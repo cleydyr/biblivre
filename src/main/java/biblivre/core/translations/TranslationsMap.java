@@ -21,6 +21,7 @@ package biblivre.core.translations;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -103,7 +104,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO> implements 
 			translations.putAll(Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()));
 		}
 
-		for (Entry<String, TranslationDTO> e : this.entrySet()) {
+		for (Map.Entry<String, TranslationDTO> e : this.entrySet()) {
 			String key = e.getKey();
 			TranslationDTO dto = e.getValue();
 
