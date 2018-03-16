@@ -4,6 +4,8 @@ Biblioteca Livre Internacional 5.0.5
 
 ## Dependências
 
+Existem duas formas de se compilar e implantar o Biblivre 5. Uma delas é 
+
 - [PostgreSQL 9.1](https://www.postgresql.org/);
 - [Apache Tomcat 7.0](http://tomcat.apache.org/);
 - [Apache Maven 3.2](https://maven.apache.org/);
@@ -40,7 +42,7 @@ Após baixar o código-fonte, para rodar o Biblivre em sua máquina será necess
 - Nem todas as dependências do Biblivre estão disponíveis em repositórios públicos, por esse motivo é necessário instalar manualmente algumas dependências do projeto. Para tanto, a partir da pasta `/lib/` do código-fonte, execute os seguintes comandos (ou, se estiver utilizando *nix execute o script maven_deps.sh **na pasta** `/lib`):
 
 ```bash
- mvn install:install-file -Dfile=a2j-2.0.4.jar -DgroupId=org.jzkit -DartifactId=a2j -Dversion=2.0.4 -Dpackaging=jar
+mvn install:install-file -Dfile=a2j-2.0.4.jar -DgroupId=org.jzkit -DartifactId=a2j -Dversion=2.0.4 -Dpackaging=jar
 
 mvn install:install-file -Dfile=jzkit2_core-2.2.3.jar -DgroupId=org.jzkit -DartifactId=jzkit2_core -Dversion=2.2.3 -Dpackaging=jar
 
