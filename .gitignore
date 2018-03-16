@@ -2,3 +2,13 @@
 .settings/
 .svn/
 /target/
+WebContent/static/styles/biblivre.about.css
+WebContent/static/styles/biblivre.acquisition.css
+WebContent/static/styles/biblivre.administration.css
+WebContent/static/styles/biblivre.administration.z3950.css
+WebContent/static/styles/biblivre.cataloging.css
+WebContent/static/styles/biblivre.cataloging.import.css
+WebContent/static/styles/biblivre.circulation.css
+WebContent/static/styles/biblivre.core.css
+WebContent/static/styles/biblivre.index.css
+WebContent/static/styles/biblivre.search.css
