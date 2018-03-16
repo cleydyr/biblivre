@@ -25,11 +25,11 @@ Por padrão, a imagem vai baixar o código do repositório do usuário cleydyr n
 - [Apache Maven 3.2](https://maven.apache.org/);
 - Uma IDE de sua preferência. Durante o desenvolvimento do Biblivre a IDE que utilizamos foi o [Eclipse](http://www.eclipse.org/downloads/eclipse-packages/);
 
-## Configuração
+#### Configuração
 
 Após baixar o código-fonte, para rodar o Biblivre em sua máquina será necessário realizar algumas configurações no seu ambiente de trabalho, conforme instruções a seguir:
 
-### PostgreSQL
+##### PostgreSQL
 
 - Baixe e instale o PostgreSQL;
 - Dentro da pasta `/sql/` do código-fonte, execute os seguintes comandos para criar a base de dados: 
@@ -42,12 +42,12 @@ Após baixar o código-fonte, para rodar o Biblivre em sua máquina será necess
 
 - O comando acima criará o schema inicial da base biblivre4.
 
-### Apache Tomcat
+##### Apache Tomcat
 
 - Baixe e instale o Apache Tomcat;
 - Caso esteja usando o Eclipse IDE, configure a [integração com Tomcat](http://www.eclipse.org/webtools/jst/components/ws/M5/tutorials/InstallTomcat.html).
 
-### Apache Maven
+##### Apache Maven
 
 - Baixe e instale o Apache Maven;
 
