@@ -2,9 +2,23 @@
 
 Biblioteca Livre Internacional 5.0.5
 
-## Dependências
+## Build e deploy
 
-Existem duas formas de se compilar e implantar o Biblivre 5. Uma delas é 
+Existem duas formas de se compilar e implantar o Biblivre 5: usando uma imagem do Docker (muito mais rápido e prático) ou instalando manualmente as dependências na sua máquina (permite modificações mais profundas).
+
+### Docker
+
+#### Como usar
+Esxecute`docker run -p 8080:8080 cleydyr/biblivre5-dev`
+Depois que todo o processo de implantação terminar (cerca de 5 minutos, mas depende da capacidade de processamento da máquina e da largura de banda de conexão à internet disponível), você poderá acessar o Biblivre 5 em `localhost:8080/Biblivre4` (note que o 4 no fim da URL ainda persiste).
+
+#### Variáveis de ambiente
+Por padrão, a imagem vai baixar o código do repositório do usuário cleydyr no Github correspondente ao *branch* 5.x. Você pode configurar o nome de usuário e o branch usando as variáveis de ambiente `GITHUB_USER` e `BRANCH_NAME`. Por exemplo para implantar o Biblivre 5 usando o código do branch `meu-branch` do usuário `fulano` no Github execute o comando:
+`docker run -p 8080:8080 -e "BRANCH_NAME=meu-branch" -e "GITHUB_USER=fulano" cleydyr/biblivre5-dev`
+
+### Configuração manual
+
+#### Dependências
 
 - [PostgreSQL 9.1](https://www.postgresql.org/);
 - [Apache Tomcat 7.0](http://tomcat.apache.org/);
