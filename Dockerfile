@@ -3,6 +3,7 @@ RUN apt-get update
 RUN apt-get install -y maven postgresql
 ENV GITHUB_USER cleydyr
 ENV BRANCH_NAME 5.x
+ENV JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
 ENTRYPOINT echo "listen_addresses = '*'" >> /etc/postgresql/9.6/main/postgresql.conf \
 && 	echo "host    all             all              0.0.0.0/0                       md5" >> /etc/postgresql/9.6/main/pg_hba.conf \
 && 	/etc/init.d/postgresql start \
