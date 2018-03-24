@@ -15,7 +15,7 @@ ENTRYPOINT echo "listen_addresses = '*'" >> /etc/postgresql/9.6/main/postgresql.
 &&	su postgres -c "psql -U postgres -f sql/createdatabase.sql" \
 &&	su postgres -c "psql -U postgres -f sql/biblivre4.sql -d biblivre4" \
 &&  cp target/Biblivre4.war $CATALINA_HOME/webapps \
-&&	catalina.sh jpda start
+&&	catalina.sh jpda run
 
 EXPOSE 8080
 EXPOSE 8000
