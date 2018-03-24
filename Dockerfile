@@ -11,7 +11,7 @@ ENTRYPOINT echo "listen_addresses = '*'" >> /etc/postgresql/9.6/main/postgresql.
 &&	cd /tmp/Biblivre-5-$BRANCH_NAME/lib/ \
 &&	sh maven_deps.sh \
 &&	cd .. \
-&&	mvn sass:update-stylesheets package \
+&&	mvn sass:update-stylesheets package -Ddebug=true \
 &&	su postgres -c "psql -U postgres -f sql/createdatabase.sql" \
 &&	su postgres -c "psql -U postgres -f sql/biblivre4.sql -d biblivre4" \
 &&  cp target/Biblivre4.war $CATALINA_HOME/webapps \
