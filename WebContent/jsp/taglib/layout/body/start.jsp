@@ -153,18 +153,18 @@
 							</c:choose>
 						</c:otherwise>
 					</c:choose>
+				</ul>
+
+				<div id=slider_area>
+					<div id=slider ></div>
+				</div>
+			</div>
+		</div>
+
+		<div id=notifications>
+			<div id=messages>
+
 <%
-
-		out.println("      </ul>");
-		out.println("      <div id=\"slider_area\">");
-		out.println("        <div id=\"slider\"></div>");
-		out.println("      </div>");
-		out.println("    </div>");
-		out.println("  </div>");
-
-		out.println("  <div id=\"notifications\">");
-		out.println("    <div id=\"messages\">");
-
 		if (isLogged && !isDisableMenu) {
 			Boolean passwordWarning = (Boolean) session.getAttribute(schema + ".system_warning_password");
 			Boolean backupWarning = (Boolean) session.getAttribute(schema + ".system_warning_backup");
