@@ -110,6 +110,7 @@ public class LayoutBody extends TagSupport {
 	
 	@Override
 	public int doStartTag() throws JspException {
+		System.out.println("+ LayoutBody.doStartTag");
 		this.init();
 
 		JspWriter out = this.pageContext.getOut();
@@ -124,6 +125,14 @@ public class LayoutBody extends TagSupport {
 			atps = AuthorizationPoints.getNotLoggedInstance(schema);
 		}
 
+		doWriteJSPContent(out, schema, translationsMap, languages, utils, atps);
+
+		System.out.println("- LayoutBody.doStartTag");
+		return BodyTag.EVAL_BODY_INCLUDE;
+	}
+
+	private void doWriteJSPContent(JspWriter out, String schema, TranslationsMap translationsMap,
+			Set<LanguageDTO> languages, LayoutUtils utils, AuthorizationPoints atps) {
 		try {
 			out.println("<body>");
 
@@ -368,12 +377,11 @@ public class LayoutBody extends TagSupport {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return BodyTag.EVAL_BODY_INCLUDE;
 	}
 
 	@Override
 	public int doEndTag() throws JspException {
+		System.out.println("+ LayoutBody.doEndTag");
 		JspWriter out = this.pageContext.getOut();
 		try {
 			out.println("      </div>");
@@ -387,6 +395,7 @@ public class LayoutBody extends TagSupport {
 		} catch (Exception e) {
 		}
 
+		System.out.println("- LayoutBody.doEndTag");
 		return Tag.EVAL_PAGE;
 	}
 }

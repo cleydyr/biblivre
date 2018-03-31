@@ -68,6 +68,7 @@ public class LayoutHead extends BodyTagSupport {
 	
 	@Override
 	public int doStartTag() throws JspException {
+		System.out.println("+ LayoutHead.doStartTag");
 		this.init();	
 		
 		JspWriter out = this.pageContext.getOut();
@@ -142,11 +143,13 @@ public class LayoutHead extends BodyTagSupport {
 		} catch (Exception e) {
 		}
 
+		System.out.println("- LayoutHead.doStartTag");
 		return BodyTag.EVAL_BODY_BUFFERED;
 	}
 
 	@Override
 	public int doEndTag() throws JspException {
+		System.out.println("+ LayoutHead.doEndTag");
 		JspWriter out = this.pageContext.getOut();
 
 		try {
@@ -154,6 +157,7 @@ public class LayoutHead extends BodyTagSupport {
 		} catch (Exception e) {
 		}
 
+		System.out.println("- LayoutHead.doEndTag");
 		return Tag.EVAL_PAGE;
 	}
 
