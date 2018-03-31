@@ -164,69 +164,59 @@
 		<div id=notifications>
 			<div id=messages>
 
-<%
-		if (isLogged && !isDisableMenu) {
-			Boolean passwordWarning = (Boolean) session.getAttribute(schema + ".system_warning_password");
-			Boolean backupWarning = (Boolean) session.getAttribute(schema + ".system_warning_backup");
-			Boolean indexingWarning = (Boolean) session.getAttribute(schema + ".system_warning_reindex");
-			String updateWarning = (String) session.getAttribute(schema + ".system_warning_new_version");
+		<c:if test="${isLogged && !isDisableMenu}">
+			<c:set var="passwordWarning" value='${schema}.system_warning_password' />
+			<c:set var="backupWarning" value='${schema}.system_warning_backup' />
+			<c:set var="indexingWarning" value='${schema}.system_warning_reindex' />
+			<c:set var="updateWarning" value='${schema}.system_warning_new_version' />
 
-			if (passwordWarning != null && passwordWarning) {
-				out.print("<div class=\"message sticky error system_warning_password\"><div>");
-				out.print(translationsMap.getHtml("warning.change_password"));
+			<c:if test='${sessionScope[passwordWarning]}'>
+				<div class="message sticky error system_warning_password">
+					<div>
+						<c:out value='${translationsMap.getHtml("warning.change_password")}' escapeXml="false" />
+						<a href="?action=administration_password" class="fright">
+							<c:out value='${translationsMap.getHtml("warning.change_password")}' escapeXml="false" />
+						</a>
+					</div>
+				</div>
+			</c:if>
+			<c:if test="${sessionScope[backupWarning]}">
+				<div class="message sticky error system_warning_backup">
+					<div>
+						<c:out value='${translationsMap.getHtml("warning.create_backup")}' escapeXml="false" />
+						<a href="?action=administration_maintenance" class="fright">
+							<c:out value='${translationsMap.getHtml("warning.fix_now")}' escapeXml="false" />
+						</a>
+					</div>
+				</div>
+			</c:if>
 
-				out.print(" <a href=\"?action=administration_password\" class=\"fright\">");
-				out.print(translationsMap.getHtml("warning.fix_now"));
-				out.print("</a>");
+			<c:if test="${sessionScope[indexingWarning]}">
+				<div class="message sticky error system_warning_reindex">
+					<div>
+						<c:out value='${translationsMap.getHtml("warning.reindex_database")}' escapeXml="false" />
+							<a href="?action=administration_maintenance" class="fright">
+								<c:out value='${translationsMap.getHtml("warning.fix_now")}' escapeXml="false" />
+							</a>
+					</div>
+				</div>
+			</c:if>
 
-				out.print("</div></div>");
-			}
-
-			if (backupWarning != null && backupWarning) {
-				out.print("<div class=\"message sticky error system_warning_backup\"><div>");
-				out.print(translationsMap.getHtml("warning.create_backup"));
-
-				out.print(" <a href=\"?action=administration_maintenance\" class=\"fright\">");
-				out.print(translationsMap.getHtml("warning.fix_now"));
-				out.print("</a>");
-
-				out.print("</div></div>");
-			}
-
-			if (indexingWarning != null && indexingWarning) {
-				out.print("<div class=\"message sticky error system_warning_reindex\"><div>");
-				out.print(translationsMap.getHtml("warning.reindex_database"));
-
-				out.print(" <a href=\"?action=administration_maintenance\" class=\"fright\">");
-				out.print(translationsMap.getHtml("warning.fix_now"));
-				out.print("</a>");
-
-				out.print("</div></div>");
-			}
-
-			if (StringUtils.isNotBlank(updateWarning)) {
-				out.print("<div class=\"message sticky error system_warning_new_version\"><div>");
-
-				out.print("<div class=\"fright\">");
-				out.print(
-						" <a href=\"javascript:void(0)\" onclick=\"Core.ignoreUpdate(this);\" class=\"close\" target=\"_blank\">&times;</a>");
-				out.print("<br>");
-				out.print(" <a href=\"" + Constants.DOWNLOAD_URL + "\" target=\"_blank\">");
-				out.print(translationsMap.getHtml("warning.download_site"));
-				out.print("</a>");
-				out.print("</div>");
-
-				String message = translationsMap.getText("warning.new_version");
-				message = message.replace("{0}", Constants.BIBLIVRE_VERSION);
-				message = message.replace("{1}", updateWarning);
-
-				out.print(message);
-
-				out.print("</div></div>");
-			}
-		}
-%>
-
+			<c:if test="${StringUtils.isNotBlank(updateWarning)}">
+				<div class="message sticky error system_warning_new_version">
+					<div>
+						<div class="fright">
+							<a href="javascript:void(0)" onclick="Core.ignoreUpdate(this);" class="close" target="_blank">&times;</a>
+							<br>
+							<a href="<c:out value='<%= Constants.DOWNLOAD_URL %>' />" target="_blank">
+								<c:out value='${translationsMap.getHtml("warning.download_site")}' escapeXml="false" />
+							</a>
+						</div>
+						<c:out value='${message}' escapeXml="false" />
+					</div>
+				</div>
+			</c:if>
+		</c:if>
 		</div>
 		<div id="breadcrumb">
 			<div id="page_help_icon">

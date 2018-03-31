@@ -123,11 +123,26 @@ public class LayoutBody extends TagSupport {
 
 		request.setAttribute("utils", new LayoutUtils(translationsMap)); // TODO: custom tag?
 
+		String updateWarning = (String) this.pageContext.getSession()
+				.getAttribute(this.getSchema() + ".system_warning_new_version");
+
+		if (StringUtils.isNotBlank(updateWarning)) {
+
+			String message = translationsMap.getText("warning.new_version");
+			message = message.replace("{0}", Constants.BIBLIVRE_VERSION);
+			message = message.replace("{1}", updateWarning);
+
+			request.setAttribute("message", message); // TODO: custom tag?
+		}
+
 		// TODO: o de baixo também iria para um custom tag
-		AuthorizationPoints atps = (AuthorizationPoints) pageContext.getSession().getAttribute(schema + ".logged_user_atps");
+		AuthorizationPoints atps = (AuthorizationPoints) pageContext.getSession()
+				.getAttribute(schema + ".logged_user_atps");
 		if (atps == null) {
 			atps = AuthorizationPoints.getNotLoggedInstance(schema);
 		}
+
+		request.setAttribute("atps", atps); // TODO: custom tag?
 
 		String path = "/jsp/taglib/layout/body/start.jsp";
 
