@@ -31,6 +31,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.core.translations.Languages;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
@@ -116,6 +117,7 @@ public class LayoutBody extends TagSupport {
 		request.setAttribute("isBanner", this.isBanner());
 		request.setAttribute("isSchemaSelection", this.isSchemaSelection());
 		request.setAttribute("isEmployee", this.isEmployee());
+		request.setAttribute("languages", Languages.getLanguages(schema));
 
 		String path = "/jsp/taglib/layout/body/start.jsp";
 

@@ -25,7 +25,6 @@
 <jsp:useBean id="isLogged" type="java.lang.Boolean" scope="request" />
 
 <%
-	Set<LanguageDTO> languages = Languages.getLanguages(schema);
 	LayoutUtils utils = new LayoutUtils(translationsMap); // TODO: passar o translations map para uma custom tag
 
 	// TODO: o de baixo também iria para um custom tag
@@ -90,23 +89,19 @@
 				<h1><a href="?">${Configurations.getHtml(schema, "general.title")}</a></h1>
 				<h2>${Configurations.getHtml(schema, "general.subtitle")}</h2>
 			</div>
+			<c:if test="${languages.size() > 1}">
+				<div id="language_selection">
+					<select class="combo combo_auto_size" name="i18n" onchange="Core.submitForm('menu', 'i18n', 'jsp');">
+					<c:forEach items="${languages}" var="dto">
+						<c:set var="selectedAttr">
+							${translationsMap.getLanguage().equals(dto.getLanguage()) ? "selected" : ""}
+						</c:set>
+						<option value="${dto.getLanguage()}" ${selectedAttr}>${dto.toString()}</option>
+					</c:forEach>
+			</select>
+			</div>
+			</c:if>
 <%
-		if (languages.size() > 1) {
-			out.println("    <div id=\"language_selection\">");
-			out.println(
-					"      <select class=\"combo combo_auto_size\" name=\"i18n\" onchange=\"Core.submitForm('menu', 'i18n', 'jsp');\">");
-
-			for (LanguageDTO dto : languages) {
-				boolean selectedLanguage = translationsMap.getLanguage().equals(dto.getLanguage());
-
-				out.println(String.format("<option value=\"%s\" %s>%s</option>", dto.getLanguage(),
-						(selectedLanguage) ? "selected=\"selected\"" : "", dto.toString()));
-			}
-
-			out.println("      </select>");
-			out.println("    </div>");
-		}
-
 		out.println("    <div id=\"menu\">");
 		out.println("      <ul>");
 
