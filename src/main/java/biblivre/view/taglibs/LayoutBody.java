@@ -31,10 +31,12 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.translations.Languages;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
+import biblivre.view.LayoutUtils;
 
 public class LayoutBody extends TagSupport {
 	private static final long serialVersionUID = 1L;
@@ -118,6 +120,14 @@ public class LayoutBody extends TagSupport {
 		request.setAttribute("isSchemaSelection", this.isSchemaSelection());
 		request.setAttribute("isEmployee", this.isEmployee());
 		request.setAttribute("languages", Languages.getLanguages(schema));
+
+		request.setAttribute("utils", new LayoutUtils(translationsMap)); // TODO: custom tag?
+
+		// TODO: o de baixo também iria para um custom tag
+		AuthorizationPoints atps = (AuthorizationPoints) pageContext.getSession().getAttribute(schema + ".logged_user_atps");
+		if (atps == null) {
+			atps = AuthorizationPoints.getNotLoggedInstance(schema);
+		}
 
 		String path = "/jsp/taglib/layout/body/start.jsp";
 

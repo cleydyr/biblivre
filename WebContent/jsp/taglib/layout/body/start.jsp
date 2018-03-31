@@ -24,16 +24,6 @@
 <jsp:useBean id="isEmployee" type="java.lang.Boolean" scope="request" />
 <jsp:useBean id="isLogged" type="java.lang.Boolean" scope="request" />
 
-<%
-	LayoutUtils utils = new LayoutUtils(translationsMap); // TODO: passar o translations map para uma custom tag
-
-	// TODO: o de baixo também iria para um custom tag
-	AuthorizationPoints atps = (AuthorizationPoints) session.getAttribute(schema + ".logged_user_atps");
-	if (atps == null) {
-		atps = AuthorizationPoints.getNotLoggedInstance(schema);
-	}
-
-%>
 <c:set var="multiPartAttributes">
 	enctype="multipart/form-data" accept-charset="UTF-8"
 </c:set>
@@ -101,71 +91,69 @@
 			</select>
 			</div>
 			</c:if>
+			<div id="menu">
+				<ul>
+					<c:choose>
+						<c:when test="${isDisableMenu}">
+							<c:out value="${utils.menuHelp(atps)}" escapeXml="false" />
+						</c:when>
+						<c:when test="${isSchemaSelection}">
+							<c:choose>
+								<c:when  test="${isLogged}">
+									<c:out value='${utils.menuLevel(atps, "multi_schema", "administration_password",
+									"multi_schema_manage", "multi_schema_configurations", "multi_schema_translations",
+									"multi_schema_backup")}' escapeXml="false" />
+									<c:out value="${utils.menuHelp(atps)}" escapeXml="false" />
+									<c:out value="${utils.menuLogout()}" escapeXml="false" />
+								</c:when>
+								<c:otherwise>
+									<c:out value='${utils.menuHelp(atps)}' escapeXml="false" />
+									<c:out value='${utils.menuLogin()}' escapeXml="false" />
+								</c:otherwise>
+							</c:choose>
+						</c:when>
+						<c:otherwise>
+							<c:choose>
+								<c:when  test="${isEmployee}">
+									<c:out value='${utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
+										"search_vocabulary", "search_z3950")}' escapeXml="false" />
+									<c:out value='${utils.menuLevel(atps, "circulation", "circulation_user", "circulation_lending",
+										"circulation_reservation", "circulation_access", "circulation_user_cards")}' escapeXml="false" />
+									<c:out value='${utils.menuLevel(atps, "cataloging", "cataloging_bibliographic",
+										"cataloging_authorities", "cataloging_vocabulary", "cataloging_import",
+										"cataloging_labels")}' escapeXml="false" />
+									<c:out value='${utils.menuLevel(atps, "cataloging", "cataloging_bibliographic",
+										"cataloging_authorities", "cataloging_vocabulary", "cataloging_import",
+										"cataloging_labels")}' escapeXml="false" />
+									<c:out value='${utils.menuLevel(atps, "acquisition", "acquisition_supplier", "acquisition_request",
+										"acquisition_quotation", "acquisition_order")}' escapeXml="false" />
+									<c:out value='${utils.menuLevel(atps, "administration", "administration_password",
+										"administration_permissions", "administration_user_types",
+										"administration_access_cards", "administration_z3950_servers", "administration_reports",
+										"administration_maintenance", "administration_configurations",
+										"administration_translations", "administration_brief_customization",
+										"administration_form_customization")}' escapeXml="false" />
+									<c:out value='${utils.menuHelp(atps)}' escapeXml="false" />
+									<c:out value='${utils.menuLogout()}' escapeXml="false" />
+								</c:when>
+								<c:when  test="${isLogged}">
+									<c:out value='${utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
+										"search_vocabulary", "search_z3950")}' escapeXml="false" />
+									<c:out value='${utils.menuLevel(atps, "self_circulation", "circulation_user_reservation")}' />
+									<c:out value='${utils.menuLevel(atps, "administration", "administration_password")}' escapeXml="false" />
+									<c:out value='${utils.menuHelp(atps)}' escapeXml="false"  />
+									<c:out value='${utils.menuLogout()}' escapeXml="false" />
+								</c:when>
+								<c:otherwise>
+									<c:out value='${utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
+										"search_vocabulary", "search_z3950")}' escapeXml="false" />
+									<c:out value='${utils.menuHelp(atps)}' escapeXml="false" />
+									<c:out value='${utils.menuLogin()}' escapeXml="false" />
+								</c:otherwise>
+							</c:choose>
+						</c:otherwise>
+					</c:choose>
 <%
-		out.println("    <div id=\"menu\">");
-		out.println("      <ul>");
-
-		if (isDisableMenu) {
-			out.println(utils.menuHelp(atps));
-		} else if (isSchemaSelection) {
-			if (isLogged) {
-				// LOGGED IN MULTI SCHEMA MENU
-				out.println(utils.menuLevel(atps, "multi_schema", "administration_password",
-						"multi_schema_manage", "multi_schema_configurations", "multi_schema_translations",
-						"multi_schema_backup"));
-				out.println(utils.menuHelp(atps));
-				out.println(utils.menuLogout());
-			} else {
-				// LOGGED OFF MULTI SCHEMA MENU
-				out.println(utils.menuHelp(atps));
-				out.println(utils.menuLogin());
-			}
-		} else {
-			if (isEmployee) {
-				// LOGGED EMPLOYEE MENU
-				out.println(utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
-						"search_vocabulary", "search_z3950"));
-
-				out.println(utils.menuLevel(atps, "circulation", "circulation_user", "circulation_lending",
-						"circulation_reservation", "circulation_access", "circulation_user_cards"));
-
-				out.println(utils.menuLevel(atps, "cataloging", "cataloging_bibliographic",
-						"cataloging_authorities", "cataloging_vocabulary", "cataloging_import",
-						"cataloging_labels"));
-
-				out.println(utils.menuLevel(atps, "acquisition", "acquisition_supplier", "acquisition_request",
-						"acquisition_quotation", "acquisition_order"));
-
-				out.println(utils.menuLevel(atps, "administration", "administration_password",
-						"administration_permissions", "administration_user_types",
-						"administration_access_cards", "administration_z3950_servers", "administration_reports",
-						"administration_maintenance", "administration_configurations",
-						"administration_translations", "administration_brief_customization",
-						"administration_form_customization"));
-
-				out.println(utils.menuHelp(atps));
-				out.println(utils.menuLogout());
-
-			} else if (isLogged) {
-				// Logged reader menu
-				out.println(utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
-						"search_vocabulary", "search_z3950"));
-
-				out.println(utils.menuLevel(atps, "self_circulation", "circulation_user_reservation"));
-
-				out.println(utils.menuLevel(atps, "administration", "administration_password"));
-
-				out.println(utils.menuHelp(atps));
-				out.println(utils.menuLogout());
-			} else {
-				// LOGGED OFF MENU
-				out.println(utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
-						"search_vocabulary", "search_z3950"));
-
-				out.println(utils.menuHelp(atps));
-				out.println(utils.menuLogin());
-			}
-		}
 
 		out.println("      </ul>");
 		out.println("      <div id=\"slider_area\">");
