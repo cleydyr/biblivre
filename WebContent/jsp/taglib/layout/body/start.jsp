@@ -31,7 +31,6 @@
 		atps = AuthorizationPoints.getNotLoggedInstance(schema);
 	}
 
-	try {
 		out.println("<body>");
 
 		if (isMultiPart) {
@@ -290,7 +289,4 @@
 		//out.println(String.format("<li><a href=\"?action=list_vocabulary\">Vocabulário</a></li>"));
 		out.println("  </ul>");
 		out.println("</noscript>");
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
 %>
