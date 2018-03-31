@@ -13,16 +13,16 @@
 <%@ page import="biblivre.core.utils.Constants"%>
 <%@ page import="org.apache.commons.lang3.StringUtils"%>
 
-<%
-	String schema = (String) request.getAttribute("schema");
-	TranslationsMap translationsMap = (TranslationsMap) request.getAttribute("translationsMap");
-	boolean isMultiPart = (Boolean) request.getAttribute("isMultiPart");
-	boolean isLogged = (Boolean) request.getAttribute("isLogged");
-	boolean isDisableMenu = (Boolean) request.getAttribute("isDisableMenu");
-	boolean isBanner = (Boolean) request.getAttribute("isBanner");
-	boolean isSchemaSelection = (Boolean) request.getAttribute("isSchemaSelection");
-	boolean isEmployee = (Boolean) request.getAttribute("isEmployee");
+<jsp:useBean id="schema" type="java.lang.String" scope="request" />
+<jsp:useBean id="translationsMap" type="biblivre.core.translations.TranslationsMap" scope="request" />
+<jsp:useBean id="isMultiPart" type="java.lang.Boolean" scope="request" />
+<jsp:useBean id="isDisableMenu" type="java.lang.Boolean" scope="request" />
+<jsp:useBean id="isBanner" type="java.lang.Boolean" scope="request" />
+<jsp:useBean id="isSchemaSelection" type="java.lang.Boolean" scope="request" />
+<jsp:useBean id="isEmployee" type="java.lang.Boolean" scope="request" />
+<jsp:useBean id="isLogged" type="java.lang.Boolean" scope="request" />
 
+<%
 	Set<LanguageDTO> languages = Languages.getLanguages(schema);
 	LayoutUtils utils = new LayoutUtils(translationsMap);
 
