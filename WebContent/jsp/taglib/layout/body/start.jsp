@@ -13,6 +13,8 @@
 <%@ page import="biblivre.core.utils.Constants"%>
 <%@ page import="org.apache.commons.lang3.StringUtils"%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <jsp:useBean id="schema" type="java.lang.String" scope="request" />
 <jsp:useBean id="translationsMap" type="biblivre.core.translations.TranslationsMap" scope="request" />
 <jsp:useBean id="isMultiPart" type="java.lang.Boolean" scope="request" />
@@ -34,17 +36,16 @@
 
 %>
 <body>
-<%
-		if (isMultiPart) {
-			out.println(
-					"<form id=\"page_submit\" name=\"page_submit\" method=\"post\" enctype=\"multipart/form-data\" accept-charset=\"UTF-8\">");
-			out.println("  <input type=\"hidden\" name=\"controller\" id=\"controller\" value=\"json\">");
-		} else {
-			out.println(
-					"<form id=\"page_submit\" name=\"page_submit\" method=\"post\" onsubmit=\"return false;\">");
-			out.println("  <input type=\"hidden\" name=\"controller\" id=\"controller\" value=\"jsp\">");
-		}
-%>
+<c:choose>
+	<c:when test="${isMultipart}">
+	<form id="page_submit" name="page_submit" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+		<input type="hidden" name="controller" id="controller" value="json">
+	</c:when>
+	<c:otherwise>
+		<form id="page_submit" name="page_submit" method="post" onsubmit="return false;">
+			<input type="hidden" name="controller" id="controller" value="jsp">
+	</c:otherwise>
+</c:choose>
 	<input type="hidden" name="module" id="module" value="login">	
 <%
 		if (isLogged) {
