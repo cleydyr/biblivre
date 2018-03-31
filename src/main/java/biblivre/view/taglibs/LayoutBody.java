@@ -28,8 +28,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,7 +42,7 @@ import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
 import biblivre.view.LayoutUtils;
 
-public class LayoutBody extends BodyTagSupport {
+public class LayoutBody extends TagSupport {
 	private static final long serialVersionUID = 1L;
 
 	private String schema;
@@ -369,7 +369,7 @@ public class LayoutBody extends BodyTagSupport {
 			e.printStackTrace();
 		}
 		
-		return BodyTag.EVAL_BODY_BUFFERED;
+		return BodyTag.EVAL_BODY_INCLUDE;
 	}
 
 	@Override
@@ -388,31 +388,5 @@ public class LayoutBody extends BodyTagSupport {
 		}
 
 		return Tag.EVAL_PAGE;
-	}
-
-	@Override
-	public int doAfterBody() throws JspException {
-		try {
-			// This code is generated for tags whose bodyContent is "JSP"
-			BodyContent bodyCont = getBodyContent();
-			JspWriter out = bodyCont.getEnclosingWriter();
-
-			this.writeTagBodyContent(out, bodyCont);
-		} catch (Exception ex) {
-			this.handleBodyContentException(ex);
-		}
-
-		return Tag.EVAL_PAGE;
-	}
-
-	private void writeTagBodyContent(JspWriter out, BodyContent bodyContent) throws IOException {
-		bodyContent.writeOut(out);
-		bodyContent.clearBody();
-	}
-
-	private void handleBodyContentException(Exception ex) throws JspException {
-		// Since the doAfterBody method is guarded, place exception handing code
-		// here.
-		throw new JspException("Error in BodyBeforeLogin tag", ex);
 	}
 }
