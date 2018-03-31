@@ -100,18 +100,12 @@ public class LayoutBody extends TagSupport {
 	public int doStartTag() throws JspException {
 		this.init();
 
-		try {
-			doJSPForward(schema, translationsMap);
-		} catch (ServletException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		doJSPForward(schema, translationsMap);
 
 		return EVAL_BODY_INCLUDE;
 	}
 
-	private void doJSPForward(String schema, TranslationsMap translationsMap) throws ServletException, IOException {
+	private void doJSPForward(String schema, TranslationsMap translationsMap) throws JspException {
 		ServletRequest request = pageContext.getRequest();
 
 		request.setAttribute("schema", schema);
@@ -125,7 +119,13 @@ public class LayoutBody extends TagSupport {
 
 		String path = "/jsp/taglib/layout/body/start.jsp";
 
-		this.pageContext.include(path);
+		try {
+			this.pageContext.include(path);
+		} catch (ServletException e) {
+			throw new JspException(e);
+		} catch (IOException e) {
+			throw new JspException(e);
+		}
 	}
 
 	@Override
