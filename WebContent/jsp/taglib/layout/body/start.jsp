@@ -68,7 +68,7 @@
 				</div>
 				<div>
 					<a href="http://www.cultura.gov.br/" target="_blank">
-						<img src="static/images/logo_lei_de_incentivo.png" width="88" height="66" alt="${translationsMap.getHtml("header.law")}">
+						<img src="static/images/logo_lei_de_incentivo.png" width="88" height="66" alt='${translationsMap.getHtml("header.law")}'>
 					</a>
 				</div>
 			</div>
