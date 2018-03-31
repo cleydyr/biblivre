@@ -159,6 +159,20 @@ public class LayoutBody extends TagSupport {
 
 	@Override
 	public int doEndTag() throws JspException {
+		String path = "/jsp/taglib/layout/body/end.jsp";
+		try {
+			this.pageContext.include(path);
+		} catch (ServletException e) {
+			e.printStackTrace();
+			throw new JspException(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new JspException(e);
+		}
+		return Tag.EVAL_PAGE;
+	}
+
+	private void doWriteJSP() {
 		JspWriter out = this.pageContext.getOut();
 		try {
 			out.println("      </div>");
@@ -172,7 +186,5 @@ public class LayoutBody extends TagSupport {
 			out.println("</html>");
 		} catch (Exception e) {
 		}
-
-		return Tag.EVAL_PAGE;
 	}
 }
