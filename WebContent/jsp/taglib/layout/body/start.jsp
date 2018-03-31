@@ -175,7 +175,7 @@
 					<div>
 						<c:out value='${translationsMap.getHtml("warning.change_password")}' escapeXml="false" />
 						<a href="?action=administration_password" class="fright">
-							<c:out value='${translationsMap.getHtml("warning.change_password")}' escapeXml="false" />
+							<c:out value='${translationsMap.getHtml("warning.fix_now")}' escapeXml="false" />
 						</a>
 					</div>
 				</div>
