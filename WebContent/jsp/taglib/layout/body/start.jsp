@@ -24,15 +24,17 @@
 
 <%
 	Set<LanguageDTO> languages = Languages.getLanguages(schema);
-	LayoutUtils utils = new LayoutUtils(translationsMap);
+	LayoutUtils utils = new LayoutUtils(translationsMap); // TODO: passar o translations map para uma custom tag
 
+	// TODO: o de baixo também iria para um custom tag
 	AuthorizationPoints atps = (AuthorizationPoints) session.getAttribute(schema + ".logged_user_atps");
 	if (atps == null) {
 		atps = AuthorizationPoints.getNotLoggedInstance(schema);
 	}
 
-		out.println("<body>");
-
+%>
+<body>
+<%
 		if (isMultiPart) {
 			out.println(
 					"<form id=\"page_submit\" name=\"page_submit\" method=\"post\" enctype=\"multipart/form-data\" accept-charset=\"UTF-8\">");
@@ -42,74 +44,58 @@
 					"<form id=\"page_submit\" name=\"page_submit\" method=\"post\" onsubmit=\"return false;\">");
 			out.println("  <input type=\"hidden\" name=\"controller\" id=\"controller\" value=\"jsp\">");
 		}
-
-		out.println("  <input type=\"hidden\" name=\"module\" id=\"module\" value=\"login\">");
+%>
+	<input type="hidden" name="module" id="module" value="login">	
+<%
 		if (isLogged) {
 			out.println("  <input type=\"hidden\" name=\"action\" id=\"action\" value=\"logout\">");
 		} else {
 			out.println("  <input type=\"hidden\" name=\"action\" id=\"action\" value=\"login\">");
 		}
+%>
+	<div id="header">
+		<div id="logo_biblivre">
+			<a href="http://biblivre.org.br/" target="_blank">
+				<img src="static/images/logo_biblivre.png" width="117" height="66" alt="Biblivre V">
+			</a>
+		</div>
 
-		out.println("  <div id=\"header\">");
+		<div id="logo_support">
+			<div>
+				<img src="static/images/logo_pedro_i.png" width="88" height="66" alt="Organização Pedro I">
+			</div>
+			<div>
+				<img src="static/images/logo_sabin.png" width="88" height="66" alt="SABIN">
+			</div>
+			<div>
+				<a href="http://www.bn.br/" target="_blank">
+					<img src="static/images/logo_biblioteca_nacional.png" width="88" height="66" alt="Biblioteca Nacional">
+				</a>
+			</div>
+			<div>
+				<a href="http://www.cultura.gov.br/" target="_blank">
+					<img src="static/images/logo_lei_de_incentivo.png" width="88" height="66" alt="${translationsMap.getHtml("header.law")}">
+				</a>
+			</div>
+		</div>
 
-		out.println("    <div id=\"logo_biblivre\">");
-		out.println("      <a href=\"http://biblivre.org.br/\" target=\"_blank\">");
-		out.println(
-				"        <img src=\"static/images/logo_biblivre.png\" width=\"117\" height=\"66\" alt=\"Biblivre V\">");
-		out.println("      </a>");
-		out.println("    </div>");
+		<div id="logo_sponsor">
+			<a href="http://www.itaucultural.org.br/" target="_blank">
+				<img src="static/images/logo_itau.png" width="77" height="66" alt="Itaú Cultural">
+			</a>
+			<div id="clock">00:00</div>
+		</div>
 
-		out.println("    <div id=\"logo_support\">");
-
-		out.println("      <div>");
-		out.println(
-				"        <img src=\"static/images/logo_pedro_i.png\" width=\"88\" height=\"66\" alt=\"Organização Pedro I\">");
-		out.println("      </div>");
-
-		out.println("      <div>");
-		out.println(
-				"        <img src=\"static/images/logo_sabin.png\" width=\"88\" height=\"66\" alt=\"SABIN\">");
-		out.println("      </div>");
-
-		out.println("      <div>");
-		out.println("        <a href=\"http://www.bn.br/\" target=\"_blank\">");
-		out.println(
-				"          <img src=\"static/images/logo_biblioteca_nacional.png\" width=\"88\" height=\"66\" alt=\"Biblioteca Nacional\">");
-		out.println("        </a>");
-		out.println("      </div>");
-
-		out.println("      <div>");
-		out.println("        <a href=\"http://www.cultura.gov.br/\" target=\"_blank\">");
-		out.println(
-				"          <img src=\"static/images/logo_lei_de_incentivo.png\" width=\"88\" height=\"66\" alt=\""
-						+ translationsMap.getHtml("header.law") + "\">");
-		out.println("        </a>");
-		out.println("      </div>");
-
-		out.println("    </div>");
-
-		out.println("    <div id=\"logo_sponsor\">");
-		out.println("      <a href=\"http://www.itaucultural.org.br/\" target=\"_blank\">");
-		out.println(
-				"        <img src=\"static/images/logo_itau.png\" width=\"77\" height=\"66\" alt=\"Itaú Cultural\">");
-		out.println("      </a>");
-		out.println("      <div id=\"clock\">00:00</div>");
-		out.println("    </div>");
-
-		out.println("    <div id=\"title\">");
-
-		out.println("      <div id=\"logo_biblivre_small\">");
-		out.println("        <a href=\"http://biblivre.org.br/\" target=\"_blank\">");
-		out.println(
-				"          <img src=\"static/images/logo_biblivre_small.png\" width=\"43\" height=\"36\" alt=\"Biblivre V\">");
-		out.println("        </a>");
-		out.println("      </div>");
-
-		out.println("      <h1><a href=\"?\">" + Configurations.getHtml(schema, "general.title") + "</a></h1>");
-		out.println("      <h2>" + Configurations.getHtml(schema, "general.subtitle") + "</h2>");
-
-		out.println("    </div>");
-
+		<div id="title">
+			<div id="logo_biblivre_small">
+				<a href="http://biblivre.org.br/" target="_blank">
+					<img src="static/images/logo_biblivre_small.png" width="43" height="36" alt="Biblivre V">
+				</a>
+			</div>
+			<h1><a href="?">${Configurations.getHtml(schema, "general.title")}</a></h1>
+			<h2>${Configurations.getHtml(schema, "general.subtitle")}</h2>
+		</div>
+<%
 		if (languages.size() > 1) {
 			out.println("    <div id=\"language_selection\">");
 			out.println(
