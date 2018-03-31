@@ -122,8 +122,10 @@ public class LayoutBody extends TagSupport {
 		try {
 			this.pageContext.include(path);
 		} catch (ServletException e) {
+			e.printStackTrace();
 			throw new JspException(e);
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new JspException(e);
 		}
 	}
