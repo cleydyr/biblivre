@@ -225,32 +225,34 @@
 				out.print("</div></div>");
 			}
 		}
-
-		out.println("    </div>");
-		out.println(
-				"    <div id=\"breadcrumb\"><div id=\"page_help_icon\"><a onclick=\"PageHelp.show();\" title=\""
-						+ translationsMap.getHtml("common.help") + "\">?</a></div></div>");
-		out.println("  </div>");
-
-		out.println("  <div id=\"content_outer\">");
-
-		if (isBanner) {
-			out.println("  <div class=\"banner\"></div>");
-		}
-
-		out.println("    <div id=\"content\">");
-
-		out.println("      <div class=\"px\"></div>");
-		out.println("      <div id=\"content_inner\">");
-
-		// No Script
-		out.println("<noscript>");
-		out.println(translationsMap.getHtml("text.main.noscript"));
-		out.println("  <ul>");
-		out.println(String.format("<li><a href=\"?action=list_bibliographic\">Bibliográfica</a></li>"));
-		// TODO: SEO
-		//out.println(String.format("<li><a href=\"?action=list_authorities\">Autoridades</a></li>"));
-		//out.println(String.format("<li><a href=\"?action=list_vocabulary\">Vocabulário</a></li>"));
-		out.println("  </ul>");
-		out.println("</noscript>");
 %>
+
+		</div>
+		<div id="breadcrumb">
+			<div id="page_help_icon">
+				<a onclick="PageHelp.show();"
+					title='${translationsMap.getHtml("common.help")}'>?</a>
+			</div>
+		</div>
+	</div>
+
+	<div id="content_outer">
+	<c:if test="${isBanner}">
+		<div class="banner"></div>
+	</c:if>
+	<div id="content">
+
+	<div class="px"></div>
+	<div id="content_inner">
+
+	<noscript>
+		<c:out value='${translationsMap.getHtml("text.main.noscript")}' escapeXml="false" />
+		<ul>
+			<li>
+				<a href="?action=list_bibliographic">Bibliográfica</a>
+			</li>
+			<%-- TODO: SEO -->
+			<%-- <li><a href=\"?action=list_authorities\">Autoridades</a></li> --%>
+			<%-- <li><a href=\"?action=list_vocabulary\">Vocabulário</a></li> --%>
+		</ul>
+	</noscript>
