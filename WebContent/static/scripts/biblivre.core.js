@@ -886,7 +886,7 @@ Menu.initialize = function() {
 	var breadcrumb = '<span>Biblivre</span>';
 
 	if (module) {
-		breadcrumb = '<span>' + (subitem.parents('li').html() || '').replace(/\r?\n|<.*$|^\s*/gm, '') + '</span> &gt; ' + subitem.text();
+		breadcrumb = '<span>' + (subitem.parents('li').html() || '').replace(/\n|\t/g, '').replace(/\r?\n|<.*$|^\s*/gm, '') + '</span> &gt; ' + subitem.text();
 	}
 
 	Core.getCachedElement('#breadcrumb').prepend(breadcrumb);
