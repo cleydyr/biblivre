@@ -25,13 +25,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.translations.Languages;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
@@ -158,21 +156,5 @@ public class LayoutBody extends TagSupport {
 			throw new JspException(e);
 		}
 		return Tag.EVAL_PAGE;
-	}
-
-	private void doWriteJSP() {
-		JspWriter out = this.pageContext.getOut();
-		try {
-			out.println("      </div>");
-			out.println("      <div class=\"px\"></div>");
-			out.println("    </div>");
-			out.println(
-					"    <div id=\"copyright\">Copyright &copy; <a href=\"http://biblivre.org.br\" target=\"_blank\">BIBLIVRE</a></div>");
-			out.println("  </div>");
-			out.println("</form>");
-			out.println("</body>");
-			out.println("</html>");
-		} catch (Exception e) {
-		}
 	}
 }
