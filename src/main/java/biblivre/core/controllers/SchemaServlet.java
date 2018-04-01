@@ -128,6 +128,9 @@ public final class SchemaServlet extends HttpServlet {
 		ExtendedRequest xRequest = (ExtendedRequest) request;
 		ExtendedResponse xResponse = (ExtendedResponse) response;
 
+		xRequest.setAttribute("title", Configurations.getString(xRequest.getSchema(), Constants.CONFIG_TITLE));
+		xRequest.setAttribute("currency", Configurations.getString(xRequest.getSchema(), Constants.CONFIG_CURRENCY));
+
 		String controller = xRequest.getController();
 		String module = xRequest.getString("module");
 		String action = xRequest.getString("action");
