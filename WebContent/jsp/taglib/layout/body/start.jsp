@@ -135,7 +135,7 @@
 										"administration_maintenance", "administration_configurations",
 										"administration_translations", "administration_brief_customization",
 										"administration_form_customization")}' escapeXml="false" />
-									<c:out value='${utils.menuHelp(atps)}' escapeXml="false" />
+									<menu:help />
 									<menu:logout />
 								</c:when>
 								<c:when  test="${isLogged}">
