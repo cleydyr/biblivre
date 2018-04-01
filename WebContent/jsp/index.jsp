@@ -9,12 +9,11 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="layoutx" tagdir="/WEB-INF/tags/layoutx" %>
 
-<layoutx:head>
+<layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.index.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.multi_schema.css" />
-</layoutx:head>
+</layout:head>
 
 <layout:body>
 	<% 	
