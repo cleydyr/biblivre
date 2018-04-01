@@ -144,7 +144,7 @@
 									<c:out value='${utils.menuLevel(atps, "self_circulation", "circulation_user_reservation")}' />
 									<c:out value='${utils.menuLevel(atps, "administration", "administration_password")}' escapeXml="false" />
 									<menu:help />
-									<c:out value='${utils.menuLogout()}' escapeXml="false" />
+									<menu:logout />
 								</c:when>
 								<c:otherwise>
 									<c:out value='${utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
