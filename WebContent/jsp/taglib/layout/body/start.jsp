@@ -4,9 +4,6 @@
 <%@ page import="biblivre.core.translations.Languages"%>
 <%@ page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page import="biblivre.core.translations.LanguageDTO"%>
-<%@ page import="biblivre.core.translations.LanguageDTO"%>
-<%@ page import="biblivre.core.translations.LanguageDTO"%>
-<%@ page import="biblivre.core.translations.LanguageDTO"%>
 <%@ page import="biblivre.core.configurations.Configurations"%>
 <%@ page import="biblivre.core.utils.Constants"%>
 <%@ page import="org.apache.commons.lang3.StringUtils"%>
