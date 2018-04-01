@@ -4,7 +4,7 @@
 <%@ taglib prefix="menu" tagdir="/WEB-INF/tags" %>
 
 <li data-module="logout" class="logout">
-	<button onclick="Core.submitForm('login', 'logout', 'jsp');" type="button">")
+	<button onclick="Core.submitForm('login', 'logout', 'jsp');" type="button">
 		<i18n:text key="label.logout" />
 	</button>
 </li>
