@@ -6,7 +6,7 @@
 <li class="menu_help" data-module="help">
 	<i18n:text key="menu.help" />
 	<ul class="submenu">
-		<menu:menu-item module="help" action="help_about_biblivre" />
+		<menu:item module="help" action="help_about_biblivre" />
 		<li class="submenu_help">
 			<a href="http://www.biblivre.org.br/forum/viewforum.php?f=30" target="_blank">
 				<i18n:text key="menu.help_faq" />
