@@ -19,15 +19,11 @@
  ******************************************************************************/
 package biblivre.view.taglibs;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTag;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +33,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 
-public class LayoutHead extends BodyTagSupport {
+public class LayoutHead extends TagSupport {
 	private static final long serialVersionUID = 1L;
 
 	private String schema;
@@ -142,7 +138,7 @@ public class LayoutHead extends BodyTagSupport {
 		} catch (Exception e) {
 		}
 
-		return BodyTag.EVAL_BODY_BUFFERED;
+		return EVAL_BODY_INCLUDE;
 	}
 
 	@Override
@@ -155,30 +151,5 @@ public class LayoutHead extends BodyTagSupport {
 		}
 
 		return Tag.EVAL_PAGE;
-	}
-
-	@Override
-	public int doAfterBody() throws JspException {
-		try {
-			// This code is generated for tags whose bodyContent is "JSP"
-			BodyContent bodyCont = getBodyContent();
-			JspWriter out = bodyCont.getEnclosingWriter();
-			
-			this.writeTagBodyContent(out, bodyCont);
-		} catch (Exception ex) {
-			this.handleBodyContentException(ex);
-		}
-
-		return Tag.EVAL_PAGE;
-	}
-	
-	private void writeTagBodyContent(JspWriter out, BodyContent bodyContent) throws IOException {
-		bodyContent.writeOut(out);
-		bodyContent.clearBody();
-	}
-
-	private void handleBodyContentException(Exception ex) throws JspException {
-		// Since the doAfterBody method is guarded, place exception handing code here.
-		throw new JspException("Error in Head tag", ex);
 	}
 }
