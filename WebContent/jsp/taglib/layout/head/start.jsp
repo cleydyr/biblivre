@@ -1,3 +1,5 @@
+<%@page import="biblivre.core.utils.Constants"%>
+<%@page import="biblivre.core.configurations.Configurations"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -5,12 +7,14 @@
 <%@ taglib prefix="menu" tagdir="/WEB-INF/tags/menu" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
+<jsp:useBean id="schema" type="java.lang.String" scope="request" />
+
 <!doctype html>
 	<html class="noscript">
 			<head>
 				<meta charset="utf-8">
 				<meta name="google" content="notranslate" />
-				<title><c:out value="${requestScope.title}" /></title>
+				<title><%= Configurations.getString(schema, Constants.CONFIG_TITLE) %></title>
 
 				<link rel="shortcut icon" type="image/x-icon" href="static/images/favicon.ico" />
 				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.core.css" />
@@ -27,7 +31,7 @@
 				<script type="text/javascript" src="static/scripts/globalize.js"></script>
 				<script type="text/javascript" src="static/scripts/cultures/globalize.culture.<i18n:text key='language_code' />.js"></script>
 				<script type="text/javascript" >Globalize.culture('<i18n:text key="language_code" />'); </script>
-				<script type="text/javascript" >Globalize.culture().numberFormat.currency.symbol = '${requestScope.currency}';</script>
+				<script type="text/javascript" >Globalize.culture().numberFormat.currency.symbol = '<%= Configurations.getString(schema, Constants.CONFIG_CURRENCY) %>';</script>
 
 				<script type="text/javascript" src="static/scripts/biblivre.core.js"></script>
 				<script type="text/javascript" src="static/scripts/${requestScope.translationsMap.getCacheFileName()}"></script>

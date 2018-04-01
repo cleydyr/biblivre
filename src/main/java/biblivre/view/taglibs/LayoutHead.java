@@ -75,6 +75,8 @@ public class LayoutHead extends TagSupport {
 		String message = (String) this.pageContext.getRequest().getAttribute("message");
 		String messageLevel = (String) this.pageContext.getRequest().getAttribute("message_level");
 		
+		pageContext.getRequest().setAttribute("schema", schema);
+
 		try {
 			this.pageContext.include("/jsp/taglib/layout/head/start.jsp");
 		} catch (ServletException e) {
