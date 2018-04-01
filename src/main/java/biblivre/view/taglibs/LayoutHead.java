@@ -72,6 +72,12 @@ public class LayoutHead extends TagSupport {
 		String message = (String) this.pageContext.getRequest().getAttribute("message");
 		String messageLevel = (String) this.pageContext.getRequest().getAttribute("message_level");
 		
+		doWriteJSP(out, schema, message, messageLevel);
+
+		return EVAL_BODY_INCLUDE;
+	}
+
+	private void doWriteJSP(JspWriter out, String schema, String message, String messageLevel) {
 		try {
 			out.println("<!doctype html>");
 			out.println("<html class=\"noscript\">");
@@ -132,8 +138,6 @@ public class LayoutHead extends TagSupport {
 			}
 		} catch (Exception e) {
 		}
-
-		return EVAL_BODY_INCLUDE;
 	}
 
 	@Override
