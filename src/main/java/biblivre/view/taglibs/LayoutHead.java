@@ -73,8 +73,6 @@ public class LayoutHead extends TagSupport {
 		String messageLevel = (String) this.pageContext.getRequest().getAttribute("message_level");
 		
 		try {
-			//out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-			//out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
 			out.println("<!doctype html>");
 			out.println("<html class=\"noscript\">");
 			out.println("<!-- " + this.getCurrentURI() + " -->");
@@ -105,9 +103,6 @@ public class LayoutHead extends TagSupport {
 			
 			//TODO Check layout on IE6
 			out.println("	<!--[if lte IE 6]><script src=\"static/scripts/ie6/warning.js\"></script><script>window.onload = function(){ e('static/scripts/ie6/') }</script><![endif]-->");
-			//out.println("	<!--[if lte IE 9]><script src=\"static/scripts/IE9.js\"></script><![endif]-->");
-			
-//			out.println("<link rel=\"stylesheet/less\" href=\"extra/less/biblivre.less\"><script src=\"extra/js/vendor/modernizr.js\"></script><script>var less = {env: \"development\",	poll: 1000};</script><script src=\"extra/js/vendor/less.js\"></script>");
 
 
 			ExtendedResponse response = (ExtendedResponse) this.pageContext.getResponse();
