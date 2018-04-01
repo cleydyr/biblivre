@@ -36,7 +36,6 @@ import biblivre.core.translations.Languages;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
-import biblivre.view.LayoutUtils;
 
 public class LayoutBody extends TagSupport {
 	private static final long serialVersionUID = 1L;
@@ -120,8 +119,6 @@ public class LayoutBody extends TagSupport {
 		request.setAttribute("isSchemaSelection", this.isSchemaSelection());
 		request.setAttribute("isEmployee", this.isEmployee());
 		request.setAttribute("languages", Languages.getLanguages(schema));
-
-		request.setAttribute("utils", new LayoutUtils(translationsMap)); // TODO: custom tag?
 
 		String updateWarning = (String) this.pageContext.getSession()
 				.getAttribute(this.getSchema() + ".system_warning_new_version");
