@@ -110,7 +110,7 @@
 								</c:when>
 								<c:otherwise>
 									<menu:help />
-									<c:out value='${utils.menuLogin()}' escapeXml="false" />
+									<menu:login />
 								</c:otherwise>
 							</c:choose>
 						</c:when>
@@ -150,7 +150,7 @@
 									<c:out value='${utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
 										"search_vocabulary", "search_z3950")}' escapeXml="false" />
 									<menu:help />
-									<c:out value='${utils.menuLogin()}' escapeXml="false" />
+									<menu:login />
 								</c:otherwise>
 							</c:choose>
 						</c:otherwise>
