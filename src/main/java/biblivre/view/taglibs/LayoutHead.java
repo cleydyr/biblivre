@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.view.taglibs;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -72,7 +75,16 @@ public class LayoutHead extends TagSupport {
 		String message = (String) this.pageContext.getRequest().getAttribute("message");
 		String messageLevel = (String) this.pageContext.getRequest().getAttribute("message_level");
 		
-		doWriteJSP(out, schema, message, messageLevel);
+		try {
+			this.pageContext.include("/jsp/taglib/layout/head/start.jsp");
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		doWriteJSP(out, schema, message, messageLevel);
 
 		return EVAL_BODY_INCLUDE;
 	}
