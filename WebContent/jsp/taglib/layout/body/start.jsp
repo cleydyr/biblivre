@@ -9,7 +9,7 @@
 <%@ page import="org.apache.commons.lang3.StringUtils"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="menu" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="menu" tagdir="/WEB-INF/tags/menu" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
 <jsp:useBean id="schema" type="java.lang.String" scope="request" />

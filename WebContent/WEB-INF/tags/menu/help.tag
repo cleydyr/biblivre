@@ -1,7 +1,7 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
-<%@ taglib prefix="menu" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="menu" tagdir="/WEB-INF/tags/menu" %>
 
 <li class="menu_help" data-module="help">
 	<i18n:text key="menu.help" />
