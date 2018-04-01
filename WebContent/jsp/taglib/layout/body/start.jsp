@@ -84,14 +84,14 @@
 			<c:if test="${languages.size() > 1}">
 				<div id="language_selection">
 					<select class="combo combo_auto_size" name="i18n" onchange="Core.submitForm('menu', 'i18n', 'jsp');">
-					<c:forEach items="${languages}" var="dto">
-						<c:set var="selectedAttr">
-							${translationsMap.getLanguage().equals(dto.getLanguage()) ? "selected" : ""}
-						</c:set>
-						<option value="${dto.getLanguage()}" ${selectedAttr}>${dto.toString()}</option>
-					</c:forEach>
-			</select>
-			</div>
+						<c:forEach items="${languages}" var="dto">
+							<c:set var="selectedAttr">
+								${translationsMap.getLanguage().equals(dto.getLanguage()) ? "selected" : ""}
+							</c:set>
+							<option value="${dto.getLanguage()}" ${selectedAttr}>${dto.toString()}</option>
+						</c:forEach>
+					</select>
+				</div>
 			</c:if>
 			<div id="menu">
 				<ul>
@@ -264,22 +264,20 @@
 	</div>
 
 	<div id="content_outer">
-	<c:if test="${isBanner}">
-		<div class="banner"></div>
-	</c:if>
-	<div id="content">
-
-	<div class="px"></div>
-	<div id="content_inner">
-
-	<noscript>
-		<i18n:text key="text.main.noscript" escapeHTML="true" />
-		<ul>
-			<li>
-				<a href="?action=list_bibliographic">Bibliográfica</a>
-			</li>
-			<%-- TODO: SEO -->
-			<%-- <li><a href=\"?action=list_authorities\">Autoridades</a></li> --%>
-			<%-- <li><a href=\"?action=list_vocabulary\">Vocabulário</a></li> --%>
-		</ul>
-	</noscript>
+		<c:if test="${isBanner}">
+			<div class="banner"></div>
+		</c:if>
+		<div id="content">
+			<div class="px"></div>
+				<div id="content_inner">
+					<noscript>
+						<i18n:text key="text.main.noscript" escapeHTML="true" />
+						<ul>
+							<li>
+								<a href="?action=list_bibliographic">Bibliográfica</a>
+							</li>
+							<%-- TODO: SEO -->
+							<%-- <li><a href=\"?action=list_authorities\">Autoridades</a></li> --%>
+							<%-- <li><a href=\"?action=list_vocabulary\">Vocabulário</a></li> --%>
+						</ul>
+					</noscript>
