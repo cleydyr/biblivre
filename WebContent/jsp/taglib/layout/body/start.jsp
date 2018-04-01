@@ -4,8 +4,6 @@
 <%@ page import="biblivre.core.translations.Languages"%>
 <%@ page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page import="biblivre.core.translations.LanguageDTO"%>
-<%@ page import="biblivre.view.LayoutUtils"%>
-<%@ page import="biblivre.core.auth.AuthorizationPoints"%>
 <%@ page import="biblivre.core.translations.LanguageDTO"%>
 <%@ page import="biblivre.core.translations.LanguageDTO"%>
 <%@ page import="biblivre.core.translations.LanguageDTO"%>

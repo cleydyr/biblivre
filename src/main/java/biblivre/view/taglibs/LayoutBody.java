@@ -132,15 +132,6 @@ public class LayoutBody extends TagSupport {
 			request.setAttribute("message", message); // TODO: custom tag?
 		}
 
-		// TODO: o de baixo também iria para um custom tag
-		AuthorizationPoints atps = (AuthorizationPoints) pageContext.getSession()
-				.getAttribute(schema + ".logged_user_atps");
-		if (atps == null) {
-			atps = AuthorizationPoints.getNotLoggedInstance(schema);
-		}
-
-		request.setAttribute("atps", atps); // TODO: custom tag?
-
 		String path = "/jsp/taglib/layout/body/start.jsp";
 
 		try {
