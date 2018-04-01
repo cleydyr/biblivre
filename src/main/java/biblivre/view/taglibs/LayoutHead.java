@@ -40,12 +40,6 @@ public class LayoutHead extends TagSupport {
 	private static final long serialVersionUID = 1L;
 
 	private String schema;
-	private TranslationsMap translationsMap;
-	
-	private String getCurrentURI() {
-		HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
-		return request.getRequestURI();
-	}
 	
 	public boolean isSchemaSelection() {
 		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
@@ -55,25 +49,16 @@ public class LayoutHead extends TagSupport {
 		return StringUtils.defaultString(this.schema);
 	}
 
-	private TranslationsMap getTranslationsMap() {
-		return this.translationsMap;
-	}
-
 	private void init() {
 		HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
 		this.schema = (String) request.getAttribute("schema");
-		this.translationsMap = (TranslationsMap) request.getAttribute("translationsMap");
 	}
 	
 	@Override
 	public int doStartTag() throws JspException {
 		this.init();	
 		
-		JspWriter out = this.pageContext.getOut();
 		String schema = this.getSchema();
-		
-		String message = (String) this.pageContext.getRequest().getAttribute("message");
-		String messageLevel = (String) this.pageContext.getRequest().getAttribute("message_level");
 		
 		pageContext.getRequest().setAttribute("schema", schema);
 
@@ -86,81 +71,20 @@ public class LayoutHead extends TagSupport {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		doWriteJSP(out, schema, message, messageLevel);
 
 		return EVAL_BODY_INCLUDE;
 	}
 
-	private void doWriteJSP(JspWriter out, String schema, String message, String messageLevel) {
-		try {
-			out.println("<!doctype html>");
-			out.println("<html class=\"noscript\">");
-			out.println("<!-- " + this.getCurrentURI() + " -->");
-			out.println("<head>");
-			out.println("	<meta charset=\"utf-8\">");
-			out.println("	<meta name=\"google\" content=\"notranslate\" />");
-			out.println("	<title>" + Configurations.getString(schema, Constants.CONFIG_TITLE) + "</title>");
-
-			out.println("	<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"static/images/favicon.ico\" />");
-			out.println("	<link rel=\"stylesheet\" type=\"text/css\" href=\"static/styles/biblivre.core.css\" />");
-			out.println("	<link rel=\"stylesheet\" type=\"text/css\" href=\"static/styles/biblivre.print.css\" />");
-			out.println("	<link rel=\"stylesheet\" type=\"text/css\" href=\"static/styles/jquery-ui.css\" />");
-			out.println("	<link rel=\"stylesheet\" type=\"text/css\" href=\"static/styles/font-awesome.min.css\" />");
-
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/json.js\"></script>");
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/jquery.js\"></script>");
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/jquery-ui.js\"></script>");
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/jquery.extras.js\"></script>");
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/lodash.js\"></script>");
-
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/globalize.js\"></script>");
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/cultures/globalize.culture." + this.getTranslationsMap().getText("language_code") + ".js\"></script>");
-			out.println("	<script type=\"text/javascript\" >Globalize.culture('" + this.getTranslationsMap().getText("language_code") + "'); </script>");
-			out.println("	<script type=\"text/javascript\" >Globalize.culture().numberFormat.currency.symbol = '" + Configurations.getString(schema, Constants.CONFIG_CURRENCY) + "'; </script>");
-
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/biblivre.core.js\"></script>");
-			out.println("	<script type=\"text/javascript\" src=\"static/scripts/" + this.getTranslationsMap().getCacheFileName() + "\"></script>");
-			
-			//TODO Check layout on IE6
-			out.println("	<!--[if lte IE 6]><script src=\"static/scripts/ie6/warning.js\"></script><script>window.onload = function(){ e('static/scripts/ie6/') }</script><![endif]-->");
-
-
-			ExtendedResponse response = (ExtendedResponse) this.pageContext.getResponse();
-			boolean translateError = false;
-			if (response.getStatus() == HttpStatus.SC_NOT_FOUND) {
-				message = "error.file_not_found";
-				messageLevel = "error";
-				translateError = true;
-			}
-			
-			if (StringUtils.isNotBlank(message)) {
-				out.println("<script type=\"text/javascript\">");
-				out.println("	$(document).ready(function() {");
-				out.println("		Core.msg({");
-				out.println("			message: '" + message + "',");
-				out.println("			message_level: '" + messageLevel + "',");
-				out.println("			animate: true,");
-				
-				if (translateError) {
-					out.println("			translate: true,");
-				}
-
-				out.println("			sticky: true");
-				out.println("		});");
-				out.println("	});");
-				out.println("</script>");
-			}
-		} catch (Exception e) {
-		}
-	}
-
 	@Override
 	public int doEndTag() throws JspException {
-		JspWriter out = this.pageContext.getOut();
-
 		try {
-			out.println("</head>");
-		} catch (Exception e) {
+			this.pageContext.include("/jsp/taglib/layout/head/end.jsp");
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return Tag.EVAL_PAGE;
