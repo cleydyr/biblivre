@@ -106,7 +106,7 @@
 									"multi_schema_manage", "multi_schema_configurations", "multi_schema_translations",
 									"multi_schema_backup")}' escapeXml="false" />
 									<menu:help />
-									<c:out value="${utils.menuLogout()}" escapeXml="false" />
+									<menu:logout />
 								</c:when>
 								<c:otherwise>
 									<menu:help />
@@ -136,7 +136,7 @@
 										"administration_translations", "administration_brief_customization",
 										"administration_form_customization")}' escapeXml="false" />
 									<c:out value='${utils.menuHelp(atps)}' escapeXml="false" />
-									<c:out value='${utils.menuLogout()}' escapeXml="false" />
+									<menu:logout />
 								</c:when>
 								<c:when  test="${isLogged}">
 									<c:out value='${utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
