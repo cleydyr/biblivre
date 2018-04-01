@@ -60,7 +60,7 @@
 				</div>
 				<div>
 					<a href="http://www.cultura.gov.br/" target="_blank">
-						<img src="static/images/logo_lei_de_incentivo.png" width="88" height="66" alt='${translationsMap.getHtml("header.law")}'>
+						<img src="static/images/logo_lei_de_incentivo.png" width="88" height="66" alt='<i18n:text key="header.law" escapeHTML="true" />'>
 					</a>
 				</div>
 			</div>
@@ -223,7 +223,7 @@
 		<div id="breadcrumb">
 			<div id="page_help_icon">
 				<a onclick="PageHelp.show();"
-					title='${translationsMap.getHtml("common.help")}'>?</a>
+					title='<i18n:text key="common.help" escapeHTML="true" />'>?</a>
 			</div>
 		</div>
 	</div>
