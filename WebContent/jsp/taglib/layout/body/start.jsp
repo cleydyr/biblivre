@@ -97,7 +97,7 @@
 				<ul>
 					<c:choose>
 						<c:when test="${isDisableMenu}">
-							<c:out value="${utils.menuHelp(atps)}" escapeXml="false" />
+							<menu:help />
 						</c:when>
 						<c:when test="${isSchemaSelection}">
 							<c:choose>
@@ -105,11 +105,11 @@
 									<c:out value='${utils.menuLevel(atps, "multi_schema", "administration_password",
 									"multi_schema_manage", "multi_schema_configurations", "multi_schema_translations",
 									"multi_schema_backup")}' escapeXml="false" />
-									<c:out value="${utils.menuHelp(atps)}" escapeXml="false" />
+									<menu:help />
 									<c:out value="${utils.menuLogout()}" escapeXml="false" />
 								</c:when>
 								<c:otherwise>
-									<c:out value='${utils.menuHelp(atps)}' escapeXml="false" />
+									<menu:help />
 									<c:out value='${utils.menuLogin()}' escapeXml="false" />
 								</c:otherwise>
 							</c:choose>
@@ -143,7 +143,7 @@
 										"search_vocabulary", "search_z3950")}' escapeXml="false" />
 									<c:out value='${utils.menuLevel(atps, "self_circulation", "circulation_user_reservation")}' />
 									<c:out value='${utils.menuLevel(atps, "administration", "administration_password")}' escapeXml="false" />
-									<c:out value='${utils.menuHelp(atps)}' escapeXml="false"  />
+									<menu:help />
 									<c:out value='${utils.menuLogout()}' escapeXml="false" />
 								</c:when>
 								<c:otherwise>
