@@ -14,6 +14,7 @@
 <%@ page import="org.apache.commons.lang3.StringUtils"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="menu" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="schema" type="java.lang.String" scope="request" />
 <jsp:useBean id="translationsMap" type="biblivre.core.translations.TranslationsMap" scope="request" />
@@ -147,7 +148,7 @@
 								<c:otherwise>
 									<c:out value='${utils.menuLevel(atps, "search", "search_bibliographic", "search_authorities",
 										"search_vocabulary", "search_z3950")}' escapeXml="false" />
-									<c:out value='${utils.menuHelp(atps)}' escapeXml="false" />
+									<menu:help />
 									<c:out value='${utils.menuLogin()}' escapeXml="false" />
 								</c:otherwise>
 							</c:choose>
