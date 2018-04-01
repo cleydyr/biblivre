@@ -40,6 +40,7 @@ import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.IFCacheableJavascript;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
 import biblivre.core.schemas.SchemasDAO;
@@ -132,6 +133,9 @@ public final class SchemaServlet extends HttpServlet {
 		String module = xRequest.getString("module");
 		String action = xRequest.getString("action");
 
+		AuthorizationPoints notLoggedAtps = AuthorizationPoints.getNotLoggedInstance(xRequest.getSchema());
+		xRequest.setAttribute("notLoggedAtps", notLoggedAtps);
+		
 		// If there is an action but there isn't any controller or module, it's
 		// a menu action
 		if (StringUtils.isBlank(controller) && StringUtils.isBlank(module) && StringUtils.isNotBlank(action)) {
