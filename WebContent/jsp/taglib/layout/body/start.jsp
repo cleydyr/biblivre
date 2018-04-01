@@ -15,6 +15,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="menu" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
 <jsp:useBean id="schema" type="java.lang.String" scope="request" />
 <jsp:useBean id="translationsMap" type="biblivre.core.translations.TranslationsMap" scope="request" />
@@ -174,9 +175,9 @@
 			<c:if test='${sessionScope[passwordWarning]}'>
 				<div class="message sticky error system_warning_password">
 					<div>
-						<c:out value='${translationsMap.getHtml("warning.change_password")}' escapeXml="false" />
+						<i18n:text key="warning.change_password" escapeHTML="true" />
 						<a href="?action=administration_password" class="fright">
-							<c:out value='${translationsMap.getHtml("warning.fix_now")}' escapeXml="false" />
+							<i18n:text key="warning.fix_now" escapeHTML="true"/>
 						</a>
 					</div>
 				</div>
@@ -184,9 +185,9 @@
 			<c:if test="${sessionScope[backupWarning]}">
 				<div class="message sticky error system_warning_backup">
 					<div>
-						<c:out value='${translationsMap.getHtml("warning.create_backup")}' escapeXml="false" />
+						<i18n:text key="warning.create_backup" escapeHTML="true" />
 						<a href="?action=administration_maintenance" class="fright">
-							<c:out value='${translationsMap.getHtml("warning.fix_now")}' escapeXml="false" />
+							<i18n:text key="warning.fix_now" escapeHTML="true"/>
 						</a>
 					</div>
 				</div>
@@ -195,9 +196,9 @@
 			<c:if test="${sessionScope[indexingWarning]}">
 				<div class="message sticky error system_warning_reindex">
 					<div>
-						<c:out value='${translationsMap.getHtml("warning.reindex_database")}' escapeXml="false" />
+						<i18n:text key="warning.reindex_database" escapeHTML="true" />
 							<a href="?action=administration_maintenance" class="fright">
-								<c:out value='${translationsMap.getHtml("warning.fix_now")}' escapeXml="false" />
+								<i18n:text key="warning.fix_now" escapeHTML="true"/>
 							</a>
 					</div>
 				</div>
@@ -210,7 +211,7 @@
 							<a href="javascript:void(0)" onclick="Core.ignoreUpdate(this);" class="close" target="_blank">&times;</a>
 							<br>
 							<a href="<c:out value='<%= Constants.DOWNLOAD_URL %>' />" target="_blank">
-								<c:out value='${translationsMap.getHtml("warning.download_site")}' escapeXml="false" />
+								<i18n:text key="warning.download_site" escapeHTML="true" />
 							</a>
 						</div>
 						<c:out value='${message}' escapeXml="false" />
@@ -237,7 +238,7 @@
 	<div id="content_inner">
 
 	<noscript>
-		<c:out value='${translationsMap.getHtml("text.main.noscript")}' escapeXml="false" />
+		<i18n:text key="text.main.noscript" escapeHTML="true" />
 		<ul>
 			<li>
 				<a href="?action=list_bibliographic">Bibliográfica</a>
