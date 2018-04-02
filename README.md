@@ -9,7 +9,7 @@ Existem duas formas de se compilar e implantar o Biblivre 5: usando uma imagem d
 ### Docker
 
 #### Como usar
-Esxecute`docker run -p 8080:8080 cleydyr/biblivre5-dev`
+Execute `docker run -p 8080:8080 cleydyr/biblivre5-dev`
 Depois que todo o processo de implantação terminar (cerca de 5 minutos, mas depende da capacidade de processamento da máquina e da largura de banda de conexão à internet disponível), você poderá acessar o Biblivre 5 em `localhost:8080/Biblivre4` (note que o 4 no fim da URL ainda persiste, mesmo sendo o Biblivre 5 que está rodando). Além disso o servidor de aplicação vai rodar em modo debug e por isso você pode fazer o debug remoto da aplicação usando a porta 8000.
 
 #### Variáveis de ambiente
