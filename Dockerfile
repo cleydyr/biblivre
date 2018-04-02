@@ -1,4 +1,4 @@
-FROM tomcat:7-jdk8
+FROM cleydyr/tomcat:7-jdk8
 RUN apt-get update
 RUN apt-get install -y maven postgresql
 ENV GITHUB_USER cleydyr
