@@ -125,6 +125,8 @@
 									<menu:level module="circulation">
 										<menu:item module="circulation" action="circulation_user"  />
 										<menu:item module="circulation" action="circulation_lending"  />
+										<menu:item module="circulation" action="circulation_reservation"  />
+										<menu:item module="circulation" action="circulation_access"  />
 										<menu:item module="circulation" action="circulation_user_cards"  />
 									</menu:level>
 									<menu:level module="cataloging">
