@@ -101,7 +101,7 @@
 										<menu:item module="multi_schema" action="administration_password"  />
 										<menu:item module="multi_schema" action="multi_schema_manage"  />
 										<menu:item module="multi_schema" action="multi_schema_configurations"  />
-										<menu:item module="multi_schema" action="multi_schema_translation"  />
+										<menu:item module="multi_schema" action="multi_schema_translations"  />
 										<menu:item module="multi_schema" action="multi_schema_backup"  />
 									</menu:level>
 									<menu:help />
