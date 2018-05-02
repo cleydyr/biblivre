@@ -152,7 +152,7 @@ public class SchemasDAO extends AbstractDAO {
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, schema);
 
-			ResultSet rs = pst.getResultSet();
+			ResultSet rs = pst.executeQuery();
 
 			return rs.next();
 		} catch (Exception e) {
