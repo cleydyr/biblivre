@@ -143,6 +143,25 @@ public class SchemasDAO extends AbstractDAO {
 		}
 	}
 
+	public boolean exists(String schema) {
+		Connection con = null;
+		try {
+			con = this.getConnection();
+			String sql = "SELECT * FROM schemas WHERE name = ?;";
+
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setString(1, schema);
+
+			ResultSet rs = pst.getResultSet();
+
+			return rs.next();
+		} catch (Exception e) {
+			throw new DAOException(e);
+		} finally {
+			this.closeConnection(con);
+		}
+	}
+
     private SchemaDTO populateDTO(ResultSet rs) throws SQLException {
     	SchemaDTO dto = new SchemaDTO();
 

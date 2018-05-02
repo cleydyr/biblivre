@@ -229,7 +229,7 @@ public class Schemas extends StaticBO {
 	}
 
 	public static boolean exists(String schema) {
-		return SchemasDAO.getInstance(schema).testDatabaseConnection();
+		return SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA).exists(schema);
 	}
 
 	public static boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {
