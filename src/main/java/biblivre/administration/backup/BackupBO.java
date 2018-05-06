@@ -25,6 +25,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -34,7 +38,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import biblivre.core.AbstractBO;
@@ -45,6 +48,8 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.Pair;
+import biblivre.core.utils.PgDumpCommand;
+import biblivre.core.utils.PgDumpCommand.Format;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
 import br.org.biblivre.z3950server.utils.TextUtils;
@@ -153,26 +158,11 @@ public class BackupBO extends AbstractBO {
 		
 		File tmpDir = FileIOUtils.createTempDir();
 
-		String[] commands = new String[] {
-			pgdump.getAbsolutePath(),	// 0
-			"--ignore-version",			// 1
-			"--host",					// 2
-			"localhost",				// 3
-			"--port",					// 4
-			"5432",						// 5
-			"--encoding",				// 6
-			"UTF-8",					// 7
-			"--format",					// 8
-			"p",						// 9
-			"--schema",					// 10
-			"",							// 11
-			"--file",					// 12
-			"",							// 13
-			"",							// 14
-			"",							// 15
-			"",							// 16
-			"",							// 17
-		};
+		InetSocketAddress defaultAddress = new InetSocketAddress(
+				InetAddress.getLocalHost(), Constants.DEFAULT_POSTGRESQL_PORT);
+
+		Charset defaultCharset = StandardCharsets.UTF_8;
+		Format defaultFormat = Format.PLAIN;
 
 		Map<String, Pair<String, String>> schemas = dto.getSchemas();
 		BackupType type = dto.getType();
@@ -185,46 +175,18 @@ public class BackupBO extends AbstractBO {
 		writer.close();
 
 		for (String schema : schemas.keySet()) {
-			File backup = null;
-			commands[11] = schema;
-
 			if (type == BackupType.FULL || type == BackupType.EXCLUDE_DIGITAL_MEDIA) {
-				backup = new File(tmpDir, schema + ".schema.b5b");
-				commands[13] = backup.getAbsolutePath();
-				commands[14] = "--schema-only";
-				commands[15] = "";
-				commands[16] = "";
-				this.dumpDatabase(ArrayUtils.subarray(commands, 0, 15));
+				dumpSchema(dto, pgdump, tmpDir, defaultAddress, defaultCharset,
+						defaultFormat, schema);
 
-				dto.increaseCurrentStep();
-				this.save(dto);
-
-				backup = new File(tmpDir, schema + ".data.b5b");
-				commands[13] = backup.getAbsolutePath();
-				commands[14] = "--data-only";
-				commands[15] = "--exclude-table";
-				commands[16] = schema + ".digital_media";
-				this.dumpDatabase(ArrayUtils.subarray(commands, 0, 17));
-
-				dto.increaseCurrentStep();
-				this.save(dto);
+				dumpData(dto, pgdump, tmpDir, defaultAddress, defaultCharset,
+						defaultFormat, schema);
 			}
 
 			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {	
 				if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
-					backup = new File(tmpDir, schema + ".media.b5b");
-					commands[13] = backup.getAbsolutePath();
-					commands[14] = "--data-only";
-					commands[15] = "--table";
-					commands[16] = schema + ".digital_media";
-					this.dumpDatabase(ArrayUtils.subarray(commands, 0, 17));
-
-					backup = new File(tmpDir, schema);
-					backup.mkdir();
-					this.exportDigitalMedia(schema, backup);
-
-					dto.increaseCurrentStep();
-					this.save(dto);				
+					dumpMedia(dto, pgdump, tmpDir, defaultAddress,
+							defaultCharset, defaultFormat, schema);
 				}
 			}
 		}
@@ -247,7 +209,7 @@ public class BackupBO extends AbstractBO {
 	public LinkedList<BackupDTO> list() {
 		return this.dao.list();
 	}
-	
+
 	public BackupDTO getLastBackup() {
 		LinkedList<BackupDTO> list = this.dao.list(1);
 
@@ -269,7 +231,7 @@ public class BackupBO extends AbstractBO {
 		if (destination == null) {
 			destination = backup.getParentFile();
 		}
-		
+
 		StringBuilder sb = new StringBuilder();
 
 		//Format: Biblivre Backup 2012-09-08 12h01m22s Full.b5bz
@@ -286,6 +248,29 @@ public class BackupBO extends AbstractBO {
 		}
 
 		return this.save(dto);
+	}
+
+	public String getBackupPath() {
+		String path = Configurations.getString(this.getSchema(), Constants.CONFIG_BACKUP_PATH);
+
+		if (StringUtils.isBlank(path) || FileIOUtils.doesNotExists(path)) {
+			File home = new File(System.getProperty("user.home"));
+			File biblivre = new File(home, "Biblivre");
+
+			if (!biblivre.exists() && home.isDirectory() && home.canWrite()) {
+				biblivre.mkdir();
+			}
+
+			path = biblivre.getAbsolutePath();
+		}
+
+		return path;
+	}
+
+	public File getBackupDestination() {
+		String path = this.getBackupPath();
+
+		return FileIOUtils.getWritablePath(path);
 	}
 
 	private boolean exportDigitalMedia(String schema, File path) throws IOException {
@@ -305,10 +290,8 @@ public class BackupBO extends AbstractBO {
 		
 		return true;
 	}
-	
-	private boolean dumpDatabase(String[] commands) {
-		ProcessBuilder pb = new ProcessBuilder(commands);
 
+	private boolean dumpDatabase(ProcessBuilder pb) {
 		pb.environment().put("PGDATABASE", "biblivre4");
 		pb.environment().put("PGUSER", "biblivre");
 		pb.environment().put("PGPASSWORD", "abracadabra");
@@ -329,7 +312,7 @@ public class BackupBO extends AbstractBO {
 					this.logger.debug(line);
 				}
 			}
-			
+
 			p.waitFor();
 			
 			return p.exitValue() == 0;
@@ -342,27 +325,69 @@ public class BackupBO extends AbstractBO {
 		return false;
 	}
 
-	public String getBackupPath() {
-		String path = Configurations.getString(this.getSchema(), Constants.CONFIG_BACKUP_PATH);
-		
-		if (StringUtils.isBlank(path) || FileIOUtils.doesNotExists(path)) {
-			File home = new File(System.getProperty("user.home"));
-			File biblivre = new File(home, "Biblivre");
-
-			if (!biblivre.exists() && home.isDirectory() && home.canWrite()) {
-				biblivre.mkdir();
-			}
-
-			path = biblivre.getAbsolutePath();
-		}
-
-		return path;
+	private void dumpDatabase(PgDumpCommand command) {
+		this.dumpDatabase(new ProcessBuilder(command.getCommands()));
 	}
 
-	public File getBackupDestination() {
-		String path = this.getBackupPath();
+	private void dumpMedia(BackupDTO dto, File pgdump, File tmpDir,
+			InetSocketAddress defaultAddress, Charset defaultCharset,
+			Format defaultFormat, String schema) throws IOException {
+		File mediabackup = new File(tmpDir, schema + ".media.b5b");
+		boolean isSchemaOnly = false;
+		boolean isDataOnly = true;
+		String excludeTablePattern = null;
+		String includeTablePattern = schema + ".digital_media";
 
-		return FileIOUtils.getWritablePath(path);
-	}	
-	
+		dump(dto, pgdump, defaultAddress, defaultCharset, defaultFormat,
+				schema, mediabackup, isSchemaOnly, isDataOnly,
+				excludeTablePattern, includeTablePattern);
+
+		File schemaBackup = new File(tmpDir, schema);
+		schemaBackup.mkdir();
+		this.exportDigitalMedia(schema, schemaBackup);
+		this.save(dto);
+	}
+
+	private void dump(BackupDTO dto, File pgdump,
+			InetSocketAddress defaultAddress, Charset defaultCharset,
+			Format defaultFormat, String schema, File mediabackup,
+			boolean isSchemaOnly, boolean isDataOnly,
+			String excludeTablePattern, String includeTablePattern) {
+		this.dumpDatabase(new PgDumpCommand(pgdump, defaultAddress,
+				defaultCharset, defaultFormat, schema, mediabackup,
+				isSchemaOnly , isDataOnly , excludeTablePattern,
+				includeTablePattern ));
+
+		dto.increaseCurrentStep();
+		this.save(dto);
+	}
+
+	private void dumpData(BackupDTO dto, File pgdump, File tmpDir,
+			InetSocketAddress defaultAddress, Charset defaultCharset,
+			Format defaultFormat, String schema) {
+		File dataBackup = new File(tmpDir, schema + ".data.b5b");
+		boolean isSchemaOnly = false;
+		boolean isDataOnly = true;
+		String excludeTablePattern = schema + ".digital_media";
+		String includeTablePattern = null;
+
+		dump(dto, pgdump, defaultAddress, defaultCharset, defaultFormat,
+				schema, dataBackup, isSchemaOnly, isDataOnly,
+				excludeTablePattern, includeTablePattern);
+	}
+
+	private void dumpSchema(BackupDTO dto, File pgdump, File tmpDir,
+			InetSocketAddress defaultAddress, Charset defaultCharset,
+			Format defaultFormat, String schema) {
+		File schemaBackup = new File(tmpDir, schema + ".schema.b5b");
+		boolean isSchemaOnly = true;
+		boolean isDataOnly = false;
+		String excludeTablePattern = null;
+		String includeTablePattern = null;
+
+		dump(dto, pgdump, defaultAddress, defaultCharset, defaultFormat,
+				schema, schemaBackup, isSchemaOnly, isDataOnly,
+				excludeTablePattern, includeTablePattern);
+	}
+
 }

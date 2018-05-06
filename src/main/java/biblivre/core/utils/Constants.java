@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 
 public class Constants {
 
+	public static final int DEFAULT_POSTGRESQL_PORT = 5432;
+
 	public static final String BIBLIVRE = "Biblivre";
 	public static final String BIBLIVRE_VERSION = "5.0.5";
 	public static final String UPDATE_URL = "http://update.biblivre.org.br";
