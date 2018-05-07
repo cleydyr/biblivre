@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -158,12 +159,6 @@ public class BackupBO extends AbstractBO {
 		
 		File tmpDir = FileIOUtils.createTempDir();
 
-		InetSocketAddress defaultAddress = new InetSocketAddress(
-				InetAddress.getLocalHost(), Constants.DEFAULT_POSTGRESQL_PORT);
-
-		Charset defaultCharset = StandardCharsets.UTF_8;
-		Format defaultFormat = Format.PLAIN;
-
 		Map<String, Pair<String, String>> schemas = dto.getSchemas();
 		BackupType type = dto.getType();
 
@@ -176,17 +171,14 @@ public class BackupBO extends AbstractBO {
 
 		for (String schema : schemas.keySet()) {
 			if (type == BackupType.FULL || type == BackupType.EXCLUDE_DIGITAL_MEDIA) {
-				dumpSchema(dto, pgdump, tmpDir, defaultAddress, defaultCharset,
-						defaultFormat, schema);
+				dumpSchema(dto, pgdump, schema);
 
-				dumpData(dto, pgdump, tmpDir, defaultAddress, defaultCharset,
-						defaultFormat, schema);
+				dumpData(dto, pgdump, schema);
 			}
 
 			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {	
 				if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
-					dumpMedia(dto, pgdump, tmpDir, defaultAddress,
-							defaultCharset, defaultFormat, schema);
+					dumpMedia(dto, pgdump, schema);
 				}
 			}
 		}
@@ -329,32 +321,24 @@ public class BackupBO extends AbstractBO {
 		this.dumpDatabase(new ProcessBuilder(command.getCommands()));
 	}
 
-	private void dumpMedia(BackupDTO dto, File pgdump, File tmpDir,
-			InetSocketAddress defaultAddress, Charset defaultCharset,
-			Format defaultFormat, String schema) throws IOException {
-		File mediabackup = new File(tmpDir, schema + ".media.b5b");
-		boolean isSchemaOnly = false;
-		boolean isDataOnly = true;
-		String excludeTablePattern = null;
-		String includeTablePattern = schema + ".digital_media";
-
-		dump(dto, pgdump, defaultAddress, defaultCharset, defaultFormat,
-				schema, mediabackup, isSchemaOnly, isDataOnly,
-				excludeTablePattern, includeTablePattern);
-
-		File schemaBackup = new File(tmpDir, schema);
-		schemaBackup.mkdir();
-		this.exportDigitalMedia(schema, schemaBackup);
-		this.save(dto);
-	}
-
-	private void dump(BackupDTO dto, File pgdump,
-			InetSocketAddress defaultAddress, Charset defaultCharset,
-			Format defaultFormat, String schema, File mediabackup,
+	private void dump(BackupDTO dto, String schema, File backupFile,
 			boolean isSchemaOnly, boolean isDataOnly,
 			String excludeTablePattern, String includeTablePattern) {
+
+		File pgdump = DatabaseUtils.getPgDump(this.getSchema());;
+		InetSocketAddress defaultAddress = null;
+		try {
+			defaultAddress = new InetSocketAddress(
+					InetAddress.getLocalHost(),
+					Constants.DEFAULT_POSTGRESQL_PORT);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+		Format defaultFormat = Format.PLAIN;
+
 		this.dumpDatabase(new PgDumpCommand(pgdump, defaultAddress,
-				defaultCharset, defaultFormat, schema, mediabackup,
+				Constants.DEFAULT_CHARSET, defaultFormat, schema, backupFile,
 				isSchemaOnly , isDataOnly , excludeTablePattern,
 				includeTablePattern ));
 
@@ -362,32 +346,42 @@ public class BackupBO extends AbstractBO {
 		this.save(dto);
 	}
 
-	private void dumpData(BackupDTO dto, File pgdump, File tmpDir,
-			InetSocketAddress defaultAddress, Charset defaultCharset,
-			Format defaultFormat, String schema) {
+	private void dumpData(BackupDTO dto, File tmpDir, String schema) {
 		File dataBackup = new File(tmpDir, schema + ".data.b5b");
 		boolean isSchemaOnly = false;
 		boolean isDataOnly = true;
 		String excludeTablePattern = schema + ".digital_media";
 		String includeTablePattern = null;
 
-		dump(dto, pgdump, defaultAddress, defaultCharset, defaultFormat,
-				schema, dataBackup, isSchemaOnly, isDataOnly,
-				excludeTablePattern, includeTablePattern);
+		dump(dto, schema, dataBackup, isSchemaOnly, isDataOnly,
+				excludeTablePattern,	includeTablePattern);
 	}
 
-	private void dumpSchema(BackupDTO dto, File pgdump, File tmpDir,
-			InetSocketAddress defaultAddress, Charset defaultCharset,
-			Format defaultFormat, String schema) {
+	private void dumpSchema(BackupDTO dto, File tmpDir, String schema) {
 		File schemaBackup = new File(tmpDir, schema + ".schema.b5b");
 		boolean isSchemaOnly = true;
 		boolean isDataOnly = false;
 		String excludeTablePattern = null;
 		String includeTablePattern = null;
 
-		dump(dto, pgdump, defaultAddress, defaultCharset, defaultFormat,
-				schema, schemaBackup, isSchemaOnly, isDataOnly,
+		dump(dto, schema, schemaBackup, isSchemaOnly, isDataOnly,
 				excludeTablePattern, includeTablePattern);
 	}
 
+	private void dumpMedia(BackupDTO dto, File tmpDir, String schema)
+			throws IOException {
+		File mediaBackup = new File(tmpDir, schema + ".media.b5b");
+		boolean isSchemaOnly = false;
+		boolean isDataOnly = true;
+		String excludeTablePattern = null;
+		String includeTablePattern = schema + ".digital_media";
+
+		dump(dto, schema, mediaBackup, isSchemaOnly, isDataOnly,
+				excludeTablePattern, includeTablePattern);
+
+		File schemaBackup = new File(tmpDir, schema);
+		schemaBackup.mkdir();
+		this.exportDigitalMedia(schema, schemaBackup);
+		this.save(dto);
+	}
 }

@@ -19,12 +19,15 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class Constants {
 
 	public static final int DEFAULT_POSTGRESQL_PORT = 5432;
+	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 	public static final String BIBLIVRE = "Biblivre";
 	public static final String BIBLIVRE_VERSION = "5.0.5";
