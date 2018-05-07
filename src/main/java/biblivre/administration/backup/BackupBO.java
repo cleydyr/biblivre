@@ -169,14 +169,14 @@ public class BackupBO extends AbstractBO {
 
 		for (String schema : schemas.keySet()) {
 			if (type == BackupType.FULL || type == BackupType.EXCLUDE_DIGITAL_MEDIA) {
-				dumpSchema(dto, pgdump, schema);
+				dumpSchema(dto, tmpDir, schema);
 
-				dumpData(dto, pgdump, schema);
+				dumpData(dto, tmpDir, schema);
 			}
 
 			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {	
 				if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
-					dumpMedia(dto, pgdump, schema);
+					dumpMedia(dto, tmpDir, schema);
 				}
 			}
 		}
