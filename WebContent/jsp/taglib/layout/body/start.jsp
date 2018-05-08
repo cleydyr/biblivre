@@ -165,7 +165,7 @@
 										<menu:item module="search" action="search_vocabulary"  />
 										<menu:item module="search" action="search_z3950"  />
 									</menu:level>
-									<menu:level module="">
+									<menu:level module="self_circulation">
 										<menu:item module="self_circulation" action="circulation_user_reservation"  />
 									</menu:level>
 									<menu:level module="administration">
