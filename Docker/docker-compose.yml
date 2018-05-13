@@ -1,6 +1,25 @@
-version: '3'
+version: '3.6'
 services:
   app:
-    build: ./tomcat
+    image: cleydyr/tomcat:7-jdk8
     ports:
      - "8080:8080"
+     - "8000:8000"
+    volumes:
+      - type: bind
+        source: ./tomcat/Biblivre4.war
+        target: /usr/local/tomcat/webapps/Biblivre4.war
+  db:
+    image: postgres:10.3
+    environment:
+      POSTGRES_PASSWORD: abracadabra
+      POSTGRES_USER: postgres
+    volumes:
+      - type: bind
+        source: ./postgres/pg_hba.conf
+        target: /etc/postgresql/pg_hba.conf
+      - type: bind
+        source: ./postgres/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+    ports:
+      - "5432:5432"
