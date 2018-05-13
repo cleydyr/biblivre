@@ -243,7 +243,7 @@ public class Schemas extends StaticBO {
 		String[] commands = new String[] { psql.getAbsolutePath(), // 0
 				"--single-transaction", // 1
 				"--host", // 2
-				"localhost", // 3
+				"db", // 3
 				"--port", // 4
 				"5432", // 5
 				"-v", // 6

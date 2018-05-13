@@ -1,44 +1,54 @@
 @media print {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\000034}}
   body {
     background: #FFF;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\000038}}
   #logo_biblivre, #logo_support, #logo_sponsor, #logo_biblivre_small, #language_selection, #menu {
     display: none;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000312}}
   #header {
     height: 70px;
     background: #FFF;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000317}}
   #messages {
     display: none;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000321}}
   #notifications {
     background: #FFF;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000325}}
   #content_outer {
     width: auto !important;
     height: auto !important;
     overflow-y: visible !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000331}}
   #content {
     width: auto !important;
     height: auto !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000337}}
   .page_title .image, .page_title .subtext, .page_title .buttons {
     display: none !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000342}}
   .page_help, .page_navigation {
     display: none !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000347}}
   .search_box .big_input, .search_box .filter_search input {
     -webkit-border-radius: 2;
     -moz-border-radius: 2;
@@ -53,25 +63,31 @@
     background: #FFF;
     border: 1px solid #EBE7E0;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000353}}
   .search_box .filter_search .fleft {
     float: none !important;
     clear: both;
     margin-left: 0 !important;
     margin-top: 10px;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000360}}
   .search_box .button, .search_box .main_button {
     display: none !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000364}}
   .search_box .advanced_search .search_entry:first-child .query .big_input {
     width: 370px !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000368}}
   .search_box .advanced_search .search_entry .query .big_input {
     width: 270px !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000372}}
   .search_box .simple_search .distributed_query input {
     width: 370px !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000377}}
   .combo_wrap {
     -webkit-border-radius: 2;
     -moz-border-radius: 2;
@@ -86,78 +102,98 @@
     background: #FFF;
     border: 1px solid #EBE7E0;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000382}}
   .combo_wrap .combo_arrow {
     display: none !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000387}}
   .select_bar {
     display: none !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000392}}
   .search_results .record {
     page-break-inside: avoid;
     border-top: 1px dashed #A7A59F;
     border-bottom: 1px dashed #A7A59F;
     background-color: #FFF !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\0000399}}
   .search_results .buttons {
     display: none;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003104}}
   .selected_results_area {
     display: none;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003108}}
   #copyright {
     display: none;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003112}}
   a {
     color: #2a2a2a !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003116}}
   div.add_term, div.clear_search {
     display: none !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003120}}
   .Zebra_DatePicker_Icon {
     display: none;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003124}}
   .paging_button {
     display: none;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003129}}
   .tabs_head .tab {
     display: none;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003133}}
   .tabs_head .tab_selected {
     display: inline !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003138}}
   .record_fields td.label {
     width: auto !important;
   }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003143}}
   .biblivre_form .extra {
     display: none !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003147}}
   .biblivre_form .collapsed, .biblivre_form .collapse {
     display: none !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003151}}
   .biblivre_form fieldset {
     background: #FFF !important;
     page-break-inside: avoid;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003155}}
   .biblivre_form fieldset legend {
     background: #FFF !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003158}}
   .biblivre_form fieldset legend a {
     display: none !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003164}}
   .biblivre_form .label {
     width: 150px !important;
   }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.print\.scss}line{font-family:\00003168}}
   .biblivre_form .value {
     width: auto !important;
   }

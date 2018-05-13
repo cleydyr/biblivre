@@ -1,15 +1,19 @@
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.setup\.scss}line{font-family:\000035}}
 #progress_popup fieldset {
   margin-top: 20px;
   margin-bottom: 30px;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.setup\.scss}line{font-family:\0000312}}
 #biblivre3import .fields, #biblivre3restore .fields {
   margin-left: 100px;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.setup\.scss}line{font-family:\0000318}}
 .digital_media_restore {
   display: none;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.setup\.scss}line{font-family:\0000321}}
 .digital_media_restore .restore {
   margin-bottom: 20px;
 }

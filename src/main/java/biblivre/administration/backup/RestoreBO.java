@@ -265,7 +265,7 @@ public class RestoreBO extends AbstractBO {
 			psql.getAbsolutePath(),		// 0
 			"--single-transaction",		// 1
 			"--host",					// 2
-			"localhost",				// 3
+			"db",				// 3
 			"--port",					// 4
 			"5432",						// 5
 			"-v",						// 6
@@ -428,7 +428,7 @@ public class RestoreBO extends AbstractBO {
 		String[] commands = new String[] {
 			psql.getAbsolutePath(),		// 0
 			"--host",					// 1
-			"localhost",				// 2
+			"db",				// 2
 			"--port",					// 3
 			"5432",						// 4
 			"-v",						// 6
@@ -507,7 +507,7 @@ public class RestoreBO extends AbstractBO {
 			psql.getAbsolutePath(),		// 0
 			"--single-transaction",		// 1
 			"--host",					// 2
-			"localhost",				// 3
+			"db",				// 3
 			"--port",					// 4
 			"5432",						// 5
 			"-v",						// 6

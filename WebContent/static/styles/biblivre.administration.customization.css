@@ -1,15 +1,19 @@
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\000032}}
 #brief_customization .buttons, #form_customization .buttons {
   text-align: center;
   margin-bottom: 15px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\000037}}
 #brief_customization .record_type_selection, #form_customization .record_type_selection {
   text-align: center;
   margin-top: 10px;
   margin-bottom: 20px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000318}}
 #brief_customization legend, #form_customization legend {
   white-space: nowrap;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000323}}
 #brief_customization #disabled_datafields div.block, #form_customization #disabled_datafields div.block {
   position: relative;
   width: 248px;
@@ -19,15 +23,18 @@
   border-color: #A0A0A0;
   color: #a0a0a0;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000332}}
 #brief_customization #disabled_datafields div.block:nth-child(3n), #form_customization #disabled_datafields div.block:nth-child(3n) {
   margin-right: 0;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000336}}
 #brief_customization #disabled_datafields div.block .buttons, #form_customization #disabled_datafields div.block .buttons {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000342}}
 #brief_customization #disabled_datafields div.block .buttons span, #form_customization #disabled_datafields div.block .buttons span {
   width: 20px;
   text-align: center;
@@ -38,6 +45,7 @@
   color: #007700;
   cursor: pointer;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000354}}
 #brief_customization #disabled_datafields div.block .data-name, #form_customization #disabled_datafields div.block .data-name {
   width: 10000px;
   white-space: nowrap;
@@ -45,51 +53,65 @@
   font-size: 12px;
   padding: 3px 6px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000366}}
 #brief_customization #datafields .buttons, #form_customization #datafields .buttons {
   font-size: 16px;
   text-align: right;
   margin: -4px 7px 5px 0;
   color: #777;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000372}}
 #brief_customization #datafields .buttons .disabled, #form_customization #datafields .buttons .disabled {
   color: #CCC !important;
   cursor: default !important;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000377}}
 #brief_customization #datafields .buttons span, #form_customization #datafields .buttons span {
   margin-left: 7px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000382}}
 #brief_customization #datafields .move-datafield, #form_customization #datafields .move-datafield {
   cursor: move;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000386}}
 #brief_customization #datafields .disable-datafield, #brief_customization #datafields .edit-datafield, #brief_customization #datafields .save-datafield, #brief_customization #datafields .cancel-datafield, #form_customization #datafields .disable-datafield, #form_customization #datafields .edit-datafield, #form_customization #datafields .save-datafield, #form_customization #datafields .cancel-datafield {
   cursor: pointer;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000390}}
 #brief_customization #datafields .disable-datafield, #brief_customization #datafields .enable-datafield, #form_customization #datafields .disable-datafield, #form_customization #datafields .enable-datafield {
   display: none;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000394}}
 #brief_customization #datafields .save-datafield, #form_customization #datafields .save-datafield {
   display: none;
   color: green;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\0000399}}
 #brief_customization #datafields .cancel-datafield, #form_customization #datafields .cancel-datafield {
   display: none;
   color: #ED514B;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003105}}
 #brief_customization #datafields .edit_area .content, #form_customization #datafields .edit_area .content {
   padding: 5px 20px 10px 20px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003111}}
 #brief_customization #datafields fieldset:hover .disable-datafield, #brief_customization #datafields .editing .disable-datafield, #form_customization #datafields fieldset:hover .disable-datafield, #form_customization #datafields .editing .disable-datafield {
   display: inline-block;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003118}}
 #brief_customization #datafields fieldset.editing .save-datafield, #brief_customization #datafields fieldset.editing .cancel-datafield, #form_customization #datafields fieldset.editing .save-datafield, #form_customization #datafields fieldset.editing .cancel-datafield {
   display: inline-block;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003124}}
 #brief_customization #datafields fieldset.disabled .disable-datafield, #brief_customization #datafields fieldset.disabled .edit-datafield, #brief_customization #datafields fieldset.disabled .save-datafield, #brief_customization #datafields fieldset.disabled .cancel-datafield, #brief_customization #datafields fieldset.disabled .move-datafield, #form_customization #datafields fieldset.disabled .disable-datafield, #form_customization #datafields fieldset.disabled .edit-datafield, #form_customization #datafields fieldset.disabled .save-datafield, #form_customization #datafields fieldset.disabled .cancel-datafield, #form_customization #datafields fieldset.disabled .move-datafield {
   display: none;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003128}}
 #brief_customization #datafields fieldset.disabled .enable-datafield, #form_customization #datafields fieldset.disabled .enable-datafield {
   display: inline-block;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003134}}
 #brief_customization #datafields .material-types, #form_customization #datafields .material-types {
   -webkit-column-count: 4;
   /* Chrome, Safari, Opera */
@@ -103,84 +125,106 @@
   column-gap: 10px;
   margin-bottom: 10px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003146}}
 #brief_customization #datafields .datafield_table, #form_customization #datafields .datafield_table {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 10px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003151}}
 #brief_customization #datafields .datafield_table *, #form_customization #datafields .datafield_table * {
   box-sizing: border-box;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003155}}
 #brief_customization #datafields .datafield_table th, #form_customization #datafields .datafield_table th {
   font-weight: bold;
   text-align: left;
   padding-left: 2px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003161}}
 #brief_customization #datafields .datafield_table td, #form_customization #datafields .datafield_table td {
   padding: 2px 10px 2px 0;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003164}}
 #brief_customization #datafields .datafield_table td:first-child, #form_customization #datafields .datafield_table td:first-child {
   width: 200px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003169}}
 #brief_customization #datafields .datafield_table td.checkbox, #form_customization #datafields .datafield_table td.checkbox {
   width: 80px;
   text-align: center;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003174}}
 #brief_customization #datafields .datafield_table .datafield_name, #brief_customization #datafields .datafield_table .datafield_tag, #form_customization #datafields .datafield_table .datafield_name, #form_customization #datafields .datafield_table .datafield_tag {
   width: 100%;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003179}}
 #brief_customization #datafields .subfield_table, #form_customization #datafields .subfield_table {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 10px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003184}}
 #brief_customization #datafields .subfield_table *, #form_customization #datafields .subfield_table * {
   box-sizing: border-box;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003188}}
 #brief_customization #datafields .subfield_table th, #form_customization #datafields .subfield_table th {
   font-weight: bold;
   text-align: left;
   padding-left: 2px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003194}}
 #brief_customization #datafields .subfield_table td, #form_customization #datafields .subfield_table td {
   padding: 2px 10px 2px 0;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003198}}
 #brief_customization #datafields .subfield_table td.checkbox, #form_customization #datafields .subfield_table td.checkbox {
   width: 80px;
   text-align: center;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003203}}
 #brief_customization #datafields .subfield_table .datafield_name, #brief_customization #datafields .subfield_table .datafield_tag, #form_customization #datafields .subfield_table .datafield_name, #form_customization #datafields .subfield_table .datafield_tag {
   width: 100%;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003208}}
 #brief_customization #datafields .indicator_table, #form_customization #datafields .indicator_table {
   box-sizing: border-box;
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 10px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003215}}
 #brief_customization #datafields .indicator_table *, #form_customization #datafields .indicator_table * {
   box-sizing: border-box;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003219}}
 #brief_customization #datafields .indicator_table th, #form_customization #datafields .indicator_table th {
   font-weight: bold;
   text-align: left;
   padding-left: 2px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003225}}
 #brief_customization #datafields .indicator_table td, #form_customization #datafields .indicator_table td {
   padding: 2px 10px 2px 0;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003228}}
 #brief_customization #datafields .indicator_table td:first-child, #form_customization #datafields .indicator_table td:first-child {
   width: 80px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003232}}
 #brief_customization #datafields .indicator_table td:last-child, #form_customization #datafields .indicator_table td:last-child {
   width: 260px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003237}}
 #brief_customization #datafields .indicator_table .indicator_values, #form_customization #datafields .indicator_table .indicator_values {
   width: 220px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003241}}
 #brief_customization #datafields .indicator_table .indicator_name, #form_customization #datafields .indicator_table .indicator_name {
   width: 100%;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003246}}
 #brief_customization #datafields .format-input, #form_customization #datafields .format-input {
   margin: 20px 30px 10px 30px;
   border: 1px solid #606060;
@@ -188,20 +232,25 @@
   min-height: 25px;
   padding: 4px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003253}}
 #brief_customization #datafields .format-input .subfield, #brief_customization #datafields .format-input .separator, #brief_customization #datafields .format-input .aggregator, #form_customization #datafields .format-input .subfield, #form_customization #datafields .format-input .separator, #form_customization #datafields .format-input .aggregator {
   width: auto !important;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003255}}
 #brief_customization #datafields .format-input .subfield .text, #brief_customization #datafields .format-input .separator .text, #brief_customization #datafields .format-input .aggregator .text, #form_customization #datafields .format-input .subfield .text, #form_customization #datafields .format-input .separator .text, #form_customization #datafields .format-input .aggregator .text {
   display: none;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003261}}
 #brief_customization #datafields .title, #form_customization #datafields .title {
   margin: 0 0 5px 0;
   font-weight: bold;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003266}}
 #brief_customization #datafields .subtitle, #form_customization #datafields .subtitle {
   margin: 0 0 5px 30px;
   font-weight: bold;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003272}}
 #brief_customization #datafields .subfield, #brief_customization #datafields .separator, #brief_customization #datafields .aggregator, #form_customization #datafields .subfield, #form_customization #datafields .separator, #form_customization #datafields .aggregator {
   white-space: nowrap;
   cursor: move;
@@ -214,16 +263,20 @@
   font-weight: bold;
   font-size: 12px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003285}}
 #brief_customization #datafields .separator, #form_customization #datafields .separator {
   background-color: #EEEEEE;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003289}}
 #brief_customization #datafields .aggregator, #form_customization #datafields .aggregator {
   background-color: #E6F1F7;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003293}}
 #brief_customization #datafields .subfields, #brief_customization #datafields .separators, #brief_customization #datafields .aggregators, #form_customization #datafields .subfields, #form_customization #datafields .separators, #form_customization #datafields .aggregators {
   margin: 0 20px 10px 30px;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003299}}
 .sortable-placeholder {
   border: 1px dashed #606060;
   margin-top: 10px;
@@ -270,6 +323,7 @@
   }
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003323}}
 .bg-success {
   -webkit-animation: successFadeIt 2s linear;
   -moz-animation: successFadeIt 2s linear;
@@ -317,6 +371,7 @@
   }
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003347}}
 .bg-cancel {
   -webkit-animation: cancelFadeIt 1.5s linear;
   -moz-animation: cancelFadeIt 1.5s linear;
@@ -324,81 +379,102 @@
   animation: cancelFadeIt 1.5s linear;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003354}}
 .translations_filter {
   margin-left: 10px;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003358}}
 #translations_tree {
   box-sizing: border-box;
   padding: 0 10px 10px 10px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003362}}
 #translations_tree * {
   box-sizing: border-box;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003366}}
 #translations_tree label {
   font-weight: bold;
   display: block;
   margin-top: 15px;
   margin-bottom: 3px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003373}}
 #translations_tree fieldset {
   padding: 0 10px 10px 10px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003375}}
 #translations_tree fieldset .open {
   display: none;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003381}}
 #translations_tree fieldset.collapsed fieldset, #translations_tree fieldset.collapsed input, #translations_tree fieldset.collapsed label, #translations_tree fieldset.collapsed .collapse {
   display: none;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003385}}
 #translations_tree fieldset.collapsed .open {
   display: inline;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003390}}
 #translations_tree input {
   width: 100%;
   padding: 5px;
   border: 1px solid #CCC;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003396}}
 #translations_tree input.changed {
   background-color: #CDE6CD;
   border-color: green;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003403}}
 .indicator_edit_table {
   box-sizing: border-box;
   width: 100%;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003407}}
 .indicator_edit_table * {
   box-sizing: border-box;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003411}}
 .indicator_edit_table th {
   font-weight: bold;
   text-align: left;
   padding-left: 2px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003417}}
 .indicator_edit_table td {
   padding: 2px 10px 2px 0;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003420}}
 .indicator_edit_table td:first-child {
   width: 100px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003425}}
 .indicator_edit_table .indicator-value {
   width: 100%;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003429}}
 .indicator_edit_table .indicator-text {
   width: 410px;
 }
 
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003434}}
 .subfield_row {
   width: 740px;
   background-color: #F3F1EE;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003438}}
 .subfield_row .tr_icon {
   width: 25px;
   text-align: center;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003443}}
 .subfield_row .tr_marc {
   width: 75px;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/thecleydyr\/source\/Biblivre-5\/WebContent\/static\/styles\/scss\/biblivre\.administration\.customization\.scss}line{font-family:\00003447}}
 .subfield_row select, .subfield_row .subfield_tag, .subfield_row .subfield_name {
   width: 100%;
 }

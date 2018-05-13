@@ -327,7 +327,7 @@ public class BackupBO extends AbstractBO {
 		InetSocketAddress defaultAddress = null;
 		try {
 			defaultAddress = new InetSocketAddress(
-					InetAddress.getLocalHost(),
+					InetAddress.getByName("db"),
 					Constants.DEFAULT_POSTGRESQL_PORT);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

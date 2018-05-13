@@ -1,7 +1,9 @@
 version: '3.6'
 services:
   app:
-    image: cleydyr/tomcat:7-jdk8
+    image: cleydyr/tomcat7-jdk8_postgresql
+    environment:
+      - JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
     ports:
      - "8080:8080"
      - "8000:8000"
@@ -9,8 +11,10 @@ services:
       - type: bind
         source: ./tomcat/Biblivre4.war
         target: /usr/local/tomcat/webapps/Biblivre4.war
+    networks:
+      - biblivre5
   db:
-    image: postgres:10.3
+    image: postgres:9.6
     environment:
       POSTGRES_PASSWORD: abracadabra
       POSTGRES_USER: postgres
@@ -21,5 +25,21 @@ services:
       - type: bind
         source: ./postgres/postgresql.conf
         target: /etc/postgresql/postgresql.conf
+      - type: bind
+        source: ./postgres/create-database.sh
+        target: /docker-entrypoint-initdb.d/create-database.sh
+      - type: bind
+        source: ./postgres/sql/createdatabase.sql
+        target: /docker-entrypoint-initdb.d/sql/createdatabase.sql
+      - type: bind
+        source: ./postgres/sql/biblivre4.sql
+        target: /docker-entrypoint-initdb.d/sql/biblivre4.sql
     ports:
       - "5432:5432"
+    networks:
+      biblivre5:
+        aliases:
+          - postgres
+
+networks:
+  biblivre5:
