@@ -23,23 +23,31 @@ import br.org.biblivre.z3950server.Z3950ServerBO;
 
 public class BiblivreInitializer {
 
+	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
 
-	public static void initialize() {
-		Updates.fixPostgreSQL81();
-		Updates.globalUpdate();
+	public synchronized static void initialize() {
+		if (!BiblivreInitializer.initialized) {
+			try {
+				Updates.fixPostgreSQL81();
+				Updates.globalUpdate();
 
-		BiblivreInitializer.Z3950server = new Z3950ServerBO();
-		BiblivreInitializer.Z3950server.startServer();
+				BiblivreInitializer.Z3950server = new Z3950ServerBO();
+				BiblivreInitializer.Z3950server.startServer();
+
+				BiblivreInitializer.initialized = true;
+			} catch (Exception e) {
+			}
+		}
 	}
 
-	public static void destroy() {
+	public synchronized static void destroy() {
 		if (BiblivreInitializer.Z3950server != null) {
 			BiblivreInitializer.Z3950server.stopServer();
 		}
 	}
 
-	public static void reloadZ3950Server() {
+	public synchronized static void reloadZ3950Server() {
 		if (BiblivreInitializer.Z3950server != null) {
 			BiblivreInitializer.Z3950server.reloadServer();
 		}
