@@ -232,6 +232,7 @@
 					title='<i18n:text key="common.help" escapeHTML="true" />'>?</a>
 			</div>
 		</div>
+		<div id="like_button_container"></div>
 	</div>
 
 	<div id="content_outer">
