@@ -41,32 +41,6 @@
 				</a>
 			</div>
 
-			<div id="logo_support">
-				<div>
-					<img src="static/images/logo_pedro_i.png" width="88" height="66" alt="Organização Pedro I">
-				</div>
-				<div>
-					<img src="static/images/logo_sabin.png" width="88" height="66" alt="SABIN">
-				</div>
-				<div>
-					<a href="http://www.bn.br/" target="_blank">
-						<img src="static/images/logo_biblioteca_nacional.png" width="88" height="66" alt="Biblioteca Nacional">
-					</a>
-				</div>
-				<div>
-					<a href="http://www.cultura.gov.br/" target="_blank">
-						<img src="static/images/logo_lei_de_incentivo.png" width="88" height="66" alt='<i18n:text key="header.law" escapeHTML="true" />'>
-					</a>
-				</div>
-			</div>
-
-			<div id="logo_sponsor">
-				<a href="http://www.itaucultural.org.br/" target="_blank">
-					<img src="static/images/logo_itau.png" width="77" height="66" alt="Itaú Cultural">
-				</a>
-				<div id="clock">00:00</div>
-			</div>
-
 			<div id="title">
 				<div id="logo_biblivre_small">
 					<a href="http://biblivre.org.br/" target="_blank">
