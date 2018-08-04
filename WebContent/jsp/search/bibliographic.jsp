@@ -24,6 +24,8 @@
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "holding").getCacheFileName() %>"></script>
 
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
+	<script type="text/babel" src="static/components/search.bibliographic.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
 
 	<script type="text/javascript">
