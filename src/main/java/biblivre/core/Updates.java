@@ -828,6 +828,7 @@ public class Updates {
 				
 				dao.addIndexingGroup(con, RecordType.BIBLIO, "publisher", "260_b", true);
 				dao.addIndexingGroup(con, RecordType.BIBLIO, "series", "490_a", true);
+				dao.addIndexingGroup(con, RecordType.BIBLIO, "notes", "500_a,505_a,520_a", true);
 
 				dao.addBriefFormat(con, RecordType.BIBLIO, "501", "${a}", 28);
 				dao.addBriefFormat(con, RecordType.BIBLIO, "530", "${a}", 31);
