@@ -3,7 +3,7 @@ function MessageBox({translations, messageKey, actionKey, actionQuery, level}) {
 			<div className={`message sticky ${level}`}>
 			<div>
 				{translations[messageKey]}
-				<a href={actionQuery} class="fright">
+				<a href={actionQuery} className="fright">
 					{translations[actionKey]}
 				</a>
 			</div>
