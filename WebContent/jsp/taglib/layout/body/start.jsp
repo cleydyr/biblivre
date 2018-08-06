@@ -179,14 +179,8 @@
 			<c:set var="updateWarning" value='${schema}.system_warning_new_version' />
 
 			<c:if test='${sessionScope[passwordWarning]}'>
-				<div class="message sticky error system_warning_password">
-					<div>
-						<i18n:text key="warning.change_password" escapeHTML="true" />
-						<a href="?action=administration_password" class="fright">
-							<i18n:text key="warning.fix_now" escapeHTML="true"/>
-						</a>
-					</div>
-				</div>
+				<div id="change_passsword_message_container"></div>
+				<script type="text/babel" src="static/components/change_password_message.js"></script>
 			</c:if>
 			<c:if test="${sessionScope[backupWarning]}">
 				<div class="message sticky error system_warning_backup">
@@ -232,7 +226,6 @@
 					title='<i18n:text key="common.help" escapeHTML="true" />'>?</a>
 			</div>
 		</div>
-		<div id="like_button_container"></div>
 	</div>
 
 	<div id="content_outer">
