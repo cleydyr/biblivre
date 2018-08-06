@@ -9708,7 +9708,7 @@ INSERT INTO biblio_indexing_groups (id, translation_key, datafields, sortable, d
 INSERT INTO biblio_indexing_groups (id, translation_key, datafields, sortable, default_sort, created, created_by, modified, modified_by) VALUES (0, 'all', NULL, false, false, '2013-04-13 13:45:00.977717', NULL, '2013-04-13 13:45:00.977717', NULL);
 INSERT INTO biblio_indexing_groups (id, translation_key, datafields, sortable, default_sort, created, created_by, modified, modified_by) VALUES (3, 'title', '245_a_b,243_a_f,240_a,730_a,740_a_n_p,830_a_v,250_a,246_a', true, true, '2013-04-13 13:45:00.977717', NULL, '2013-04-13 13:45:00.977717', NULL);
 INSERT INTO biblio_indexing_groups (id, translation_key, datafields, sortable, default_sort, created, created_by, modified, modified_by) VALUES (2, 'year', '260_c', true, false, '2013-04-13 13:45:00.977717', NULL, '2013-04-13 13:45:00.977717', NULL);
-INSERT INTO single.biblio_indexing_groups (id, translation_key, datafields, sortable, default_sort, created, created_by, modified, modified_by) VALUES (7, 'notes', '500_a,505_a,520_a', false, false, '2013-04-13 13:45:00.977717', NULL, '2013-04-13 13:45:00.977717', NULL);
+
 
 --
 -- TOC entry 2786 (class 0 OID 729481)
