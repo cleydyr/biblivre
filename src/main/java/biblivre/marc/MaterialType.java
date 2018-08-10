@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.marc;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -113,29 +114,33 @@ public enum MaterialType {
 	
 	public static List<MaterialType> bibliographicValues() {
 		if (MaterialType.bibliographicMaterials == null) {
-			MaterialType.bibliographicMaterials = new LinkedList<MaterialType>();
+			List<MaterialType> temporaryList = new LinkedList<MaterialType>();
 			
 			for (MaterialType material : MaterialType.values()) {
 				if (material.isSearchable() && !material.equals(MaterialType.ALL)) {
-					MaterialType.bibliographicMaterials.add(material);
+					temporaryList.add(material);
 				}
 			}
+
+			MaterialType.bibliographicMaterials = Collections.unmodifiableList(temporaryList);
 		}
-				
+
 		return MaterialType.bibliographicMaterials;
 	}
 	
 	public static List<MaterialType> searchableValues() {
 		if (MaterialType.searchableMaterials == null) {
-			MaterialType.searchableMaterials = new LinkedList<MaterialType>();
+			List<MaterialType> temporaryList = new LinkedList<MaterialType>();
 			
 			for (MaterialType material : MaterialType.values()) {
 				if (material.isSearchable()) {
-					MaterialType.searchableMaterials.add(material);
+					temporaryList.add(material);
 				}
 			}
+
+			MaterialType.searchableMaterials = Collections.unmodifiableList(temporaryList);
 		}
-				
+
 		return MaterialType.searchableMaterials;
 	}
 	
