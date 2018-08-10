@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.Record;
 
@@ -50,20 +51,28 @@ public enum MaterialType {
 
 	private final static List<MaterialType> bibliographicMaterials;
 	private final static List<MaterialType> searchableMaterials;
+	private final static String javascriptArray;
 	
 	static {
 		List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
 		List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("[");
 
 		for (MaterialType material : MaterialType.values()) {
 			if (material.isSearchable()) {
 				tempSearchableMaterials.add(material);
 				if (!material.equals(MaterialType.ALL)) {
 					tempBibliographicMaterials.add(material);
+					sb.append("\'").append(material.toString()).append("\',");
 				}
 			}
 		}
 
+		sb.append("]");
+
+		javascriptArray = sb.toString();
 		bibliographicMaterials = Collections.unmodifiableList(tempBibliographicMaterials);
 		searchableMaterials = Collections.unmodifiableList(tempSearchableMaterials);
 	}
@@ -118,7 +127,7 @@ public enum MaterialType {
 		return MaterialType.BOOK;
 	}
 	
-	public  static MaterialType fromRecord(Record record) {
+	public static MaterialType fromRecord(Record record) {
 		MaterialType mt = null;
 
 		if (record != null) {
@@ -138,30 +147,7 @@ public enum MaterialType {
 	}
 	
 	public static String toJavascriptArray(){
-		
-		List<MaterialType> bibliographicValues = MaterialType.bibliographicValues();
-		
-		String[] names = new String[bibliographicValues.size()];
-		int i = 0;
-		for (MaterialType type : bibliographicValues) {
-			names[i++] = type.toString();
-		}
-		
-	    StringBuffer sb = new StringBuffer();
-	    sb.append("[");
-	    
-	    for (int j = 0; j < names.length; j++) {
-	    	
-	        sb.append("\"").append(names[j]).append("\"");
-	        
-	        if ( (j + 1) < names.length) {
-	            sb.append(",");
-	        }
-	        
-	    }
-	    sb.append("]");
-	    
-	    return sb.toString();
+		return javascriptArray;
 	}
 	
 	@Override
