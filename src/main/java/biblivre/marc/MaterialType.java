@@ -48,9 +48,26 @@ public enum MaterialType {
 	VOCABULARY('w', "  ", false),
 	HOLDINGS('u', "  ", false);
 
-	private static List<MaterialType> bibliographicMaterials = null;
-	private static List<MaterialType> searchableMaterials = null;
+	private final static List<MaterialType> bibliographicMaterials;
+	private final static List<MaterialType> searchableMaterials;
 	
+	static {
+		List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
+		List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
+
+		for (MaterialType material : MaterialType.values()) {
+			if (material.isSearchable()) {
+				tempSearchableMaterials.add(material);
+				if (!material.equals(MaterialType.ALL)) {
+					tempBibliographicMaterials.add(material);
+				}
+			}
+		}
+
+		bibliographicMaterials = Collections.unmodifiableList(tempBibliographicMaterials);
+		searchableMaterials = Collections.unmodifiableList(tempSearchableMaterials);
+	}
+
 	private char typeOfRecord;
 	private String implDefined1;
 	private boolean searchable;
@@ -113,35 +130,11 @@ public enum MaterialType {
 	}
 	
 	public static List<MaterialType> bibliographicValues() {
-		if (MaterialType.bibliographicMaterials == null) {
-			List<MaterialType> temporaryList = new LinkedList<MaterialType>();
-			
-			for (MaterialType material : MaterialType.values()) {
-				if (material.isSearchable() && !material.equals(MaterialType.ALL)) {
-					temporaryList.add(material);
-				}
-			}
-
-			MaterialType.bibliographicMaterials = Collections.unmodifiableList(temporaryList);
-		}
-
-		return MaterialType.bibliographicMaterials;
+		return bibliographicMaterials;
 	}
 	
 	public static List<MaterialType> searchableValues() {
-		if (MaterialType.searchableMaterials == null) {
-			List<MaterialType> temporaryList = new LinkedList<MaterialType>();
-			
-			for (MaterialType material : MaterialType.values()) {
-				if (material.isSearchable()) {
-					temporaryList.add(material);
-				}
-			}
-
-			MaterialType.searchableMaterials = Collections.unmodifiableList(temporaryList);
-		}
-
-		return MaterialType.searchableMaterials;
+		return searchableMaterials;
 	}
 	
 	public static String toJavascriptArray(){
