@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.Record;
 
