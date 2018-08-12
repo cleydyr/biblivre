@@ -8,8 +8,8 @@
 			</div>
   			</div>
 		</form>
-		<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-		<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+		<script src="<%=application.getContextPath() %>/webjars/react/16.4.2/umd/react.production.min.js" crossorigin></script>
+		<script src="<%=application.getContextPath() %>/webjars/react-dom/16.4.2/umd/react-dom.production.min.js" crossorigin></script>
+		<script src="<%=application.getContextPath() %>/webjars/babel-standalone/6.26.0/babel.min.js"></script>
 	</body>
 </html>

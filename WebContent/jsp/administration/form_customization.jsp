@@ -44,21 +44,7 @@
 		</fieldset>
 		
 		<div id="datafields"></div>
-		<textarea id="datafields_template" class="template"><!-- 
-			{#foreach $T.datafields as datafield}
-				<fieldset class="block" data-datafield="{ $T.datafield.datafield }">
-					<legend>{$T.datafield.datafield} - { _('marc.bibliographic.datafield.' + $T.datafield.datafield) }</legend>
-					<div class="buttons">
-						<span class="cancel-datafield"><i class="fa fa-close"></i></span>
-						<span class="save-datafield"><i class="fa fa-check"></i></span>
-						<span class="trash-datafield"><i class="fa fa-trash-o"></i></span>
-						<span class="edit-datafield"><i class="fa fa-pencil"></i></span>
-						<span class="move-datafield"><i class="fa fa-bars"></i></span>
-					</div>
-					<div class="edit_area"></div>
-				</fieldset>
-			{#/for}
-		--></textarea>
+		<script type="text/babel" src="static/components/datafields.js"></script>
 		<textarea id="datafields_edit_template" class="template"><!--
 		 	<div class="content">
 		 		<table class="datafield_table">
