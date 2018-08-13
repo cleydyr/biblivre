@@ -2,11 +2,14 @@
 .externalToolBuilders/
 .settings/
 .svn/
-/target/
-WebContent/static/styles/biblivre.administration.customization.css 
+/target
+WebContent/static/styles/biblivre.administration.customization.css
 WebContent/static/styles/biblivre.administration.setup.css
 WebContent/static/styles/biblivre.multi_schema.css
 WebContent/static/styles/biblivre.print.css
+WebContent/static/components/dist/
+WebContent/static/components/node/
+WebContent/static/components/node_modules/
 WebContent/static/styles/biblivre.about.css
 WebContent/static/styles/biblivre.acquisition.css
 WebContent/static/styles/biblivre.administration.css
