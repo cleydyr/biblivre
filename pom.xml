@@ -414,6 +414,7 @@
 								<exclude>Traducoes - enUS.txt</exclude>
 								<exclude>Traducoes - ptBR.txt</exclude>
 								<exclude>Traducoes - es.txt</exclude>
+								<exclude>static/components/node_modules/*</exclude>
 							</excludes>
 						</resource>
 						<resource>

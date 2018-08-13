@@ -65,9 +65,6 @@ $(document).ready(function() {
 	
 	datafields.on('click', '.save-datafield', FormCustomization.saveDatafield);
 	
-	// Defining Template
-	datafields.setTemplateElement($('#datafields_template'));
-	
 	//Adding behaviour to record_type select
 	var recordTypeSelect = $(':input[name=record_type_field]'); 
 	recordTypeSelect.on('change', function() {
