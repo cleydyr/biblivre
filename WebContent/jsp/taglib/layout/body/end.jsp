@@ -8,6 +8,6 @@
 			</div>
   			</div>
 		</form>
-		<script src="static/components/dist/bundle.js"></script>
+		<script src="static/scripts/bundle.js"></script>
 	</body>
 </html>
