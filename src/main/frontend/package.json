@@ -5,9 +5,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["biblivre", "library information system", "LIS"],
+  "keywords": [
+    "biblivre",
+    "library information system",
+    "LIS"
+  ],
   "author": "Cleydyr Albuquerque",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@babel/core": "^7.0.0-rc.1",
     "@babel/preset-env": "^7.0.0-rc.1",
