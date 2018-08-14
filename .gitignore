@@ -1,4 +1,5 @@
 .project
+/WebContent/static/scripts/bundle.js
 /src/main/frontend/node_modules/
 .externalToolBuilders/
 .settings/
