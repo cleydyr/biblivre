@@ -43,8 +43,7 @@
 			</div>
 		</fieldset>
 		
-		<div id="datafields"></div>
-		<script type="text/babel" src="static/components/datafields.js"></script>
+		<div id="datafields" />
 		<textarea id="datafields_edit_template" class="template"><!--
 		 	<div class="content">
 		 		<table class="datafield_table">
