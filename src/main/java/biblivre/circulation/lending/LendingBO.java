@@ -77,7 +77,7 @@ public class LendingBO extends AbstractBO {
 		// Specify the source where the template files come from. Here I set a
 		// plain directory for it, but non-file-system sources are possible too:
 		try {
-			freemarkerConfiguration.setDirectoryForTemplateLoading(new File("/freemarker"));
+			freemarkerConfiguration.setDirectoryForTemplateLoading(new File("WebContent/freemarker"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
