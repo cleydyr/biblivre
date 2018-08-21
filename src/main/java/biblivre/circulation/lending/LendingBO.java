@@ -19,6 +19,11 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,9 +60,42 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
 public class LendingBO extends AbstractBO {
-	
+	public static final Configuration freemarkerConfiguration;
+
+	static {
+		// Create your Configuration instance, and specify if up to what FreeMarker
+		// version (here 2.3.27) do you want to apply the fixes that are not 100%
+		// backward-compatible. See the Configuration JavaDoc for details.
+		freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_28);
+
+		// Specify the source where the template files come from. Here I set a
+		// plain directory for it, but non-file-system sources are possible too:
+		try {
+			freemarkerConfiguration.setDirectoryForTemplateLoading(new File("/freemarker"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Set the preferred charset template files are stored in. UTF-8 is
+		// a good choice in most applications:
+		freemarkerConfiguration.setDefaultEncoding("UTF-8");
+
+		// Sets how errors will appear.
+		// During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
+		freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+		// Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+		freemarkerConfiguration.setLogTemplateExceptions(false);
+
+		// Wrap unchecked exceptions thrown during template processing in
+		freemarkerConfiguration.setWrapUncheckedExceptions(true);
+	}
 	private LendingDAO dao;
 	
 	public static LendingBO getInstance(String schema) {
@@ -621,7 +659,17 @@ public class LendingBO extends AbstractBO {
 	}
 	
 	private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n) {
+		Template template = null;
+
+		try {
+			template = freemarkerConfiguration.getTemplate("receipt.ftl");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Map<String, Object> root = new HashMap<>();
 		DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
+		root.put("dateTimeFormat", i18n.getText("format.datetime"));
 		
 		List<LendingDTO> lendings = this.listLendings(lendingsIds);
 		if (lendings == null || lendings.isEmpty()) {
@@ -631,24 +679,36 @@ public class LendingBO extends AbstractBO {
 		if (lendingInfo == null || lendingInfo.isEmpty()) {
 			return "";
 		}
-		
 		StringBuilder receipt = new StringBuilder();
 		receipt.append("<html>");
 		receipt.append("<table style=\"border: 1px solid; padding: 10px; font-family: HelveticaNeue-Light, 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal;\">");
 		
 		String libraryName = Configurations.getString(this.getSchema(), "general.title");
 		String now = receiptDateFormat.format(new Date());
+
+		root.put("libraryName", libraryName);
+		root.put("now", now);
+
 		receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
 		receipt.append(libraryName).append(" - ").append(now);
 		receipt.append("</td></tr>");
 		receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
 		
+		root.put("lendingInfo", lendingInfo);
+
 		if (lendingInfo.size() > 0) {
 			
 			UserDTO user = lendingInfo.get(0).getUser();
-			
+
+			root.put("user", user);
+
 			String nameLabel = i18n.getText("circulation.user_field.name");
+			
+			root.put("nameLabel", nameLabel);
+
 			String userName = StringEscapeUtils.escapeHtml4(user.getName());
+
+			root.put("userName", userName);
 			
 			receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
 			receipt.append(nameLabel).append(":");
@@ -657,9 +717,15 @@ public class LendingBO extends AbstractBO {
 			receipt.append("</td></tr>");
 			
 			String idLabel = i18n.getText("circulation.user_field.id");
+
+			root.put("idLabel", idLabel);
+
 			String enrollment = user.getEnrollment();
-			
+
+			root.put("enrollment", enrollment);
+
 			receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
+
 			receipt.append(idLabel).append(":");
 			receipt.append("</td><td style=\"text-align: left\">");
 			receipt.append(enrollment);
@@ -692,9 +758,23 @@ public class LendingBO extends AbstractBO {
 			String returnDateLabel = i18n.getText("circulation.lending.receipt.return_date");
 			String lendingDateLabel = i18n.getText("circulation.lending.receipt.lending_date");
 
-			if (!currentLendings.isEmpty()) {
+			root.put("currentLendings", currentLendings);
+			root.put("currentRenews", currentRenews);
+			root.put("currentReturns", currentReturns);
 			
+			root.put("authorLabel", authorLabel);
+			root.put("titleLabel", titleLabel);
+			root.put("biblioLabel", biblioLabel);
+			root.put("holdingLabel", holdingLabel);
+			root.put("expectedDateLabel", expectedDateLabel);
+			root.put("returnDateLabel", returnDateLabel);
+			root.put("lendingDateLabel", lendingDateLabel);
+
+			if (!currentLendings.isEmpty()) {
 				String header = i18n.getText("circulation.lending.receipt.lendings");
+				
+				root.put("header", header);
+
 				receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
 				receipt.append(header);
 				receipt.append("</td></tr>");
@@ -748,16 +828,17 @@ public class LendingBO extends AbstractBO {
 					receipt.append("</td></tr>");
 					
 					receipt.append("<tr><td>&nbsp;</td></tr>");
-					
 				}
 				
 				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
-				
 			}
 			
+			//TODO: move it
 			if (!currentRenews.isEmpty()) {
-				
 				String header = i18n.getText("circulation.lending.receipt.renews");
+				
+				root.put("renewsHeader", header);
+
 				receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
 				receipt.append(header);
 				receipt.append("</td></tr>");
@@ -812,9 +893,7 @@ public class LendingBO extends AbstractBO {
 					receipt.append("<tr><td>&nbsp;</td></tr>");
 					
 				}
-				
 				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
-				
 			}
 			
 			if (!currentReturns.isEmpty()) {
@@ -873,15 +952,20 @@ public class LendingBO extends AbstractBO {
 					receipt.append(receiptDateFormat.format(returnDate));
 					receipt.append("</td></tr>");
 					receipt.append("<tr><td>&nbsp;</td></tr>");
-					
 				}
 				
 				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
-				
 			}
 		}
+
 		receipt.append("</table></html>");
 		
+		try {
+			template.process(root, new OutputStreamWriter(System.out));
+		} catch (TemplateException | IOException e) {
+			e.printStackTrace();
+		}
+
 		return receipt.toString();
 	}
 	
