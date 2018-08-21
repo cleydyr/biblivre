@@ -18,7 +18,7 @@
 		<table>
 			<tr><td colspan="2" style="text-align: center;">${libraryName} - ${.now}</td></tr>
 			<tr><td colspan="2"><hr /></td></tr>
-			<#if lendingInfo?size > 0}>
+			<#if (lendingInfo?size > 0)>
 				<tr><td style="width: 40%; text-align: right;">${nameLabel}:</td><td style="text-align: left">${userName}</td></tr>
 				<tr><td style="width: 40%; text-align: right;">${idLabel}:</td><td style="text-align: left">${enrollment}</td></tr>
 				<tr><td colspan="2"><hr /></td></tr>
