@@ -22,6 +22,7 @@ package biblivre.circulation.lending;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
@@ -470,8 +471,9 @@ public class LendingBO extends AbstractBO {
 			try {
 				return this.generateTableReceipt(lendingsIds, i18n);
 			} catch (TemplateException | IOException e) {
-				e.printStackTrace();
-				return "";
+				PrintWriter errorWriter = new PrintWriter(new StringWriter());
+				e.printStackTrace(errorWriter);
+				return errorWriter.toString();
 			}
 		} else {
 			return this.generateTxtReceipt(lendingsIds, i18n, columns);
