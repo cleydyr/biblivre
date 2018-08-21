@@ -658,42 +658,37 @@ public class LendingBO extends AbstractBO {
 		return receipt.toString();
 	}
 	
-	private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n) {
+	private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
+			throws TemplateException, IOException {
+
 		Template template = null;
 
-		try {
-			template = freemarkerConfiguration.getTemplate("receipt.ftl");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		template = freemarkerConfiguration.getTemplate("receipt.ftl");
 
 		Map<String, Object> root = new HashMap<>();
+
 		DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
+
 		root.put("dateTimeFormat", i18n.getText("format.datetime"));
 		
 		List<LendingDTO> lendings = this.listLendings(lendingsIds);
+
 		if (lendings == null || lendings.isEmpty()) {
 			return "";
 		}
+
 		List<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+
 		if (lendingInfo == null || lendingInfo.isEmpty()) {
 			return "";
 		}
-		StringBuilder receipt = new StringBuilder();
-		receipt.append("<html>");
-		receipt.append("<table style=\"border: 1px solid; padding: 10px; font-family: HelveticaNeue-Light, 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal;\">");
-		
+
 		String libraryName = Configurations.getString(this.getSchema(), "general.title");
 		String now = receiptDateFormat.format(new Date());
 
 		root.put("libraryName", libraryName);
 		root.put("now", now);
 
-		receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
-		receipt.append(libraryName).append(" - ").append(now);
-		receipt.append("</td></tr>");
-		receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
-		
 		root.put("lendingInfo", lendingInfo);
 
 		if (lendingInfo.size() > 0) {
@@ -710,12 +705,6 @@ public class LendingBO extends AbstractBO {
 
 			root.put("userName", userName);
 			
-			receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-			receipt.append(nameLabel).append(":");
-			receipt.append("</td><td style=\"text-align: left\">");
-			receipt.append(userName);
-			receipt.append("</td></tr>");
-			
 			String idLabel = i18n.getText("circulation.user_field.id");
 
 			root.put("idLabel", idLabel);
@@ -724,14 +713,6 @@ public class LendingBO extends AbstractBO {
 
 			root.put("enrollment", enrollment);
 
-			receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-
-			receipt.append(idLabel).append(":");
-			receipt.append("</td><td style=\"text-align: left\">");
-			receipt.append(enrollment);
-			receipt.append("</td></tr>");
-			
-			receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
 			
 			List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
 			List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
@@ -774,126 +755,13 @@ public class LendingBO extends AbstractBO {
 				String header = i18n.getText("circulation.lending.receipt.lendings");
 				
 				root.put("header", header);
-
-				receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
-				receipt.append(header);
-				receipt.append("</td></tr>");
-				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
-				receipt.append("<tr><td>&nbsp;</td></tr>");
-				
-				for (LendingInfoDTO info : currentLendings) {
-					
-					String author = info.getBiblio().getAuthor();
-					author = StringEscapeUtils.escapeHtml4(author);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(authorLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(author);
-					receipt.append("</td></tr>");
-					
-					String title = info.getBiblio().getTitle();
-					title = StringEscapeUtils.escapeHtml4(title);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(titleLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(title);
-					receipt.append("</td></tr>");
-					
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(biblioLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(info.getHolding().getId());
-					receipt.append("</td></tr>");
-					
-					String accessionNumber = info.getHolding().getAccessionNumber();
-					accessionNumber = StringEscapeUtils.escapeHtml4(accessionNumber);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(holdingLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(accessionNumber);
-					receipt.append("</td></tr>");
-					
-					Date lendingDate = info.getLending().getCreated();
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(lendingDateLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(receiptDateFormat.format(lendingDate));
-					receipt.append("</td></tr>");
-					
-					Date expectedReturnDate = info.getLending().getExpectedReturnDate();
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(expectedDateLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(receiptDateFormat.format(expectedReturnDate));
-					receipt.append("</td></tr>");
-					
-					receipt.append("<tr><td>&nbsp;</td></tr>");
-				}
-				
-				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
 			}
 			
-			//TODO: move it
 			if (!currentRenews.isEmpty()) {
 				String header = i18n.getText("circulation.lending.receipt.renews");
 				
 				root.put("renewsHeader", header);
 
-				receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
-				receipt.append(header);
-				receipt.append("</td></tr>");
-				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
-				receipt.append("<tr><td>&nbsp;</td></tr>");
-				
-				for (LendingInfoDTO info : currentRenews) {
-					
-					String author = info.getBiblio().getAuthor();
-					author = StringEscapeUtils.escapeHtml4(author);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(authorLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(author);
-					receipt.append("</td></tr>");
-					
-					String title = info.getBiblio().getTitle();
-					title = StringEscapeUtils.escapeHtml4(title);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(titleLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(title);
-					receipt.append("</td></tr>");
-					
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(biblioLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(info.getHolding().getId());
-					receipt.append("</td></tr>");
-					
-					String accessionNumber = info.getHolding().getAccessionNumber();
-					accessionNumber = StringEscapeUtils.escapeHtml4(accessionNumber);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(holdingLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(accessionNumber);
-					receipt.append("</td></tr>");
-					
-					Date lendingDate = info.getLending().getCreated();
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(lendingDateLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(receiptDateFormat.format(lendingDate));
-					receipt.append("</td></tr>");
-					
-					Date expectedReturnDate = info.getLending().getExpectedReturnDate();
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(expectedDateLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(receiptDateFormat.format(expectedReturnDate));
-					receipt.append("</td></tr>");
-					receipt.append("<tr><td>&nbsp;</td></tr>");
-					
-				}
-				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
 			}
 			
 			if (!currentReturns.isEmpty()) {
@@ -901,75 +769,14 @@ public class LendingBO extends AbstractBO {
 				String header = i18n.getText("circulation.lending.receipt.returns");
 				
 				root.put("returnsHeader", header);
-				
-				receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
-				receipt.append(header);
-				receipt.append("</td></tr>");
-				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
-				receipt.append("<tr><td>&nbsp;</td></tr>");
-				
-				for (LendingInfoDTO info : currentReturns) {
-					
-					String author = info.getBiblio().getAuthor();
-					author = StringEscapeUtils.escapeHtml4(author);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(authorLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(author);
-					receipt.append("</td></tr>");
-					
-					String title = info.getBiblio().getTitle();
-					title = StringEscapeUtils.escapeHtml4(title);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(titleLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(title);
-					receipt.append("</td></tr>");
-					
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(biblioLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(info.getHolding().getId());
-					receipt.append("</td></tr>");
-					
-					String accessionNumber = info.getHolding().getAccessionNumber();
-					accessionNumber = StringEscapeUtils.escapeHtml4(accessionNumber);
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(holdingLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(accessionNumber);
-					receipt.append("</td></tr>");
-					
-					Date lendingDate = info.getLending().getCreated();
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(lendingDateLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(receiptDateFormat.format(lendingDate));
-					receipt.append("</td></tr>");
-					
-
-					Date returnDate = info.getLending().getReturnDate();
-					receipt.append("<tr><td style=\"width: 40%; text-align: right;\">");
-					receipt.append(returnDateLabel).append(":");
-					receipt.append("</td><td style=\"text-align: left\">");
-					receipt.append(receiptDateFormat.format(returnDate));
-					receipt.append("</td></tr>");
-					receipt.append("<tr><td>&nbsp;</td></tr>");
-				}
-				
-				receipt.append("<tr><td colspan=\"2\"><hr /></td></tr>");
 			}
 		}
 
-		receipt.append("</table></html>");
-		
-		try {
-			template.process(root, new OutputStreamWriter(System.out));
-		} catch (TemplateException | IOException e) {
-			e.printStackTrace();
-		}
+		StringWriter writer = new StringWriter();
 
-		return receipt.toString();
+		template.process(root, writer);
+
+		return writer.toString();
 	}
 	
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
