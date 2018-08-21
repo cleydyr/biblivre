@@ -467,7 +467,12 @@ public class LendingBO extends AbstractBO {
 		}
 		
 		if (columns == 0) {
-			return this.generateTableReceipt(lendingsIds, i18n);
+			try {
+				return this.generateTableReceipt(lendingsIds, i18n);
+			} catch (TemplateException | IOException e) {
+				e.printStackTrace();
+				return "";
+			}
 		} else {
 			return this.generateTxtReceipt(lendingsIds, i18n, columns);
 		}
