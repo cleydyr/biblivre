@@ -899,6 +899,9 @@ public class LendingBO extends AbstractBO {
 			if (!currentReturns.isEmpty()) {
 				
 				String header = i18n.getText("circulation.lending.receipt.returns");
+				
+				root.put("returnsHeader", header);
+				
 				receipt.append("<tr><td colspan=\"2\" style=\"text-align: center;\">");
 				receipt.append(header);
 				receipt.append("</td></tr>");

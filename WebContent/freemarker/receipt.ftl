@@ -52,11 +52,11 @@
 					</#list>
 					<tr><td colspan="2"><hr /></td></tr>
 				</#if>
-				<#if currentRenews?size != 0>
+				<#if currentReturns?size != 0>
 					<tr><td colspan="2" style="text-align: center;">${renewsHeader}</td></tr>
 					<tr><td colspan="2"><hr /></td></tr>
 					<tr>	<td>&nbsp;</td></tr>
-					<#list currentRenews as item>
+					<#list currentReturns as item>
 						<tr><td style="width: 40%; text-align: right;">${authorLabel}:</td><td style="text-align: left">${item.biblio.author}</td></tr>
 						<tr><td style="width: 40%; text-align: right;">${titleLabel}:</td><td style="text-align: left">${item.biblio.title}</td></tr>
 						<tr><td style="width: 40%; text-align: right;">${biblioLabel}:</td><td style="text-align: left">${item.holding.id}</td></tr>
