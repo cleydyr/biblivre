@@ -32,7 +32,7 @@
 						<tr><td style="width: 40%; text-align: right;">${biblioLabel}:</td><td style="text-align: left">${item.holding.id}</td></tr>
 						<tr><td style="width: 40%; text-align: right;">${holdingLabel}:</td><td style="text-align: left">${item.holding.accessionNumber}</td></tr>
 						<tr><td style="width: 40%; text-align: right;">${lendingDateLabel}:</td><td style="text-align: left">${item.lending.created}</td></tr>
-						<tr><td style="width: 40%; text-align: right;">${exptectedDateLabel}:</td><td style="text-align: left">${item.lending.expectedReturnDate}</td></tr>
+						<tr><td style="width: 40%; text-align: right;">${expectedDateLabel}:</td><td style="text-align: left">${item.lending.expectedReturnDate}</td></tr>
 						<tr><td>&nbsp;</td></tr>
 					</#list>
 					<tr><td colspan="2"><hr /></td></tr>
@@ -47,7 +47,7 @@
 						<tr><td style="width: 40%; text-align: right;">${biblioLabel}:</td><td style="text-align: left">${item.holding.id}</td></tr>
 						<tr><td style="width: 40%; text-align: right;">${holdingLabel}:</td><td style="text-align: left">${item.holding.accessionNumber}</td></tr>
 						<tr><td style="width: 40%; text-align: right;">${lendingDateLabel}:</td><td style="text-align: left">${item.lending.created}</td></tr>
-						<tr><td style="width: 40%; text-align: right;">${exptectedDateLabel}:</td><td style="text-align: left">${item.lending.expectedReturnDate}</td></tr>
+						<tr><td style="width: 40%; text-align: right;">${expectedDateLabel}:</td><td style="text-align: left">${item.lending.expectedReturnDate}</td></tr>
 						<tr><td>&nbsp;</td></tr>
 					</#list>
 					<tr><td colspan="2"><hr /></td></tr>
