@@ -43,7 +43,7 @@
 			</div>
 		</fieldset>
 		
-		<div id="datafields" />
+		<div id="datafields"></div>
 		<textarea id="datafields_edit_template" class="template"><!--
 		 	<div class="content">
 		 		<table class="datafield_table">

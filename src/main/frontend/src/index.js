@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
 function MessageBox({translations, messageKey, actionKey, actionQuery, level}) {
@@ -25,24 +25,33 @@ changePasswordMessageContainer && ReactDOM.render(
 	/>,
 	changePasswordMessageContainer);
 
-function DataFields ({datafields}) {
-	return datafields.map( datafield =>
-		(<fieldset className="block" data-datafield={datafield.datafield}>
-			<legend>{datafield.datafield} - { _(`marc.bibliographic.datafield.${datafield.datafield}`)}</legend>
-			<div class="buttons">
-					<span className="cancel-datafield fa fa-close"></span>
-					<span className="save-datafield fa fa-check"></span>
-					<span className="trash-datafield fa fa-trash-o"></span>
-					<span className="edit-datafield fa fa-pencil"></span>
-					<span className="move-datafield fa fa-bars"></span>
-				</div>
-			<div className="edit_area"></div>
-		</fieldset>)
-	);
+class DataFields extends Component {
+	render() {
+		const {formFields, selectedRecordType} = this.props;
+		const enabledFields = formFields[selectedRecordType];
+		const datafields = ld.sortBy(enabledFields, 'sortOrder');
+
+		FormCustomization.indexedDatafields = ld.keyBy(FormCustomization.datafields, 'datafield');
+
+		return datafields.map( datafield =>
+			(<fieldset className="block" data-datafield={datafield.datafield}>
+				<legend>{datafield.datafield} - { _(`marc.bibliographic.datafield.${datafield.datafield}`)}</legend>
+				<div class="buttons">
+						<span className="cancel-datafield fa fa-close"></span>
+						<span className="save-datafield fa fa-check"></span>
+						<span className="trash-datafield fa fa-trash-o"></span>
+						<span className="edit-datafield fa fa-pencil"></span>
+						<span className="move-datafield fa fa-bars"></span>
+					</div>
+				<div className="edit_area"></div>
+			</fieldset>)
+		);
+	};
 }
 
 const datafields = document.querySelector('#datafields');
 datafields && ReactDOM.render(
 	<DataFields
-		datafields={FormCustomization.formFields['bibliographic']}/>,
+		formFields={FormCustomization.formFields}
+		selectedRecordType='bibliographic'/>,
 	datafields);
