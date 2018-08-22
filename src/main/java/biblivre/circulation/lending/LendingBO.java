@@ -67,7 +67,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 public class LendingBO extends AbstractBO {
-	public static final Configuration freemarkerConfiguration;
+	private static final Configuration freemarkerConfiguration;
 
 	static {
 		// Create your Configuration instance, and specify if up to what FreeMarker
