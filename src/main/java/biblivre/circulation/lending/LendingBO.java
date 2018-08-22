@@ -97,6 +97,7 @@ public class LendingBO extends AbstractBO {
 		// Wrap unchecked exceptions thrown during template processing in
 		freemarkerConfiguration.setWrapUncheckedExceptions(true);
 	}
+
 	private LendingDAO dao;
 	
 	public static LendingBO getInstance(String schema) {
@@ -690,13 +691,13 @@ public class LendingBO extends AbstractBO {
 			return "";
 		}
 
+		root.put("lendingInfo", lendingInfo);
+
 		String libraryName = Configurations.getString(this.getSchema(), "general.title");
 		String now = receiptDateFormat.format(new Date());
 
 		root.put("libraryName", libraryName);
 		root.put("now", now);
-
-		root.put("lendingInfo", lendingInfo);
 
 		if (lendingInfo.size() > 0) {
 			
@@ -720,7 +721,6 @@ public class LendingBO extends AbstractBO {
 
 			root.put("enrollment", enrollment);
 
-			
 			List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
 			List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
 			List<LendingInfoDTO> currentReturns = new ArrayList<LendingInfoDTO>();
