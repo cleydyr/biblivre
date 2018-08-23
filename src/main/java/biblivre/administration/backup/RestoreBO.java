@@ -179,7 +179,7 @@ public class RestoreBO extends AbstractBO {
 			}
 			
 			try {
-				DataMigrationDAO dao = DataMigrationDAO.getInstance(this.getSchema(), " biblivre4_b3b_restore");
+				DataMigrationDAO dao = DataMigrationDAO.getInstance(this.getSchema(), "biblivre4_b3b_restore");
 				for (int i = 0; i < 1000; i++) {
 					dao.testDatabaseConnection();
 				}
