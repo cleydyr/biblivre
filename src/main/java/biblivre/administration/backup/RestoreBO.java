@@ -496,7 +496,7 @@ public class RestoreBO extends AbstractBO {
 		return false;
 	}
 	
-	public synchronized boolean restoreBackupBiblivre3(File sql) {		
+	public synchronized boolean restoreBackupBiblivre3(File sql) {
 		File psql = DatabaseUtils.getPsql(this.getSchema());
 
 		if (psql == null) {
@@ -548,19 +548,18 @@ public class RestoreBO extends AbstractBO {
 			});
 
 			t.start();
-			
+
 			BufferedReader sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(sql), "UTF-8"));
-			
 			String inputLine;
 			boolean validBackup = false;
-			
+
 			while ((inputLine = sqlBr.readLine()) != null) {
 				if (inputLine.trim().startsWith("\\connect biblivre")) {
 					validBackup = true;
 					break;
 				}
 			}
-			
+
 			if (!validBackup) {
 				sqlBr.close();
 				State.writeLog("Never reached \\connect biblivre;");
@@ -569,27 +568,28 @@ public class RestoreBO extends AbstractBO {
 
 			bw.write("\\connect biblivre4_b3b_restore\n");
 			bw.flush();
-			
+
 			while ((inputLine = sqlBr.readLine()) != null) {
 				if (inputLine.trim().startsWith("CREATE PROCEDURAL LANGUAGE")) {
 					continue;
 				}
-				
+
 				if (inputLine.trim().startsWith("ALTER PROCEDURAL LANGUAGE")) {
 					continue;
 				}
-				
+
 				bw.write(inputLine);
-				
+
 				if (inputLine.trim().startsWith("SET search_path =")) {
 					break;
 				}
 			}
 
 			bw.flush();
-			
+
 			char[] buf = new char[1024 * 8];
 			int len;
+
 			while ((len = sqlBr.read(buf)) > 0) {
 				bw.write(buf, 0, len);
 				bw.flush();
@@ -599,7 +599,7 @@ public class RestoreBO extends AbstractBO {
 
 			//bw.write("ANALYZE;\n");
 			bw.close();
-			
+
 			p.waitFor();
 
 			return p.exitValue() == 0;
