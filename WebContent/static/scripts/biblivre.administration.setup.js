@@ -110,7 +110,7 @@ Administration.setup.biblivre3Import = function() {
 
 Administration.setup.biblivre3ImportFromFile = function() {
 	if ($('input[name="biblivre3backup"]').val() == '') {
-		alert('administration.setup.biblivre3restore.select_file');
+		alert(_('administration.setup.biblivre3restore.select_file'));
 		return;
 	}
 
@@ -127,7 +127,7 @@ Administration.setup.biblivre4Restore = function(file, params) {
 
 Administration.setup.biblivre4RestoreFromFile = function(file) {
 	if ($('input[name="biblivre4backup"]').val() == '') {
-		alert('administration.setup.biblivre4restore.select_file');
+		alert(_('administration.setup.biblivre4restore.select_file'));
 		return;
 	}	
 	
@@ -140,7 +140,7 @@ Administration.setup.biblivre4RestoreFromFileMedia = function(file) {
 	$('input[name="biblivre4backup"]').val('');
 
 	if ($('input[name="biblivre4backupmedia"]').val() == '') {
-		alert('administration.setup.biblivre4restore.select_file');
+		alert(_('administration.setup.biblivre4restore.select_file'));
 		return;
 	}	
 	
