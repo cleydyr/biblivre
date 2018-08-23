@@ -23,7 +23,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.6</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<debug>false</debug>
 		<sass.OutputStyle>:expanded</sass.OutputStyle>
 	</properties>
