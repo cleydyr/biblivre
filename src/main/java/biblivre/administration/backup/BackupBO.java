@@ -324,14 +324,9 @@ public class BackupBO extends AbstractBO {
 			String excludeTablePattern, String includeTablePattern) {
 
 		File pgdump = DatabaseUtils.getPgDump(this.getSchema());;
-		InetSocketAddress defaultAddress = null;
-		try {
-			defaultAddress = new InetSocketAddress(
-					InetAddress.getLocalHost(),
-					Constants.DEFAULT_POSTGRESQL_PORT);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+		InetSocketAddress defaultAddress = new InetSocketAddress(
+				InetAddress.getLoopbackAddress(),
+				Constants.DEFAULT_POSTGRESQL_PORT);
 
 		Format defaultFormat = Format.PLAIN;
 
