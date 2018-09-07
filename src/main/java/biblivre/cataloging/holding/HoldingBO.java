@@ -21,6 +21,7 @@ package biblivre.cataloging.holding;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.StreamUtils;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
@@ -299,11 +301,11 @@ public class HoldingBO extends RecordBO {
 	
 	public DiskFile printLabelsToPDF(List<LabelDTO> labels, LabelPrintDTO printDTO) {
 		Document document = new Document();
+		OutputStream fos = null;
 
 		try {
 			File file = File.createTempFile("biblivre_label_", ".pdf");
-
-			FileOutputStream fos = new FileOutputStream(file);
+			fos = new FileOutputStream(file);
 			PdfWriter writer = PdfWriter.getInstance(document, fos);
 
 			document.setPageSize(PageSize.A4);
@@ -393,12 +395,14 @@ public class HoldingBO extends RecordBO {
 			document.add(table);
 			writer.flush();
 			document.close();
-			fos.close();
 
 			return new DiskFile(file, "application/pdf");
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
+		} finally {
+			StreamUtils.cleanUp(fos);
 		}
+
 		return null;
 	}
 

@@ -42,6 +42,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
+import biblivre.core.utils.StreamUtils;
 import br.org.biblivre.z3950server.Z3950ServerBO;
 
 public class Schemas extends StaticBO {
@@ -260,6 +261,8 @@ public class Schemas extends StaticBO {
 
 		pb.redirectErrorStream(true);
 
+		BufferedWriter bw = null;
+
 		try {
 			State.writeLog("Starting psql");
 
@@ -269,7 +272,7 @@ public class Schemas extends StaticBO {
 			final BufferedReader br = new BufferedReader(isr);
 
 			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
-			BufferedWriter bw = new BufferedWriter(osw);
+			bw = new BufferedWriter(osw);
 
 			Thread t = new Thread(new Runnable() {
 
@@ -310,7 +313,6 @@ public class Schemas extends StaticBO {
 			}
 
 			bw.write("ANALYZE;\n");
-			bw.close();
 
 			p.waitFor();
 
@@ -321,6 +323,8 @@ public class Schemas extends StaticBO {
 			Schemas.logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			Schemas.logger.error(e.getMessage(), e);
+		} finally {
+			StreamUtils.cleanUp(bw);
 		}
 
 		return false;

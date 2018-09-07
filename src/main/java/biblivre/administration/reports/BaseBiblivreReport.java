@@ -22,6 +22,7 @@ package biblivre.administration.reports;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,6 +34,7 @@ import org.apache.log4j.Logger;
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
+import biblivre.core.utils.StreamUtils;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -82,9 +84,10 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	protected DiskFile generateReportFile(BaseReportDto reportData, String fileName) {
 		Document document = new Document(PageSize.A4);
 		DiskFile report = null;
+		FileOutputStream out = null;
 		try {
 			File file = File.createTempFile(fileName, ".pdf");
-			FileOutputStream out = new FileOutputStream(file);
+			out = new FileOutputStream(file);
 			this.writer = PdfWriter.getInstance(document, out);
 			this.writer.setPageEvent(this);
 			this.writer.setFullCompression();
@@ -97,7 +100,9 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
 			return null;
-		} 
+		} finally {
+			StreamUtils.cleanUp(out);
+		}
 		return report;
 	}
 

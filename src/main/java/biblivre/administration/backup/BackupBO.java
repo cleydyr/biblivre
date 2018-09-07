@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -49,6 +50,7 @@ import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.Pair;
 import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
+import biblivre.core.utils.StreamUtils;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
 import br.org.biblivre.z3950server.utils.TextUtils;
@@ -263,22 +265,29 @@ public class BackupBO extends AbstractBO {
 		return FileIOUtils.getWritablePath(path);
 	}
 
-	private boolean exportDigitalMedia(String schema, File path) throws IOException {
+	private boolean exportDigitalMedia(String schema, File path) {
+		OutputStream writer = null;
 		DigitalMediaDAO dao = DigitalMediaDAO.getInstance(schema);
-		
 		List<DigitalMediaDTO> list = dao.list();
-		
-		for (DigitalMediaDTO dto : list) {
-			DatabaseFile file = dao.load(dto.getId(), dto.getName());
 
-			File destination = new File(path, dto.getId() + "_" + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
-			FileOutputStream writer = new FileOutputStream(destination);
+		try {
+			for (DigitalMediaDTO dto : list) {
+				DatabaseFile file = dao.load(dto.getId(), dto.getName());
+				File destination = new File(path, dto.getId() + "_" + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
+				writer = new FileOutputStream(destination);
 
-			file.copy(writer);
-			file.close();
+				file.copy(writer);
+
+				file.close();
+			}
+
+			return true;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			StreamUtils.cleanUp(writer);
 		}
-		
-		return true;
 	}
 
 	private boolean dumpDatabase(ProcessBuilder pb) {

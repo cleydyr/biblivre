@@ -35,6 +35,7 @@ import biblivre.core.LabelPrintDTO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.StreamUtils;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -123,11 +124,12 @@ public class UserBO extends AbstractBO {
 	
 	public DiskFile printUserCardsToPDF(LabelPrintDTO dto, TranslationsMap i18n) {
 		Document document = new Document();
-		
+		FileOutputStream fos = null;
+
 		try {
 			File file = File.createTempFile("biblivre_user_cards_", ".pdf");
 
-			FileOutputStream fos = new FileOutputStream(file);
+			fos = new FileOutputStream(file);
 			PdfWriter writer = PdfWriter.getInstance(document, fos);
 
 			document.setPageSize(PageSize.A4);
@@ -202,7 +204,10 @@ public class UserBO extends AbstractBO {
 			return new DiskFile(file, "application/pdf");
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
+		} finally {
+			StreamUtils.cleanUp(fos);
 		}
+
 		return null;
 	}
 	

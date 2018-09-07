@@ -21,6 +21,7 @@ package biblivre.administration.setup;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,8 +127,8 @@ public class Handler extends AbstractHandler {
 		boolean success = true;
 		RestoreDTO dto = null;
 
-		try {
-			file.copy(new FileOutputStream(backup));
+		try (OutputStream os = new FileOutputStream(backup)){
+			file.copy(os);
 
 			RestoreBO rbo = RestoreBO.getInstance(schema);
 			dto = rbo.getRestoreDTO(backup.getName());
@@ -146,15 +147,18 @@ public class Handler extends AbstractHandler {
 	
 	public void uploadBiblivre3(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
-		boolean success = false;		
+
+		boolean success = false;
+
+		OutputStream os = null;
+
 		try {
 			State.start();
 			State.writeLog(request.getLocalizedText("administration.setup.biblivre3restore.log_header"));
 
 			MemoryFile file = request.getFile("biblivre3backup");
 			File gzip = new File(FileIOUtils.createTempDir(), file.getName());
-			OutputStream os = new FileOutputStream(gzip);
+			os = new FileOutputStream(gzip);
 			
 			file.copy(os);
 
@@ -181,6 +185,14 @@ public class Handler extends AbstractHandler {
 			this.setMessage(e);
 			State.writeLog(ExceptionUtils.getStackTrace(e));
 			State.cancel();
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		try {

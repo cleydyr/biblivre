@@ -51,6 +51,7 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
+import biblivre.core.utils.StreamUtils;
 import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
@@ -282,6 +283,8 @@ public class RestoreBO extends AbstractBO {
 
 		pb.redirectErrorStream(true);
 
+		BufferedWriter bw = null;
+
 		try {
 			State.writeLog("Starting psql");
 
@@ -291,7 +294,7 @@ public class RestoreBO extends AbstractBO {
 			final BufferedReader br = new BufferedReader(isr);
 
 			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
-			BufferedWriter bw = new BufferedWriter(osw);
+			bw = new BufferedWriter(osw);
 
 			Thread t = new Thread(new Runnable() {
 				@Override
@@ -404,7 +407,6 @@ public class RestoreBO extends AbstractBO {
 			bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);\n");
 			
 			bw.write("ANALYZE;\n");
-			bw.close();
 			
 			p.waitFor();
 
@@ -413,6 +415,8 @@ public class RestoreBO extends AbstractBO {
 			this.logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
+		} finally {
+			StreamUtils.cleanUp(bw);
 		}
 
 		return false;
@@ -445,6 +449,8 @@ public class RestoreBO extends AbstractBO {
 
 		pb.redirectErrorStream(true);
 
+		BufferedWriter bw = null;
+
 		try {
 			Process p = pb.start();
 
@@ -452,7 +458,7 @@ public class RestoreBO extends AbstractBO {
 			final BufferedReader br = new BufferedReader(isr);
 
 			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
-			BufferedWriter bw = new BufferedWriter(osw);
+			bw = new BufferedWriter(osw);
 
 			Thread t = new Thread(new Runnable() {
 				@Override
@@ -482,8 +488,6 @@ public class RestoreBO extends AbstractBO {
 			bw.write("CREATE DATABASE biblivre4_b3b_restore WITH OWNER = biblivre ENCODING = 'UTF8';\n");
 			bw.flush();
 
-			bw.close();
-
 			p.waitFor();
 			
 			return p.exitValue() == 0;
@@ -491,6 +495,8 @@ public class RestoreBO extends AbstractBO {
 			this.logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
+		} finally {
+			StreamUtils.cleanUp(bw);
 		}
 		
 		return false;
@@ -524,6 +530,8 @@ public class RestoreBO extends AbstractBO {
 
 		pb.redirectErrorStream(true);
 
+		BufferedWriter bw = null;
+
 		try {
 			Process p = pb.start();
 
@@ -531,7 +539,7 @@ public class RestoreBO extends AbstractBO {
 			final BufferedReader br = new BufferedReader(isr);
 
 			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
-			BufferedWriter bw = new BufferedWriter(osw);
+			bw = new BufferedWriter(osw);
 
 			Thread t = new Thread(new Runnable() {
 				@Override
@@ -598,7 +606,6 @@ public class RestoreBO extends AbstractBO {
 			sqlBr.close();
 
 			//bw.write("ANALYZE;\n");
-			bw.close();
 
 			p.waitFor();
 
@@ -607,6 +614,8 @@ public class RestoreBO extends AbstractBO {
 			this.logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
+		} finally {
+			StreamUtils.cleanUp(bw);
 		}
 
 		return false;

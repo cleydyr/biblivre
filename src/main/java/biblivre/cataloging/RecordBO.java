@@ -51,6 +51,7 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.StreamUtils;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.marc.MarcUtils;
@@ -141,9 +142,11 @@ public abstract class RecordBO extends AbstractBO {
 	
 	public DiskFile createExportFile(Set<Integer> ids) {
 		Map<Integer, RecordDTO> records = this.map(ids);
+		FileOutputStream out = null;
+
 		try {
 			File file = File.createTempFile("biblivre", ".mrc");
-			FileOutputStream out = new FileOutputStream(file);
+			out = new FileOutputStream(file);
 			OutputStreamWriter marcWriter = new OutputStreamWriter(out, "UTF-8");
 			for (RecordDTO dto : records.values()) {
 				marcWriter.write(dto.getIso2709());
@@ -154,7 +157,10 @@ public abstract class RecordBO extends AbstractBO {
 			return new DiskFile(file, "x-download");
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
+		} finally {
+			StreamUtils.cleanUp(out);
 		}
+
 		return null;
 	}
 	

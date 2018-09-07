@@ -386,12 +386,7 @@ public class FileIOUtils {
 			} finally {
 				file.close();
 
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException ignore) {
-					}
-				}				
+				StreamUtils.cleanUp(output);
 			}
 			
 			return;
