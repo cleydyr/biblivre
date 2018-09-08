@@ -20,8 +20,6 @@
 package biblivre.administration.backup;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -151,36 +149,7 @@ public class BackupDAO extends AbstractDAO {
 			con = this.getConnection();
 			con.setAutoCommit(false);
 			
-			PGConnection pgcon = null;
-
-			try {
-				Class<?> D = Class.forName("org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
-				Constructor<?> c = D.getConstructor(Connection.class);
-				Object o = c.newInstance(con);
-				Method m = D.getMethod("getInnermostDelegate");
-
-				pgcon =	 (PGConnection) m.invoke(o);
-			} catch (Exception e) {
-				this.logger.info("Skipping org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
-			}
-
-			if (pgcon == null) {
-				try {
-					Class<?> D = Class.forName("org.apache.commons.dbcp.DelegatingConnection");
-					Constructor<?> c = D.getConstructor(Connection.class);
-					Object o = c.newInstance(con);
-					Method m = D.getMethod("getInnermostDelegate");
-
-					pgcon =	 (PGConnection) m.invoke(o);
-				} catch (Exception e) {
-					this.logger.info("org.apache.commons.dbcp.DelegatingConnection");
-					e.printStackTrace();
-				}
-			}
-			
-			if (pgcon == null) {
-				throw new Exception("Invalid Delegating Connection");
-			}
+			PGConnection pgcon = getPGConnection(con);
 			
 			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 			long oid = lobj.createLO();
