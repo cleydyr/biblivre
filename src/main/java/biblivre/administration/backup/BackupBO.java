@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,7 +50,6 @@ import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.Pair;
 import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
-import biblivre.core.utils.StreamUtils;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
 import br.org.biblivre.z3950server.utils.TextUtils;
@@ -285,7 +285,7 @@ public class BackupBO extends AbstractBO {
 			e.printStackTrace();
 			return false;
 		} finally {
-			StreamUtils.cleanUp(writer);
+			IOUtils.closeQuietly(writer);
 		}
 	}
 
@@ -295,12 +295,14 @@ public class BackupBO extends AbstractBO {
 		pb.environment().put("PGPASSWORD", "abracadabra");
 
 		pb.redirectErrorStream(true);
-		
+
+		BufferedReader br = null;
+
 		try {
 			Process p = pb.start();
 
 			InputStreamReader isr = new InputStreamReader(p.getInputStream());
-			BufferedReader br = new BufferedReader(isr);
+			br = new BufferedReader(isr);
 			String line;
 			
 			while ((line = br.readLine()) != null) {
@@ -318,6 +320,8 @@ public class BackupBO extends AbstractBO {
 			this.logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
+		} finally {
+			IOUtils.closeQuietly(br);
 		}
 
 		return false;

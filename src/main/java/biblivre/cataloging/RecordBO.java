@@ -30,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
 
@@ -51,7 +52,6 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.StreamUtils;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.marc.MarcUtils;
@@ -158,7 +158,7 @@ public abstract class RecordBO extends AbstractBO {
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
 		} finally {
-			StreamUtils.cleanUp(out);
+			IOUtils.closeQuietly(out);
 		}
 
 		return null;

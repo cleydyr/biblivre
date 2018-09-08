@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -42,7 +43,6 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
-import biblivre.core.utils.StreamUtils;
 import br.org.biblivre.z3950server.Z3950ServerBO;
 
 public class Schemas extends StaticBO {
@@ -269,7 +269,6 @@ public class Schemas extends StaticBO {
 			Process p = pb.start();
 
 			InputStreamReader isr = new InputStreamReader(p.getInputStream(), "UTF-8");
-			final BufferedReader br = new BufferedReader(isr);
 
 			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
 			bw = new BufferedWriter(osw);
@@ -279,7 +278,7 @@ public class Schemas extends StaticBO {
 				@Override
 				public void run() {
 					String outputLine;
-					try {
+					try (final BufferedReader br = new BufferedReader(isr)) {
 						while ((outputLine = br.readLine()) != null) {
 							State.writeLog(outputLine);
 						}
@@ -324,7 +323,7 @@ public class Schemas extends StaticBO {
 		} catch (InterruptedException e) {
 			Schemas.logger.error(e.getMessage(), e);
 		} finally {
-			StreamUtils.cleanUp(bw);
+			IOUtils.closeQuietly(bw);
 		}
 
 		return false;
@@ -343,23 +342,24 @@ public class Schemas extends StaticBO {
 
 		Schemas.logger.info("===== Creating schema based on template file '" + restore.getName() + "' =====");
 
-		BufferedReader sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(restore), "UTF-8"));
+		try (BufferedReader sqlBr = new BufferedReader(
+				new InputStreamReader(
+						new FileInputStream(restore), "UTF-8"))) {
 
-		char[] buf = new char[1024 * 8];
-		int len;
-		while ((len = sqlBr.read(buf)) > 0) {
+			char[] buf = new char[1024 * 8];
+			int len;
+			while ((len = sqlBr.read(buf)) > 0) {
 
-			for (int i = 0; i < len; i++) {
-				if (buf[i] == '\n') {
-					State.incrementCurrentStep();
+				for (int i = 0; i < len; i++) {
+					if (buf[i] == '\n') {
+						State.incrementCurrentStep();
+					}
 				}
+
+				bw.write(buf, 0, len);
+				bw.flush();
 			}
-
-			bw.write(buf, 0, len);
-			bw.flush();
 		}
-
-		sqlBr.close();
 	}
 
 }

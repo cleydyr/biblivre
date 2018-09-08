@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -136,21 +137,16 @@ public class DatabaseUtils {
 	
 	private static File getLinux(String filename) {
 		ProcessBuilder pb = whichCommand(filename);
-		String line = null;
-		try {
-			Process p = pb.start();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			line = reader.readLine();
-		} catch (IOException e) {
-			// TODO: logger
-			e.printStackTrace();
-		}
 
-		if (line == null) {
+		try (BufferedReader reader = new BufferedReader(
+					new InputStreamReader(pb.start().getInputStream()	))) {
+
+			String line = reader.readLine();
+
+			return new File(line);
+		} catch(Exception e) {
 			return null;
 		}
-
-		return new File(line);
 	}
 
 	private static ProcessBuilder whichCommand(String filename) {
@@ -236,17 +232,15 @@ public class DatabaseUtils {
 	}
 	
 	private static String processPatternMatcher(String[] commands, String regex, int group, String directory) {
-		try {
-			ProcessBuilder pb = new ProcessBuilder(commands);
-			if (directory != null) {
-				pb.directory(new File(directory));
-			}
-				
-			pb.redirectErrorStream(true);
-			Process p = pb.start();
+		ProcessBuilder pb = new ProcessBuilder(commands);
+		if (directory != null) {
+			pb.directory(new File(directory));
+		}
 
-			InputStreamReader isr = new InputStreamReader(p.getInputStream());
-			BufferedReader br = new BufferedReader(isr);
+		pb.redirectErrorStream(true);
+
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(pb.start().getInputStream()))) {
 			String line;
 			
 			Pattern pattern = Pattern.compile(regex);

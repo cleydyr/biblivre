@@ -105,19 +105,18 @@ public class FileIOUtils {
 			} else {
 				byte[] buf = new byte[1024];
 				int len;
-				FileInputStream in = new FileInputStream(src);
-				
-				if (path.equals("")) {
-					zip.putNextEntry(new ZipEntry(src.getName()));
-				} else {
-					zip.putNextEntry(new ZipEntry(path + "/" + src.getName()));
-				}
 
-				while ((len = in.read(buf)) > 0) {
-					zip.write(buf, 0, len);
+				try (FileInputStream in = new FileInputStream(src)) {
+					if (path.equals("")) {
+						zip.putNextEntry(new ZipEntry(src.getName()));
+					} else {
+						zip.putNextEntry(new ZipEntry(path + "/" + src.getName()));
+					}
+
+					while ((len = in.read(buf)) > 0) {
+						zip.write(buf, 0, len);
+					}
 				}
-				
-				in.close();
 			}
 		}
 	}
@@ -386,7 +385,7 @@ public class FileIOUtils {
 			} finally {
 				file.close();
 
-				StreamUtils.cleanUp(output);
+				IOUtils.closeQuietly(output);
 			}
 			
 			return;

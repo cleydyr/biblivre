@@ -20,6 +20,7 @@
 package biblivre.cataloging;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,8 +67,8 @@ public class ImportBO extends AbstractBO {
 				
 		switch (enc) {
 			case AUTO_DETECT:
-				try {
-					encoding = TextUtils.detectCharset(file.getNewInputStream());
+				try (InputStream is = file.getNewInputStream()) {
+					encoding = TextUtils.detectCharset(is);
 				} catch (IOException e) {
 				}
 				break;
@@ -87,18 +88,15 @@ public class ImportBO extends AbstractBO {
 		
 		String streamEncoding = (enc == ImportEncoding.AUTO_DETECT)  ? "BESTGUESS" : encoding;
 
-		try {
+		try (InputStream is = file.getNewInputStream()) {
 			switch (format) {
 				case AUTO_DETECT:
 					MarcReader reader = null;
 					List<ImportDTO> list = new ArrayList<ImportDTO>();
 					
-					try {
-						reader = new MarcPermissiveStreamReader(file.getNewInputStream(), true, true, streamEncoding);	
-						dto = this.readFromMarcReader(reader);
-						dto.setFormat(ImportFormat.ISO2709);
-					} catch (Exception e) {
-					}
+					reader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
+					dto = this.readFromMarcReader(reader);
+					dto.setFormat(ImportFormat.ISO2709);
 
 					if (dto.isPerfect()) {
 						break;
@@ -106,13 +104,9 @@ public class ImportBO extends AbstractBO {
 						list.add(dto);
 					}
 					
-					try {
-						reader = new MarcXmlReader(file.getNewInputStream());
-						dto = this.readFromMarcReader(reader);
-						dto.setFormat(ImportFormat.XML);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					reader = new MarcXmlReader(is);
+					dto = this.readFromMarcReader(reader);
+					dto.setFormat(ImportFormat.XML);
 
 					if (dto.isPerfect()) {
 						break;
@@ -120,12 +114,9 @@ public class ImportBO extends AbstractBO {
 						list.add(dto);
 					}
 					
-					try {
-						reader = new MarcFileReader(file.getNewInputStream(), encoding);
-						dto = this.readFromMarcReader(reader);
-						dto.setFormat(ImportFormat.MARC);
-					} catch (Exception e) {
-					}
+					reader = new MarcFileReader(is, encoding);
+					dto = this.readFromMarcReader(reader);
+					dto.setFormat(ImportFormat.MARC);
 
 					if (dto.isPerfect()) {
 						break;
@@ -139,20 +130,20 @@ public class ImportBO extends AbstractBO {
 					break;
 					
 				case ISO2709:
-					MarcReader isoReader = new MarcPermissiveStreamReader(file.getNewInputStream(), true, true, streamEncoding);
+					MarcReader isoReader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
 					dto = this.readFromMarcReader(isoReader);
 					dto.setFormat(ImportFormat.ISO2709);
 					
 					break;
 
 				case XML:
-					MarcReader xmlReader = new MarcXmlReader(file.getNewInputStream());
+					MarcReader xmlReader = new MarcXmlReader(is);
 					dto = this.readFromMarcReader(xmlReader);
 					dto.setFormat(ImportFormat.XML);
 					break;
 
 				case MARC:
-					MarcReader marcReader = new MarcFileReader(file.getNewInputStream(), encoding);
+					MarcReader marcReader = new MarcFileReader(is, encoding);
 					dto = this.readFromMarcReader(marcReader);
 					dto.setFormat(ImportFormat.MARC);
 					break;

@@ -34,7 +34,6 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
-import biblivre.core.file.MemoryFile;
 import biblivre.core.translations.LanguageDTO;
 import biblivre.core.translations.Languages;
 import biblivre.core.translations.TranslationDTO;
@@ -98,11 +97,9 @@ public class Handler extends AbstractHandler {
 		String key = null;
 		String value = null;
 
-		try {
-			MemoryFile file = request.getFile("file");
+		try (Scanner sc = new Scanner(request.getFile("file").getInputStream(), "UTF-8")) {
 			//TODO check file's char encoding
 			//TODO validate if this a translations file
-			Scanner sc = new Scanner(file.getInputStream(), "UTF-8");
 
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine().trim();

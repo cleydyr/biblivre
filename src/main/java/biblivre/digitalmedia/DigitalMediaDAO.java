@@ -46,7 +46,8 @@ public class DigitalMediaDAO extends AbstractDAO {
 
 	public final Integer save(MemoryFile file) {
 		Connection con = null;
-		try {
+
+		try (InputStream is = file.getNewInputStream()) {
 			con = this.getConnection();
 			con.setAutoCommit(false);
 			
@@ -67,7 +68,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 				long oid = lobj.createLO();
 
 				LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-				InputStream is = file.getNewInputStream();
 
 				byte buf[] = new byte[4096];
 				int bytesRead = 0;
@@ -106,7 +106,10 @@ public class DigitalMediaDAO extends AbstractDAO {
 
 	public final long importFile(File file) {
 		Connection con = null;
-		try {
+
+		try (
+				InputStream is = new FileInputStream(file)
+				) {
 			con = this.getConnection();
 			con.setAutoCommit(false);
 
@@ -120,7 +123,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 			long oid = lobj.createLO();
 
 			LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-			InputStream is = new FileInputStream(file);
 
 			byte buf[] = new byte[4096];
 			int bytesRead = 0;
@@ -129,7 +131,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 			}
 
 			obj.close();
-			is.close();
 
 			this.commit(con);
 			

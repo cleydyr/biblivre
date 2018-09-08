@@ -55,18 +55,16 @@ public class DiskFile extends BiblivreFile {
 			return;
 		}
 
-		InputStream input = new FileInputStream(this.file);
+		try (InputStream input = new FileInputStream(this.file)) {
+			input.skip(start);
 
-		input.skip(start);
+			byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
+			int read;
 
-		byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
-		int read;
-
-		while ((read = input.read(buffer)) > 0) {
-			out.write(buffer, 0, read);
+			while ((read = input.read(buffer)) > 0) {
+				out.write(buffer, 0, read);
+			}
 		}
-		
-		input.close();
 	}
 	
 	public boolean delete() {

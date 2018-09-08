@@ -22,19 +22,18 @@ package biblivre.administration.reports;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
-import biblivre.core.utils.StreamUtils;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -101,7 +100,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 			this.logger.error(e.getMessage(), e);
 			return null;
 		} finally {
-			StreamUtils.cleanUp(out);
+			IOUtils.closeQuietly(out);
 		}
 		return report;
 	}

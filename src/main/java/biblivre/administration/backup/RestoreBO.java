@@ -51,7 +51,6 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
-import biblivre.core.utils.StreamUtils;
 import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
@@ -416,7 +415,7 @@ public class RestoreBO extends AbstractBO {
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
 		} finally {
-			StreamUtils.cleanUp(bw);
+			IOUtils.closeQuietly(bw);
 		}
 
 		return false;
@@ -455,7 +454,6 @@ public class RestoreBO extends AbstractBO {
 			Process p = pb.start();
 
 			InputStreamReader isr = new InputStreamReader(p.getInputStream(), "UTF-8");
-			final BufferedReader br = new BufferedReader(isr);
 
 			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
 			bw = new BufferedWriter(osw);
@@ -464,7 +462,7 @@ public class RestoreBO extends AbstractBO {
 				@Override
 				public void run() {
 					String outputLine;
-					try {
+					try (final BufferedReader br = new BufferedReader(isr)) {
 						while ((outputLine = br.readLine()) != null) {
 							State.writeLog(outputLine);
 						}
@@ -496,7 +494,7 @@ public class RestoreBO extends AbstractBO {
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
 		} finally {
-			StreamUtils.cleanUp(bw);
+			IOUtils.closeQuietly(bw);
 		}
 		
 		return false;
@@ -531,12 +529,12 @@ public class RestoreBO extends AbstractBO {
 		pb.redirectErrorStream(true);
 
 		BufferedWriter bw = null;
+		BufferedReader sqlBr = null;
 
 		try {
 			Process p = pb.start();
 
 			InputStreamReader isr = new InputStreamReader(p.getInputStream(), "UTF-8");
-			final BufferedReader br = new BufferedReader(isr);
 
 			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
 			bw = new BufferedWriter(osw);
@@ -545,7 +543,7 @@ public class RestoreBO extends AbstractBO {
 				@Override
 				public void run() {
 					String outputLine;
-					try {
+					try (final BufferedReader br = new BufferedReader(isr)){
 						while ((outputLine = br.readLine()) != null) {
 							State.writeLog(outputLine);
 						}
@@ -557,7 +555,7 @@ public class RestoreBO extends AbstractBO {
 
 			t.start();
 
-			BufferedReader sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(sql), "UTF-8"));
+			sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(sql), "UTF-8"));
 			String inputLine;
 			boolean validBackup = false;
 
@@ -615,7 +613,8 @@ public class RestoreBO extends AbstractBO {
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
 		} finally {
-			StreamUtils.cleanUp(bw);
+			IOUtils.closeQuietly(bw);
+			IOUtils.closeQuietly(sqlBr);
 		}
 
 		return false;

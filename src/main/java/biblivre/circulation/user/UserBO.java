@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
+
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.core.AbstractBO;
@@ -35,7 +37,6 @@ import biblivre.core.LabelPrintDTO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.StreamUtils;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -205,7 +206,7 @@ public class UserBO extends AbstractBO {
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
 		} finally {
-			StreamUtils.cleanUp(fos);
+			IOUtils.closeQuietly(fos);
 		}
 
 		return null;
