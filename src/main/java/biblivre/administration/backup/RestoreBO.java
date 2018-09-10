@@ -407,6 +407,8 @@ public class RestoreBO extends AbstractBO {
 			
 			bw.write("ANALYZE;\n");
 			
+			bw.close();
+
 			p.waitFor();
 
 			return p.exitValue() == 0;
@@ -448,21 +450,24 @@ public class RestoreBO extends AbstractBO {
 
 		pb.redirectErrorStream(true);
 
-		BufferedWriter bw = null;
+		Process p;
 
 		try {
-			Process p = pb.start();
+			p = pb.start();
+		} catch (IOException ioe) {
+			return false;
+		}
 
-			InputStreamReader isr = new InputStreamReader(p.getInputStream(), "UTF-8");
-
-			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
-			bw = new BufferedWriter(osw);
+		try (
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), "UTF-8"));
+				final BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+			) {
 
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					String outputLine;
-					try (final BufferedReader br = new BufferedReader(isr)) {
+					try {
 						while ((outputLine = br.readLine()) != null) {
 							State.writeLog(outputLine);
 						}
@@ -493,10 +498,8 @@ public class RestoreBO extends AbstractBO {
 			this.logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			this.logger.error(e.getMessage(), e);
-		} finally {
-			IOUtils.closeQuietly(bw);
 		}
-		
+
 		return false;
 	}
 	
