@@ -622,12 +622,6 @@ public class Updates {
 				Translations.reset();
 				Configurations.reset();
 			 }
-			
-			// version = "4.0.X";
-			// if (!installedVersions.contains(version)) {
-			// con = dao.beginUpdate();
-			// dao.commitUpdate(version, con);
-			// }
 
 			return true;
 		} catch (Exception e) {
