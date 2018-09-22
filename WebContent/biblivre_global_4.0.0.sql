@@ -6747,7 +6747,7 @@ INSERT INTO translations (language, key, text, created, created_by, modified, mo
 -- Data for Name: versions; Type: TABLE DATA; Schema: global; Owner: biblivre
 --
 
-INSERT INTO versions (installed_versions) VALUES ('4.0.0b');
+INSERT INTO versions (installed_versions) VALUES ('6-alpha');
 
 
 --
