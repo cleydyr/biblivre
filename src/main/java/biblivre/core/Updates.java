@@ -943,13 +943,6 @@ public class Updates {
 				dao.commitUpdate(version, con);
 			}
 
-			// version = "4.0.X";
-			// if (!installedVersions.contains(version)) {
-			// con = dao.beginUpdate();
-			// dao.commitUpdate(version, con);
-			// }
-
-			
 			return true;
 		} catch (Exception e) {
 			dao.rollbackUpdate(con);
