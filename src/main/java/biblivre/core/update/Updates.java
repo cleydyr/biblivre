@@ -17,16 +17,18 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core;
+package biblivre.core.update;
 
 import java.sql.Connection;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
+import org.reflections.Reflections;
 
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.administration.indexing.IndexingGroups;
@@ -46,6 +48,10 @@ public class Updates {
 	}
 
 	public static boolean globalUpdate() {
+		return _doUpdates(updater -> updater.globalUpdate());
+	}
+
+	private static boolean oldGlobalUpdate() {
 		UpdatesDAO dao = UpdatesDAO.getInstance("global");
 
 		Connection con = null;
@@ -633,6 +639,10 @@ public class Updates {
 	}
 
 	public static boolean schemaUpdate(String schema) {
+		return _doUpdates(updater -> updater.schemaUpdate(schema));
+	}
+
+	private static boolean _oldSchemaUpdate(String schema) {
 		UpdatesDAO dao = UpdatesDAO.getInstance(schema);
 
 		Connection con = null;
@@ -1004,5 +1014,27 @@ public class Updates {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+	}
+
+	private static boolean _doUpdates(Function<UpdateBO, Boolean> updater) {
+		return _getUpdateBOSet().stream()
+				.allMatch(updateBO -> {
+					try {
+						final UpdateBO newInstance = updateBO.newInstance();
+
+						return updater.apply(newInstance);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+
+					return false;
+				});
+	}
+
+	private static Set<Class<? extends UpdateBO>> _getUpdateBOSet() {
+		final String packageName = Updates.class.getPackage().getName();
+		Reflections reflections = new Reflections(packageName);
+
+		return reflections.getSubTypesOf(UpdateBO.class);
 	}
 }

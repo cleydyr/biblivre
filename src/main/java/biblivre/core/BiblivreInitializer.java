@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.core.update.Updates;
 import br.org.biblivre.z3950server.Z3950ServerBO;
 
 public class BiblivreInitializer {

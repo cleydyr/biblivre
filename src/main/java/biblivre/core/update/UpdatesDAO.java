@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core;
+package biblivre.core.update;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import biblivre.cataloging.enums.RecordType;
+import biblivre.core.AbstractDAO;
 import biblivre.core.utils.TextUtils;
 
 
