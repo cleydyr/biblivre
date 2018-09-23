@@ -23,6 +23,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.function.Function;
+
+import javax.measure.MetricPrefix;
+import javax.measure.Quantity;
+import javax.measure.Unit;
+import javax.measure.quantity.Length;
+
+import tech.units.indriya.unit.Units;
 
 public class Constants {
 
@@ -82,4 +90,7 @@ public class Constants {
 	// The constants below should not be final
 	public static String SINGLE_SCHEMA = "single";
 	public static boolean REINDEXING = false;
+
+	public static final Unit<Length> USER_UNIT = MetricPrefix.CENTI(Units.METRE).multiply(2.54).divide(72);
+	public static final Function<Quantity<Length>, Float> FROM_CM = q -> q.to(USER_UNIT).getValue().floatValue();
 }

@@ -169,7 +169,8 @@ var CatalogingLabels = {
 				width: label.width,
 				height: label.height,
 				columns: label.columns,
-				rows: label.rows
+				rows: label.rows,
+				model: label.model,
 			},
 			loadingTimedOverlay: true,
 			context: this
