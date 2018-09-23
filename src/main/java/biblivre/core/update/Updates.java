@@ -51,7 +51,93 @@ public class Updates {
 		return _doUpdates(updater -> updater.globalUpdate());
 	}
 
-	private static boolean oldGlobalUpdate() {
+	public static boolean schemaUpdate(String schema) {
+		return _doUpdates(updater -> updater.schemaUpdate(schema));
+	}
+
+	public static String getUID() {
+		String uid = Configurations.getString(Constants.GLOBAL_SCHEMA, Constants.CONFIG_UID);
+
+		if (StringUtils.isBlank(uid)) {
+			uid = UUID.randomUUID().toString();
+
+			ConfigurationsDTO config = new ConfigurationsDTO();
+			config.setKey(Constants.CONFIG_UID);
+			config.setValue(uid);
+			config.setType("string");
+			config.setRequired(false);
+
+			Configurations.save(Constants.GLOBAL_SCHEMA, config, 0);
+		}
+
+		return uid;
+	}
+
+	public static String checkUpdates() {
+		String uid = Updates.getUID();
+		String version = Updates.getVersion();
+
+		PostMethod updatePost = new PostMethod(Constants.UPDATE_URL);
+		updatePost.addParameter("uid", TextUtils.biblivreEncrypt(uid));
+		updatePost.addParameter("version", TextUtils.biblivreEncrypt(version));
+
+		HttpClient client = new HttpClient();
+		client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
+		try {
+			int status = client.executeMethod(updatePost);
+
+			if (status == HttpStatus.SC_OK) {
+				return updatePost.getResponseBodyAsString();
+			}
+			updatePost.releaseConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
+	}
+
+	public static void fixPostgreSQL81() {
+		UpdatesDAO dao = UpdatesDAO.getInstance("public");
+
+		try {
+			if (!dao.checkFunctionExistance("array_agg")) {
+				String version = dao.getPostgreSQLVersion();
+
+				if (version.contains("8.1")) {
+					dao.create81ArrayAgg();
+				} else {
+					dao.createArrayAgg();
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
+	private static boolean _doUpdates(Function<UpdateBO, Boolean> updater) {
+		return _getUpdateBOSet().stream()
+				.allMatch(updateBO -> {
+					try {
+						final UpdateBO newInstance = updateBO.newInstance();
+
+						return updater.apply(newInstance);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+
+					return false;
+				});
+	}
+
+	private static Set<Class<? extends UpdateBO>> _getUpdateBOSet() {
+		final String packageName = Updates.class.getPackage().getName();
+		Reflections reflections = new Reflections(packageName);
+
+		return reflections.getSubTypesOf(UpdateBO.class);
+	}
+
+	private static boolean _oldGlobalUpdate() {
 		UpdatesDAO dao = UpdatesDAO.getInstance("global");
 
 		Connection con = null;
@@ -638,10 +724,6 @@ public class Updates {
 		return false;
 	}
 
-	public static boolean schemaUpdate(String schema) {
-		return _doUpdates(updater -> updater.schemaUpdate(schema));
-	}
-
 	private static boolean _oldSchemaUpdate(String schema) {
 		UpdatesDAO dao = UpdatesDAO.getInstance(schema);
 
@@ -954,87 +1036,5 @@ public class Updates {
 		}
 
 		return false;
-	}
-
-	public static String getUID() {
-		String uid = Configurations.getString(Constants.GLOBAL_SCHEMA, Constants.CONFIG_UID);
-
-		if (StringUtils.isBlank(uid)) {
-			uid = UUID.randomUUID().toString();
-
-			ConfigurationsDTO config = new ConfigurationsDTO();
-			config.setKey(Constants.CONFIG_UID);
-			config.setValue(uid);
-			config.setType("string");
-			config.setRequired(false);
-
-			Configurations.save(Constants.GLOBAL_SCHEMA, config, 0);
-		}
-
-		return uid;
-	}
-
-	public static String checkUpdates() {
-		String uid = Updates.getUID();
-		String version = Updates.getVersion();
-
-		PostMethod updatePost = new PostMethod(Constants.UPDATE_URL);
-		updatePost.addParameter("uid", TextUtils.biblivreEncrypt(uid));
-		updatePost.addParameter("version", TextUtils.biblivreEncrypt(version));
-
-		HttpClient client = new HttpClient();
-		client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-		try {
-			int status = client.executeMethod(updatePost);
-
-			if (status == HttpStatus.SC_OK) {
-				return updatePost.getResponseBodyAsString();
-			}
-			updatePost.releaseConnection();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return "";
-	}
-
-	public static void fixPostgreSQL81() {
-		UpdatesDAO dao = UpdatesDAO.getInstance("public");
-
-		try {
-			if (!dao.checkFunctionExistance("array_agg")) {
-				String version = dao.getPostgreSQLVersion();
-
-				if (version.contains("8.1")) {
-					dao.create81ArrayAgg();
-				} else {
-					dao.createArrayAgg();
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
-
-	private static boolean _doUpdates(Function<UpdateBO, Boolean> updater) {
-		return _getUpdateBOSet().stream()
-				.allMatch(updateBO -> {
-					try {
-						final UpdateBO newInstance = updateBO.newInstance();
-
-						return updater.apply(newInstance);
-					} catch (InstantiationException | IllegalAccessException e) {
-						e.printStackTrace();
-					}
-
-					return false;
-				});
-	}
-
-	private static Set<Class<? extends UpdateBO>> _getUpdateBOSet() {
-		final String packageName = Updates.class.getPackage().getName();
-		Reflections reflections = new Reflections(packageName);
-
-		return reflections.getSubTypesOf(UpdateBO.class);
 	}
 }

@@ -1,31 +1,44 @@
 package biblivre.core.update;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import biblivre.core.utils.Constants;
 
 public abstract class UpdateBO {
 	public boolean globalUpdate() {
-		return _update(Constants.GLOBAL_SCHEMA, (schema) -> doGlobalUpdate());
+		return _update(Constants.GLOBAL_SCHEMA, (dao, schema) -> {
+			try {
+				doGlobalUpdate(dao);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	public boolean schemaUpdate(String schema) {
-		return _update(Constants.GLOBAL_SCHEMA, this::doSchemaUpdate);
+		return _update(Constants.GLOBAL_SCHEMA, (t, u) -> {
+			try {
+				doSchemaUpdate(t, u);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
-	protected void doGlobalUpdate() {
+	protected void doGlobalUpdate(UpdatesDAO dao) throws SQLException {
 		
 	}
 	
-	protected void doSchemaUpdate(String schema) {
+	protected void doSchemaUpdate(UpdatesDAO dao, String schema) throws SQLException {
 		
 	}
 	
 	protected abstract String getVersion();
 
-	private boolean _update(String schema, Consumer<String> updater) {
+	private boolean _update(String schema, BiConsumer<UpdatesDAO, String> updater) {
 		System.out.println("Updating to version " + getVersion());
 
 		UpdatesDAO dao = UpdatesDAO.getInstance(schema);
@@ -42,14 +55,14 @@ public abstract class UpdateBO {
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
 
-				updater.accept(schema);
+				updater.accept(dao, schema);
 
 				dao.commitUpdate(version, con);
 			}
 
 			return true;
 		}
-		catch (Exception e) {
+		catch (SQLException e) {
 			dao.rollbackUpdate(con);
 
 			e.printStackTrace();

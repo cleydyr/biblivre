@@ -126,6 +126,10 @@ public class UpdatesDAO extends AbstractDAO {
 		}
 	}
 
+	public void fixUpdateTranslationFunction() throws SQLException {
+		fixUpdateTranslationFunction(getConnection());
+	}
+
 	public void fixUpdateTranslationFunction(Connection con) throws SQLException {
 		String sql = "CREATE OR REPLACE FUNCTION update_translation(character varying, character varying, character varying, integer) RETURNS integer \n" +
 					"    LANGUAGE plpgsql \n" +
@@ -212,6 +216,10 @@ public class UpdatesDAO extends AbstractDAO {
 		st.execute(sql2);
 	}
 
+	public void fixUpdateUserFunction() throws SQLException {
+		fixUpdateUserFunction(getConnection());
+	}
+
 	public void fixUpdateUserFunction(Connection con) throws SQLException {
 		String sql = "CREATE OR REPLACE FUNCTION update_user_value(integer, character varying, character varying, character varying) RETURNS integer \n" +
 					"  LANGUAGE plpgsql \n" +
@@ -266,7 +274,11 @@ public class UpdatesDAO extends AbstractDAO {
 		st.execute(sql);
 		st.execute(sql2);
 	}
-	
+
+	public void fixUserNameAscii() throws SQLException {
+		fixUserNameAscii(getConnection());
+	}
+
 	public void fixUserNameAscii(Connection con) throws SQLException {
 		if (this.checkColumnExistance("users", "name_ascii")) {
 			return;
@@ -291,6 +303,10 @@ public class UpdatesDAO extends AbstractDAO {
 		if (run) {
 			pst.executeBatch();
 		}
+	}
+
+	public void fixBackupTable() throws SQLException {
+		fixBackupTable(getConnection());
 	}
 
 	public void fixBackupTable(Connection con) throws SQLException {
@@ -361,7 +377,11 @@ public class UpdatesDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
+	public void fixHoldingCreationTable() throws SQLException {
+		fixHoldingCreationTable(getConnection());
+	}
+
 	public void fixHoldingCreationTable(Connection con) throws SQLException {
 		String sql = "UPDATE holding_creation_counter HA " +
 				"SET user_name = coalesce(U.name, L.login), user_login = L.login " +
@@ -373,7 +393,11 @@ public class UpdatesDAO extends AbstractDAO {
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
-	
+
+	public void fixCDDBiblioBriefFormat() throws SQLException {
+		fixCDDBiblioBriefFormat(getConnection());
+	}
+
 	public void fixCDDBiblioBriefFormat(Connection con) throws SQLException {
 		String sql = "UPDATE biblio_brief_formats " +
 				"SET format = '${a}_{ }${2}' " + 
@@ -381,7 +405,11 @@ public class UpdatesDAO extends AbstractDAO {
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
-	
+
+	public void fixAuthoritiesBriefFormat() throws SQLException {
+		fixAuthoritiesBriefFormat(getConnection());
+	}
+
 	public void fixAuthoritiesBriefFormat(Connection con) throws SQLException {
 		String sql = "UPDATE authorities_brief_formats " +
 				"SET format = '${a}_{; }${b}_{; }${c}_{ - }${d}' " + 
@@ -389,7 +417,11 @@ public class UpdatesDAO extends AbstractDAO {
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
-	
+
+	public void addIndexingGroup(RecordType recordType, String name, String datafields, boolean sortable) throws SQLException {
+		addIndexingGroup(getConnection(), recordType, name, datafields, sortable);
+	}
+
 	public void addIndexingGroup(Connection con, RecordType recordType, String name, String datafields, boolean sortable) throws SQLException {
 		StringBuilder deleteSql = new StringBuilder();			
 		deleteSql.append("DELETE FROM ").append(recordType).append("_indexing_groups WHERE translation_key = ?;");
@@ -412,6 +444,10 @@ public class UpdatesDAO extends AbstractDAO {
 		pst.execute();
 	}
 
+	public void updateIndexingGroup(RecordType recordType, String name, String datafields) throws SQLException {
+		updateIndexingGroup(getConnection(), recordType, name, datafields);
+	}
+
 	public void updateIndexingGroup(Connection con, RecordType recordType, String name, String datafields) throws SQLException {
 		StringBuilder sql = new StringBuilder();
 		sql.append("UPDATE ").append(recordType).append("_indexing_groups SET datafields = ? WHERE translation_key = ?;");
@@ -423,7 +459,11 @@ public class UpdatesDAO extends AbstractDAO {
 		
 		pst.execute();
 	}
-	
+
+	public void addBriefFormat(RecordType recordType, String datafield, String format, Integer sortOrder) throws SQLException {
+		addBriefFormat(getConnection(), recordType, datafield, format, sortOrder);
+	}
+
 	public void addBriefFormat(Connection con, RecordType recordType, String datafield, String format, Integer sortOrder) throws SQLException {
 		StringBuilder deleteSql = new StringBuilder();			
 		deleteSql.append("DELETE FROM ").append(recordType).append("_brief_formats WHERE datafield = ?;");
@@ -444,7 +484,11 @@ public class UpdatesDAO extends AbstractDAO {
 		
 		pst.execute();
 	}
-	
+
+	public void updateBriefFormat(RecordType recordType, String datafield, String format) throws SQLException {
+		updateBriefFormat(getConnection(), recordType, datafield, format);
+	}
+
 	public void updateBriefFormat(Connection con, RecordType recordType, String datafield, String format) throws SQLException {
 		StringBuilder sql = new StringBuilder();
 		sql.append("UPDATE ").append(recordType).append("_brief_formats SET format = ? WHERE datafield = ?;");
@@ -456,7 +500,11 @@ public class UpdatesDAO extends AbstractDAO {
 		
 		pst.execute();
 	}
-	
+
+	public void invalidateIndex(RecordType recordType) throws SQLException {
+		invalidateIndex(getConnection(), recordType);
+	}
+
 	public void invalidateIndex(Connection con, RecordType recordType) throws SQLException {
 		StringBuilder deleteSql = new StringBuilder();			
 		deleteSql.append("DELETE FROM ").append(recordType).append("_idx_sort WHERE record_id = 0;");
@@ -472,6 +520,10 @@ public class UpdatesDAO extends AbstractDAO {
 		pst.setString(1, "");
 		
 		pst.execute();
+	}
+	
+	public void addDatafieldSortOrderColumns(RecordType recordType) throws SQLException {
+		addDatafieldSortOrderColumns(getConnection(), recordType);
 	}
 	
 	public void addDatafieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
@@ -492,6 +544,10 @@ public class UpdatesDAO extends AbstractDAO {
 		updateSt.execute(updateSql.toString());
 	}
 	
+	public void addSubfieldSortOrderColumns(RecordType recordType) throws SQLException {
+		addSubfieldSortOrderColumns(getConnection(), recordType);
+	}
+
 	public void addSubfieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
 		String tableName = recordType + "_form_subfields";
 
@@ -508,8 +564,12 @@ public class UpdatesDAO extends AbstractDAO {
 		updateSql.append("UPDATE ").append(tableName).append(" SET sort_order = (CAST(datafield as INT) + ASCII(subfield));");
 		Statement updateSt = con.createStatement();			
 		updateSt.execute(updateSql.toString());
-	}	
-	
+	}
+
+	public void addBriefFormatSortOrderColumns(RecordType recordType) throws SQLException {
+		addBriefFormatSortOrderColumns(getConnection(), recordType);
+	}
+
 	public void addBriefFormatSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
 		String tableName = recordType + "_brief_formats";
 		
@@ -528,6 +588,10 @@ public class UpdatesDAO extends AbstractDAO {
 		updateSt.execute(updateSql.toString());
 	}
 
+	public void updateZ3950Address(String name, String url) throws SQLException {
+		updateZ3950Address(getConnection(), name, url);
+	}
+
 	public void updateZ3950Address(Connection con, String name, String url) throws SQLException {
 		String sql = "UPDATE z3950_addresses SET url = ? WHERE name = ?;";
 		PreparedStatement pst = con.prepareStatement(sql);
@@ -536,8 +600,11 @@ public class UpdatesDAO extends AbstractDAO {
 		
 		pst.execute();
 	}
-	
-	
+
+	public void replaceBiblivreVersion()  throws SQLException {
+		replaceBiblivreVersion(getConnection());
+	}
+
 	public void replaceBiblivreVersion(Connection con)  throws SQLException {
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre 4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre 4%';");
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre4%'");
