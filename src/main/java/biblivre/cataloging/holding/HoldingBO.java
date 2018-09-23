@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
+import static biblivre.core.utils.Constants.FROM_CM;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -34,11 +36,12 @@ import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
+import com.github.cleydyr.pimaco.PimacoTagSheet;
+import com.github.cleydyr.pimaco.SheetSize;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -61,6 +64,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.LabelPrintDTO;
+import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
@@ -301,101 +305,40 @@ public class HoldingBO extends RecordBO {
 	}
 	
 	public DiskFile printLabelsToPDF(List<LabelDTO> labels, LabelPrintDTO printDTO) {
-		Document document = new Document();
 		OutputStream fos = null;
 
 		try {
+			ITextPimacoTagSheetAdapter adapter =
+					new ITextPimacoTagSheetAdapter(printDTO.getModel());
+
+			Document document = new Document(adapter.getPageSize(),
+					adapter.getHorizontalMargin(), adapter.getHorizontalMargin(),
+					adapter.getVerticalMargin(), adapter.getVerticalMargin());
+			int horizontalAlignment =
+					ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(
+							schema, () -> Element.ALIGN_CENTER);
 			File file = File.createTempFile("biblivre_label_", ".pdf");
 			fos = new FileOutputStream(file);
 			PdfWriter writer = PdfWriter.getInstance(document, fos);
+			PdfPTable table = new PdfPTable(adapter.getColumns());
 
-			document.setPageSize(PageSize.A4);
-			float verticalMargin = (297.0f - (printDTO.getHeight() * printDTO.getRows())) / 2;
-
-			document.setMargins(7.15f * Constants.MM_UNIT, 7.15f * Constants.MM_UNIT, verticalMargin * Constants.MM_UNIT, verticalMargin * Constants.MM_UNIT);
 			document.open();
 
-			PdfPTable table = new PdfPTable(printDTO.getColumns());
 			table.setWidthPercentage(100f);
-			PdfPCell cell;
 
-			int i = 0;
-			for (i = 0; i < printDTO.getOffset(); i++) {
-				cell = new PdfPCell();
-				cell.setBorder(Rectangle.NO_BORDER);
-				cell.setFixedHeight(printDTO.getHeight() * Constants.MM_UNIT);
-				table.addCell(cell);
-			}
+			table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+
+			float fixedHeight = adapter.getCellHeight();
+
+			_skipOffset(printDTO, horizontalAlignment, table, fixedHeight);
 
 			for (LabelDTO ldto : labels) {
-				PdfContentByte cb = writer.getDirectContent();
-
-				String holdingSerial = String.valueOf(ldto.getId());
-				while (holdingSerial.length() < 10) {
-					holdingSerial = "0" + holdingSerial;
-				}
-				Barcode39 code39 = new Barcode39();
-				code39.setExtended(true);
-				code39.setCode(holdingSerial);
-				code39.setStartStopText(false);
-
-				Image image39 = code39.createImageWithBarcode(cb, null, null);
-				if (printDTO.getHeight() > 30.0f) {
-					image39.scalePercent(110f);
-				} else {
-					image39.scalePercent(90f);
-				}
-
-				Paragraph para = new Paragraph();
-				Phrase p1 = new Phrase(StringUtils.left(ldto.getAuthor(), 28) + "\n");
-				Phrase p2 = new Phrase(StringUtils.left(ldto.getTitle(), 28) + "\n\n");
-				Phrase p3 = new Phrase(new Chunk(image39, 0, 0));
-				para.add(p1);
-				para.add(p2);
-				para.add(p3);
-
-				int horizontalAlignment =
-						ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(
-								schema, () -> Element.ALIGN_CENTER);
-
-				cell = new PdfPCell(para);
-				i++;
-				cell.setNoWrap(true);
-				cell.setFixedHeight(printDTO.getHeight() * Constants.MM_UNIT);
-				cell.setHorizontalAlignment(horizontalAlignment);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				cell.setBorder(Rectangle.NO_BORDER);
-				table.addCell(cell);
-
-				Paragraph para2 = new Paragraph();
-				Phrase p5 = new Phrase(ldto.getLocationA() + "\n");
-				Phrase p6 = new Phrase(ldto.getLocationB() + "\n");
-				Phrase p7 = new Phrase(ldto.getLocationC() + "\n");
-				Phrase p8 = new Phrase(ldto.getLocationD() + "\n");
-				Phrase p4 = new Phrase(ldto.getAccessionNumber() + "\n");
-				para2.add(p5);
-				para2.add(p6);
-				para2.add(p7);
-				para2.add(p8);
-				para2.add(p4);
-
-				cell = new PdfPCell(para2);
-				i++;
-				cell.setFixedHeight(printDTO.getHeight() * Constants.MM_UNIT);
-				cell.setHorizontalAlignment(horizontalAlignment);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				cell.setBorder(Rectangle.NO_BORDER);
-				table.addCell(cell);
+				_printOddLabels(printDTO, fixedHeight, writer, table,
+						horizontalAlignment, ldto);
+				_printEvenLabels(fixedHeight, table, ldto, horizontalAlignment);
 			}
-			
-			if ((i % printDTO.getColumns()) != 0) {
-				while ((i % printDTO.getColumns()) != 0) {
-					i++;
-					cell = new PdfPCell();
-					cell.setBorder(Rectangle.NO_BORDER);
-					table.addCell(cell);
-				}
-			}
+
+			table.completeRow();
 
 			document.add(table);
 			writer.flush();
@@ -409,6 +352,84 @@ public class HoldingBO extends RecordBO {
 		}
 
 		return null;
+	}
+
+	private void _skipOffset(LabelPrintDTO printDTO, int horizontalAlignment,
+			PdfPTable table, float fixedHeight) {
+		for (int i = 0; i < printDTO.getOffset(); i++) {
+			PdfPCell cell = _getNewCell(fixedHeight , horizontalAlignment);
+			table.addCell(cell);
+		}
+	}
+
+	private PdfPCell _getNewCell(float fixedHeight, int horizontalAlignment) {
+		return _getNewCell(fixedHeight, horizontalAlignment, null);
+	}
+
+	private void _printOddLabels(LabelPrintDTO printDTO, float fixedHeight,
+			PdfWriter writer, PdfPTable table, int horizontalAlignment,
+			LabelDTO ldto) {
+		PdfPCell cell;
+		PdfContentByte cb = writer.getDirectContent();
+
+		String holdingSerial = String.valueOf(ldto.getId());
+		while (holdingSerial.length() < 10) {
+			holdingSerial = "0" + holdingSerial;
+		}
+		Barcode39 code39 = new Barcode39();
+		code39.setExtended(true);
+		code39.setCode(holdingSerial);
+		code39.setStartStopText(false);
+
+		Image image39 = code39.createImageWithBarcode(cb, null, null);
+		if (printDTO.getHeight() > 30.0f) {
+			image39.scalePercent(110f);
+		} else {
+			image39.scalePercent(90f);
+		}
+
+		Paragraph para = new Paragraph();
+		Phrase p1 = new Phrase(StringUtils.left(ldto.getAuthor(), 28) + "\n");
+		Phrase p2 = new Phrase(StringUtils.left(ldto.getTitle(), 28) + "\n\n");
+		Phrase p3 = new Phrase(new Chunk(image39, 0, 0));
+		para.add(p1);
+		para.add(p2);
+		para.add(p3);
+
+
+		cell = _getNewCell(fixedHeight, horizontalAlignment, para);
+		table.addCell(cell);
+	}
+
+	private PdfPCell _getNewCell(float fixedHeight, int horizontalAlignment,
+			Paragraph para) {
+		PdfPCell cell;
+		cell = new PdfPCell(para);
+		cell.setNoWrap(true);
+		cell.setFixedHeight(fixedHeight);
+		cell.setHorizontalAlignment(horizontalAlignment);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+	}
+
+	private void _printEvenLabels(float fixedHeight, PdfPTable table,
+			LabelDTO ldto, int horizontalAlignment) {
+		PdfPCell cell;
+		Paragraph para = new Paragraph();
+		Phrase p5 = new Phrase(ldto.getLocationA() + "\n");
+		Phrase p6 = new Phrase(ldto.getLocationB() + "\n");
+		Phrase p7 = new Phrase(ldto.getLocationC() + "\n");
+		Phrase p8 = new Phrase(ldto.getLocationD() + "\n");
+		Phrase p4 = new Phrase(ldto.getAccessionNumber() + "\n");
+		para.add(p5);
+		para.add(p6);
+		para.add(p7);
+		para.add(p8);
+		para.add(p4);
+
+		cell = _getNewCell(fixedHeight, horizontalAlignment, para);
+		table.addCell(cell);
 	}
 
 	public boolean createAutomaticHolding(AutomaticHoldingDTO autoDto) {
