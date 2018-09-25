@@ -147,15 +147,6 @@ public class Updates {
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
 				dao.commitUpdate(version, con);
-
-				for (String schema : Schemas.getEnabledSchemasList()) {
-					try {
-						IndexingBO bo = IndexingBO.getInstance(schema);
-						bo.reindex(RecordType.AUTHORITIES);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
 			}
 
 			version = "4.0.11b";
@@ -713,14 +704,6 @@ public class Updates {
 			version = "4.0.10b";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-
-				try {
-					IndexingBO bo = IndexingBO.getInstance(schema);
-					bo.reindex(RecordType.AUTHORITIES);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
 				dao.commitUpdate(version, con);
 			}
 
@@ -736,13 +719,6 @@ public class Updates {
 
 				dao.fixAuthoritiesAutoComplete();
 				dao.fixVocabularyAutoComplete();
-
-				try {
-					IndexingBO bo = IndexingBO.getInstance(schema);
-					bo.reindex(RecordType.VOCABULARY);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 
 				dao.commitUpdate(version, con);
 			}
@@ -786,17 +762,6 @@ public class Updates {
 			version = "4.1.6";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-				
-				try {
-					IndexingBO bo = IndexingBO.getInstance(schema);
-					bo.reindex(RecordType.BIBLIO);
-					bo.reindex(RecordType.AUTHORITIES);
-					bo.reindex(RecordType.VOCABULARY);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				
 				dao.commitUpdate(version, con);
 			}
 			
