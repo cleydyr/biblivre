@@ -19,8 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
-import static biblivre.core.utils.Constants.FROM_CM;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -36,8 +34,6 @@ import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
-import com.github.cleydyr.pimaco.PimacoTagSheet;
-import com.github.cleydyr.pimaco.SheetSize;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -63,8 +59,8 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.LabelPrintDTO;
 import biblivre.core.ITextPimacoTagSheetAdapter;
+import biblivre.core.LabelPrintDTO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
@@ -354,6 +350,97 @@ public class HoldingBO extends RecordBO {
 		return null;
 	}
 
+	public boolean createAutomaticHolding(AutomaticHoldingDTO autoDto) {
+
+		int holdingCount = autoDto.getHoldingCount();
+		int volumeNumber = autoDto.getIssueNumber();
+		int volumeCount = autoDto.getNumberOfIssues();
+		String library = autoDto.getLibraryName();
+		String acquisitionType = autoDto.getAcquisitionType();
+		String acquisitionDate = autoDto.getAcquisitionDate();
+
+		String[] notes = new String[3];
+		notes[0] = 'a' + library;
+		notes[1] = 'c' + acquisitionType;
+		notes[2] = 'd' + acquisitionDate;
+
+		boolean success = true;
+
+		RecordDTO biblioDto = autoDto.getBiblioRecordDto();
+		if (biblioDto.getRecord() == null) {
+			biblioDto.setRecord(MarcUtils.iso2709ToRecord(biblioDto.getIso2709()));
+		}
+		MarcDataReader mdr = new MarcDataReader(biblioDto.getRecord());
+
+		String biblioLocationA = mdr.getLocation();
+		biblioLocationA = StringUtils.defaultString(biblioLocationA);
+		String biblioLocationB = mdr.getLocationB();
+		biblioLocationB = StringUtils.defaultString(biblioLocationB);
+		String biblioLocationC = mdr.getLocationC();
+		biblioLocationC = StringUtils.defaultString(biblioLocationC);
+
+		for (int j = 0; j < volumeCount; j++) {
+			for (int i = 0; i < holdingCount; i++) {
+
+				String[] location = new String[4];
+
+				location[0] = "a" + biblioLocationA;
+				location[1] = "b" + biblioLocationB;
+				location[2] = "c";
+
+				if (StringUtils.isNotBlank(biblioLocationC)) {
+					location[2] += biblioLocationC;
+				} else {
+					if (volumeNumber != 0) {
+						location[2] += "v." + volumeNumber;
+					} else if (volumeCount > 1) {
+						location[2] += "v." + (j + 1);
+					}
+				}
+
+				location[3] = 'd' + "ex." + (i + 1);
+
+				Record holding = this.createHoldingMarcRecord(location, notes);
+				MarcUtils.setAccessionNumber(holding, this.getNextAccessionNumber());
+
+				success &= this.save(this.createHoldingDto(holding, autoDto));
+			}
+		}
+
+		return success;
+
+	}
+
+	@Override
+	public Integer count(SearchDTO search) {
+		throw new RuntimeException("error.invalid_method_call");
+	}
+
+	@Override
+	public List<RecordDTO> listByLetter(char letter, int order) {
+		throw new RuntimeException("error.invalid_method_call");
+	}
+
+	@Override
+	public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database) {
+		throw new RuntimeException("error.invalid_method_call");
+	}
+
+	@Override
+	public boolean search(SearchDTO search) {
+		throw new RuntimeException("error.invalid_method_call");
+	}
+
+	@Override
+	public boolean paginateSearch(SearchDTO search) {
+		throw new RuntimeException("error.invalid_method_call");
+	}
+
+	@Override
+	public SearchDTO getSearch(Integer searchId) {
+		throw new RuntimeException("error.invalid_method_call");
+	}
+
 	private void _skipOffset(LabelPrintDTO printDTO, int horizontalAlignment,
 			PdfPTable table, float fixedHeight) {
 		for (int i = 0; i < printDTO.getOffset(); i++) {
@@ -432,67 +519,6 @@ public class HoldingBO extends RecordBO {
 		table.addCell(cell);
 	}
 
-	public boolean createAutomaticHolding(AutomaticHoldingDTO autoDto) {
-
-		int holdingCount = autoDto.getHoldingCount();
-		int volumeNumber = autoDto.getIssueNumber();
-		int volumeCount = autoDto.getNumberOfIssues();
-		String library = autoDto.getLibraryName();
-		String acquisitionType = autoDto.getAcquisitionType();
-		String acquisitionDate = autoDto.getAcquisitionDate();
-
-		String[] notes = new String[3];
-		notes[0] = 'a' + library;
-		notes[1] = 'c' + acquisitionType;
-		notes[2] = 'd' + acquisitionDate;
-
-		boolean success = true;
-
-		RecordDTO biblioDto = autoDto.getBiblioRecordDto();
-		if (biblioDto.getRecord() == null) {
-			biblioDto.setRecord(MarcUtils.iso2709ToRecord(biblioDto.getIso2709()));
-		}
-		MarcDataReader mdr = new MarcDataReader(biblioDto.getRecord());
-
-		String biblioLocationA = mdr.getLocation();
-		biblioLocationA = StringUtils.defaultString(biblioLocationA);
-		String biblioLocationB = mdr.getLocationB();
-		biblioLocationB = StringUtils.defaultString(biblioLocationB);
-		String biblioLocationC = mdr.getLocationC();
-		biblioLocationC = StringUtils.defaultString(biblioLocationC);
-
-		for (int j = 0; j < volumeCount; j++) {
-			for (int i = 0; i < holdingCount; i++) {
-
-				String[] location = new String[4];
-
-				location[0] = "a" + biblioLocationA;
-				location[1] = "b" + biblioLocationB;
-				location[2] = "c";
-
-				if (StringUtils.isNotBlank(biblioLocationC)) {
-					location[2] += biblioLocationC;
-				} else {
-					if (volumeNumber != 0) {
-						location[2] += "v." + volumeNumber;
-					} else if (volumeCount > 1) {
-						location[2] += "v." + (j + 1);
-					}
-				}
-
-				location[3] = 'd' + "ex." + (i + 1);
-
-				Record holding = this.createHoldingMarcRecord(location, notes);
-				MarcUtils.setAccessionNumber(holding, this.getNextAccessionNumber());
-
-				success &= this.save(this.createHoldingDto(holding, autoDto));
-			}
-		}
-
-		return success;
-
-	}
-
 	private Record createHoldingMarcRecord(String[] location, String[] notes) {
 		MarcFactory factory = MarcFactory.newInstance();
 		Record record = factory.newRecord();
@@ -534,35 +560,4 @@ public class HoldingBO extends RecordBO {
 		return dto;
 	}
 
-
-	
-	@Override
-	public Integer count(SearchDTO search) {
-		throw new RuntimeException("error.invalid_method_call");
-	}
-	
-	@Override
-	public List<RecordDTO> listByLetter(char letter, int order) {
-		throw new RuntimeException("error.invalid_method_call");
-	}
-
-	@Override
-	public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database) {
-		throw new RuntimeException("error.invalid_method_call");
-	}	
-
-	@Override
-	public boolean search(SearchDTO search) {
-		throw new RuntimeException("error.invalid_method_call");
-	}
-
-	@Override
-	public boolean paginateSearch(SearchDTO search) {
-		throw new RuntimeException("error.invalid_method_call");
-	}
-
-	@Override
-	public SearchDTO getSearch(Integer searchId) {
-		throw new RuntimeException("error.invalid_method_call");
-	}
 }
