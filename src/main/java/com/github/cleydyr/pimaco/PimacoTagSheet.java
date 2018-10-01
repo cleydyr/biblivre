@@ -141,9 +141,10 @@ public enum PimacoTagSheet {
 
 	;
 
-	private PimacoTagSheet(SheetSize sheetSize, String pimacoCode, double verticalMargin,
-			double horizontalMargin, double verticalDensity, double horizontalDensity, 
-			double tagHeight, double tagWidth, int columns, int rows) {
+	private PimacoTagSheet(SheetSize sheetSize, String pimacoCode,
+			double verticalMargin, double horizontalMargin,
+			double verticalDensity, double horizontalDensity, double tagHeight,
+			double tagWidth, int columns, int rows) {
 
 		Function<Double, Quantity<Length>> converter =
 				Utils.DOUBLE_TO_CENTIMETER_CONVERTER;
