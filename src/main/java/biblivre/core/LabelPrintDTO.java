@@ -31,6 +31,7 @@ public class LabelPrintDTO extends AbstractDTO {
 	private float height;
 	private int columns;
 	private int rows;
+	private String model;
 
 	public Set<Integer> getIds() {
 		return this.ids;
@@ -78,5 +79,13 @@ public class LabelPrintDTO extends AbstractDTO {
 
 	public void setRows(int rows) {
 		this.rows = rows;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 }
