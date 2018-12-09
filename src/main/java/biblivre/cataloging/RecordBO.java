@@ -318,7 +318,7 @@ public abstract class RecordBO extends AbstractBO {
 				String encodedId = matcher.group(1);
 				String fileId = "";
 				String fileName = "";
-				String decodedId = new String(new Base64().decode(encodedId));
+				String decodedId = TextUtils.biblivreDecode(encodedId);
 				String[] splitId = decodedId.split(":");
 				if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
 					fileId = splitId[0];
