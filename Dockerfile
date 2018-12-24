@@ -1,8 +1,8 @@
-FROM cleydyr/tomcat:7-jdk8
+FROM tomcat:9-jre8
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update
-RUN apt-get install -y maven postgresql-11
+RUN apt-get install -y maven postgresql-11 default-jdk
 ENV GITHUB_USER cleydyr
 ENV BRANCH_NAME master
 ENV JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
