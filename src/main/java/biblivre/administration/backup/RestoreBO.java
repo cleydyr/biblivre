@@ -392,11 +392,8 @@ public class RestoreBO extends AbstractBO {
 				if (!finalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
 					String schemaTitle = finalSchemaName;
 					
-					try {
-						schemaTitle = dto.getSchemas().get(originalSchemaName).getLeft();
-						schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\", "\\\\");
-					} catch (Exception e) {
-					}
+					schemaTitle = dto.getSchemas().get(originalSchemaName).getLeft();
+					schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\\\", "\\\\");
 
 					bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" = '" + finalSchemaName + "';\n");
 					bw.write("INSERT INTO \"" + Constants.GLOBAL_SCHEMA + "\".schemas (schema, name) VALUES ('" + finalSchemaName + "', E'" + schemaTitle + "');\n");
