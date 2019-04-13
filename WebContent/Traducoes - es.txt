@@ -260,8 +260,6 @@
 *administration.configuration.new_value = Nuevo valor
 *administration.configuration.original_value = Valor original
 
-*administration.configuration.description.administration.z3950.server.active = Esta configuración indica si el servidor z39.50 Lugar estará activo. En los casos de instalaciones multi-biblioteca, el nombre de la Colección del servidor z39.50 será igual al nombre de cada biblioteca. Por ejemplo, el nombre de la colección para esta instalación es "{0}".
-
 *administration.configuration.description.cataloging.accession_number_prefix = El sello patrimonial es el campo que identifica únicamente un ejemplar. En el Biblivre, la regla de formación para el sello patrimonial depende del año de adquisición del ejemplar, de la cantidad de ejemplares adquiridos en el año y del prefijo del sello patrimonial. Este prefijo es el término que será incluido antes de la numeración de año, en el formato <prefijo>.<año>.<contador> (Ex: Bib.2014.7).
 
 *administration.configuration.description.circulation.lending_receipt.printer.type = Esta configuración representa el tipo de impresora que será utilizada para la impresión de recibos de préstamos.  Los valores posibles son: impresora de 40 columnas, de 80 columnas, o impresora común (chorro de tinta).
@@ -286,8 +284,6 @@
 *administration.configuration.printer_type.printer_40_columns = Impresora 40 columnas
 *administration.configuration.printer_type.printer_80_columns = Impresora 80 columnas
 *administration.configuration.printer_type.printer_common = Impresora común
-
-*administration.configuration.title.administration.z3950.server.active = Servidor z39.50 Lugar activo
 
 *administration.configuration.title.cataloging.accession_number_prefix = Prefijo del sello patrimonial
 
@@ -392,8 +388,6 @@
 *administration.migration.groups.lendings = Préstamos activos, historia de préstamos y multas
 *administration.migration.groups.reservations = Reservas
 *administration.migration.groups.users = Usuarios, Logins de acceso y Tipos de Usuarios
-*administration.migration.groups.z3950_servers = Servidores Z39.50
-
 *administration.migration.migrate.error = Falla al importar los datos
 *administration.migration.migrate.success = Datos importados con éxito
 
@@ -458,9 +452,6 @@
 *administration.permissions.items.administration_usertype_delete = Excluir registro de tipo de usuario
 *administration.permissions.items.administration_usertype_list = Listar tipos de Usuarios
 *administration.permissions.items.administration_usertype_save = Guardar registro de tipo de usuario
-*administration.permissions.items.administration_z3950_delete = Excluir registro de servidor z3950
-*administration.permissions.items.administration_z3950_save = Guardar registro de servidor z3950
-*administration.permissions.items.administration_z3950_search = Listar servidores z3950
 *administration.permissions.items.cataloging_authorities_delete = Excluir registro de autoridad
 *administration.permissions.items.cataloging_authorities_move = Mover registro de autoridad
 *administration.permissions.items.cataloging_authorities_save = Guardar registro de autoridad
@@ -778,31 +769,7 @@
 
 *administration.usertype.confirm_delete_record_title.forever = Excluir Tipo de Usuario
 
-*administration.z3950.confirm_cancel_editing_title = Cancelar edición del Servidor Z39.50
-*administration.z3950.no_server_found = Ningún servidor z39.50 encontrado
-*administration.z3950.page_help = <p>La rutina de Servidores Z39.50 permite el registro y búsqueda de los Servidores utilizados por la rutina de Búsqueda Distribuida. Para realizar el registro serán necesarios los datos de la Colección Z39.50, así como la dirección URL y puerta de acceso.</p>
 <p>Al accesar a esa rutina, el Biblivre listará automáticamente todos los Servidores previamente registrados. Usted podrá entonces filtrar esa lista, digitando el <em>Nombre</em> de un Servidor que quiera encontrar.</p>
-
-*administration.z3950.confirm_cancel_editing.1 = ¿Usted desea cancelar la edición de este Servidor Z39.50?
-*administration.z3950.confirm_cancel_editing.2 = Todas las alteraciones se perderán
-
-*administration.z3950.confirm_delete_record.forever = El Servidor Z39.50 será excluido permanentemente del sistema y no podrá ser recuperado
-
-*administration.z3950.confirm_delete_record_question.forever = ¿Usted realmente desea excluir este Servidor Z39.50?
-
-*administration.z3950.confirm_delete_record_title.forever = Excluir Servidor Z39.50
-
-*administration.z3950.error.delete = Falla al excluir el servidor z39.50
-*administration.z3950.error.save = Falla al guardar el servidor z39.50
-
-*administration.z3950.field.collection = Colección
-*administration.z3950.field.name = Nombre
-*administration.z3950.field.port = Puerta
-*administration.z3950.field.url = URL
-
-*administration.z3950.success.delete = Servidor z39.50 excluido con éxito
-*administration.z3950.success.save = Servidor z39.50 guardado con éxito
-*administration.z3950.success.update = Servidor z39.50 actualizado con éxito
 
 *aquisition.quotation.error.quotation_not_found = No fue posible encontrar la cotización
 
@@ -926,7 +893,7 @@
 *cataloging.import.isrc_already_in_database = Ya existe un registro con este ISRC en la base de datos
 *cataloging.import.issn_already_in_database = Ya existe un registro con este ISSN en la base de datos
 *cataloging.import.no_records_found = Ningún registro encontrado
-*cataloging.import.page_help = <p>La importación de registros permite expandir su base de datos sin que haya necesidad de catalogación manual. Nuevos registros pueden ser importados a través de búsquedas Z39.50 o a partir de archivos exportados por otros sistemas de biblioteconomía.</p>
+
 *cataloging.import.record_imported_successfully = Registro importado con éxito
 *cataloging.import.record_will_be_ignored = Este registro no será importado
 *cataloging.import.records_found_plural = {0} registros encontrados
@@ -935,7 +902,7 @@
 *cataloging.import.source_file_subtitle = Seleccione un archivo conteniendo los registros a ser importados. El formato de este archivo puede ser <strong>texto</strong>, <strong>XML</strong> o <strong>ISO2709</strong>, desde que la catalogación original sea compatible con MARC.
 *cataloging.import.source_file_title = Importar registros a partir de un archivo
 *cataloging.import.source_search_subtitle = Seleccione una biblioteca remota y rellene los términos de la búsqueda. La búsqueda devolverá un límite de {0} registros. En caso que no encuentre el registro de interés, refine su búsqueda.
-*cataloging.import.source_search_title = Importar registros a partir de una búsqueda Z39.50
+
 *cataloging.import.step_1_description = En este paso, usted puede importar un archivo conteniendo registros en los formatos MARC, XML y ISO2709 o realizar una búsqueda en otras bibliotecas. Seleccione abajo el modo de importación deseado, seleccionando el archivo o rellenando los términos de la búsqueda. En el paso siguiente, usted podrá seleccionar cuales registros deberán ser importados.
 *cataloging.import.step_1_title = Seleccionar origen de los datos de la importación
 *cataloging.import.step_2_description = En este paso, verifique los registros que serán importados e impórtelos individualmente o en conjunto, a través de los botones disponibles al final de la página. El Biblivre detecta automáticamente si el registro es bibliográfico, autoridades o vocabulario, sin embargo permite que el usuario corrija antes de la importación. <strong>Importante:</strong> Los registros importados serán agregados a la Base de Trabajo y deberán ser corregidos y ajustados antes de ser movidos para la Base Principal. Eso evita que registros incorrectos sean agregados directamente a la base de datos final.
@@ -2337,7 +2304,6 @@
 *menu.administration_reports = Informes
 *menu.administration_translations = Traducciones
 *menu.administration_user_types = Tipos de Usuario
-*menu.administration_z3950_servers = Servidores Z39.50
 *menu.cataloging = Catalogación
 *menu.cataloging_authorities = Autoridades
 *menu.cataloging_bibliographic = Bibliográfica
@@ -2364,8 +2330,6 @@
 *menu.search_authorities = Autoridades
 *menu.search_bibliographic = Bibliográfica
 *menu.search_vocabulary = Vocabulario
-*menu.search_z3950 = Distribuida
-
 *multi_schema.configuration.description.general.subtitle = Subtítulo que será exhibido cuando se accede a la página principal de este grupo de bibliotecas. Esta página listará todas las bibliotecas registradas en este grupo (administradas por el mismo Biblivre 4).
 *multi_schema.configuration.description.general.title = Nombre que será exhibido cuando se accede a la página principal de este grupo de bibliotecas. Esta página listará todas las bibliotecas registradas en este grupo (administradas por el mismo Biblivre 4).
 
@@ -2474,7 +2438,7 @@
 *search.distributed.author = Autor
 *search.distributed.isbn = ISBN
 *search.distributed.issn = ISSN (incluyendo guiones)
-*search.distributed.no_servers = No es posible realizar una búsqueda Z39.50 pues no existen bibliotecas remotas registradas. Para solucionar este problema, registre los servidores Z39.50 de las bibliotecas de interés en la opción <em>"Servidores Z39.50"</em> dentro de <em>"Administración"</em> en el menu superior. Para esto es necesario un nombre de <strong>usuario</strong> y <strong>contraseña</strong>.
+
 *search.distributed.page_help = <p>La búsqueda distribuida permite recuperar informaciones sobre registros en acervos de otras bibliotecas, que colocan a disposición sus registros para la búsqueda y catalogación colaborativa.</p>
 <p>Para realizar una búsqueda, rellene los términos de la búsqueda, seleccionando el campo de interés. En seguida, seleccione una o más bibliotecas donde se deberán localizar los registros. <span class="warn">Atención: seleccione pocas bibliotecas para evitar que la búsqueda distribuida sea muy lenta, entendiendo que ella depende de la comunicación entre las bibliotecas y el tamaño de cada acervo.</span></p>
 *search.distributed.query_placeholder = Rellene los términos de la búsqueda
@@ -2518,8 +2482,6 @@
 *warning.create_backup = Hace más de 3 días que usted está sin generar una copia de seguridad (backup)
 *warning.fix_now = Resolver este problema
 *warning.reindex_database = Usted precisa reindizar las bases de datos
-
-*z3950.adresses.list.no_address_found = Ningún Servidor Z39.50 encontrado
 
 *administration.permissions.items.circulation_user_reservation = Efectuar Reserva para sí mismo
 *menu.circulation_user_reservation = Reservas del Lector

@@ -89,7 +89,6 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("menu", "search_bibliographic", AuthorizationPointTypes.MENU_SEARCH);
 		this.addAuthPoint("menu", "search_authorities", AuthorizationPointTypes.MENU_SEARCH);
 		this.addAuthPoint("menu", "search_vocabulary", AuthorizationPointTypes.MENU_SEARCH);
-		this.addAuthPoint("menu", "search_z3950", AuthorizationPointTypes.MENU_SEARCH);
 
 		this.addAuthPoint("menu", "cataloging_bibliographic", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE, AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_DELETE);
 		this.addAuthPoint("menu", "cataloging_authorities", AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE, AuthorizationPointTypes.CATALOGING_AUTHORITIES_DELETE);
@@ -116,7 +115,6 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("menu", "administration_access_cards", AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_LIST, AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_SAVE, AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_DELETE);
 		this.addAuthPoint("menu", "administration_configurations", AuthorizationPointTypes.ADMINISTRATION_CONFIGURATIONS);
 		this.addAuthPoint("menu", "administration_permissions", AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
-		this.addAuthPoint("menu", "administration_z3950_servers", AuthorizationPointTypes.ADMINISTRATION_Z3950_SEARCH, AuthorizationPointTypes.ADMINISTRATION_Z3950_SAVE, AuthorizationPointTypes.ADMINISTRATION_Z3950_DELETE);
 		this.addAuthPoint("menu", "administration_reports", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
 		this.addAuthPoint("menu", "administration_translations", AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
 		this.addAuthPoint("menu", "administration_brief_customization", AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
@@ -287,11 +285,6 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("administration.permissions", "save", AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
 		this.addAuthPoint("administration.permissions", "delete", AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
 		
-		this.addAuthPoint("administration.z3950", "search", AuthorizationPointTypes.ADMINISTRATION_Z3950_SEARCH);
-		this.addAuthPoint("administration.z3950", "paginate", AuthorizationPointTypes.ADMINISTRATION_Z3950_SEARCH);
-		this.addAuthPoint("administration.z3950", "save", AuthorizationPointTypes.ADMINISTRATION_Z3950_SAVE);
-		this.addAuthPoint("administration.z3950", "delete", AuthorizationPointTypes.ADMINISTRATION_Z3950_DELETE);
-		
 		this.addAuthPoint("administration.reports", "user_search", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
 		this.addAuthPoint("administration.reports", "author_search", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
 		this.addAuthPoint("administration.reports", "generate", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
@@ -318,10 +311,6 @@ public class AuthorizationPoints implements Serializable {
 		
 		this.addAuthPoint("digitalmedia", "upload", AuthorizationPointTypes.DIGITALMEDIA_UPLOAD);
 		this.addAuthPoint("digitalmedia", "download", AuthorizationPointTypes.DIGITALMEDIA_DOWNLOAD);
-
-		this.addAuthPoint("z3950", "search", AuthorizationPointTypes.Z3950_SEARCH);
-		this.addAuthPoint("z3950", "paginate", AuthorizationPointTypes.Z3950_SEARCH);
-		this.addAuthPoint("z3950", "open", AuthorizationPointTypes.Z3950_SEARCH);
 	}
 
 	private void addAuthPoint(String module, String action, AuthorizationPointTypes ... types) {

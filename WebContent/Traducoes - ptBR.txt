@@ -90,22 +90,6 @@
 *administration.usertype.confirm_delete_record.forever = O Tipo de Usuário será excluído permanentemente do sistema e não poderá ser recuperado
 
 
-*administration.z3950.field.name = Nome
-*administration.z3950.field.url = URL
-*administration.z3950.field.port = Porta
-*administration.z3950.field.collection = Coleção
-*administration.z3950.confirm_cancel_editing_title = Cancelar edição do Servidor Z39.50
-*administration.z3950.confirm_cancel_editing.1 = Você deseja cancelar a edição deste Servidor Z39.50?
-*administration.z3950.confirm_cancel_editing.2 = Todas as alterações serão perdidas
-*administration.z3950.confirm_delete_record_title.forever = Excluir Servidor Z39.50
-*administration.z3950.confirm_delete_record_question.forever = Você realmente deseja excluir este Servidor Z39.50?
-*administration.z3950.confirm_delete_record.forever = O Servidor Z39.50 será excluído permanentemente do sistema e não poderá ser recuperado
-*administration.z3950.no_server_found = Nenhum servidor z39.50 encontrado
-*administration.z3950.success.save = Servidor z39.50 salvo com sucesso
-*administration.z3950.success.update = Servidor z39.50 atualizado com sucesso
-*administration.z3950.error.save = Falha ao salvar o servidor z39.50
-*administration.z3950.success.delete = Servidor z39.50 excluído com sucesso
-*administration.z3950.error.delete = Falha ao excluir o servidor z39.50
 
 *acquisition.request.error.no_request_found = Não foi possível encontrar nenhuma Requisição
 *aquisition.request.error.request_not_found = Não foi possível encontrar a requisição
@@ -196,7 +180,7 @@
 
 *cataloging.import.source_file_title = Importar registros a partir de um arquivo
 *cataloging.import.source_file_subtitle = Selecione um arquivo contendo os registros a serem importados. O formato deste arquivo pode ser <strong>texto</strong>, <strong>XML</strong> ou <strong>ISO2709</strong>, desde que a catalogação original seja compatível com MARC.
-*cataloging.import.source_search_title = Importar registros a partir de uma pesquisa Z39.50
+
 *cataloging.import.source_search_subtitle = Selecione uma biblioteca remota e preencha os termos da pesquisa. A pesquisa retornará um limite de {0} registros. Caso não encontre o registro de interesse, refine sua pesquisa.
 
 *cataloging.import.isbn_already_in_database = Já existe um registro com este ISBN na base de dados
@@ -549,9 +533,6 @@
 *administration.permissions.items.administration_usertype_list = Listar tipos de usuários
 *administration.permissions.items.administration_usertype_save = Salvar registro de tipo de usuário
 *administration.permissions.items.administration_usertype_delete = Excluir registro de tipo de usuário
-*administration.permissions.items.administration_z3950_search = Listar servidores z3950
-*administration.permissions.items.administration_z3950_save = Salvar registro de servidor z3950
-*administration.permissions.items.administration_z3950_delete = Excluir registro de servidor z3950
 *administration.permissions.items.administration_accesscards_list = Listar cartões de acesso
 *administration.permissions.items.administration_accesscards_save = Incluir cartões de acesso
 *administration.permissions.items.administration_accesscards_delete = Excluir cartões de acesso
@@ -1314,7 +1295,6 @@
 *menu.search_bibliographic = Bibliográfica
 *menu.search_authorities = Autoridades
 *menu.search_vocabulary = Vocabulário
-*menu.search_z3950 = Distribuída
 *menu.circulation = Circulação
 *menu.circulation_user = Cadastro de Usuários
 *menu.circulation_lending = Empréstimos e Devoluções
@@ -1337,7 +1317,6 @@
 *menu.administration_permissions = Logins e Permissões
 *menu.administration_user_types = Tipos de Usuário
 *menu.administration_access_cards = Cartões de Acesso
-*menu.administration_z3950_servers = Servidores Z39.50
 *menu.administration_reports = Relatórios
 *menu.administration_maintenance = Manutenção
 *menu.administration_configurations = Configurações
@@ -1379,7 +1358,7 @@
 *search.distributed.issn = ISSN (incluindo hífens)
 *search.distributed.subject = Assunto
 *search.distributed.any = Qualquer
-*search.distributed.no_servers = Não é possível realizar uma pesquisa Z39.50 pois não existem bibliotecas remotas cadastradas. Para solucionar este problema, cadastre os servidores Z39.50 das bibliotecas de interesse na opção <em>"Servidores Z39.50"</em> dentro de <em>"Administração"</em> no menu superior. Para isto é necessário um nome de <strong>usuário</strong> e <strong>senha</strong>.
+
 
 *search.user.simple_term_title = Preencha os termos da pesquisa
 *search.user.field = Campo
@@ -1517,7 +1496,6 @@
 *cataloging.holding.confirm_delete_record.forever = Ele será excluído permanentemente do sistema e não poderá ser recuperado
 
 
-*z3950.adresses.list.no_address_found = Nenhum Servidor Z39.50 encontrado
 
 *cataloging.bibliographic.selected_records_singular = {0} registro selecionado
 *cataloging.bibliographic.selected_records_plural = {0} registros selecionados
@@ -1576,8 +1554,6 @@
 *administration.configuration.title.search.distributed_search_limit = Limite de resultados para buscas distribuídas
 *administration.configuration.description.search.distributed_search_limit = Esta configuração representa a quantidade máxima de resultados que serão encontrados em uma pesquisa distribuída. Evite o uso de um limite muito elevado pois as buscas distribuídas levarão muito tempo para retornar os resultados pesquisados.
 
-*administration.configuration.title.administration.z3950.server.active = Servidor z39.50 local ativo
-*administration.configuration.description.administration.z3950.server.active = Esta configuração representa se o servidor z39.50 local estará ativo. Nos casos de instalações multi-biblioteca, o nome da Coleção do servidor z39.50 será igual ao nome de cada biblioteca. Por exemplo, o nome da coleção para esta instalação é "{0}".
 
 
 *administration.configuration.title.general.backup_path = Caminho de destino das cópias de segurança (Backups)
@@ -2239,7 +2215,7 @@
 *circulation.access_control.page_help = <p>O <strong>"Controle de Acesso"</strong> permite gerenciar a entrada e permanência dos leitores nas instalações da biblioteca. Selecione o leitor através de uma pesquisa por nome ou matrícula e digite o número de um cartão de acesso disponível para vincular aquele cartão ao leitor.</p>
 <p>No momento da saída do leitor, você poderá desvincular o cartão procurando pelo código do mesmo</p>
 
-*cataloging.import.page_help = <p>A importação de registros permite expandir sua base de dados sem que haja necessidade de catalogação manual. Novos registros podem ser importados através de pesquisas Z39.50 ou a partir de arquivos exportados por outros sistemas de biblioteconomia.</p>
+
 
 *acquisition.supplier.page_help = <p>A rotina de Fornecedores permite o cadastramento e pesquisa de fornecedores. A pesquisa buscará cada um dos termos digitados nos campos <em>Nome Fantasia, Razão Social ou CNPJ</em>.</p>
 *acquisition.request.page_help = <p>A rotina de Requisições permite o cadastramento e pesquisa de requisições de obras. Uma requisição é um registro de alguma obra que a Biblioteca deseja adquirir, e pode ser utilizada para se realizar Cotações com os Fornecedores previamente cadastrados.</p> 
@@ -2256,7 +2232,6 @@
 *administration.accesscards.page_help = <p>A rotina de Cartões de Acesso permite o cadastramento e pesquisa dos Cartões utilizados pela rotina de Controle de Acesso. Para realizar o cadastramento o Biblivre oferece duas opções:</p>
 <ul><li>Cadastrar Novo Cartão: utilize para cadastrar apenas um cartão de acesso;</li><li>Cadastrar Sequência de Cartões: utilize para cadastrar mais de um cartão de acesso, em sequência. Utilize o campo "Pré visualização" para verificar como serão as numerações dos cartões incluídos.</li></ul>
 <p>Ao acessar essa rotina, o Biblivre listará automaticamente todos os Cartões de Acesso previamente cadastrados.  Você poderá então filtrar essa lista, digitando o <em>Código</em> de um Cartão de Acesso que queira encontrar.</p>
-*administration.z3950.page_help = <p>A rotina de Servidores Z39.50 permite o cadastramento e pesquisa dos Servidores utilizados pela rotina de Pesquisa Distribuída. Para realizar o cadastramento serão necessários os dados da Coleção Z39.50, assim como endereço URL e porta de acesso.</p>
 <p>Ao acessar essa rotina, o Biblivre listará automaticamente todos os Servidores previamente cadastrados.  Você poderá então filtrar essa lista, digitando o <em>Nome</em> de um Servidor que queira encontrar.</p>
 *administration.reports.page_help = <p>A rotina de Relatórios permite a geração e impressão de diversos relatórios disponibilizados pelo Biblivre. Os relatórios disponíveis se dividem entre as rotinas de Aquisição, Catalogação e Circulação.</p>
 <p>Alguns dos relatórios disponíveis possuem filtros, como Base Bibliográfica, ou Período, por exemplo. Para outros, basta selecionar o relatório e clicar em "Emitir Relatório".</p>
@@ -2300,7 +2275,6 @@
 *administration.migration.groups.users = Usuários, Logins de acesso e Tipos de Usuários
 *administration.migration.groups.access_control = Cartões de acesso e Controle de acesso
 *administration.migration.groups.acquisition = Aquisições (Fornecedor, Requisição, Cotação e Pedido)
-*administration.migration.groups.z3950_servers = Servidores Z39.50
 *administration.migration.groups.lendings = Empréstimos ativos, histórico de empréstimos e multas
 *administration.migration.groups.reservations = Reservas
 *administration.migration.button.migrate = Importar dados

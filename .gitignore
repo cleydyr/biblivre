@@ -10,7 +10,6 @@ WebContent/static/styles/biblivre.print.css
 WebContent/static/styles/biblivre.about.css
 WebContent/static/styles/biblivre.acquisition.css
 WebContent/static/styles/biblivre.administration.css
-WebContent/static/styles/biblivre.administration.z3950.css
 WebContent/static/styles/biblivre.cataloging.css
 WebContent/static/styles/biblivre.cataloging.import.css
 WebContent/static/styles/biblivre.circulation.css

@@ -37,7 +37,6 @@ public enum DataMigrationPhase {
 	ACQUISITION_QUOTATION("acquisition_quotation", "quotations", "quotations_id_seq", "id"), 
 	ACQUISITION_ITEM_QUOTATION("acquisition_item_quotation", "request_quotation", "quotations_id_seq", null), 
 	ACQUISITION_ORDER("acquisition_order", "orders", "orders_id_seq", "id"), 
-	Z3950_SERVERS("z3950_server", "z3950_addresses", "z3950_addresses_id_seq", "id"),
 	ACCESS_CONTROL("access_control", "access_control", "access_control_id_seq", "id"),
 	ACCESS_CONTROL_HISTORY("access_control", "access_control", "access_control_id_seq", "id"),
 	LENDINGS("lending", "lendings", "lendings_id_seq", "id"), 

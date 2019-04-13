@@ -34,7 +34,5 @@ public class BiblivreContextListener implements ServletContextListener {
 	}
 
 	@Override
-	public void contextDestroyed(ServletContextEvent arg0) {
-		BiblivreInitializer.destroy();
-	}
+	public void contextDestroyed(ServletContextEvent arg0) {}
 }

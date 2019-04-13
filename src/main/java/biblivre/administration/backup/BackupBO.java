@@ -52,7 +52,6 @@ import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
-import br.org.biblivre.z3950server.utils.TextUtils;
 
 public class BackupBO extends AbstractBO {
 	private BackupDAO dao;

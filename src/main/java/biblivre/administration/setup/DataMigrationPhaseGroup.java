@@ -32,7 +32,6 @@ public enum DataMigrationPhaseGroup {
 	CATALOGING_VOCABULARY(DataMigrationPhase.CATALOGING_VOCABULARY),
 	USERS(DataMigrationPhase.USER_TYPES, DataMigrationPhase.LOGINS, DataMigrationPhase.USERS),
 	ACQUISITION(DataMigrationPhase.ACQUISITION_SUPPLIER, DataMigrationPhase.ACQUISITION_REQUISITION, DataMigrationPhase.ACQUISITION_QUOTATION, DataMigrationPhase.ACQUISITION_ITEM_QUOTATION, DataMigrationPhase.ACQUISITION_ORDER),
-	Z3950_SERVERS(DataMigrationPhase.Z3950_SERVERS),
 	ACCESS_CONTROL(DataMigrationPhase.ACCESS_CARDS, DataMigrationPhase.ACCESS_CONTROL, DataMigrationPhase.ACCESS_CONTROL_HISTORY),
 	LENDINGS(DataMigrationPhase.LENDINGS, DataMigrationPhase.LENDINGS_HISTORY, DataMigrationPhase.LENDING_FINE), 
 	RESERVATIONS(DataMigrationPhase.RESERVATIONS);
