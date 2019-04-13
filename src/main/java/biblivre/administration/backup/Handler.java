@@ -122,14 +122,9 @@ public class Handler extends AbstractHandler {
 
 		this.setFile(diskFile);
 
-		this.setCallback(new HttpCallback() {
-			@Override
-			public void success() {
-				dto.setDownloaded(true);
-				bo.save(dto);
-			}
-		});
+		this.setCallback(() -> finishDownload(bo, dto));
 	}
+
 	
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -164,5 +159,10 @@ public class Handler extends AbstractHandler {
 				this.json.append("backups", dto.toJSONObject());
 			}
 		} catch (JSONException e) {}
+	}
+
+	private void finishDownload(final BackupBO bo, final BackupDTO dto) {
+		dto.setDownloaded(true);
+		bo.save(dto);
 	}
 }
