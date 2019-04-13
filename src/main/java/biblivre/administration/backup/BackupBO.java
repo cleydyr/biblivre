@@ -50,6 +50,7 @@ import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.Pair;
 import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
+import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
 
