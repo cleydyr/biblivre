@@ -60,7 +60,6 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.MemoryFile;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MaterialType;
-import biblivre.z3950.Z3950AddressDTO;
 
 public class DataMigrationDAO extends AbstractDAO {
 	
@@ -359,46 +358,6 @@ public class DataMigrationDAO extends AbstractDAO {
 		return list;
 	}
 
-	public List<Z3950AddressDTO> listZ3950Servers(int limit, int offset) {
-		List<Z3950AddressDTO> list = new LinkedList<Z3950AddressDTO>();
-		
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM z3950_server ");
-			sql.append("ORDER BY server_id ASC ");
-			sql.append("LIMIT ? OFFSET ? ");
-			
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
-			pst.setInt(1, limit);
-			pst.setInt(2, offset);
-			
-			ResultSet rs = pst.executeQuery();
-
-			while (rs.next()) {
-				Z3950AddressDTO dto = new Z3950AddressDTO();
-				
-				dto.setId(rs.getInt("server_id"));
-				dto.setName(rs.getString("server_name").trim());
-				dto.setUrl(rs.getString("server_url").trim());
-				dto.setPort(rs.getInt("server_port"));
-				dto.setCollection(rs.getString("server_dbname"));
-				
-				dto.setCreatedBy(1);
-				
-				list.add(dto);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return list;
-	}
-	
 	public List<AccessControlDTO> listAccessControl(int limit, int offset) {
 		List<AccessControlDTO> list = new LinkedList<AccessControlDTO>();
 		

@@ -36,14 +36,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import biblivre.administration.setup.State;
-import biblivre.core.BiblivreInitializer;
 import biblivre.core.StaticBO;
 import biblivre.core.Updates;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
-import br.org.biblivre.z3950server.Z3950ServerBO;
 
 public class Schemas extends StaticBO {
 
@@ -104,9 +102,6 @@ public class Schemas extends StaticBO {
 				}
 			}
 		}
-
-		Z3950ServerBO.setSingleSchema(Constants.SINGLE_SCHEMA);
-		BiblivreInitializer.reloadZ3950Server();
 	}
 
 	public static SchemaDTO getSchema(String schema) {

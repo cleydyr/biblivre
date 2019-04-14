@@ -84,9 +84,6 @@ public enum AuthorizationPointTypes {
 	ADMINISTRATION_USERTYPE_LIST(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_USERTYPE_SAVE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_USERTYPE_DELETE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
-	ADMINISTRATION_Z3950_SEARCH(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
-	ADMINISTRATION_Z3950_SAVE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
-	ADMINISTRATION_Z3950_DELETE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_REPORTS(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_ACCESSCARDS_LIST(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_ACCESSCARDS_SAVE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
@@ -95,9 +92,7 @@ public enum AuthorizationPointTypes {
 	ADMINISTRATION_MULTI_SCHEMA(AuthorizationSchemaScope.GLOBAL_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 
 	DIGITALMEDIA_UPLOAD(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.DIGITALMEDIA),
-	DIGITALMEDIA_DOWNLOAD(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.ANY, AuthorizationPointGroups.DIGITALMEDIA, true),
-
-	Z3950_SEARCH(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.ANY, AuthorizationPointGroups.SEARCH, true);
+	DIGITALMEDIA_DOWNLOAD(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.ANY, AuthorizationPointGroups.DIGITALMEDIA, true);
 
 	private AuthorizationPointGroups group;
 	private AuthorizationSchemaScope schemaScope;

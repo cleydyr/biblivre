@@ -36,28 +36,15 @@ import biblivre.core.file.DiskFile;
 public class Handler extends AbstractHandler {
 
 	public void createPdf(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String printId = UUID.randomUUID().toString();
+		LabelPrintDTO print = getLabelPrintDTO(request);
 
-		LabelPrintDTO print = new LabelPrintDTO();
-		String idList = request.getString("id_list");
-
-		String[] idArray = idList.split(",");
-		Set<Integer> ids = new TreeSet<Integer>();
-		try {
-			for (int i = 0; i < idArray.length; i++) {
-				ids.add(Integer.valueOf(idArray[i]));
-			}			
-		} catch(Exception e) {
+		if (print == null) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+			return;
 		}
-		
-		print.setIds(ids);
-		print.setOffset(request.getInteger("offset"));
-		print.setWidth(request.getFloat("width"));
-		print.setHeight(request.getFloat("height"));
-		print.setColumns(request.getInteger("columns"));
-		print.setRows(request.getInteger("rows"));
+
+		String printId = UUID.randomUUID().toString();
+		String schema = request.getSchema();
 		
 		request.setSessionAttribute(schema, printId, print);
 		
@@ -71,23 +58,38 @@ public class Handler extends AbstractHandler {
 	public void downloadPdf(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String printId = request.getString("id");
-		
 		LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
-
 		UserBO ubo = UserBO.getInstance(schema);
-
 		final DiskFile exportFile = ubo.printUserCardsToPDF(dto, request.getTranslationsMap());
+
 		ubo.markAsPrinted(dto.getIds());
 
 		this.setFile(exportFile);
 
-		this.setCallback(new HttpCallback() {
-			@Override
-			public void success() {
-				try {
-					exportFile.delete();
-				} catch (Exception e) {}
+		this.setCallback(exportFile::delete);
+	}
+
+	private LabelPrintDTO getLabelPrintDTO(ExtendedRequest request) {
+		LabelPrintDTO print = new LabelPrintDTO();
+
+		try {
+			String idList = request.getString("id_list");
+			String[] idArray = idList.split(",");
+			Set<Integer> ids = new TreeSet<Integer>();
+			for (int i = 0; i < idArray.length; i++) {
+				ids.add(Integer.valueOf(idArray[i]));
 			}
-		});
+			print.setIds(ids);
+			print.setOffset(request.getInteger("offset"));
+			print.setWidth(request.getFloat("width"));
+			print.setHeight(request.getFloat("height"));
+			print.setColumns(request.getInteger("columns"));
+			print.setRows(request.getInteger("rows"));
+
+			return print;
+		}
+		catch (NumberFormatException nfe) {
+			return null;
+		}
 	}
 }

@@ -44,13 +44,9 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import biblivre.z3950.Z3950AddressDTO;
-import biblivre.z3950.Z3950BO;
-import biblivre.z3950.Z3950RecordDTO;
 
 public class Handler extends AbstractHandler {
 	
@@ -112,70 +108,6 @@ public class Handler extends AbstractHandler {
 		} catch(JSONException e) { }
 	}
 
-	public void importSearch(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Integer id = request.getInteger("search_server");
-		String attribute = request.getString("search_attribute");
-		String value = request.getString("search_query");
-
-		Z3950BO bo = Z3950BO.getInstance(schema);
-		Z3950AddressDTO server = bo.findById(id);
-		
-		List<Z3950AddressDTO> serverList = new LinkedList<Z3950AddressDTO>();
-		serverList.add(server);
-		Pair<String, String> search = new Pair<String, String>(attribute, value);
-		
-		List<Z3950RecordDTO> recordList = bo.search(serverList, search);
-		
-		ImportBO importBo = ImportBO.getInstance(schema);
-		ImportDTO list = importBo.readFromZ3950Results(recordList);
-
-		if (list != null) {
-			List<String> isbnList = new LinkedList<String>();
-			List<String> issnList = new LinkedList<String>();
-			List<String> isrcList = new LinkedList<String>();
-
-			for (RecordDTO dto : list.getRecordList()) {
-				if (dto instanceof BiblioRecordDTO) {
-					BiblioRecordDTO rdto = (BiblioRecordDTO) dto;
-					
-					if (StringUtils.isNotBlank(rdto.getIsbn())) {
-						isbnList.add(rdto.getIsbn());
-					} else if (StringUtils.isNotBlank(rdto.getIssn())) {
-						issnList.add(rdto.getIssn());
-					} else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-						isrcList.add(rdto.getIsrc());
-					}
-				}
-			}
-
-			IndexingBO ibo = IndexingBO.getInstance(schema);
-	
-			if (isbnList.size() > 0) {
-				list.setFoundISBN(ibo.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
-			}
-	
-			if (issnList.size() > 0) {
-				list.setFoundISSN(ibo.searchExactTerms(RecordType.BIBLIO, 6, issnList));
-			}
-			
-			if (isrcList.size() > 0) {
-				list.setFoundISRC(ibo.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
-			}
-		}
-
-		try {
-			if (list == null) {
-				this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
-			} else if (list.getSuccess() == 0) {
-				this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
-			} else {
-				this.json.putOpt("data", list.toJSONObject());
-			}
-		} catch(JSONException e) { }
-	}
-
-	
 	public void parseMarc(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String marc = request.getString("marc");

@@ -527,16 +527,6 @@ public class UpdatesDAO extends AbstractDAO {
 		updateSt.execute(updateSql.toString());
 	}
 
-	public void updateZ3950Address(Connection con, String name, String url) throws SQLException {
-		String sql = "UPDATE z3950_addresses SET url = ? WHERE name = ?;";
-		PreparedStatement pst = con.prepareStatement(sql);
-		pst.setString(1, url);
-		pst.setString(2, name);
-		
-		pst.execute();
-	}
-	
-	
 	public void replaceBiblivreVersion(Connection con)  throws SQLException {
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre 4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre 4%';");
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre4%'");

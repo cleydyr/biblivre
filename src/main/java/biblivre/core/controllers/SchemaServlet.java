@@ -36,7 +36,6 @@ import org.json.JSONObject;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
-import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.IFCacheableJavascript;
@@ -66,7 +65,6 @@ public final class SchemaServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		BiblivreInitializer.initialize();
 		ExtendedRequest xRequest = ((ExtendedRequest) request);
 
 		if (xRequest.mustRedirectToSchema()) {

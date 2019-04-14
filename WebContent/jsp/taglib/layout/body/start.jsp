@@ -94,7 +94,6 @@
 										<menu:item module="search" action="search_bibliographic"  />
 										<menu:item module="search" action="search_authorities"  />
 										<menu:item module="search" action="search_vocabulary"  />
-										<menu:item module="search" action="search_z3950"  />
 									</menu:level>
 									<menu:level module="circulation">
 										<menu:item module="circulation" action="circulation_user"  />
@@ -121,7 +120,6 @@
 										<menu:item module="administration" action="administration_permissions"  />
 										<menu:item module="administration" action="administration_user_types"  />
 										<menu:item module="administration" action="administration_access_cards"  />
-										<menu:item module="administration" action="administration_z3950_servers"  />
 										<menu:item module="administration" action="administration_reports"  />
 										<menu:item module="administration" action="administration_maintenance"  />
 										<menu:item module="administration" action="administration_configurations"  />
@@ -137,7 +135,6 @@
 										<menu:item module="search" action="search_bibliographic"  />
 										<menu:item module="search" action="search_authorities"  />
 										<menu:item module="search" action="search_vocabulary"  />
-										<menu:item module="search" action="search_z3950"  />
 									</menu:level>
 									<menu:level module="self_circulation">
 										<menu:item module="self_circulation" action="circulation_user_reservation"  />
@@ -153,7 +150,6 @@
 										<menu:item module="search" action="search_bibliographic"  />
 										<menu:item module="search" action="search_authorities"  />
 										<menu:item module="search" action="search_vocabulary"  />
-										<menu:item module="search" action="search_z3950"  />
 									</menu:level>
 									<menu:help />
 									<menu:login />

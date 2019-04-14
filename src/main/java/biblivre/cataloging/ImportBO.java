@@ -45,7 +45,6 @@ import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcFileReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
-import biblivre.z3950.Z3950RecordDTO;
 
 public class ImportBO extends AbstractBO {
 	
@@ -181,29 +180,6 @@ public class ImportBO extends AbstractBO {
 					dto.incrementSuccess();
 				} else {
 					dto.incrementFailure();					
-				}
-			} catch (Exception e) {
-				dto.incrementFailure();
-			}
-		}
-
-		return dto;
-	}
-	
-	public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {
-		ImportDTO dto = new ImportDTO();
-		BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
-		for (Z3950RecordDTO z3950Dto : recordList) {
-			dto.incrementFound();
-			try {
-				BiblioRecordDTO brdto = z3950Dto.getRecord();
-
-				if (brdto != null) {
-					bbo.populateDetails(brdto, RecordBO.MARC_INFO);
-					brdto.setMarc(MarcUtils.recordToMarc(brdto.getRecord()));
-
-					dto.addRecord(brdto);
-					dto.incrementSuccess();
 				}
 			} catch (Exception e) {
 				dto.incrementFailure();
