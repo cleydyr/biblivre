@@ -263,7 +263,7 @@ public class Translations extends StaticBO {
 			Translations.logger.debug("Loading language " + schema + "." + language);
 		}
 
-		TranslationsDAO dao = TranslationsDAO.getInstance(schema);
+		TranslationsService dao = TranslationsDAO.getInstance(schema);
 
 		if (StringUtils.isNotBlank(language)) {
 			List<TranslationDTO> list = dao.list(language);
