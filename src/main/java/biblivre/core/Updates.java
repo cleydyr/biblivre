@@ -28,13 +28,11 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.administration.indexing.IndexingBO;
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
-import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
