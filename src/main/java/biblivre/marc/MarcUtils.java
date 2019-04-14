@@ -252,11 +252,10 @@ public class MarcUtils {
 			}
 
 			MarcFactory factory = MarcFactory.newInstance();
-
 			Leader leader = MarcUtils.createLeader(strLeader, materialType, status);
 			record = factory.newRecord(leader);
+			Iterator<String> dataFieldsIterator = json.keys();
 
-			Iterator<String> dataFieldsIterator = json.sortedKeys();
 			while (dataFieldsIterator.hasNext()) {
 				String dataFieldTag = dataFieldsIterator.next();
 
@@ -281,7 +280,7 @@ public class MarcUtils {
 							df.setIndicator1(' ');
 							df.setIndicator2(' ');
 
-							Iterator<String> dfIterator = subFieldJson.sortedKeys();
+							Iterator<String> dfIterator = subFieldJson.keys();
 							while (dfIterator.hasNext()) {
 								String subFieldTag = dfIterator.next();
 

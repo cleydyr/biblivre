@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -49,17 +50,22 @@
 
 	<dependencies>
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>servlet-api</artifactId>
-		    <version>2.5</version>
-		    <scope>provided</scope>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180813</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
-		    <groupId>javax.servlet.jsp</groupId>
-		    <artifactId>jsp-api</artifactId>
-		    <version>2.0</version>
-		    <scope>provided</scope>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -138,18 +144,12 @@
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.2</version>
 		</dependency>
-
-		<!-- dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency -->
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -163,7 +163,7 @@
 			<artifactId>marc4j</artifactId>
 			<version>2.5.1.beta</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>normalizer</artifactId>
@@ -208,7 +208,7 @@
 			<artifactId>juniversalchardet</artifactId>
 			<version>1.0.3</version>
 		</dependency>
-		
+
 		<!-- ObjectLab Kit for business days calculations -->
 		<dependency>
 			<groupId>net.objectlab.kit</groupId>
@@ -241,9 +241,9 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
 		<dependency>
-		    <groupId>org.freemarker</groupId>
-		    <artifactId>freemarker</artifactId>
-		    <version>2.3.28</version>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.28</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.measure</groupId>
@@ -270,7 +270,7 @@
 					<target>${jdk.version}</target>
 					<debug>${debug}</debug>
 					<optimize>!${debug}</optimize>
-					<verbose>${debug}</verbose>				
+					<verbose>${debug}</verbose>
 					<showWarnings>${debug}</showWarnings>
 					<showDeprecation>${debug}</showDeprecation>
 				</configuration>
@@ -302,7 +302,7 @@
 							</includes>
 						</resource>
 					</webResources>
-				</configuration>				
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -314,7 +314,7 @@
 						<always_update>true</always_update>
 						<style>${sass.OutputStyle}</style>
 						<debug_info>${debug}</debug_info>
-					</sassOptions>	
+					</sassOptions>
 					<useCompass>true</useCompass>
 					<resources>
 						<resource>
@@ -327,11 +327,11 @@
 							</source>
 							<destination>${basedir}/WebContent/static/styles</destination>
 						</resource>
-					</resources>							
+					</resources>
 				</configuration>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -359,6 +359,6 @@
 					</configuration>
 				</plugin>
 			</plugins>
-		</pluginManagement>		
+		</pluginManagement>
 	</build>
 </project>

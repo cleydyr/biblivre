@@ -20,10 +20,8 @@
 package biblivre.administration.configurations;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractHandler;
@@ -32,9 +30,9 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.exceptions.ValidationException;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Translations;
+import biblivre.core.utils.Constants;
 
 public class Handler extends AbstractHandler {
 
@@ -43,50 +41,34 @@ public class Handler extends AbstractHandler {
 		int loggedUser = request.getLoggedUserId();
 		String language = request.getLanguage();
 
-		String configurations = request.getString("configurations", "{}");
-		List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>();
+		String configurations = request.getString("configurations", Constants.JSON_EMPTY_OBJECT_STR);
+		final List<ConfigurationsDTO> configs = new ArrayList<>();
 		
-		try {
-			JSONObject json = new JSONObject(configurations);
+		JSONObject json = new JSONObject(configurations);
 
-			Iterator<String> it = json.keys();
-			while (it.hasNext()) {
-				String key = it.next();
-				String value = json.getString(key);
+		json.keys().forEachRemaining(key -> {
+			String value = json.getString(key);
 
-				if (key.equals("text.main.logged_in") || key.equals("text.main.logged_out")) {
-					Translations.addSingleTranslation(schema, language, key, value, loggedUser);
-				} else {
-					configs.add(new ConfigurationsDTO(key, value));
-				}
+			if (key.equals("text.main.logged_in") || key.equals("text.main.logged_out")) {
+				Translations.addSingleTranslation(schema, language, key, value, loggedUser);
+			} else {
+				configs.add(new ConfigurationsDTO(key, value));
 			}
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
+		});
 
 		if (configs.size() == 0) {
 			return;
 		}
 		
-		try {
-			configs = Configurations.validate(schema, configs);
-		} catch (ValidationException e) {
-			this.setMessage(e);
-			return;
-		}
-		
-		try {
-			boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
-			Configurations.save(schema, configs, loggedUser);
-			boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
+		boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
 
-			this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
-			this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
-		} catch (Exception e) {
-			this.setMessage(ActionResult.WARNING, "administration.configurations.error.save");
-			return;
-		}
+		Configurations.save(schema, Configurations.validate(schema, configs), loggedUser);
+
+		boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
+
+		this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
+
+		this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
 	}
 	
 	public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
