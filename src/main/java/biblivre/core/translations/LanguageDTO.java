@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import biblivre.core.AbstractDTO;
 
-public class LanguageDTO extends AbstractDTO {
+public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private String language;
@@ -63,5 +63,10 @@ public class LanguageDTO extends AbstractDTO {
 		LanguageDTO otherDto = (LanguageDTO) other;
 		
 		return this.language == null ? otherDto.language == null : this.language.equals(otherDto.language);
+	}
+	
+	@Override
+	public int compareTo(LanguageDTO other) {
+		return this.getLanguage().compareTo(other.getLanguage());
 	}
 }

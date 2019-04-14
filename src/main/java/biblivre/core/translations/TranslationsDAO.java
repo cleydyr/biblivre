@@ -34,18 +34,16 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class TranslationsDAO extends AbstractDAO implements TranslationsService {
+public class TranslationsDAO extends AbstractDAO {
 
-	public static TranslationsService getInstance(String schema) {
-		return (TranslationsService) AbstractDAO.getInstance(TranslationsDAO.class, schema);
+	public static TranslationsDAO getInstance(String schema) {
+		return (TranslationsDAO) AbstractDAO.getInstance(TranslationsDAO.class, schema);
 	}
 
-	@Override
 	public List<TranslationDTO> list() {
 		return this.list(null);
 	}
 
-	@Override
 	public List<TranslationDTO> list(String language) {
 		List<TranslationDTO> list = new ArrayList<TranslationDTO>();
 
@@ -90,12 +88,10 @@ public class TranslationsDAO extends AbstractDAO implements TranslationsService 
 		return list;
 	}
 
-	@Override
 	public boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser) {
  		return this.save(translations, null, loggedUser);
 	}
 	
-	@Override
 	public boolean save(HashMap<String, HashMap<String, String>> translations, HashMap<String, HashMap<String, String>> removeTranslations, int loggedUser) {
 		Connection con = null;
 		try {
