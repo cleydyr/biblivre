@@ -20,7 +20,7 @@
 package biblivre.administration.translations;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -36,23 +36,25 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.LanguageDTO;
 import biblivre.core.translations.Languages;
-import biblivre.core.translations.TranslationDTO;
 import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationsMap;
 
 public class Handler extends AbstractHandler {
 
 	public void dump(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String dumpId = UUID.randomUUID().toString();
+
 		String language = request.getString("language");
-		
+
 		if (StringUtils.isBlank(language)) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.invalid_language");
 			return;
 		}
-		
+
+		String dumpId = UUID.randomUUID().toString();
+		String schema = request.getSchema();
+
 		request.setSessionAttribute(schema, dumpId, language);
-		
+
 		try {
 			this.json.put("uuid", dumpId);
 		} catch(JSONException e) {
@@ -62,9 +64,9 @@ public class Handler extends AbstractHandler {
 	
 	
 	public void downloadDump(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		
 		String dumpId = request.getString("id");
+		String schema = request.getSchema();
 		String language = (String)request.getSessionAttribute(schema, dumpId);
 
 		if (StringUtils.isBlank(language)) {
@@ -74,8 +76,10 @@ public class Handler extends AbstractHandler {
 
 		final DiskFile exportFile = Translations.createDumpFile(schema, language);
 
+		exportFile.setName("biblivre_translations_" + System.currentTimeMillis() + "_" + ".txt");
+
 		this.setFile(exportFile);
-		
+
 		this.setCallback(exportFile::delete);
 	}
 
@@ -83,7 +87,6 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
 		boolean loadUserCreated = StringUtils.isNotBlank(request.getString("user_created"));
-
 		HashMap<String, String> addTranslation = new HashMap<String, String>();
 		HashMap<String, String> removeTranslation = new HashMap<String, String>();
 		char type = '\0';
@@ -91,9 +94,6 @@ public class Handler extends AbstractHandler {
 		String value = null;
 
 		try (Scanner sc = new Scanner(request.getFile("file").getInputStream(), "UTF-8")) {
-			//TODO check file's char encoding
-			//TODO validate if this a translations file
-
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine().trim();
 
@@ -188,18 +188,22 @@ public class Handler extends AbstractHandler {
 	
 	public void list(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
-		Languages.reset(schema);
-		Set<LanguageDTO> languages = Languages.getLanguages(schema);
-		
-		HashMap<String, HashMap<String, TranslationDTO>> translations = new HashMap<String, HashMap<String, TranslationDTO>>();
 
-		for (LanguageDTO languageDTO : languages) {
+		Languages.reset(schema);
+
+		Set<LanguageDTO> languages = Languages.getLanguages(schema);
+		Map<String, Map<String, String>> translations = new HashMap<>();
+
+		languages.forEach(languageDTO -> {
 			String language = languageDTO.getLanguage();
 
 			Translations.reset(schema, language);
-			translations.put(language, Translations.get(schema, language).getAll());
-		}
+
+			TranslationsMap translationsMap = Translations.get(schema, language);
+			Map<String, String> translation = translationsMap.getAllValues();
+
+			translations.put(language, translation);
+		});
 
 		try {
 			this.json.put("translations", new JSONObject(translations));
@@ -220,39 +224,26 @@ public class Handler extends AbstractHandler {
 
 			if (jsonTranslations == null) {
 				this.setMessage(ActionResult.WARNING, "error.invalid_json");
-				return;				
+				return;
 			}
-		
+
 			HashMap<String, HashMap<String, String>> newTranslations = new HashMap<String, HashMap<String, String>>();
 
-			Iterator<String> it = jsonTranslations.keys();
-			while (it.hasNext()) {
-				String language = it.next();
+			jsonTranslations.keys().forEachRemaining(language -> {
 				JSONObject jsonTranslation = jsonTranslations.optJSONObject(language);
 
-				if (jsonTranslation == null) {
-					continue;
+				if (jsonTranslation != null) {
+					HashMap<String, String> newTranslation = new HashMap<String, String>();
+
+					jsonTranslation.keys().forEachRemaining(key -> newTranslation.put(key, jsonTranslation.optString(key)));
+
+					newTranslations.put(language, newTranslation);
 				}
+			});
 
-				HashMap<String, String> newTranslation = new HashMap<String, String>();
-
-				Iterator<String> tit = jsonTranslation.keys();
-				while (tit.hasNext()) {
-					String key = tit.next();
-					String value = jsonTranslation.optString(key);
-					
-					if (value != null) {
-						newTranslation.put(key, value);
-					}
-				}
-
-				newTranslations.put(language, newTranslation);
-			}
-			
 			Translations.save(schema, newTranslations, null, loggedUser);
-			
+
 			this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
-			
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
@@ -269,8 +260,8 @@ public class Handler extends AbstractHandler {
 
 		try {
 			JSONObject json = new JSONObject(strJson);
-
 			String language = json.getString("language_code");
+
 			if (!Translations.isJavaScriptLocaleAvailable(language)) {
 				this.setMessage(ActionResult.WARNING, "administration.translations.error.invalid_language");
 				return;
@@ -278,15 +269,7 @@ public class Handler extends AbstractHandler {
 
 			HashMap<String, String> newTranslation = new HashMap<String, String>();
 
-			Iterator<String> tit = json.keys();
-			while (tit.hasNext()) {
-				String key = tit.next();
-				String value = json.optString(key);
-				
-				if (value != null) {
-					newTranslation.put(key, value);
-				}
-			}
+			json.keys().forEachRemaining(key -> newTranslation.put(key, json.optString(key)));
 
 			Translations.save(schema, language, newTranslation, new HashMap<String, String>(), loggedUser);
 

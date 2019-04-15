@@ -21,7 +21,7 @@ package biblivre.circulation.user;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum UserFieldType {
+public enum UserFieldType implements org.json.JSONString {
 	STRING,
 	TEXT,
 	NUMBER,
@@ -53,5 +53,10 @@ public enum UserFieldType {
 
 	public String getString() {
 		return this.toString();
+	}
+
+	@Override
+	public String toJSONString() {
+		return "\'" + toString() + "\'";
 	}
 }
