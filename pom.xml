@@ -153,20 +153,6 @@
 			<version>9.1-901.jdbc4</version>
 		</dependency>
 
-		<!--dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-dbcp</artifactId>
-			<version>7.0.53</version>
-			<scope>provided</scope>
-		</dependency-->
-
 		<!-- Local libraries, must use mvn:install first -->
 		<dependency>
 			<groupId>org.marc4j</groupId>
