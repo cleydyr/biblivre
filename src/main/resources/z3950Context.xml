@@ -44,7 +44,7 @@
     
     <!-- Persistence Definitions -->
     
-    <bean id="z3950DataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+    <bean id="z3950DataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName">
             <value>${biblivre3.z3950.jdbc_driver}</value>
         </property>
