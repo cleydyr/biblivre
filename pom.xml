@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.3.14.RELEASE</version>
+			<version>3.2.18.RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -178,6 +178,18 @@
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>normalizer</artifactId>
 			<version>2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzkit</groupId>
+			<artifactId>a2j</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzkit</groupId>
+			<artifactId>jzkit2_service</artifactId>
+			<version>2.2.3</version>
 		</dependency>
 
 		<!-- z39.50 -->
