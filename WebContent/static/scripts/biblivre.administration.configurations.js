@@ -69,6 +69,11 @@ Configurations.save = function(button) {
 		}
 	});
 
+	var z3950Checkbox = $('#z3950_server_active');
+	if (z3950Checkbox.size()) {
+		result[z3950Checkbox.attr('name')] = z3950Checkbox.is(':checked');
+	}
+
 	var multiSchema = $('#multi_schema_active');
 	var multiSchemaChecked = false;
 

@@ -38,6 +38,8 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.z3950.Z3950AddressDTO;
+import biblivre.z3950.Z3950BO;
 
 public class Handler extends AbstractHandler {
 
@@ -102,6 +104,18 @@ public class Handler extends AbstractHandler {
 		return; 
 	}
 	
+	public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
+		String schema = request.getSchema();
+		Z3950BO bo = Z3950BO.getInstance(schema);
+		
+		List<Z3950AddressDTO> servers = bo.listAll();
+
+		request.setAttribute("servers", servers);
+		
+		this.jspURL = "/jsp/search/z3950.jsp";
+		return; 
+	}
+
 	public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/cataloging/bibliographic.jsp";
 		return; 
@@ -114,6 +128,18 @@ public class Handler extends AbstractHandler {
 
 	public void catalogingVocabulary(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/cataloging/vocabulary.jsp";
+		return; 
+	}
+
+	public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
+		String schema = request.getSchema();
+		Z3950BO bo = Z3950BO.getInstance(schema);
+		
+		List<Z3950AddressDTO> servers = bo.listAll();
+
+		request.setAttribute("servers", servers);
+		
+		this.jspURL = "/jsp/cataloging/import.jsp";
 		return; 
 	}
 
@@ -220,6 +246,11 @@ public class Handler extends AbstractHandler {
 		return;
 	}
 
+	public void administrationZ3950Servers(ExtendedRequest request, ExtendedResponse response) {
+		this.jspURL = "/jsp/administration/z3950_servers.jsp";
+		return;
+	}
+	
 	public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/reports.jsp";
 		return;

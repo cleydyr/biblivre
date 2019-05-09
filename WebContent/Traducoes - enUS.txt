@@ -262,6 +262,7 @@
 *administration.configuration.new_value = New value valor
 *administration.configuration.original_value = Original value
 
+*administration.configuration.description.administration.z3950.server.active = This configuration is showing whether local server z39.50 will be active. In case of multiple libraries, the name of the Server z39.50 Collection will be identical to the name of each library. For example, the name of the collection for this installation is "{0}".
 
 *administration.configuration.description.cataloging.accession_number_prefix = Asset cataloging is the field that solely identifies a copy. In Biblivre, the rule for asset reference numbers depends on the year of acquisition of the unit, on the quantity of units entered in the year and on the prefix of the asset reference number. This prefix is the term to be included before the year number, in the format <prefix>.<year>.<counter> (Ex: Bib.2014.7).
 
@@ -288,6 +289,7 @@
 *administration.configuration.printer_type.printer_80_columns = 80-column printer
 *administration.configuration.printer_type.printer_common = Common printer
 
+*administration.configuration.title.administration.z3950.server.active = Local active server z39.50 
 *administration.configuration.title.cataloging.accession_number_prefix = Prefix of asset reference number
 
 *administration.configuration.title.circulation.lending_receipt.printer.type = Type of printer for loan receipts
@@ -393,6 +395,7 @@
 *administration.migration.groups.lendings = Active loans, loan and fine historical record
 *administration.migration.groups.reservations = Reserves
 *administration.migration.groups.users = Users, access Logins and Users Types
+*administration.migration.groups.z3950_servers = Z39.50 Servers
 
 *administration.migration.migrate.error = Error when importing data
 *administration.migration.migrate.success = Data imported successfully
@@ -458,6 +461,9 @@
 *administration.permissions.items.administration_usertype_delete = Delete user type record
 *administration.permissions.items.administration_usertype_list = List user types
 *administration.permissions.items.administration_usertype_save = Save user type record
+*administration.permissions.items.administration_z3950_delete = Delete z3950 server record
+*administration.permissions.items.administration_z3950_save = Save server z3950 record
+*administration.permissions.items.administration_z3950_search = List z3950 Servers
 *administration.permissions.items.cataloging_authorities_delete = Delete authority record
 *administration.permissions.items.cataloging_authorities_move = Move authority record
 *administration.permissions.items.cataloging_authorities_save = Save authority record
@@ -776,14 +782,31 @@
 
 *administration.usertype.confirm_delete_record_title.forever = Delete User Type
 
+*administration.z3950.confirm_cancel_editing_title = Cancel edition of Z39.50 Server
+*administration.z3950.no_server_found = No z39.50 server found
+*administration.z3950.page_help = <p> the Z39.50 server routine allows registration and search in Servers used  by the Distributed Search routine. To register the data of the Z39.50 collection are needed, as well as the URL address and access port.</p>
 <p>When accessing this routine, Biblivre will automatically list all the Servers previously registered. You may then filter the list, inserting the <em>Name</em> of a Server you may wish to find.</p>
 
+*administration.z3950.confirm_cancel_editing.1 = Do you wish to cancel editing the Z39.50 Server?
+*administration.z3950.confirm_cancel_editing.2 = All the modifications will be lost
 
+*administration.z3950.confirm_delete_record.forever = The Z39.50 Server will be deleted forever from the system and cannot be restored
 
+*administration.z3950.confirm_delete_record_question.forever = Do you really wish to delete this Z39.50 Server?
 
+*administration.z3950.confirm_delete_record_title.forever = Delete Z39.50 Server
 
+*administration.z3950.error.delete = Error in deleting Z39.50 Server
+*administration.z3950.error.save = Error saving Z39.50 Server
 
+*administration.z3950.field.collection = Collection
+*administration.z3950.field.name = Name
+*administration.z3950.field.port = Port
+*administration.z3950.field.url = URL
 
+*administration.z3950.success.delete = Z39.50 Server successfully deleted
+*administration.z3950.success.save = Z39.50 Server successfully saved
+*administration.z3950.success.update = Z39.50 Server successfully updated
 
 *aquisition.quotation.error.quotation_not_found = It was not possible to find the quotation
 
@@ -907,7 +930,7 @@
 *cataloging.import.isrc_already_in_database = There is already a record with this ISRC in the database
 *cataloging.import.issn_already_in_database = There is already a record with this ISSN in the database
 *cataloging.import.no_records_found = No records found
-
+*cataloging.import.page_help = <p>Record import allows expanding your database without any need of manual cataloging. New records can be imported through Z39.50 searches or from files exported by other librarianship systems.</p>
 *cataloging.import.record_imported_successfully = Record successfully imported
 *cataloging.import.record_will_be_ignored = This record will not be imported
 *cataloging.import.records_found_plural = {0} records found
@@ -916,7 +939,7 @@
 *cataloging.import.source_file_subtitle = Select a file with the records to be imported. This file´s format can be <strong>text</strong>, <strong>XML</strong> or <strong>ISO2709</strong>, provided original cataloging is compatible with MARC.
 *cataloging.import.source_file_title = Import records from a file
 *cataloging.import.source_search_subtitle = Select a remote library and fill in the search terms. The search will provide a limit of  {0} records. If you do not see the record that interests you, please refine your search.
-
+*cataloging.import.source_search_title = Import records from a Z39.50 search
 *cataloging.import.step_1_description = At this stage, you can import a file with records in MARC, XML and ISO2709 formats of conduct a search in other libraries. Select below the import arrangement you wish, selecting the file or filling in the search terms. The next step will be to select which records should be imported.
 *cataloging.import.step_1_title = Select origin of import data
 *cataloging.import.step_2_description = In this case, please check the records to be imported and import them individually or altogether, through the buttons available at the end of the page. Biblivre automatically detects if the record is a bibliographic one, or authorities or vocabulary, but it allows the user to correct the importation beforehand. <strong>Important:</strong> Imported record will be added to the Work base and must be corrected and adjusted before moving them to the Main Base. This avoids incorrect records added directly to the final database.
@@ -2316,6 +2339,7 @@
 *menu.administration_reports = Reports
 *menu.administration_translations = Translations
 *menu.administration_user_types = User Types
+*menu.administration_z3950_servers = Z39.50 Servers
 *menu.cataloging = Cataloging
 *menu.cataloging_authorities = Authorities
 *menu.cataloging_bibliographic = Bibliographic
@@ -2342,6 +2366,7 @@
 *menu.search_authorities = Authorities
 *menu.search_bibliographic = Bibliographic
 *menu.search_vocabulary = Vocabulary
+*menu.search_z3950 = Distributed
 
 *multi_schema.configuration.description.general.subtitle = Subtitle shown when the main page in this library broup is accessed. This page will list all the registered libraries in this group (managed by the same Biblivre 4).
 *multi_schema.configuration.description.general.title = Nome to be shown when the main page of the library group is accessed. o que será exibido quando a página principal deste grupo de bibliotecas for acessada. This page will list all the registered libraries in this group (managed by the same Biblivre 4).
@@ -2451,7 +2476,7 @@
 *search.distributed.author = Author
 *search.distributed.isbn = ISBN
 *search.distributed.issn = ISSN (including hyphens)
-
+*search.distributed.no_servers = A Z39.50 search is not possible as there are no remote libraries registered. In order to solve this problem, please registers Z39.50 servers of the libraries of interest in the option <em>" Z39.50 Servers"</em> within <em>"Administration"</em> in the upper Menu. For this a name of <strong>user</strong> and<strong>password</strong> is needed.
 *search.distributed.page_help = <p> Distributed searches allow retrieving information on records in contents from other libraries, which make their records available for collaborative searches and cataloging.</p>
 <p>In order to conduct a search please fill in the terms of the search, selecting your field of interest. Right afterwards, select one or more libraries where the records can be traced.. <span class="warn">Attention: select just a few libraries in order to prevent the Distributed Search from running too slowly, as this depends on the communication between libraries and on the size of each collection.</span></p>
 *search.distributed.query_placeholder = Fill in the terms for the search
@@ -2497,6 +2522,8 @@
 *warning.fix_now = Solve this problem
 
 *warning.reindex_database = You need database reindexing 
+
+*z3950.adresses.list.no_address_found = Z39.50 Server found
 
 
 *multi_schema.manage.enable = Enable library

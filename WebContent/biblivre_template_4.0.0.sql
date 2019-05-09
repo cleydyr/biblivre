@@ -2027,6 +2027,58 @@ ALTER SEQUENCE vocabulary_searches_id_seq OWNED BY vocabulary_searches.id;
 
 SELECT pg_catalog.setval('vocabulary_searches_id_seq', 1, false);
 
+
+--
+-- TOC entry 251 (class 1259 OID 729763)
+-- Dependencies: 2602 8
+-- Name: z3950_addresses; Type: TABLE; Schema: bib4template; Owner: biblivre; Tablespace: 
+--
+
+CREATE TABLE z3950_addresses (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    url character varying NOT NULL,
+    port integer NOT NULL,
+    collection character varying DEFAULT 'default'::character varying NOT NULL
+);
+
+
+ALTER TABLE bib4template.z3950_addresses OWNER TO biblivre;
+
+--
+-- TOC entry 252 (class 1259 OID 729770)
+-- Dependencies: 8 251
+-- Name: z3950_addresses_id_seq; Type: SEQUENCE; Schema: bib4template; Owner: biblivre
+--
+
+CREATE SEQUENCE z3950_addresses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bib4template.z3950_addresses_id_seq OWNER TO biblivre;
+
+--
+-- TOC entry 2873 (class 0 OID 0)
+-- Dependencies: 252
+-- Name: z3950_addresses_id_seq; Type: SEQUENCE OWNED BY; Schema: bib4template; Owner: biblivre
+--
+
+ALTER SEQUENCE z3950_addresses_id_seq OWNED BY z3950_addresses.id;
+
+
+--
+-- TOC entry 2874 (class 0 OID 0)
+-- Dependencies: 252
+-- Name: z3950_addresses_id_seq; Type: SEQUENCE SET; Schema: bib4template; Owner: biblivre
+--
+
+SELECT pg_catalog.setval('z3950_addresses_id_seq', 13, false);
+
+
 --
 -- TOC entry 2480 (class 2604 OID 729772)
 -- Dependencies: 177 176
@@ -2232,6 +2284,15 @@ ALTER TABLE ONLY vocabulary_records ALTER COLUMN id SET DEFAULT nextval('vocabul
 --
 
 ALTER TABLE ONLY vocabulary_searches ALTER COLUMN id SET DEFAULT nextval('vocabulary_searches_id_seq'::regclass);
+
+
+--
+-- TOC entry 2603 (class 2604 OID 729795)
+-- Dependencies: 252 251
+-- Name: id; Type: DEFAULT; Schema: bib4template; Owner: biblivre
+--
+
+ALTER TABLE ONLY z3950_addresses ALTER COLUMN id SET DEFAULT nextval('z3950_addresses_id_seq'::regclass);
 
 
 --
@@ -2862,6 +2923,7 @@ INSERT INTO configurations (key, value, type, required, modified, modified_by) V
 -- INSERT INTO configurations (key, value, type, required, modified, modified_by) VALUES ('general.business_days', '2,3,4,5,6,7', 'string', true, '2014-02-22 17:07:33.380256', 1);
 -- INSERT INTO configurations (key, value, type, required, modified, modified_by) VALUES ('general.default_language', 'pt-BR', 'string', true, '2014-02-22 17:18:48.852604', 1);
 -- INSERT INTO configurations (key, value, type, required, modified, modified_by) VALUES ('general.title', 'Biblivre IV', 'string', true, '2014-02-22 17:01:57.071056', 1);
+-- INSERT INTO configurations (key, value, type, required, modified, modified_by) VALUES ('administration.z3950.server.active', 'true', 'boolean', true, '2014-04-07 19:58:15.127', 1);
 -- INSERT INTO configurations (key, value, type, required, modified, modified_by) VALUES ('circulation.lending_receipt.printer.type', 'printer_common', 'string', false, '2014-04-14 15:27:14.339', 1);
 -- INSERT INTO configurations (key, value, type, required, modified, modified_by) VALUES ('general.backup_path', '', 'string', false, '2014-04-07 19:15:49.925', 1);
 -- INSERT INTO configurations (key, value, type, required, modified, modified_by) VALUES ('general.pg_dump_path', '', 'string', false, '2014-04-07 19:15:49.925', 1);
@@ -3200,6 +3262,27 @@ INSERT INTO vocabulary_indexing_groups (id, translation_key, datafields, sortabl
 -- Dependencies: 249
 -- Data for Name: vocabulary_searches; Type: TABLE DATA; Schema: bib4template; Owner: biblivre
 --
+
+
+
+--
+-- TOC entry 2819 (class 0 OID 729763)
+-- Dependencies: 251
+-- Data for Name: z3950_addresses; Type: TABLE DATA; Schema: bib4template; Owner: biblivre
+--
+
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (1, 'Universidad de Chile - Santiago, Chile', 'unicornio.uchile.cl', 2200, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (2, 'Université Laval - Quebec, Canadá', 'ariane2.ulaval.ca', 2200, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (3, 'Brunel University - Londres, Reino Unido', 'library.brunel.ac.uk', 2200, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (4, 'Acadia University - Nova Escócia, Canada', 'jasper.acadiau.ca', 2200, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (5, 'Carnegie Mellon University - Pittsburgh, PA - EUA', 'webcat.library.cmu.edu', 2200, 'unicorn');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (6, 'New York Public Library - EUA', 'catalog.nypl.org', 210, 'INNOPAC');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (7, 'Biblioteca Nacional da Espanha - Madrid', 'sigb.bne.es', 2200, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (8, 'Library of Congress Online Catalog - EUA', '140.147.249.67', 210, 'LCDB');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (9, 'South University New Orleans, EUA', 'suno.louislibraries.org', 7705, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (10, 'Penn State University, EUA', 'zcat.libraries.psu.edu', 2200, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (11, 'The Fletcher School, Tufts University, EUA', 'fletcher.louislibraries.org', 8205, 'default');
+INSERT INTO z3950_addresses (id, name, url, port, collection) VALUES (12, 'Univerdidad de Madrid, Espanha', 'marte.biblioteca.upm.es', 2200, 'default');
 
 
 --
@@ -3700,6 +3783,16 @@ ALTER TABLE ONLY vocabulary_search_results
 
 ALTER TABLE ONLY vocabulary_searches
     ADD CONSTRAINT "PK_vocabulary_searches" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2736 (class 2606 OID 729897)
+-- Dependencies: 251 251
+-- Name: PK_z3950_addresses; Type: CONSTRAINT; Schema: bib4template; Owner: biblivre; Tablespace: 
+--
+
+ALTER TABLE ONLY z3950_addresses
+    ADD CONSTRAINT "PK_z3950_addresses" PRIMARY KEY (id);
 
 
 --

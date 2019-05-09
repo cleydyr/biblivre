@@ -65,6 +65,7 @@ public final class SchemaServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		BiblivreInitializer.initialize();
 		ExtendedRequest xRequest = ((ExtendedRequest) request);
 
 		if (xRequest.mustRedirectToSchema()) {

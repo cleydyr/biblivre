@@ -5,6 +5,7 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
+	<!-- link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.z3950.css" /-->	
 
 	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.administration.usertype.search.js"></script>

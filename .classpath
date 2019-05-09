@@ -23,13 +23,14 @@
 	<classpathentry kind="lib" path="lib/jzkit2_core-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/jzkit2_jdbc_plugin-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/jzkit2_service-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/jzkit2_z3950_plugin-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/marc4j-2.5.1.beta.jar"/>
 	<classpathentry kind="lib" path="lib/normalizer-2.6.jar"/>
+	<classpathentry kind="lib" path="lib/z3950server-1.0.2.jar"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>

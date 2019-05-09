@@ -17,39 +17,58 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core;
+package biblivre.z3950;
 
-import br.org.biblivre.z3950server.Z3950ServerBO;
+import biblivre.core.AbstractDTO;
 
-public class BiblivreInitializer {
+public class Z3950AddressDTO extends AbstractDTO {
 
-	private static boolean initialized = false;
-	public static Z3950ServerBO Z3950server = null;
+	private static final long serialVersionUID = 1L;
 
-	public synchronized static void initialize() {
-		if (!BiblivreInitializer.initialized) {
-			try {
-				Updates.fixPostgreSQL81();
-				Updates.globalUpdate();
+	private int id;
+	private String name;
+	private String url;
+	private int port;
+	private String collection;
 
-				BiblivreInitializer.Z3950server = new Z3950ServerBO();
-				BiblivreInitializer.Z3950server.startServer();
-
-				BiblivreInitializer.initialized = true;
-			} catch (Exception e) {
-			}
-		}
+	public int getId() {
+		return this.id;
 	}
 
-	public synchronized static void destroy() {
-		if (BiblivreInitializer.Z3950server != null) {
-			BiblivreInitializer.Z3950server.stopServer();
-		}
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public synchronized static void reloadZ3950Server() {
-		if (BiblivreInitializer.Z3950server != null) {
-			BiblivreInitializer.Z3950server.reloadServer();
-		}
+	public String getName() {
+		return this.name;
 	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUrl() {
+		return this.url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public int getPort() {
+		return this.port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public String getCollection() {
+		return this.collection;
+	}
+
+	public void setCollection(String collection) {
+		this.collection = collection;
+	}
+	
 }

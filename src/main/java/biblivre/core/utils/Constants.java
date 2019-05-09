@@ -68,6 +68,9 @@ public class Constants {
 	public static final String CONFIG_SEARCH_RESULTS_PER_PAGE = "search.results_per_page";
 	public static final String CONFIG_SEARCH_RESULT_LIMIT = "search.result_limit";
 
+	public static final String CONFIG_Z3950_RESULT_LIMIT = "search.distributed_search_limit";
+	public static final String CONFIG_Z3950_SERVER_ACTIVE = "administration.z3950.server.active";
+
 	public static final String CONFIG_LENDING_PRINTER_TYPE = "circulation.lending_receipt.printer.type";
 
 	// Translations

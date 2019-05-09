@@ -901,6 +901,8 @@ public class Updates {
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
 				
+				dao.updateZ3950Address(con, "Library of Congress Online Catalog - EUA", "lx2.loc.gov");
+				
 				dao.commitUpdate(version, con);
 			}
 
