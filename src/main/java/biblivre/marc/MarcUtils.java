@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -252,11 +252,10 @@ public class MarcUtils {
 			}
 
 			MarcFactory factory = MarcFactory.newInstance();
-
 			Leader leader = MarcUtils.createLeader(strLeader, materialType, status);
 			record = factory.newRecord(leader);
+			Iterator<String> dataFieldsIterator = json.keys();
 
-			Iterator<String> dataFieldsIterator = json.sortedKeys();
 			while (dataFieldsIterator.hasNext()) {
 				String dataFieldTag = dataFieldsIterator.next();
 
@@ -281,7 +280,7 @@ public class MarcUtils {
 							df.setIndicator1(' ');
 							df.setIndicator2(' ');
 
-							Iterator<String> dfIterator = subFieldJson.sortedKeys();
+							Iterator<String> dfIterator = subFieldJson.keys();
 							while (dfIterator.hasNext()) {
 								String subFieldTag = dfIterator.next();
 

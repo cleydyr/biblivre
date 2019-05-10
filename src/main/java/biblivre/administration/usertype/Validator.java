@@ -74,7 +74,7 @@ public class Validator extends AbstractValidator {
 		String fineValue = request.getString("fine_value");
 		if (StringUtils.isBlank(url)) {
 			ex.addError("fine_value", "field.error.required");
-		} else if (!NumberUtils.isNumber(fineValue)) {
+		} else if (!NumberUtils.isCreatable(fineValue)) {
 			ex.addError("fine_value", "field.error.digits_only");
 		}
 		

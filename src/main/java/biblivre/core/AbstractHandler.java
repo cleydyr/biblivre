@@ -27,7 +27,7 @@ import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 
-public abstract class AbstractHandler {
+public class AbstractHandler {
 
 	protected JSONObject json;
 	protected String jspURL;
@@ -36,8 +36,8 @@ public abstract class AbstractHandler {
 	protected int returnCode;
 	protected HttpCallback callback;
 	
-	public class HttpCallback {
-		public void success() {};
+	public interface HttpCallback {
+		public void success();
 	}
 	
 	public AbstractHandler() {

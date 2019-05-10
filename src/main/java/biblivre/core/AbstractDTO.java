@@ -83,7 +83,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 								if (item instanceof IFJson) {
 									json.append(name, ((IFJson) item).toJSONObject());
 								} else if (value instanceof Date) {
-									json.putOpt(name, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format((Date) value));
+									json.putOpt(name, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format((Date) value));
 								} else if (item instanceof String) {
 									json.append(name, ((String) item).trim());
 								} else {
@@ -91,7 +91,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 								}
 							}
 						} else if (value instanceof Date) {
-							json.putOpt(name, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format((Date) value));
+							json.putOpt(name, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format((Date) value));
 						} else if (value instanceof String) {
 							json.putOpt(name, ((String) value).trim());
 						} else {

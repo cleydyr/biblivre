@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -9,6 +10,12 @@
 	<name>Biblivre6</name>
 	<version>6.0.0</version>
 	<url>http://www.biblivre.org.br</url>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.5.RELEASE</version>
+	</parent>
 
 	<developers>
 		<developer>
@@ -49,23 +56,27 @@
 
 	<dependencies>
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>servlet-api</artifactId>
-		    <version>2.5</version>
-		    <scope>provided</scope>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180813</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
-		    <groupId>javax.servlet.jsp</groupId>
-		    <artifactId>jsp-api</artifactId>
-		    <version>2.0</version>
-		    <scope>provided</scope>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.3.14.RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -73,16 +84,15 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
 		</dependency>
 
 		<dependency>
@@ -92,9 +102,14 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.5</version>
 		</dependency>
 
 		<dependency>
@@ -138,23 +153,15 @@
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.2</version>
 		</dependency>
-
-		<!-- dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency -->
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.5</version>
 		</dependency>
 
 		<!-- Local libraries, must use mvn:install first -->
@@ -163,11 +170,23 @@
 			<artifactId>marc4j</artifactId>
 			<version>2.5.1.beta</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>normalizer</artifactId>
 			<version>2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzkit</groupId>
+			<artifactId>a2j</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzkit</groupId>
+			<artifactId>jzkit2_service</artifactId>
+			<version>2.2.3</version>
 		</dependency>
 
 		<!-- z39.50 -->
@@ -208,7 +227,7 @@
 			<artifactId>juniversalchardet</artifactId>
 			<version>1.0.3</version>
 		</dependency>
-		
+
 		<!-- ObjectLab Kit for business days calculations -->
 		<dependency>
 			<groupId>net.objectlab.kit</groupId>
@@ -241,9 +260,8 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
 		<dependency>
-		    <groupId>org.freemarker</groupId>
-		    <artifactId>freemarker</artifactId>
-		    <version>2.3.28</version>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.measure</groupId>
@@ -264,13 +282,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
 					<debug>${debug}</debug>
 					<optimize>!${debug}</optimize>
-					<verbose>${debug}</verbose>				
+					<verbose>${debug}</verbose>
 					<showWarnings>${debug}</showWarnings>
 					<showDeprecation>${debug}</showDeprecation>
 				</configuration>
@@ -279,7 +296,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
 				<configuration>
 					<webResources>
 						<resource>
@@ -302,7 +318,7 @@
 							</includes>
 						</resource>
 					</webResources>
-				</configuration>				
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -314,7 +330,7 @@
 						<always_update>true</always_update>
 						<style>${sass.OutputStyle}</style>
 						<debug_info>${debug}</debug_info>
-					</sassOptions>	
+					</sassOptions>
 					<useCompass>true</useCompass>
 					<resources>
 						<resource>
@@ -327,11 +343,11 @@
 							</source>
 							<destination>${basedir}/WebContent/static/styles</destination>
 						</resource>
-					</resources>							
+					</resources>
 				</configuration>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -359,6 +375,6 @@
 					</configuration>
 				</plugin>
 			</plugins>
-		</pluginManagement>		
+		</pluginManagement>
 	</build>
 </project>

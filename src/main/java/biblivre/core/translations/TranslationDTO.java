@@ -19,9 +19,13 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
-import biblivre.core.AbstractDTO;
+import org.apache.commons.text.StringEscapeUtils;
+import org.json.JSONString;
 
-public class TranslationDTO extends AbstractDTO {
+import biblivre.core.AbstractDTO;
+import biblivre.core.utils.StringPool;
+
+public class TranslationDTO extends AbstractDTO implements JSONString {
 	private static final long serialVersionUID = 1L;
 
 	private String language;
@@ -73,5 +77,12 @@ public class TranslationDTO extends AbstractDTO {
 	@Override
 	public String toString() {
 		return this.getText();
+	}
+
+	@Override
+	public String toJSONString() {
+		return StringPool.DOUBLE_QUOTE +
+				StringEscapeUtils.escapeEcmaScript(this.toString()) +
+				StringPool.DOUBLE_QUOTE;
 	}
 }

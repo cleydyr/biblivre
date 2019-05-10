@@ -94,14 +94,7 @@ public class Handler extends AbstractHandler {
 
 		this.setFile(report);
 		
-		this.setCallback(new HttpCallback() {
-			@Override
-			public void success() {
-				try {
-					report.delete();
-				} catch (Exception e) {}
-			}
-		});
+		this.setCallback(report::delete);
 	}
 
 	private ReportsDTO populateDto(ExtendedRequest request) throws Exception {
