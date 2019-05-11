@@ -58,7 +58,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	}
 
 	public RestoreDTO (JSONObject json) throws Exception {
-		this.setSchemas(json.getString("schemas"));
+		this.setSchemas(json.get("schemas").toString());
 		this.setType(BackupType.fromString(json.getString("type")));
 		this.setBackupScope(BackupScope.fromString(json.getString("backup_scope")));
 		this.setValid(true);
