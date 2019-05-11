@@ -1,29 +1,16 @@
 package biblivre.z3950.client.config;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 
-import br.org.biblivre.z3950server.JZKitBackend;
-import javafx.application.Application;
-import org.jzkit.a2j.codec.util.OIDRegister;
 import org.jzkit.search.provider.z3950.Z3950ServiceFactory;
-import org.jzkit.util.PropsHolder;
-import org.jzkit.z3950.QueryModel.PropsBasedInternalToType1ConversionRules;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.Resource;
 
 import biblivre.z3950.client.Z3950Client;
-import sun.security.provider.certpath.CollectionCertStore;
+import br.org.biblivre.z3950server.JZKitBackend;
 
 @Import(Z3950AppContext.class)
 @Configuration
