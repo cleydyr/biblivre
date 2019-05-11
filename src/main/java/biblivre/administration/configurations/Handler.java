@@ -47,7 +47,7 @@ public class Handler extends AbstractHandler {
 		JSONObject json = new JSONObject(configurations);
 
 		json.keys().forEachRemaining(key -> {
-			String value = json.getString(key);
+			String value = json.get(key).toString();
 
 			if (key.equals("text.main.logged_in") || key.equals("text.main.logged_out")) {
 				Translations.addSingleTranslation(schema, language, key, value, loggedUser);
