@@ -137,8 +137,8 @@ public class Handler extends AbstractHandler {
 
 	public void reserve(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		Integer recordId = request.getInteger("record_id");
-		Integer userId = request.getInteger("user_id");
+		int recordId = request.getInteger("record_id");
+		int userId = request.getInteger("user_id");
 		
 		RecordBO rbo = RecordBO.getInstance(schema, RecordType.BIBLIO);
 		BiblioRecordDTO record = (BiblioRecordDTO)rbo.get(recordId, RecordBO.MARC_INFO);
@@ -173,7 +173,7 @@ public class Handler extends AbstractHandler {
 	
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		Integer reserveId = request.getInteger("id");
+		int reserveId = request.getInteger("id");
 		
 		ReservationBO reservationBo = ReservationBO.getInstance(schema);
 		boolean success = reservationBo.delete(reserveId);
@@ -212,9 +212,9 @@ public class Handler extends AbstractHandler {
 	public void selfReserve(ExtendedRequest request, ExtendedResponse response) {
 		
 		try {
-			Integer userId = request.getInteger("user_id");
-			Integer loggedUser = request.getLoggedUserId();
-			Integer dbUserId = UserBO.getInstance(request.getSchema()).getUserByLoginId(loggedUser).getId();
+			int userId = request.getInteger("user_id");
+			int loggedUser = request.getLoggedUserId();
+			int dbUserId = UserBO.getInstance(request.getSchema()).getUserByLoginId(loggedUser).getId();
 			
 			if (userId != dbUserId) {
 				this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
@@ -235,11 +235,11 @@ public class Handler extends AbstractHandler {
 		UserSearchDTO searchDto = new UserSearchDTO(searchParameters);
 		
 		try {
-			Integer userId = Integer.valueOf(searchDto.getQuery());
-			Integer loggedUser = request.getLoggedUserId();
-			Integer dbUserId = UserBO.getInstance(schema).getUserByLoginId(loggedUser).getId();
+			int userId = Integer.valueOf(searchDto.getQuery());
+			int loggedUser = request.getLoggedUserId();
+			int dbUserId = UserBO.getInstance(schema).getUserByLoginId(loggedUser).getId();
 			
-			if (!userId.equals(dbUserId)) {
+			if (userId != dbUserId) {
 				this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
 				return;
 			}
@@ -273,8 +273,8 @@ public class Handler extends AbstractHandler {
 	
 	public void selfDelete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		Integer reservationId = request.getInteger("id");
-		Integer loggedUser = request.getLoggedUserId();
+		int reservationId = request.getInteger("id");
+		int loggedUser = request.getLoggedUserId();
 		
 		ReservationBO reservationBo = ReservationBO.getInstance(schema);
 		ReservationDTO reservationDto = reservationBo.get(reservationId);
@@ -284,7 +284,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 		
-		Integer userId = reservationDto.getUserId();
+		int userId = reservationDto.getUserId();
 		
 		if (userId != loggedUser) {
 			this.setMessage(ActionResult.WARNING, "circulation.reservation.delete_failure");
