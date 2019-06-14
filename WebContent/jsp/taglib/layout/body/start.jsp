@@ -47,8 +47,8 @@
 						<img src="static/images/logo_biblivre_small.png" width="43" height="36" alt="Biblivre V">
 					</a>
 				</div>
-				<h1><a href="?">${Configurations.getHtml(schema, "general.title")}</a></h1>
-				<h2>${Configurations.getHtml(schema, "general.subtitle")}</h2>
+				<h1><a href="?"><%= Configurations.getString(schema, Constants.CONFIG_TITLE) %></a></h1>
+				<h2><%= Configurations.getHtml(schema, Constants.CONFIG_TITLE) %></h2>
 			</div>
 			<c:if test="${languages.size() > 1}">
 				<div id="language_selection">
