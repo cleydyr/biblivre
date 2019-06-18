@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -53,49 +52,17 @@ import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
+import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.PrinterType;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 
 public class LendingBO extends AbstractBO {
-	private static final Configuration freemarkerConfiguration;
-
-	static {
-		// Create your Configuration instance, and specify if up to what FreeMarker
-		// version (here 2.3.27) do you want to apply the fixes that are not 100%
-		// backward-compatible. See the Configuration JavaDoc for details.
-		freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_28);
-
-		// Specify the source where the template files come from. Here I set a
-		// plain directory for it, but non-file-system sources are possible too:
-		try {
-			freemarkerConfiguration.setDirectoryForTemplateLoading(new File("WebContent/freemarker"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Set the preferred charset template files are stored in. UTF-8 is
-		// a good choice in most applications:
-		freemarkerConfiguration.setDefaultEncoding("UTF-8");
-
-		// Sets how errors will appear.
-		// During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
-		freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-
-		// Don't log exceptions inside FreeMarker that it will thrown at you anyway:
-		freemarkerConfiguration.setLogTemplateExceptions(false);
-
-		// Wrap unchecked exceptions thrown during template processing in
-		freemarkerConfiguration.setWrapUncheckedExceptions(true);
-	}
-
 	private LendingDAO dao;
 	
 	public static LendingBO getInstance(String schema) {
@@ -669,7 +636,7 @@ public class LendingBO extends AbstractBO {
 
 		Template template = null;
 
-		template = freemarkerConfiguration.getTemplate("receipt.ftl");
+		template = FreemarkerTemplateHelper.freemarkerConfiguration.getTemplate("receipt.ftl");
 
 		Map<String, Object> root = new HashMap<>();
 

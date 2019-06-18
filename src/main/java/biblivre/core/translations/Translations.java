@@ -28,16 +28,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
+import freemarker.template.Template;
+import biblivre.core.translations.TranslationsDAO;
 
 public class Translations extends StaticBO {
 	private static Logger logger = Logger.getLogger(Translations.class);
@@ -180,71 +184,31 @@ public class Translations extends StaticBO {
 	
 	public static DiskFile createDumpFile(String schema, String language) {
 		Translations.reset(schema, language);
-		HashMap<String, TranslationDTO> translations = Translations.get(schema, language).getAll();
-		
+
+		Map<String,TranslationDTO> translations = Translations.get(schema, language).getAll();
 		List<String> list = new ArrayList<String>(translations.keySet());
+
 		Collections.sort(list, new NamespaceComparator());
 
 		try {
-			
 			File file = File.createTempFile("biblivre_translations_" + language + "_", ".txt");
 			FileWriter out = new FileWriter(file);
+			Template template = FreemarkerTemplateHelper
+					.freemarkerConfiguration
+					.getTemplate("translations_dump.ftl");
+			Map<String, Object> root = new HashMap<>();
 
-			String lastNamespace = null;
-			String namespace = null;
-			int namespaceIndex;
+			root.put("translations", translations);
 
-			out.write("##################################################################\n");
-			out.write("#               ARQUIVO DE TRADUÇÕES DO BIBLIVRE V               #\n");
-			out.write("#                  BIBLIVRE V TRANSLATIONS FILE                  #\n");
-			out.write("##################################################################\n");
-			out.write("#                                                                #\n");			
-			out.write("#                     DIRETRIZES / GUIDELINES                    #\n");
-			out.write("#                                                                #\n");
-			out.write("##################################################################\n");
-			out.write("#                                                                #\n");
-			out.write("# 1. Este arquivo deve ser salvo com o encoding UTF-8            #\n");
-			out.write("# 2. Traduza apenas o que estiver depois do símbolo de igual     #\n");
-			out.write("# 3. Não altere ou traduza termos que estiverem dentro de chaves #\n");
-			out.write("# 4. É possível usar quebra de linha nas  traduções. Os símbolos #\n");
-			out.write("#    * ou + no começo da linha definirão que ali começa um novo  #\n");
-			out.write("#    termo                                                       #\n");
-			out.write("# 5. A chave *language_code deve ser preenchida com o código do  #\n");
-			out.write("#    idioma no formato RFC 3066 como descrito em                 #\n");
-			out.write("#    http://www.i18nguy.com/unicode/language-identifiers.html    #\n");
-			out.write("#                                                                #\n");
-			out.write("##################################################################\n");
-			out.write("\n");
-			out.write("\n");
-			
-			for (String key : list) {
-				namespaceIndex = key.lastIndexOf('.');
-
-				if (namespaceIndex != -1) {
-					namespace = key.substring(0, namespaceIndex);
-				} else {
-					namespace = "";
-				}
-
-				if (lastNamespace != null && !lastNamespace.equals(namespace)) {
-					out.write(Constants.LINE_BREAK);
-				}
-
-				lastNamespace = namespace;
-
-				TranslationDTO dto = translations.get(key);
-				
-				out.write(dto.isUserCreated() ? "+" : "*");
-				out.write(key);
-				out.write(" = ");
-				out.write(dto.getText());
-				out.write(Constants.LINE_BREAK);
-			}
+			template.process(root, out);
 
 			out.flush();
+
 			out.close();
+
 			return new DiskFile(file, "x-download");
 		} catch (Exception e) {
+			e.printStackTrace();
 			Translations.logger.error(e.getMessage(), e);
 		}
 		return null;

@@ -115,7 +115,18 @@ public class TranslationsMap extends HashMap<String, TranslationDTO> implements 
 		
 		return translations;
 	}
-	
+
+	public Map<String, String> getAllValues() {
+		HashMap<String, TranslationDTO> all = this.getAll();
+		HashMap<String, String> translation = new HashMap<>();
+
+		all.forEach((key, translationDTO) -> {
+			translation.put(key, translationDTO.getText());
+		});
+
+		return translation;
+	}
+
 	@Override
 	public String toJavascriptString() {
 		return "Translations.translations = " + this.toString() + ";";
@@ -156,6 +167,6 @@ public class TranslationsMap extends HashMap<String, TranslationDTO> implements 
 	
 	@Override
 	public String toString() {
-		return new JSONObject(this.getAll()).toString();
+		return new JSONObject(this.getAllValues()).toString();
 	}
 }

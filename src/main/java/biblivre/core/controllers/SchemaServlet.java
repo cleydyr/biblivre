@@ -39,6 +39,7 @@ import biblivre.circulation.user.UserFields;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
@@ -239,5 +240,11 @@ public final class SchemaServlet extends HttpServlet {
 		};
 
 		rd.forward(wrapped, response);
+	}
+	
+	@Override
+	public void init() throws ServletException {
+		FreemarkerTemplateHelper.freemarkerConfiguration
+			.setServletContextForTemplateLoading(getServletContext(), "/freemarker");
 	}
 }

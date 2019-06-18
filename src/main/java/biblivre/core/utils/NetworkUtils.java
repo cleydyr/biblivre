@@ -42,12 +42,13 @@ public class NetworkUtils {
 	    }
 	}
 
-	public static InetAddress remoteIp(final HttpServletRequest request) throws UnknownHostException {
-		final Enumeration<String> headers = request.getHeaders("X-Forwarded-for");
+	private static InetAddress remoteIp(final HttpServletRequest request) throws UnknownHostException {
+		final Enumeration<?> headers = request.getHeaders("X-Forwarded-for");
 
 		if (headers != null) {
 			while (headers.hasMoreElements()) {
-				final String[] ips = headers.nextElement().split(",");
+				String nextElement = (String) headers.nextElement();
+				final String[] ips = nextElement.split(",");
 				for (int i = 0; i < ips.length; i++) {
 					final String proxy = ips[i].trim();
 					if (!"unknown".equals(proxy) && !proxy.isEmpty()) {
