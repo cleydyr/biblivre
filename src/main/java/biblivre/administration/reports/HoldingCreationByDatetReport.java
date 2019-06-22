@@ -23,9 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.HoldingCreationByDateReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -33,12 +30,14 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class HoldingCreationByDatetReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.HoldingCreationByDateReportDto;
+
+public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCreationByDateReportDto> {
 
 	private static Map<String, Integer> userTotal;
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected HoldingCreationByDateReportDto getReportData(ReportsDTO dto) {
 		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
@@ -46,21 +45,20 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		HoldingCreationByDateReportDto dto = (HoldingCreationByDateReportDto)reportData;
+	protected void generateReportBody(Document document, HoldingCreationByDateReportDto reportData) throws Exception {
 		userTotal = new HashMap<String, Integer>();
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.holdings_creation_by_date"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
-		String dateSpan = this.getText("administration.reports.field.date_from") + " " + dto.getInitialDate() + " " + this.getText("administration.reports.field.date_to")+ " " + dto.getFinalDate();
+		String dateSpan = this.getText("administration.reports.field.date_from") + " " + reportData.getInitialDate() + " " + this.getText("administration.reports.field.date_to")+ " " + reportData.getFinalDate();
 		Paragraph p2 = new Paragraph(this.getHeaderChunk(dateSpan));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
 
-		if (dto.getData() != null) {
-			PdfPTable table = createTable(dto.getData());
+		if (reportData.getData() != null) {
+			PdfPTable table = createTable(reportData.getData());
 			document.add(table);
 			document.add(new Phrase("\n"));
 		}
@@ -129,13 +127,13 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		String biblio = dto.getTotalBiblioMain();
+		String biblio = reportData.getTotalBiblioMain();
 		biblio = biblio != null ? biblio : "";
 		cell = new PdfPCell(new Paragraph(this.getNormalChunk(biblio)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		String tombos = dto.getTotalHoldingMain();
+		String tombos = reportData.getTotalHoldingMain();
 		tombos = tombos != null ? tombos : "";
 		PdfPCell cell2 = new PdfPCell(new Paragraph(this.getNormalChunk(tombos)));
 		cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -147,13 +145,13 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		biblio = dto.getTotalBiblioWork();
+		biblio = reportData.getTotalBiblioWork();
 		biblio = biblio != null ? biblio : "";
 		cell = new PdfPCell(new Paragraph(this.getNormalChunk(biblio)));
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		tombos = dto.getTotalHoldingWork();
+		tombos = reportData.getTotalHoldingWork();
 		tombos = tombos != null ? tombos : "";
 		cell2 = new PdfPCell(new Paragraph(this.getNormalChunk(tombos)));
 		cell2.setHorizontalAlignment(Element.ALIGN_CENTER);

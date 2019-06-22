@@ -21,9 +21,6 @@ package biblivre.administration.reports;
 
 import java.util.List;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.LateLendingsDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -31,28 +28,29 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class LateReturnLendingsReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.LateLendingsDto;
+
+public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto> {
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected LateLendingsDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getLateReturnLendingsReportData();
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		LateLendingsDto dto = (LateLendingsDto)reportData;
+	protected void generateReportBody(Document document, LateLendingsDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.late_lendings"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
 
-		if (dto.getData().size() != 0) {
-			Paragraph p2 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.late_lendings_count") + ":  " + dto.getData().size()));
+		if (reportData.getData().size() != 0) {
+			Paragraph p2 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.late_lendings_count") + ":  " + reportData.getData().size()));
 			p2.setAlignment(Element.ALIGN_LEFT);
 			document.add(p2);
 			document.add(new Phrase("\n"));
 
-			PdfPTable table = createTable(dto.getData());
+			PdfPTable table = createTable(reportData.getData());
 			document.add(table);
 			document.add(new Phrase("\n"));
 		}

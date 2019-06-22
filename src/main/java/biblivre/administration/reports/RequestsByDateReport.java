@@ -21,9 +21,6 @@ package biblivre.administration.reports;
 
 import java.util.List;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.RequestsByDateReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -31,10 +28,12 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class RequestsByDateReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.RequestsByDateReportDto;
+
+public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateReportDto> {
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected RequestsByDateReportDto getReportData(ReportsDTO dto) {
 		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
@@ -42,23 +41,22 @@ public class RequestsByDateReport extends BaseBiblivreReport {
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		RequestsByDateReportDto dto = (RequestsByDateReportDto)reportData;
+	protected void generateReportBody(Document document, RequestsByDateReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.orders_by_date"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
 		StringBuilder header = new StringBuilder();
 		header.append(this.getText("administration.reports.field.date_from"));
-		header.append(" ").append(dto.getInitialDate()).append(" ");
+		header.append(" ").append(reportData.getInitialDate()).append(" ");
 		header.append(this.getText("administration.reports.field.date_to"));
-		header.append(" ").append(dto.getFinalDate());
+		header.append(" ").append(reportData.getFinalDate());
 		Paragraph p2 = new Paragraph(this.getHeaderChunk(header.toString()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
-		if (dto.getData() != null) {
-			PdfPTable table = createTable(dto.getData());
+		if (reportData.getData() != null) {
+			PdfPTable table = createTable(reportData.getData());
 			document.add(table);
 			document.add(new Phrase("\n"));
 		}

@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import biblivre.administration.reports.dto.AssetHoldingDto;
-import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.core.utils.NaturalOrderComparator;
 
 import com.lowagie.text.Chunk;
@@ -40,7 +39,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class AssetHoldingFullReport extends BaseBiblivreReport implements Comparator<String[]> {
+public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> implements Comparator<String[]> {
 
 	private Boolean topographic;
 
@@ -49,13 +48,12 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
 	}
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected AssetHoldingDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingFullReportData();
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		AssetHoldingDto dto = (AssetHoldingDto)reportData;
+	protected void generateReportBody(Document document, AssetHoldingDto reportData) throws Exception {
 		String title = "";
 		if (this.topographic) {
 			title = this.getText("administration.reports.title.topographic");
@@ -70,7 +68,7 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
 		table.setWidthPercentage(100f);
 		createHeader(table);
 		PdfPCell cell;
-		List<String[]> dataList = dto.getData();
+		List<String[]> dataList = reportData.getData();
 		Collections.sort(dataList, this);
 		for (String[] data : dataList) {
 			PdfContentByte cb = getWriter().getDirectContent();

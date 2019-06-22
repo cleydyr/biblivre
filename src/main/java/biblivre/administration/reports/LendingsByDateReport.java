@@ -19,9 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.LendingsByDateReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -29,10 +26,12 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class LendingsByDateReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.LendingsByDateReportDto;
+
+public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateReportDto> {
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected LendingsByDateReportDto getReportData(ReportsDTO dto) {
 		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
@@ -40,29 +39,28 @@ public class LendingsByDateReport extends BaseBiblivreReport {
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		LendingsByDateReportDto dto = (LendingsByDateReportDto)reportData;
+	protected void generateReportBody(Document document, LendingsByDateReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.lendings_by_date"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
 		StringBuilder header = new StringBuilder();
 		header.append(this.getText("administration.reports.field.date_from"));
-		header.append(" " + dto.getInitialDate() + " ");
+		header.append(" " + reportData.getInitialDate() + " ");
 		header.append(this.getText("administration.reports.field.date_to"));
-		header.append(" " + dto.getFinalDate());
+		header.append(" " + reportData.getFinalDate());
 		Paragraph p2 = new Paragraph(this.getHeaderChunk(header.toString()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
 
-		Paragraph p3 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_count") + ":  " + dto.getTotals()[0]));
+		Paragraph p3 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_count") + ":  " + reportData.getTotals()[0]));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p3);
-		Paragraph p4 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_current") + ":  " + dto.getTotals()[1]));
+		Paragraph p4 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_current") + ":  " + reportData.getTotals()[1]));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p4);
-		Paragraph p5 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_late") + ":  " + dto.getTotals()[2]));
+		Paragraph p5 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_late") + ":  " + reportData.getTotals()[2]));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p5);
 		document.add(new Phrase("\n"));
@@ -70,7 +68,7 @@ public class LendingsByDateReport extends BaseBiblivreReport {
 		document.add(new Phrase(this.getText("administration.reports.field.lendings_top")));
 		document.add(new Phrase("\n"));
 
-		PdfPTable table = createTable(dto);
+		PdfPTable table = createTable(reportData);
 		document.add(table);
 		document.add(new Phrase("\n"));
 	}

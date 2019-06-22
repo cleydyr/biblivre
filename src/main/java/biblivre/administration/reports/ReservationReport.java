@@ -22,9 +22,6 @@ package biblivre.administration.reports;
 import java.util.Date;
 import java.util.List;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.ReservationReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -32,22 +29,23 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class ReservationReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.ReservationReportDto;
+
+public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> {
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected ReservationReportDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getReservationReportData();
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		ReservationReportDto dto = (ReservationReportDto)reportData;
+	protected void generateReportBody(Document document, ReservationReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.reservation"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n\n"));
-		boolean hasBiblioData = dto.getBiblioReservations() != null && !dto.getBiblioReservations().isEmpty();
-		boolean hasHoldingData = dto.getHoldingReservations() != null && !dto.getHoldingReservations().isEmpty();
+		boolean hasBiblioData = reportData.getBiblioReservations() != null && !reportData.getBiblioReservations().isEmpty();
+		boolean hasHoldingData = reportData.getHoldingReservations() != null && !reportData.getHoldingReservations().isEmpty();
 		if (hasBiblioData) {
 			PdfPTable biblioTable = new PdfPTable(7);
 			biblioTable.setWidthPercentage(100f);
@@ -59,7 +57,7 @@ public class ReservationReport extends BaseBiblivreReport {
 			cell.setColspan(7);
 			biblioTable.addCell(cell);
 			createHeader(biblioTable);
-			createBody(biblioTable, dto.getBiblioReservations());
+			createBody(biblioTable, reportData.getBiblioReservations());
 			document.add(biblioTable);
 			document.add(new Phrase("\n"));
 		}
@@ -74,7 +72,7 @@ public class ReservationReport extends BaseBiblivreReport {
 			cell.setColspan(7);
 			holdingTable.addCell(cell);
 			createHeader(holdingTable);
-			createBody(holdingTable, dto.getHoldingReservations());
+			createBody(holdingTable, reportData.getHoldingReservations());
 			document.add(holdingTable);
 		}
 		if (!hasBiblioData && !hasHoldingData) {

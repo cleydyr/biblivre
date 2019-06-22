@@ -22,9 +22,6 @@ package biblivre.administration.reports;
 import java.util.ArrayList;
 import java.util.List;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.BibliographyReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -32,10 +29,12 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class BibliographyReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.BibliographyReportDto;
+
+public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto> {
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected BibliographyReportDto getReportData(ReportsDTO dto) {
 		String ids = dto.getRecordIds();
 		String[] idArray = ids.split(",");
 		List<Integer> idList = new ArrayList<Integer>();
@@ -48,22 +47,21 @@ public class BibliographyReport extends BaseBiblivreReport {
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		BibliographyReportDto dto = (BibliographyReportDto)reportData;
+	protected void generateReportBody(Document document, BibliographyReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.bibliography"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
-		Paragraph p2 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.author") + ":  " + dto.getAuthorName()));
+		Paragraph p2 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.author") + ":  " + reportData.getAuthorName()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
-		if (dto.getData() != null) {
+		if (reportData.getData() != null) {
 			PdfPTable table = new PdfPTable(8);
 			table.setHorizontalAlignment(Element.ALIGN_CENTER);
 			createHeader(table);
 			PdfPCell cell;
-			for (String[] data : dto.getData()) {
+			for (String[] data : reportData.getData()) {
 				cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
 				cell.setColspan(3);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);

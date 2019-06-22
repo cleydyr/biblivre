@@ -19,9 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.SearchesByDateReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -29,33 +26,34 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class SearchesByDateReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.SearchesByDateReportDto;
+
+public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateReportDto> {
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected SearchesByDateReportDto getReportData(ReportsDTO dto) {
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
 		return ReportsDAO.getInstance(this.getSchema()).getSearchesByDateReportData(initialDate, finalDate);
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		SearchesByDateReportDto dto = (SearchesByDateReportDto)reportData;
+	protected void generateReportBody(Document document, SearchesByDateReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.searches_by_date"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
 		StringBuilder p2Builder = new StringBuilder();
 		p2Builder.append(this.getText("administration.reports.field.date_from") + " ");
-		p2Builder.append(dto.getInitialDate());
+		p2Builder.append(reportData.getInitialDate());
 		p2Builder.append(" " + this.getText("administration.reports.field.date_to") + " ");
-		p2Builder.append(dto.getFinalDate());
+		p2Builder.append(reportData.getFinalDate());
 		Paragraph p2 = new Paragraph(this.getHeaderChunk(p2Builder.toString()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
 
-		PdfPTable table = createTable(dto);
+		PdfPTable table = createTable(reportData);
 		document.add(table);
 		document.add(new Phrase("\n"));
 	}

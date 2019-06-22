@@ -25,9 +25,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.DeweyReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -35,18 +32,19 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class DeweyReport extends BaseBiblivreReport implements Comparator<String[]> {
+import biblivre.administration.reports.dto.DeweyReportDto;
+
+public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> implements Comparator<String[]> {
 
 	private Integer index = 0;
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected DeweyReportDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getDeweyReportData(dto.getDatabase(), dto.getDatafield(), dto.getDigits());
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		DeweyReportDto dto = (DeweyReportDto)reportData;
+	protected void generateReportBody(Document document, DeweyReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.dewey"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
@@ -57,7 +55,7 @@ public class DeweyReport extends BaseBiblivreReport implements Comparator<String
 		PdfPCell cell;
 		int totalRecords = 0;
 		int totalHoldings = 0;
-		List<String[]> dataList = dto.getData();
+		List<String[]> dataList = reportData.getData();
 		Collections.sort(dataList, this);
 		for (String[] data : dataList) {
 			if (StringUtils.isBlank(data[0])) {

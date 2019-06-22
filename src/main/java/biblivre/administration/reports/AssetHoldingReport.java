@@ -23,10 +23,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import biblivre.administration.reports.dto.AssetHoldingDto;
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.core.utils.NaturalOrderComparator;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -34,16 +30,18 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class AssetHoldingReport extends BaseBiblivreReport implements Comparator<String[]> {
+import biblivre.administration.reports.dto.AssetHoldingDto;
+import biblivre.core.utils.NaturalOrderComparator;
+
+public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> implements Comparator<String[]> {
 	
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected AssetHoldingDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingReportData();
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		AssetHoldingDto dto = (AssetHoldingDto)reportData;
+	protected void generateReportBody(Document document, AssetHoldingDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.holdings"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
@@ -52,7 +50,7 @@ public class AssetHoldingReport extends BaseBiblivreReport implements Comparator
 		table.setWidthPercentage(100f);
 		createHeader(table);
 		PdfPCell cell;
-		List<String[]> dataList = dto.getData();
+		List<String[]> dataList = reportData.getData();
 		Collections.sort(dataList, this);
 		for (String[] data : dataList) {
 			cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[0])));

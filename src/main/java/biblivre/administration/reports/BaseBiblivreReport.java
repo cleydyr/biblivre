@@ -31,10 +31,6 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.core.file.DiskFile;
-import biblivre.core.translations.TranslationsMap;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -49,7 +45,11 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
 
-public abstract class BaseBiblivreReport extends PdfPageEventHelper implements IBiblivreReport {
+import biblivre.administration.reports.dto.BaseReportDto;
+import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationsMap;
+
+public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPageEventHelper implements IBiblivreReport {
 
 
 	protected final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -78,14 +78,14 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	public DiskFile generateReport(ReportsDTO dto) throws IOException {
 		this.generationDate = new Date();
 		this.dateFormat = new SimpleDateFormat(this.getText("format.datetime"));
-		BaseReportDto reportData = getReportData(dto);
+		T reportData = getReportData(dto);
 		String fileName = this.getFileName(dto);
 		return generateReportFile(reportData, fileName);
 	}
 
-	protected abstract BaseReportDto getReportData(ReportsDTO dto);
+	protected abstract T getReportData(ReportsDTO dto);
 
-	protected DiskFile generateReportFile(BaseReportDto reportData, String fileName) throws IOException {
+	protected DiskFile generateReportFile(T reportData, String fileName) throws IOException {
 		Document document = new Document(PageSize.A4);
 		DiskFile report = null;
 
@@ -119,7 +119,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 		return reportName + day + month + hour + minute + "_" + second;
 	}
 
-	protected abstract void generateReportBody(Document document, BaseReportDto reportData) throws Exception;
+	protected abstract void generateReportBody(Document document, T reportData) throws Exception;
 
 	@Override
 	public final void setI18n(TranslationsMap i18n) {

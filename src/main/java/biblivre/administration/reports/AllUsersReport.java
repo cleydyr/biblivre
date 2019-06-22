@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import biblivre.administration.reports.dto.AllUsersReportDto;
-import biblivre.administration.reports.dto.BaseReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -34,17 +31,18 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class AllUsersReport extends BaseBiblivreReport {
+import biblivre.administration.reports.dto.AllUsersReportDto;
+
+public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected AllUsersReportDto getReportData(ReportsDTO dto) {
 		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
 		return dao.getAllUsersReportData();
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		AllUsersReportDto dto = (AllUsersReportDto)reportData;
+	protected void generateReportBody(Document document, AllUsersReportDto allUsers) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.all_users"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
@@ -53,11 +51,11 @@ public class AllUsersReport extends BaseBiblivreReport {
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
-		PdfPTable summaryTable = createSummaryTable(dto.getTypesMap());
+		PdfPTable summaryTable = createSummaryTable(allUsers.getTypesMap());
 		document.add(summaryTable);
 		document.add(new Phrase("\n"));
 
-		ArrayList<PdfPTable> listTable = createListTable(dto.getData());
+		ArrayList<PdfPTable> listTable = createListTable(allUsers.getData());
 		if (listTable != null) {
 			Paragraph p3 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_list_by_type")));
 			p3.setAlignment(Element.ALIGN_LEFT);

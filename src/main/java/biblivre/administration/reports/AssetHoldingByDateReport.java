@@ -22,7 +22,6 @@ package biblivre.administration.reports;
 import java.util.List;
 
 import biblivre.administration.reports.dto.AssetHoldingByDateDto;
-import biblivre.administration.reports.dto.BaseReportDto;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -31,18 +30,17 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class AssetHoldingByDateReport extends BaseBiblivreReport {
+public class AssetHoldingByDateReport extends BaseBiblivreReport<AssetHoldingByDateDto> {
 	
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected AssetHoldingByDateDto getReportData(ReportsDTO dto) {
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
 		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingByDateReportData(initialDate, finalDate);
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		AssetHoldingByDateDto dto = (AssetHoldingByDateDto)reportData;
+	protected void generateReportBody(Document document, AssetHoldingByDateDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.holdings_by_date"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
@@ -51,7 +49,7 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
 		table.setWidthPercentage(100f);
 		createHeader(table);
 		PdfPCell cell;
-		List<String[]> dataList = dto.getData();
+		List<String[]> dataList = reportData.getData();
 		for (String[] data : dataList) {
 			cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[0])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);

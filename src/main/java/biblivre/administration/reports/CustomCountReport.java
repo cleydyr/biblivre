@@ -24,9 +24,6 @@ import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.CustomCountDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -34,7 +31,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class CustomCountReport extends BaseBiblivreReport implements Comparator<String[]> {
+import biblivre.administration.reports.dto.CustomCountDto;
+
+public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implements Comparator<String[]> {
 
 	private Integer index;
 	private String marcField;
@@ -42,7 +41,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 	private String subfield;
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected CustomCountDto getReportData(ReportsDTO dto) {
 		
 		this.marcField = dto.getMarcField();
 		if (StringUtils.isNotBlank(this.marcField)) {
@@ -63,8 +62,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		CustomCountDto dto = (CustomCountDto)reportData;
+	protected void generateReportBody(Document document, CustomCountDto reportData) throws Exception {
 		StringBuilder text = new StringBuilder();
 		text.append(this.getText("administration.reports.title.custom_count") + ":\n");
 		text.append(this.datafield).append(" (");
@@ -80,10 +78,10 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		PdfPTable table = new PdfPTable(3);
 		table.setWidthPercentage(100f);
 		createHeader(table, this.getText("marc.bibliographic.datafield." + this.datafield + ".subfield." + this.subfield));
-		Collections.sort(dto.getData(), this);
+		Collections.sort(reportData.getData(), this);
 		PdfPCell cell;
 		int total = 0;
-		for (String[] data : dto.getData()) {
+		for (String[] data : reportData.getData()) {
 			cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[0])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);

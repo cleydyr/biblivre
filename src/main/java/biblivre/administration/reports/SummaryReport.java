@@ -24,9 +24,6 @@ import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.SummaryReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -34,12 +31,14 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class SummaryReport extends BaseBiblivreReport implements Comparator<String[]> {
+import biblivre.administration.reports.dto.SummaryReportDto;
+
+public class SummaryReport extends BaseBiblivreReport<SummaryReportDto> implements Comparator<String[]> {
 
 	private Integer index;
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected SummaryReportDto getReportData(ReportsDTO dto) {
 		Integer order = 1;
 		if (StringUtils.isNotBlank(dto.getOrder()) && StringUtils.isNumeric(dto.getOrder().trim())) {
 			order = Integer.valueOf(dto.getOrder().trim());
@@ -54,8 +53,7 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		SummaryReportDto dto = (SummaryReportDto)reportData;
+	protected void generateReportBody(Document document, SummaryReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.summary"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
@@ -63,9 +61,9 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
 		PdfPTable table = new PdfPTable(10);
 		table.setWidthPercentage(100f);
 		createHeader(table);
-		Collections.sort(dto.getData(), this);
+		Collections.sort(reportData.getData(), this);
 		PdfPCell cell;
-		for (String[] data : dto.getData()) {
+		for (String[] data : reportData.getData()) {
 			cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[6])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);

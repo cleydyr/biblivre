@@ -25,7 +25,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import biblivre.administration.reports.dto.BaseReportDto;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+
 import biblivre.administration.reports.dto.UserReportDto;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
@@ -39,20 +45,13 @@ import biblivre.circulation.user.UserFieldDTO;
 import biblivre.circulation.user.UserFields;
 import biblivre.core.JavascriptCacheableList;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
-
-public class UserReport extends BaseBiblivreReport {
+public class UserReport extends BaseBiblivreReport<UserReportDto> {
 	
 	public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
-	protected BaseReportDto getReportData(ReportsDTO dto) {
+	protected UserReportDto getReportData(ReportsDTO dto) {
 		UserReportDto urdto = new UserReportDto();
 		UserBO ubo = UserBO.getInstance(this.getSchema());
 		Integer userId = Integer.valueOf(dto.getUserId());
@@ -99,48 +98,47 @@ public class UserReport extends BaseBiblivreReport {
 	}
 
 	@Override
-	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
-		UserReportDto dto = (UserReportDto)reportData;
+	protected void generateReportBody(Document document, UserReportDto reportData) throws Exception {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.user"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
 
-		PdfPTable dataTable = createUserDataTable(dto.getUser());
+		PdfPTable dataTable = createUserDataTable(reportData.getUser());
 		document.add(dataTable);
 
 		Paragraph p2 = new Paragraph(this.getText("administration.reports.field.user_data"));
 		p2.setAlignment(Element.ALIGN_CENTER);
 		document.add(p2);
 		document.add(new Phrase("\n"));
-		document.add(createDateTable(dto.getUser()));
+		document.add(createDateTable(reportData.getUser()));
 
 		Paragraph p3 = null;
-		if (dto.getLendings() != null && dto.getLendings().size() > 0) {
+		if (reportData.getLendings() != null && reportData.getLendings().size() > 0) {
 			document.add(new Phrase("\n"));
 			p3 = new Paragraph(this.getText("administration.reports.field.user_lendings"));
 			p3.setAlignment(Element.ALIGN_CENTER);
 			document.add(p3);
 			document.add(new Phrase("\n"));
-			document.add(createLendingsTable(dto.getLendings()));
+			document.add(createLendingsTable(reportData.getLendings()));
 		}
 
-		if (dto.getLateLendings() != null && dto.getLateLendings().size() > 0) {
+		if (reportData.getLateLendings() != null && reportData.getLateLendings().size() > 0) {
 			document.add(new Phrase("\n"));
 			p3 = new Paragraph(this.getText("administration.reports.field.user_late_lendings"));
 			p3.setAlignment(Element.ALIGN_CENTER);
 			document.add(p3);
 			document.add(new Phrase("\n"));
-			document.add(createLendingsTable(dto.getLateLendings()));
+			document.add(createLendingsTable(reportData.getLateLendings()));
 		}
 
-		if (dto.getReturnedLendings() != null && dto.getReturnedLendings().size() > 0) {
+		if (reportData.getReturnedLendings() != null && reportData.getReturnedLendings().size() > 0) {
 			document.add(new Phrase("\n"));
 			p3 = new Paragraph(this.getText("administration.reports.field.user_returned_lendings"));
 			p3.setAlignment(Element.ALIGN_CENTER);
 			document.add(p3);
 			document.add(new Phrase("\n"));
-			document.add(createLendingsTable(dto.getReturnedLendings()));
+			document.add(createLendingsTable(reportData.getReturnedLendings()));
 		}
 	}
 
