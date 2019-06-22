@@ -19,12 +19,14 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
+import java.io.IOException;
+
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 
 public interface IBiblivreReport {
 
-	public DiskFile generateReport(ReportsDTO dto);
+	public DiskFile generateReport(ReportsDTO dto) throws IOException;
 	public void setI18n(TranslationsMap i18n);
 	public void setSchema(String schema);
 

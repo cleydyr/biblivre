@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.json.JSONException;
 
 import biblivre.cataloging.enums.RecordDatabase;
@@ -59,29 +62,24 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		ReportsBO bo = ReportsBO.getInstance(schema);
 
-		ReportsDTO dto = null;
 		try {
-			dto = this.populateDto(request);
-		} catch (Exception e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-			return;
-		}
+			ReportsDTO dto = this.populateDto(request);
+			DiskFile report = bo.generateReport(dto, request.getTranslationsMap());
 
-		DiskFile report = bo.generateReport(dto, request.getTranslationsMap());
-		
-		if (report != null) {
-			request.setSessionAttribute(schema, report.getName(), report);
-			this.setMessage(ActionResult.SUCCESS, "administration.reports.success.generate");
-		} else {
-			this.setMessage(ActionResult.WARNING, "administration.reports.error.generate");
-		}
-		
-		try {
+			if (report != null) {
+				request.setSessionAttribute(schema, report.getName(), report);
+				this.setMessage(ActionResult.SUCCESS, "administration.reports.success.generate");
+			} else {
+				this.setMessage(ActionResult.WARNING, "administration.reports.error.generate");
+			}
+
 			if (report != null) {
 				this.json.put("file_name", report.getName());
 			}
-		} catch(JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
+		} catch (ParseException pe) {
+			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+		} catch (IOException ioe) {
+			this.setMessage(ActionResult.WARNING, "error.runtime_error", ioe);
 		}
 	}
 	
@@ -97,7 +95,7 @@ public class Handler extends AbstractHandler {
 		this.setCallback(report::delete);
 	}
 
-	private ReportsDTO populateDto(ExtendedRequest request) throws Exception {
+	private ReportsDTO populateDto(ExtendedRequest request) throws ParseException {
 		ReportsDTO dto = new ReportsDTO();
 
 		String reportId = request.getString("report");

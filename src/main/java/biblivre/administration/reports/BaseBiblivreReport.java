@@ -22,12 +22,12 @@ package biblivre.administration.reports;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -75,7 +75,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	protected String schema; 
 
 	@Override
-	public DiskFile generateReport(ReportsDTO dto) {
+	public DiskFile generateReport(ReportsDTO dto) throws IOException {
 		this.generationDate = new Date();
 		this.dateFormat = new SimpleDateFormat(this.getText("format.datetime"));
 		BaseReportDto reportData = getReportData(dto);
@@ -85,13 +85,13 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
 	protected abstract BaseReportDto getReportData(ReportsDTO dto);
 
-	protected DiskFile generateReportFile(BaseReportDto reportData, String fileName) {
+	protected DiskFile generateReportFile(BaseReportDto reportData, String fileName) throws IOException {
 		Document document = new Document(PageSize.A4);
 		DiskFile report = null;
-		FileOutputStream out = null;
-		try {
-			File file = File.createTempFile(fileName, ".pdf");
-			out = new FileOutputStream(file);
+
+		File file = File.createTempFile(fileName, ".pdf");
+
+		try (FileOutputStream out = new FileOutputStream(file)) {
 			this.writer = PdfWriter.getInstance(document, out);
 			this.writer.setPageEvent(this);
 			this.writer.setFullCompression();
@@ -103,10 +103,8 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 			report.setName(fileName);
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
-			return null;
-		} finally {
-			IOUtils.closeQuietly(out);
 		}
+
 		return report;
 	}
 

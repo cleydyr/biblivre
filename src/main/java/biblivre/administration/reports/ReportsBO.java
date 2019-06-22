@@ -1,5 +1,6 @@
 package biblivre.administration.reports;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class ReportsBO extends AbstractBO {
 		return bo;
 	}
 
-	public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
+	public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) throws IOException {
 		ReportType type = dto.getType();
 		IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type);
 		report.setI18n(i18n);

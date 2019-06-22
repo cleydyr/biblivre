@@ -79,6 +79,10 @@ public class AbstractHandler {
 	public void setMessage(Throwable exception) {
 		this.message = new Message(exception);
 	}
+
+	public void setMessage(ActionResult level, String message, Throwable throwable) {
+		this.message = new Message(level, message, throwable);
+	}
 	
 	public Message getMessage() {
 		return this.message;
