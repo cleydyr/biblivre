@@ -20,10 +20,8 @@
 package biblivre.circulation.user;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONString;
 
 import biblivre.core.utils.BiblivreEnum;
-import biblivre.core.utils.StringPool;
 
 public enum UserFieldType implements BiblivreEnum  {
 	STRING,
