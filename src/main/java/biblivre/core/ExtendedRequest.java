@@ -266,7 +266,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 		return 0;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void loadMultiPart() {
 		this.multiPart = ServletFileUpload.isMultipartContent(this);
 

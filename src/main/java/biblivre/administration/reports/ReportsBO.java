@@ -121,7 +121,6 @@ public class ReportsBO extends AbstractBO {
 		return dto;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void countSubfieldValue(Collection<RecordDTO> records, Map<String, Integer> subfieldCounter, String field, String subfield) {
 		
 		for (RecordDTO biblio : records) {

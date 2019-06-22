@@ -38,7 +38,6 @@ import org.apache.log4j.Logger;
 import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
-import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 import freemarker.template.Template;
 import biblivre.core.translations.TranslationsDAO;
