@@ -120,28 +120,28 @@ public class AllUsersReport extends BaseBiblivreReport {
 
 				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
 				cell.setBackgroundColor(this.headerBgColor);
-				cell.setBorderWidth(this.headerBorderWidth);
+				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
 				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
 				cell.setBackgroundColor(this.headerBgColor);
-				cell.setBorderWidth(this.headerBorderWidth);
+				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
 				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.creation_date"))));
 				cell.setBackgroundColor(this.headerBgColor);
-				cell.setBorderWidth(this.headerBorderWidth);
+				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
 				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.modified"))));
 				cell.setBackgroundColor(this.headerBgColor);
-				cell.setBorderWidth(this.headerBorderWidth);
+				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);

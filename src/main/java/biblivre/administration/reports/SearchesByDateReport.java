@@ -67,14 +67,14 @@ public class SearchesByDateReport extends BaseBiblivreReport {
 		PdfPCell cell;
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.date"))));
 		cell.setBackgroundColor(this.headerBgColor);
-		cell.setBorderWidth(this.headerBorderWidth);
+		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.total"))));
 		cell.setBackgroundColor(this.headerBgColor);
 		cell.setColspan(2);
-		cell.setBorderWidth(this.headerBorderWidth);
+		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
