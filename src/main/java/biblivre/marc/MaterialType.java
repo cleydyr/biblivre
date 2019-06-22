@@ -27,8 +27,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.Record;
 
+import biblivre.core.utils.BiblivreEnum;
 
-public enum MaterialType {
+
+public enum MaterialType implements BiblivreEnum {
 	ALL('a', "m ", true),
 	BOOK('a', "m ", true),
 	PAMPHLET('a', "m ", true),

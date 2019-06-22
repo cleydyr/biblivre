@@ -21,7 +21,9 @@ package biblivre.core.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum PrinterType {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum PrinterType implements BiblivreEnum {
 	
 	PRINTER_24_COLUMNS,
 	PRINTER_40_COLUMNS,

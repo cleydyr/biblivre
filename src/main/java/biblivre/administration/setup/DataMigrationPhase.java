@@ -21,7 +21,9 @@ package biblivre.administration.setup;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum DataMigrationPhase {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum DataMigrationPhase implements BiblivreEnum {
 	
 	DIGITAL_MEDIA("digital_media", "digital_media", "digital_media_id_seq", "id"), 
 	CATALOGING_BIBLIOGRAPHIC("cataloging_biblio", "biblio_records", "biblio_records_id_seq", "id"),

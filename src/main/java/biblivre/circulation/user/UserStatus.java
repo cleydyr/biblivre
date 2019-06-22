@@ -21,7 +21,9 @@ package biblivre.circulation.user;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum UserStatus {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum UserStatus implements BiblivreEnum {
 	ACTIVE,
 	PENDING_ISSUES,
 	INACTIVE,

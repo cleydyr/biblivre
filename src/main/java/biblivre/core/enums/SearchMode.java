@@ -21,8 +21,10 @@ package biblivre.core.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.core.utils.BiblivreEnum;
 
-public enum SearchMode {
+
+public enum SearchMode implements BiblivreEnum {
 	LIST_ALL,
 	SIMPLE,
 	ADVANCED;
