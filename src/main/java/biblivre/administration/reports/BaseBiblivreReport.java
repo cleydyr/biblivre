@@ -168,7 +168,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 
 			PdfPTable foot = new PdfPTable(1);
 			Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
-			pageNumber.setFont(BaseBiblivreReport.FOOTER_FONT);
+			pageNumber.setFont(FOOTER_FONT);
 			cell = new PdfPCell(new Paragraph(pageNumber));
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cell.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -184,25 +184,25 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 
 	protected Chunk getNormalChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(BaseBiblivreReport.TEXT_FONT);
+		chunk.setFont(TEXT_FONT);
 		return chunk;
 	}
 
 	protected Chunk getBoldChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(BaseBiblivreReport.BOLD_FONT);
+		chunk.setFont(BOLD_FONT);
 		return chunk;
 	}
 
 	protected Chunk getSmallFontChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(BaseBiblivreReport.SMALL_FONT);
+		chunk.setFont(SMALL_FONT);
 		return chunk;
 	}
 
 	protected Chunk getHeaderChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(BaseBiblivreReport.HEADER_FONT);
+		chunk.setFont(HEADER_FONT);
 		return chunk;
 	}
 
