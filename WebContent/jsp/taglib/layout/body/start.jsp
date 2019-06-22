@@ -210,7 +210,7 @@
 				</div>
 			</c:if>
 
-			<c:if test="${StringUtils.isNotBlank(updateWarning)}">
+			<c:if test="${sessionScope[updateWarning]}">
 				<div class="message sticky error system_warning_new_version">
 					<div>
 						<div class="fright">
