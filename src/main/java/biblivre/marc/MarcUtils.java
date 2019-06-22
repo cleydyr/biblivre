@@ -159,7 +159,6 @@ public class MarcUtils {
 		return record;
 	} 
 
-	@SuppressWarnings("unchecked")
 	public static String recordToMarc(Record record) {
 		if (record == null) {
 			return "";
@@ -200,7 +199,6 @@ public class MarcUtils {
 		return sb.toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	public static JSONObject recordToJson(Record record) {
 		JSONObject json = new JSONObject();
 
