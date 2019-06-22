@@ -24,7 +24,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum DataMigrationPhaseGroup {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum DataMigrationPhaseGroup implements BiblivreEnum {
 	
 	DIGITAL_MEDIA(DataMigrationPhase.DIGITAL_MEDIA),
 	CATALOGING_BIBLIOGRAPHIC(DataMigrationPhase.CATALOGING_BIBLIOGRAPHIC, DataMigrationPhase.CATALOGING_HOLDINGS),

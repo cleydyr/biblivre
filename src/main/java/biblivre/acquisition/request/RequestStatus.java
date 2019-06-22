@@ -21,7 +21,9 @@ package biblivre.acquisition.request;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum RequestStatus {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum RequestStatus implements BiblivreEnum {
 	
 	PENDING,
 	CLOSED,

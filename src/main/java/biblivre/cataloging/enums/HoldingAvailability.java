@@ -21,7 +21,9 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum HoldingAvailability {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum HoldingAvailability implements BiblivreEnum {
 	
 	AVAILABLE,
 	UNAVAILABLE;

@@ -21,7 +21,9 @@ package biblivre.administration.accesscards;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum AccessCardStatus {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum AccessCardStatus implements BiblivreEnum {
 	AVAILABLE,
 	IN_USE,
 	BLOCKED,

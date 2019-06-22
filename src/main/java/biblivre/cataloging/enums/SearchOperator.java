@@ -21,8 +21,10 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.core.utils.BiblivreEnum;
 
-public enum SearchOperator {
+
+public enum SearchOperator implements BiblivreEnum {
 	AND(" AND "),
 	OR(" OR "),
 	AND_NOT(" AND NOT ");

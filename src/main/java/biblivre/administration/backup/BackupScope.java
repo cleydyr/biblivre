@@ -21,7 +21,9 @@ package biblivre.administration.backup;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum BackupScope {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum BackupScope implements BiblivreEnum {
 	SINGLE_SCHEMA, // general.multi_schema is false
 	MULTI_SCHEMA, // general.multi_schema is true and backup was made from public schema
 	SINGLE_SCHEMA_FROM_MULTI_SCHEMA; // general.multi_schema is true but backup was made from single schema

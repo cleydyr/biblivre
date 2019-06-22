@@ -21,8 +21,10 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.core.utils.BiblivreEnum;
 
-public enum ImportFormat {
+
+public enum ImportFormat implements BiblivreEnum {
 	
 	AUTO_DETECT,
 	MARC,

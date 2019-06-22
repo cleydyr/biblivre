@@ -19,7 +19,9 @@
  ******************************************************************************/
 package biblivre.core.enums;
 
-public enum ActionResult {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum ActionResult implements BiblivreEnum {
 	NORMAL, SUCCESS, WARNING, ERROR;
 	
 	@Override

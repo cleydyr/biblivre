@@ -21,8 +21,10 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.core.utils.BiblivreEnum;
 
-public enum RecordType {
+
+public enum RecordType implements BiblivreEnum {
 	BIBLIO,
 	AUTHORITIES,
 	VOCABULARY,

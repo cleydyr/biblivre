@@ -21,7 +21,9 @@ package biblivre.administration.backup;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum BackupType {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum BackupType implements BiblivreEnum {
 	FULL,
 	DIGITAL_MEDIA_ONLY,
 	EXCLUDE_DIGITAL_MEDIA;

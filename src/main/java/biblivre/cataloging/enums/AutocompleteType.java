@@ -21,7 +21,9 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum AutocompleteType {
+import biblivre.core.utils.BiblivreEnum;
+
+public enum AutocompleteType implements BiblivreEnum {
 	DISABLED,
 	PREVIOUS_VALUES,
 	FIXED_TABLE,

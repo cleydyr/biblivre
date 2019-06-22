@@ -21,8 +21,10 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.core.utils.BiblivreEnum;
 
-public enum RecordDatabase {
+
+public enum RecordDatabase implements BiblivreEnum {
 	MAIN,
 	WORK,
 	PRIVATE,
