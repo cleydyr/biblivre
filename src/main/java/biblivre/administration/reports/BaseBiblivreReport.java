@@ -23,8 +23,9 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -48,6 +49,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
+import biblivre.core.utils.DateUtils;
 
 public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPageEventHelper implements IBiblivreReport {
 
@@ -69,15 +71,11 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 
 	protected TranslationsMap i18n;
 	private PdfWriter writer;
-	private Date generationDate;
-	protected DateFormat dateFormat;
 	
 	protected String schema; 
 
 	@Override
 	public DiskFile generateReport(ReportsDTO dto) throws IOException {
-		this.generationDate = new Date();
-		this.dateFormat = new SimpleDateFormat(this.getText("format.datetime"));
 		T reportData = getReportData(dto);
 		String fileName = this.getFileName(dto);
 		return generateReportFile(reportData, fileName);
@@ -157,7 +155,9 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 			head.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + head.getTotalHeight(), writer.getDirectContent());
 
 			PdfPTable date = new PdfPTable(1);
-			PdfPCell dateCell = new PdfPCell(new Paragraph(this.dateFormat.format(this.generationDate)));
+
+			PdfPCell dateCell = new PdfPCell(new Paragraph(now()));
+
 			dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			dateCell.setVerticalAlignment(Element.ALIGN_CENTER);
 			dateCell.setBorder(Rectangle.BOTTOM);
@@ -180,6 +180,21 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 		catch (Exception e) {
 			throw new ExceptionConverter(e);
 		}
+	}
+
+	protected String format(LocalDateTime date) {
+		String language = i18n.getLanguage();
+
+		DateTimeFormatter fmt = DateUtils.getFormatter(language);
+
+		return fmt.format(date);
+	}
+
+	protected String format(Date date) {
+		LocalDateTime localDateTime = LocalDateTime.ofInstant(
+				date.toInstant(), ZoneId.systemDefault());
+
+		return format(localDateTime);
 	}
 
 	protected Chunk getNormalChunk(String text) {
@@ -212,6 +227,10 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 
 	public String getSchema() {
 		return this.schema;
+	}
+
+	protected String now() {
+		return format(LocalDateTime.now());
 	}
 
 	@Override

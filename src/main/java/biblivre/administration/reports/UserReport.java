@@ -218,7 +218,7 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		Date signupDate = user.getCreated();
-		cell = new PdfPCell(new Paragraph(this.getNormalChunk(signupDate != null ? this.dateFormat.format(signupDate) : "")));
+		cell = new PdfPCell(new Paragraph(this.getNormalChunk(signupDate != null ? format(signupDate) : "")));
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);

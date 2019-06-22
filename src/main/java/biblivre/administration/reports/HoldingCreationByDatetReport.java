@@ -39,8 +39,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 	@Override
 	protected HoldingCreationByDateReportDto getReportData(ReportsDTO dto) {
 		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
-		String initialDate = this.dateFormat.format(dto.getInitialDate());
-		String finalDate = this.dateFormat.format(dto.getFinalDate());
+		String initialDate = format(dto.getInitialDate());
+		String finalDate = format(dto.getFinalDate());
 		return dao.getHoldingCreationByDateReportData(initialDate, finalDate);
 	}
 
