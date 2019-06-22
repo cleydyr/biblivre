@@ -126,21 +126,21 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 	private void createHeader(PdfPTable table) {
 		PdfPCell cell;
 		cell = new PdfPCell(new Paragraph(this.getBoldChunk(this.getText("administration.reports.field.id"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setColspan(6);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		cell = new PdfPCell(new Paragraph(this.getBoldChunk(this.getText("administration.reports.field.accession_number"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setColspan(3);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		cell = new PdfPCell(new Paragraph(this.getBoldChunk(this.getText("administration.reports.field.holdings_count"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setColspan(11);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);

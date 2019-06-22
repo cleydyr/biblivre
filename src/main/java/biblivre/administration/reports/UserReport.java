@@ -149,20 +149,20 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 
 		PdfPCell cell;
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.date"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.author"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -192,7 +192,7 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		PdfPTable table = new PdfPTable(4);
 		table.setWidthPercentage(100f);
 		PdfPCell cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
@@ -203,7 +203,7 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		table.addCell(cell);
 
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
@@ -213,7 +213,7 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		table.addCell(cell);
 
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_signup"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
@@ -224,7 +224,7 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		table.addCell(cell);
 		
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_type"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
@@ -236,7 +236,7 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		table.addCell(cell);
 
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_status"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
@@ -257,7 +257,7 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		for (UserFieldDTO field : fields) {
 			String fieldKey = field.getKey();
 			cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("circulation.custom.user_field." + fieldKey))));
-			cell.setBackgroundColor(this.headerBgColor);
+			cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);

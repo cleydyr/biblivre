@@ -114,14 +114,14 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 	private void createHeader(PdfPTable table, String title) {
 		PdfPCell cell;
 		cell = new PdfPCell(new Paragraph(this.getBoldChunk(title)));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		cell = new PdfPCell(new Paragraph(this.getBoldChunk(this.getText("administration.reports.field.total"))));
-		cell.setBackgroundColor(this.headerBgColor);
+		cell.setBackgroundColor(BaseBiblivreReport.HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(BaseBiblivreReport.HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);

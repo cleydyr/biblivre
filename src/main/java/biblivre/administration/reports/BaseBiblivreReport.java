@@ -60,12 +60,12 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 	protected static final String ARIAL_FONT_NAME = "Arial";
 	protected static final Float PAGE_NUMBER_FONT_SIZE = 8f;
 
-	protected final Color headerBgColor = new Color(239, 239, 239);
-	protected final Font smallFont = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.NORMAL, Color.BLACK);
-	protected final Font textFont = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.NORMAL, Color.BLACK);
-	protected final Font boldFont = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.BOLD, Color.BLACK);
-	protected final Font headerFont = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
-	protected final Font footerFont = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
+	protected static final Color HEADER_BACKGROUND_COLOR = new Color(239, 239, 239);
+	protected static final Font SMALL_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.NORMAL, Color.BLACK);
+	protected static final Font TEXT_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.NORMAL, Color.BLACK);
+	protected static final Font BOLD_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.BOLD, Color.BLACK);
+	protected static final Font HEADER_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
+	protected static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
 
 	protected TranslationsMap i18n;
 	private PdfWriter writer;
@@ -168,7 +168,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 
 			PdfPTable foot = new PdfPTable(1);
 			Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
-			pageNumber.setFont(this.footerFont);
+			pageNumber.setFont(BaseBiblivreReport.FOOTER_FONT);
 			cell = new PdfPCell(new Paragraph(pageNumber));
 			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			cell.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -184,25 +184,25 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 
 	protected Chunk getNormalChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(this.textFont);
+		chunk.setFont(BaseBiblivreReport.TEXT_FONT);
 		return chunk;
 	}
 
 	protected Chunk getBoldChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(this.boldFont);
+		chunk.setFont(BaseBiblivreReport.BOLD_FONT);
 		return chunk;
 	}
 
 	protected Chunk getSmallFontChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(this.smallFont);
+		chunk.setFont(BaseBiblivreReport.SMALL_FONT);
 		return chunk;
 	}
 
 	protected Chunk getHeaderChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(this.headerFont);
+		chunk.setFont(BaseBiblivreReport.HEADER_FONT);
 		return chunk;
 	}
 
