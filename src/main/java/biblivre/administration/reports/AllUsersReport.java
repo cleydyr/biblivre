@@ -60,6 +60,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 		for (PdfPTable table : listTable) {
 			document.add(table);
+
 			ReportUtil.insertNewLine(document);
 		}
 	}
@@ -68,12 +69,17 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		ReportUtil.insertChunkText(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
 				this.getText("administration.reports.field.user_list_by_type"));
+
 		ReportUtil.insertNewLine(document);
 	}
 
-	private void _insertSummaryTable(Document document, AllUsersReportDto allUsers) throws DocumentException {
+	private void _insertSummaryTable(Document document, AllUsersReportDto allUsers)
+			throws DocumentException {
+
 		PdfPTable summaryTable = createSummaryTable(allUsers.getTypesMap());
+
 		document.add(summaryTable);
+
 		ReportUtil.insertNewLine(document);
 	}
 
@@ -81,6 +87,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		ReportUtil.insertChunkText(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
 				this.getText("administration.reports.field.user_count_by_type"));
+
 		ReportUtil.insertNewLine(document);
 	}
 
@@ -100,12 +107,6 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		table.setWidthPercentage(50f);
 		table.setHorizontalAlignment(Element.ALIGN_LEFT);
 
-		int total = types
-				.values()
-				.stream()
-				.mapToInt(Integer::intValue)
-				.sum();
-
 		types.forEach((description, quantity) -> {
 			_insertDescription(table, description);
 
@@ -113,6 +114,12 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		});
 
 		_insertTotalLabel(table);
+
+		int total = types
+				.values()
+				.stream()
+				.mapToInt(Integer::intValue)
+				.sum();
 
 		_insertTotalValue(table, total);
 
