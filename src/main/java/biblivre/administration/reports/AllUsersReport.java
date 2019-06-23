@@ -112,7 +112,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		table.setHorizontalAlignment(Element.ALIGN_LEFT);
 
 		types.forEach((description, quantity) -> {
-			_insertDescription(table, description);
+			_insertDescription(table, description.toUpperCase());
 
 			_insertQuantity(table, quantity);
 		});
@@ -130,50 +130,20 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		return table;
 	}
 
-	private void _insertQuantity(PdfPTable table, Integer quantity) {
-		PdfPCell quantityCell = new PdfPCell(
-				new Paragraph(ReportUtil.getNormalChunk(String.valueOf(quantity))));
-
-		quantityCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		quantityCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-		table.addCell(quantityCell);
+	private void _insertQuantity(PdfPTable table, int total) {
+		ReportUtil.insertValue(table, total);
 	}
 
 	private void _insertDescription(PdfPTable table, String description) {
-		PdfPCell descriptionLabelCell = new PdfPCell(
-				new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
-
-		descriptionLabelCell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		descriptionLabelCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		descriptionLabelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		descriptionLabelCell.setColspan(2);
-
-		table.addCell(descriptionLabelCell);
+		ReportUtil.insertHeaderColSpan2(table, description);
 	}
 
 	private void _insertTotalLabel(PdfPTable table) {
-		PdfPCell totalCell = new PdfPCell(
-				new Paragraph(
-						ReportUtil.getHeaderChunk(
-								this.getText("administration.reports.field.total"))));
-
-		totalCell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		totalCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		totalCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		totalCell.setColspan(2);
-
-		table.addCell(totalCell);
+		ReportUtil.insertHeaderColSpan2(table, this.getText("administration.reports.field.total"));
 	}
 
 	private void _insertTotalValue(PdfPTable table, int total) {
-		PdfPCell cell2 = new PdfPCell(
-				new Paragraph(ReportUtil.getNormalChunk(String.valueOf(total))));
-
-		cell2.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-		table.addCell(cell2);
+		ReportUtil.insertValue(table, total);
 	}
 
 	private final List<PdfPTable> createListTable(Map<String, List<String>> data) {

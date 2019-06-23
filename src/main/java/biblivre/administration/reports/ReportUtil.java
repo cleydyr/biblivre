@@ -8,10 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 
 public class ReportUtil {
 	
@@ -24,6 +27,7 @@ public class ReportUtil {
 	public static final Font BOLD_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.BOLD, Color.BLACK);
 	public static final Font HEADER_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
 	public static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
+	public static final Color HEADER_BACKGROUND_COLOR = new Color(239, 239, 239);
 
 	public static Chunk getNormalChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
@@ -57,6 +61,27 @@ public class ReportUtil {
 		Paragraph p2 = new Paragraph(chunker.apply(text));
 		p2.setAlignment(alignment);
 		document.add(p2);
+	}
+
+	public static void insertHeaderColSpan2(PdfPTable table, String text) {
+		PdfPCell cell = new PdfPCell(new Paragraph(getHeaderChunk(text)));
+
+		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setColspan(2);
+
+		table.addCell(cell);
+	}
+
+	public static void insertValue(PdfPTable table, int total) {
+		PdfPCell cell = new PdfPCell(
+				new Paragraph(getNormalChunk(String.valueOf(total))));
+
+		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+		table.addCell(cell);
 	}
 
 }

@@ -207,6 +207,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 			header.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + header.getTotalHeight(), writer.getDirectContent());
 		}
 	}
+
 	protected String format(LocalDateTime date) {
 		String language = i18n.getLanguage();
 
