@@ -20,10 +20,12 @@
 package biblivre.administration.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
@@ -43,29 +45,51 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 	@Override
 	protected void generateReportBody(Document document, AllUsersReportDto allUsers) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.all_users"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
+		_insertReportTitle(document);
+
+		_insertUserCountByTypeHeader(document);
+
+		_insertSummaryTable(document, allUsers);
+
+		_insertUserListByTypeHeader(document);
+
+		_insertAllUsersTable(document, allUsers);
+	}
+
+	private void _insertAllUsersTable(Document document, AllUsersReportDto allUsers) throws DocumentException {
+		List<PdfPTable> listTable = createListTable(allUsers.getData());
+
+		for (PdfPTable table : listTable) {
+			document.add(table);
+			document.add(new Phrase("\n"));
+		}
+	}
+
+	private void _insertUserListByTypeHeader(Document document) throws DocumentException {
+		Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_list_by_type")));
+		p3.setAlignment(Element.ALIGN_LEFT);
+		document.add(p3);
 		document.add(new Phrase("\n"));
+	}
+
+	private void _insertSummaryTable(Document document, AllUsersReportDto allUsers) throws DocumentException {
+		PdfPTable summaryTable = createSummaryTable(allUsers.getTypesMap());
+		document.add(summaryTable);
+		document.add(new Phrase("\n"));
+	}
+
+	private void _insertUserCountByTypeHeader(Document document) throws DocumentException {
 		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_count_by_type")));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
-		PdfPTable summaryTable = createSummaryTable(allUsers.getTypesMap());
-		document.add(summaryTable);
-		document.add(new Phrase("\n"));
+	}
 
-		ArrayList<PdfPTable> listTable = createListTable(allUsers.getData());
-		if (listTable != null) {
-			Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_list_by_type")));
-			p3.setAlignment(Element.ALIGN_LEFT);
-			document.add(p3);
-			document.add(new Phrase("\n"));
-			for (PdfPTable tabela : listTable) {
-				document.add(tabela);
-				document.add(new Phrase("\n"));
-			}
-		}
+	private void _insertReportTitle(Document document) throws DocumentException {
+		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.all_users"));
+		p1.setAlignment(Element.ALIGN_CENTER);
+		document.add(p1);
+		document.add(new Phrase("\n"));
 	}
 
 	private final PdfPTable createSummaryTable(Map<String, Integer> tipos) {
@@ -101,9 +125,9 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		return table;
 	}
 
-	private final ArrayList<PdfPTable> createListTable(Map<String, List<String>> data) {
+	private final List<PdfPTable> createListTable(Map<String, List<String>> data) {
 		try {
-			ArrayList<PdfPTable> tabelas = new ArrayList<PdfPTable>();
+			List<PdfPTable> tables = new ArrayList<PdfPTable>();
 			PdfPTable table = null;
 			PdfPCell cell;
 			for (String description : data.keySet()) {
@@ -170,12 +194,12 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 					table.addCell(cell);
 				}
-				tabelas.add(table);
+				tables.add(table);
 			}
-			return tabelas;
+			return tables;
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
-			return null;
+			return Collections.emptyList();
 		}
 	}
 	
