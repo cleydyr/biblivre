@@ -37,7 +37,7 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport<AssetHoldingByD
 
 	@Override
 	protected void generateReportBody(Document document, AssetHoldingByDateDto reportData) throws Exception {
-		PdfPTable table = new PdfPTable(8);
+		PdfPTable table = new PdfPTable(6);
 
 		table.setWidthPercentage(100f);
 
