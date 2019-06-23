@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -67,7 +65,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertUserListByTypeHeader(Document document) throws DocumentException {
-		insertChunkText(
+		ReportUtil.insertChunkText(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
 				this.getText("administration.reports.field.user_list_by_type"));
 		ReportUtil.insertNewLine(document);
@@ -80,16 +78,10 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertUserCountByTypeHeader(Document document) throws DocumentException {
-		insertChunkText(
+		ReportUtil.insertChunkText(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
 				this.getText("administration.reports.field.user_count_by_type"));
 		ReportUtil.insertNewLine(document);
-	}
-
-	public void insertChunkText(Document document, Function<String, Chunk> chunker, int alignment, String text) throws DocumentException {
-		Paragraph p2 = new Paragraph(chunker.apply(text));
-		p2.setAlignment(alignment);
-		document.add(p2);
 	}
 
 	private void _insertReportTitle(Document document) throws DocumentException {

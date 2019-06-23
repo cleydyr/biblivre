@@ -1,6 +1,7 @@
 package biblivre.administration.reports;
 
 import java.awt.Color;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,6 +10,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 
 public class ReportUtil {
@@ -49,6 +51,12 @@ public class ReportUtil {
 
 	public static void insertNewLine(Document document) throws DocumentException {
 		document.add(new Phrase("\n"));
+	}
+
+	public static void insertChunkText(Document document, Function<String, Chunk> chunker, int alignment, String text) throws DocumentException {
+		Paragraph p2 = new Paragraph(chunker.apply(text));
+		p2.setAlignment(alignment);
+		document.add(p2);
 	}
 
 }
