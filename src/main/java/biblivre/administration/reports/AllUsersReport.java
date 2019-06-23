@@ -157,21 +157,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 				_insertUserTableDescription(description, table);
 
-				String userName = this.getText("administration.reports.field.user_name");
-
-				ReportUtil.insertHeaderTextWithBorder(table, userName);
-
-				String userId = this.getText("administration.reports.field.user_id");
-
-				ReportUtil.insertHeaderTextWithBorder(table, userId);
-
-				String created = this.getText("administration.reports.field.creation_date");
-
-				ReportUtil.insertHeaderTextWithBorder(table, created);
-
-				String modified = this.getText("administration.reports.field.modified");
-
-				ReportUtil.insertHeaderTextWithBorder(table, modified);
+				_insertUserTableLabels(table);
 
 				for (String line : data.get(description)) {
 					String[] userData = line.split("\t");
@@ -186,11 +172,30 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 				}
 				tables.add(table);
 			}
+
 			return tables;
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
 			return Collections.emptyList();
 		}
+	}
+
+	private void _insertUserTableLabels(PdfPTable table) {
+		String userName = this.getText("administration.reports.field.user_name");
+
+		ReportUtil.insertHeaderTextWithBorder(table, userName);
+
+		String userId = this.getText("administration.reports.field.user_id");
+
+		ReportUtil.insertHeaderTextWithBorder(table, userId);
+
+		String created = this.getText("administration.reports.field.creation_date");
+
+		ReportUtil.insertHeaderTextWithBorder(table, created);
+
+		String modified = this.getText("administration.reports.field.modified");
+
+		ReportUtil.insertHeaderTextWithBorder(table, modified);
 	}
 
 	public void _insertUserTableDescription(String description, PdfPTable table) {
