@@ -29,7 +29,16 @@ import biblivre.administration.reports.dto.AssetHoldingDto;
 import biblivre.core.utils.NaturalOrderComparator;
 
 public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
-	
+
+	private static int[] COLSPANS = new int[] {1, 2, 2, 1, 1};
+	private static String[] HEADER_TEXTS = new String[] {
+		"administration.reports.field.accession_number",
+		"administration.reports.field.author",
+		"administration.reports.field.title",
+		"administration.reports.field.edition",
+		"administration.reports.field.date",
+	};
+
 	@Override
 	protected AssetHoldingDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingReportData();
@@ -48,8 +57,9 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
 		_sortReportData(dataList);
 
 		for (String[] data : dataList) {
-			for (int i = 0; i <= 4; i++) {
-				ReportUtil.insertValueCenter(table, ReportUtil::getSmallFontChunk, data[i]);
+			for (int i = 0; i < data.length; i++) {
+				ReportUtil.insertValueCenter(
+						table, ReportUtil::getSmallFontChunk, data[i], COLSPANS[i]);
 			}
 		}
 
@@ -67,20 +77,10 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
 	}
 
 	private void _createHeader(PdfPTable table) {
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk, getText("administration.reports.field.accession_number"));
-
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk, getText("administration.reports.field.author"));
-
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk, getText("administration.reports.field.title"));
-
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk, getText("administration.reports.field.edition"));
-
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk, getText("administration.reports.field.date"));
+		for (int i = 0; i < COLSPANS.length; i++) {
+			ReportUtil.insertTextWithBorder(
+					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
+		}
 	}
 
 	@Override
