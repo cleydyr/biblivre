@@ -35,8 +35,6 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
@@ -54,7 +52,6 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 	protected final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	protected static final Float HEADER_BORDER_WIDTH = 0.8f;
-	protected static final Float PAGE_NUMBER_FONT_SIZE = 8f;
 	protected static final Color HEADER_BACKGROUND_COLOR = new Color(239, 239, 239);
 	
 	protected TranslationsMap i18n;
@@ -79,7 +76,9 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 
 		try (FileOutputStream out = new FileOutputStream(file)) {
 			this.writer = PdfWriter.getInstance(document, out);
-			this.writer.setPageEvent(ReportPageEvent.getInstance(this));
+			this.writer.setPageEvent(new ReportPageEvent(
+					getText("administration.reports.biblivre_report_header"),
+					DateUtils.now(i18n.getLanguage())));
 			this.writer.setFullCompression();
 			document.open();
 			generateReportBody(document, reportData);
@@ -127,23 +126,15 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 		return text;
 	}
 
-	private static class ReportPageEvent extends PdfPageEventHelper {
-		protected static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
+	private class ReportPageEvent extends PdfPageEventHelper {
 
-		private BaseBiblivreReport<?> _report;
-		private static ReportPageEvent _instance = null;
+		private String _headerText;
 
-		private ReportPageEvent(BaseBiblivreReport<?> report) {
-			this._report = report;
-		}
+		private String _dateTime;
 
-		public static ReportPageEvent getInstance(BaseBiblivreReport<?> report) {
-			if (_instance == null) {
-				synchronized (ReportPageEvent.class) {
-					_instance = new ReportPageEvent(report);
-				}
-			}
-			return _instance;
+		public ReportPageEvent(String headerText, String dateAndTime) {
+			_headerText = headerText;
+			_dateTime = dateAndTime;
 		}
 
 		@Override
@@ -163,7 +154,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 
 			Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
 
-			pageNumber.setFont(FOOTER_FONT);
+			pageNumber.setFont(ReportUtil.FOOTER_FONT);
 
 			PdfPCell pageNumberCell = new PdfPCell(new Paragraph(pageNumber));
 
@@ -191,7 +182,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 
 			PdfPTable date = new PdfPTable(1);
 
-			PdfPCell dateCell = new PdfPCell(new Paragraph(_report.now()));
+			PdfPCell dateCell = new PdfPCell(new Paragraph(_dateTime));
 
 			dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			dateCell.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -205,7 +196,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 		private void _insertHeaderTitle(PdfWriter writer, Document document, PdfPTable header) {
 			Rectangle page = document.getPageSize();
 
-			PdfPCell headerTextCell = new PdfPCell(new Paragraph(_report.getText("administration.reports.biblivre_report_header")));
+			PdfPCell headerTextCell = new PdfPCell(new Paragraph(_headerText));
 
 			headerTextCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			headerTextCell.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -237,10 +228,6 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 
 	public String getSchema() {
 		return this.schema;
-	}
-
-	protected String now() {
-		return format(LocalDateTime.now());
 	}
 
 	@Override

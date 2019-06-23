@@ -29,6 +29,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.ReservationReportDto;
+import biblivre.core.utils.DateUtils;
 
 public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> {
 
@@ -77,7 +78,7 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 		if (!hasBiblioData && !hasHoldingData) {
 			PdfPTable noDataTable = new PdfPTable(1);
 			noDataTable.setWidthPercentage(100f);
-			String message = this.getText("administration.reports.field.no_data") + " - " + now();
+			String message = this.getText("administration.reports.field.no_data") + " - " + DateUtils.now(i18n.getLanguage());
 			PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(message)));
 			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 			cell.setBorderWidth(HEADER_BORDER_WIDTH);
