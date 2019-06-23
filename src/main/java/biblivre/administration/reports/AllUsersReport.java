@@ -36,6 +36,8 @@ import biblivre.administration.reports.dto.AllUsersReportDto;
 
 public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
+	private static final String USER_DATA_SEPARATOR = "\t";
+
 	@Override
 	protected AllUsersReportDto getReportData(ReportsDTO dto) {
 		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
@@ -150,7 +152,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		try {
 			List<PdfPTable> tables = new ArrayList<PdfPTable>();
 
-			for (String description : data.keySet()) {
+			data.forEach((description, userDataList) -> {
 				PdfPTable table = new PdfPTable(4);
 
 				table.setWidthPercentage(100f);
@@ -159,19 +161,20 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 				_insertUserTableLabels(table);
 
-				for (String line : data.get(description)) {
-					String[] userData = line.split("\t");
+				userDataList.forEach(userData -> {
+					String[] userDataArray = userData.split(USER_DATA_SEPARATOR);
 
-					ReportUtil.insertValue(table, _getUserName(userData));
+					ReportUtil.insertValue(table, _getUserName(userDataArray));
 
-					ReportUtil.insertValueCenter(table, _getUserId(userData));
+					ReportUtil.insertValueCenter(table, _getUserId(userDataArray));
 
-					ReportUtil.insertValueCenter(table, _getUserCreatedDate(userData));
+					ReportUtil.insertValueCenter(table, _getUserCreatedDate(userDataArray));
 
-					ReportUtil.insertValueCenter(table, _getUserUpdateDate(userData));
-				}
+					ReportUtil.insertValueCenter(table, _getUserUpdateDate(userDataArray));
+				});
+
 				tables.add(table);
-			}
+			});
 
 			return tables;
 		} catch (Exception e) {
