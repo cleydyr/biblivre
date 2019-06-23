@@ -47,10 +47,6 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 	@Override
 	protected void generateReportBody(Document document, HoldingCreationByDateReportDto reportData) throws Exception {
 		userTotal = new HashMap<String, Integer>();
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.holdings_creation_by_date"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		String dateSpan = this.getText("administration.reports.field.date_from") + " " + reportData.getInitialDate() + " " + this.getText("administration.reports.field.date_to")+ " " + reportData.getFinalDate();
 		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(dateSpan));
 		p2.setAlignment(Element.ALIGN_LEFT);
@@ -213,6 +209,11 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.holdings_creation_by_date");
 	}
 
 }

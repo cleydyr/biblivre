@@ -99,11 +99,6 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 
 	@Override
 	protected void generateReportBody(Document document, UserReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.user"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
-
 		PdfPTable dataTable = createUserDataTable(reportData.getUser());
 		document.add(dataTable);
 
@@ -269,6 +264,11 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		}		
 
 		return table;
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.user");
 	}
 	
 }

@@ -39,10 +39,6 @@ public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateRepor
 
 	@Override
 	protected void generateReportBody(Document document, SearchesByDateReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.searches_by_date"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		StringBuilder p2Builder = new StringBuilder();
 		p2Builder.append(this.getText("administration.reports.field.date_from") + " ");
 		p2Builder.append(reportData.getInitialDate());
@@ -89,6 +85,11 @@ public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateRepor
 			table.addCell(cell);
 		}
 		return table;
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.searches_by_date");
 	}
 	
 }

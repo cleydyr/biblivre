@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.PageSize;
@@ -81,6 +82,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 					DateUtils.now(i18n.getLanguage())));
 			this.writer.setFullCompression();
 			document.open();
+			insertReportTitle(document);
 			generateReportBody(document, reportData);
 			this.writer.flush();
 			document.close();
@@ -235,4 +237,16 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
+
+	protected void insertReportTitle(Document document) throws DocumentException {
+		Paragraph p1 = new Paragraph(getTitle());
+
+		p1.setAlignment(Element.ALIGN_CENTER);
+
+		document.add(p1);
+
+		ReportUtil.insertNewLine(document);
+	}
+
+	protected abstract String getTitle();
 }

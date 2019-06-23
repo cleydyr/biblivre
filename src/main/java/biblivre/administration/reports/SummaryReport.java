@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -54,10 +53,6 @@ public class SummaryReport extends BaseBiblivreReport<SummaryReportDto> implemen
 
 	@Override
 	protected void generateReportBody(Document document, SummaryReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.summary"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		PdfPTable table = new PdfPTable(10);
 		table.setWidthPercentage(100f);
 		createHeader(table);
@@ -168,6 +163,11 @@ public class SummaryReport extends BaseBiblivreReport<SummaryReportDto> implemen
 		}
 
 		return o1[this.index].compareTo(o2[this.index]);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.summary");
 	}
 
 }

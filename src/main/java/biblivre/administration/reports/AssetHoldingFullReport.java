@@ -54,16 +54,6 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 
 	@Override
 	protected void generateReportBody(Document document, AssetHoldingDto reportData) throws Exception {
-		String title = "";
-		if (this.topographic) {
-			title = this.getText("administration.reports.title.topographic");
-		} else {
-			title = this.getText("administration.reports.title.holdings_full");
-		}
-		Paragraph p1 = new Paragraph(title);
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		PdfPTable table = new PdfPTable(20);
 		table.setWidthPercentage(100f);
 		createHeader(table);
@@ -162,6 +152,15 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 			return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[4], o2[4]);
 		} else {
 			return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[1], o2[1]);
+		}
+	}
+
+	@Override
+	protected String getTitle() {
+		if (this.topographic) {
+			return this.getText("administration.reports.title.topographic");
+		} else {
+			return this.getText("administration.reports.title.holdings_full");
 		}
 	}
 }

@@ -40,10 +40,6 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 
 	@Override
 	protected void generateReportBody(Document document, ReservationReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.reservation"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n\n"));
 		boolean hasBiblioData = reportData.getBiblioReservations() != null && !reportData.getBiblioReservations().isEmpty();
 		boolean hasHoldingData = reportData.getHoldingReservations() != null && !reportData.getHoldingReservations().isEmpty();
 		if (hasBiblioData) {
@@ -154,6 +150,11 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.reservation");
 	}
 
 }

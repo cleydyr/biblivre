@@ -39,11 +39,6 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 
 	@Override
 	protected void generateReportBody(Document document, LateLendingsDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.late_lendings"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
-
 		if (reportData.getData().size() != 0) {
 			Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.late_lendings_count") + ":  " + reportData.getData().size()));
 			p2.setAlignment(Element.ALIGN_LEFT);
@@ -115,6 +110,11 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.late_lendings");
 	}
 
 }

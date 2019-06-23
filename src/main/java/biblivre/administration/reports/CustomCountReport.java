@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -63,18 +62,6 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 
 	@Override
 	protected void generateReportBody(Document document, CustomCountDto reportData) throws Exception {
-		StringBuilder text = new StringBuilder();
-		text.append(this.getText("administration.reports.title.custom_count") + ":\n");
-		text.append(this.datafield).append(" (");
-		text.append(this.getText("marc.bibliographic.datafield." + this.datafield));
-		text.append(")\n$").append(this.subfield);
-		text.append(" (");
-		text.append(this.getText("marc.bibliographic.datafield." + this.datafield + ".subfield." + this.subfield));
-		text.append(")");
-		Paragraph p2 = new Paragraph(text.toString());
-		p2.setAlignment(Element.ALIGN_CENTER);
-		document.add(p2);
-		document.add(new Phrase("\n"));
 		PdfPTable table = new PdfPTable(3);
 		table.setWidthPercentage(100f);
 		createHeader(table, this.getText("marc.bibliographic.datafield." + this.datafield + ".subfield." + this.subfield));
@@ -153,6 +140,21 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 		}
 			
 		
+	}
+
+	@Override
+	protected String getTitle() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(this.getText("administration.reports.title.custom_count") + ":\n");
+		sb.append(this.datafield).append(" (");
+		sb.append(this.getText("marc.bibliographic.datafield." + this.datafield));
+		sb.append(")\n$").append(this.subfield);
+		sb.append(" (");
+		sb.append(this.getText("marc.bibliographic.datafield." + this.datafield + ".subfield." + this.subfield));
+		sb.append(")");
+
+		return sb.toString();
 	}
 
 }

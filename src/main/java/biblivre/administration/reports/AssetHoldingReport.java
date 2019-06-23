@@ -26,7 +26,6 @@ import java.util.List;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -42,10 +41,6 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> impl
 
 	@Override
 	protected void generateReportBody(Document document, AssetHoldingDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.holdings"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		PdfPTable table = new PdfPTable(7);
 		table.setWidthPercentage(100f);
 		createHeader(table);
@@ -119,5 +114,10 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> impl
 	public int compare(String[] o1, String[] o2) {
 		if (o1 == null && o2 == null) return 0;
 		return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.holdings");
 	}
 }

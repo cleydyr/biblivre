@@ -42,10 +42,6 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 
 	@Override
 	protected void generateReportBody(Document document, RequestsByDateReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.orders_by_date"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		StringBuilder header = new StringBuilder();
 		header.append(this.getText("administration.reports.field.date_from"));
 		header.append(" ").append(reportData.getInitialDate()).append(" ");
@@ -177,6 +173,11 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.orders_by_date");
 	}
 
 }

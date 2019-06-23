@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -45,10 +44,6 @@ public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> implements C
 
 	@Override
 	protected void generateReportBody(Document document, DeweyReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.dewey"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n\n"));
 		PdfPTable table = new PdfPTable(6);
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		createHeader(table);
@@ -129,5 +124,10 @@ public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> implements C
 		}
 
 		return o1[this.index].compareTo(o2[this.index]);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.dewey");
 	}
 }

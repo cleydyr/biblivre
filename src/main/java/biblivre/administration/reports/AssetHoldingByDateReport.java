@@ -21,14 +21,13 @@ package biblivre.administration.reports;
 
 import java.util.List;
 
-import biblivre.administration.reports.dto.AssetHoldingByDateDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+
+import biblivre.administration.reports.dto.AssetHoldingByDateDto;
 
 public class AssetHoldingByDateReport extends BaseBiblivreReport<AssetHoldingByDateDto> {
 	
@@ -41,10 +40,6 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport<AssetHoldingByD
 
 	@Override
 	protected void generateReportBody(Document document, AssetHoldingByDateDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.holdings_by_date"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		PdfPTable table = new PdfPTable(8);
 		table.setWidthPercentage(100f);
 		createHeader(table);
@@ -121,6 +116,11 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport<AssetHoldingByD
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.holdings_by_date");
 	}
 
 }

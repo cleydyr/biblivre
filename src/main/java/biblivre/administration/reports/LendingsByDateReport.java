@@ -40,10 +40,6 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 
 	@Override
 	protected void generateReportBody(Document document, LendingsByDateReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.lendings_by_date"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		StringBuilder header = new StringBuilder();
 		header.append(this.getText("administration.reports.field.date_from"));
 		header.append(" " + reportData.getInitialDate() + " ");
@@ -117,6 +113,11 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 			table.addCell(cell);
 		}
 		return table;
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.lendings_by_date");
 	}
 
 	

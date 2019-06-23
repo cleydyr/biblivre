@@ -48,10 +48,6 @@ public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto
 
 	@Override
 	protected void generateReportBody(Document document, BibliographyReportDto reportData) throws Exception {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.bibliography"));
-		p1.setAlignment(Element.ALIGN_CENTER);
-		document.add(p1);
-		document.add(new Phrase("\n"));
 		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.author") + ":  " + reportData.getAuthorName()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
@@ -124,6 +120,11 @@ public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.bibliography");
 	}
 	
 }

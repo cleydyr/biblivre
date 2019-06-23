@@ -48,8 +48,6 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	protected void generateReportBody(Document document, AllUsersReportDto allUsers)
 			throws Exception {
 
-		_insertReportTitle(document);
-
 		_insertUserCountByTypeHeader(document);
 
 		_insertSummaryTable(document, allUsers);
@@ -93,16 +91,6 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		ReportUtil.insertChunkText(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
 				this.getText("administration.reports.field.user_count_by_type"));
-
-		ReportUtil.insertNewLine(document);
-	}
-
-	private void _insertReportTitle(Document document) throws DocumentException {
-		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.all_users"));
-
-		p1.setAlignment(Element.ALIGN_CENTER);
-
-		document.add(p1);
 
 		ReportUtil.insertNewLine(document);
 	}
@@ -227,6 +215,11 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 	private static String _getUserName(String[] dados) {
 		return dados[0];
+	}
+
+	@Override
+	protected String getTitle() {
+		return this.getText("administration.reports.title.all_users");
 	}
 	
 }
