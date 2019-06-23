@@ -20,7 +20,6 @@
 package biblivre.administration.reports;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.lowagie.text.Document;
@@ -32,7 +31,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import biblivre.administration.reports.dto.AssetHoldingDto;
 import biblivre.core.utils.NaturalOrderComparator;
 
-public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> implements Comparator<String[]> {
+public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
 	
 	@Override
 	protected AssetHoldingDto getReportData(ReportsDTO dto) {
@@ -42,36 +41,32 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> impl
 	@Override
 	protected void generateReportBody(Document document, AssetHoldingDto reportData) throws Exception {
 		PdfPTable table = new PdfPTable(7);
+
 		table.setWidthPercentage(100f);
+
 		createHeader(table);
-		PdfPCell cell;
+
 		List<String[]> dataList = reportData.getData();
-		Collections.sort(dataList, this);
+
+		_sortReportData(dataList);
+
 		for (String[] data : dataList) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[0])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[1])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[2])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[3])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[4])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+			for (int i = 0; i <= 4; i++) {
+				ReportUtil.insertValueCenter(table, ReportUtil::getSmallFontChunk, data[i]);
+			}
 		}
+
 		document.add(table);
+	}
+
+	private void _sortReportData(List<String[]> dataList) {
+		Collections.sort(dataList, (o1, o2) -> {
+			if (o1 == null && o2 == null) {
+				return 0;
+			}
+
+			return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
+		});
 	}
 
 	private void createHeader(PdfPTable table) {
@@ -108,12 +103,6 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> impl
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-	}
-
-	@Override
-	public int compare(String[] o1, String[] o2) {
-		if (o1 == null && o2 == null) return 0;
-		return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
 	}
 
 	@Override
