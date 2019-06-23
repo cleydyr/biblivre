@@ -84,8 +84,13 @@ public class ReportUtil {
 	}
 
 	public static void insertValueCenter(PdfPTable table, String value) {
+		insertValueCenter(table, ReportUtil::getNormalChunk, value);
+	}
+
+	public static void insertValueCenter(
+			PdfPTable table, Function<String, Chunk> chunker, String value) {
 		PdfPCell cell = new PdfPCell(
-				new Paragraph(getNormalChunk(value)));
+				new Paragraph(chunker.apply(value)));
 
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -94,7 +99,12 @@ public class ReportUtil {
 	}
 
 	public static void insertHeaderTextWithBorder(PdfPTable table, String value) {
-		PdfPCell cell = new PdfPCell(new Paragraph(getHeaderChunk(value)));
+		insertTextWithBorder(table, ReportUtil::getHeaderChunk, value);
+	}
+
+	public static void insertTextWithBorder(
+			PdfPTable table, Function<String, Chunk> chunker, String value) {
+		PdfPCell cell = new PdfPCell(new Paragraph(chunker.apply(value)));
 
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 
