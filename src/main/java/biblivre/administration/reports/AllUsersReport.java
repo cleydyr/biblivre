@@ -155,7 +155,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 				table.setWidthPercentage(100f);
 
-				_insertTableDescription(description, table);
+				_insertUserTableDescription(description, table);
 
 				String userName = this.getText("administration.reports.field.user_name");
 
@@ -193,7 +193,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		}
 	}
 
-	public void _insertTableDescription(String description, PdfPTable table) {
+	public void _insertUserTableDescription(String description, PdfPTable table) {
 		PdfPCell cell = new PdfPCell(
 				new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
 
