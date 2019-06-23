@@ -149,43 +149,71 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 		@Override
 		public void onEndPage(PdfWriter writer, Document document) {
 			try {
-				Rectangle page = document.getPageSize();
-				
-				PdfPTable head = new PdfPTable(1);
-				PdfPCell cell = new PdfPCell(new Paragraph(_report.getText("administration.reports.biblivre_report_header")));
-				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-				cell.setVerticalAlignment(Element.ALIGN_CENTER);
-				cell.setBorder(Rectangle.BOTTOM);
-				head.addCell(cell);
-				head.setTotalWidth( (page.getWidth() / 2) - document.leftMargin());
-				head.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + head.getTotalHeight(), writer.getDirectContent());
+				_insertHeader(writer, document);
 	
-				PdfPTable date = new PdfPTable(1);
-	
-				PdfPCell dateCell = new PdfPCell(new Paragraph(_report.now()));
-	
-				dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-				dateCell.setVerticalAlignment(Element.ALIGN_CENTER);
-				dateCell.setBorder(Rectangle.BOTTOM);
-				date.addCell(dateCell);
-				date.setTotalWidth( (page.getWidth() / 2) - document.rightMargin());
-				date.writeSelectedRows(0, -1, (page.getWidth() / 2), page.getHeight() - document.topMargin() + head.getTotalHeight(), writer.getDirectContent());
-	
-	
-				PdfPTable foot = new PdfPTable(1);
-				Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
-				pageNumber.setFont(FOOTER_FONT);
-				cell = new PdfPCell(new Paragraph(pageNumber));
-				cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-				cell.setVerticalAlignment(Element.ALIGN_CENTER);
-				cell.setBorder(Rectangle.TOP);
-				foot.addCell(cell);
-				foot.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
-				foot.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin(), writer.getDirectContent());
+				_insertFooter(writer, document);
 			}
 			catch (Exception e) {
 				throw new ExceptionConverter(e);
 			}
+		}
+
+		private void _insertFooter(PdfWriter writer, Document document) {
+			Rectangle page = document.getPageSize();
+
+			Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
+
+			pageNumber.setFont(FOOTER_FONT);
+
+			PdfPCell pageNumberCell = new PdfPCell(new Paragraph(pageNumber));
+
+			pageNumberCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			pageNumberCell.setVerticalAlignment(Element.ALIGN_CENTER);
+			pageNumberCell.setBorder(Rectangle.TOP);
+
+			PdfPTable footer = new PdfPTable(1);
+
+			footer.addCell(pageNumberCell);
+			footer.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
+			footer.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin(), writer.getDirectContent());
+		}
+
+		private void _insertHeader(PdfWriter writer, Document document) {
+			PdfPTable header = new PdfPTable(1);
+
+			_insertHeaderTitle(writer, document, header);
+
+			_insertHeaderDate(writer, document, header);
+		}
+
+		private void _insertHeaderDate(PdfWriter writer, Document document, PdfPTable header) {
+			Rectangle page = document.getPageSize();
+
+			PdfPTable date = new PdfPTable(1);
+
+			PdfPCell dateCell = new PdfPCell(new Paragraph(_report.now()));
+
+			dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			dateCell.setVerticalAlignment(Element.ALIGN_CENTER);
+			dateCell.setBorder(Rectangle.BOTTOM);
+
+			date.addCell(dateCell);
+			date.setTotalWidth( (page.getWidth() / 2) - document.rightMargin());
+			date.writeSelectedRows(0, -1, (page.getWidth() / 2), page.getHeight() - document.topMargin() + header.getTotalHeight(), writer.getDirectContent());
+		}
+
+		private void _insertHeaderTitle(PdfWriter writer, Document document, PdfPTable header) {
+			Rectangle page = document.getPageSize();
+
+			PdfPCell headerTextCell = new PdfPCell(new Paragraph(_report.getText("administration.reports.biblivre_report_header")));
+
+			headerTextCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+			headerTextCell.setVerticalAlignment(Element.ALIGN_CENTER);
+			headerTextCell.setBorder(Rectangle.BOTTOM);
+
+			header.addCell(headerTextCell);
+			header.setTotalWidth( (page.getWidth() / 2) - document.leftMargin());
+			header.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + header.getTotalHeight(), writer.getDirectContent());
 		}
 	}
 	protected String format(LocalDateTime date) {
