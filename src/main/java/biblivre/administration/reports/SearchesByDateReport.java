@@ -48,7 +48,7 @@ public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateRepor
 		p2Builder.append(reportData.getInitialDate());
 		p2Builder.append(" " + this.getText("administration.reports.field.date_to") + " ");
 		p2Builder.append(reportData.getFinalDate());
-		Paragraph p2 = new Paragraph(this.getHeaderChunk(p2Builder.toString()));
+		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(p2Builder.toString()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
@@ -63,13 +63,13 @@ public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateRepor
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		//Table header
 		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.date"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.date"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.total"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.total"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
@@ -79,11 +79,11 @@ public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateRepor
 		//Table body
 		if (dto.getData() == null || dto.getData().isEmpty()) return table;
 		for (String[] data : dto.getData()) {
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[1])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);

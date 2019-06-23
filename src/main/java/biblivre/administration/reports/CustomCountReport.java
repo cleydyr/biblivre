@@ -82,7 +82,7 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 		PdfPCell cell;
 		int total = 0;
 		for (String[] data : reportData.getData()) {
-			cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[0])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[0])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -90,19 +90,19 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 			if (data[1] != null && StringUtils.isNumeric(data[1])) {
 				total += Integer.valueOf(data[1]);
 			}
-			cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[1])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[1])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
 		
 		if (total != 0) {
-			cell = new PdfPCell(new Paragraph(this.getBoldChunk("Total")));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk("Total")));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getBoldChunk(String.valueOf(total))));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(String.valueOf(total))));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
@@ -113,14 +113,14 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 
 	private void createHeader(PdfPTable table, String title) {
 		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(this.getBoldChunk(title)));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(title)));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getBoldChunk(this.getText("administration.reports.field.total"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.total"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);

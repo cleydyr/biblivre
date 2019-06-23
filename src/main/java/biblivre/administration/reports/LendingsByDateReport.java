@@ -49,18 +49,18 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 		header.append(" " + reportData.getInitialDate() + " ");
 		header.append(this.getText("administration.reports.field.date_to"));
 		header.append(" " + reportData.getFinalDate());
-		Paragraph p2 = new Paragraph(this.getHeaderChunk(header.toString()));
+		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(header.toString()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
 
-		Paragraph p3 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_count") + ":  " + reportData.getTotals()[0]));
+		Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings_count") + ":  " + reportData.getTotals()[0]));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p3);
-		Paragraph p4 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_current") + ":  " + reportData.getTotals()[1]));
+		Paragraph p4 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings_current") + ":  " + reportData.getTotals()[1]));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p4);
-		Paragraph p5 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings_late") + ":  " + reportData.getTotals()[2]));
+		Paragraph p5 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings_late") + ":  " + reportData.getTotals()[2]));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p5);
 		document.add(new Phrase("\n"));
@@ -78,20 +78,20 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.setWidthPercentage(100f);
 		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.lendings"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.title"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.author"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.author"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
@@ -101,16 +101,16 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 		//Table body
 		if (dto.getData() == null || dto.getData().isEmpty()) return table;
 		for (String[] data : dto.getData()) {
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[1])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[2])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[2])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);

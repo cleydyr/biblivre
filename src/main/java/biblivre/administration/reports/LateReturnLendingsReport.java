@@ -45,7 +45,7 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 		document.add(new Phrase("\n"));
 
 		if (reportData.getData().size() != 0) {
-			Paragraph p2 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.late_lendings_count") + ":  " + reportData.getData().size()));
+			Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.late_lendings_count") + ":  " + reportData.getData().size()));
 			p2.setAlignment(Element.ALIGN_LEFT);
 			document.add(p2);
 			document.add(new Phrase("\n"));
@@ -65,21 +65,21 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 
 		PdfPCell cell;
 		for (String[] lending : lendings) {
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(lending[0])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[0])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(lending[1])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[1])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(lending[2])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[2])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(lending[3])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[3])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
@@ -89,27 +89,27 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 
 	private void createHeader(PdfPTable table) {
 		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.title"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.expected_date"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.expected_date"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);

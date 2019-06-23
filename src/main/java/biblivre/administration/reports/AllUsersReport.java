@@ -47,7 +47,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 		document.add(new Phrase("\n"));
-		Paragraph p2 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_count_by_type")));
+		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_count_by_type")));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
@@ -57,7 +57,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 		ArrayList<PdfPTable> listTable = createListTable(allUsers.getData());
 		if (listTable != null) {
-			Paragraph p3 = new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_list_by_type")));
+			Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_list_by_type")));
 			p3.setAlignment(Element.ALIGN_LEFT);
 			document.add(p3);
 			document.add(new Phrase("\n"));
@@ -77,24 +77,24 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		PdfPCell cell;
 		for (String description : tipos.keySet()) {
 			total += tipos.get(description);
-			cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
 			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell.setColspan(2);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(tipos.get(description)))));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(tipos.get(description)))));
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.total"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.total"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setColspan(2);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(total))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(total))));
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
@@ -109,35 +109,35 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 			for (String description : data.keySet()) {
 				table = new PdfPTable(4);
 				table.setWidthPercentage(100f);
-				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
+				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
 				cell.setColspan(4);
 				cell.setBorder(Rectangle.NO_BORDER);
 				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
-				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
+				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
 				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
-				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
+				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
 				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
-				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.creation_date"))));
+				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.creation_date"))));
 				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
-				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.modified"))));
+				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.modified"))));
 				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 				cell.setBorderWidth(HEADER_BORDER_WIDTH);
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -147,25 +147,25 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 				for (String line : data.get(description)) {
 					String[] dados = line.split("\t");
 					//Nome
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(dados[0])));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[0])));
 					cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 					table.addCell(cell);
 
 					//Matricula
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(dados[1])));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[1])));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 					table.addCell(cell);
 
 					//Data de Inclusao
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(dados[2])));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[2])));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 					table.addCell(cell);
 
 					//Data de Cancelamento/Alteracao
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(dados[3])));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[3])));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 					table.addCell(cell);

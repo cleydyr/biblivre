@@ -51,7 +51,7 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		header.append(" ").append(reportData.getInitialDate()).append(" ");
 		header.append(this.getText("administration.reports.field.date_to"));
 		header.append(" ").append(reportData.getFinalDate());
-		Paragraph p2 = new Paragraph(this.getHeaderChunk(header.toString()));
+		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(header.toString()));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
 		document.add(new Phrase("\n"));
@@ -77,25 +77,25 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		for (String[] data : dataList) {
 			if (!data[0].equals(lastQuotationId)) {
 				if (!lastQuotationId.equals("0")) {
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(requester)));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(requester)));
 					cell.setColspan(2);
 					cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 					cell.setVerticalAlignment(Element.ALIGN_TOP);
 					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(title)));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(title)));
 					cell.setColspan(2);
 					cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 					cell.setVerticalAlignment(Element.ALIGN_TOP);
 					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(quantity)));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(quantity)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setVerticalAlignment(Element.ALIGN_TOP);
 					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(unit_value)));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(unit_value)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setVerticalAlignment(Element.ALIGN_TOP);
 					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(this.getNormalChunk(total_value)));
+					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(total_value)));
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setVerticalAlignment(Element.ALIGN_TOP);
 					table.addCell(cell);
@@ -117,25 +117,25 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		}
 		
 		if (!lastQuotationId.equals("0")) {
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(requester)));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(requester)));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_TOP);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(title)));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(title)));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_TOP);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(quantity)));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(quantity)));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_TOP);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(unit_value)));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(unit_value)));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_TOP);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(total_value)));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(total_value)));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_TOP);
 			table.addCell(cell);
@@ -145,33 +145,33 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 	
 	private void createHeader(PdfPTable table) {
 		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.requester"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.requester"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.title"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.amount"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.amount"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.unit_value"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.unit_value"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.paid_value"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.paid_value"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);

@@ -48,7 +48,7 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 		if (hasBiblioData) {
 			PdfPTable biblioTable = new PdfPTable(7);
 			biblioTable.setWidthPercentage(100f);
-			PdfPCell cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.biblio_reservation"))));
+			PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.biblio_reservation"))));
 			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 			cell.setBorderWidth(HEADER_BORDER_WIDTH);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -63,7 +63,7 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 		if (hasHoldingData) {
 			PdfPTable holdingTable = new PdfPTable(7);
 			holdingTable.setWidthPercentage(100f);
-			PdfPCell cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.holding_reservation"))));
+			PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.holding_reservation"))));
 			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 			cell.setBorderWidth(HEADER_BORDER_WIDTH);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -78,7 +78,7 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 			PdfPTable noDataTable = new PdfPTable(1);
 			noDataTable.setWidthPercentage(100f);
 			String message = this.getText("administration.reports.field.no_data") + " - " + now();
-			PdfPCell cell = new PdfPCell(new Paragraph(this.getHeaderChunk(message)));
+			PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(message)));
 			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 			cell.setBorderWidth(HEADER_BORDER_WIDTH);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -90,33 +90,33 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 
 	private void createHeader(PdfPTable table) {
 		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.title"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.author"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
+		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
+		cell.setColspan(2);
+		cell.setBorderWidth(HEADER_BORDER_WIDTH);
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.addCell(cell);
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.author"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.reservation_date"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.reservation_date"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -130,25 +130,25 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 		}
 		for (String[] data : dataList) {
 			PdfPCell cell;
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[1])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[2])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[2])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[3])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[3])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[4])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[4])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);

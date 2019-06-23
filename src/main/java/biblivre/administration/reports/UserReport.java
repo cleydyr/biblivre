@@ -148,20 +148,20 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		table.setWidthPercentage(100f);
 
 		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.date"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.date"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.title"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.author"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.author"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setColspan(2);
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
@@ -170,16 +170,16 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 		table.addCell(cell);
 
 		for (String[] lending : lendings) {
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(lending[0])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[0])));
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(lending[1])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[1])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(lending[2])));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[2])));
 			cell.setColspan(2);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -191,56 +191,56 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 	private PdfPTable createUserDataTable(UserDTO user) {
 		PdfPTable table = new PdfPTable(4);
 		table.setWidthPercentage(100f);
-		PdfPCell cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
+		PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getNormalChunk(user.getName())));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(user.getName())));
 		cell.setColspan(3);
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(user.getId()))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(user.getId()))));
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_signup"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_signup"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		Date signupDate = user.getCreated();
-		cell = new PdfPCell(new Paragraph(this.getNormalChunk(signupDate != null ? format(signupDate) : "")));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(signupDate != null ? format(signupDate) : "")));
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_type"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_type"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 		UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
 		UserTypeDTO usdto = utbo.get(user.getType());
-		cell = new PdfPCell(new Paragraph(this.getNormalChunk(usdto.getDescription())));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(usdto.getDescription())));
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_status"))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_status"))));
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(this.getNormalChunk(this.getText("administration.reports.field.user_status." + user.getStatus().toString()))));
+		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(this.getText("administration.reports.field.user_status." + user.getStatus().toString()))));
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
@@ -256,12 +256,12 @@ public class UserReport extends BaseBiblivreReport<UserReportDto> {
 
 		for (UserFieldDTO field : fields) {
 			String fieldKey = field.getKey();
-			cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("circulation.custom.user_field." + fieldKey))));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("circulation.custom.user_field." + fieldKey))));
 			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(this.getNormalChunk(user.getFields().get(fieldKey))));
+			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(user.getFields().get(fieldKey))));
 			cell.setColspan(3);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);

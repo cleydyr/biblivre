@@ -29,7 +29,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.lowagie.text.Chunk;
@@ -52,22 +51,12 @@ import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.DateUtils;
 
 public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBiblivreReport {
-
-
 	protected final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	protected static final Float HEADER_BORDER_WIDTH = 0.8f;
-	protected static final Float SMALL_FONT_SIZE = 8f;
-	protected static final Float REPORT_FONT_SIZE = 10f;
-	protected static final String ARIAL_FONT_NAME = "Arial";
 	protected static final Float PAGE_NUMBER_FONT_SIZE = 8f;
-
 	protected static final Color HEADER_BACKGROUND_COLOR = new Color(239, 239, 239);
-	protected static final Font SMALL_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.NORMAL, Color.BLACK);
-	protected static final Font TEXT_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.NORMAL, Color.BLACK);
-	protected static final Font BOLD_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.BOLD, Color.BLACK);
-	protected static final Font HEADER_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
-
+	
 	protected TranslationsMap i18n;
 	private PdfWriter writer;
 	
@@ -197,7 +186,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBi
 			catch (Exception e) {
 				throw new ExceptionConverter(e);
 			}
-	}
+		}
 	}
 	protected String format(LocalDateTime date) {
 		String language = i18n.getLanguage();
