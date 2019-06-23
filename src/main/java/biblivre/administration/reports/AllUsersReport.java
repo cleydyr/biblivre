@@ -149,45 +149,26 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	private final List<PdfPTable> createListTable(Map<String, List<String>> data) {
 		try {
 			List<PdfPTable> tables = new ArrayList<PdfPTable>();
-			PdfPTable table = null;
-			PdfPCell cell;
+
 			for (String description : data.keySet()) {
-				table = new PdfPTable(4);
+				PdfPTable table = new PdfPTable(4);
+
 				table.setWidthPercentage(100f);
-				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
-				cell.setColspan(4);
-				cell.setBorder(Rectangle.NO_BORDER);
-				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
 
-				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
-				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-				cell.setBorderWidth(HEADER_BORDER_WIDTH);
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
+				_insertTableDescription(description, table);
 
-				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
-				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-				cell.setBorderWidth(HEADER_BORDER_WIDTH);
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
+				String userName = this.getText("administration.reports.field.user_name");
+				ReportUtil.insertHeaderTextWithBorder(table, userName);
 
-				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.creation_date"))));
-				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-				cell.setBorderWidth(HEADER_BORDER_WIDTH);
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
+				String userId = this.getText("administration.reports.field.user_id");
+				ReportUtil.insertHeaderTextWithBorder(table, userId);
 
-				cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.modified"))));
-				cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-				cell.setBorderWidth(HEADER_BORDER_WIDTH);
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
+				String created = this.getText("administration.reports.field.creation_date");
+				ReportUtil.insertHeaderTextWithBorder(table, created);
+
+				String modified = this.getText("administration.reports.field.modified");
+
+				ReportUtil.insertHeaderTextWithBorder(table, modified);
 
 				for (String line : data.get(description)) {
 					String[] userData = line.split("\t");
@@ -207,6 +188,17 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 			this.logger.error(e.getMessage(), e);
 			return Collections.emptyList();
 		}
+	}
+
+	public void _insertTableDescription(String description, PdfPTable table) {
+		PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
+
+		cell.setColspan(4);
+		cell.setBorder(Rectangle.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+		table.addCell(cell);
 	}
 
 	private static String _getUserUpdateDate(String[] userData) {

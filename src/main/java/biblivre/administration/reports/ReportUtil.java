@@ -28,6 +28,7 @@ public class ReportUtil {
 	public static final Font HEADER_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
 	public static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
 	public static final Color HEADER_BACKGROUND_COLOR = new Color(239, 239, 239);
+	public static final Float HEADER_BORDER_WIDTH = 0.8f;
 
 	public static Chunk getNormalChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
@@ -66,9 +67,7 @@ public class ReportUtil {
 	public static void insertHeaderColSpan2(PdfPTable table, String text) {
 		PdfPCell cell = new PdfPCell(new Paragraph(getHeaderChunk(text)));
 
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		applyBackgroundThenCenter(cell);
 		cell.setColspan(2);
 
 		table.addCell(cell);
@@ -92,6 +91,22 @@ public class ReportUtil {
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
 		table.addCell(cell);
+	}
+
+	public static void insertHeaderTextWithBorder(PdfPTable table, String value) {
+		PdfPCell cell = new PdfPCell(new Paragraph(getHeaderChunk(value)));
+
+		cell.setBorderWidth(HEADER_BORDER_WIDTH);
+
+		applyBackgroundThenCenter(cell);
+
+		table.addCell(cell);
+	}
+
+	private static void applyBackgroundThenCenter(PdfPCell cell) {
+		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 	}
 
 }
