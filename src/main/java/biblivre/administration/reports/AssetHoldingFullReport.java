@@ -40,9 +40,12 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> {
 
-	private static final int THIRD_COLUMN_SPAN = 11;
-	private static final int SECOND_COLUMN_SPAN = 3;
-	private static final int FIRST_COLUMN_SPAN = 6;
+	private static int[] COLSPANS = new int[] {11, 3, 6};
+	private static String[] HEADER_TEXTS = new String[] {
+		"administration.reports.field.id",
+		"administration.reports.field.accession_number",
+		"administration.reports.field.holdings_count"
+	};
 
 	private Boolean topographic;
 
@@ -75,11 +78,11 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 			Image image39 = _toBarcodeImage(cb, paddedHoldingSerial);
 
 			ReportUtil.insertValueCenter(
-					table, (__) -> new Chunk(image39, 0, 0), null, FIRST_COLUMN_SPAN);
+					table, (__) -> new Chunk(image39, 0, 0), null, COLSPANS[0]);
 
 			ReportUtil.insertValueCenter(
 					table, ReportUtil::getSmallFontChunk, _getAccesionNumber(data),
-					SECOND_COLUMN_SPAN);
+					COLSPANS[1]);
 
 			_insertOtherHoldingData(table, data);
 		}
@@ -108,7 +111,7 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 
 		PdfPCell cell = new PdfPCell(para);
 
-		cell.setColspan(THIRD_COLUMN_SPAN);
+		cell.setColspan(COLSPANS[3]);
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_TOP);
 		cell.setPaddingTop(5f);
@@ -178,15 +181,10 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 	}
 
 	private void _createHeader(PdfPTable table) {
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk,
-				getText("administration.reports.field.id"), FIRST_COLUMN_SPAN);
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk,
-				getText("administration.reports.field.accession_number"), SECOND_COLUMN_SPAN);
-		ReportUtil.insertTextWithBorder(
-				table, ReportUtil::getBoldChunk,
-				getText("administration.reports.field.holdings_count"), THIRD_COLUMN_SPAN);
+		for (int i = 0; i < COLSPANS.length; i++) {
+			ReportUtil.insertTextWithBorder(
+					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
+		}
 	}
 
 	@Override
