@@ -24,9 +24,6 @@ import java.util.Collections;
 import org.apache.commons.lang3.StringUtils;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.CustomCountDto;
@@ -63,36 +60,31 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> {
 	@Override
 	protected void generateReportBody(Document document, CustomCountDto reportData) throws Exception {
 		PdfPTable table = new PdfPTable(3);
+
 		table.setWidthPercentage(100f);
-		createHeader(table, this.getText("marc.bibliographic.datafield." + this.datafield + ".subfield." + this.subfield));
+
+		_createHeader(table);
+
 		_sortReportData(reportData);
-		PdfPCell cell;
+
 		int total = 0;
+
 		for (String[] data : reportData.getData()) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[0])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+			ReportUtil.insertValueCenter(
+					table, ReportUtil::getSmallFontChunk, data[0], 2);
+
 			if (data[1] != null && StringUtils.isNumeric(data[1])) {
 				total += Integer.valueOf(data[1]);
 			}
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[1])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+
+			ReportUtil.insertValueCenter(
+					table, ReportUtil::getSmallFontChunk, data[1]);
 		}
 		
 		if (total != 0) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk("Total")));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(String.valueOf(total))));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+			ReportUtil.insertValueCenter(table, ReportUtil::getBoldChunk, "Total", 2);
+
+			ReportUtil.insertValueCenter(table, ReportUtil::getBoldChunk, String.valueOf(total));
 		}
 		
 		document.add(table);
@@ -119,21 +111,13 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> {
 		});
 	}
 
-	private void createHeader(PdfPTable table, String title) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(title)));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.total"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+	private void _createHeader(PdfPTable table) {
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk,
+				getText("marc.bibliographic.datafield." + datafield + ".subfield." + subfield), 2);
+
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk, getText("administration.reports.field.total"), 1);
 	}
 
 	@Override
