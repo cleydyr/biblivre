@@ -20,7 +20,6 @@
 package biblivre.administration.reports;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +38,11 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> implements Comparator<String[]> {
+public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> {
+
+	private static final int THIRD_COLUMN_SPAN = 11;
+	private static final int SECOND_COLUMN_SPAN = 3;
+	private static final int FIRST_COLUMN_SPAN = 6;
 
 	private Boolean topographic;
 
@@ -55,104 +58,135 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 	@Override
 	protected void generateReportBody(Document document, AssetHoldingDto reportData) throws Exception {
 		PdfPTable table = new PdfPTable(20);
+
 		table.setWidthPercentage(100f);
-		createHeader(table);
-		PdfPCell cell;
+
+		_createHeader(table);
+
 		List<String[]> dataList = reportData.getData();
-		Collections.sort(dataList, this);
+
+		_sortReportData(dataList);
+
 		for (String[] data : dataList) {
 			PdfContentByte cb = getWriter().getDirectContent();
 
-			String holdingSerial = StringUtils.leftPad(data[0], 10, "0");
-			Barcode39 code39 = new Barcode39();
-			code39.setExtended(true);
-			code39.setCode(holdingSerial);
-			code39.setStartStopText(false);
+			String paddedHoldingSerial = StringUtils.leftPad(_getHoldingSerial(data), 10, "0");
 
-			Image image39 = code39.createImageWithBarcode(cb, null, null);
-			image39.scalePercent(100f);
-			cell = new PdfPCell(new Paragraph(new Phrase(new Chunk(image39, 0, 0))));
-			cell.setColspan(6);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[1])));
-			cell.setColspan(3);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+			Image image39 = _toBarcodeImage(cb, paddedHoldingSerial);
 
-			Paragraph para = new Paragraph();
-			para.add(new Phrase(ReportUtil.getSmallFontChunk(data[2] + "\n")));
-			para.add(new Phrase(ReportUtil.getSmallFontChunk(data[3] + "\n")));
+			ReportUtil.insertValueCenter(
+					table, (__) -> new Chunk(image39, 0, 0), null, FIRST_COLUMN_SPAN);
 
-			if (StringUtils.isNotBlank(data[4])) {
-				para.add(new Phrase(ReportUtil.getBoldChunk(this.getText("administration.reports.field.location") + ": ")));
-				para.add(new Phrase(ReportUtil.getSmallFontChunk(data[4] + " ")));
-			}
+			ReportUtil.insertValueCenter(
+					table, ReportUtil::getSmallFontChunk, _getAccesionNumber(data),
+					SECOND_COLUMN_SPAN);
 
-			if (StringUtils.isNotBlank(data[5])) {
-				para.add(new Phrase(ReportUtil.getBoldChunk(this.getText("administration.reports.field.edition") + ": ")));
-				para.add(new Phrase(ReportUtil.getSmallFontChunk(data[5] + " ")));
-			}
-
-			if (StringUtils.isNotBlank(data[6])) {
-				para.add(new Phrase(ReportUtil.getBoldChunk(this.getText("administration.reports.field.date") + ": ")));
-				para.add(new Phrase(ReportUtil.getSmallFontChunk(data[6])));
-			}
-			
-			cell = new PdfPCell(para);
-			cell.setColspan(11);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_TOP);
-			cell.setPaddingTop(5f);
-			cell.setPaddingLeft(7f);
-			cell.setPaddingBottom(4f);
-			table.addCell(cell);
+			_insertOtherHoldingData(table, data);
 		}
 		document.add(table);
 	}
 
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.id"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(6);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.accession_number"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(3);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.holdings_count"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(11);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+	private void _insertOtherHoldingData(PdfPTable table, String[] data) {
+		Paragraph para = new Paragraph();
+		para.add(new Phrase(ReportUtil.getSmallFontChunk(_getTitle(data) + "\n")));
+		para.add(new Phrase(ReportUtil.getSmallFontChunk(StringUtils.defaultString(_getAuthorName(data)) + "\n")));
+
+		if (StringUtils.isNotBlank(_getLocation(data))) {
+			para.add(new Phrase(ReportUtil.getBoldChunk(this.getText("administration.reports.field.location") + ": ")));
+			para.add(new Phrase(ReportUtil.getSmallFontChunk(_getLocation(data) + " ")));
+		}
+
+		if (StringUtils.isNotBlank(_getEdition(data))) {
+			para.add(new Phrase(ReportUtil.getBoldChunk(this.getText("administration.reports.field.edition") + ": ")));
+			para.add(new Phrase(ReportUtil.getSmallFontChunk(_getEdition(data) + " ")));
+		}
+
+		if (StringUtils.isNotBlank(_getPublishedYear(data))) {
+			para.add(new Phrase(ReportUtil.getBoldChunk(this.getText("administration.reports.field.date") + ": ")));
+			para.add(new Phrase(ReportUtil.getSmallFontChunk(_getPublishedYear(data))));
+		}
+
+		PdfPCell cell = new PdfPCell(para);
+
+		cell.setColspan(THIRD_COLUMN_SPAN);
+		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		cell.setVerticalAlignment(Element.ALIGN_TOP);
+		cell.setPaddingTop(5f);
+		cell.setPaddingLeft(7f);
+		cell.setPaddingBottom(4f);
+
 		table.addCell(cell);
 	}
 
-	@Override
-	public int compare(String[] o1, String[] o2) {
-		if (o1 == null) {
-			return -1;
-		}
-		
-		if (o2 == null) {
-			return 1;
-		}
+	private static String _getPublishedYear(String[] data) {
+		return data[6];
+	}
 
-		if (this.topographic) {
-			return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[4], o2[4]);
-		} else {
-			return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[1], o2[1]);
-		}
+	private static String _getEdition(String[] data) {
+		return data[5];
+	}
+
+	private static String _getLocation(String[] data) {
+		return data[4];
+	}
+
+	private static String _getAuthorName(String[] data) {
+		return data[3];
+	}
+
+	private static String _getTitle(String[] data) {
+		return data[2];
+	}
+
+	private static String _getAccesionNumber(String[] data) {
+		return data[1];
+	}
+
+	private static String _getHoldingSerial(String[] data) {
+		return data[0];
+	}
+
+	private Image _toBarcodeImage(PdfContentByte cb, String holdingSerial) {
+		Barcode39 code39 = new Barcode39();
+
+		code39.setExtended(true);
+		code39.setCode(holdingSerial);
+		code39.setStartStopText(false);
+
+		Image image39 = code39.createImageWithBarcode(cb, null, null);
+
+		image39.scalePercent(100f);
+		return image39;
+	}
+
+	private void _sortReportData(List<String[]> dataList) {
+		Collections.sort(dataList, (o1, o2) -> {
+			if (o1 == null) {
+				return -1;
+			}
+
+			if (o2 == null) {
+				return 1;
+			}
+
+			if (this.topographic) {
+				return NaturalOrderComparator.NUMERICAL_ORDER.compare(_getLocation(o1), _getLocation(o2));
+			} else {
+				return NaturalOrderComparator.NUMERICAL_ORDER.compare(_getAccesionNumber(o1), _getAccesionNumber(o2));
+			}
+		});
+	}
+
+	private void _createHeader(PdfPTable table) {
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk,
+				getText("administration.reports.field.id"), FIRST_COLUMN_SPAN);
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk,
+				getText("administration.reports.field.accession_number"), SECOND_COLUMN_SPAN);
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk,
+				getText("administration.reports.field.holdings_count"), THIRD_COLUMN_SPAN);
 	}
 
 	@Override

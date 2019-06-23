@@ -91,25 +91,41 @@ public class ReportUtil {
 	}
 
 	public static void insertValueCenter(
-			PdfPTable table, Function<String, Chunk> chunker, String value) {
+			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan) {
 		PdfPCell cell = new PdfPCell(
 				new Paragraph(chunker.apply(value)));
 
+		cell.setColspan(colspan);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
 		table.addCell(cell);
 	}
 
+	public static void insertValueCenter(
+			PdfPTable table, Function<String, Chunk> chunker, String value) {
+		insertValueCenter(table, chunker, value, 1);
+	}
+
 	public static void insertHeaderTextWithBorder(PdfPTable table, String value) {
-		insertTextWithBorder(table, ReportUtil::getHeaderChunk, value);
+		insertTextWithBorder(table, ReportUtil::getHeaderChunk, value, 1);
+	}
+
+	public static void insertHeaderTextWithBorder(PdfPTable table, String value, int colspan) {
+		insertTextWithBorder(table, ReportUtil::getHeaderChunk, value, colspan);
 	}
 
 	public static void insertTextWithBorder(
 			PdfPTable table, Function<String, Chunk> chunker, String value) {
+		insertTextWithBorder(table, chunker, value, 1);
+	}
+
+	public static void insertTextWithBorder(
+			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan) {
 		PdfPCell cell = new PdfPCell(new Paragraph(chunker.apply(value)));
 
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
+		cell.setColspan(colspan);
 
 		applyBackgroundThenCenter(cell);
 
