@@ -23,9 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.AssetHoldingDto;
@@ -44,7 +41,7 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
 
 		table.setWidthPercentage(100f);
 
-		createHeader(table);
+		_createHeader(table);
 
 		List<String[]> dataList = reportData.getData();
 
@@ -69,40 +66,21 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
 		});
 	}
 
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.accession_number"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.author"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.edition"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.date"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+	private void _createHeader(PdfPTable table) {
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk, getText("administration.reports.field.accession_number"));
+
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk, getText("administration.reports.field.author"));
+
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk, getText("administration.reports.field.title"));
+
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk, getText("administration.reports.field.edition"));
+
+		ReportUtil.insertTextWithBorder(
+				table, ReportUtil::getBoldChunk, getText("administration.reports.field.date"));
 	}
 
 	@Override
