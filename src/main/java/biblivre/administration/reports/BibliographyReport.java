@@ -24,14 +24,19 @@ import java.util.List;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.BibliographyReportDto;
 
 public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto> {
+	private static int[] COLSPANS = new int[] {3, 1, 1, 2, 1};
+	private static String[] HEADER_TEXTS = new String[] {
+		"administration.reports.field.title",
+		"administration.reports.field.edition",
+		"administration.reports.field.editor",
+		"administration.reports.field.year",
+		"administration.reports.field.place"
+	};
 
 	@Override
 	protected BibliographyReportDto getReportData(ReportsDTO dto) {
@@ -48,78 +53,39 @@ public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto
 
 	@Override
 	protected void generateReportBody(Document document, BibliographyReportDto reportData) throws Exception {
-		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.author") + ":  " + reportData.getAuthorName()));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p2);
-		document.add(new Phrase("\n"));
+		StringBuilder authorHeaderBuilder =
+			new StringBuilder(4)
+				.append(this.getText("administration.reports.field.author"))
+				.append(":")
+				.append(" ")
+				.append(reportData.getAuthorName());
+
+		ReportUtil.insertChunkText(
+				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT, authorHeaderBuilder.toString());
+
 		if (reportData.getData() != null) {
 			PdfPTable table = new PdfPTable(8);
+
 			table.setHorizontalAlignment(Element.ALIGN_CENTER);
-			createHeader(table);
-			PdfPCell cell;
+
+			_createHeader(table);
+
 			for (String[] data : reportData.getData()) {
-				cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
-				cell.setColspan(3);
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
-				cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
-				cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[2])));
-				cell.setColspan(2);
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
-				cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[3])));
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
-				cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[4])));
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
+				for (int i = 0; i < COLSPANS.length; i++) {
+					ReportUtil.insertValueCenter(
+							table, ReportUtil::getNormalChunk, data[i], COLSPANS[i]);
+				}
 			}
+
 			document.add(table);
-			document.add(new Phrase("\n"));
 		}
 	}
 
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(3);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.edition"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.editor"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.year"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.place"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+	private void _createHeader(PdfPTable table) {
+		for (int i = 0; i < COLSPANS.length; i++) {
+			ReportUtil.insertTextWithBorder(
+					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
+		}
 	}
 
 	@Override
