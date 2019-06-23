@@ -74,11 +74,21 @@ public class ReportUtil {
 		table.addCell(cell);
 	}
 
-	public static void insertValue(PdfPTable table, int total) {
+	public static void insertValue(PdfPTable table, String value) {
 		PdfPCell cell = new PdfPCell(
-				new Paragraph(getNormalChunk(String.valueOf(total))));
+				new Paragraph(getNormalChunk(value)));
 
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+		table.addCell(cell);
+	}
+
+	public static void insertValueCenter(PdfPTable table, String value) {
+		PdfPCell cell = new PdfPCell(
+				new Paragraph(getNormalChunk(value)));
+
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
 		table.addCell(cell);

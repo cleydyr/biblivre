@@ -131,7 +131,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertQuantity(PdfPTable table, int total) {
-		ReportUtil.insertValue(table, total);
+		ReportUtil.insertValue(table, String.valueOf(total));
 	}
 
 	private void _insertDescription(PdfPTable table, String description) {
@@ -143,7 +143,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertTotalValue(PdfPTable table, int total) {
-		ReportUtil.insertValue(table, total);
+		ReportUtil.insertValue(table,  String.valueOf(total));
 	}
 
 	private final List<PdfPTable> createListTable(Map<String, List<String>> data) {
@@ -190,30 +190,15 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 				table.addCell(cell);
 
 				for (String line : data.get(description)) {
-					String[] dados = line.split("\t");
-					//Nome
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[0])));
-					cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					table.addCell(cell);
+					String[] userData = line.split("\t");
 
-					//Matricula
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[1])));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					table.addCell(cell);
+					ReportUtil.insertValue(table, _getUserName(userData));
 
-					//Data de Inclusao
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[2])));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					table.addCell(cell);
+					ReportUtil.insertValueCenter(table, _getUserId(userData));
 
-					//Data de Cancelamento/Alteracao
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(dados[3])));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					table.addCell(cell);
+					ReportUtil.insertValueCenter(table, _getUserCreatedDate(userData));
+
+					ReportUtil.insertValueCenter(table, _getUserUpdateDate(userData));
 				}
 				tables.add(table);
 			}
@@ -222,6 +207,22 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 			this.logger.error(e.getMessage(), e);
 			return Collections.emptyList();
 		}
+	}
+
+	private static String _getUserUpdateDate(String[] userData) {
+		return userData[3];
+	}
+
+	private static String _getUserCreatedDate(String[] userData) {
+		return userData[2];
+	}
+
+	private static String _getUserId(String[] dados) {
+		return dados[1];
+	}
+
+	private static String _getUserName(String[] dados) {
+		return dados[0];
 	}
 	
 }
