@@ -86,42 +86,77 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 	private void _insertReportTitle(Document document) throws DocumentException {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.all_users"));
+
 		p1.setAlignment(Element.ALIGN_CENTER);
+
 		document.add(p1);
+
 		ReportUtil.insertNewLine(document);
 	}
 
-	private final PdfPTable createSummaryTable(Map<String, Integer> tipos) {
+	private final PdfPTable createSummaryTable(Map<String, Integer> types) {
 		PdfPTable table = new PdfPTable(3);
+
 		table.setWidthPercentage(50f);
 		table.setHorizontalAlignment(Element.ALIGN_LEFT);
 
-		int total = 0;
-		PdfPCell cell;
-		for (String description : tipos.keySet()) {
-			total += tipos.get(description);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
-			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			cell.setColspan(2);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(tipos.get(description)))));
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-		}
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.total"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		cell.setColspan(2);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(total))));
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+		int total = types
+				.values()
+				.stream()
+				.mapToInt(Integer::intValue)
+				.sum();
+
+		types.forEach((description, quantity) -> {
+			_insertDescription(table, description);
+
+			_insertQuantity(table, quantity);
+		});
+
+		_insertTotalLabel(table);
+
+		_insertTotalValue(table, total);
+
 		return table;
+	}
+
+	private void _insertQuantity(PdfPTable table, Integer quantity) {
+		PdfPCell quantityCell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(quantity))));
+
+		quantityCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		quantityCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+		table.addCell(quantityCell);
+	}
+
+	private void _insertDescription(PdfPTable table, String description) {
+		PdfPCell descriptionLabelCell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
+
+		descriptionLabelCell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
+		descriptionLabelCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		descriptionLabelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		descriptionLabelCell.setColspan(2);
+
+		table.addCell(descriptionLabelCell);
+	}
+
+	private void _insertTotalLabel(PdfPTable table) {
+		PdfPCell totalCell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.total"))));
+
+		totalCell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
+		totalCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		totalCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		totalCell.setColspan(2);
+
+		table.addCell(totalCell);
+	}
+
+	private void _insertTotalValue(PdfPTable table, int total) {
+		PdfPCell cell2 = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(total))));
+
+		cell2.setHorizontalAlignment(Element.ALIGN_LEFT);
+		cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+		table.addCell(cell2);
 	}
 
 	private final List<PdfPTable> createListTable(Map<String, List<String>> data) {
