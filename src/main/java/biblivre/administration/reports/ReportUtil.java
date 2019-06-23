@@ -5,8 +5,11 @@ import java.awt.Color;
 import org.apache.commons.lang3.StringUtils;
 
 import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.Phrase;
 
 public class ReportUtil {
 	
@@ -42,6 +45,10 @@ public class ReportUtil {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
 		chunk.setFont(HEADER_FONT);
 		return chunk;
+	}
+
+	public static void insertNewLine(Document document) throws DocumentException {
+		document.add(new Phrase("\n"));
 	}
 
 }

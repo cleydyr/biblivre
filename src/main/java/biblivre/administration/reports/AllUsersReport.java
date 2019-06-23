@@ -28,7 +28,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -61,7 +60,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 		for (PdfPTable table : listTable) {
 			document.add(table);
-			document.add(new Phrase("\n"));
+			ReportUtil.insertNewLine(document);
 		}
 	}
 
@@ -69,27 +68,27 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 		Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_list_by_type")));
 		p3.setAlignment(Element.ALIGN_LEFT);
 		document.add(p3);
-		document.add(new Phrase("\n"));
+		ReportUtil.insertNewLine(document);
 	}
 
 	private void _insertSummaryTable(Document document, AllUsersReportDto allUsers) throws DocumentException {
 		PdfPTable summaryTable = createSummaryTable(allUsers.getTypesMap());
 		document.add(summaryTable);
-		document.add(new Phrase("\n"));
+		ReportUtil.insertNewLine(document);
 	}
 
 	private void _insertUserCountByTypeHeader(Document document) throws DocumentException {
 		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_count_by_type")));
 		p2.setAlignment(Element.ALIGN_LEFT);
 		document.add(p2);
-		document.add(new Phrase("\n"));
+		ReportUtil.insertNewLine(document);
 	}
 
 	private void _insertReportTitle(Document document) throws DocumentException {
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.all_users"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
-		document.add(new Phrase("\n"));
+		ReportUtil.insertNewLine(document);
 	}
 
 	private final PdfPTable createSummaryTable(Map<String, Integer> tipos) {
