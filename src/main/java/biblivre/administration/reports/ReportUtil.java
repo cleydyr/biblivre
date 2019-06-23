@@ -58,7 +58,10 @@ public class ReportUtil {
 		document.add(new Phrase("\n"));
 	}
 
-	public static void insertChunkText(Document document, Function<String, Chunk> chunker, int alignment, String text) throws DocumentException {
+	public static void insertChunkText(
+			Document document, Function<String, Chunk> chunker, int alignment, String text)
+		throws DocumentException {
+
 		Paragraph p2 = new Paragraph(chunker.apply(text));
 		p2.setAlignment(alignment);
 		document.add(p2);
