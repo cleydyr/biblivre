@@ -20,22 +20,27 @@
 package biblivre.administration.reports;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.DeweyReportDto;
 
-public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> implements Comparator<String[]> {
+public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> {
 
 	private Integer index = 0;
+
+	private static int[] COLSPANS = new int[] {2, 2, 2};
+
+	private static String[] HEADER_TEXTS = new String[] {
+			"administration.reports.field.dewey",
+			"administration.reports.field.number_of_titles",
+			"administration.reports.field.number_of_holdings"
+	};
 
 	@Override
 	protected DeweyReportDto getReportData(ReportsDTO dto) {
@@ -45,20 +50,29 @@ public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> implements C
 	@Override
 	protected void generateReportBody(Document document, DeweyReportDto reportData) throws Exception {
 		PdfPTable table = new PdfPTable(6);
+
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
-		createHeader(table);
-		PdfPCell cell;
+
+		_createHeader(table);
+
 		int totalRecords = 0;
+
 		int totalHoldings = 0;
+
 		List<String[]> dataList = reportData.getData();
-		Collections.sort(dataList, this);
+
+		_sortReportData(dataList);
+
 		for (String[] data : dataList) {
 			if (StringUtils.isBlank(data[0])) {
 				data[0] = this.getText("administration.reports.field.unclassified");
 			}
+
 			totalRecords += Integer.parseInt(data[1]);
+
 			totalHoldings += Integer.parseInt(data[2]);
 		}
+
 		if (totalRecords > 0) {
 			dataList.add(new String[]{
 				this.getText("administration.reports.field.total"),
@@ -67,63 +81,36 @@ public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> implements C
 			});
 		}
 
-		for (String[] data : dataList) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[2])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+		for (String[] data : reportData.getData()) {
+			for (int i = 0; i < COLSPANS.length; i++) {
+				ReportUtil.insertValueCenter(
+						table, ReportUtil::getNormalChunk, data[i], COLSPANS[i]);
+			}
 		}
+
 		document.add(table);
 	}
 
+	private void _sortReportData(List<String[]> dataList) {
+		Collections.sort(dataList, (o1, o2) -> {
+			if (o1 == null || o1[this.index] == null) {
+				return -1;
+			}
 
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.dewey"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.number_of_titles"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.number_of_holdings"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+			if (o2 == null || o2[this.index] == null) {
+				return 1;
+			}
+
+			return o1[this.index].compareTo(o2[this.index]);
+		});
 	}
 
-	@Override
-	public int compare(String[] o1, String[] o2) {
-		if (o1 == null || o1[this.index] == null) {
-			return -1;
-		}
-		
-		if (o2 == null || o2[this.index] == null) {
-			return 1;
-		}
 
-		return o1[this.index].compareTo(o2[this.index]);
+	private void _createHeader(PdfPTable table) {
+		for (int i = 0; i < COLSPANS.length; i++) {
+			ReportUtil.insertTextWithBorder(
+					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
+		}
 	}
 
 	@Override
