@@ -158,12 +158,15 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 				_insertTableDescription(description, table);
 
 				String userName = this.getText("administration.reports.field.user_name");
+
 				ReportUtil.insertHeaderTextWithBorder(table, userName);
 
 				String userId = this.getText("administration.reports.field.user_id");
+
 				ReportUtil.insertHeaderTextWithBorder(table, userId);
 
 				String created = this.getText("administration.reports.field.creation_date");
+
 				ReportUtil.insertHeaderTextWithBorder(table, created);
 
 				String modified = this.getText("administration.reports.field.modified");
@@ -191,7 +194,8 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	public void _insertTableDescription(String description, PdfPTable table) {
-		PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
+		PdfPCell cell = new PdfPCell(
+				new Paragraph(ReportUtil.getHeaderChunk(description.toUpperCase())));
 
 		cell.setColspan(4);
 		cell.setBorder(Rectangle.NO_BORDER);
