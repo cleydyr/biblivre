@@ -20,7 +20,6 @@
 package biblivre.administration.reports;
 
 import java.util.Collections;
-import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,8 +30,9 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.CustomCountDto;
+import biblivre.core.utils.CharPool;
 
-public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implements Comparator<String[]> {
+public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> {
 
 	private Integer index;
 	private String marcField;
@@ -65,7 +65,7 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 		PdfPTable table = new PdfPTable(3);
 		table.setWidthPercentage(100f);
 		createHeader(table, this.getText("marc.bibliographic.datafield." + this.datafield + ".subfield." + this.subfield));
-		Collections.sort(reportData.getData(), this);
+		_sortReportData(reportData);
 		PdfPCell cell;
 		int total = 0;
 		for (String[] data : reportData.getData()) {
@@ -98,6 +98,27 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 		document.add(table);
 	}
 
+	private void _sortReportData(CustomCountDto reportData) {
+		Collections.sort(reportData.getData(), (o1, o2) -> {
+			if (o1 == null || o2 == null) {
+				return 0;
+			}
+
+			if (o1[this.index] == null && o2[this.index] == null) {
+				return 0;
+			}
+
+			switch (this.index) {
+				case 0:
+					return o1[this.index].compareTo(o2[this.index]);
+				case 1:
+					return (Integer.valueOf(o2[this.index]).compareTo(Integer.valueOf(o1[this.index])));
+				default:
+					return o1[this.index].compareTo(o2[this.index]);
+			}
+		});
+	}
+
 	private void createHeader(PdfPTable table, String title) {
 		PdfPCell cell;
 		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(title)));
@@ -115,44 +136,29 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> implem
 		table.addCell(cell);
 	}
 
-
-	@Override
-	public int compare(String[] o1, String[] o2) {
-		if (o1 == null) {
-			return 0;
-		}
-		
-		if (o2 == null) {
-			return 0;
-		}
-		
-		if (o1[this.index] == null && o2[this.index] == null) {
-			return 0;
-		}
-		
-		switch (this.index) {
-		case 0:
-			return o1[this.index].compareTo(o2[this.index]);
-		case 1:
-			return (Integer.valueOf(o2[this.index]).compareTo(Integer.valueOf(o1[this.index])));
-		default:
-			return o1[this.index].compareTo(o2[this.index]);
-		}
-			
-		
-	}
-
 	@Override
 	protected String getTitle() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(this.getText("administration.reports.title.custom_count") + ":\n");
-		sb.append(this.datafield).append(" (");
-		sb.append(this.getText("marc.bibliographic.datafield." + this.datafield));
-		sb.append(")\n$").append(this.subfield);
-		sb.append(" (");
-		sb.append(this.getText("marc.bibliographic.datafield." + this.datafield + ".subfield." + this.subfield));
-		sb.append(")");
+		StringBuilder sb =
+			new StringBuilder(14)
+				.append(this.getText("administration.reports.title.custom_count"))
+				.append(CharPool.COLON)
+				.append(CharPool.NEW_LINE)
+				.append(this.datafield)
+				.append(CharPool.SPACE)
+				.append(CharPool.OPEN_PARENTHESIS)
+				.append(this.getText("marc.bibliographic.datafield."))
+				.append(this.datafield)
+				.append(CharPool.CLOSE_PARENTHESIS)
+				.append(CharPool.NEW_LINE)
+				.append(CharPool.DOLLAR_SIGN)
+				.append(this.subfield)
+				.append(CharPool.SPACE)
+				.append(CharPool.OPEN_PARENTHESIS)
+				.append(this.getText("marc.bibliographic.datafield."))
+				.append(this.datafield)
+				.append(".subfield.")
+				.append(this.subfield)
+				.append(CharPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
 	}
