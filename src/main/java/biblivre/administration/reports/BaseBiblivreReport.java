@@ -51,7 +51,7 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.DateUtils;
 
-public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPageEventHelper implements IBiblivreReport {
+public abstract class BaseBiblivreReport<T extends BaseReportDto> implements IBiblivreReport {
 
 
 	protected final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -67,7 +67,6 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 	protected static final Font TEXT_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.NORMAL, Color.BLACK);
 	protected static final Font BOLD_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.BOLD, Color.BLACK);
 	protected static final Font HEADER_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
-	protected static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
 
 	protected TranslationsMap i18n;
 	private PdfWriter writer;
@@ -91,7 +90,7 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 
 		try (FileOutputStream out = new FileOutputStream(file)) {
 			this.writer = PdfWriter.getInstance(document, out);
-			this.writer.setPageEvent(this);
+			this.writer.setPageEvent(ReportPageEvent.getInstance(this));
 			this.writer.setFullCompression();
 			document.open();
 			generateReportBody(document, reportData);
@@ -139,49 +138,67 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 		return text;
 	}
 
+	private static class ReportPageEvent extends PdfPageEventHelper {
+		protected static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
 
-	@Override
-	public void onEndPage(PdfWriter writer, Document document) {
-		try {
-			Rectangle page = document.getPageSize();
-			
-			PdfPTable head = new PdfPTable(1);
-			PdfPCell cell = new PdfPCell(new Paragraph(this.getText("administration.reports.biblivre_report_header")));
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_CENTER);
-			cell.setBorder(Rectangle.BOTTOM);
-			head.addCell(cell);
-			head.setTotalWidth( (page.getWidth() / 2) - document.leftMargin());
-			head.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + head.getTotalHeight(), writer.getDirectContent());
+		private BaseBiblivreReport<?> _report;
+		private static ReportPageEvent _instance = null;
 
-			PdfPTable date = new PdfPTable(1);
-
-			PdfPCell dateCell = new PdfPCell(new Paragraph(now()));
-
-			dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			dateCell.setVerticalAlignment(Element.ALIGN_CENTER);
-			dateCell.setBorder(Rectangle.BOTTOM);
-			date.addCell(dateCell);
-			date.setTotalWidth( (page.getWidth() / 2) - document.rightMargin());
-			date.writeSelectedRows(0, -1, (page.getWidth() / 2), page.getHeight() - document.topMargin() + head.getTotalHeight(), writer.getDirectContent());
-
-
-			PdfPTable foot = new PdfPTable(1);
-			Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
-			pageNumber.setFont(FOOTER_FONT);
-			cell = new PdfPCell(new Paragraph(pageNumber));
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			cell.setVerticalAlignment(Element.ALIGN_CENTER);
-			cell.setBorder(Rectangle.TOP);
-			foot.addCell(cell);
-			foot.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
-			foot.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin(), writer.getDirectContent());
+		private ReportPageEvent(BaseBiblivreReport<?> report) {
+			this._report = report;
 		}
-		catch (Exception e) {
-			throw new ExceptionConverter(e);
+
+		public static ReportPageEvent getInstance(BaseBiblivreReport<?> report) {
+			if (_instance == null) {
+				synchronized (ReportPageEvent.class) {
+					_instance = new ReportPageEvent(report);
+				}
+			}
+			return _instance;
 		}
+
+		@Override
+		public void onEndPage(PdfWriter writer, Document document) {
+			try {
+				Rectangle page = document.getPageSize();
+				
+				PdfPTable head = new PdfPTable(1);
+				PdfPCell cell = new PdfPCell(new Paragraph(_report.getText("administration.reports.biblivre_report_header")));
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setVerticalAlignment(Element.ALIGN_CENTER);
+				cell.setBorder(Rectangle.BOTTOM);
+				head.addCell(cell);
+				head.setTotalWidth( (page.getWidth() / 2) - document.leftMargin());
+				head.writeSelectedRows(0, -1, document.leftMargin(), page.getHeight() - document.topMargin() + head.getTotalHeight(), writer.getDirectContent());
+	
+				PdfPTable date = new PdfPTable(1);
+	
+				PdfPCell dateCell = new PdfPCell(new Paragraph(_report.now()));
+	
+				dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				dateCell.setVerticalAlignment(Element.ALIGN_CENTER);
+				dateCell.setBorder(Rectangle.BOTTOM);
+				date.addCell(dateCell);
+				date.setTotalWidth( (page.getWidth() / 2) - document.rightMargin());
+				date.writeSelectedRows(0, -1, (page.getWidth() / 2), page.getHeight() - document.topMargin() + head.getTotalHeight(), writer.getDirectContent());
+	
+	
+				PdfPTable foot = new PdfPTable(1);
+				Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
+				pageNumber.setFont(FOOTER_FONT);
+				cell = new PdfPCell(new Paragraph(pageNumber));
+				cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				cell.setVerticalAlignment(Element.ALIGN_CENTER);
+				cell.setBorder(Rectangle.TOP);
+				foot.addCell(cell);
+				foot.setTotalWidth(page.getWidth() - document.leftMargin() - document.rightMargin());
+				foot.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin(), writer.getDirectContent());
+			}
+			catch (Exception e) {
+				throw new ExceptionConverter(e);
+			}
 	}
-
+	}
 	protected String format(LocalDateTime date) {
 		String language = i18n.getLanguage();
 
@@ -195,30 +212,6 @@ public abstract class BaseBiblivreReport<T extends BaseReportDto> extends PdfPag
 				date.toInstant(), ZoneId.systemDefault());
 
 		return format(localDateTime);
-	}
-
-	protected Chunk getNormalChunk(String text) {
-		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(TEXT_FONT);
-		return chunk;
-	}
-
-	protected Chunk getBoldChunk(String text) {
-		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(BOLD_FONT);
-		return chunk;
-	}
-
-	protected Chunk getSmallFontChunk(String text) {
-		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(SMALL_FONT);
-		return chunk;
-	}
-
-	protected Chunk getHeaderChunk(String text) {
-		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-		chunk.setFont(HEADER_FONT);
-		return chunk;
 	}
 
 	protected PdfWriter getWriter() {
