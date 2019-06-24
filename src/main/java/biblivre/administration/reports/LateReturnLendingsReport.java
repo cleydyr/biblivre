@@ -30,7 +30,7 @@ import biblivre.administration.reports.dto.LateLendingsDto;
 import biblivre.core.utils.CharPool;
 
 public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto> {
-
+	
 	@Override
 	protected LateLendingsDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getLateReturnLendingsReportData();
@@ -39,16 +39,17 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 	@Override
 	protected void generateReportBody(Document document, LateLendingsDto reportData) throws Exception {
 		if (!reportData.getData().isEmpty()) {
-			StringBuilder lateLendingsCount =
+			String lateLendingsCount =
 				new StringBuilder(4)
 					.append(getText("administration.reports.field.late_lendings_count"))
 					.append(CharPool.COLON)
 					.append(CharPool.SPACE)
-					.append(reportData.getData().size());
+					.append(reportData.getData().size())
+					.toString();
 
 			ReportUtil.insertChunkedTextParagraph(
 					document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
-					lateLendingsCount.toString());
+					lateLendingsCount);
 
 			ReportUtil.insertNewLine(document);
 
@@ -62,7 +63,7 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.setWidthPercentage(100f);
 		
-		_createHeader(table);
+		_insertHeader(table);
 
 		for (String[] lending : lendings) {
 			ReportUtil.insertChunkedTextCellWithStrategy(
@@ -82,7 +83,7 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 		ReportUtil.insertNewLine(document);
 	}
 
-	private void _createHeader(PdfPTable table) {
+	private void _insertHeader(PdfPTable table) {
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
 				getText("administration.reports.field.user_id"));

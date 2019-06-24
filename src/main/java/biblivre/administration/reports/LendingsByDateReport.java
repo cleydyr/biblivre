@@ -20,13 +20,12 @@
 package biblivre.administration.reports;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.LendingsByDateReportDto;
+import biblivre.core.utils.CharPool;
 
 public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateReportDto> {
 
@@ -40,79 +39,86 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 
 	@Override
 	protected void generateReportBody(Document document, LendingsByDateReportDto reportData) throws Exception {
-		StringBuilder header = new StringBuilder();
-		header.append(this.getText("administration.reports.field.date_from"));
-		header.append(" " + reportData.getInitialDate() + " ");
-		header.append(this.getText("administration.reports.field.date_to"));
-		header.append(" " + reportData.getFinalDate());
-		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(header.toString()));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p2);
-		document.add(new Phrase("\n"));
+		String header =
+			new StringBuilder(7)
+				.append(getText("administration.reports.field.date_from"))
+				.append(CharPool.SPACE)
+				.append(reportData.getInitialDate())
+				.append(CharPool.SPACE)
+				.append(getText("administration.reports.field.date_to"))
+				.append(CharPool.SPACE)
+				.append(reportData.getFinalDate())
+				.toString();
 
-		Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings_count") + ":  " + reportData.getTotals()[0]));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p3);
-		Paragraph p4 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings_current") + ":  " + reportData.getTotals()[1]));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p4);
-		Paragraph p5 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings_late") + ":  " + reportData.getTotals()[2]));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p5);
-		document.add(new Phrase("\n"));
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT, header);
 
-		document.add(new Phrase(this.getText("administration.reports.field.lendings_top")));
-		document.add(new Phrase("\n"));
+		ReportUtil.insertNewLine(document);
 
-		PdfPTable table = createTable(reportData);
-		document.add(table);
-		document.add(new Phrase("\n"));
+		String[] totals = reportData.getTotals();
+
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
+				getText("administration.reports.field.lendings_count") + ":  " + totals[0]);
+
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
+				getText("administration.reports.field.lendings_current") + ":  " + totals[1]);
+
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
+				getText("administration.reports.field.lendings_late") + ":  " + totals[2]);
+
+		ReportUtil.insertNewLine(document);
+
+		createTable(document, reportData);
+
+		ReportUtil.insertNewLine(document);
 	}
 
-	private PdfPTable createTable(LendingsByDateReportDto dto) {
+	private void createTable(Document document, LendingsByDateReportDto dto) throws DocumentException {
+		if (dto.getData() == null || dto.getData().isEmpty()) {
+			return;
+		}
+
 		PdfPTable table = new PdfPTable(5);
+
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.setWidthPercentage(100f);
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.lendings"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.author"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		//Table body
-		if (dto.getData() == null || dto.getData().isEmpty()) return table;
+
+		_insertHeader(table);
+		
+		_insertBody(table, dto);
+
+		document.add(table);
+	}
+
+	private void _insertBody(PdfPTable table, LendingsByDateReportDto dto) {
 		for (String[] data : dto.getData()) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[2])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE,
+					data[0]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.LEFT_MIDDLE,
+					data[1]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.LEFT_MIDDLE,
+					data[2]);
 		}
-		return table;
+	}
+
+	private void _insertHeader(PdfPTable table) {
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.lendings"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.title"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.author"));
 	}
 
 	@Override
