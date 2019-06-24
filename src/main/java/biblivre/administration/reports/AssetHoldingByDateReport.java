@@ -53,23 +53,23 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport<AssetHoldingByD
 
 		for (String[] data : dataList) {
 			for (int i = 0; i <= 5; i++) {
-				ReportUtil.insertValueCenter(table, ReportUtil::getSmallFontChunk, data[i]);
+				ReportUtil.insertChunkedCenterTextCell(table, ReportUtil::getSmallFontChunk, data[i]);
 			}
 		}
 	}
 
 	private void _createHeader(PdfPTable table) {
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.created"));
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.accession_number"));
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.title"));
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.author"));
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.date"));
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.acquisition"));
 	}
 

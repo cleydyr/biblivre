@@ -58,69 +58,91 @@ public class ReportUtil {
 		document.add(new Phrase("\n"));
 	}
 
-	public static void insertChunkText(
+	public static void insertChunkedTextParagraph(
 			Document document, Function<String, Chunk> chunker, int alignment, String text)
 		throws DocumentException {
 
 		Paragraph p2 = new Paragraph(chunker.apply(text));
+
 		p2.setAlignment(alignment);
+
 		document.add(p2);
 	}
 
-	public static void insertHeaderColSpan2(PdfPTable table, String text) {
+	public static void insertHeaderCellWithBackgroundColspan2(PdfPTable table, String text) {
+		insertHeaderCellWithBackground(table, text, 2);
+	}
+
+	public static void insertHeaderCellWithBackground(PdfPTable table, String text, int colspan) {
 		PdfPCell cell = new PdfPCell(new Paragraph(getHeaderChunk(text)));
 
 		applyBackgroundThenCenter(cell);
-		cell.setColspan(2);
+
+		cell.setColspan(colspan);
 
 		table.addCell(cell);
 	}
 
-	public static void insertValue(PdfPTable table, String value) {
+	public static void insertLeftTextCell(PdfPTable table, String value) {
+		insertTextCell(table, value, Element.ALIGN_LEFT);
+	}
+
+	public static void insertCenterTextCell(PdfPTable table, String value) {
+		insertTextCell(table, value, Element.ALIGN_CENTER);
+	}
+
+	public static void insertTextCell(PdfPTable table, String value, int halignment) {
 		PdfPCell cell = new PdfPCell(
 				new Paragraph(getNormalChunk(value)));
 
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+		cell.setHorizontalAlignment(halignment);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
 		table.addCell(cell);
 	}
 
 	public static void insertValueCenter(PdfPTable table, String value) {
-		insertValueCenter(table, ReportUtil::getNormalChunk, value);
+		insertChunkedCenterTextCell(table, ReportUtil::getNormalChunk, value);
 	}
 
-	public static void insertValueCenter(
+	public static void insertChunkedCenterTextCell(
 			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan) {
+		insertChunkedTextCell(table, chunker, value, colspan, Element.ALIGN_CENTER);
+	}
+
+	public static void insertChunkedTextCell(
+			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan,
+			int halignment) {
 		PdfPCell cell = new PdfPCell(
 				new Paragraph(chunker.apply(value)));
 
 		cell.setColspan(colspan);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setHorizontalAlignment(halignment);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
 		table.addCell(cell);
 	}
 
-	public static void insertValueCenter(
+	public static void insertChunkedCenterTextCell(
 			PdfPTable table, Function<String, Chunk> chunker, String value) {
-		insertValueCenter(table, chunker, value, 1);
+		insertChunkedCenterTextCell(table, chunker, value, 1);
 	}
 
-	public static void insertHeaderTextWithBorder(PdfPTable table, String value) {
-		insertTextWithBorder(table, ReportUtil::getHeaderChunk, value, 1);
+	public static void insertHeaderCellWithBackgroundAndBorder(PdfPTable table, String value) {
+		insertChunkedTextCellWithBackgroundAndBorder(table, ReportUtil::getHeaderChunk, value, 1);
 	}
 
-	public static void insertHeaderTextWithBorder(PdfPTable table, String value, int colspan) {
-		insertTextWithBorder(table, ReportUtil::getHeaderChunk, value, colspan);
+	public static void insertHeaderCellWithBackgroundAndBorder(
+			PdfPTable table, String value, int colspan) {
+		insertChunkedTextCellWithBackgroundAndBorder(table, ReportUtil::getHeaderChunk, value, colspan);
 	}
 
-	public static void insertTextWithBorder(
+	public static void insertChunkedTextCellWithBackgroundAndBorder(
 			PdfPTable table, Function<String, Chunk> chunker, String value) {
-		insertTextWithBorder(table, chunker, value, 1);
+		insertChunkedTextCellWithBackgroundAndBorder(table, chunker, value, 1);
 	}
 
-	public static void insertTextWithBorder(
+	public static void insertChunkedTextCellWithBackgroundAndBorder(
 			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan) {
 		PdfPCell cell = new PdfPCell(new Paragraph(chunker.apply(value)));
 

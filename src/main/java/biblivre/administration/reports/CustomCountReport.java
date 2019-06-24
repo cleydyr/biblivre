@@ -70,21 +70,21 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> {
 		int total = 0;
 
 		for (String[] data : reportData.getData()) {
-			ReportUtil.insertValueCenter(
+			ReportUtil.insertChunkedCenterTextCell(
 					table, ReportUtil::getSmallFontChunk, data[0], 2);
 
 			if (data[1] != null && StringUtils.isNumeric(data[1])) {
 				total += Integer.valueOf(data[1]);
 			}
 
-			ReportUtil.insertValueCenter(
+			ReportUtil.insertChunkedCenterTextCell(
 					table, ReportUtil::getSmallFontChunk, data[1]);
 		}
 		
 		if (total != 0) {
-			ReportUtil.insertValueCenter(table, ReportUtil::getBoldChunk, "Total", 2);
+			ReportUtil.insertChunkedCenterTextCell(table, ReportUtil::getBoldChunk, "Total", 2);
 
-			ReportUtil.insertValueCenter(table, ReportUtil::getBoldChunk, String.valueOf(total));
+			ReportUtil.insertChunkedCenterTextCell(table, ReportUtil::getBoldChunk, String.valueOf(total));
 		}
 		
 		document.add(table);
@@ -112,11 +112,11 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> {
 	}
 
 	private void _createHeader(PdfPTable table) {
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk,
 				getText("marc.bibliographic.datafield." + datafield + ".subfield." + subfield), 2);
 
-		ReportUtil.insertTextWithBorder(
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.total"), 1);
 	}
 

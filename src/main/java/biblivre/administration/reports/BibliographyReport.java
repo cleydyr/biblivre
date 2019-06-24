@@ -60,7 +60,7 @@ public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto
 				.append(" ")
 				.append(reportData.getAuthorName());
 
-		ReportUtil.insertChunkText(
+		ReportUtil.insertChunkedTextParagraph(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT, authorHeaderBuilder.toString());
 
 		if (reportData.getData() != null) {
@@ -72,7 +72,7 @@ public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto
 
 			for (String[] data : reportData.getData()) {
 				for (int i = 0; i < COLSPANS.length; i++) {
-					ReportUtil.insertValueCenter(
+					ReportUtil.insertChunkedCenterTextCell(
 							table, ReportUtil::getNormalChunk, data[i], COLSPANS[i]);
 				}
 			}
@@ -83,7 +83,7 @@ public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto
 
 	private void _createHeader(PdfPTable table) {
 		for (int i = 0; i < COLSPANS.length; i++) {
-			ReportUtil.insertTextWithBorder(
+			ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
 		}
 	}

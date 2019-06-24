@@ -70,7 +70,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertUserListByTypeHeader(Document document) throws DocumentException {
-		ReportUtil.insertChunkText(
+		ReportUtil.insertChunkedTextParagraph(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
 				this.getText("administration.reports.field.user_list_by_type"));
 
@@ -88,7 +88,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertUserCountByTypeHeader(Document document) throws DocumentException {
-		ReportUtil.insertChunkText(
+		ReportUtil.insertChunkedTextParagraph(
 				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
 				this.getText("administration.reports.field.user_count_by_type"));
 
@@ -121,19 +121,19 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertQuantity(PdfPTable table, int total) {
-		ReportUtil.insertValue(table, String.valueOf(total));
+		ReportUtil.insertLeftTextCell(table, String.valueOf(total));
 	}
 
 	private void _insertDescription(PdfPTable table, String description) {
-		ReportUtil.insertHeaderColSpan2(table, description);
+		ReportUtil.insertHeaderCellWithBackgroundColspan2(table, description);
 	}
 
 	private void _insertTotalLabel(PdfPTable table) {
-		ReportUtil.insertHeaderColSpan2(table, this.getText("administration.reports.field.total"));
+		ReportUtil.insertHeaderCellWithBackgroundColspan2(table, this.getText("administration.reports.field.total"));
 	}
 
 	private void _insertTotalValue(PdfPTable table, int total) {
-		ReportUtil.insertValue(table,  String.valueOf(total));
+		ReportUtil.insertLeftTextCell(table,  String.valueOf(total));
 	}
 
 	private final List<PdfPTable> createListTable(Map<String, List<String>> data) {
@@ -152,7 +152,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 				userDataList.forEach(userData -> {
 					String[] userDataArray = userData.split(USER_DATA_SEPARATOR);
 
-					ReportUtil.insertValue(table, _getUserName(userDataArray));
+					ReportUtil.insertLeftTextCell(table, _getUserName(userDataArray));
 
 					ReportUtil.insertValueCenter(table, _getUserId(userDataArray));
 
@@ -174,19 +174,19 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	private void _insertUserTableLabels(PdfPTable table) {
 		String userName = this.getText("administration.reports.field.user_name");
 
-		ReportUtil.insertHeaderTextWithBorder(table, userName);
+		ReportUtil.insertHeaderCellWithBackgroundAndBorder(table, userName);
 
 		String userId = this.getText("administration.reports.field.user_id");
 
-		ReportUtil.insertHeaderTextWithBorder(table, userId);
+		ReportUtil.insertHeaderCellWithBackgroundAndBorder(table, userId);
 
 		String created = this.getText("administration.reports.field.creation_date");
 
-		ReportUtil.insertHeaderTextWithBorder(table, created);
+		ReportUtil.insertHeaderCellWithBackgroundAndBorder(table, created);
 
 		String modified = this.getText("administration.reports.field.modified");
 
-		ReportUtil.insertHeaderTextWithBorder(table, modified);
+		ReportUtil.insertHeaderCellWithBackgroundAndBorder(table, modified);
 	}
 
 	public void _insertUserTableDescription(String description, PdfPTable table) {

@@ -58,7 +58,7 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
 
 		for (String[] data : dataList) {
 			for (int i = 0; i < data.length; i++) {
-				ReportUtil.insertValueCenter(
+				ReportUtil.insertChunkedCenterTextCell(
 						table, ReportUtil::getSmallFontChunk, data[i], COLSPANS[i]);
 			}
 		}
@@ -78,7 +78,7 @@ public class AssetHoldingReport extends BaseBiblivreReport<AssetHoldingDto> {
 
 	private void _createHeader(PdfPTable table) {
 		for (int i = 0; i < COLSPANS.length; i++) {
-			ReportUtil.insertTextWithBorder(
+			ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
 		}
 	}

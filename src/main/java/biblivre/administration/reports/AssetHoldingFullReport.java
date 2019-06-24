@@ -77,10 +77,10 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 
 			Image image39 = _toBarcodeImage(cb, paddedHoldingSerial);
 
-			ReportUtil.insertValueCenter(
+			ReportUtil.insertChunkedCenterTextCell(
 					table, (__) -> new Chunk(image39, 0, 0), null, COLSPANS[0]);
 
-			ReportUtil.insertValueCenter(
+			ReportUtil.insertChunkedCenterTextCell(
 					table, ReportUtil::getSmallFontChunk, _getAccesionNumber(data),
 					COLSPANS[1]);
 
@@ -182,7 +182,7 @@ public class AssetHoldingFullReport extends BaseBiblivreReport<AssetHoldingDto> 
 
 	private void _createHeader(PdfPTable table) {
 		for (int i = 0; i < COLSPANS.length; i++) {
-			ReportUtil.insertTextWithBorder(
+			ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
 					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
 		}
 	}
