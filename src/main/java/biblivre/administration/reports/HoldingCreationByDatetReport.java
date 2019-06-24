@@ -26,9 +26,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.HoldingCreationByDateReportDto;
@@ -69,45 +68,61 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 		if (reportData.getData() != null) {
 			PdfPTable table = createTable(reportData.getData());
 			document.add(table);
-			document.add(new Phrase("\n"));
+			ReportUtil.insertNewLine(document);
 		}
 
 		if (userTotal.size() > 0) {
-			PdfPTable table = new PdfPTable(2);
-
-			ReportUtil.insertChunkedTextCellWithStrategy(table, ReportUtil::getHeaderChunk,
-					ReportUtil.CENTER, getText("administration.reports.title.user_creation_count"));
-
-			ReportUtil.insertNewLine(document);
-
-			ReportUtil.insertChunkedTextCellWithStrategy(
-					table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE,
-					getText("administration.reports.field.user_name"));
-
-			ReportUtil.insertChunkedTextCellWithStrategy(
-					table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
-					getText("administration.reports.field.total"));
-
-			for (String name : userTotal.keySet()) {
-				ReportUtil.insertChunkedTextCellWithStrategy(
-						table, ReportUtil::getNormalChunk, ReportUtil.LEFT_MIDDLE,
-						getText("administration.reports.field.total"));
-
-				ReportUtil.insertChunkedTextCellWithStrategy(
-						table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE,
-						String.valueOf(userTotal.get(name)));
-			}
-
-			document.add(table);
+			_insertUserTotalsTable(document);
 
 			ReportUtil.insertNewLine(document);
 		}
 
 		//Database totals table
-		Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.database_count")));
-		p3.setAlignment(Element.ALIGN_CENTER);
-		document.add(p3);
-		document.add(new Phrase("\n"));
+		_insertTotalsTitle(document);
+
+		ReportUtil.insertNewLine(document);
+
+		_insertTotalsTable(document, reportData);
+
+	}
+
+	private void _insertUserTotalsTable(Document document) throws DocumentException {
+		PdfPTable table = new PdfPTable(2);
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.CENTER,
+				getText("administration.reports.title.user_creation_count"));
+
+		ReportUtil.insertNewLine(document);
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE,
+				getText("administration.reports.field.user_name"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.total"));
+
+		userTotal.forEach((userName, total) -> {
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.LEFT_MIDDLE, userName);
+
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE,
+					String.valueOf(total));
+		});
+
+		document.add(table);
+	}
+
+	public void _insertTotalsTitle(Document document) throws DocumentException {
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, Element.ALIGN_CENTER,
+				getText("administration.reports.field.database_count"));
+	}
+
+	private void _insertTotalsTable(Document document, HoldingCreationByDateReportDto reportData)
+			throws DocumentException {
 		PdfPTable table = new PdfPTable(3);
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
@@ -151,7 +166,6 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 				table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, totalHoldingWork);
 
 		document.add(table);
-
 	}
 
 	private PdfPTable createTable(List<String[]> dataList) {
