@@ -134,7 +134,8 @@ public class ReportUtil {
 
 	public static void insertHeaderCellWithBackgroundAndBorder(
 			PdfPTable table, String value, int colspan) {
-		insertChunkedTextCellWithBackgroundAndBorder(table, ReportUtil::getHeaderChunk, value, colspan);
+		insertChunkedTextCellWithBackgroundAndBorder(
+				table, ReportUtil::getHeaderChunk, value, colspan);
 	}
 
 	public static void insertChunkedTextCellWithBackgroundAndBorder(
