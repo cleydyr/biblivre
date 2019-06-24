@@ -29,10 +29,10 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.HoldingCreationByDateReportDto;
+import biblivre.core.utils.CharPool;
 
 public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCreationByDateReportDto> {
 
@@ -49,11 +49,22 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 	@Override
 	protected void generateReportBody(Document document, HoldingCreationByDateReportDto reportData) throws Exception {
 		userTotal = new HashMap<String, Integer>();
-		String dateSpan = this.getText("administration.reports.field.date_from") + " " + reportData.getInitialDate() + " " + this.getText("administration.reports.field.date_to")+ " " + reportData.getFinalDate();
-		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(dateSpan));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p2);
-		document.add(new Phrase("\n"));
+
+		String dateSpan =
+			new StringBuilder(7)
+				.append(getText("administration.reports.field.date_from"))
+				.append(CharPool.SPACE)
+				.append(reportData.getInitialDate())
+				.append(CharPool.SPACE)
+				.append(getText("administration.reports.field.date_to"))
+				.append(CharPool.SPACE)
+				.append(reportData.getFinalDate())
+				.toString();
+
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT, dateSpan);
+
+		ReportUtil.insertNewLine(document);
 
 		if (reportData.getData() != null) {
 			PdfPTable table = createTable(reportData.getData());
