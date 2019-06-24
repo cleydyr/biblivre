@@ -37,7 +37,9 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 	}
 
 	@Override
-	protected void generateReportBody(Document document, LateLendingsDto reportData) throws Exception {
+	protected void generateReportBody(Document document, LateLendingsDto reportData)
+		throws Exception {
+
 		if (!reportData.getData().isEmpty()) {
 			String lateLendingsCount =
 				new StringBuilder(4)
