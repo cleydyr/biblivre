@@ -67,7 +67,9 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 
 		if (reportData.getData() != null) {
 			PdfPTable table = createTable(reportData.getData());
+
 			document.add(table);
+
 			ReportUtil.insertNewLine(document);
 		}
 
