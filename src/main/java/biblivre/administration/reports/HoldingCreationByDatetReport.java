@@ -33,7 +33,8 @@ import com.lowagie.text.pdf.PdfPTable;
 import biblivre.administration.reports.dto.HoldingCreationByDateReportDto;
 import biblivre.core.utils.CharPool;
 
-public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCreationByDateReportDto> {
+public class HoldingCreationByDatetReport
+		extends BaseBiblivreReport<HoldingCreationByDateReportDto> {
 
 	@Override
 	protected HoldingCreationByDateReportDto getReportData(ReportsDTO dto) {
@@ -44,7 +45,10 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 	}
 
 	@Override
-	protected void generateReportBody(Document document, HoldingCreationByDateReportDto reportData) throws Exception {
+	protected void generateReportBody(
+			Document document, HoldingCreationByDateReportDto reportData)
+		throws Exception {
+
 		_insertDateSpanHeader(document, reportData);
 
 		_insertDataTable(document, reportData.getData());
@@ -146,8 +150,10 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 				getText("administration.reports.field.database_count"));
 	}
 
-	private void _insertDatabaseTotalsTable(Document document, HoldingCreationByDateReportDto reportData)
-			throws DocumentException {
+	private void _insertDatabaseTotalsTable(
+			Document document, HoldingCreationByDateReportDto reportData)
+		throws DocumentException {
+
 		PdfPTable table = new PdfPTable(3);
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
