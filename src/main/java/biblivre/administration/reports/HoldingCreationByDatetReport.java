@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -98,61 +100,46 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 		document.add(p3);
 		document.add(new Phrase("\n"));
 		PdfPTable table = new PdfPTable(3);
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.database_count"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.biblio"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.holdings_count"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
 
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.database_main"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		String biblio = reportData.getTotalBiblioMain();
-		biblio = biblio != null ? biblio : "";
-		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(biblio)));
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		String tombos = reportData.getTotalHoldingMain();
-		tombos = tombos != null ? tombos : "";
-		PdfPCell cell2 = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(tombos)));
-		cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell2);
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.LEFT,
+				getText("administration.reports.field.database_count"));
 
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.database_work"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		biblio = reportData.getTotalBiblioWork();
-		biblio = biblio != null ? biblio : "";
-		cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(biblio)));
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		tombos = reportData.getTotalHoldingWork();
-		tombos = tombos != null ? tombos : "";
-		cell2 = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(tombos)));
-		cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell2);
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.CENTER,
+				getText("administration.reports.field.database_count"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.CENTER,
+				getText("administration.reports.field.database_count"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BACKGROUND_LEFT_MIDDLE,
+				getText("administration.reports.field.database_main"));
+
+		String totalBiblioMain = StringUtils.defaultString(reportData.getTotalBiblioMain());
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, totalBiblioMain);
+
+		String totalHoldingMain = StringUtils.defaultString(reportData.getTotalHoldingMain());
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, totalHoldingMain);
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BACKGROUND_LEFT_MIDDLE,
+				getText("administration.reports.field.database_work"));
+
+		String totalBiblioWork = StringUtils.defaultString(reportData.getTotalBiblioWork());
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, totalBiblioWork);
+
+		String totalHoldingWork = StringUtils.defaultString(reportData.getTotalHoldingWork());
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, totalHoldingWork);
 
 		document.add(table);
 

@@ -1,6 +1,7 @@
 package biblivre.administration.reports;
 
 import java.awt.Color;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,37 @@ public class ReportUtil {
 	public static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
 	public static final Color HEADER_BACKGROUND_COLOR = new Color(239, 239, 239);
 	public static final Float HEADER_BORDER_WIDTH = 0.8f;
+
+	public static final CellFormattingStrategy BORDER = cell -> {
+		cell.setBorderWidth(HEADER_BORDER_WIDTH);
+	};
+
+	public static final CellFormattingStrategy BACKGROUND = cell -> {
+		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
+	};
+
+	public static final Function<Integer, CellFormattingStrategy> COLSPAN =
+			colspan ->  cell -> cell.setColspan(colspan);
+
+	private static final Function<Integer, CellFormattingStrategy> HALIGN =
+			halignment -> cell -> cell.setHorizontalAlignment(halignment);
+
+	public static final CellFormattingStrategy CENTER = HALIGN.apply(Element.ALIGN_CENTER);
+
+	public static final CellFormattingStrategy LEFT = HALIGN.apply(Element.ALIGN_LEFT);
+
+	public static final CellFormattingStrategy RIGHT = HALIGN.apply(Element.ALIGN_RIGHT);
+
+	private static final Function<Integer, CellFormattingStrategy> VALIGN =
+			valignment -> cell -> cell.setVerticalAlignment(valignment);
+
+	public static final CellFormattingStrategy MIDDLE = VALIGN.apply(Element.ALIGN_MIDDLE);
+
+	public static final CellFormattingStrategy CENTER_MIDDLE =
+			ReportUtil.CENTER.with(ReportUtil.MIDDLE);
+
+	public static final CellFormattingStrategy BACKGROUND_LEFT_MIDDLE =
+			ReportUtil.BACKGROUND.with(ReportUtil.LEFT).with(ReportUtil.MIDDLE);
 
 	public static Chunk getNormalChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
@@ -74,13 +106,18 @@ public class ReportUtil {
 	}
 
 	public static void insertHeaderCellWithBackground(PdfPTable table, String text, int colspan) {
-		PdfPCell cell = new PdfPCell(new Paragraph(getHeaderChunk(text)));
+		insertHeaderCenterTextCellWithBackgroundAndColspan(table, text, colspan);
+	}
 
-		applyBackgroundThenCenter(cell);
+	public static void insertHeaderCenterTextCellWithBackgroundAndColspan(
+			PdfPTable table, String text, int colspan) {
+		CellFormattingStrategy strategy =
+			BACKGROUND
+				.with(CENTER)
+				.with(MIDDLE)
+				.with(COLSPAN.apply(colspan));
 
-		cell.setColspan(colspan);
-
-		table.addCell(cell);
+		insertChunkedTextCellWithStrategy(table, ReportUtil::getHeaderChunk, strategy, text);
 	}
 
 	public static void insertLeftTextCell(PdfPTable table, String value) {
@@ -92,13 +129,9 @@ public class ReportUtil {
 	}
 
 	public static void insertTextCell(PdfPTable table, String value, int halignment) {
-		PdfPCell cell = new PdfPCell(
-				new Paragraph(getNormalChunk(value)));
+		CellFormattingStrategy strategy = HALIGN.apply(halignment).with(MIDDLE);
 
-		cell.setHorizontalAlignment(halignment);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-		table.addCell(cell);
+		insertChunkedTextCellWithStrategy(table, ReportUtil::getNormalChunk, strategy, value);
 	}
 
 	public static void insertValueCenter(PdfPTable table, String value) {
@@ -113,14 +146,14 @@ public class ReportUtil {
 	public static void insertChunkedTextCell(
 			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan,
 			int halignment) {
-		PdfPCell cell = new PdfPCell(
-				new Paragraph(chunker.apply(value)));
 
-		cell.setColspan(colspan);
-		cell.setHorizontalAlignment(halignment);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		CellFormattingStrategy strategy =
+			MIDDLE
+				.with(COLSPAN.apply(colspan))
+				.with(HALIGN.apply(halignment))
+				.with(MIDDLE);
 
-		table.addCell(cell);
+		insertChunkedTextCellWithStrategy(table, chunker, strategy, value);
 	}
 
 	public static void insertChunkedCenterTextCell(
@@ -153,26 +186,37 @@ public class ReportUtil {
 			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan,
 			int halignment) {
 
-		PdfPCell cell = new PdfPCell(new Paragraph(chunker.apply(value)));
+		CellFormattingStrategy strategy =
+			BORDER
+			.with(BACKGROUND)
+			.with(COLSPAN.apply(colspan))
+			.with(HALIGN.apply(halignment))
+			.with(MIDDLE);
 
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setColspan(colspan);
-
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setHorizontalAlignment(halignment);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
-		table.addCell(cell);
+		insertChunkedTextCellWithStrategy(table, chunker, strategy, value);
 	}
 
-	private static void applyBackgroundThenCenter(PdfPCell cell) {
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+	public static void insertChunkedTextCellWithStrategy(
+			PdfPTable table, Function<String, Chunk> chunker, CellFormattingStrategy strategy,
+			String value) {
+
+		PdfPCell cell = new PdfPCell(new Paragraph(chunker.apply(value)));
+
+		strategy.accept(cell);
+
+		table.addCell(cell);
 	}
 
 	public static void insertHeaderCellWithBackground(PdfPTable table, String text) {
 		insertHeaderCellWithBackground(table, text, 1);
 	}
 
+	interface CellFormattingStrategy extends Consumer<PdfPCell> {
+		public default CellFormattingStrategy with(CellFormattingStrategy that) {
+			return cell -> {
+				this.accept(cell);
+				that.accept(cell);
+			};
+		}
+	}
 }
