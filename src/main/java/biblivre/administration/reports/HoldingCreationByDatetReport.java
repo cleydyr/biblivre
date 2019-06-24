@@ -62,36 +62,34 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 		}
 
 		if (userTotal.size() > 0) {
-			Paragraph p3 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.title.user_creation_count")));
-			p3.setAlignment(Element.ALIGN_CENTER);
-			document.add(p3);
-			document.add(new Phrase("\n"));
 			PdfPTable table = new PdfPTable(2);
-			PdfPCell cell;
-			cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
-			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-			cell.setBorderWidth(HEADER_BORDER_WIDTH);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.total"))));
-			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-			cell.setBorderWidth(HEADER_BORDER_WIDTH);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+
+			ReportUtil.insertChunkedTextCellWithStrategy(table, ReportUtil::getHeaderChunk,
+					ReportUtil.CENTER, getText("administration.reports.title.user_creation_count"));
+
+			ReportUtil.insertNewLine(document);
+
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE,
+					getText("administration.reports.field.user_name"));
+
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+					getText("administration.reports.field.total"));
+
 			for (String name : userTotal.keySet()) {
-				cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(name)));
-				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
-				cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(userTotal.get(name)))));
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-				table.addCell(cell);
+				ReportUtil.insertChunkedTextCellWithStrategy(
+						table, ReportUtil::getNormalChunk, ReportUtil.LEFT_MIDDLE,
+						getText("administration.reports.field.total"));
+
+				ReportUtil.insertChunkedTextCellWithStrategy(
+						table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE,
+						String.valueOf(userTotal.get(name)));
 			}
+
 			document.add(table);
-			document.add(new Phrase("\n"));
+
+			ReportUtil.insertNewLine(document);
 		}
 
 		//Database totals table
@@ -178,17 +176,18 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 	}
 
 	private void createHeader(PdfPTable table) {
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
-				table, ReportUtil::getHeaderChunk, getText("administration.reports.field.date"), 1,
-				Element.ALIGN_LEFT);
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE,
+				getText("administration.reports.field.date"));
 
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				getText("administration.reports.field.user_name"), 2, Element.ALIGN_LEFT);
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.user_name"));
 
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
-				table, ReportUtil::getHeaderChunk, getText("administration.reports.field.total"),
-				1, Element.ALIGN_LEFT);
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE,
+				getText("administration.reports.field.total"));
 	}
 
 	@Override

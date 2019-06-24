@@ -65,6 +65,15 @@ public class ReportUtil {
 	public static final CellFormattingStrategy BACKGROUND_LEFT_MIDDLE =
 			ReportUtil.BACKGROUND.with(LEFT_MIDDLE);
 
+	public static final CellFormattingStrategy BORDER_BACKGROUND_LEFT_MIDDLE =
+			BACKGROUND_LEFT_MIDDLE.with(BORDER);
+
+	public static final CellFormattingStrategy BACKGROUND_CENTER_MIDDLE =
+			CENTER_MIDDLE.with(BACKGROUND);
+
+	public static final CellFormattingStrategy BORDER_BACKGROUND_CENTER_MIDDLE =
+			BACKGROUND_CENTER_MIDDLE.with(BORDER);
+
 	public static Chunk getNormalChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
 		chunk.setFont(TEXT_FONT);
