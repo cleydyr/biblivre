@@ -18,7 +18,22 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class ReportUtil {
-	
+	enum ParagraphAlignment {
+		LEFT(Element.ALIGN_LEFT),
+		RIGHT(Element.ALIGN_RIGHT),
+		CENTER(Element.ALIGN_CENTER);
+
+		private int value;
+
+		private ParagraphAlignment(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	}
+
 	public static final Float SMALL_FONT_SIZE = 8f;
 	public static final Float REPORT_FONT_SIZE = 10f;
 	public static final Float PAGE_NUMBER_FONT_SIZE = 8f;
@@ -109,6 +124,17 @@ public class ReportUtil {
 		Paragraph p2 = new Paragraph(chunker.apply(text));
 
 		p2.setAlignment(alignment);
+
+		document.add(p2);
+	}
+
+	public static void insertChunkedTextParagraph(
+			Document document, Function<String, Chunk> chunker, ParagraphAlignment alignment, String text)
+		throws DocumentException {
+
+		Paragraph p2 = new Paragraph(chunker.apply(text));
+
+		p2.setAlignment(alignment.value);
 
 		document.add(p2);
 	}

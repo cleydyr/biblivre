@@ -22,13 +22,12 @@ package biblivre.administration.reports;
 import java.util.List;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.LateLendingsDto;
+import biblivre.core.utils.CharPool;
 
 public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto> {
 
@@ -39,77 +38,68 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 
 	@Override
 	protected void generateReportBody(Document document, LateLendingsDto reportData) throws Exception {
-		if (reportData.getData().size() != 0) {
-			Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.late_lendings_count") + ":  " + reportData.getData().size()));
-			p2.setAlignment(Element.ALIGN_LEFT);
-			document.add(p2);
-			document.add(new Phrase("\n"));
+		if (!reportData.getData().isEmpty()) {
+			StringBuilder lateLendingsCount =
+				new StringBuilder(4)
+					.append(getText("administration.reports.field.late_lendings_count"))
+					.append(CharPool.COLON)
+					.append(CharPool.SPACE)
+					.append(reportData.getData().size());
 
-			PdfPTable table = createTable(reportData.getData());
-			document.add(table);
-			document.add(new Phrase("\n"));
+			ReportUtil.insertChunkedTextParagraph(
+					document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
+					lateLendingsCount.toString());
+
+			ReportUtil.insertNewLine(document);
+
+			_insertTable(document, reportData.getData());
 		}
 	}
 
-	private PdfPTable createTable(List<String[]> lendings) {
+	private void _insertTable(Document document, List<String[]> lendings) throws DocumentException {
 		PdfPTable table = new PdfPTable(6);
+
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.setWidthPercentage(100f);
 		
-		createHeader(table);
+		_createHeader(table);
 
-		PdfPCell cell;
 		for (String[] lending : lendings) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[0])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[1])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[2])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(lending[3])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, lending[0]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), lending[1]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), lending[2]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, lending[3]);
 		}
-		return table;
+
+		document.add(table);
+
+		ReportUtil.insertNewLine(document);
 	}
 
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.expected_date"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+	private void _createHeader(PdfPTable table) {
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.user_id"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.user_name"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.title"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.expected_date"));
 	}
 
 	@Override
