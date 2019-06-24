@@ -23,12 +23,11 @@ import java.util.List;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.RequestsByDateReportDto;
+import biblivre.core.utils.CharPool;
 
 public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateReportDto> {
 
@@ -41,16 +40,25 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 	}
 
 	@Override
-	protected void generateReportBody(Document document, RequestsByDateReportDto reportData) throws Exception {
-		StringBuilder header = new StringBuilder();
-		header.append(this.getText("administration.reports.field.date_from"));
-		header.append(" ").append(reportData.getInitialDate()).append(" ");
-		header.append(this.getText("administration.reports.field.date_to"));
-		header.append(" ").append(reportData.getFinalDate());
-		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(header.toString()));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p2);
-		document.add(new Phrase("\n"));
+	protected void generateReportBody(Document document, RequestsByDateReportDto reportData)
+		throws Exception {
+
+		String header =
+			new StringBuilder(7)
+				.append(getText("administration.reports.field.date_from"))
+				.append(CharPool.SPACE)
+				.append(reportData.getInitialDate())
+				.append(CharPool.SPACE)
+				.append(getText("administration.reports.field.date_to"))
+				.append(CharPool.SPACE)
+				.append(reportData.getFinalDate())
+				.toString();
+
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT, header);
+
+		ReportUtil.insertNewLine(document);
+
 		if (reportData.getData() != null) {
 			PdfPTable table = createTable(reportData.getData());
 			document.add(table);
@@ -62,39 +70,37 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		PdfPTable table = new PdfPTable(7);
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.setWidthPercentage(100f);
-		createHeader(table);
-		PdfPCell cell;
+
+		_insertHeader(table);
+
+		_insertBody(table, dataList);
+
+		return table;
+	}
+
+	private void _insertBody(PdfPTable table, List<String[]> dataList) {
 		String lastQuotationId = "0";
 		String requester = null;
 		String title = null;
 		String quantity = null;
 		String unit_value = null;
 		String total_value = null;
+
 		for (String[] data : dataList) {
 			if (!data[0].equals(lastQuotationId)) {
 				if (!lastQuotationId.equals("0")) {
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(requester)));
-					cell.setColspan(2);
-					cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-					cell.setVerticalAlignment(Element.ALIGN_TOP);
-					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(title)));
-					cell.setColspan(2);
-					cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-					cell.setVerticalAlignment(Element.ALIGN_TOP);
-					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(quantity)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setVerticalAlignment(Element.ALIGN_TOP);
-					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(unit_value)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setVerticalAlignment(Element.ALIGN_TOP);
-					table.addCell(cell);
-					cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(total_value)));
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					cell.setVerticalAlignment(Element.ALIGN_TOP);
-					table.addCell(cell);
+					ReportUtil.insertChunkedTextCellWithStrategy(
+							table, ReportUtil::getNormalChunk,
+							ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), requester);
+					ReportUtil.insertChunkedTextCellWithStrategy(
+							table, ReportUtil::getNormalChunk,
+							ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), title);
+					ReportUtil.insertChunkedTextCellWithStrategy(
+							table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, quantity);
+					ReportUtil.insertChunkedTextCellWithStrategy(
+							table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, unit_value);
+					ReportUtil.insertChunkedTextCellWithStrategy(
+							table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, total_value);
 				}
 
 				requester = "";
@@ -113,66 +119,39 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		}
 		
 		if (!lastQuotationId.equals("0")) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(requester)));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_TOP);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(title)));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_TOP);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(quantity)));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_TOP);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(unit_value)));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_TOP);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(total_value)));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_TOP);
-			table.addCell(cell);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), requester);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), title);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, quantity);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, unit_value);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, total_value);
 		}
-		return table;
 	}
 	
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.requester"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.amount"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.unit_value"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.paid_value"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+	private void _insertHeader(PdfPTable table) {
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.requester"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.title"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.amount"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.unit_value"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.paid_value"));
 	}
 
 	@Override

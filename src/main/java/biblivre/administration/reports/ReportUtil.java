@@ -69,6 +69,13 @@ public class ReportUtil {
 	private static final Function<Integer, CellFormattingStrategy> VALIGN =
 			valignment -> cell -> cell.setVerticalAlignment(valignment);
 
+
+	public static final CellFormattingStrategy TOP = VALIGN.apply(Element.ALIGN_TOP);
+
+	public static final CellFormattingStrategy LEFT_TOP = TOP.with(LEFT);
+
+	public static final CellFormattingStrategy CENTER_TOP = TOP.with(CENTER);
+
 	public static final CellFormattingStrategy MIDDLE = VALIGN.apply(Element.ALIGN_MIDDLE);
 
 	public static final CellFormattingStrategy CENTER_MIDDLE =
