@@ -147,31 +147,33 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 
 	private PdfPTable createTable(List<String[]> dataList) {
 		PdfPTable table = new PdfPTable(4);
+
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
+
 		createHeader(table);
-		PdfPCell cell;
+
 		for (String[] data : dataList) {
 			String name = data[1];
+
 			int total = Integer.valueOf(data[2]);
+
 			if (userTotal.containsKey(name)) {
 				userTotal.put(name, userTotal.get(name) + total);
 			} else {
 				userTotal.put(name, total);
 			}
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(name)));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(String.valueOf(total))));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.LEFT_MIDDLE, data[0]);
+
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), name);
+
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, data[2]);
 		}
+
 		return table;
 	}
 

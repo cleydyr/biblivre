@@ -59,8 +59,11 @@ public class ReportUtil {
 	public static final CellFormattingStrategy CENTER_MIDDLE =
 			ReportUtil.CENTER.with(ReportUtil.MIDDLE);
 
+	public static final CellFormattingStrategy LEFT_MIDDLE =
+			ReportUtil.LEFT.with(ReportUtil.MIDDLE);
+
 	public static final CellFormattingStrategy BACKGROUND_LEFT_MIDDLE =
-			ReportUtil.BACKGROUND.with(ReportUtil.LEFT).with(ReportUtil.MIDDLE);
+			ReportUtil.BACKGROUND.with(LEFT_MIDDLE);
 
 	public static Chunk getNormalChunk(String text) {
 		Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
