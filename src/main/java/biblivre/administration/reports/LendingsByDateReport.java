@@ -87,7 +87,7 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 		table.setWidthPercentage(100f);
 
 		_insertHeader(table);
-		
+
 		_insertBody(table, dto);
 
 		document.add(table);

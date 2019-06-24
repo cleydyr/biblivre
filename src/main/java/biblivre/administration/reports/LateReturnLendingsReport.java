@@ -30,7 +30,7 @@ import biblivre.administration.reports.dto.LateLendingsDto;
 import biblivre.core.utils.CharPool;
 
 public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto> {
-	
+
 	@Override
 	protected LateLendingsDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getLateReturnLendingsReportData();
