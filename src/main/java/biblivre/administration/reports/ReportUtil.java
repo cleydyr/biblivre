@@ -129,28 +129,38 @@ public class ReportUtil {
 	}
 
 	public static void insertHeaderCellWithBackgroundAndBorder(PdfPTable table, String value) {
-		insertChunkedTextCellWithBackgroundAndBorder(table, ReportUtil::getHeaderChunk, value, 1);
+		insertChunkedCenterTextCellWithBackgroundAndBorder(table, ReportUtil::getHeaderChunk, value, 1);
 	}
 
-	public static void insertHeaderCellWithBackgroundAndBorder(
+	public static void insertChunkedCenterTextCellWithBackgroundAndBorder(
 			PdfPTable table, String value, int colspan) {
-		insertChunkedTextCellWithBackgroundAndBorder(
+		insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getHeaderChunk, value, colspan);
 	}
 
-	public static void insertChunkedTextCellWithBackgroundAndBorder(
+	public static void insertChunkedCenterTextCellWithBackgroundAndBorder(
 			PdfPTable table, Function<String, Chunk> chunker, String value) {
-		insertChunkedTextCellWithBackgroundAndBorder(table, chunker, value, 1);
+		insertChunkedCenterTextCellWithBackgroundAndBorder(table, chunker, value, 1);
+	}
+
+	public static void insertChunkedCenterTextCellWithBackgroundAndBorder(
+			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan) {
+		insertChunkedTextCellWithBackgroundAndBorder(
+				table, chunker, value, colspan, Element.ALIGN_CENTER);
 	}
 
 	public static void insertChunkedTextCellWithBackgroundAndBorder(
-			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan) {
+			PdfPTable table, Function<String, Chunk> chunker, String value, int colspan,
+			int halignment) {
+
 		PdfPCell cell = new PdfPCell(new Paragraph(chunker.apply(value)));
 
 		cell.setBorderWidth(HEADER_BORDER_WIDTH);
 		cell.setColspan(colspan);
 
-		applyBackgroundThenCenter(cell);
+		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
+		cell.setHorizontalAlignment(halignment);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
 		table.addCell(cell);
 	}
@@ -159,6 +169,10 @@ public class ReportUtil {
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+	}
+
+	public static void insertHeaderCellWithBackground(PdfPTable table, String text) {
+		insertHeaderCellWithBackground(table, text, 1);
 	}
 
 }

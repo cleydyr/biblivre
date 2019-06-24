@@ -189,26 +189,17 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport<HoldingCrea
 	}
 
 	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.date"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.total"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+				table, ReportUtil::getHeaderChunk, getText("administration.reports.field.date"), 1,
+				Element.ALIGN_LEFT);
+
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+				table, ReportUtil::getHeaderChunk,
+				getText("administration.reports.field.user_name"), 2, Element.ALIGN_LEFT);
+
+		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+				table, ReportUtil::getHeaderChunk, getText("administration.reports.field.total"),
+				1, Element.ALIGN_LEFT);
 	}
 
 	@Override

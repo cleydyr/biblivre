@@ -112,11 +112,11 @@ public class CustomCountReport extends BaseBiblivreReport<CustomCountDto> {
 	}
 
 	private void _createHeader(PdfPTable table) {
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk,
 				getText("marc.bibliographic.datafield." + datafield + ".subfield." + subfield), 2);
 
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.total"), 1);
 	}
 

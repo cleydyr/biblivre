@@ -108,7 +108,7 @@ public class DeweyReport extends BaseBiblivreReport<DeweyReportDto> {
 
 	private void _createHeader(PdfPTable table) {
 		for (int i = 0; i < COLSPANS.length; i++) {
-			ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+			ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
 		}
 	}

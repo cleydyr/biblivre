@@ -59,17 +59,17 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport<AssetHoldingByD
 	}
 
 	private void _createHeader(PdfPTable table) {
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.created"));
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.accession_number"));
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.title"));
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.author"));
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.date"));
-		ReportUtil.insertChunkedTextCellWithBackgroundAndBorder(
+		ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
 				table, ReportUtil::getBoldChunk, getText("administration.reports.field.acquisition"));
 	}
 
