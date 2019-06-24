@@ -22,10 +22,7 @@ package biblivre.administration.reports;
 import java.util.List;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.ReservationReportDto;
@@ -40,116 +37,97 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 
 	@Override
 	protected void generateReportBody(Document document, ReservationReportDto reportData) throws Exception {
-		boolean hasBiblioData = reportData.getBiblioReservations() != null && !reportData.getBiblioReservations().isEmpty();
-		boolean hasHoldingData = reportData.getHoldingReservations() != null && !reportData.getHoldingReservations().isEmpty();
+		boolean hasBiblioData = reportData.getBiblioReservations() != null && 
+				!reportData.getBiblioReservations().isEmpty();
+
+		boolean hasHoldingData = reportData.getHoldingReservations() != null &&
+				!reportData.getHoldingReservations().isEmpty();
+
+		String message = null;
+
 		if (hasBiblioData) {
-			PdfPTable biblioTable = new PdfPTable(7);
-			biblioTable.setWidthPercentage(100f);
-			PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.biblio_reservation"))));
-			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-			cell.setBorderWidth(HEADER_BORDER_WIDTH);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			cell.setColspan(7);
-			biblioTable.addCell(cell);
-			createHeader(biblioTable);
-			createBody(biblioTable, reportData.getBiblioReservations());
-			document.add(biblioTable);
-			document.add(new Phrase("\n"));
+			message = getText("administration.reports.field.biblio_reservation");
 		}
 		if (hasHoldingData) {
-			PdfPTable holdingTable = new PdfPTable(7);
-			holdingTable.setWidthPercentage(100f);
-			PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.holding_reservation"))));
-			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-			cell.setBorderWidth(HEADER_BORDER_WIDTH);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			cell.setColspan(7);
-			holdingTable.addCell(cell);
-			createHeader(holdingTable);
-			createBody(holdingTable, reportData.getHoldingReservations());
-			document.add(holdingTable);
+			message = getText("administration.reports.field.holding_reservation");
 		}
 		if (!hasBiblioData && !hasHoldingData) {
-			PdfPTable noDataTable = new PdfPTable(1);
-			noDataTable.setWidthPercentage(100f);
-			String message = this.getText("administration.reports.field.no_data") + " - " + DateUtils.now(i18n.getLanguage());
-			PdfPCell cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(message)));
-			cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-			cell.setBorderWidth(HEADER_BORDER_WIDTH);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			noDataTable.addCell(cell);
-			document.add(noDataTable);
+			message = getText(
+					"administration.reports.field.no_data") + " - " +
+					DateUtils.now(i18n.getLanguage());
 		}
+
+		_insertTable(document, reportData, message);
+
+		ReportUtil.insertNewLine(document);
 	}
 
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_id"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.user_name"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.author"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.reservation_date"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+	private void _insertTable(Document document, ReservationReportDto reportData, String subtitle)
+		throws DocumentException {
+
+		PdfPTable table = new PdfPTable(7);
+
+		table.setWidthPercentage(100f);
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(7)),
+				subtitle);
+
+		_insertHeader(table);
+
+		_insertBody(table, reportData.getBiblioReservations());
+
+		document.add(table);
 	}
 
-	private void createBody(PdfPTable table, List<String[]> dataList) {
+	private void _insertHeader(PdfPTable table) {
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.user_id"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.user_name"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				getText("administration.reports.field.title"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.author"));
+
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.reservation_date"));
+	}
+
+	private void _insertBody(PdfPTable table, List<String[]> dataList) {
 		if (dataList == null || dataList.isEmpty()) {
 			return;
 		}
+
 		for (String[] data : dataList) {
-			PdfPCell cell;
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[2])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[3])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[4])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, data[1]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), data[0]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), data[2]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, data[3]);
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, data[4]);
 		}
+
 	}
 
 	@Override
