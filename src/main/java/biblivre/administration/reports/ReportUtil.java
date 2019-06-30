@@ -38,11 +38,16 @@ public class ReportUtil {
 	public static final Float REPORT_FONT_SIZE = 10f;
 	public static final Float PAGE_NUMBER_FONT_SIZE = 8f;
 	public static final String ARIAL_FONT_NAME = "Arial";
-	public static final Font SMALL_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.NORMAL, Color.BLACK);
-	public static final Font TEXT_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.NORMAL, Color.BLACK);
-	public static final Font BOLD_FONT = FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.BOLD, Color.BLACK);
-	public static final Font HEADER_FONT = FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
-	public static final Font FOOTER_FONT = FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
+	public static final Font SMALL_FONT =
+			FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.NORMAL, Color.BLACK);
+	public static final Font TEXT_FONT =
+			FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.NORMAL, Color.BLACK);
+	public static final Font BOLD_FONT =
+			FontFactory.getFont(ARIAL_FONT_NAME, SMALL_FONT_SIZE, Font.BOLD, Color.BLACK);
+	public static final Font HEADER_FONT =
+			FontFactory.getFont(ARIAL_FONT_NAME, REPORT_FONT_SIZE, Font.BOLD, Color.BLACK);
+	public static final Font FOOTER_FONT =
+			FontFactory.getFont(FontFactory.COURIER, PAGE_NUMBER_FONT_SIZE, Font.BOLD, Color.BLACK);
 	public static final Color HEADER_BACKGROUND_COLOR = new Color(239, 239, 239);
 	public static final Float HEADER_BORDER_WIDTH = 0.8f;
 
@@ -136,7 +141,8 @@ public class ReportUtil {
 	}
 
 	public static void insertChunkedTextParagraph(
-			Document document, Function<String, Chunk> chunker, ParagraphAlignment alignment, String text)
+			Document document, Function<String, Chunk> chunker, ParagraphAlignment alignment,
+			String text)
 		throws DocumentException {
 
 		Paragraph p2 = new Paragraph(chunker.apply(text));
@@ -207,7 +213,8 @@ public class ReportUtil {
 	}
 
 	public static void insertHeaderCellWithBackgroundAndBorder(PdfPTable table, String value) {
-		insertChunkedCenterTextCellWithBackgroundAndBorder(table, ReportUtil::getHeaderChunk, value, 1);
+		insertChunkedCenterTextCellWithBackgroundAndBorder(
+				table, ReportUtil::getHeaderChunk, value, 1);
 	}
 
 	public static void insertChunkedCenterTextCellWithBackgroundAndBorder(
