@@ -20,26 +20,38 @@
 package biblivre.administration.reports;
 
 import java.util.Collections;
-import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.SummaryReportDto;
 
-public class SummaryReport extends BaseBiblivreReport<SummaryReportDto> implements Comparator<String[]> {
+public class SummaryReport extends BaseBiblivreReport<SummaryReportDto> {
+	private static int[] COLSPANS = new int[] {2, 2, 1, 1, 1, 1, 1};
+
+	private static String[] HEADER_TEXTS = new String[] {
+		"administration.reports.field.dewey",
+		"administration.reports.field.title",
+		"administration.reports.field.author",
+		"administration.reports.field.isbn",
+		"administration.reports.field.editor",
+		"administration.reports.field.year",
+		"administration.reports.field.edition",
+		"administration.reports.field.holdings_count"
+	};
+
+	private static int[] DATA_ORDER = {6, 0, 1, 2, 3, 4, 5, 7};
 
 	private Integer index;
 
 	@Override
 	protected SummaryReportDto getReportData(ReportsDTO dto) {
 		Integer order = 1;
-		if (StringUtils.isNotBlank(dto.getOrder()) && StringUtils.isNumeric(dto.getOrder().trim())) {
+		if (StringUtils.isNotBlank(dto.getOrder()) &&
+				StringUtils.isNumeric(dto.getOrder().trim())) {
+
 			order = Integer.valueOf(dto.getOrder().trim());
 		}
 		switch (order) {
@@ -52,117 +64,50 @@ public class SummaryReport extends BaseBiblivreReport<SummaryReportDto> implemen
 	}
 
 	@Override
-	protected void generateReportBody(Document document, SummaryReportDto reportData) throws Exception {
+	protected void generateReportBody(Document document, SummaryReportDto reportData)
+			throws Exception {
+
 		PdfPTable table = new PdfPTable(10);
+
 		table.setWidthPercentage(100f);
-		createHeader(table);
-		Collections.sort(reportData.getData(), this);
-		PdfPCell cell;
-		for (String[] data : reportData.getData()) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[6])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[0])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[1])));
-			cell.setColspan(2);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[2])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[3])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[4])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[5])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getSmallFontChunk(data[7])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-		}
+
+		_insertHeader(table);
+
+		_sortReportData(reportData);
+
+		_insertBody(table, reportData);
+
 		document.add(table);
 	}
 
-	private void createHeader(PdfPTable table) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.dewey"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.title"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.author"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.isbn"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.editor"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.year"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.edition"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getBoldChunk(this.getText("administration.reports.field.holdings_count"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
+	private void _insertBody(PdfPTable table, SummaryReportDto reportData) {
+		for (String[] data : reportData.getData()) {
+			for (int i = 0; i < COLSPANS.length; i++) {
+				ReportUtil.insertChunkedCenterTextCell(
+						table, ReportUtil::getSmallFontChunk, data[DATA_ORDER[i]], COLSPANS[i]);
+			}
+		}
 	}
 
+	private void _sortReportData(SummaryReportDto reportData) {
+		Collections.sort(reportData.getData(), (o1, o2) -> {
+			if (o1 == null || o1[this.index] == null) {
+				return -1;
+			}
 
-	@Override
-	public int compare(String[] o1, String[] o2) {
-		if (o1 == null || o1[this.index] == null) {
-			return -1;
-		}
-		
-		if (o2 == null || o2[this.index] == null) {
-			return 1;
-		}
+			if (o2 == null || o2[this.index] == null) {
+				return 1;
+			}
 
-		return o1[this.index].compareTo(o2[this.index]);
+			return o1[this.index].compareTo(o2[this.index]);
+		});
+	}
+
+	private void _insertHeader(PdfPTable table) {
+		for (int i = 0; i < COLSPANS.length; i++) {
+			ReportUtil.insertChunkedCenterTextCellWithBackgroundAndBorder(
+					table, ReportUtil::getBoldChunk, getText(HEADER_TEXTS[i]), COLSPANS[i]);
+		}
 	}
 
 	@Override

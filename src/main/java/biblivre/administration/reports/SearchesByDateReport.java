@@ -20,13 +20,12 @@
 package biblivre.administration.reports;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.SearchesByDateReportDto;
+import biblivre.core.utils.CharPool;
 
 public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateReportDto> {
 
@@ -39,52 +38,68 @@ public class SearchesByDateReport extends BaseBiblivreReport<SearchesByDateRepor
 
 	@Override
 	protected void generateReportBody(Document document, SearchesByDateReportDto reportData) throws Exception {
-		StringBuilder p2Builder = new StringBuilder();
-		p2Builder.append(this.getText("administration.reports.field.date_from") + " ");
-		p2Builder.append(reportData.getInitialDate());
-		p2Builder.append(" " + this.getText("administration.reports.field.date_to") + " ");
-		p2Builder.append(reportData.getFinalDate());
-		Paragraph p2 = new Paragraph(ReportUtil.getHeaderChunk(p2Builder.toString()));
-		p2.setAlignment(Element.ALIGN_LEFT);
-		document.add(p2);
-		document.add(new Phrase("\n"));
+		String header =
+				new StringBuilder(7)
+					.append(getText("administration.reports.field.date_from"))
+					.append(CharPool.SPACE)
+					.append(reportData.getInitialDate())
+					.append(CharPool.SPACE)
+					.append(getText("administration.reports.field.date_to"))
+					.append(CharPool.SPACE)
+					.append(reportData.getFinalDate())
+					.toString();
 
+		ReportUtil.insertChunkedTextParagraph(
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT, header);
+
+		ReportUtil.insertNewLine(document);
+
+		_insertTable(document, reportData);
+	}
+
+	private void _insertTable(Document document, SearchesByDateReportDto reportData) throws DocumentException {
 		PdfPTable table = createTable(reportData);
+
 		document.add(table);
-		document.add(new Phrase("\n"));
+
+		ReportUtil.insertNewLine(document);
 	}
 
 	private PdfPTable createTable(SearchesByDateReportDto dto) {
 		PdfPTable table = new PdfPTable(2);
+
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
-		//Table header
-		PdfPCell cell;
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.date"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		cell = new PdfPCell(new Paragraph(ReportUtil.getHeaderChunk(this.getText("administration.reports.field.total"))));
-		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
-		cell.setColspan(2);
-		cell.setBorderWidth(HEADER_BORDER_WIDTH);
-		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		table.addCell(cell);
-		//Table body
-		if (dto.getData() == null || dto.getData().isEmpty()) return table;
-		for (String[] data : dto.getData()) {
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[1])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-			cell = new PdfPCell(new Paragraph(ReportUtil.getNormalChunk(data[0])));
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			table.addCell(cell);
-		}
+
+		_insertHeader(table);
+
+		_insertBody(table, dto);
+
 		return table;
+	}
+
+	private void _insertBody(PdfPTable table, SearchesByDateReportDto dto) {
+		if (dto.getData() == null || dto.getData().isEmpty()) return;
+
+		for (String[] data : dto.getData()) {
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.CENTER_MIDDLE, data[1]);
+
+			ReportUtil.insertChunkedTextCellWithStrategy(
+					table, ReportUtil::getNormalChunk,
+					ReportUtil.CENTER_MIDDLE, data[0]);
+		}
+	}
+
+	private void _insertHeader(PdfPTable table) {
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.date"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,
+				getText("administration.reports.field.total"));
 	}
 
 	@Override

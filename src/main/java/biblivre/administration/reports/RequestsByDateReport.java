@@ -22,8 +22,8 @@ package biblivre.administration.reports;
 import java.util.List;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.dto.RequestsByDateReportDto;
@@ -60,10 +60,14 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		ReportUtil.insertNewLine(document);
 
 		if (reportData.getData() != null) {
-			PdfPTable table = createTable(reportData.getData());
-			document.add(table);
-			document.add(new Phrase("\n"));
+			_insertTable(document, reportData);
 		}
+	}
+
+	private void _insertTable(Document document, RequestsByDateReportDto reportData) throws DocumentException {
+		PdfPTable table = createTable(reportData.getData());
+		document.add(table);
+		ReportUtil.insertNewLine(document);
 	}
 
 	private PdfPTable createTable(List<String[]> dataList) {
