@@ -73,7 +73,7 @@ public class HoldingCreationByDatetReport
 				.toString();
 
 		ReportUtil.insertChunkedTextParagraph(
-				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT, dateSpan);
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT, dateSpan);
 
 		ReportUtil.insertNewLine(document);
 	}
@@ -146,7 +146,7 @@ public class HoldingCreationByDatetReport
 
 	public void _insertDatabaseTotalsTitle(Document document) throws DocumentException {
 		ReportUtil.insertChunkedTextParagraph(
-				document, ReportUtil::getHeaderChunk, Element.ALIGN_CENTER,
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
 				getText("administration.reports.field.database_count"));
 	}
 

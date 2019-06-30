@@ -61,7 +61,8 @@ public class BibliographyReport extends BaseBiblivreReport<BibliographyReportDto
 				.append(reportData.getAuthorName());
 
 		ReportUtil.insertChunkedTextParagraph(
-				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT, authorHeaderBuilder.toString());
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
+				authorHeaderBuilder.toString());
 
 		if (reportData.getData() != null) {
 			PdfPTable table = new PdfPTable(8);

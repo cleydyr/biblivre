@@ -71,7 +71,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 	private void _insertUserListByTypeHeader(Document document) throws DocumentException {
 		ReportUtil.insertChunkedTextParagraph(
-				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
 				this.getText("administration.reports.field.user_list_by_type"));
 
 		ReportUtil.insertNewLine(document);
@@ -89,7 +89,7 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 
 	private void _insertUserCountByTypeHeader(Document document) throws DocumentException {
 		ReportUtil.insertChunkedTextParagraph(
-				document, ReportUtil::getHeaderChunk, Element.ALIGN_LEFT,
+				document, ReportUtil::getHeaderChunk, ReportUtil.ParagraphAlignment.LEFT,
 				this.getText("administration.reports.field.user_count_by_type"));
 
 		ReportUtil.insertNewLine(document);
