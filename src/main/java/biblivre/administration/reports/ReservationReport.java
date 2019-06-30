@@ -71,7 +71,7 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(7)),
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(7)),
 				subtitle);
 
 		_insertHeader(table);
@@ -89,12 +89,12 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.user_name"));
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.title"));
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
@@ -118,10 +118,10 @@ public class ReservationReport extends BaseBiblivreReport<ReservationReportDto> 
 					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, data[1]);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk,
-					ReportUtil.CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), data[0]);
+					ReportUtil.CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)), data[0]);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk,
-					ReportUtil.CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), data[2]);
+					ReportUtil.CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)), data[2]);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, data[3]);
 			ReportUtil.insertChunkedTextCellWithStrategy(

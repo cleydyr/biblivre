@@ -59,7 +59,7 @@ public class ReportUtil {
 		cell.setBackgroundColor(HEADER_BACKGROUND_COLOR);
 	};
 
-	public static final Function<Integer, CellFormattingStrategy> COLSPAN =
+	public static final ColspanApplier COLSPAN =
 			colspan ->  cell -> cell.setColspan(colspan);
 
 	private static final Function<Integer, CellFormattingStrategy> HALIGN =
@@ -141,25 +141,6 @@ public class ReportUtil {
 		document.add(p2);
 	}
 
-	public static void insertHeaderCellWithBackgroundColspan2(PdfPTable table, String text) {
-		insertHeaderCellWithBackground(table, text, 2);
-	}
-
-	public static void insertHeaderCellWithBackground(PdfPTable table, String text, int colspan) {
-		insertHeaderCenterTextCellWithBackgroundAndColspan(table, text, colspan);
-	}
-
-	public static void insertHeaderCenterTextCellWithBackgroundAndColspan(
-			PdfPTable table, String text, int colspan) {
-		CellFormattingStrategy strategy =
-			BACKGROUND
-				.with(CENTER)
-				.with(MIDDLE)
-				.with(COLSPAN.apply(colspan));
-
-		insertChunkedTextCellWithStrategy(table, ReportUtil::getHeaderChunk, strategy, text);
-	}
-
 	public static void insertLeftTextCell(PdfPTable table, String value) {
 		insertTextCell(table, value, Element.ALIGN_LEFT);
 	}
@@ -189,7 +170,7 @@ public class ReportUtil {
 
 		CellFormattingStrategy strategy =
 			MIDDLE
-				.with(COLSPAN.apply(colspan))
+				.with(COLSPAN.of(colspan))
 				.with(HALIGN.apply(halignment))
 				.with(MIDDLE);
 
@@ -230,7 +211,7 @@ public class ReportUtil {
 		CellFormattingStrategy strategy =
 			BORDER
 			.with(BACKGROUND)
-			.with(COLSPAN.apply(colspan))
+			.with(COLSPAN.of(colspan))
 			.with(HALIGN.apply(halignment))
 			.with(MIDDLE);
 
@@ -248,10 +229,6 @@ public class ReportUtil {
 		table.addCell(cell);
 	}
 
-	public static void insertHeaderCellWithBackground(PdfPTable table, String text) {
-		insertHeaderCellWithBackground(table, text, 1);
-	}
-
 	interface CellFormattingStrategy extends Consumer<PdfPCell> {
 		public default CellFormattingStrategy with(CellFormattingStrategy that) {
 			return cell -> {
@@ -259,5 +236,10 @@ public class ReportUtil {
 				that.accept(cell);
 			};
 		}
+	}
+
+	@FunctionalInterface
+	interface ColspanApplier {
+		public CellFormattingStrategy of(int colspan);
 	}
 }

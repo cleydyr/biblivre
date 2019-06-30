@@ -113,11 +113,11 @@ public class LendingsByDateReport extends BaseBiblivreReport<LendingsByDateRepor
 				getText("administration.reports.field.lendings"));
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.title"));
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.author"));
 	}
 

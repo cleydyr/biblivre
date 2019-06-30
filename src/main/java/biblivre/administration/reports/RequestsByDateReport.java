@@ -95,10 +95,10 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 				if (!lastQuotationId.equals("0")) {
 					ReportUtil.insertChunkedTextCellWithStrategy(
 							table, ReportUtil::getNormalChunk,
-							ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), requester);
+							ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.of(2)), requester);
 					ReportUtil.insertChunkedTextCellWithStrategy(
 							table, ReportUtil::getNormalChunk,
-							ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), title);
+							ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.of(2)), title);
 					ReportUtil.insertChunkedTextCellWithStrategy(
 							table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, quantity);
 					ReportUtil.insertChunkedTextCellWithStrategy(
@@ -125,10 +125,10 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 		if (!lastQuotationId.equals("0")) {
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk,
-					ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), requester);
+					ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.of(2)), requester);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk,
-					ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.apply(2)), title);
+					ReportUtil.LEFT_TOP.with(ReportUtil.COLSPAN.of(2)), title);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_TOP, quantity);
 			ReportUtil.insertChunkedTextCellWithStrategy(
@@ -141,11 +141,11 @@ public class RequestsByDateReport extends BaseBiblivreReport<RequestsByDateRepor
 	private void _insertHeader(PdfPTable table) {
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.requester"));
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.title"));
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk, ReportUtil.BORDER_BACKGROUND_CENTER_MIDDLE,

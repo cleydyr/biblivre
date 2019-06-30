@@ -72,10 +72,10 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, lending[0]);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk,
-					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), lending[1]);
+					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)), lending[1]);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk,
-					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), lending[2]);
+					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)), lending[2]);
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, lending[3]);
 		}
@@ -92,12 +92,12 @@ public class LateReturnLendingsReport extends BaseBiblivreReport<LateLendingsDto
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.user_name"));
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.title"));
 
 		ReportUtil.insertChunkedTextCellWithStrategy(

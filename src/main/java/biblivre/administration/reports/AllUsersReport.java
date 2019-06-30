@@ -125,11 +125,17 @@ public class AllUsersReport extends BaseBiblivreReport<AllUsersReportDto> {
 	}
 
 	private void _insertDescription(PdfPTable table, String description) {
-		ReportUtil.insertHeaderCellWithBackgroundColspan2(table, description);
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
+				description);
 	}
 
 	private void _insertTotalLabel(PdfPTable table) {
-		ReportUtil.insertHeaderCellWithBackgroundColspan2(table, this.getText("administration.reports.field.total"));
+		ReportUtil.insertChunkedTextCellWithStrategy(
+				table, ReportUtil::getHeaderChunk,
+				ReportUtil.BACKGROUND_CENTER_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
+				getText("administration.reports.field.total"));
 	}
 
 	private void _insertTotalValue(PdfPTable table, int total) {

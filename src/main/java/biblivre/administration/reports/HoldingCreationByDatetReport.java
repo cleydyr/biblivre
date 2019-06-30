@@ -216,7 +216,7 @@ public class HoldingCreationByDatetReport
 
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk,
-					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)), name);
+					ReportUtil.LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)), name);
 
 			ReportUtil.insertChunkedTextCellWithStrategy(
 					table, ReportUtil::getNormalChunk, ReportUtil.CENTER_MIDDLE, data[2]);
@@ -234,7 +234,7 @@ public class HoldingCreationByDatetReport
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
 				table, ReportUtil::getHeaderChunk,
-				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.apply(2)),
+				ReportUtil.BORDER_BACKGROUND_LEFT_MIDDLE.with(ReportUtil.COLSPAN.of(2)),
 				getText("administration.reports.field.user_name"));
 
 		ReportUtil.insertChunkedTextCellWithStrategy(
