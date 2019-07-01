@@ -4,12 +4,13 @@ RUN apt-get install -y maven postgresql
 ENV GITHUB_USER cleydyr
 ENV BRANCH_NAME 5.x
 ENV JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n"
+ENV REPO_NAME biblivre
 ENTRYPOINT echo "listen_addresses = '*'" >> /etc/postgresql/9.6/main/postgresql.conf \
 && 	echo "host    all             all              0.0.0.0/0                       md5" >> /etc/postgresql/9.6/main/pg_hba.conf \
 && 	/etc/init.d/postgresql start \
-&&	wget https://github.com/$GITHUB_USER/Biblivre-5/archive/$BRANCH_NAME.zip \
+&&	wget https://github.com/$GITHUB_USER/$REPO_NAME/archive/$BRANCH_NAME.zip \
 &&	unzip $BRANCH_NAME.zip -d /tmp && rm $BRANCH_NAME.zip \
-&&	cd /tmp/Biblivre-5-$BRANCH_NAME/lib/ \
+&&	cd /tmp/$REPO_NAME-$BRANCH_NAME/lib/ \
 &&	sh maven_deps.sh \
 &&	cd .. \
 &&	mvn sass:update-stylesheets package -Ddebug=true \
