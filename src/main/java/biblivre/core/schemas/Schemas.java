@@ -313,6 +313,8 @@ public class Schemas extends StaticBO {
 
 			bw.write("ANALYZE;\n");
 
+			bw.close();
+
 			p.waitFor();
 
 			Schemas.reset();
