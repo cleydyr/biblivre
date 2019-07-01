@@ -147,7 +147,7 @@ public class SchemasDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			String sql = "SELECT * FROM schemas WHERE name = ?;";
+			String sql = "SELECT * FROM schemas WHERE schema = ?;";
 
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, schema);
