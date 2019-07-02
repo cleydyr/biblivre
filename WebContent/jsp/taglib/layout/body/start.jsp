@@ -48,7 +48,7 @@
 					</a>
 				</div>
 				<h1><a href="?"><%= Configurations.getString(schema, Constants.CONFIG_TITLE) %></a></h1>
-				<h2><%= Configurations.getHtml(schema, Constants.CONFIG_TITLE) %></h2>
+				<h2><%= Configurations.getHtml(schema, Constants.CONFIG_SUBTITLE) %></h2>
 			</div>
 			<c:if test="${languages.size() > 1}">
 				<div id="language_selection">
