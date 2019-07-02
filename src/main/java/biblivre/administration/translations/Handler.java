@@ -38,6 +38,7 @@ import biblivre.core.translations.LanguageDTO;
 import biblivre.core.translations.Languages;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
+import biblivre.core.utils.Constants;
 
 public class Handler extends AbstractHandler {
 
@@ -93,7 +94,8 @@ public class Handler extends AbstractHandler {
 		String key = null;
 		String value = null;
 
-		try (Scanner sc = new Scanner(request.getFile("file").getInputStream(), "UTF-8")) {
+		try (Scanner sc = new Scanner(
+				request.getFile("file").getInputStream(), Constants.DEFAULT_CHARSET.name())) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine().trim();
 

@@ -52,6 +52,7 @@ import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
+import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
@@ -899,7 +900,7 @@ public class HoldingDAO extends AbstractDAO {
 		HoldingDTO dto = new HoldingDTO();
 
 		dto.setId(rs.getInt("id"));
-		dto.setIso2709(new String(rs.getBytes("iso2709"), "UTF-8"));
+		dto.setIso2709(new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
 		dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
 		
 		if (this.hasColumn(rs, "biblio")) {
@@ -907,7 +908,7 @@ public class HoldingDAO extends AbstractDAO {
 			BiblioRecordDTO bdto = new BiblioRecordDTO();
 
 			bdto.setId(rs.getInt("record_id"));
-			bdto.setIso2709(new String(rs.getBytes("biblio"), "UTF-8"));
+			bdto.setIso2709(new String(rs.getBytes("biblio"), Constants.DEFAULT_CHARSET));
 
 			bbo.populateDetails(bdto, RecordBO.MARC_INFO);
 			

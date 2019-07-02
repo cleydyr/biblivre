@@ -24,6 +24,8 @@ import java.io.File;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
+import biblivre.core.utils.Constants;
+
 public class JavascriptCache {
 	
 	private File cacheFile;
@@ -38,7 +40,9 @@ public class JavascriptCache {
 			this.cacheFile = File.createTempFile(this.parent.getCacheFileNamePrefix() + ".", this.parent.getCacheFileNameSuffix());
 			this.cacheFile.deleteOnExit();
 
-			BufferedWriter out = new BufferedWriter(new FileWriterWithEncoding(this.cacheFile, "UTF-8"));
+			BufferedWriter out = new BufferedWriter(
+					new FileWriterWithEncoding(this.cacheFile, Constants.DEFAULT_CHARSET));
+
 			out.write(this.parent.toJavascriptString());
 			out.close();
 		} catch (Exception e) {

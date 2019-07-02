@@ -298,7 +298,7 @@ public class FileIOUtils {
 				String acceptEncoding = request.getHeader("Accept-Encoding");
 				acceptsGzip = acceptEncoding != null && FileIOUtils.accepts(acceptEncoding, "gzip");
 				contentType += ";charset=UTF-8";
-				response.setCharacterEncoding("UTF-8");
+				response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 			} else if (!contentType.startsWith("image")) {
 				// Else, expect for images, determine content disposition. If content type is supported by
 				// the browser, then set to inline, else attachment which will pop a 'save as' dialogue.

@@ -41,6 +41,7 @@ import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
+import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcFileReader;
 import biblivre.marc.MarcUtils;
@@ -74,7 +75,7 @@ public class ImportBO extends AbstractBO {
 				break;
 
 			case UTF8:
-				encoding = "UTF-8";
+				encoding = Constants.DEFAULT_CHARSET.name();
 				break;
 
 			case MARC8:
@@ -83,7 +84,7 @@ public class ImportBO extends AbstractBO {
 		}
 
 		if (encoding == null) {
-			encoding = "UTF-8";
+			encoding = Constants.DEFAULT_CHARSET.name();
 		}
 		
 		String streamEncoding = (enc == ImportEncoding.AUTO_DETECT)  ? "BESTGUESS" : encoding;

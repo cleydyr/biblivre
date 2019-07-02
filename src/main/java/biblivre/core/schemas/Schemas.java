@@ -268,9 +268,9 @@ public class Schemas extends StaticBO {
 
 			Process p = pb.start();
 
-			InputStreamReader isr = new InputStreamReader(p.getInputStream(), "UTF-8");
+			InputStreamReader isr = new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET);
 
-			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
+			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
 			bw = new BufferedWriter(osw);
 
 			Thread t = new Thread(new Runnable() {
@@ -346,7 +346,7 @@ public class Schemas extends StaticBO {
 
 		try (BufferedReader sqlBr = new BufferedReader(
 				new InputStreamReader(
-						new FileInputStream(restore), "UTF-8"))) {
+						new FileInputStream(restore), Constants.DEFAULT_CHARSET))) {
 
 			char[] buf = new char[1024 * 8];
 			int len;

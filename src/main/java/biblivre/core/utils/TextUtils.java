@@ -43,7 +43,7 @@ public class TextUtils {
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA");
-			md.update(password.getBytes("UTF-8"));
+			md.update(password.getBytes(Constants.DEFAULT_CHARSET));
 			byte[] pass = new Base64().encode(md.digest());
 			
 			return new String(pass);

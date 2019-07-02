@@ -147,7 +147,7 @@ public abstract class RecordBO extends AbstractBO {
 		try {
 			File file = File.createTempFile("biblivre", ".mrc");
 			out = new FileOutputStream(file);
-			OutputStreamWriter marcWriter = new OutputStreamWriter(out, "UTF-8");
+			OutputStreamWriter marcWriter = new OutputStreamWriter(out, Constants.DEFAULT_CHARSET);
 			for (RecordDTO dto : records.values()) {
 				marcWriter.write(dto.getIso2709());
 				marcWriter.write(Constants.LINE_BREAK);
