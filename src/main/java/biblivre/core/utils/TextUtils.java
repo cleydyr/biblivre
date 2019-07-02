@@ -95,7 +95,8 @@ public class TextUtils {
 			throw new NullPointerException("Input string cannot be null");
 		}
 
-		return new String(Base64.getDecoder().decode(input),
+		return new String(
+				Base64.getDecoder().decode(StringUtils.reverse(input).getBytes()),
 				Constants.DEFAULT_CHARSET);
 	}
 	
