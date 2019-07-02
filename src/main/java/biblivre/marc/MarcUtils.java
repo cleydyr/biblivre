@@ -31,8 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +50,8 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
 
+import biblivre.core.utils.Constants;
+
 public class MarcUtils {
 
 	private static Logger logger = Logger.getLogger(MarcUtils.class);
@@ -60,12 +62,12 @@ public class MarcUtils {
 	public static String recordToIso2709(Record record) {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-		MarcWriter writer = new MarcStreamWriter(os, "UTF-8");
+		MarcWriter writer = new MarcStreamWriter(os, Constants.DEFAULT_CHARSET.name());
 		writer.write(record);
 		writer.close();
 
 		try {
-			return os.toString("UTF-8");
+			return os.toString(Constants.DEFAULT_CHARSET.name());
 		} catch (UnsupportedEncodingException uee) {
 			MarcUtils.logger.error(uee.getMessage(), uee);
 			return os.toString();
@@ -73,14 +75,7 @@ public class MarcUtils {
 	}
 
 	public static Record iso2709ToRecord(String iso2709) {
-		Record record = null;
-		
-		try {
-			record = MarcUtils.iso2709ToRecord(iso2709.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException uee) {
-		}
-		
-		return record;
+		return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));
 	}
 	
 	public static Record iso2709ToRecord(byte[] iso2709) {
@@ -118,13 +113,10 @@ public class MarcUtils {
 		String unescaped = StringEscapeUtils.unescapeHtml4(marc);
 		Scanner scanner = null;
 
-		try {
-			ByteArrayInputStream is = new ByteArrayInputStream(unescaped.getBytes("UTF-8"));
-			scanner = new Scanner(is, "UTF-8");
-		} catch (UnsupportedEncodingException uee) {
-			MarcUtils.logger.error(uee.getMessage(), uee);
-			scanner = new Scanner(unescaped);
-		}
+		ByteArrayInputStream is = new ByteArrayInputStream(
+				unescaped.getBytes(Constants.DEFAULT_CHARSET));
+
+		scanner = new Scanner(is, Constants.DEFAULT_CHARSET.name());
 
 		List<String> text = new ArrayList<String>();
 		while (scanner.hasNextLine()) {

@@ -43,6 +43,7 @@ import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.Constants;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 
@@ -703,7 +704,7 @@ public abstract class RecordDAO extends AbstractDAO {
 		RecordDTO dto = this.createRecord();
 
 		dto.setId(rs.getInt("id"));
-		dto.setIso2709(new String(rs.getBytes("iso2709"), "UTF-8"));
+		dto.setIso2709(new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
 
 		dto.setCreated(rs.getTimestamp("created"));
 		dto.setCreatedBy(rs.getInt("created_by"));
@@ -720,7 +721,7 @@ public abstract class RecordDAO extends AbstractDAO {
 		
 		RecordDTO rdto = this.createRecord();
 
-		rdto.setIso2709(new String(rs.getBytes("iso2709"), "UTF-8"));
+		rdto.setIso2709(new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
 		rdto.setRecord(MarcUtils.iso2709ToRecord(rdto.getIso2709()));
 		rdto.setJson(MarcUtils.recordToJson(rdto.getRecord()));
 

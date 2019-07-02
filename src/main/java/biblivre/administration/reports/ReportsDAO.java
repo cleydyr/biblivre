@@ -55,6 +55,7 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -515,7 +516,8 @@ public class ReportsDAO extends AbstractDAO {
 				String[] lending = new String[4];
 				lending[0] = String.valueOf(rs.getInt("userid")); //matricula
 				lending[1] = rs.getString("username"); // nome do usuario
-				Record record = MarcUtils.iso2709ToRecord(new String(rs.getBytes("iso2709"), "UTF-8"));
+				Record record = MarcUtils.iso2709ToRecord(
+						new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
 				MarcDataReader dataReader = new MarcDataReader(record);
 				lending[2] = dataReader.getTitle(false); // titulo
 				lending[3] = dd_MM_yyyy.format(rs.getDate("expected_return_date"));
@@ -688,7 +690,7 @@ public class ReportsDAO extends AbstractDAO {
 			if (rs != null) {
 				while (rs.next()) {
 					Integer id = rs.getInt("id");
-					String iso2709 = new String(rs.getBytes("iso2709"), "UTF-8");
+					String iso2709 = new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET);
 					Record record = MarcUtils.iso2709ToRecord(iso2709);
 					String name = new MarcDataReader(record).getAuthor(false);
 					if (results.containsKey(name)) {
@@ -730,7 +732,7 @@ public class ReportsDAO extends AbstractDAO {
 			ResultSet rs = st.executeQuery();
 			List<String[]> data = new ArrayList<String[]>();
 			while (rs.next()) {
-				String iso2709 = new String(rs.getBytes("iso2709"), "UTF-8");
+				String iso2709 = new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET);
 				Record record = MarcUtils.iso2709ToRecord(iso2709);
 				MarcDataReader dataReader = new MarcDataReader(record);
 				String[] lending = new String[5];
@@ -773,7 +775,7 @@ public class ReportsDAO extends AbstractDAO {
 				String[] reservation = new String[5];
 				reservation[0] = rs.getString("name");
 				reservation[1] = String.valueOf(rs.getInt("id"));
-				String iso2709 = new String(rs.getBytes("iso2709"), "UTF-8");
+				String iso2709 = new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET);
 				Record record = MarcUtils.iso2709ToRecord(iso2709);
 				MarcDataReader dataReader = new MarcDataReader(record);
 				reservation[2] = dataReader.getTitle(false);

@@ -33,6 +33,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.Constants;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 
@@ -115,7 +116,7 @@ public class AuthorityRecordDAO extends RecordDAO {
 		AuthorityRecordDTO dto = (AuthorityRecordDTO) this.createRecord();
 
 		dto.setId(rs.getInt("id"));
-		dto.setIso2709(new String(rs.getBytes("iso2709"), "UTF-8"));
+		dto.setIso2709(new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
 
 		dto.setCreated(rs.getTimestamp("created"));
 		dto.setCreatedBy(rs.getInt("created_by"));

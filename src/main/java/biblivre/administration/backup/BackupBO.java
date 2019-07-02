@@ -163,7 +163,7 @@ public class BackupBO extends AbstractBO {
 
 		// Writing metadata
 		File meta = new File(tmpDir, "backup.meta");
-		Writer writer = new FileWriterWithEncoding(meta, "UTF-8");
+		Writer writer = new FileWriterWithEncoding(meta, Constants.DEFAULT_CHARSET);
 		writer.write(new RestoreDTO(dto).toJSONString());
 		writer.flush();
 		writer.close();

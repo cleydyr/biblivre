@@ -38,6 +38,7 @@ import org.jzkit.search.util.ResultSet.ReadAheadEnumeration;
 import org.marc4j.marc.Record;
 import org.springframework.context.ApplicationContext;
 
+import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcUtils;
@@ -49,7 +50,7 @@ public class Z3950Client {
 	private ApplicationContext z3950Context;
 	private Z3950ServiceFactory factory;
 	private static final String QUERY_PREFIX = "@attrset bib-1 @attr 1=";
-	private static final String CHARSET = "UTF-8";
+	private static final String CHARSET = Constants.DEFAULT_CHARSET.name();
 
 	public void setZ3950Context(ApplicationContext z3950Context) {
 		this.z3950Context = z3950Context;

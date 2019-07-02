@@ -289,10 +289,14 @@ public class RestoreBO extends AbstractBO {
 
 			Process p = pb.start();
 
-			InputStreamReader isr = new InputStreamReader(p.getInputStream(), "UTF-8");
+			InputStreamReader isr = new InputStreamReader(
+					p.getInputStream(), Constants.DEFAULT_CHARSET);
+
 			final BufferedReader br = new BufferedReader(isr);
 
-			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
+			OutputStreamWriter osw = new OutputStreamWriter(
+					p.getOutputStream(), Constants.DEFAULT_CHARSET);
+
 			bw = new BufferedWriter(osw);
 
 			Thread t = new Thread(new Runnable() {
@@ -456,8 +460,11 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		try (
-				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), "UTF-8"));
-				final BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+				BufferedWriter bw = new BufferedWriter(
+						new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET));
+
+				final BufferedReader br = new BufferedReader(
+						new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET));
 			) {
 
 			Thread t = new Thread(new Runnable() {
@@ -536,9 +543,12 @@ public class RestoreBO extends AbstractBO {
 		try {
 			Process p = pb.start();
 
-			InputStreamReader isr = new InputStreamReader(p.getInputStream(), "UTF-8");
+			InputStreamReader isr = new InputStreamReader(
+					p.getInputStream(), Constants.DEFAULT_CHARSET);
 
-			OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream(), "UTF-8");
+			OutputStreamWriter osw = new OutputStreamWriter(
+					p.getOutputStream(), Constants.DEFAULT_CHARSET);
+
 			bw = new BufferedWriter(osw);
 
 			Thread t = new Thread(new Runnable() {
@@ -557,7 +567,9 @@ public class RestoreBO extends AbstractBO {
 
 			t.start();
 
-			sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(sql), "UTF-8"));
+			sqlBr = new BufferedReader(
+					new InputStreamReader(new FileInputStream(sql), Constants.DEFAULT_CHARSET));
+
 			String inputLine;
 			boolean validBackup = false;
 
@@ -662,7 +674,7 @@ public class RestoreBO extends AbstractBO {
 			
 			StringWriter writer = new StringWriter();
 			content = zip.getInputStream(metadata);
-			IOUtils.copy(content, writer, "UTF-8");
+			IOUtils.copy(content, writer, Constants.DEFAULT_CHARSET);
  
 			JSONObject json = new JSONObject(writer.toString());
 			dto = new RestoreDTO(json);
@@ -694,7 +706,7 @@ public class RestoreBO extends AbstractBO {
 
 		this.logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-		BufferedReader sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(restore), "UTF-8"));
+		BufferedReader sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(restore), Constants.DEFAULT_CHARSET));
 
 		char[] buf = new char[1024 * 8];
 		int len;
@@ -753,7 +765,8 @@ public class RestoreBO extends AbstractBO {
 
 		this.logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-		Scanner sc = new Scanner(restore, "UTF-8");
+		Scanner sc = new Scanner(restore, Constants.DEFAULT_CHARSET.name());
+
 		String inputLine;
 
 		// Since PostgreSQL uses global OIDs for LargeObjects, we can't simply
