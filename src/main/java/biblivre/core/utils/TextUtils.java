@@ -25,13 +25,11 @@ import java.text.Normalizer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -46,7 +44,7 @@ public class TextUtils {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA");
 			md.update(password.getBytes("UTF-8"));
-			byte[] pass = Base64.getEncoder().encode(md.digest());
+			byte[] pass = new Base64().encode(md.digest());
 			
 			return new String(pass);
 		} catch(Exception e) {
@@ -82,22 +80,18 @@ public class TextUtils {
 	
 	public static String biblivreEncode(String input) {
 		if (input == null) {
-			throw new NullPointerException("Input string cannot be null");
+			return "";
 		}
 		
-		return StringUtils.reverse(
-				new String(Base64.getEncoder().encode(input.getBytes()),
-				Constants.DEFAULT_CHARSET));
+		return StringUtils.reverse(Base64.encodeBase64String(input.getBytes()));
 	}
 
 	public static String biblivreDecode(String input) {
 		if (input == null) {
-			throw new NullPointerException("Input string cannot be null");
+			return "";
 		}
 
-		return new String(
-				Base64.getDecoder().decode(StringUtils.reverse(input).getBytes()),
-				Constants.DEFAULT_CHARSET);
+		return new String(Base64.decodeBase64(StringUtils.reverse(input)));
 	}
 	
 	public static String biblivreEncrypt(String input) {
