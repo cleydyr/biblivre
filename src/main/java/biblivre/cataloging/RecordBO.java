@@ -22,6 +22,7 @@ package biblivre.cataloging;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
@@ -318,7 +318,7 @@ public abstract class RecordBO extends AbstractBO {
 				String encodedId = matcher.group(1);
 				String fileId = "";
 				String fileName = "";
-				String decodedId = TextUtils.biblivreDecode(encodedId);
+				String decodedId = new String(Base64.getDecoder().decode(encodedId));
 				String[] splitId = decodedId.split(":");
 				if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
 					fileId = splitId[0];

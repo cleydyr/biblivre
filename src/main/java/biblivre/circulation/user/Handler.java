@@ -20,9 +20,9 @@
 package biblivre.circulation.user;
 
 import java.io.ByteArrayInputStream;
+import java.util.Base64;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
@@ -41,7 +41,6 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 
 public class Handler extends AbstractHandler {
@@ -145,7 +144,7 @@ public class Handler extends AbstractHandler {
 	
 				MemoryFile file = new MemoryFile();
 	
-				byte[] arr = Base64.decodeBase64(photoData);
+				byte[] arr = Base64.getDecoder().decode(photoData);
 				file.setContentType("image/png");
 				file.setName(user.getName() + ".png");
 				file.setInputStream(new ByteArrayInputStream(arr));
@@ -158,7 +157,7 @@ public class Handler extends AbstractHandler {
 					user.setPhotoId(photoId);
 	
 					if (StringUtils.isNotBlank(oldPhotoId)) {
-						String decodedId = TextUtils.biblivreDecode(oldPhotoId);
+						String decodedId = new String(Base64.getDecoder().decode(oldPhotoId));
 						String[] splitId = decodedId.split(":");
 	
 						if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {

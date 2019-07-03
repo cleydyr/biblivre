@@ -26,8 +26,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -82,22 +80,18 @@ public class TextUtils {
 	
 	public static String biblivreEncode(String input) {
 		if (input == null) {
-			throw new NullPointerException("Input string cannot be null");
+			return "";
 		}
 		
-		return StringUtils.reverse(
-				new String(Base64.getEncoder().encode(input.getBytes()),
-				Constants.DEFAULT_CHARSET));
+		return StringUtils.reverse(Base64.getEncoder().encodeToString(input.getBytes()));
 	}
 
 	public static String biblivreDecode(String input) {
 		if (input == null) {
-			throw new NullPointerException("Input string cannot be null");
+			return "";
 		}
 
-		return new String(
-				Base64.getDecoder().decode(StringUtils.reverse(input).getBytes()),
-				Constants.DEFAULT_CHARSET);
+		return new String(Base64.getDecoder().decode(StringUtils.reverse(input)));
 	}
 	
 	public static String biblivreEncrypt(String input) {
