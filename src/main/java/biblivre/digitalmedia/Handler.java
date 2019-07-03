@@ -31,7 +31,6 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
-import biblivre.core.utils.TextUtils;
 
 public class Handler extends AbstractHandler {
 
@@ -44,7 +43,7 @@ public class Handler extends AbstractHandler {
 		String fileName = null;
 
 		try {
-			String decodedId = TextUtils.biblivreDecode(id);
+			String decodedId = new String(new Base64().decode(id));
 
 			String[] splitId = decodedId.split(":");
 			if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
@@ -99,7 +98,7 @@ public class Handler extends AbstractHandler {
 
 		if (serial != null && serial != 0) {
 			String id = serial + ":" + file.getName();
-			String encodedId = TextUtils.biblivreEncode(id);
+			String encodedId = new String(new Base64().encode(id.getBytes()));
 
 			return encodedId.replaceAll("\\\\", "_");
 		}

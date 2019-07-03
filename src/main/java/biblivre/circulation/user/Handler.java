@@ -41,7 +41,6 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 
 public class Handler extends AbstractHandler {
@@ -158,7 +157,7 @@ public class Handler extends AbstractHandler {
 					user.setPhotoId(photoId);
 	
 					if (StringUtils.isNotBlank(oldPhotoId)) {
-						String decodedId = TextUtils.biblivreDecode(oldPhotoId);
+						String decodedId = new String(new Base64().decode(oldPhotoId));
 						String[] splitId = decodedId.split(":");
 	
 						if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
