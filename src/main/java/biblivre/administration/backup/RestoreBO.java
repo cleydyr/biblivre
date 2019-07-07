@@ -276,10 +276,6 @@ public class RestoreBO extends AbstractBO {
 
 		ProcessBuilder pb = new ProcessBuilder(commands);
 
-		pb.environment().put("PGDATABASE", "biblivre4");
-		pb.environment().put("PGUSER", "biblivre");
-		pb.environment().put("PGPASSWORD", "abracadabra");
-
 		pb.redirectErrorStream(true);
 
 		BufferedWriter bw = null;
@@ -441,10 +437,6 @@ public class RestoreBO extends AbstractBO {
 
 		ProcessBuilder pb = new ProcessBuilder(commands);
 
-		pb.environment().put("PGUSER", "biblivre");
-		pb.environment().put("PGPASSWORD", "abracadabra");
-		pb.environment().put("PGDATABASE", "biblivre4");
-
 		pb.redirectErrorStream(true);
 
 		Process p;
@@ -521,10 +513,6 @@ public class RestoreBO extends AbstractBO {
 		};
 
 		ProcessBuilder pb = new ProcessBuilder(commands);
-
-		pb.environment().put("PGUSER", "biblivre");
-		pb.environment().put("PGPASSWORD", "abracadabra");
-		pb.environment().put("PGDATABASE", "biblivre4");
 
 		pb.redirectErrorStream(true);
 

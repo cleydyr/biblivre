@@ -290,10 +290,6 @@ public class BackupBO extends AbstractBO {
 	}
 
 	private boolean dumpDatabase(ProcessBuilder pb) {
-		pb.environment().put("PGDATABASE", "biblivre4");
-		pb.environment().put("PGUSER", "biblivre");
-		pb.environment().put("PGPASSWORD", "abracadabra");
-
 		pb.redirectErrorStream(true);
 
 		BufferedReader br = null;
