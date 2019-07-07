@@ -244,9 +244,9 @@ public class Schemas extends StaticBO {
 		String[] commands = new String[] { psql.getAbsolutePath(), // 0
 				"--single-transaction", // 1
 				"--host", // 2
-				"localhost", // 3
+				DatabaseUtils.getDatabaseHostName(), // 3
 				"--port", // 4
-				"5432", // 5
+				DatabaseUtils.getDatabasePort(), // 5
 				"-v", // 6
 				"ON_ERROR_STOP=1", // 7
 				"--file", // 8

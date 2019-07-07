@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -87,7 +86,15 @@ public class DatabaseUtils {
 
 		return null;
 	}
-	
+
+	public static String getDatabaseHostName() {
+		return System.getenv(Constants.DATABASE_HOST_NAME);
+	}
+
+	public static String getDatabasePort() {
+		return System.getenv(Constants.DATABASE_PORT);
+	}
+
 	private static File getFromFilesystem(String fileName) {
 		String os = System.getProperty("os.name").toUpperCase();
 		
@@ -159,7 +166,7 @@ public class DatabaseUtils {
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		return pb;
 	}
-	
+
 	private static File getWindows(String filename) {
 		String[] commands;
 		

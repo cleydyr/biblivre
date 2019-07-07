@@ -93,4 +93,7 @@ public class Constants {
 
 	public static final Unit<Length> USER_UNIT = MetricPrefix.CENTI(Units.METRE).multiply(2.54).divide(72);
 	public static final Function<Quantity<Length>, Float> FROM_CM = q -> q.to(USER_UNIT).getValue().floatValue();
+
+	public static final String DATABASE_HOST_NAME = "DATABASE_HOST_NAME";
+	public static final String DATABASE_PORT = "DATABASE_PORT";
 }
