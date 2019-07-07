@@ -333,8 +333,8 @@ public class BackupBO extends AbstractBO {
 
 		File pgdump = DatabaseUtils.getPgDump(this.getSchema());;
 		InetSocketAddress defaultAddress = new InetSocketAddress(
-				InetAddress.getLoopbackAddress(),
-				Constants.DEFAULT_POSTGRESQL_PORT);
+				DatabaseUtils.getDatabaseHostName(),
+				Integer.parseInt(DatabaseUtils.getDatabasePort()));
 
 		Format defaultFormat = Format.PLAIN;
 
