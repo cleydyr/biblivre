@@ -148,9 +148,10 @@
 			<version>20090211</version> </dependency -->
 
 		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.1-901.jdbc4</version>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>42.2.6</version>
+		    <scope>provided</scope>
 		</dependency>
 
 		<!-- Local libraries, must use mvn:install first -->
