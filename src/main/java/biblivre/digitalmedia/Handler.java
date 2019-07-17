@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.digitalmedia;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +34,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
+import biblivre.core.utils.Constants;
 
 public class Handler extends AbstractHandler {
 
@@ -43,25 +46,12 @@ public class Handler extends AbstractHandler {
 		String fileId = null;
 		String fileName = null;
 
-		try {
-			String decodedId = new String(Base64.getDecoder().decode(id));
+		DatabaseFile file = _tryFetchingDBFileWithWindowsEncoding(schema, id, fileId, fileName);
 
-			String[] splitId = decodedId.split(":");
-			if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-				fileId = splitId[0];
-				fileName = splitId[1];
-			}
-		} catch (Exception e) {
+		if (file == null) {
+			file = _tryFetchingDBFileWithEncoding(
+					schema, id, fileId, fileName, Constants.DEFAULT_CHARSET);
 		}
-
-		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
-
-		if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
-			this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-
-		DatabaseFile file = bo.load(Integer.valueOf(fileId), fileName);
 
 		if (file == null) {
 			this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
@@ -107,4 +97,33 @@ public class Handler extends AbstractHandler {
 		return "";
 	}
 
+	private DatabaseFile _tryFetchingDBFileWithEncoding(
+			String schema, String id, String fileId, String fileName, Charset charset) {
+		try {
+			String decodedId = new String(Base64.getDecoder().decode(id), charset);
+
+			String[] splitId = decodedId.split(":");
+			if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
+				fileId = splitId[0];
+				fileName = splitId[1];
+			}
+		} catch (Exception e) {
+		}
+
+		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
+
+		if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
+			this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
+			return null;
+		}
+
+		DatabaseFile file = bo.load(Integer.valueOf(fileId), fileName);
+		return file;
+	}
+
+	private DatabaseFile _tryFetchingDBFileWithWindowsEncoding(
+			String schema, String id, String fileId, String fileName) {
+		return _tryFetchingDBFileWithEncoding(
+				schema, id, fileId, fileName, StandardCharsets.ISO_8859_1);
+	}
 }
