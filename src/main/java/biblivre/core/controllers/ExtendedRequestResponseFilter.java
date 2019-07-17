@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.utils.Constants;
 
 /**
  * Servlet Filter implementation class StatusExposingServletResponse
@@ -38,7 +39,12 @@ import biblivre.core.ExtendedResponse;
 public class ExtendedRequestResponseFilter implements Filter {
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+
+		request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+		response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+
 		ExtendedRequest xRequest = null;
 		ExtendedResponse xResponse = null;
 		
