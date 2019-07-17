@@ -62,9 +62,6 @@ public abstract class Controller {
 		String module = null;
 		String action = null;
 		
-		this.xRequest.setCharacterEncoding("UTF-8");
-		this.xResponse.setCharacterEncoding("UTF-8");
-		
 		try {
 			schema = this.xRequest.getSchema();
 			module = this.xRequest.getString("module", (String) this.xRequest.getAttribute("module"));
