@@ -20,7 +20,6 @@
 package biblivre.digitalmedia;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import javax.servlet.http.HttpServletResponse;
@@ -124,6 +123,6 @@ public class Handler extends AbstractHandler {
 	private DatabaseFile _tryFetchingDBFileWithWindowsEncoding(
 			String schema, String id, String fileId, String fileName) {
 		return _tryFetchingDBFileWithEncoding(
-				schema, id, fileId, fileName, StandardCharsets.ISO_8859_1);
+				schema, id, fileId, fileName, Constants.WINDOWS_CHARSET);
 	}
 }
