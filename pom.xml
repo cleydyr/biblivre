@@ -8,7 +8,7 @@
 	<packaging>war</packaging>
 
 	<name>Biblivre4</name>
-	<version>5.1.13-cloud</version>
+	<version>5.1.14-cloud</version>
 	<url>http://www.biblivre.org.br</url>
 
 	<developers>
