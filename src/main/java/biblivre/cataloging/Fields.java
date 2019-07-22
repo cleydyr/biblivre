@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordType;
@@ -32,8 +33,6 @@ import biblivre.core.StaticBO;
 import biblivre.core.utils.Pair;
 
 public class Fields extends StaticBO {
-
-	private static Logger logger = Logger.getLogger(Fields.class);
 
 	private static HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>> briefTabFieldFormats;
 	private static HashMap<Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>> formTabFields;
@@ -182,9 +181,7 @@ public class Fields extends StaticBO {
 			return list;
 		}
 
-		if (Fields.logger.isDebugEnabled()) {
-			Fields.logger.debug("Loading brief formats from " + schema + "." + recordType);
-		}
+		_log.debug("Loading brief formats from " + schema + "." + recordType);
 
 		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
@@ -203,9 +200,7 @@ public class Fields extends StaticBO {
 			return list;
 		}
 
-		if (Fields.logger.isDebugEnabled()) {
-			Fields.logger.debug("Loading form fields from " + schema + "." + recordType);
-		}
+		_log.debug("Loading form fields from " + schema + "." + recordType);
 
 		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
@@ -231,9 +226,7 @@ public class Fields extends StaticBO {
 			return list;
 		}
 
-		if (Fields.logger.isDebugEnabled()) {
-			Fields.logger.debug("Loading autocomplete subfields from " + schema + "." + recordType);
-		}
+		_log.debug("Loading autocomplete subfields from " + schema + "." + recordType);
 		
 		JavascriptCacheableList<FormTabDatafieldDTO> fields = Fields.getFormFields(schema, recordType);
 		list = new LinkedList<FormTabSubfieldDTO>();
@@ -269,4 +262,6 @@ public class Fields extends StaticBO {
 
 		return list;
 	}
+
+	private static final Logger _log = LogManager.getLogger(Fields.class);
 }

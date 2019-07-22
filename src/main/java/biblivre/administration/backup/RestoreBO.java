@@ -42,6 +42,8 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import biblivre.administration.setup.DataMigrationDAO;
@@ -132,23 +134,13 @@ public class RestoreBO extends AbstractBO {
 			}
 		}
 
-		
-		// Counting restore steps
-		long steps = 0;
-
-		for (String schema : dto.getRestoreSchemas().keySet()) {
-			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".schema." + extension));
-			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".data." + extension));
-
-			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
-				steps += FileIOUtils.countLines(new File(tmpDir, schema + ".media." + extension));
-			}			
-		}
-
-		State.setSteps(steps);
-		State.writeLog("Restoring " + dto.getRestoreSchemas().size() + " schemas for a total of " + steps + " SQL lines");
-		
 		try {
+			long steps = _countSteps(dto, tmpDir, extension);
+
+			State.setSteps(steps);
+
+			State.writeLog("Restoring " + dto.getRestoreSchemas().size() + " schemas for a total of " + steps + " SQL lines");
+
 			return this.restoreBackup(dto, tmpDir);
 		} catch (ValidationException e) {
 			throw e;
@@ -158,8 +150,7 @@ public class RestoreBO extends AbstractBO {
 			FileUtils.deleteQuietly(tmpDir);			
 		}
 	}
-	
-	
+
 	public boolean restoreBiblivre3(File file) {
 		if (file == null || !file.exists()) {
 			throw new ValidationException("administration.maintenance.backup.error.corrupted_backup_file");
@@ -406,9 +397,9 @@ public class RestoreBO extends AbstractBO {
 
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(bw);
 		}
@@ -484,9 +475,9 @@ public class RestoreBO extends AbstractBO {
 			
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		}
 
 		return false;
@@ -597,9 +588,9 @@ public class RestoreBO extends AbstractBO {
 
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(bw);
 			IOUtils.closeQuietly(sqlBr);
@@ -667,16 +658,16 @@ public class RestoreBO extends AbstractBO {
 	
 	private void processRestore(File restore, BufferedWriter bw) throws IOException {
 		if (restore == null) {
-			this.logger.info("===== Skipping File 'null' =====");
+			_log.info("===== Skipping File 'null' =====");
 			return;
 		}
 
 		if (!restore.exists()) {
-			this.logger.info("===== Skipping File '" + restore.getName() + "' =====");
+			_log.info("===== Skipping File '" + restore.getName() + "' =====");
 			return;
 		}
 
-		this.logger.info("===== Restoring File '" + restore.getName() + "' =====");
+		_log.info("===== Restoring File '" + restore.getName() + "' =====");
 
 		BufferedReader sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(restore), "UTF-8"));
 
@@ -699,12 +690,12 @@ public class RestoreBO extends AbstractBO {
 	
 	private void processMediaRestoreFolder(File path, BufferedWriter bw) throws IOException {
 		if (path == null) {
-			this.logger.info("===== Skipping File 'null' =====");
+			_log.info("===== Skipping File 'null' =====");
 			return;
 		}
 
 		if (!path.exists() || !path.isDirectory()) {
-			this.logger.info("===== Skipping File '" + path.getName() + "' =====");
+			_log.info("===== Skipping File '" + path.getName() + "' =====");
 			return;
 		}
 
@@ -726,16 +717,16 @@ public class RestoreBO extends AbstractBO {
 
 	private void processMediaRestore(File restore, BufferedWriter bw, String schema) throws IOException {
 		if (restore == null) {
-			this.logger.info("===== Skipping File 'null' =====");
+			_log.info("===== Skipping File 'null' =====");
 			return;
 		}
 
 		if (!restore.exists()) {
-			this.logger.info("===== Skipping File '" + restore.getName() + "' =====");
+			_log.info("===== Skipping File '" + restore.getName() + "' =====");
 			return;
 		}
 
-		this.logger.info("===== Restoring File '" + restore.getName() + "' =====");
+		_log.info("===== Restoring File '" + restore.getName() + "' =====");
 
 		Scanner sc = new Scanner(restore, "UTF-8");
 		String inputLine;
@@ -760,7 +751,7 @@ public class RestoreBO extends AbstractBO {
 					String currentOid = loCreateMatcher.group(1);
 					Long newOid = this.dao.createOID();
 
-					this.logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
+					_log.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
 
 					oidMap.put(currentOid, this.dao.createOID());
 				}
@@ -781,7 +772,7 @@ public class RestoreBO extends AbstractBO {
 				// Ignore internal transactions (we are already using --single-transaction)
 			} else {
 				if (inputLine.startsWith("COPY")) {
-					this.logger.info(inputLine);
+					_log.info(inputLine);
 				}
 
 				bw.write(inputLine);
@@ -802,4 +793,21 @@ public class RestoreBO extends AbstractBO {
 		bw.flush();
 		sc.close();
 	}
+
+	private long _countSteps(RestoreDTO dto, File tmpDir, String extension) throws IOException {
+		long steps = 0;
+
+		for (String schema : dto.getRestoreSchemas().keySet()) {
+			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".schema." + extension));
+			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".data." + extension));
+
+			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
+				steps += FileIOUtils.countLines(new File(tmpDir, schema + ".media." + extension));
+			}
+		}
+
+		return steps;
+	}
+
+	private static final Logger _log = LogManager.getLogger(RestoreBO.class);
 }

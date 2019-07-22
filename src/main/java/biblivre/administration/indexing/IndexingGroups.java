@@ -24,7 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.StaticBO;
@@ -33,7 +34,6 @@ import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Pair;
 
 public class IndexingGroups extends StaticBO {
-	private static Logger logger = Logger.getLogger(IndexingGroups.class);
 
 	private static HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>> groups;
 
@@ -108,9 +108,7 @@ public class IndexingGroups extends StaticBO {
 			return list;
 		}
 
-		if (IndexingGroups.logger.isDebugEnabled()) {
-			IndexingGroups.logger.debug("Loading indexing groups from " + schema + "." + recordType);
-		}
+		_log.debug("Loading indexing groups from " + schema + "." + recordType);
 
 		IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance(schema);
 		
@@ -119,4 +117,6 @@ public class IndexingGroups extends StaticBO {
 
 		return list;
 	}
+
+	private static final Logger _log = LogManager.getLogger(IndexingGroups.class);
 }

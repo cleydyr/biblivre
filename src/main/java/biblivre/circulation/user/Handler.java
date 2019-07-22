@@ -137,39 +137,37 @@ public class Handler extends AbstractHandler {
 			}
 		}
 
-		try {
-			String photoData = request.getString("photo_data");
-			if (StringUtils.isNotBlank(photoData)) {
-				biblivre.digitalmedia.Handler mediaHandler = new biblivre.digitalmedia.Handler();
-	
-				MemoryFile file = new MemoryFile();
-	
-				byte[] arr = Base64.getDecoder().decode(photoData);
-				file.setContentType("image/png");
-				file.setName(user.getName() + ".png");
-				file.setInputStream(new ByteArrayInputStream(arr));
-				file.setSize(arr.length);
-				
-				String photoId = mediaHandler.uploadHelper(schema, file);
-				String oldPhotoId = user.getPhotoId();
-				
-				if (StringUtils.isNotBlank(photoId)) {
-					user.setPhotoId(photoId);
-	
-					if (StringUtils.isNotBlank(oldPhotoId)) {
-						String decodedId = new String(Base64.getDecoder().decode(oldPhotoId));
-						String[] splitId = decodedId.split(":");
-	
-						if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-							// Try to remove the file from Biblivre DB
-	
-							DigitalMediaBO dmbo = DigitalMediaBO.getInstance(schema);
-							dmbo.delete(Integer.valueOf(splitId[0]), splitId[1]);
-						}
+		String photoData = request.getString("photo_data");
+
+		if (StringUtils.isNotBlank(photoData)) {
+			biblivre.digitalmedia.Handler mediaHandler = new biblivre.digitalmedia.Handler();
+
+			MemoryFile file = new MemoryFile();
+
+			byte[] arr = Base64.getDecoder().decode(photoData);
+			file.setContentType("image/png");
+			file.setName(user.getName() + ".png");
+			file.setInputStream(new ByteArrayInputStream(arr));
+			file.setSize(arr.length);
+
+			String photoId = mediaHandler.uploadHelper(schema, file);
+			String oldPhotoId = user.getPhotoId();
+
+			if (StringUtils.isNotBlank(photoId)) {
+				user.setPhotoId(photoId);
+
+				if (StringUtils.isNotBlank(oldPhotoId)) {
+					String decodedId = new String(Base64.getDecoder().decode(oldPhotoId));
+					String[] splitId = decodedId.split(":");
+
+					if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
+						// Try to remove the file from Biblivre DB
+
+						DigitalMediaBO dmbo = DigitalMediaBO.getInstance(schema);
+						dmbo.delete(Integer.valueOf(splitId[0]), splitId[1]);
 					}
 				}
 			}
-		} catch (Exception e) {
 		}
 		
 		if (bo.save(user)) {

@@ -25,7 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import biblivre.core.IFCacheableJavascript;
@@ -33,7 +34,6 @@ import biblivre.core.JavascriptCache;
 import biblivre.core.utils.Constants;
 
 public class TranslationsMap extends HashMap<String, TranslationDTO> implements IFCacheableJavascript {
-	private Logger logger = Logger.getLogger(this.getClass());
 	private static final long serialVersionUID = 1L;
 
 	private String schema;
@@ -67,7 +67,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO> implements 
 			if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
 				value = Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()).getText(key);
 			} else {
-				this.logger.warn("Translation key not found: " + this.schema + "." + this.language + "." + key);
+				_log.warn("Translation key not found: " + this.schema + "." + this.language + "." + key);
 				value = "__" + key + "__";
 			}
 		}
@@ -158,4 +158,6 @@ public class TranslationsMap extends HashMap<String, TranslationDTO> implements 
 	public String toString() {
 		return new JSONObject(this.getAll()).toString();
 	}
+
+	private static final Logger _log = LogManager.getLogger(TranslationsMap.class);
 }

@@ -23,14 +23,13 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.StaticBO;
 import biblivre.core.utils.Constants;
 
 public class Languages extends StaticBO {
-	private static Logger logger = Logger.getLogger(Languages.class);
-
 	private static HashMap<String, Set<LanguageDTO>> languages;
 
 	private Languages() {
@@ -117,7 +116,7 @@ public class Languages extends StaticBO {
 			return set;
 		}
 		
-		Languages.logger.debug("Loading languages from " + schema);
+		_log.debug("Loading languages from " + schema);
 		LanguagesDAO dao = LanguagesDAO.getInstance(schema);
 		
 		set = dao.list();
@@ -125,4 +124,6 @@ public class Languages extends StaticBO {
 
 		return set;
 	}
+
+	private static final Logger _log = LogManager.getLogger(Languages.class);
 }

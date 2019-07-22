@@ -32,6 +32,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.marc4j.marc.Record;
 
 import biblivre.cataloging.authorities.AuthorityRecordBO;
@@ -156,7 +158,7 @@ public abstract class RecordBO extends AbstractBO {
 			marcWriter.close();
 			return new DiskFile(file, "x-download");
 		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(out);
 		}
@@ -312,24 +314,22 @@ public abstract class RecordBO extends AbstractBO {
 		}
 		
 		//Check if the file is in Biblivre's DB and try to delete it
-		try {
-			Matcher matcher = RecordBO.ID_PATTERN.matcher(uri);
-			if (matcher.find()) {
-				String encodedId = matcher.group(1);
-				String fileId = "";
-				String fileName = "";
-				String decodedId = new String(Base64.getDecoder().decode(encodedId));
-				String[] splitId = decodedId.split(":");
-				if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-					fileId = splitId[0];
-					fileName = splitId[1];
-				}
-				
-				// Try to remove the file from Biblivre DB
-				DigitalMediaBO dmbo = DigitalMediaBO.getInstance(this.getSchema());
-				dmbo.delete(Integer.valueOf(fileId), fileName);
+		Matcher matcher = RecordBO.ID_PATTERN.matcher(uri);
+
+		if (matcher.find()) {
+			String encodedId = matcher.group(1);
+			String fileId = "";
+			String fileName = "";
+			String decodedId = new String(Base64.getDecoder().decode(encodedId));
+			String[] splitId = decodedId.split(":");
+			if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
+				fileId = splitId[0];
+				fileName = splitId[1];
 			}
-		} catch (Exception e) {
+
+			// Try to remove the file from Biblivre DB
+			DigitalMediaBO dmbo = DigitalMediaBO.getInstance(this.getSchema());
+			dmbo.delete(Integer.valueOf(fileId), fileName);
 		}
 		
 		return dto;
@@ -341,4 +341,6 @@ public abstract class RecordBO extends AbstractBO {
 
 	public abstract void populateDetails(RecordDTO record, int mask);
 	public abstract boolean isDeleatable(HoldingDTO holding) throws ValidationException;
+
+	private static final Logger _log = LogManager.getLogger(RecordBO.class);
 }

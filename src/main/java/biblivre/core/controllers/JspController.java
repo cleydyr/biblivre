@@ -24,6 +24,8 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.Dialog;
 import biblivre.core.ExtendedRequest;
@@ -65,25 +67,19 @@ public class JspController extends Controller {
 	
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.error(error, e);
-		} else {
-			this.log.error(error);
-		}
+		_log.error(error, e);
 		
 		Message message = new Message(ActionResult.ERROR, error, e);
+
 		this.dispatch("/jsp/error.jsp", message);
 	}
 	
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.warn(warning, e);
-		} else {
-			this.log.warn(warning);
-		}
+		_log.warn(warning, e);
 		
 		Message message = new Message(ActionResult.WARNING, warning, e);
+
 		this.dispatch("/jsp/error.jsp", message);
 	}
 	
@@ -96,4 +92,6 @@ public class JspController extends Controller {
 		this.xRequest.getRequestDispatcher(jsp).forward(this.xRequest, this.xResponse);
 //		this.xRequest.dispatch(jsp, this.xResponse);
 	}
+
+	private static final Logger _log = LogManager.getLogger(JspController.class);
 }

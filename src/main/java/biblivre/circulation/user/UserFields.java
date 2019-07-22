@@ -23,14 +23,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.JavascriptCacheableList;
 import biblivre.core.StaticBO;
 
 public class UserFields extends StaticBO {
-
-	private static Logger logger = Logger.getLogger(UserFields.class);
 
 	private static HashMap<String, JavascriptCacheableList<UserFieldDTO>> fields;	 // FormTab
 
@@ -90,9 +89,7 @@ public class UserFields extends StaticBO {
 			return list;
 		}
 
-		if (UserFields.logger.isDebugEnabled()) {
-			UserFields.logger.debug("Loading user fields from " + schema + ".");
-		}
+		_log.debug("Loading user fields from {}.", schema);
 
 		UserFieldsDAO dao = UserFieldsDAO.getInstance(schema);
 
@@ -105,4 +102,6 @@ public class UserFields extends StaticBO {
 
 		return list;
 	}
+
+	private static final Logger _log = LogManager.getLogger(UserFields.class);
 }

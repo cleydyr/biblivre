@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.cataloging.RecordDTO;
@@ -166,39 +165,36 @@ public class BiblioRecordDTO extends RecordDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("material_type", this.getMaterialType());
-			json.putOpt("title", this.getTitle());
-			json.putOpt("author", this.getAuthor());
-			json.putOpt("publication_year", this.getPublicationYear());
+		json.putOpt("material_type", this.getMaterialType());
+		json.putOpt("title", this.getTitle());
+		json.putOpt("author", this.getAuthor());
+		json.putOpt("publication_year", this.getPublicationYear());
 
-			json.putOpt("isbn", this.getIsbn());
-			json.putOpt("issn", this.getIssn());
-			json.putOpt("isrc", this.getIsrc());
-			json.putOpt("shelf_location", this.getShelfLocation());
-			json.putOpt("subject", this.getSubject());
-			
-			json.putOpt("holdings_count", this.getHoldingsCount());
-			json.putOpt("holdings_available", this.getHoldingsAvailable());
-			json.putOpt("holdings_lent", this.getHoldingsLent());
-			json.putOpt("holdings_reserved", this.getHoldingsReserved());
-			
-			if (this.getHoldings() != null) {
-				for (HoldingDTO holding : this.getHoldings()) {
-					json.append("holdings", holding.toJSONObject());
-				}
+		json.putOpt("isbn", this.getIsbn());
+		json.putOpt("issn", this.getIssn());
+		json.putOpt("isrc", this.getIsrc());
+		json.putOpt("shelf_location", this.getShelfLocation());
+		json.putOpt("subject", this.getSubject());
+
+		json.putOpt("holdings_count", this.getHoldingsCount());
+		json.putOpt("holdings_available", this.getHoldingsAvailable());
+		json.putOpt("holdings_lent", this.getHoldingsLent());
+		json.putOpt("holdings_reserved", this.getHoldingsReserved());
+
+		if (this.getHoldings() != null) {
+			for (HoldingDTO holding : this.getHoldings()) {
+				json.append("holdings", holding.toJSONObject());
+			}
+		}
+
+		if (this.getLendings() != null) {
+			JSONObject lendings = new JSONObject();
+
+			for (Entry<Integer, LendingDTO> entry : this.getLendings().entrySet()) {
+				lendings.put(entry.getKey().toString(), entry.getValue().toJSONObject());
 			}
 
-			if (this.getLendings() != null) {
-				JSONObject lendings = new JSONObject();
-				
-				for (Entry<Integer, LendingDTO> entry : this.getLendings().entrySet()) {
-					lendings.put(entry.getKey().toString(), entry.getValue().toJSONObject());
-				}
-				
-				json.put("lendings", lendings);
-			}
-		} catch (JSONException e) {
+			json.put("lendings", lendings);
 		}
 
 		return json;

@@ -27,6 +27,8 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.postgresql.core.BaseConnection;
 
 import biblivre.core.AbstractDAO;
@@ -53,7 +55,7 @@ public class SchemasDAO extends AbstractDAO {
 				try {
 					set.add(this.populateDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -171,4 +173,6 @@ public class SchemasDAO extends AbstractDAO {
 
         return dto;
     }
+
+    private static final Logger _log = LogManager.getLogger(SchemasDAO.class);
 }

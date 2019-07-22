@@ -28,6 +28,8 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.utils.Constants;
 
@@ -59,12 +61,10 @@ public class LayoutHead extends TagSupport {
 
 		try {
 			this.pageContext.include("/jsp/taglib/layout/head/start.jsp");
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ServletException se) {
+			_log.catching(se);
+		} catch (IOException ioe) {
+			_log.catching(ioe);
 		}
 
 		return EVAL_BODY_INCLUDE;
@@ -74,14 +74,14 @@ public class LayoutHead extends TagSupport {
 	public int doEndTag() throws JspException {
 		try {
 			this.pageContext.include("/jsp/taglib/layout/head/end.jsp");
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ServletException se) {
+			_log.catching(se);
+		} catch (IOException ioe) {
+			_log.catching(ioe);
 		}
 
 		return Tag.EVAL_PAGE;
 	}
+
+	private static final Logger _log = LogManager.getLogger(LayoutHead.class);
 }

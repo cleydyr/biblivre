@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.marc4j.marc.Record;
@@ -74,7 +76,8 @@ public class Handler extends AbstractHandler {
 		for (String serverId : serverIds) {
 			try {
 				ids.add(Integer.parseInt(serverId.trim()));
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
+				_log.error("Couldn't convert {} to int", serverId);
 			}
 		}
 
@@ -105,9 +108,7 @@ public class Handler extends AbstractHandler {
 		DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, 1);
 		collection.setId(searchId);
 		
-		try {
-			this.json.putOpt("search", collection.toJSONObject());
-		} catch(JSONException e) { }
+		this.json.putOpt("search", collection.toJSONObject());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -128,10 +129,8 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 		DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, page);
-		try {
-			this.json.putOpt("search", collection.toJSONObject());
-		} catch(JSONException e) { 
-		}
+
+		this.json.putOpt("search", collection.toJSONObject());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -209,5 +208,6 @@ public class Handler extends AbstractHandler {
 		collection.setPaging(paging);
 		return collection;
 	}
-	
+
+	private static final Logger _log = LogManager.getLogger(Handler.class);
 }

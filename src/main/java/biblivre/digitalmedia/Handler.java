@@ -25,8 +25,6 @@ import java.util.Base64;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -73,9 +71,7 @@ public class Handler extends AbstractHandler {
 		String encodedId = this.uploadHelper(schema, file);
 		
 		if (StringUtils.isNotBlank(encodedId)) {
-			try {
-				this.json.put("id", encodedId);
-			} catch (JSONException e) {}
+			this.json.put("id", encodedId);
 		} else {
 			this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
 		}
@@ -98,15 +94,13 @@ public class Handler extends AbstractHandler {
 
 	private DatabaseFile _tryFetchingDBFileWithEncoding(
 			String schema, String id, String fileId, String fileName, Charset charset) {
-		try {
-			String decodedId = new String(Base64.getDecoder().decode(id), charset);
 
-			String[] splitId = decodedId.split(":");
-			if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-				fileId = splitId[0];
-				fileName = splitId[1];
-			}
-		} catch (Exception e) {
+		String decodedId = new String(Base64.getDecoder().decode(id), charset);
+
+		String[] splitId = decodedId.split(":");
+		if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
+			fileId = splitId[0];
+			fileName = splitId[1];
 		}
 
 		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);

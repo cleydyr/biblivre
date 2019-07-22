@@ -19,9 +19,12 @@
  ******************************************************************************/
 package biblivre.circulation.user;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,7 +70,7 @@ public class UserSearchDTO extends AbstractDTO {
 		this.setType(json.optInt("type"));
 		this.setPendingFines(json.optBoolean("users_with_pending_fines", false));
 		this.setLateLendings(json.optBoolean("users_with_late_lendings", false));
-		this.setLoginAccess(json.optBoolean("users_who_have_login_access", false));
+		this.setLoginAccess(json.optBoolean("users_who_havethis.login_access", false));
 		this.setUserCardNeverPrinted(json.optBoolean("users_without_user_card", false));
 		this.setInactiveOnly(json.optBoolean("inactive_users_only", false));
 		this.setCreatedStartDate(json.optString("created_start"));
@@ -157,7 +160,10 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(createdStartDate)) {
 			try {
 				this.createdStartDate = TextUtils.parseDate(createdStartDate);
-			} catch(Exception e) {	
+			} catch (ParseException e) {
+				_log.catching(e);
+
+				throw new ValidationException("Error while parsing start date", e);
 			}
 		}
 	}
@@ -171,7 +177,10 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(createdEndDate)) {
 			try {
 				this.createdEndDate = TextUtils.parseDate(createdEndDate);
-			} catch(Exception e) {	
+			} catch (ParseException e) {
+				_log.catching(e);
+
+				throw new ValidationException("Error while parsing created end date", e);
 			}
 		}
 	}
@@ -185,7 +194,10 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(modifiedStartDate)) {
 			try {
 				this.modifiedStartDate = TextUtils.parseDate(modifiedStartDate);
-			} catch(Exception e) {	
+			} catch (ParseException e) {
+				_log.catching(e);
+
+				throw new ValidationException("Error while parsing modified start date", e);
 			}
 		}
 
@@ -200,9 +212,13 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(modifiedEndDate)) {
 			try {
 				this.modifiedEndDate = TextUtils.parseDate(modifiedEndDate);
-			} catch(Exception e) {	
+			} catch (ParseException e) {
+				_log.catching(e);
+
+				throw new ValidationException("Error while parsing modified end date", e);
 			}
 		}
 	}
-	
+
+	private static final Logger _log = LogManager.getLogger(UserSearchDTO.class);
 }

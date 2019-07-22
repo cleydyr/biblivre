@@ -97,9 +97,7 @@ public class Handler extends AbstractHandler {
 		this.setCallback(new HttpCallback() {
 			@Override
 			public void success() {
-				try {
-					report.delete();
-				} catch (Exception e) {}
+				report.delete();
 			}
 		});
 	}

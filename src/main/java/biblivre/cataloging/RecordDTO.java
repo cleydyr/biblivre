@@ -21,7 +21,6 @@ package biblivre.cataloging;
 
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.marc4j.marc.Record;
 
@@ -133,22 +132,17 @@ public class RecordDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			this.populateExtraData(json);
-			
-			json.putOpt("id", this.getId());
-			json.putOpt("database", this.getRecordDatabase());
-			
-			json.putOpt("created", this.getCreated());
-			json.putOpt("modified", this.getModified());
+		this.populateExtraData(json);
 
-			json.putOpt("attachments", this.toJSONArray(this.getAttachments()));
-			json.putOpt("fields", this.toJSONArray(this.getFields()));
-			json.putOpt("json", this.getJson());
-			json.putOpt("marc", this.getMarc());
-		} catch (JSONException e) {
-		}
-		
+		json.putOpt("id", this.getId());
+		json.putOpt("database", this.getRecordDatabase());
+		json.putOpt("created", this.getCreated());
+		json.putOpt("modified", this.getModified());
+		json.putOpt("attachments", this.toJSONArray(this.getAttachments()));
+		json.putOpt("fields", this.toJSONArray(this.getFields()));
+		json.putOpt("json", this.getJson());
+		json.putOpt("marc", this.getMarc());
+
 		return json;
 	}
 }

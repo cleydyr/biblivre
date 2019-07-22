@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.cataloging.RecordDTO;
@@ -113,18 +112,15 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("material_type", this.getMaterialType());
-			json.putOpt("record_id", this.getRecordId());
-			json.putOpt("accession_number", this.getAccessionNumber());
-			json.putOpt("location_d", this.getLocationD());
-			json.putOpt("shelf_location", this.getShelfLocation());
-			json.putOpt("availability", this.getAvailability().toString());
-			
-			if (this.getBiblioRecord() != null) {
-				json.put("biblio", this.getBiblioRecord().toJSONObject());
-			}
-		} catch (JSONException e) {
+		json.putOpt("material_type", this.getMaterialType());
+		json.putOpt("record_id", this.getRecordId());
+		json.putOpt("accession_number", this.getAccessionNumber());
+		json.putOpt("location_d", this.getLocationD());
+		json.putOpt("shelf_location", this.getShelfLocation());
+		json.putOpt("availability", this.getAvailability().toString());
+
+		if (this.getBiblioRecord() != null) {
+			json.put("biblio", this.getBiblioRecord().toJSONObject());
 		}
 
 		return json;

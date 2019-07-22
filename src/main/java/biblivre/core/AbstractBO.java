@@ -22,13 +22,14 @@ package biblivre.core;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 
 public abstract class AbstractBO {
-	protected Logger logger = Logger.getLogger(this.getClass());
+	private static Logger logger = LogManager.getLogger(AbstractBO.class.getName());
 	protected String schema;
 
 	private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances = new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();
@@ -48,7 +49,9 @@ public abstract class AbstractBO {
 				instance.setSchema(schema);
 
 				AbstractBO.instances.put(pair, instance);
-			} catch (Exception ex) { }
+			} catch (Exception e) {
+				logger.error("Can't instantiate class: " + cls.getCanonicalName(), e);
+			}
 		}
 
 		return instance;

@@ -33,7 +33,8 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,9 +51,10 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
 
+import biblivre.core.utils.Constants;
+
 public class MarcUtils {
 
-	private static Logger logger = Logger.getLogger(MarcUtils.class);
 	private static Format CF001_FORMAT = new DecimalFormat("0000000");
 	private static Format CF008_FORMAT = new SimpleDateFormat("yyMMdd");
 	private static Format COMPACT_ISO = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
@@ -67,20 +69,13 @@ public class MarcUtils {
 		try {
 			return os.toString("UTF-8");
 		} catch (UnsupportedEncodingException uee) {
-			MarcUtils.logger.error(uee.getMessage(), uee);
+			_log.error(uee.getMessage(), uee);
 			return os.toString();
 		}
 	}
 
 	public static Record iso2709ToRecord(String iso2709) {
-		Record record = null;
-		
-		try {
-			record = MarcUtils.iso2709ToRecord(iso2709.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException uee) {
-		}
-		
-		return record;
+		return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));
 	}
 	
 	public static Record iso2709ToRecord(byte[] iso2709) {
@@ -95,9 +90,7 @@ public class MarcUtils {
 			}
 
 		} catch (MarcException me) {
-			if (MarcUtils.logger.isDebugEnabled()) {
-				MarcUtils.logger.error(me.getMessage(), me);
-			}
+			_log.error(me.getMessage(), me);
 		}
 
 		return record;
@@ -122,7 +115,7 @@ public class MarcUtils {
 			ByteArrayInputStream is = new ByteArrayInputStream(unescaped.getBytes("UTF-8"));
 			scanner = new Scanner(is, "UTF-8");
 		} catch (UnsupportedEncodingException uee) {
-			MarcUtils.logger.error(uee.getMessage(), uee);
+			_log.error(uee.getMessage(), uee);
 			scanner = new Scanner(unescaped);
 		}
 
@@ -208,31 +201,28 @@ public class MarcUtils {
 			return json;
 		}
 
-		try {
-			json.putOpt("000", record.getLeader().marshal());
+		json.putOpt("000", record.getLeader().marshal());
 
-			ArrayList<ControlField> controlFields = (ArrayList<ControlField>) record.getControlFields();
+		ArrayList<ControlField> controlFields = (ArrayList<ControlField>) record.getControlFields();
 
-			for (ControlField cf : controlFields) {
-				json.putOpt(cf.getTag(), cf.getData());
+		for (ControlField cf : controlFields) {
+			json.putOpt(cf.getTag(), cf.getData());
+		}
+
+		ArrayList<DataField> dataFields = (ArrayList<DataField>) record.getDataFields();
+		for (DataField df : dataFields) {
+			JSONObject datafieldJson = new JSONObject();
+
+			datafieldJson.putOpt("ind1", df.getIndicator1());
+			datafieldJson.putOpt("ind2", df.getIndicator2());
+
+			ArrayList<Subfield> subFields = (ArrayList<Subfield>) df.getSubfields();
+
+			for (Subfield sf : subFields) {
+				datafieldJson.append(String.valueOf(sf.getCode()), sf.getData());
 			}
 
-			ArrayList<DataField> dataFields = (ArrayList<DataField>) record.getDataFields();
-			for (DataField df : dataFields) {
-				JSONObject datafieldJson = new JSONObject();
-
-				datafieldJson.putOpt("ind1", df.getIndicator1());
-				datafieldJson.putOpt("ind2", df.getIndicator2());
-
-				ArrayList<Subfield> subFields = (ArrayList<Subfield>) df.getSubfields();
-
-				for (Subfield sf : subFields) {
-					datafieldJson.append(String.valueOf(sf.getCode()), sf.getData());
-				}
-
-				json.append(df.getTag(), datafieldJson);
-			}
-		} catch (JSONException je) {
+			json.append(df.getTag(), datafieldJson);
 		}
 
 		return json;
@@ -305,11 +295,11 @@ public class MarcUtils {
 						}
 					}
 				} catch (NumberFormatException nfe) {
-					MarcUtils.logger.error(nfe.getMessage(), nfe);
+					_log.error(nfe.getMessage(), nfe);
 				}
 			}
 		} catch (JSONException je) {
-			MarcUtils.logger.error(je.getMessage(), je);
+			_log.error(je.getMessage(), je);
 		}
 
 		return record;
@@ -577,4 +567,6 @@ public class MarcUtils {
 		}
 		return record;
 	}
+
+	private static final Logger _log = LogManager.getLogger(MarcUtils.class);
 }

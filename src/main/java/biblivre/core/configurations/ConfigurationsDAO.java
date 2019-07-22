@@ -27,6 +27,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
@@ -51,7 +54,7 @@ public class ConfigurationsDAO extends AbstractDAO {
 				try {
 					list.add(this.populateDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -120,4 +123,6 @@ public class ConfigurationsDAO extends AbstractDAO {
 
 		return dto;
 	}
+
+	private static final Logger _log = LogManager.getLogger(ConfigurationsDAO.class);
 }

@@ -27,6 +27,9 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class NetworkUtils {
 	public static boolean isLocalRequest(HttpServletRequest request) throws UnknownHostException {
 		InetAddress address = NetworkUtils.remoteIp(request);
@@ -54,6 +57,7 @@ public class NetworkUtils {
 						try {
 							return InetAddress.getByName(proxy);
 						} catch (UnknownHostException e) {
+							_log.warn("Unknown host", e);
 						}
 					}
 				}
@@ -62,4 +66,6 @@ public class NetworkUtils {
 
 		return InetAddress.getByName(request.getRemoteAddr());
 	}
+
+	private static final Logger _log = LogManager.getLogger(NetworkUtils.class);
 }

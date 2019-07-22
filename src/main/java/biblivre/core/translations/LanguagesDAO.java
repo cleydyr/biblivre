@@ -26,6 +26,9 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
@@ -59,7 +62,7 @@ public class LanguagesDAO extends AbstractDAO {
 				try {
 					set.add(this.populateDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -78,5 +81,7 @@ public class LanguagesDAO extends AbstractDAO {
         dto.setName(rs.getString("name"));
 
         return dto;
-    }    
+    }
+
+    private static final Logger _log = LogManager.getLogger(LanguagesDAO.class);
 }

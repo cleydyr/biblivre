@@ -29,6 +29,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
@@ -54,7 +57,7 @@ public class TabFieldsDAO extends AbstractDAO {
 				try {
 					list.add(this.populateFormatsDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -208,7 +211,7 @@ public class TabFieldsDAO extends AbstractDAO {
 					hash.put(datafield.getDatafield(), datafield);
 					list.add(datafield);
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 
@@ -226,7 +229,7 @@ public class TabFieldsDAO extends AbstractDAO {
 						datafield.addSubfield(subfield);
 					}
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 
@@ -369,6 +372,7 @@ public class TabFieldsDAO extends AbstractDAO {
 				try {
 					pstDatafieldInsert.execute();
 				} catch (Exception e) {
+					_log.info(e.getMessage());
 				}
 			}
 			
@@ -394,4 +398,6 @@ public class TabFieldsDAO extends AbstractDAO {
 
 		return true;
 	}
+
+	private static final Logger _log = LogManager.getLogger(TabFieldsDAO.class);
 }

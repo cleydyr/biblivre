@@ -104,8 +104,8 @@ public class IndexingBO extends AbstractBO {
 				int limit = 30;
 	
 				for (int offset = 0; offset < recordCount; offset += limit) {
-					//if (this.logger.isDebugEnabled()) {
-						//this.logger.debug("Reindexing offsets from " + offset + " to " + (offset + limit));
+					//if (_logger.isDebugEnabled()) {
+						//_logger.debug("Reindexing offsets from " + offset + " to " + (offset + limit));
 					//}
 		
 					List<RecordDTO> records = rbo.list(offset, limit);

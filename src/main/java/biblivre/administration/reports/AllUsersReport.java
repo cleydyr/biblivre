@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import biblivre.administration.reports.dto.AllUsersReportDto;
-import biblivre.administration.reports.dto.BaseReportDto;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -33,6 +33,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+
+import biblivre.administration.reports.dto.AllUsersReportDto;
+import biblivre.administration.reports.dto.BaseReportDto;
 
 public class AllUsersReport extends BaseBiblivreReport {
 
@@ -176,9 +179,11 @@ public class AllUsersReport extends BaseBiblivreReport {
 			}
 			return tabelas;
 		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
+
 			return null;
 		}
 	}
-	
+
+	private static final Logger _log = LogManager.getLogger(AllUsersReport.class);
 }

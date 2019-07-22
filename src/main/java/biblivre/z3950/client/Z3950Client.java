@@ -26,7 +26,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jzkit.search.provider.iface.IRQuery;
 import org.jzkit.search.provider.iface.Searchable;
 import org.jzkit.search.provider.z3950.Z3950ServiceFactory;
@@ -45,7 +46,8 @@ import biblivre.z3950.Z3950AddressDTO;
 
 public class Z3950Client {
 	
-	private final Logger log = Logger.getLogger(this.getClass().getName());
+	private static final Logger _log = LogManager.getLogger(Z3950Client.class);
+
 	private ApplicationContext z3950Context;
 	private Z3950ServiceFactory factory;
 	private static final String QUERY_PREFIX = "@attrset bib-1 @attr 1=";
@@ -105,7 +107,7 @@ public class Z3950Client {
 			// Wait without timeout until result set is complete or failure
 			result.waitForStatus(IRResultSetStatus.COMPLETE | IRResultSetStatus.FAILURE, 0);
 			if (result.getStatus() == IRResultSetStatus.FAILURE) {
-				this.log.error("IRResultSetStatus == FAILURE");
+				_log.error("IRResultSetStatus == FAILURE");
 			}
 			if (result.getFragmentCount() == 0) {
 				return listRecords;
@@ -134,11 +136,11 @@ public class Z3950Client {
 			}
 			
 			if (errorRecords > 0) {
-				this.log.warn("Total number of records that failed the conversion: " + errorRecords);
+				_log.warn("Total number of records that failed the conversion: " + errorRecords);
 			}
 
 		} catch (Exception e) {
-			this.log.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			if (result != null) {
 				result.close();

@@ -51,30 +51,22 @@ public class Handler extends CatalogingHandler {
 
 	@Override
 	public void search(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
+		this.json.put("success", false);
 	}
 	
 	@Override
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
+		this.json.put("success", false);
 	}
 	
 	@Override
 	public void itemCount(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
+		this.json.put("success", false);
 	}
 
 	@Override
 	public void moveRecords(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
+		this.json.put("success", false);
 	}
 	
 	@Override

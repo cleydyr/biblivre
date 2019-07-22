@@ -26,7 +26,8 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
@@ -44,7 +45,8 @@ import biblivre.core.utils.TextUtils;
 
 public abstract class Controller {
 	
-	protected final Logger log = Logger.getLogger(this.getClass());
+	private static final Logger _log = LogManager.getLogger(Controller.class);
+
 	protected ExtendedRequest xRequest;
 	protected ExtendedResponse xResponse;
 	protected AbstractHandler handler;
@@ -115,8 +117,10 @@ public abstract class Controller {
 			this.doAuthorizationError();
 		} catch (ClassNotFoundException cnfe) {
 			//No Validator found, do nothing.
+			_log.warn("No Validator found, do nothing.", cnfe);
 		} catch (NoSuchMethodException nsme) {
 			//No Method found in the Validator, so do nothing.
+			_log.warn("No Method found in the Validator, so do nothing.", nsme);
 		} catch (InvocationTargetException e) {
 			// Exception thrown in method.invoke
 			Throwable handlerException = e.getTargetException();
@@ -125,11 +129,14 @@ public abstract class Controller {
 			} else {
 				this.doError("error.runtime_error", handlerException);
 			}
-			this.log.error(e.getMessage(), e);
+
+			_log.error(e.getMessage(), e);
+
 			return;
 		} catch (Exception e) {
 			// ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, etc.
 			this.doError("error.invalid_handler", e);
+
 			return;
 		}
 		
@@ -154,13 +161,17 @@ public abstract class Controller {
 			} else {
 				this.doError("error.runtime_error", handlerException);
 			}
-			this.log.error(e.getMessage(), e);
+
+			_log.error(e.getMessage(), e);
+
 			return;
 			
 		} catch (Exception e) {
 			// ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, etc.
 			this.doError("error.invalid_handler", e);
-			this.log.error(e.getMessage(), e);
+
+			_log.error(e.getMessage(), e);
+
 			return;
 		}
 

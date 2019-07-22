@@ -27,16 +27,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-
-import biblivre.administration.usertype.UserTypeBO;
-import biblivre.administration.usertype.UserTypeDTO;
-import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
-import biblivre.core.DTOCollection;
-import biblivre.core.LabelPrintDTO;
-import biblivre.core.file.DiskFile;
-import biblivre.core.translations.TranslationsMap;
-import biblivre.core.utils.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -51,6 +43,16 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+
+import biblivre.administration.usertype.UserTypeBO;
+import biblivre.administration.usertype.UserTypeDTO;
+import biblivre.core.AbstractBO;
+import biblivre.core.AbstractDTO;
+import biblivre.core.DTOCollection;
+import biblivre.core.LabelPrintDTO;
+import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationsMap;
+import biblivre.core.utils.Constants;
 
 public class UserBO extends AbstractBO {
 
@@ -204,7 +206,7 @@ public class UserBO extends AbstractBO {
 
 			return new DiskFile(file, "application/pdf");
 		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
@@ -235,4 +237,6 @@ public class UserBO extends AbstractBO {
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}
+
+	private static final Logger _log = LogManager.getLogger(UserBO.class);
 }

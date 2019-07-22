@@ -22,14 +22,14 @@ package biblivre.core.exceptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.utils.Pair;
 
 
 public class ValidationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
-	private Logger logger = Logger.getLogger(this.getClass());
 
 	private List<Pair<String, String>> errorList;
 	
@@ -39,7 +39,8 @@ public class ValidationException extends RuntimeException {
 	
 	public ValidationException(String s, Exception cause) {
     	super(s, cause);
-		this.logger.error(cause.getMessage(), cause);  
+
+		_log.error(cause.getMessage(), cause);
     }
 
     public void addError(String key, String value) {
@@ -57,4 +58,6 @@ public class ValidationException extends RuntimeException {
     public boolean hasErrors() {
     	return this.errorList != null && this.errorList.size() > 0;
     }
+
+    private static final Logger _log = LogManager.getLogger(ValidationException.class);
 }

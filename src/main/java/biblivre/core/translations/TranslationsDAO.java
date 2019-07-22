@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
@@ -76,7 +78,7 @@ public class TranslationsDAO extends AbstractDAO {
 				try {
 					list.add(this.populateDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -159,4 +161,6 @@ public class TranslationsDAO extends AbstractDAO {
 
         return dto;
     }
+
+    private static final Logger _log = LogManager.getLogger(TranslationsDAO.class);
 }

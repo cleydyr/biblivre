@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
@@ -74,18 +73,15 @@ public class BackupDTO extends AbstractDTO {
 	public void setSchemas(String schemas) {
 		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
 
-		try {
-			JSONObject json = new JSONObject(schemas);
-		
-			Iterator<String> iterator = json.keys();
+		JSONObject json = new JSONObject(schemas);
 	
-			while (iterator.hasNext()) {
-				String key = iterator.next();
-				map.put(key, Pair.<String, String>fromJSONObject(json.getJSONObject(key)));
-			}
+		Iterator<String> iterator = json.keys();
 
-		} catch (JSONException e) {
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			map.put(key, Pair.<String, String>fromJSONObject(json.getJSONObject(key)));
 		}
+
 
 		this.schemas = map;
 	}
@@ -150,22 +146,18 @@ public class BackupDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("id", this.getId());
-			json.putOpt("schemas", this.getSchemas());
-			json.putOpt("type", this.getType());
-			json.putOpt("backup_scope", this.getBackupScope());			
-			json.putOpt("created", this.getCreated());
+		json.putOpt("id", this.getId());
+		json.putOpt("schemas", this.getSchemas());
+		json.putOpt("type", this.getType());
+		json.putOpt("backup_scope", this.getBackupScope());
+		json.putOpt("created", this.getCreated());
+		json.putOpt("steps", this.getSteps());
+		json.putOpt("current_step", this.getCurrentStep());
+		json.putOpt("downloaded", this.isDownloaded());
 
-			json.putOpt("steps", this.getSteps());
-			json.putOpt("current_step", this.getCurrentStep());
+		boolean exists = (this.getBackup() != null && this.getBackup().exists());
 
-			json.putOpt("downloaded", this.isDownloaded());
-			
-			boolean exists = (this.getBackup() != null && this.getBackup().exists());
-			json.putOpt("exists", exists);
-		} catch (JSONException e) {
-		}
+		json.putOpt("exists", exists);
 
 		return json;
 	}

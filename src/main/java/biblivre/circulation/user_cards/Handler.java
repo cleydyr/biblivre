@@ -84,9 +84,7 @@ public class Handler extends AbstractHandler {
 		this.setCallback(new HttpCallback() {
 			@Override
 			public void success() {
-				try {
-					exportFile.delete();
-				} catch (Exception e) {}
+				exportFile.delete();
 			}
 		});
 	}

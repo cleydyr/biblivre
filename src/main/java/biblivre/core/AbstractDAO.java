@@ -34,7 +34,8 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.postgresql.PGConnection;
 
 import biblivre.core.exceptions.DAOException;
@@ -44,7 +45,7 @@ import biblivre.core.utils.Pair;
 public abstract class AbstractDAO {
 	private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
 
-	protected Logger logger = Logger.getLogger(this.getClass());
+	private static final Logger _log = LogManager.getLogger(AbstractDAO.class);
 	private String schema;
 	private String dataSourceName;
 
@@ -57,8 +58,12 @@ public abstract class AbstractDAO {
 		return AbstractDAO.getInstance(cls, schema, "biblivre4");
 	}
 	
-	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema, String dataSourceName) {
-		Pair<Class<? extends AbstractDAO>, String> pair = new Pair<Class<? extends AbstractDAO>, String>(cls, schema + ":" + dataSourceName);
+	protected static AbstractDAO getInstance(
+			Class<? extends AbstractDAO> cls, String schema, String dataSourceName) {
+
+		Pair<Class<? extends AbstractDAO>, String> pair =
+				new Pair<Class<? extends AbstractDAO>, String>(cls, schema + ":" + dataSourceName);
+
 		AbstractDAO instance = AbstractDAO.instances.get(pair);
 
 		if (instance == null) {
@@ -72,7 +77,9 @@ public abstract class AbstractDAO {
 				instance.setDataSourceName(dataSourceName);
 
 				AbstractDAO.instances.put(pair, instance);
-			} catch(Exception ex) {}
+			} catch(Exception e) {
+				_log.error("Unable to instantiate class {}", cls.getCanonicalName());
+			}
 		}
 
 		return instance;
@@ -152,7 +159,8 @@ public abstract class AbstractDAO {
 		}
 
 		if (ds == null) {
-			this.logger.error("[DAO.Constructor] Data Source not found.");
+			_log.error("[DAO.Constructor] Data Source not found.");
+
 			throw new RuntimeException("Data Source not found!");
 		} else {
 			dataSourceMap.put(this.getDataSourceName(), ds);
@@ -347,7 +355,7 @@ public abstract class AbstractDAO {
 
 			pgcon =	 (PGConnection) m.invoke(o);
 		} catch (Exception e) {
-			this.logger.info("Skipping org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
+			_log.info("Skipping org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
 		}
 
 		if (pgcon == null) {
@@ -359,8 +367,7 @@ public abstract class AbstractDAO {
 
 				pgcon =	 (PGConnection) m.invoke(o);
 			} catch (Exception e) {
-				this.logger.info("org.apache.commons.dbcp.DelegatingConnection");
-				e.printStackTrace();
+				_log.info("org.apache.commons.dbcp.DelegatingConnection");
 			}
 		}
 		
@@ -368,8 +375,7 @@ public abstract class AbstractDAO {
 			try {
 				pgcon = (PGConnection) con.unwrap(PGConnection.class);
 			} catch (Exception e) {
-				this.logger.info("getInnermostDelegate Unwrap");
-				e.printStackTrace();
+				_log.info("getInnermostDelegate Unwrap");
 			}
 		}
 

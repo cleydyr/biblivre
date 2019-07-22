@@ -26,7 +26,8 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.translations.TranslationsMap;
 
@@ -37,7 +38,6 @@ public class Translations extends SimpleTagSupport {
 	private String param2;
 	private String param3;
 	private boolean escapeHTML;
-	protected Logger logger = Logger.getLogger(this.getClass());
 
 	@Override
 	public void doTag() throws JspException {
@@ -67,7 +67,7 @@ public class Translations extends SimpleTagSupport {
 			
 			out.print(translation);
 		} catch (Exception e)  {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 			throw new JspException(e.getMessage());
 		}
 	}
@@ -91,4 +91,6 @@ public class Translations extends SimpleTagSupport {
 	public void setEscapeHTML(boolean escapeHTML) {
 		this.escapeHTML = escapeHTML;
 	}
+
+	private static final Logger _log = LogManager.getLogger(Translations.class);
 }

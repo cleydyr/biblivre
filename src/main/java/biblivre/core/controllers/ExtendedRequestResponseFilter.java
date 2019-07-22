@@ -66,11 +66,8 @@ public class ExtendedRequestResponseFilter implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
-	}
+	public void init(FilterConfig config) throws ServletException {}
 
 	@Override
-	public void destroy() {
-	}
+	public void destroy() {}
 }

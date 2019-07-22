@@ -25,7 +25,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
@@ -82,10 +83,8 @@ public class Handler extends AbstractHandler {
 		
 		BackupDTO dto = bo.prepare(map, backupType, backupScope);
 
-		try {
-			this.json.put("success", true);
-			this.json.put("id", dto.getId());
-		} catch (JSONException e) {}
+		this.json.put("success", true);
+		this.json.put("id", dto.getId());
 	}
 	
 	//http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=backup
@@ -114,7 +113,7 @@ public class Handler extends AbstractHandler {
 		final BackupDTO dto = bo.get(id);
 
 		if (dto == null) {
-			// TODO: Error
+			_log.error("Can't instantiate DTO for Backup entity");
 			return;
 		}
 
@@ -143,12 +142,10 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		try {
-			this.json.put("success", true);
-			this.json.put("current", dto.getCurrentStep());
-			this.json.put("total", dto.getSteps());
-			this.json.put("complete", dto.getCurrentStep() == dto.getSteps());
-		} catch (JSONException e) {}
+		this.json.put("success", true);
+		this.json.put("current", dto.getCurrentStep());
+		this.json.put("total", dto.getSteps());
+		this.json.put("complete", dto.getCurrentStep() == dto.getSteps());
 	}
 	
 	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
@@ -157,12 +154,12 @@ public class Handler extends AbstractHandler {
 
 		BackupBO bo = BackupBO.getInstance(schema);
 
-		try {
-			this.json.put("success", true);
+		this.json.put("success", true);
 
-			for (BackupDTO dto : bo.list()) {
-				this.json.append("backups", dto.toJSONObject());
-			}
-		} catch (JSONException e) {}
+		for (BackupDTO dto : bo.list()) {
+			this.json.append("backups", dto.toJSONObject());
+		}
 	}
+
+	private static final Logger _log = LogManager.getLogger(Handler.class);
 }

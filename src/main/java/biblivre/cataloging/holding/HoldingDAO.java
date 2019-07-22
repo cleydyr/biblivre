@@ -35,6 +35,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
@@ -177,7 +179,7 @@ public class HoldingDAO extends AbstractDAO {
 				try {
 					list.add(this.populateDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -930,4 +932,6 @@ public class HoldingDAO extends AbstractDAO {
 
 		return dto;		
 	}
+
+	private static final Logger _log = LogManager.getLogger(HoldingDAO.class);
 }

@@ -28,16 +28,13 @@ public class BiblivreInitializer {
 
 	public synchronized static void initialize() {
 		if (!BiblivreInitializer.initialized) {
-			try {
-				Updates.fixPostgreSQL81();
-				Updates.globalUpdate();
+			Updates.fixPostgreSQL81();
+			Updates.globalUpdate();
 
-				BiblivreInitializer.Z3950server = new Z3950ServerBO();
-				BiblivreInitializer.Z3950server.startServer();
+			BiblivreInitializer.Z3950server = new Z3950ServerBO();
+			BiblivreInitializer.Z3950server.startServer();
 
-				BiblivreInitializer.initialized = true;
-			} catch (Exception e) {
-			}
+			BiblivreInitializer.initialized = true;
 		}
 	}
 

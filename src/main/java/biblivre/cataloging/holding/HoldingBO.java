@@ -29,6 +29,8 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
@@ -202,7 +204,7 @@ public class HoldingBO extends RecordBO {
 				LoginDTO ldto = LoginBO.getInstance(this.getSchema()).get(dto.getCreatedBy());
 				this.dao.updateHoldingCreationCounter(udto, ldto);
 			} catch (Exception e) {
-				this.logger.error(e);
+				_log.error(e);
 			}
 		}
 		
@@ -339,7 +341,7 @@ public class HoldingBO extends RecordBO {
 
 			return new DiskFile(file, "application/pdf");
 		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(fos);
 		}
@@ -557,4 +559,5 @@ public class HoldingBO extends RecordBO {
 		return dto;
 	}
 
+	private static final Logger _log = LogManager.getLogger(HoldingBO.class);
 }

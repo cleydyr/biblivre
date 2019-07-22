@@ -33,7 +33,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.administration.setup.State;
 import biblivre.core.BiblivreInitializer;
@@ -46,8 +47,6 @@ import biblivre.core.utils.DatabaseUtils;
 import br.org.biblivre.z3950server.Z3950ServerBO;
 
 public class Schemas extends StaticBO {
-
-	protected static Logger logger = Logger.getLogger(Schemas.class);
 
 	private static Set<SchemaDTO> schemas;
 	private static final List<String> schemaBlacklist = new ArrayList<String>();
@@ -317,9 +316,9 @@ public class Schemas extends StaticBO {
 
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			Schemas.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			Schemas.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(bw);
 		}
@@ -329,16 +328,16 @@ public class Schemas extends StaticBO {
 
 	private static void processRestore(File restore, BufferedWriter bw) throws IOException {
 		if (restore == null) {
-			Schemas.logger.info("===== Skipping File 'null' =====");
+			_log.info("===== Skipping File 'null' =====");
 			return;
 		}
 
 		if (!restore.exists()) {
-			Schemas.logger.info("===== Skipping File '" + restore.getName() + "' =====");
+			_log.info("===== Skipping File '" + restore.getName() + "' =====");
 			return;
 		}
 
-		Schemas.logger.info("===== Creating schema based on template file '" + restore.getName() + "' =====");
+		_log.info("===== Creating schema based on template file '" + restore.getName() + "' =====");
 
 		try (BufferedReader sqlBr = new BufferedReader(
 				new InputStreamReader(
@@ -360,4 +359,5 @@ public class Schemas extends StaticBO {
 		}
 	}
 
+	private static final Logger _log = LogManager.getLogger(Schemas.class);
 }

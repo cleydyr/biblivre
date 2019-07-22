@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.vocabulary;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.cataloging.RecordDTO;
@@ -69,14 +68,11 @@ public class VocabularyRecordDTO extends RecordDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("material_type", this.getMaterialType());
-			json.putOpt("term_te", this.getTermTE());
-			json.putOpt("term_up", this.getTermUP());
-			json.putOpt("term_tg", this.getTermTG());
-			json.putOpt("term_vt_ta", this.getTermVTTA());
-		} catch (JSONException e) {
-		}
+		json.putOpt("material_type", this.getMaterialType());
+		json.putOpt("term_te", this.getTermTE());
+		json.putOpt("term_up", this.getTermUP());
+		json.putOpt("term_tg", this.getTermTG());
+		json.putOpt("term_vt_ta", this.getTermVTTA());
 
 		return json;
 	}

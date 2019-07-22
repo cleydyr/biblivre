@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.authorities;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.cataloging.RecordDTO;
@@ -59,13 +58,10 @@ public class AuthorityRecordDTO extends RecordDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("material_type", this.getMaterialType());
-			json.putOpt("name", this.getAuthorName());
-			json.putOpt("other_name", this.getAuthorOtherName());
-			json.putOpt("author_type", this.getAuthorType());
-		} catch (JSONException e) {
-		}
+		json.putOpt("material_type", this.getMaterialType());
+		json.putOpt("name", this.getAuthorName());
+		json.putOpt("other_name", this.getAuthorOtherName());
+		json.putOpt("author_type", this.getAuthorType());
 
 		return json;
 	}

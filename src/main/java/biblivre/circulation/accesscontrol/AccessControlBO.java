@@ -21,6 +21,9 @@ package biblivre.circulation.accesscontrol;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.administration.accesscards.AccessCardStatus;
@@ -32,6 +35,8 @@ import biblivre.core.exceptions.ValidationException;
 
 public class AccessControlBO extends AbstractBO {
 	private AccessControlDAO dao;
+
+	private static final Logger _log = LogManager.getLogger(AccessControlBO.class);
 
 	public static AccessControlBO getInstance(String schema) {
 		AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
@@ -68,7 +73,7 @@ public class AccessControlBO extends AbstractBO {
 		try {
 			udto = userBO.get(dto.getUserId());
 		} catch (Exception e) {
-			this.logger.error(e);
+			_log.error(e);
 		}
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
@@ -96,7 +101,7 @@ public class AccessControlBO extends AbstractBO {
 			cardBO.update(cardDto);
 			return this.dao.save(dto);
 		} catch (Exception e) {
-			this.logger.error(e);
+			_log.error(e);
 		}
 		
         return false;
@@ -109,7 +114,7 @@ public class AccessControlBO extends AbstractBO {
 		try {
 			udto = userBO.get(dto.getUserId());
 		} catch (Exception e) {
-			this.logger.error(e);
+			_log.error(e);
 		}
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
@@ -145,7 +150,7 @@ public class AccessControlBO extends AbstractBO {
 				return this.dao.update(existingAccess);
 			}
 		} catch (Exception e) {
-			this.logger.error(e);
+			_log.error(e);
 		}
 		
         return false;

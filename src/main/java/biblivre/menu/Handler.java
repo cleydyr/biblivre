@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 
 import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.request.RequestDTO;
@@ -44,10 +43,7 @@ import biblivre.z3950.Z3950BO;
 public class Handler extends AbstractHandler {
 
 	public void ping(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", true);
-		} catch (JSONException e) {
-		}
+		this.json.put("success", true);
 	}
 
 	public void i18n(ExtendedRequest request, ExtendedResponse response) throws IOException {

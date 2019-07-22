@@ -137,7 +137,6 @@ public class VocabularyRecordBO extends RecordBO {
 	
 	@Override
 	public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

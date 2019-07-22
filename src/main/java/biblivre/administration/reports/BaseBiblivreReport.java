@@ -29,11 +29,8 @@ import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.core.file.DiskFile;
-import biblivre.core.translations.TranslationsMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -49,9 +46,12 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
 
+import biblivre.administration.reports.dto.BaseReportDto;
+import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationsMap;
+
 public abstract class BaseBiblivreReport extends PdfPageEventHelper implements IBiblivreReport {
 
-	protected final Logger logger = Logger.getLogger(this.getClass().getName());
 	protected final Float headerBorderWidth = 0.8f;
 	protected final Float smallFontSize = 8f;
 	protected final Float reportFontSize = 10f;
@@ -97,7 +97,8 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 			report = new DiskFile(file, "application/pdf");
 			report.setName(fileName);
 		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
+
 			return null;
 		} finally {
 			IOUtils.closeQuietly(out);
@@ -215,4 +216,6 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
+
+	private static final Logger _log = LogManager.getLogger(BaseBiblivreReport.class);
 }

@@ -25,6 +25,8 @@ import java.util.List;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,29 +66,19 @@ public class JsonController extends Controller {
 	
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.error(error, e);
-		} else {
-			this.log.error(error);
-		}
+		_log.error(error, e);
 		
-		//e.printStackTrace();
-
 		Message message = new Message(ActionResult.ERROR, error, e);
+
 		this.dispatch(null, message);
 	}
 	
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.warn(warning, e);
-		} else {
-			this.log.warn(warning);
-		}
+		_log.warn(warning, e);
 		
-		//e.printStackTrace();
-
 		Message message = new Message(ActionResult.WARNING, warning, e);
+
 		this.dispatch(null, message);
 	}
 	
@@ -99,28 +91,26 @@ public class JsonController extends Controller {
 			message = new Message();
 		}
 		
-		try {
-			json.putOnce("success", message.isSuccess());
+		json.putOnce("success", message.isSuccess());
 
-			if (StringUtils.isNotBlank(message.getText())) {
-				json.putOnce("message", this.xRequest.getLocalizedText(message.getText()));
-				json.putOnce("message_level", message.getLevel());
+		if (StringUtils.isNotBlank(message.getText())) {
+			json.putOnce("message", this.xRequest.getLocalizedText(message.getText()));
+			json.putOnce("message_level", message.getLevel());
+		}
+
+		if (StringUtils.isNotBlank(message.getStackTrace(false))) {
+			json.putOnce("stack_trace", message.getStackTrace(false));
+		}
+
+		List<Pair<String, String>> errorList = message.getErrorList();
+
+		if (errorList != null && !json.has("errors")) {
+			for (Pair<String, String> pair : errorList) {
+				JSONObject error = new JSONObject();
+				error.put(pair.getLeft(), this.xRequest.getLocalizedText(pair.getRight()));
+				json.append("errors", error);
 			}
-
-			if (StringUtils.isNotBlank(message.getStackTrace(false))) {
-				json.putOnce("stack_trace", message.getStackTrace(false));
-			}
-
-			List<Pair<String, String>> errorList = message.getErrorList();
-
-			if (errorList != null && !json.has("errors")) {
-				for (Pair<String, String> pair : errorList) {
-					JSONObject error = new JSONObject();
-					error.put(pair.getLeft(), this.xRequest.getLocalizedText(pair.getRight()));
-					json.append("errors", error);
-				}
-			}
-		} catch (JSONException je) {}
+		}
 
 		if (this.xRequest.isMultiPart()) {			
 	        this.xResponse.setContentType("text/html;charset=UTF-8");			
@@ -131,7 +121,9 @@ public class JsonController extends Controller {
         try {
 			this.xResponse.print(json.toString(2));
 		} catch (JSONException e) {
-			this.log.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		}
 	}
+
+	private static final Logger _log = LogManager.getLogger(JsonController.class);
 }

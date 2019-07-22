@@ -26,17 +26,16 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.StaticBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.schemas.Schemas;
-import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 
 public class Configurations extends StaticBO {
 
-	private static Logger logger = Logger.getLogger(Translations.class);
 	// HashMap<Schema, HashMap<Key, Value>>
 	private static HashMap<String, HashMap<String, ConfigurationsDTO>> configurations;
 
@@ -78,7 +77,7 @@ public class Configurations extends StaticBO {
 		try {
 			return Integer.valueOf(value);
 		} catch (Exception e) {
-			Configurations.logger.warn("Configuration is not an integer: " + schema + "." + key + " = " + value);
+			_log.error("Configuration is not an integer: " + schema + "." + key + " = " + value);
 			return def;
 		}
 	}
@@ -89,7 +88,7 @@ public class Configurations extends StaticBO {
 		try {
 			return Float.valueOf(value.replace(',', '.'));
 		} catch (Exception e) {
-			Configurations.logger.warn("Configuration is not a float: " + schema + "." + key + " = " + value);
+			_log.error("Configuration is not a float: " + schema + "." + key + " = " + value);
 			return 0.0f;
 		}
 	}
@@ -273,7 +272,7 @@ public class Configurations extends StaticBO {
 			return map;
 		}
 
-		Configurations.logger.debug("Loading configurations for " + schema);
+		_log.debug("Loading configurations for " + schema);
 
 		ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
 
@@ -288,4 +287,6 @@ public class Configurations extends StaticBO {
 
 		return map;
 	}
+
+	private static final Logger _log = LogManager.getLogger(Configurations.class);
 }

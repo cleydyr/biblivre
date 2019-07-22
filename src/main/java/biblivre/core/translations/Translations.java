@@ -32,7 +32,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
@@ -40,7 +41,6 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 
 public class Translations extends StaticBO {
-	private static Logger logger = Logger.getLogger(Translations.class);
 
 	// HashMap<Pair<Schema, Language>, TranslationsMap>
 	private static HashMap<Pair<String, String>, TranslationsMap> translations;
@@ -245,7 +245,7 @@ public class Translations extends StaticBO {
 			out.close();
 			return new DiskFile(file, "x-download");
 		} catch (Exception e) {
-			Translations.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -259,9 +259,7 @@ public class Translations extends StaticBO {
 			return map;
 		}
 
-		if (Translations.logger.isDebugEnabled()) {
-			Translations.logger.debug("Loading language " + schema + "." + language);
-		}
+		_log.debug("Loading language {}.{}", schema, language);
 
 		TranslationsDAO dao = TranslationsDAO.getInstance(schema);
 
@@ -280,5 +278,6 @@ public class Translations extends StaticBO {
 
 		return map;
 	}
-	
+
+	private static final Logger _log = LogManager.getLogger(Translations.class);
 }

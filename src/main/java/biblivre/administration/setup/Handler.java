@@ -35,8 +35,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.json.JSONException;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.backup.BackupScope;
 import biblivre.administration.backup.BackupType;
@@ -89,9 +89,7 @@ public class Handler extends AbstractHandler {
 			Configurations.save(schema, dto, 0);
 		}
 
-		try {
-			this.json.put("success", success);
-		} catch (JSONException e) {}
+		this.json.put("success", success);
 	}
 	
 	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list_restores
@@ -102,13 +100,11 @@ public class Handler extends AbstractHandler {
 
 		LinkedList<RestoreDTO> list = bo.list();
 		
-		try {
-			this.json.put("success", true);
+		this.json.put("success", true);
 
-			for (RestoreDTO dto : list) {
-				this.json.append("restores", dto.toJSONObject());
-			}
-		} catch (JSONException e) {}
+		for (RestoreDTO dto : list) {
+			this.json.append("restores", dto.toJSONObject());
+		}
 	}
 
 	public void uploadBiblivre4(ExtendedRequest request, ExtendedResponse response) {
@@ -132,17 +128,18 @@ public class Handler extends AbstractHandler {
 
 			RestoreBO rbo = RestoreBO.getInstance(schema);
 			dto = rbo.getRestoreDTO(backup.getName());
-		} catch (Exception e) {
+		} catch (IOException ioe) {
+			_log.error("Couldn't copy backup file", ioe);
+
 			success = false;
 		}
-		try {
-			this.json.put("success", success);
-			this.json.put("file", uuid);
-			
-			if (success && dto != null) {
-				this.json.put("metadata", dto.toJSONObject());
-			}
-		} catch (JSONException e) {}
+
+		this.json.put("success", success);
+		this.json.put("file", uuid);
+
+		if (success && dto != null) {
+			this.json.put("metadata", dto.toJSONObject());
+		}
 	}
 	
 	public void uploadBiblivre3(ExtendedRequest request, ExtendedResponse response) {
@@ -195,9 +192,7 @@ public class Handler extends AbstractHandler {
 			}
 		}
 
-		try {
-			this.json.put("success", success);
-		} catch (JSONException e) {}
+		this.json.put("success", success);
 	}
 	
 	private Map<String, String> breakString(String string) {
@@ -413,9 +408,7 @@ public class Handler extends AbstractHandler {
 			State.cancel();			
 		}
 		
-		try {
-			this.json.put("success", success);
-		} catch (JSONException e) {}
+		this.json.put("success", success);
 	}
 
 
@@ -469,19 +462,17 @@ public class Handler extends AbstractHandler {
 			State.writeLog(ExceptionUtils.getStackTrace(e));
 			State.cancel();
 		}
-		
-		try {
-			this.json.put("success", success);
-		} catch (JSONException e) {}		
+
+		this.json.put("success", success);
 	}
 	
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", true);
-			this.json.put("current", State.getCurrentStep());
-			this.json.put("total", State.getSteps());
-			this.json.put("secondary_current", State.getCurrentSecondaryStep());
-			this.json.put("complete", !State.LOCKED.get());
-		} catch (JSONException e) {}
+		this.json.put("success", true);
+		this.json.put("current", State.getCurrentStep());
+		this.json.put("total", State.getSteps());
+		this.json.put("secondary_current", State.getCurrentSecondaryStep());
+		this.json.put("complete", !State.LOCKED.get());
 	}
+
+	private static final Logger _log = LogManager.getLogger(Handler.class);
 }

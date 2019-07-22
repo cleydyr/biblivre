@@ -32,9 +32,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.MemoryFile;
@@ -129,14 +132,15 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	}
 
 	public Integer getInteger(String key, Integer defaultValue) {
-		Integer retValue = defaultValue;
+		String param = this.getRequestParameter(key);
 
 		try {
-			retValue = Integer.valueOf(this.getRequestParameter(key));
+			return Integer.valueOf(param);
 		} catch (NumberFormatException e) {
+			_log.error("Failed to convert value of parameter {} ({}) to int", key, param);
 		}
 
-		return retValue;
+		return defaultValue;
 	}
 	
 	public Float getFloat(String key) {
@@ -144,14 +148,15 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	}
 
 	public Float getFloat(String key, Float defaultValue) {
-		Float retValue = defaultValue;
+		String param = this.getRequestParameter(key);
 
 		try {
-			retValue = Float.valueOf(this.getRequestParameter(key));
+			return Float.valueOf(param);
 		} catch (NumberFormatException e) {
+			_log.error("Failed to convert value of parameter {} ({}) to int", key, param);
 		}
 
-		return retValue;
+		return defaultValue;
 	}
 	
 	public boolean getBoolean(String key) {
@@ -266,7 +271,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 		return 0;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void loadMultiPart() {
 		this.multiPart = ServletFileUpload.isMultipartContent(this);
 
@@ -288,8 +292,8 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 						this.multiPartFiles.put(item.getFieldName(), file);
 					}
 				}
-			} catch (Exception e) {
-				// TODO: handle exception
+			} catch (FileUploadException fue) {
+				_log.error("Error parsing upload request", fue);
 			}
 		}
 	}
@@ -389,4 +393,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	public String getParameter(String name) {
 		return super.getParameter(name);
 	}
+
+	private static final Logger _log = LogManager.getLogger(ExtendedRequest.class);
 }

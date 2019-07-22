@@ -21,7 +21,6 @@ package biblivre.core;
 
 import java.util.Date;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PagingDTO implements IFJson {
@@ -140,18 +139,16 @@ public class PagingDTO implements IFJson {
 		
 	@Override
 	public JSONObject toJSONObject() {		
-		JSONObject json = new JSONObject();
 		this.endTimer();
 
-		try {
-			json.putOpt("page", this.getPage());
-			json.putOpt("page_count", this.getPageCount());
-			json.putOpt("record_count", this.getRecordCount());
-			json.putOpt("records_per_page", this.getRecordsPerPage());
-			json.putOpt("record_limit", this.getRecordLimit());
-			json.putOpt("time", this.getTime());
-		} catch (JSONException e) {
-		}
+		JSONObject json = new JSONObject();
+
+		json.putOpt("page", this.getPage());
+		json.putOpt("page_count", this.getPageCount());
+		json.putOpt("record_count", this.getRecordCount());
+		json.putOpt("records_per_page", this.getRecordsPerPage());
+		json.putOpt("record_limit", this.getRecordLimit());
+		json.putOpt("time", this.getTime());
 
 		return json;
 	}

@@ -45,7 +45,10 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.BiblivreFile;
 
 public class FileIOUtils {
@@ -478,17 +481,24 @@ public class FileIOUtils {
 	}
 	
 	public static long countLines(File file) {
-		LineNumberReader reader = null;
-		int count = 1;
 		try {
-			reader = new LineNumberReader(new FileReader(file));
+			LineNumberReader reader =  new LineNumberReader(new FileReader(file));
+
+			int count = 1;
+	
 			reader.skip(Long.MAX_VALUE);
+	
 			count = reader.getLineNumber() + 1;
+	
 			reader.close();
-		} catch (Exception e) {
+	
+			return count;
 		}
-		
-		return count;
+		catch (IOException ioe) {
+			_log.catching(ioe);
+
+			throw new ValidationException("Error while reading file " + file.getAbsolutePath(), ioe);
+		}
 	}
 
 	public static long countFiles(File file) {
@@ -501,4 +511,5 @@ public class FileIOUtils {
 		return count;
 	}
 
+	private static final Logger _log = LogManager.getLogger(FileIOUtils.class);
 }

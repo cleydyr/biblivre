@@ -33,6 +33,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
@@ -385,7 +387,7 @@ public abstract class RecordDAO extends AbstractDAO {
 				try {
 					list.add(this.populateDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -425,7 +427,7 @@ public abstract class RecordDAO extends AbstractDAO {
 				try {
 					list.add(this.populateDTO(rs));
 				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
+					_log.error(e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
@@ -731,4 +733,6 @@ public abstract class RecordDAO extends AbstractDAO {
 	}
 
 	protected abstract RecordDTO createRecord();
+
+	private static final Logger _log = LogManager.getLogger(RecordDAO.class);
 }

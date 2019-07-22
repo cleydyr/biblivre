@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.postgresql.largeobject.LargeObject;
 
 import biblivre.core.utils.Constants;
@@ -100,29 +102,31 @@ public class DatabaseFile extends BiblivreFile {
 
 	@Override
 	public void close() {
-		LargeObject largeObject = this.getLargeObject();
-		if (largeObject != null) {
-			this.setLargeObject(null);
-			try {
+		try {
+			LargeObject largeObject = this.getLargeObject();
+
+			if (largeObject != null) {
+				this.setLargeObject(null);
+
 				largeObject.close();
-			} catch (SQLException ignore) {
 			}
-		}
 
-		Connection con = this.getConnection();
-		if (con != null) {
-			this.setConnection(null);
-			try {
+			Connection con = this.getConnection();
+
+			if (con != null) {
+				this.setConnection(null);
+
 				con.commit();
-			} catch (SQLException ignore) {
-			}
 
-			try {
 				if (!con.isClosed()) {
 					con.close();
 				}
-			} catch (SQLException ignore) {
 			}
 		}
+		catch (Exception e) {
+			_log.error("Error when closing database file", e);
+		}
 	}
+
+	private static final Logger _log = LogManager.getLogger(DatabaseFile.class);
 }

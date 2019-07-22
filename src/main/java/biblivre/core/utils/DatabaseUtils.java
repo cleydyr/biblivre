@@ -27,13 +27,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.configurations.Configurations;
 
 public class DatabaseUtils {
-	
-	private static Logger logger = Logger.getLogger(DatabaseUtils.class);
 	
 	public static File getPgDump(String schema) {
 		File pgdump = DatabaseUtils.getPgDumpFromConfiguration(schema);
@@ -258,9 +257,11 @@ public class DatabaseUtils {
 				}
 			}
 		} catch (IOException e) {
-			DatabaseUtils.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		}
 
 		return null;
 	}
+
+	private static final Logger _log = LogManager.getLogger(DatabaseUtils.class);
 }

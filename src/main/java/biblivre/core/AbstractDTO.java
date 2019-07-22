@@ -151,15 +151,10 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 		return this.toJSONObject().toString();
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected <T extends AbstractDTO> T fromJSONObject(String jsonData) {
-		try {
-			JSONObject json = new JSONObject(jsonData);
-			return this.fromJSONObject(json);
-		} catch (JSONException je) {
-		}
-		
-		return (T) this;
+		JSONObject json = new JSONObject(jsonData);
+
+		return this.fromJSONObject(json);
 	}
 	
 	@SuppressWarnings("unchecked")

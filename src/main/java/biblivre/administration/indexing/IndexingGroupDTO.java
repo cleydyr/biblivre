@@ -22,7 +22,6 @@ package biblivre.administration.indexing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
@@ -129,14 +128,11 @@ public class IndexingGroupDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("id", this.getId());
-			json.putOpt("translation_key", this.getTranslationKey());
-			json.putOpt("datafields", this.getDatafields());
-			json.putOpt("sortable", this.isSortable());
-			json.putOpt("default_sort", this.isDefaultSort());
-		} catch (JSONException e) {
-		}
+		json.putOpt("id", this.getId());
+		json.putOpt("translation_key", this.getTranslationKey());
+		json.putOpt("datafields", this.getDatafields());
+		json.putOpt("sortable", this.isSortable());
+		json.putOpt("default_sort", this.isDefaultSort());
 
 		return json;
 	}

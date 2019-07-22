@@ -19,17 +19,20 @@
  ******************************************************************************/
 package biblivre.cataloging.search;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.json.JSONException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import biblivre.cataloging.enums.SearchOperator;
 import biblivre.core.AbstractDTO;
+import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
 
 public class SearchTermDTO extends AbstractDTO {
@@ -83,10 +86,14 @@ public class SearchTermDTO extends AbstractDTO {
 
 	public void setStartDate(String startDate) {
 		this.startDate = null;
+
 		if (StringUtils.isNotBlank(startDate)) {
 			try {
 				this.startDate = TextUtils.parseDate(startDate);
-			} catch(Exception e) {	
+			} catch (ParseException pe) {
+				_log.catching(pe);
+
+				throw new ValidationException("Error while parsing start date", pe);
 			}
 		}
 	}
@@ -97,10 +104,14 @@ public class SearchTermDTO extends AbstractDTO {
 
 	public void setEndDate(String endDate) {
 		this.endDate = null;
+
 		if (StringUtils.isNotBlank(endDate)) {
 			try {
 				this.endDate = TextUtils.parseDate(endDate);
-			} catch(Exception e) {
+			} catch (ParseException pe) {
+				_log.catching(pe);
+
+				throw new ValidationException("Error while parsing end date", pe);
 			}
 		}
 	}
@@ -113,21 +124,20 @@ public class SearchTermDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			json.append("terms", StringUtils.join(this.getTerms(), " "));
-			json.putOpt("field", this.getField());
-			json.putOpt("operator", this.getOperator());
+		json.append("terms", StringUtils.join(this.getTerms(), " "));
+		json.putOpt("field", this.getField());
+		json.putOpt("operator", this.getOperator());
 
-			if (this.getStartDate() != null) {
-				json.putOpt("start_date", DateFormatUtils.ISO_DATETIME_FORMAT.format(this.getStartDate()));
-			}
-			
-			if (this.getEndDate() != null) {
-				json.putOpt("end_date", DateFormatUtils.ISO_DATETIME_FORMAT.format(this.getEndDate()));
-			}
-		} catch (JSONException e) {
+		if (this.getStartDate() != null) {
+			json.putOpt("start_date", DateFormatUtils.ISO_DATETIME_FORMAT.format(this.getStartDate()));
+		}
+
+		if (this.getEndDate() != null) {
+			json.putOpt("end_date", DateFormatUtils.ISO_DATETIME_FORMAT.format(this.getEndDate()));
 		}
 
 		return json;
 	}
+
+	private static final Logger _log = LogManager.getLogger(SearchTermDTO.class);
 }

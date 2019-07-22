@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.Formatter;
@@ -39,6 +38,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import biblivre.core.AbstractBO;
 import biblivre.core.configurations.Configurations;
@@ -304,18 +305,16 @@ public class BackupBO extends AbstractBO {
 			while ((line = br.readLine()) != null) {
 				//There was a system.out.println here for the 'line' var, 
 				//with a FIX_ME tag.  So I changed it to logger.debug().
-				if (this.logger.isDebugEnabled()) {
-					this.logger.debug(line);
-				}
+				_log.debug(line);
 			}
 
 			p.waitFor();
 			
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			_log.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(br);
 		}
@@ -385,4 +384,6 @@ public class BackupBO extends AbstractBO {
 		this.exportDigitalMedia(schema, schemaBackup);
 		this.save(dto);
 	}
+
+	private static final Logger _log = LogManager.getLogger(BackupBO.class);
 }

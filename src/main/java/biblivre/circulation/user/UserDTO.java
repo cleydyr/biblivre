@@ -22,7 +22,6 @@ package biblivre.circulation.user;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
@@ -143,23 +142,19 @@ public class UserDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			
-			json.putOpt("id", this.getId());
-			json.putOpt("enrollment", this.getEnrollment());
-			json.putOpt("name", this.getName());
-			json.putOpt("loginId", this.getLoginId());
-			json.putOpt("status", this.getStatus());
-			json.putOpt("type", this.getType());
-			json.putOpt("type_name", this.getUsertypeName());
-			json.putOpt("photo_id", this.getPhotoId());
-			json.putOpt("fields", this.getFields());
-			json.putOpt("current_lendings", this.getCurrentLendings());
+		json.putOpt("id", this.getId());
+		json.putOpt("enrollment", this.getEnrollment());
+		json.putOpt("name", this.getName());
+		json.putOpt("loginId", this.getLoginId());
+		json.putOpt("status", this.getStatus());
+		json.putOpt("type", this.getType());
+		json.putOpt("type_name", this.getUsertypeName());
+		json.putOpt("photo_id", this.getPhotoId());
+		json.putOpt("fields", this.getFields());
+		json.putOpt("current_lendings", this.getCurrentLendings());
 
-			json.putOpt("created", this.getCreated());
-			json.putOpt("modified", this.getModified());
-		} catch (JSONException e) {
-		}
+		json.putOpt("created", this.getCreated());
+		json.putOpt("modified", this.getModified());
 		
 		return json;
 	}
