@@ -20,6 +20,10 @@
 			<id>danniel</id>
 			<name>Danniel Willian B. do Nascimento</name>
 		</developer>
+		<developer>
+			<id>cleydyr</id>
+			<name>Cleydyr B. de Albuquerque</name>
+		</developer>
 	</developers>
 
 	<properties>
@@ -72,6 +76,7 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
@@ -144,9 +149,6 @@
 			<version>2.2</version>
 		</dependency>
 
-		<!-- dependency> <groupId>org.json</groupId> <artifactId>json</artifactId> 
-			<version>20090211</version> </dependency -->
-
 		<dependency>
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
@@ -154,7 +156,6 @@
 		    <scope>provided</scope>
 		</dependency>
 
-		<!-- Local libraries, must use mvn:install first -->
 		<dependency>
 			<groupId>org.marc4j</groupId>
 			<artifactId>marc4j</artifactId>
@@ -179,7 +180,6 @@
 			<version>2.2.3</version>
 		</dependency>
 
-		<!-- z39.50 -->
 		<dependency>
 			<groupId>org.jzkit</groupId>
 			<artifactId>jzkit2_z3950_plugin</artifactId>
@@ -207,18 +207,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jzkit</groupId>
 			<artifactId>jzkit2_core</artifactId>
 			<version>2.2.3</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.googlecode.juniversalchardet</groupId>
 			<artifactId>juniversalchardet</artifactId>
 			<version>1.0.3</version>
 		</dependency>
 
-		<!-- ObjectLab Kit for business days calculations -->
 		<dependency>
 			<groupId>net.objectlab.kit</groupId>
 			<artifactId>datecalc-common</artifactId>
@@ -236,7 +237,6 @@
 			<version>4.2.1</version>
 		</dependency>
 
-		<!-- z39.50 server dependency -->
 		<dependency>
 			<groupId>br.org.biblivre</groupId>
 			<artifactId>z3950server</artifactId>
@@ -248,7 +248,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
@@ -298,16 +298,16 @@
 					<target>${jdk.version}</target>
 					<debug>${debug}</debug>
 					<optimize>!${debug}</optimize>
-					<verbose>${debug}</verbose>
-					<showWarnings>${debug}</showWarnings>
-					<showDeprecation>${debug}</showDeprecation>
+					<verbose>false</verbose>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.2.3</version>
 				<configuration>
 					<webResources>
 						<resource>
@@ -332,21 +332,6 @@
 					</webResources>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<server>Biblivre Alpha</server>
-					<url>http://192.168.2.3:8080/manager/text</url>
-					<path>/Biblivre4</path>
-				</configuration>
-			</plugin>
-
-			<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId> 
-				<version>2.12</version> <configuration> <skipTests>true</skipTests> </configuration> 
-				</plugin -->
 
 			<plugin>
 				<groupId>org.jasig.maven</groupId>
