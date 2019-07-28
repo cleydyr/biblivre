@@ -8,7 +8,7 @@
 	<packaging>war</packaging>
 
 	<name>Biblivre4</name>
-	<version>5.1.14-cloud</version>
+	<version>5.1.15-cloud</version>
 	<url>http://www.biblivre.org.br</url>
 
 	<developers>
@@ -19,6 +19,10 @@
 		<developer>
 			<id>danniel</id>
 			<name>Danniel Willian B. do Nascimento</name>
+		</developer>
+		<developer>
+			<id>cleydyr</id>
+			<name>Cleydyr B. de Albuquerque</name>
 		</developer>
 	</developers>
 
@@ -72,6 +76,7 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
@@ -88,24 +93,6 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.2.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.5</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-digester</groupId>
-			<artifactId>commons-digester</artifactId>
-			<version>2.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-discovery</groupId>
-			<artifactId>commons-discovery</artifactId>
-			<version>0.5</version>
 		</dependency>
 
 		<dependency>
@@ -133,19 +120,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.2</version>
 		</dependency>
-
-		<!-- dependency> <groupId>org.json</groupId> <artifactId>json</artifactId> 
-			<version>20090211</version> </dependency -->
 
 		<dependency>
 		    <groupId>org.postgresql</groupId>
@@ -154,32 +132,12 @@
 		    <scope>provided</scope>
 		</dependency>
 
-		<!-- Local libraries, must use mvn:install first -->
 		<dependency>
 			<groupId>org.marc4j</groupId>
 			<artifactId>marc4j</artifactId>
 			<version>2.5.1.beta</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.ibm.icu</groupId>
-			<artifactId>normalizer</artifactId>
-			<version>2.6</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jzkit</groupId>
-			<artifactId>a2j</artifactId>
-			<version>2.0.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jzkit</groupId>
-			<artifactId>jzkit2_service</artifactId>
-			<version>2.2.3</version>
-		</dependency>
-
-		<!-- z39.50 -->
 		<dependency>
 			<groupId>org.jzkit</groupId>
 			<artifactId>jzkit2_z3950_plugin</artifactId>
@@ -188,10 +146,6 @@
 				<exclusion>
 					<artifactId>marc4j</artifactId>
 					<groupId>marc4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jdbm</artifactId>
-					<groupId>jdbm</groupId>
 				</exclusion>
 				<exclusion>
 					<artifactId>xalan</artifactId>
@@ -207,18 +161,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jzkit</groupId>
 			<artifactId>jzkit2_core</artifactId>
 			<version>2.2.3</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.googlecode.juniversalchardet</groupId>
 			<artifactId>juniversalchardet</artifactId>
 			<version>1.0.3</version>
 		</dependency>
 
-		<!-- ObjectLab Kit for business days calculations -->
 		<dependency>
 			<groupId>net.objectlab.kit</groupId>
 			<artifactId>datecalc-common</artifactId>
@@ -236,24 +191,12 @@
 			<version>4.2.1</version>
 		</dependency>
 
-		<!-- z39.50 server dependency -->
-		<dependency>
-			<groupId>br.org.biblivre</groupId>
-			<artifactId>z3950server</artifactId>
-			<version>1.0.2</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-dbcp</artifactId>
-					<groupId>commons-dbcp</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.28</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.measure</groupId>
 			<artifactId>unit-api</artifactId>
@@ -265,6 +208,55 @@
 			<artifactId>indriya</artifactId>
 			<version>2.0-EDR</version>
 		</dependency>
+
+		<!-- z3950server e suas dependências transitivas -->
+		<!-- Embora elas não sejam explicitamente requisitadas no código, elas são necessárias
+				em tempo de execução pela biblioteca z3950server e suas dependências -->
+
+		<dependency>
+			<groupId>br.org.biblivre</groupId>
+			<artifactId>z3950server</artifactId>
+			<version>1.0.2</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-dbcp</artifactId>
+					<groupId>commons-dbcp</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzkit</groupId>
+			<artifactId>a2j</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzkit</groupId>
+			<artifactId>jzkit2_service</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.jdbm</groupId>
+			<artifactId>jdbm</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jzkit</groupId>
+			<artifactId>jzkit2_jdbc_plugin</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<!-- / -->
+
 	</dependencies>
 
 	<build>
@@ -298,16 +290,16 @@
 					<target>${jdk.version}</target>
 					<debug>${debug}</debug>
 					<optimize>!${debug}</optimize>
-					<verbose>${debug}</verbose>
-					<showWarnings>${debug}</showWarnings>
-					<showDeprecation>${debug}</showDeprecation>
+					<verbose>false</verbose>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.2.3</version>
 				<configuration>
 					<webResources>
 						<resource>
@@ -334,21 +326,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<server>Biblivre Alpha</server>
-					<url>http://192.168.2.3:8080/manager/text</url>
-					<path>/Biblivre4</path>
-				</configuration>
-			</plugin>
-
-			<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId> 
-				<version>2.12</version> <configuration> <skipTests>true</skipTests> </configuration> 
-				</plugin -->
-
-			<plugin>
 				<groupId>org.jasig.maven</groupId>
 				<artifactId>sass-maven-plugin</artifactId>
 				<version>1.1.1</version>
@@ -372,6 +349,11 @@
 						</resource>
 					</resources>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
 			</plugin>
 		</plugins>
 

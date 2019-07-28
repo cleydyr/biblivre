@@ -37,6 +37,7 @@ public class BiblivreInitializer {
 
 				BiblivreInitializer.initialized = true;
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

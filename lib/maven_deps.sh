@@ -8,3 +8,4 @@ mvn install:install-file -Dfile=marc4j-2.5.1.beta.jar -DgroupId=org.marc4j -Dart
 mvn install:install-file -Dfile=z3950server-1.0.2.jar -DgroupId=br.org.biblivre -DartifactId=z3950server -Dversion=1.0.2 -Dpackaging=jar
 mvn install:install-file -Dfile=itext-4.2.1.jar -DgroupId=com.lowagie.legacy -DartifactId=itext -Dversion=4.2.1 -Dpackaging=jar
 mvn install:install-file -Dfile=normalizer-2.6.jar -DgroupId=com.ibm.icu -DartifactId=normalizer -Dversion=2.6 -Dpackaging=jar
+mvn install:install-file -Dfile=jdbm-1.0.jar -DgroupId=org.apache.jdbm -DartifactId=jdbm -Dversion=1.0 -Dpackaging=jar
