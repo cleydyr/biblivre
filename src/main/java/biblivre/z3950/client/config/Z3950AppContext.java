@@ -6,6 +6,10 @@ import javax.sql.DataSource;
 
 import org.jzkit.a2j.codec.util.OIDRegister;
 import org.jzkit.configuration.provider.xml.XMLImpl;
+import org.jzkit.search.SearchException;
+import org.jzkit.search.SearchSession;
+import org.jzkit.search.impl.SearchSessionImpl;
+import org.jzkit.search.util.Profile.ProfileService;
 import org.jzkit.search.util.Profile.ProfileServiceImpl;
 import org.jzkit.search.util.RecordConversion.FragmentTransformerService;
 import org.jzkit.util.PropsHolder;
@@ -41,7 +45,7 @@ public class Z3950AppContext {
 	}
 	
 	@Bean
-	public ProfileServiceImpl ProfileService() {
+	public ProfileService ProfileService() {
 		return new ProfileServiceImpl();
 	}
 	
@@ -50,5 +54,10 @@ public class Z3950AppContext {
 		InitialContext cxt = new InitialContext();
 		DataSource ds = (DataSource) cxt.lookup("java:comp/env/jdbc/biblivre4");
 		return ds;
+	}
+
+	@Bean
+	public SearchSession SearchService() throws SearchException {
+		return new SearchSessionImpl(ProfileService(), TransformationService());
 	}
 }
