@@ -26,10 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractHandler.HttpCallback;
 import biblivre.core.Dialog;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.HttpCallback;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
@@ -41,27 +41,31 @@ public class DownloadController extends Controller {
 		super(xRequest, xResponse);
 	}
 
-	// http://balusc.blogspot.com/2009/02/fileservlet-supporting-resume-and.html
 	@Override
 	protected void doReturn() throws ServletException, IOException {
-		BiblivreFile file = this.handler.getFile();
 		Message message = this.handler.getMessage();
+
 		int returnCode = this.handler.getReturnCode();
 
 		if (StringUtils.isNotBlank(message.getText()) || returnCode != 0) {
 			this.xResponse.setStatus(returnCode == 0 ? HttpServletResponse.SC_BAD_REQUEST : returnCode, message.getText());
+
 			this.xRequest.getRequestDispatcher("/jsp/error_fatal.jsp").forward(this.xRequest, this.xResponse);
+
 			return;
 		}
+
+		BiblivreFile file = this.handler.getFile();
 
 		FileIOUtils.sendHttpFile(file, this.xRequest, this.xResponse, this.headerOnly);
 
 		HttpCallback callback = this.handler.getCallback();
+
 		if (callback != null) {
 			callback.success();
 		}
 	}
-	
+
 	@Override
 	protected void doAuthorizationError() throws ServletException, IOException {
 		Message message = new Message(ActionResult.WARNING, "error.no_permission");
@@ -75,7 +79,7 @@ public class DownloadController extends Controller {
 
 		this.dispatch("/jsp/error.jsp", message);
 	}
-	
+
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -88,7 +92,7 @@ public class DownloadController extends Controller {
 
 		this.dispatch("/jsp/error.jsp", message);
 	}
-	
+
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -96,8 +100,9 @@ public class DownloadController extends Controller {
 		} else {
 			this.log.warn(warning);
 		}
-		
+
 		Message message = new Message(ActionResult.WARNING, warning, e);
+
 		this.dispatch("/jsp/error.jsp", message);
 	}
 
@@ -107,8 +112,8 @@ public class DownloadController extends Controller {
 		}
 
 		this.xResponse.setContentType("text/html;charset=UTF-8");
+
 		this.xRequest.getRequestDispatcher(jsp).forward(this.xRequest, this.xResponse);
-		//this.xRequest.dispatch(jsp, this.xResponse);
 	}
 
 }
