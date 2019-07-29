@@ -509,14 +509,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 		this.setFile(exportFile);
 		
-		this.setCallback(new HttpCallback() {
-			@Override
-			public void success() {
-				try {
-					exportFile.delete();
-				} catch (Exception e) {}
-			}
-		});
+		this.setCallback(exportFile::delete);
 	}
 
 	public void autocomplete(ExtendedRequest request, ExtendedResponse response) {

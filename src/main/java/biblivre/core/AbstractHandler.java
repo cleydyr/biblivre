@@ -35,11 +35,7 @@ public abstract class AbstractHandler {
 	protected BiblivreFile file;
 	protected int returnCode;
 	protected HttpCallback callback;
-	
-	public class HttpCallback {
-		public void success() {};
-	}
-	
+
 	public AbstractHandler() {
 		this.setJson(new JSONObject());
 		this.setJspURL("");

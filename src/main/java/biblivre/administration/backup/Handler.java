@@ -122,13 +122,12 @@ public class Handler extends AbstractHandler {
 
 		this.setFile(diskFile);
 
-		this.setCallback(new HttpCallback() {
-			@Override
-			public void success() {
+		this.setCallback(
+			() -> {
 				dto.setDownloaded(true);
 				bo.save(dto);
 			}
-		});
+		);
 	}
 	
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
