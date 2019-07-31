@@ -58,6 +58,8 @@ public class Handler extends AbstractHandler {
 		}
 
 		this.setFile(file);
+
+		this.setCallback(file::close);
 	}
 
 	public void upload(ExtendedRequest request, ExtendedResponse response) {
