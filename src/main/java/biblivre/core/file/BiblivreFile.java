@@ -93,10 +93,4 @@ public abstract class BiblivreFile implements Closeable {
 	public abstract boolean exists();
 	
 	public abstract void copy(OutputStream out, long start, long size) throws IOException;
-	
-	@Override
-	protected void finalize() throws Throwable {
-		this.close();
-		super.finalize();
-	}
 }
