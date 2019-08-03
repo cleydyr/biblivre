@@ -20,6 +20,7 @@
 package biblivre.core;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -340,24 +341,16 @@ public abstract class AbstractDAO {
 		PGConnection pgcon = null;
 
 		try {
-			Class<?> D = Class.forName("org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
-			Constructor<?> c = D.getConstructor(Connection.class);
-			Object o = c.newInstance(con);
-			Method m = D.getMethod("getInnermostDelegate");
-
-			pgcon =	 (PGConnection) m.invoke(o);
+			pgcon = _getInnermostDelegateFromConnection(
+					con, "org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
 		} catch (Exception e) {
 			this.logger.info("Skipping org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
 		}
 
 		if (pgcon == null) {
 			try {
-				Class<?> D = Class.forName("org.apache.commons.dbcp.DelegatingConnection");
-				Constructor<?> c = D.getConstructor(Connection.class);
-				Object o = c.newInstance(con);
-				Method m = D.getMethod("getInnermostDelegate");
-
-				pgcon =	 (PGConnection) m.invoke(o);
+				pgcon =	 _getInnermostDelegateFromConnection(
+						con, "org.apache.commons.dbcp.DelegatingConnection");
 			} catch (Exception e) {
 				this.logger.info("org.apache.commons.dbcp.DelegatingConnection");
 				e.printStackTrace();
@@ -373,6 +366,21 @@ public abstract class AbstractDAO {
 			}
 		}
 
+		return pgcon;
+	}
+
+	private PGConnection _getInnermostDelegateFromConnection(
+			Connection con, String className)
+		throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException,	InvocationTargetException {
+
+		PGConnection pgcon;
+		Class<?> D = Class.forName(className);
+		Constructor<?> c = D.getConstructor(Connection.class);
+		Object o = c.newInstance(con);
+		Method m = D.getMethod("getInnermostDelegate");
+
+		pgcon =	 (PGConnection) m.invoke(o);
 		return pgcon;
 	}
 	
