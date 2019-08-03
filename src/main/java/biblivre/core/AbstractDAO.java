@@ -20,6 +20,7 @@
 package biblivre.core;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -340,39 +341,51 @@ public abstract class AbstractDAO {
 		PGConnection pgcon = null;
 
 		try {
-			Class<?> D = Class.forName("org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
-			Constructor<?> c = D.getConstructor(Connection.class);
-			Object o = c.newInstance(con);
-			Method m = D.getMethod("getInnermostDelegate");
+			pgcon = (PGConnection) con.unwrap(PGConnection.class);
 
-			pgcon =	 (PGConnection) m.invoke(o);
+			return pgcon;
+		} catch (Exception e) {
+			this.logger.info("getInnermostDelegate Unwrap");
+			e.printStackTrace();
+		}
+
+		try {
+			pgcon = _getInnermostDelegateFromConnection(
+					con, "org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
+
+			return pgcon;
 		} catch (Exception e) {
 			this.logger.info("Skipping org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
-		}
 
-		if (pgcon == null) {
-			try {
-				Class<?> D = Class.forName("org.apache.commons.dbcp.DelegatingConnection");
-				Constructor<?> c = D.getConstructor(Connection.class);
-				Object o = c.newInstance(con);
-				Method m = D.getMethod("getInnermostDelegate");
-
-				pgcon =	 (PGConnection) m.invoke(o);
-			} catch (Exception e) {
-				this.logger.info("org.apache.commons.dbcp.DelegatingConnection");
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 		
-		if (pgcon == null) {
-			try {
-				pgcon = (PGConnection) con.unwrap(PGConnection.class);
-			} catch (Exception e) {
-				this.logger.info("getInnermostDelegate Unwrap");
-				e.printStackTrace();
-			}
+		try {
+			pgcon =	 _getInnermostDelegateFromConnection(
+					con, "org.apache.commons.dbcp.DelegatingConnection");
+
+			return pgcon;
+		} catch (Exception e) {
+			this.logger.info("org.apache.commons.dbcp.DelegatingConnection");
+
+			e.printStackTrace();
 		}
 
+		return null;
+	}
+
+	private PGConnection _getInnermostDelegateFromConnection(
+			Connection con, String className)
+		throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException,	InvocationTargetException {
+
+		PGConnection pgcon;
+		Class<?> D = Class.forName(className);
+		Constructor<?> c = D.getConstructor(Connection.class);
+		Object o = c.newInstance(con);
+		Method m = D.getMethod("getInnermostDelegate");
+
+		pgcon =	 (PGConnection) m.invoke(o);
 		return pgcon;
 	}
 	
