@@ -20,6 +20,7 @@
 package biblivre.core;
 
 import java.sql.Connection;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,6 +37,7 @@ import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
+import biblivre.update.UpdateService;
 
 public class Updates {
 
@@ -50,11 +52,17 @@ public class Updates {
 		try {
 			Set<String> installedVersions = dao.getInstalledVersions();
 
-			String version = "4.0.0b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
+			ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
+
+			for (UpdateService updateService : serviceLoader) {
+				if (!installedVersions.contains(updateService.getVersion())) {
+					con = dao.beginUpdate();
+					updateService.doUpdate(con);
+					dao.commitUpdate(updateService.getVersion(), con);
+				}
 			}
+
+			String version = null;
 
 			version = "4.0.1b";
 			if (!installedVersions.contains(version)) {
