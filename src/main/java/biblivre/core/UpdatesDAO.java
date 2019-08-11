@@ -395,7 +395,8 @@ public class UpdatesDAO extends AbstractDAO {
 
 		PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
 		
-		_deleteFromBriefFormat(name, deletePst);
+		deletePst.setString(1, name);
+		deletePst.execute();
 		
 		
 		StringBuilder sql = new StringBuilder();			
@@ -422,12 +423,34 @@ public class UpdatesDAO extends AbstractDAO {
 		pst.execute();
 	}
 	
-	public void addBriefFormat(Connection con, RecordType recordType, String datafield, String format, Integer sortOrder) throws SQLException {
+	public void addBriefFormat(Connection con, RecordType recordType, String datafield,
+			String format, Integer sortOrder)
+		throws SQLException {
+
+		_deleteFromBriefFormat(datafield, recordType, con);
+
+		_insertIntoBriefFormat(datafield, format, sortOrder, recordType, con);
+	}
+
+	private void _deleteFromBriefFormat(String datafield, RecordType recordType, Connection con)
+			throws SQLException {
+
 		StringBuilder deleteFromBriefFormatsSQLTemplate =
 				new StringBuilder(3)
 						.append("DELETE FROM ")
 						.append(recordType)
 						.append("_brief_formats WHERE datafield = ?;");
+
+		PreparedStatement deleteFromBriefFormat = con.prepareStatement(
+				deleteFromBriefFormatsSQLTemplate.toString());
+
+		deleteFromBriefFormat.setString(1, datafield);
+		deleteFromBriefFormat.execute();
+	}
+
+	private void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
+			RecordType recordType, Connection con)
+		throws SQLException {
 
 		StringBuilder insertIntoBriefFormatsSQLTemplate =
 				new StringBuilder(3)
@@ -435,27 +458,9 @@ public class UpdatesDAO extends AbstractDAO {
 				.append(recordType)
 				.append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
 
-		try (
-				PreparedStatement deleteFromBriefFormat = con.prepareStatement(
-						deleteFromBriefFormatsSQLTemplate.toString());
+		PreparedStatement insertIntoBriefFormat = con.prepareStatement(
+				insertIntoBriefFormatsSQLTemplate.toString());
 
-				PreparedStatement insertIntoBriefFormat = con.prepareStatement(
-						insertIntoBriefFormatsSQLTemplate.toString());
-		) {
-			_deleteFromBriefFormat(datafield, deleteFromBriefFormat);
-
-			_insertIntoBriefFormat(datafield, format, sortOrder, insertIntoBriefFormat);
-		}
-
-	}
-
-	private void _deleteFromBriefFormat(String datafield, PreparedStatement deleteFromBriefFormat) throws SQLException {
-		deleteFromBriefFormat.setString(1, datafield);
-		deleteFromBriefFormat.execute();
-	}
-
-	private void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
-			PreparedStatement insertIntoBriefFormat) throws SQLException {
 		insertIntoBriefFormat.setString(1, datafield);
 		insertIntoBriefFormat.setString(2, format);
 		insertIntoBriefFormat.setInt(3, sortOrder);
