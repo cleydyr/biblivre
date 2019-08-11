@@ -550,16 +550,38 @@ public class UpdatesDAO extends AbstractDAO {
 		if (this.checkColumnExistance(tableName, "sort_order")) {
 			return;
 		}
-		
-		StringBuilder addDatafieldColumn = new StringBuilder();			
-		addDatafieldColumn.append("ALTER TABLE ").append(tableName).append(" ADD COLUMN sort_order integer;");
-		Statement addDatafieldColumnSt = con.createStatement();			
-		addDatafieldColumnSt.execute(addDatafieldColumn.toString());
-		
-		StringBuilder updateSql = new StringBuilder();
-		updateSql.append("UPDATE ").append(tableName).append(" SET sort_order = (CAST(datafield as INT));");
-		Statement updateSt = con.createStatement();			
-		updateSt.execute(updateSql.toString());
+
+		_addSortOrderColumnForTable(tableName, con);
+
+		_updateSortOrderForTable(tableName, con);
+	}
+
+	private void _updateSortOrderForTable(String tableName, Connection con) throws SQLException {
+		StringBuilder updateSql =
+				new StringBuilder(3)
+					.append("UPDATE ")
+					.append(tableName)
+					.append(" SET sort_order = (CAST(datafield as INT));");
+
+		try (
+			Statement updateSt = con.createStatement();
+		) {
+			updateSt.execute(updateSql.toString());
+		}
+	}
+
+	private void _addSortOrderColumnForTable(String tableName, Connection con) throws SQLException {
+		StringBuilder addSortOrderColumnSQL =
+				new StringBuilder(3)
+					.append("ALTER TABLE ")
+					.append(tableName)
+					.append(" ADD COLUMN sort_order integer;");
+
+		try (
+			Statement addDatafieldColumnSt = con.createStatement();
+		) {
+			addDatafieldColumnSt.execute(addSortOrderColumnSQL.toString());
+		}
 	}
 
 	public void updateZ3950Address(Connection con, String name, String url) throws SQLException {
