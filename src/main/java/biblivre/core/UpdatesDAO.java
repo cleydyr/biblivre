@@ -395,8 +395,7 @@ public class UpdatesDAO extends AbstractDAO {
 
 		PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
 		
-		deletePst.setString(1, name);
-		deletePst.execute();
+		_deleteFromBriefFormat(name, deletePst);
 		
 		
 		StringBuilder sql = new StringBuilder();			
@@ -443,12 +442,16 @@ public class UpdatesDAO extends AbstractDAO {
 				PreparedStatement insertIntoBriefFormat = con.prepareStatement(
 						insertIntoBriefFormatsSQLTemplate.toString());
 		) {
-			deleteFromBriefFormat.setString(1, datafield);
-			deleteFromBriefFormat.execute();
+			_deleteFromBriefFormat(datafield, deleteFromBriefFormat);
 
 			_insertIntoBriefFormat(datafield, format, sortOrder, insertIntoBriefFormat);
 		}
 
+	}
+
+	private void _deleteFromBriefFormat(String datafield, PreparedStatement deleteFromBriefFormat) throws SQLException {
+		deleteFromBriefFormat.setString(1, datafield);
+		deleteFromBriefFormat.execute();
 	}
 
 	private void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
