@@ -18,6 +18,10 @@ public class ParameterSetterFactory {
 			return (PreparedStatement preparedStatement, Object parameter, int position) ->
 				preparedStatement.setInt(position, (Integer) parameter);
 		}
+		else if (parameterClass.isAssignableFrom(Boolean.class)) {
+			return (PreparedStatement preparedStatement, Object parameter, int position) ->
+				preparedStatement.setBoolean(position, (Boolean) parameter);
+		}
 		else {
 			throw new ParameterSetterNotFoundException(parameterClass);
 		}
