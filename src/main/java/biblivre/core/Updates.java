@@ -57,67 +57,14 @@ public class Updates {
 			for (UpdateService updateService : serviceLoader) {
 				if (!installedVersions.contains(updateService.getVersion())) {
 					con = dao.beginUpdate();
+
 					updateService.doUpdate(con);
+
 					dao.commitUpdate(updateService.getVersion(), con);
 				}
 			}
 
 			String version = null;
-
-			version = "4.0.6b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-
-				Translations.addSingleTranslation("global", "pt-BR", "administration.reports.title.custom_count", "Relatório de contagem pelo campo Marc", 0);
-				Translations.addSingleTranslation("global", "pt-BR", "cataloging.bibliographic.search.holding_accession_number", "Tombo patrimonial", 0);
-				Translations.addSingleTranslation("global", "pt-BR", "cataloging.bibliographic.search.holding_id", "Código de barras da etiqueta", 0);
-				Translations.addSingleTranslation("global", "pt-BR", "search.holding.shelf_location", "Localização", 0);
-				Translations.addSingleTranslation("global", "pt-BR", "circulation.lending.no_holding_found", "Nenhum exemplar encontrado", 0);
-
-				Translations.addSingleTranslation("global", "en-US", "administration.reports.title.custom_count", "Marc field counting report", 0);
-				Translations.addSingleTranslation("global", "en-US", "cataloging.bibliographic.search.holding_accession_number", "Asset number", 0);
-				Translations.addSingleTranslation("global", "en-US", "cataloging.bibliographic.search.holding_id", "Label barcode number", 0);
-				Translations.addSingleTranslation("global", "en-US", "search.holding.shelf_location", "Location", 0);
-				Translations.addSingleTranslation("global", "en-US", "circulation.lending.no_holding_found", "No copy found", 0);
-
-				Translations.addSingleTranslation("global", "es", "administration.reports.title.custom_count", "Informe de recuento del campo Marc", 0);
-				Translations.addSingleTranslation("global", "es", "cataloging.bibliographic.search.holding_accession_number", "Sello patrimonial", 0);
-				Translations.addSingleTranslation("global", "es", "cataloging.bibliographic.search.holding_id", "Código de barras de la etiqueta", 0);
-				Translations.addSingleTranslation("global", "es", "search.holding.shelf_location", "Localización", 0);
-				Translations.addSingleTranslation("global", "es", "circulation.lending.no_holding_found", "Ningún ejemplar encontrado", 0);
-
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.7b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.8b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-
-				Translations.addSingleTranslation("global", "pt-BR", "administration.setup.biblivre3restore.log_header", "[Log de restauração de backup do Biblivre 3]\n\n", 0);
-				Translations.addSingleTranslation("global", "en-US", "administration.setup.biblivre3restore.log_header", "[Log for Biblivre 3 backup restoration]\n\n", 0);
-				Translations.addSingleTranslation("global", "es", "administration.setup.biblivre3restore.log_header", "[Log de restauración de backup del Biblivre 3]\n\n", 0);
-
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.9b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-
-				dao.fixUpdateTranslationFunction(con);
-				dao.fixUpdateUserFunction(con);
-				if (!dao.checkTableExistance("backups")) {
-					dao.fixBackupTable(con);
-				}
-
-				dao.commitUpdate(version, con);
-			}
 
 			version = "4.0.10b";
 			if (!installedVersions.contains(version)) {

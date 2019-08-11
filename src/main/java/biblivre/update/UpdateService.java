@@ -12,7 +12,7 @@ public interface UpdateService {
 		dao.commitUpdate(getVersion(), connection);
 	}
 
-	public default void doUpdate(Connection connection) {
+	public default void doUpdate(Connection connection) throws SQLException {
 		// Do nothing
 	}
 }
