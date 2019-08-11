@@ -424,24 +424,34 @@ public class UpdatesDAO extends AbstractDAO {
 	}
 	
 	public void addBriefFormat(Connection con, RecordType recordType, String datafield, String format, Integer sortOrder) throws SQLException {
-		StringBuilder deleteSql = new StringBuilder();			
-		deleteSql.append("DELETE FROM ").append(recordType).append("_brief_formats WHERE datafield = ?;");
+		StringBuilder deleteFromBriefFormatsSQLTemplate =
+				new StringBuilder(3)
+						.append("DELETE FROM ")
+						.append(recordType)
+						.append("_brief_formats WHERE datafield = ?;");
 
-		PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
-		
-		deletePst.setString(1, datafield);
-		deletePst.execute();
-		
-		
-		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO ").append(recordType).append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
-		PreparedStatement pst = con.prepareStatement(sql.toString());
-		
-		pst.setString(1, datafield);
-		pst.setString(2, format);
-		pst.setInt(3, sortOrder);
-		
-		pst.execute();
+		StringBuilder insertIntoBriefFormatsSQLTemplate =
+				new StringBuilder(3)
+				.append("INSERT INTO ")
+				.append(recordType)
+				.append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
+
+		try (
+				PreparedStatement deleteFromBriefFormat = con.prepareStatement(
+						deleteFromBriefFormatsSQLTemplate.toString());
+
+				PreparedStatement insertIntoBriefFormat = con.prepareStatement(
+						insertIntoBriefFormatsSQLTemplate.toString());
+		) {
+			deleteFromBriefFormat.setString(1, datafield);
+			deleteFromBriefFormat.execute();
+
+			insertIntoBriefFormat.setString(1, datafield);
+			insertIntoBriefFormat.setString(2, format);
+			insertIntoBriefFormat.setInt(3, sortOrder);
+			insertIntoBriefFormat.execute();
+		}
+
 	}
 	
 	public void updateBriefFormat(Connection con, RecordType recordType, String datafield, String format) throws SQLException {
