@@ -64,12 +64,6 @@ public class Updates {
 
 			String version = null;
 
-			version = "4.0.1b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
 			version = "4.0.2b";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
