@@ -73,15 +73,21 @@ public class UpdatesDAO extends AbstractDAO {
 	public void commitUpdate(String version, Connection con, boolean insert) throws SQLException {
 		try {
 			if (insert) {
-				String sql = "INSERT INTO versions (installed_versions) VALUES (?);"; 
+				try (PreparedStatement insertIntoVersions = con.prepareStatement(
+						"INSERT INTO versions (installed_versions) VALUES (?);")) {
+
+					PreparedStatementUtil.setAllParameters(insertIntoVersions, version);
 	
-				PreparedStatement pst = con.prepareStatement(sql);
-				pst.setString(1, version);
-				pst.executeUpdate();
+					insertIntoVersions.executeUpdate();
+				} catch (ParameterSetterNotFoundException e) {
+					// Should never happen
+					e.printStackTrace();
+				}
+
+				this.commit(con);
 			}
-			
-			this.commit(con);
-		} finally {
+		}
+		finally {
 			this.closeConnection(con);
 		}
 	}	
@@ -111,17 +117,13 @@ public class UpdatesDAO extends AbstractDAO {
 	}	
 	
 	public void create81ArrayAgg() throws SQLException {
-		Connection con = null;
 
-		try {
-			con = this.getConnection();
+		try (Connection con = this.getConnection();
+				Statement st = con.createStatement(); ) {
 
 			String sql = "CREATE AGGREGATE public.array_agg (SFUNC = array_append, BASETYPE = anyelement, STYPE = anyarray, INITCOND = '{}');"; 
 
-			Statement st = con.createStatement();
 			st.execute(sql);
-		} finally {
-			this.closeConnection(con);
 		}
 	}
 
@@ -389,26 +391,61 @@ public class UpdatesDAO extends AbstractDAO {
 		st.execute(sql);
 	}
 	
-	public void addIndexingGroup(Connection con, RecordType recordType, String name, String datafields, boolean sortable) throws SQLException {
-		StringBuilder deleteSql = new StringBuilder();			
-		deleteSql.append("DELETE FROM ").append(recordType).append("_indexing_groups WHERE translation_key = ?;");
+	public void addIndexingGroup(
+			Connection con, RecordType recordType, String name, String datafields, boolean sortable)
+		throws SQLException {
 
-		PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
+		_deleteFromIndexingGroupsByTranslationKey(recordType, name, con);
 		
-		deletePst.setString(1, name);
-		deletePst.execute();
+		_insertIntoIndexingGroups(recordType, name, datafields, sortable, con);
+	}
+
+	private void _insertIntoIndexingGroups(
+			RecordType recordType, String name, String datafields, boolean sortable,
+			Connection con)
+		throws SQLException{
+
+		StringBuilder sql =
+				new StringBuilder(3)
+					.append("INSERT INTO ")
+					.append(recordType)
+					.append("_indexing_groups (translation_key, datafields, sortable) "
+						+ "VALUES (?, ?, ?);");
 		
-		
-		StringBuilder sql = new StringBuilder();			
-		sql.append("INSERT INTO ").append(recordType).append("_indexing_groups (translation_key, datafields, sortable) VALUES (?, ?, ?);");
-		
-		PreparedStatement pst = con.prepareStatement(sql.toString());
-		
-		pst.setString(1, name);
-		pst.setString(2, datafields);
-		pst.setBoolean(3, sortable);
-		
-		pst.execute();
+		try (PreparedStatement insertIntoIndexingGroups = con.prepareStatement(sql.toString())) {
+
+			PreparedStatementUtil.setAllParameters(
+					insertIntoIndexingGroups, name, datafields, sortable);
+
+			insertIntoIndexingGroups.execute();
+		} catch (ParameterSetterNotFoundException e) {
+			// Should never happen
+			e.printStackTrace();
+		}
+
+	}
+
+	private void _deleteFromIndexingGroupsByTranslationKey(
+			RecordType recordType, String translationKey, Connection con)
+		throws SQLException {
+
+		StringBuilder deleteFromIndexingGroupsByTranslationKeySQLTemplate =
+				new StringBuilder(3)
+					.append("DELETE FROM ")
+					.append(recordType)
+					.append("_indexing_groups WHERE translation_key = ?;");
+
+		try (PreparedStatement deleteFromIndexingGroupsByTranslationKey = con.prepareStatement(
+					deleteFromIndexingGroupsByTranslationKeySQLTemplate.toString())) {
+
+			PreparedStatementUtil.setAllParameters(
+					deleteFromIndexingGroupsByTranslationKey, translationKey);
+
+			deleteFromIndexingGroupsByTranslationKey.execute();
+		} catch (ParameterSetterNotFoundException e) {
+			// Should never happen
+			e.printStackTrace();
+		}
 	}
 
 	public void updateIndexingGroup(Connection con, RecordType recordType, String name, String datafields) throws SQLException {
@@ -464,10 +501,8 @@ public class UpdatesDAO extends AbstractDAO {
 				.append(recordType)
 				.append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
 
-		try (
-			PreparedStatement insertIntoBriefFormat = con.prepareStatement(
-					insertIntoBriefFormatsSQLTemplate.toString());
-		) {
+		try (PreparedStatement insertIntoBriefFormat = con.prepareStatement(
+					insertIntoBriefFormatsSQLTemplate.toString())) {
 
 			PreparedStatementUtil.setAllParameters(
 					insertIntoBriefFormat, datafield, format, sortOrder);
@@ -551,9 +586,7 @@ public class UpdatesDAO extends AbstractDAO {
 					.append(tableName)
 					.append(" SET sort_order = (CAST(datafield as INT));");
 
-		try (
-			Statement updateSt = con.createStatement();
-		) {
+		try (Statement updateSt = con.createStatement()) {
 			updateSt.execute(updateSql.toString());
 		}
 	}
@@ -568,9 +601,7 @@ public class UpdatesDAO extends AbstractDAO {
 					.append(tableName)
 					.append(" SET sort_order = (CAST(datafield as INT) + ASCII(subfield));");
 
-		try (
-			Statement updateSt = con.createStatement();
-		) {
+		try (Statement updateSt = con.createStatement()) {
 			updateSt.execute(updateSql.toString());
 		}
 	}
@@ -582,9 +613,7 @@ public class UpdatesDAO extends AbstractDAO {
 					.append(tableName)
 					.append(" ADD COLUMN sort_order integer;");
 
-		try (
-			Statement addDatafieldColumnSt = con.createStatement();
-		) {
+		try (Statement addDatafieldColumnSt = con.createStatement()) {
 			addDatafieldColumnSt.execute(addSortOrderColumnSQL.toString());
 		}
 	}
