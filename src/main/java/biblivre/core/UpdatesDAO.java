@@ -444,8 +444,14 @@ public class UpdatesDAO extends AbstractDAO {
 		PreparedStatement deleteFromBriefFormat = con.prepareStatement(
 				deleteFromBriefFormatsSQLTemplate.toString());
 
-		deleteFromBriefFormat.setString(1, datafield);
-		deleteFromBriefFormat.execute();
+		try {
+			PreparedStatementUtil.setAllParameters(deleteFromBriefFormat, datafield);
+
+			deleteFromBriefFormat.execute();
+		} catch (ParameterSetterNotFoundException e) {
+			// Should never happen.
+			e.printStackTrace();
+		}
 	}
 
 	private void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
@@ -458,13 +464,19 @@ public class UpdatesDAO extends AbstractDAO {
 				.append(recordType)
 				.append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
 
-		PreparedStatement insertIntoBriefFormat = con.prepareStatement(
-				insertIntoBriefFormatsSQLTemplate.toString());
+		try (
+			PreparedStatement insertIntoBriefFormat = con.prepareStatement(
+					insertIntoBriefFormatsSQLTemplate.toString());
+		) {
 
-		insertIntoBriefFormat.setString(1, datafield);
-		insertIntoBriefFormat.setString(2, format);
-		insertIntoBriefFormat.setInt(3, sortOrder);
-		insertIntoBriefFormat.execute();
+			PreparedStatementUtil.setAllParameters(
+					insertIntoBriefFormat, datafield, format, sortOrder);
+
+			insertIntoBriefFormat.execute();
+		} catch (ParameterSetterNotFoundException e) {
+			// Should never happen.
+			e.printStackTrace();
+		}
 	}
 	
 	public void updateBriefFormat(Connection con, RecordType recordType, String datafield, String format) throws SQLException {
