@@ -446,12 +446,17 @@ public class UpdatesDAO extends AbstractDAO {
 			deleteFromBriefFormat.setString(1, datafield);
 			deleteFromBriefFormat.execute();
 
-			insertIntoBriefFormat.setString(1, datafield);
-			insertIntoBriefFormat.setString(2, format);
-			insertIntoBriefFormat.setInt(3, sortOrder);
-			insertIntoBriefFormat.execute();
+			_insertIntoBriefFormat(datafield, format, sortOrder, insertIntoBriefFormat);
 		}
 
+	}
+
+	private void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
+			PreparedStatement insertIntoBriefFormat) throws SQLException {
+		insertIntoBriefFormat.setString(1, datafield);
+		insertIntoBriefFormat.setString(2, format);
+		insertIntoBriefFormat.setInt(3, sortOrder);
+		insertIntoBriefFormat.execute();
 	}
 	
 	public void updateBriefFormat(Connection con, RecordType recordType, String datafield, String format) throws SQLException {
