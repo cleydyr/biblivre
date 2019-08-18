@@ -82,7 +82,7 @@ public class Update implements UpdateService {
 				"El archivo de copia de seguridad seleccionado previamente no contiene archivos " +
 						"digitales. Si usted tiene una copia de seguridad de sólo archivos " +
 						"digitales, seleccione el archivo que desee a continuación, o cargar " +
-						"el mismo. Si no desea importar Digital Media, haga clic en " + 
+						"el mismo. Si no desea importar Digital Media, haga clic en " +
 						"<strong>Pasar</ strong>.");
 
 		Translations.addSingleTranslation(
