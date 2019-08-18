@@ -53,10 +53,9 @@ public class Update implements UpdateService {
 					}
 				}
 		);
-
 	}
 
-	private void _addUpdateTranslationsToBatch(Statement batchUpdateStatement) throws SQLException {
+	private void _addUpdateTranslationsToBatch(Statement batchUpdateStatement) {
 		_TRANSLATIONS_ORIGINAL_REPLACEMENT_PAIRS.forEach(
 				(original, replacement) -> {
 					try {
