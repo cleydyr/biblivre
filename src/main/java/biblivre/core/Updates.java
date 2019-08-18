@@ -210,17 +210,17 @@ public class Updates {
 				con = dao.beginUpdate();
 				dao.commitUpdate(version, con);
 			}
-			
+
 			version = "4.1.7";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-				
+
 				dao.fixHoldingCreationTable(con);
 				dao.fixCDDBiblioBriefFormat(con);
-				
+
 				dao.commitUpdate(version, con);
 			}
-			
+
 			version = "4.1.8";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
@@ -236,35 +236,35 @@ public class Updates {
 			version = "4.1.10";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-				
+
 				dao.addIndexingGroup(con, RecordType.BIBLIO, "publisher", "260_b", true);
 				dao.addIndexingGroup(con, RecordType.BIBLIO, "series", "490_a", true);
 
 				dao.addBriefFormat(con, RecordType.BIBLIO, "501", "${a}", 28);
 				dao.addBriefFormat(con, RecordType.BIBLIO, "530", "${a}", 31);
 				dao.addBriefFormat(con, RecordType.BIBLIO, "595", "${a}", 33);
-				
+
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "245", "${a}_{: }${b}_{ / }${c}");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "100", "${a}_{ - }${d}_{ }(${q})");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "110", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "111", "${a}_{. }(${n}_{ : }${d}_{ : }${c})");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "130", "${a}_{. }${l}_{. }${f}");
-				
+
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "600", "${a}_{. }${b}_{. }${c}_{. }${d}_{ - }${x}_{ - }${y}_{ - }${z}");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "610", "${a}_{. }${b}_{ - }${x}_{ - }${y}_{ - }${z}");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "611", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})_{ - }${x}_{ - }${y}_{ - }${z}");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})_{ - }${x}_{ - }${y}_{ - }${z}");
-				
+
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "700", "${a}_{. }${d}");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "710", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "711", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
 				dao.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})");
-				
+
 				dao.updateIndexingGroup(con, RecordType.BIBLIO, "title", "245_a_b,243_a_f,240_a,730_a,740_a_n_p,830_a_v,250_a,130_a");
 
 				Fields.reset(schema, RecordType.BIBLIO);
 				IndexingGroups.reset(schema, RecordType.BIBLIO);
-				
+
 				dao.commitUpdate(version, con);
 			}
 
@@ -277,8 +277,8 @@ public class Updates {
 
 				dao.invalidateIndex(con, RecordType.BIBLIO);
 
-				
-				Fields.reset(schema, RecordType.BIBLIO);				
+
+				Fields.reset(schema, RecordType.BIBLIO);
 
 				dao.commitUpdate(version, con);
 			}
@@ -288,28 +288,28 @@ public class Updates {
 				con = dao.beginUpdate();
 				dao.commitUpdate(version, con);
 			}
-			
+
 			version = "4.1.11a";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-				
+
 				dao.fixAuthoritiesBriefFormat(con);
-				
+
 				dao.commitUpdate(version, con);
 			}
-			
+
 			version = "5.0.0";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-				
+
 				for (RecordType recordType : RecordType.values()) {
 					dao.addDatafieldSortOrderColumns(con, recordType);
 					dao.addSubfieldSortOrderColumns(con, recordType);
 				}
-			
+
 				dao.commitUpdate(version, con);
 			}
-			
+
 			 version = "5.0.1";
 			 if (!installedVersions.contains(version)) {
 				 con = dao.beginUpdate();
@@ -324,11 +324,11 @@ public class Updates {
 			version = "5.0.1b";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-				
+
 				dao.addBriefFormatSortOrderColumns(con, RecordType.BIBLIO);
 				dao.addBriefFormatSortOrderColumns(con, RecordType.AUTHORITIES);
 				dao.addBriefFormatSortOrderColumns(con, RecordType.VOCABULARY);
-			
+
 				dao.commitUpdate(version, con);
 			}
 
@@ -337,7 +337,7 @@ public class Updates {
 				con = dao.beginUpdate();
 				dao.commitUpdate(version, con);
 			}
-			
+
 			version = "5.0.3";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
@@ -347,9 +347,9 @@ public class Updates {
 			version = "5.0.4c";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
-				
+
 				dao.updateZ3950Address(con, "Library of Congress Online Catalog - EUA", "lx2.loc.gov");
-				
+
 				dao.commitUpdate(version, con);
 			}
 
@@ -359,7 +359,7 @@ public class Updates {
 			// dao.commitUpdate(version, con);
 			// }
 
-			
+
 			return true;
 		} catch (Exception e) {
 			dao.rollbackUpdate(con);
