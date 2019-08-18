@@ -46,7 +46,7 @@ public class Updates {
 	}
 
 	public static boolean globalUpdate() {
-		UpdatesDAO dao = UpdatesDAO.getInstance("global");
+		UpdatesDAO dao = UpdatesDAO.getInstance(Constants.GLOBAL_SCHEMA);
 
 		Connection con = null;
 		try {
