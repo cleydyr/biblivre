@@ -131,7 +131,7 @@ public class Update implements UpdateService {
 
 	@Override
 	public String getVersion() {
-		return "4.0.6b";
+		return "4.0.12b";
 	}
 
 }
