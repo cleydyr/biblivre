@@ -86,42 +86,21 @@ public class Updates {
 
 			Set<String> installedVersions = dao.getInstalledVersions();
 
-			String version = "4.0.0b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
+			ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
+
+			for (UpdateService updateService : serviceLoader) {
+				if (!installedVersions.contains(updateService.getVersion())) {
+					con = dao.beginUpdate();
+
+					updateService.doUpdateScopedBySchema(con);
+
+					dao.commitUpdate(updateService.getVersion(), con);
+
+					updateService.afterUpdate();
+				}
 			}
 
-			version = "4.0.1b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.2b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.3b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.4b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.5b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.fixUserNameAscii(con);
-				dao.commitUpdate(version, con);
-			}
+			String version = null;
 
 			version = "4.0.6b";
 			if (!installedVersions.contains(version)) {
