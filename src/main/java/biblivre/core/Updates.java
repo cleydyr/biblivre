@@ -68,17 +68,6 @@ public class Updates {
 
 			String version = null;
 
-			 version = "5.0.1";
-			 if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.replaceBiblivreVersion(con);
-
-				dao.commitUpdate(version, con);
-
-				Translations.reset();
-				Configurations.reset();
-			 }
-
 			 version = "5.0.1b";
 			 if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
