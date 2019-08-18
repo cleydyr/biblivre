@@ -1,6 +1,8 @@
 package biblivre.update.v4_0_12b;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
@@ -116,6 +118,32 @@ public class Update implements UpdateService {
 				"es", "multi_schema.manage.drop_schema.confirm",
 				"La biblioteca será excluida permanentemente del sistema y no podrá ser " +
 						"recuperada");
+	}
+
+	@Override
+	public void doUpdateScopedBySchema(Connection connection) throws SQLException {
+		_fixAuthoritiesAutoComplete(connection);
+
+		_fixVocabularyAutoComplete(connection);
+	}
+
+
+	private void _fixAuthoritiesAutoComplete(Connection connection) throws SQLException {
+		String sql = "UPDATE biblio_form_subfields SET autocomplete_type = 'authorities' " +
+				"WHERE subfield = 'a' AND datafield in ('100', '110', '111');";
+
+		try (Statement st = connection.createStatement()) {
+			st.execute(sql);
+		};
+	}
+
+	private void _fixVocabularyAutoComplete(Connection connection) throws SQLException {
+		String sql = "UPDATE biblio_form_subfields SET autocomplete_type = 'vocabulary' " +
+				"WHERE subfield = 'a' AND datafield in ('600', '610', '611', '630', '650', '651');";
+
+		try (Statement st = connection.createStatement()) {
+			st.execute(sql);
+		}
 	}
 
 	@Override

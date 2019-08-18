@@ -102,52 +102,6 @@ public class Updates {
 
 			String version = null;
 
-			version = "4.0.6b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.7b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.8b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.9b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.10b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.11b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "4.0.12b";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-
-				dao.fixAuthoritiesAutoComplete();
-				dao.fixVocabularyAutoComplete();
-
-				dao.commitUpdate(version, con);
-			}
-
 			version = "4.1.0";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
