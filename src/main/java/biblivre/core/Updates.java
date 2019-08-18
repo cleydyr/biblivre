@@ -66,21 +66,6 @@ public class Updates {
 
 			String version = null;
 
-			version = "4.1.10";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				
-				Translations.addSingleTranslation("pt-BR", "cataloging.bibliographic.indexing_groups.publisher", "Editora");
-				Translations.addSingleTranslation("en-US", "cataloging.bibliographic.indexing_groups.publisher", "Publisher");
-				Translations.addSingleTranslation("es", "cataloging.bibliographic.indexing_groups.publisher", "Editora");
-
-				Translations.addSingleTranslation("pt-BR", "cataloging.bibliographic.indexing_groups.series", "Série");
-				Translations.addSingleTranslation("en-US", "cataloging.bibliographic.indexing_groups.series", "Series");
-				Translations.addSingleTranslation("es", "cataloging.bibliographic.indexing_groups.series", "Serie");
-
-				dao.commitUpdate(version, con);
-			}
-			
 			version = "4.1.10a";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
