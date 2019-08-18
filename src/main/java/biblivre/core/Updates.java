@@ -66,25 +66,6 @@ public class Updates {
 
 			String version = null;
 
-			version = "4.1.10a";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				
-				Translations.addSingleTranslation("pt-BR", "cataloging.tab.record.custom.field_label.biblio_501", "Notas");
-				Translations.addSingleTranslation("en-US", "cataloging.tab.record.custom.field_label.biblio_501", "Notes");
-				Translations.addSingleTranslation("es", "cataloging.tab.record.custom.field_label.biblio_501", "Notas");
-
-				Translations.addSingleTranslation("pt-BR", "cataloging.tab.record.custom.field_label.biblio_530", "Notas");
-				Translations.addSingleTranslation("en-US", "cataloging.tab.record.custom.field_label.biblio_530", "Notes");
-				Translations.addSingleTranslation("es", "cataloging.tab.record.custom.field_label.biblio_530", "Notas");
-
-				Translations.addSingleTranslation("pt-BR", "cataloging.tab.record.custom.field_label.biblio_595", "Notas");
-				Translations.addSingleTranslation("en-US", "cataloging.tab.record.custom.field_label.biblio_595", "Notes");
-				Translations.addSingleTranslation("es", "cataloging.tab.record.custom.field_label.biblio_595", "Notas");
-
-				dao.commitUpdate(version, con);
-			}
-			
 			version = "4.1.11";
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
