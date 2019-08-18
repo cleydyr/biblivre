@@ -79,9 +79,6 @@ public class UpdatesDAO extends AbstractDAO {
 					PreparedStatementUtil.setAllParameters(insertIntoVersions, version);
 	
 					insertIntoVersions.executeUpdate();
-				} catch (ParameterSetterNotFoundException e) {
-					// Should never happen
-					e.printStackTrace();
 				}
 
 				this.commit(con);
@@ -277,11 +274,7 @@ public class UpdatesDAO extends AbstractDAO {
 					insertIntoIndexingGroups, name, datafields, sortable);
 
 			insertIntoIndexingGroups.execute();
-		} catch (ParameterSetterNotFoundException e) {
-			// Should never happen
-			e.printStackTrace();
 		}
-
 	}
 
 	private void _deleteFromIndexingGroupsByTranslationKey(
@@ -301,9 +294,6 @@ public class UpdatesDAO extends AbstractDAO {
 					deleteFromIndexingGroupsByTranslationKey, translationKey);
 
 			deleteFromIndexingGroupsByTranslationKey.execute();
-		} catch (ParameterSetterNotFoundException e) {
-			// Should never happen
-			e.printStackTrace();
 		}
 	}
 
@@ -340,14 +330,9 @@ public class UpdatesDAO extends AbstractDAO {
 		PreparedStatement deleteFromBriefFormat = con.prepareStatement(
 				deleteFromBriefFormatsSQLTemplate.toString());
 
-		try {
-			PreparedStatementUtil.setAllParameters(deleteFromBriefFormat, datafield);
+		PreparedStatementUtil.setAllParameters(deleteFromBriefFormat, datafield);
 
-			deleteFromBriefFormat.execute();
-		} catch (ParameterSetterNotFoundException e) {
-			// Should never happen.
-			e.printStackTrace();
-		}
+		deleteFromBriefFormat.execute();
 	}
 
 	private void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
@@ -367,9 +352,6 @@ public class UpdatesDAO extends AbstractDAO {
 					insertIntoBriefFormat, datafield, format, sortOrder);
 
 			insertIntoBriefFormat.execute();
-		} catch (ParameterSetterNotFoundException e) {
-			// Should never happen.
-			e.printStackTrace();
 		}
 	}
 	

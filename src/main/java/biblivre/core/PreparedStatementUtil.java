@@ -7,7 +7,7 @@ public class PreparedStatementUtil {
 	private static final int FIRST_POSITION = 1;
 
 	public static void setAllParameters(PreparedStatement preparedStatement, Object... parameters)
-			throws ParameterSetterNotFoundException, SQLException {
+			throws SQLException {
 		int position = FIRST_POSITION;
 
 		for (Object parameter : parameters) {
