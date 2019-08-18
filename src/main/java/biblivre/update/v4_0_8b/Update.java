@@ -10,16 +10,16 @@ public class Update implements UpdateService {
 	@Override
 	public void doUpdate(Connection connection) {
 		Translations.addSingleTranslation(
-				"global", "pt-BR", "administration.setup.biblivre3restore.log_header",
-				"[Log de restauração de backup do Biblivre 3]\n\n", 0);
+				"pt-BR", "administration.setup.biblivre3restore.log_header",
+				"[Log de restauração de backup do Biblivre 3]\n\n");
 
 		Translations.addSingleTranslation(
-				"global", "en-US", "administration.setup.biblivre3restore.log_header",
-				"[Log for Biblivre 3 backup restoration]\n\n", 0);
+				"en-US", "administration.setup.biblivre3restore.log_header",
+				"[Log for Biblivre 3 backup restoration]\n\n");
 
 		Translations.addSingleTranslation(
-				"global", "es", "administration.setup.biblivre3restore.log_header",
-				"[Log de restauración de backup del Biblivre 3]\n\n", 0);
+				"es", "administration.setup.biblivre3restore.log_header",
+				"[Log de restauración de backup del Biblivre 3]\n\n");
 	}
 
 	@Override

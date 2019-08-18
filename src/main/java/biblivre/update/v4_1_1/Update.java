@@ -34,14 +34,13 @@ public class Update implements UpdateService {
 				"Seleccione un archivo de copia de seguridad Biblivre 4");
 
 		Translations.addSingleTranslation(
-				"pt-BR", "multi_schema.restore.limit.title",
-				"Bibliotecas no arquivo selecionado");
+				"pt-BR", "multi_schema.restore.limit.title", "Bibliotecas no arquivo selecionado");
 
-		Translations.addSingleTranslation("en-US", "multi_schema.restore.limit.title",
-				"Libraries in the selected file");
+		Translations.addSingleTranslation(
+				"en-US", "multi_schema.restore.limit.title", "Libraries in the selected file");
 
-		Translations.addSingleTranslation("es", "multi_schema.restore.limit.title",
-				"Bibliotecas en el archivo seleccionado");
+		Translations.addSingleTranslation(
+				"es", "multi_schema.restore.limit.title", "Bibliotecas en el archivo seleccionado");
 
 		Translations.addSingleTranslation(
 				"pt-BR", "multi_schema.restore.limit.description",
