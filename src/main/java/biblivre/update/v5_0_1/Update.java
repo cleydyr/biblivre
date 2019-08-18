@@ -30,13 +30,14 @@ public class Update implements UpdateService {
 	}
 
 	private void _replaceBiblivreVersion(Connection con)  throws SQLException {
-		Statement batchUpdateStatement = con.createStatement();
+		try (Statement batchUpdateStatement = con.createStatement()) {
 
-		_addUpdateTranslationsToBatch(batchUpdateStatement);
+			_addUpdateTranslationsToBatch(batchUpdateStatement);
 
-		_addUpdateConfigurationsToBatch(batchUpdateStatement);
+			_addUpdateConfigurationsToBatch(batchUpdateStatement);
 
-		batchUpdateStatement.executeBatch();
+			batchUpdateStatement.executeBatch();
+		}
 	}
 
 	private void _addUpdateConfigurationsToBatch(Statement batchUpdateStatement) {
