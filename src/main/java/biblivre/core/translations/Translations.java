@@ -123,7 +123,8 @@ public class Translations extends StaticBO {
 	}
 
 	public static boolean addSingleTranslation(String language, String key, String text) {
-		return addSingleTranslation("global", language, key, text, 0);
+		return addSingleTranslation(
+				Constants.GLOBAL_SCHEMA, language, key, text, Constants.ADMIN_LOGGED_USER_ID);
 	}
 
 	public static boolean addSingleTranslation(String schema, String language, String key, String text, int loggedUser) {
