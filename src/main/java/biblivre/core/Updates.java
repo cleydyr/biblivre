@@ -61,6 +61,8 @@ public class Updates {
 					updateService.doUpdate(con);
 
 					dao.commitUpdate(updateService.getVersion(), con);
+
+					updateService.afterUpdate();
 				}
 			}
 
