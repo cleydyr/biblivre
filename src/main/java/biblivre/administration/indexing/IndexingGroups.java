@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.administration.indexing;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import biblivre.cataloging.enums.RecordType;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.StaticBO;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
@@ -98,7 +102,69 @@ public class IndexingGroups extends StaticBO {
 		
 		return (sort != null) ? sort.getId() : 1;
 	}
-	
+
+	public static void addIndexingGroup(
+			Connection con, RecordType recordType, String name, String datafields, boolean sortable)
+		throws SQLException {
+
+		_deleteFromIndexingGroupsByTranslationKey(recordType, name, con);
+		
+		_insertIntoIndexingGroups(recordType, name, datafields, sortable, con);
+	}
+
+	public static void updateIndexingGroup(Connection con, RecordType recordType, String name, String datafields) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE ").append(recordType).append("_indexing_groups SET datafields = ? WHERE translation_key = ?;");
+		
+		PreparedStatement pst = con.prepareStatement(sql.toString());
+		
+		pst.setString(1, datafields);
+		pst.setString(2, name);
+		
+		pst.execute();
+	}
+
+	private static void _insertIntoIndexingGroups(
+			RecordType recordType, String name, String datafields, boolean sortable,
+			Connection con)
+		throws SQLException{
+
+		StringBuilder sql =
+				new StringBuilder(3)
+					.append("INSERT INTO ")
+					.append(recordType)
+					.append("_indexing_groups (translation_key, datafields, sortable) "
+						+ "VALUES (?, ?, ?);");
+		
+		try (PreparedStatement insertIntoIndexingGroups = con.prepareStatement(sql.toString())) {
+
+			PreparedStatementUtil.setAllParameters(
+					insertIntoIndexingGroups, name, datafields, sortable);
+
+			insertIntoIndexingGroups.execute();
+		}
+	}
+
+	private static void _deleteFromIndexingGroupsByTranslationKey(
+			RecordType recordType, String translationKey, Connection con)
+		throws SQLException {
+
+		StringBuilder deleteFromIndexingGroupsByTranslationKeySQLTemplate =
+				new StringBuilder(3)
+					.append("DELETE FROM ")
+					.append(recordType)
+					.append("_indexing_groups WHERE translation_key = ?;");
+
+		try (PreparedStatement deleteFromIndexingGroupsByTranslationKey = con.prepareStatement(
+					deleteFromIndexingGroupsByTranslationKeySQLTemplate.toString())) {
+
+			PreparedStatementUtil.setAllParameters(
+					deleteFromIndexingGroupsByTranslationKey, translationKey);
+
+			deleteFromIndexingGroupsByTranslationKey.execute();
+		}
+	}
+
 	private static synchronized List<IndexingGroupDTO> loadGroups(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
 		List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);

@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +31,7 @@ import org.apache.log4j.Logger;
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.JavascriptCacheableList;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.StaticBO;
 import biblivre.core.utils.Pair;
 
@@ -172,7 +176,64 @@ public class Fields extends StaticBO {
 
 		return list;
 	}
-	
+
+	public static void addBriefFormat(Connection con, RecordType recordType, String datafield,
+			String format, Integer sortOrder)
+		throws SQLException {
+
+		_deleteFromBriefFormat(datafield, recordType, con);
+
+		_insertIntoBriefFormat(datafield, format, sortOrder, recordType, con);
+	}
+
+	public static void updateBriefFormat(Connection con, RecordType recordType, String datafield, String format) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE ").append(recordType).append("_brief_formats SET format = ? WHERE datafield = ?;");
+		
+		PreparedStatement pst = con.prepareStatement(sql.toString());
+		
+		pst.setString(1, format);
+		pst.setString(2, datafield);
+		
+		pst.execute();
+	}
+
+	private static void _deleteFromBriefFormat(String datafield, RecordType recordType, Connection con)
+			throws SQLException {
+
+		StringBuilder deleteFromBriefFormatsSQLTemplate =
+				new StringBuilder(3)
+						.append("DELETE FROM ")
+						.append(recordType)
+						.append("_brief_formats WHERE datafield = ?;");
+
+		PreparedStatement deleteFromBriefFormat = con.prepareStatement(
+				deleteFromBriefFormatsSQLTemplate.toString());
+
+		PreparedStatementUtil.setAllParameters(deleteFromBriefFormat, datafield);
+
+		deleteFromBriefFormat.execute();
+	}
+
+	private static void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
+			RecordType recordType, Connection con)
+		throws SQLException {
+
+		StringBuilder insertIntoBriefFormatsSQLTemplate =
+				new StringBuilder(3)
+				.append("INSERT INTO ")
+				.append(recordType)
+				.append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
+
+		try (PreparedStatement insertIntoBriefFormat = con.prepareStatement(
+					insertIntoBriefFormatsSQLTemplate.toString())) {
+
+			PreparedStatementUtil.setAllParameters(
+					insertIntoBriefFormat, datafield, format, sortOrder);
+
+			insertIntoBriefFormat.execute();
+		}
+	}
 	private static synchronized List<BriefTabFieldFormatDTO> loadBriefFormats(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
 		List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);

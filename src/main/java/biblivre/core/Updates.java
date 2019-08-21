@@ -106,30 +106,30 @@ public class Updates {
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
 
-				dao.addIndexingGroup(con, RecordType.BIBLIO, "publisher", "260_b", true);
-				dao.addIndexingGroup(con, RecordType.BIBLIO, "series", "490_a", true);
+				IndexingGroups.addIndexingGroup(con, RecordType.BIBLIO, "publisher", "260_b", true);
+				IndexingGroups.addIndexingGroup(con, RecordType.BIBLIO, "series", "490_a", true);
 
-				dao.addBriefFormat(con, RecordType.BIBLIO, "501", "${a}", 28);
-				dao.addBriefFormat(con, RecordType.BIBLIO, "530", "${a}", 31);
-				dao.addBriefFormat(con, RecordType.BIBLIO, "595", "${a}", 33);
+				Fields.addBriefFormat(con, RecordType.BIBLIO, "501", "${a}", 28);
+				Fields.addBriefFormat(con, RecordType.BIBLIO, "530", "${a}", 31);
+				Fields.addBriefFormat(con, RecordType.BIBLIO, "595", "${a}", 33);
 
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "245", "${a}_{: }${b}_{ / }${c}");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "100", "${a}_{ - }${d}_{ }(${q})");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "110", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "111", "${a}_{. }(${n}_{ : }${d}_{ : }${c})");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "130", "${a}_{. }${l}_{. }${f}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "245", "${a}_{: }${b}_{ / }${c}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "100", "${a}_{ - }${d}_{ }(${q})");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "110", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "111", "${a}_{. }(${n}_{ : }${d}_{ : }${c})");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "130", "${a}_{. }${l}_{. }${f}");
 
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "600", "${a}_{. }${b}_{. }${c}_{. }${d}_{ - }${x}_{ - }${y}_{ - }${z}");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "610", "${a}_{. }${b}_{ - }${x}_{ - }${y}_{ - }${z}");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "611", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})_{ - }${x}_{ - }${y}_{ - }${z}");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})_{ - }${x}_{ - }${y}_{ - }${z}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "600", "${a}_{. }${b}_{. }${c}_{. }${d}_{ - }${x}_{ - }${y}_{ - }${z}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "610", "${a}_{. }${b}_{ - }${x}_{ - }${y}_{ - }${z}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "611", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})_{ - }${x}_{ - }${y}_{ - }${z}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})_{ - }${x}_{ - }${y}_{ - }${z}");
 
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "700", "${a}_{. }${d}");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "710", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "711", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "700", "${a}_{. }${d}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "710", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "711", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})");
 
-				dao.updateIndexingGroup(con, RecordType.BIBLIO, "title", "245_a_b,243_a_f,240_a,730_a,740_a_n_p,830_a_v,250_a,130_a");
+				IndexingGroups.updateIndexingGroup(con, RecordType.BIBLIO, "title", "245_a_b,243_a_f,240_a,730_a,740_a_n_p,830_a_v,250_a,130_a");
 
 				Fields.reset(schema, RecordType.BIBLIO);
 				IndexingGroups.reset(schema, RecordType.BIBLIO);
@@ -141,8 +141,8 @@ public class Updates {
 			if (!installedVersions.contains(version)) {
 				con = dao.beginUpdate();
 
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "490", "(${a}_{ ; }${v})");
-				dao.updateBriefFormat(con, RecordType.BIBLIO, "830", "${a}_{. }${p}_{ ; }${v}");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "490", "(${a}_{ ; }${v})");
+				Fields.updateBriefFormat(con, RecordType.BIBLIO, "830", "${a}_{. }${p}_{ ; }${v}");
 
 				dao.invalidateIndex(con, RecordType.BIBLIO);
 
