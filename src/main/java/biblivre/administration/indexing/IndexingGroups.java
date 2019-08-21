@@ -54,11 +54,13 @@ public class IndexingGroups extends StaticBO {
 
 	public static void reset(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+
 		IndexingGroups.groups.remove(pair);
 	}
 
 	public static List<IndexingGroupDTO> getGroups(String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);		
+		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+
 		List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
 
 		if (list == null) {
@@ -70,13 +72,16 @@ public class IndexingGroups extends StaticBO {
 
 	public static String getSearchableGroupsText(String schema, RecordType recordType, String language) {
 		List<String> list = new LinkedList<String>();
+
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
+
 		TranslationsMap translations = Translations.get(schema, language);
 
 		for (IndexingGroupDTO group : groups) {
 			if (group.getId() == 0) {
 				continue;
 			}
+
 			list.add(translations.getText("cataloging." + (recordType == RecordType.BIBLIO ? "bibliographic" : recordType) + ".indexing_groups." + group.getTranslationKey()));
 		}
 
@@ -87,6 +92,7 @@ public class IndexingGroups extends StaticBO {
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
 
 		IndexingGroupDTO sort = null;
+
 		for (IndexingGroupDTO group : groups) {
 			if (group.isSortable()) {
 				if (group.isDefaultSort()) {
@@ -112,22 +118,27 @@ public class IndexingGroups extends StaticBO {
 		_insertIntoIndexingGroups(recordType, name, datafields, sortable, con);
 	}
 
-	public static void updateIndexingGroup(Connection con, RecordType recordType, String name, String datafields) throws SQLException {
-		StringBuilder sql = new StringBuilder();
-		sql.append("UPDATE ").append(recordType).append("_indexing_groups SET datafields = ? WHERE translation_key = ?;");
+	public static void updateIndexingGroup(
+			Connection con, RecordType recordType, String name, String datafields)
+		throws SQLException {
 
-		PreparedStatement pst = con.prepareStatement(sql.toString());
+		StringBuilder sql =
+				new StringBuilder(3)
+					.append("UPDATE ")
+					.append(recordType)
+					.append("_indexing_groups SET datafields = ? WHERE translation_key = ?;");
 
-		pst.setString(1, datafields);
-		pst.setString(2, name);
+		try (PreparedStatement pst = con.prepareStatement(sql.toString())) {
+			PreparedStatementUtil.setAllParameters(pst, datafields, name);
 
-		pst.execute();
+			pst.execute();
+		}
 	}
 
 	private static void _insertIntoIndexingGroups(
 			RecordType recordType, String name, String datafields, boolean sortable,
 			Connection con)
-		throws SQLException{
+		throws SQLException {
 
 		StringBuilder sql =
 				new StringBuilder(3)
@@ -165,8 +176,11 @@ public class IndexingGroups extends StaticBO {
 		}
 	}
 
-	private static synchronized List<IndexingGroupDTO> loadGroups(String schema, RecordType recordType) {
+	private static synchronized List<IndexingGroupDTO> loadGroups(
+			String schema, RecordType recordType) {
+
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+
 		List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
 
 		// Checking again for thread safety.
@@ -181,6 +195,7 @@ public class IndexingGroups extends StaticBO {
 		IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance(schema);
 
 		list = dao.list(recordType);
+
 		IndexingGroups.groups.put(pair, list);
 
 		return list;
