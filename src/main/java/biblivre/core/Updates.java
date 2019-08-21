@@ -29,7 +29,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.configurations.Configurations;
@@ -101,41 +100,6 @@ public class Updates {
 			}
 
 			String version = null;
-
-			version = "4.1.10";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-
-				IndexingGroups.addIndexingGroup(con, RecordType.BIBLIO, "publisher", "260_b", true);
-				IndexingGroups.addIndexingGroup(con, RecordType.BIBLIO, "series", "490_a", true);
-
-				Fields.addBriefFormat(con, RecordType.BIBLIO, "501", "${a}", 28);
-				Fields.addBriefFormat(con, RecordType.BIBLIO, "530", "${a}", 31);
-				Fields.addBriefFormat(con, RecordType.BIBLIO, "595", "${a}", 33);
-
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "245", "${a}_{: }${b}_{ / }${c}");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "100", "${a}_{ - }${d}_{ }(${q})");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "110", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "111", "${a}_{. }(${n}_{ : }${d}_{ : }${c})");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "130", "${a}_{. }${l}_{. }${f}");
-
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "600", "${a}_{. }${b}_{. }${c}_{. }${d}_{ - }${x}_{ - }${y}_{ - }${z}");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "610", "${a}_{. }${b}_{ - }${x}_{ - }${y}_{ - }${z}");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "611", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})_{ - }${x}_{ - }${y}_{ - }${z}");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})_{ - }${x}_{ - }${y}_{ - }${z}");
-
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "700", "${a}_{. }${d}");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "710", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "711", "${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "630", "${a}_{. }(${d})");
-
-				IndexingGroups.updateIndexingGroup(con, RecordType.BIBLIO, "title", "245_a_b,243_a_f,240_a,730_a,740_a_n_p,830_a_v,250_a,130_a");
-
-				Fields.reset(schema, RecordType.BIBLIO);
-				IndexingGroups.reset(schema, RecordType.BIBLIO);
-
-				dao.commitUpdate(version, con);
-			}
 
 			version = "4.1.10a";
 			if (!installedVersions.contains(version)) {
