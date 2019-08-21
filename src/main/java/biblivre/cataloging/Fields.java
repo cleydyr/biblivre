@@ -186,20 +186,27 @@ public class Fields extends StaticBO {
 		_insertIntoBriefFormat(datafield, format, sortOrder, recordType, con);
 	}
 
-	public static void updateBriefFormat(Connection con, RecordType recordType, String datafield, String format) throws SQLException {
-		StringBuilder sql = new StringBuilder();
-		sql.append("UPDATE ").append(recordType).append("_brief_formats SET format = ? WHERE datafield = ?;");
+	public static void updateBriefFormat(
+			Connection con, RecordType recordType, String datafield, String format)
+		throws SQLException {
 
-		PreparedStatement pst = con.prepareStatement(sql.toString());
+		StringBuilder sql =
+				new StringBuilder(3)
+					.append("UPDATE ")
+					.append(recordType)
+					.append("_brief_formats SET format = ? WHERE datafield = ?;");
 
-		pst.setString(1, format);
-		pst.setString(2, datafield);
+		try (PreparedStatement pst = con.prepareStatement(sql.toString())) {
+			PreparedStatementUtil.setAllParameters(pst, format, datafield);
 
-		pst.execute();
+			pst.execute();
+		}
+
 	}
 
-	private static void _deleteFromBriefFormat(String datafield, RecordType recordType, Connection con)
-			throws SQLException {
+	private static void _deleteFromBriefFormat(
+			String datafield, RecordType recordType, Connection con)
+		throws SQLException {
 
 		StringBuilder deleteFromBriefFormatsSQLTemplate =
 				new StringBuilder(3)
@@ -215,8 +222,9 @@ public class Fields extends StaticBO {
 		deleteFromBriefFormat.execute();
 	}
 
-	private static void _insertIntoBriefFormat(String datafield, String format, Integer sortOrder,
-			RecordType recordType, Connection con)
+	private static void _insertIntoBriefFormat(
+			String datafield, String format, Integer sortOrder, RecordType recordType,
+			Connection con)
 		throws SQLException {
 
 		StringBuilder insertIntoBriefFormatsSQLTemplate =
