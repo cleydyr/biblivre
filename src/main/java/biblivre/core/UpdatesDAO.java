@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -43,7 +43,7 @@ public class UpdatesDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			String sql = "SELECT installed_versions FROM versions;"; 
+			String sql = "SELECT installed_versions FROM versions;";
 
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(sql);
@@ -59,7 +59,7 @@ public class UpdatesDAO extends AbstractDAO {
 	}	
 
 	public Connection beginUpdate() throws SQLException {
-		Connection con =  this.getConnection();
+		Connection con = this.getConnection();
 		con.setAutoCommit(false);
 
 		return con;
@@ -104,7 +104,7 @@ public class UpdatesDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			String sql = "CREATE AGGREGATE public.array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND=’{}’);"; 
+			String sql = "CREATE AGGREGATE public.array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND=’{}’);";
 
 			Statement st = con.createStatement();
 			st.execute(sql);
@@ -118,7 +118,7 @@ public class UpdatesDAO extends AbstractDAO {
 		try (Connection con = this.getConnection();
 				Statement st = con.createStatement(); ) {
 
-			String sql = "CREATE AGGREGATE public.array_agg (SFUNC = array_append, BASETYPE = anyelement, STYPE = anyarray, INITCOND = '{}');"; 
+			String sql = "CREATE AGGREGATE public.array_agg (SFUNC = array_append, BASETYPE = anyelement, STYPE = anyarray, INITCOND = '{}');";
 
 			st.execute(sql);
 		}
@@ -163,7 +163,7 @@ public class UpdatesDAO extends AbstractDAO {
 					 "CONSTRAINT \"PK_backups\" PRIMARY KEY (id) " +
 					 ") WITH (OIDS=FALSE);";
 
-		String sql2 = "ALTER TABLE global.backups OWNER TO biblivre;"; 
+		String sql2 = "ALTER TABLE global.backups OWNER TO biblivre;";
 
 		Statement st = con.createStatement();
 		st.execute(sql);
@@ -176,11 +176,11 @@ public class UpdatesDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			String sql = "CREATE TABLE versions (" + 
-						 "installed_versions character varying NOT NULL, CONSTRAINT \"PK_versions\" PRIMARY KEY (installed_versions))" + 
+			String sql = "CREATE TABLE versions (" +
+						 "installed_versions character varying NOT NULL, CONSTRAINT \"PK_versions\" PRIMARY KEY (installed_versions))" +
 						 "WITH (OIDS=FALSE);";
 
-			String sql2 = "ALTER TABLE backups OWNER TO biblivre;"; 
+			String sql2 = "ALTER TABLE backups OWNER TO biblivre;";
 
 			Statement st = con.createStatement();
 			st.execute(sql);
@@ -225,7 +225,7 @@ public class UpdatesDAO extends AbstractDAO {
 				"FROM holding_creation_counter H " +
 				"INNER JOIN logins L ON L.id = H.created_by " +
 				"LEFT JOIN users U on U.login_id = H.created_by " +
-				"WHERE HA.created_by = H.created_by;"; 
+				"WHERE HA.created_by = H.created_by;";
 
 		Statement st = con.createStatement();
 		st.execute(sql);
@@ -233,16 +233,16 @@ public class UpdatesDAO extends AbstractDAO {
 
 	public void fixCDDBiblioBriefFormat(Connection con) throws SQLException {
 		String sql = "UPDATE biblio_brief_formats " +
-				"SET format = '${a}_{ }${2}' " + 
-				"WHERE format = '${a}_{ }_{2}';"; 
+				"SET format = '${a}_{ }${2}' " +
+				"WHERE format = '${a}_{ }_{2}';";
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
 
 	public void fixAuthoritiesBriefFormat(Connection con) throws SQLException {
 		String sql = "UPDATE authorities_brief_formats " +
-				"SET format = '${a}_{; }${b}_{; }${c}_{ - }${d}' " + 
-				"WHERE datafield = '110';"; 
+				"SET format = '${a}_{; }${b}_{; }${c}_{ - }${d}' " +
+				"WHERE datafield = '110';";
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
@@ -348,7 +348,7 @@ public class UpdatesDAO extends AbstractDAO {
 		pst.execute();
 	}
 
-	public void replaceBiblivreVersion(Connection con)  throws SQLException {
+	public void replaceBiblivreVersion(Connection con) throws SQLException {
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre 4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre 4%';");
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre4%'");
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre IV', 'Biblivre V'), modified = now() WHERE text like '%Biblivre IV%'");
