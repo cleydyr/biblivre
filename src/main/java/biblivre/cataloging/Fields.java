@@ -73,7 +73,7 @@ public class Fields extends StaticBO {
 
 		return list;
 	}
-	
+
 	public static boolean insertBriefFormat(String schema, RecordType recordType, BriefTabFieldFormatDTO dto, int loggedUser) {
 
 		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
@@ -86,7 +86,7 @@ public class Fields extends StaticBO {
 
 		return result;
 	}
-	
+
 	public static boolean updateBriefFormats(String schema, RecordType recordType, List<BriefTabFieldFormatDTO> briefFormats, int loggedUser) {
 
 		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
@@ -99,9 +99,9 @@ public class Fields extends StaticBO {
 
 		return result;
 	}
-	
+
 	public static boolean updateFormTabDatafield(String schema, RecordType recordType, HashMap<String, FormTabDatafieldDTO> formDatafields, int loggedUser) {
-		
+
 		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 		boolean result = dao.updateFormTabDatafield(formDatafields, recordType, loggedUser);
 
@@ -109,10 +109,10 @@ public class Fields extends StaticBO {
 			Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
 			Fields.formTabFields.remove(pair);
 		}
-		
+
 		return result;
 	}
-	
+
 	public static boolean deleteBriefFormat(String schema, RecordType recordType, String datafield) {
 
 		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
@@ -125,7 +125,7 @@ public class Fields extends StaticBO {
 
 		return result;
 	}
-	
+
 	public static boolean deleteFormTabDatafield(String schema, RecordType recordType, String datafield) {
 
 		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
@@ -146,7 +146,7 @@ public class Fields extends StaticBO {
 		}
 		return Fields.getFormFields(schema, recordType);
 	}
-	
+
 	public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);		
 		JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
@@ -157,7 +157,7 @@ public class Fields extends StaticBO {
 
 		return list;
 	}
-	
+
 	public static List<FormTabSubfieldDTO> getAutocompleteSubFields(String schema, String type) {
 		RecordType recordType = RecordType.fromString(type);
 		if (recordType == null) {
@@ -165,7 +165,7 @@ public class Fields extends StaticBO {
 		}
 		return Fields.getAutocompleteSubFields(schema, recordType);
 	}
-	
+
 	public static List<FormTabSubfieldDTO> getAutocompleteSubFields(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);		
 		List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
@@ -189,12 +189,12 @@ public class Fields extends StaticBO {
 	public static void updateBriefFormat(Connection con, RecordType recordType, String datafield, String format) throws SQLException {
 		StringBuilder sql = new StringBuilder();
 		sql.append("UPDATE ").append(recordType).append("_brief_formats SET format = ? WHERE datafield = ?;");
-		
+
 		PreparedStatement pst = con.prepareStatement(sql.toString());
-		
+
 		pst.setString(1, format);
 		pst.setString(2, datafield);
-		
+
 		pst.execute();
 	}
 
@@ -254,7 +254,7 @@ public class Fields extends StaticBO {
 
 		return list;
 	}
-	
+
 	private static synchronized JavascriptCacheableList<FormTabDatafieldDTO> loadFormFields(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
 		JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
@@ -282,7 +282,7 @@ public class Fields extends StaticBO {
 
 		return list;
 	}
-	
+
 	private static synchronized List<FormTabSubfieldDTO> loadAutocompleteSubFields(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
 		List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
@@ -295,14 +295,14 @@ public class Fields extends StaticBO {
 		if (Fields.logger.isDebugEnabled()) {
 			Fields.logger.debug("Loading autocomplete subfields from " + schema + "." + recordType);
 		}
-		
+
 		JavascriptCacheableList<FormTabDatafieldDTO> fields = Fields.getFormFields(schema, recordType);
 		list = new LinkedList<FormTabSubfieldDTO>();
 
 		if (fields == null) {
 			return list;
 		}
-		
+
 		for (FormTabDatafieldDTO datafield : fields) {
 			for (FormTabSubfieldDTO subfield : datafield.getSubfields()) {
 				AutocompleteType type = subfield.getAutocompleteType();
@@ -325,7 +325,7 @@ public class Fields extends StaticBO {
 
 			}
 		}
-		
+
 		Fields.autocompleteSubfields.put(pair, list);
 
 		return list;

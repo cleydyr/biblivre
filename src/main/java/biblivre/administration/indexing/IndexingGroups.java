@@ -43,20 +43,20 @@ public class IndexingGroups extends StaticBO {
 
 	private IndexingGroups() {
 	}
-	
+
 	static {
 		IndexingGroups.reset();
 	}
-	
+
 	public static void reset() {
 		IndexingGroups.groups = new HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>>();
 	}
-	
+
 	public static void reset(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
 		IndexingGroups.groups.remove(pair);
 	}
-	
+
 	public static List<IndexingGroupDTO> getGroups(String schema, RecordType recordType) {
 		Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);		
 		List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
@@ -64,7 +64,7 @@ public class IndexingGroups extends StaticBO {
 		if (list == null) {
 			list = IndexingGroups.loadGroups(schema, recordType);
 		}
-		
+
 		return list;
 	}
 
@@ -72,20 +72,20 @@ public class IndexingGroups extends StaticBO {
 		List<String> list = new LinkedList<String>();
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
 		TranslationsMap translations = Translations.get(schema, language);
-		
+
 		for (IndexingGroupDTO group : groups) {
 			if (group.getId() == 0) {
 				continue;
 			}
 			list.add(translations.getText("cataloging." + (recordType == RecordType.BIBLIO ? "bibliographic" : recordType) + ".indexing_groups." + group.getTranslationKey()));
 		}
-		
+
 		return StringUtils.join(list, ", ");
 	}
-	
+
 	public static Integer getDefaultSortableGroupId(String schema, RecordType recordType) {
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
-		
+
 		IndexingGroupDTO sort = null;
 		for (IndexingGroupDTO group : groups) {
 			if (group.isSortable()) {
@@ -93,13 +93,13 @@ public class IndexingGroups extends StaticBO {
 					sort = group;
 					break;
 				}
-				
+
 				if (sort == null) {
 					sort = group;
 				}				
 			}
 		}
-		
+
 		return (sort != null) ? sort.getId() : 1;
 	}
 
@@ -108,19 +108,19 @@ public class IndexingGroups extends StaticBO {
 		throws SQLException {
 
 		_deleteFromIndexingGroupsByTranslationKey(recordType, name, con);
-		
+
 		_insertIntoIndexingGroups(recordType, name, datafields, sortable, con);
 	}
 
 	public static void updateIndexingGroup(Connection con, RecordType recordType, String name, String datafields) throws SQLException {
 		StringBuilder sql = new StringBuilder();
 		sql.append("UPDATE ").append(recordType).append("_indexing_groups SET datafields = ? WHERE translation_key = ?;");
-		
+
 		PreparedStatement pst = con.prepareStatement(sql.toString());
-		
+
 		pst.setString(1, datafields);
 		pst.setString(2, name);
-		
+
 		pst.execute();
 	}
 
@@ -135,7 +135,7 @@ public class IndexingGroups extends StaticBO {
 					.append(recordType)
 					.append("_indexing_groups (translation_key, datafields, sortable) "
 						+ "VALUES (?, ?, ?);");
-		
+
 		try (PreparedStatement insertIntoIndexingGroups = con.prepareStatement(sql.toString())) {
 
 			PreparedStatementUtil.setAllParameters(
@@ -179,7 +179,7 @@ public class IndexingGroups extends StaticBO {
 		}
 
 		IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance(schema);
-		
+
 		list = dao.list(recordType);
 		IndexingGroups.groups.put(pair, list);
 

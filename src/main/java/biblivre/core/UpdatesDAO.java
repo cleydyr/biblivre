@@ -47,7 +47,7 @@ public class UpdatesDAO extends AbstractDAO {
 
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(sql);
-			
+
 			Set<String> set = new TreeSet<String>();
 			while (rs.next()) {
 				set.add(rs.getString("installed_versions"));
@@ -68,8 +68,8 @@ public class UpdatesDAO extends AbstractDAO {
 	public void commitUpdate(String version, Connection con) throws SQLException {
 		this.commitUpdate(version, con, true);
 	}
-	
-	
+
+
 	public void commitUpdate(String version, Connection con, boolean insert) throws SQLException {
 		try {
 			if (insert) {
@@ -77,7 +77,7 @@ public class UpdatesDAO extends AbstractDAO {
 						"INSERT INTO versions (installed_versions) VALUES (?);")) {
 
 					PreparedStatementUtil.setAllParameters(insertIntoVersions, version);
-	
+
 					insertIntoVersions.executeUpdate();
 				}
 
@@ -88,8 +88,8 @@ public class UpdatesDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}	
-	
-	
+
+
 	public void rollbackUpdate(Connection con) {
 		try {
 			this.rollback(con);
@@ -97,7 +97,7 @@ public class UpdatesDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}	
-	
+
 	public void createArrayAgg() throws SQLException {
 		Connection con = null;
 
@@ -112,7 +112,7 @@ public class UpdatesDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}	
-	
+
 	public void create81ArrayAgg() throws SQLException {
 
 		try (Connection con = this.getConnection();
@@ -179,9 +179,9 @@ public class UpdatesDAO extends AbstractDAO {
 			String sql = "CREATE TABLE versions (" + 
 						 "installed_versions character varying NOT NULL, CONSTRAINT \"PK_versions\" PRIMARY KEY (installed_versions))" + 
 						 "WITH (OIDS=FALSE);";
-	
+
 			String sql2 = "ALTER TABLE backups OWNER TO biblivre;"; 
-	
+
 			Statement st = con.createStatement();
 			st.execute(sql);
 			st.execute(sql2);
@@ -204,7 +204,7 @@ public class UpdatesDAO extends AbstractDAO {
 		}
 	}
 
-	
+
 	public void fixVocabularyAutoComplete() throws SQLException {
 		Connection con = null;
 
@@ -218,7 +218,7 @@ public class UpdatesDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public void fixHoldingCreationTable(Connection con) throws SQLException {
 		String sql = "UPDATE holding_creation_counter HA " +
 				"SET user_name = coalesce(U.name, L.login), user_login = L.login " +
@@ -230,7 +230,7 @@ public class UpdatesDAO extends AbstractDAO {
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
-	
+
 	public void fixCDDBiblioBriefFormat(Connection con) throws SQLException {
 		String sql = "UPDATE biblio_brief_formats " +
 				"SET format = '${a}_{ }${2}' " + 
@@ -238,7 +238,7 @@ public class UpdatesDAO extends AbstractDAO {
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
-	
+
 	public void fixAuthoritiesBriefFormat(Connection con) throws SQLException {
 		String sql = "UPDATE authorities_brief_formats " +
 				"SET format = '${a}_{; }${b}_{; }${c}_{ - }${d}' " + 
@@ -246,27 +246,27 @@ public class UpdatesDAO extends AbstractDAO {
 		Statement st = con.createStatement();
 		st.execute(sql);
 	}
-	
+
 	public void invalidateIndex(Connection con, RecordType recordType) throws SQLException {
 		StringBuilder deleteSql = new StringBuilder();			
 		deleteSql.append("DELETE FROM ").append(recordType).append("_idx_sort WHERE record_id = 0;");
 
 		Statement deletePst = con.createStatement();			
 		deletePst.execute(deleteSql.toString());
-		
-		
+
+
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ").append(recordType).append("_idx_sort (record_id, indexing_group_id, phrase, ignore_chars_count) VALUES (0, 1, ?, 0);");
 		PreparedStatement pst = con.prepareStatement(sql.toString());
-		
+
 		pst.setString(1, "");
-		
+
 		pst.execute();
 	}
-	
+
 	public void addDatafieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
 		String tableName = recordType + "_form_datafields";
-		
+
 		if (this.checkColumnExistance(tableName, "sort_order")) {
 			return;
 		}
@@ -275,7 +275,7 @@ public class UpdatesDAO extends AbstractDAO {
 
 		_updateSortOrderForTable(tableName, con);
 	}
-	
+
 	public void addSubfieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
 		String tableName = recordType + "_form_subfields";
 
@@ -287,10 +287,10 @@ public class UpdatesDAO extends AbstractDAO {
 
 		_updateSortOrderForTableWithSubfield(tableName, con);
 	}	
-	
+
 	public void addBriefFormatSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
 		String tableName = recordType + "_brief_formats";
-		
+
 		if (this.checkColumnExistance(tableName, "sort_order")) {
 			return;
 		}
@@ -344,11 +344,10 @@ public class UpdatesDAO extends AbstractDAO {
 		PreparedStatement pst = con.prepareStatement(sql);
 		pst.setString(1, url);
 		pst.setString(2, name);
-		
+
 		pst.execute();
 	}
-	
-	
+
 	public void replaceBiblivreVersion(Connection con)  throws SQLException {
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre 4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre 4%';");
 		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre4%'");
