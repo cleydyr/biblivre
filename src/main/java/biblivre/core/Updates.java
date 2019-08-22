@@ -29,7 +29,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.translations.Translations;
@@ -109,18 +108,6 @@ public class Updates {
 
 				Translations.reset();
 				Configurations.reset();
-			}
-
-			version = "5.0.2";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
-			}
-
-			version = "5.0.3";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.commitUpdate(version, con);
 			}
 
 			version = "5.0.4c";
