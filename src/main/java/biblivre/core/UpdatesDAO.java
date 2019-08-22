@@ -239,14 +239,6 @@ public class UpdatesDAO extends AbstractDAO {
 		st.execute(sql);
 	}
 
-	public void fixAuthoritiesBriefFormat(Connection con) throws SQLException {
-		String sql = "UPDATE authorities_brief_formats " +
-				"SET format = '${a}_{; }${b}_{; }${c}_{ - }${d}' " +
-				"WHERE datafield = '110';";
-		Statement st = con.createStatement();
-		st.execute(sql);
-	}
-
 	public void addDatafieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
 		String tableName = recordType + "_form_datafields";
 
