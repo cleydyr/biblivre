@@ -1,7 +1,10 @@
 package biblivre.update.v5_0_0;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+import biblivre.cataloging.enums.RecordType;
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 
@@ -729,7 +732,15 @@ public class Update implements UpdateService {
 		Translations.addSingleTranslation(
 				"es", "administration.form_customization.error.invalid_tag",
 				"Campo Marc inválido. El campo Marc debe ser numérico con 3 dígitos.");
+	}
 
+	@Override
+	public void doUpdateScopedBySchema(Connection connection) throws SQLException {
+		for (RecordType recordType : RecordType.values()) {
+			_addDatafieldSortOrderColumns(connection, recordType);
+
+			_addSubfieldSortOrderColumns(connection, recordType);
+		}
 	}
 
 	@Override
@@ -737,4 +748,70 @@ public class Update implements UpdateService {
 		return "5.0.0";
 	}
 
+	private void _addDatafieldSortOrderColumns(Connection connection, RecordType recordType)
+		throws SQLException {
+
+		String tableName = recordType + "_form_datafields";
+
+		if (UpdateService.checkColumnExistence(tableName, "sort_order", connection)) {
+			return;
+		}
+
+		_addSortOrderColumnForTable(tableName, connection);
+
+		_updateSortOrderForTable(tableName, connection);
+	}
+
+	private void _addSubfieldSortOrderColumns(Connection connection, RecordType recordType)
+		throws SQLException {
+
+		String tableName = recordType + "_form_subfields";
+
+		if (UpdateService.checkColumnExistence(tableName, "sort_order", connection)) {
+			return;
+		}
+
+		_addSortOrderColumnForTable(tableName, connection);
+
+		_updateSortOrderForTableWithSubfield(tableName, connection);
+	}
+
+	private void _addSortOrderColumnForTable(String tableName, Connection con) throws SQLException {
+		StringBuilder addSortOrderColumnSQL =
+				new StringBuilder(3)
+					.append("ALTER TABLE ")
+					.append(tableName)
+					.append(" ADD COLUMN sort_order integer;");
+
+		try (Statement addDatafieldColumnSt = con.createStatement()) {
+			addDatafieldColumnSt.execute(addSortOrderColumnSQL.toString());
+		}
+	}
+
+	private void _updateSortOrderForTable(String tableName, Connection con) throws SQLException {
+		StringBuilder updateSql =
+				new StringBuilder(3)
+					.append("UPDATE ")
+					.append(tableName)
+					.append(" SET sort_order = (CAST(datafield as INT));");
+
+		try (Statement updateSt = con.createStatement()) {
+			updateSt.execute(updateSql.toString());
+		}
+	}
+
+	private void _updateSortOrderForTableWithSubfield(
+			String tableName, Connection con)
+		throws SQLException {
+
+		StringBuilder updateSql =
+				new StringBuilder(3)
+					.append("UPDATE ")
+					.append(tableName)
+					.append(" SET sort_order = (CAST(datafield as INT) + ASCII(subfield));");
+
+		try (Statement updateSt = con.createStatement()) {
+			updateSt.execute(updateSql.toString());
+		}
+	}
 }

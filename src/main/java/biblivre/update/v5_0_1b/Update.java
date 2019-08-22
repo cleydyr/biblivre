@@ -2,7 +2,9 @@ package biblivre.update.v5_0_1b;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
+import biblivre.cataloging.enums.RecordType;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
@@ -74,6 +76,29 @@ public class Update implements UpdateService {
 
 	}
 
+	public void doUpdateScopedBySchema(Connection connection) throws SQLException {
+		for (RecordType recordType :
+			new RecordType[] {RecordType.BIBLIO, RecordType.AUTHORITIES,
+					RecordType.VOCABULARY}) {
+
+			_addBriefFormatSortOrderColumns(connection, recordType);
+		}
+	}
+
+	public void _addBriefFormatSortOrderColumns(Connection connection, RecordType recordType)
+		throws SQLException {
+
+		String tableName = recordType + "_brief_formats";
+
+		if (UpdateService.checkColumnExistence(tableName, "sort_order", connection)) {
+			return;
+		}
+
+		_addSortOrderColumnForTable(tableName, connection);
+
+		_updateSortOrderForTable(tableName, connection);
+	}
+
 	@Override
 	public void afterUpdate() {
 		Translations.reset();
@@ -85,5 +110,29 @@ public class Update implements UpdateService {
 	@Override
 	public String getVersion() {
 		return "5.0.1b";
+	}
+
+	private void _addSortOrderColumnForTable(String tableName, Connection con) throws SQLException {
+		StringBuilder addSortOrderColumnSQL =
+				new StringBuilder(3)
+					.append("ALTER TABLE ")
+					.append(tableName)
+					.append(" ADD COLUMN sort_order integer;");
+
+		try (Statement addDatafieldColumnSt = con.createStatement()) {
+			addDatafieldColumnSt.execute(addSortOrderColumnSQL.toString());
+		}
+	}
+
+	private void _updateSortOrderForTable(String tableName, Connection con) throws SQLException {
+		StringBuilder updateSql =
+				new StringBuilder(3)
+					.append("UPDATE ")
+					.append(tableName)
+					.append(" SET sort_order = (CAST(datafield as INT));");
+
+		try (Statement updateSt = con.createStatement()) {
+			updateSt.execute(updateSql.toString());
+		}
 	}
 }

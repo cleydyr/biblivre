@@ -27,7 +27,6 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.utils.TextUtils;
 
 
@@ -237,81 +236,6 @@ public class UpdatesDAO extends AbstractDAO {
 				"WHERE format = '${a}_{ }_{2}';";
 		Statement st = con.createStatement();
 		st.execute(sql);
-	}
-
-	public void addDatafieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
-		String tableName = recordType + "_form_datafields";
-
-		if (this.checkColumnExistance(tableName, "sort_order")) {
-			return;
-		}
-
-		_addSortOrderColumnForTable(tableName, con);
-
-		_updateSortOrderForTable(tableName, con);
-	}
-
-	public void addSubfieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
-		String tableName = recordType + "_form_subfields";
-
-		if (this.checkColumnExistance(tableName, "sort_order")) {
-			return;
-		}
-
-		_addSortOrderColumnForTable(tableName, con);
-
-		_updateSortOrderForTableWithSubfield(tableName, con);
-	}	
-
-	public void addBriefFormatSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
-		String tableName = recordType + "_brief_formats";
-
-		if (this.checkColumnExistance(tableName, "sort_order")) {
-			return;
-		}
-
-		_addSortOrderColumnForTable(tableName, con);
-
-		_updateSortOrderForTable(tableName, con);
-	}
-
-	private void _updateSortOrderForTable(String tableName, Connection con) throws SQLException {
-		StringBuilder updateSql =
-				new StringBuilder(3)
-					.append("UPDATE ")
-					.append(tableName)
-					.append(" SET sort_order = (CAST(datafield as INT));");
-
-		try (Statement updateSt = con.createStatement()) {
-			updateSt.execute(updateSql.toString());
-		}
-	}
-
-	private void _updateSortOrderForTableWithSubfield(
-			String tableName, Connection con)
-		throws SQLException {
-
-		StringBuilder updateSql =
-				new StringBuilder(3)
-					.append("UPDATE ")
-					.append(tableName)
-					.append(" SET sort_order = (CAST(datafield as INT) + ASCII(subfield));");
-
-		try (Statement updateSt = con.createStatement()) {
-			updateSt.execute(updateSql.toString());
-		}
-	}
-
-	private void _addSortOrderColumnForTable(String tableName, Connection con) throws SQLException {
-		StringBuilder addSortOrderColumnSQL =
-				new StringBuilder(3)
-					.append("ALTER TABLE ")
-					.append(tableName)
-					.append(" ADD COLUMN sort_order integer;");
-
-		try (Statement addDatafieldColumnSt = con.createStatement()) {
-			addDatafieldColumnSt.execute(addSortOrderColumnSQL.toString());
-		}
 	}
 
 	public void updateZ3950Address(Connection con, String name, String url) throws SQLException {
