@@ -27,9 +27,6 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-import biblivre.core.utils.TextUtils;
-
-
 public class UpdatesDAO extends AbstractDAO {
 
 	public static UpdatesDAO getInstance(String schema) {
@@ -123,52 +120,6 @@ public class UpdatesDAO extends AbstractDAO {
 		}
 	}
 
-	public void fixUserNameAscii(Connection con) throws SQLException {
-		if (this.checkColumnExistance("users", "name_ascii")) {
-			return;
-		}
-
-		Statement st = con.createStatement();
-		st.executeUpdate("ALTER TABLE users ADD COLUMN name_ascii character varying;");
-
-		st = con.createStatement();
-		ResultSet rs = st.executeQuery("SELECT id, name FROM users;");
-
-		PreparedStatement pst = con.prepareStatement("UPDATE users SET name_ascii = ? WHERE id = ?");
-
-		boolean run = false;
-		while (rs.next()) {
-			run = true;
-			pst.setString(1, TextUtils.removeDiacriticals(rs.getString("name")));
-			pst.setInt(2, rs.getInt("id"));
-			pst.addBatch();
-		}
-
-		if (run) {
-			pst.executeBatch();
-		}
-	}
-
-	public void fixBackupTable(Connection con) throws SQLException {
-		String sql = "CREATE TABLE global.backups (id serial NOT NULL, " +
-					 "created timestamp without time zone NOT NULL DEFAULT now(), " +
-					 "path character varying, " +
-					 "schemas character varying NOT NULL, " +
-					 "type character varying NOT NULL, " +
-					 "scope character varying NOT NULL, " +
-					 "downloaded boolean NOT NULL DEFAULT false, " +
-					 "steps integer, " +
-					 "current_step integer, " +
-					 "CONSTRAINT \"PK_backups\" PRIMARY KEY (id) " +
-					 ") WITH (OIDS=FALSE);";
-
-		String sql2 = "ALTER TABLE global.backups OWNER TO biblivre;";
-
-		Statement st = con.createStatement();
-		st.execute(sql);
-		st.execute(sql2);
-	}
-
 	public void fixVersionsTable() throws SQLException {
 		Connection con = null;
 
@@ -187,76 +138,5 @@ public class UpdatesDAO extends AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
-	}
-
-	public void fixAuthoritiesAutoComplete() throws SQLException {
-		Connection con = null;
-
-		try {
-			con = this.getConnection();
-
-			String sql = "UPDATE biblio_form_subfields SET autocomplete_type = 'authorities' WHERE subfield = 'a' AND datafield in ('100', '110', '111');";	
-			Statement st = con.createStatement();
-			st.execute(sql);
-		} finally {
-			this.closeConnection(con);
-		}
-	}
-
-
-	public void fixVocabularyAutoComplete() throws SQLException {
-		Connection con = null;
-
-		try {
-			con = this.getConnection();
-
-			String sql = "UPDATE biblio_form_subfields SET autocomplete_type = 'vocabulary' WHERE subfield = 'a' AND datafield in ('600', '610', '611', '630', '650', '651');";	
-			Statement st = con.createStatement();
-			st.execute(sql);
-		} finally {
-			this.closeConnection(con);
-		}
-	}
-
-	public void fixHoldingCreationTable(Connection con) throws SQLException {
-		String sql = "UPDATE holding_creation_counter HA " +
-				"SET user_name = coalesce(U.name, L.login), user_login = L.login " +
-				"FROM holding_creation_counter H " +
-				"INNER JOIN logins L ON L.id = H.created_by " +
-				"LEFT JOIN users U on U.login_id = H.created_by " +
-				"WHERE HA.created_by = H.created_by;";
-
-		Statement st = con.createStatement();
-		st.execute(sql);
-	}
-
-	public void fixCDDBiblioBriefFormat(Connection con) throws SQLException {
-		String sql = "UPDATE biblio_brief_formats " +
-				"SET format = '${a}_{ }${2}' " +
-				"WHERE format = '${a}_{ }_{2}';";
-		Statement st = con.createStatement();
-		st.execute(sql);
-	}
-
-	public void updateZ3950Address(Connection con, String name, String url) throws SQLException {
-		String sql = "UPDATE z3950_addresses SET url = ? WHERE name = ?;";
-		PreparedStatement pst = con.prepareStatement(sql);
-		pst.setString(1, url);
-		pst.setString(2, name);
-
-		pst.execute();
-	}
-
-	public void replaceBiblivreVersion(Connection con) throws SQLException {
-		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre 4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre 4%';");
-		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre4', 'Biblivre 5'), modified = now() WHERE text like '%Biblivre4%'");
-		con.createStatement().execute("UPDATE translations SET text = replace(text, 'Biblivre IV', 'Biblivre V'), modified = now() WHERE text like '%Biblivre IV%'");
-		con.createStatement().execute("UPDATE translations SET text = replace(text, 'ersão 4.0', 'ersão 5.0'), modified = now() WHERE text like '%ersão 4.0%'");
-		con.createStatement().execute("UPDATE translations SET text = replace(text, 'ersión 4.0', 'ersión 5.0'), modified = now() WHERE text like '%ersão 4.0%'");
-		con.createStatement().execute("UPDATE translations SET text = replace(text, 'ersion 4.0', 'ersion 5.0'), modified = now() WHERE text like '%ersão 4.0%'");
-		con.createStatement().execute("UPDATE configurations SET value = replace(value, 'Biblivre IV', 'Biblivre V'), modified = now() WHERE value like '%Biblivre IV%'");
-		con.createStatement().execute("UPDATE configurations SET value = replace(value, 'ersão 4.0', 'ersão 5.0'), modified = now() WHERE value like '%ersão 4.0%'");
-		con.createStatement().execute("UPDATE configurations SET value = replace(value, 'ersión 4.0', 'ersión 5.0'), modified = now() WHERE value like '%ersão 4.0%'");
-		con.createStatement().execute("UPDATE configurations SET value = replace(value, 'ersion 4.0', 'ersion 5.0'), modified = now() WHERE value like '%ersão 4.0%'");
 	}
 }

@@ -18,6 +18,11 @@ public class Update implements UpdateService {
 	}
 
 	@Override
+	public void doUpdateScopedBySchema(Connection connection) throws SQLException {
+		_replaceBiblivreVersion(connection);
+	}
+
+	@Override
 	public void afterUpdate() {
 		Translations.reset();
 

@@ -31,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
-import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.update.UpdateService;
@@ -96,35 +95,6 @@ public class Updates {
 					updateService.afterUpdate();
 				}
 			}
-
-			String version = null;
-
-			version = "5.0.1";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-				dao.replaceBiblivreVersion(con);
-
-				dao.commitUpdate(version, con);
-
-				Translations.reset();
-				Configurations.reset();
-			}
-
-			version = "5.0.4c";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-
-				dao.updateZ3950Address(con, "Library of Congress Online Catalog - EUA", "lx2.loc.gov");
-
-				dao.commitUpdate(version, con);
-			}
-
-			// version = "4.0.X";
-			// if (!installedVersions.contains(version)) {
-			// con = dao.beginUpdate();
-			// dao.commitUpdate(version, con);
-			// }
-
 
 			return true;
 		} catch (Exception e) {
