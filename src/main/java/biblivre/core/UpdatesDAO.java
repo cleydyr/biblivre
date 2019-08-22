@@ -247,23 +247,6 @@ public class UpdatesDAO extends AbstractDAO {
 		st.execute(sql);
 	}
 
-	public void invalidateIndex(Connection con, RecordType recordType) throws SQLException {
-		StringBuilder deleteSql = new StringBuilder();			
-		deleteSql.append("DELETE FROM ").append(recordType).append("_idx_sort WHERE record_id = 0;");
-
-		Statement deletePst = con.createStatement();			
-		deletePst.execute(deleteSql.toString());
-
-
-		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO ").append(recordType).append("_idx_sort (record_id, indexing_group_id, phrase, ignore_chars_count) VALUES (0, 1, ?, 0);");
-		PreparedStatement pst = con.prepareStatement(sql.toString());
-
-		pst.setString(1, "");
-
-		pst.execute();
-	}
-
 	public void addDatafieldSortOrderColumns(Connection con, RecordType recordType) throws SQLException {
 		String tableName = recordType + "_form_datafields";
 

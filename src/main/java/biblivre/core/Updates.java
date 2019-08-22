@@ -29,7 +29,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
@@ -100,21 +99,6 @@ public class Updates {
 			}
 
 			String version = null;
-
-			version = "4.1.10a";
-			if (!installedVersions.contains(version)) {
-				con = dao.beginUpdate();
-
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "490", "(${a}_{ ; }${v})");
-				Fields.updateBriefFormat(con, RecordType.BIBLIO, "830", "${a}_{. }${p}_{ ; }${v}");
-
-				dao.invalidateIndex(con, RecordType.BIBLIO);
-
-
-				Fields.reset(schema, RecordType.BIBLIO);
-
-				dao.commitUpdate(version, con);
-			}
 
 			version = "4.1.11";
 			if (!installedVersions.contains(version)) {
