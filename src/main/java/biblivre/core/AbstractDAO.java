@@ -269,7 +269,7 @@ public abstract class AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			String sql = "SELECT count(*) as count FROM information_schema.columns WHERE table_schema = ? and table_name = ? and column_name = ?;"; 
+			String sql = "SELECT count(*) as count FROM information_schema.columns WHERE table_schema = ? and table_name = ? and column_name = ?;";
 
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, this.getSchema());
@@ -277,7 +277,7 @@ public abstract class AbstractDAO {
 			pst.setString(3, columnName);
 			
 			ResultSet rs = pst.executeQuery();
-			return rs.next() && rs.getInt("count") == 1; 
+			return rs.next() && rs.getInt("count") == 1;
 		} finally {
 			this.closeConnection(con);
 		}
