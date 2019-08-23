@@ -34,6 +34,7 @@ import tech.units.indriya.unit.Units;
 
 public class Constants {
 
+	public static final int ADMIN_LOGGED_USER_ID = 0;
 	public static final int DEFAULT_POSTGRESQL_PORT = 5432;
 	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
