@@ -125,6 +125,11 @@ public class Translations extends StaticBO {
 		return true;
 	}
 
+	public static boolean addSingleTranslation(String language, String key, String text) {
+		return addSingleTranslation(
+				Constants.GLOBAL_SCHEMA, language, key, text, Constants.ADMIN_LOGGED_USER_ID);
+	}
+
 	public static boolean addSingleTranslation(String schema, String language, String key, String text, int loggedUser) {
 		HashMap<String, String> translation = new HashMap<String, String>();
 		translation.put(key, text);
