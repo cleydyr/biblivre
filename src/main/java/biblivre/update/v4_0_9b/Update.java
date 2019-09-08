@@ -43,7 +43,7 @@ public class Update implements UpdateService {
 
 	private boolean _checkBackupTableExistence(Connection connection) throws SQLException {
 		String countBackupTablesSQL = "SELECT count(*) as count FROM information_schema.tables " +
-				"WHERE table_schema = global and table_name = backup;";
+				"WHERE table_schema = 'global' and table_name = 'backup';";
 
 		try (Statement statement = connection.createStatement()) {
 
