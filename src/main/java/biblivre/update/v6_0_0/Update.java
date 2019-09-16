@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import biblivre.core.translations.Translations;
-import biblivre.core.utils.Constants;
 import biblivre.update.UpdateService;
 
 public class Update implements UpdateService {
