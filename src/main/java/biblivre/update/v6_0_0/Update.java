@@ -41,6 +41,15 @@ public class Update implements UpdateService {
 			put("es", "El lector seleccionado excedió el límite de reservas permitidas");
 			put("pt-BR", "O leitor selecionado ultrapassou o limite de reservas permitidas");
 		}});
+
+		put("cataloging.import.error.file_upload_error", new HashMap() {{
+			put("en-US", "Couldn't upload file. Please contact the administrator to analyze this" +
+					"problem.");
+			put("es", "No ha sido posible subir el archivo. Por favor, contacta el administrador " +
+					"del sistema para analizar este problema.");
+			put("pt-BR", "Não foi possível fazer upload do arquivo. Por favor, contacte o " +
+					"administrador do sistema para anlizar este problema.");
+		}});
 	}};
 	
 }
