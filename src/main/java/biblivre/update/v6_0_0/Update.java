@@ -5,13 +5,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.update.UpdateService;
 
-@Component
 public class Update implements UpdateService {
 
 	public void doUpdateScopedBySchema(Connection connection) throws SQLException {
