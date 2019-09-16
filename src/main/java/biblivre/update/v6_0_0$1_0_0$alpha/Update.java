@@ -1,4 +1,4 @@
-package biblivre.update.v6_0_0;
+package biblivre.update.v6_0_0$1_0_0$alpha;
 
 import java.sql.Connection;
 import java.sql.SQLException;
