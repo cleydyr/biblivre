@@ -11,7 +11,16 @@ import biblivre.update.UpdateService;
 
 public class Update implements UpdateService {
 
-	public void doUpdateScopedBySchema(Connection connection) throws SQLException {
+	public void doUpdate(Connection connection) throws SQLException {
+		_addTranslations(connection);
+	}
+
+	@Override
+	public String getVersion() {
+		return "6.0.0";
+	}
+
+	private void _addTranslations(Connection connection) throws SQLException {
 		for (Map.Entry<String, Map<String, String>> entry: _TRANSLATIONS.entrySet()) {
 			for (Map.Entry<String, String> entry2: entry.getValue().entrySet()) {
 				String key = entry.getKey();
@@ -20,16 +29,9 @@ public class Update implements UpdateService {
 
 				String translation = entry2.getValue();
 
-				Translations.addSingleTranslation(
-						connection.getSchema(), language, key, translation,
-						Constants.ADMIN_LOGGED_USER_ID);
+				Translations.addSingleTranslation(language, key, translation);
 			}
 		}
-	}
-
-	@Override
-	public String getVersion() {
-		return "6.0.0";
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
