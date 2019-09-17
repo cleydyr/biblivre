@@ -16,9 +16,6 @@ Depois que todo o processo de implantação terminar (cerca de 5 minutos, mas de
 Por padrão, a imagem vai baixar o código do repositório do usuário cleydyr no Github correspondente ao *branch* 5.x. Você pode configurar o nome de usuário e o branch usando as variáveis de ambiente `GITHUB_USER` e `BRANCH_NAME`. Por exemplo para implantar o Biblivre 5 usando o código do branch `meu-branch` do usuário `fulano` no Github execute o comando:
 `docker run -p 8080:8080 -p 8000:8000 -e "BRANCH_NAME=meu-branch" -e "GITHUB_USER=fulano" cleydyr/biblivre5-dev`
 
-#### WeDeploy
-[![Deploy](https://cdn.wedeploy.com/images/deploy.svg)](https://console.wedeploy.com/deploy?repo=https://github.com/cleydyr/Biblivre-5/tree/5.x)
-
 ### Configuração manual
 
 #### Dependências
