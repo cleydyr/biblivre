@@ -8,7 +8,8 @@
       minimumIdle="5"
       maximumPoolSize="10"
       connectionTimeout="300000"
-      jdbcUrl="jdbc:postgresql://127.0.0.1:5432/biblivre4"
+      dataSourceClassName="org.postgresql.ds.PGSimpleDataSource"
+      dataSource.url="jdbc:postgresql://127.0.0.1:5432/biblivre4"
       leakDetectionThreshold="60"
       dataSource.user="biblivre"
       dataSource.password="abracadabra" />
