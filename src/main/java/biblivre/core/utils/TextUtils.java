@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -134,7 +134,7 @@ public class TextUtils {
 			Cipher cipher = Cipher.getInstance("AES");
 			Key key = new SecretKeySpec(Constants.CRYPT_KEY, "AES");
 
-			cipher.init(Cipher.DECRYPT_MODE, key);		
+			cipher.init(Cipher.DECRYPT_MODE, key);
 			byte[] plaintext = cipher.doFinal(ciphertext);
 
 			return new String(plaintext);
@@ -151,15 +151,15 @@ public class TextUtils {
 	}
 
 	public static String[] prepareWords(String phrase) {
-		return StringUtils.split(TextUtils.removeNonLettersOrDigits(phrase, " "));	
+		return StringUtils.split(TextUtils.removeNonLettersOrDigits(phrase, " "));
 	}
 
 	public static String[] prepareAutocomplete(String phrase) {
-		return StringUtils.split(TextUtils.preparePhrase(phrase));	
+		return StringUtils.split(TextUtils.preparePhrase(phrase));
 	}
 
 	public static String prepareWord(String word) {
-		return TextUtils.removeNonLettersOrDigits(word, "");	
+		return TextUtils.removeNonLettersOrDigits(word, "");
 	}
 
 	public static String[] prepareExactTerms(String phrase) {
@@ -167,7 +167,7 @@ public class TextUtils {
 
 		Arrays.sort(terms, new Comparator<String>() {
 			@Override
-			public int compare(String o1, String o2) {  
+			public int compare(String o1, String o2) {
 				if (o1.length() < o2.length()) {
 					return 1;
 				} else if (o1.length() > o2.length()) {
@@ -206,7 +206,7 @@ public class TextUtils {
 			return "";
 		}
 
-		String trimmed = StringUtils.trimToEmpty(input); 
+		String trimmed = StringUtils.trimToEmpty(input);
 		return trimmed.replaceAll("\\s{2,}", " ");
 	}
 

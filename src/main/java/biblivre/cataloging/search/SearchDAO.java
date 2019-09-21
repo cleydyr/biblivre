@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -42,7 +42,7 @@ public abstract class SearchDAO extends AbstractDAO {
 	protected RecordType recordType;
 
 	public SearchDTO getSearch(Integer searchId) {
-		SearchDTO search = new SearchDTO(this.recordType); 
+		SearchDTO search = new SearchDTO(this.recordType);
 
 		if (searchId == null) {
 			return search;
@@ -173,7 +173,7 @@ public abstract class SearchDAO extends AbstractDAO {
 					String[] eTerms = exactTerms.get(j++);
 
 					for (String eTerm : eTerms) {
-						pst.setString(index++, eTerm);						
+						pst.setString(index++, eTerm);
 					}
 				}
 			}
@@ -265,8 +265,8 @@ public abstract class SearchDAO extends AbstractDAO {
 						pst.setString(index++, term);
 
 					} else if (
-							field.equals("holding_created") || 
-							field.equals("holding_modified") || 
+							field.equals("holding_created") ||
+							field.equals("holding_modified") ||
 							field.equals("holding_label_never_printed") ||
 							field.equals("created") ||
 							field.equals("modified")
@@ -368,11 +368,11 @@ public abstract class SearchDAO extends AbstractDAO {
 			if (i < cteCount) {
 				sql.append(" INTERSECT ");
 			}
-		}		
+		}
 		sql.append(") ");
 
 		sql.append(") A INNER JOIN ").append(this.recordType).append("_records R ");
-		sql.append("ON R.id = A.record_id ");    	
+		sql.append("ON R.id = A.record_id ");
 		sql.append("WHERE R.database = ? ");
 
         if (query.getMaterialType() != MaterialType.ALL) {
@@ -417,14 +417,14 @@ public abstract class SearchDAO extends AbstractDAO {
 			}
 
 			sql.append("(");
-			sql.append(this.createAdvancedFilterClause(searchTerm));	
+			sql.append(this.createAdvancedFilterClause(searchTerm));
 			sql.append(")");
 		}
 
 		sql.append(");");
 
 		return sql.toString();
-	}	
+	}
 
 	private String createAdvancedFilterClause(SearchTermDTO searchTerm) {
 		StringBuilder clause = new StringBuilder();
@@ -436,9 +436,9 @@ public abstract class SearchDAO extends AbstractDAO {
 			clause.append("R.id IN (SELECT record_id FROM (");
 
 			if (field.equals("0")) {
-				clause.append(StringUtils.repeat("SELECT record_id, datafield FROM " + this.recordType + "_idx_fields WHERE word = ? ", " INTERSECT ", terms.size()));	
+				clause.append(StringUtils.repeat("SELECT record_id, datafield FROM " + this.recordType + "_idx_fields WHERE word = ? ", " INTERSECT ", terms.size()));
 			} else {
-				clause.append(StringUtils.repeat("SELECT record_id, datafield FROM " + this.recordType + "_idx_fields WHERE word = ? AND indexing_group_id = ? ", " INTERSECT ", terms.size()));	
+				clause.append(StringUtils.repeat("SELECT record_id, datafield FROM " + this.recordType + "_idx_fields WHERE word = ? AND indexing_group_id = ? ", " INTERSECT ", terms.size()));
 			}
 
 			clause.append(") A ) ");

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -207,13 +207,13 @@ public class Handler extends AbstractHandler {
 		int start = request.getInteger("start", 1);
 		int end = request.getInteger("end", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Set<Integer> successIds = new HashSet<Integer>();
-		Set<Integer> failedIds = new HashSet<Integer>(); 
+		Set<Integer> failedIds = new HashSet<Integer>();
 
 		for (int i = start; i <= end; i++) {
 			String marc = request.getString("marc_" + i);
 			RecordType recordType = request.getEnum(RecordType.class, "record_type_" + i);
 
-			if (recordType == null) { 
+			if (recordType == null) {
 				continue;
 			}
 
@@ -228,13 +228,13 @@ public class Handler extends AbstractHandler {
 				default: dto = new RecordDTO();
 			}
 
-			Record record = null;			
+			Record record = null;
 			try {
 				record = MarcUtils.marcToRecord(marc, null, RecordStatus.NEW);
 			} catch (Exception e) {
 				failedIds.add(i);
 				this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-				continue;			
+				continue;
 			}
 
 			if (record == null) {

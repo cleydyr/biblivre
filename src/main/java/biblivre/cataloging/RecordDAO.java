@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -208,13 +208,13 @@ public abstract class RecordDAO extends AbstractDAO {
 //			sqlSearch.append("WHERE record_id IN (");
 //			sqlSearch.append(StringUtils.repeat("?", ", ", ids.length));
 //			sqlSearch.append(");");
-//			
+//
 //			i = 1;
 //			PreparedStatement pstSearch = con.prepareStatement(sqlSearch.toString());
 //			for (int j = 0; j < ids.length; j++) {
 //				pstSearch.setInt(i++, ids[j]);
 //			}
-//			
+//
 //			pstSearch.executeUpdate();
 
 			if (this.recordType == RecordType.BIBLIO) {
@@ -329,7 +329,7 @@ public abstract class RecordDAO extends AbstractDAO {
 			sql.append(StringUtils.repeat("?", ", ", ids.size()));
 			sql.append(");");
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());		
+			PreparedStatement pst = con.prepareStatement(sql.toString());
 			int index = 1;
 			for (Integer id : ids) {
 				pst.setInt(index++, id);
@@ -559,7 +559,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
 				if (useIndexingGroup) {
 					pst.setInt(index++, search.getIndexingGroup());
-				}				
+				}
 			} else	{
 				pst.setString(index++, search.getQuery().getDatabase().toString());
 

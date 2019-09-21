@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -151,7 +151,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 		if (search == null) {
 			handler.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
-			return null;			
+			return null;
 		}
 
 		if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
@@ -194,7 +194,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 		if (dto.getRecordDatabase() == RecordDatabase.PRIVATE) {
 			this.authorize(request, "cataloging.bibliographic", "private_database_access");
-		}		
+		}
 
 
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
@@ -235,7 +235,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 		if (database == RecordDatabase.PRIVATE) {
 			this.authorize(request, "cataloging.bibliographic", "private_database_access");
-		}		
+		}
 
 		RecordStatus status = (id == 0) ? RecordStatus.NEW : RecordStatus.CORRECTED;
 
@@ -256,7 +256,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 				case MARC:
 				case RECORD:
 				case HOLDING_MARC:
-					dto.setRecord(MarcUtils.marcToRecord(data, materialType, status));	
+					dto.setRecord(MarcUtils.marcToRecord(data, materialType, status));
 					break;
 				case FORM:
 				case HOLDING_FORM:
@@ -265,7 +265,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 			}
 		} catch (Exception e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-			return;			
+			return;
 		}
 
 		this.beforeSave(request, dto);
@@ -329,7 +329,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 		if (recordDatabase == RecordDatabase.PRIVATE) {
 			this.authorize(request, "cataloging.bibliographic", "private_database_access");
-		}		
+		}
 
 		dto.setModifiedBy(request.getLoggedUserId());
 		boolean success = false;
@@ -339,7 +339,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 			Set<Integer> ids = new TreeSet<Integer>();
 			ids.add(dto.getId());
 			success = bo.moveRecords(ids, request.getLoggedUserId(), RecordDatabase.TRASH);
-		}		
+		}
 
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
@@ -369,7 +369,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 				case MARC:
 				case RECORD:
 				case HOLDING_MARC:
-					record = MarcUtils.marcToRecord(data, dto.getMaterialType(), status);	
+					record = MarcUtils.marcToRecord(data, dto.getMaterialType(), status);
 					break;
 				case FORM:
 				case HOLDING_FORM:
@@ -377,7 +377,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 					break;
 			}
 			if (record != null) {
-				MarcUtils.recordToIso2709(record);	
+				MarcUtils.recordToIso2709(record);
 			}
 			switch (to) {
 				case MARC:
@@ -400,7 +400,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 			}
 		} catch (Exception e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-			return;			
+			return;
 		}
 
 		this.afterConvert(request, dto);
@@ -424,7 +424,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 		if (recordDatabase == RecordDatabase.PRIVATE) {
 			this.authorize(request, "cataloging.bibliographic", "private_database_access");
-		}		
+		}
 
 		RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 		SearchQueryDTO query = new SearchQueryDTO(recordDatabase);

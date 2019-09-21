@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -78,14 +78,14 @@ public abstract class Controller {
 
 			if (State.LOCKED.get() && !action.equals("progress")) {
 				this.doLockedStateError();
-				return;	
+				return;
 			}
 
 			boolean isSetup = (module.equals("administration.setup") || (module.equals("menu") && action.equals("setup")));
 
 			if (isSetup && (Configurations.getBoolean(schema, Constants.CONFIG_NEW_LIBRARY) || action.equals("progress"))) {
 				// authorize
-			} else {	
+			} else {
 				AuthorizationPoints authPoints = (AuthorizationPoints) this.xRequest.getSessionAttribute(schema, "logged_user_atps");
 				if (authPoints == null) {
 					authPoints = AuthorizationPoints.getNotLoggedInstance(schema);
@@ -93,11 +93,11 @@ public abstract class Controller {
 
 				AuthorizationBO abo = AuthorizationBO.getInstance(schema);
 				abo.authorize(authPoints, module, action);
-			}			
+			}
 		} catch (AuthorizationException e) {
 			// Exception thrown in abo.authorize
 			this.doAuthorizationError();
-			return;	
+			return;
 		}
 
 		try {

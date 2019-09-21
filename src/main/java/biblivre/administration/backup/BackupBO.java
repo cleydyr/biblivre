@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -84,7 +84,7 @@ public class BackupBO extends AbstractBO {
 
 		for (String s : list) {
 			if (Schemas.isNotLoaded(s)) {
-				continue;				
+				continue;
 			}
 
 			String title = Configurations.getString(s, Constants.CONFIG_TITLE);
@@ -175,7 +175,7 @@ public class BackupBO extends AbstractBO {
 				dumpData(dto, tmpDir, schema);
 			}
 
-			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {	
+			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
 				if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
 					dumpMedia(dto, tmpDir, schema);
 				}
@@ -306,7 +306,7 @@ public class BackupBO extends AbstractBO {
 			String line;
 
 			while ((line = br.readLine()) != null) {
-				//There was a system.out.println here for the 'line' var, 
+				//There was a system.out.println here for the 'line' var,
 				//with a FIX_ME tag.  So I changed it to logger.debug().
 				if (this.logger.isDebugEnabled()) {
 					this.logger.debug(line);

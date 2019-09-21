@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -74,12 +74,12 @@ public class Handler extends AbstractHandler {
 			State.start();
 			State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
 
-			File template = new File(request.getSession().getServletContext().getRealPath("/"), "biblivre_template_4.0.0.sql");			
+			File template = new File(request.getSession().getServletContext().getRealPath("/"), "biblivre_template_4.0.0.sql");
 			success = Schemas.createSchema(dto, template, false);
 
 			if (success) {
 				State.finish();
-			} else {			
+			} else {
 				State.cancel();
 			}
 		}
@@ -224,7 +224,7 @@ public class Handler extends AbstractHandler {
 		Boolean skip = request.getBoolean("skip", false);
 
 		try {
-			RestoreBO bo = RestoreBO.getInstance(schema);			
+			RestoreBO bo = RestoreBO.getInstance(schema);
 
 			switch (dto.getType()) {
 				case FULL: {
@@ -247,20 +247,20 @@ public class Handler extends AbstractHandler {
 						RestoreDTO partialDto = bo.getRestoreDTO(mediaFileBackup);
 
 						if (partialDto.getType() == BackupType.DIGITAL_MEDIA_ONLY) {
-							return true;						
+							return true;
 						}
 
 
 						State.writeLog(request.getLocalizedText("administration.setup.biblivre4restore.error.digital_media_only_should_be_selected"));
 						this.json.put("success", false);
 						return false;
-					} 
+					}
 
 					this.json.put("success", true);
-					this.json.put("ask_for_media_backup", true);						
+					this.json.put("ask_for_media_backup", true);
 					return false;
 				}
-			}			
+			}
 		} catch (Exception e) {
 			State.writeLog(ExceptionUtils.getStackTrace(e));
 		}
@@ -290,7 +290,7 @@ public class Handler extends AbstractHandler {
 			RestoreDTO dto = bo.getRestoreDTO(filename);
 
 			if (!this.checkForPartialBackup(dto, request, response)) {
-				State.cancel();	
+				State.cancel();
 				return;
 			}
 
@@ -352,7 +352,7 @@ public class Handler extends AbstractHandler {
 				}
 
 				if (StringUtils.isBlank(value) || !Schemas.isValidName(value)) {
-					throw new ValidationException("administration.maintenance.backup.error.invalid_destination_schema");	
+					throw new ValidationException("administration.maintenance.backup.error.invalid_destination_schema");
 				}
 
 				if (key.equals(Constants.GLOBAL_SCHEMA) && !key.equals(value)) {
@@ -403,7 +403,7 @@ public class Handler extends AbstractHandler {
 		} catch (Throwable e) {
 			this.setMessage(e);
 			State.writeLog(ExceptionUtils.getStackTrace(e));
-			State.cancel();			
+			State.cancel();
 		}
 
 		this.json.put("success", success);

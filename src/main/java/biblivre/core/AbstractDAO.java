@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -126,11 +126,11 @@ public abstract class AbstractDAO {
 		Connection con = this.getDataSource().getConnection();
 
 		/*
-		DatabaseMetaData dbmd = con.getMetaData(); 
-		System.out.println("=====  Driver info ====="); 
-		System.out.println("DriverName: " + dbmd.getDriverName() ); 
-		System.out.println("DriverVersion: " + dbmd.getDriverVersion() ); 
-		System.out.println("DriverMajorVersion: " + dbmd.getDriverMajorVersion()); 
+		DatabaseMetaData dbmd = con.getMetaData();
+		System.out.println("=====  Driver info =====");
+		System.out.println("DriverName: " + dbmd.getDriverName() );
+		System.out.println("DriverVersion: " + dbmd.getDriverVersion() );
+		System.out.println("DriverMajorVersion: " + dbmd.getDriverMajorVersion());
 		*/
 
 		if (this.getSchema() != null) {
@@ -244,7 +244,7 @@ public abstract class AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			String sql = "SELECT count(*) as count FROM pg_catalog.pg_proc WHERE proname = ?;"; 
+			String sql = "SELECT count(*) as count FROM pg_catalog.pg_proc WHERE proname = ?;";
 
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, functionName);
@@ -290,14 +290,14 @@ public abstract class AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			String sql = "SELECT count(*) as count FROM information_schema.tables WHERE table_schema = ? and table_name = ?;"; 
+			String sql = "SELECT count(*) as count FROM information_schema.tables WHERE table_schema = ? and table_name = ?;";
 
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, this.getSchema());
 			pst.setString(2, tableName);
 
 			ResultSet rs = pst.executeQuery();
-			return rs.next() && rs.getInt("count") == 1; 
+			return rs.next() && rs.getInt("count") == 1;
 		} finally {
 			this.closeConnection(con);
 		}
@@ -310,7 +310,7 @@ public abstract class AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			String sql = "SELECT version() as version;"; 
+			String sql = "SELECT version() as version;";
 
 			Statement st = con.createStatement();
 
@@ -320,7 +320,7 @@ public abstract class AbstractDAO {
 				return rs.getString("version");
 			}
 
-			return ""; 
+			return "";
 		} finally {
 			this.closeConnection(con);
 		}

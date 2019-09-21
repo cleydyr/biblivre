@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -66,7 +66,7 @@ import biblivre.z3950.Z3950AddressDTO;
 public class DataMigrationDAO extends AbstractDAO {
 
 	private String userSchema;
-	private static final Map<String, String> userFieldsMap = new HashMap<String, String>(); 
+	private static final Map<String, String> userFieldsMap = new HashMap<String, String>();
 
 	static {
 		userFieldsMap.put("email","email");
@@ -217,7 +217,7 @@ public class DataMigrationDAO extends AbstractDAO {
 				dto.setId(rs.getInt("holding_serial"));
 				dto.setRecordId(rs.getInt("record_serial"));
 				dto.setIso2709(new String(rs.getBytes("record"), Constants.DEFAULT_CHARSET));
-				//As this is a migration, we're setting the creator as 'admin' 
+				//As this is a migration, we're setting the creator as 'admin'
 				dto.setCreatedBy(1);
 				//Fix for bib4 holding reports - no creation date
 				dto.setCreated(rs.getTimestamp("created"));
@@ -231,7 +231,7 @@ public class DataMigrationDAO extends AbstractDAO {
 				dto.setAvailability((availability == 0) ? HoldingAvailability.AVAILABLE : HoldingAvailability.UNAVAILABLE);
 
 				dto.setAccessionNumber(rs.getString("asset_holding"));
-				dto.setLocationD(rs.getString("loc_d"));		
+				dto.setLocationD(rs.getString("loc_d"));
 
 				list.add(dto);
 			}
@@ -513,7 +513,7 @@ public class DataMigrationDAO extends AbstractDAO {
 				dto.setReturnDate(rs.getTimestamp("return_date"));
 
 				dto.setCreatedBy(1);
-				dto.setCreated(rs.getTimestamp("lending_date"));				
+				dto.setCreated(rs.getTimestamp("lending_date"));
 
 				list.add(dto);
 			}
@@ -552,7 +552,7 @@ public class DataMigrationDAO extends AbstractDAO {
 				dto.setUserId(rs.getInt("user_serial"));
 				dto.setValue(rs.getFloat("value"));
 				dto.setPayment(rs.getDate("payment"));
-				dto.setCreated(rs.getDate("payment"));				
+				dto.setCreated(rs.getDate("payment"));
 				list.add(dto);
 			}
 		} catch (Exception e) {
@@ -878,7 +878,7 @@ public class DataMigrationDAO extends AbstractDAO {
 							dto.addField(key, columnValue);
 						}
 					}
-				}				
+				}
 				list.add(dto);
 			}
 		} catch (Exception e) {
@@ -934,31 +934,31 @@ public class DataMigrationDAO extends AbstractDAO {
 		MaterialType material;
 
 		if ("BOOK".equals(mt)) {
-			material = MaterialType.BOOK; 
+			material = MaterialType.BOOK;
 		} else if ("BOOKM".equals(mt)) {
-			material = MaterialType.MANUSCRIPT; 
+			material = MaterialType.MANUSCRIPT;
 		} else if ("BOOKP".equals(mt)) {
-			material = MaterialType.PAMPHLET; 
+			material = MaterialType.PAMPHLET;
 		} else if ("BOOKT".equals(mt)) {
-			material = MaterialType.THESIS; 
+			material = MaterialType.THESIS;
 		} else if ("CFILES".equals(mt)) {
-			material = MaterialType.COMPUTER_LEGIBLE; 
+			material = MaterialType.COMPUTER_LEGIBLE;
 		} else if ("MAPS".equals(mt)) {
-			material = MaterialType.MAP; 
+			material = MaterialType.MAP;
 		} else if ("MOVIE".equals(mt)) {
-			material = MaterialType.MOVIE; 
+			material = MaterialType.MOVIE;
 		} else if ("MUSIC".equals(mt)) {
-			material = MaterialType.SCORE; 
+			material = MaterialType.SCORE;
 		} else if ("OBJ3D".equals(mt)) {
-			material = MaterialType.OBJECT_3D; 
+			material = MaterialType.OBJECT_3D;
 		} else if ("PHOTO".equals(mt)) {
-			material = MaterialType.PHOTO; 
+			material = MaterialType.PHOTO;
 		} else if ("SERIAL".equals(mt)) {
-			material = MaterialType.PERIODIC; 
+			material = MaterialType.PERIODIC;
 		} else if ("SERIAR".equals(mt)) {
-			material = MaterialType.ARTICLES; 
+			material = MaterialType.ARTICLES;
 		} else if ("SOUND".equals(mt)) {
-			material = MaterialType.MUSIC; 
+			material = MaterialType.MUSIC;
 		} else {
 			material = MaterialType.BOOK;
 		}
@@ -970,19 +970,19 @@ public class DataMigrationDAO extends AbstractDAO {
 
 		switch (oldStatus) {
 			case 0:
-				status = AccessCardStatus.AVAILABLE; 
+				status = AccessCardStatus.AVAILABLE;
 				break;
 			case 1:
-				status = AccessCardStatus.IN_USE; 
+				status = AccessCardStatus.IN_USE;
 				break;
 			case 2:
-				status = AccessCardStatus.BLOCKED; 
+				status = AccessCardStatus.BLOCKED;
 				break;
 			case 3:
-				status = AccessCardStatus.IN_USE_AND_BLOCKED; 
+				status = AccessCardStatus.IN_USE_AND_BLOCKED;
 				break;
 			case 4:
-				status = AccessCardStatus.CANCELLED; 
+				status = AccessCardStatus.CANCELLED;
 				break;
 			default:
 				status = AccessCardStatus.AVAILABLE;
@@ -999,11 +999,11 @@ public class DataMigrationDAO extends AbstractDAO {
 		}
 
 		if (oldStatus.equals("0")) {
-			status = RequestStatus.PENDING; 
+			status = RequestStatus.PENDING;
 		} else if (oldStatus.equals("1")) {
-			status = RequestStatus.CLOSED; 
+			status = RequestStatus.CLOSED;
 		} else if (oldStatus.equals("2")) {
-			status = RequestStatus.PENDING_AND_CLOSED; 
+			status = RequestStatus.PENDING_AND_CLOSED;
 		} else {
 			status = RequestStatus.CLOSED;
 		}
@@ -1019,13 +1019,13 @@ public class DataMigrationDAO extends AbstractDAO {
 		}
 
 		if (oldStatus.equals("ACTIVE")) {
-			status = UserStatus.ACTIVE; 
+			status = UserStatus.ACTIVE;
 		} else if (oldStatus.equals("PENDINGS")) {
-			status = UserStatus.PENDING_ISSUES; 
+			status = UserStatus.PENDING_ISSUES;
 		} else if (oldStatus.equals("INACTIVE")) {
-			status = UserStatus.INACTIVE; 
+			status = UserStatus.INACTIVE;
 		} else if (oldStatus.equals("BLOCKED")) {
-			status = UserStatus.BLOCKED; 
+			status = UserStatus.BLOCKED;
 		} else {
 			status = UserStatus.ACTIVE;
 		}

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -110,7 +110,7 @@ public class Handler extends AbstractHandler {
 		Integer id = request.getInteger("id");
 
 		UserBO bo = UserBO.getInstance(schema);
-		UserDTO user = null; 
+		UserDTO user = null;
 
 		if (id != 0) {
 			user = bo.get(id);
@@ -189,7 +189,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
 		}
-	}	
+	}
 
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -207,7 +207,7 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.setMessage(ActionResult.WARNING, "circulation.users.failure." + act);
 		}
-	}	
+	}
 
 	public void loadTabData(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();

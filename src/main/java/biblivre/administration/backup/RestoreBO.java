@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -142,7 +142,7 @@ public class RestoreBO extends AbstractBO {
 
 			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
 				steps += FileIOUtils.countLines(new File(tmpDir, schema + ".media." + extension));
-			}			
+			}
 		}
 
 		State.setSteps(steps);
@@ -155,7 +155,7 @@ public class RestoreBO extends AbstractBO {
 		} catch (Exception e) {
 			throw new ValidationException("administration.maintenance.backup.error.couldnt_restore_backup", e);
 		} finally {
-			FileUtils.deleteQuietly(tmpDir);			
+			FileUtils.deleteQuietly(tmpDir);
 		}
 	}
 
@@ -192,7 +192,7 @@ public class RestoreBO extends AbstractBO {
 			throw new ValidationException("administration.maintenance.backup.error.couldnt_restore_backup", e);
 		} finally {
 			FileUtils.deleteQuietly(file);
-			FileUtils.deleteQuietly(sql);			
+			FileUtils.deleteQuietly(sql);
 		}
 	}
 
@@ -229,7 +229,7 @@ public class RestoreBO extends AbstractBO {
 			}
 		}
 
-		for (String originalSchemaName : restoreSchemas.keySet()) {	
+		for (String originalSchemaName : restoreSchemas.keySet()) {
 			// Verifica se o schema está atrapalhando alguma importação. Neste caso, renomeia temporariamente.
 			// Se o schema estiver na lista de schemas a serem deletados, não se preocupar em renomear e restaurar
 			if (!deleteSchemas.containsKey(originalSchemaName) && databaseSchemas.contains(originalSchemaName)) {
@@ -328,7 +328,7 @@ public class RestoreBO extends AbstractBO {
 				State.writeLog("Processing schema for '" + Constants.GLOBAL_SCHEMA + "'");
 				this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".schema." + extension), bw);
 
-				State.writeLog("Processing data for '" + Constants.GLOBAL_SCHEMA + "'");				
+				State.writeLog("Processing data for '" + Constants.GLOBAL_SCHEMA + "'");
 				this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".data." + extension), bw);
 				bw.flush();
 			}
@@ -343,7 +343,7 @@ public class RestoreBO extends AbstractBO {
 				this.processRestore(new File(path, schema + ".schema." + extension), bw);
 
 				// Restoring database data
-				State.writeLog("Processing data for '" + schema + "'");				
+				State.writeLog("Processing data for '" + schema + "'");
 				this.processRestore(new File(path, schema + ".data." + extension), bw);
 
 				// Restoring digital media files
@@ -424,7 +424,7 @@ public class RestoreBO extends AbstractBO {
 		return false;
 	}
 
-	public synchronized boolean recreateBiblivre3RestoreDatabase(boolean tryPGSQL92) {		
+	public synchronized boolean recreateBiblivre3RestoreDatabase(boolean tryPGSQL92) {
 		File psql = DatabaseUtils.getPsql(this.getSchema());
 
 		if (psql == null) {
@@ -657,7 +657,7 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		return dto;
-	}	
+	}
 
 	private RestoreDTO getRestoreDTO(File file) {
 		ZipFile zip = null;

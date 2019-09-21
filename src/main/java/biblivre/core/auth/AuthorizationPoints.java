@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -253,7 +253,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("acquisition.order", "delete", AuthorizationPointTypes.ACQUISITION_ORDER_DELETE);
 
 		this.addAuthPoint("administration.configurations", "save", AuthorizationPointTypes.ADMINISTRATION_CONFIGURATIONS);
-		this.addAuthPoint("administration.configurations", "ignore_update", AuthorizationPointTypes.MENU_OTHER);		
+		this.addAuthPoint("administration.configurations", "ignore_update", AuthorizationPointTypes.MENU_OTHER);
 
 		this.addAuthPoint("administration.indexing", "reindex", AuthorizationPointTypes.ADMINISTRATION_INDEXING);
 		this.addAuthPoint("administration.indexing", "progress", AuthorizationPointTypes.ADMINISTRATION_INDEXING);
@@ -268,8 +268,8 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("administration.backup", "list", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
 		this.addAuthPoint("administration.backup", "prepare", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
 		this.addAuthPoint("administration.backup", "backup", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
-		this.addAuthPoint("administration.backup", "download", AuthorizationPointTypes.ADMINISTRATION_BACKUP);		
-		this.addAuthPoint("administration.backup", "progress", AuthorizationPointTypes.ADMINISTRATION_BACKUP);		
+		this.addAuthPoint("administration.backup", "download", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
+		this.addAuthPoint("administration.backup", "progress", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
 
 		this.addAuthPoint("administration.usertype", "search", AuthorizationPointTypes.ADMINISTRATION_USERTYPE_LIST);
 		this.addAuthPoint("administration.usertype", "paginate", AuthorizationPointTypes.ADMINISTRATION_USERTYPE_LIST);
@@ -308,12 +308,12 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("administration.setup", "restore", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
 		this.addAuthPoint("administration.setup", "import_biblivre3", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
 
-		this.addAuthPoint("administration.customization", "save_brief_formats", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
-		this.addAuthPoint("administration.customization", "insert_brief_format", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
-		this.addAuthPoint("administration.customization", "delete_brief_format", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
+		this.addAuthPoint("administration.customization", "save_brief_formats", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
+		this.addAuthPoint("administration.customization", "insert_brief_format", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
+		this.addAuthPoint("administration.customization", "delete_brief_format", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
 
-		this.addAuthPoint("administration.customization", "save_form_datafields", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
-		this.addAuthPoint("administration.customization", "insert_form_datafield", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
+		this.addAuthPoint("administration.customization", "save_form_datafields", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
+		this.addAuthPoint("administration.customization", "insert_form_datafield", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
 		this.addAuthPoint("administration.customization", "delete_form_datafield", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
 
 		this.addAuthPoint("digitalmedia", "upload", AuthorizationPointTypes.DIGITALMEDIA_UPLOAD);
