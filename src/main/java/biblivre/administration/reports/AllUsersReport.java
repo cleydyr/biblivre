@@ -180,5 +180,5 @@ public class AllUsersReport extends BaseBiblivreReport {
 			return null;
 		}
 	}
-	
+
 }

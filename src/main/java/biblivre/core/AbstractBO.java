@@ -32,7 +32,7 @@ public abstract class AbstractBO {
 	protected String schema;
 
 	private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances = new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();
-	
+
 	@SuppressWarnings("unchecked")
 	protected static <T extends AbstractBO> T getInstance(Class<T> cls, String schema) {
 		Pair<Class<? extends AbstractBO>, String> pair = new Pair<Class<? extends AbstractBO>, String>(cls, schema);
@@ -61,9 +61,9 @@ public abstract class AbstractBO {
 	public String getSchema() {
 		return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
 	}
-	
+
 	public boolean isGlobalSchema() {
 		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
 	}
-	
+
 }

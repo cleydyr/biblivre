@@ -57,7 +57,7 @@ public class TranslationsDAO extends AbstractDAO {
 			sql.append("SELECT DISTINCT B.language, A.key FROM (SELECT DISTINCT key FROM translations UNION SELECT DISTINCT key FROM global.translations) A ");
 			sql.append("CROSS JOIN (SELECT DISTINCT language FROM translations UNION SELECT DISTINCT language FROM global.translations) B ");
 			sql.append(") K LEFT JOIN translations T ON T.key = K.key AND T.language = K.language ");
-			
+
 			if (StringUtils.isNotBlank(language)) {
 				sql.append("WHERE K.language = ? ");
 			}
@@ -69,7 +69,7 @@ public class TranslationsDAO extends AbstractDAO {
 			if (StringUtils.isNotBlank(language)) {
 				pst.setString(1, language);
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
@@ -91,7 +91,7 @@ public class TranslationsDAO extends AbstractDAO {
 	public boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser) {
  		return this.save(translations, null, loggedUser);
 	}
-	
+
 	public boolean save(HashMap<String, HashMap<String, String>> translations, HashMap<String, HashMap<String, String>> removeTranslations, int loggedUser) {
 		Connection con = null;
 		try {
@@ -100,10 +100,10 @@ public class TranslationsDAO extends AbstractDAO {
 
 			if (translations != null) {
 				CallableStatement function = con.prepareCall("{ call global.update_translation(?, ?, ?, ?) }");
-			
+
 				for (String language : translations.keySet()) {
 					Map<String, String> translation = translations.get(language);
-					
+
 					for (String key : translation.keySet()) {
 						function.setString(1, language);
 						function.setString(2, key);
@@ -112,7 +112,7 @@ public class TranslationsDAO extends AbstractDAO {
 						function.addBatch();
 					}
 				}
-				
+
 				function.executeBatch();
 				function.close();
 			}
@@ -120,20 +120,20 @@ public class TranslationsDAO extends AbstractDAO {
 			if (removeTranslations != null) {
 				String sql = "DELETE FROM translations WHERE language = ? AND key = ?; ";
 				PreparedStatement pst = con.prepareStatement(sql);
-	
+
 				for (String language : removeTranslations.keySet()) {
 					Map<String, String> translation = removeTranslations.get(language);
-					
+
 					for (String key : translation.keySet()) {
 						pst.setString(1, language);
 						pst.setString(2, key);
 						pst.addBatch();
 					}
 				}
-				
+
 				pst.executeBatch();
 			}
-			
+
 			this.commit(con);
 			return true;
 		} catch (Exception e) {
@@ -142,7 +142,7 @@ public class TranslationsDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
     private TranslationDTO populateDTO(ResultSet rs) throws SQLException {
     	TranslationDTO dto = new TranslationDTO();
 
@@ -154,7 +154,7 @@ public class TranslationsDAO extends AbstractDAO {
         dto.setCreatedBy(rs.getInt("created_by"));
         dto.setModified(rs.getTimestamp("modified"));
         dto.setModifiedBy(rs.getInt("modified_by"));
-        
+
         dto.setUserCreated(rs.getBoolean("user_created"));
 
         return dto;

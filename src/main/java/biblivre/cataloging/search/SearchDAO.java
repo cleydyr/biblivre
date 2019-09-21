@@ -67,7 +67,7 @@ public abstract class SearchDAO extends AbstractDAO {
 				search.setId(rs.getInt("id"));
 				search.setQuery(query);
 			}
-			
+
 			return search;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -75,7 +75,7 @@ public abstract class SearchDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean createSearch(SearchDTO search) {
 		if (search == null) {
 			return false;
@@ -108,10 +108,10 @@ public abstract class SearchDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean populateSimpleSearch(SearchDTO search, boolean deleteOldResults) {
 		SearchQueryDTO query = search.getQuery();
-		
+
 		Set<String> terms = search.getQuery().getSimpleTerms();
 		List<String> sqlTerms = new ArrayList<String>(terms.size());
 		List<String> sqlOperators = new ArrayList<String>(terms.size());
@@ -166,20 +166,20 @@ public abstract class SearchDAO extends AbstractDAO {
 			for (int i = 0; i < sqlTerms.size(); i++) {
 				String term = sqlTerms.get(i);
 				String operator = sqlOperators.get(i);
-				
+
 				pst.setString(index++, term);
-				
+
 				if (operator.equals("~")) {
 					String[] eTerms = exactTerms.get(j++);
-					
+
 					for (String eTerm : eTerms) {
 						pst.setString(index++, eTerm);						
 					}
 				}
 			}
-			
+
 			pst.setString(index++, query.getDatabase().toString());
-			
+
 			if (query.getMaterialType() != MaterialType.ALL) {
 				pst.setString(index++, query.getMaterialType().toString());
 			}
@@ -189,7 +189,7 @@ public abstract class SearchDAO extends AbstractDAO {
 			if (deleteOldResults) {
 				this.commit(con);
 			}
-			
+
 			return records > 0;
 		} catch (Exception e) {
 			if (deleteOldResults) {
@@ -201,7 +201,7 @@ public abstract class SearchDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean populateAdvancedSearch(SearchDTO search, boolean deleteOld) {
 		SearchQueryDTO query = search.getQuery();
 		String sql = this.createAdvancedSelectClause(search);
@@ -209,7 +209,7 @@ public abstract class SearchDAO extends AbstractDAO {
 		if (sql == null) {
 			return false;
 		}
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
@@ -238,7 +238,7 @@ public abstract class SearchDAO extends AbstractDAO {
 			List<SearchTermDTO> searchTerms = search.getQuery().getTerms();
 			for (SearchTermDTO searchTerm : searchTerms) {
 				String field = searchTerm.getField();
-				
+
 				for (String term : searchTerm.getTerms()) {
 					// See: createAdvancedFilterClause();
 
@@ -249,17 +249,17 @@ public abstract class SearchDAO extends AbstractDAO {
 						if (!field.equals("0")) {
 							pst.setInt(index++, TextUtils.defaultInt(field));
 						}
-						
+
 						continue;
 					}
-					
+
 					if (field.equals("record_id")) {
 						pst.setInt(index++, TextUtils.defaultInt(term));
-						
+
 					} else if (field.equals("holding_id")) {
 						pst.setString(index++, query.getDatabase().toString());
 						pst.setInt(index++, TextUtils.defaultInt(term));
-						
+
 					} else if (field.equals("holding_accession_number")) {
 						pst.setString(index++, query.getDatabase().toString());
 						pst.setString(index++, term);
@@ -292,13 +292,13 @@ public abstract class SearchDAO extends AbstractDAO {
 					}
 				}
 			}
-			
+
 			int records = pst.executeUpdate();
 
 			if (deleteOld) {
 				this.commit(con);
 			}
-			
+
 			return records > 0;
 		} catch (Exception e) {
 			if (deleteOld) {
@@ -310,7 +310,7 @@ public abstract class SearchDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	private String createSimpleSelectClause(SearchDTO search, List<String> operators, List<String[]> exactTerms) {
 		SearchQueryDTO query = search.getQuery();
 
@@ -323,9 +323,9 @@ public abstract class SearchDAO extends AbstractDAO {
 
 		sql.append("INSERT INTO ").append(this.recordType).append("_search_results ");
 		sql.append("(search_id, indexing_group_id, record_id) ");
-		
+
 		sql.append("WITH ");
-		
+
 		int j = 0;
 		for (String operator : operators) {
 			cteCount++;
@@ -350,21 +350,21 @@ public abstract class SearchDAO extends AbstractDAO {
 
 		sql.append("SELECT DISTINCT ").append(search.getId()).append(", A.indexing_group_id, A.record_id ");
 		sql.append("FROM ( ");
-		
+
 		sql.append("SELECT I.indexing_group_id, I.record_id FROM ( ");
-		
+
 		for (int i = 1; i <= cteCount; i++) {
 			sql.append("SELECT * FROM Query_").append(i).append(" ");
-			
+
 			if (i < cteCount) {
 				sql.append(" UNION ");
 			}
 		}
-		
+
 		sql.append(") I WHERE I.record_id in ( ");
 		for (int i = 1; i <= cteCount; i++) {
 			sql.append("SELECT record_id FROM Query_").append(i).append(" ");
-			
+
 			if (i < cteCount) {
 				sql.append(" INTERSECT ");
 			}
@@ -378,14 +378,14 @@ public abstract class SearchDAO extends AbstractDAO {
         if (query.getMaterialType() != MaterialType.ALL) {
         	sql.append("AND R.material = ? ");
         }
-        
+
         if (query.isReservedOnly()) {
         	sql.append("AND R.id in (SELECT DISTINCT record_id FROM reservations WHERE expires > localtimestamp) ");
         }
-		
+
 		return sql.toString();
 	}
-	
+
 	private String createAdvancedSelectClause(SearchDTO search) {
 		SearchQueryDTO query = search.getQuery();
 		List<SearchTermDTO> searchTerms = query.getTerms();
@@ -430,17 +430,17 @@ public abstract class SearchDAO extends AbstractDAO {
 		StringBuilder clause = new StringBuilder();
 		String field = searchTerm.getField();
 		Set<String> terms = searchTerm.getTerms();
-		
+
 		// See: populateAdvancedSearch();
 		if (StringUtils.isNumeric(field)) {
 			clause.append("R.id IN (SELECT record_id FROM (");
-			
+
 			if (field.equals("0")) {
 				clause.append(StringUtils.repeat("SELECT record_id, datafield FROM " + this.recordType + "_idx_fields WHERE word = ? ", " INTERSECT ", terms.size()));	
 			} else {
 				clause.append(StringUtils.repeat("SELECT record_id, datafield FROM " + this.recordType + "_idx_fields WHERE word = ? AND indexing_group_id = ? ", " INTERSECT ", terms.size()));	
 			}
-			
+
 			clause.append(") A ) ");
 		} else if (field.equals("record_id")) {
 			// Field is the record id
@@ -455,7 +455,7 @@ public abstract class SearchDAO extends AbstractDAO {
 				clause.append(StringUtils.repeat("id = ? ", " OR ", terms.size()));
 			} else if (field.equals("holding_created") || field.equals("holding_modified")) {
 				clause.append("(");
-				
+
 				if (searchTerm.getStartDate() != null) {
 					clause.append(field.substring(8)).append(" >= ? ");
 				}
@@ -480,7 +480,7 @@ public abstract class SearchDAO extends AbstractDAO {
 		} else if (field.equals("created") || field.equals("modified")) {
 			// Field is a date
 			clause.append("(");
-			
+
 			if (searchTerm.getStartDate() != null) {
 				clause.append("R.").append(field).append(" >= ? ");
 			}

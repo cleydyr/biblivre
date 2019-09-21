@@ -27,7 +27,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 
 public class LendingListDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
@@ -52,7 +52,7 @@ public class LendingListDTO extends AbstractDTO {
 	public void setUser(UserDTO user) {
 		this.user = user;
 	}
-	
+
 	public Integer getId() {
 		return this.id;
 	}
@@ -89,12 +89,12 @@ public class LendingListDTO extends AbstractDTO {
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
-		
+
 		try {
 			json.put("id", this.getUser().getId());
 		} catch (JSONException e) { }
-		
+
 		return json;
 	}*/
-	
+
 }

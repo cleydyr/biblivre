@@ -50,7 +50,7 @@ public class Handler extends AbstractHandler {
 	public void createPdf(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String printId = UUID.randomUUID().toString();
-		
+
 		LabelPrintDTO print = new LabelPrintDTO();
 		String idList = request.getString("id_list");
 
@@ -63,7 +63,7 @@ public class Handler extends AbstractHandler {
 		} catch(Exception e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
 		}
-		
+
 		print.setIds(ids);
 		print.setOffset(request.getInteger("offset"));
 		print.setWidth(request.getFloat("width"));
@@ -73,50 +73,50 @@ public class Handler extends AbstractHandler {
 		print.setModel(request.getString("model"));
 
 		request.setSessionAttribute(schema, printId, print);
-		
+
 		try {
 			this.json.put("uuid", printId);
 		} catch(JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void downloadPdf(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String printId = request.getString("id");
 		LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
-		
+
 		HoldingBO hbo = HoldingBO.getInstance(schema);
 		Map<Integer, RecordDTO> hdto = hbo.map(dto.getIds(), RecordBO.MARC_INFO);
-		
+
 		BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
-		
+
 		List<LabelDTO> labels = new LinkedList<LabelDTO>();
 		for (RecordDTO rdto : hdto.values()) {
 			HoldingDTO holding = (HoldingDTO)rdto;
-			
+
 			LabelDTO label = new LabelDTO();
-			
+
 			label.setId(rdto.getId());
 			label.setAccessionNumber(holding.getAccessionNumber());
-			
+
 			BiblioRecordDTO biblio = (BiblioRecordDTO) biblioBo.get(holding.getRecordId());
 			Record biblioRecord = MarcUtils.iso2709ToRecord(biblio.getIso2709());
 			MarcDataReader dataReader = new MarcDataReader(biblioRecord);
-			
+
 			label.setAuthor(StringUtils.defaultString(dataReader.getAuthorName(false)));
 			label.setTitle(StringUtils.defaultString(dataReader.getTitle(false)));
-			
+
 			Record holdingRecord = MarcUtils.iso2709ToRecord(holding.getIso2709());
 			dataReader = new MarcDataReader(holdingRecord);
 			label.setLocationA(StringUtils.defaultString(dataReader.getLocation()));
 			label.setLocationB(StringUtils.defaultString(dataReader.getLocationB()));
 			label.setLocationC(StringUtils.defaultString(dataReader.getLocationC()));
 			label.setLocationD(StringUtils.defaultString(dataReader.getLocationD()));
-			
+
 			labels.add(label);
 		}
-		
+
 		final DiskFile exportFile = hbo.printLabelsToPDF(labels, dto);
 		hbo.markAsPrinted(dto.getIds());
 
@@ -124,7 +124,7 @@ public class Handler extends AbstractHandler {
 
 		this.setCallback(exportFile::delete);
 	}
-	
+
 	public void printText(ExtendedRequest request, ExtendedResponse response) {
 		//TODO Implementar e Melhorar
 		//TODO RENAME RECORD_FILE_TXT => printText 

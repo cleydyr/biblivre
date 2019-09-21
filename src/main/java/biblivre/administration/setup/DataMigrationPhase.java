@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.utils.BiblivreEnum;
 
 public enum DataMigrationPhase implements BiblivreEnum {
-	
+
 	DIGITAL_MEDIA("digital_media", "digital_media", "digital_media_id_seq", "id"), 
 	CATALOGING_BIBLIOGRAPHIC("cataloging_biblio", "biblio_records", "biblio_records_id_seq", "id"),
 	CATALOGING_HOLDINGS("cataloging_holdings", "biblio_holdings", "biblio_holdings_id_seq", "id"),
@@ -46,12 +46,12 @@ public enum DataMigrationPhase implements BiblivreEnum {
 	LENDINGS_HISTORY("lending_history", "lendings", "lendings_id_seq", "id"), 
 	LENDING_FINE("lending_fine", "lending_fines", "lending_fines_id_seq", "id"), 
 	RESERVATIONS("reservation", "reservations", "reservations_id_seq", "id");
-	
+
 	private String biblivre3TableName;
 	private String biblivre4TableName;
 	private String biblivre4SequenceName;
 	private String biblivre4IdColumnName;
-	
+
 	private DataMigrationPhase(String biblivre3TableName, String biblivre4TableName, String biblivre4SequenceName, String biblivre4IdColumnName) {
 		this.biblivre3TableName = biblivre3TableName;
 		this.biblivre4TableName = biblivre4TableName;
@@ -74,7 +74,7 @@ public enum DataMigrationPhase implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();
@@ -95,9 +95,9 @@ public enum DataMigrationPhase implements BiblivreEnum {
 	public String getBiblivre4SequenceName() {
 		return this.biblivre4SequenceName;
 	}
-	
+
 	public String getBiblivre4IdColumnName() {
 		return this.biblivre4IdColumnName;
 	}
-	
+
 }

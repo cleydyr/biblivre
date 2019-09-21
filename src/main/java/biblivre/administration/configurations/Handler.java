@@ -43,7 +43,7 @@ public class Handler extends AbstractHandler {
 
 		String configurations = request.getString("configurations", Constants.JSON_EMPTY_OBJECT_STR);
 		final List<ConfigurationsDTO> configs = new ArrayList<>();
-		
+
 		JSONObject json = new JSONObject(configurations);
 
 		json.keys().forEachRemaining(key -> {
@@ -59,7 +59,7 @@ public class Handler extends AbstractHandler {
 		if (configs.size() == 0) {
 			return;
 		}
-		
+
 		boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
 
 		Configurations.save(schema, Configurations.validate(schema, configs), loggedUser);
@@ -70,7 +70,7 @@ public class Handler extends AbstractHandler {
 
 		this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
 	}
-	
+
 	public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
 		request.getSession().removeAttribute(request.getSchema() + ".system_warning_new_version");
 	}

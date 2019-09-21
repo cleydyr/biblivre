@@ -29,10 +29,10 @@ public class RequestQuotationDTO extends AbstractDTO {
 	private int quantity;
 	private Float unitValue;
 	private int responseQuantity;
-	
+
     transient private String title;
     transient private String author;
-    
+
 	public int getRequestId() {
 		return this.requestId;
 	}
@@ -72,7 +72,7 @@ public class RequestQuotationDTO extends AbstractDTO {
 	public void setResponseQuantity(int responseQuantity) {
 		this.responseQuantity = responseQuantity;
 	}
-	
+
     public String getTitle() {
         return (this.title == null) ? "" : this.title.trim();
     }
@@ -87,7 +87,7 @@ public class RequestQuotationDTO extends AbstractDTO {
     public void setAuthor(String author) {
         this.author = author;
     }
-	
+
     @Override
     public String toString() {
 		StringBuilder builder = new StringBuilder();

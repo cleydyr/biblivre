@@ -29,16 +29,16 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateChangePassword(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
 		String currentPassword = request.getString("current_password");
 		String newPassword = request.getString("new_password");
 		String repeatPassword = request.getString("repeat_password");
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (StringUtils.isBlank(currentPassword)) {
 			ex.addError("current_password", "field.error.required");
 		}
@@ -50,7 +50,7 @@ public class Validator extends AbstractValidator {
 		if (StringUtils.isBlank(repeatPassword)) {
 			ex.addError("repeat_password", "field.error.required");
 		}
-		
+
 		if (newPassword.length() < 3) {
 			ex.addError("new_password", "field.error.min_length:3");
 		}
@@ -67,9 +67,9 @@ public class Validator extends AbstractValidator {
 			handler.setMessage(ex);
 			return;
 		}
-		
+
 		LoginBO lbo = LoginBO.getInstance(schema);
-		
+
 		int loggedId = request.getLoggedUserId();
 		LoginDTO login = lbo.get(loggedId);
 		if (login == null) {

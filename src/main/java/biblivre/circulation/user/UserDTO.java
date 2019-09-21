@@ -36,12 +36,12 @@ public class UserDTO extends AbstractDTO {
 	private UserStatus status;
 	private Integer loginId;
 	private Boolean userCardPrinted;
-	
+
 	private HashMap<String, String> fields;
-	
+
 	transient private Integer currentLendings;
 	transient private String usertypeName;
-	
+
 	public UserDTO() {
 		this.fields = new HashMap<String, String>();
 	}
@@ -53,7 +53,7 @@ public class UserDTO extends AbstractDTO {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getEnrollment() {
 		return StringUtils.leftPad(String.valueOf(this.getId()), 5, "0");
 	}
@@ -93,7 +93,7 @@ public class UserDTO extends AbstractDTO {
 	public void setLoginId(Integer loginId) {
 		this.loginId = loginId;
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
@@ -101,7 +101,7 @@ public class UserDTO extends AbstractDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public HashMap<String, String> getFields() {
 		return this.fields;
 	}
@@ -109,11 +109,11 @@ public class UserDTO extends AbstractDTO {
 	public void setFields(HashMap<String, String> fields) {
 		this.fields = fields;
 	}
-	
+
 	public void addField(String key, String value) {
 		this.fields.put(key, value);
 	}
-	
+
 	public Integer getCurrentLendings() {
 		return this.currentLendings;
 	}
@@ -121,7 +121,7 @@ public class UserDTO extends AbstractDTO {
 	public void setCurrentLendings(Integer currentLendings) {
 		this.currentLendings = currentLendings;
 	}
-	
+
 	public Boolean getUserCardPrinted() {
 		return this.userCardPrinted == null ? Boolean.FALSE : this.userCardPrinted;
 	}
@@ -155,8 +155,8 @@ public class UserDTO extends AbstractDTO {
 
 		json.putOpt("created", this.getCreated());
 		json.putOpt("modified", this.getModified());
-		
+
 		return json;
 	}
-	
+
 }

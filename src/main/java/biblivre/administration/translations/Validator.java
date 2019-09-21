@@ -29,9 +29,9 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateDump(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String language = request.getString("language");
 
 		if (StringUtils.isBlank(language)) {
@@ -40,17 +40,17 @@ public class Validator extends AbstractValidator {
 			handler.setMessage(ex);
 		}
 	}
-	
+
 	public void validateLoad(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		MemoryFile file = request.getFile("file");
-		
+
 		if (file == null || file.getSize() <= 0) {
 			ValidationException ex = new ValidationException("error.form_invalid_values");
 			ex.addError("file", "administration.translations.error.invalid_file");
 			handler.setMessage(ex);
 		}
 	}	
-	
+
 
 }

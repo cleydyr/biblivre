@@ -26,16 +26,16 @@ import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 
 public class Handler extends CatalogingHandler {
-	
+
 	public Handler() {
 		super(RecordType.VOCABULARY, MaterialType.VOCABULARY);
 	}
-	
+
 	@Override
 	protected RecordDTO createRecordDTO(ExtendedRequest request) {
 		VocabularyRecordDTO dto = new VocabularyRecordDTO();
-		
-		
+
+
 		return dto;
 	}
 

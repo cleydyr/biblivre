@@ -39,18 +39,18 @@ public class OrderDAO extends AbstractDAO {
 	public static OrderDAO getInstance(String schema) {
 		return (OrderDAO) AbstractDAO.getInstance(OrderDAO.class, schema);
 	}
-	
+
 	 public OrderDTO get(Integer orderId) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			String sql = " SELECT * FROM orders WHERE id = ?; ";
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setInt(1, orderId);
-			
+
 			ResultSet rs = pst.executeQuery();
-			
+
 			if (rs.next()) {
 				return this.populateDto(rs);
 			}
@@ -63,14 +63,14 @@ public class OrderDAO extends AbstractDAO {
 		return null;
 	}
 
-	
+
 	public Integer save(OrderDTO dto) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			int orderId = this.getNextSerial("orders_id_seq");
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append(" INSERT INTO orders (quotation_id, created, ");
 			sql.append(" created_by, info, status, invoice_number, ");
@@ -78,7 +78,7 @@ public class OrderDAO extends AbstractDAO {
 			sql.append(" terms_of_payment, deadline_date, id) ");
 			sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ");
 			String sqlInsert = sql.toString();
-			
+
 			PreparedStatement pst = con.prepareStatement(sqlInsert);
 			pst.setInt(1, dto.getQuotationId());
 			pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
@@ -118,21 +118,21 @@ public class OrderDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append(" INSERT INTO orders (quotation_id, created, ");
 			sql.append(" created_by, info, status, invoice_number, ");
 			sql.append(" receipt_date, total_value, delivered_quantity, ");
 			sql.append(" terms_of_payment, deadline_date, id) ");
 			sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				OrderDTO dto = (OrderDTO) abstractDto;
 				pst.setInt(1, dto.getQuotationId());
@@ -168,15 +168,15 @@ public class OrderDAO extends AbstractDAO {
 				pst.setInt(12, dto.getId());
 				pst.addBatch();
 			}
-			
+
 			pst.executeBatch();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
-		
+
 		return true;
 	}
 
@@ -301,7 +301,7 @@ public class OrderDAO extends AbstractDAO {
 				sql.append("AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?)) ");
 			}
 			sql.append("ORDER BY O.created ASC LIMIT ? OFFSET ?;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			int i = 1;
 			if (StringUtils.isNumeric(value)) {
@@ -313,7 +313,7 @@ public class OrderDAO extends AbstractDAO {
 			}
 			pst.setInt(i++, offset);
 			pst.setInt(i++, limit);
-			
+
 			StringBuilder sqlCount = new StringBuilder("SELECT count(*) as total FROM orders O ");
 			if (StringUtils.isNumeric(value)) {
 				sql.append("WHERE O.id = ? ");
@@ -325,7 +325,7 @@ public class OrderDAO extends AbstractDAO {
 				sql.append("AND RQ.request_id = R.id ");
 				sql.append("AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?));");
 			}
-			
+
 			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());			
 			if (StringUtils.isNumeric(value)) {
 				pst.setInt(1, Integer.valueOf(value));
@@ -334,7 +334,7 @@ public class OrderDAO extends AbstractDAO {
 				pst.setString(2, "%" + value + "%");
 				pst.setString(3, "%" + value + "%");
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDto(rs));
@@ -367,7 +367,7 @@ public class OrderDAO extends AbstractDAO {
 		dto.setDeliveredQuantity(rs.getInt("delivered_quantity"));
 		dto.setTermsOfPayment(rs.getString("terms_of_payment"));
 		dto.setDeadlineDate(rs.getDate("deadline_date"));
-		
+
 		dto.setCreated(rs.getDate("created"));
 		dto.setCreatedBy(rs.getInt("created_by"));
 		dto.setModified(rs.getDate("modified"));

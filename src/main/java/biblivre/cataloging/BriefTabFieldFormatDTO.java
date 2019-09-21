@@ -29,23 +29,23 @@ public class BriefTabFieldFormatDTO extends AbstractDTO implements Comparable<Br
 	private String datafieldTag;
 	private String format;
 	private Integer sortOrder;
-	
+
 	public BriefTabFieldFormatDTO() {
 	}
-	
+
 	public BriefTabFieldFormatDTO(JSONObject jsonObject) {
 		this.fromJSONObject(jsonObject);
 	}
-	
+
 	public BriefTabFieldFormatDTO(String datafieldTag, String format) {
 		this.setDatafieldTag(datafieldTag);
 		this.setFormat(format);
 	}
-	
+
 	public String getDatafieldTag() {
 		return this.datafieldTag;
 	}
-	
+
 	public void setDatafieldTag(String datafieldTag) {
 		this.datafieldTag = datafieldTag;
 	}
@@ -53,7 +53,7 @@ public class BriefTabFieldFormatDTO extends AbstractDTO implements Comparable<Br
 	public String getFormat() {
 		return this.format;
 	}
-	
+
 	public void setFormat(String format) {
 		this.format = format;
 	}
@@ -65,13 +65,13 @@ public class BriefTabFieldFormatDTO extends AbstractDTO implements Comparable<Br
 	public void setSortOrder(Integer sortOrder) {
 		this.sortOrder = sortOrder;
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
-		
+
 		json.put("datafieldTag", this.getDatafieldTag());
-		
+
 		return json;
 	}
 

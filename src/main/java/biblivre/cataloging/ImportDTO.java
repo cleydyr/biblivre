@@ -43,20 +43,20 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	private int success;
 	private int failure;
 	private int found;
-	
+
 	private ImportFormat format;
 	private ImportEncoding encoding;
-	
+
 	public boolean isPerfect() {
 		return this.getFound() > 0 && this.getFailure() == 0;
 	}
-	
+
 	public void addRecord(RecordDTO record) {
 		if (record != null) {
 			this.recordList.add(record);
 		}
 	}
-	
+
 	public List<RecordDTO> getRecordList() {
 		return this.recordList;
 	}
@@ -64,19 +64,19 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	public int getSuccess() {
 		return this.success;
 	}
-	
+
 	public void setSuccess(int success) {
 		this.success = success;
 	}
-	
+
 	public void incrementSuccess() {
 		this.success++;
 	}
-	
+
 	public int getFailure() {
 		return this.failure;
 	}
-	
+
 	public void setFailure(int failure) {
 		this.failure = failure;
 	}
@@ -84,19 +84,19 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	public void incrementFailure() {
 		this.failure++;
 	}
-	
+
 	public int getFound() {
 		return this.found;
 	}
-	
+
 	public void setFound(int found) {
 		this.found = found;
 	}
-	
+
 	public void incrementFound() {
 		this.found++;
 	}
-	
+
 	public ImportFormat getFormat() {
 		return this.format;
 	}
@@ -112,7 +112,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	public void setEncoding(ImportEncoding encoding) {
 		this.encoding = encoding;
 	}
-	
+
 	public List<String> getFoundISBN() {
 		return this.foundISBN;
 	}

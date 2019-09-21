@@ -30,16 +30,16 @@ import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 
 public class Validator extends AbstractValidator {
-	
 
-	
+
+
 	public void validateCreate(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String nameParam = request.getString("title");
 		String schemaParam = request.getString("schema");
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (StringUtils.isBlank(nameParam)) {
 			ex.addError("name", "field.error.required");
 		}

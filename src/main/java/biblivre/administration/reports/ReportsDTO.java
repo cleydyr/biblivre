@@ -149,5 +149,5 @@ public class ReportsDTO {
 	public void setSearchId(Integer searchId) {
 		this.searchId = searchId;
 	}
-	
+
 }

@@ -48,22 +48,22 @@ public class MemoryFile extends BiblivreFile {
 		if (this.fileItem == null) {
 			return this.inputStream;
 		}
-		
+
 		IOUtils.closeQuietly(this.inputStream);
-		
+
 		this.inputStream = this.fileItem.getInputStream();
 		return this.inputStream;
 	}
-	
+
 	public void setInputStream(InputStream is) {
 		this.inputStream = is;
 	}
-	
+
 	public InputStream getInputStream() throws IOException {
 		if (this.inputStream == null) {
 			return this.getNewInputStream();
 		}
-		
+
 		return this.inputStream;
 	}
 
@@ -96,7 +96,7 @@ public class MemoryFile extends BiblivreFile {
 		while ((read = input.read(buffer)) > 0) {
 			out.write(buffer, 0, read);
 		}
-		
+
 		IOUtils.closeQuietly(input);
 	}
 

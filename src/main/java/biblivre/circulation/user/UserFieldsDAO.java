@@ -30,19 +30,19 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
 public class UserFieldsDAO extends AbstractDAO {
-	
+
 	public static UserFieldsDAO getInstance(String schema) {
 		return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class, schema);
 	}
 
 	public List<UserFieldDTO> listFields() {
 		List<UserFieldDTO> list = new ArrayList<UserFieldDTO>();
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			String sqlDatafields = "SELECT * FROM users_fields ORDER BY \"sort_order\";";
-			
+
 			Statement pst = con.createStatement();
 			ResultSet rs = pst.executeQuery(sqlDatafields);			
 			while (rs.next()) {
@@ -62,7 +62,7 @@ public class UserFieldsDAO extends AbstractDAO {
 
 		return list;
 	}
-	
+
 	private UserFieldDTO populateUserFieldDTO(ResultSet rs) throws SQLException {
 		UserFieldDTO dto = new UserFieldDTO();
 

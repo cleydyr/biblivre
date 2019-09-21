@@ -32,26 +32,26 @@ import org.apache.log4j.Logger;
 import biblivre.core.configurations.Configurations;
 
 public class DatabaseUtils {
-	
+
 	private static Logger logger = Logger.getLogger(DatabaseUtils.class);
-	
+
 	public static File getPgDump(String schema) {
 		File pgdump = DatabaseUtils.getPgDumpFromConfiguration(schema);
-		
+
 		if (pgdump == null) {
 			pgdump = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPgDumpFilename());
 		}
-		
+
 		return pgdump;
 	}
-	
+
 	public static File getPsql(String schema) {
 		File psql = DatabaseUtils.getPsqlFromConfiguration(schema);
-		
+
 		if (psql == null) {
 			psql = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPsqlFilename());
 		}
-		
+
 		return psql;
 	}
 
@@ -86,10 +86,10 @@ public class DatabaseUtils {
 
 		return null;
 	}
-	
+
 	private static File getFromFilesystem(String fileName) {
 		String os = System.getProperty("os.name").toUpperCase();
-		
+
 		if (os.contains("WINDOWS")) {
 			return DatabaseUtils.getWindows(fileName);
 		} else if (os.contains("LINUX")) {
@@ -103,7 +103,7 @@ public class DatabaseUtils {
 
 	private static String getPgDumpFilename() {
 		String os = System.getProperty("os.name").toUpperCase();
-		
+
 		if (os.contains("WINDOWS")) {
 			return "pg_dump.exe";
 		} else {
@@ -113,14 +113,14 @@ public class DatabaseUtils {
 
 	private static String getPsqlFilename() {
 		String os = System.getProperty("os.name").toUpperCase();
-		
+
 		if (os.contains("WINDOWS")) {
 			return "psql.exe";
 		} else {
 			return "psql";
 		}		
 	}
-	
+
 	private static File getMacOs(String filename) {
 		String[] commands;
 
@@ -133,7 +133,7 @@ public class DatabaseUtils {
 		String path = DatabaseUtils.processPatternMatcher(commands, "(.*)", 1);		
 		return new File(path, filename);
 	}
-	
+
 	private static File getLinux(String filename) {
 		ProcessBuilder pb = whichCommand(filename);
 
@@ -158,10 +158,10 @@ public class DatabaseUtils {
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		return pb;
 	}
-	
+
 	private static File getWindows(String filename) {
 		String[] commands;
-		
+
 		//Step 1 - Detecting current PostgreSQL service name
 		commands = new String[] {
 			"tasklist",
@@ -177,7 +177,7 @@ public class DatabaseUtils {
 		if (postgresServiceName == null) {
 			return null;
 		}
-		
+
 		//Step 2 - Detect PostgreSQL Product Code
 		String postgresProductCode = null;
 		String[] regkeys = new String[] {
@@ -193,7 +193,7 @@ public class DatabaseUtils {
 		if (postgresProductCode == null) {
 			return null;
 		}
-		
+
 		//Step 3 - Detect PostgreSQL Base Directory
 		String postgresBaseDirectory = null;
 		regkeys = new String[] {
@@ -209,11 +209,11 @@ public class DatabaseUtils {
 		if (postgresBaseDirectory == null) {
 			return null;
 		}
-		
+
 		File file = new File(postgresBaseDirectory + File.separator + "bin", filename);
 		return file.exists() ? file : null;
 	}
-	
+
 	private static String getRegValue(String dir, String key) {
 		String[] commands = new String[] {
 			"reg",
@@ -222,14 +222,14 @@ public class DatabaseUtils {
 			"/V",
 			key
 		};
-			
+
 		return DatabaseUtils.processPatternMatcher(commands, "REG_SZ\\s+(.+)$", 1);
 	}
-	
+
 	private static String processPatternMatcher(String[] commands, String regex, int group) {
 		return DatabaseUtils.processPatternMatcher(commands, regex, group, null);
 	}
-	
+
 	private static String processPatternMatcher(String[] commands, String regex, int group, String directory) {
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		if (directory != null) {
@@ -241,7 +241,7 @@ public class DatabaseUtils {
 		try (BufferedReader br = new BufferedReader(
 				new InputStreamReader(pb.start().getInputStream()))) {
 			String line;
-			
+
 			Pattern pattern = Pattern.compile(regex);
 			while ((line = br.readLine()) != null) {
 				Matcher matcher = pattern.matcher(line);

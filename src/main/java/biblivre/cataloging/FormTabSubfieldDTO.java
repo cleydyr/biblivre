@@ -25,9 +25,9 @@ import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.core.AbstractDTO;
 
 public class FormTabSubfieldDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private String datafield;
 	private String subfield;
 	private boolean collapsed;
@@ -40,11 +40,11 @@ public class FormTabSubfieldDTO extends AbstractDTO {
 		this.fromJSONObject(jsonObject);
 		this.setAutocompleteType(jsonObject.getString("autocomplete_type"));
 	}
-	
+
 	public FormTabSubfieldDTO() {
 		super();
 	}
-	
+
 	public String getDatafield() {
 		return this.datafield;
 	}
@@ -76,12 +76,12 @@ public class FormTabSubfieldDTO extends AbstractDTO {
 	public void setRepeatable(boolean repeatable) {
 		this.repeatable = repeatable;
 	}
-	
+
 	public AutocompleteType getAutocompleteType() {
 		if (this.autocompleteType == null) {
 			return AutocompleteType.DISABLED;
 		}
-		
+
 		return this.autocompleteType;
 	}
 
@@ -92,7 +92,7 @@ public class FormTabSubfieldDTO extends AbstractDTO {
 	public void setAutocompleteType(String autocompleteType) {
 		this.autocompleteType = AutocompleteType.fromString(autocompleteType);
 	}
-	
+
 	public Integer getSortOrder() {
 		return this.sortOrder;
 	}

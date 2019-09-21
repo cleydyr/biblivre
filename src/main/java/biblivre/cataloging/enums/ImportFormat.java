@@ -25,17 +25,17 @@ import biblivre.core.utils.BiblivreEnum;
 
 
 public enum ImportFormat implements BiblivreEnum {
-	
+
 	AUTO_DETECT,
 	MARC,
 	XML,
 	ISO2709;
-	
+
 	public static ImportFormat fromString(String str) {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (ImportFormat importFormat : ImportFormat.values()) {
@@ -46,7 +46,7 @@ public enum ImportFormat implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();
@@ -55,5 +55,5 @@ public enum ImportFormat implements BiblivreEnum {
 	public String getString() {
 		return this.toString();
 	}
-	
+
 }

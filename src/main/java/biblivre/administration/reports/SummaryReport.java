@@ -164,7 +164,7 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
 		if (o1 == null || o1[this.index] == null) {
 			return -1;
 		}
-		
+
 		if (o2 == null || o2[this.index] == null) {
 			return 1;
 		}

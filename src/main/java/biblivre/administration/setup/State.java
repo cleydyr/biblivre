@@ -31,7 +31,7 @@ public class State {
 	private static long currentStep;
 
 	private static long currentSecondaryStep;
-	
+
 	public static void start() {
 		State.LOCKED.set(true);
 		State.log = new StringBuilder();
@@ -40,7 +40,7 @@ public class State {
 		State.currentStep = 0;
 		State.currentSecondaryStep = 0; 
 	}
-	
+
 	public static void cancel() {
 		State.LOCKED.set(false);
 	}
@@ -48,23 +48,23 @@ public class State {
 	public static void finish() {
 		State.LOCKED.set(false);
 	}
-	
+
 	public static String getLog() {
 		if (State.log == null) {
 			return "";
 		}
-		
+
 		return State.log.toString();
 	}
 
 	public static String getLastMessage() {
 		return State.lastMessage;
 	}
-	
+
 	public static void setSteps(long steps) {
 		State.steps = steps;
 	}
-	
+
 	public static long getSteps() {
 		return State.steps;
 	}
@@ -72,7 +72,7 @@ public class State {
 	public static long getCurrentStep() {
 		return State.currentStep;
 	}
-	
+
 	public synchronized static void incrementCurrentStep() {
 		State.currentStep++;
 	}
@@ -80,8 +80,8 @@ public class State {
 	public synchronized static void incrementCurrentStep(long count) {
 		State.currentStep += count;
 	}
-	
-	
+
+
 	public static void setCurrentSecondaryStep(long steps) {
 		State.currentSecondaryStep = steps;
 	}
@@ -89,7 +89,7 @@ public class State {
 	public static long getCurrentSecondaryStep() {
 		return State.currentSecondaryStep;
 	}
-	
+
 	public synchronized static void incrementCurrentSecondaryStep() {
 		State.currentSecondaryStep++;
 	}
@@ -102,7 +102,7 @@ public class State {
 		if (StringUtils.isBlank(message)) {
 			return;
 		}
-		
+
 		State.log.append(message).append("\n");
 		State.lastMessage = message;
 	}

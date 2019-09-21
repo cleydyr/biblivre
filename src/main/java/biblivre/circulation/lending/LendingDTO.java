@@ -24,20 +24,20 @@ import java.util.Date;
 import biblivre.core.AbstractDTO;
 
 public class LendingDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 	private Integer holdingId;
 	private Integer userId;
 	private Integer previousLendingId;
 	private Date expectedReturnDate;
 	private Date returnDate;
-	
+
 	private transient Float dailyFine;
 	private transient Integer daysLate;
 	private transient Float estimatedFine;
-	
+
 	public Integer getId() {
 		return this.id;
 	}

@@ -37,7 +37,7 @@ import biblivre.core.utils.Constants;
 public class Handler extends AbstractHandler {
 
 	public void create(ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String titleParam = request.getString("title");
 		String subtitleParam = request.getString("subtitle");
 		String schemaParam = request.getString("schema");
@@ -46,7 +46,7 @@ public class Handler extends AbstractHandler {
 		dto.setName(titleParam);
 		dto.setSchema(schemaParam);
 		dto.setCreatedBy(request.getLoggedUserId());
-		
+
 		State.start();
 		State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
 
@@ -55,7 +55,7 @@ public class Handler extends AbstractHandler {
 		boolean success = Schemas.createSchema(dto, template, true);
 		if (success) {
 			State.finish();
-			
+
 			Configurations.save(schemaParam, new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam), request.getLoggedUserId());
 			Configurations.save(schemaParam, new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam), request.getLoggedUserId());
 			this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");			
@@ -64,7 +64,7 @@ public class Handler extends AbstractHandler {
 
 			this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
 		}
-		
+
 		try {
 			this.json.put("success", success);
 
@@ -79,14 +79,14 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 
 	public void toggle(ExtendedRequest request, ExtendedResponse response) {
 		String schemaParam = request.getString("schema");
 		boolean disable = request.getBoolean("disable", false);	
 
 		SchemaDTO dto = Schemas.getSchema(schemaParam);
-		
+
 		if (dto == null) {
 			this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.toggle");
 			return;
@@ -98,7 +98,7 @@ public class Handler extends AbstractHandler {
 				return;
 			}
 		}
-		
+
 		boolean success = (disable) ? Schemas.disable(dto) : Schemas.enable(dto);
 		try {
 			this.json.put("success", success);
@@ -107,14 +107,14 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void deleteSchema(ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String schemaParam = request.getString("schema");
 
 		SchemaDTO dto = Schemas.getSchema(schemaParam);
 		boolean success = Schemas.deleteSchema(dto);
-		
+
 		try {
 			this.json.put("success", success);
 		} catch (JSONException e) {
@@ -122,5 +122,5 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 }

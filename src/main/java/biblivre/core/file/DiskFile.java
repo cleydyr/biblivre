@@ -29,7 +29,7 @@ import biblivre.core.utils.Constants;
 
 public class DiskFile extends BiblivreFile {
 	private File file;
-	
+
 	public DiskFile(File file, String contentType) {
 		this.file = file;
 		this.setContentType(contentType);
@@ -43,7 +43,7 @@ public class DiskFile extends BiblivreFile {
 	@Override
 	public void close() throws IOException {
 	}
-	
+
 	@Override
 	public boolean exists() {
 		return this.file != null && this.file.exists();
@@ -66,7 +66,7 @@ public class DiskFile extends BiblivreFile {
 			}
 		}
 	}
-	
+
 	public boolean delete() {
 		return this.file != null && this.file.delete();
 	}

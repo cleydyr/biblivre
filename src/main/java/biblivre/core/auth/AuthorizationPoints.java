@@ -33,7 +33,7 @@ public class AuthorizationPoints implements Serializable {
 
 	private static AuthorizationPoints notLoggedMultiSchemaInstance;
 	private static AuthorizationPoints notLoggedSingleSchemaInstance;
-	
+
 	private HashMap<Pair<String, String>, Boolean> points;
 	private HashMap<String, Boolean> permissions;
 	private boolean admin;
@@ -50,7 +50,7 @@ public class AuthorizationPoints implements Serializable {
 
 			return AuthorizationPoints.notLoggedMultiSchemaInstance;
 		}
-					
+
 		if (AuthorizationPoints.notLoggedSingleSchemaInstance == null) {
 			AuthorizationPoints.notLoggedSingleSchemaInstance = new AuthorizationPoints("*", false, false, null);
 		}
@@ -85,7 +85,7 @@ public class AuthorizationPoints implements Serializable {
 		// TODO (SEO)
 //		this.addAuthPoint("menu", "list_authorities", AuthorizationPointTypes.MENU_SEARCH);
 //		this.addAuthPoint("menu", "list_vocabulary", AuthorizationPointTypes.MENU_SEARCH);
-		
+
 		this.addAuthPoint("menu", "search_bibliographic", AuthorizationPointTypes.MENU_SEARCH);
 		this.addAuthPoint("menu", "search_authorities", AuthorizationPointTypes.MENU_SEARCH);
 		this.addAuthPoint("menu", "search_vocabulary", AuthorizationPointTypes.MENU_SEARCH);
@@ -96,20 +96,20 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("menu", "cataloging_vocabulary", AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE, AuthorizationPointTypes.CATALOGING_VOCABULARY_DELETE);
 		this.addAuthPoint("menu", "cataloging_import", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE, AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE, AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
 		this.addAuthPoint("menu", "cataloging_labels", AuthorizationPointTypes.CATALOGING_PRINT_LABELS);
-		
+
 		this.addAuthPoint("menu", "circulation_user", AuthorizationPointTypes.CIRCULATION_LIST, AuthorizationPointTypes.CIRCULATION_SAVE, AuthorizationPointTypes.CIRCULATION_DELETE);
 		this.addAuthPoint("menu", "circulation_lending", AuthorizationPointTypes.CIRCULATION_LENDING_LIST, AuthorizationPointTypes.CIRCULATION_LENDING_LEND, AuthorizationPointTypes.CIRCULATION_LENDING_RETURN);
 		this.addAuthPoint("menu", "circulation_reservation", AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST, AuthorizationPointTypes.CIRCULATION_RESERVATION_RESERVE);
 		this.addAuthPoint("menu", "circulation_access", AuthorizationPointTypes.CIRCULATION_LIST);
 		this.addAuthPoint("menu", "circulation_user_cards", AuthorizationPointTypes.CIRCULATION_PRINT_USER_CARDS);
-		
+
 		this.addAuthPoint("menu", "circulation_user_reservation", AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
 
 		this.addAuthPoint("menu", "acquisition_order", AuthorizationPointTypes.ACQUISITION_ORDER_LIST, AuthorizationPointTypes.ACQUISITION_ORDER_SAVE, AuthorizationPointTypes.ACQUISITION_ORDER_DELETE);
 		this.addAuthPoint("menu", "acquisition_quotation", AuthorizationPointTypes.ACQUISITION_QUOTATION_LIST, AuthorizationPointTypes.ACQUISITION_QUOTATION_SAVE, AuthorizationPointTypes.ACQUISITION_QUOTATION_DELETE);
 		this.addAuthPoint("menu", "acquisition_request", AuthorizationPointTypes.ACQUISITION_REQUEST_LIST, AuthorizationPointTypes.ACQUISITION_REQUEST_SAVE, AuthorizationPointTypes.ACQUISITION_REQUEST_DELETE);
 		this.addAuthPoint("menu", "acquisition_supplier", AuthorizationPointTypes.ACQUISITION_SUPPLIER_LIST, AuthorizationPointTypes.ACQUISITION_SUPPLIER_SAVE, AuthorizationPointTypes.ACQUISITION_SUPPLIER_DELETE);
-		
+
 		this.addAuthPoint("menu", "administration_password", AuthorizationPointTypes.LOGIN_CHANGE_PASSWORD);
 		this.addAuthPoint("menu", "administration_maintenance", AuthorizationPointTypes.ADMINISTRATION_INDEXING);
 		this.addAuthPoint("menu", "administration_user_types", AuthorizationPointTypes.ADMINISTRATION_USERTYPE_LIST, AuthorizationPointTypes.ADMINISTRATION_USERTYPE_SAVE, AuthorizationPointTypes.ADMINISTRATION_USERTYPE_DELETE);
@@ -126,7 +126,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("menu", "multi_schema_configurations", AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
 		this.addAuthPoint("menu", "multi_schema_translations", AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
 		this.addAuthPoint("menu", "multi_schema_backup", AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-		
+
 		this.addAuthPoint("menu", "help_about_biblivre", AuthorizationPointTypes.MENU_HELP);
 		this.addAuthPoint("menu", "ping", AuthorizationPointTypes.MENU_OTHER);
 		this.addAuthPoint("menu", "i18n", AuthorizationPointTypes.MENU_OTHER);
@@ -156,7 +156,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("cataloging.holding", "save", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
 		this.addAuthPoint("cataloging.holding", "delete", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_DELETE);
 		this.addAuthPoint("cataloging.holding", "create_automatic_holding", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
-		
+
 		this.addAuthPoint("cataloging", "import_upload", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE, AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE, AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
 		this.addAuthPoint("cataloging", "save_import", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE, AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE, AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
 		this.addAuthPoint("cataloging", "parse_marc", AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE, AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE, AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
@@ -176,7 +176,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("cataloging.authorities", "search_author", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
 		this.addAuthPoint("cataloging.authorities", "list_brief_formats", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
 
-		
+
 		this.addAuthPoint("cataloging.vocabulary", "search", AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
 		this.addAuthPoint("cataloging.vocabulary", "paginate", AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
 		this.addAuthPoint("cataloging.vocabulary", "open", AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
@@ -190,7 +190,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("cataloging.vocabulary", "download_export", AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
 		this.addAuthPoint("cataloging.vocabulary", "list_brief_formats", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
 
-		
+
 		this.addAuthPoint("cataloging.labels", "create_pdf", AuthorizationPointTypes.CATALOGING_PRINT_LABELS);
 		this.addAuthPoint("cataloging.labels", "download_pdf", AuthorizationPointTypes.CATALOGING_PRINT_LABELS);
 
@@ -201,7 +201,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("circulation.user", "load_tab_data", AuthorizationPointTypes.CIRCULATION_LENDING_LIST, AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST);
 		this.addAuthPoint("circulation.user", "block", AuthorizationPointTypes.CIRCULATION_SAVE);
 		this.addAuthPoint("circulation.user", "unblock", AuthorizationPointTypes.CIRCULATION_SAVE);
-		
+
 		this.addAuthPoint("circulation.user_cards", "create_pdf", AuthorizationPointTypes.CIRCULATION_PRINT_USER_CARDS);
 		this.addAuthPoint("circulation.user_cards", "download_pdf", AuthorizationPointTypes.CIRCULATION_PRINT_USER_CARDS);
 
@@ -219,12 +219,12 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("circulation.reservation", "user_search", AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST);
 		this.addAuthPoint("circulation.reservation", "reserve", AuthorizationPointTypes.CIRCULATION_RESERVATION_RESERVE);
 		this.addAuthPoint("circulation.reservation", "delete", AuthorizationPointTypes.CIRCULATION_RESERVATION_RESERVE);
-		
+
 		this.addAuthPoint("circulation.reservation", "self_open", AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
 		this.addAuthPoint("circulation.reservation", "self_search", AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
 		this.addAuthPoint("circulation.reservation", "self_reserve", AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
 		this.addAuthPoint("circulation.reservation", "self_delete", AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
-		
+
 		this.addAuthPoint("circulation.accesscontrol", "card_search", AuthorizationPointTypes.CIRCULATION_ACCESS_CONTROL_LIST);
 		this.addAuthPoint("circulation.accesscontrol", "user_search", AuthorizationPointTypes.CIRCULATION_ACCESS_CONTROL_LIST);
 		this.addAuthPoint("circulation.accesscontrol", "bind", AuthorizationPointTypes.CIRCULATION_ACCESS_CONTROL_BIND);
@@ -234,7 +234,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("acquisition.supplier", "paginate", AuthorizationPointTypes.ACQUISITION_SUPPLIER_LIST);
 		this.addAuthPoint("acquisition.supplier", "save", AuthorizationPointTypes.ACQUISITION_SUPPLIER_SAVE);
 		this.addAuthPoint("acquisition.supplier", "delete", AuthorizationPointTypes.ACQUISITION_SUPPLIER_DELETE);
-		
+
 		this.addAuthPoint("acquisition.request", "search", AuthorizationPointTypes.ACQUISITION_REQUEST_LIST);
 		this.addAuthPoint("acquisition.request", "paginate", AuthorizationPointTypes.ACQUISITION_REQUEST_LIST);
 		this.addAuthPoint("acquisition.request", "open", AuthorizationPointTypes.ACQUISITION_REQUEST_LIST);
@@ -251,7 +251,7 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("acquisition.order", "paginate", AuthorizationPointTypes.ACQUISITION_ORDER_LIST);
 		this.addAuthPoint("acquisition.order", "save", AuthorizationPointTypes.ACQUISITION_ORDER_SAVE);
 		this.addAuthPoint("acquisition.order", "delete", AuthorizationPointTypes.ACQUISITION_ORDER_DELETE);
-		
+
 		this.addAuthPoint("administration.configurations", "save", AuthorizationPointTypes.ADMINISTRATION_CONFIGURATIONS);
 		this.addAuthPoint("administration.configurations", "ignore_update", AuthorizationPointTypes.MENU_OTHER);		
 
@@ -275,23 +275,23 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("administration.usertype", "paginate", AuthorizationPointTypes.ADMINISTRATION_USERTYPE_LIST);
 		this.addAuthPoint("administration.usertype", "save", AuthorizationPointTypes.ADMINISTRATION_USERTYPE_SAVE);
 		this.addAuthPoint("administration.usertype", "delete", AuthorizationPointTypes.ADMINISTRATION_USERTYPE_DELETE);
-		
+
 		this.addAuthPoint("administration.accesscards", "search", AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_LIST);
 		this.addAuthPoint("administration.accesscards", "paginate", AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_LIST);
 		this.addAuthPoint("administration.accesscards", "save", AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_SAVE);
 		this.addAuthPoint("administration.accesscards", "change_status", AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_SAVE);
 		this.addAuthPoint("administration.accesscards", "delete", AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_DELETE);
-		
+
 		this.addAuthPoint("administration.permissions", "search", AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
 		this.addAuthPoint("administration.permissions", "open", AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
 		this.addAuthPoint("administration.permissions", "save", AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
 		this.addAuthPoint("administration.permissions", "delete", AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
-		
+
 		this.addAuthPoint("administration.z3950", "search", AuthorizationPointTypes.ADMINISTRATION_Z3950_SEARCH);
 		this.addAuthPoint("administration.z3950", "paginate", AuthorizationPointTypes.ADMINISTRATION_Z3950_SEARCH);
 		this.addAuthPoint("administration.z3950", "save", AuthorizationPointTypes.ADMINISTRATION_Z3950_SAVE);
 		this.addAuthPoint("administration.z3950", "delete", AuthorizationPointTypes.ADMINISTRATION_Z3950_DELETE);
-		
+
 		this.addAuthPoint("administration.reports", "user_search", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
 		this.addAuthPoint("administration.reports", "author_search", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
 		this.addAuthPoint("administration.reports", "generate", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
@@ -307,15 +307,15 @@ public class AuthorizationPoints implements Serializable {
 		this.addAuthPoint("administration.setup", "upload_biblivre3", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
 		this.addAuthPoint("administration.setup", "restore", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
 		this.addAuthPoint("administration.setup", "import_biblivre3", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-		
+
 		this.addAuthPoint("administration.customization", "save_brief_formats", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
 		this.addAuthPoint("administration.customization", "insert_brief_format", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
 		this.addAuthPoint("administration.customization", "delete_brief_format", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
-		
+
 		this.addAuthPoint("administration.customization", "save_form_datafields", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
 		this.addAuthPoint("administration.customization", "insert_form_datafield", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);		
 		this.addAuthPoint("administration.customization", "delete_form_datafield", AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-		
+
 		this.addAuthPoint("digitalmedia", "upload", AuthorizationPointTypes.DIGITALMEDIA_UPLOAD);
 		this.addAuthPoint("digitalmedia", "download", AuthorizationPointTypes.DIGITALMEDIA_DOWNLOAD);
 
@@ -334,30 +334,30 @@ public class AuthorizationPoints implements Serializable {
 				matchesThisSchema = true;
 				break;
 			}
-			
+
 			if (this.schema.equals(Constants.GLOBAL_SCHEMA) && type.getSchemaScope() == AuthorizationSchemaScope.GLOBAL_SCHEMA) {
 				matchesThisSchema = true;
 				break;
 			}
-	
+
 			if (!this.schema.equals(Constants.GLOBAL_SCHEMA) && type.getSchemaScope() == AuthorizationSchemaScope.SINGLE_SCHEMA) {
 				matchesThisSchema = true;
 				break;
 			}
 		}
-		
+
 		if (!matchesThisSchema) {
 			return;
 		}
-		
+
 		boolean matchesUserAffiliation = false;
-		
+
 		for (AuthorizationPointTypes type : types) {
 			if (type.getUserScope() == AuthorizationUserScope.ANY) {
 				matchesUserAffiliation = true;
 				break;
 			}
-			
+
 			if (this.employee && type.getUserScope() == AuthorizationUserScope.EMPLOYEE) {
 				matchesUserAffiliation = true;
 				break;
@@ -367,11 +367,11 @@ public class AuthorizationPoints implements Serializable {
 				break;
 			}
 		}
-		
+
 		if (!matchesUserAffiliation) {
 			return;
 		}
-		
+
 		boolean allowed = false;
 
 		for (AuthorizationPointTypes type : types) {

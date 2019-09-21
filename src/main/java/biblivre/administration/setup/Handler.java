@@ -60,11 +60,11 @@ public class Handler extends AbstractHandler {
 
 	public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
-		
+
+
 		boolean isNewLibrary = Configurations.getBoolean(schema, Constants.CONFIG_NEW_LIBRARY);
 		boolean success = true;
-		
+
 		if (!isNewLibrary) {
 			SchemaDTO dto = new SchemaDTO();
 			dto.setName(Constants.BIBLIVRE);
@@ -73,17 +73,17 @@ public class Handler extends AbstractHandler {
 
 			State.start();
 			State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
-			
+
 			File template = new File(request.getSession().getServletContext().getRealPath("/"), "biblivre_template_4.0.0.sql");			
 			success = Schemas.createSchema(dto, template, false);
-			
+
 			if (success) {
 				State.finish();
 			} else {			
 				State.cancel();
 			}
 		}
-		
+
 		if (success) {
 			ConfigurationsDTO dto = new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
 			Configurations.save(schema, dto, 0);
@@ -91,7 +91,7 @@ public class Handler extends AbstractHandler {
 
 		this.json.put("success", success);
 	}
-	
+
 	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list_restores
 	public void listRestores(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -99,7 +99,7 @@ public class Handler extends AbstractHandler {
 		RestoreBO bo = RestoreBO.getInstance(schema);
 
 		LinkedList<RestoreDTO> list = bo.list();
-		
+
 		this.json.put("success", true);
 
 		for (RestoreDTO dto : list) {
@@ -110,16 +110,16 @@ public class Handler extends AbstractHandler {
 	public void uploadBiblivre4(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Boolean mediaUpload = request.getBoolean("media_upload", false);
-		
+
 		BackupBO bo = BackupBO.getInstance(schema);
 		MemoryFile file = request.getFile(mediaUpload ? "biblivre4backupmedia" : "biblivre4backup");
-		
+
 		String extension = file.getName().endsWith("b4bz") ? "b4bz" : "b5bz";
-		
+
 		File path = bo.getBackupDestination();
 		String uuid = UUID.randomUUID().toString() + "." + extension;
 		File backup = new File(path, uuid);
-		
+
 		boolean success = true;
 		RestoreDTO dto = null;
 
@@ -139,7 +139,7 @@ public class Handler extends AbstractHandler {
 			this.json.put("metadata", dto.toJSONObject());
 		}
 	}
-	
+
 	public void uploadBiblivre3(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
@@ -154,14 +154,14 @@ public class Handler extends AbstractHandler {
 			MemoryFile file = request.getFile("biblivre3backup");
 			File gzip = new File(FileIOUtils.createTempDir(), file.getName());
 			os = new FileOutputStream(gzip);
-			
+
 			file.copy(os);
 
 			os.close();
-			
+
 			RestoreBO bo = RestoreBO.getInstance(schema);
 			success = bo.restoreBiblivre3(gzip);
-			
+
 			if (success) {
 				State.finish();
 			} else {
@@ -170,11 +170,11 @@ public class Handler extends AbstractHandler {
 		} catch (ValidationException e) {
 			this.setMessage(e);
 			State.writeLog(request.getLocalizedText(e.getMessage()));
-			
+
 			if (e.getCause() != null) {
 				State.writeLog(ExceptionUtils.getStackTrace(e.getCause()));
 			}
-			
+
 			State.cancel();
 		} catch (Exception e) {
 			this.setMessage(e);
@@ -192,7 +192,7 @@ public class Handler extends AbstractHandler {
 
 		this.json.put("success", success);
 	}
-	
+
 	private Map<String, String> breakString(String string) {
 		Map<String, String> ret = new HashMap<String, String>();
 
@@ -213,7 +213,7 @@ public class Handler extends AbstractHandler {
 
 			ret.put(split[0], split[1]);
 		}
-		
+
 		return ret;
 	}
 
@@ -231,13 +231,13 @@ public class Handler extends AbstractHandler {
 					// Full backup User may restore it
 					return true;
 				}
-				
+
 				case DIGITAL_MEDIA_ONLY: {
 					State.writeLog(request.getLocalizedText("administration.setup.biblivre4restore.error.digital_media_only_selected"));
 					this.json.put("success", false);
 					return false;
 				}
-				
+
 				case EXCLUDE_DIGITAL_MEDIA: {
 					if (skip) {
 						return true;
@@ -245,17 +245,17 @@ public class Handler extends AbstractHandler {
 
 					if (StringUtils.isNotBlank(mediaFileBackup)) {
 						RestoreDTO partialDto = bo.getRestoreDTO(mediaFileBackup);
-						
+
 						if (partialDto.getType() == BackupType.DIGITAL_MEDIA_ONLY) {
 							return true;						
 						}
-						
-						
+
+
 						State.writeLog(request.getLocalizedText("administration.setup.biblivre4restore.error.digital_media_only_should_be_selected"));
 						this.json.put("success", false);
 						return false;
 					} 
-					
+
 					this.json.put("success", true);
 					this.json.put("ask_for_media_backup", true);						
 					return false;
@@ -268,7 +268,7 @@ public class Handler extends AbstractHandler {
 		return false;
 	}
 
-	
+
 	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=restore&filename=Biblivre Backup 2012-09-15 22h56m22s Full.b5bz
 	public void restore(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -293,7 +293,7 @@ public class Handler extends AbstractHandler {
 				State.cancel();	
 				return;
 			}
-			
+
 			BackupScope backupScope = dto.getBackupScope();
 
 			State.writeLog(backupScope.toString() + " => " + restoreScope.toString());
@@ -302,7 +302,7 @@ public class Handler extends AbstractHandler {
 
 			if (restoreScope == BackupScope.SINGLE_SCHEMA) {
 				// Se o backup possui schema global e multi bibliotecas não está habilitado, restaura o global também
-				
+
 				if (dto.getSchemas().containsKey(Constants.GLOBAL_SCHEMA)) {
 					restoreSchemas.put(Constants.GLOBAL_SCHEMA, Constants.GLOBAL_SCHEMA);
 				}
@@ -346,7 +346,7 @@ public class Handler extends AbstractHandler {
 			for (Entry<String, String> entry : restoreSchemas.entrySet()) {
 				String key = entry.getKey();
 				String value = entry.getValue();
-				
+
 				if (StringUtils.isBlank(key) || !dto.getSchemas().containsKey(key)) {
 					throw new ValidationException("administration.maintenance.backup.error.invalid_origin_schema");
 				}
@@ -365,22 +365,22 @@ public class Handler extends AbstractHandler {
 			if (uniqueCheck.size() != restoreSchemas.size()) {
 				throw new ValidationException("administration.maintenance.backup.error.duplicated_destination_schema");
 			}
-			
+
 			dto.setRestoreScope(restoreScope);
 			dto.setRestoreSchemas(restoreSchemas);
 
 			RestoreDTO partialDTO = null;
-			
+
 			if (StringUtils.isNotBlank(mediaFileBackup)) {
 				partialDTO = bo.getRestoreDTO(mediaFileBackup);
 			}
-			
+
 			success = bo.restore(dto, partialDTO);
 
 			if (success) {
 				ConfigurationsDTO cdto = new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
 				Configurations.save(schema, cdto, 0);
-				
+
 				State.finish();
 
 				StaticBO.resetCache();
@@ -390,11 +390,11 @@ public class Handler extends AbstractHandler {
 		} catch (ValidationException e) {
 			this.setMessage(e);
 			State.writeLog(request.getLocalizedText(e.getMessage()));
-			
+
 			if (e.getCause() != null) {
 				State.writeLog(ExceptionUtils.getStackTrace(e.getCause()));
 			}
-			
+
 			State.cancel();
 		} catch (Exception e) {
 			this.setMessage(e);
@@ -405,7 +405,7 @@ public class Handler extends AbstractHandler {
 			State.writeLog(ExceptionUtils.getStackTrace(e));
 			State.cancel();			
 		}
-		
+
 		this.json.put("success", success);
 	}
 
@@ -432,13 +432,13 @@ public class Handler extends AbstractHandler {
 		for (DataMigrationPhaseGroup group : phaseGroups) {
 			selectedPhases.addAll(group.getPhases());
 		}
-		
+
 		boolean success = false;
 
 		try {
 			State.start();
 			State.writeLog(request.getLocalizedText("administration.setup.biblivre3import.log_header"));
-			
+
 			success = DataMigrationBO.getInstance(schema, origin).migrate(selectedPhases);
 
 			if (success) {
@@ -460,10 +460,10 @@ public class Handler extends AbstractHandler {
 			State.writeLog(ExceptionUtils.getStackTrace(e));
 			State.cancel();
 		}
-		
+
 		this.json.put("success", success);
 	}
-	
+
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
 		try {
 			this.json.put("success", true);

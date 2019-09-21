@@ -92,5 +92,5 @@ public class SearchesByDateReport extends BaseBiblivreReport {
 		}
 		return table;
 	}
-	
+
 }

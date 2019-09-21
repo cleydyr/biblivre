@@ -32,7 +32,7 @@ public enum BackupScope implements BiblivreEnum {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (BackupScope scope : BackupScope.values()) {
@@ -43,7 +43,7 @@ public enum BackupScope implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

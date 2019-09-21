@@ -51,5 +51,5 @@ public class AccessCardDTO extends AbstractDTO {
 	public void setStatus(AccessCardStatus status) {
 		this.status = status;
 	}
-	
+
 }

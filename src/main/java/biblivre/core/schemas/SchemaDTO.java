@@ -29,35 +29,35 @@ public class SchemaDTO extends AbstractDTO implements Comparable<SchemaDTO> {
 	private String schema;
 	private String name;
 	private boolean disabled;
-	
+
 	public SchemaDTO() {
 		super();
 	}
-	
+
 	public SchemaDTO(String schema, String name) {
 		super();
-		
+
 		this.setSchema(schema);
 		this.setName(name);
 		this.setDisabled(false);
 	}
-	
+
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
-	
+
 	public String getSchema() {
 		return StringUtils.defaultString(this.schema);
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getName() {
 		return StringUtils.defaultString(this.name);
 	}
-	
+
 	public boolean isDisabled() {
 		return this.disabled;
 	}
@@ -80,12 +80,12 @@ public class SchemaDTO extends AbstractDTO implements Comparable<SchemaDTO> {
 		if (other == null || !(other instanceof SchemaDTO)) {
 			return false;
 		}
-		
+
 		SchemaDTO otherDto = (SchemaDTO) other;
-		
+
 		return this.schema == null ? otherDto.schema == null : this.schema.equals(otherDto.schema);
 	}
-	
+
 	@Override
 	public int compareTo(SchemaDTO other) {		
 		return this.getSchema().compareTo(other.getSchema());

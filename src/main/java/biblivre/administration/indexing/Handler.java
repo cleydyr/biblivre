@@ -28,7 +28,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 
 public class Handler extends AbstractHandler {
-	
+
 	public void reindex(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String strRecordType = request.getString("record_type", "biblio");
@@ -51,9 +51,9 @@ public class Handler extends AbstractHandler {
 
 			request.setSessionAttribute(schema, "system_warning_reindex", false);
 		} finally {
-			
+
 		}
-	
+
 		this.json.put("success", true);
 		this.json.put("time", (end - start) / 1000.0);
 	}

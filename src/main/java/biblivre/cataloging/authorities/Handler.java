@@ -38,33 +38,33 @@ import biblivre.core.enums.ActionResult;
 import biblivre.marc.MaterialType;
 
 public class Handler extends CatalogingHandler {
-	
+
 	public Handler() {
 		super(RecordType.AUTHORITIES, MaterialType.AUTHORITIES);
 	}
-	
+
 	@Override
 	protected RecordDTO createRecordDTO(ExtendedRequest request) {
 		AuthorityRecordDTO dto = new AuthorityRecordDTO();
 		return dto;
 	}
-	
+
 	@Override
 	protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
 		((AuthorityRecordDTO)dto).setAuthorType(request.getString("author_type"));
 	}
-	
+
 	@Override
 	protected void afterConvert(ExtendedRequest request, RecordDTO dto) {
 		((AuthorityRecordDTO)dto).setAuthorType(request.getString("author_type"));
 	}
-	
+
 	public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String searchParameters = request.getString("search_parameters");
 		String query = "";
 		RecordDatabase db = RecordDatabase.MAIN;
-		
+
 		try {
 			JSONObject json = new JSONObject(searchParameters);
 			db = RecordDatabase.fromString(json.optString("database"));
@@ -107,7 +107,7 @@ public class Handler extends CatalogingHandler {
 			e.printStackTrace();
 		}
 	}
-	
+
 //	@Override
 //	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 //		this.search(request, response);

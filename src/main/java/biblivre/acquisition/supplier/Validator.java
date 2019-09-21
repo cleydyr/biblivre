@@ -29,32 +29,32 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String trademark = request.getString("trademark");
 		String supplierName = request.getString("supplier_name");
 		String supplierNumber = request.getString("supplier_number");
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (StringUtils.isBlank(trademark)) {
 			ex.addError("trademark", "field.error.required");
 		}
-		
+
 		if (StringUtils.isBlank(supplierName)) {
 			ex.addError("supplier_name", "field.error.required");
 		}
-		
+
 		if (StringUtils.isBlank(supplierNumber)) {
 			ex.addError("supplier_number", "field.error.required");
 		}
-		
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
 			return;
 		}
-				
+
 	}	
 
 	public void validateOpen(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -72,6 +72,6 @@ public class Validator extends AbstractValidator {
 			return;
 		}
 	}
-	
+
 
 }

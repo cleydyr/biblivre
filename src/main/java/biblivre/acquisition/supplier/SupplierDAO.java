@@ -39,11 +39,11 @@ public class SupplierDAO extends AbstractDAO {
 	}
 
 	public boolean save(SupplierDTO dto) {
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO suppliers ( ");
 			sql.append("trademark, supplier_name, supplier_number, ");
@@ -82,9 +82,9 @@ public class SupplierDAO extends AbstractDAO {
 			pstInsert.setString(22, dto.getUrl());
 			pstInsert.setString(23, dto.getEmail());
 			pstInsert.setInt(24, dto.getCreatedBy());
-			
+
 			pstInsert.executeUpdate();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -92,12 +92,12 @@ public class SupplierDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO suppliers ( ");
 			sql.append("trademark, supplier_name, supplier_number, ");
@@ -112,7 +112,7 @@ public class SupplierDAO extends AbstractDAO {
 
 
 			PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				SupplierDTO dto = (SupplierDTO) abstractDto;
 				pstInsert.setString(1, dto.getTrademark());
@@ -142,9 +142,9 @@ public class SupplierDAO extends AbstractDAO {
 				pstInsert.setInt(25, dto.getId());
 				pstInsert.addBatch();
 			}
-			
+
 			pstInsert.executeBatch();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -152,7 +152,7 @@ public class SupplierDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	public boolean update(SupplierDTO dto) {
 		Connection con = null;
 		try {
@@ -194,9 +194,9 @@ public class SupplierDAO extends AbstractDAO {
 			pstInsert.setString(23, dto.getEmail());
 			pstInsert.setInt(24, dto.getModifiedBy());
 			pstInsert.setInt(25, dto.getId());
-			
+
 			return pstInsert.executeUpdate() > 0;
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -215,16 +215,16 @@ public class SupplierDAO extends AbstractDAO {
 
 			PreparedStatement pstInsert = con.prepareStatement(sql.toString());
 			pstInsert.setInt(1, dto.getId());
-			
+
 			return pstInsert.executeUpdate() > 0;
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public SupplierDTO get(int id) {
 		Connection con = null;
 		try {
@@ -233,7 +233,7 @@ public class SupplierDAO extends AbstractDAO {
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM suppliers ");
 			sql.append("WHERE id = ?;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, id);
 
@@ -251,7 +251,7 @@ public class SupplierDAO extends AbstractDAO {
 
 	public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
 		DTOCollection<SupplierDTO> list = new DTOCollection<SupplierDTO>();
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
@@ -263,7 +263,7 @@ public class SupplierDAO extends AbstractDAO {
 				sql.append("OR supplier_number = ? ");
 			}
 			sql.append("ORDER BY id ASC LIMIT ? OFFSET ? ");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			int i = 1;
 			if (StringUtils.isNotBlank(value)) {
@@ -280,19 +280,19 @@ public class SupplierDAO extends AbstractDAO {
 				sqlCount.append("OR supplier_name ilike ? ");
 				sqlCount.append("OR supplier_number = ? ");
 			}
-			
+
 			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
 			if (StringUtils.isNotBlank(value)) {
 				pstCount.setString(1, "%" + value + "%");
 				pstCount.setString(2, "%" + value + "%");
 				pstCount.setString(3, value);
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDto(rs));
 			}
-			
+
 			ResultSet rsCount = pstCount.executeQuery();
 			if (rsCount.next()) {
 				int total = rsCount.getInt("total");
@@ -300,16 +300,16 @@ public class SupplierDAO extends AbstractDAO {
 				PagingDTO paging = new PagingDTO(total, limit, offset);
 				list.setPaging(paging);
 			}			
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
-		
+
 		return list;
 	}
-			
+
 	private SupplierDTO populateDto(ResultSet rs) throws Exception {
 		SupplierDTO dto = new SupplierDTO();
 		dto.setId(rs.getInt("id"));
@@ -342,5 +342,5 @@ public class SupplierDAO extends AbstractDAO {
 		dto.setModifiedBy(rs.getInt("modified_by"));
 		return dto;
 	}
-	
+
 }

@@ -31,9 +31,9 @@ public final class ReportUtils {
         if (digits == -1) {
             return dewey;
         }
-        
+
         int i = digits;
-        
+
         StringBuilder format = new StringBuilder();
         for (char c : dewey.toCharArray()) {
             if (i == 0) {
@@ -46,13 +46,13 @@ public final class ReportUtils {
 
             format.append(c);
         }
-        
+
         if (digits < 3) {
             while (format.length() < 3) {
                 format.append("0");
             }
         }
-        
+
         return format.toString();
     }
 

@@ -45,7 +45,7 @@ import biblivre.marc.MarcUtils;
 import biblivre.z3950.Z3950AddressDTO;
 
 public class Z3950Client {
-	
+
 	private final Logger log = Logger.getLogger(this.getClass().getName());
 	private ApplicationContext z3950Context;
 	private Z3950ServiceFactory factory;
@@ -92,7 +92,7 @@ public class Z3950Client {
 		query.collections = new Vector();
 		query.collections.add(address.getCollection());
 		query.query = new org.jzkit.search.util.QueryModel.PrefixString.PrefixString(qry);
-		
+
 		Searchable searchable = null;
 		IRResultSet result = null;
 
@@ -112,7 +112,7 @@ public class Z3950Client {
 				return listRecords;
 			}
 
-			
+
 			Enumeration e = new ReadAheadEnumeration(result, new ArchetypeRecordFormatSpecification("Default"));
 			int errorRecords = 0;
 			int validRecords = limit;
@@ -123,7 +123,7 @@ public class Z3950Client {
 				if (o == null) {
 					continue;
 				}
-				
+
 				record = MarcUtils.iso2709ToRecord((byte[]) o.getOriginalObject());
 
 				if (record != null) {
@@ -133,7 +133,7 @@ public class Z3950Client {
 					errorRecords++;
 				}
 			}
-			
+
 			if (errorRecords > 0) {
 				this.log.warn("Total number of records that failed the conversion: " + errorRecords);
 			}
@@ -160,6 +160,6 @@ class z3950Observer implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		System.out.println();
 	}
-	
-	
+
+
 }

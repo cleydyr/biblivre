@@ -29,7 +29,7 @@ public class AuthorityRecordDTO extends RecordDTO {
 	private String authorName;
 	private String authorOtherName;
 	private String authorType;
-	
+
 	public String getAuthorName() {
 		return this.authorName;
 	}

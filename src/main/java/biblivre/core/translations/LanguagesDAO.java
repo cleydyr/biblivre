@@ -34,7 +34,7 @@ public class LanguagesDAO extends AbstractDAO {
 	public static LanguagesDAO getInstance(String schema) {
 		return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class, schema);
 	}
-	
+
 	public Set<LanguageDTO> list() {
 		Set<LanguageDTO> set = new TreeSet<LanguageDTO>();
 
@@ -49,7 +49,7 @@ public class LanguagesDAO extends AbstractDAO {
  				sql.append("UNION ");					
 				sql.append("SELECT language, text as name FROM translations WHERE key = 'language_name' ");
  			}
-			
+
 			sql.append("ORDER BY name;");
 
 			Statement st = con.createStatement();
@@ -70,7 +70,7 @@ public class LanguagesDAO extends AbstractDAO {
 
 		return set;
 	}
-    
+
     private LanguageDTO populateDTO(ResultSet rs) throws SQLException {
     	LanguageDTO dto = new LanguageDTO();
 

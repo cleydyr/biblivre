@@ -43,7 +43,7 @@ public class SearchTermDTO extends AbstractDTO {
 	public Set<String> getTerms() {
 		return this.terms;
 	}
-	
+
 	public boolean addTerm(String term) {
 		if (this.terms == null) {
 			this.terms = new HashSet<String>();
@@ -51,7 +51,7 @@ public class SearchTermDTO extends AbstractDTO {
 
 		return this.terms.add(term);
 	}
-	
+
 	public boolean addTerms(Set<String> terms) {
 		if (this.terms == null) {
 			this.terms = new HashSet<String>();
@@ -71,7 +71,7 @@ public class SearchTermDTO extends AbstractDTO {
 	public SearchOperator getOperator() {
 		return this.operator;
 	}
-	
+
 	public void setOperator(SearchOperator operator) {
 		this.operator = operator;
 	}
@@ -119,7 +119,7 @@ public class SearchTermDTO extends AbstractDTO {
 		if (this.getStartDate() != null) {
 			json.putOpt("start_date", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getStartDate()));
 		}
-		
+
 		if (this.getEndDate() != null) {
 			json.putOpt("end_date", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getEndDate()));
 		}

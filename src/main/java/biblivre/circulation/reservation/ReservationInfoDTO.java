@@ -24,13 +24,13 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 
 public class ReservationInfoDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private BiblioRecordDTO biblio;
 	private ReservationDTO reservation;
 	private UserDTO user;
-	
+
 	public UserDTO getUser() {
 		return this.user;
 	}
@@ -58,5 +58,5 @@ public class ReservationInfoDTO extends AbstractDTO {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 }

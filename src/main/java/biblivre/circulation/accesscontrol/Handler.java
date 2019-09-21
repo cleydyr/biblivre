@@ -34,23 +34,23 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 
 public class Handler extends AbstractHandler {
-	
+
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
 		DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
-		
+
 		if (userList == null) {
 			return;
 		}
-		
+
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(userList.getPaging());
-		
+
 		AccessControlBO bo = AccessControlBO.getInstance(schema);
 		AccessCardBO abo = AccessCardBO.getInstance(schema);
-		
+
 		for (UserDTO user : userList) {
 			AccessControlDTO dto = bo.getByUserId(user.getId());
 			if (dto == null) {
@@ -60,42 +60,42 @@ public class Handler extends AbstractHandler {
 
 			dto.setId(user.getId());
 			dto.setUser(user);
-			
+
 			if (dto.getAccessCardId() != null) {
 				dto.setAccessCard(abo.get(dto.getAccessCardId()));
 			}
-			
+
 			list.add(dto);
 		}
-		
+
 		if (list.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
 			return;
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		biblivre.administration.accesscards.Handler cardHandler = new biblivre.administration.accesscards.Handler();
 		DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
-		
+
 		if (cardList == null) {
 			return;
 		}
-		
+
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(cardList.getPaging());
-		
+
 		AccessControlBO bo = AccessControlBO.getInstance(schema);
 		UserBO ubo = UserBO.getInstance(schema);
-		
+
 		for (AccessCardDTO card : cardList) {
 			AccessControlDTO dto = bo.getByCardId(card.getId());
 			if (dto == null) {
@@ -105,11 +105,11 @@ public class Handler extends AbstractHandler {
 
 			dto.setId(card.getId());
 			dto.setAccessCard(card);
-			
+
 			if (dto.getUserId() != null) {
 				dto.setUser(ubo.get(dto.getUserId()));
 			}
-			
+
 			list.add(dto);
 		}
 
@@ -118,7 +118,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
 			return;
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
@@ -128,7 +128,7 @@ public class Handler extends AbstractHandler {
 
 	public void bind(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
@@ -137,9 +137,9 @@ public class Handler extends AbstractHandler {
 		dto.setUserId(userId);
 		dto.setCreatedBy(request.getLoggedUserId());
 		dto.setArrivalTime(new Date());
-		
+
 		AccessControlBO bo = AccessControlBO.getInstance(schema);
-		
+
 		if (bo.lendCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.lend.success");
 			try {
@@ -156,10 +156,10 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "circulation.accesscards.lend.error");
 		}
 	}
-	
+
 	public void unbind(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
@@ -168,9 +168,9 @@ public class Handler extends AbstractHandler {
 		dto.setUserId(userId);
 		dto.setModifiedBy(request.getLoggedUserId());
 		dto.setDepartureTime(new Date());
-		
+
 		AccessControlBO bo = AccessControlBO.getInstance(schema);
-		
+
 		if (bo.returnCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.return.success");
 			try {

@@ -25,11 +25,11 @@ import org.json.JSONObject;
 
 public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implements IFJson  {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 
 	private PagingDTO paging;
-	
+
 	public PagingDTO getPaging() {
 		return this.paging;
 	}
@@ -44,7 +44,7 @@ public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implemen
 		}
 		return this.paging.getRecordLimit();
 	}
-	
+
 	public Integer getId() {
 		return this.id;
 	}
@@ -56,13 +56,13 @@ public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implemen
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = null;
-				
+
 		if (this.getPaging() != null) {
 			json = this.getPaging().toJSONObject();
 		} else {
 			json = new JSONObject();
 		}
-		
+
 		json.putOpt("id", this.getId());
 
 		for (T dto : this) {

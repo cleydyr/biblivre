@@ -35,8 +35,8 @@ public class BiblioRecordDAO extends RecordDAO {
 
 		return dao;
 	}
-	
-	
+
+
 	@Override
 	protected RecordDTO createRecord() {
 		return new BiblioRecordDTO();

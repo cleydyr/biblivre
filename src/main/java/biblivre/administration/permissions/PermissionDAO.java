@@ -30,24 +30,24 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
 public class PermissionDAO extends AbstractDAO {
-	
+
 	public static PermissionDAO getInstance(String schema) {
 		return (PermissionDAO) AbstractDAO.getInstance(PermissionDAO.class, schema);
 	}
-	
+
 	public boolean delete(UserDTO user) {
 		Connection con = null;
 
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("DELETE FROM permissions WHERE login_id = ?;");
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, user.getLoginId());
 			pst.executeUpdate();
-			
+
 			con.commit();
 			return true;
 		} catch (Exception e) {
@@ -57,7 +57,7 @@ public class PermissionDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-		
+
 	public List<String> getByLoginId(Integer loginid) {
 		Connection con = null;
 		List<String> list = new ArrayList<String>();
@@ -96,7 +96,7 @@ public class PermissionDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean save(int loginId, List<String> permissions) {
 		Connection con = null;
 		try {
@@ -104,7 +104,7 @@ public class PermissionDAO extends AbstractDAO {
 			String sql = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
 
 			PreparedStatement pst = con.prepareStatement(sql);
-			
+
 			for (String permission : permissions) {
 				pst.setInt(1, loginId);
 				pst.setString(2, permission);

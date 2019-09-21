@@ -60,7 +60,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 		super(request);
 
 		String path = request.getServletPath();
-		
+
 		if (path.contains("static/")) {
 			return;
 		}
@@ -73,11 +73,11 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
 	public String getLocalizedText(String key) {
 		String[] params = key.split(":::");
-		
+
 		if (params.length == 1) {
 			return this.translationsMap.getText(key);
 		}
-		
+
 		String text = this.translationsMap.getText(params[0]);
 		for (int i = 1; i < params.length; i++) {
 			String replacement = params[i];
@@ -97,7 +97,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	public void setSessionAttribute(String schema, String key, Object obj) {
 		this.setSessionAttribute(schema + "." + key, obj);
 	}
-	
+
 	public Object getSessionAttribute(String key) {
 		return this.getSession().getAttribute(key);
 	}
@@ -105,7 +105,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	public Object getSessionAttribute(String schema, String key) {
 		return this.getSessionAttribute(schema + "." + key);
 	}
-	
+
 	public boolean hasParameter(String key) {
 		return this.getParameterMap().containsKey(key);
 	}
@@ -114,7 +114,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 		if (!key.equals("action") && !key.equals("controller")) {
 			//Translations.addSingleTranslation(this.schema, this.language, "audit." + this.controller + "." + this.getString("action") + "." + key, key);
 		}
-		
+
 		return this.getString(key, "");
 	}
 
@@ -138,7 +138,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
 		return retValue;
 	}
-	
+
 	public Float getFloat(String key) {
 		return this.getFloat(key, 0.0f);
 	}
@@ -153,7 +153,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
 		return retValue;
 	}
-	
+
 	public boolean getBoolean(String key) {
 		return this.getBoolean(key, false);
 	}
@@ -168,7 +168,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 		} else if (value.toLowerCase().equals("false")) {
 			return false;
 		}
-		
+
 		return defaultValue;
 	}
 
@@ -193,7 +193,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	public MemoryFile getFile(String key) {
 		return this.multiPart ? this.multiPartFiles.get(key) : null;
 	}
-	
+
 	public String getRequestParameter(String key) {
 		return this.multiPart ? this.multiPartParameters.get(key) : super.getParameter(key);
 	}
@@ -227,10 +227,10 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
 	public Locale getSelectedLocale() {
 		Locale locale = Translations.toLocale(this.getLanguage());
-		
+
 		return (locale == null) ? this.getLocale() : locale;
 	}
-	
+
 	public void setMustRedirectToSchema(boolean mustRedirectToSchema) {
 		this.mustRedirectToSchema = mustRedirectToSchema;
 	}
@@ -251,7 +251,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	public boolean isMultiPart() {
 		return this.multiPart;
 	}
-	
+
 	public boolean isGlobalSchema() {
 		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
 	}
@@ -265,14 +265,14 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
 		return 0;
 	}
-	
+
 	private void loadMultiPart() {
 		this.multiPart = ServletFileUpload.isMultipartContent(this);
 
 		if (this.multiPart) {
 			this.multiPartParameters = new HashMap<String, String>();
 			this.multiPartFiles = new HashMap<String, MemoryFile>();
-			
+
 			try {
 				FileItemFactory factory = new DiskFileItemFactory();
 				ServletFileUpload upload = new ServletFileUpload(factory);
@@ -307,7 +307,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 				schema = null;
 				controller = "DigitalMediaController";
 			}
-			
+
 			if (urlArray.length > 1) {
 				controller = urlArray[1];
 			} else if (!url.endsWith("/")) {
@@ -324,7 +324,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 				schema = Constants.SINGLE_SCHEMA;
 			}
 		}
-		
+
 		if (controller == null) {
 			controller = this.getString("controller");
 		}
@@ -332,7 +332,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 		this.setSchema(schema);
 		this.setController(controller);
 	}
-	
+
 	public void clearSessionAttributes(String schema) {
 		@SuppressWarnings("unchecked")
 		Enumeration<String> atributes = this.getSession().getAttributeNames();
@@ -342,7 +342,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 				this.getSession().removeAttribute(attribute);
 			}
 		}
-		
+
 	}
 
 	private void loadLanguage() {
@@ -379,11 +379,11 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
 		this.setLanguage(language);
 	}
-	
+
 	private void loadTranslationsMap() {
 		this.setTranslationsMap(Translations.get(this.schema, this.language));
 	}
-	
+
 	@Deprecated	@Override
 	public String getParameter(String name) {
 		return super.getParameter(name);

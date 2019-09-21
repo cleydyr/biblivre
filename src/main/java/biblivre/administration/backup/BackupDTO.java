@@ -53,7 +53,7 @@ public class BackupDTO extends AbstractDTO {
 		this.setType(type);
 		this.setBackupScope(backupScope);
 	}
-	
+
 	public Integer getId() {
 		return this.id;
 	}
@@ -74,7 +74,7 @@ public class BackupDTO extends AbstractDTO {
 		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
 
 		JSONObject json = new JSONObject(schemas);
-	
+
 		Iterator<String> iterator = json.keys();
 
 		while (iterator.hasNext()) {
@@ -85,7 +85,7 @@ public class BackupDTO extends AbstractDTO {
 
 		this.schemas = map;
 	}
-	
+
 	public String getSchemasString() {
 		return new JSONObject(this.schemas).toString();
 	}
@@ -105,7 +105,7 @@ public class BackupDTO extends AbstractDTO {
 	public void setBackupScope(BackupScope backupScope) {
 		this.backupScope = backupScope;
 	}
-	
+
 	public File getBackup() {
 		return this.backup;
 	}
@@ -137,11 +137,11 @@ public class BackupDTO extends AbstractDTO {
 	public void setCurrentStep(Integer currentStep) {
 		this.currentStep = currentStep;
 	}
-	
+
 	public void increaseCurrentStep() {
 		this.currentStep++;
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
@@ -154,7 +154,7 @@ public class BackupDTO extends AbstractDTO {
 		json.putOpt("steps", this.getSteps());
 		json.putOpt("current_step", this.getCurrentStep());
 		json.putOpt("downloaded", this.isDownloaded());
-		
+
 		boolean exists = (this.getBackup() != null && this.getBackup().exists());
 
 		json.putOpt("exists", exists);

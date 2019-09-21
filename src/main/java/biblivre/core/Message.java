@@ -33,7 +33,7 @@ public class Message {
 	private String text;
 	private String stackTrace;
 	private List<Pair<String, String>> errorList;
-	
+
 	public Message(ActionResult level, String text) {
 		super();
 		this.setLevel(level);
@@ -51,7 +51,7 @@ public class Message {
 			}
 		}
 	}
-	
+
 	public Message() {
 		this(ActionResult.NORMAL, "");
 	}
@@ -59,27 +59,27 @@ public class Message {
 	public Message(Throwable exception) {
 		this(ActionResult.WARNING, exception.getMessage(), exception);
 	}
-	
+
 	public boolean isSuccess() {
 		return ActionResult.NORMAL.equals(this.getLevel()) || ActionResult.SUCCESS.equals(this.getLevel());
 	}
-	
+
 	public ActionResult getLevel() {
 		return this.level;
 	}
-	
+
 	public void setLevel(ActionResult level) {
 		this.level = level;
 	}
-	
+
 	public String getText() {
 		return this.text;
 	}
-	
+
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 	public String getStackTrace(boolean encode) {
 		if (!encode || this.stackTrace == null) {
 			return this.stackTrace;

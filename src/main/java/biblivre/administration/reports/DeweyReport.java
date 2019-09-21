@@ -125,7 +125,7 @@ public class DeweyReport extends BaseBiblivreReport implements Comparator<String
 		if (o1 == null || o1[this.index] == null) {
 			return -1;
 		}
-		
+
 		if (o2 == null || o2[this.index] == null) {
 			return 1;
 		}

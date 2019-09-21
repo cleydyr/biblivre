@@ -25,53 +25,53 @@ import biblivre.core.AbstractDTO;
 
 public class RecordAttachmentDTO extends AbstractDTO {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String path;
 	private String file;
 	private String name;
 	private String uri;
-	
+
 	public String getPath() {
 		return this.path;
 	}
-	
+
 	public void setPath(String path) {
 		this.path = path;
 	}
-	
+
 	public String getFile() {
 		return this.file;
 	}
-	
+
 	public void setFile(String file) {
 		this.file = file;
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getUri() {
 		return this.uri;
 	}
-	
+
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
-		
+
 		json.putOpt("path", this.getPath());
 		json.putOpt("file", this.getFile());
 		json.putOpt("name", this.getName());
 		json.putOpt("uri", this.getUri());
-        
+
 		return json;
 	}
 }

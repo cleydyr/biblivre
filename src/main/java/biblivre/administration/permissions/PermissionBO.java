@@ -33,14 +33,14 @@ public class PermissionBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = PermissionDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public boolean delete(UserDTO user) {
 		return this.dao.delete(user);
 	}
-	
+
 	public boolean save(Integer loginId, List<String> permissions) {
 		UserDTO dto = new UserDTO();
 		dto.setLoginId(loginId);
@@ -53,7 +53,7 @@ public class PermissionBO extends AbstractBO {
 	public List<String> getByLoginId(Integer loginid) {
 		return this.dao.getByLoginId(loginid);
 	}
-	
-	
-	
+
+
+
 }

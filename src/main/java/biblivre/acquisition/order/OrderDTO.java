@@ -43,7 +43,7 @@ public class OrderDTO extends AbstractDTO {
 	transient private String supplierName;
 	transient private Integer deliveryTime;
 	transient private List<RequestQuotationDTO> quotationsList;
-	
+
 	public Integer getId() {
 		return this.id;
 	}
@@ -155,5 +155,5 @@ public class OrderDTO extends AbstractDTO {
 	public void setQuotationsList(List<RequestQuotationDTO> quotationsList) {
 		this.quotationsList = quotationsList;
 	}
-	
+
 }

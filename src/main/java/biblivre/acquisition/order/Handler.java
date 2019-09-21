@@ -40,7 +40,7 @@ public class Handler extends AbstractHandler {
 		String searchParameters = request.getString("search_parameters");
 
 		String query = null;
-		
+
 		try {
 			JSONObject json = new JSONObject(searchParameters);
 			query = json.optString("query");
@@ -59,19 +59,19 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.no_request_found");
 			return;
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		this.search(request, response);
 	}
 
-	
+
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -85,13 +85,13 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Integer id = request.getInteger("id");		
 		OrderDTO dto = null;
-		
+
 		try {
 			dto = this.populateDTO(request);
 		} catch (Exception e) {
@@ -100,7 +100,7 @@ public class Handler extends AbstractHandler {
 		}
 
 		OrderBO bo = OrderBO.getInstance(schema);
-		
+
 		Integer newId = 0;
 		boolean result = false;
 		if (id == 0) {
@@ -126,9 +126,9 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.save");
 		}
-		
+
 		dto = bo.get(id == 0 ? newId : id);
-		
+
 		try {
 			this.json.put("data", dto.toJSONObject());
 			this.json.put("full_data", true);
@@ -138,12 +138,12 @@ public class Handler extends AbstractHandler {
 		}
 
 	}
-	
+
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Integer id = request.getInteger("id");
-		
+
 		OrderBO bo = OrderBO.getInstance(schema);
 		OrderDTO dto = new OrderDTO();
 		dto.setId(id);
@@ -154,7 +154,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.delete");
 		}
 	}
-	
+
 	private OrderDTO populateDTO(ExtendedRequest request) throws Exception {
 		OrderDTO dto = new OrderDTO();
 		dto.setId(request.getInteger("id"));
@@ -162,7 +162,7 @@ public class Handler extends AbstractHandler {
 		dto.setInfo(request.getString("info"));
 		dto.setCreated(TextUtils.parseDate(request.getString("created")));
 		dto.setDeadlineDate(TextUtils.parseDate(request.getString("deadline_date")));
-		
+
 		if (StringUtils.isNotBlank(request.getString("delivered"))) {
 			dto.setInvoiceNumber(request.getString("invoice_number"));
 			dto.setReceiptDate(TextUtils.parseDate(request.getString("receipt_date")));
@@ -171,7 +171,7 @@ public class Handler extends AbstractHandler {
 			dto.setTermsOfPayment(request.getString("terms_of_payment"));
 			dto.setStatus(RequestStatus.CLOSED.toString());
 		}
-		
+
 		return dto;
 	}	
 }

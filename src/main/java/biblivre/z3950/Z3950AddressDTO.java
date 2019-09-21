@@ -70,5 +70,5 @@ public class Z3950AddressDTO extends AbstractDTO {
 	public void setCollection(String collection) {
 		this.collection = collection;
 	}
-	
+
 }

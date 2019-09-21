@@ -53,7 +53,7 @@ public enum MaterialType implements BiblivreEnum {
 	private final static List<MaterialType> bibliographicMaterials;
 	private final static List<MaterialType> searchableMaterials;
 	private final static String javascriptArray;
-	
+
 	static {
 		List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
 		List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
@@ -118,16 +118,16 @@ public enum MaterialType implements BiblivreEnum {
 
 	public static MaterialType fromTypeAndImplDef(char typeOfRecord, char[] implDef1) {
 		String imp = String.valueOf(implDef1);
-		
+
 		for (MaterialType type : MaterialType.values()) {
 			if (type.getTypeOfRecord() == typeOfRecord && type.getImplDefined1().equals(imp)) {
 				return type;
 			}
 		}
-		
+
 		return MaterialType.BOOK;
 	}
-	
+
 	public static MaterialType fromRecord(Record record) {
 		MaterialType mt = null;
 
@@ -138,19 +138,19 @@ public enum MaterialType implements BiblivreEnum {
 
 		return (mt != null && mt != MaterialType.ALL) ? mt : MaterialType.BOOK;
 	}
-	
+
 	public static List<MaterialType> bibliographicValues() {
 		return bibliographicMaterials;
 	}
-	
+
 	public static List<MaterialType> searchableValues() {
 		return searchableMaterials;
 	}
-	
+
 	public static String toJavascriptArray(){
 		return javascriptArray;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

@@ -67,9 +67,9 @@ public abstract class RecordBO extends AbstractBO {
 	public static final int LENDING_INFO = 1 << 4;
 	public static final int LENDING_LIST = 1 << 5;
 	public static final int ATTACHMENTS_LIST = 1 << 6;
-	
+
 	public static final Pattern ID_PATTERN = Pattern.compile("id=(.*?)(&|$)");
-	
+
 	/**
 	 * Class Factory
 	 */
@@ -90,32 +90,32 @@ public abstract class RecordBO extends AbstractBO {
 	public RecordDTO get(int id) {
 		Set<Integer> ids = new HashSet<Integer>();
 		ids.add(id);
-		
+
 		return this.map(ids).get(id);
 	}
 
 	public RecordDTO get(int id, int mask) {
 		Set<Integer> ids = new HashSet<Integer>();
 		ids.add(id);
-		
+
 		return this.map(ids, mask).get(id);
 	}
 
-	
+
 	public Map<Integer, RecordDTO> map(Set<Integer> ids) {
 		return this.rdao.map(ids);
 	}
 
 	public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
 		Map<Integer, RecordDTO> map = this.rdao.map(ids);
-		
+
 		for (RecordDTO dto : map.values()) {
 			this.populateDetails(dto, mask);
 		}
-		
+
 		return map;
 	}
-	
+
 	public List<RecordDTO> list(int offset, int limit) {
 		return this.rdao.list(offset, limit);
 	}
@@ -135,11 +135,11 @@ public abstract class RecordBO extends AbstractBO {
 	public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database) {
 		return this.rdao.moveRecords(ids, modifiedBy, database);
 	}
-	
+
 	public boolean listContainsPrivateRecord(Set<Integer> ids) {
 		return this.rdao.listContainsPrivateRecord(ids);
 	}
-	
+
 	public DiskFile createExportFile(Set<Integer> ids) {
 		Map<Integer, RecordDTO> records = this.map(ids);
 		FileOutputStream out = null;
@@ -163,24 +163,24 @@ public abstract class RecordBO extends AbstractBO {
 
 		return null;
 	}
-	
+
 	public boolean delete(RecordDTO dto) {
 		return this.rdao.delete(dto);
 	}
-	
+
 	public Integer count() {
 		return this.count(null);
 	}
-	
+
 	public Integer count(SearchDTO search) {
 		return this.rdao.count(search);
 	}
-	
+
 	public boolean search(SearchDTO search) {
 		SearchMode searchMode = search.getSearchMode();
 
 		boolean isNewSearch = (search.getId() == null);
-		
+
 		if (isNewSearch) {
 			if (!this.sdao.createSearch(search)) {
 				return false;
@@ -234,7 +234,7 @@ public abstract class RecordBO extends AbstractBO {
 
 		return true;
 	}
-	
+
 	public SearchDTO getSearch(Integer searchId) {
 		SearchDTO search = this.sdao.getSearch(searchId);
 
@@ -242,7 +242,7 @@ public abstract class RecordBO extends AbstractBO {
 			if (search.getPaging() == null) {
 				search.setPaging(new PagingDTO());
 			}
-			
+
 			PagingDTO paging = search.getPaging();
 			paging.setRecordsPerPage(Configurations.getPositiveInt(this.getSchema(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
 			paging.setRecordLimit(Configurations.getPositiveInt(this.getSchema(), Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
@@ -255,44 +255,44 @@ public abstract class RecordBO extends AbstractBO {
 		for (RecordDTO rdto : list) {
 			this.populateDetails(rdto, mask);
 		}
-		
+
 		return list;
 	}
-	
+
 	public List<String> phraseAutocomplete(String datafield, String subfield, String query) {
 		String[] searchTerms = TextUtils.prepareAutocomplete(query);
-		
+
 		List<String> listA = this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 10, true);
 		List<String> listB = this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 5, false);
-		
+
 		listA.addAll(listB);
-		
+
 		return listA;
 	}
-	
+
 	public DTOCollection<AutocompleteDTO> recordAutocomplete(String datafield, String subfield, String query) {
 		String[] searchTerms = TextUtils.prepareAutocomplete(query);
-		
+
 		DTOCollection<AutocompleteDTO> listA = this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 10, true);
 		DTOCollection<AutocompleteDTO> listB = this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 5, false);
-		
+
 		listA.addAll(listB);
-		
+
 		return listA;
 	}
 
 	public RecordDTO addAttachment(Integer recordId, String uri, String description, Integer userId) {
 		RecordDTO dto = this.get(recordId);
 		dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
-			
+
 		Record record = MarcUtils.addAttachment(dto.getRecord(), uri, description);
-			
+
 		dto.setRecord(record);
 		dto.setModifiedBy(userId);
-			
+
 		// Update the record in Biblivre DB
 		this.update(dto);
-		
+
 		return dto;
 	}
 
@@ -304,13 +304,13 @@ public abstract class RecordBO extends AbstractBO {
 			Record record = MarcUtils.removeAttachment(dto.getRecord(), uri, description);
 			dto.setRecord(record);
 			dto.setModifiedBy(userId);
-			
+
 			// Update the record in Biblivre DB
 			this.update(dto);
 		} catch (Exception e) {
 			throw new ValidationException(e.getMessage());
 		}
-		
+
 		//Check if the file is in Biblivre's DB and try to delete it
 		try {
 			Matcher matcher = RecordBO.ID_PATTERN.matcher(uri);
@@ -324,17 +324,17 @@ public abstract class RecordBO extends AbstractBO {
 					fileId = splitId[0];
 					fileName = splitId[1];
 				}
-				
+
 				// Try to remove the file from Biblivre DB
 				DigitalMediaBO dmbo = DigitalMediaBO.getInstance(this.getSchema());
 				dmbo.delete(Integer.valueOf(fileId), fileName);
 			}
 		} catch (Exception e) {
 		}
-		
+
 		return dto;
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.rdao.saveFromBiblivre3(dtoList);
 	}

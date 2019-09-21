@@ -35,7 +35,7 @@ public class ConfigurationsDAO extends AbstractDAO {
 	public static ConfigurationsDAO getInstance(String schema) {
 		return (ConfigurationsDAO) AbstractDAO.getInstance(ConfigurationsDAO.class, schema);
 	}
-	
+
 	public List<ConfigurationsDTO> list() {
 		List<ConfigurationsDTO> list = new ArrayList<ConfigurationsDTO>();
 
@@ -77,20 +77,20 @@ public class ConfigurationsDAO extends AbstractDAO {
 
 			for (ConfigurationsDTO config : configs) {
 				updatePst.clearParameters();
-				
+
 				updatePst.setString(1, config.getValue());
 				updatePst.setInt(2, loggedUser);
 				updatePst.setString(3, config.getKey());
-				
+
 				if (updatePst.executeUpdate() == 0) {
 					insertPst.clearParameters();
-					
+
 					insertPst.setString(1, config.getKey());
 					insertPst.setString(2, config.getValue());
 					insertPst.setString(3, config.getType());
 					insertPst.setBoolean(4, config.isRequired());
 					insertPst.setInt(5, loggedUser);
-					
+
 					if (insertPst.executeUpdate() == 0) {
 						con.rollback();
 						return false;

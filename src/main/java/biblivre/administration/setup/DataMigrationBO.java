@@ -60,42 +60,42 @@ public class DataMigrationBO extends AbstractBO {
 	private Map<Integer, Integer> lendingMap = new HashMap<Integer, Integer>();
 	private Map<Integer, Integer> lendingHistoryMap = new HashMap<Integer, Integer>();
 	private String userSchema;
-	
+
 	@Override
 	public String getSchema() {
 		return this.userSchema;
 	}
-	
+
 	public static DataMigrationBO getInstance(String schema, String datasource) {
 		DataMigrationBO bo = AbstractBO.getInstance(DataMigrationBO.class, schema + ":" + datasource);
-		
+
 		bo.userSchema = schema;
-		
+
 		if (bo.dao == null) {
 			bo.dao = DataMigrationDAO.getInstance(schema, datasource);
 		}
-		
+
 		if (bo.setupDao == null) {
 			bo.setupDao = SetupDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public boolean isBiblivre3Available() {
 		return this.dao.testDatabaseConnection();
 	}
-	
+
 	public boolean migrate(List<DataMigrationPhase> selectedPhases) {
 		synchronized (this) {
 			this.migratingDatabase = true;
-			
+
 			if (selectedPhases == null || selectedPhases.isEmpty()) {
 				selectedPhases = Arrays.asList(DataMigrationPhase.values());
 			}
-			
+
 			State.setSteps(selectedPhases.size());
-			
+
 			//DIGITAL MEDIA FILES CAN BE QUITE LARGE, SO WE WILL MIGRATE THEM
 			//SEPARATELY AND SLOWER (THE LIMIT VALUE IS LOWER) THAN THE REST.
 			boolean migrateDigitalMedia = false;
@@ -103,7 +103,7 @@ public class DataMigrationBO extends AbstractBO {
 				migrateDigitalMedia = true;
 				selectedPhases.remove(DataMigrationPhase.DIGITAL_MEDIA);
 			}
-			
+
 			for (DataMigrationPhase phase : selectedPhases) {
 				this.currentPhase = phase;
 				this.setCurrentCount(0);
@@ -141,14 +141,14 @@ public class DataMigrationBO extends AbstractBO {
 				this.setupDao.fixSequence(this.currentPhase);
 				State.incrementCurrentStep();
 			}
-			
+
 			if (migrateDigitalMedia) {
 				this.currentPhase = DataMigrationPhase.DIGITAL_MEDIA;
 				this.setCurrentCount(0);
 				int page = 0;
 				int digitalMediaLimit = 1;
 				int offset = digitalMediaLimit * page;
-				
+
 				boolean firstPass = true;
 				boolean hasMore = true;
 				while (hasMore) {
@@ -169,7 +169,7 @@ public class DataMigrationBO extends AbstractBO {
 				this.setupDao.fixSequence(this.currentPhase);
 				State.incrementCurrentStep();
 			}
-			
+
 			return true;
 		}
 	}
@@ -179,55 +179,55 @@ public class DataMigrationBO extends AbstractBO {
 
 		case CATALOGING_BIBLIOGRAPHIC:
 			return this.dao.listCatalogingRecords(RecordType.BIBLIO, limit, offset);
-			
+
 		case CATALOGING_HOLDINGS:
 			return this.dao.listCatalogingHoldings(limit, offset);
-			
+
 		case CATALOGING_AUTHORITIES:
 			return this.dao.listCatalogingRecords(RecordType.AUTHORITIES, limit, offset);
-			
+
 		case CATALOGING_VOCABULARY:
 			return this.dao.listCatalogingRecords(RecordType.VOCABULARY, limit, offset);
-			
+
 		case ACCESS_CARDS:
 			return this.dao.listAccessCards(limit, offset);
-			
+
 		case LOGINS:
 			return this.dao.listLogins(limit, offset);
-			
+
 		case USER_TYPES:
 			return this.dao.listUsersTypes(limit, offset);
-			
+
 		case USERS:
 			return this.dao.listUsers(limit, offset);
-			
+
 		case ACQUISITION_SUPPLIER:
 			return this.dao.listAquisitionSupplier(limit, offset);
-			
+
 		case ACQUISITION_REQUISITION:
 			return this.dao.listAquisitionRequisition(limit, offset);
-			
+
 		case ACQUISITION_QUOTATION:
 			return this.dao.listAquisitionQuotation(limit, offset);
-			
+
 		case ACQUISITION_ITEM_QUOTATION:
 			return this.dao.listAquisitionItemQuotation(limit, offset);
-			
+
 		case ACQUISITION_ORDER:
 			return this.dao.listAquisitionOrder(limit, offset);
-			
+
 		case Z3950_SERVERS:
 			return this.dao.listZ3950Servers(limit, offset);
-			
+
 		case ACCESS_CONTROL:
 			return this.dao.listAccessControl(limit, offset);
-			
+
 		case ACCESS_CONTROL_HISTORY:
 			return this.dao.listAccessControlHistory(limit, offset);
-			
+
 		case LENDINGS: {
 			List<LendingDTO> list = this.dao.listLendings(limit, offset);
-			
+
 			int i = offset + 1;
 			for (LendingDTO dto : list) {
 				if (dto.getExpectedReturnDate() == null) {
@@ -235,15 +235,15 @@ public class DataMigrationBO extends AbstractBO {
 				} else {
 					this.lendingMap.put(dto.getId(), i);					
 				}
-				
+
 				dto.setId(i);
-				
+
 				i++;
 			}
-			
+
 			return list;
 		}
-			
+
 		case LENDING_FINE: {
 			List<LendingFineDTO> list = this.dao.listLendingFines(limit, offset);
 
@@ -253,92 +253,92 @@ public class DataMigrationBO extends AbstractBO {
 
 			return list;
 		}
-		
+
 		case RESERVATIONS:
 			return this.dao.listReservations(limit, offset);
-			
+
 		case DIGITAL_MEDIA:
 		default:
 			return null;
 		}
 	}
-	
+
 	private boolean saveDTOs(DataMigrationPhase phase, List<? extends AbstractDTO> dtoList) {
 		String schema = this.getSchema();
-		
+
 		switch (phase) {
-				
+
 			case CATALOGING_BIBLIOGRAPHIC:
 				RecordBO biblioBo = RecordBO.getInstance(schema, RecordType.BIBLIO);
 				return biblioBo.saveFromBiblivre3(dtoList);
-				
+
 			case CATALOGING_AUTHORITIES:
 				RecordBO authoritiesBo = RecordBO.getInstance(schema,  RecordType.AUTHORITIES);
 				return authoritiesBo.saveFromBiblivre3(dtoList);
-				
+
 			case CATALOGING_VOCABULARY:
 				RecordBO vocabularyBo = RecordBO.getInstance(schema, RecordType.VOCABULARY);
 				return vocabularyBo.saveFromBiblivre3(dtoList);
-				
+
 			case CATALOGING_HOLDINGS:
 				RecordBO holdingsBo = RecordBO.getInstance(schema, RecordType.HOLDING);
 				return holdingsBo.saveFromBiblivre3(dtoList);
-				
+
 			case ACCESS_CARDS:
 				return AccessCardBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case LOGINS:
 				return LoginBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case USER_TYPES:
 				return UserTypeBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case USERS:
 				return UserBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case ACQUISITION_SUPPLIER:
 				return SupplierBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case ACQUISITION_REQUISITION:
 				return RequestBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case ACQUISITION_QUOTATION:
 				return QuotationBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case ACQUISITION_ITEM_QUOTATION:
 				return QuotationBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case ACQUISITION_ORDER:
 				return OrderBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case Z3950_SERVERS:
 				return Z3950BO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case ACCESS_CONTROL:
 				return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case ACCESS_CONTROL_HISTORY:
 				return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case LENDINGS:
 				return LendingBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case LENDING_FINE:
 				return LendingFineBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case RESERVATIONS:
 				return ReservationBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
 			case DIGITAL_MEDIA:
 			default:
 				return true;
 		}
 	}
-	
+
 	private List<MemoryFile> listDigitalMedia(int limit, int offset) {
 		return this.dao.listDigitalMedia(limit, offset);
 	}
-	
+
 	private boolean saveDigitalMedia(List<MemoryFile> dtoList) {
 		DigitalMediaBO bo = DigitalMediaBO.getInstance(this.getSchema());
 		for (MemoryFile file : dtoList) {
@@ -354,7 +354,7 @@ public class DataMigrationBO extends AbstractBO {
 	public void setMigratingDatabase(boolean migratingDatabase) {
 		this.migratingDatabase = migratingDatabase;
 	}
-	
+
 	public DataMigrationPhase getCurrentPhase() {
 		return this.currentPhase;
 	}
@@ -362,7 +362,7 @@ public class DataMigrationBO extends AbstractBO {
 	public void setCurrentPhase(DataMigrationPhase currentPhase) {
 		this.currentPhase = currentPhase;
 	}
-	
+
 	public Integer getCurrentCount() {
 		if (this.currentCount == null) {
 			this.currentCount = 0;

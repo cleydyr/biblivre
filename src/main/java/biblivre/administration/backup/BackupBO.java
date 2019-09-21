@@ -63,10 +63,10 @@ public class BackupBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = BackupDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public void simpleBackup() {
 		BackupType backupType = BackupType.FULL;
 		BackupScope backupScope = this.getBackupScope();
@@ -105,14 +105,14 @@ public class BackupBO extends AbstractBO {
 			return BackupScope.SINGLE_SCHEMA;
 		}
 	}
-	
+
 	public BackupDTO prepare(Map<String, Pair<String, String>> schemas, BackupType type, BackupScope scope) {
 		BackupDTO dto = new BackupDTO(schemas, type, scope);
 		dto.setCurrentStep(0);
-		
+
 		int steps = 0;
 		int schemasCount = dto.getSchemas().size();
-		
+
 		switch (dto.getType()) {
 			case FULL:
 				// schema, data and media for each schema (except media for public) + zip
@@ -127,7 +127,7 @@ public class BackupBO extends AbstractBO {
 				steps = schemasCount;
 				break;
 		}
-				
+
 		dto.setSteps(steps);
 
 		if (this.save(dto)) {
@@ -140,7 +140,7 @@ public class BackupBO extends AbstractBO {
 	public void backup(BackupDTO dto) {
 		try {
 			this.createBackup(dto);
-	
+
 			if (dto.getBackup() != null) {
 				this.move(dto);
 			}
@@ -155,7 +155,7 @@ public class BackupBO extends AbstractBO {
 		if (pgdump == null) {
 			return;
 		}
-		
+
 		File tmpDir = FileIOUtils.createTempDir();
 
 		Map<String, Pair<String, String>> schemas = dto.getSchemas();
@@ -210,7 +210,7 @@ public class BackupBO extends AbstractBO {
 
 		return list.getFirst();
 	}
-	
+
 	public boolean save(BackupDTO dto) {
 		return this.dao.save(dto);
 	}
@@ -218,7 +218,7 @@ public class BackupBO extends AbstractBO {
 	public boolean move(BackupDTO dto) {
 		File destination = this.getBackupDestination();
 		File backup = dto.getBackup();
-		
+
 		if (destination == null) {
 			destination = backup.getParentFile();
 		}
@@ -304,7 +304,7 @@ public class BackupBO extends AbstractBO {
 			InputStreamReader isr = new InputStreamReader(p.getInputStream());
 			br = new BufferedReader(isr);
 			String line;
-			
+
 			while ((line = br.readLine()) != null) {
 				//There was a system.out.println here for the 'line' var, 
 				//with a FIX_ME tag.  So I changed it to logger.debug().
@@ -314,7 +314,7 @@ public class BackupBO extends AbstractBO {
 			}
 
 			p.waitFor();
-			
+
 			return p.exitValue() == 0;
 		} catch (IOException e) {
 			this.logger.error(e.getMessage(), e);

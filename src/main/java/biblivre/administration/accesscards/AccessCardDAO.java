@@ -49,29 +49,29 @@ public class AccessCardDAO extends AbstractDAO {
 		if (list.size() == 0) {
 			return null;
 		}
-		
+
 		return list.get(0);
 	}
-		
+
 	public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
 		List<AccessCardDTO> list = new LinkedList<AccessCardDTO>();
 
 		boolean hasCodes = (codes != null && codes.size() > 0);
 		boolean hasStatus = (status != null && status.size() > 0);
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
 
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM access_cards WHERE 1 = 1 ");
-			
+
 			if (hasCodes) {
 				sql.append("and code in (");
 				sql.append(StringUtils.repeat("?", ", ", codes.size()));
 				sql.append(");");
 			}
-			
+
 			if (hasStatus) {
 				sql.append("and status in (");
 				sql.append(StringUtils.repeat("?", ", ", status.size()));
@@ -85,13 +85,13 @@ public class AccessCardDAO extends AbstractDAO {
 					pst.setString(index++, code);
 				}
 			}
-			
+
 			if (hasStatus) {
 				for (AccessCardStatus stat : status) {
 					pst.setString(index++, stat.toString());
 				}
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDTO(rs));
@@ -103,7 +103,7 @@ public class AccessCardDAO extends AbstractDAO {
 		}
 		return list;
 	}
-	
+
 	public AccessCardDTO get(int id) {
 		Connection con = null;
 		try {
@@ -123,19 +123,19 @@ public class AccessCardDAO extends AbstractDAO {
 		}
 		return null;
 	}
-	
+
 	public DTOCollection<AccessCardDTO> search(String code, AccessCardStatus status, int limit, int offset) {
 		DTOCollection<AccessCardDTO> list = new DTOCollection<AccessCardDTO>();
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			StringBuilder sqlCount = new StringBuilder();
-			
+
 			sql.append("SELECT * FROM access_cards WHERE ");
 			sqlCount.append("SELECT count(*) as total FROM access_cards WHERE ");
-			
+
 			if (status == null) {
 				sql.append("status <> ? ");
 				sqlCount.append("status <> ? ");
@@ -143,18 +143,18 @@ public class AccessCardDAO extends AbstractDAO {
 				sql.append("status = ? ");
 				sqlCount.append("status = ? ");
 			}
-			
+
 			if (StringUtils.isNotBlank(code)) {
 				sql.append("AND code ILIKE ? ");
 				sqlCount.append("AND code ILIKE ? ");
 			}
 			sql.append("ORDER BY id ASC LIMIT ? OFFSET ?;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
-			
+
 			int idx = 1;
-			
+
 			if (status == null) {
 				pst.setString(idx, AccessCardStatus.CANCELLED.toString());
 				pstCount.setString(idx++, AccessCardStatus.CANCELLED.toString());
@@ -162,15 +162,15 @@ public class AccessCardDAO extends AbstractDAO {
 				pst.setString(idx,status.toString());
 				pstCount.setString(idx++, status.toString());
 			}
-			
+
 			if (StringUtils.isNotBlank(code)) {
 				pst.setString(idx,"%" + code + "%");
 				pstCount.setString(idx++, "%" + code + "%");
 			}
-			
+
 			pst.setInt(idx++, limit);
 			pst.setInt(idx++, offset);
-			
+
 			ResultSet rs = pst.executeQuery();
 			ResultSet rsCount = pstCount.executeQuery();
 
@@ -203,14 +203,14 @@ public class AccessCardDAO extends AbstractDAO {
 			pst.setString(1, dto.getCode());
 			pst.setString(2, dto.getStatus().toString());
 			pst.setInt(3, dto.getCreatedBy());
-			
+
 			pst.executeUpdate();
-			
+
 			ResultSet keys = pst.getGeneratedKeys();
 			if (keys.next()) {
 				dto.setId(keys.getInt(1));
 			}
-			
+
 			return true;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -218,27 +218,27 @@ public class AccessCardDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean save(LinkedList<AccessCardDTO> cardList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO access_cards(code, status, created_by) ");
 			sql.append("VALUES (?, ?, ?);");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
-			
+
 			for (AccessCardDTO card : cardList) {
 				pst.setString(1, card.getCode());
 				pst.setString(2, card.getStatus().toString());
 				pst.setInt(3, card.getCreatedBy());
 				pst.addBatch();
 			}
-			
+
 			pst.executeBatch();
-			
+
 			ResultSet keys = pst.getGeneratedKeys();
 			if (keys.next()) {
 				AccessCardDTO dto = cardList.get(0);
@@ -251,18 +251,18 @@ public class AccessCardDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO access_cards(code, status, created_by, id) ");
 			sql.append("VALUES (?, ?, ?, ?);");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				AccessCardDTO dto = (AccessCardDTO) abstractDto;
 				pst.setString(1, dto.getCode());
@@ -271,9 +271,9 @@ public class AccessCardDAO extends AbstractDAO {
 				pst.setInt(4, dto.getId());
 				pst.addBatch();
 			}
-			
+
 			pst.executeBatch();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -281,8 +281,8 @@ public class AccessCardDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
-	
+
+
 	public boolean update(AccessCardDTO dto) {
 		Connection con = null;
 		try {
@@ -329,7 +329,7 @@ public class AccessCardDAO extends AbstractDAO {
 		dto.setModifiedBy(rs.getInt("modified_by"));
 		return dto;
 	}
-	
+
 
 //	public AccessCardDTO get(String code) {
 //		Connection con = null;
@@ -363,5 +363,5 @@ public class AccessCardDAO extends AbstractDAO {
 //		}
 //		return null;
 //	}
-	
+
 }

@@ -47,21 +47,21 @@ public class ExtendedRequestResponseFilter implements Filter {
 
 		ExtendedRequest xRequest = null;
 		ExtendedResponse xResponse = null;
-		
+
 		if (request instanceof ExtendedRequest) {
 			// Avoid rewrapping if forwarding
 			xRequest = (ExtendedRequest) request;
 		} else {
 			xRequest = new ExtendedRequest((HttpServletRequest) request);
 		}
-		
+
 		if (response instanceof ExtendedResponse) {
 			// Avoid rewrapping if forwarding
 			xResponse = (ExtendedResponse) response;
 		} else {
 			xResponse = new ExtendedResponse((HttpServletResponse) response);
 		}
-		
+
 		chain.doFilter(xRequest, xResponse);
 	}
 

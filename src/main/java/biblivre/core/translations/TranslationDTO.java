@@ -33,43 +33,43 @@ public class TranslationDTO extends AbstractDTO implements JSONString {
 	private String text;
 	private boolean userEdited;
 	private boolean userCreated;
-	
+
 	public String getLanguage() {
 		return this.language;
 	}
-	
+
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-	
+
 	public String getKey() {
 		return this.key;
 	}
-	
+
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+
 	public String getText() {
 		return this.text;
 	}
-	
+
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 	public boolean isUserEdited() {
 		return this.userEdited;
 	}
-	
+
 	public void setUserEdited(boolean userEdited) {
 		this.userEdited = userEdited;
 	}
-	
+
 	public boolean isUserCreated() {
 		return this.userCreated;
 	}
-	
+
 	public void setUserCreated(boolean userCreated) {
 		this.userCreated = userCreated;
 	}

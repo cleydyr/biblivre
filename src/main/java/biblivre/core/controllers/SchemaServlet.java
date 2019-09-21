@@ -130,7 +130,7 @@ public final class SchemaServlet extends HttpServlet {
 
 		AuthorizationPoints notLoggedAtps = AuthorizationPoints.getNotLoggedInstance(xRequest.getSchema());
 		xRequest.setAttribute("notLoggedAtps", notLoggedAtps);
-		
+
 		// If there is an action but there isn't any controller or module, it's
 		// a menu action
 		if (StringUtils.isBlank(controller) && StringUtils.isBlank(module) && StringUtils.isNotBlank(action)) {
@@ -235,7 +235,7 @@ public final class SchemaServlet extends HttpServlet {
 
 		rd.forward(wrapped, response);
 	}
-	
+
 	@Override
 	public void init() throws ServletException {
 		FreemarkerTemplateHelper.freemarkerConfiguration

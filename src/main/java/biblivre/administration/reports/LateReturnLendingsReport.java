@@ -62,7 +62,7 @@ public class LateReturnLendingsReport extends BaseBiblivreReport {
 		PdfPTable table = new PdfPTable(6);
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.setWidthPercentage(100f);
-		
+
 		createHeader(table);
 
 		PdfPCell cell;

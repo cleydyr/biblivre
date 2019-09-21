@@ -20,7 +20,7 @@
 package biblivre.core.auth;
 
 public enum AuthorizationPointTypes {
-	
+
 	LOGIN(AuthorizationSchemaScope.ANY, AuthorizationUserScope.ANY, AuthorizationPointGroups.LOGIN, true),
 	LOGIN_CHANGE_PASSWORD(AuthorizationSchemaScope.ANY, AuthorizationUserScope.ANY, AuthorizationPointGroups.LOGIN, false, true),
 
@@ -59,7 +59,7 @@ public enum AuthorizationPointTypes {
 	CIRCULATION_PRINT_USER_CARDS(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.CIRCULATION),
 
 	CIRCULATION_USER_RESERVATION(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.READER, AuthorizationPointGroups.CIRCULATION),
-	
+
 	ACQUISITION_SUPPLIER_LIST(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ACQUISITION),
 	ACQUISITION_SUPPLIER_SAVE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ACQUISITION),
 	ACQUISITION_SUPPLIER_DELETE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ACQUISITION),
@@ -91,7 +91,7 @@ public enum AuthorizationPointTypes {
 	ADMINISTRATION_ACCESSCARDS_LIST(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_ACCESSCARDS_SAVE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_ACCESSCARDS_DELETE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
-	
+
 	ADMINISTRATION_MULTI_SCHEMA(AuthorizationSchemaScope.GLOBAL_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 
 	DIGITALMEDIA_UPLOAD(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.DIGITALMEDIA),
@@ -120,7 +120,7 @@ public enum AuthorizationPointTypes {
 		this._public = _public;
 		this._publicForLoggedUsers = _publicForLoggedUsers;
 	}
-	
+
 	public AuthorizationPointGroups getGroup() {
 		return this.group;
 	}

@@ -24,16 +24,16 @@ import java.util.Date;
 import biblivre.core.AbstractDTO;
 
 public class ReservationDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 	private Integer recordId;
 	private Integer userId;
 	private Date expires;
-	
+
 	private transient String title;
-	
+
 	private transient String author;
 
 	public Integer getId() {

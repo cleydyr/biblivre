@@ -54,7 +54,7 @@ public class SearchQueryDTO extends AbstractDTO {
 	public SearchQueryDTO(String jsonString) throws ValidationException {
 		this.parameters = jsonString;
 		this.terms = new ArrayList<SearchTermDTO>();
-		
+
 		try {
 			this.fromJson(jsonString);
 		} catch (Exception e) {
@@ -65,10 +65,10 @@ public class SearchQueryDTO extends AbstractDTO {
 			throw new ValidationException("cataloging.error.invalid_database");
 		}
 	}
-	
+
 	public SearchQueryDTO(RecordDatabase database) {
 		this.setDatabase(database);
-		
+
 		if (this.getDatabase() == null) {
 			throw new ValidationException("cataloging.error.invalid_database");
 		}
@@ -97,7 +97,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			if (searchTerm == null) {
 				continue;
 			}
-			
+
 			String query = searchTerm.optString("query");
 			String field = searchTerm.optString("field");
 			String operator = searchTerm.optString("operator");
@@ -108,7 +108,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			if (f.equals("created") || f.equals("modified") || f.equals("holding_created") || f.equals("holding_modified")) {
 				query = "date";
 			}
-			
+
 			String sanitizedQuery = TextUtils.preparePhrase(query);
 
 			Pattern pattern = Pattern.compile("\\s*(\"[^\"]+\"|[^\\s\"]+)");
@@ -118,7 +118,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			while (matcher.find()) {
 				String group = matcher.group(1);
 				String[] terms;
-				
+
 				if (group.charAt(0) == '"' && group.indexOf(' ') != -1) {
 					//Multiple terms grouped by quotes
 					terms = new String[]{group};
@@ -158,7 +158,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			throw new ValidationException("cataloging.error.no_valid_terms");
 		}
 	}
-	
+
 	public String getParameters() {
 		return this.parameters;
 	}
@@ -202,7 +202,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
 		this.holdingSearch = holdingSearch;
 	}
-	
+
 	public Boolean isReservedOnly() {
 		return this.reservedOnly != null ? this.reservedOnly : false;
 	}
@@ -211,22 +211,22 @@ public class SearchQueryDTO extends AbstractDTO {
 		if (reservedOnly == null) {
 			reservedOnly = Boolean.FALSE;
 		}
-		
+
 		this.reservedOnly = reservedOnly;
 	}
 
 	public List<SearchTermDTO> getTerms() {
 		return this.terms;
 	}
-	
+
 	public Set<String> getSimpleTerms() {
 		if (this.terms == null || this.terms.size() == 0) {
 			return new HashSet<String>();
 		}
-		
+
 		return this.terms.get(0).getTerms();
 	}
-	
+
 	public void addTerm(SearchTermDTO dto) {
 		if (dto == null) {
 			return;
@@ -234,7 +234,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
 		this.terms.add(dto);
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();

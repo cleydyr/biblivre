@@ -39,7 +39,7 @@ public enum SearchOperator implements BiblivreEnum {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (SearchOperator searchOperator : SearchOperator.values()) {
@@ -59,7 +59,7 @@ public enum SearchOperator implements BiblivreEnum {
 	public String getString() {
 		return this.toString();
 	}
-	
+
 	public String getSqlOperator() {
 		return this.operator;
 	}

@@ -25,29 +25,29 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.core.AbstractDTO;
 
 public class Z3950RecordDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private BiblioRecordDTO record;
 	private Z3950AddressDTO server;
 	private transient int autogenId;
-	
+
 	public BiblioRecordDTO getRecord() {
 		return this.record;
 	}
-	
+
 	public void setRecord(BiblioRecordDTO record) {
 		this.record = record;
 	}
-	
+
 	public Z3950AddressDTO getServer() {
 		return this.server;
 	}
-	
+
 	public void setServer(Z3950AddressDTO server) {
 		this.server = server;
 	}
-	
+
 	public int getAutogenId() {
 		return this.autogenId;
 	}
@@ -66,6 +66,6 @@ public class Z3950RecordDTO extends AbstractDTO {
 
 		return json;
 	}
-	
+
 
 }

@@ -35,11 +35,11 @@ public class AbstractHandler {
 	protected BiblivreFile file;
 	protected int returnCode;
 	protected HttpCallback callback;
-	
+
 	public interface HttpCallback {
 		public void success();
 	}
-	
+
 	public AbstractHandler() {
 		this.setJson(new JSONObject());
 		this.setJspURL("");
@@ -79,7 +79,7 @@ public class AbstractHandler {
 	public void setMessage(Throwable exception) {
 		this.message = new Message(exception);
 	}
-	
+
 	public Message getMessage() {
 		return this.message;
 	}
@@ -91,7 +91,7 @@ public class AbstractHandler {
 		if (!hasErrorMessage) {
 			return false;
 		}
-		
+
 		ActionResult level = message.getLevel();
 		switch (level) {
 			case WARNING:
@@ -101,7 +101,7 @@ public class AbstractHandler {
 				return false;
 		}
 	}
-	
+
 	public BiblivreFile getFile() {
 		return this.file;
 	}
@@ -125,7 +125,7 @@ public class AbstractHandler {
 	public void setCallback(HttpCallback callback) {
 		this.callback = callback;
 	}
-	
+
 	protected void authorize(ExtendedRequest request, String module, String action) {
 		AuthorizationPoints authPoints = (AuthorizationPoints) request.getSessionAttribute(request.getSchema(), "logged_user_atps");
 		if (authPoints == null) {

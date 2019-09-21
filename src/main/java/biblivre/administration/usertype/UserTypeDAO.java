@@ -42,7 +42,7 @@ public class UserTypeDAO extends AbstractDAO {
 	public static UserTypeDAO getInstance(String schema) {
 		return (UserTypeDAO) AbstractDAO.getInstance(UserTypeDAO.class, schema);
 	}
-	
+
 	public UserTypeDTO get(int id) {		
 		Connection con = null;
 		try {
@@ -69,15 +69,15 @@ public class UserTypeDAO extends AbstractDAO {
 
 	public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
 		DTOCollection<UserTypeDTO> list = new DTOCollection<UserTypeDTO>();
-		
+
 		if (value != null) {
 			value = TextUtils.removeDiacriticals(value);
 		}
-		
+
 		if (limit == 0) {
 			limit = Configurations.getInt(this.getSchema(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
 		}
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
@@ -92,7 +92,7 @@ public class UserTypeDAO extends AbstractDAO {
 				sql.append("WHERE name ilike ? ");
 				countSql.append("WHERE name ilike ? ");
 			}
-			
+
 			sql.append("ORDER BY name ASC ");
 			sql.append("LIMIT ? OFFSET ?;");
 
@@ -129,9 +129,9 @@ public class UserTypeDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
         return list;
-		
+
 	}
-	
+
 	public List<UserTypeDTO> list() {
 		List<UserTypeDTO> list = new LinkedList<UserTypeDTO>();
 
@@ -162,7 +162,7 @@ public class UserTypeDAO extends AbstractDAO {
         try {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
-            
+
             PreparedStatement pst = null;
 			Boolean newType = dto.getId() == null || dto.getId() == 0;
 			if (newType) {
@@ -177,7 +177,7 @@ public class UserTypeDAO extends AbstractDAO {
 				sql.append("WHERE id = ?;");
 				pst = con.prepareStatement(sql.toString());
 			}
-			
+
             pst.setString(1, dto.getName());
             pst.setString(2, dto.getDescription());
             pst.setInt(3, dto.getLendingLimit());
@@ -191,16 +191,16 @@ public class UserTypeDAO extends AbstractDAO {
             	pst.setInt(8, dto.getModifiedBy());
             	pst.setInt(9, dto.getId());
             }
-            
+
             pst.executeUpdate();
-            
+
             if (newType) {
 				ResultSet keys = pst.getGeneratedKeys();
 				if (keys.next()) {
 					dto.setId(keys.getInt(1));
 				}
             }
-            
+
 			return true;
         } catch (Exception e) {
             throw new DAOException(e);
@@ -208,18 +208,18 @@ public class UserTypeDAO extends AbstractDAO {
             closeConnection(con);
         }
     }
-    
+
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
-            
+
             StringBuilder sql = new StringBuilder();
             sql.append("INSERT INTO users_types (name, description, lending_limit, reservation_limit, ");
             sql.append("lending_time_limit, reservation_time_limit, fine_value, created_by, id) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?); ");
-            
+
             PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
             for (AbstractDTO abstractDto : dtoList) {
 				UserTypeDTO dto = (UserTypeDTO) abstractDto;
 	            pst.setString(1, dto.getName());
@@ -232,9 +232,9 @@ public class UserTypeDAO extends AbstractDAO {
             	pst.setInt(8, dto.getId());
             	pst.addBatch();
             }
-            
+
             pst.executeBatch();
-            
+
         } catch (Exception e) {
             throw new DAOException(e);
         } finally {
@@ -261,7 +261,7 @@ public class UserTypeDAO extends AbstractDAO {
         }
     }
 
-	
+
 	private UserTypeDTO populateDTO(ResultSet rs) throws SQLException {
 		UserTypeDTO dto = new UserTypeDTO();
 
@@ -270,7 +270,7 @@ public class UserTypeDAO extends AbstractDAO {
 		dto.setCreatedBy(rs.getInt("created_by"));
 		dto.setModified(rs.getTimestamp("modified"));
 		dto.setModifiedBy(rs.getInt("modified_by"));
-		
+
 		dto.setName(rs.getString("name"));
 		dto.setDescription(rs.getString("description"));
 		dto.setLendingLimit(rs.getInt("lending_limit"));

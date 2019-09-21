@@ -81,7 +81,7 @@ public class FileIOUtils {
 			return true;
 		}
 	}
-	
+
 	public static void zipFolder(File src, File dest) throws IOException	 {
 		ZipOutputStream zip = null;
 		FileOutputStream fileWriter = null;
@@ -89,7 +89,7 @@ public class FileIOUtils {
 		fileWriter = new FileOutputStream(dest);
 		zip = new ZipOutputStream(fileWriter);
 
-		
+
 		FileIOUtils.addFolderToZip("", src, zip);
 
 		zip.flush();
@@ -120,7 +120,7 @@ public class FileIOUtils {
 			}
 		}
 	}
-	
+
 	private static void addFolderToZip(String path, File src, ZipOutputStream zip) throws IOException {
 		//check the empty folder
 		if (src.list().length == 0) {
@@ -132,7 +132,7 @@ public class FileIOUtils {
 			}
 		}
 	}
-	
+
 	public static File unzip(File zip) throws IOException {
 		File tmpDir = FileIOUtils.createTempDir();
 		ZipFile zipFile = new ZipFile(zip);
@@ -148,20 +148,20 @@ public class FileIOUtils {
 			} else {
 				InputStream is = zipFile.getInputStream(entry);
 				FileOutputStream os = FileUtils.openOutputStream(destination);
-			
+
 				try {
 					IOUtils.copy(is, os);
 				} finally {
 					os.close();
 					is.close();
 				}
-				
+
 				destination.setLastModified(entry.getTime());
 			}
 		}
-		
+
 		ZipFile.closeQuietly(zipFile);
-		
+
 		return tmpDir;
 	}
 
@@ -180,7 +180,7 @@ public class FileIOUtils {
 
 		return output;
 	}
-	
+
 	public static void sendHttpFile(BiblivreFile file, HttpServletRequest request, HttpServletResponse response, boolean headerOnly) throws IOException {
 		if (file != null) {
 			if (!file.exists()) {
@@ -193,7 +193,7 @@ public class FileIOUtils {
 			long size = file.getSize();
 			long lastModified = file.getLastModified();
 			String eTag = fileName + "_" + size + "_" + lastModified;
-			
+
 			// If-None-Match header should contain "*" or ETag. If so, then return 304.
 			String ifNoneMatch = request.getHeader("If-None-Match");
 			if (ifNoneMatch != null && FileIOUtils.matches(ifNoneMatch, eTag)) {
@@ -387,7 +387,7 @@ public class FileIOUtils {
 
 				IOUtils.closeQuietly(output);
 			}
-			
+
 			return;
 		}
 	}
@@ -427,7 +427,7 @@ public class FileIOUtils {
 		if (toAccept.equals("x-download")) {
 			return false;
 		}
-		
+
 		String[] acceptValues = acceptHeader.split("\\s*(,|;)\\s*");
 		Arrays.sort(acceptValues);
 		return Arrays.binarySearch(acceptValues, toAccept) > -1
@@ -454,7 +454,7 @@ public class FileIOUtils {
 			this.total = total;
 		}
 	}
-	
+
 	public static File getWritablePath(String path) {
 		if (StringUtils.isBlank(path)) {
 			return null;
@@ -465,18 +465,18 @@ public class FileIOUtils {
 		if (!file.isDirectory()) {
 			return null;
 		}
-		
+
 		if (!file.canWrite()) {
 			return null;
 		}
 
 		return file;
 	}
-	
+
 	public static boolean isWritablePath(String path) {
 		return FileIOUtils.getWritablePath(path) != null;
 	}
-	
+
 	public static long countLines(File file) {
 		LineNumberReader reader = null;
 		int count = 1;
@@ -487,17 +487,17 @@ public class FileIOUtils {
 			reader.close();
 		} catch (Exception e) {
 		}
-		
+
 		return count;
 	}
 
 	public static long countFiles(File file) {
 		int count = 1;
-		
+
 		if (file != null && file.isDirectory()) {
 			count =  file.list().length;
 		}
-		
+
 		return count;
 	}
 

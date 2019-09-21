@@ -45,15 +45,15 @@ public class TranslationsDate extends SimpleTagSupport {
 			TranslationsMap map = (TranslationsMap) request.getAttribute("translationsMap");
 
 			String pattern;
-			
+
 			if (this.time) {
 				pattern = map.getText(Constants.TRANSLATION_FORMAT_DATETIME);
 			} else {
 				pattern = map.getText(Constants.TRANSLATION_FORMAT_DATE);
 			}
-			
+
 			SimpleDateFormat formatter = new SimpleDateFormat(pattern);
-			
+
 			out.print(formatter.format(this.date));
 		} catch (Exception e)  {
 			throw new JspException(e.getMessage());

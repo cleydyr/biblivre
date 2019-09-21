@@ -25,7 +25,7 @@ public class AuthorizationException extends RuntimeException {
     public AuthorizationException() {
     	super("error.no_permission");
     }
-	
+
     public AuthorizationException(String s) {
     	super(s);
     }

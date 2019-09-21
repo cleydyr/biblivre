@@ -94,48 +94,48 @@ public class IndexingBO extends AbstractBO {
 
 			try {
 				this.clearIndexes(recordType);
-	
+
 				List<IndexingGroupDTO> indexingGroups = IndexingGroups.getGroups(schema, recordType);
 				List<FormTabSubfieldDTO> autocompleteSubfields = Fields.getAutocompleteSubFields(schema, recordType);
 
 				RecordBO rbo = RecordBO.getInstance(schema, recordType);
-	
+
 				int recordCount = rbo.count();
 				int limit = 30;
-	
+
 				for (int offset = 0; offset < recordCount; offset += limit) {
 					//if (this.logger.isDebugEnabled()) {
 						//this.logger.debug("Reindexing offsets from " + offset + " to " + (offset + limit));
 					//}
-		
+
 					List<RecordDTO> records = rbo.list(offset, limit);
-	
+
 					List<IndexingDTO> indexes = new LinkedList<IndexingDTO>();
 					List<IndexingDTO> sortIndexes = new LinkedList<IndexingDTO>();
 					List<AutocompleteDTO> autocompleteIndexes = new LinkedList<AutocompleteDTO>();
-					
+
 					for (RecordDTO dto : records) {
 						this.populateIndexes(dto, indexingGroups, indexes, sortIndexes);
 						this.populateAutocompleteIndexes(dto, autocompleteSubfields, autocompleteIndexes);
 					}
-		
+
 					this.dao.insertIndexes(recordType, indexes);
 					this.dao.insertSortIndexes(recordType, sortIndexes);
 					this.dao.insertAutocompleteIndexes(recordType, autocompleteIndexes);
 				}
-				
+
 				this.dao.reindexDatabase(recordType);
 			} finally {
 				this.toggleLockState(recordType, false);
 			}
 		}
 	}
-	
-	
+
+
 	public void reindexAutocompleteFixedTable(RecordType recordType, String datafield, String subfield, List<String> phrases) {
 		this.dao.reindexAutocompleteFixedTable(recordType, datafield, subfield, phrases);
 	}
-	
+
 	private void populateIndexes(RecordDTO dto, List<IndexingGroupDTO> indexingGroups, List<IndexingDTO> indexes, List<IndexingDTO> sortIndexes) {
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
 		MarcDataReader marcDataReader = new MarcDataReader(record);
@@ -151,12 +151,12 @@ public class IndexingBO extends AbstractBO {
 		boolean charsToIgnoreSet;
 
 		int datafieldId = 0;
-		
+
 		index = new IndexingDTO();
 		index.setIndexingGroupId(0);
 		index.setRecordId(dto.getId());
 		index.addWord(String.valueOf(dto.getId()), datafieldId);
-		
+
 		indexes.add(index);
 
 		// For each indexing group
@@ -201,7 +201,7 @@ public class IndexingBO extends AbstractBO {
 							}
 						}
 					}
-					
+
 					// Some datafields have nonfillings characters, based on indicator 1 or 2
 					if (!charsToIgnoreSet && sortIndex.getPhraseLength() > 0) {
 						char indicator = '0';
@@ -214,7 +214,7 @@ public class IndexingBO extends AbstractBO {
 						if (indicator >= '1' && indicator <= '9') {
 							sortIndex.setIgnoreCharsCount(Integer.valueOf(Character.toString(indicator)));
 						}
-						
+
 						charsToIgnoreSet = true;
 					}
 				}
@@ -229,7 +229,7 @@ public class IndexingBO extends AbstractBO {
 			}
 		}
 	}
-	
+
 	private void populateAutocompleteIndexes(RecordDTO dto, List<FormTabSubfieldDTO> autocompleteSubfields, List<AutocompleteDTO> autocompleteIndexes) {
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
 
@@ -238,16 +238,16 @@ public class IndexingBO extends AbstractBO {
 		List<DataField> datafields;
 		List<Subfield> subfields;
 		String phrase;
-		
+
 		for (FormTabSubfieldDTO autocompleteSubfield : autocompleteSubfields) {
 			datafields = marcDataReader.getDataFields(autocompleteSubfield.getDatafield());
-			
+
 			for (DataField datafield : datafields) {
 				subfields = datafield.getSubfields(autocompleteSubfield.getSubfield().charAt(0));
-				
+
 				for (Subfield subfield : subfields) {
 					phrase = subfield.getData();
-					
+
 					if (StringUtils.isBlank(phrase)) {
 						continue;
 					}
@@ -258,7 +258,7 @@ public class IndexingBO extends AbstractBO {
 					autocomplete.setDatafield(autocompleteSubfield.getDatafield());
 					autocomplete.setSubfield(autocompleteSubfield.getSubfield());
 					autocomplete.setPhrase(phrase);
-					
+
 					autocompleteIndexes.add(autocomplete);
 				}
 			}
@@ -280,7 +280,7 @@ public class IndexingBO extends AbstractBO {
 				break;
 		}
 	}
-	
+
 	private boolean getLockState(RecordType recordType) {
 		switch (recordType) {
 			case BIBLIO:
@@ -293,7 +293,7 @@ public class IndexingBO extends AbstractBO {
 				return false;
 		}
 	}
-	
+
 	public int countIndexed(RecordType recordType) {
 		return this.dao.countIndexed(recordType);
 	}
@@ -326,13 +326,13 @@ public class IndexingBO extends AbstractBO {
 	public boolean deleteIndexes(RecordType recordType, RecordDTO dto) {
 		return this.dao.deleteIndexes(recordType, dto);
 	}
-	
+
 	public List<String> searchExactTerm(RecordType recordType, int indexingGroupId, String term) {
 		List<String> terms = new LinkedList<String>();
 		terms.add(term);
 		return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
 	}
-	
+
 	public List<String> searchExactTerms(RecordType recordType, int indexingGroupId, List<String> terms) {
 		return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
 	}

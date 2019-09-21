@@ -35,7 +35,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class AssetHoldingReport extends BaseBiblivreReport implements Comparator<String[]> {
-	
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingReportData();

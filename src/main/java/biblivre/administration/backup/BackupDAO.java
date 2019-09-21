@@ -50,9 +50,9 @@ public class BackupDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
-			
+
 			if (dto.getId() == null) {
 				dto.setId(this.getNextSerial("backups_id_seq"));
 
@@ -68,12 +68,12 @@ public class BackupDAO extends AbstractDAO {
 				} else {
 					pst.setNull(2, Types.VARCHAR);
 				}
-				
+
 				pst.setString(3, dto.getSchemasString());
 				pst.setString(4, dto.getType().toString());
 				pst.setString(5, dto.getBackupScope().toString());				
 				pst.setBoolean(6, dto.isDownloaded());
-				
+
 				if (dto.getSteps() != null) {
 					pst.setInt(7, dto.getSteps());
 				} else {
@@ -98,7 +98,7 @@ public class BackupDAO extends AbstractDAO {
 				} else {
 					pst.setNull(1, Types.VARCHAR);
 				}
-				
+
 				pst.setBoolean(2, dto.isDownloaded());
 				pst.setInt(3, dto.getCurrentStep());
 				pst.setInt(4, dto.getId());
@@ -111,12 +111,12 @@ public class BackupDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public BackupDTO get(Integer id) {
 		if (id == null) {
 			return null;
 		}
-		
+
 		BackupDTO dto = null;
 
 		Connection con = null;
@@ -128,9 +128,9 @@ public class BackupDAO extends AbstractDAO {
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 
 			pst.setInt(1, id);
-			
+
 			ResultSet rs = pst.executeQuery();
-			
+
 			if (rs.next()) {
 				dto = this.populateDTO(rs);
 			}
@@ -139,23 +139,23 @@ public class BackupDAO extends AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
-		
+
 		return dto;
 	}
-	
+
 	public long createOID() {
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			PGConnection pgcon = getPGConnection(con);
-			
+
 			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 			long oid = lobj.createLO();
-			
+
 			this.commit(con);
-			
+
 			return oid;
 		} catch (Exception e) {
 			this.rollback(con);
@@ -164,7 +164,7 @@ public class BackupDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public Set<String> listDatabaseSchemas() {
 		Set<String> set = new TreeSet<String>();
 
@@ -175,7 +175,7 @@ public class BackupDAO extends AbstractDAO {
 
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(sql);
-			
+
 			while (rs.next()) {
 				set.add(rs.getString("schema_name"));
 			}
@@ -184,14 +184,14 @@ public class BackupDAO extends AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
-		
+
 		return set;
 	}
 
 	public LinkedList<BackupDTO> list() {
 		return this.list(0);
 	}
-	
+
 	public LinkedList<BackupDTO> list(int limit) {
 		LinkedList<BackupDTO> list = new LinkedList<BackupDTO>();
 
@@ -199,9 +199,9 @@ public class BackupDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 			StringBuilder sql = new StringBuilder();
-			
+
 			sql.append("SELECT * FROM backups ORDER BY created DESC ");
-			
+
 			if (limit > 0) {
 				sql.append("LIMIT ?");
 			}
@@ -212,7 +212,7 @@ public class BackupDAO extends AbstractDAO {
 			}
 
 			ResultSet rs = pst.executeQuery();
-			
+
 			while (rs.next()) {
 				list.add(this.populateDTO(rs));
 			}
@@ -221,10 +221,10 @@ public class BackupDAO extends AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
-		
+
 		return list;
 	}
-	
+
 	private BackupDTO populateDTO(ResultSet rs) throws SQLException {
 		String schemas = rs.getString("schemas");
 		BackupType type = BackupType.fromString(rs.getString("type"));

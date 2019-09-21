@@ -43,7 +43,7 @@ public class DigitalMediaBO extends AbstractBO {
 	public DatabaseFile load(int id, String name) {
 		return this.dao.load(id, name);
 	}
-	
+
 	public boolean delete(Integer fileId, String fileName) {
 		return this.dao.delete(fileId);
 	}

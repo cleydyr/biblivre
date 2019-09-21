@@ -32,11 +32,11 @@ public class ValidationException extends RuntimeException {
 	private Logger logger = Logger.getLogger(this.getClass());
 
 	private List<Pair<String, String>> errorList;
-	
+
     public ValidationException(String s) {
     	super(s);
     }
-	
+
 	public ValidationException(String s, Exception cause) {
     	super(s, cause);
 		this.logger.error(cause.getMessage(), cause);  
@@ -46,14 +46,14 @@ public class ValidationException extends RuntimeException {
     	if (this.errorList == null) {
     		this.errorList = new ArrayList<Pair<String, String>>();
     	}
-    	
+
     	this.errorList.add(new Pair<String, String>(key, value));
     }
 
     public List<Pair<String, String>> getErrorList() {
     	return this.errorList;
     }
-    
+
     public boolean hasErrors() {
     	return this.errorList != null && this.errorList.size() > 0;
     }

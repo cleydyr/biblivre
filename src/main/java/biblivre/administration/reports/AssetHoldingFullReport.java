@@ -112,7 +112,7 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
 				para.add(new Phrase(this.getBoldChunk(this.getText("administration.reports.field.date") + ": ")));
 				para.add(new Phrase(this.getSmallFontChunk(data[6])));
 			}
-			
+
 			cell = new PdfPCell(para);
 			cell.setColspan(11);
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -155,7 +155,7 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
 		if (o1 == null) {
 			return -1;
 		}
-		
+
 		if (o2 == null) {
 			return 1;
 		}

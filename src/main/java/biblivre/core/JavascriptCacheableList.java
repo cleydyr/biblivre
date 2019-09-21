@@ -31,13 +31,13 @@ public class JavascriptCacheableList<T extends IFJson> extends LinkedList<T> imp
 	private String prefix;
 	private String suffix;
 	private JavascriptCache cache;
-	
+
 	public JavascriptCacheableList(String variable, String prefix, String suffix) {
 		this.variable = variable;
 		this.prefix = prefix;
 		this.suffix = suffix;
 	}
-	
+
 	@Override
 	public String getCacheFileNamePrefix() {
 		return this.prefix;
@@ -55,7 +55,7 @@ public class JavascriptCacheableList<T extends IFJson> extends LinkedList<T> imp
 		for (T el : this) {
 			array.put(el.toJSONObject());
 		}
-		
+
 		return this.variable + " = " + array.toString() + ";";
 	}
 
@@ -64,19 +64,19 @@ public class JavascriptCacheableList<T extends IFJson> extends LinkedList<T> imp
 		if (this.cache == null) {
 			this.cache = new JavascriptCache(this);
 		}
-				
+
 		return this.cache.getCacheFile();
 	}
-	
+
 	@Override
 	public String getCacheFileName() {
 		if (this.cache == null) {
 			this.cache = new JavascriptCache(this);
 		}
-				
+
 		return this.cache.getFileName();
 	}
-	
+
 	@Override
 	public void invalidateCache() {
 		this.cache = null;

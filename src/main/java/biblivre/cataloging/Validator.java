@@ -29,13 +29,13 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateImportUpload(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		MemoryFile file = request.getFile("file");
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (file == null || file.getSize() <= 0) {
 			ex.addError("file", "cataloging.import.error.invalid_file");
 		}
@@ -45,14 +45,14 @@ public class Validator extends AbstractValidator {
 			return;
 		}
 	}	
-	
+
 	public void validateImportSearch(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		Integer id = request.getInteger("search_server", 0);
 		String attribute = request.getString("search_attribute");
 		String value = request.getString("search_query");
 
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (id == 0) {
 			ex.addError("search_server", "field.error.invalid");			
 		}

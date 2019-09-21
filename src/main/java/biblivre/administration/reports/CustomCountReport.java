@@ -43,13 +43,13 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		
+
 		this.marcField = dto.getMarcField();
 		if (StringUtils.isNotBlank(this.marcField)) {
 			this.datafield = this.marcField.split("\\_")[0];
 			this.subfield = this.marcField.split("\\_")[1];
 		}
-		
+
 		String order = "1";
 		if (StringUtils.isNotBlank(dto.getCountOrder())) {
 			order = dto.getCountOrder();
@@ -97,7 +97,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
-		
+
 		if (total != 0) {
 			cell = new PdfPCell(new Paragraph(this.getBoldChunk("Total")));
 			cell.setColspan(2);
@@ -109,7 +109,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
-		
+
 		document.add(table);
 	}
 
@@ -136,15 +136,15 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		if (o1 == null) {
 			return 0;
 		}
-		
+
 		if (o2 == null) {
 			return 0;
 		}
-		
+
 		if (o1[this.index] == null && o2[this.index] == null) {
 			return 0;
 		}
-		
+
 		switch (this.index) {
 		case 0:
 			return o1[this.index].compareTo(o2[this.index]);
@@ -153,8 +153,8 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		default:
 			return o1[this.index].compareTo(o2[this.index]);
 		}
-			
-		
+
+
 	}
 
 }

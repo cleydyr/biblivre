@@ -35,9 +35,9 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.utils.CalendarUtils;
 
 public class LendingFineBO extends AbstractBO {
-	
+
 	private LendingFineDAO dao;
-	
+
 	public static LendingFineBO getInstance(String schema) {
 		LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class, schema);
 
@@ -47,7 +47,7 @@ public class LendingFineBO extends AbstractBO {
 
 		return bo;
 	}
-	
+
 	public LendingFineDTO getById(Integer fineId) {
 		return this.dao.get(fineId);
 	}
@@ -59,11 +59,11 @@ public class LendingFineBO extends AbstractBO {
 	public List<LendingFineDTO> listLendingFines(UserDTO user) {
 		return this.populateFineInfo(this.dao.list(user, false));
 	}
-	
+
 	public List<LendingFineDTO> listLendingFines(UserDTO user, boolean pendingOnly) {
 		return  this.populateFineInfo(this.dao.list(user, pendingOnly));
 	}
-	
+
 	private List<LendingFineDTO> populateFineInfo(List<LendingFineDTO> fines) {
 		for (LendingFineDTO fine : fines) {
 			this.populateFineInfo(fine);
@@ -73,15 +73,15 @@ public class LendingFineBO extends AbstractBO {
 
 	private void populateFineInfo(LendingFineDTO fine) {
 		Integer lendingId = fine.getLendingId();
-		
+
 		LendingBO lbo = LendingBO.getInstance(this.getSchema());
 		HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
 		BiblioRecordBO rbo = BiblioRecordBO.getInstance(this.getSchema());
-		
+
 		LendingDTO lending = lbo.get(lendingId);
 		HoldingDTO holding = (HoldingDTO)hbo.get(lending.getHoldingId());
 		BiblioRecordDTO biblio = (BiblioRecordDTO)rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
-		
+
 		fine.setAuthor(biblio.getAuthor());
 		fine.setTitle(biblio.getTitle());
 	}
@@ -89,7 +89,7 @@ public class LendingFineBO extends AbstractBO {
 	public boolean update(LendingFineDTO fine) {
 		return this.dao.update(fine);
 	}
-	
+
 	public LendingFineDTO createFine(LendingDTO lending, Float value, boolean paid) {
 		LendingFineDTO fine = new LendingFineDTO();
 		fine.setUserId(lending.getUserId());
@@ -102,7 +102,7 @@ public class LendingFineBO extends AbstractBO {
 		this.dao.insert(fine);
 		return fine;
 	}
-	
+
 	public Float calculateFineValue(Integer daysLate, UserDTO user) {
 		if (daysLate == null || daysLate <= 0) {
 			return 0.0f;
@@ -112,16 +112,16 @@ public class LendingFineBO extends AbstractBO {
 		Float fineValue = userType.getFineValue();
 		return daysLate * fineValue;
 	}
-	
+
 	public boolean isLateReturn(LendingDTO lending) {
 		return this.calculateLateDays(lending) > 0;
 	}
-	
+
 	public Integer calculateLateDays(LendingDTO lending) {
 		Date expectedReturnDate = lending.getExpectedReturnDate();
 		return CalendarUtils.calculateDeteDifference(expectedReturnDate, new Date());
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}

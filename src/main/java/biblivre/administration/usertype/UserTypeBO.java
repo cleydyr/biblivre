@@ -49,7 +49,7 @@ public class UserTypeBO extends AbstractBO {
 	public List<UserTypeDTO> list() {
 		return this.dao.list();
 	}
-	
+
 	public Map<Integer, UserTypeDTO> map() {
 		List<UserTypeDTO> list = this.dao.list();
 		Map<Integer, UserTypeDTO> map = new TreeMap<Integer, UserTypeDTO>();
@@ -58,7 +58,7 @@ public class UserTypeBO extends AbstractBO {
 		}
 		return map;
 	}
-	
+
 	public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
 		return this.dao.search(value, limit, offset);
 	}
@@ -72,17 +72,17 @@ public class UserTypeBO extends AbstractBO {
 		UserBO bo = UserBO.getInstance(this.getSchema());
 		UserSearchDTO dto = new UserSearchDTO();
 		dto.setType(id);
-		
+
 		DTOCollection<UserDTO> userList = bo.search(dto, 1, 0);
 		boolean existingUser = userList.size() > 0;
-		
+
 		if (existingUser) {
 			throw new ValidationException("administration.user_type.error.type_has_users");
 		}
-		
+
 		return this.dao.delete(id);
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}

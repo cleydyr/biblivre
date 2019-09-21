@@ -54,7 +54,7 @@ public class Z3950DAO extends AbstractDAO {
 		if (value != null) {
 			value = TextUtils.removeDiacriticals(value);
 		}
-		
+
 		if (limit == 0) {
 			limit = Configurations.getInt(this.getSchema(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
 		}
@@ -113,7 +113,7 @@ public class Z3950DAO extends AbstractDAO {
 		return list;
 	}
 
-	
+
 	public List<Z3950AddressDTO> list(List<Integer> ids) {
 		List<Z3950AddressDTO> list = new LinkedList<Z3950AddressDTO>();
 
@@ -123,13 +123,13 @@ public class Z3950DAO extends AbstractDAO {
 
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM z3950_addresses ");
-			
+
 			if (ids != null && ids.size() > 0) {
 				sql.append("WHERE id in (");
 				sql.append(StringUtils.repeat("?", ", ", ids.size()));
 				sql.append(") ");
 			}
-			
+
 			sql.append("ORDER BY name ASC;");
 
 			PreparedStatement pst = con.prepareStatement(sql.toString());
@@ -141,7 +141,7 @@ public class Z3950DAO extends AbstractDAO {
 					pst.setInt(index++, id);
 				}
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
@@ -162,7 +162,7 @@ public class Z3950DAO extends AbstractDAO {
 			con = this.getConnection();
 
 			String sql = "INSERT INTO z3950_addresses (name, url, port, collection) VALUES (?, ?, ?, ?);";
-			
+
 			PreparedStatement pst = con.prepareStatement(sql, Statement	.RETURN_GENERATED_KEYS);
 
 			pst.setString(1, dto.getName());
@@ -171,13 +171,13 @@ public class Z3950DAO extends AbstractDAO {
 			pst.setString(4, dto.getCollection());
 
 			pst.executeUpdate();
-			
+
 			ResultSet keys = pst.getGeneratedKeys();
-			
+
 			if (keys.next()) {
 				dto.setId(keys.getInt(1));
 			}
-			
+
 			return true;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -185,16 +185,16 @@ public class Z3950DAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			String sql = "INSERT INTO z3950_addresses (name, url, port, collection) VALUES (?, ?, ?, ?);";
-			
+
 			PreparedStatement pst = con.prepareStatement(sql);
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				Z3950AddressDTO dto = (Z3950AddressDTO) abstractDto;
 				pst.setString(1, dto.getName());
@@ -204,9 +204,9 @@ public class Z3950DAO extends AbstractDAO {
 //				pst.setInt(5, dto.getId());
 				pst.addBatch();
 			}
-			
+
 			pst.executeBatch();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -246,7 +246,7 @@ public class Z3950DAO extends AbstractDAO {
 			con = this.getConnection();
 
 			String sql = "DELETE FROM z3950_addresses WHERE id = ?;";
-			
+
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setInt(1, dto.getId());
 
@@ -260,13 +260,13 @@ public class Z3950DAO extends AbstractDAO {
 
 	private Z3950AddressDTO populateDTO(ResultSet rs) throws SQLException {
 		Z3950AddressDTO dto = new Z3950AddressDTO();
-		
+
 		dto.setId(rs.getInt("id"));
 		dto.setName(rs.getString("name").trim());
 		dto.setUrl(rs.getString("url").trim());
 		dto.setPort(rs.getInt("port"));
 		dto.setCollection(rs.getString("collection"));
-		
+
 		return dto;
 	}
 }

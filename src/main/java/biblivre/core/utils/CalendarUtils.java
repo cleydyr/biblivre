@@ -36,9 +36,9 @@ import org.joda.time.LocalDate;
 import biblivre.core.configurations.Configurations;
 
 public class CalendarUtils {
-	
+
 	private static final String CALENDAR_NAME = "BR-BIBL";
-	
+
 	public static java.sql.Date toSqlDate(Date date) {
 		return new java.sql.Date(date.getTime());
 	}
@@ -46,7 +46,7 @@ public class CalendarUtils {
 	public static java.sql.Timestamp toSqlTimestamp(Date date) {
 		return new java.sql.Timestamp(date.getTime());
 	}
-	
+
 	public static boolean isMidnight(Date date) {
 		Calendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -57,7 +57,7 @@ public class CalendarUtils {
 
         return date.getTime() == cal.getTimeInMillis();
 	}
-	
+
 	public static Date calculateExpectedReturnDate(String schema, Date lendingDate, int days) {
 		DateCalculator<LocalDate> cal = 
 				LocalDateKitCalculatorsFactory.
@@ -67,7 +67,7 @@ public class CalendarUtils {
 		for (int i = 1; i <=7; i++) {
 			week = week.withWorkingDayFromCalendar(false, i);
 		}
-		
+
 		for (int i : Configurations.getIntArray(schema, Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6")) {
 			week = week.withWorkingDayFromCalendar(true, i);
 		}
@@ -77,15 +77,15 @@ public class CalendarUtils {
 		//LocalDate newCurrent = cal.moveByBusinessDays(days).getCurrentBusinessDate();
 		return newCurrent.toDate();
 	}
-	
+
 	public static int calculateDeteDifference(Date initialDate, Date finalDate) {
 		DateTime firstDate = new DateTime(initialDate);
 		DateTime lastDate = new DateTime(finalDate);
 		Integer difference = Days.daysBetween(firstDate, lastDate).getDays();
 		return difference < 0 ? 0 : difference;
 	}
-	
-	
+
+
 //	public static void loadHolidays() {
 //		Set<LocalDate> holidays = new HashSet<LocalDate>();
 		//List holidays from database and add them to the holidays Set
@@ -101,5 +101,5 @@ public class CalendarUtils {
 //			getDefaultInstance().
 //			registerHolidays(CalendarUtils.CALENDAR_NAME, calendar);
 //	}
-	
+
 }

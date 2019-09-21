@@ -45,9 +45,9 @@ public class Handler extends AbstractHandler {
 
 		String printId = UUID.randomUUID().toString();
 		String schema = request.getSchema();
-		
+
 		request.setSessionAttribute(schema, printId, print);
-		
+
 		try {
 			this.json.put("uuid", printId);
 		} catch(JSONException e) {

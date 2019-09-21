@@ -33,14 +33,14 @@ public class ConfigurationsDTO extends AbstractDTO {
 	private String value;
 	private String type;
 	private boolean required;
-	
+
 	public ConfigurationsDTO() {
 		super();
 	}
 
 	public ConfigurationsDTO(String key, String value) {
 		super();
-		
+
 		this.setKey(key);
 		this.setValue(value);
 	}
@@ -69,7 +69,7 @@ public class ConfigurationsDTO extends AbstractDTO {
 		if (type.equals("boolean") && !(value.equals("true") || value.equals("false"))) {
 			return "administration.configurations.error.value_must_be_boolean";
 		}
-		
+
 		if (type.equals("file") && StringUtils.isNotBlank(value)) {
 			try {
 				File file = new File(value);
@@ -80,7 +80,7 @@ public class ConfigurationsDTO extends AbstractDTO {
 				return "administration.configurations.error.file_not_found";
 			}
 		}
-		
+
 		if (type.equals("writable_path") && StringUtils.isNotBlank(value)) {
 			if (!FileIOUtils.isWritablePath(value)) {
 				return "administration.configurations.error.invalid_writable_path";

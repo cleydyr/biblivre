@@ -27,14 +27,14 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import biblivre.core.utils.Constants;
 
 public class JavascriptCache {
-	
+
 	private File cacheFile;
 	private IFCacheableJavascript parent;
-	
+
 	public JavascriptCache(IFCacheableJavascript parent) {
 		this.parent = parent;
 	}
-	
+
 	private void createCacheFile() {
 		try {
 			this.cacheFile = File.createTempFile(this.parent.getCacheFileNamePrefix() + ".", this.parent.getCacheFileNameSuffix());
@@ -54,7 +54,7 @@ public class JavascriptCache {
 		if (this.cacheFile == null || !this.cacheFile.exists() || this.cacheFile.length() == 0) {
 			this.createCacheFile();
 		}
-		
+
 		return this.cacheFile != null;
 	}
 
@@ -65,7 +65,7 @@ public class JavascriptCache {
 			return this.parent.getCacheFileNamePrefix() + this.parent.getCacheFileNameSuffix();
 		}
 	}
-	
+
 	public File getCacheFile() {
 		this.validateCacheFile();
 		return this.cacheFile;

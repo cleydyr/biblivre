@@ -49,7 +49,7 @@ public class UserSearchDTO extends AbstractDTO {
 
 	public UserSearchDTO() {
 	}
-	
+
 	public UserSearchDTO(String jsonString) throws ValidationException {
 		try {
 			this.fromJson(jsonString);
@@ -57,7 +57,7 @@ public class UserSearchDTO extends AbstractDTO {
 			throw new ValidationException("cataloging.error.invalid_search_parameters");			
 		}
 	}
-	
+
 	private void fromJson(String jsonString) throws JSONException {
 		JSONObject json = new JSONObject(jsonString);
 
@@ -75,15 +75,15 @@ public class UserSearchDTO extends AbstractDTO {
 		this.setModifiedStartDate(json.optString("modified_start"));
 		this.setModifiedEndDate(json.optString("modified_end"));
 	}
-	
+
 	public SearchMode getSearchMode() {
 		return this.searchMode;
 	}
-	
+
 	public void setSearchMode(SearchMode searchMode) {
 		this.searchMode = searchMode;
 	}
-	
+
 	public String getField() {
 		return this.field;
 	}
@@ -139,7 +139,7 @@ public class UserSearchDTO extends AbstractDTO {
 	public void setUserCardNeverPrinted(boolean userCardNeverPrinted) {
 		this.userCardNeverPrinted = userCardNeverPrinted;
 	}
-	
+
 	public boolean isInactiveOnly() {
 		return this.inactiveOnly;
 	}
@@ -204,5 +204,5 @@ public class UserSearchDTO extends AbstractDTO {
 			}
 		}
 	}
-	
+
 }

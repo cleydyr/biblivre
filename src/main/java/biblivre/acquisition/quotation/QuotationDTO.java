@@ -33,7 +33,7 @@ public class QuotationDTO extends AbstractDTO {
 	private Date expirationDate;
 	private int deliveryTime;
 	private String info;
-	
+
 	transient private List<RequestQuotationDTO> quotationsList;
 	transient private String supplierName;
 

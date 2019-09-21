@@ -33,7 +33,7 @@ public class AccessControlDTO extends AbstractDTO {
 	private Integer userId;
 	private Date arrivalTime;
 	private Date departureTime;
-	
+
 	transient private UserDTO user;
 	transient private AccessCardDTO accessCard;
 

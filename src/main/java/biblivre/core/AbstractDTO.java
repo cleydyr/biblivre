@@ -60,13 +60,13 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 				for (Field field : clazz.getDeclaredFields()) {
 					String name = field.getName();
 					Method getter = null;
-					
+
 					try {
 						getter = clazz.getDeclaredMethod("get" + StringUtils.capitalize(name));
 					} catch (NoSuchMethodException e) {
 						continue;
 					}
-	
+
 					Object value = getter.invoke(this);
 
 					if (value != null) {
@@ -74,7 +74,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 							json.putOpt(name, ((IFJson) value).toJSONObject());
 						} else if (value instanceof Collection) {
 							Collection<?> col = (Collection<?>) value;
-	
+
 							for (Object item : col) {
 								if (item == null) {
 									continue;
@@ -102,7 +102,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
 				for (Entry<String, IFJson> e : this._extraData.entrySet()) {
 					IFJson value = e.getValue();
-					
+
 					if (value instanceof DTOCollection) {
 						json.put(e.getKey(), this.toJSONArray((DTOCollection<AbstractDTO>) value));
 					} else {
@@ -126,7 +126,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 	public void populateExtraData(JSONObject json) throws JSONException {
 		for (Entry<String, IFJson> e : this._extraData.entrySet()) {
 			IFJson value = e.getValue();
-			
+
 			if (value instanceof DTOCollection) {
 				json.put(e.getKey(), this.toJSONArray((DTOCollection<AbstractDTO>) value));
 			} else {
@@ -134,29 +134,29 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 			}
 		}
 	}
-	
+
 	protected JSONArray toJSONArray(List<? extends IFJson> list) {
 		if (list == null) {
 			return null;
 		}
-		
+
 		JSONArray array = new JSONArray();
 		for (IFJson e : list) {
 			array.put(e.toJSONObject());
 		}
 		return array;
 	}
-	
+
 	public String toJSONString() {
 		return this.toJSONObject().toString();
 	}
-	
+
 	protected <T extends AbstractDTO> T fromJSONObject(String jsonData) {
 		JSONObject json = new JSONObject(jsonData);
 
 		return this.fromJSONObject(json);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected <T extends AbstractDTO> T fromJSONObject(JSONObject json) {
 		Class<?> clazz = this.getClass();

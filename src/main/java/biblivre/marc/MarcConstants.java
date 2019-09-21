@@ -38,7 +38,7 @@ public final class MarcConstants {
     public static final String SECONDARY_AUTHOR_PERSONAL_NAME = "700";
     public static final String SECONDARY_AUTHOR_CORPORATION_NAME = "710";
     public static final String SECONDARY_AUTHOR_CONGRESS_NAME = "711";
-	
+
 	public static final String PUBLICATION = "260";
 	public static final String EDITION = "250"; 
 	public static final String PUBLICATION_FUNCTIONS = "264";
@@ -49,12 +49,12 @@ public final class MarcConstants {
     public static final String ADDED_UNIFORM_TITLE = "730";
     public static final String ADDED_ANALYTICAL_TITLE = "740";
     public static final String SECONDARY_INPUT_SERIAL_TITLE = "830";
-	
+
 	public static final String SHELF_LOCATION = "090";
     public static final String DDCN = "082";
     public static final String CNPQ = "095";
     public static final String PATENT = "013";
-	
+
 	public static final String NETWORK_LOCATION = "852";
 	public static final String ELECTRONIC_LOCATION = "856";
 
@@ -65,8 +65,8 @@ public final class MarcConstants {
 	public static final String SUBJECT_ADDED_ENTRY_TOPICAL_TERM = "650";
 	public static final String SUBJECT_ADDED_ENTRY_GEOGRAPHIC_NAME = "651";
 	public static final String SUBJECT_ADDED_ENTRY_LOCAL = "699";
-		
+
 	public static final String ACCESSION_NUMBER = "949";
-	
+
 	public static final String SOURCE_ACQUISITION_NOTES= "541";
 }

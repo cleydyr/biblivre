@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.utils.BiblivreEnum;
 
 public enum DataMigrationPhaseGroup implements BiblivreEnum {
-	
+
 	DIGITAL_MEDIA(DataMigrationPhase.DIGITAL_MEDIA),
 	CATALOGING_BIBLIOGRAPHIC(DataMigrationPhase.CATALOGING_BIBLIOGRAPHIC, DataMigrationPhase.CATALOGING_HOLDINGS),
 	CATALOGING_AUTHORITIES(DataMigrationPhase.CATALOGING_AUTHORITIES),
@@ -38,14 +38,14 @@ public enum DataMigrationPhaseGroup implements BiblivreEnum {
 	ACCESS_CONTROL(DataMigrationPhase.ACCESS_CARDS, DataMigrationPhase.ACCESS_CONTROL, DataMigrationPhase.ACCESS_CONTROL_HISTORY),
 	LENDINGS(DataMigrationPhase.LENDINGS, DataMigrationPhase.LENDINGS_HISTORY, DataMigrationPhase.LENDING_FINE), 
 	RESERVATIONS(DataMigrationPhase.RESERVATIONS);
-	
+
 	private List<DataMigrationPhase> phases;
-	
+
 	private DataMigrationPhaseGroup(DataMigrationPhase... phases) {
 		this.phases = Arrays.asList(phases);
 	}
-	
-	
+
+
 	public static DataMigrationPhaseGroup fromString(String str) {
 		if (StringUtils.isBlank(str)) {
 			return null;
@@ -61,7 +61,7 @@ public enum DataMigrationPhaseGroup implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();
@@ -70,7 +70,7 @@ public enum DataMigrationPhaseGroup implements BiblivreEnum {
 	public String getString() {
 		return this.toString();
 	}
-	
+
 	public List<DataMigrationPhase> getPhases() {
 		return this.phases;
 	}

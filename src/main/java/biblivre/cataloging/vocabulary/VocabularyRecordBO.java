@@ -35,7 +35,7 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 
 public class VocabularyRecordBO extends RecordBO {
-	
+
 	public static VocabularyRecordBO getInstance(String schema) {
 		VocabularyRecordBO bo = AbstractBO.getInstance(VocabularyRecordBO.class, schema);
 
@@ -57,11 +57,11 @@ public class VocabularyRecordBO extends RecordBO {
 
 		if ((mask & RecordBO.MARC_INFO) != 0) {
 			Record record = rdto.getRecord();
-			
+
 			if (record == null && rdto.getIso2709() != null) {
 				record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
 			}
-			
+
 			if (record != null) {
 				MarcDataReader marcDataReader = new MarcDataReader(record);
 				dto.setTermTE(marcDataReader.getFirstSubfieldData("150", 'a'));
@@ -71,9 +71,9 @@ public class VocabularyRecordBO extends RecordBO {
 			}
 		}
 
-		
+
 	}
-	
+
 	@Override
 	public boolean save(RecordDTO dto) {
 		Record record = dto.getRecord();
@@ -116,7 +116,7 @@ public class VocabularyRecordBO extends RecordBO {
 
 	@Override
 	public boolean delete(RecordDTO dto) {
-		
+
 //		HoldingBO holdingBo = new HoldingBO();
 //		LendingBO lendingBo = new LendingBO();
 //		List<HoldingDTO> holdings = holdingBo.list(record);
@@ -134,13 +134,13 @@ public class VocabularyRecordBO extends RecordBO {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public Map<Integer, RecordDTO> map(Set<Integer> ids) {
 		return super.map(ids, RecordBO.MARC_INFO);

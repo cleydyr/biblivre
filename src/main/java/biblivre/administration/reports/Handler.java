@@ -68,14 +68,14 @@ public class Handler extends AbstractHandler {
 		}
 
 		DiskFile report = bo.generateReport(dto, request.getTranslationsMap());
-		
+
 		if (report != null) {
 			request.setSessionAttribute(schema, report.getName(), report);
 			this.setMessage(ActionResult.SUCCESS, "administration.reports.success.generate");
 		} else {
 			this.setMessage(ActionResult.WARNING, "administration.reports.error.generate");
 		}
-		
+
 		try {
 			if (report != null) {
 				this.json.put("file_name", report.getName());
@@ -84,16 +84,16 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	//http://localhost:8080/Biblivre5/?controller=download&module=cataloging.export&action=download_report&file_name={export_id}
 	public void downloadReport(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String report_name = request.getString("file_name");
-				
+
 		final DiskFile report = (DiskFile)request.getSessionAttribute(schema, report_name);
 
 		this.setFile(report);
-		
+
 		this.setCallback(report::delete);
 	}
 

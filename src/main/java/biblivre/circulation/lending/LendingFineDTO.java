@@ -26,52 +26,52 @@ import biblivre.core.AbstractDTO;
 public class LendingFineDTO extends AbstractDTO {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 	private Integer lendingId;
 	private Integer userId;
 	private Float value;
 	private Date payment;
-	
+
 	private transient String title;
 	private transient String author;
-	
+
 	public Integer getId() {
 		return this.id;
 	}
-	
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	public Integer getLendingId() {
 		return this.lendingId;
 	}
-	
+
 	public void setLendingId(Integer lendingId) {
 		this.lendingId = lendingId;
 	}
-	
+
 	public Integer getUserId() {
 		return this.userId;
 	}
-	
+
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	
+
 	public Float getValue() {
 		return this.value;
 	}
-	
+
 	public void setValue(Float value) {
 		this.value = value;
 	}
-	
+
 	public Date getPayment() {
 		return this.payment;
 	}
-	
+
 	public void setPayment(Date payment) {
 		this.payment = payment;
 	}
@@ -91,5 +91,5 @@ public class LendingFineDTO extends AbstractDTO {
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	
+
 }

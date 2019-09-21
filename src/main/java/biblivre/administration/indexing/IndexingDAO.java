@@ -82,9 +82,9 @@ public class IndexingDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public void startIndexing() {
-		
+
 	}
 
 	public void insertIndexes(RecordType recordType, List<IndexingDTO> indexes) {
@@ -163,12 +163,12 @@ public class IndexingDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public void insertAutocompleteIndexes(RecordType recordType, List<AutocompleteDTO> autocompleteIndexes) {
 		if (autocompleteIndexes.size() == 0) {
 			return;
 		}
-		
+
 		boolean batched = false;
 
 		Connection con = null;
@@ -185,12 +185,12 @@ public class IndexingDAO extends AbstractDAO {
 				final String datafield = index.getDatafield();
 				final String subfield = index.getSubfield();
 				final String phrase = index.getPhrase();
-				
+
 				for (String word : TextUtils.prepareAutocomplete(phrase)) {
 					if (StringUtils.isBlank(word) || word.length() < 2) {
 						continue;
 					}
-					
+
 					pst.setString(1, datafield);
 					pst.setString(2, subfield);
 					pst.setString(3, word);
@@ -211,7 +211,7 @@ public class IndexingDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public void reindexAutocompleteFixedTable(RecordType recordType, String datafield, String subfield, List<String> phrases) {
 		boolean batched = false;
 
@@ -219,19 +219,19 @@ public class IndexingDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
-			
+
+
 			StringBuilder sql = new StringBuilder();
-			
+
 			sql.append("DELETE FROM ").append(recordType).append("_idx_autocomplete ");
 			sql.append("WHERE datafield = ? and subfield = ? and record_id is null;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setString(1, datafield);
 			pst.setString(2, subfield);
 
 			pst.executeUpdate();
-			
+
 			sql = new StringBuilder();
 			sql.append("INSERT INTO ").append(recordType).append("_idx_autocomplete ");
 			sql.append("(datafield, subfield, word, phrase, record_id) VALUES (?, ?, ?, ?, null);");
@@ -243,7 +243,7 @@ public class IndexingDAO extends AbstractDAO {
 					if (StringUtils.isBlank(word) || word.length() < 2) {
 						continue;
 					}
-					
+
 					pst.setString(1, datafield);
 					pst.setString(2, subfield);
 					pst.setString(3, word);
@@ -257,7 +257,7 @@ public class IndexingDAO extends AbstractDAO {
 			if (batched) {
 				pst.executeBatch();
 			}
-			
+
 			con.commit();
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -265,14 +265,14 @@ public class IndexingDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean deleteIndexes(RecordType recordType, RecordDTO dto) {
 		Connection con = null;
-		
+
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("DELETE FROM ").append(recordType).append("_idx_fields ");
 			sql.append("WHERE record_id = ?;");
@@ -296,7 +296,7 @@ public class IndexingDAO extends AbstractDAO {
 			pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, dto.getId());
 			pst.executeUpdate();
-			
+
 			this.commit(con);
 			return true;
 		} catch (Exception e) {
@@ -306,14 +306,14 @@ public class IndexingDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}	
-	
+
 	public void reindexDatabase(RecordType recordType) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
 
 			Statement st = con.createStatement();
-			
+
 			st.execute("REINDEX TABLE " + recordType + "_idx_fields");
 			st.execute("REINDEX TABLE " + recordType + "_idx_sort");
 			st.execute("ANALYZE " + recordType + "_idx_fields");
@@ -324,30 +324,30 @@ public class IndexingDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public List<String> searchExactTerms(RecordType recordType, int indexingGroupId, List<String> terms) {
 		List<String> list = new LinkedList<String>();
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			StringBuilder sql = new StringBuilder();
-			
+
 			sql.append("SELECT phrase FROM ").append(recordType).append("_idx_sort WHERE indexing_group_id = ? AND phrase in (");
 			sql.append(StringUtils.repeat("?", ", ", terms.size()));
 			sql.append(");");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			int index = 1;
 			pst.setInt(index++, indexingGroupId);
-			
+
 			for (String term : terms) {
 				pst.setString(index++, term.toLowerCase());
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
- 
+
 			while (rs.next()) {
 				list.add(rs.getString("phrase"));
 			}

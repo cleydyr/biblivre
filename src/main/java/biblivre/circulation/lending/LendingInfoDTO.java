@@ -27,7 +27,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 
 public class LendingInfoDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private BiblioRecordDTO biblio;
@@ -75,13 +75,13 @@ public class LendingInfoDTO extends AbstractDTO {
 	public void setBiblio(BiblioRecordDTO biblio) {
 		this.biblio = biblio;
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
-		
+
 		json.put("id", this.getHolding().getId());
-		
+
 		return json;
 	}
 }

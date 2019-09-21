@@ -27,12 +27,12 @@ public enum BackupType implements BiblivreEnum {
 	FULL,
 	DIGITAL_MEDIA_ONLY,
 	EXCLUDE_DIGITAL_MEDIA;
-	
+
 	public static BackupType fromString(String str) {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (BackupType type : BackupType.values()) {
@@ -43,7 +43,7 @@ public enum BackupType implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

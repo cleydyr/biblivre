@@ -28,66 +28,66 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateSelectCard(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String code = request.getString("code");
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (StringUtils.isBlank(code)) {
 			ex.addError("code", "field.error.required");
 		}
-		
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
 			return;
 		}
-				
+
 	}	
 
 	public void validateLendCard(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (cardId == 0) {
 			ex.addError("card_id", "field.error.required");
 		}
-		
+
 		if (userId == 0) {
 			ex.addError("user_id", "field.error.required");
 		}
-		
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
 			return;
 		}
-				
+
 	}	
-	
+
 	public void validateReturnCard(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (cardId == 0) {
 			ex.addError("card_id", "field.error.required");
 		}
-		
+
 		if (userId == 0) {
 			ex.addError("user_id", "field.error.required");
 		}
-		
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
 			return;
 		}
-		
+
 	}
-	
+
 }

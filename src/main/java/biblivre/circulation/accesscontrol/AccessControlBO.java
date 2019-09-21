@@ -39,15 +39,15 @@ public class AccessControlBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = AccessControlDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public AccessControlDTO populateDetails(AccessControlDTO dto) {
 		if (dto == null) {
 			return null;
 		}
-		
+
 		if (dto.getAccessCardId() != null) {
 			AccessCardBO cardBo = AccessCardBO.getInstance(this.getSchema());
 			dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
@@ -57,12 +57,12 @@ public class AccessControlBO extends AbstractBO {
 			UserBO userBo = UserBO.getInstance(this.getSchema());
 			dto.setUser(userBo.get(dto.getUserId()));
 		}
-		
+
 		return dto;
 	}
-	
+
     public boolean lendCard(AccessControlDTO dto) {
-    	
+
     	UserBO userBO = UserBO.getInstance(this.getSchema());
 		UserDTO udto = null;
 		try {
@@ -73,7 +73,7 @@ public class AccessControlBO extends AbstractBO {
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
-		
+
 		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
 		AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
 		if (cardDto == null) {
@@ -81,7 +81,7 @@ public class AccessControlBO extends AbstractBO {
 		} else if (!cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
 			throw new ValidationException("circulation.access_control.card_unavailable");
 		}
-		
+
 		AccessControlDTO existingAccess = this.getByCardId(dto.getAccessCardId());
 		if (existingAccess != null) {
 			throw new ValidationException("circulation.access_control.card_in_use");
@@ -90,7 +90,7 @@ public class AccessControlBO extends AbstractBO {
 		if (existingAccess != null) {
 			throw new ValidationException("circulation.access_control.user_has_card");
 		}
-    	
+
 		try {
 			cardDto.setStatus(AccessCardStatus.IN_USE);
 			cardBO.update(cardDto);
@@ -98,12 +98,12 @@ public class AccessControlBO extends AbstractBO {
 		} catch (Exception e) {
 			this.logger.error(e);
 		}
-		
+
         return false;
     }
 
     public boolean returnCard(AccessControlDTO dto) {
-    	
+
     	UserBO userBO = UserBO.getInstance(this.getSchema());
 		UserDTO udto = null;
 		try {
@@ -114,7 +114,7 @@ public class AccessControlBO extends AbstractBO {
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
-		
+
 		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
 		AccessControlDTO existingAccess = null;
 
@@ -125,7 +125,7 @@ public class AccessControlBO extends AbstractBO {
 			} else if (cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
 				throw new ValidationException("circulation.access_control.card_available");
 			}
-			
+
 			existingAccess = this.getByCardId(dto.getAccessCardId());
 			if (existingAccess == null) {
 				existingAccess = this.getByUserId(dto.getUserId());
@@ -134,7 +134,7 @@ public class AccessControlBO extends AbstractBO {
 				}
 			}
 		}
-		
+
 		try {
 			if (existingAccess != null) {
 				AccessCardDTO cardDto = cardBO.get(existingAccess.getAccessCardId());
@@ -147,7 +147,7 @@ public class AccessControlBO extends AbstractBO {
 		} catch (Exception e) {
 			this.logger.error(e);
 		}
-		
+
         return false;
     }
 

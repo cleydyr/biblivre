@@ -35,11 +35,11 @@ public class LayoutHead extends TagSupport {
 	private static final long serialVersionUID = 1L;
 
 	private String schema;
-	
+
 	public boolean isSchemaSelection() {
 		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
 	}
-	
+
 	private String getSchema() {
 		return StringUtils.defaultString(this.schema);
 	}
@@ -48,13 +48,13 @@ public class LayoutHead extends TagSupport {
 		HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
 		this.schema = (String) request.getAttribute("schema");
 	}
-	
+
 	@Override
 	public int doStartTag() throws JspException {
 		this.init();	
-		
+
 		String schema = this.getSchema();
-		
+
 		pageContext.getRequest().setAttribute("schema", schema);
 
 		try {

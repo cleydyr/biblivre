@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.utils.BiblivreEnum;
 
 public enum PrinterType implements BiblivreEnum {
-	
+
 	PRINTER_24_COLUMNS,
 	PRINTER_40_COLUMNS,
 	PRINTER_80_COLUMNS,
@@ -34,7 +34,7 @@ public enum PrinterType implements BiblivreEnum {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (PrinterType printerType : PrinterType.values()) {
@@ -45,7 +45,7 @@ public enum PrinterType implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

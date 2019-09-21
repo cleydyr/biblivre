@@ -25,16 +25,16 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
 public class SetupDAO extends AbstractDAO {
-	
+
 	public static SetupDAO getInstance(String schema) {
 		return (SetupDAO) AbstractDAO.getInstance(SetupDAO.class, schema);
 	}
-	
+
 	public final void fixSequence(DataMigrationPhase migrationPhase) {
 		if (migrationPhase == null || migrationPhase.getBiblivre4IdColumnName() == null) {
 			return;
 		}
-		
+
 		this.fixSequence(
 				migrationPhase.getBiblivre4SequenceName(),
 				migrationPhase.getBiblivre4TableName(),

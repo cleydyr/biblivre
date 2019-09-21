@@ -29,12 +29,12 @@ import org.marc4j.marc.Record;
 public class MarcFileReader implements MarcReader {
 
 	private static final Pattern LEADER_PATTERN = Pattern.compile("^(000|LDR|LEADER)\\s+", Pattern.CASE_INSENSITIVE);
-	
+
 	private InputStream input;
 	private Scanner scanner;
 	private StringBuilder marc;
 	private boolean validStart;
-	
+
 	public MarcFileReader(InputStream input, String encoding) {
 		this.input = input;
         this.scanner = new Scanner(this.input, encoding);
@@ -51,7 +51,7 @@ public class MarcFileReader implements MarcReader {
 		if (this.marc == null && this.validStart) {
 			return false;
 		}
-		
+
 		while (this.scanner.hasNextLine()) {
 			String line = this.scanner.nextLine().trim();
 
@@ -73,10 +73,10 @@ public class MarcFileReader implements MarcReader {
 	@Override
 	public Record next() {
 		Record record = null;
-		
+
 		while (this.scanner.hasNextLine()) {
 			String line = this.scanner.nextLine().trim();
-			
+
 			if (line.length() <= 3) {
 				continue;
 			}

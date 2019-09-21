@@ -40,7 +40,7 @@ public class Handler extends AbstractHandler {
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
 		DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -55,15 +55,15 @@ public class Handler extends AbstractHandler {
 		for (UserDTO user : userList) {
 			list.add(this.populatePermission(schema, user));
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
-	
+
+
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int userId = request.getInteger("user_id");
@@ -74,7 +74,7 @@ public class Handler extends AbstractHandler {
 
 		UserBO ubo = UserBO.getInstance(schema);
 		LoginBO lbo = LoginBO.getInstance(schema);
-		
+
 		UserDTO udto = ubo.get(userId);
 		if (udto == null) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_user");
@@ -101,7 +101,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int userId = request.getInteger("user_id");
@@ -127,17 +127,17 @@ public class Handler extends AbstractHandler {
 
 		PermissionBO pbo = PermissionBO.getInstance(schema);
 		LoginBO lbo = LoginBO.getInstance(schema);
-		
+
 		LoginDTO ldto = new LoginDTO();
 		ldto.setLogin(login);
 		ldto.setEmployee(employee);
-		
+
 		if (StringUtils.isNotBlank(password)) {
 			ldto.setEncPassword(TextUtils.encodePassword(password));
 		}
-		
+
 		boolean result = true;
-		
+
 		if (newLogin) {
 			ldto.setCreatedBy(request.getLoggedUserId());
 			result = lbo.save(ldto, udto);
@@ -148,11 +148,11 @@ public class Handler extends AbstractHandler {
 		}
 
 		String[] permissions = request.getParameterValues("permissions[]");
-		
+
 		if (permissions != null) {
 			result &= pbo.save(udto.getLoginId(), Arrays.asList(permissions));
 		}
-		 
+
 		if (result) {
 			if (newLogin) {
 				this.setMessage(ActionResult.SUCCESS, "administration.permission.success.create_login");
@@ -164,10 +164,10 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.setMessage(ActionResult.WARNING, "administration.permission.error.create_login");
 		}
-		
-		
+
+
 		PermissionDTO dto = this.populatePermission(schema, udto);
-		
+
 		try {
 			this.json.put("data", dto.toJSONObject());
 			this.json.put("full_data", true);
@@ -176,7 +176,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int userId = request.getInteger("user_id");
@@ -203,36 +203,36 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "administration.permission.error.delete");
 		}
 	}
-	
+
 	private PermissionDTO populatePermission(String schema, UserDTO user) {
 		PermissionBO pbo = PermissionBO.getInstance(schema);
 		LoginBO lbo = LoginBO.getInstance(schema);
-		
+
 		PermissionDTO dto = new PermissionDTO();
 		dto.setUser(user);
-		
+
 		if (user.getLoginId() == null || user.getLoginId() == 0) {
 			return dto;
 		}
-		
+
 		LoginDTO ldto = lbo.get(user.getLoginId());
-		
+
 		if (ldto == null) {
 			return dto;
 		}
-		
+
 		dto.setLogin(ldto);
-		
+
 		List<String> permissions = pbo.getByLoginId(user.getLoginId());
-		
+
 		if (permissions == null) {
 			return dto;
 		}
-		
+
 		dto.setPermissions(permissions);
-		
+
 		return dto;
-		
+
 	}
-	
+
 }

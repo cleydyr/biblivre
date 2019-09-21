@@ -23,7 +23,7 @@ import biblivre.core.utils.BiblivreEnum;
 
 public enum ActionResult implements BiblivreEnum {
 	NORMAL, SUCCESS, WARNING, ERROR;
-	
+
 	@Override
 	public String toString() {
 		return super.toString().toLowerCase();

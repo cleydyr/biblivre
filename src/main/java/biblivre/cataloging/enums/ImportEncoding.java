@@ -25,17 +25,17 @@ import biblivre.core.utils.BiblivreEnum;
 
 
 public enum ImportEncoding implements BiblivreEnum {
-	
+
 	AUTO_DETECT,
 	UTF8,
 	MARC8;
-	
-	
+
+
 	public static ImportEncoding fromString(String str) {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (ImportEncoding importEncoding : ImportEncoding.values()) {
@@ -46,7 +46,7 @@ public enum ImportEncoding implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

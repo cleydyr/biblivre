@@ -29,22 +29,22 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String requester = request.getString("requester");
 		String author = request.getString("author");
 		String title = request.getString("title");
 		String edition = request.getString("edition");
 		String publisher = request.getString("publisher");
 		String quantity = request.getString("quantity");
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (StringUtils.isBlank(requester)) {
 			ex.addError("requester", "field.error.required");
 		}
-		
+
 		if (StringUtils.isBlank(author)) {
 			ex.addError("author", "field.error.required");
 		}
@@ -71,7 +71,7 @@ public class Validator extends AbstractValidator {
 			handler.setMessage(ex);
 			return;
 		}
-				
+
 	}	
 
 	public void validateOpen(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -89,6 +89,6 @@ public class Validator extends AbstractValidator {
 			return;
 		}
 	}
-	
+
 
 }

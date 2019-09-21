@@ -46,9 +46,9 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.CalendarUtils;
 
 public class ReservationBO extends AbstractBO {
-	
+
 	private ReservationDAO dao;
-	
+
 	public static ReservationBO getInstance(String schema) {
 		ReservationBO bo = AbstractBO.getInstance(ReservationBO.class, schema);
 
@@ -58,7 +58,7 @@ public class ReservationBO extends AbstractBO {
 
 		return bo;
 	}
-	
+
 	public boolean deleteExpired() {
 		return this.dao.deleteExpired();
 	}
@@ -78,37 +78,37 @@ public class ReservationBO extends AbstractBO {
 	public int countReserved(UserDTO user) {
 		return this.dao.count(user, null);
 	}
-	
+
 	public List<Integer> listReservedRecordIds(UserDTO user) {
 		List<Integer> reservedRecords = new ArrayList<Integer>();
 		List<ReservationDTO> list = this.dao.list(user, null);
-		
+
 		for (ReservationDTO dto : list) {
 			reservedRecords.add(dto.getRecordId());
 		}
-		
+
 		return reservedRecords;
 	}
 
 	public List<ReservationDTO> list(UserDTO user) {
 		List<ReservationDTO> list = this.dao.list(user, null);
 		BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
-		
+
 		for (ReservationDTO dto : list) {
 			BiblioRecordDTO record = (BiblioRecordDTO) bo.get(dto.getRecordId(), RecordBO.MARC_INFO);
 
 			dto.setTitle(record.getTitle());
 			dto.setAuthor(record.getAuthor());
 		}
-		
+
 		return list;
 	}
-	
+
 	public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
 		List<ReservationDTO> list = this.dao.list(user, null);
 		List<ReservationInfoDTO> result = new LinkedList<ReservationInfoDTO>();
 		BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
-		
+
 		for (ReservationDTO dto : list) {
 			ReservationInfoDTO info = new ReservationInfoDTO();
 			info.setReservation(dto);
@@ -118,17 +118,17 @@ public class ReservationBO extends AbstractBO {
 
 			result.add(info);
 		}
-		
+
 		return result;
 	}
-	
+
 	public List<ReservationInfoDTO> list() {
 		List<ReservationDTO> list = this.dao.list();
 		List<ReservationInfoDTO> result = new LinkedList<ReservationInfoDTO>();
 
 		BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
 		UserBO ubo = UserBO.getInstance(this.getSchema());
-		
+
 		for (ReservationDTO dto : list) {
 			ReservationInfoDTO info = new ReservationInfoDTO();
 
@@ -142,18 +142,18 @@ public class ReservationBO extends AbstractBO {
 			UserDTO user = ubo.get(dto.getUserId()); 
 			info.setUser(user);
 		}
-		
+
 		return result;
 	}
 
 	public boolean delete(Integer id) {
 		return this.dao.delete(id);
 	}
-	
+
 	public boolean delete(Integer userId, Integer recordId) {
 		return this.dao.delete(userId, recordId);
 	}
-	
+
 	public void checkReservation(RecordDTO record, UserDTO user) {
 
 		//User cannot be blocked
@@ -193,12 +193,12 @@ public class ReservationBO extends AbstractBO {
 		Date expires = CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
 
 		reservation.setExpires(expires);
-		
+
 		int reservationId = this.dao.insert(reservation);
-		
+
 		return reservationId;
 	}
-	
+
 	public SearchDTO populateReservationInfoByBiblio(SearchDTO search) {
 		String schema = this.getSchema();
 
@@ -210,7 +210,7 @@ public class ReservationBO extends AbstractBO {
 		}		
 
 		UserBO ubo = UserBO.getInstance(schema);
-		
+
 		Map<Integer, List<ReservationDTO>> reservationsMap = this.getReservationsMap(records);
 		for (Entry<Integer, List<ReservationDTO>> entry : reservationsMap.entrySet()) {
 			for (ReservationDTO dto : entry.getValue()) {
@@ -225,11 +225,11 @@ public class ReservationBO extends AbstractBO {
 		if (!users.isEmpty()) {
 			usersMap = ubo.map(users);
 		}
-		
+
 		// Join data
 		for (RecordDTO record : search) {
 			List<ReservationDTO> reservations = reservationsMap.get(record.getId());
-			
+
 			if (reservations == null) {
 				continue;
 			}
@@ -242,7 +242,7 @@ public class ReservationBO extends AbstractBO {
 				if (reservation.getUserId() != null) {
 					info.setUser(usersMap.get(reservation.getUserId()));
 				}
-				
+
 				infoList.add(info);
 			}
 			record.addExtraData("reservationInfo", infoList);
@@ -250,12 +250,12 @@ public class ReservationBO extends AbstractBO {
 
 		return search;
 	}
-	
+
 	public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
 		return this.dao.getReservationsMap(recordIds);
 	}
-	
-	
+
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}

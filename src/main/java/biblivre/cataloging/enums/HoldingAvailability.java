@@ -24,15 +24,15 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.utils.BiblivreEnum;
 
 public enum HoldingAvailability implements BiblivreEnum {
-	
+
 	AVAILABLE,
 	UNAVAILABLE;
-	
+
 	public static HoldingAvailability fromString(String str) {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (HoldingAvailability availability : HoldingAvailability.values()) {
@@ -43,7 +43,7 @@ public enum HoldingAvailability implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

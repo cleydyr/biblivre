@@ -29,7 +29,7 @@ public class PagingDTO implements IFJson {
 	private int recordOffset;
 	private int recordsPerPage;
 	private int recordLimit;
-	
+
 	private transient double time;
 	private transient long startTime;
 	private transient long endTime;
@@ -37,10 +37,10 @@ public class PagingDTO implements IFJson {
 	public PagingDTO() {
 		this.startTimer();		
 	}
-	
+
 	public PagingDTO(int recordCount, int recordsPerPage, int recordOffset) {
 		this.startTimer();
-		
+
 		this.recordCount = recordCount;
 		this.recordsPerPage = recordsPerPage;
 		this.recordOffset = recordOffset;		
@@ -61,7 +61,7 @@ public class PagingDTO implements IFJson {
 	public void setRecordsPerPage(int recordsPerPage) {
 		this.recordsPerPage = recordsPerPage;
 	}
-	
+
 	public void setRecordsPerPage(String recordsPerPage) {
 		try {
 			this.recordsPerPage = Integer.parseInt(recordsPerPage);
@@ -73,11 +73,11 @@ public class PagingDTO implements IFJson {
 	public int getRecordOffset() {
 		return this.recordOffset;
 	}
-	
+
 	public void setRecordOffset(int recordOffset) {
 		this.recordOffset = recordOffset;
 	}
-	
+
 	public int getRecordLimit() {
 		return this.recordLimit;
 	}
@@ -93,11 +93,11 @@ public class PagingDTO implements IFJson {
 
 		return (this.getRecordOffset() / this.getRecordsPerPage()) + 1;
 	}
-	
+
 	public void setPage(int page) {
 		this.recordOffset = (page - 1) * this.getRecordsPerPage();
 	}
-	
+
 	public int getPageCount() {
 		if (this.getRecordCount() == 0) {
 			return 0;
@@ -108,14 +108,14 @@ public class PagingDTO implements IFJson {
 		}
 
 		double count = this.getRecordCount();
-		
+
 		if (this.getRecordLimit() > 0 && this.getRecordLimit() < count) {
 			count = this.getRecordLimit();
 		}
 
 		return (int) Math.ceil(count / this.getRecordsPerPage());
 	}
-	
+
 	public double getTime() {
 		return this.time;
 	}
@@ -123,21 +123,21 @@ public class PagingDTO implements IFJson {
 	public void setTime(double time) {
 		this.time = time;
 	}
-	
+
 	public void setTime(long start, long end) {
 		this.time = (end - start) / 1000.0;
 	}
-	
+
 	public void startTimer() {
 		this.startTime = new Date().getTime();
 		this.setTime(this.startTime, this.endTime);
 	}
-	
+
 	public void endTimer() {
 		this.endTime = new Date().getTime();
 		this.setTime(this.startTime, this.endTime);
 	}
-		
+
 	@Override
 	public JSONObject toJSONObject() {		
 		JSONObject json = new JSONObject();

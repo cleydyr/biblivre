@@ -32,17 +32,17 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.login.LoginBO;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		UserBO ubo = UserBO.getInstance(schema);
-		
+
 		int userId = request.getInteger("user_id");
 		UserDTO udto = ubo.get(userId);
-		
+
 		String login = request.getString("new_login");
 		String password = request.getString("new_password");
 		String password2 = request.getString("repeat_password");
@@ -51,7 +51,7 @@ public class Validator extends AbstractValidator {
 		boolean newLogin = (loginId == null || loginId == 0);
 
 		LoginBO lbo = LoginBO.getInstance(schema);
-		
+
 		if (newLogin && lbo.loginExists(login)) {
 			ex.addError("new_login", "login.error.login_already_exists");
 		}
@@ -71,11 +71,11 @@ public class Validator extends AbstractValidator {
 		if (StringUtils.isNotBlank(password) && !password.equals(password2)) {
 			ex.addError("repeat_password", "login.error.password_not_matching");
 		}
-		
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
 		}
-				
+
 	}	
 
 	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {

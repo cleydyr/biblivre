@@ -67,7 +67,7 @@ public class DatabaseFile extends BiblivreFile {
 	@Override
 	public void copy(OutputStream out, long start, long size) throws IOException {
 		LargeObject input = this.getLargeObject();
-		
+
 		if (input == null) {
 			return;
 		}
@@ -83,7 +83,7 @@ public class DatabaseFile extends BiblivreFile {
 			} else {
 				input.seek((int) start);
 				long toRead = size;
-	
+
 				while ((read = input.read(buffer, 0, Constants.DEFAULT_BUFFER_SIZE)) > 0) {
 					if ((toRead -= read) > 0) {
 						out.write(buffer, 0, read);

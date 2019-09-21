@@ -26,7 +26,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 
 public class ReservationListDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
@@ -41,7 +41,7 @@ public class ReservationListDTO extends AbstractDTO {
 	public void setUser(UserDTO user) {
 		this.user = user;
 	}
-	
+
 	public Integer getId() {
 		return this.id;
 	}

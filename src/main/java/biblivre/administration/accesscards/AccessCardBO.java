@@ -38,10 +38,10 @@ public class AccessCardBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = AccessCardDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public boolean save(AccessCardDTO dto) {
 		if (dto != null) {
 			AccessCardDTO existingCard = this.dao.get(dto.getCode());
@@ -50,7 +50,7 @@ public class AccessCardBO extends AbstractBO {
 			}
 			return this.dao.save(dto);
 		}
-		
+
 		return false;
 	}
 
@@ -65,18 +65,18 @@ public class AccessCardBO extends AbstractBO {
 	public AccessCardDTO get(String code) {
 		return this.dao.get(code);
 	}
-	
+
 	public LinkedList<AccessCardDTO> saveCardList(String prefix, String suffix, String startString, String endString, Integer loggedUserId, AccessCardStatus status) {
 		int start = Integer.parseInt(startString);
 		int end = Integer.parseInt(endString);
-		
+
 		LinkedList<String> codeList = new LinkedList<String>();
 		int pad = startString.length();
 		for (int i = start; i <= end; i++) {
 			String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
 			codeList.add(prefix + number + suffix);
 		}
-		
+
 		//Validate existing cards
 		List<AccessCardDTO> existingCards = this.dao.get(codeList, null);
 		List<String> existingCodes = new LinkedList<String>();
@@ -88,7 +88,7 @@ public class AccessCardBO extends AbstractBO {
 			ve.addError("existing_cards", StringUtils.join(existingCodes, ", "));
 			throw ve;
 		}
-		
+
 		LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
 		for (String code : codeList) {
 			AccessCardDTO dto = new AccessCardDTO();
@@ -97,7 +97,7 @@ public class AccessCardBO extends AbstractBO {
 			dto.setCreatedBy(loggedUserId);
 			cardList.add(dto);
 		}
-		
+
 		if (this.dao.save(cardList)) {
 			return cardList;
 		} else {
@@ -111,11 +111,11 @@ public class AccessCardBO extends AbstractBO {
 			if (card == null) {
 				throw new ValidationException("administration.accesscards.error.card_not_found");
 			}
-			
+
 			if (card.getStatus() == AccessCardStatus.CANCELLED) {
 				return this.delete(card.getId());
 			}
-			
+
 			dto.setStatus(AccessCardStatus.CANCELLED);
 			return this.update(dto);
 		}
@@ -125,11 +125,11 @@ public class AccessCardBO extends AbstractBO {
 	public boolean update(AccessCardDTO dto) {
 		return this.dao.update(dto);
 	}
-	
+
 	public boolean delete(int id) {
 		return this.dao.delete(id);
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}

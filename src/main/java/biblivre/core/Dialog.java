@@ -33,7 +33,7 @@ public class Dialog {
     public static void showError(ExtendedRequest request, String textKey) {
     	Dialog.show(request, textKey, ActionResult.ERROR);
     }
-    
+
     public static void show(ExtendedRequest request, String textKey, ActionResult level) {
         request.setAttribute("message", textKey);
         request.setAttribute("message_level", level.name().toLowerCase());

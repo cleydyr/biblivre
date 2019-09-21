@@ -45,10 +45,10 @@ public class BiblioRecordDTO extends RecordDTO {
 	private Integer holdingsAvailable;
 	private Integer holdingsLent;
 	private Integer holdingsReserved;
-	
+
 	private List<HoldingDTO> holdings;
 	private Map<Integer, LendingDTO> lendings;
-	
+
 	public String getTitle() {
 		return this.title;
 	}
@@ -80,7 +80,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
 	}
-	
+
 	public String getIssn() {
 		return this.issn;
 	}
@@ -88,7 +88,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setIssn(String issn) {
 		this.issn = issn;
 	}
-	
+
 	public String getIsrc() {
 		return this.isrc;
 	}
@@ -112,7 +112,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
-	
+
 	public Integer getHoldingsCount() {
 		return this.holdingsCount;
 	}
@@ -144,7 +144,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setHoldingsReserved(Integer holdingsReserved) {
 		this.holdingsReserved = holdingsReserved;
 	}
-	
+
 	public List<HoldingDTO> getHoldings() {
 		return this.holdings;
 	}
@@ -152,7 +152,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setHoldings(List<HoldingDTO> holdings) {
 		this.holdings = holdings;
 	}
-	
+
 	public Map<Integer, LendingDTO> getLendings() {
 		return this.lendings;
 	}
@@ -175,12 +175,12 @@ public class BiblioRecordDTO extends RecordDTO {
 		json.putOpt("isrc", this.getIsrc());
 		json.putOpt("shelf_location", this.getShelfLocation());
 		json.putOpt("subject", this.getSubject());
-		
+
 		json.putOpt("holdings_count", this.getHoldingsCount());
 		json.putOpt("holdings_available", this.getHoldingsAvailable());
 		json.putOpt("holdings_lent", this.getHoldingsLent());
 		json.putOpt("holdings_reserved", this.getHoldingsReserved());
-		
+
 		if (this.getHoldings() != null) {
 			for (HoldingDTO holding : this.getHoldings()) {
 				json.append("holdings", holding.toJSONObject());
@@ -189,11 +189,11 @@ public class BiblioRecordDTO extends RecordDTO {
 
 		if (this.getLendings() != null) {
 			JSONObject lendings = new JSONObject();
-			
+
 			for (Entry<Integer, LendingDTO> entry : this.getLendings().entrySet()) {
 				lendings.put(entry.getKey().toString(), entry.getValue().toJSONObject());
 			}
-			
+
 			json.put("lendings", lendings);
 		}
 

@@ -54,14 +54,14 @@ public class JsonController extends Controller {
 
 		this.dispatch(null, message);
 	}
-	
+
 	@Override
 	protected void doLockedStateError() throws ServletException, IOException {
 		Message message = new Message(ActionResult.WARNING, "error.biblivre_is_locked_please_wait");
 
 		this.dispatch(null, message);
 	}
-	
+
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -69,13 +69,13 @@ public class JsonController extends Controller {
 		} else {
 			this.log.error(error);
 		}
-		
+
 		//e.printStackTrace();
 
 		Message message = new Message(ActionResult.ERROR, error, e);
 		this.dispatch(null, message);
 	}
-	
+
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -83,22 +83,22 @@ public class JsonController extends Controller {
 		} else {
 			this.log.warn(warning);
 		}
-		
+
 		//e.printStackTrace();
 
 		Message message = new Message(ActionResult.WARNING, warning, e);
 		this.dispatch(null, message);
 	}
-	
+
 	private void dispatch(JSONObject json, Message message) throws IOException {
 		if (json == null) {
 			json = new JSONObject();
 		}
-		
+
 		if (message == null) {
 			message = new Message();
 		}
-		
+
 		json.putOnce("success", message.isSuccess());
 
 		if (StringUtils.isNotBlank(message.getText())) {
@@ -125,7 +125,7 @@ public class JsonController extends Controller {
 		} else {
 	        this.xResponse.setContentType("application/json;charset=UTF-8");			
 		}
-		
+
         try {
 			this.xResponse.print(json.toString(2));
 		} catch (JSONException e) {

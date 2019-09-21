@@ -127,5 +127,5 @@ public class BibliographyReport extends BaseBiblivreReport {
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
 	}
-	
+
 }

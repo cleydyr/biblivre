@@ -66,7 +66,7 @@ public class Handler extends AbstractHandler {
 			if ((user.getId() == 1) || schema.equals(Constants.GLOBAL_SCHEMA)) {
 				atps.setAdmin(true);
 			}
-			
+
 			request.setSessionAttribute(schema, "logged_user", user);
 			request.setSessionAttribute(schema, "logged_user_atps", atps);
 
@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
 			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
 				if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_BACKUP)) {
 					boolean warningBackup = false;
-	
+
 					BackupBO bbo = BackupBO.getInstance(schema);
 					BackupDTO lastBackup = bbo.getLastBackup();
 
@@ -100,16 +100,16 @@ public class Handler extends AbstractHandler {
 						int diff = Days.daysBetween(new DateTime(lastBackup.getCreated()), new DateTime()).getDays();
 						warningBackup = (diff >= 3);
 					}
-	
+
 					request.setSessionAttribute(schema, "system_warning_backup", warningBackup);
 				}
-	
+
 				if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_INDEXING)) {
 					boolean warningReindex = IndexingBO.getInstance(schema).isIndexOutdated();
 					request.setSessionAttribute(schema, "system_warning_reindex", warningReindex);
 				}
 			}
-			
+
 			this.message.setText(ActionResult.NORMAL, "login.welcome");
 			this.jspURL = "/jsp/index.jsp";
 			return; 
@@ -141,7 +141,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/index.jsp";
 		return;
 	}
-	
+
 	public void changePassword(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedId = request.getLoggedUserId();

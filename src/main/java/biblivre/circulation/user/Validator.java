@@ -37,13 +37,13 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		DateFormat dateFormat = new SimpleDateFormat(request.getLocalizedText("format.date"));
 		DateFormat dateTimeFormat = new SimpleDateFormat(request.getLocalizedText("format.datetime"));
 
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		String schema = request.getSchema();
 		List<UserFieldDTO> userFields = UserFields.getFields(schema);
 
@@ -62,11 +62,11 @@ public class Validator extends AbstractValidator {
 			ex.addError("type", "field.error.required");
 		}
 
-		
+
 		for (UserFieldDTO userField : userFields) {
 			String key = userField.getKey();
 			String param = request.getString(key);
-			
+
 			if (userField.isRequired() && StringUtils.isBlank(param)) {
 				ex.addError(key, "field.error.required");
 				continue;
@@ -77,8 +77,8 @@ public class Validator extends AbstractValidator {
 				ex.addError(key, "field.error.max_length:::" + String.valueOf(maxLength));
 				continue;
 			}
-			
-			
+
+
 			switch (userField.getType()) {
 				case NUMBER: {
 					if (StringUtils.isNotBlank(param) && !NumberUtils.isDigits(param)) {
@@ -106,24 +106,24 @@ public class Validator extends AbstractValidator {
 					}
 					break;
 				}
-	
+
 				default: break;
 			}
 		}
-		
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
 		}		
 
 	}
-	
+
 	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
 		UserBO bo = UserBO.getInstance(schema);
 		UserDTO user = bo.get(id);
-		
+
 		if (user == null) {
 			handler.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
 			return;
@@ -133,7 +133,7 @@ public class Validator extends AbstractValidator {
 			handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_lendings");
 			return;
 		}
-		
+
 		if (AccessControlBO.getInstance(schema).getByUserId(user.getId()) != null) {
 			handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_accesscard");
 			return;

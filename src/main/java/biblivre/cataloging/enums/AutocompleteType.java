@@ -31,12 +31,12 @@ public enum AutocompleteType implements BiblivreEnum {
 	BIBLIO,
 	AUTHORITIES,
 	VOCABULARY;
-	
+
 	public static AutocompleteType fromString(String str) {
 		if (StringUtils.isBlank(str)) {
 			return AutocompleteType.DISABLED;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (AutocompleteType type : AutocompleteType.values()) {
@@ -47,7 +47,7 @@ public enum AutocompleteType implements BiblivreEnum {
 
 		return AutocompleteType.DISABLED;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

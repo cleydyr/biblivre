@@ -96,5 +96,5 @@ public class UserTypeDTO extends AbstractDTO {
 	public void setFineValue(Float fineValue) {
 		this.fineValue = fineValue;
 	}
-	
+
 }

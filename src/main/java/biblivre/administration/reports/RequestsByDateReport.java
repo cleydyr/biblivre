@@ -117,7 +117,7 @@ public class RequestsByDateReport extends BaseBiblivreReport {
 			unit_value += data[4] + "\n";
 			total_value = (data[5] == null ? "-" : data[5]) + "\n";
 		}
-		
+
 		if (!lastQuotationId.equals("0")) {
 			cell = new PdfPCell(new Paragraph(this.getNormalChunk(requester)));
 			cell.setColspan(2);
@@ -144,7 +144,7 @@ public class RequestsByDateReport extends BaseBiblivreReport {
 		}
 		return table;
 	}
-	
+
 	private void createHeader(PdfPTable table) {
 		PdfPCell cell;
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.requester"))));

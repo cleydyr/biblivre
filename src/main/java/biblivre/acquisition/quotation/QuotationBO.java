@@ -38,21 +38,21 @@ public class QuotationBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = QuotationDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public QuotationDTO get(Integer id) {
 		QuotationDTO dto = this.dao.get(id);
-		
+
 		RequestBO rbo = RequestBO.getInstance(this.getSchema());
 		SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
 
 		this.populateDTO(dto, rbo, sbo);
-		
+
 		return dto;
 	}
-	
+
 	public Integer save(QuotationDTO dto) {
 		return this.dao.save(dto);
 	}
@@ -60,43 +60,43 @@ public class QuotationBO extends AbstractBO {
 	public boolean update(QuotationDTO dto) {
 		return this.dao.update(dto);
 	}
-	
+
 	public boolean delete(QuotationDTO dto) {
 		return this.dao.delete(dto);
 	}
-	
+
 	public DTOCollection<QuotationDTO> list() {
 		return this.search(null, Integer.MAX_VALUE, 0);
 	}
 
 	public DTOCollection<QuotationDTO> search(String value, int limit, int offset) {
 		DTOCollection<QuotationDTO> list = this.dao.search(value, limit, offset);
-		
+
 		RequestBO rbo = RequestBO.getInstance(this.getSchema());
 		SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-		
+
 		for (QuotationDTO quotation : list) {
 			this.populateDTO(quotation, rbo, sbo);
 		}
 		return list;
 	}
-	
+
 	public DTOCollection<QuotationDTO> list(Integer supplierId) {
 		DTOCollection<QuotationDTO> list = this.dao.list(supplierId);
-		
+
 		RequestBO rbo = RequestBO.getInstance(this.getSchema());
 		SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-		
+
 		for (QuotationDTO quotation : list) {
 			this.populateDTO(quotation, rbo, sbo);
 		}
 		return list;
 	}
-	
+
 	public List<RequestQuotationDTO> listRequestQuotation(Integer quotationId) {
 		return this.dao.listRequestQuotation(quotationId);
 	}
-	
+
 	private void populateDTO(QuotationDTO dto, RequestBO rbo, SupplierBO sbo) {
 		List<RequestQuotationDTO> rqList = this.dao.listRequestQuotation(dto.getId());
 		for (RequestQuotationDTO rqdto : rqList) {
@@ -105,12 +105,12 @@ public class QuotationBO extends AbstractBO {
 			rqdto.setTitle(request.getTitle());
 		}
 		dto.setQuotationsList(rqList);
-		
+
 		SupplierDTO sdto = sbo.get(dto.getSupplierId());
 		dto.setSupplierName(sdto.getTrademark());
-		
+
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}

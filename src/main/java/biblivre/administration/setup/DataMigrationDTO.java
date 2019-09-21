@@ -40,7 +40,7 @@ public class DataMigrationDTO extends AbstractDTO {
 		this.phases = new HashMap<DataMigrationPhase, Boolean>();
 		this.completedPhases = new TreeSet<DataMigrationPhase>(); 
 	}
-	
+
 	public String getDataSourceName() {
 		return this.dataSourceName;
 	}
@@ -72,7 +72,7 @@ public class DataMigrationDTO extends AbstractDTO {
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
-	
+
 	public void enablePhase(String phase) {
 		this.enablePhase(DataMigrationPhase.fromString(phase));
 	}
@@ -82,7 +82,7 @@ public class DataMigrationDTO extends AbstractDTO {
 			this.phases.put(phase, true);
 		}
 	}
-	
+
 	public void disablePhase(String phase) {
 		this.disablePhase(DataMigrationPhase.fromString(phase));	
 	}
@@ -92,19 +92,19 @@ public class DataMigrationDTO extends AbstractDTO {
 			this.phases.put(phase, false);
 		}
 	}
-	
+
 	public boolean isPhaseEnabled(DataMigrationPhase phase) {
 		if (!this.phases.containsKey(phase)) {
 			return false;
 		}
-		
+
 		return this.phases.get(phase);
 	}
 
 	public void completePhase(DataMigrationPhase phase) {
 		this.completedPhases.add(phase);
 	}
-	
+
 	public Set<DataMigrationPhase> getCompletedPhases() {
 		return this.completedPhases;
 	}

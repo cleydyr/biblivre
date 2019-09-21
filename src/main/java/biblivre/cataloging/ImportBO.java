@@ -49,23 +49,23 @@ import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950RecordDTO;
 
 public class ImportBO extends AbstractBO {
-	
+
 	protected ImportDAO dao;
-	
+
 	public static ImportBO getInstance(String schema) {
 		ImportBO bo = AbstractBO.getInstance(ImportBO.class, schema);
-		
+
 		if (bo.dao == null) {
 			bo.dao = ImportDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public ImportDTO loadFromFile(MemoryFile file, ImportFormat format, ImportEncoding enc) {
 		ImportDTO dto = null;
 		String encoding = null;
-				
+
 		switch (enc) {
 			case AUTO_DETECT:
 				try (InputStream is = file.getNewInputStream()) {
@@ -86,7 +86,7 @@ public class ImportBO extends AbstractBO {
 		if (encoding == null) {
 			encoding = Constants.DEFAULT_CHARSET.name();
 		}
-		
+
 		String streamEncoding = (enc == ImportEncoding.AUTO_DETECT)  ? "BESTGUESS" : encoding;
 
 		try (InputStream is = file.getNewInputStream()) {
@@ -94,7 +94,7 @@ public class ImportBO extends AbstractBO {
 				case AUTO_DETECT:
 					MarcReader reader = null;
 					List<ImportDTO> list = new ArrayList<ImportDTO>();
-					
+
 					reader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
 					dto = this.readFromMarcReader(reader);
 					dto.setFormat(ImportFormat.ISO2709);
@@ -104,7 +104,7 @@ public class ImportBO extends AbstractBO {
 					} else {
 						list.add(dto);
 					}
-					
+
 					reader = new MarcXmlReader(is);
 					dto = this.readFromMarcReader(reader);
 					dto.setFormat(ImportFormat.XML);
@@ -114,7 +114,7 @@ public class ImportBO extends AbstractBO {
 					} else {
 						list.add(dto);
 					}
-					
+
 					reader = new MarcFileReader(is, encoding);
 					dto = this.readFromMarcReader(reader);
 					dto.setFormat(ImportFormat.MARC);
@@ -124,17 +124,17 @@ public class ImportBO extends AbstractBO {
 					} else {
 						list.add(dto);
 					}
-					
+
 					Collections.sort(list);
 					dto = list.get(0);
-					
+
 					break;
-					
+
 				case ISO2709:
 					MarcReader isoReader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
 					dto = this.readFromMarcReader(isoReader);
 					dto.setFormat(ImportFormat.ISO2709);
-					
+
 					break;
 
 				case XML:
@@ -156,14 +156,14 @@ public class ImportBO extends AbstractBO {
 			this.logger.debug("Error reading file", e);
 			throw new ValidationException(e.getMessage());
 		}
-		
+
 		if (dto != null) {
 			dto.setEncoding(enc);
 		}
 
 		return dto;
 	}
-	
+
 	/**
 	 * @param reader
 	 * @return
@@ -190,7 +190,7 @@ public class ImportBO extends AbstractBO {
 
 		return dto;
 	}
-	
+
 	public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {
 		ImportDTO dto = new ImportDTO();
 		BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
@@ -213,7 +213,7 @@ public class ImportBO extends AbstractBO {
 
 		return dto;
 	}
-	
+
 	public RecordDTO dtoFromRecord(Record record) {
 		String schema = this.getSchema();		
 		RecordDTO rdto = null;
@@ -235,14 +235,14 @@ public class ImportBO extends AbstractBO {
 				rbo = BiblioRecordBO.getInstance(schema);
 				break;
 		}
-		
+
 		if (rdto != null && rbo != null) {
 			rdto.setRecord(record);
 			rbo.populateDetails(rdto, RecordBO.MARC_INFO);
-	
+
 			rdto.setMarc(MarcUtils.recordToMarc(record));
 		}
-		
+
 		return rdto;
 	}
 }

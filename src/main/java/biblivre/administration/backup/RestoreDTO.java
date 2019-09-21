@@ -34,7 +34,7 @@ import biblivre.core.utils.Pair;
 
 public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Map<String, Pair<String, String>> schemas;
 	private BackupType type;
 	private BackupScope backupScope;
@@ -47,7 +47,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 
 	public RestoreDTO() {
 	}
-	
+
 	public RestoreDTO(BackupDTO dto) {
 		this.setSchemas(dto.getSchemas());
 		this.setType(dto.getType());
@@ -63,7 +63,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 		this.setValid(true);
 
 		String created = json.getString("created");
-		
+
 		try {
 			if (created != null) {
 				this.setCreated(Constants.DEFAULT_DATE_FORMAT_TIMEZONE.parse(created));
@@ -77,7 +77,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 			}
 		}
 	}
-	
+
 	public Map<String, Pair<String, String>> getSchemas() {
 		return this.schemas;
 	}
@@ -85,12 +85,12 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	public void setSchemas(Map<String, Pair<String, String>> schemas) {
 		this.schemas = schemas;
 	}
-	
+
 	public void setSchemas(String schemas) {
 		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
 
 		JSONObject json = new JSONObject(schemas);
-	
+
 		Iterator<String> iterator = json.keys();
 
 		while (iterator.hasNext()) {
@@ -140,7 +140,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	public void setValid(boolean valid) {
 		this.valid = valid;
 	}
-	
+
 	public boolean isPurgeAll() {
 		return this.purgeAll;
 	}
@@ -148,7 +148,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	public void setPurgeAll(boolean purgeAll) {
 		this.purgeAll = purgeAll;
 	}
-	
+
 	public Map<String, String> getRestoreSchemas() {
 		return this.restoreSchemas;
 	}
@@ -156,7 +156,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	public void setRestoreSchemas(Map<String, String> restoreSchemas) {
 		this.restoreSchemas = restoreSchemas;
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
@@ -164,11 +164,11 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 		json.putOpt("schemas", this.getSchemas());
 		json.putOpt("type", this.getType());
 		json.putOpt("backup_scope", this.getBackupScope());
-		
+
 		if (this.getCreated() != null) {
 			json.putOpt("created", Constants.DEFAULT_DATE_FORMAT_TIMEZONE.format(this.getCreated()));
 		}
-		
+
 		if (this.getBackup() != null) {
 			json.putOpt("file", this.getBackup().getName());
 		}
@@ -177,13 +177,13 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 
 		return json;
 	}
-	
+
 	@Override
 	public int compareTo(RestoreDTO other) {
 		if (other == null) {
 			return -1;
 		}
-		
+
 		if (this.getCreated() != null && other.getCreated() != null) {
 			return this.getCreated().compareTo(other.getCreated()) * -1; // Order Desc
 		}
@@ -191,7 +191,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 		if (this.getBackup() != null && other.getBackup() != null) {
 			return this.getBackup().getName().compareTo(other.getBackup().getName());
 		}
-		
+
 		return 0;
 	}
 }

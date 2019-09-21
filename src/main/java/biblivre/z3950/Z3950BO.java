@@ -38,25 +38,25 @@ import biblivre.z3950.client.Z3950Client;
 import biblivre.z3950.client.config.Z3950Config;
 
 public class Z3950BO extends AbstractBO {
-	
+
 	private static ApplicationContext context;
 	private Z3950DAO dao;
-			
+
 	public static Z3950BO getInstance(String schema) {
 		Z3950BO bo = AbstractBO.getInstance(Z3950BO.class, schema);
-		
+
 		if (bo.dao == null) {
 			bo.dao = Z3950DAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public List<Z3950RecordDTO> search(List<Z3950AddressDTO> servers, Pair<String, String> search) {
 		Z3950Client z3950Client = this.getContext().getBean(Z3950Client.class);
 		List<Z3950RecordDTO> dtoList = new LinkedList<Z3950RecordDTO>();
 		int limit = Configurations.getInt(this.getSchema(), Constants.CONFIG_Z3950_RESULT_LIMIT, 100);
-		
+
 		for (Z3950AddressDTO searchServer : servers) {
 			try {
 				List<Record> recordList = z3950Client.search(searchServer, search, limit);
@@ -78,22 +78,22 @@ public class Z3950BO extends AbstractBO {
 
 		return dtoList;
 	}
-	
+
 	public DTOCollection<Z3950AddressDTO> search(String value, int limit, int offset) {
 		return this.dao.search(value, limit, offset);
 	}
-	
+
 	public List<Z3950AddressDTO> listAll() {
 		return this.dao.listAll();
 	}
-	
+
 	public DTOCollection<Z3950AddressDTO> listServers() {
 		DTOCollection<Z3950AddressDTO> servers = new DTOCollection<Z3950AddressDTO>();
 
 		servers.addAll(this.dao.listAll());
 		return servers;
 	}
-	
+
 	public boolean save(Z3950AddressDTO dto) {
 		if (dto == null) {
 			return false;
@@ -113,12 +113,12 @@ public class Z3950BO extends AbstractBO {
 	public Z3950AddressDTO findById(int id) {
 		List<Integer> ids = new LinkedList<Integer>();
 		ids.add(id);
-		
+
 		List<Z3950AddressDTO> list = this.dao.list(ids);
-		
+
 		return (list.size() > 0) ? list.get(0) : null;
 	}
-	
+
 	public List<Z3950AddressDTO> list(List<Integer> ids) {
 		return this.dao.list(ids);
 	}
@@ -131,7 +131,7 @@ public class Z3950BO extends AbstractBO {
 				this.logger.error(e.getMessage(), e);
 			}
 		}
-		
+
 		return Z3950BO.context;
 	}
 

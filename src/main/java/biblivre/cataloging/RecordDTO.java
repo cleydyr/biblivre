@@ -43,7 +43,7 @@ public class RecordDTO extends AbstractDTO {
 	private transient String marc;
 	// TODO
 	// private transient Integer populatedMask;
-	
+
 	public MaterialType getMaterialType() {
 		if (this.materialType == null) {
 			return MaterialType.fromRecord(this.record);
@@ -119,7 +119,7 @@ public class RecordDTO extends AbstractDTO {
 	public void setMarc(String marc) {
 		this.marc = marc;
 	}
-	
+
 	public Record getRecord() {
 		return this.record;
 	}
@@ -144,7 +144,7 @@ public class RecordDTO extends AbstractDTO {
 		json.putOpt("fields", this.toJSONArray(this.getFields()));
 		json.putOpt("json", this.getJson());
 		json.putOpt("marc", this.getMarc());
-		
+
 		return json;
 	}
 }

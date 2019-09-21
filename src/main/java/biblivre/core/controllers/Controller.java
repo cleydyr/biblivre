@@ -43,7 +43,7 @@ import biblivre.core.utils.TextUtils;
 
 
 public abstract class Controller {
-	
+
 	protected final Logger log = Logger.getLogger(this.getClass());
 	protected ExtendedRequest xRequest;
 	protected ExtendedResponse xResponse;
@@ -56,20 +56,20 @@ public abstract class Controller {
 		this.xResponse = xResponse;
 		this.headerOnly = false;
 	}
-	
+
 	protected void processRequest() throws ServletException, IOException {
 		String schema = null;
 		String module = null;
 		String action = null;
-		
+
 		this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 		this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-		
+
 		try {
 			schema = this.xRequest.getSchema();
 			module = this.xRequest.getString("module", (String) this.xRequest.getAttribute("module"));
 			action = this.xRequest.getString("action", (String) this.xRequest.getAttribute("action"));
-			
+
 			// In case of invalid pack and method, send user to index page
 			if (StringUtils.isBlank(module) || StringUtils.isBlank(action)) {
 				this.doError("error.void");
@@ -82,7 +82,7 @@ public abstract class Controller {
 			}
 
 			boolean isSetup = (module.equals("administration.setup") || (module.equals("menu") && action.equals("setup")));
-			
+
 			if (isSetup && (Configurations.getBoolean(schema, Constants.CONFIG_NEW_LIBRARY) || action.equals("progress"))) {
 				// authorize
 			} else {	
@@ -90,7 +90,7 @@ public abstract class Controller {
 				if (authPoints == null) {
 					authPoints = AuthorizationPoints.getNotLoggedInstance(schema);
 				}
-	
+
 				AuthorizationBO abo = AuthorizationBO.getInstance(schema);
 				abo.authorize(authPoints, module, action);
 			}			
@@ -99,15 +99,15 @@ public abstract class Controller {
 			this.doAuthorizationError();
 			return;	
 		}
-		
+
 		try {
 			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
 			this.handler = (AbstractHandler) this.handlerClass.newInstance();
-			
+
 			Class<?> validatorClass = Class.forName("biblivre." + module + ".Validator");
 			String validationMethodName = "validate_" + action;
 			Method validationMethod = validatorClass.getDeclaredMethod(TextUtils.camelCase(validationMethodName), AbstractHandler.class, ExtendedRequest.class, ExtendedResponse.class);
-			
+
 			AbstractValidator validator = (AbstractValidator) validatorClass.newInstance();
 			validationMethod.invoke(validator, this.handler, this.xRequest, this.xResponse);
 			if (!validator.checkValidation(this.handler)) {
@@ -135,10 +135,10 @@ public abstract class Controller {
 			this.doError("error.invalid_handler", e);
 			return;
 		}
-		
+
 		try {
 			Method method;
-			
+
 			try {
 				method = this.handlerClass.getDeclaredMethod(TextUtils.camelCase(action), ExtendedRequest.class, ExtendedResponse.class);
 			} catch (NoSuchMethodException e) {
@@ -159,7 +159,7 @@ public abstract class Controller {
 			}
 			this.log.error(e.getMessage(), e);
 			return;
-			
+
 		} catch (Exception e) {
 			// ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, etc.
 			this.doError("error.invalid_handler", e);
@@ -169,7 +169,7 @@ public abstract class Controller {
 
 		this.doReturn();
 	}
-	
+
 	public boolean isHeaderOnly() {
 		return this.headerOnly;
 	}

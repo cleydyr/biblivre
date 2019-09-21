@@ -44,7 +44,7 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
     public MaterialType getMaterialType() {
     	return MaterialType.HOLDINGS;
     }
-    
+
 	public Integer getRecordId() {
 		return this.recordId;
 	}
@@ -83,7 +83,7 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
 	public void setAvailability(String availability) {
 		this.availability = HoldingAvailability.fromString(availability);
 	}
-	
+
 	public BiblioRecordDTO getBiblioRecord() {
 		return this.biblioRecord;
 	}
@@ -99,7 +99,7 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
 	public void setLabelPrinted(Boolean labelPrinted) {
 		this.labelPrinted = labelPrinted;
 	}
-	
+
 	public String getShelfLocation() {
 		return this.shelfLocation;
 	}
@@ -131,7 +131,7 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
         if (o == null) {
             return 0;
         }
-        
+
         return NaturalOrderComparator.NUMERICAL_ORDER.compare(this.getAccessionNumber(), o.getAccessionNumber());
 	}
 }

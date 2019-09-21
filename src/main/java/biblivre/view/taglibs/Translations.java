@@ -48,15 +48,15 @@ public class Translations extends SimpleTagSupport {
 			TranslationsMap map = (TranslationsMap) request.getAttribute("translationsMap");
 
 			String translation = map.getText(this.key);
-			
+
 			if (this.param1 != null) {
 				translation = translation.replace("{0}", this.param1);
 			}
-			
+
 			if (this.param2 != null) {
 				translation = translation.replace("{1}", this.param2);
 			}
-			
+
 			if (this.param3 != null) {
 				translation = translation.replace("{2}", this.param3);
 			}
@@ -64,7 +64,7 @@ public class Translations extends SimpleTagSupport {
 			if (this.escapeHTML) {
 				translation = StringEscapeUtils.escapeHtml4(translation);
 			}
-			
+
 			out.print(translation);
 		} catch (Exception e)  {
 			this.logger.error(e.getMessage(), e);
@@ -87,7 +87,7 @@ public class Translations extends SimpleTagSupport {
 	public void setParam3(String param3) {
 		this.param3 = param3;
 	}
-	
+
 	public void setEscapeHTML(boolean escapeHTML) {
 		this.escapeHTML = escapeHTML;
 	}

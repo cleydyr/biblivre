@@ -32,7 +32,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class AssetHoldingByDateReport extends BaseBiblivreReport {
-	
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		String initialDate = this.dateFormat.format(dto.getInitialDate());

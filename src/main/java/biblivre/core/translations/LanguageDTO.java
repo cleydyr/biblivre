@@ -28,7 +28,7 @@ public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> 
 
 	private String language;
 	private String name;
-	
+
 	public void setLanguage(String language) {
 		this.language = language;
 	}
@@ -36,11 +36,11 @@ public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> 
 	public String getLanguage() {
 		return StringUtils.defaultString(this.language);
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getName() {
 		return StringUtils.defaultString(this.name);
 	}
@@ -49,7 +49,7 @@ public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> 
 	public String toString() {
 		return this.getName();
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -59,12 +59,12 @@ public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> 
 		if (other == null || !(other instanceof LanguageDTO)) {
 			return false;
 		}
-		
+
 		LanguageDTO otherDto = (LanguageDTO) other;
-		
+
 		return this.language == null ? otherDto.language == null : this.language.equals(otherDto.language);
 	}
-	
+
 	@Override
 	public int compareTo(LanguageDTO other) {
 		return this.getLanguage().compareTo(other.getLanguage());

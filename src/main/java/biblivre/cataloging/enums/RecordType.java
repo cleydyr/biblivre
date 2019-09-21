@@ -34,7 +34,7 @@ public enum RecordType implements BiblivreEnum {
 		if (StringUtils.isBlank(str)) {
 			return null;
 		}
-		
+
 		str = str.toLowerCase();
 
 		for (RecordType recordType : RecordType.values()) {
@@ -45,7 +45,7 @@ public enum RecordType implements BiblivreEnum {
 
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

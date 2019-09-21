@@ -30,7 +30,7 @@ public class Handler extends CatalogingHandler {
 	public Handler() {
 		super(RecordType.BIBLIO, MaterialType.BOOK);
 	}
-	
+
 	@Override
 	protected RecordDTO createRecordDTO(ExtendedRequest request) {
 		return new BiblioRecordDTO();

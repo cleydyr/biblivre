@@ -47,11 +47,11 @@ public enum SearchMode implements BiblivreEnum {
 
 	public static SearchMode fromString(String str, SearchMode def) {
 		SearchMode mode = SearchMode.fromString(str);
-		
+
 		return (mode == null) ? def : mode;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

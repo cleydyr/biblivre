@@ -29,7 +29,7 @@ import biblivre.core.AbstractDTO;
 
 public class IndexingDTO extends AbstractDTO {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer recordId;
 	private Integer indexingGroupId;
 	private StringBuilder phrase;
@@ -41,15 +41,15 @@ public class IndexingDTO extends AbstractDTO {
 		this.phrase = new StringBuilder();
 		this.ignoreCharsCount = 0;
 	}
-	
+
 	public Integer getRecordId() {
 		return this.recordId;
 	}
-	
+
 	public void setRecordId(Integer recordId) {
 		this.recordId = recordId;
 	}
-		
+
 	public Integer getIndexingGroupId() {
 		return this.indexingGroupId;
 	}
@@ -75,7 +75,7 @@ public class IndexingDTO extends AbstractDTO {
 
 		return phrase.trim();
 	}
-	
+
 	public int getPhraseLength() {
 		return this.phrase.length();
 	}
@@ -93,23 +93,23 @@ public class IndexingDTO extends AbstractDTO {
 			if (!this.words.containsKey(datafieldId)) {
 				this.words.put(datafieldId, new HashSet<String>());
 			}
-			
+
 			this.words.get(datafieldId).add(word);
 		}
 	}
-	
+
 	public void addWords(String[] words, Integer datafieldId) {
 		if (!this.words.containsKey(datafieldId)) {
 			this.words.put(datafieldId, new HashSet<String>());
 		}
-		
+
 		Collections.addAll(this.words.get(datafieldId), words);
 	}
 
 	public HashMap<Integer, HashSet<String>> getWords() {
 		return this.words;
 	}
-	
+
 	public int getCount() {
 		return this.words.size();
 	}

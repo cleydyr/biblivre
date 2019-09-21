@@ -36,7 +36,7 @@ public class AutocompleteDTO extends AbstractDTO {
 	//private VocabularyRecordDTO vocabulary;
 
 	private transient RecordDTO record;
-	
+
 	public Integer getId() {
 		return this.id;
 	}
@@ -84,7 +84,7 @@ public class AutocompleteDTO extends AbstractDTO {
 	public void setPhrase(String phrase) {
 		this.phrase = phrase;
 	}
-	
+
 	public RecordDTO getRecord() {
 		return this.record;
 	}
@@ -103,11 +103,11 @@ public class AutocompleteDTO extends AbstractDTO {
 		json.putOpt("subfield", this.getSubfield());
 		json.putOpt("word", this.getWord());
 		json.putOpt("phrase", this.getPhrase());
-		
+
 		if (this.getRecord() != null) {
 			json.putOpt("record", this.getRecord().toJSONObject());
 		}
-		
+
 		return json;
 	}
 }

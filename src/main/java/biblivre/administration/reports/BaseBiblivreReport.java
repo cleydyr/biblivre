@@ -66,7 +66,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	private PdfWriter writer;
 	private Date generationDate;
 	protected DateFormat dateFormat;
-	
+
 	protected String schema; 
 
 	@Override
@@ -125,11 +125,11 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
 	protected final String getText(String key) {
 		String[] params = key.split(":");
-		
+
 		if (params.length == 1) {
 			return this.i18n.getText(key);
 		}
-		
+
 		String text = this.i18n.getText(params[0]);
 		for (int i = 1; i < params.length; i++) {
 			String replacement = params[i];
@@ -143,7 +143,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	public void onEndPage(PdfWriter writer, Document document) {
 		try {
 			Rectangle page = document.getPageSize();
-			
+
 			PdfPTable head = new PdfPTable(1);
 			PdfPCell cell = new PdfPCell(new Paragraph(this.getText("administration.reports.biblivre_report_header")));
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);

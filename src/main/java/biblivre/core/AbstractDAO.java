@@ -57,7 +57,7 @@ public abstract class AbstractDAO {
 	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema) {
 		return AbstractDAO.getInstance(cls, schema, "biblivre4");
 	}
-	
+
 	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema, String dataSourceName) {
 		Pair<Class<? extends AbstractDAO>, String> pair = new Pair<Class<? extends AbstractDAO>, String>(cls, schema + ":" + dataSourceName);
 		AbstractDAO instance = AbstractDAO.instances.get(pair);
@@ -93,7 +93,7 @@ public abstract class AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
@@ -101,7 +101,7 @@ public abstract class AbstractDAO {
 	public String getSchema() {
 		return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
 	}
-	
+
 	public String getDataSourceName() {
 		return this.dataSourceName;
 	}
@@ -124,7 +124,7 @@ public abstract class AbstractDAO {
 
 	protected final Connection getConnection() throws SQLException {
 		Connection con = this.getDataSource().getConnection();
-		
+
 		/*
 		DatabaseMetaData dbmd = con.getMetaData(); 
 		System.out.println("=====  Driver info ====="); 
@@ -132,7 +132,7 @@ public abstract class AbstractDAO {
 		System.out.println("DriverVersion: " + dbmd.getDriverVersion() ); 
 		System.out.println("DriverMajorVersion: " + dbmd.getDriverMajorVersion()); 
 		*/
-		
+
 		if (this.getSchema() != null) {
 			con.createStatement().execute("SET search_path = '" + this.getSchema() + "', public, pg_catalog;");
 		}
@@ -161,7 +161,7 @@ public abstract class AbstractDAO {
 
 		return ds;
 	}
-	
+
 	protected final void closeConnection(Connection con) {
 		try {
 			if (con != null && !con.isClosed()) {
@@ -201,7 +201,7 @@ public abstract class AbstractDAO {
 
 			String sql = "SELECT nextval('" + sequence + "') FROM " + sequence;
 			PreparedStatement pst = con.prepareStatement(sql);
-			
+
 			ResultSet rs = pst.executeQuery();
 
 			if ((rs != null) && rs.next()) {
@@ -215,11 +215,11 @@ public abstract class AbstractDAO {
 
 		return serial;
 	}
-	
+
 	public final void fixSequence(String sequence, String tableName) {
 		this.fixSequence(sequence, tableName, "id");
 	}
-	
+
 	public final void fixSequence(String sequence, String tableName, String tableIdColumnName) {
 		Connection con = null;
 
@@ -228,7 +228,7 @@ public abstract class AbstractDAO {
 
 			String sql = "SELECT setval('" + sequence + "', coalesce((SELECT max(" + tableIdColumnName + ") + 1 FROM " + tableName + "), 1), false);";
 			PreparedStatement pst = con.prepareStatement(sql);
-			
+
 			pst.executeQuery();
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -248,21 +248,21 @@ public abstract class AbstractDAO {
 
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, functionName);
-			
+
 			ResultSet rs = pst.executeQuery();
-			
+
 			if (rs.next()) {
 				int count = rs.getInt("count");
-				
+
 				return count > 0;
 			}
-			
+
 			return false;
 		} finally {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public final boolean checkColumnExistance(String tableName, String columnName) throws SQLException {
 		Connection con = null;
 
@@ -275,7 +275,7 @@ public abstract class AbstractDAO {
 			pst.setString(1, this.getSchema());
 			pst.setString(2, tableName);
 			pst.setString(3, columnName);
-			
+
 			ResultSet rs = pst.executeQuery();
 			return rs.next() && rs.getInt("count") == 1;
 		} finally {
@@ -283,7 +283,7 @@ public abstract class AbstractDAO {
 		}
 	}
 
-	
+
 	public final boolean checkTableExistance(String tableName) throws SQLException {
 		Connection con = null;
 
@@ -295,15 +295,15 @@ public abstract class AbstractDAO {
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, this.getSchema());
 			pst.setString(2, tableName);
-			
+
 			ResultSet rs = pst.executeQuery();
 			return rs.next() && rs.getInt("count") == 1; 
 		} finally {
 			this.closeConnection(con);
 		}
 	}
-	
-	
+
+
 	public final String getPostgreSQLVersion() throws SQLException {
 		Connection con = null;
 
@@ -313,19 +313,19 @@ public abstract class AbstractDAO {
 			String sql = "SELECT version() as version;"; 
 
 			Statement st = con.createStatement();
-			
+
 			ResultSet rs = st.executeQuery(sql);
-			
+
 			if (rs.next()) {
 				return rs.getString("version");
 			}
-			
+
 			return ""; 
 		} finally {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	protected final boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
 	    ResultSetMetaData metadata = rs.getMetaData();
 	    int columns = metadata.getColumnCount();
@@ -336,7 +336,7 @@ public abstract class AbstractDAO {
 	    }
 	    return false;
 	}
-	
+
 	protected PGConnection getPGConnection(Connection con) {
 		PGConnection pgcon = null;
 
@@ -359,7 +359,7 @@ public abstract class AbstractDAO {
 
 			e.printStackTrace();
 		}
-		
+
 		try {
 			pgcon =	 _getInnermostDelegateFromConnection(
 					con, "org.apache.commons.dbcp.DelegatingConnection");
@@ -388,5 +388,5 @@ public abstract class AbstractDAO {
 		pgcon =	 (PGConnection) m.invoke(o);
 		return pgcon;
 	}
-	
+
 }

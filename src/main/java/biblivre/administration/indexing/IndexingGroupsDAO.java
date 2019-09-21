@@ -31,7 +31,7 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
 public class IndexingGroupsDAO extends AbstractDAO {
-	
+
 	public static IndexingGroupsDAO getInstance(String schema) {
 		return (IndexingGroupsDAO) AbstractDAO.getInstance(IndexingGroupsDAO.class, schema);
 	}
@@ -62,7 +62,7 @@ public class IndexingGroupsDAO extends AbstractDAO {
 
 		return list;
 	}
-	
+
 	private IndexingGroupDTO populateDTO(ResultSet rs) throws SQLException {
 		IndexingGroupDTO dto = new IndexingGroupDTO();
 
@@ -71,7 +71,7 @@ public class IndexingGroupsDAO extends AbstractDAO {
 		dto.setDatafields(rs.getString("datafields"));
 		dto.setSortable(rs.getBoolean("sortable"));
 		dto.setDefaultSort(rs.getBoolean("default_sort"));
-		
+
 		dto.setCreated(rs.getTimestamp("created"));
 		dto.setCreatedBy(rs.getInt("created_by"));
 		dto.setModified(rs.getTimestamp("modified"));

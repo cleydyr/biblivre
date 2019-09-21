@@ -34,14 +34,14 @@ public class SupplierBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = SupplierDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
     public SupplierDTO get(Integer id) {
         return this.dao.get(id);
     }
-    
+
     public boolean save(SupplierDTO dto) {
         return this.dao.save(dto);
     }
@@ -49,11 +49,11 @@ public class SupplierBO extends AbstractBO {
     public boolean update(SupplierDTO dto) {
         return this.dao.update(dto);
     }
-    
+
     public boolean delete(SupplierDTO dto) {
         return this.dao.delete(dto);
     }
-	
+
     public DTOCollection<SupplierDTO> list() {
         return this.search(null, Integer.MAX_VALUE, 0);
     }
@@ -61,7 +61,7 @@ public class SupplierBO extends AbstractBO {
     public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
     	return this.dao.search(value, limit, offset);
     }
-    
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}

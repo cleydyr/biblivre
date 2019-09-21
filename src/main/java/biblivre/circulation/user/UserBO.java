@@ -62,47 +62,47 @@ public class UserBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = UserDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
 		DTOCollection<UserDTO> list = this.dao.search(dto, limit, offset);
-		
+
 		UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
 		Map<Integer, UserTypeDTO> map = utbo.map();
-		
+
 		for (UserDTO udto : list) {
 			UserTypeDTO utdto = map.get(udto.getType());
-			
+
 			if (utdto != null) {
 				udto.setUsertypeName(utdto.getName());
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 	public UserDTO get(int id) {
 		Set<Integer> ids = new HashSet<Integer>();
 		ids.add(id);
-		
+
 		return this.map(ids).get(id);
 	}
-	
+
 	public Map<Integer, UserDTO> map(Set<Integer> ids) {
 		Map<Integer, UserDTO> map = this.dao.map(ids);
-		
+
 		UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
 		Map<Integer, UserTypeDTO> typeMap = utbo.map();
-		
+
 		for (UserDTO user : map.values()) {
 			user.setUsertypeName(typeMap.get(user.getType()).getName());
 		}
-		
+
 		return map;
 	}
-	
+
 	public UserDTO getUserByLoginId(Integer loginId) {
 		Integer userId = this.dao.getUserIdByLoginId(loginId);
 		if (userId == null) {
@@ -110,19 +110,19 @@ public class UserBO extends AbstractBO {
 		}
 		return this.get(userId);
 	}
-	
+
 	public boolean save(UserDTO user) {
 		return this.dao.save(user);
 	}
-	
+
 	public boolean updateUserStatus(Integer userId, UserStatus status) {
 		return this.dao.updateUserStatus(userId, status);
 	}
-	
+
 	public boolean delete(UserDTO user) {
 		return this.dao.delete(user);
 	}
-	
+
 	public DiskFile printUserCardsToPDF(LabelPrintDTO dto, TranslationsMap i18n) {
 		Document document = new Document();
 		FileOutputStream fos = null;
@@ -187,7 +187,7 @@ public class UserBO extends AbstractBO {
 				cell.setBorder(Rectangle.NO_BORDER);
 				table.addCell(cell);
 			}
-			
+
 			if ((i % 3) != 0) {
 				while ((i % 3) != 0) {
 					i++;
@@ -196,7 +196,7 @@ public class UserBO extends AbstractBO {
 					table.addCell(cell);
 				}
 			}
-			
+
 			document.add(table);
 			writer.flush();
 			document.close();
@@ -211,8 +211,8 @@ public class UserBO extends AbstractBO {
 
 		return null;
 	}
-	
-	
+
+
 	private String getText(TranslationsMap i18n, String key) {
 		String[] params = key.split(":::");
 
@@ -227,11 +227,11 @@ public class UserBO extends AbstractBO {
 		}
 		return text;
 	}
-	
+
 	public void markAsPrinted(Set<Integer> ids) {
 		this.dao.markAsPrinted(ids);
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}

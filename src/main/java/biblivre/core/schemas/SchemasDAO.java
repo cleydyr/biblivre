@@ -37,7 +37,7 @@ public class SchemasDAO extends AbstractDAO {
 	public static SchemasDAO getInstance(String schema) {
 		return (SchemasDAO) AbstractDAO.getInstance(SchemasDAO.class, schema);
 	}
-	
+
 	public Set<SchemaDTO> list() {
 		Set<SchemaDTO> set = new TreeSet<SchemaDTO>();
 
@@ -64,7 +64,7 @@ public class SchemasDAO extends AbstractDAO {
 
 		return set;
 	}
-	
+
 	public boolean insert(SchemaDTO dto) {
 		Connection con = null;
 
@@ -72,7 +72,7 @@ public class SchemasDAO extends AbstractDAO {
 			con = this.getConnection();
 
 			String sql = "INSERT INTO schemas (schema, name) VALUES (?, ?);";
-			
+
 			PreparedStatement pst = con.prepareStatement(sql);
 
 			pst.setString(1, dto.getSchema());
@@ -85,7 +85,7 @@ public class SchemasDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean delete(SchemaDTO dto) {
 		Connection con = null;
 
@@ -94,7 +94,7 @@ public class SchemasDAO extends AbstractDAO {
 			con.setAutoCommit(false);
 
 			String sql = "DELETE FROM schemas WHERE schema = ? AND name = ?;";
-			
+
 			PreparedStatement pst = con.prepareStatement(sql);
 
 			pst.setString(1, dto.getSchema());
@@ -106,12 +106,12 @@ public class SchemasDAO extends AbstractDAO {
 				String escaped = ((BaseConnection) this.getPGConnection(con)).escapeString(dto.getSchema());
 				String dropSql = "DROP SCHEMA \"" + escaped + "\" CASCADE;";
 				Statement dropSt = con.createStatement();
-	
+
 				dropSt.executeUpdate(dropSql);
 			}
-			
+
 			this.commit(con);
-			
+
 			return success;
 		} catch (Exception e) {
 			this.rollback(con);
@@ -120,7 +120,7 @@ public class SchemasDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean save(SchemaDTO dto) {
 		Connection con = null;
 
@@ -128,13 +128,13 @@ public class SchemasDAO extends AbstractDAO {
 			con = this.getConnection();
 
 			String sql = "UPDATE schemas SET name = ?, disabled = ? WHERE schema = ?;";
-			
+
 			PreparedStatement pst = con.prepareStatement(sql);
 
 			pst.setString(1, dto.getName());
 			pst.setBoolean(2, dto.isDisabled());
 			pst.setString(3, dto.getSchema());
-			
+
 			return pst.executeUpdate() > 0;
 		} catch (Exception e) {
 			throw new DAOException(e);

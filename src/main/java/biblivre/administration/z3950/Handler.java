@@ -33,14 +33,14 @@ import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 
 public class Handler extends AbstractHandler {
-	
-	
+
+
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String searchParameters = request.getString("search_parameters");
 
 		String query = null;
-		
+
 		try {
 			JSONObject json = new JSONObject(searchParameters);
 			query = json.optString("query");
@@ -51,15 +51,15 @@ public class Handler extends AbstractHandler {
 
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = (request.getInteger("page", 1) - 1) * limit;
-		
+
 		Z3950BO bo = Z3950BO.getInstance(schema);
 		DTOCollection<Z3950AddressDTO> list = bo.search(query, limit, offset);
-		
+
 		if (list.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "administration.z3950.no_server_found");
 			return;
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
@@ -67,11 +67,11 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		this.search(request, response);
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Z3950BO bo = Z3950BO.getInstance(schema);
@@ -84,7 +84,7 @@ public class Handler extends AbstractHandler {
 		dto.setUrl(request.getString("url"));
 		dto.setPort(request.getInteger("port"));
 		dto.setCollection(request.getString("collection"));
-		
+
 		if (bo.save(dto)) {
 			if (id == 0) {
 				this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.save");
@@ -94,7 +94,7 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.setMessage(ActionResult.WARNING, "administration.z3950.error.save");
 		}
-		
+
 		try {
 			this.json.put("data", dto.toJSONObject());
 			this.json.put("full_data", true);
@@ -109,12 +109,12 @@ public class Handler extends AbstractHandler {
 		Z3950BO bo = Z3950BO.getInstance(schema);
 		Z3950AddressDTO dto = new Z3950AddressDTO();
 		dto.setId(request.getInteger("id"));
-		
+
 		if (bo.delete(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.delete");
 		} else {
 			this.setMessage(ActionResult.ERROR, "administration.z3950.error.delete");
 		}
 	}
-	
+
 }

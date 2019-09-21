@@ -31,7 +31,7 @@ public class VocabularyRecordDTO extends RecordDTO {
 	private transient String termUP;
 	private transient String termTG;
 	private transient String termVTTA;
-	
+
 	public String getTermTE() {
 		return this.termTE;
 	}

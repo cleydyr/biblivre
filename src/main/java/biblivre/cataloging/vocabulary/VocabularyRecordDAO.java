@@ -35,12 +35,12 @@ public class VocabularyRecordDAO extends RecordDAO {
 
 		return dao;
 	}
-	
-	
+
+
 	@Override
 	protected RecordDTO createRecord() {
 		return new VocabularyRecordDTO();
 	}
-		
+
 
 }

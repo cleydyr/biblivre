@@ -24,11 +24,11 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.utils.BiblivreEnum;
 
 public enum RequestStatus implements BiblivreEnum {
-	
+
 	PENDING,
 	CLOSED,
 	PENDING_AND_CLOSED;
-	
+
 	public static RequestStatus fromString(String str) {
 		if (StringUtils.isBlank(str)) {
 			return null;

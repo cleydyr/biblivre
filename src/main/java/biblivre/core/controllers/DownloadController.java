@@ -61,7 +61,7 @@ public class DownloadController extends Controller {
 			callback.success();
 		}
 	}
-	
+
 	@Override
 	protected void doAuthorizationError() throws ServletException, IOException {
 		Message message = new Message(ActionResult.WARNING, "error.no_permission");
@@ -75,7 +75,7 @@ public class DownloadController extends Controller {
 
 		this.dispatch("/jsp/error.jsp", message);
 	}
-	
+
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -88,7 +88,7 @@ public class DownloadController extends Controller {
 
 		this.dispatch("/jsp/error.jsp", message);
 	}
-	
+
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -96,7 +96,7 @@ public class DownloadController extends Controller {
 		} else {
 			this.log.warn(warning);
 		}
-		
+
 		Message message = new Message(ActionResult.WARNING, warning, e);
 		this.dispatch("/jsp/error.jsp", message);
 	}

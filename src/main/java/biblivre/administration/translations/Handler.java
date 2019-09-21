@@ -62,10 +62,10 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
-	
+
+
 	public void downloadDump(ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String dumpId = request.getString("id");
 		String schema = request.getSchema();
 		String language = (String)request.getSessionAttribute(schema, dumpId);
@@ -102,7 +102,7 @@ public class Handler extends AbstractHandler {
 				if (line.length() == 0) {
 					continue;
 				}
-				
+
 				line = line.replace("\\n", "\n");
 
 				int eq = line.indexOf("=");
@@ -111,7 +111,7 @@ public class Handler extends AbstractHandler {
 				if (start == '#') {
 					continue;
 				}
-				
+
 				if ((eq != -1) && (start == '*' || start == '+' || start == '-')) {					
 					if (key != null) {
 						switch (type) {
@@ -151,7 +151,7 @@ public class Handler extends AbstractHandler {
 						break;
 				}
 			}
-			
+
 			sc.close();
 		} catch (Exception e) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.load");
@@ -174,7 +174,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.java_locale_not_available");
 			return;			
 		}
-		
+
 		try {
 			boolean success = Translations.save(schema, language, addTranslation, removeTranslation, loggedUser);
 			if (success) {
@@ -187,7 +187,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void list(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
@@ -214,7 +214,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
@@ -254,7 +254,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void saveLanguageTranslations(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();

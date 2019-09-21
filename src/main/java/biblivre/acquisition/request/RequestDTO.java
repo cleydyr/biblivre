@@ -114,5 +114,5 @@ public class RequestDTO extends AbstractDTO {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	
+
 }

@@ -30,24 +30,24 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
 
 public class Validator extends AbstractValidator {
-	
+
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
+
 		Integer supplierId = request.getInteger("supplier");
 		Integer requestId = request.getInteger("request");
 		String quotationList = request.getString("quotation_list");
-		
+
 		String quotationDate = request.getString("quotation_date");
 		String responseDate = request.getString("response_date");
 		String expirationDate = request.getString("expiration_date");
 		String deliveryTime = request.getString("delivery_time");
-		
+
 		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
+
 		if (supplierId == 0) {
 			ex.addError("supplier", "field.error.required");
 		}
-		
+
 		if (StringUtils.isBlank(quotationList)) {
 			if (requestId == 0) {
 				ex.addError("request", "field.error.required");
@@ -55,7 +55,7 @@ public class Validator extends AbstractValidator {
 				ex.addError("quotation_list", "field.error.required");
 			}
 		}
-		
+
 		if (StringUtils.isBlank(quotationDate)) {
 			ex.addError("quotation_date", "field.error.required");
 		} else {
@@ -65,7 +65,7 @@ public class Validator extends AbstractValidator {
 				ex.addError("quotation_date", "field.error.invalid");				
 			}
 		}
-		
+
 		if (StringUtils.isBlank(responseDate)) {
 			ex.addError("response_date", "field.error.required");
 		} else {
@@ -75,7 +75,7 @@ public class Validator extends AbstractValidator {
 				ex.addError("response_date", "field.error.invalid");				
 			}
 		}
-		
+
 		if (StringUtils.isBlank(expirationDate)) {
 			ex.addError("expiration_date", "field.error.required");
 		} else {
@@ -85,19 +85,19 @@ public class Validator extends AbstractValidator {
 				ex.addError("expiration_date", "field.error.invalid");				
 			}
 		}
-		
+
 		if (StringUtils.isBlank(deliveryTime)) {
 			ex.addError("delivery_time", "field.error.required");
 		} else if (!StringUtils.isNumeric(deliveryTime)) {
 			ex.addError("delivery_time", "field.error.digits_only");
 		}
-		
-		
+
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
 			return;
 		}
-				
+
 	}	
 
 	public void validateOpen(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -115,6 +115,6 @@ public class Validator extends AbstractValidator {
 			return;
 		}
 	}
-	
+
 
 }

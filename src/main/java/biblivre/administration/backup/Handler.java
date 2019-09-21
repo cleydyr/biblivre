@@ -47,16 +47,16 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.ERROR, "administration.maintenance.backup.error.invalid_backup_type");
 			return;
 		}
-		
+
 		BackupBO bo = BackupBO.getInstance(schema);
 		BackupScope backupScope = bo.getBackupScope();
-		
+
 		LinkedList<String> list = new LinkedList<String>();
 		list.add(Constants.GLOBAL_SCHEMA);
 
 		if (request.isGlobalSchema()) {
 			list.addAll(Arrays.asList(StringUtils.split(schemas, ",")));
-			
+
 			if (list.size() == 2) {
 				// Only one schema is being backuped. We can say that the backupScope is:
 				backupScope = BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;
@@ -77,13 +77,13 @@ public class Handler extends AbstractHandler {
 			String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
 			map.put(s, new Pair<String, String>(title, subtitle));
 		}
-		
+
 		BackupDTO dto = bo.prepare(map, backupType, backupScope);
 
 		this.json.put("success", true);
 		this.json.put("id", dto.getId());
 	}
-	
+
 	//http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=backup
 	public void backup(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -121,7 +121,7 @@ public class Handler extends AbstractHandler {
 		this.setCallback(() -> finishDownload(bo, dto));
 	}
 
-	
+
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -139,7 +139,7 @@ public class Handler extends AbstractHandler {
 		this.json.put("total", dto.getSteps());
 		this.json.put("complete", dto.getCurrentStep() == dto.getSteps());
 	}
-	
+
 	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
 	public void list(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();

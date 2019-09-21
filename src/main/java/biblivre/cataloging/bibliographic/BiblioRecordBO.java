@@ -43,7 +43,7 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 
 public class BiblioRecordBO extends RecordBO {
-	
+
 	public static BiblioRecordBO getInstance(String schema) {
 		BiblioRecordBO bo = AbstractBO.getInstance(BiblioRecordBO.class, schema);
 
@@ -65,14 +65,14 @@ public class BiblioRecordBO extends RecordBO {
 
 		if ((mask & RecordBO.MARC_INFO) != 0) {
 			Record record = rdto.getRecord();
-			
+
 			if (record == null && rdto.getIso2709() != null) {
 				record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
 			}
-			
+
 			if (record != null) {
 				MarcDataReader marcDataReader = new MarcDataReader(record);
-				
+
 				dto.setAuthor(marcDataReader.getAuthor(true));
 				dto.setTitle(marcDataReader.getTitle(false));
 				dto.setIsbn(marcDataReader.getIsbn());
@@ -85,15 +85,15 @@ public class BiblioRecordBO extends RecordBO {
 		}
 
 		Integer recordId = dto.getId();
-		
+
 		if (recordId == null || recordId <= 0) {
 			return;
 		}
-		
+
 		HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
 		LendingBO lbo = LendingBO.getInstance(this.getSchema());
 		ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
-		
+
 		if ((mask & RecordBO.HOLDING_INFO) != 0) {
 			int totalHoldings = hbo.count(recordId);
 			int availableHoldings = hbo.countAvailableHoldings(recordId);
@@ -113,29 +113,29 @@ public class BiblioRecordBO extends RecordBO {
 
 		if ((mask & RecordBO.HOLDING_LIST) != 0) {
 			List<HoldingDTO> holdingsList = hbo.list(recordId);
-			
+
 			Collections.sort(holdingsList);
 
 			for (HoldingDTO holding : holdingsList) {
 				MarcDataReader marcDataReader = new MarcDataReader(holding.getRecord());
-				
+
 				String holdingLocation = marcDataReader.getShelfLocation();
 				holding.setShelfLocation(StringUtils.isNotBlank(holdingLocation) ? holdingLocation : dto.getShelfLocation());
-				
+
 				holding.setAttachments(marcDataReader.getAttachments());
 			}
-			
+
 			dto.setHoldings(holdingsList);
 		}
-		
+
 		if ((mask & RecordBO.LENDING_INFO) != 0) {
 			List<HoldingDTO> holdingsList = dto.getHoldings();
-			
+
 			if (holdingsList == null) {
 				holdingsList = hbo.list(recordId);				
 				Collections.sort(holdingsList);
 			}
-			
+
 			List<LendingDTO> lendings = new LinkedList<LendingDTO>();
 			for (HoldingDTO holding : holdingsList) {
 				lendings.add(lbo.getCurrentLending(holding));
@@ -143,7 +143,7 @@ public class BiblioRecordBO extends RecordBO {
 		}
 
 	}
-	
+
 	@Override
 	public boolean save(RecordDTO dto) {
 		Record record = dto.getRecord();
@@ -186,7 +186,7 @@ public class BiblioRecordBO extends RecordBO {
 
 	@Override
 	public boolean delete(RecordDTO dto) {
-		
+
 //		HoldingBO holdingBo = new HoldingBO();
 //		LendingBO lendingBo = new LendingBO();
 //		List<HoldingDTO> holdings = holdingBo.list(record);
@@ -204,16 +204,16 @@ public class BiblioRecordBO extends RecordBO {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public Map<Integer, RecordDTO> map(Set<Integer> ids) {
 		return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.LENDING_INFO);
 	}
-	
+
 }

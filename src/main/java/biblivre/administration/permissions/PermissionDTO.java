@@ -28,7 +28,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.login.LoginDTO;
 
 public class PermissionDTO extends AbstractDTO {
-	
+
 	private static final long serialVersionUID = 1L;
 
     private List<String> permissions;
@@ -58,7 +58,7 @@ public class PermissionDTO extends AbstractDTO {
 	public void setUser(UserDTO user) {
 		this.user = user;
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();

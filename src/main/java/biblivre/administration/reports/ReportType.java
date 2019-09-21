@@ -20,7 +20,7 @@
 package biblivre.administration.reports;
 
 public enum ReportType {
-	
+
 	ACQUISITION("1", "rp01_", true),
 	SUMMARY("2", "rp02_", false),
 	DEWEY("3", "rp03_", false),
@@ -37,7 +37,7 @@ public enum ReportType {
 	TOPOGRAPHIC_FULL("15", "rp15_", false),
 	ASSET_HOLDING_BY_DATE("16", "rp16_", true),
 	CUSTOM_COUNT("17", "rp17_", false);
-	
+
 	private String id;
 	private String name;
 	private boolean timePeriod;
@@ -47,7 +47,7 @@ public enum ReportType {
 		this.name = name;
 		this.timePeriod = timePeriod;
 	}
-	
+
 	public final String getId() {
 		return this.id;
 	}
@@ -59,7 +59,7 @@ public enum ReportType {
 	public boolean isTimePeriod() {
 		return this.timePeriod;
 	}
-	
+
 	public static ReportType getById(final String id) {
 		for (ReportType type : values()) {
 			if (type.getId().equals(id)) {
@@ -68,6 +68,6 @@ public enum ReportType {
 		}
 		return null;
 	}
-	
+
 }
 

@@ -58,13 +58,13 @@ public class UserFields extends StaticBO {
 
 		return list;
 	}
-	
+
 	public static List<UserFieldDTO> getSearchableFields(String schema) {
 		JavascriptCacheableList<UserFieldDTO> list = UserFields.getFields(schema);
 
 		List<UserFieldDTO> searcheableList = new LinkedList<UserFieldDTO>();
 		for (UserFieldDTO dto : list) {
-			
+
 			switch (dto.getType()) {
 				case STRING:
 				case TEXT:
@@ -75,13 +75,13 @@ public class UserFields extends StaticBO {
 				case LIST:
 				default: break;
 			}
-			
+
 		}
-		
+
 		return searcheableList;
 	}
-	
-	
+
+
 	private static synchronized JavascriptCacheableList<UserFieldDTO> loadFields(String schema) {
 		JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(schema);
 
@@ -96,7 +96,7 @@ public class UserFields extends StaticBO {
 
 		UserFieldsDAO dao = UserFieldsDAO.getInstance(schema);
 
-		
+
 		List<UserFieldDTO> fields = dao.listFields();
 		list = new JavascriptCacheableList<UserFieldDTO>("CirculationInput.userFields", schema + ".circulation", ".user_fields.js");
 		list.addAll(fields);

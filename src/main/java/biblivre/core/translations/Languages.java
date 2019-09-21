@@ -35,15 +35,15 @@ public class Languages extends StaticBO {
 
 	private Languages() {
 	}
-	
+
 	static {
 		Languages.reset();
 	}
-	
+
 	public static void reset() {
 		Languages.languages = new HashMap<String, Set<LanguageDTO>>();
 	}
-	
+
 	public static void reset(String schema) {
 		if (schema.equals(Constants.GLOBAL_SCHEMA)) {
 			Languages.reset();
@@ -51,64 +51,64 @@ public class Languages extends StaticBO {
 			Languages.languages.remove(schema);
 		}
 	}
-	
+
 	public static Set<LanguageDTO> getLanguages(String schema) {
 		Set<LanguageDTO> set = Languages.languages.get(schema);
 
 		if (set == null) {
 			set = Languages.loadLanguages(schema);
 		}
-		
+
 		return set;
 	}
-	
+
 	public static boolean isLoaded(String schema, String language) {
 		if (StringUtils.isBlank(schema) || StringUtils.isBlank(language)) {
 			return false;
 		}
-		
+
 		Set<LanguageDTO> languages = Languages.getLanguages(schema);
-		
+
 		if (languages == null) {
 			return false;
 		}
-		
+
 		for (LanguageDTO dto : languages) {
 			if (language.equals(dto.getLanguage())) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public static boolean isNotLoaded(String schema, String language) {
 		return !Languages.isLoaded(schema, language);
 	}
-	
+
 	public static String getDefaultLanguage(String schema) {
 		Set<LanguageDTO> languages = Languages.getLanguages(schema);
-		
+
 		for (LanguageDTO dto : languages) {
 			return dto.getLanguage();
 		}
-		
+
 		return "";
 	}
-	
+
 	public static LanguageDTO getLanguage(String schema, String language) {
 		Set<LanguageDTO> languages = Languages.getLanguages(schema);
-		
+
 		for (LanguageDTO dto : languages) {
 			if (language.equals(dto.getLanguage())) {
 				return dto;
 			}
 		}
-		
+
 		return null;
 	}
 
-	
+
 	private static synchronized Set<LanguageDTO> loadLanguages(String schema) {
 		Set<LanguageDTO> set = Languages.languages.get(schema);
 
@@ -116,10 +116,10 @@ public class Languages extends StaticBO {
 		if (set != null) {
 			return set;
 		}
-		
+
 		Languages.logger.debug("Loading languages from " + schema);
 		LanguagesDAO dao = LanguagesDAO.getInstance(schema);
-		
+
 		set = dao.list();
 		Languages.languages.put(schema, set);
 

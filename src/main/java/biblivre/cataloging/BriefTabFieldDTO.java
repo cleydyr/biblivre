@@ -41,7 +41,7 @@ public class BriefTabFieldDTO extends AbstractDTO {
 	public void setDatafieldTag(String datafieldTag) {
 		this.datafieldTag = datafieldTag;
 	}
-	
+
 	public String getValue() {
 		return this.value;
 	}

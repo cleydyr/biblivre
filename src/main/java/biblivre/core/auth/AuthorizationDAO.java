@@ -41,10 +41,10 @@ public class AuthorizationDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 			String sql = "SELECT permission FROM permissions WHERE login_id = ?;";
-			
+
 			PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, user.getId());
-            
+
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {

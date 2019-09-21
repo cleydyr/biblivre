@@ -37,7 +37,7 @@ public class Handler extends AbstractHandler {
 		String searchParameters = request.getString("search_parameters");
 
 		String query = null;
-		
+
 		try {
 			JSONObject json = new JSONObject(searchParameters);
 			query = json.optString("query");
@@ -56,19 +56,19 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.no_request_found");
 			return;
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		this.search(request, response);
 	}
 
-	
+
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -82,15 +82,15 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Integer id = request.getInteger("id");		
 		RequestDTO dto = this.populateDTO(request);
 
 		RequestBO bo = RequestBO.getInstance(schema);
-		
+
 		boolean result = false;
 		if (id == 0) {
 			dto.setStatus(RequestStatus.PENDING);;
@@ -110,7 +110,7 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.save");
 		}
-		
+
 		try {
 			this.json.put("data", dto.toJSONObject());
 			this.json.put("full_data", true);
@@ -120,12 +120,12 @@ public class Handler extends AbstractHandler {
 		}
 
 	}
-	
+
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Integer id = request.getInteger("id");
-		
+
 		RequestBO bo = RequestBO.getInstance(schema);
 		RequestDTO dto = new RequestDTO();
 		dto.setId(id);
@@ -136,7 +136,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.delete");
 		}
 	}
-	
+
 	private RequestDTO populateDTO(ExtendedRequest request) {
 		RequestDTO dto = new RequestDTO();
 		dto.setId(request.getInteger("id"));
