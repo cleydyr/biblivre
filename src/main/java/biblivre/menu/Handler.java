@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-
 import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
@@ -44,10 +42,7 @@ import biblivre.z3950.Z3950BO;
 public class Handler extends AbstractHandler {
 
 	public void ping(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", true);
-		} catch (JSONException e) {
-		}
+		this.json.put("success", true);
 	}
 
 	public void i18n(ExtendedRequest request, ExtendedResponse response) throws IOException {
@@ -62,56 +57,56 @@ public class Handler extends AbstractHandler {
 	public void listBibliographic(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		RecordType type = RecordType.BIBLIO;
-		
+
 		String letter = request.getString("letter");
 		Integer order = request.getInteger("order",IndexingGroups.getDefaultSortableGroupId(schema, type));
-		
+
 		if (StringUtils.isBlank(letter)) {
 			letter = "a";
 		}
-		
+
 		RecordBO rbo = RecordBO.getInstance(schema, type);
 		List<RecordDTO> records = rbo.listByLetter(letter.charAt(0), order);
 
 		request.setAttribute("records", records);
-		
+
 		this.jspURL = "/jsp/list/bibliographic.jsp";
 		return; 
 	}
-	
+
 	public void listAuthorities(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/list/authorities.jsp";
 		return; 
 	}
-	
+
 	public void listVocabulary(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/list/vocabulary.jsp";
 		return; 
 	}
-	
+
 	public void searchBibliographic(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/search/bibliographic.jsp";
 		return; 
 	}
-	
+
 	public void searchAuthorities(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/search/authorities.jsp";
 		return; 
 	}
-	
+
 	public void searchVocabulary(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/search/vocabulary.jsp";
 		return; 
 	}
-	
+
 	public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Z3950BO bo = Z3950BO.getInstance(schema);
-		
+
 		List<Z3950AddressDTO> servers = bo.listAll();
 
 		request.setAttribute("servers", servers);
-		
+
 		this.jspURL = "/jsp/search/z3950.jsp";
 		return; 
 	}
@@ -120,7 +115,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/cataloging/bibliographic.jsp";
 		return; 
 	}
-	
+
 	public void catalogingAuthorities(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/cataloging/authorities.jsp";
 		return; 
@@ -134,11 +129,11 @@ public class Handler extends AbstractHandler {
 	public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Z3950BO bo = Z3950BO.getInstance(schema);
-		
+
 		List<Z3950AddressDTO> servers = bo.listAll();
 
 		request.setAttribute("servers", servers);
-		
+
 		this.jspURL = "/jsp/cataloging/import.jsp";
 		return; 
 	}
@@ -147,7 +142,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/cataloging/labels.jsp";
 		return; 
 	}
-	
+
 	public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/user.jsp";
 		return; 
@@ -162,7 +157,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/circulation/reservation.jsp";
 		return; 
 	}
-	
+
 	public void circulationUserReservation(ExtendedRequest request, ExtendedResponse response) {
 		Integer loggedUser = request.getLoggedUserId();
 		if (loggedUser == null || loggedUser == 0) {
@@ -174,58 +169,58 @@ public class Handler extends AbstractHandler {
 			} else {
 				request.setAttribute("RESERVATION_USER_ID", 0);
 			}
-			
+
 			this.jspURL = "/jsp/circulation/user_reservation.jsp";
 		}
 		return;
 	}
-	
+
 	public void circulationAccess(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/access_control.jsp";
 		return; 
 	}
-	
+
 	public void circulationUserCards(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/user_cards.jsp";
 		return; 
 	}
-	
+
 	public void acquisitionSupplier(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/acquisition/suppliers.jsp";
 		return; 
 	}
-	
+
 	public void acquisitionRequest(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/acquisition/requests.jsp";
 		return; 
 	}
-	
+
 	public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		SupplierBO bo = SupplierBO.getInstance(schema);
 		List<SupplierDTO> suppliers = bo.list();
 		request.setAttribute("suppliers", suppliers);
-		
+
 		RequestBO rbo = RequestBO.getInstance(schema);
 		List<RequestDTO> requests = rbo.list();
 		request.setAttribute("requests", requests);
-		
+
 		this.jspURL = "/jsp/acquisition/quotations.jsp";
 		return; 
 	}
-	
+
 	public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		SupplierBO bo = SupplierBO.getInstance(schema);
 		List<SupplierDTO> suppliers = bo.list();
 		request.setAttribute("suppliers", suppliers);
-		
+
 		this.jspURL = "/jsp/acquisition/orders.jsp";
 		return; 
 	}
-	
+
 	public void administrationPassword(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/password.jsp";
 		return;
@@ -235,7 +230,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/administration/maintenance.jsp";
 		return;
 	}
-	
+
 	public void administrationPermissions(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/permissions.jsp";
 		return;
@@ -250,27 +245,27 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/administration/z3950_servers.jsp";
 		return;
 	}
-	
+
 	public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/reports.jsp";
 		return;
 	}
-	
+
 	public void administrationUserTypes(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/user_types.jsp";
 		return;
 	}
-	
+
 	public void administrationAccessCards(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/access_cards.jsp";
 		return;
 	}
-	
+
 	public void administrationDatamigration(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/migration.jsp";
 		return;
 	}
-	
+
 	public void administrationTranslations(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/translations.jsp";
 		return;
@@ -285,7 +280,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/administration/form_customization.jsp";
 		return;
 	}
-	
+
 	public void multiSchemaTranslations(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/multi_schema/translations.jsp";
 		return;
@@ -310,14 +305,14 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/help/about_biblivre.jsp";
 		return;
 	}
-	
+
 	public void setup(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/setup.jsp";
 		return;
 	}
-	
+
 	public void test(ExtendedRequest request, ExtendedResponse response) {
-//		this.jspURL = "/jsp/record_tab_config.jsp";
+		//		this.jspURL = "/jsp/record_tab_config.jsp";
 		this.jspURL = "/jsp/upload.jsp";
 		return; 
 	}

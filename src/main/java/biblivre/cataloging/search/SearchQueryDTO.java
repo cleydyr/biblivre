@@ -239,14 +239,11 @@ public class SearchQueryDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("search_mode", this.getSearchMode());
-			json.putOpt("database", this.getDatabase());
-			json.putOpt("material_type", this.getMaterialType());	
-			json.putOpt("holding_search", this.isHoldingSearch());	
-			json.putOpt("terms", this.getTerms());
-		} catch (JSONException e) {
-		}
+		json.putOpt("search_mode", this.getSearchMode());
+		json.putOpt("database", this.getDatabase());
+		json.putOpt("material_type", this.getMaterialType());	
+		json.putOpt("holding_search", this.isHoldingSearch());	
+		json.putOpt("terms", this.getTerms());
 
 		return json;
 	}

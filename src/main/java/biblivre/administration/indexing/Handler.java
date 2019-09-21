@@ -21,8 +21,6 @@ package biblivre.administration.indexing;
 
 import java.util.Date;
 
-import org.json.JSONException;
-
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
@@ -55,11 +53,9 @@ public class Handler extends AbstractHandler {
 		} finally {
 			
 		}
-		
-		try {
-			this.json.put("success", true);
-			this.json.put("time", (end - start) / 1000.0);
-		} catch (JSONException e) {}
+	
+		this.json.put("success", true);
+		this.json.put("time", (end - start) / 1000.0);
 	}
 
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
@@ -77,11 +73,9 @@ public class Handler extends AbstractHandler {
 
 		int progress[] = bo.getReindexProgress(recordType);
 
-		try {
-			this.json.put("success", true);
-			this.json.put("current", progress[0]);
-			this.json.put("total", progress[1]);
-			this.json.put("complete", progress[0] == progress[1]);
-		} catch (JSONException e) {}
+		this.json.put("success", true);
+		this.json.put("current", progress[0]);
+		this.json.put("total", progress[1]);
+		this.json.put("complete", progress[0] == progress[1]);
 	}
 }

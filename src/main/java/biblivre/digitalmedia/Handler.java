@@ -25,8 +25,6 @@ import java.util.Base64;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -73,11 +71,9 @@ public class Handler extends AbstractHandler {
 		}
 
 		String encodedId = this.uploadHelper(schema, file);
-		
+
 		if (StringUtils.isNotBlank(encodedId)) {
-			try {
-				this.json.put("id", encodedId);
-			} catch (JSONException e) {}
+			this.json.put("id", encodedId);
 		} else {
 			this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
 		}
@@ -94,7 +90,7 @@ public class Handler extends AbstractHandler {
 
 			return encodedId.replaceAll("\\\\", "_");
 		}
-		
+
 		return "";
 	}
 

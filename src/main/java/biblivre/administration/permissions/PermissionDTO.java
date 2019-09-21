@@ -21,7 +21,6 @@ package biblivre.administration.permissions;
 
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.circulation.user.UserDTO;
@@ -64,10 +63,7 @@ public class PermissionDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("id", (this.getUser() != null) ? this.getUser().getId() : 0);
-		} catch (JSONException e) {
-		}
+		json.putOpt("id", (this.getUser() != null) ? this.getUser().getId() : 0);
 
 		return json;
 	}

@@ -72,13 +72,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(request.getSchema(), this.recordType);
 		
-		try {
-			this.json.put("search", search.toJSONObject());
+		this.json.put("search", search.toJSONObject());
 
-			for (IndexingGroupDTO group : groups) {
-				this.json.accumulate("indexing_groups", group.toJSONObject());
-			}
-		} catch(JSONException e) { }
+		for (IndexingGroupDTO group : groups) {
+			this.json.accumulate("indexing_groups", group.toJSONObject());
+		}
 	}
 
 	public SearchDTO searchHelper(ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
@@ -133,13 +131,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
 			return;
 		}
 		
-		try {
-			this.json.put("search", search.toJSONObject());
+		this.json.put("search", search.toJSONObject());
 
-			for (IndexingGroupDTO group : groups) {
-				this.json.accumulate("indexing_groups", group.toJSONObject());
-			}
-		} catch(JSONException e) { }
+		for (IndexingGroupDTO group : groups) {
+			this.json.accumulate("indexing_groups", group.toJSONObject());
+		}
 	}
 
 	public SearchDTO paginateHelper(ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
@@ -531,12 +527,8 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 				List<String> list = bo.phraseAutocomplete(datafield, subfield, query);
 				
-				try {
-					for (String term : list) {
-						this.json.append("data", term);
-					}
-				} catch (JSONException e) {
-					
+				for (String term : list) {
+					this.json.append("data", term);
 				}
 				
 				break;
@@ -548,35 +540,17 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 				DTOCollection<AutocompleteDTO> list = bo.recordAutocomplete(datafield, subfield, query);
 				
-				try {
-					this.json.putOpt("data", list.toJSONObject());
-				} catch (JSONException e) {
-					
-				}
+				this.json.putOpt("data", list.toJSONObject());
 				
 				break;
 			}
 			
 			case VOCABULARY: {
 				RecordBO bo = RecordBO.getInstance(schema, RecordType.fromString(type.toString()));
-
-//				List<String> list = bo.phraseAutocomplete("150", "a", query);
-//				
-//				try {
-//					for (String term : list) {
-//						this.json.append("data", term);
-//					}
-//				} catch (JSONException e) {
-//					
-//				}	
 				
 				DTOCollection<AutocompleteDTO> list = bo.recordAutocomplete("150", "a", query);
 				
-				try {
-					this.json.putOpt("data", list.toJSONObject());
-				} catch (JSONException e) {
-					
-				}
+				this.json.putOpt("data", list.toJSONObject());
 			}
 			
 			default:

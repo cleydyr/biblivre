@@ -22,7 +22,6 @@ package biblivre.cataloging.search;
 import java.util.Map;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.cataloging.RecordDTO;
@@ -97,10 +96,10 @@ public class SearchDTO extends DTOCollection<RecordDTO> {
 		if (this.getQuery() == null) {
 			return "";
 		}
-		
+
 		return this.getQuery().getParameters();
 	}
-	
+
 	public Map<Integer, Integer> getIndexingGroupCount() {
 		return this.indexingGroupCount;
 	}
@@ -113,22 +112,19 @@ public class SearchDTO extends DTOCollection<RecordDTO> {
 	public JSONObject toJSONObject() {
 		JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("record_type", this.getRecordType());
-			
-			JSONArray groupCount = new JSONArray();
-			
-			for (Integer key : this.getIndexingGroupCount().keySet()) {
-				JSONObject group = new JSONObject();
-				group.put("group_id", key);
-				group.put("result_count", this.getIndexingGroupCount().get(key));
-				
-				groupCount.put(group);
-			}
+		json.putOpt("record_type", this.getRecordType());
 
-			json.putOpt("indexing_group_count", groupCount);
-		} catch (JSONException e) {
+		JSONArray groupCount = new JSONArray();
+
+		for (Integer key : this.getIndexingGroupCount().keySet()) {
+			JSONObject group = new JSONObject();
+			group.put("group_id", key);
+			group.put("result_count", this.getIndexingGroupCount().get(key));
+
+			groupCount.put(group);
 		}
+
+		json.putOpt("indexing_group_count", groupCount);
 
 		return json;
 	}

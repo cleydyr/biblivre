@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
@@ -68,13 +67,10 @@ public class RecordAttachmentDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 		
-		try {
-			json.putOpt("path", this.getPath());
-			json.putOpt("file", this.getFile());
-			json.putOpt("name", this.getName());
-			json.putOpt("uri", this.getUri());
-		} catch (JSONException e) {
-		}
+		json.putOpt("path", this.getPath());
+		json.putOpt("file", this.getFile());
+		json.putOpt("name", this.getName());
+		json.putOpt("uri", this.getUri());
         
 		return json;
 	}

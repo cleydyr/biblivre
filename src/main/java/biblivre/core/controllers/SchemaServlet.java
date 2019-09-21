@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.administration.setup.State;
@@ -89,17 +88,12 @@ public final class SchemaServlet extends HttpServlet {
 			Writer out = response.getWriter();
 			JSONObject json = new JSONObject();
 
-			try {
-				// TODO: Completar com mais mensagens.
-				// Checking Database
-				if (!SchemasDAO.getInstance("public").testDatabaseConnection()) {
-					json.put("success", false);
-					json.put("status_message", "Falha no acesso ao Banco de Dados");
-				} else {
-					json.put("success", true);
-					json.put("status_message", "Disponível");
-				}
-			} catch (JSONException e) {
+			if (!SchemasDAO.getInstance("public").testDatabaseConnection()) {
+				json.put("success", false);
+				json.put("status_message", "Falha no acesso ao Banco de Dados");
+			} else {
+				json.put("success", true);
+				json.put("status_message", "Disponível");
 			}
 
 			out.write(json.toString());

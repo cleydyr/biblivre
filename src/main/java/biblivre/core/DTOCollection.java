@@ -21,7 +21,6 @@ package biblivre.core;
 
 import java.util.LinkedList;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implements IFJson  {
@@ -64,12 +63,10 @@ public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implemen
 			json = new JSONObject();
 		}
 		
-		try {
-			json.putOpt("id", this.getId());
-			for (T dto : this) {
-				json.append("data", dto.toJSONObject());
-			}
-		} catch (JSONException e) {
+		json.putOpt("id", this.getId());
+
+		for (T dto : this) {
+			json.append("data", dto.toJSONObject());
 		}
 
 		return json;

@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.z3950;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
@@ -61,12 +60,9 @@ public class Z3950RecordDTO extends AbstractDTO {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("record", this.getRecord().toJSONObject());
-			json.putOpt("server_name", this.getServer().getName());
-			json.putOpt("id", this.getAutogenId());
-		} catch (JSONException e) {
-		}
+		json.putOpt("record", this.getRecord().toJSONObject());
+		json.putOpt("server_name", this.getServer().getName());
+		json.putOpt("id", this.getAutogenId());
 
 		return json;
 	}

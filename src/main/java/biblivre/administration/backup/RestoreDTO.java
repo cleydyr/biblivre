@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
@@ -90,17 +89,13 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	public void setSchemas(String schemas) {
 		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
 
-		try {
-			JSONObject json = new JSONObject(schemas);
-		
-			Iterator<String> iterator = json.keys();
+		JSONObject json = new JSONObject(schemas);
 	
-			while (iterator.hasNext()) {
-				String key = iterator.next();
-				map.put(key, Pair.<String, String>fromJSONObject(json.getJSONObject(key)));
-			}
+		Iterator<String> iterator = json.keys();
 
-		} catch (JSONException e) {
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			map.put(key, Pair.<String, String>fromJSONObject(json.getJSONObject(key)));
 		}
 
 		this.schemas = map;
@@ -166,22 +161,19 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("schemas", this.getSchemas());
-			json.putOpt("type", this.getType());
-			json.putOpt("backup_scope", this.getBackupScope());
-			
-			if (this.getCreated() != null) {
-				json.putOpt("created", Constants.DEFAULT_DATE_FORMAT_TIMEZONE.format(this.getCreated()));
-			}
-			
-			if (this.getBackup() != null) {
-				json.putOpt("file", this.getBackup().getName());
-			}
-
-			json.putOpt("valid", this.isValid());
-		} catch (JSONException e) {
+		json.putOpt("schemas", this.getSchemas());
+		json.putOpt("type", this.getType());
+		json.putOpt("backup_scope", this.getBackupScope());
+		
+		if (this.getCreated() != null) {
+			json.putOpt("created", Constants.DEFAULT_DATE_FORMAT_TIMEZONE.format(this.getCreated()));
 		}
+		
+		if (this.getBackup() != null) {
+			json.putOpt("file", this.getBackup().getName());
+		}
+
+		json.putOpt("valid", this.isValid());
 
 		return json;
 	}

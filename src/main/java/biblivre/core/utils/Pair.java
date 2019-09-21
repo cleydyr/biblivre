@@ -22,7 +22,6 @@ package biblivre.core.utils;
 
 import java.io.Serializable;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONString;
 
@@ -36,7 +35,7 @@ public class Pair<L, R> implements Serializable, JSONString {
 		this.left = left;
 		this.right = right;
 	}
-	
+
 	public R getRight() {
 		return this.right;
 	}
@@ -63,7 +62,7 @@ public class Pair<L, R> implements Serializable, JSONString {
 		if (o1 == null) {
 			return o2 == null;
 		}
-		
+
 		return o1.equals(o2);
 	}
 
@@ -98,26 +97,17 @@ public class Pair<L, R> implements Serializable, JSONString {
 	public String toJSONString() {
 		JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("left", this.getLeft());
-			json.putOpt("right", this.getRight());
-		} catch (JSONException e) {
-
-		}
+		json.putOpt("left", this.getLeft());
+		json.putOpt("right", this.getRight());
 
 		return json.toString();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <A, B> Pair<A, B> fromJSONObject(JSONObject json) {
-		try {
-			A left = (A)json.get("left");
-			B right = (B)json.get("right");
+		A left = (A)json.get("left");
+		B right = (B)json.get("right");
 
-			return new Pair<A, B>(left, right);
-		} catch (JSONException e) {
-
-		}
-		return null;
+		return new Pair<A, B>(left, right);
 	}
 }

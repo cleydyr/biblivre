@@ -77,7 +77,7 @@ public class MarcUtils {
 	public static Record iso2709ToRecord(String iso2709) {
 		return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));
 	}
-	
+
 	public static Record iso2709ToRecord(byte[] iso2709) {
 		Record record = null;
 
@@ -198,31 +198,28 @@ public class MarcUtils {
 			return json;
 		}
 
-		try {
-			json.putOpt("000", record.getLeader().marshal());
+		json.putOpt("000", record.getLeader().marshal());
 
-			ArrayList<ControlField> controlFields = (ArrayList<ControlField>) record.getControlFields();
+		ArrayList<ControlField> controlFields = (ArrayList<ControlField>) record.getControlFields();
 
-			for (ControlField cf : controlFields) {
-				json.putOpt(cf.getTag(), cf.getData());
+		for (ControlField cf : controlFields) {
+			json.putOpt(cf.getTag(), cf.getData());
+		}
+
+		ArrayList<DataField> dataFields = (ArrayList<DataField>) record.getDataFields();
+		for (DataField df : dataFields) {
+			JSONObject datafieldJson = new JSONObject();
+
+			datafieldJson.putOpt("ind1", df.getIndicator1());
+			datafieldJson.putOpt("ind2", df.getIndicator2());
+
+			ArrayList<Subfield> subFields = (ArrayList<Subfield>) df.getSubfields();
+
+			for (Subfield sf : subFields) {
+				datafieldJson.append(String.valueOf(sf.getCode()), sf.getData());
 			}
 
-			ArrayList<DataField> dataFields = (ArrayList<DataField>) record.getDataFields();
-			for (DataField df : dataFields) {
-				JSONObject datafieldJson = new JSONObject();
-
-				datafieldJson.putOpt("ind1", df.getIndicator1());
-				datafieldJson.putOpt("ind2", df.getIndicator2());
-
-				ArrayList<Subfield> subFields = (ArrayList<Subfield>) df.getSubfields();
-
-				for (Subfield sf : subFields) {
-					datafieldJson.append(String.valueOf(sf.getCode()), sf.getData());
-				}
-
-				json.append(df.getTag(), datafieldJson);
-			}
-		} catch (JSONException je) {
+			json.append(df.getTag(), datafieldJson);
 		}
 
 		return json;
@@ -464,12 +461,12 @@ public class MarcUtils {
 		record.addVariableField(field);
 		return record;
 	}
-	
+
 	public static Record removeAttachment(Record record, String uri, String description) throws Exception {
 		VariableField dataFieldToRemove = null;
-		
+
 		MarcDataReader marcReader = new MarcDataReader(record);
-		
+
 		for (DataField df : marcReader.getDataFields(MarcConstants.ELECTRONIC_LOCATION)) {
 			String sfName = marcReader.getFirstSubfieldData(df, 'y');
 			String sfUri = marcReader.getFirstSubfieldData(df, 'u');
@@ -477,17 +474,17 @@ public class MarcUtils {
 			if (StringUtils.isBlank(sfName)) {
 				sfName = sfUri;
 			}
-			
+
 			if (description.equals(sfName) && uri.equals(sfUri)) {
 				dataFieldToRemove = df;
 				break;
 			}
 		}
-		
+
 		if (dataFieldToRemove != null) {
 			record.removeVariableField(dataFieldToRemove);
 		}
-		
+
 		return record;
 	}
 
@@ -526,11 +523,11 @@ public class MarcUtils {
 			field = factory.newControlField("004");
 			holding.addVariableField(field);
 		}
-		
+
 		field.setData(recordId.toString());
 		return holding;
 	}
-	
+
 	public static Record setCF005(Record record) {
 		return MarcUtils.setCF005(record, new Date());
 	}
