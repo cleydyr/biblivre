@@ -10,3 +10,4 @@ mvn install:install-file -Dfile=z3950server-1.0.2.jar -DgroupId=br.org.biblivre 
 mvn install:install-file -Dfile=itext-4.2.1.jar -DgroupId=com.lowagie.legacy -DartifactId=itext -Dversion=4.2.1 -Dpackaging=jar &
 mvn install:install-file -Dfile=jdbm-1.0.jar -DgroupId=org.apache.jdbm -DartifactId=jdbm -Dversion=1.0 -Dpackaging=jar &
 wait
+echo "Finished!"
