@@ -23,9 +23,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
-
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.administration.reports.dto.CustomCountDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -34,6 +33,10 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
+import biblivre.administration.reports.dto.BaseReportDto;
+import biblivre.administration.reports.dto.CustomCountDto;
+
+@Component
 public class CustomCountReport extends BaseBiblivreReport implements Comparator<String[]> {
 
 	private Integer index;
@@ -59,7 +62,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		} else {
 			this.index = 0; //marc field
 		}
-		return ReportsBO.getInstance(this.getSchema()).getCustomCountData(dto);
+		return reportsBOFactory.getInstance(this.getSchema()).getCustomCountData(dto);
 	}
 
 	@Override
@@ -157,4 +160,6 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		
 	}
 
+	@Autowired
+	private ReportsBOFactory reportsBOFactory;
 }

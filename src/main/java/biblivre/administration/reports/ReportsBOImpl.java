@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
+import org.springframework.stereotype.Service;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
@@ -20,26 +21,21 @@ import biblivre.cataloging.bibliographic.BiblioRecordDAO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
-import biblivre.core.AbstractBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 
-public class ReportsBO extends AbstractBO {
-	
+public class ReportsBOImpl {
 	
 	private ReportsDAO dao;
+	private String schema;
 
-	public static ReportsBO getInstance(String schema) {
-		ReportsBO bo = AbstractBO.getInstance(ReportsBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = ReportsDAO.getInstance(schema);
-		}
-		
-		return bo;
+	public ReportsBOImpl(ReportsDAO dao, String schema) {
+		this.dao = dao;
+		this.schema = schema;
 	}
+
 
 	public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
 		ReportType type = dto.getType();
@@ -50,6 +46,11 @@ public class ReportsBO extends AbstractBO {
 	}
 
 	
+	private String getSchema() {
+		return this.schema;
+	}
+
+
 	public TreeMap<String, Set<Integer>> searchAuthors(String author, RecordDatabase database) {
 		return this.dao.searchAuthors(author, database);
 	}

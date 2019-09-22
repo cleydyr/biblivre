@@ -20,7 +20,12 @@
 package biblivre.administration.reports;
 
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+import biblivre.administration.reports.configuration.ReportsConfiguration;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.lending.LendingListDTO;
 import biblivre.circulation.user.UserDTO;
@@ -33,6 +38,13 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
 
 public class Handler extends AbstractHandler {
+
+	public Handler() {
+		ApplicationContext context = new AnnotationConfigApplicationContext(
+				ReportsConfiguration.class);
+
+		this.reportsBOFactory = (ReportsBOFactory) context.getBean("reportsBOFactory"); 
+	}
 
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 
@@ -57,7 +69,7 @@ public class Handler extends AbstractHandler {
 
 	public void generate(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		ReportsBO bo = ReportsBO.getInstance(schema);
+		ReportsBOImpl bo = reportsBOFactory.getInstance(schema);
 
 		ReportsDTO dto = null;
 		try {
@@ -123,4 +135,6 @@ public class Handler extends AbstractHandler {
 		return dto;
 	}
 
+	@Autowired
+	private ReportsBOFactory reportsBOFactory;
 }
