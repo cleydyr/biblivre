@@ -102,18 +102,20 @@ public abstract class Controller {
 		}
 
 		try {
+			Class<?> handlerClass = Class.forName("biblivre." + module + ".Handler");
+
 			try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
 					ReportsConfiguration.class)) {
 
 				this.handler = (AbstractHandler) context.getBean(
-						Class.forName("biblivre." + module + ".Handler"));
+						handlerClass);
 			}
 			catch (Exception e) {}
 
 			if (this.handler == null) {
 				System.out.println("null handler...");
 
-				this.handler = (AbstractHandler) this.handlerClass.newInstance();
+				this.handler = (AbstractHandler) handlerClass.newInstance();
 			}
 
 			Class<?> validatorClass = Class.forName("biblivre." + module + ".Validator");
