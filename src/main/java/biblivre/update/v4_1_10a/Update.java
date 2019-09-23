@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.PreparedStatementUtil;
@@ -12,6 +14,7 @@ import biblivre.core.translations.Translations;
 import biblivre.core.utils.StringPool;
 import biblivre.update.UpdateService;
 
+@Service("v4_1_10a")
 public class Update implements UpdateService {
 
 	@Override

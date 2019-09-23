@@ -2,9 +2,12 @@ package biblivre.update.v4_0_6b;
 
 import java.sql.Connection;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 
+@Service("v4_0_6b")
 public class Update implements UpdateService {
 
 	@Override

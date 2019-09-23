@@ -1,7 +1,10 @@
 package biblivre.update.v4_0_10b;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.update.UpdateService;
 
+@Service("v4_0_10b")
 public class Update implements UpdateService {
 
 	@Override

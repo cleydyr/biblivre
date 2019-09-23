@@ -6,10 +6,13 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.core.configurations.Configurations;
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 
+@Service("v5_0_1")
 public class Update implements UpdateService {
 
 	@Override

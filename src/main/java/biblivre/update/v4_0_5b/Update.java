@@ -6,10 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.core.PreparedStatementUtil;
 import biblivre.core.utils.TextUtils;
 import biblivre.update.UpdateService;
 
+@Service("v4_0_5b")
 public class Update implements UpdateService {
 
 	@Override

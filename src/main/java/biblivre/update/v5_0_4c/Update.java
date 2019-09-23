@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.core.PreparedStatementUtil;
 import biblivre.update.UpdateService;
 
+@Service("v5_0_4c")
 public class Update implements UpdateService {
 
 

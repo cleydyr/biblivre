@@ -5,8 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.update.UpdateService;
 
+@Service("v4_0_9b")
 public class Update implements UpdateService {
 
 	@Override

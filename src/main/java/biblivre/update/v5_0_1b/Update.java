@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 
+@Service("v5_0_1b")
 public class Update implements UpdateService {
 
 	@Override

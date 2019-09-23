@@ -3,12 +3,15 @@ package biblivre.update.v4_1_10;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Service;
+
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 
+@Service("v4_1_10")
 public class Update implements UpdateService {
 
 	@Override

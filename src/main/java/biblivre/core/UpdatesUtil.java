@@ -28,12 +28,15 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.update.UpdateService;
+import biblivre.update.UpdateServiceConfiguration;
+import biblivre.update.UpdateServiceLocator;
 
 public class UpdatesUtil {
 
@@ -45,12 +48,14 @@ public class UpdatesUtil {
 		UpdatesDAO dao = UpdatesDAO.getInstance(Constants.GLOBAL_SCHEMA);
 
 		Connection con = null;
-		try {
+		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+				UpdateServiceConfiguration.class)) {
+
 			Set<String> installedVersions = dao.getInstalledVersions();
 
-			ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
+			UpdateServiceLocator serviceLocator = context.getBean(UpdateServiceLocator.class);
 
-			for (UpdateService updateService : serviceLoader) {
+			for (UpdateService updateService : serviceLocator.getUpdateServices()) {
 				if (!installedVersions.contains(updateService.getVersion())) {
 					con = dao.beginUpdate();
 
