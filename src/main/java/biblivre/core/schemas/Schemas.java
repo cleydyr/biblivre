@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 import biblivre.administration.setup.State;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.StaticBO;
-import biblivre.core.Updates;
+import biblivre.core.UpdatesUtil;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
@@ -92,7 +92,7 @@ public class Schemas extends StaticBO {
 
 		for (SchemaDTO dto : Schemas.schemas) {
 			if (!dto.isDisabled()) {
-				Updates.schemaUpdate(dto.getSchema());
+				UpdatesUtil.schemaUpdate(dto.getSchema());
 			}
 		}
 

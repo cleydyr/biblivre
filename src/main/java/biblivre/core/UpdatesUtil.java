@@ -35,7 +35,7 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.update.UpdateService;
 
-public class Updates {
+public class UpdatesUtil {
 
 	public static String getVersion() {
 		return Constants.BIBLIVRE_VERSION;
@@ -124,8 +124,8 @@ public class Updates {
 	}
 
 	public static String checkUpdates() {
-		String uid = Updates.getUID();
-		String version = Updates.getVersion();
+		String uid = UpdatesUtil.getUID();
+		String version = UpdatesUtil.getVersion();
 
 		PostMethod updatePost = new PostMethod(Constants.UPDATE_URL);
 		updatePost.addParameter("uid", TextUtils.biblivreEncrypt(uid));

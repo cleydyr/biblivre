@@ -30,8 +30,8 @@ public class BiblivreInitializer {
 	public synchronized static void initialize() {
 		if (!BiblivreInitializer.initialized) {
 			try {
-				Updates.fixPostgreSQL81();
-				Updates.globalUpdate();
+				UpdatesUtil.fixPostgreSQL81();
+				UpdatesUtil.globalUpdate();
 
 				BiblivreInitializer.Z3950server = new Z3950ServerBOAdapter();
 				BiblivreInitializer.Z3950server.startServer();

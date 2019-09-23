@@ -33,7 +33,7 @@ import biblivre.administration.indexing.IndexingBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.Updates;
+import biblivre.core.UpdatesUtil;
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPointTypes;
 import biblivre.core.auth.AuthorizationPoints;
@@ -75,7 +75,7 @@ public class Handler extends AbstractHandler {
 				request.setSessionAttribute(schema, "system_warning_password", warningPassword);
 
 				(new Thread(() -> {
-					String latestVersion = Updates.checkUpdates();
+					String latestVersion = UpdatesUtil.checkUpdates();
 					latestVersion = StringUtils.chomp(latestVersion);
 
 					if (StringUtils.isNotBlank(latestVersion) &&
