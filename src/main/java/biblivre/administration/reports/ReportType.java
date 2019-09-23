@@ -19,25 +19,27 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
+import static biblivre.administration.reports.ReportConstants.*;
+
 public enum ReportType {
 	
-	ACQUISITION("1", "rp01_", true),
-	SUMMARY("2", "rp02_", false),
-	DEWEY("3", "rp03_", false),
-	HOLDING_CREATION_BY_DATE("4", "rp04_", true),
-	AUTHOR_BIBLIOGRAPHY("5", "rp05_", false),
-	USER("6", "rp06_", false),
-	ALL_USERS("7", "rp07_", false),
-	LATE_LENDINGS("8", "rp08_", false),
-	SEARCHES_BY_DATE("9", "rp09_", true),
-	LENDINGS_BY_DATE("10", "rp10_", true),
-	RESERVATION("12", "rp12_", false),
-	ASSET_HOLDING("13", "rp13_", false),
-	ASSET_HOLDING_FULL("14", "rp14_", false),
-	TOPOGRAPHIC_FULL("15", "rp15_", false),
-	ASSET_HOLDING_BY_DATE("16", "rp16_", true),
-	CUSTOM_COUNT("17", "rp17_", false);
-	
+	ACQUISITION(ACQUISITION_ID, "rp01_", true),
+	SUMMARY(SUMMARY_ID, "rp02_", false),
+	DEWEY(DEWEY_ID, "rp03_", false),
+	HOLDING_CREATION_BY_DATE(HOLDING_CREATION_BY_DATE_ID, "rp04_", true),
+	AUTHOR_BIBLIOGRAPHY(AUTHOR_BIBLIOGRAPHY_ID, "rp05_", false),
+	USER(USER_ID, "rp06_", false),
+	ALL_USERS(ALL_USERS_ID, "rp07_", false),
+	LATE_LENDINGS(LATE_LENDINGS_ID, "rp08_", false),
+	SEARCHES_BY_DATE(SEARCHES_BY_DATE_ID, "rp09_", true),
+	LENDINGS_BY_DATE(LENDINGS_BY_DATE_ID, "rp10_", true),
+	RESERVATION(RESERVATION_ID, "rp12_", false),
+	ASSET_HOLDING(ASSET_HOLDING_ID, "rp13_", false),
+	ASSET_HOLDING_FULL(ASSET_HOLDING_FULL_ID, "rp14_", false),
+	TOPOGRAPHIC_FULL(TOPOGRAPHIC_FULL_ID, "rp15_", false),
+	ASSET_HOLDING_BY_DATE(ASSET_HOLDING_BY_DATE_ID, "rp16_", true),
+	CUSTOM_COUNT(CUSTOM_COUNT_ID, "rp17_", false);
+
 	private String id;
 	private String name;
 	private boolean timePeriod;

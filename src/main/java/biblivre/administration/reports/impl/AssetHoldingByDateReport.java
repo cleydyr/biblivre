@@ -21,6 +21,9 @@ package biblivre.administration.reports.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -29,13 +32,16 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.BaseBiblivreReport;
+import biblivre.administration.reports.ReportConstants;
 import biblivre.administration.reports.ReportsDAO;
 import biblivre.administration.reports.ReportsDTO;
 import biblivre.administration.reports.dto.AssetHoldingByDateDto;
 import biblivre.administration.reports.dto.BaseReportDto;
 
+@Service(ReportConstants.ASSET_HOLDING_BY_DATE_ID)
 public class AssetHoldingByDateReport extends BaseBiblivreReport {
 
+	@Autowired
 	public AssetHoldingByDateReport(ReportsDAO reportsDAO) {
 		super(reportsDAO);
 	}

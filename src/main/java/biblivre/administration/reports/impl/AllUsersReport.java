@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.lowagie.text.Document;
@@ -34,13 +35,16 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 import biblivre.administration.reports.BaseBiblivreReport;
+import biblivre.administration.reports.ReportConstants;
 import biblivre.administration.reports.ReportsDAO;
 import biblivre.administration.reports.ReportsDTO;
 import biblivre.administration.reports.dto.AllUsersReportDto;
 import biblivre.administration.reports.dto.BaseReportDto;
 
+@Component(ReportConstants.ALL_USERS_ID)
 public class AllUsersReport extends BaseBiblivreReport {
 
+	@Autowired
 	public AllUsersReport(ReportsDAO reportsDAO) {
 		super(reportsDAO);
 	}
