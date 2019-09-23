@@ -35,8 +35,8 @@ import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.update.UpdateService;
-import biblivre.update.UpdateServiceConfiguration;
 import biblivre.update.UpdateServiceLocator;
+import biblivre.update.configuration.UpdateServiceConfiguration;
 
 public class UpdatesUtil {
 
