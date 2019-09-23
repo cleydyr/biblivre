@@ -62,14 +62,18 @@ public abstract class Controller {
 		String schema = null;
 		String module = null;
 		String action = null;
+		Class<?> handlerClass = null;
 
 		this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 		this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+
 
 		try {
 			schema = this.xRequest.getSchema();
 			module = this.xRequest.getString("module", (String) this.xRequest.getAttribute("module"));
 			action = this.xRequest.getString("action", (String) this.xRequest.getAttribute("action"));
+
+			handlerClass = Class.forName("biblivre." + module + ".Handler");
 
 			// In case of invalid pack and method, send user to index page
 			if (StringUtils.isBlank(module) || StringUtils.isBlank(action)) {
@@ -99,10 +103,12 @@ public abstract class Controller {
 			// Exception thrown in abo.authorize
 			this.doAuthorizationError();
 			return;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		try {
-			Class<?> handlerClass = Class.forName("biblivre." + module + ".Handler");
 
 			try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
 					ReportsConfiguration.class)) {
@@ -155,9 +161,9 @@ public abstract class Controller {
 			Method method;
 
 			try {
-				method = this.handlerClass.getDeclaredMethod(TextUtils.camelCase(action), ExtendedRequest.class, ExtendedResponse.class);
+				method = handlerClass.getDeclaredMethod(TextUtils.camelCase(action), ExtendedRequest.class, ExtendedResponse.class);
 			} catch (NoSuchMethodException e) {
-				method = this.handlerClass.getSuperclass().getDeclaredMethod(TextUtils.camelCase(action), ExtendedRequest.class, ExtendedResponse.class);
+				method = handlerClass.getSuperclass().getDeclaredMethod(TextUtils.camelCase(action), ExtendedRequest.class, ExtendedResponse.class);
 			}
 
 			method.invoke(this.handler, this.xRequest, this.xResponse);
