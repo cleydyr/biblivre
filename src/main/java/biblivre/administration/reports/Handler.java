@@ -20,7 +20,6 @@
 package biblivre.administration.reports;
 
 import org.json.JSONException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.administration.reports.configuration.ReportsConfiguration;
@@ -134,6 +133,5 @@ public class Handler extends AbstractHandler {
 		return dto;
 	}
 
-	@Autowired
 	private ReportsBOFactory reportsBOFactory;
 }

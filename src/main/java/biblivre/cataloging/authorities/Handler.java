@@ -26,7 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.administration.reports.ReportsBO;
@@ -118,6 +117,5 @@ public class Handler extends CatalogingHandler {
 		}
 	}
 
-	@Autowired
 	private ReportsBOFactory reportsBOFactory;
 }
