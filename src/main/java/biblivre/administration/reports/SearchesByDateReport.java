@@ -31,11 +31,15 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class SearchesByDateReport extends BaseBiblivreReport {
 
+	public SearchesByDateReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
-		return ReportsDAO.getInstance(this.getSchema()).getSearchesByDateReportData(initialDate, finalDate);
+		return reportsDAO.getSearchesByDateReportData(initialDate, finalDate);
 	}
 
 	@Override

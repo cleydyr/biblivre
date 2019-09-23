@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import biblivre.administration.reports.dto.AllUsersReportDto;
-import biblivre.administration.reports.dto.BaseReportDto;
+import org.springframework.stereotype.Component;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -34,12 +33,18 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
+import biblivre.administration.reports.dto.AllUsersReportDto;
+import biblivre.administration.reports.dto.BaseReportDto;
+
 public class AllUsersReport extends BaseBiblivreReport {
+
+	public AllUsersReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
-		return dao.getAllUsersReportData();
+		return this.reportsDAO.getAllUsersReportData();
 	}
 
 	@Override
@@ -180,5 +185,4 @@ public class AllUsersReport extends BaseBiblivreReport {
 			return null;
 		}
 	}
-	
 }

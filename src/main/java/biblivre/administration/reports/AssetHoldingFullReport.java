@@ -44,13 +44,15 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
 
 	private Boolean topographic;
 
-	public AssetHoldingFullReport(Boolean topographic) {
+	public AssetHoldingFullReport(Boolean topographic, ReportsDAO reportsDAO) {
+		super(reportsDAO);
+
 		this.topographic = topographic;
 	}
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingFullReportData();
+		return reportsDAO.getAssetHoldingFullReportData();
 	}
 
 	@Override

@@ -22,26 +22,24 @@ package biblivre.administration.reports;
 
 public class BiblivreReportFactory {
 
-	private BiblivreReportFactory(){}
-
-	public static IBiblivreReport getBiblivreReport(ReportType type) {
+	public static IBiblivreReport getBiblivreReport(ReportType type, ReportsDAO dao) {
 		switch (type) {
-			case SEARCHES_BY_DATE: return new SearchesByDateReport(); 
-			case LENDINGS_BY_DATE: return new LendingsByDateReport(); 
-			case ALL_USERS: return new AllUsersReport(); 
-			case DEWEY: return new DeweyReport(); 
-			case LATE_LENDINGS: return new LateReturnLendingsReport(); 
-			case AUTHOR_BIBLIOGRAPHY: return new BibliographyReport(); 
-			case HOLDING_CREATION_BY_DATE: return new HoldingCreationByDatetReport();
-			case ACQUISITION: return new RequestsByDateReport(); 
-			case SUMMARY: return new SummaryReport(); 
-			case USER: return new UserReport();
-			case RESERVATION: return new ReservationReport(); 
-			case ASSET_HOLDING: return new AssetHoldingReport(); 
-			case ASSET_HOLDING_FULL: return new AssetHoldingFullReport(false); 
-			case TOPOGRAPHIC_FULL: return new AssetHoldingFullReport(true); 
-			case ASSET_HOLDING_BY_DATE: return new AssetHoldingByDateReport(); 
-			case CUSTOM_COUNT: return new CustomCountReport();
+			case SEARCHES_BY_DATE: return new SearchesByDateReport(dao); 
+			case LENDINGS_BY_DATE: return new LendingsByDateReport(dao); 
+			case ALL_USERS: return new AllUsersReport(dao); 
+			case DEWEY: return new DeweyReport(dao); 
+			case LATE_LENDINGS: return new LateReturnLendingsReport(dao); 
+			case AUTHOR_BIBLIOGRAPHY: return new BibliographyReport(dao); 
+			case HOLDING_CREATION_BY_DATE: return new HoldingCreationByDatetReport(dao);
+			case ACQUISITION: return new RequestsByDateReport(dao); 
+			case SUMMARY: return new SummaryReport(dao); 
+			case USER: return new UserReport(dao);
+			case RESERVATION: return new ReservationReport(dao); 
+			case ASSET_HOLDING: return new AssetHoldingReport(dao); 
+			case ASSET_HOLDING_FULL: return new AssetHoldingFullReport(false, dao); 
+			case TOPOGRAPHIC_FULL: return new AssetHoldingFullReport(true, dao); 
+			case ASSET_HOLDING_BY_DATE: return new AssetHoldingByDateReport(dao); 
+			case CUSTOM_COUNT: return new CustomCountReport(dao);
 			default:
 				return null;
 		}

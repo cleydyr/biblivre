@@ -26,8 +26,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.administration.reports.ReportsBO;
+import biblivre.administration.reports.ReportsBOFactory;
+import biblivre.administration.reports.configuration.ReportsConfiguration;
 import biblivre.cataloging.CatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -41,6 +44,12 @@ public class Handler extends CatalogingHandler {
 	
 	public Handler() {
 		super(RecordType.AUTHORITIES, MaterialType.AUTHORITIES);
+
+		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+				ReportsConfiguration.class)) {
+
+			this.reportsBOFactory = (ReportsBOFactory) context.getBean("reportsBOFactory");
+		}
 	}
 	
 	@Override
@@ -78,7 +87,7 @@ public class Handler extends CatalogingHandler {
 			return;
 		}
 
-		ReportsBO bo = ReportsBO.getInstance(schema);
+		ReportsBO bo = reportsBOFactory.getInstance(schema);
 		//Removed pagination (limit and offset) from method to fix a bug in the Reports/Report By Author functionality.
 		TreeMap<String, Set<Integer>> result = bo.searchAuthors(query, db);
 
@@ -107,11 +116,6 @@ public class Handler extends CatalogingHandler {
 			e.printStackTrace();
 		}
 	}
-	
-//	@Override
-//	public void paginate(ExtendedRequest request, ExtendedResponse response) {
-//		this.search(request, response);
-//	}
 
-
+	private ReportsBOFactory reportsBOFactory;
 }

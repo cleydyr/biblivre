@@ -133,6 +133,7 @@ public abstract class Controller {
 		} catch (Exception e) {
 			// ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, etc.
 			this.doError("error.invalid_handler", e);
+			e.printStackTrace();
 			return;
 		}
 		

@@ -31,12 +31,15 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class LendingsByDateReport extends BaseBiblivreReport {
 
+	public LendingsByDateReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
-		return dao.getLendingsByDateReportData(initialDate, finalDate);
+		return reportsDAO.getLendingsByDateReportData(initialDate, finalDate);
 	}
 
 	@Override

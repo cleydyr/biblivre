@@ -49,6 +49,10 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class UserReport extends BaseBiblivreReport {
 	
+	public UserReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
