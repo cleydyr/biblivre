@@ -11,7 +11,6 @@ import java.util.TreeMap;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
-import org.springframework.stereotype.Service;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
@@ -26,7 +25,7 @@ import biblivre.core.translations.TranslationsMap;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 
-public class ReportsBOImpl {
+public class ReportsBOImpl implements ReportsBO {
 	
 	private ReportsDAO dao;
 	private String schema;

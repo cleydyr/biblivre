@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 public class ReportsBoFactoryImpl implements ReportsBOFactory {
 
 	@Override
-	public ReportsBOImpl getInstance(String schema) {
-		ReportsBOImpl reportsBOImpl = new ReportsBOImpl(ReportsDAO.getInstance(schema), schema);
+	public ReportsBO getInstance(String schema) {
+		ReportsBO reportsBOImpl = new ReportsBOImpl(ReportsDAO.getInstance(schema), schema);
 
 		return reportsBOImpl;
 	}
