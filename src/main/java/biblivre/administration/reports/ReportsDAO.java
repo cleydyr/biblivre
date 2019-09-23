@@ -23,6 +23,8 @@ public interface ReportsDAO {
 
 	DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
+	String getSchema();
+
 	SummaryReportDto getSummaryReportData(RecordDatabase database);
 
 	DeweyReportDto getDeweyReportData(RecordDatabase db, String datafield, int digits);

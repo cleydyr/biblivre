@@ -34,6 +34,10 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class BibliographyReport extends BaseBiblivreReport {
 
+	public BibliographyReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		String ids = dto.getRecordIds();
@@ -44,7 +48,7 @@ public class BibliographyReport extends BaseBiblivreReport {
 				idList.add(Integer.valueOf(idArray[i].trim()));
 			} catch (Exception e) {}
 		}
-		return reportsDAOFactory.getInstance(this.getSchema()).getBibliographyReportData(dto.getAuthorName(), idList.toArray(new Integer[]{}));
+		return reportsDAO.getBibliographyReportData(dto.getAuthorName(), idList.toArray(new Integer[]{}));
 	}
 
 	@Override

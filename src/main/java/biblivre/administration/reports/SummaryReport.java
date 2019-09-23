@@ -36,6 +36,10 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class SummaryReport extends BaseBiblivreReport implements Comparator<String[]> {
 
+	public SummaryReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	private Integer index;
 
 	@Override
@@ -50,7 +54,7 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
 			case 3 : this.index = 1; break; //author
 			default : this.index = 6; //dewey
 		}
-		return reportsDAOFactory.getInstance(this.getSchema()).getSummaryReportData(dto.getDatabase());
+		return reportsDAO.getSummaryReportData(dto.getDatabase());
 	}
 
 	@Override

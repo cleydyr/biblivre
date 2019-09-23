@@ -33,9 +33,13 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class RequestsByDateReport extends BaseBiblivreReport {
 
+	public RequestsByDateReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		ReportsDAO dao = reportsDAOFactory.getInstance(this.getSchema());
+		ReportsDAO dao = reportsDAO;
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
 		return dao.getRequestsByDateReportData(initialDate, finalDate);

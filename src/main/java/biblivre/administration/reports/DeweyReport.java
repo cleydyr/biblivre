@@ -37,11 +37,15 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class DeweyReport extends BaseBiblivreReport implements Comparator<String[]> {
 
+	public DeweyReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	private Integer index = 0;
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		return reportsDAOFactory.getInstance(this.getSchema()).getDeweyReportData(dto.getDatabase(), dto.getDatafield(), dto.getDigits());
+		return reportsDAO.getDeweyReportData(dto.getDatabase(), dto.getDatafield(), dto.getDigits());
 	}
 
 	@Override

@@ -34,9 +34,13 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class ReservationReport extends BaseBiblivreReport {
 
+	public ReservationReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		return reportsDAOFactory.getInstance(this.getSchema()).getReservationReportData();
+		return reportsDAO.getReservationReportData();
 	}
 
 	@Override

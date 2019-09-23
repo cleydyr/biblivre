@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -36,10 +38,13 @@ import biblivre.administration.reports.dto.BaseReportDto;
 
 public class AllUsersReport extends BaseBiblivreReport {
 
+	public AllUsersReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		ReportsDAO dao = reportsDAOFactory.getInstance(this.getSchema());
-		return dao.getAllUsersReportData();
+		return this.reportsDAO.getAllUsersReportData();
 	}
 
 	@Override

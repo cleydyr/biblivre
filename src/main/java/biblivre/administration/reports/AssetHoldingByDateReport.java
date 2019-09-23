@@ -33,11 +33,15 @@ import biblivre.administration.reports.dto.BaseReportDto;
 
 public class AssetHoldingByDateReport extends BaseBiblivreReport {
 	
+	public AssetHoldingByDateReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
-		return reportsDAOFactory.getInstance(this.getSchema()).getAssetHoldingByDateReportData(initialDate, finalDate);
+		return reportsDAO.getAssetHoldingByDateReportData(initialDate, finalDate);
 	}
 
 	@Override

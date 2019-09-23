@@ -15,7 +15,7 @@ public class ReportsConfiguration {
 
 	@Bean
 	public ReportsBOFactory reportsBOFactory() {
-		return new ReportsBOFactoryImpl();
+		return new ReportsBOFactoryImpl(reportsDAOFactory());
 	}
 
 	@Bean

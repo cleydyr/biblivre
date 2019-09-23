@@ -33,9 +33,13 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class LateReturnLendingsReport extends BaseBiblivreReport {
 
+	public LateReturnLendingsReport(ReportsDAO reportsDAO) {
+		super(reportsDAO);
+	}
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		return reportsDAOFactory.getInstance(this.getSchema()).getLateReturnLendingsReportData();
+		return reportsDAO.getLateReturnLendingsReportData();
 	}
 
 	@Override

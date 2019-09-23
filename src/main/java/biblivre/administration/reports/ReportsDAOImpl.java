@@ -73,6 +73,10 @@ public class ReportsDAOImpl implements ReportsDAO {
 		this.dataSourceName = dataSourceName;
 	}
 
+	public String getSchema() {
+		return this.schema;
+	}
+
 	public SummaryReportDto getSummaryReportData(RecordDatabase database) {
 		SummaryReportDto dto = new SummaryReportDto();
 

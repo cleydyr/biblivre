@@ -30,12 +30,6 @@ import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import biblivre.administration.reports.configuration.ReportsConfiguration;
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.core.file.DiskFile;
-import biblivre.core.translations.TranslationsMap;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -50,6 +44,10 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
+
+import biblivre.administration.reports.dto.BaseReportDto;
+import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationsMap;
 
 public abstract class BaseBiblivreReport extends PdfPageEventHelper implements IBiblivreReport {
 
@@ -71,14 +69,10 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	
 	protected String schema; 
 
-	protected ReportsDAOFactory reportsDAOFactory;
+	protected ReportsDAO reportsDAO;
 
-	public BaseBiblivreReport() {
-		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-				ReportsConfiguration.class)) {
-
-			this.reportsDAOFactory = (ReportsDAOFactory) context.getBean("reportsDAOFactory");
-		}
+	public BaseBiblivreReport(ReportsDAO reportsDAO) {
+			this.reportsDAO = reportsDAO;
 	}
 
 	@Override
