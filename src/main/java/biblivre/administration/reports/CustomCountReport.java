@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -64,13 +64,13 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		
+
 		this.marcField = dto.getMarcField();
 		if (StringUtils.isNotBlank(this.marcField)) {
 			this.datafield = this.marcField.split("\\_")[0];
 			this.subfield = this.marcField.split("\\_")[1];
 		}
-		
+
 		String order = "1";
 		if (StringUtils.isNotBlank(dto.getCountOrder())) {
 			order = dto.getCountOrder();
@@ -118,7 +118,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
-		
+
 		if (total != 0) {
 			cell = new PdfPCell(new Paragraph(this.getBoldChunk("Total")));
 			cell.setColspan(2);
@@ -130,7 +130,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
-		
+
 		document.add(table);
 	}
 
@@ -157,15 +157,15 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		if (o1 == null) {
 			return 0;
 		}
-		
+
 		if (o2 == null) {
 			return 0;
 		}
-		
+
 		if (o1[this.index] == null && o2[this.index] == null) {
 			return 0;
 		}
-		
+
 		switch (this.index) {
 		case 0:
 			return o1[this.index].compareTo(o2[this.index]);
@@ -174,25 +174,25 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		default:
 			return o1[this.index].compareTo(o2[this.index]);
 		}
-			
-		
+
+
 	}
 
 	public CustomCountDto getCustomCountData(ReportsDTO reportsDto) {
 		CustomCountDto dto = new CustomCountDto();
-		
+
 		Map<String, Integer> subfieldCounter = new HashMap<String, Integer>();
-		
+
 		int page = 0;
 		int limit = 100;
 		int offset = limit * page;
-		
+
 		String marcField = reportsDto.getMarcField();
 		String field = marcField.split("_")[0];
 		String subfield = marcField.split("_")[1];
-		
+
 		if (reportsDto.getSearchId() != null && reportsDto.getSearchId() != 0) {
-			
+
 			RecordBO bo = RecordBO.getInstance(this.getSchema(), RecordType.BIBLIO);
 
 			boolean hasMore = true;
@@ -203,22 +203,22 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 				search.getPaging().setRecordsPerPage(limit);
 				search.getPaging().setPage(++page);
 				bo.paginateSearch(search);
-				
+
 				if (search == null || search.size() == 0) {
 					hasMore = false;
 				} else {
 					countSubfieldValue(search, subfieldCounter, field, subfield);
 				}
 			}
-			
+
 		} else {
 			BiblioRecordDAO bdao = BiblioRecordDAO.getInstance(this.getSchema());
-			
+
 			RecordDatabase database = reportsDto.getDatabase();
 			if (database == null) {
 				database = RecordDatabase.MAIN;
 			}
-			
+
 			boolean hasMore = true;
 			while (hasMore) {
 				List<RecordDTO> records = bdao.list(offset, limit, database);
@@ -230,31 +230,31 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 				}
 			}
 		}
-		
+
 		List<String[]> data = new ArrayList<String[]>();
-		
+
 		for (String key : subfieldCounter.keySet()) {
 			String[] valuePair = new String[2];
 			valuePair[0] = key;
 			valuePair[1] = String.valueOf(subfieldCounter.get(key));
 			data.add(valuePair);
 		}
-		
+
 		dto.setData(data);
-		
+
 		return dto;
 	}
 
 	private void countSubfieldValue(Collection<RecordDTO> records, Map<String, Integer> subfieldCounter, String field, String subfield) {
-		
+
 		for (RecordDTO biblio : records) {
 			Record record = MarcUtils.iso2709ToRecord(biblio.getIso2709());
 			MarcDataReader reader = new MarcDataReader(record);
 			List<DataField> datafields = reader.getDataFields(field);
-			
+
 			for (DataField df : datafields) {
 				List<Subfield> subfields = df.getSubfields(subfield.charAt(0));
-				
+
 				for (Subfield sf : subfields) {
 					String value = sf.getData();
 					Integer count = subfieldCounter.get(value);
@@ -263,7 +263,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 					}
 					subfieldCounter.put(value, ++count);
 				}
-				
+
 			}
 		}
 	}

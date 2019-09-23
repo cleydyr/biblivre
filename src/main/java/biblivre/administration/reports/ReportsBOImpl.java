@@ -26,7 +26,7 @@ public class ReportsBOImpl implements ReportsBO {
 		return report.generateReport(dto);
 	}
 
-	
+
 	private String getSchema() {
 		return this.dao.getSchema();
 	}

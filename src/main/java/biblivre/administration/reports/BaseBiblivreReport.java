@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -66,8 +66,8 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	private PdfWriter writer;
 	private Date generationDate;
 	protected DateFormat dateFormat;
-	
-	protected String schema; 
+
+	protected String schema;
 
 	protected ReportsDAO reportsDAO;
 
@@ -131,11 +131,11 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
 	protected final String getText(String key) {
 		String[] params = key.split(":");
-		
+
 		if (params.length == 1) {
 			return this.i18n.getText(key);
 		}
-		
+
 		String text = this.i18n.getText(params[0]);
 		for (int i = 1; i < params.length; i++) {
 			String replacement = params[i];
@@ -149,7 +149,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	public void onEndPage(PdfWriter writer, Document document) {
 		try {
 			Rectangle page = document.getPageSize();
-			
+
 			PdfPTable head = new PdfPTable(1);
 			PdfPCell cell = new PdfPCell(new Paragraph(this.getText("administration.reports.biblivre_report_header")));
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);

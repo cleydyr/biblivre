@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -41,7 +41,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.marc.MaterialType;
 
 public class Handler extends CatalogingHandler {
-	
+
 	public Handler() {
 		super(RecordType.AUTHORITIES, MaterialType.AUTHORITIES);
 
@@ -51,29 +51,29 @@ public class Handler extends CatalogingHandler {
 			this.reportsBOFactory = (ReportsBOFactory) context.getBean("reportsBOFactory");
 		}
 	}
-	
+
 	@Override
 	protected RecordDTO createRecordDTO(ExtendedRequest request) {
 		AuthorityRecordDTO dto = new AuthorityRecordDTO();
 		return dto;
 	}
-	
+
 	@Override
 	protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
 		((AuthorityRecordDTO)dto).setAuthorType(request.getString("author_type"));
 	}
-	
+
 	@Override
 	protected void afterConvert(ExtendedRequest request, RecordDTO dto) {
 		((AuthorityRecordDTO)dto).setAuthorType(request.getString("author_type"));
 	}
-	
+
 	public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		String searchParameters = request.getString("search_parameters");
 		String query = "";
 		RecordDatabase db = RecordDatabase.MAIN;
-		
+
 		try {
 			JSONObject json = new JSONObject(searchParameters);
 			db = RecordDatabase.fromString(json.optString("database"));
