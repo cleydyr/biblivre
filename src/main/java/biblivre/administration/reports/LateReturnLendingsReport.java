@@ -35,7 +35,7 @@ public class LateReturnLendingsReport extends BaseBiblivreReport {
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		return ReportsDAO.getInstance(this.getSchema()).getLateReturnLendingsReportData();
+		return reportsDAOFactory.getInstance(this.getSchema()).getLateReturnLendingsReportData();
 	}
 
 	@Override

@@ -30,7 +30,9 @@ import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import biblivre.administration.reports.configuration.ReportsConfiguration;
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
@@ -68,6 +70,16 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 	protected DateFormat dateFormat;
 	
 	protected String schema; 
+
+	protected ReportsDAOFactory reportsDAOFactory;
+
+	public BaseBiblivreReport() {
+		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+				ReportsConfiguration.class)) {
+
+			this.reportsDAOFactory = (ReportsDAOFactory) context.getBean("reportsDAOFactory");
+		}
+	}
 
 	@Override
 	public DiskFile generateReport(ReportsDTO dto) {

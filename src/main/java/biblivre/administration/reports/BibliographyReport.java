@@ -44,7 +44,7 @@ public class BibliographyReport extends BaseBiblivreReport {
 				idList.add(Integer.valueOf(idArray[i].trim()));
 			} catch (Exception e) {}
 		}
-		return ReportsDAO.getInstance(this.getSchema()).getBibliographyReportData(dto.getAuthorName(), idList.toArray(new Integer[]{}));
+		return reportsDAOFactory.getInstance(this.getSchema()).getBibliographyReportData(dto.getAuthorName(), idList.toArray(new Integer[]{}));
 	}
 
 	@Override

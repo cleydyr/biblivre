@@ -35,7 +35,7 @@ public class RequestsByDateReport extends BaseBiblivreReport {
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
+		ReportsDAO dao = reportsDAOFactory.getInstance(this.getSchema());
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
 		return dao.getRequestsByDateReportData(initialDate, finalDate);

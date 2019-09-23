@@ -38,7 +38,7 @@ public class AssetHoldingReport extends BaseBiblivreReport implements Comparator
 	
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingReportData();
+		return reportsDAOFactory.getInstance(this.getSchema()).getAssetHoldingReportData();
 	}
 
 	@Override

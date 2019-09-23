@@ -21,9 +21,6 @@ package biblivre.administration.reports;
 
 import java.util.List;
 
-import biblivre.administration.reports.dto.AssetHoldingByDateDto;
-import biblivre.administration.reports.dto.BaseReportDto;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -31,13 +28,16 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
+import biblivre.administration.reports.dto.AssetHoldingByDateDto;
+import biblivre.administration.reports.dto.BaseReportDto;
+
 public class AssetHoldingByDateReport extends BaseBiblivreReport {
 	
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		String initialDate = this.dateFormat.format(dto.getInitialDate());
 		String finalDate = this.dateFormat.format(dto.getFinalDate());
-		return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingByDateReportData(initialDate, finalDate);
+		return reportsDAOFactory.getInstance(this.getSchema()).getAssetHoldingByDateReportData(initialDate, finalDate);
 	}
 
 	@Override
