@@ -1,10 +1,7 @@
 package biblivre.administration.reports;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
-
-import biblivre.administration.reports.configuration.ReportsConfiguration;
 
 @Service
 public class ReportsBOFactoryImpl implements ReportsBOFactory {
@@ -13,7 +10,6 @@ public class ReportsBOFactoryImpl implements ReportsBOFactory {
 
 	@Autowired
 	public ReportsBOFactoryImpl(ReportsDAOFactory reportsDAOFactory) {
-		super();
 		this.reportsDAOFactory = reportsDAOFactory;
 	}
 

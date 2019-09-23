@@ -27,7 +27,9 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import biblivre.administration.reports.configuration.ReportsConfiguration;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
@@ -49,7 +51,6 @@ public abstract class Controller {
 	protected ExtendedResponse xResponse;
 	protected AbstractHandler handler;
 	protected boolean headerOnly;
-	protected Class<?> handlerClass;
 
 	public Controller(ExtendedRequest xRequest, ExtendedResponse xResponse) {
 		this.xRequest = xRequest;
@@ -101,8 +102,19 @@ public abstract class Controller {
 		}
 
 		try {
-			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
-			this.handler = (AbstractHandler) this.handlerClass.newInstance();
+			try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+					ReportsConfiguration.class)) {
+
+				this.handler = (AbstractHandler) context.getBean(
+						Class.forName("biblivre." + module + ".Handler"));
+			}
+			catch (Exception e) {}
+
+			if (this.handler == null) {
+				System.out.println("null handler...");
+
+				this.handler = (AbstractHandler) this.handlerClass.newInstance();
+			}
 
 			Class<?> validatorClass = Class.forName("biblivre." + module + ".Validator");
 			String validationMethodName = "validate_" + action;
