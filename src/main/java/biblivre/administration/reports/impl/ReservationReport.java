@@ -17,11 +17,14 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.administration.reports;
+package biblivre.administration.reports.impl;
 
 import java.util.Date;
 import java.util.List;
 
+import biblivre.administration.reports.BaseBiblivreReport;
+import biblivre.administration.reports.ReportsDAO;
+import biblivre.administration.reports.ReportsDTO;
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.administration.reports.dto.ReservationReportDto;
 

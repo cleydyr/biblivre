@@ -3,8 +3,6 @@ package biblivre.administration.reports;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.springframework.stereotype.Service;
-
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;

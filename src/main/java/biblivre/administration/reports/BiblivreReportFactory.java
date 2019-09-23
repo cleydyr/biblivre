@@ -19,6 +19,21 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
+import biblivre.administration.reports.impl.AllUsersReport;
+import biblivre.administration.reports.impl.AssetHoldingByDateReport;
+import biblivre.administration.reports.impl.AssetHoldingFullReport;
+import biblivre.administration.reports.impl.AssetHoldingReport;
+import biblivre.administration.reports.impl.BibliographyReport;
+import biblivre.administration.reports.impl.CustomCountReport;
+import biblivre.administration.reports.impl.DeweyReport;
+import biblivre.administration.reports.impl.HoldingCreationByDatetReport;
+import biblivre.administration.reports.impl.LateReturnLendingsReport;
+import biblivre.administration.reports.impl.LendingsByDateReport;
+import biblivre.administration.reports.impl.RequestsByDateReport;
+import biblivre.administration.reports.impl.ReservationReport;
+import biblivre.administration.reports.impl.SearchesByDateReport;
+import biblivre.administration.reports.impl.SummaryReport;
+import biblivre.administration.reports.impl.UserReport;
 
 public class BiblivreReportFactory {
 

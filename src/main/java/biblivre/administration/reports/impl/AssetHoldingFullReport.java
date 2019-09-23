@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.administration.reports;
+package biblivre.administration.reports.impl;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +25,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import biblivre.administration.reports.BaseBiblivreReport;
+import biblivre.administration.reports.ReportsDAO;
+import biblivre.administration.reports.ReportsDTO;
 import biblivre.administration.reports.dto.AssetHoldingDto;
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.core.utils.NaturalOrderComparator;
