@@ -1,11 +1,9 @@
 package biblivre.administration.reports;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Service;
 
 import biblivre.administration.reports.configuration.ReportsConfiguration;
 
-@Service
 public class ReportsBOFactoryImpl implements ReportsBOFactory {
 
 	private ReportsDAOFactory reportsDAOFactory;
