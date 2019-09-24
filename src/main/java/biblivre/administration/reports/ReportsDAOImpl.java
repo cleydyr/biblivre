@@ -34,9 +34,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
 
@@ -56,6 +53,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.user.UserStatus;
+import biblivre.core.Datasource;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
@@ -64,17 +62,14 @@ import biblivre.marc.MarcUtils;
 
 public class ReportsDAOImpl implements ReportsDAO {
 
-	private String schema;
+	private String _schema;
 
-	private String dataSourceName;
-
-	public ReportsDAOImpl(String dataSourceName, String schema) {
-		this.schema = schema;
-		this.dataSourceName = dataSourceName;
+	public ReportsDAOImpl(String schema) {
+		_schema = schema;
 	}
 
 	public String getSchema() {
-		return this.schema;
+		return _schema;
 	}
 
 	public SummaryReportDto getSummaryReportData(RecordDatabase database) {
@@ -82,7 +77,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 
 		String sql = "SELECT r.iso2709, count(h.id) as holding_count FROM single.biblio_records r inner join single.biblio_holdings h on r.id = h.record_id where r.database = ? group by r.iso2709;";
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement pst = _createPreparedStatementWith100Rows(sql, con)) {
 
 			pst.setString(1, database.toString());
@@ -150,7 +145,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sql.append("WHERE b.database = ? ");
 		sql.append("GROUP BY b.iso2709; ");
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement pst = con.prepareStatement(sql.toString())) {
 
 			pst.setString(1, db.toString());
@@ -220,7 +215,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sql.append(" ON R.id = H.record_id WHERE H.database = 'main' ");
 		sql.append(" ORDER BY H.accession_number ");
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement pst = _createPreparedStatementWith100Rows(sql.toString(), con);
 				ResultSet rs = pst.executeQuery();
 				) {
@@ -260,7 +255,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		AssetHoldingDto dto = new AssetHoldingDto();
 		Connection con = null;
 		try {
-			con = this.getConnection();
+			con = Datasource.getConnection(_schema);
 			StringBuilder sql = new StringBuilder();
 			sql.append(" SELECT H.id, H.accession_number, R.iso2709 FROM biblio_holdings H INNER JOIN biblio_records R ");
 			sql.append(" ON R.id = H.record_id WHERE H.database = 'main' ");
@@ -299,7 +294,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		AssetHoldingByDateDto dto = new AssetHoldingByDateDto();
 		Connection con = null;
 		try {
-			con = this.getConnection();
+			con = Datasource.getConnection(_schema);
 			StringBuilder sql = new StringBuilder();
 			sql.append(" SELECT H.accession_number, to_char(H.created, 'DD/MM/YYYY'), R.iso2709, H.iso2709 ");
 			sql.append(" FROM biblio_holdings H INNER JOIN biblio_records R ");
@@ -358,7 +353,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sqlTotal.append(" GROUP BY user_name, to_char(created, 'DD/MM/YYYY') ");
 		sqlTotal.append(" ORDER BY to_char(created, 'DD/MM/YYYY'), user_name; ");
 
-		try (Connection con = this.getConnection()) {
+		try (Connection con = Datasource.getConnection(_schema)) {
 
 			try (PreparedStatement st = con.prepareStatement(sqlTotal.toString())) {
 				st.setString(1, initialDate);
@@ -475,7 +470,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sqlLate.append(" AND expected_return_date < to_date(?, 'DD-MM-YYYY') ");
 		sqlLate.append(" AND return_date is null; ");
 
-		try (Connection con = this.getConnection()){
+		try (Connection con = Datasource.getConnection(_schema)){
 
 			try (PreparedStatement st = con.prepareStatement(sqlLent.toString())) {
 				st.setString(1, initialDate);
@@ -534,7 +529,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 				try (ResultSet rs = st.executeQuery()) {
 					List<String[]> data = new ArrayList<String[]>();
 
-					BiblioRecordBO biblioBO = BiblioRecordBO.getInstance(this.schema);
+					BiblioRecordBO biblioBO = BiblioRecordBO.getInstance(_schema);
 
 					while (rs.next()) {
 						Integer biblioId = rs.getInt(1);
@@ -571,7 +566,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sql.append("AND h.record_id = b.id ");
 		sql.append("AND l.return_date is null; ");
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement st = con.prepareStatement(sql.toString());
 				) {
 
@@ -610,7 +605,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 				+ " group by to_char(created, 'YYYY-MM-DD') "
 				+ " order by to_char(created, 'YYYY-MM-DD') ASC;";
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement st = con.prepareStatement(sql);)
 		{
 			st.setString(1, initialDate);
@@ -650,7 +645,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		firstSql.append("GROUP BY u.type, t.description, t.id ");
 		firstSql.append("ORDER BY t.description;");
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				Statement createStatement = con.createStatement();
 				ResultSet rs = createStatement.executeQuery(firstSql.toString());
 				){
@@ -697,7 +692,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sql.append(" AND r.created <= to_date(?, 'DD-MM-YYYY') ");
 		sql.append(" ORDER BY o.id; ");
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement st = con.prepareStatement(sql.toString());){
 
 			st.setString(1, initialDate);
@@ -743,7 +738,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 			}
 		}
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement st = con.prepareStatement(sql.toString())
 				){
 
@@ -792,7 +787,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sql.append(StringUtils.repeat("?", ", ", recordIdArray.length));
 		sql.append(") ORDER BY id ASC; ");
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				PreparedStatement st = con.prepareStatement(sql.toString());
 				) {
 
@@ -835,7 +830,7 @@ public class ReportsDAOImpl implements ReportsDAO {
 		sql.append(" AND r.record_id is not null ");
 		sql.append(" ORDER BY u.name ASC; ");
 
-		try (Connection con = this.getConnection();
+		try (Connection con = Datasource.getConnection(_schema);
 				Statement st = con.createStatement();
 				ResultSet rs = st.executeQuery(sql.toString());) {
 
@@ -859,35 +854,6 @@ public class ReportsDAOImpl implements ReportsDAO {
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}
-	}
-
-	private final Connection getConnection() throws SQLException {
-		Connection con = this.getDataSource().getConnection();
-
-		if (this.schema != null) {
-			con.createStatement().execute("SET search_path = '" + this.schema + "', public, pg_catalog;");
-		}
-
-		return con;
-	}
-
-	private final DataSource getDataSource() {
-		DataSource ds = null;
-
-		try {
-			InitialContext cxt = new InitialContext();
-
-			ds = (DataSource) cxt.lookup("java:comp/env/jdbc/" + this.dataSourceName);
-		} catch (Exception e) {
-			throw new DAOException(e);
-		}
-
-		if (ds == null) {
-			System.out.println("[DAO.Constructor] Data Source not found.");
-			throw new RuntimeException("Data Source not found!");
-		}
-
-		return ds;
 	}
 
 	private PreparedStatement _createPreparedStatementWith100Rows(String sql, Connection con)
