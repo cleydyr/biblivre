@@ -1,4 +1,4 @@
-# Biblivre-5
+# Biblivre
 
 Biblioteca Livre Internacional
 
@@ -9,10 +9,12 @@ Existem duas formas de se compilar e implantar o Biblivre: usando uma imagem do 
 ### Docker Compose
 
 #### Como usar
+
 Primeiramente, na raiz do projeto, compile normalmente rodando o script `lib/maven_deps.sh` e depois `mvn package -Ddockerfile.skip=true`. Depois disso, é só rodar `docker-compose up`.
 Depois que todo o processo de implantação terminar (cerca de 5 minutos, mas depende da capacidade de processamento da máquina e da largura de banda de conexão à internet disponível), você poderá acessar o Biblivre em `localhost:8080/Biblivre6`. Além disso o servidor de aplicação vai rodar em modo debug e por isso você pode fazer o debug remoto da aplicação usando a porta 8000.
 
 #### Configurações
+
 As seguintes variáveis de ambiente são configuráveis através do arquivo .env:
 *APP_HTTP_HOST_PORT* (porta de acesso ao Biblivre pelo host; valor padrão 8080)
 *APP_DEBUG_HOST_PORT* (porta de debug do Java pelo host (JPDA); valor padrão 8000)
