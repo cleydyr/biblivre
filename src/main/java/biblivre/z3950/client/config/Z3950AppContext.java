@@ -1,6 +1,5 @@
 package biblivre.z3950.client.config;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
@@ -16,6 +15,8 @@ import org.jzkit.util.PropsHolder;
 import org.jzkit.z3950.QueryModel.PropsBasedInternalToType1ConversionRules;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import biblivre.core.HikariDataSourceConnectionProvider;
 
 @Configuration
 public class Z3950AppContext {
@@ -51,9 +52,7 @@ public class Z3950AppContext {
 	
 	@Bean
 	public DataSource z3950DataSource() throws NamingException {
-		InitialContext cxt = new InitialContext();
-		DataSource ds = (DataSource) cxt.lookup("java:comp/env/jdbc/biblivre4");
-		return ds;
+		return HikariDataSourceConnectionProvider.getDataSource();
 	}
 
 	@Bean

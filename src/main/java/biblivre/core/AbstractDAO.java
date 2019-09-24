@@ -31,7 +31,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -142,14 +141,9 @@ public abstract class AbstractDAO {
 
 	private final DataSource getDataSource() {
 		DataSource ds = dataSourceMap.get(this.getDataSourceName());
-		if (ds == null) {
-			try {
-				InitialContext cxt = new InitialContext();
 
-				ds = (DataSource) cxt.lookup("java:comp/env/jdbc/" + this.getDataSourceName());
-			} catch (Exception e) {
-				throw new DAOException(e);
-			}
+		if (ds == null) {
+			ds = HikariDataSourceConnectionProvider.getDataSource();
 		}
 
 		if (ds == null) {

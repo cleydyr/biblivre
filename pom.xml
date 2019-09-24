@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>br.org.biblivre</groupId>
-	<artifactId>biblivre-6</artifactId>
+	<artifactId>biblivre</artifactId>
 	<packaging>war</packaging>
 
-	<name>Biblivre6</name>
-	<version>6.0.0</version>
+	<name>Biblivre</name>
+	<version>6.0.0-alpha</version>
 	<url>http://www.biblivre.org.br</url>
 
 	<parent>
@@ -37,6 +37,8 @@
 		<jdk.version>1.8</jdk.version>
 		<debug>false</debug>
 		<sass.OutputStyle>:expanded</sass.OutputStyle>
+		<dockerfile.version>1.4.1</dockerfile.version>
+		<docker.image.prefix>cleydyr</docker.image.prefix>
 	</properties>
 
 	<repositories>
@@ -60,6 +62,7 @@
 			<artifactId>json</artifactId>
 			<version>20180813</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -266,7 +269,6 @@
 		<dependency>
 	       <groupId>com.zaxxer</groupId>
 	       <artifactId>HikariCP</artifactId>
-	       <version>3.3.1</version>
 	   </dependency>
 		<!-- / -->
 
@@ -275,6 +277,25 @@
 	<build>
 		<finalName>Biblivre6</finalName>
 		<plugins>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>${dockerfile.version}</version>
+				<!-- Wire up to the default build phases -->
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<repository>${docker.image.prefix}/${project.artifactId}</repository>
+					<tag>${project.version}</tag>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
