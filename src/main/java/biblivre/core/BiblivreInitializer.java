@@ -20,12 +20,11 @@
 package biblivre.core;
 
 import biblivre.z3950.server.Z3950ServerBOAdapter;
-import br.org.biblivre.z3950server.Z3950ServerBO;
 
 public class BiblivreInitializer {
 
 	private static boolean initialized = false;
-	public static Z3950ServerBO Z3950server = null;
+	public static Z3950ServerBOAdapter Z3950server = null;
 
 	public synchronized static void initialize() {
 		if (!BiblivreInitializer.initialized) {

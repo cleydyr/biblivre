@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,7 +87,27 @@ public class DatabaseUtils {
 
 		return null;
 	}
-	
+
+	public static String getDatabaseHostName() {
+		String databaseHostName = System.getenv(Constants.DATABASE_HOST_NAME);
+
+		if (databaseHostName != null) {
+			return databaseHostName;
+		}
+
+		return InetAddress.getLoopbackAddress().getHostName();
+	}
+
+	public static String getDatabasePort() {
+		String databasePort = System.getenv(Constants.DATABASE_PORT);
+
+		if (databasePort != null) {
+			return databasePort;
+		}
+
+		return  String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT);
+	}
+
 	private static File getFromFilesystem(String fileName) {
 		String os = System.getProperty("os.name").toUpperCase();
 		
@@ -158,7 +179,7 @@ public class DatabaseUtils {
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		return pb;
 	}
-	
+
 	private static File getWindows(String filename) {
 		String[] commands;
 		

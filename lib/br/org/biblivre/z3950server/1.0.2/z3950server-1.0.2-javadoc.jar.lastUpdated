@@ -1,0 +1,10 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sat May 11 00:37:07 BRT 2019
+http\://developer.k-int.com/maven2/.lastUpdated=1557513267324
+http\://clojars.org/repo/.lastUpdated=1557513266728
+https\://repo.maven.apache.org/maven2/.lastUpdated=1557545827083
+http\://developer.k-int.com/maven2/.error=
+http\://clojars.org/repo/.error=
+http\://central.maven.org/maven2/.error=
+https\://repo.maven.apache.org/maven2/.error=
+http\://central.maven.org/maven2/.lastUpdated=1557513267690

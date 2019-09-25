@@ -100,4 +100,6 @@ public class Constants {
 	public static final Function<Quantity<Length>, Float> FROM_CM = q -> q.to(USER_UNIT).getValue().floatValue();
 
 	public static final String JSON_EMPTY_OBJECT_STR = "{}";
+	public static final String DATABASE_HOST_NAME = "DATABASE_HOST_NAME";
+	public static final String DATABASE_PORT = "DATABASE_PORT";
 }
