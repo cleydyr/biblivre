@@ -295,6 +295,7 @@
 						<configuration>
 							<composeFile>${project.basedir}/docker-compose.yml</composeFile>
 							<detachedMode>true</detachedMode>
+							<build>true</build>
 						</configuration>
 					</execution>
 				</executions>
