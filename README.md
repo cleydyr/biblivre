@@ -11,8 +11,7 @@ Para compilar, fazer o build e deploy é necessário ter instalado na sua máqui
 1. JDK (versão 8 ou posterior)
 1. Maven
 1. Docker
-1. 
-
+1. Docker Compose
 
 ### Docker Compose
 
