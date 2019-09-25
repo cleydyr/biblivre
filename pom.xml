@@ -56,7 +56,7 @@
 		</repository>
     <repository>
       <id>legacy-libs</id>
-      <url>file://{project.basedir}/lib</url>
+      <url>file://${project.basedir}/lib</url>
     </repository>
 	</repositories>
 
@@ -295,22 +295,6 @@
 						<configuration>
 							<composeFile>${project.basedir}/docker-compose.yml</composeFile>
 							<detachedMode>true</detachedMode>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>exec-maven-plugin</artifactId>
-				<groupId>org.codehaus.mojo</groupId>
-				<executions>
-					<execution>
-						<id>Install local dependencies</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>${basedir}/lib/maven_deps.sh</executable>
 						</configuration>
 					</execution>
 				</executions>
