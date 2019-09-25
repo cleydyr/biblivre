@@ -6,11 +6,19 @@ Biblioteca Livre Internacional
 
 Existem duas formas de se compilar e implantar o Biblivre: usando uma imagem do Docker (muito mais rápido e prático) ou instalando manualmente as dependências na sua máquina (permite modificações mais profundas). Devido à dificuldade de se instalar manualmente cada dependência, esta documentação não irá apresentar a manual.
 
+### Dependências
+Para compilar, fazer o build e deploy é necessário ter instalado na sua máquina
+1. JDK (versão 8 ou posterior)
+1. Maven
+1. Docker
+1. 
+
+
 ### Docker Compose
 
 #### Como usar
 
-Primeiramente, na raiz do projeto, compile normalmente rodando o script `lib/maven_deps.sh` e depois `mvn package -Ddockerfile.skip=true`. Depois disso, é só rodar `docker-compose up`.
+Na raiz do projeto, compile normalmente rodando o script `mvn verify -Ddockerfile.skip=true`.
 Depois que todo o processo de implantação terminar (cerca de 5 minutos, mas depende da capacidade de processamento da máquina e da largura de banda de conexão à internet disponível), você poderá acessar o Biblivre em `localhost:8080/Biblivre6`. Além disso o servidor de aplicação vai rodar em modo debug e por isso você pode fazer o debug remoto da aplicação usando a porta 8000.
 
 #### Configurações
