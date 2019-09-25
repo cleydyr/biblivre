@@ -17,7 +17,7 @@ Para compilar, fazer o build e deploy é necessário ter instalado na sua máqui
 
 #### Como usar
 
-Na raiz do projeto, compile normalmente rodando o script `mvn verify -Ddockerfile.skip=true`.
+Na raiz do projeto, compile normalmente rodando o script `mvn clean sass:update-stylesheets verify -Ddockerfile.skip=true`.
 Depois que todo o processo de implantação terminar (cerca de 5 minutos, mas depende da capacidade de processamento da máquina e da largura de banda de conexão à internet disponível), você poderá acessar o Biblivre em `localhost:8080/Biblivre6`. Além disso o servidor de aplicação vai rodar em modo debug e por isso você pode fazer o debug remoto da aplicação usando a porta 8000.
 
 #### Configurações
