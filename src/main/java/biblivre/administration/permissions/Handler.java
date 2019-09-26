@@ -24,6 +24,8 @@ import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -36,7 +38,16 @@ import biblivre.core.utils.TextUtils;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 
+@Component
 public class Handler extends AbstractHandler {
+
+	private PermissionBOFactory permissionBOFactory;
+
+	@Autowired
+	public void setPermissionBOFactory(PermissionBOFactory permissionBOFactory) {
+		this.permissionBOFactory = permissionBOFactory;
+	}
+
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
