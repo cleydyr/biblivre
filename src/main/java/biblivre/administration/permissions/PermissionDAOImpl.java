@@ -28,13 +28,18 @@ import java.util.Collection;
 import java.util.List;
 
 import biblivre.circulation.user.UserDTO;
+import biblivre.core.HikariDataSourceConnectionProvider;
 import biblivre.core.exceptions.DAOException;
 
 public class PermissionDAOImpl {
+	private String _schema;
 
-	private Connection getConnection() {
-		// TODO Auto-generated method stub
-		return null;
+	public PermissionDAOImpl(String schema) {
+		_schema = schema;
+	}
+
+	private Connection getConnection() throws SQLException {
+		return HikariDataSourceConnectionProvider.getConnection(_schema);
 	}
 
 	public boolean deleteByUser(UserDTO user) {
