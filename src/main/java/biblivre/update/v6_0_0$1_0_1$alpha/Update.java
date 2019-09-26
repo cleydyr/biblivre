@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Service;
-
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 
