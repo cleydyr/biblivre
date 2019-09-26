@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.administration.permissions;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class PermissionBO {
 		return this.dao.deleteByUser(user);
 	}
 
-	public boolean save(Integer loginId, List<String> permissions) {
+	public boolean save(Integer loginId, Collection<String> permissions) {
 		UserDTO dto = new UserDTO();
 		dto.setLoginId(loginId);
 		if (this.delete(dto)) {
@@ -49,7 +49,7 @@ public class PermissionBO {
 		return false;
 	}
 
-	public List<String> getByLoginId(Integer loginid) {
+	public Collection<String> getByLoginId(Integer loginid) {
 		return this.dao.getPermissionsByLoginId(loginid);
 	}
 }
