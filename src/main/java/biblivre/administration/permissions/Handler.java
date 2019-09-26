@@ -88,7 +88,7 @@ public class Handler extends AbstractHandler {
 
 		if (loginId > 0) {
 			dto.setLogin(lbo.get(loginId));
-			PermissionBOImpl bo = PermissionBOImpl.getInstance(schema);
+			PermissionBO bo = PermissionBOImpl.getInstance(schema);
 			Collection<String> list = bo.getPermissionsByLoginId(loginId);
 			if (list != null) {
 				dto.setPermissions(list);
@@ -125,7 +125,7 @@ public class Handler extends AbstractHandler {
 		Integer loginId = udto.getLoginId();
 		boolean newLogin = (loginId == null || loginId == 0);
 
-		PermissionBOImpl pbo = PermissionBOImpl.getInstance(schema);
+		PermissionBO pbo = PermissionBOImpl.getInstance(schema);
 		LoginBO lbo = LoginBO.getInstance(schema);
 		
 		LoginDTO ldto = new LoginDTO();
@@ -205,7 +205,7 @@ public class Handler extends AbstractHandler {
 	}
 	
 	private PermissionDTO populatePermission(String schema, UserDTO user) {
-		PermissionBOImpl pbo = PermissionBOImpl.getInstance(schema);
+		PermissionBO pbo = PermissionBOImpl.getInstance(schema);
 		LoginBO lbo = LoginBO.getInstance(schema);
 		
 		PermissionDTO dto = new PermissionDTO();

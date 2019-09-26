@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 import biblivre.circulation.user.UserDTO;
 
 @Service
-public class PermissionBOImpl {
+public class PermissionBOImpl implements PermissionBO {
 	private PermissionDAOImpl dao;
 
 	@Autowired
@@ -36,10 +36,12 @@ public class PermissionBOImpl {
 		this.dao = dao;
 	}
 
+	@Override
 	public boolean deleteByUser(UserDTO user) {
 		return this.dao.deleteByUserId(user.getLoginId());
 	}
 
+	@Override
 	public boolean saveAll(Integer loginId, Collection<String> permissions) {
 		UserDTO dto = new UserDTO();
 		dto.setLoginId(loginId);
@@ -49,6 +51,7 @@ public class PermissionBOImpl {
 		return false;
 	}
 
+	@Override
 	public Collection<String> getPermissionsByLoginId(Integer loginid) {
 		return this.dao.getPermissionsByLoginId(loginid);
 	}
