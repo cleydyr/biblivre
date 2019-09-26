@@ -26,15 +26,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class PermissionDAO extends AbstractDAO {
+public class PermissionDAOImpl {
 	
-	public static PermissionDAO getInstance(String schema) {
-		return (PermissionDAO) AbstractDAO.getInstance(PermissionDAO.class, schema);
+	private void closeConnection(Connection con) {
+		// TODO Auto-generated method stub
+
 	}
-	
+
+	private void rollback(Connection con) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private Connection getConnection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public boolean delete(UserDTO user) {
 		Connection con = null;
 

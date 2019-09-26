@@ -28,10 +28,10 @@ import biblivre.circulation.user.UserDTO;
 
 @Service
 public class PermissionBO {
-	private PermissionDAO dao;
+	private PermissionDAOImpl dao;
 
 	@Autowired
-	public PermissionBO(PermissionDAO dao) {
+	public PermissionBO(PermissionDAOImpl dao) {
 		super();
 		this.dao = dao;
 	}
