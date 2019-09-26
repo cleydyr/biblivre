@@ -30,7 +30,7 @@ import java.util.List;
 import biblivre.core.HikariDataSourceConnectionProvider;
 import biblivre.core.exceptions.DAOException;
 
-public class PermissionDAOImpl {
+public class PermissionDAOImpl implements PermissionDAO {
 	private String _schema;
 
 	public PermissionDAOImpl(String schema) {
@@ -41,6 +41,7 @@ public class PermissionDAOImpl {
 		return HikariDataSourceConnectionProvider.getConnection(_schema);
 	}
 
+	@Override
 	public boolean deleteByUserId(int loginId) {
 		String sql = "DELETE FROM permissions WHERE login_id = ?;";
 
@@ -62,6 +63,7 @@ public class PermissionDAOImpl {
 		}
 	}
 
+	@Override
 	public Collection<String> getPermissionsByLoginId(Integer loginid) {
 		String sql = "SELECT login_id, permission FROM permissions WHERE login_id = ?;";
 
@@ -84,6 +86,7 @@ public class PermissionDAOImpl {
 		}
 	}
 
+	@Override
 	public boolean save(int loginid, String permission) {
 		String sql = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
 
@@ -99,6 +102,7 @@ public class PermissionDAOImpl {
 		}
 	}
 
+	@Override
 	public boolean saveAll(int loginId, Collection<String> permissions) {
 		String sql = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
 
