@@ -11,5 +11,4 @@ public class PermissionDAOFactoryImpl implements PermissionDAOFactory {
 	public PermissionDAO getInstance(String schema) {
 		return _instances.computeIfAbsent(schema, PermissionDAOImpl::new);
 	}
-
 }
