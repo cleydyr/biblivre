@@ -21,26 +21,25 @@ package biblivre.administration.permissions;
 
 import java.util.List;
 
-import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractBO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class PermissionBO extends AbstractBO {
+import biblivre.circulation.user.UserDTO;
+
+@Service
+public class PermissionBO {
 	private PermissionDAO dao;
 
-	public static PermissionBO getInstance(String schema) {
-		PermissionBO bo = AbstractBO.getInstance(PermissionBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = PermissionDAO.getInstance(schema);
-		}
-		
-		return bo;
+	@Autowired
+	public PermissionBO(PermissionDAO dao) {
+		super();
+		this.dao = dao;
 	}
-	
+
 	public boolean delete(UserDTO user) {
 		return this.dao.delete(user);
 	}
-	
+
 	public boolean save(Integer loginId, List<String> permissions) {
 		UserDTO dto = new UserDTO();
 		dto.setLoginId(loginId);
@@ -53,7 +52,4 @@ public class PermissionBO extends AbstractBO {
 	public List<String> getByLoginId(Integer loginid) {
 		return this.dao.getByLoginId(loginid);
 	}
-	
-	
-	
 }
