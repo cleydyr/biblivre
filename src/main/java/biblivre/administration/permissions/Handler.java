@@ -48,7 +48,6 @@ public class Handler extends AbstractHandler {
 		this.permissionBOFactory = permissionBOFactory;
 	}
 
-
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		
