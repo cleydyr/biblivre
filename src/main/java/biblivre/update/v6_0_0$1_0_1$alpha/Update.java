@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 
-@Service("v6_0_0$1_0_1$alpha")
 public class Update implements UpdateService {
 
 	public void doUpdate(Connection connection) throws SQLException {
