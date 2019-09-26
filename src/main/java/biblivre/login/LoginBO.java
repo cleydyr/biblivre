@@ -54,7 +54,7 @@ public class LoginBO extends AbstractBO {
 		String schema = this.getSchema();
 		PermissionBOImpl pbo = PermissionBOImpl.getInstance(schema);
 		
-		pbo.delete(user);
+		pbo.deleteByUser(user);
 		return this.dao.delete(user);
 	}	
 	

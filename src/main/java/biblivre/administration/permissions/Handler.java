@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
 		if (loginId > 0) {
 			dto.setLogin(lbo.get(loginId));
 			PermissionBOImpl bo = PermissionBOImpl.getInstance(schema);
-			Collection<String> list = bo.getByLoginId(loginId);
+			Collection<String> list = bo.getPermissionsByLoginId(loginId);
 			if (list != null) {
 				dto.setPermissions(list);
 			}
@@ -150,7 +150,7 @@ public class Handler extends AbstractHandler {
 		String[] permissions = request.getParameterValues("permissions[]");
 		
 		if (permissions != null) {
-			result &= pbo.save(udto.getLoginId(), Arrays.asList(permissions));
+			result &= pbo.saveAll(udto.getLoginId(), Arrays.asList(permissions));
 		}
 		 
 		if (result) {
@@ -223,7 +223,7 @@ public class Handler extends AbstractHandler {
 		
 		dto.setLogin(ldto);
 		
-		Collection<String> permissions = pbo.getByLoginId(user.getLoginId());
+		Collection<String> permissions = pbo.getPermissionsByLoginId(user.getLoginId());
 		
 		if (permissions == null) {
 			return dto;

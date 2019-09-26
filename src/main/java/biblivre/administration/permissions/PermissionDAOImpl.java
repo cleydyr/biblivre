@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import biblivre.circulation.user.UserDTO;
 import biblivre.core.HikariDataSourceConnectionProvider;
 import biblivre.core.exceptions.DAOException;
 
@@ -42,14 +41,14 @@ public class PermissionDAOImpl {
 		return HikariDataSourceConnectionProvider.getConnection(_schema);
 	}
 
-	public boolean deleteByUser(UserDTO user) {
+	public boolean deleteByUserId(int loginId) {
 		String sql = "DELETE FROM permissions WHERE login_id = ?;";
 
 		try (Connection con = this.getConnection()) {
 			con.setAutoCommit(false);
 
 			try (PreparedStatement pst = con.prepareStatement(sql)) {
-				pst.setInt(1, user.getLoginId());
+				pst.setInt(1, loginId);
 				pst.executeUpdate();
 				con.commit();
 				return true;

@@ -36,20 +36,20 @@ public class PermissionBOImpl {
 		this.dao = dao;
 	}
 
-	public boolean delete(UserDTO user) {
-		return this.dao.deleteByUser(user);
+	public boolean deleteByUser(UserDTO user) {
+		return this.dao.deleteByUserId(user.getLoginId());
 	}
 
-	public boolean save(Integer loginId, Collection<String> permissions) {
+	public boolean saveAll(Integer loginId, Collection<String> permissions) {
 		UserDTO dto = new UserDTO();
 		dto.setLoginId(loginId);
-		if (this.delete(dto)) {
+		if (this.deleteByUser(dto)) {
 			return this.dao.saveAll(loginId, permissions);
 		}
 		return false;
 	}
 
-	public Collection<String> getByLoginId(Integer loginid) {
+	public Collection<String> getPermissionsByLoginId(Integer loginid) {
 		return this.dao.getPermissionsByLoginId(loginid);
 	}
 }
