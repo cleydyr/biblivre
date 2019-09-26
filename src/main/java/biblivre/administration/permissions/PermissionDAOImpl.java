@@ -47,7 +47,7 @@ public class PermissionDAOImpl {
 		return null;
 	}
 
-	public boolean delete(UserDTO user) {
+	public boolean deleteByUser(UserDTO user) {
 		String sql = "DELETE FROM permissions WHERE login_id = ?;";
 
 		try (Connection con = this.getConnection()) {
@@ -68,8 +68,7 @@ public class PermissionDAOImpl {
 		}
 	}
 
-	public Collection<String> getByLoginId(Integer loginid) {
-
+	public Collection<String> getPermissionsByLoginId(Integer loginid) {
 		String sql = "SELECT login_id, permission FROM permissions WHERE login_id = ?;";
 
 		try (Connection con = this.getConnection();
@@ -92,10 +91,10 @@ public class PermissionDAOImpl {
 	}
 
 	public boolean save(int loginid, String permission) {
-		String sqlInsert = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
+		String sql = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
 
 		try (Connection con = this.getConnection();
-				PreparedStatement pstInsert = con.prepareStatement(sqlInsert)) {
+				PreparedStatement pstInsert = con.prepareStatement(sql)) {
 
 			pstInsert.setInt(1, loginid);
 			pstInsert.setString(2, permission);
@@ -106,7 +105,7 @@ public class PermissionDAOImpl {
 		}
 	}
 
-	public boolean save(int loginId, Collection<String> permissions) {
+	public boolean saveAll(int loginId, Collection<String> permissions) {
 		String sql = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
 
 		try (Connection con = this.getConnection();

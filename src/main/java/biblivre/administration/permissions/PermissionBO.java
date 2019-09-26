@@ -37,19 +37,19 @@ public class PermissionBO {
 	}
 
 	public boolean delete(UserDTO user) {
-		return this.dao.delete(user);
+		return this.dao.deleteByUser(user);
 	}
 
 	public boolean save(Integer loginId, List<String> permissions) {
 		UserDTO dto = new UserDTO();
 		dto.setLoginId(loginId);
 		if (this.delete(dto)) {
-			return this.dao.save(loginId, permissions);
+			return this.dao.saveAll(loginId, permissions);
 		}
 		return false;
 	}
 
 	public List<String> getByLoginId(Integer loginid) {
-		return this.dao.getByLoginId(loginid);
+		return this.dao.getPermissionsByLoginId(loginid);
 	}
 }
