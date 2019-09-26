@@ -32,16 +32,6 @@ import biblivre.core.exceptions.DAOException;
 
 public class PermissionDAOImpl {
 
-	private void closeConnection(Connection con) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void rollback(Connection con) {
-		// TODO Auto-generated method stub
-
-	}
-
 	private Connection getConnection() {
 		// TODO Auto-generated method stub
 		return null;
