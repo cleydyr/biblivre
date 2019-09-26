@@ -21,7 +21,7 @@ package biblivre.login;
 
 import java.util.List;
 
-import biblivre.administration.permissions.PermissionBO;
+import biblivre.administration.permissions.PermissionBOImpl;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
@@ -52,7 +52,7 @@ public class LoginBO extends AbstractBO {
 	
 	public boolean delete(UserDTO user) {
 		String schema = this.getSchema();
-		PermissionBO pbo = PermissionBO.getInstance(schema);
+		PermissionBOImpl pbo = PermissionBOImpl.getInstance(schema);
 		
 		pbo.delete(user);
 		return this.dao.delete(user);

@@ -27,11 +27,11 @@ import org.springframework.stereotype.Service;
 import biblivre.circulation.user.UserDTO;
 
 @Service
-public class PermissionBO {
+public class PermissionBOImpl {
 	private PermissionDAOImpl dao;
 
 	@Autowired
-	public PermissionBO(PermissionDAOImpl dao) {
+	public PermissionBOImpl(PermissionDAOImpl dao) {
 		super();
 		this.dao = dao;
 	}
