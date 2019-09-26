@@ -21,8 +21,8 @@ public class HikariDataSourceConnectionProvider {
 
 		Properties props = new Properties();
 		props.setProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
-		props.setProperty("dataSource.user", "biblivre");
-		props.setProperty("dataSource.password", "abracadabra");
+		props.setProperty("dataSource.user", DatabaseUtils.getDatabaseUser());
+		props.setProperty("dataSource.password", DatabaseUtils.getDatabasePassword());
 		props.setProperty("dataSource.url", String.format(JDBC_URL_TEMPLATE,
 				DatabaseUtils.getDatabaseHostName(), DatabaseUtils.getDatabasePort()));
 

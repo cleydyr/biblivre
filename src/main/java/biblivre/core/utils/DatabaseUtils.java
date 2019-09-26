@@ -108,6 +108,26 @@ public class DatabaseUtils {
 		return  String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT);
 	}
 
+	public static String getDatabasePassword() {
+		String password = System.getenv(Constants.POSTGRES_PASSWORD_ENV);
+
+		if (password != null) {
+			return password;
+		}
+
+		return Constants.DEAFULT_POSTGRES_PASSWORD;
+	}
+
+	public static String getDatabaseUser() {
+		String user = System.getenv(Constants.POSTGRES_USER_ENV);
+
+		if (user != null) {
+			return user;
+		}
+
+		return Constants.DEAFULT_POSTGRES_USER;
+	}
+
 	private static File getFromFilesystem(String fileName) {
 		String os = System.getProperty("os.name").toUpperCase();
 		
