@@ -21,16 +21,11 @@ package biblivre.administration.permissions;
 
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import biblivre.circulation.user.UserDTO;
 
-@Service
 public class PermissionBOImpl implements PermissionBO {
 	private PermissionDAO dao;
 
-	@Autowired
 	public PermissionBOImpl(PermissionDAO dao) {
 		super();
 		this.dao = dao;
