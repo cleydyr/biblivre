@@ -21,8 +21,11 @@ package biblivre.login;
 
 import java.util.List;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import biblivre.administration.permissions.PermissionBO;
-import biblivre.administration.permissions.PermissionBOImpl;
+import biblivre.administration.permissions.PermissionBOFactory;
+import biblivre.administration.permissions.PermissionConfiguration;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
@@ -31,13 +34,21 @@ import biblivre.core.utils.TextUtils;
 public class LoginBO extends AbstractBO {
 	private LoginDAO dao;
 
+	private PermissionBOFactory permissionBOFactory;
+
 	public static LoginBO getInstance(String schema) {
 		LoginBO bo = AbstractBO.getInstance(LoginBO.class, schema);
 
 		if (bo.dao == null) {
 			bo.dao = LoginDAO.getInstance(schema);
 		}
-		
+
+		try (AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(PermissionConfiguration.class)) {
+
+			bo.permissionBOFactory = context.getBean(PermissionBOFactory.class);
+		}
+
 		return bo;
 	}
 	
@@ -53,7 +64,7 @@ public class LoginBO extends AbstractBO {
 	
 	public boolean delete(UserDTO user) {
 		String schema = this.getSchema();
-		PermissionBO pbo = PermissionBOImpl.getInstance(schema);
+		PermissionBO pbo = permissionBOFactory.getInstance(schema);
 		
 		pbo.deleteByUser(user);
 		return this.dao.delete(user);
