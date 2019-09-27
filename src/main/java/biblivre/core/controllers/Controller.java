@@ -27,7 +27,9 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import biblivre.administration.permissions.PermissionConfiguration;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
@@ -102,7 +104,18 @@ public abstract class Controller {
 		
 		try {
 			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
-			this.handler = (AbstractHandler) this.handlerClass.newInstance();
+
+			try (AnnotationConfigApplicationContext context =
+					new AnnotationConfigApplicationContext(PermissionConfiguration.class)) {
+
+				this.handler = (AbstractHandler) context.getBean(this.handlerClass);
+			} catch(Exception e) {
+				System.out.println("handler not found?");
+			}
+
+			if (this.handler == null) {
+				this.handler = (AbstractHandler) this.handlerClass.newInstance();
+			}
 			
 			Class<?> validatorClass = Class.forName("biblivre." + module + ".Validator");
 			String validationMethodName = "validate_" + action;
