@@ -36,6 +36,7 @@ import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.postgresql.PGConnection;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
@@ -143,7 +144,10 @@ public abstract class AbstractDAO {
 		DataSource ds = dataSourceMap.get(this.getDataSourceName());
 
 		if (ds == null) {
-			ds = HikariDataSourceConnectionProvider.getDataSource();
+			AnnotationConfigApplicationContext context =
+					new AnnotationConfigApplicationContext(AppConfig.class);
+
+			ds = (DataSource) context.getBean(DataSource.class);
 		}
 
 		if (ds == null) {

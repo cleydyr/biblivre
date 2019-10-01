@@ -43,11 +43,10 @@ public class LoginBO extends AbstractBO {
 			bo.dao = LoginDAO.getInstance(schema);
 		}
 
-		try (AnnotationConfigApplicationContext context =
-				new AnnotationConfigApplicationContext(AppConfig.class)) {
+		AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(AppConfig.class);
 
-			bo.permissionBOFactory = context.getBean(PermissionBOFactory.class);
-		}
+		bo.permissionBOFactory = context.getBean(PermissionBOFactory.class);
 
 		return bo;
 	}
