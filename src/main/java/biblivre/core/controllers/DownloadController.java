@@ -25,6 +25,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.AbstractHandler.HttpCallback;
 import biblivre.core.Dialog;
@@ -36,6 +38,7 @@ import biblivre.core.file.BiblivreFile;
 import biblivre.core.utils.FileIOUtils;
 
 public class DownloadController extends Controller {
+	private static Logger _logger = LoggerFactory.getLogger(DownloadController.class);
 
 	public DownloadController(ExtendedRequest xRequest, ExtendedResponse xResponse) {
 		super(xRequest, xResponse);
