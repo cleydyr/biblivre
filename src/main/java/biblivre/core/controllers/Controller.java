@@ -237,7 +237,7 @@ public abstract class Controller {
 
 			return (AbstractHandler) context.getBean(clazz);
 		} catch(Exception e) {
-			_logger.warn("Handler bean not found: ", e.getMessage());
+			_logger.warn("Handler bean not found: ", clazz.getName());
 		}
 
 		return null;
