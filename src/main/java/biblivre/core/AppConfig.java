@@ -20,7 +20,6 @@ public class AppConfig {
 	@Bean
 	public DataSource dataSource() {
 		return DataSourceBuilder.create()
-			.driverClassName("org.postgresql.ds.PGSimpleDataSource")
 			.username(DatabaseUtils.getDatabaseUser())
 			.password(DatabaseUtils.getDatabasePassword())
 			.url(String.format(JDBC_URL_TEMPLATE,
