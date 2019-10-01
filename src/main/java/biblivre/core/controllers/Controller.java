@@ -34,6 +34,7 @@ import biblivre.administration.permissions.PermissionConfiguration;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
+import biblivre.core.AppConfig;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationBO;
@@ -231,7 +232,7 @@ public abstract class Controller {
 
 	private AbstractHandler _tryGettingHandlerFromContextBean(Class<?> clazz) {
 		try (AnnotationConfigApplicationContext context =
-				new AnnotationConfigApplicationContext(PermissionConfiguration.class)) {
+				new AnnotationConfigApplicationContext(AppConfig.class)) {
 
 			return (AbstractHandler) context.getBean(clazz);
 		} catch(Exception e) {

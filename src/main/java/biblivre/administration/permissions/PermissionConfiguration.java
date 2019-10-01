@@ -1,5 +1,7 @@
 package biblivre.administration.permissions;
 
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -8,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "biblivre.administration.permissions")
 public class PermissionConfiguration {
 	@Bean
-	public PermissionDAOFactory permissionDAOFactory() {
-		return new PermissionDAOFactoryImpl();
+	public PermissionDAOFactory permissionDAOFactory(DataSource dataSource) {
+		return new PermissionDAOFactoryImpl(dataSource);
 	}
 
 	@Bean
-	public PermissionBOFactory permissionBOFactory() {
-		return new PermissionBOFactoryImpl(permissionDAOFactory());
+	public PermissionBOFactory permissionBOFactory(DataSource dataSource) {
+		return new PermissionBOFactoryImpl(permissionDAOFactory(dataSource));
 	}
 }

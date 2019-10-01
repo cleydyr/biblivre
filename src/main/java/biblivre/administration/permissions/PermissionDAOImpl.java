@@ -23,22 +23,36 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import biblivre.core.HikariDataSourceConnectionProvider;
+import javax.sql.DataSource;
+
 import biblivre.core.exceptions.DAOException;
 
 public class PermissionDAOImpl implements PermissionDAO {
 	private String _schema;
+	private DataSource _dataSource;
 
-	public PermissionDAOImpl(String schema) {
+	private static final String SET_SCHEMA_TEMPLATE = "SET search_path = '%s', public, pg_catalog;";
+
+	public PermissionDAOImpl(DataSource dataSource, String schema) {
 		_schema = schema;
+		_dataSource = dataSource;
 	}
 
 	private Connection getConnection() throws SQLException {
-		return HikariDataSourceConnectionProvider.getConnection(_schema);
+		Connection connection = _dataSource.getConnection();
+
+		if (_schema != null) {
+			try (Statement createStatement = connection.createStatement()) {
+				createStatement.execute(String.format(SET_SCHEMA_TEMPLATE, _schema));
+			}
+		}
+
+		return connection;
 	}
 
 	@Override

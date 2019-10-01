@@ -25,10 +25,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import biblivre.administration.permissions.PermissionBO;
 import biblivre.administration.permissions.PermissionBOFactory;
-import biblivre.administration.permissions.PermissionConfiguration;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.AppConfig;
 import biblivre.core.utils.TextUtils;
 
 public class LoginBO extends AbstractBO {
@@ -44,7 +44,7 @@ public class LoginBO extends AbstractBO {
 		}
 
 		try (AnnotationConfigApplicationContext context =
-				new AnnotationConfigApplicationContext(PermissionConfiguration.class)) {
+				new AnnotationConfigApplicationContext(AppConfig.class)) {
 
 			bo.permissionBOFactory = context.getBean(PermissionBOFactory.class);
 		}
