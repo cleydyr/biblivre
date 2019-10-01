@@ -27,6 +27,8 @@ import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -35,6 +37,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Pair;
 
 public class JsonController extends Controller { 
+	private static Logger _logger = LoggerFactory.getLogger(JsonController.class);
 
 	public JsonController(ExtendedRequest xRequest, ExtendedResponse xResponse) {
 		super(xRequest, xResponse);
@@ -64,11 +67,7 @@ public class JsonController extends Controller {
 	
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.error(error, e);
-		} else {
-			this.log.error(error);
-		}
+		_logger.error(error, e);
 		
 		//e.printStackTrace();
 
@@ -78,11 +77,7 @@ public class JsonController extends Controller {
 	
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.warn(warning, e);
-		} else {
-			this.log.warn(warning);
-		}
+		_logger.warn(warning, e);
 		
 		//e.printStackTrace();
 
@@ -131,7 +126,7 @@ public class JsonController extends Controller {
         try {
 			this.xResponse.print(json.toString(2));
 		} catch (JSONException e) {
-			this.log.error(e.getMessage(), e);
+			_logger.error(e.getMessage(), e);
 		}
 	}
 }

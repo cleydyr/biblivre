@@ -81,11 +81,7 @@ public class DownloadController extends Controller {
 	
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.error(error, e);
-		} else {
-			this.log.error(error);
-		}
+		_logger.error(error, e);
 
 		Message message = new Message(ActionResult.ERROR, error);
 
@@ -94,13 +90,10 @@ public class DownloadController extends Controller {
 	
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
-		if (e != null && this.log.isDebugEnabled()) {
-			this.log.warn(warning, e);
-		} else {
-			this.log.warn(warning);
-		}
+		_logger.warn(warning, e);
 		
 		Message message = new Message(ActionResult.WARNING, warning, e);
+
 		this.dispatch("/jsp/error.jsp", message);
 	}
 
