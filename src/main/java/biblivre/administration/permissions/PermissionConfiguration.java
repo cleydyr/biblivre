@@ -6,8 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import biblivre.core.HandlerBeanNameGenerator;
+
 @Configuration
-@ComponentScan(basePackages = "biblivre.administration.permissions")
+@ComponentScan(
+		basePackages = "biblivre.administration.permissions",
+		nameGenerator = HandlerBeanNameGenerator.class
+)
 public class PermissionConfiguration {
 	@Bean
 	public PermissionDAOFactory permissionDAOFactory(DataSource dataSource) {

@@ -24,8 +24,6 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.marc4j.marc.Record;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.core.AbstractBO;
@@ -35,11 +33,9 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 import biblivre.z3950.client.Z3950Client;
-import biblivre.z3950.client.config.Z3950Config;
 
 public class Z3950BO extends AbstractBO {
 	
-	private static ApplicationContext context;
 	private Z3950DAO dao;
 			
 	public static Z3950BO getInstance(String schema) {
@@ -52,8 +48,8 @@ public class Z3950BO extends AbstractBO {
 		return bo;
 	}
 	
-	public List<Z3950RecordDTO> search(List<Z3950AddressDTO> servers, Pair<String, String> search) {
-		Z3950Client z3950Client = this.getContext().getBean(Z3950Client.class);
+	public List<Z3950RecordDTO> search(
+			Z3950Client z3950Client, List<Z3950AddressDTO> servers, Pair<String, String> search) {
 		List<Z3950RecordDTO> dtoList = new LinkedList<Z3950RecordDTO>();
 		int limit = Configurations.getInt(this.getSchema(), Constants.CONFIG_Z3950_RESULT_LIMIT, 100);
 		
@@ -121,18 +117,6 @@ public class Z3950BO extends AbstractBO {
 	
 	public List<Z3950AddressDTO> list(List<Integer> ids) {
 		return this.dao.list(ids);
-	}
-
-	private ApplicationContext getContext() {
-		if (Z3950BO.context == null) {
-			try {
-				Z3950BO.context = new AnnotationConfigApplicationContext(Z3950Config.class);
-			} catch (Exception e) {
-				this.logger.error(e.getMessage(), e);
-			}
-		}
-		
-		return Z3950BO.context;
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {

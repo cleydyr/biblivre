@@ -13,7 +13,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.schemas.SchemasDAO;
 import biblivre.core.utils.Constants;
-import biblivre.z3950.client.config.Z3950Config;
+import biblivre.z3950.client.config.Z3950Configuration;
 import br.org.biblivre.z3950server.Z3950LocalServer;
 
 public class Z3950ServerBOAdapter {
@@ -72,7 +72,7 @@ public class Z3950ServerBOAdapter {
 	private ApplicationContext _getContext() {
 		if (_context == null) {
 			try {
-				_context = new AnnotationConfigApplicationContext(Z3950Config.class);
+				_context = new AnnotationConfigApplicationContext(Z3950Configuration.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

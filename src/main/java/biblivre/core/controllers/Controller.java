@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import biblivre.administration.permissions.PermissionConfiguration;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;

@@ -9,10 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import biblivre.administration.permissions.PermissionConfiguration;
+import biblivre.cataloging.CatalogingConfiguration;
 import biblivre.core.utils.DatabaseUtils;
+import biblivre.z3950.client.config.Z3950Configuration;
 
 @Configuration
-@Import(PermissionConfiguration.class)
+@Import({ PermissionConfiguration.class, CatalogingConfiguration.class, Z3950Configuration.class })
 @ComponentScan(basePackages = "biblivre.core")
 public class AppConfig {
 	private static final String JDBC_URL_TEMPLATE = "jdbc:postgresql://%s:%s/biblivre4";

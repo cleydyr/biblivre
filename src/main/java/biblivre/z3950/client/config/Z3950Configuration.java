@@ -6,15 +6,21 @@ import org.jzkit.search.provider.z3950.Z3950ServiceFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import biblivre.core.HandlerBeanNameGenerator;
 import biblivre.z3950.client.Z3950Client;
 import br.org.biblivre.z3950server.JZKitBackend;
 
 @Import(Z3950AppContext.class)
 @Configuration
-public class Z3950Config {
+@ComponentScan(
+		basePackages = "biblivre.z3950",
+		nameGenerator = HandlerBeanNameGenerator.class
+)
+public class Z3950Configuration {
 
 	@Bean
 	public ApplicationContext z3950XmlAppContext() {

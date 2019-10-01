@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.BriefTabFieldFormatDTO;
@@ -46,8 +48,17 @@ import biblivre.core.utils.Pair;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
+import biblivre.z3950.client.Z3950Client;
 
+@Component
 public class Handler extends AbstractHandler {
+
+	private Z3950Client _z3950Client;
+
+	@Autowired
+	public void setZ3950Client(Z3950Client z3950Client) {
+		_z3950Client = z3950Client;
+	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -85,7 +96,7 @@ public class Handler extends AbstractHandler {
 		
 		List<Z3950AddressDTO> serverList = bo.list(ids);
 		Pair<String, String> search = new Pair<String, String>(attribute, query);
-		List<Z3950RecordDTO> results = bo.search(serverList, search);
+		List<Z3950RecordDTO> results = bo.search(_z3950Client, serverList, search);
 		
 		if (results.isEmpty()) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");

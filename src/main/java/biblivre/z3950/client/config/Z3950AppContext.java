@@ -1,8 +1,5 @@
 package biblivre.z3950.client.config;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
 import org.jzkit.a2j.codec.util.OIDRegister;
 import org.jzkit.configuration.provider.xml.XMLImpl;
 import org.jzkit.search.SearchException;
@@ -15,8 +12,6 @@ import org.jzkit.util.PropsHolder;
 import org.jzkit.z3950.QueryModel.PropsBasedInternalToType1ConversionRules;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import biblivre.core.HikariDataSourceConnectionProvider;
 
 @Configuration
 public class Z3950AppContext {
@@ -50,11 +45,6 @@ public class Z3950AppContext {
 		return new ProfileServiceImpl();
 	}
 	
-	@Bean
-	public DataSource z3950DataSource() throws NamingException {
-		return HikariDataSourceConnectionProvider.getDataSource();
-	}
-
 	@Bean
 	public SearchSession SearchService() throws SearchException {
 		return new SearchSessionImpl(ProfileService(), TransformationService());

@@ -28,6 +28,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.authorities.AuthorityRecordDTO;
@@ -51,9 +53,17 @@ import biblivre.marc.RecordStatus;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import biblivre.z3950.Z3950RecordDTO;
+import biblivre.z3950.client.Z3950Client;
 
+@Component
 public class Handler extends AbstractHandler {
-	
+	private Z3950Client _z3950Client;
+
+	@Autowired
+	public void setZ3950Client(Z3950Client z3950Client) {
+		_z3950Client = z3950Client;
+	}
+
 	public void importUpload(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
@@ -125,7 +135,7 @@ public class Handler extends AbstractHandler {
 		serverList.add(server);
 		Pair<String, String> search = new Pair<String, String>(attribute, value);
 		
-		List<Z3950RecordDTO> recordList = bo.search(serverList, search);
+		List<Z3950RecordDTO> recordList = bo.search(_z3950Client, serverList, search);
 		
 		ImportBO importBo = ImportBO.getInstance(schema);
 		ImportDTO list = importBo.readFromZ3950Results(recordList);
