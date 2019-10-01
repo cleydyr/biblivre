@@ -231,8 +231,9 @@ public abstract class Controller {
 	}
 
 	private AbstractHandler _tryGettingHandlerFromContextBean(Class<?> clazz) {
-		try (AnnotationConfigApplicationContext context =
-				new AnnotationConfigApplicationContext(AppConfig.class)) {
+		try {
+			AnnotationConfigApplicationContext context =
+				new AnnotationConfigApplicationContext(AppConfig.class);
 
 			return (AbstractHandler) context.getBean(clazz);
 		} catch(Exception e) {
