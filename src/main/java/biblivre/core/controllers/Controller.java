@@ -22,18 +22,17 @@ package biblivre.core.controllers;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
-import biblivre.core.AppConfig;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationBO;
@@ -69,7 +68,7 @@ public abstract class Controller {
 		this.headerOnly = headerOnly;
 	}
 
-	protected void processRequest() throws ServletException, IOException {
+	protected void processRequest(Map<String, AbstractHandler> _handlers) throws ServletException, IOException {
 		
 		this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 		this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
@@ -100,11 +99,14 @@ public abstract class Controller {
 		}
 		
 		try {
-			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
+			String handlerFullyQualifiedClassName = "biblivre." + module + ".Handler";
 
-			this.handler = _tryGettingHandlerFromContextBean(this.handlerClass);
+			this.handler =
+					_tryGettingHandlerFromContextBean(_handlers, handlerFullyQualifiedClassName);
 
 			if (this.handler == null) {
+				this.handlerClass = Class.forName(handlerFullyQualifiedClassName);
+
 				this.handler = (AbstractHandler) this.handlerClass.newInstance();
 			}
 
@@ -229,17 +231,10 @@ public abstract class Controller {
 		return StringUtils.isBlank(module) || StringUtils.isBlank(action);
 	}
 
-	private AbstractHandler _tryGettingHandlerFromContextBean(Class<?> clazz) {
-		try {
-			AnnotationConfigApplicationContext context =
-				new AnnotationConfigApplicationContext(AppConfig.class);
+	private AbstractHandler _tryGettingHandlerFromContextBean(
+			Map<String, AbstractHandler> _handlers, String name) {
 
-			return (AbstractHandler) context.getBean(clazz);
-		} catch(Exception e) {
-			_logger.warn("Handler bean not found: ", clazz.getName());
-		}
-
-		return null;
+		return _handlers.get(name);
 	}
 
 	private void _handleGenericException(Exception e) throws ServletException, IOException {

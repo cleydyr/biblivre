@@ -49,6 +49,9 @@ public abstract class AbstractDAO {
 	private String schema;
 	private String dataSourceName;
 
+	private static final AnnotationConfigApplicationContext _context =
+			new AnnotationConfigApplicationContext(AppConfig.class);
+
 	private static HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO> instances = new HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO>();
 
 	protected AbstractDAO() {
@@ -144,10 +147,7 @@ public abstract class AbstractDAO {
 		DataSource ds = dataSourceMap.get(this.getDataSourceName());
 
 		if (ds == null) {
-			AnnotationConfigApplicationContext context =
-					new AnnotationConfigApplicationContext(AppConfig.class);
-
-			ds = (DataSource) context.getBean(DataSource.class);
+			ds = (DataSource) _context.getBean(DataSource.class);
 		}
 
 		if (ds == null) {

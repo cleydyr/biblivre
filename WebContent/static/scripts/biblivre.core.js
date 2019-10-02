@@ -799,13 +799,8 @@ Core.getScrollbarWidth = function() {
 Core.keepSession = function() {
 	$.ajax({
 		type: 'POST',
-		url: window.location.pathname,
+		url: window.location.pathname + 'api/ping',
 		dataType: 'json',
-		data: {
-			controller: 'json',
-			module: 'menu',
-			action: 'ping'
-		},
 		complete: function() {
 			setTimeout(Core.keepSession, 300000);
 		}

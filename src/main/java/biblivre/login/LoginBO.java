@@ -36,6 +36,9 @@ public class LoginBO extends AbstractBO {
 
 	private PermissionBOFactory permissionBOFactory;
 
+	private static final AnnotationConfigApplicationContext _context =
+			new AnnotationConfigApplicationContext(AppConfig.class);
+
 	public static LoginBO getInstance(String schema) {
 		LoginBO bo = AbstractBO.getInstance(LoginBO.class, schema);
 
@@ -43,10 +46,7 @@ public class LoginBO extends AbstractBO {
 			bo.dao = LoginDAO.getInstance(schema);
 		}
 
-		AnnotationConfigApplicationContext context =
-				new AnnotationConfigApplicationContext(AppConfig.class);
-
-		bo.permissionBOFactory = context.getBean(PermissionBOFactory.class);
+		bo.permissionBOFactory = _context.getBean(PermissionBOFactory.class);
 
 		return bo;
 	}

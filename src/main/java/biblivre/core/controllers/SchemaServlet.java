@@ -22,6 +22,7 @@ package biblivre.core.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -32,10 +33,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
+import biblivre.core.AbstractHandler;
+import biblivre.core.AppConfig;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -52,6 +56,13 @@ import biblivre.core.utils.FileIOUtils;
 public final class SchemaServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+
+	private static final AnnotationConfigApplicationContext _context =
+			new AnnotationConfigApplicationContext(AppConfig.class);
+
+	private static Map<String, AbstractHandler> _handlers =
+			_context.getBeansOfType(AbstractHandler.class);
 
 	@Override
 	protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -151,17 +162,17 @@ public final class SchemaServlet extends HttpServlet {
 		if (controller.equals("jsp")) {
 			JspController jspController = new JspController(xRequest, xResponse);
 			jspController.setHeaderOnly(headerOnly);
-			jspController.processRequest();
+			jspController.processRequest(_handlers);
 
 		} else if (controller.equals("json")) {
 			JsonController jsonController = new JsonController(xRequest, xResponse);
 			jsonController.setHeaderOnly(headerOnly);
-			jsonController.processRequest();
+			jsonController.processRequest(_handlers);
 
 		} else if (controller.equals("download")) {
 			DownloadController downloadController = new DownloadController(xRequest, xResponse);
 			downloadController.setHeaderOnly(headerOnly);
-			downloadController.processRequest();
+			downloadController.processRequest(_handlers);
 
 		} else if (controller.equals("media") || controller.equals("DigitalMediaController")) {
 			xRequest.setAttribute("module", "digitalmedia");
@@ -169,7 +180,7 @@ public final class SchemaServlet extends HttpServlet {
 
 			DownloadController downloadController = new DownloadController(xRequest, xResponse);
 			downloadController.setHeaderOnly(headerOnly);
-			downloadController.processRequest();
+			downloadController.processRequest(_handlers);
 
 		} else if (controller.equals("log")) {
 			xResponse.setContentType("text/html;charset=UTF-8");
