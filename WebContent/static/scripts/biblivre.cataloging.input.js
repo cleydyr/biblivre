@@ -854,15 +854,9 @@ var CatalogingInputClass = {
 		}
 	
 		this._updateDatabaseCountXHR = $.ajax({
-			url: window.location.pathname,
+			url: window.location.pathname + 'api/' + this.type + '/database/' + database + '/item_count',
 			type: 'POST',
 			dataType: 'json',
-			data: {
-				controller: 'json',
-				module: this.type,
-				action: 'item_count',
-				database: database
-			},
 			loadingElement: '#database_count',
 			context: this
 		}).done(function(response) {
