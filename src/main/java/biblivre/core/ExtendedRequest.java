@@ -334,7 +334,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	}
 	
 	public void clearSessionAttributes(String schema) {
-		@SuppressWarnings("unchecked")
 		Enumeration<String> atributes = this.getSession().getAttributeNames();
 		while (atributes.hasMoreElements()) {
 			String attribute = atributes.nextElement();

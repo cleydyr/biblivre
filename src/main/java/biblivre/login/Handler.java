@@ -33,13 +33,11 @@ import biblivre.administration.indexing.IndexingBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.Updates;
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPointTypes;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.core.utils.TextUtils;
 
 public class Handler extends AbstractHandler {
@@ -114,7 +112,6 @@ public class Handler extends AbstractHandler {
 		String language = request.getLanguage();
 		HttpSession session = request.getSession();
 
-		@SuppressWarnings("unchecked")
 		Enumeration<String> attributes = session.getAttributeNames();
 		while (attributes.hasMoreElements()) {
 			String attribute = attributes.nextElement();
