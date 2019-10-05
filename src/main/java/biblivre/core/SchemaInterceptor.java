@@ -1,33 +1,23 @@
 package biblivre.core;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 
-@Component
-@Order(1)
-public class SchemaRequestFilter implements Filter {
+public class SchemaInterceptor extends HandlerInterceptorAdapter {
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
+	public boolean preHandle(
+			HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
 
-		HttpServletRequest req = (HttpServletRequest) request;
+		_loadSchemaAndController(request);
 
-		_loadSchemaAndController(req);
-
-		chain.doFilter(request, response);
+		return true;
 	}
 
 	private void _loadSchemaAndController(HttpServletRequest request) {

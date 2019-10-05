@@ -19,16 +19,12 @@
  ******************************************************************************/
 package biblivre.core;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
-
+import biblivre.update.BiblivreWebConfiguration;
 import biblivre.z3950.server.Z3950ServerBOAdapter;
 
-public class BiblivreInitializer implements WebApplicationInitializer {
+public class BiblivreInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	private static boolean initialized = false;
 	public static Z3950ServerBOAdapter Z3950server = null;
@@ -61,16 +57,31 @@ public class BiblivreInitializer implements WebApplicationInitializer {
 		}
 	}
 
-    @Override
-    public void onStartup(ServletContext container) {
-    	AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.register(AppConfig.class);
-        context.refresh();
+//	@Override
+//	public void onStartup(ServletContext container) {
+//		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+//		context.register(AppConfig.class);
+//		context.refresh();
+//
+//		ServletRegistration.Dynamic registration =
+//				container.addServlet("dispatcher", new DispatcherServlet(context));
+//
+//		registration.setLoadOnStartup(1);
+//		registration.addMapping("/api/*");
+//	}
 
-        ServletRegistration.Dynamic registration =
-        		container.addServlet("dispatcher", new DispatcherServlet(context));
+	@Override
+	protected Class<?>[] getRootConfigClasses() {
+		return null;
+	}
 
-        registration.setLoadOnStartup(1);
-        registration.addMapping("/api/*");
-    }
+	@Override
+	protected Class<?>[] getServletConfigClasses() {
+		return new Class<?>[] { AppConfig.class, BiblivreWebConfiguration.class };
+	}
+
+	@Override
+	protected String[] getServletMappings() {
+		return new String[] { "/api/*" };
+	}
 }

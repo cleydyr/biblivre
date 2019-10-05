@@ -22,10 +22,13 @@ public class AppConfig {
 	@Bean
 	public DataSource dataSource() {
 		return DataSourceBuilder.create()
-			.username(DatabaseUtils.getDatabaseUser())
-			.password(DatabaseUtils.getDatabasePassword())
-			.url(String.format(JDBC_URL_TEMPLATE,
-				DatabaseUtils.getDatabaseHostName(), DatabaseUtils.getDatabasePort()))
-			.build();
+				.username(DatabaseUtils.getDatabaseUser())
+				.password(DatabaseUtils.getDatabasePassword())
+				.url(
+						String.format(
+								JDBC_URL_TEMPLATE, DatabaseUtils.getDatabaseHostName(),
+								DatabaseUtils.getDatabasePort())
+				)
+				.build();
 	}
 }
