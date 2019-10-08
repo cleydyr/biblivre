@@ -105,9 +105,9 @@ public abstract class Controller {
 					_tryGettingHandlerFromContextBean(_handlers, handlerFullyQualifiedClassName);
 
 			if (this.handler == null) {
-				this.handlerClass = Class.forName(handlerFullyQualifiedClassName);
+				Class<?> handlerClass = Class.forName(handlerFullyQualifiedClassName);
 
-				this.handler = (AbstractHandler) this.handlerClass.newInstance();
+				this.handler = (AbstractHandler) handlerClass.newInstance();
 			}
 
 			if (!_isValidActionForModule(module, action)) {
@@ -162,13 +162,15 @@ public abstract class Controller {
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Method method = null;
 
+		Class<? extends AbstractHandler> handlerClass = this.handler.getClass();
+
 		try {
 			method =
-					this.handlerClass.getDeclaredMethod(
+					handlerClass.getDeclaredMethod(
 							TextUtils.camelCase(action), ExtendedRequest.class,
 							ExtendedResponse.class);
 		} catch (NoSuchMethodException e) {
-			Class<?> superclass = this.handlerClass.getSuperclass();
+			Class<?> superclass = handlerClass.getSuperclass();
 
 			method =
 					superclass.getDeclaredMethod(

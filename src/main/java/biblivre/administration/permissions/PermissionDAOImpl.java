@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import biblivre.core.exceptions.DAOException;
 
 public class PermissionDAOImpl implements PermissionDAO {
@@ -38,9 +40,12 @@ public class PermissionDAOImpl implements PermissionDAO {
 
 	private static final String SET_SCHEMA_TEMPLATE = "SET search_path = '%s', public, pg_catalog;";
 
+	private JdbcTemplate _jdbcTemplate;
+
 	public PermissionDAOImpl(DataSource dataSource, String schema) {
 		_schema = schema;
 		_dataSource = dataSource;
+		_jdbcTemplate = new JdbcTemplate(_dataSource);
 	}
 
 	private Connection getConnection() throws SQLException {
@@ -57,29 +62,25 @@ public class PermissionDAOImpl implements PermissionDAO {
 
 	@Override
 	public boolean deleteByUserId(int loginId) {
-		String sql = "DELETE FROM permissions WHERE login_id = ?;";
+		String sql = "DELETE FROM " + _schema + ".permissions WHERE login_id = ?;";
 
-		try (Connection con = this.getConnection()) {
-			con.setAutoCommit(false);
+		int updateCount = _jdbcTemplate.update(
+				sql,
+				ps -> {
+					ps.setInt(1, loginId);
+				}
+		);
 
-			try (PreparedStatement pst = con.prepareStatement(sql)) {
-				pst.setInt(1, loginId);
-				pst.executeUpdate();
-				con.commit();
-				return true;
-			}
-			catch (Exception e) {
-				con.rollback();
-				throw new DAOException(e);
-			}
-		} catch (SQLException sqle) {
-			throw new DAOException(sqle);
-		}
+		return updateCount > 0;
 	}
 
 	@Override
 	public Collection<String> getPermissionsByLoginId(Integer loginid) {
-		String sql = "SELECT login_id, permission FROM permissions WHERE login_id = ?;";
+		String sql = new StringBuffer(3)
+				.append("SELECT login_id, permission FROM ")
+				.append(_schema)
+				.append(".permissions WHERE login_id = ?;")
+				.toString();
 
 		try (Connection con = this.getConnection();
 				PreparedStatement pst = con.prepareStatement(sql)) {
