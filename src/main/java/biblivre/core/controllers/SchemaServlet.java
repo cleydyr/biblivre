@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,46 +80,25 @@ public final class SchemaServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BiblivreInitializer.initialize();
+
 		ExtendedRequest xRequest = ((ExtendedRequest) request);
 
 		if (xRequest.mustRedirectToSchema()) {
-			String query = xRequest.getQueryString();
+			_sendRedirectToSchema(response, xRequest);
 
-			if (StringUtils.isNotBlank(query)) {
-				query = "?" + query;
-			} else {
-				query = "";
-			}
-
-			((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
 			return;
 		}
 
 		String controller = xRequest.getController();
 
 		if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
-			Writer out = response.getWriter();
-			JSONObject json = new JSONObject();
-
-			try {
-				// TODO: Completar com mais mensagens.
-				// Checking Database
-				if (!SchemasDAO.getInstance("public").testDatabaseConnection()) {
-					json.put("success", false);
-					json.put("status_message", "Falha no acesso ao Banco de Dados");
-				} else {
-					json.put("success", true);
-					json.put("status_message", "Disponível");
-				}
-			} catch (JSONException e) {
-			}
-
-			out.write(json.toString());
+			_sendStatusMessage(response);
 
 			return;
 		}
 
 		String path = request.getServletPath();
+
 		boolean isStatic = path.contains("static/") || path.contains("extra/");
 
 		if (isStatic) {
@@ -126,6 +106,39 @@ public final class SchemaServlet extends HttpServlet {
 		} else {
 			this.processDynamicRequest(request, response);
 		}
+	}
+
+	private void _sendStatusMessage(HttpServletResponse response) throws IOException {
+		Writer out = response.getWriter();
+
+		JSONObject json = new JSONObject();
+
+		try {
+			// TODO: Completar com mais mensagens.
+			// Checking Database
+			if (!SchemasDAO.getInstance("public").testDatabaseConnection()) {
+				json.put("success", false);
+				json.put("status_message", "Falha no acesso ao Banco de Dados");
+			} else {
+				json.put("success", true);
+				json.put("status_message", "Disponível");
+			}
+		} catch (JSONException e) {
+		}
+
+		out.write(json.toString());
+	}
+
+	private void _sendRedirectToSchema(HttpServletResponse response, ExtendedRequest xRequest) throws IOException {
+		String query = xRequest.getQueryString();
+
+		if (StringUtils.isNotBlank(query)) {
+			query = "?" + query;
+		} else {
+			query = "";
+		}
+
+		((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
 	}
 
 	@Override
@@ -150,10 +163,10 @@ public final class SchemaServlet extends HttpServlet {
 		
 		// If there is an action but there isn't any controller or module, it's
 		// a menu action
-		if (StringUtils.isBlank(controller) && StringUtils.isBlank(module) && StringUtils.isNotBlank(action)) {
+		if (_isMenuAction(controller, module, action)) {
 			xRequest.setAttribute("module", "menu");
 			controller = "jsp";
-		} else if (StringUtils.isBlank(controller) && (xRequest.getBoolean("force_setup") || Configurations.getBoolean(xRequest.getSchema(), Constants.CONFIG_NEW_LIBRARY))) {
+		} else if (_isSetupAction(xRequest, controller)) {
 			xRequest.setAttribute("module", "menu");
 			xRequest.setAttribute("action", "setup");
 			controller = "jsp";
@@ -161,27 +174,27 @@ public final class SchemaServlet extends HttpServlet {
 
 		if (controller.equals("jsp")) {
 			JspController jspController = new JspController(xRequest, xResponse);
+
 			jspController.setHeaderOnly(headerOnly);
 			jspController.processRequest(_handlers);
-
 		} else if (controller.equals("json")) {
 			JsonController jsonController = new JsonController(xRequest, xResponse);
+
 			jsonController.setHeaderOnly(headerOnly);
 			jsonController.processRequest(_handlers);
-
 		} else if (controller.equals("download")) {
 			DownloadController downloadController = new DownloadController(xRequest, xResponse);
+
 			downloadController.setHeaderOnly(headerOnly);
 			downloadController.processRequest(_handlers);
-
 		} else if (controller.equals("media") || controller.equals("DigitalMediaController")) {
 			xRequest.setAttribute("module", "digitalmedia");
 			xRequest.setAttribute("action", "download");
 
 			DownloadController downloadController = new DownloadController(xRequest, xResponse);
+
 			downloadController.setHeaderOnly(headerOnly);
 			downloadController.processRequest(_handlers);
-
 		} else if (controller.equals("log")) {
 			xResponse.setContentType("text/html;charset=UTF-8");
 			xRequest.dispatch("/jsp/log.jsp", xResponse);
@@ -198,48 +211,45 @@ public final class SchemaServlet extends HttpServlet {
 		}
 	}
 
-	protected void processStaticRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private boolean _isSetupAction(ExtendedRequest xRequest, String controller) {
+		return StringUtils.isBlank(controller) &&
+				(xRequest.getBoolean("force_setup") ||
+						Configurations.getBoolean(
+								xRequest.getSchema(), Constants.CONFIG_NEW_LIBRARY));
+	}
+
+	private boolean _isMenuAction(String controller, String module, String action) {
+		return StringUtils.isBlank(controller) && StringUtils.isBlank(module) &&
+				StringUtils.isNotBlank(action);
+	}
+
+	protected void processStaticRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		this.processStaticRequest(request, response, false);
 	}
 
-	protected void processStaticRequest(HttpServletRequest request, HttpServletResponse response, boolean headerOnly) throws ServletException, IOException {
+	protected void processStaticRequest(
+			HttpServletRequest request, HttpServletResponse response, boolean headerOnly)
+			throws ServletException, IOException {
+
 		final String path = request.getServletPath();
-		final String realPath;
 
-		if (path.contains("static/")) {
-			realPath = path.substring(path.lastIndexOf("/static"));
-		} else {
-			realPath = path.substring(path.lastIndexOf("/extra"));
-		}
+		final String relevantPath = _getRelevantPath(path);
 
-		if (realPath.endsWith(".i18n.js") || realPath.endsWith(".form.js") || realPath.endsWith(".user_fields.js")) {
-			String filename = StringUtils.substringAfterLast(path, "/");
-			String[] params = StringUtils.split(filename, ".");
+		if (_isPseudoStaticJavascriptPath(relevantPath)) {
+			IFCacheableJavascript javascript = _getCacheableJavascript(path, relevantPath);
 
-			String schema = params[0];
-			IFCacheableJavascript javascript = null;
+			_sendJavascriptCodeAsResponse(request, response, headerOnly, javascript);
 
-			if (realPath.endsWith(".i18n.js")) {
-				javascript = Translations.get(schema, params[1]);
-			} else if (realPath.endsWith(".user_fields.js")) {
-				javascript = UserFields.getFields(schema);
-			} else {
-				javascript = Fields.getFormFields(schema, params[2]);
-			}
-
-			File cacheFile = javascript.getCacheFile();
-
-			if (cacheFile != null) {
-				DiskFile diskFile = new DiskFile(cacheFile, "application/javascript;charset=UTF-8");
-
-				FileIOUtils.sendHttpFile(diskFile, request, response, headerOnly);
-			} else {
-				response.getOutputStream().print(javascript.toJavascriptString());
-			}
 			return;
 		}
 
-		// Other static files
+		_dispatchToOtherStaticFiles(request, response, relevantPath);
+	}
+
+	private void _dispatchToOtherStaticFiles(HttpServletRequest request, HttpServletResponse response,
+			final String realPath) throws ServletException, IOException {
 		RequestDispatcher rd = this.getServletContext().getNamedDispatcher("default");
 
 		ExtendedRequest wrapped = new ExtendedRequest(request) {
@@ -251,6 +261,53 @@ public final class SchemaServlet extends HttpServlet {
 		};
 
 		rd.forward(wrapped, response);
+	}
+
+	private IFCacheableJavascript _getCacheableJavascript(
+			final String path, final String realPath) {
+		String filename = StringUtils.substringAfterLast(path, "/");
+
+		String[] params = StringUtils.split(filename, ".");
+
+		String schema = params[0];
+		
+		if (realPath.endsWith(".i18n.js")) {
+			return Translations.get(schema, params[1]);
+		} else if (realPath.endsWith(".user_fields.js")) {
+			return UserFields.getFields(schema);
+		} else {
+			return Fields.getFormFields(schema, params[2]);
+		}
+	}
+
+	private boolean _isPseudoStaticJavascriptPath(final String realPath) {
+		return realPath.endsWith(".i18n.js") || realPath.endsWith(".form.js") ||
+				realPath.endsWith(".user_fields.js");
+	}
+
+	private void _sendJavascriptCodeAsResponse(
+			HttpServletRequest request, HttpServletResponse response, boolean headerOnly,
+			IFCacheableJavascript javascript) throws IOException {
+
+		File cacheFile = javascript.getCacheFile();
+
+		if (cacheFile != null) {
+			DiskFile diskFile = new DiskFile(cacheFile, "application/javascript;charset=UTF-8");
+
+			FileIOUtils.sendHttpFile(diskFile, request, response, headerOnly);
+		} else {
+			try (ServletOutputStream outputStream = response.getOutputStream()) {
+				outputStream.print(javascript.toJavascriptString());
+			};
+		}
+	}
+
+	private String _getRelevantPath(final String path) {
+		if (path.contains("static/")) {
+			return path.substring(path.lastIndexOf("/static"));
+		} else {
+			return path.substring(path.lastIndexOf("/extra"));
+		}
 	}
 	
 	@Override

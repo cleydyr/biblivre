@@ -68,7 +68,8 @@ public abstract class Controller {
 		this.headerOnly = headerOnly;
 	}
 
-	protected void processRequest(Map<String, AbstractHandler> _handlers) throws ServletException, IOException {
+	protected void processRequest(Map<String, AbstractHandler> _handlers)
+			throws ServletException, IOException {
 		
 		this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 		this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
@@ -102,7 +103,7 @@ public abstract class Controller {
 			String handlerFullyQualifiedClassName = "biblivre." + module + ".Handler";
 
 			this.handler =
-					_tryGettingHandlerFromContextBean(_handlers, handlerFullyQualifiedClassName);
+					_getHandlerFromMap(_handlers, handlerFullyQualifiedClassName);
 
 			if (this.handler == null) {
 				Class<?> handlerClass = Class.forName(handlerFullyQualifiedClassName);
@@ -221,8 +222,8 @@ public abstract class Controller {
 	private boolean _isFirstSetup(String schema, String module, String action) {
 		return (module.equals("administration.setup") || (module.equals("menu") &&
 				action.equals("setup"))) &&
-				(Configurations.getBoolean(schema, Constants.CONFIG_NEW_LIBRARY) ||
-						action.equals("progress"));
+				(Configurations.getBoolean(
+						schema, Constants.CONFIG_NEW_LIBRARY) || action.equals("progress"));
 	}
 
 	private boolean _checkLockedAndNotRequestingProgressInformation(String action) {
@@ -233,14 +234,15 @@ public abstract class Controller {
 		return StringUtils.isBlank(module) || StringUtils.isBlank(action);
 	}
 
-	private AbstractHandler _tryGettingHandlerFromContextBean(
+	private AbstractHandler _getHandlerFromMap(
 			Map<String, AbstractHandler> _handlers, String name) {
 
 		return _handlers.get(name);
 	}
 
 	private void _handleGenericException(Exception e) throws ServletException, IOException {
-		// ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, etc.
+		// ClassNotFoundException, NoSuchMethodException, InstantiationException,\
+		// IllegalAccessException, etc.
 		this.doError("error.invalid_handler", e);
 
 		_logger.error(e.getMessage(), e);
