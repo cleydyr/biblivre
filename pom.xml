@@ -30,7 +30,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
 		<debug>false</debug>
-		<sass.OutputStyle>:expanded</sass.OutputStyle>
+		<sass.OutputStyle>:compressed</sass.OutputStyle>
 		<dockerfile.version>1.4.1</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
 	</properties>
