@@ -21,6 +21,9 @@ package biblivre.circulation.lending;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.json.JSONObject;
+
 import biblivre.core.AbstractDTO;
 
 public class LendingDTO extends AbstractDTO {
@@ -108,5 +111,22 @@ public class LendingDTO extends AbstractDTO {
 
 	public void setDaysLate(Integer daysLate) {
 		this.daysLate = daysLate;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject json = super.toJSONObject();
+
+		if (getExpectedReturnDate() != null) {
+			json.put(
+					"expectedReturnDate",
+					DateFormatUtils.ISO_DATETIME_FORMAT.format(getExpectedReturnDate()));
+		}
+
+		if (getReturnDate() != null) {
+			json.put("returnDate", DateFormatUtils.ISO_DATETIME_FORMAT.format(getReturnDate()));
+		}
+
+		return json;
 	}
 }
