@@ -37,16 +37,16 @@
 
 	<repositories>
 		<repository>
-			<id>clojars.org</id>
-			<url>http://clojars.org/repo</url>
-		</repository>
-		<repository>
-			<id>k-int.com</id>
-			<url>http://developer.k-int.com/maven2/</url>
+			<id>legacy-libs</id>
+			<url>file://${project.basedir}/lib</url>
 		</repository>
 		<repository>
 			<id>central</id>
-			<url>http://central.maven.org/maven2/</url>
+			<url>https://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
 		</repository>
 	</repositories>
 
@@ -126,16 +126,16 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.postgresql</groupId>
-		    <artifactId>postgresql</artifactId>
-		    <version>42.2.6</version>
-		    <scope>provided</scope>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.6</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.marc4j</groupId>
 			<artifactId>marc4j</artifactId>
-			<version>2.5.1.beta</version>
+			<version>2.9.1</version>
 		</dependency>
 
 		<dependency>
@@ -210,8 +210,8 @@
 		</dependency>
 
 		<!-- z3950server e suas dependências transitivas -->
-		<!-- Embora elas não sejam explicitamente requisitadas no código, elas são necessárias
-				em tempo de execução pela biblioteca z3950server e suas dependências -->
+		<!-- Embora elas não sejam explicitamente requisitadas no código, elas 
+			são necessárias em tempo de execução pela biblioteca z3950server e suas dependências -->
 
 		<dependency>
 			<groupId>br.org.biblivre</groupId>
@@ -256,10 +256,10 @@
 		</dependency>
 
 		<dependency>
-	       <groupId>com.zaxxer</groupId>
-	       <artifactId>HikariCP</artifactId>
-	       <version>3.3.1</version>
-	   </dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.3.1</version>
+		</dependency>
 		<!-- / -->
 
 	</dependencies>
