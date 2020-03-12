@@ -46,6 +46,10 @@
 			<id>central</id>
 			<url>http://central.maven.org/maven2/</url>
 		</repository>
+		<repository>
+			<id>legacy-libs</id>
+			<url>file://${project.basedir}/lib</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -124,9 +128,9 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.postgresql</groupId>
-		    <artifactId>postgresql</artifactId>
-		    <version>42.2.6</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.6</version>
 		</dependency>
 
 		<dependency>
@@ -207,8 +211,8 @@
 		</dependency>
 
 		<!-- z3950server e suas dependências transitivas -->
-		<!-- Embora elas não sejam explicitamente requisitadas no código, elas são necessárias
-				em tempo de execução pela biblioteca z3950server e suas dependências -->
+		<!-- Embora elas não sejam explicitamente requisitadas no código, elas 
+			são necessárias em tempo de execução pela biblioteca z3950server e suas dependências -->
 
 		<dependency>
 			<groupId>br.org.biblivre</groupId>
@@ -253,10 +257,10 @@
 		</dependency>
 
 		<dependency>
-	       <groupId>com.zaxxer</groupId>
-	       <artifactId>HikariCP</artifactId>
-	       <version>3.3.1</version>
-	   </dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.3.1</version>
+		</dependency>
 		<!-- / -->
 
 	</dependencies>
