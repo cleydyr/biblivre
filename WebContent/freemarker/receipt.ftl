@@ -1,4 +1,5 @@
 <#setting datetime_format="${dateTimeFormat}">
+<#setting date_format="${dateFormat}">
 
 <html>
 	<head>
@@ -36,7 +37,7 @@
 					<tr><td colspan="2"><hr /></td></tr>
 					<tr>	<td>&nbsp;</td></tr>
 					<#list currentLendings as item>
-						<tr><td class="left-cell">${authorLabel}:</td><td class="right-cell">${item.biblio.author}</td></tr>
+						<tr><td class="left-cell">${authorLabel}:</td><td class="right-cell">${item.biblio.author!}</td></tr>
 						<tr><td class="left-cell">${titleLabel}:</td><td class="right-cell">${item.biblio.title}</td></tr>
 						<tr><td class="left-cell">${biblioLabel}:</td><td class="right-cell">${item.holding.id}</td></tr>
 						<tr><td class="left-cell">${holdingLabel}:</td><td class="right-cell">${item.holding.accessionNumber}</td></tr>
@@ -51,7 +52,7 @@
 					<tr><td colspan="2"><hr /></td></tr>
 					<tr>	<td>&nbsp;</td></tr>
 					<#list currentRenews as item>
-						<tr><td class="left-cell">${authorLabel}:</td><td class="right-cell">${item.biblio.author}</td></tr>
+						<tr><td class="left-cell">${authorLabel}:</td><td class="right-cell">${item.biblio.author!}</td></tr>
 						<tr><td class="left-cell">${titleLabel}:</td><td class="right-cell">${item.biblio.title}</td></tr>
 						<tr><td class="left-cell">${biblioLabel}:</td><td class="right-cell">${item.holding.id}</td></tr>
 						<tr><td class="left-cell">${holdingLabel}:</td><td class="right-cell">${item.holding.accessionNumber}</td></tr>
@@ -66,7 +67,7 @@
 					<tr><td colspan="2"><hr /></td></tr>
 					<tr>	<td>&nbsp;</td></tr>
 					<#list currentReturns as item>
-						<tr><td class="left-cell">${authorLabel}:</td><td class="right-cell">${item.biblio.author}</td></tr>
+						<tr><td class="left-cell">${authorLabel}:</td><td class="right-cell">${item.biblio.author!}</td></tr>
 						<tr><td class="left-cell">${titleLabel}:</td><td class="right-cell">${item.biblio.title}</td></tr>
 						<tr><td class="left-cell">${biblioLabel}:</td><td class="right-cell">${item.holding.id}</td></tr>
 						<tr><td class="left-cell">${holdingLabel}:</td><td class="right-cell">${item.holding.accessionNumber}</td></tr>
