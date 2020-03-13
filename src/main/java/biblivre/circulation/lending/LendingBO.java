@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
@@ -701,6 +701,7 @@ public class LendingBO extends AbstractBO {
 			
 			for (LendingInfoDTO info : lendingInfo) {
 				LendingDTO lendingDto = info.getLending();
+
 				if (lendingDto.getReturnDate() != null) {
 					currentReturns.add(info);
 					continue;
