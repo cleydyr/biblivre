@@ -448,7 +448,7 @@ public class LendingBO extends AbstractBO {
 	
 	private String generateTxtReceipt(List<Integer> lendingsIds, TranslationsMap i18n, int columns) {
 		DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
-		
+
 		List<LendingDTO> lendings = this.listLendings(lendingsIds);
 		if (lendings == null || lendings.isEmpty()) {
 			return "";
@@ -522,6 +522,9 @@ public class LendingBO extends AbstractBO {
 			String returnDateLabel = i18n.getText("circulation.lending.receipt.return_date");
 			String lendingDateLabel = i18n.getText("circulation.lending.receipt.lending_date");
 
+			DateFormat returnDateFormat =
+					new SimpleDateFormat(i18n.getText(Constants.TRANSLATION_FORMAT_DATE));
+
 			if (!currentLendings.isEmpty()) {
 			
 				String header = "**" + i18n.getText("circulation.lending.receipt.lendings") + "**";
@@ -549,7 +552,7 @@ public class LendingBO extends AbstractBO {
 					receipt.append("   ").append(receiptDateFormat.format(lendingDate)).append("\n");
 					receipt.append(expectedDateLabel).append(":\n");
 					Date expectedReturnDate = info.getLending().getExpectedReturnDate();
-					receipt.append("   ").append(receiptDateFormat.format(expectedReturnDate)).append("\n");
+					receipt.append("   ").append(returnDateFormat.format(expectedReturnDate)).append("\n");
 					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
 					receipt.append("\n");
 				}
@@ -583,7 +586,7 @@ public class LendingBO extends AbstractBO {
 					receipt.append("   ").append(receiptDateFormat.format(lendingDate)).append("\n");
 					receipt.append(expectedDateLabel).append(":\n");
 					Date expectedReturnDate = info.getLending().getExpectedReturnDate();
-					receipt.append("   ").append(receiptDateFormat.format(expectedReturnDate)).append("\n");
+					receipt.append("   ").append(returnDateFormat.format(expectedReturnDate)).append("\n");
 					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
 					receipt.append("\n");
 				}
