@@ -47,12 +47,8 @@
 			<url>http://clojars.org/repo</url>
 		</repository>
 		<repository>
-			<id>k-int.com</id>
-			<url>http://developer.k-int.com/maven2/</url>
-		</repository>
-		<repository>
 			<id>central</id>
-			<url>http://central.maven.org/maven2/</url>
+			<url>https://repo1.maven.org/maven2/</url>
 		</repository>
     <repository>
       <id>legacy-libs</id>
