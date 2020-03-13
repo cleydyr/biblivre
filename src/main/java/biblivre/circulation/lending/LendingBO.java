@@ -701,6 +701,7 @@ public class LendingBO extends AbstractBO {
 			
 			for (LendingInfoDTO info : lendingInfo) {
 				LendingDTO lendingDto = info.getLending();
+
 				if (lendingDto.getReturnDate() != null) {
 					currentReturns.add(info);
 					continue;
