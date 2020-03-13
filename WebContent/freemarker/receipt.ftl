@@ -42,7 +42,7 @@
 						<tr><td class="left-cell">${biblioLabel}:</td><td class="right-cell">${item.holding.id}</td></tr>
 						<tr><td class="left-cell">${holdingLabel}:</td><td class="right-cell">${item.holding.accessionNumber}</td></tr>
 						<tr><td class="left-cell">${lendingDateLabel}:</td><td class="right-cell">${item.lending.created}</td></tr>
-						<tr><td class="left-cell">${expectedDateLabel}:</td><td class="right-cell">${item.lending.expectedReturnDate}</td></tr>
+						<tr><td class="left-cell">${expectedDateLabel}:</td><td class="right-cell">${item.lending.expectedReturnDate?date}</td></tr>
 						<tr><td>&nbsp;</td></tr>
 					</#list>
 					<tr><td colspan="2"><hr /></td></tr>
@@ -57,7 +57,7 @@
 						<tr><td class="left-cell">${biblioLabel}:</td><td class="right-cell">${item.holding.id}</td></tr>
 						<tr><td class="left-cell">${holdingLabel}:</td><td class="right-cell">${item.holding.accessionNumber}</td></tr>
 						<tr><td class="left-cell">${lendingDateLabel}:</td><td class="right-cell">${item.lending.created}</td></tr>
-						<tr><td class="left-cell">${expectedDateLabel}:</td><td class="right-cell">${item.lending.expectedReturnDate}</td></tr>
+						<tr><td class="left-cell">${expectedDateLabel}:</td><td class="right-cell">${item.lending.expectedReturnDate?date}</td></tr>
 						<tr><td>&nbsp;</td></tr>
 					</#list>
 					<tr><td colspan="2"><hr /></td></tr>
@@ -72,7 +72,7 @@
 						<tr><td class="left-cell">${biblioLabel}:</td><td class="right-cell">${item.holding.id}</td></tr>
 						<tr><td class="left-cell">${holdingLabel}:</td><td class="right-cell">${item.holding.accessionNumber}</td></tr>
 						<tr><td class="left-cell">${lendingDateLabel}:</td><td class="right-cell">${item.lending.created}</td></tr>
-						<tr><td class="left-cell">${returnDateLabel}:</td><td class="right-cell">${item.lending.expectedReturnDate}</td></tr>
+						<tr><td class="left-cell">${returnDateLabel}:</td><td class="right-cell">${item.lending.expectedReturnDate?date}</td></tr>
 						<tr><td>&nbsp;</td></tr>
 					</#list>
 					<tr><td colspan="2"><hr /></td></tr>

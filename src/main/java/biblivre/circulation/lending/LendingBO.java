@@ -643,9 +643,15 @@ public class LendingBO extends AbstractBO {
 
 		Map<String, Object> root = new HashMap<>();
 
-		DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
+		String formatDateTime = i18n.getText(Constants.TRANSLATION_FORMAT_DATETIME);
 
-		root.put("dateTimeFormat", i18n.getText("format.datetime"));
+		DateFormat dateTimeFormat = new SimpleDateFormat(formatDateTime);
+
+		root.put("dateTimeFormat", formatDateTime);
+
+		String formatDate = i18n.getText(Constants.TRANSLATION_FORMAT_DATE);
+
+		root.put("dateFormat", formatDate);
 		
 		List<LendingDTO> lendings = this.listLendings(lendingsIds);
 
@@ -662,7 +668,7 @@ public class LendingBO extends AbstractBO {
 		root.put("lendingInfo", lendingInfo);
 
 		String libraryName = Configurations.getString(this.getSchema(), "general.title");
-		String now = receiptDateFormat.format(new Date());
+		String now = dateTimeFormat.format(new Date());
 
 		root.put("libraryName", libraryName);
 		root.put("now", now);
