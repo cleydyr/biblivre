@@ -412,7 +412,8 @@ public class LendingBO extends AbstractBO {
 		return lendingList;
 	}
 
-	public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n) {
+	public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
+			throws TemplateException, IOException {
 		PrinterType printerType = PrinterType.fromString(Configurations.getString(this.getSchema(), Constants.CONFIG_LENDING_PRINTER_TYPE));
 		int columns = 24;
 		
@@ -434,13 +435,7 @@ public class LendingBO extends AbstractBO {
 		}
 		
 		if (columns == 0) {
-			try {
-				return this.generateTableReceipt(lendingsIds, i18n);
-			} catch (TemplateException | IOException e) {
-				PrintWriter errorWriter = new PrintWriter(new StringWriter());
-				e.printStackTrace(errorWriter);
-				return errorWriter.toString();
-			}
+			return this.generateTableReceipt(lendingsIds, i18n);
 		} else {
 			return this.generateTxtReceipt(lendingsIds, i18n, columns);
 		}
