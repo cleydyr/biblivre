@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +47,7 @@ import biblivre.core.PagingDTO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
+import freemarker.template.TemplateException;
 
 public class Handler extends AbstractHandler {
 
@@ -330,12 +332,20 @@ public class Handler extends AbstractHandler {
 		}
 		
 		LendingBO bo = LendingBO.getInstance(schema);
-		String receipt = bo.generateReceipt(ids, request.getTranslationsMap());
+
 		
 		try {
+			String receipt = bo.generateReceipt(ids, request.getTranslationsMap());
+
 			this.json.put("receipt", receipt);
 		} catch(JSONException e) {
+			e.printStackTrace();
+
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
+		} catch (TemplateException | IOException e) {
+			e.printStackTrace();
+
+			this.setMessage(ActionResult.ERROR, "error.runtime_error");
 		}
 	}
 }
