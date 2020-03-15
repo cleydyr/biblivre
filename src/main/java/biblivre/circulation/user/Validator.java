@@ -57,6 +57,10 @@ public class Validator extends AbstractValidator {
 			ex.addError("name", "field.error.required");
 		}
 
+		if (name.contains(":")) {
+			ex.addError("name", "circulation.error.invalid_user_name");
+		}
+
 		Integer type = request.getInteger("type");
 		if (UserTypeBO.getInstance(schema).get(type) == null) {
 			ex.addError("type", "field.error.required");
