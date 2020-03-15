@@ -1153,6 +1153,7 @@
 *circulation.error.no_users_found = Ningún usuario encontrado
 *circulation.error.user_not_found = Usuario no encontrado
 *circulation.error.you_cannot_delete_yourself = Usted no puede excluirse o marcarse como inactivo
+*circulation.error.invalid_user_name = Este usuario posee un nombre con caracteres inválidos (:)
 
 *circulation.error.delete.user_has_accesscard = Este usuario posee tarjeta de acceso en uso.  Realice la devolución de la tarjeta antes de excluir este usuario.
 *circulation.error.delete.user_has_lendings = Este usuario posee préstamos activos.  Realice la devolución antes de excluir este usuario.

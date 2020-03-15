@@ -1161,6 +1161,7 @@
 
 *circulation.error.delete.user_has_accesscard = This user has an access card in use. Return the card before deleting this user.
 *circulation.error.delete.user_has_lendings = This user has active lendings. Return items before deleting this user.
+*circulation.error.invalid_user_name = This user has a name with invalid characters (:)
 
 *circulation.lending.daily_fine = Daily fine
 *circulation.lending.days_late = Days behind schedule
