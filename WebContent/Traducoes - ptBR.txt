@@ -315,6 +315,7 @@
 *circulation.error.you_cannot_delete_yourself = Você não pode excluir-se ou marcar-se como inativo
 *circulation.error.delete.user_has_lendings = Este usuário possui empréstimos ativos.  Realize a devolução antes de excluir este usuário.
 *circulation.error.delete.user_has_accesscard = Este usuário possui cartão de acesso em uso.  Realize a devolução do cartão antes de excluir este usuário.
+*circulation.error.invalid_user_name = Este usuário possui nome com caracteres inválidos (:)
 *circulation.users.success.save = Usuário incluído com sucesso
 *circulation.users.success.update = Usuário salvo com sucesso
 *circulation.users.error.save = Falha ao gravar o Usuário
