@@ -106,6 +106,12 @@ public class Handler extends AbstractHandler {
 	}
 	
 	public void save(ExtendedRequest request, ExtendedResponse response) {
+		if (request.getString("name").contains(":")) {
+			this.setMessage(ActionResult.ERROR, "circulation.error.invalid_user_name");
+
+			return;
+		}
+
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 

@@ -6771,6 +6771,10 @@ INSERT INTO translations (language, key, text, created, created_by, modified, mo
 INSERT INTO translations (language, key, text, created, created_by, modified, modified_by, user_created) VALUES ('en-US', 'acquisition.supplier.confirm_delete_record.trash', 'It will be moved to the "trash" database', '2014-07-26 10:56:18.338867', 1, '2014-07-26 13:41:48.22945', 1, false);
 INSERT INTO translations (language, key, text, created, created_by, modified, modified_by, user_created) VALUES ('en-US', 'circulation.user.confirm_delete_record_title.inactive', 'Mark user as "inactive"', '2014-07-26 10:56:18.338867', 1, '2014-07-26 13:41:48.22945', 1, false);
 
+INSERT INTO translations (language, key, text, created, created_by, modified, modified_by, user_created) VALUES ('en-US', 'circulation.error.invalid_user_name', 'This user has a name with invalid characters (:)', '2014-07-26 10:56:18.338867', 1, '2014-07-26 13:41:48.22945', 1, false);
+INSERT INTO translations (language, key, text, created, created_by, modified, modified_by, user_created) VALUES ('pt-BR', 'circulation.error.invalid_user_name', 'Este usuário possui nome com caracteres inválidos (:)', '2014-07-26 10:56:18.338867', 1, '2014-07-26 13:41:48.22945', 1, false);
+INSERT INTO translations (language, key, text, created, created_by, modified, modified_by, user_created) VALUES ('es', 'circulation.error.invalid_user_name', 'Este usuario posee un nombre con caracteres inválidos (:)', '2014-07-26 10:56:18.338867', 1, '2014-07-26 13:41:48.22945', 1, false);
+
 
 --
 -- TOC entry 2438 (class 0 OID 741275)
