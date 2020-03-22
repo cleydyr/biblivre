@@ -21,26 +21,52 @@ package biblivre.circulation.user;
 
 import java.util.HashMap;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
 
+@Entity()
+@Table(name = "users", schema = "single")
 public class UserDTO extends AbstractDTO {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+
+	@Column(nullable = false)
 	private String name;
+
 	private Integer type;
+
+	@Column(name = "photo_id")
 	private String photoId;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private UserStatus status;
+
+	@Column(name = "login_id")
 	private Integer loginId;
+
+	@Column(name = "user_card_printed")
 	private Boolean userCardPrinted;
 	
 	private HashMap<String, String> fields;
 	
 	transient private Integer currentLendings;
+
 	transient private String usertypeName;
 	
 	public UserDTO() {

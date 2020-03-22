@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.JSONArray;
@@ -37,12 +40,18 @@ import org.json.JSONObject;
 
 import biblivre.core.utils.TextUtils;
 
+@MappedSuperclass
 public abstract class AbstractDTO implements IFJson, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Date created;
+	
+	@Column(name = "created_by")
 	private int createdBy;
+
 	private Date modified;
+	
+	@Column(name = "modified_by")
 	private int modifiedBy;
 
 	private transient Map<String, IFJson> _extraData = new HashMap<String, IFJson>();
@@ -207,35 +216,35 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 		return (T) this;
 	}
 
-	public final Date getCreated() {
+	public Date getCreated() {
 		return this.created;
 	}
 
-	public final void setCreated(Date created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 
-	public final int getCreatedBy() {
+	public int getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public final void setCreatedBy(int createdBy) {
+	public void setCreatedBy(int createdBy) {
 		this.createdBy = createdBy;
 	}
 
-	public final Date getModified() {
+	public Date getModified() {
 		return this.modified;
 	}
 
-	public final void setModified(Date modified) {
+	public void setModified(Date modified) {
 		this.modified = modified;
 	}
 
-	public final int getModifiedBy() {
+	public int getModifiedBy() {
 		return this.modifiedBy;
 	}
 
-	public final void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(int modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 }

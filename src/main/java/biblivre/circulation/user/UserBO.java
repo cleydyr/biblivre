@@ -21,22 +21,12 @@ package biblivre.circulation.user;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-
-import biblivre.administration.usertype.UserTypeBO;
-import biblivre.administration.usertype.UserTypeDTO;
-import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
-import biblivre.core.DTOCollection;
-import biblivre.core.LabelPrintDTO;
-import biblivre.core.file.DiskFile;
-import biblivre.core.translations.TranslationsMap;
-import biblivre.core.utils.Constants;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -52,9 +42,21 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+import biblivre.administration.usertype.UserTypeBO;
+import biblivre.administration.usertype.UserTypeDTO;
+import biblivre.core.AbstractBO;
+import biblivre.core.AbstractDTO;
+import biblivre.core.DTOCollection;
+import biblivre.core.LabelPrintDTO;
+import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationsMap;
+import biblivre.core.utils.Constants;
+
 public class UserBO extends AbstractBO {
 
 	private UserDAO dao;
+
+	private UserRepository userRepository;
 
 	public static UserBO getInstance(String schema) {
 		UserBO bo = AbstractBO.getInstance(UserBO.class, schema);
@@ -62,7 +64,11 @@ public class UserBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = UserDAO.getInstance(schema);
 		}
-		
+
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(UserConfig.class);
+
+		bo.userRepository = ctx.getBean(UserRepository.class);
+
 		return bo;
 	}
 	
@@ -84,10 +90,11 @@ public class UserBO extends AbstractBO {
 	}
 	
 	public UserDTO get(int id) {
-		Set<Integer> ids = new HashSet<Integer>();
-		ids.add(id);
+		return userRepository.findById(id).get();
+//		Set<Integer> ids = new HashSet<Integer>();
+//		ids.add(id);
 		
-		return this.map(ids).get(id);
+//		return this.map(ids).get(id);
 	}
 	
 	public Map<Integer, UserDTO> map(Set<Integer> ids) {

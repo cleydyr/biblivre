@@ -24,10 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.utils.BiblivreEnum;
 
 public enum UserStatus implements BiblivreEnum {
-	ACTIVE,
-	PENDING_ISSUES,
-	INACTIVE,
-	BLOCKED;
+	active,
+	pending_issues,
+	inactive,
+	blocked;
 
 	public static UserStatus fromString(String str) {
 		if (StringUtils.isBlank(str)) {
