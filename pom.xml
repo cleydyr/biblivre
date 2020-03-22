@@ -262,7 +262,7 @@
 		</dependency>
 
 		<!-- z3950server e suas dependências transitivas -->
-		<!-- Embora elas não sejam explicitamente requisitadas no código, elas 
+		<!-- Embora elas não sejam explicitamente requisitadas no código, elas
 			são necessárias em tempo de execução pela biblioteca z3950server e suas dependências -->
 
 		<dependency>
