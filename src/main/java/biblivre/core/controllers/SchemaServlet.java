@@ -66,8 +66,11 @@ public final class SchemaServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException {
+
 		BiblivreInitializer.initialize();
+
 		ExtendedRequest xRequest = ((ExtendedRequest) request);
 
 		if (xRequest.mustRedirectToSchema()) {
@@ -80,6 +83,7 @@ public final class SchemaServlet extends HttpServlet {
 			}
 
 			((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
+
 			return;
 		}
 

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -45,12 +45,12 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Date created;
-	
+
 	@Column(name = "created_by")
 	private int createdBy;
 
 	private Date modified;
-	
+
 	@Column(name = "modified_by")
 	private int modifiedBy;
 
@@ -69,13 +69,13 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 				for (Field field : clazz.getDeclaredFields()) {
 					String name = field.getName();
 					Method getter = null;
-					
+
 					try {
 						getter = clazz.getDeclaredMethod("get" + StringUtils.capitalize(name));
 					} catch (NoSuchMethodException e) {
 						continue;
 					}
-	
+
 					Object value = getter.invoke(this);
 
 					if (value != null) {
@@ -83,7 +83,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 							json.putOpt(name, ((IFJson) value).toJSONObject());
 						} else if (value instanceof Collection) {
 							Collection<?> col = (Collection<?>) value;
-	
+
 							for (Object item : col) {
 								if (item == null) {
 									continue;
@@ -111,7 +111,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
 				for (Entry<String, IFJson> e : this._extraData.entrySet()) {
 					IFJson value = e.getValue();
-					
+
 					if (value instanceof DTOCollection) {
 						json.put(e.getKey(), this.toJSONArray((DTOCollection<AbstractDTO>) value));
 					} else {
@@ -135,7 +135,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 	public void populateExtraData(JSONObject json) throws JSONException {
 		for (Entry<String, IFJson> e : this._extraData.entrySet()) {
 			IFJson value = e.getValue();
-			
+
 			if (value instanceof DTOCollection) {
 				json.put(e.getKey(), this.toJSONArray((DTOCollection<AbstractDTO>) value));
 			} else {
@@ -143,23 +143,23 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 			}
 		}
 	}
-	
+
 	protected JSONArray toJSONArray(List<? extends IFJson> list) {
 		if (list == null) {
 			return null;
 		}
-		
+
 		JSONArray array = new JSONArray();
 		for (IFJson e : list) {
 			array.put(e.toJSONObject());
 		}
 		return array;
 	}
-	
+
 	public String toJSONString() {
 		return this.toJSONObject().toString();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected <T extends AbstractDTO> T fromJSONObject(String jsonData) {
 		try {
@@ -167,10 +167,10 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 			return this.fromJSONObject(json);
 		} catch (JSONException je) {
 		}
-		
+
 		return (T) this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected <T extends AbstractDTO> T fromJSONObject(JSONObject json) {
 		Class<?> clazz = this.getClass();
