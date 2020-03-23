@@ -1,5 +1,5 @@
 *
 !Dockerfile
-!scripts/deploy.sh
+!scripts/
 !target/Biblivre4
 

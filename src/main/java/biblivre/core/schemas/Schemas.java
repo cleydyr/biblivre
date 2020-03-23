@@ -43,7 +43,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
-import br.org.biblivre.z3950server.Z3950ServerBO;
+import biblivre.z3950.server.Z3950ServerBOAdapter;
 
 public class Schemas extends StaticBO {
 
@@ -105,7 +105,7 @@ public class Schemas extends StaticBO {
 			}
 		}
 
-		Z3950ServerBO.setSingleSchema(Constants.SINGLE_SCHEMA);
+		Z3950ServerBOAdapter.setSingleSchema(Constants.SINGLE_SCHEMA);
 		BiblivreInitializer.reloadZ3950Server();
 	}
 

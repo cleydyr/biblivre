@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,11 +89,23 @@ public class DatabaseUtils {
 	}
 
 	public static String getDatabaseHostName() {
-		return System.getenv(Constants.DATABASE_HOST_NAME);
+		String databaseHostName = System.getenv(Constants.DATABASE_HOST_NAME);
+
+		if (databaseHostName != null) {
+			return databaseHostName;
+		}
+
+		return InetAddress.getLoopbackAddress().getHostName();
 	}
 
 	public static String getDatabasePort() {
-		return System.getenv(Constants.DATABASE_PORT);
+		String databasePort = System.getenv(Constants.DATABASE_PORT);
+
+		if (databasePort != null) {
+			return databasePort;
+		}
+
+		return  String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT);
 	}
 
 	private static File getFromFilesystem(String fileName) {
