@@ -1,57 +1,50 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+// Imports the @clayui/css package CSS
+import "@clayui/css/lib/css/atlas.css";
 
-function MessageBox({translations, messageKey, actionKey, actionQuery, level}) {
-	return (
-			<div className={`message sticky ${level}`}>
-			<div>
-				{translations[messageKey]}
-				<a href={actionQuery} className="fright">
-					{translations[actionKey]}
-				</a>
-			</div>
-		</div>
-	);
-}
-const changePasswordMessageContainer = document.querySelector('#change_passsword_message_container');
+import ClayNavigationBar from '@clayui/navigation-bar';
+import React from 'react';
+import ReactDOM from "react-dom";
 
-changePasswordMessageContainer && ReactDOM.render(
-	<MessageBox
-		translations={Translations.translations}
-		messageKey='warning.change_password'
-		actionKey='warning.fix_now'
-		actionQuery='?action=administration_password'
-		level='error'
-	/>,
-	changePasswordMessageContainer);
+import spritemap from "@clayui/css/lib/images/icons/icons.svg";
 
-class DataFields extends Component {
-	render() {
-		const {formFields, selectedRecordType} = this.props;
-		const enabledFields = formFields[selectedRecordType];
-		const datafields = ld.sortBy(enabledFields, 'sortOrder');
+const Component = () => {
+  const btnStyle = {
+    padding: "5.5px 16px 5.5px 16px",
+    borderColor: "var(--indigo)"
+  };
 
-		FormCustomization.indexedDatafields = ld.keyBy(FormCustomization.datafields, 'datafield');
+  return (
+    <ClayNavigationBar triggerLabel="Item 1" spritemap={spritemap}>
+      <ClayNavigationBar.Item active>
+        <button
+          className="btn btn-unstyled btn-block btn-sm"
+          style={btnStyle}
+          type="button"
+        >
+          Item 1
+        </button>
+      </ClayNavigationBar.Item>
+      <ClayNavigationBar.Item>
+        <button
+          className="btn btn-unstyled btn-block btn-sm"
+          style={btnStyle}
+          type="button"
+        >
+          Item 2
+        </button>
+      </ClayNavigationBar.Item>
+      <ClayNavigationBar.Item>
+        <button
+          className="btn btn-unstyled btn-block btn-sm"
+          style={btnStyle}
+          type="button"
+        >
+          Item 3
+        </button>
+      </ClayNavigationBar.Item>
+    </ClayNavigationBar>
+  );
+};
 
-		return datafields.map( datafield =>
-			(<fieldset className="block" data-datafield={datafield.datafield}>
-				<legend>{datafield.datafield} - { _(`marc.bibliographic.datafield.${datafield.datafield}`)}</legend>
-				<div class="buttons">
-						<span className="cancel-datafield fa fa-close"></span>
-						<span className="save-datafield fa fa-check"></span>
-						<span className="trash-datafield fa fa-trash-o"></span>
-						<span className="edit-datafield fa fa-pencil"></span>
-						<span className="move-datafield fa fa-bars"></span>
-					</div>
-				<div className="edit_area"></div>
-			</fieldset>)
-		);
-	};
-}
-
-const datafields = document.querySelector('#datafields');
-datafields && ReactDOM.render(
-	<DataFields
-		formFields={FormCustomization.formFields}
-		selectedRecordType='bibliographic'/>,
-	datafields);
+const rootElement = document.getElementById("root");
+ReactDOM.render(<Component />, rootElement);
