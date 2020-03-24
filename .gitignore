@@ -20,3 +20,5 @@ WebContent/static/styles/biblivre.administration.z3950.css
 /WebContent/static/styles/biblivre.core.css
 /WebContent/static/styles/biblivre.index.css
 /WebContent/static/styles/biblivre.search.css
+.vscode/
+.factorypath
