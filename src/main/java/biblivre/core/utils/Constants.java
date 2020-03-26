@@ -37,6 +37,7 @@ public class Constants {
 	public static final int ADMIN_LOGGED_USER_ID = 0;
 	public static final int DEFAULT_POSTGRESQL_PORT = 5432;
 	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+	public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
 	public static final Charset WINDOWS_CHARSET = Charset.forName("cp1252");
 
 	public static final String BIBLIVRE = "Biblivre";

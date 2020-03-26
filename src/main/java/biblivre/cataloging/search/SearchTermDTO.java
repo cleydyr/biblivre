@@ -119,11 +119,11 @@ public class SearchTermDTO extends AbstractDTO {
 			json.putOpt("operator", this.getOperator());
 
 			if (this.getStartDate() != null) {
-				json.putOpt("start_date", DateFormatUtils.ISO_DATETIME_FORMAT.format(this.getStartDate()));
+				json.putOpt("start_date", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getStartDate()));
 			}
 			
 			if (this.getEndDate() != null) {
-				json.putOpt("end_date", DateFormatUtils.ISO_DATETIME_FORMAT.format(this.getEndDate()));
+				json.putOpt("end_date", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getEndDate()));
 			}
 		} catch (JSONException e) {
 		}
