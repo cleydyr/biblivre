@@ -30,3 +30,4 @@ As seguintes variáveis de ambiente são configuráveis através do arquivo .env
 **POSTGRES_DB** (nome do banco de dados; valor padrão "biblivre4")
 **DATABASE_HOST_PORT** (porta da aplicação de banco de dados; valor padrão 5432)
 **DATABASE_HOST_NAME** (nome do host da aplicação de banco de dados; valor padrão "database", que é o nome de host do contêiner que roda o PostgreSQL)
+**PGPASSFILE** (caminho do arquivo .pgpass necessário para a execução do comando pg_dump)
