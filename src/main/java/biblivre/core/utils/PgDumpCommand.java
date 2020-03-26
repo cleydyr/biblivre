@@ -11,7 +11,7 @@ public class PgDumpCommand {
 	public PgDumpCommand(File executable, InetSocketAddress address, Charset encoding,
 			Format format, String schema, File file,	boolean isSchemaOnly,
 			boolean isDataOnly, String excludeTablePattern,
-			String includeTablePattern) {
+			String includeTablePattern, String username, String dbname) {
 
 		this.executable = executable;
 		this.address = address;
@@ -23,6 +23,8 @@ public class PgDumpCommand {
 		this.isDataOnly = isDataOnly;
 		this.excludeTablePattern = excludeTablePattern;
 		this.tablePattern = includeTablePattern;
+		this.username = username;
+		this.dbname = dbname;
 	}
 
 	public InetSocketAddress getAddress() {
@@ -64,29 +66,35 @@ public class PgDumpCommand {
 	public File getExecutable() {
 		return this.executable;
 	}
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public String getDbname() {
+		return dbname;
+	}
 
 	public List<String> getCommands() {
 		List<String> result = new ArrayList<String>();
 
 		result.add(getExecutable().getAbsolutePath());
 
-		result.add(Option.HOST.toString());
-		result.add(getAddress().getHostString());
+		result.add(Option.HOST.toString() + getAddress().getHostString());
 
-		result.add(Option.PORT.toString());
-		result.add(String.valueOf(getAddress().getPort()));
+		result.add(Option.PORT.toString() + String.valueOf(getAddress().getPort()));
+		
+		result.add(Option.USERNAME.toString() + getUsername());
+		
+		result.add(Option.DBNAME.toString() + getDbname());
+		
+		result.add(Option.ENCODING.toString() + getEncoding().name());
 
-		result.add(Option.ENCODING.toString());
-		result.add(getEncoding().name());
+		result.add(Option.FORMAT.toString() + getFormat().value());
 
-		result.add(Option.FORMAT.toString());
-		result.add(getFormat().value());
+		result.add(Option.SCHEMA.toString() + getSchema());
 
-		result.add(Option.SCHEMA.toString());
-		result.add(getSchema());
-
-		result.add(Option.FILE.toString());
-		result.add(getFile().getAbsolutePath());
+		result.add(Option.FILE.toString() + getFile().getAbsolutePath());
 
 		if (isSchemaOnly()) {
 			result.add(Option.SCHEMA_ONLY.toString());
@@ -97,13 +105,11 @@ public class PgDumpCommand {
 		}
 
 		if (getExcludeTablePattern() != null) {
-			result.add(Option.EXCLUDE_TABLE.toString());
-			result.add(getExcludeTablePattern());
+			result.add(Option.EXCLUDE_TABLE.toString() + getExcludeTablePattern());
 		}
 
 		if (getTablePattern() != null) {
-			result.add(Option.TABLE.toString());
-			result.add(getTablePattern());
+			result.add(Option.TABLE.toString() + getTablePattern());
 		}
 
 		return result;
@@ -118,11 +124,17 @@ public class PgDumpCommand {
 	}
 
 	enum Option {
-		ENCODING, FORMAT, SCHEMA, FILE, SCHEMA_ONLY, DATA_ONLY, EXCLUDE_TABLE,
-		HOST, PORT, TABLE;
+		ENCODING(true), FORMAT(true), SCHEMA(true), FILE(true), SCHEMA_ONLY(false), DATA_ONLY(false), EXCLUDE_TABLE(true),
+		HOST(true), PORT(true), TABLE(true), USERNAME(true), DBNAME(true);
+		
+		private final boolean equalString;
+		
+		private Option(boolean equalString) {
+			this.equalString = equalString;
+		}
 
 		public String toString() {
-			return "--" + this.name().replaceAll("_", "-").toLowerCase();
+			return "--" + this.name().replaceAll("_", "-").toLowerCase() + (this.equalString ? "=" : "");
 		}
 	}
 
@@ -136,4 +148,6 @@ public class PgDumpCommand {
 	private final boolean isDataOnly;
 	private final String excludeTablePattern;
 	private final String tablePattern;
+	private final String username;
+	private final String dbname;
 }

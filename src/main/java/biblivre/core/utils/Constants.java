@@ -107,4 +107,5 @@ public class Constants {
 	public static final String DATABASE_PORT = "DATABASE_PORT";
 	public static final String POSTGRES_USER_ENV = "PGUSER";
 	public static final String DEAFULT_POSTGRES_USER = "biblivre";
+	public static final String DATABASE_NAME="POSTGRES_DB";
 }

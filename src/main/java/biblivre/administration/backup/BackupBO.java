@@ -337,11 +337,13 @@ public class BackupBO extends AbstractBO {
 				Constants.DEFAULT_POSTGRESQL_PORT);
 
 		Format defaultFormat = Format.PLAIN;
-
+		String username = Constants.DEAFULT_POSTGRES_USER;
+		String dbname = System.getenv(Constants.DATABASE_NAME);
+		
 		this.dumpDatabase(new PgDumpCommand(pgdump, defaultAddress,
 				Constants.DEFAULT_CHARSET, defaultFormat, schema, backupFile,
 				isSchemaOnly , isDataOnly , excludeTablePattern,
-				includeTablePattern ));
+				includeTablePattern, username, dbname ));
 
 		dto.increaseCurrentStep();
 		this.save(dto);
