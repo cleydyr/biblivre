@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.Formatter;
@@ -331,17 +330,19 @@ public class BackupBO extends AbstractBO {
 			boolean isSchemaOnly, boolean isDataOnly,
 			String excludeTablePattern, String includeTablePattern) {
 
-		File pgdump = DatabaseUtils.getPgDump(this.getSchema());;
-		InetSocketAddress defaultAddress = new InetSocketAddress(
-				DatabaseUtils.getDatabaseHostName(),
+		File pgdump = DatabaseUtils.getPgDump(this.getSchema());
+
+		InetSocketAddress address =
+			new InetSocketAddress(DatabaseUtils.getDatabaseHostName(),
 				Integer.parseInt(DatabaseUtils.getDatabasePort()));
 
 		Format defaultFormat = Format.PLAIN;
 
-		this.dumpDatabase(new PgDumpCommand(pgdump, defaultAddress,
-				Constants.DEFAULT_CHARSET, defaultFormat, schema, backupFile,
-				isSchemaOnly , isDataOnly , excludeTablePattern,
-				includeTablePattern ));
+		this.dumpDatabase(
+			new PgDumpCommand(
+				pgdump, address, Constants.DEFAULT_CHARSET, defaultFormat,
+				schema, backupFile,	isSchemaOnly , isDataOnly ,
+				excludeTablePattern, includeTablePattern));
 
 		dto.increaseCurrentStep();
 		this.save(dto);
