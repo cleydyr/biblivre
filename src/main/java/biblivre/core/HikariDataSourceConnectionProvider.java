@@ -15,16 +15,17 @@ import biblivre.core.utils.DatabaseUtils;
 public class HikariDataSourceConnectionProvider {
 	private static com.zaxxer.hikari.HikariDataSource ds;
 	private static final String SET_SCHEMA_TEMPLATE = "SET search_path = '%s', public, pg_catalog;";
-	private static final String JDBC_URL_TEMPLATE = "jdbc:postgresql://%s:%s/biblivre4";
+	private static final String JDBC_URL_TEMPLATE = "jdbc:postgresql://%s:%s/%s";
 
 	static {
 
 		Properties props = new Properties();
 		props.setProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
-		props.setProperty("dataSource.user", "biblivre");
-		props.setProperty("dataSource.password", "abracadabra");
+		props.setProperty("dataSource.user", System.getenv("PGUSER"));
+		props.setProperty("dataSource.password", DatabaseUtils.getDatabasePassword());
 		props.setProperty("dataSource.url", String.format(JDBC_URL_TEMPLATE,
-				DatabaseUtils.getDatabaseHostName(), DatabaseUtils.getDatabasePort()));
+				DatabaseUtils.getDatabaseHostName(), DatabaseUtils.getDatabasePort(),
+				DatabaseUtils.getDatabaseName()));
 
 		props.setProperty("maximumPoolSize", "10");
 		props.setProperty("minimumIdle", "5");

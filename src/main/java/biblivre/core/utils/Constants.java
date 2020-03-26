@@ -99,4 +99,8 @@ public class Constants {
 
 	public static final String DATABASE_HOST_NAME = "DATABASE_HOST_NAME";
 	public static final String DATABASE_PORT = "DATABASE_PORT";
+	public static final String DATABASE_NAME = "PGDATABASE";
+	public static final String DATABASE_PASSWORD = "PGPASSWORD";
+	public static final String DEFAULT_DATABASE_NAME = "biblivre4";
+	public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
 }
