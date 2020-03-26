@@ -1,6 +1,6 @@
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
-<%@page import="org.apache.commons.lang3.StringEscapeUtils"%>
+<%@page import="org.apache.commons.text.StringEscapeUtils"%>
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
 <%@page import="biblivre.core.schemas.Schemas"%>
 <%@page import="biblivre.core.ExtendedRequest"%>

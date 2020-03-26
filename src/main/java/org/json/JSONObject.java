@@ -1519,7 +1519,7 @@ public class JSONObject {
             return value.toString();
         }
         if (value instanceof Date) {
-            return quote(DateFormatUtils.ISO_DATETIME_FORMAT.format(value));
+            return quote(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(value));
         }        
         if (value instanceof Map) {
             return new JSONObject((Map<String, Object>)value).toString();
@@ -1611,7 +1611,7 @@ public class JSONObject {
         } else if (value.getClass().isArray()) {
             new JSONArray(value).write(writer, indentFactor, indent);
         } else if (value instanceof Date) {
-        	writer.write(quote(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(value)));
+        	writer.write(quote(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT.format(value)));
         } else if (value instanceof Number) {
             writer.write(numberToString((Number) value));
         } else if (value instanceof Boolean) {
