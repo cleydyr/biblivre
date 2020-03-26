@@ -50,6 +50,8 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
 
+import biblivre.core.utils.Constants;
+
 public class MarcUtils {
 
 	private static Logger logger = Logger.getLogger(MarcUtils.class);
@@ -60,12 +62,12 @@ public class MarcUtils {
 	public static String recordToIso2709(Record record) {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-		MarcWriter writer = new MarcStreamWriter(os, "UTF-8");
+		MarcWriter writer = new MarcStreamWriter(os, Constants.DEFAULT_CHARSET_NAME);
 		writer.write(record);
 		writer.close();
 
 		try {
-			return os.toString("UTF-8");
+			return os.toString(Constants.DEFAULT_CHARSET_NAME);
 		} catch (UnsupportedEncodingException uee) {
 			MarcUtils.logger.error(uee.getMessage(), uee);
 			return os.toString();
@@ -76,7 +78,7 @@ public class MarcUtils {
 		Record record = null;
 		
 		try {
-			record = MarcUtils.iso2709ToRecord(iso2709.getBytes("UTF-8"));
+			record = MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET_NAME));
 		} catch (UnsupportedEncodingException uee) {
 		}
 		
@@ -119,8 +121,8 @@ public class MarcUtils {
 		Scanner scanner = null;
 
 		try {
-			ByteArrayInputStream is = new ByteArrayInputStream(unescaped.getBytes("UTF-8"));
-			scanner = new Scanner(is, "UTF-8");
+			ByteArrayInputStream is = new ByteArrayInputStream(unescaped.getBytes(Constants.DEFAULT_CHARSET_NAME));
+			scanner = new Scanner(is, Constants.DEFAULT_CHARSET_NAME);
 		} catch (UnsupportedEncodingException uee) {
 			MarcUtils.logger.error(uee.getMessage(), uee);
 			scanner = new Scanner(unescaped);
