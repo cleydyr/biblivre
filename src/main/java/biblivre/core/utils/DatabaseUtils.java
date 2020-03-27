@@ -98,6 +98,16 @@ public class DatabaseUtils {
 		return InetAddress.getLoopbackAddress().getHostName();
 	}
 
+	public static String getDatabaseName() {
+		String databaseName = System.getenv(Constants.DATABASE_NAME);
+
+		if (databaseName != null) {
+			return databaseName;
+		}
+
+		return Constants.DEFAULT_DATABASE_NAME;
+	}
+
 	public static String getDatabasePort() {
 		String databasePort = System.getenv(Constants.DATABASE_PORT);
 
@@ -109,23 +119,13 @@ public class DatabaseUtils {
 	}
 
 	public static String getDatabasePassword() {
-		String password = System.getenv(Constants.POSTGRES_PASSWORD_ENV);
+		String databasePassword = System.getenv(Constants.DATABASE_PASSWORD);
 
-		if (password != null) {
-			return password;
+		if (databasePassword != null) {
+			return databasePassword;
 		}
 
-		return Constants.DEAFULT_POSTGRES_PASSWORD;
-	}
-
-	public static String getDatabaseUser() {
-		String user = System.getenv(Constants.POSTGRES_USER_ENV);
-
-		if (user != null) {
-			return user;
-		}
-
-		return Constants.DEAFULT_POSTGRES_USER;
+		return Constants.DEFAULT_DATABASE_PASSWORD;
 	}
 
 	private static File getFromFilesystem(String fileName) {

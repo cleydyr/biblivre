@@ -9,7 +9,7 @@ services:
     - "JAVA_OPTS=\"-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n\""
     - "DATABASE_HOST_NAME=$DATABASE_HOST_NAME"
     - "DATABASE_PORT=5432"
-    - "PGUSER=$POSTGRES_USER"
+    - "PGUSER=biblivre"
     - "PGPASSWORD=$POSTGRES_PASSWORD"
     - "PGDATABASE=$POSTGRES_DB"
     depends_on:
@@ -23,6 +23,6 @@ services:
     volumes:
     - "./sql/biblivre4.sql:/docker-entrypoint-initdb.d/populate-initial-data.sql"
     environment:
-    - "POSTGRES_USER=$POSTGRES_USER"
+    - "POSTGRES_USER=biblivre"
     - "POSTGRES_PASSWORD=$POSTGRES_PASSWORD"
     - "POSTGRES_DB=$POSTGRES_DB"

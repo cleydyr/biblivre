@@ -23,10 +23,10 @@ Depois que todo o processo de implantação terminar (cerca de 5 minutos, mas de
 #### Configurações
 
 As seguintes variáveis de ambiente são configuráveis através do arquivo .env:
-**APP_HTTP_HOST_PORT** (porta de acesso ao Biblivre pelo host; valor padrão 8080)
-**APP_DEBUG_HOST_PORT** (porta de debug do Java pelo host (JPDA); valor padrão 8000)
-**POSTGRES_USER** (nome do usuário do banco de dados; valor padrão "biblivre")
-**POSTGRES_PASSWORD** (senha do usuário do banco de dados; valor padrão "abracadabra")
-**POSTGRES_DB** (nome do banco de dados; valor padrão "biblivre4")
-**DATABASE_HOST_PORT** (porta da aplicação de banco de dados; valor padrão 5432)
-**DATABASE_HOST_NAME** (nome do host da aplicação de banco de dados; valor padrão "database", que é o nome de host do contêiner que roda o PostgreSQL)
+
+*APP_HTTP_HOST_PORT* (porta de acesso ao Biblivre pelo host; valor padrão 8080)
+*APP_DEBUG_HOST_PORT* (porta de debug do Java pelo host (JPDA); valor padrão 8000)
+*POSTGRES_PASSWORD* (senha do usuário do banco de dados; valor padrão "abracadabra")
+*POSTGRES_DB* (nome do banco de dados; valor padrão "biblivre4")
+*DATABASE_HOST_PORT* (porta da aplicação de banco de dados; valor padrão 5432)
+*DATABASE_HOST_NAME* (nome do host da aplicação de banco de dados; valor padrão "database", que é o nome de host do contêiner que roda o PostgreSQL)
