@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
+import biblivre.administration.accesscards.SearchParameters;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -99,11 +100,12 @@ public class Handler extends AbstractHandler {
 
 		_accessControlBO.setSchema(schema);
 
-		biblivre.administration.accesscards.Handler cardHandler = new biblivre.administration.accesscards.Handler();
-		DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
-		
-		if (cardList == null) {
-			return;
+		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
+
+		DTOCollection<AccessCardDTO> cardList = _accessCardBO.search(searchParameters);
+
+		if (cardList.size() == 0) {
+			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
 		}
 		
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();

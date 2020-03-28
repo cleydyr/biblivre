@@ -74,8 +74,7 @@ public class Handler extends AbstractHandler {
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-		AccessCardBO bo = _accessCardBO;
-		DTOCollection<AccessCardDTO> list = bo.search(query, status, limit, offset);
+		DTOCollection<AccessCardDTO> list = _accessCardBO.search(new SearchParameters(query, status, limit, offset));
 
 		if (list.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
