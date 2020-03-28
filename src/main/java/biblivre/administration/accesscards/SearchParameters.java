@@ -13,7 +13,7 @@ public class SearchParameters {
 	public int limit;
 	public int offset;
 
-	public SearchParameters(String code, AccessCardStatus status, int limit, int offset) {
+	private SearchParameters(String code, AccessCardStatus status, int limit, int offset) {
 		this.code = code;
 		this.status = status;
 		this.limit = limit;
