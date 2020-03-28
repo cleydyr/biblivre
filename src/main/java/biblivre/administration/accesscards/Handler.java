@@ -47,7 +47,15 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
-		DTOCollection<AccessCardDTO> list = this.searchHelper(request, response, this);
+		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
+
+		if (searchParameters == null) {
+			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+
+			return;
+		}
+
+		DTOCollection<AccessCardDTO> list = _accessCardBO.search(searchParameters);
 		
 		try {
 			this.json.put("search", list.toJSONObject());
@@ -56,31 +64,20 @@ public class Handler extends AbstractHandler {
 		}
 	}
 	
-	public DTOCollection<AccessCardDTO> searchHelper(ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-		String schema = request.getSchema();
-		String searchParameters = request.getString("search_parameters");
-		
-		String query = null;
-		AccessCardStatus status = null;
-		try {
-			JSONObject json = new JSONObject(searchParameters);
-			query = json.optString("query");
-			status = AccessCardStatus.fromString(json.optString("status"));
-		} catch (JSONException je) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-			return null;
-		}
-		
-		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-		Integer offset = (request.getInteger("page", 1) - 1) * limit;
+	public void searchHelper(ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
+		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
 
-		DTOCollection<AccessCardDTO> list = _accessCardBO.search(new SearchParameters(query, status, limit, offset));
+		if (searchParameters == null) {
+			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+
+			return;
+		}
+
+		DTOCollection<AccessCardDTO> list = _accessCardBO.search(searchParameters);
 
 		if (list.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
 		}
-		
-		return list;
 	}
 	
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
