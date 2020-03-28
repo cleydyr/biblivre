@@ -129,6 +129,16 @@ public class DatabaseUtils {
 		return Constants.DEFAULT_DATABASE_PASSWORD;
 	}
 
+	public static String getDatabaseUsername() {
+		String databaseUser = System.getenv(Constants.DATABASE_USERNAME);
+
+		if (databaseUser != null) {
+			return databaseUser;
+		}
+
+		return Constants.DEFAULT_DATABASE_USERNAME;
+	}
+
 	private static File getFromFilesystem(String fileName) {
 		String os = System.getProperty("os.name").toUpperCase();
 
