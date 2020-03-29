@@ -36,7 +36,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 
-@Component
+@Component(value = "circulation.accesscontrol")
 public class Handler extends AbstractHandler {
 	private AccessControlBO _accessControlBO;
 

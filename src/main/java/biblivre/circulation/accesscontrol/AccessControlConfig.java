@@ -1,4 +1,4 @@
-package biblivre.administration.accesscontrol;
+package biblivre.circulation.accesscontrol;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -6,10 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import biblivre.administration.accesscards.AccessCardConfig;
-import biblivre.circulation.accesscontrol.AccessControlBO;
-import biblivre.circulation.accesscontrol.AccessControlDAO;
-import biblivre.circulation.accesscontrol.AccessControlPersistence;
-import biblivre.circulation.accesscontrol.Handler;
 
 @Configuration
 @Import(AccessCardConfig.class)
