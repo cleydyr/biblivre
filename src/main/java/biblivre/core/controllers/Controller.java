@@ -27,7 +27,9 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import biblivre.administration.accesscontrol.AccessControlConfig;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
@@ -102,7 +104,15 @@ public abstract class Controller {
 		
 		try {
 			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
-			this.handler = (AbstractHandler) this.handlerClass.newInstance();
+
+			if (module.equals("circulation.accesscontrol")) {
+				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
+
+				this.handler = (AbstractHandler) this.handlerClass.cast(ctx.getBean(this.handlerClass));
+			}
+			else {
+				this.handler = (AbstractHandler) this.handlerClass.newInstance();
+			}
 			
 			Class<?> validatorClass = Class.forName("biblivre." + module + ".Validator");
 			String validationMethodName = "validate_" + action;

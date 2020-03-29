@@ -22,12 +22,11 @@ package biblivre.circulation.accesscontrol;
 import java.util.Date;
 
 import org.json.JSONException;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
-import biblivre.administration.accesscontrol.AccessControlConfig;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -38,13 +37,8 @@ import biblivre.core.enums.ActionResult;
 
 @Component
 public class Handler extends AbstractHandler {
+	@Autowired
 	private AccessControlBO _accessControlBO;
-
-	public Handler() {
-		 AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
-
-		_accessControlBO = ctx.getBean(AccessControlBO.class);
-	}
 
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
