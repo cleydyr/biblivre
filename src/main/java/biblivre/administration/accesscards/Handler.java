@@ -38,9 +38,9 @@ public class Handler extends AbstractHandler {
 	private AccessCardBO _accessCardBO;
 
 	@Autowired
-	public Handler(AccessCardBO _accessCardBO) {
+	public Handler(AccessCardBO accessCardBO) {
 		super();
-		this._accessCardBO = _accessCardBO;
+		_accessCardBO = accessCardBO;
 	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
