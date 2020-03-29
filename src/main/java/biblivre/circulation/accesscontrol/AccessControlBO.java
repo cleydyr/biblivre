@@ -39,9 +39,10 @@ public class AccessControlBO extends AbstractBO {
 	private AccessCardBO _accessCardBO;
 
 	@Autowired
-	public AccessControlBO(AccessControlPersistence persistence) {
+	public AccessControlBO(AccessControlPersistence persistence, AccessCardBO accessCardBO) {
 		super();
-		this._persistence = persistence;
+		_persistence = persistence;
+		_accessCardBO = accessCardBO;
 	}
 
 	public AccessControlDTO populateDetails(AccessControlDTO dto) {

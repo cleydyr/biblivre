@@ -16,7 +16,7 @@ import biblivre.circulation.user.Validator;
 public class AccessControlConfig {
 	@Bean
 	public AccessControlBO accessControlBO() {
-		return new AccessControlBO(getAccessControlPersistence());
+		return new AccessControlBO(getAccessControlPersistence(), accessCardBO());
 	}
 
 	@Bean
