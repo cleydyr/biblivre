@@ -177,4 +177,10 @@ public class AccessControlBO extends AbstractBO {
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this._persistence.saveFromBiblivre3(dtoList);
 	}
+
+	@Override
+	public void setSchema(String schema) {
+		super.setSchema(schema);
+		_persistence.setSchema(schema);
+	}
 }
