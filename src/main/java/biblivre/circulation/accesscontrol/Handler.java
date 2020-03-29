@@ -37,8 +37,16 @@ import biblivre.core.enums.ActionResult;
 
 @Component
 public class Handler extends AbstractHandler {
-	@Autowired
 	private AccessControlBO _accessControlBO;
+
+	private AccessCardBO _accessCardBO;
+
+	@Autowired
+	public Handler(AccessControlBO accessControlBO, AccessCardBO accessCardBO) {
+		super();
+		_accessControlBO = accessControlBO;
+		_accessCardBO = accessCardBO;
+	}
 
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -55,7 +63,7 @@ public class Handler extends AbstractHandler {
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(userList.getPaging());
 		
-		AccessCardBO abo = AccessCardBO.getInstance(schema);
+		AccessCardBO abo = _accessCardBO;
 		
 		for (UserDTO user : userList) {
 			AccessControlDTO dto = _accessControlBO.getByUserId(user.getId());

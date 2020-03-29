@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
@@ -33,7 +35,16 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 
+@Component
 public class Handler extends AbstractHandler {
+
+	private AccessCardBO _accessCardBO;
+
+	@Autowired
+	public Handler(AccessCardBO _accessCardBO) {
+		super();
+		this._accessCardBO = _accessCardBO;
+	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		DTOCollection<AccessCardDTO> list = this.searchHelper(request, response, this);
@@ -63,7 +74,7 @@ public class Handler extends AbstractHandler {
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
+		AccessCardBO bo = _accessCardBO;
 		DTOCollection<AccessCardDTO> list = bo.search(query, status, limit, offset);
 
 		if (list.size() == 0) {
@@ -81,7 +92,7 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
+		AccessCardBO bo = _accessCardBO;
 		AccessCardDTO card = bo.get(id);
 		
 		if (card == null) {
@@ -98,7 +109,7 @@ public class Handler extends AbstractHandler {
 	
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
+		AccessCardBO bo = _accessCardBO;
 
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status", AccessCardStatus.AVAILABLE);
 		String code = request.getString("code");
@@ -142,7 +153,7 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
+		AccessCardBO bo = _accessCardBO;
 		AccessCardDTO dto = new AccessCardDTO();
 		dto.setId(id);
 		dto.setModifiedBy(request.getLoggedUserId());
@@ -158,7 +169,7 @@ public class Handler extends AbstractHandler {
 		Integer id = request.getInteger("id");
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status");
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
+		AccessCardBO bo = _accessCardBO;
 		AccessCardDTO dto = bo.get(id);
 		dto.setModifiedBy(request.getLoggedUserId());
 		dto.setStatus(status);

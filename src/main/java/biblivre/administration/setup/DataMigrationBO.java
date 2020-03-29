@@ -65,11 +65,13 @@ public class DataMigrationBO extends AbstractBO {
 	private String userSchema;
 
 	private AccessControlBO _accessControlBO;
+	private AccessCardBO _accessCardBO;
 
 	public DataMigrationBO() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
 
 		_accessControlBO = ctx.getBean(AccessControlBO.class);
+		_accessCardBO = ctx.getBean(AccessCardBO.class);
 	}
 
 	@Override
@@ -298,7 +300,7 @@ public class DataMigrationBO extends AbstractBO {
 				return holdingsBo.saveFromBiblivre3(dtoList);
 				
 			case ACCESS_CARDS:
-				return AccessCardBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return _accessCardBO.saveFromBiblivre3(dtoList);
 				
 			case LOGINS:
 				return LoginBO.getInstance(schema).saveFromBiblivre3(dtoList);

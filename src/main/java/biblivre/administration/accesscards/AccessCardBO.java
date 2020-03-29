@@ -23,47 +23,46 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
 
+@Service
 public class AccessCardBO extends AbstractBO {
-	private AccessCardDAO dao;
+	private AccessCardPersistence _accessCardPersistence;
 
-	public static AccessCardBO getInstance(String schema) {
-		AccessCardBO bo = AbstractBO.getInstance(AccessCardBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = AccessCardDAO.getInstance(schema);
-		}
-		
-		return bo;
+	@Autowired
+	public AccessCardBO(AccessCardPersistence accessCardPersistence) {
+		super();
+		_accessCardPersistence = accessCardPersistence;
 	}
-	
+
 	public boolean save(AccessCardDTO dto) {
 		if (dto != null) {
-			AccessCardDTO existingCard = this.dao.get(dto.getCode());
+			AccessCardDTO existingCard = this._accessCardPersistence.get(dto.getCode());
 			if (existingCard != null) {
 				throw new ValidationException("administration.accesscards.error.existing_card");
 			}
-			return this.dao.save(dto);
+			return this._accessCardPersistence.save(dto);
 		}
 		
 		return false;
 	}
 
 	public DTOCollection<AccessCardDTO> search(String code, AccessCardStatus status, int limit, int offset) {
-		return this.dao.search(code, status, limit, offset);
+		return this._accessCardPersistence.search(code, status, limit, offset);
 	}
 
 	public AccessCardDTO get(int id) {
-		return this.dao.get(id);
+		return this._accessCardPersistence.get(id);
 	}
 
 	public AccessCardDTO get(String code) {
-		return this.dao.get(code);
+		return this._accessCardPersistence.get(code);
 	}
 	
 	public LinkedList<AccessCardDTO> saveCardList(String prefix, String suffix, String startString, String endString, Integer loggedUserId, AccessCardStatus status) {
@@ -78,7 +77,7 @@ public class AccessCardBO extends AbstractBO {
 		}
 		
 		//Validate existing cards
-		List<AccessCardDTO> existingCards = this.dao.get(codeList, null);
+		List<AccessCardDTO> existingCards = this._accessCardPersistence.get(codeList, null);
 		List<String> existingCodes = new LinkedList<String>();
 		for (AccessCardDTO card : existingCards) {
 			existingCodes.add(card.getCode());
@@ -98,7 +97,7 @@ public class AccessCardBO extends AbstractBO {
 			cardList.add(dto);
 		}
 		
-		if (this.dao.save(cardList)) {
+		if (this._accessCardPersistence.save(cardList)) {
 			return cardList;
 		} else {
 			return null;
@@ -123,14 +122,14 @@ public class AccessCardBO extends AbstractBO {
 	}
 
 	public boolean update(AccessCardDTO dto) {
-		return this.dao.update(dto);
+		return this._accessCardPersistence.update(dto);
 	}
 	
 	public boolean delete(int id) {
-		return this.dao.delete(id);
+		return this._accessCardPersistence.delete(id);
 	}
 	
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
+		return this._accessCardPersistence.saveFromBiblivre3(dtoList);
 	}
 }

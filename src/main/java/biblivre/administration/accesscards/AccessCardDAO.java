@@ -35,12 +35,13 @@ import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
 
-public class AccessCardDAO extends AbstractDAO {
+public class AccessCardDAO extends AbstractDAO implements AccessCardPersistence {
 
-	public static AccessCardDAO getInstance(String schema) {
-		return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAO.class, schema);
+	public static AccessCardPersistence getInstance(String schema) {
+		return (AccessCardPersistence) AbstractDAO.getInstance(AccessCardDAO.class, schema);
 	}
 
+	@Override
 	public AccessCardDTO get(String code) {
 		List<String> codes = new LinkedList<String>();
 		codes.add(code);
@@ -53,6 +54,7 @@ public class AccessCardDAO extends AbstractDAO {
 		return list.get(0);
 	}
 		
+	@Override
 	public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
 		List<AccessCardDTO> list = new LinkedList<AccessCardDTO>();
 
@@ -104,6 +106,7 @@ public class AccessCardDAO extends AbstractDAO {
 		return list;
 	}
 	
+	@Override
 	public AccessCardDTO get(int id) {
 		Connection con = null;
 		try {
@@ -124,6 +127,7 @@ public class AccessCardDAO extends AbstractDAO {
 		return null;
 	}
 	
+	@Override
 	public DTOCollection<AccessCardDTO> search(String code, AccessCardStatus status, int limit, int offset) {
 		DTOCollection<AccessCardDTO> list = new DTOCollection<AccessCardDTO>();
 		Connection con = null;
@@ -192,6 +196,7 @@ public class AccessCardDAO extends AbstractDAO {
 		return list;
 	}
 
+	@Override
 	public boolean save(AccessCardDTO dto) {
 		Connection con = null;
 		try {
@@ -219,6 +224,7 @@ public class AccessCardDAO extends AbstractDAO {
 		}
 	}
 	
+	@Override
 	public boolean save(LinkedList<AccessCardDTO> cardList) {
 		Connection con = null;
 		try {
@@ -252,6 +258,7 @@ public class AccessCardDAO extends AbstractDAO {
 		return true;
 	}
 	
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
@@ -283,6 +290,7 @@ public class AccessCardDAO extends AbstractDAO {
 	}
 	
 	
+	@Override
 	public boolean update(AccessCardDTO dto) {
 		Connection con = null;
 		try {
@@ -303,6 +311,7 @@ public class AccessCardDAO extends AbstractDAO {
 		}
 	}
 
+	@Override
 	public boolean delete(int id) {
 		Connection con = null;
 		try {

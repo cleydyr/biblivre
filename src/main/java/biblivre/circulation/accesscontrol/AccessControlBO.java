@@ -36,6 +36,7 @@ import biblivre.core.exceptions.ValidationException;
 @Service
 public class AccessControlBO extends AbstractBO {
 	private AccessControlPersistence _persistence;
+	private AccessCardBO _accessCardBO;
 
 	@Autowired
 	public AccessControlBO(AccessControlPersistence persistence) {
@@ -49,7 +50,7 @@ public class AccessControlBO extends AbstractBO {
 		}
 		
 		if (dto.getAccessCardId() != null) {
-			AccessCardBO cardBo = AccessCardBO.getInstance(this.getSchema());
+			AccessCardBO cardBo = _accessCardBO;
 			dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
 		}
 
@@ -74,7 +75,7 @@ public class AccessControlBO extends AbstractBO {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
 		
-		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
+		AccessCardBO cardBO = _accessCardBO;
 		AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
 		if (cardDto == null) {
 			throw new ValidationException("circulation.access_control.card_not_found");
@@ -115,7 +116,7 @@ public class AccessControlBO extends AbstractBO {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
 		
-		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
+		AccessCardBO cardBO = _accessCardBO;
 		AccessControlDTO existingAccess = null;
 
 		if (dto.getAccessCardId() != 0) {
