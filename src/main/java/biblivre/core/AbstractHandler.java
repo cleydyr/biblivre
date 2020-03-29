@@ -41,11 +41,7 @@ public class AbstractHandler {
 	}
 	
 	public AbstractHandler() {
-		this.setJson(new JSONObject());
-		this.setJspURL("");
-		this.setMessage(new Message());
-		this.setFile(null);
-		this.setReturnCode(0);
+		resetFields();
 	}
 
 	public void setJson(JSONObject json) {
@@ -125,7 +121,15 @@ public class AbstractHandler {
 	public void setCallback(HttpCallback callback) {
 		this.callback = callback;
 	}
-	
+
+	public void resetFields() {
+		this.setJson(new JSONObject());
+		this.setJspURL("");
+		this.setMessage(new Message());
+		this.setFile(null);
+		this.setReturnCode(0);
+	}
+
 	protected void authorize(ExtendedRequest request, String module, String action) {
 		AuthorizationPoints authPoints = (AuthorizationPoints) request.getSessionAttribute(request.getSchema(), "logged_user_atps");
 		if (authPoints == null) {

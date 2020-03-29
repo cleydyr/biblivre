@@ -109,6 +109,8 @@ public abstract class Controller {
 				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
 
 				this.handler = (AbstractHandler) ctx.getBean(this.handlerClass);
+
+				this.handler.resetFields();
 			}
 			else {
 				this.handler = (AbstractHandler) this.handlerClass.newInstance();
