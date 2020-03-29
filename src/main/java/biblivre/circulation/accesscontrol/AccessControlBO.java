@@ -43,16 +43,6 @@ public class AccessControlBO extends AbstractBO {
 		this._persistence = persistence;
 	}
 
-//	public static AccessControlBO getInstance(String schema) {
-//		AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
-//
-//		if (bo._persistence == null) {
-//			bo._persistence = AccessControlDAO.getInstance(schema);
-//		}
-//		
-//		return bo;
-//	}
-	
 	public AccessControlDTO populateDetails(AccessControlDTO dto) {
 		if (dto == null) {
 			return null;
