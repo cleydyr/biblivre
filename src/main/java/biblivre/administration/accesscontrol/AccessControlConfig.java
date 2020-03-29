@@ -36,11 +36,11 @@ public class AccessControlConfig {
 
 	@Bean
 	public AccessCardBO accessCardBO() {
-		return new AccessCardBO(getAccessCardPersistence());
+		return new AccessCardBO(accessCardPersistence());
 	}
 
 	@Bean
-	public AccessCardPersistence getAccessCardPersistence() {
+	public AccessCardPersistence accessCardPersistence() {
 		return AccessCardDAO.getInstance("global");
 	}
 }
