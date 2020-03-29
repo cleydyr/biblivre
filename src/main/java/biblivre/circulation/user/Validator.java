@@ -132,6 +132,9 @@ public class Validator extends AbstractValidator {
 	
 	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
+
+		_accessControlBO.setSchema(schema);
+
 		Integer id = request.getInteger("id");
 
 		UserBO bo = UserBO.getInstance(schema);

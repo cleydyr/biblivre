@@ -276,7 +276,9 @@ public class DataMigrationBO extends AbstractBO {
 	
 	private boolean saveDTOs(DataMigrationPhase phase, List<? extends AbstractDTO> dtoList) {
 		String schema = this.getSchema();
-		
+
+		_accessControlBO.setSchema(schema);
+
 		switch (phase) {
 				
 			case CATALOGING_BIBLIOGRAPHIC:

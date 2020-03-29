@@ -48,7 +48,9 @@ public class Handler extends AbstractHandler {
 
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
+		_accessControlBO.setSchema(schema);
+
 		biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
 		DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 		
@@ -93,7 +95,9 @@ public class Handler extends AbstractHandler {
 	
 	public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
+		_accessControlBO.setSchema(schema);
+
 		biblivre.administration.accesscards.Handler cardHandler = new biblivre.administration.accesscards.Handler();
 		DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
 		
@@ -139,7 +143,9 @@ public class Handler extends AbstractHandler {
 
 	public void bind(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
+		_accessControlBO.setSchema(schema);
+
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
@@ -170,7 +176,9 @@ public class Handler extends AbstractHandler {
 	
 	public void unbind(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
+		_accessControlBO.setSchema(schema);
+
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
@@ -181,7 +189,7 @@ public class Handler extends AbstractHandler {
 		dto.setDepartureTime(new Date());
 		
 		AccessControlBO bo = _accessControlBO;
-		
+
 		if (bo.returnCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.return.success");
 			try {
