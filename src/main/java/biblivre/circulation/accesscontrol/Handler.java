@@ -52,6 +52,7 @@ public class Handler extends AbstractHandler {
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
+		_accessCardBO.setSchema(schema);
 		_accessControlBO.setSchema(schema);
 
 		biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
@@ -95,6 +96,8 @@ public class Handler extends AbstractHandler {
 	
 	public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
+
+		_accessCardBO.setSchema(schema);
 
 		_accessControlBO.setSchema(schema);
 
