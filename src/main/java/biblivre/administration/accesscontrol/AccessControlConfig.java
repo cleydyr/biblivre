@@ -24,9 +24,14 @@ public class AccessControlConfig {
 		return AccessControlDAO.getInstance("global");
 	}
 
-	@Bean(name = "circulation.accesscontrol")
+	@Bean
 	public Handler handler() {
 		return new Handler(accessControlBO(), accessCardBO());
+	}
+
+	@Bean
+	public biblivre.administration.accesscards.Handler anotherHandler() {
+		return new biblivre.administration.accesscards.Handler(accessCardBO());
 	}
 
 	@Bean(name = "circulation.user")
