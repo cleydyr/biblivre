@@ -23,7 +23,6 @@ import java.util.LinkedList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,9 +30,7 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.utils.Constants;
 
 @Component
 public class Handler extends AbstractHandler {
