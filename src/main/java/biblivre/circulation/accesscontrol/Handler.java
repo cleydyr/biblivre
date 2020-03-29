@@ -22,9 +22,12 @@ package biblivre.circulation.accesscontrol;
 import java.util.Date;
 
 import org.json.JSONException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
+import biblivre.administration.accesscontrol.AccessControlConfig;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -33,8 +36,16 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 
+@Component
 public class Handler extends AbstractHandler {
-	
+	private AccessControlBO _accessControlBO;
+
+	public Handler() {
+		 AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
+
+		_accessControlBO = ctx.getBean(AccessControlBO.class);
+	}
+
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		
@@ -48,7 +59,7 @@ public class Handler extends AbstractHandler {
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(userList.getPaging());
 		
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
+		AccessControlBO bo = _accessControlBO;
 		AccessCardBO abo = AccessCardBO.getInstance(schema);
 		
 		for (UserDTO user : userList) {
@@ -93,7 +104,7 @@ public class Handler extends AbstractHandler {
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(cardList.getPaging());
 		
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
+		AccessControlBO bo = _accessControlBO;
 		UserBO ubo = UserBO.getInstance(schema);
 		
 		for (AccessCardDTO card : cardList) {
@@ -138,7 +149,7 @@ public class Handler extends AbstractHandler {
 		dto.setCreatedBy(request.getLoggedUserId());
 		dto.setArrivalTime(new Date());
 		
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
+		AccessControlBO bo = _accessControlBO;
 		
 		if (bo.lendCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.lend.success");
@@ -169,7 +180,7 @@ public class Handler extends AbstractHandler {
 		dto.setModifiedBy(request.getLoggedUserId());
 		dto.setDepartureTime(new Date());
 		
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
+		AccessControlBO bo = _accessControlBO;
 		
 		if (bo.returnCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.return.success");

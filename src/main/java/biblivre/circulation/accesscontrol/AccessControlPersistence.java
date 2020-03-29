@@ -4,7 +4,7 @@ import java.util.List;
 
 import biblivre.core.AbstractDTO;
 
-public interface AccessCardPersistence {
+public interface AccessControlPersistence {
 
 	boolean save(AccessControlDTO dto);
 

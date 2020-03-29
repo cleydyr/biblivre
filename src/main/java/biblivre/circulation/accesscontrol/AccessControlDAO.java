@@ -28,10 +28,10 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 
-public class AccessControlDAO extends AbstractDAO implements AccessCardPersistence {
+public class AccessControlDAO extends AbstractDAO implements AccessControlPersistence {
 
-	public static AccessCardPersistence getInstance(String schema) {
-		return (AccessCardPersistence) AbstractDAO.getInstance(AccessControlDAO.class, schema);
+	public static AccessControlPersistence getInstance(String schema) {
+		return (AccessControlPersistence) AbstractDAO.getInstance(AccessControlDAO.class, schema);
 	}
 
 	@Override

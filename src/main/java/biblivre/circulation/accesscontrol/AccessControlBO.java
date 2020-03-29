@@ -21,6 +21,9 @@ package biblivre.circulation.accesscontrol;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.administration.accesscards.AccessCardStatus;
@@ -30,23 +33,25 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
 
+@Service
 public class AccessControlBO extends AbstractBO {
-	private AccessCardPersistence _persistence;
+	private AccessControlPersistence _persistence;
 
-	public AccessControlBO(AccessCardPersistence persistence) {
+	@Autowired
+	public AccessControlBO(AccessControlPersistence persistence) {
 		super();
 		this._persistence = persistence;
 	}
 
-	public static AccessControlBO getInstance(String schema) {
-		AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
-
-		if (bo._persistence == null) {
-			bo._persistence = AccessControlDAO.getInstance(schema);
-		}
-		
-		return bo;
-	}
+//	public static AccessControlBO getInstance(String schema) {
+//		AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
+//
+//		if (bo._persistence == null) {
+//			bo._persistence = AccessControlDAO.getInstance(schema);
+//		}
+//		
+//		return bo;
+//	}
 	
 	public AccessControlDTO populateDetails(AccessControlDTO dto) {
 		if (dto == null) {

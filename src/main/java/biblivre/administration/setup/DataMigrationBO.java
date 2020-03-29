@@ -24,11 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import biblivre.acquisition.order.OrderBO;
 import biblivre.acquisition.quotation.QuotationBO;
 import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
+import biblivre.administration.accesscontrol.AccessControlConfig;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -60,7 +63,15 @@ public class DataMigrationBO extends AbstractBO {
 	private Map<Integer, Integer> lendingMap = new HashMap<Integer, Integer>();
 	private Map<Integer, Integer> lendingHistoryMap = new HashMap<Integer, Integer>();
 	private String userSchema;
-	
+
+	private AccessControlBO _accessControlBO;
+
+	public DataMigrationBO() {
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
+
+		_accessControlBO = ctx.getBean(AccessControlBO.class);
+	}
+
 	@Override
 	public String getSchema() {
 		return this.userSchema;
@@ -315,10 +326,10 @@ public class DataMigrationBO extends AbstractBO {
 				return Z3950BO.getInstance(schema).saveFromBiblivre3(dtoList);
 				
 			case ACCESS_CONTROL:
-				return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return _accessControlBO.saveFromBiblivre3(dtoList);
 				
 			case ACCESS_CONTROL_HISTORY:
-				return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return _accessControlBO.saveFromBiblivre3(dtoList);
 				
 			case LENDINGS:
 				return LendingBO.getInstance(schema).saveFromBiblivre3(dtoList);

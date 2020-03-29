@@ -25,7 +25,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import biblivre.administration.accesscontrol.AccessControlConfig;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.lending.LendingBO;
@@ -37,7 +39,14 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
-	
+	private AccessControlBO _accessControlBO;
+
+	public Validator() {
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
+
+		_accessControlBO = ctx.getBean(AccessControlBO.class);
+	}
+
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		DateFormat dateFormat = new SimpleDateFormat(request.getLocalizedText("format.date"));
 		DateFormat dateTimeFormat = new SimpleDateFormat(request.getLocalizedText("format.datetime"));
@@ -138,7 +147,7 @@ public class Validator extends AbstractValidator {
 			return;
 		}
 		
-		if (AccessControlBO.getInstance(schema).getByUserId(user.getId()) != null) {
+		if (_accessControlBO.getByUserId(user.getId()) != null) {
 			handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_accesscard");
 			return;
 		}
