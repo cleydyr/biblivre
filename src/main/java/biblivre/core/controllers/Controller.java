@@ -115,10 +115,21 @@ public abstract class Controller {
 			}
 			
 			Class<?> validatorClass = Class.forName("biblivre." + module + ".Validator");
+
 			String validationMethodName = "validate_" + action;
 			Method validationMethod = validatorClass.getDeclaredMethod(TextUtils.camelCase(validationMethodName), AbstractHandler.class, ExtendedRequest.class, ExtendedResponse.class);
 			
-			AbstractValidator validator = (AbstractValidator) validatorClass.newInstance();
+			AbstractValidator validator;
+
+			if (module.equals("circulation.user")) {
+				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
+
+				validator = (AbstractValidator) ctx.getBean(validatorClass);
+			}
+			else {
+				validator = (AbstractValidator) validatorClass.newInstance();
+			}
+
 			validationMethod.invoke(validator, this.handler, this.xRequest, this.xResponse);
 			if (!validator.checkValidation(this.handler)) {
 				this.doReturn();

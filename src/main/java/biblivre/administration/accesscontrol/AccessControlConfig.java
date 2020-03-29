@@ -7,6 +7,7 @@ import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.accesscontrol.AccessControlDAO;
 import biblivre.circulation.accesscontrol.AccessControlPersistence;
 import biblivre.circulation.accesscontrol.Handler;
+import biblivre.circulation.user.Validator;
 
 @Configuration
 public class AccessControlConfig {
@@ -23,5 +24,10 @@ public class AccessControlConfig {
 	@Bean(name = "circulation.accesscontrol")
 	public Handler handler() {
 		return new Handler();
+	}
+
+	@Bean(name = "circulation.user")
+	public Validator validator() {
+		return new Validator(accessControlBO());
 	}
 }

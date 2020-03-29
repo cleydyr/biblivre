@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import biblivre.administration.accesscontrol.AccessControlConfig;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.lending.LendingBO;
@@ -38,13 +38,14 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
+@Component
 public class Validator extends AbstractValidator {
 	private AccessControlBO _accessControlBO;
 
-	public Validator() {
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
-
-		_accessControlBO = ctx.getBean(AccessControlBO.class);
+	@Autowired
+	public Validator(AccessControlBO accessControlBO) {
+		super();
+		this._accessControlBO = accessControlBO;
 	}
 
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
