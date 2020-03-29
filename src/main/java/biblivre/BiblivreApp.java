@@ -9,5 +9,5 @@ import biblivre.circulation.user.UserConfig;
 
 @Configuration
 @Import({AccessCardConfig.class, UserConfig.class, AccessControlConfig.class})
-public class BiblivreConfig {
+public class BiblivreApp {
 }
