@@ -108,7 +108,7 @@ public abstract class Controller {
 			if (module.equals("circulation.accesscontrol")) {
 				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
 
-				this.handler = (AbstractHandler) this.handlerClass.cast(ctx.getBean(this.handlerClass));
+				this.handler = (AbstractHandler) ctx.getBean(this.handlerClass);
 			}
 			else {
 				this.handler = (AbstractHandler) this.handlerClass.newInstance();
