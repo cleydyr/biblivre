@@ -26,4 +26,5 @@ public interface AccessCardPersistence {
 
 	boolean delete(int id);
 
+	public void setSchema(String schema);
 }

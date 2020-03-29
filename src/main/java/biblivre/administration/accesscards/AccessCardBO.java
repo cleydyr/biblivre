@@ -132,4 +132,9 @@ public class AccessCardBO extends AbstractBO {
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this._accessCardPersistence.saveFromBiblivre3(dtoList);
 	}
+
+	@Override
+	public void setSchema(String schema) {
+		_accessCardPersistence.setSchema(schema);
+	}
 }

@@ -44,6 +44,10 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
+		String schema = request.getSchema();
+
+		_accessCardBO.setSchema(schema);
+
 		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
 
 		if (searchParameters == null) {
@@ -62,6 +66,10 @@ public class Handler extends AbstractHandler {
 	}
 	
 	public void searchHelper(ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
+		String schema = request.getSchema();
+
+		_accessCardBO.setSchema(schema);
+
 		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
 
 		if (searchParameters == null) {
@@ -83,6 +91,9 @@ public class Handler extends AbstractHandler {
 	
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
+
+		_accessCardBO.setSchema(schema);
+
 		Integer id = request.getInteger("id");
 
 		AccessCardBO bo = _accessCardBO;
@@ -102,6 +113,9 @@ public class Handler extends AbstractHandler {
 	
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
+
+		_accessCardBO.setSchema(schema);
+
 		AccessCardBO bo = _accessCardBO;
 
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status", AccessCardStatus.AVAILABLE);
@@ -144,6 +158,9 @@ public class Handler extends AbstractHandler {
 	
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
+
+		_accessCardBO.setSchema(schema);
+
 		Integer id = request.getInteger("id");
 
 		AccessCardBO bo = _accessCardBO;
@@ -159,6 +176,9 @@ public class Handler extends AbstractHandler {
 	
 	public void changeStatus(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
+
+		_accessCardBO.setSchema(schema);
+
 		Integer id = request.getInteger("id");
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status");
 
