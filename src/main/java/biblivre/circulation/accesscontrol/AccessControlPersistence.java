@@ -15,4 +15,6 @@ public interface AccessControlPersistence {
 	AccessControlDTO getByCardId(Integer cardId);
 
 	AccessControlDTO getByUserId(Integer userId);
+
+	public void setSchema(String schema);
 }
