@@ -50,8 +50,7 @@ public class AccessControlBO extends AbstractBO {
 		}
 		
 		if (dto.getAccessCardId() != null) {
-			AccessCardBO cardBo = _accessCardBO;
-			dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
+			dto.setAccessCard(_accessCardBO.get(dto.getAccessCardId()));
 		}
 
 		if (dto.getUserId() != null) {
@@ -75,8 +74,7 @@ public class AccessControlBO extends AbstractBO {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
 		
-		AccessCardBO cardBO = _accessCardBO;
-		AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+		AccessCardDTO cardDto = _accessCardBO.get(dto.getAccessCardId());
 		if (cardDto == null) {
 			throw new ValidationException("circulation.access_control.card_not_found");
 		} else if (!cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
@@ -94,7 +92,7 @@ public class AccessControlBO extends AbstractBO {
     	
 		try {
 			cardDto.setStatus(AccessCardStatus.IN_USE);
-			cardBO.update(cardDto);
+			_accessCardBO.update(cardDto);
 			return this._persistence.save(dto);
 		} catch (Exception e) {
 			this.logger.error(e);
@@ -116,11 +114,10 @@ public class AccessControlBO extends AbstractBO {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
 		
-		AccessCardBO cardBO = _accessCardBO;
 		AccessControlDTO existingAccess = null;
 
 		if (dto.getAccessCardId() != 0) {
-			AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+			AccessCardDTO cardDto = _accessCardBO.get(dto.getAccessCardId());
 			if (cardDto == null) {
 				throw new ValidationException("circulation.access_control.card_not_found");
 			} else if (cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
@@ -138,11 +135,11 @@ public class AccessControlBO extends AbstractBO {
 		
 		try {
 			if (existingAccess != null) {
-				AccessCardDTO cardDto = cardBO.get(existingAccess.getAccessCardId());
+				AccessCardDTO cardDto = _accessCardBO.get(existingAccess.getAccessCardId());
 				//If the cardId was sent in the parameters, it means that the user has returned it.
 				//Else, it means that the user left the library without returning the card, so we have to block it.
 				cardDto.setStatus(dto.getAccessCardId() != 0 ? AccessCardStatus.AVAILABLE : AccessCardStatus.IN_USE_AND_BLOCKED);
-				cardBO.update(cardDto);
+				_accessCardBO.update(cardDto);
 				return this._persistence.update(existingAccess);
 			}
 		} catch (Exception e) {

@@ -64,8 +64,6 @@ public class Handler extends AbstractHandler {
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(userList.getPaging());
 		
-		AccessCardBO abo = _accessCardBO;
-		
 		for (UserDTO user : userList) {
 			AccessControlDTO dto = _accessControlBO.getByUserId(user.getId());
 			if (dto == null) {
@@ -77,7 +75,7 @@ public class Handler extends AbstractHandler {
 			dto.setUser(user);
 			
 			if (dto.getAccessCardId() != null) {
-				dto.setAccessCard(abo.get(dto.getAccessCardId()));
+				dto.setAccessCard(_accessCardBO.get(dto.getAccessCardId()));
 			}
 			
 			list.add(dto);

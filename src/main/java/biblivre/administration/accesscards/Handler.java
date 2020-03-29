@@ -96,8 +96,7 @@ public class Handler extends AbstractHandler {
 
 		Integer id = request.getInteger("id");
 
-		AccessCardBO bo = _accessCardBO;
-		AccessCardDTO card = bo.get(id);
+		AccessCardDTO card = _accessCardBO.get(id);
 		
 		if (card == null) {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.card_not_found");
@@ -116,8 +115,6 @@ public class Handler extends AbstractHandler {
 
 		_accessCardBO.setSchema(schema);
 
-		AccessCardBO bo = _accessCardBO;
-
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status", AccessCardStatus.AVAILABLE);
 		String code = request.getString("code");
 		String prefix = request.getString("prefix");
@@ -130,9 +127,9 @@ public class Handler extends AbstractHandler {
 		
 		if (StringUtils.isNotBlank(code)) {
 			returnDto = this.createCard(request, code, status);
-			success = bo.save(returnDto);
+			success = _accessCardBO.save(returnDto);
 		} else {
-			LinkedList<AccessCardDTO> list = bo.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
+			LinkedList<AccessCardDTO> list = _accessCardBO.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
 			if (list != null) {
 				returnDto = list.get(0);
 				success = true;
@@ -163,11 +160,10 @@ public class Handler extends AbstractHandler {
 
 		Integer id = request.getInteger("id");
 
-		AccessCardBO bo = _accessCardBO;
 		AccessCardDTO dto = new AccessCardDTO();
 		dto.setId(id);
 		dto.setModifiedBy(request.getLoggedUserId());
-		if (bo.removeCard(dto)) {
+		if (_accessCardBO.removeCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.delete");
 		} else {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.delete");
@@ -182,11 +178,10 @@ public class Handler extends AbstractHandler {
 		Integer id = request.getInteger("id");
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status");
 
-		AccessCardBO bo = _accessCardBO;
-		AccessCardDTO dto = bo.get(id);
+		AccessCardDTO dto = _accessCardBO.get(id);
 		dto.setModifiedBy(request.getLoggedUserId());
 		dto.setStatus(status);
-		if (bo.update(dto)) {
+		if (_accessCardBO.update(dto)) {
 			if (status == AccessCardStatus.BLOCKED || status == AccessCardStatus.IN_USE_AND_BLOCKED) {
 				this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.block");
 			} else {
