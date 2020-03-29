@@ -31,13 +31,18 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
 
 public class AccessControlBO extends AbstractBO {
-	private AccessControlDAO dao;
+	private AccessCardPersistence _persistence;
+
+	public AccessControlBO(AccessCardPersistence persistence) {
+		super();
+		this._persistence = persistence;
+	}
 
 	public static AccessControlBO getInstance(String schema) {
 		AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = AccessControlDAO.getInstance(schema);
+		if (bo._persistence == null) {
+			bo._persistence = AccessControlDAO.getInstance(schema);
 		}
 		
 		return bo;
@@ -94,7 +99,7 @@ public class AccessControlBO extends AbstractBO {
 		try {
 			cardDto.setStatus(AccessCardStatus.IN_USE);
 			cardBO.update(cardDto);
-			return this.dao.save(dto);
+			return this._persistence.save(dto);
 		} catch (Exception e) {
 			this.logger.error(e);
 		}
@@ -142,7 +147,7 @@ public class AccessControlBO extends AbstractBO {
 				//Else, it means that the user left the library without returning the card, so we have to block it.
 				cardDto.setStatus(dto.getAccessCardId() != 0 ? AccessCardStatus.AVAILABLE : AccessCardStatus.IN_USE_AND_BLOCKED);
 				cardBO.update(cardDto);
-				return this.dao.update(existingAccess);
+				return this._persistence.update(existingAccess);
 			}
 		} catch (Exception e) {
 			this.logger.error(e);
@@ -153,18 +158,18 @@ public class AccessControlBO extends AbstractBO {
 
 
     public boolean update(AccessControlDTO dto) {
-        return this.dao.update(dto);
+        return this._persistence.update(dto);
     }
 
     public AccessControlDTO getByCardId(Integer cardId) {
-        return this.dao.getByCardId(cardId);
+        return this._persistence.getByCardId(cardId);
     }
 
     public AccessControlDTO getByUserId(Integer userId) {
-        return this.dao.getByUserId(userId);
+        return this._persistence.getByUserId(userId);
     }
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
+		return this._persistence.saveFromBiblivre3(dtoList);
 	}
 }

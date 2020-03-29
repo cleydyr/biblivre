@@ -28,12 +28,13 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 
-public class AccessControlDAO extends AbstractDAO {
+public class AccessControlDAO extends AbstractDAO implements AccessCardPersistence {
 
-	public static AccessControlDAO getInstance(String schema) {
-		return (AccessControlDAO) AbstractDAO.getInstance(AccessControlDAO.class, schema);
+	public static AccessCardPersistence getInstance(String schema) {
+		return (AccessCardPersistence) AbstractDAO.getInstance(AccessControlDAO.class, schema);
 	}
 
+	@Override
 	public boolean save(AccessControlDTO dto) {
 		Connection con = null;
 		try {
@@ -58,6 +59,7 @@ public class AccessControlDAO extends AbstractDAO {
 		}
 	}
 	
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
@@ -88,6 +90,7 @@ public class AccessControlDAO extends AbstractDAO {
 		}
 	}
 
+	@Override
 	public boolean update(AccessControlDTO dto) {
 		Connection con = null;
 		try {
@@ -113,6 +116,7 @@ public class AccessControlDAO extends AbstractDAO {
 		}
 	}
 
+	@Override
 	public AccessControlDTO getByCardId(Integer cardId) {
 		Connection con = null;
 		try {
@@ -140,6 +144,7 @@ public class AccessControlDAO extends AbstractDAO {
 		return null;
 	}
 
+	@Override
 	public AccessControlDTO getByUserId(Integer userId) {
 		Connection con = null;
 		try {
