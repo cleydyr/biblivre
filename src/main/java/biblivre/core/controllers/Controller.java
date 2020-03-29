@@ -105,7 +105,7 @@ public abstract class Controller {
 		try {
 			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
 
-			if (module.equals("circulation.accesscontrol")) {
+			if (module.equals("circulation.accesscontrol") || module.equals("administration.accesscards")) {
 				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
 
 				this.handler = (AbstractHandler) ctx.getBean(this.handlerClass);
