@@ -1,22 +1,25 @@
 package biblivre.administration.accesscontrol;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
-import biblivre.administration.accesscards.AccessCardBO;
-import biblivre.administration.accesscards.AccessCardDAO;
-import biblivre.administration.accesscards.AccessCardPersistence;
+import biblivre.administration.accesscards.AccessCardConfig;
 import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.accesscontrol.AccessControlDAO;
 import biblivre.circulation.accesscontrol.AccessControlPersistence;
 import biblivre.circulation.accesscontrol.Handler;
-import biblivre.circulation.user.Validator;
 
 @Configuration
+@Import(AccessCardConfig.class)
 public class AccessControlConfig {
+	@Autowired
+	AccessCardConfig _accessCardsConfig;
+	
 	@Bean
 	public AccessControlBO accessControlBO() {
-		return new AccessControlBO(getAccessControlPersistence(), accessCardBO());
+		return new AccessControlBO(getAccessControlPersistence(), _accessCardsConfig.accessCardBO());
 	}
 
 	@Bean
@@ -26,26 +29,6 @@ public class AccessControlConfig {
 
 	@Bean
 	public Handler handler() {
-		return new Handler(accessControlBO(), accessCardBO());
-	}
-
-	@Bean
-	public biblivre.administration.accesscards.Handler anotherHandler() {
-		return new biblivre.administration.accesscards.Handler(accessCardBO());
-	}
-
-	@Bean(name = "circulation.user")
-	public Validator validator() {
-		return new Validator(accessControlBO());
-	}
-
-	@Bean
-	public AccessCardBO accessCardBO() {
-		return new AccessCardBO(accessCardPersistence());
-	}
-
-	@Bean
-	public AccessCardPersistence accessCardPersistence() {
-		return AccessCardDAO.getInstance("global");
+		return new Handler(accessControlBO(), _accessCardsConfig.accessCardBO());
 	}
 }

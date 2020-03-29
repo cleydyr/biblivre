@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import biblivre.administration.accesscontrol.AccessControlConfig;
+import biblivre.BiblivreConfig;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
@@ -106,7 +106,7 @@ public abstract class Controller {
 			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
 
 			if (module.equals("circulation.accesscontrol") || module.equals("administration.accesscards")) {
-				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
+				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(BiblivreConfig.class);
 
 				this.handler = (AbstractHandler) ctx.getBean(this.handlerClass);
 
@@ -124,7 +124,7 @@ public abstract class Controller {
 			AbstractValidator validator;
 
 			if (module.equals("circulation.user")) {
-				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AccessControlConfig.class);
+				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(BiblivreConfig.class);
 
 				validator = (AbstractValidator) ctx.getBean(validatorClass);
 			}
