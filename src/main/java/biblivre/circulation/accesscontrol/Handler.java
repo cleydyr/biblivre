@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
-import biblivre.administration.accesscards.SearchParameters;
+import biblivre.administration.accesscards.AccessCardSearchParameters;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -101,7 +101,7 @@ public class Handler extends AbstractHandler {
 
 		_accessControlBO.setSchema(schema);
 
-		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
+		AccessCardSearchParameters searchParameters = AccessCardSearchParameters.extractSearchParameters(request);
 
 		DTOCollection<AccessCardDTO> cardList = _accessCardBO.search(searchParameters);
 

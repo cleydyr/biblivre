@@ -7,20 +7,20 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.utils.Constants;
 
-public class SearchParameters {
+public class AccessCardSearchParameters {
 	public String code;
 	public AccessCardStatus status;
 	public int limit;
 	public int offset;
 
-	private SearchParameters(String code, AccessCardStatus status, int limit, int offset) {
+	private AccessCardSearchParameters(String code, AccessCardStatus status, int limit, int offset) {
 		this.code = code;
 		this.status = status;
 		this.limit = limit;
 		this.offset = offset;
 	}
 
-	public static SearchParameters extractSearchParameters(ExtendedRequest request) {
+	public static AccessCardSearchParameters extractSearchParameters(ExtendedRequest request) {
 		String schema = request.getSchema();
 		String searchParameters = request.getString("search_parameters");
 		
@@ -37,8 +37,6 @@ public class SearchParameters {
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-		SearchParameters parameterObject = new SearchParameters(query, status, limit, offset);
-
-		return parameterObject;
+		return new AccessCardSearchParameters(query, status, limit, offset);
 	}
 }

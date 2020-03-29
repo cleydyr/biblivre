@@ -48,7 +48,7 @@ public class Handler extends AbstractHandler {
 
 		_accessCardBO.setSchema(schema);
 
-		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
+		AccessCardSearchParameters searchParameters = AccessCardSearchParameters.extractSearchParameters(request);
 
 		if (searchParameters == null) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
@@ -70,7 +70,7 @@ public class Handler extends AbstractHandler {
 
 		_accessCardBO.setSchema(schema);
 
-		SearchParameters searchParameters = SearchParameters.extractSearchParameters(request);
+		AccessCardSearchParameters searchParameters = AccessCardSearchParameters.extractSearchParameters(request);
 
 		if (searchParameters == null) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");

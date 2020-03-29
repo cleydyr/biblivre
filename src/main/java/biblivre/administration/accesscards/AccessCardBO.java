@@ -53,7 +53,7 @@ public class AccessCardBO extends AbstractBO {
 		return false;
 	}
 
-	public DTOCollection<AccessCardDTO> search(SearchParameters parameterObject) {
+	public DTOCollection<AccessCardDTO> search(AccessCardSearchParameters parameterObject) {
 		return this._accessCardPersistence.search(parameterObject.code, parameterObject.status, parameterObject.limit, parameterObject.offset);
 	}
 
