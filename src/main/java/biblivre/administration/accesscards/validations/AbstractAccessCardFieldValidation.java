@@ -20,7 +20,7 @@ public abstract class AbstractAccessCardFieldValidation implements Validation {
 		String start = request.getString("start");
 		String end = request.getString("end");
 		String suffix = request.getString("suffix");
-	
+
 		boolean multiple = StringUtils.isNotBlank(start + end + prefix + suffix);
 		return multiple;
 	}

@@ -18,7 +18,7 @@ public class RequiredFieldValidation implements Validation {
 
 		boolean single = StringUtils.isNotBlank(code);
 		boolean multiple = StringUtils.isNotBlank(start) || StringUtils.isNotBlank(end) || StringUtils.isNotBlank(prefix) || StringUtils.isNotBlank(suffix);
-		
+
 		if (!single && !multiple) {
 			e.addError("code", "field.error.required");
 		}
