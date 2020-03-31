@@ -11,9 +11,13 @@ public class RequiredFieldValidation implements Validation {
 	@Override
 	public void validate(ExtendedRequest request, ExtendedResponse response, ValidationException e) {
 		String code = request.getString("code");
+
 		String prefix = request.getString("prefix");
+
 		String start = request.getString("start");
+
 		String end = request.getString("end");
+
 		String suffix = request.getString("suffix");
 
 		boolean single = StringUtils.isNotBlank(code);
