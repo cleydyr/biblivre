@@ -17,6 +17,7 @@ public class RequiredFieldValidation implements Validation {
 		String suffix = request.getString("suffix");
 
 		boolean single = StringUtils.isNotBlank(code);
+
 		boolean multiple = StringUtils.isNotBlank(start) || StringUtils.isNotBlank(end) || StringUtils.isNotBlank(prefix) || StringUtils.isNotBlank(suffix);
 
 		if (!single && !multiple) {
