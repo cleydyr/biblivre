@@ -19,78 +19,56 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
-import org.apache.commons.lang3.StringUtils;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
+import biblivre.administration.accesscards.validations.EndValidation;
+import biblivre.administration.accesscards.validations.NumericEndValidation;
+import biblivre.administration.accesscards.validations.NumericStartValidation;
+import biblivre.administration.accesscards.validations.RequiredFieldValidation;
+import biblivre.administration.accesscards.validations.StartEndOrderValidation;
+import biblivre.administration.accesscards.validations.StartValidation;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.Validation;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
-	
-	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		
-		String code = request.getString("code");
-		String prefix = request.getString("prefix");
-		String start = request.getString("start");
-		String end = request.getString("end");
-		String suffix = request.getString("suffix");
-		
-		ValidationException ex = new ValidationException("error.form_invalid_values");
-		
-		boolean single = StringUtils.isNotBlank(code);
-		boolean multiple = StringUtils.isNotBlank(start) || StringUtils.isNotBlank(end) || StringUtils.isNotBlank(prefix) || StringUtils.isNotBlank(suffix);
-		
-		if (!single && !multiple) {
-			ex.addError("code", "field.error.required");
-		}
-		
-		if (multiple) {
-			boolean numeric = true;
-			
-			if (StringUtils.isBlank(start)) {
-				ex.addError("start", "field.error.required");
-				numeric = false;
-			}
-			
-			if (StringUtils.isBlank(end)) {
-				ex.addError("end", "field.error.required");
-				numeric = false;			
-			}
-			
-			if (numeric && !StringUtils.isNumeric(start)) {
-				ex.addError("start", "field.error.digits_only");
-				numeric = false;			
-			}
-			
-			if (numeric && !StringUtils.isNumeric(end)) {
-				ex.addError("end", "field.error.digits_only");
-				numeric = false;			
-			}
-			
-			if (numeric) {
-				
-				Integer startInt = request.getInteger("start");
-				Integer endInt = request.getInteger("end");
-				
-				if (startInt >= endInt) {
-					ex.addError("start", "administration.accesscards.error.start_less_than_or_equals_end");
-					ex.addError("end", "administration.accesscards.error.start_less_than_or_equals_end");
-				}
-			}
+	private static final String SAVE_ACTION = "save";
 
-			
+	@SuppressWarnings("serial")
+	private static HashMap<String, Set<Validation>> validations = new HashMap<String, Set<Validation>>() {
+		{
+			put(SAVE_ACTION, new HashSet<Validation>(
+				Arrays.asList(new Validation[] {
+					new RequiredFieldValidation(),
+					new EndValidation(),
+					new StartValidation(),
+					new NumericEndValidation(),
+					new NumericStartValidation(),
+					new StartEndOrderValidation(),
+				})
+			));
 		}
-		
+	};
+
+	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+		ValidationException ex = new ValidationException("error.form_invalid_values");
+
+		for (Validation v : validations.get(SAVE_ACTION)) {
+			v.validate(request, response, ex);
+		}
+
 		if (ex.hasErrors()) {
 			handler.setMessage(ex);
-			return;
 		}
 	}	
-
-
 	
 	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		Integer id = request.getInteger("id");
