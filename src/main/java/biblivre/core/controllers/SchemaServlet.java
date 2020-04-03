@@ -21,6 +21,7 @@ package biblivre.core.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -50,6 +51,9 @@ import biblivre.core.utils.FileIOUtils;
 public final class SchemaServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private static String[] _JAVASCRIPT_FILES_SUFFIXES =
+		{".i18n.js", ".form.js", ".user_fields.js"};
 
 	@Override
 	protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -157,12 +161,17 @@ public final class SchemaServlet extends HttpServlet {
 
 		final String realPath = _getRealPath(path);
 
-		if (realPath.endsWith(".i18n.js") || realPath.endsWith(".form.js") || realPath.endsWith(".user_fields.js")) {
-			_sendJavascriptFile(request, response, headerOnly, path, realPath);
+		if (_hasJavascriptCachedFileSuffix(realPath)) {
+			_sendJavascriptCachedFile(request, response, headerOnly, path, realPath);
+
 			return;
 		}
 
 		_forwardToOtherStatic(request, response, realPath);
+	}
+
+	private boolean _hasJavascriptCachedFileSuffix(String realPath) {
+		return Stream.of(_JAVASCRIPT_FILES_SUFFIXES).anyMatch(realPath::endsWith);
 	}
 
 	@Override
@@ -196,7 +205,7 @@ public final class SchemaServlet extends HttpServlet {
 		return realPath;
 	}
 
-	private void _sendJavascriptFile(HttpServletRequest request, HttpServletResponse response, boolean headerOnly,
+	private void _sendJavascriptCachedFile(HttpServletRequest request, HttpServletResponse response, boolean headerOnly,
 			final String path, final String realPath) throws IOException {
 		String filename = StringUtils.substringAfterLast(path, "/");
 		String[] params = StringUtils.split(filename, ".");
