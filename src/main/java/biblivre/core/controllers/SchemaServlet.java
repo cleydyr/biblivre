@@ -154,42 +154,25 @@ public final class SchemaServlet extends HttpServlet {
 
 	protected void processStaticRequest(HttpServletRequest request, HttpServletResponse response, boolean headerOnly) throws ServletException, IOException {
 		final String path = request.getServletPath();
-		final String realPath;
 
-		if (path.contains("static/")) {
-			realPath = path.substring(path.lastIndexOf("/static"));
-		} else {
-			realPath = path.substring(path.lastIndexOf("/extra"));
-		}
+		final String realPath = _getRealPath(path);
 
 		if (realPath.endsWith(".i18n.js") || realPath.endsWith(".form.js") || realPath.endsWith(".user_fields.js")) {
-			String filename = StringUtils.substringAfterLast(path, "/");
-			String[] params = StringUtils.split(filename, ".");
-
-			String schema = params[0];
-			IFCacheableJavascript javascript = null;
-
-			if (realPath.endsWith(".i18n.js")) {
-				javascript = Translations.get(schema, params[1]);
-			} else if (realPath.endsWith(".user_fields.js")) {
-				javascript = UserFields.getFields(schema);
-			} else {
-				javascript = Fields.getFormFields(schema, params[2]);
-			}
-
-			File cacheFile = javascript.getCacheFile();
-
-			if (cacheFile != null) {
-				DiskFile diskFile = new DiskFile(cacheFile, "application/javascript;charset=UTF-8");
-
-				FileIOUtils.sendHttpFile(diskFile, request, response, headerOnly);
-			} else {
-				response.getOutputStream().print(javascript.toJavascriptString());
-			}
+			_sendJavascriptFile(request, response, headerOnly, path, realPath);
 			return;
 		}
 
-		// Other static files
+		_forwardToOtherStatic(request, response, realPath);
+	}
+
+	@Override
+	public void init() throws ServletException {
+		FreemarkerTemplateHelper.freemarkerConfiguration
+			.setServletContextForTemplateLoading(getServletContext(), "/freemarker");
+	}
+
+	private void _forwardToOtherStatic(HttpServletRequest request, HttpServletResponse response, final String realPath)
+			throws ServletException, IOException {
 		RequestDispatcher rd = this.getServletContext().getNamedDispatcher("default");
 
 		ExtendedRequest wrapped = new ExtendedRequest(request) {
@@ -202,10 +185,41 @@ public final class SchemaServlet extends HttpServlet {
 
 		rd.forward(wrapped, response);
 	}
-	
-	@Override
-	public void init() throws ServletException {
-		FreemarkerTemplateHelper.freemarkerConfiguration
-			.setServletContextForTemplateLoading(getServletContext(), "/freemarker");
+
+	private String _getRealPath(final String path) {
+		final String realPath;
+		if (path.contains("static/")) {
+			realPath = path.substring(path.lastIndexOf("/static"));
+		} else {
+			realPath = path.substring(path.lastIndexOf("/extra"));
+		}
+		return realPath;
+	}
+
+	private void _sendJavascriptFile(HttpServletRequest request, HttpServletResponse response, boolean headerOnly,
+			final String path, final String realPath) throws IOException {
+		String filename = StringUtils.substringAfterLast(path, "/");
+		String[] params = StringUtils.split(filename, ".");
+
+		String schema = params[0];
+		IFCacheableJavascript javascript = null;
+
+		if (realPath.endsWith(".i18n.js")) {
+			javascript = Translations.get(schema, params[1]);
+		} else if (realPath.endsWith(".user_fields.js")) {
+			javascript = UserFields.getFields(schema);
+		} else {
+			javascript = Fields.getFormFields(schema, params[2]);
+		}
+
+		File cacheFile = javascript.getCacheFile();
+
+		if (cacheFile != null) {
+			DiskFile diskFile = new DiskFile(cacheFile, "application/javascript;charset=UTF-8");
+
+			FileIOUtils.sendHttpFile(diskFile, request, response, headerOnly);
+		} else {
+			response.getOutputStream().print(javascript.toJavascriptString());
+		}
 	}
 }
