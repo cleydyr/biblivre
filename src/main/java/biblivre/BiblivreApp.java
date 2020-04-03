@@ -24,20 +24,22 @@ import biblivre.core.controllers.SchemaServlet;
 public class BiblivreApp implements ServletContextInitializer, ApplicationContextAware {
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-		ServletRegistration.Dynamic serviceServlet = servletContext.addServlet("SchemaServlet", new SchemaServlet());
+		ServletRegistration.Dynamic serviceServlet =
+			servletContext.addServlet("SchemaServlet", new SchemaServlet());
 
 		serviceServlet.addMapping("/*");
 		serviceServlet.setAsyncSupported(true);
 		serviceServlet.setLoadOnStartup(2);
 	}
 
-    private static ApplicationContext context;
-    
-    public static <T extends Object> T getBean(Class<T> beanClass) {
-        return context.getBean(beanClass);
-    }
-     
-    @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        BiblivreApp.context = context;
-    }}
+	private static ApplicationContext context;
+
+	public static <T extends Object> T getBean(Class<T> beanClass) {
+		return context.getBean(beanClass);
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		BiblivreApp.context = context;
+	}
+}
