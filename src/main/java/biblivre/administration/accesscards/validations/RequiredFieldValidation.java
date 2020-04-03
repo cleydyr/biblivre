@@ -4,26 +4,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.Validation;
 import biblivre.core.exceptions.ValidationException;
 
-public class RequiredFieldValidation implements Validation {
+public class RequiredFieldValidation extends AbstractAccessCardFieldValidation {
 	@Override
 	public void validate(ExtendedRequest request, ExtendedResponse response, ValidationException e) {
 		String code = request.getString("code");
 
-		String prefix = request.getString("prefix");
-
-		String start = request.getString("start");
-
-		String end = request.getString("end");
-
-		String suffix = request.getString("suffix");
-
 		boolean single = StringUtils.isNotBlank(code);
 
-		boolean multiple =
-			StringUtils.isNotBlank(start + end + prefix + suffix);
+		boolean multiple = isMultiple(request);
 
 		if (!single && !multiple) {
 			e.addError("code", "field.error.required");

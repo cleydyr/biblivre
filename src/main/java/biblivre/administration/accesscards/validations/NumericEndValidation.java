@@ -10,7 +10,11 @@ public class NumericEndValidation extends AbstractAccessCardFieldValidation {
 
 	@Override
 	public void validate(ExtendedRequest request, ExtendedResponse response, ValidationException e) {
-		if (!StringUtils.isNumeric(request.getString("end"))) {
+		String end = request.getString("end");
+
+		boolean multiple = isMultiple(request);
+
+		if (multiple &&	!StringUtils.isNumeric(end)) {
 			e.addError("end", "field.error.digits_only");
 		}
 	}
