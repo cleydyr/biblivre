@@ -28,6 +28,8 @@ import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import biblivre.BiblivreApp;
 import biblivre.administration.setup.State;
@@ -106,9 +108,7 @@ public abstract class Controller {
 			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
 
 			if (module.equals("circulation.accesscontrol") || module.equals("administration.accesscards")) {
-				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(BiblivreApp.class);
-
-				this.handler = (AbstractHandler) ctx.getBean(this.handlerClass);
+				this.handler = (AbstractHandler) BiblivreApp.getBean(this.handlerClass);
 
 				this.handler.resetFields();
 			}
@@ -124,9 +124,7 @@ public abstract class Controller {
 			AbstractValidator validator;
 
 			if (module.equals("circulation.user")) {
-				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(BiblivreApp.class);
-
-				validator = (AbstractValidator) ctx.getBean(validatorClass);
+				validator = (AbstractValidator) BiblivreApp.getBean(validatorClass);
 			}
 			else {
 				validator = (AbstractValidator) validatorClass.newInstance();

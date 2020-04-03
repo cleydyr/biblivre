@@ -21,11 +21,13 @@ package biblivre.core;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 /**
  * Application Lifecycle Listener implementation class BiblivreContextListener
  *
  */
+@WebListener
 public class BiblivreContextListener implements ServletContextListener {
 
 	@Override
