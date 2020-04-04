@@ -61,14 +61,12 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
 		String path = request.getServletPath();
 		
-		if (path.contains("static/")) {
-			return;
+		if (!path.contains("static/")) {
+			this.loadMultiPart();
+			this.loadSchemaAndController();
+			this.loadLanguage();
+			this.loadTranslationsMap();
 		}
-
-		this.loadMultiPart();
-		this.loadSchemaAndController();
-		this.loadLanguage();
-		this.loadTranslationsMap();
 	}
 
 	public String getLocalizedText(String key) {
