@@ -44,14 +44,14 @@ public class AccessCardBO extends AbstractBO {
 	public boolean save(AccessCardDTO dto) {
 		if (dto != null) {
 			AccessCardDTO existingCard =
-				this._accessCardPersistence.get(dto.getCode());
+				_accessCardPersistence.get(dto.getCode());
 
 			if (existingCard != null) {
 				throw new ValidationException(
 					"administration.accesscards.error.existing_card");
 			}
 
-			return this._accessCardPersistence.save(dto);
+			return _accessCardPersistence.save(dto);
 		}
 		
 		return false;
@@ -60,17 +60,17 @@ public class AccessCardBO extends AbstractBO {
 	public DTOCollection<AccessCardDTO> search(
 			AccessCardSearchParameters parameterObject) {
 
-		return this._accessCardPersistence.search(
+		return _accessCardPersistence.search(
 			parameterObject.code, parameterObject.status, parameterObject.limit,
 			parameterObject.offset);
 	}
 
 	public AccessCardDTO get(int id) {
-		return this._accessCardPersistence.get(id);
+		return _accessCardPersistence.get(id);
 	}
 
 	public AccessCardDTO get(String code) {
-		return this._accessCardPersistence.get(code);
+		return _accessCardPersistence.get(code);
 	}
 	
 	public List<AccessCardDTO> saveCardList(
@@ -85,7 +85,7 @@ public class AccessCardBO extends AbstractBO {
 		List<AccessCardDTO> cardList =
 			_generateCardLIst(loggedUserId, status, codeList);
 
-		if (this._accessCardPersistence.save(cardList)) {
+		if (_accessCardPersistence.save(cardList)) {
 			return cardList;
 		} else {
 			return null;
@@ -94,7 +94,7 @@ public class AccessCardBO extends AbstractBO {
 
 	public boolean removeCard(AccessCardDTO dto) {
 		if (dto != null) {
-			AccessCardDTO card = this.get(dto.getId());
+			AccessCardDTO card = get(dto.getId());
 
 			if (card == null) {
 				throw new ValidationException(
@@ -102,27 +102,27 @@ public class AccessCardBO extends AbstractBO {
 			}
 			
 			if (card.getStatus() == AccessCardStatus.CANCELLED) {
-				return this.delete(card.getId());
+				return delete(card.getId());
 			}
 			
 			dto.setStatus(AccessCardStatus.CANCELLED);
 
-			return this.update(dto);
+			return update(dto);
 		}
 
 		return false;
 	}
 
 	public boolean update(AccessCardDTO dto) {
-		return this._accessCardPersistence.update(dto);
+		return _accessCardPersistence.update(dto);
 	}
 	
 	public boolean delete(int id) {
-		return this._accessCardPersistence.delete(id);
+		return _accessCardPersistence.delete(id);
 	}
 	
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this._accessCardPersistence.saveFromBiblivre3(dtoList);
+		return _accessCardPersistence.saveFromBiblivre3(dtoList);
 	}
 
 	@Override
@@ -174,7 +174,7 @@ public class AccessCardBO extends AbstractBO {
 
 	private void _validateExistingCards(List<String> codeList) {
 		List<AccessCardDTO> existingCards =
-			this._accessCardPersistence.get(codeList, null);
+			_accessCardPersistence.get(codeList, null);
 
 		List<String> existingCodes = new LinkedList<String>();
 
