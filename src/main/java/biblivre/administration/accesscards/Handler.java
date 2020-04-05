@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -129,7 +129,7 @@ public class Handler extends AbstractHandler {
 			returnDto = this.createCard(request, code, status);
 			success = _accessCardBO.save(returnDto);
 		} else {
-			LinkedList<AccessCardDTO> list = _accessCardBO.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
+			List<AccessCardDTO> list = _accessCardBO.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
 			if (list != null) {
 				returnDto = list.get(0);
 				success = true;

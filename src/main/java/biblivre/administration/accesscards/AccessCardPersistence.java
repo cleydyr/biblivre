@@ -1,6 +1,5 @@
 package biblivre.administration.accesscards;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import biblivre.core.AbstractDTO;
@@ -18,7 +17,7 @@ public interface AccessCardPersistence {
 
 	boolean save(AccessCardDTO dto);
 
-	boolean save(LinkedList<AccessCardDTO> cardList);
+	boolean save(List<AccessCardDTO> cardList);
 
 	boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 

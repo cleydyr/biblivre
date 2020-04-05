@@ -73,15 +73,29 @@ public class AccessCardBO extends AbstractBO {
 		return this._accessCardPersistence.get(code);
 	}
 	
-	public LinkedList<AccessCardDTO> saveCardList(
+	public List<AccessCardDTO> saveCardList(
 			String prefix, String suffix, String startString, String endString,
 			Integer loggedUserId, AccessCardStatus status) {
-		
-		LinkedList<String> codeList =
+
+		List<String> codeList =
 			_generateCodeList(prefix, suffix, startString, endString);
-		
+
 		_validateExistingCards(codeList);
-		
+
+		List<AccessCardDTO> cardList =
+			_generateCardLIst(loggedUserId, status, codeList);
+
+		if (this._accessCardPersistence.save(cardList)) {
+			return cardList;
+		} else {
+			return null;
+		}
+	}
+
+	private LinkedList<AccessCardDTO> _generateCardLIst(
+			Integer loggedUserId, AccessCardStatus status,
+			List<String> codeList) {
+
 		LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
 
 		for (String code : codeList) {
@@ -95,19 +109,15 @@ public class AccessCardBO extends AbstractBO {
 
 			cardList.add(dto);
 		}
-		
-		if (this._accessCardPersistence.save(cardList)) {
-			return cardList;
-		} else {
-			return null;
-		}
+
+		return cardList;
 	}
 
-	private LinkedList<String> _generateCodeList(
+	private List<String> _generateCodeList(
 			String prefix, String suffix, String startString,
 			String endString) {
 
-		LinkedList<String> codeList = new LinkedList<String>();
+		List<String> codeList = new LinkedList<String>();
 
 		int pad = startString.length();
 
@@ -120,10 +130,11 @@ public class AccessCardBO extends AbstractBO {
 
 			codeList.add(prefix + number + suffix);
 		}
+
 		return codeList;
 	}
 
-	private void _validateExistingCards(LinkedList<String> codeList) {
+	private void _validateExistingCards(List<String> codeList) {
 		List<AccessCardDTO> existingCards =
 			this._accessCardPersistence.get(codeList, null);
 

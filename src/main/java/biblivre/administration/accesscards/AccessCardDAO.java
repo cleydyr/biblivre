@@ -225,7 +225,7 @@ public class AccessCardDAO extends AbstractDAO implements AccessCardPersistence 
 	}
 	
 	@Override
-	public boolean save(LinkedList<AccessCardDTO> cardList) {
+	public boolean save(List<AccessCardDTO> cardList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
