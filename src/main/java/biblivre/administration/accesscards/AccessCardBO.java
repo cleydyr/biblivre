@@ -43,18 +43,26 @@ public class AccessCardBO extends AbstractBO {
 
 	public boolean save(AccessCardDTO dto) {
 		if (dto != null) {
-			AccessCardDTO existingCard = this._accessCardPersistence.get(dto.getCode());
+			AccessCardDTO existingCard =
+				this._accessCardPersistence.get(dto.getCode());
+
 			if (existingCard != null) {
-				throw new ValidationException("administration.accesscards.error.existing_card");
+				throw new ValidationException(
+					"administration.accesscards.error.existing_card");
 			}
+
 			return this._accessCardPersistence.save(dto);
 		}
 		
 		return false;
 	}
 
-	public DTOCollection<AccessCardDTO> search(AccessCardSearchParameters parameterObject) {
-		return this._accessCardPersistence.search(parameterObject.code, parameterObject.status, parameterObject.limit, parameterObject.offset);
+	public DTOCollection<AccessCardDTO> search(
+			AccessCardSearchParameters parameterObject) {
+
+		return this._accessCardPersistence.search(
+			parameterObject.code, parameterObject.status, parameterObject.limit,
+			parameterObject.offset);
 	}
 
 	public AccessCardDTO get(int id) {
@@ -65,35 +73,56 @@ public class AccessCardBO extends AbstractBO {
 		return this._accessCardPersistence.get(code);
 	}
 	
-	public LinkedList<AccessCardDTO> saveCardList(String prefix, String suffix, String startString, String endString, Integer loggedUserId, AccessCardStatus status) {
-		int start = Integer.parseInt(startString);
-		int end = Integer.parseInt(endString);
+	public LinkedList<AccessCardDTO> saveCardList(
+			String prefix, String suffix, String startString, String endString,
+			Integer loggedUserId, AccessCardStatus status) {
 		
 		LinkedList<String> codeList = new LinkedList<String>();
+
 		int pad = startString.length();
+
+		int start = Integer.parseInt(startString);
+
+		int end = Integer.parseInt(endString);
+
 		for (int i = start; i <= end; i++) {
 			String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
+
 			codeList.add(prefix + number + suffix);
 		}
 		
 		//Validate existing cards
-		List<AccessCardDTO> existingCards = this._accessCardPersistence.get(codeList, null);
+		List<AccessCardDTO> existingCards =
+			this._accessCardPersistence.get(codeList, null);
+
 		List<String> existingCodes = new LinkedList<String>();
+
 		for (AccessCardDTO card : existingCards) {
 			existingCodes.add(card.getCode());
 		}
+
 		if (existingCodes.size() > 0) {
-			ValidationException ve = new ValidationException("administration.accesscards.error.existing_cards");
-			ve.addError("existing_cards", StringUtils.join(existingCodes, ", "));
+			ValidationException ve =
+				new ValidationException(
+					"administration.accesscards.error.existing_cards");
+
+			ve.addError(
+				"existing_cards", StringUtils.join(existingCodes, ", "));
+
 			throw ve;
 		}
 		
 		LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
+
 		for (String code : codeList) {
 			AccessCardDTO dto = new AccessCardDTO();
+
 			dto.setCode(code);
+
 			dto.setStatus(status);
+
 			dto.setCreatedBy(loggedUserId);
+
 			cardList.add(dto);
 		}
 		
@@ -107,8 +136,10 @@ public class AccessCardBO extends AbstractBO {
 	public boolean removeCard(AccessCardDTO dto) {
 		if (dto != null) {
 			AccessCardDTO card = this.get(dto.getId());
+
 			if (card == null) {
-				throw new ValidationException("administration.accesscards.error.card_not_found");
+				throw new ValidationException(
+					"administration.accesscards.error.card_not_found");
 			}
 			
 			if (card.getStatus() == AccessCardStatus.CANCELLED) {
@@ -116,8 +147,10 @@ public class AccessCardBO extends AbstractBO {
 			}
 			
 			dto.setStatus(AccessCardStatus.CANCELLED);
+
 			return this.update(dto);
 		}
+
 		return false;
 	}
 
