@@ -77,19 +77,8 @@ public class AccessCardBO extends AbstractBO {
 			String prefix, String suffix, String startString, String endString,
 			Integer loggedUserId, AccessCardStatus status) {
 		
-		LinkedList<String> codeList = new LinkedList<String>();
-
-		int pad = startString.length();
-
-		int start = Integer.parseInt(startString);
-
-		int end = Integer.parseInt(endString);
-
-		for (int i = start; i <= end; i++) {
-			String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
-
-			codeList.add(prefix + number + suffix);
-		}
+		LinkedList<String> codeList =
+			_generateCodeList(prefix, suffix, startString, endString);
 		
 		_validateExistingCards(codeList);
 		
@@ -112,6 +101,26 @@ public class AccessCardBO extends AbstractBO {
 		} else {
 			return null;
 		}
+	}
+
+	private LinkedList<String> _generateCodeList(
+			String prefix, String suffix, String startString,
+			String endString) {
+
+		LinkedList<String> codeList = new LinkedList<String>();
+
+		int pad = startString.length();
+
+		int start = Integer.parseInt(startString);
+
+		int end = Integer.parseInt(endString);
+
+		for (int i = start; i <= end; i++) {
+			String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
+
+			codeList.add(prefix + number + suffix);
+		}
+		return codeList;
 	}
 
 	private void _validateExistingCards(LinkedList<String> codeList) {
