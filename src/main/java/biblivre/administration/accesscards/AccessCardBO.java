@@ -91,26 +91,7 @@ public class AccessCardBO extends AbstractBO {
 			codeList.add(prefix + number + suffix);
 		}
 		
-		//Validate existing cards
-		List<AccessCardDTO> existingCards =
-			this._accessCardPersistence.get(codeList, null);
-
-		List<String> existingCodes = new LinkedList<String>();
-
-		for (AccessCardDTO card : existingCards) {
-			existingCodes.add(card.getCode());
-		}
-
-		if (existingCodes.size() > 0) {
-			ValidationException ve =
-				new ValidationException(
-					"administration.accesscards.error.existing_cards");
-
-			ve.addError(
-				"existing_cards", StringUtils.join(existingCodes, ", "));
-
-			throw ve;
-		}
+		_validateExistingCards(codeList);
 		
 		LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
 
@@ -130,6 +111,28 @@ public class AccessCardBO extends AbstractBO {
 			return cardList;
 		} else {
 			return null;
+		}
+	}
+
+	private void _validateExistingCards(LinkedList<String> codeList) {
+		List<AccessCardDTO> existingCards =
+			this._accessCardPersistence.get(codeList, null);
+
+		List<String> existingCodes = new LinkedList<String>();
+
+		for (AccessCardDTO card : existingCards) {
+			existingCodes.add(card.getCode());
+		}
+
+		if (existingCodes.size() > 0) {
+			ValidationException ve =
+				new ValidationException(
+					"administration.accesscards.error.existing_cards");
+
+			ve.addError(
+				"existing_cards", StringUtils.join(existingCodes, ", "));
+
+			throw ve;
 		}
 	}
 
