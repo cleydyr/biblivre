@@ -92,6 +92,44 @@ public class AccessCardBO extends AbstractBO {
 		}
 	}
 
+	public boolean removeCard(AccessCardDTO dto) {
+		if (dto != null) {
+			AccessCardDTO card = this.get(dto.getId());
+
+			if (card == null) {
+				throw new ValidationException(
+					"administration.accesscards.error.card_not_found");
+			}
+			
+			if (card.getStatus() == AccessCardStatus.CANCELLED) {
+				return this.delete(card.getId());
+			}
+			
+			dto.setStatus(AccessCardStatus.CANCELLED);
+
+			return this.update(dto);
+		}
+
+		return false;
+	}
+
+	public boolean update(AccessCardDTO dto) {
+		return this._accessCardPersistence.update(dto);
+	}
+	
+	public boolean delete(int id) {
+		return this._accessCardPersistence.delete(id);
+	}
+	
+	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+		return this._accessCardPersistence.saveFromBiblivre3(dtoList);
+	}
+
+	@Override
+	public void setSchema(String schema) {
+		_accessCardPersistence.setSchema(schema);
+	}
+
 	private LinkedList<AccessCardDTO> _generateCardLIst(
 			Integer loggedUserId, AccessCardStatus status,
 			List<String> codeList) {
@@ -154,43 +192,5 @@ public class AccessCardBO extends AbstractBO {
 
 			throw ve;
 		}
-	}
-
-	public boolean removeCard(AccessCardDTO dto) {
-		if (dto != null) {
-			AccessCardDTO card = this.get(dto.getId());
-
-			if (card == null) {
-				throw new ValidationException(
-					"administration.accesscards.error.card_not_found");
-			}
-			
-			if (card.getStatus() == AccessCardStatus.CANCELLED) {
-				return this.delete(card.getId());
-			}
-			
-			dto.setStatus(AccessCardStatus.CANCELLED);
-
-			return this.update(dto);
-		}
-
-		return false;
-	}
-
-	public boolean update(AccessCardDTO dto) {
-		return this._accessCardPersistence.update(dto);
-	}
-	
-	public boolean delete(int id) {
-		return this._accessCardPersistence.delete(id);
-	}
-	
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this._accessCardPersistence.saveFromBiblivre3(dtoList);
-	}
-
-	@Override
-	public void setSchema(String schema) {
-		_accessCardPersistence.setSchema(schema);
 	}
 }
