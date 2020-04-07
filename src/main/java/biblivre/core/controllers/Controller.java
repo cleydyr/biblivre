@@ -22,6 +22,7 @@ package biblivre.core.controllers;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
 
@@ -51,6 +52,9 @@ public abstract class Controller {
 	protected AbstractHandler handler;
 	protected boolean headerOnly;
 	protected Class<?> handlerClass;
+
+	private static String[] _COMPONENTIZED_MODULES =
+		{"circulation.accesscontrol", "administration.accesscards"};
 
 	public Controller(ExtendedRequest xRequest, ExtendedResponse xResponse) {
 		this.xRequest = xRequest;
@@ -104,7 +108,7 @@ public abstract class Controller {
 		try {
 			this.handlerClass = Class.forName("biblivre." + module + ".Handler");
 
-			if (module.equals("circulation.accesscontrol") || module.equals("administration.accesscards")) {
+			if (Stream.of(_COMPONENTIZED_MODULES).anyMatch(this.handler::equals)) {
 				this.handler = (AbstractHandler) BiblivreApp.getBean(this.handlerClass);
 
 				this.handler.resetFields();
