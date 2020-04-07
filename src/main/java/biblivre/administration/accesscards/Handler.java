@@ -48,7 +48,8 @@ public class Handler extends AbstractHandler {
 
 		_accessCardBO.setSchema(schema);
 
-		AccessCardSearchParameters searchParameters = AccessCardSearchParameters.extractSearchParameters(request);
+		AccessCardSearchParameters searchParameters =
+			AccessCardSearchParameters.extractSearchParameters(request);
 
 		if (searchParameters == null) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
@@ -56,7 +57,8 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		DTOCollection<AccessCardDTO> list = _accessCardBO.search(searchParameters);
+		DTOCollection<AccessCardDTO> list =
+			_accessCardBO.search(searchParameters);
 		
 		try {
 			this.json.put("search", list.toJSONObject());
@@ -65,12 +67,16 @@ public class Handler extends AbstractHandler {
 		}
 	}
 	
-	public void searchHelper(ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
+	public void searchHelper(
+			ExtendedRequest request, ExtendedResponse response,
+			AbstractHandler handler) {
+
 		String schema = request.getSchema();
 
 		_accessCardBO.setSchema(schema);
 
-		AccessCardSearchParameters searchParameters = AccessCardSearchParameters.extractSearchParameters(request);
+		AccessCardSearchParameters searchParameters =
+			AccessCardSearchParameters.extractSearchParameters(request);
 
 		if (searchParameters == null) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
@@ -78,10 +84,13 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		DTOCollection<AccessCardDTO> list = _accessCardBO.search(searchParameters);
+		DTOCollection<AccessCardDTO> list =
+			_accessCardBO.search(searchParameters);
 
 		if (list.size() == 0) {
-			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
+			this.setMessage(
+				ActionResult.WARNING,
+				"administration.accesscards.error.no_card_found");
 		}
 	}
 	
@@ -99,7 +108,10 @@ public class Handler extends AbstractHandler {
 		AccessCardDTO card = _accessCardBO.get(id);
 		
 		if (card == null) {
-			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.card_not_found");
+			this.setMessage(
+				ActionResult.WARNING,
+				"administration.accesscards.error.card_not_found");
+
 			return;
 		}
 		
@@ -115,7 +127,10 @@ public class Handler extends AbstractHandler {
 
 		_accessCardBO.setSchema(schema);
 
-		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status", AccessCardStatus.AVAILABLE);
+		AccessCardStatus status =
+			request.getEnum(AccessCardStatus.class, "status",
+			AccessCardStatus.AVAILABLE);
+
 		String code = request.getString("code");
 		String prefix = request.getString("prefix");
 		String start = request.getString("start");
@@ -129,7 +144,11 @@ public class Handler extends AbstractHandler {
 			returnDto = this.createCard(request, code, status);
 			success = _accessCardBO.save(returnDto);
 		} else {
-			List<AccessCardDTO> list = _accessCardBO.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
+			List<AccessCardDTO> list =
+				_accessCardBO.saveCardList(
+					prefix, suffix, start, end, request.getLoggedUserId(),
+					status);
+
 			if (list != null) {
 				returnDto = list.get(0);
 				success = true;
@@ -139,9 +158,13 @@ public class Handler extends AbstractHandler {
 		}
 		
 		if (success) {
-			this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.save");
+			this.setMessage(
+				ActionResult.SUCCESS,
+				"administration.accesscards.success.save");
 		} else {
-			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.save");
+			this.setMessage(
+				ActionResult.WARNING,
+				"administration.accesscards.error.save");
 		}
 		
 		try {
@@ -164,42 +187,63 @@ public class Handler extends AbstractHandler {
 		dto.setId(id);
 		dto.setModifiedBy(request.getLoggedUserId());
 		if (_accessCardBO.removeCard(dto)) {
-			this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.delete");
+			this.setMessage(
+				ActionResult.SUCCESS,
+				"administration.accesscards.success.delete");
 		} else {
-			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.delete");
+			this.setMessage(
+				ActionResult.WARNING,
+				"administration.accesscards.error.delete");
 		}
 	}
 	
-	public void changeStatus(ExtendedRequest request, ExtendedResponse response) {
+	public void changeStatus(
+			ExtendedRequest request, ExtendedResponse response) {
+
 		String schema = request.getSchema();
 
 		_accessCardBO.setSchema(schema);
 
 		Integer id = request.getInteger("id");
-		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status");
+		AccessCardStatus status =
+			request.getEnum(AccessCardStatus.class, "status");
 
 		AccessCardDTO dto = _accessCardBO.get(id);
 		dto.setModifiedBy(request.getLoggedUserId());
 		dto.setStatus(status);
 		if (_accessCardBO.update(dto)) {
-			if (status == AccessCardStatus.BLOCKED || status == AccessCardStatus.IN_USE_AND_BLOCKED) {
-				this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.block");
+			if (status == AccessCardStatus.BLOCKED ||
+				status == AccessCardStatus.IN_USE_AND_BLOCKED) {
+
+				this.setMessage(
+					ActionResult.SUCCESS,
+					"administration.accesscards.success.block");
 			} else {
-				this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.unblock");
+				this.setMessage(
+					ActionResult.SUCCESS,
+					"administration.accesscards.success.unblock");
 			}
 		} else {
-			if (status == AccessCardStatus.BLOCKED || status == AccessCardStatus.IN_USE_AND_BLOCKED) {
-				this.setMessage(ActionResult.WARNING, "administration.accesscards.error.block");
+			if (status == AccessCardStatus.BLOCKED ||
+				status == AccessCardStatus.IN_USE_AND_BLOCKED) {
+
+				this.setMessage(
+					ActionResult.WARNING,
+					"administration.accesscards.error.block");
 			} else {
-				this.setMessage(ActionResult.WARNING, "administration.accesscards.error.unblock");
+				this.setMessage(
+					ActionResult.WARNING,
+					"administration.accesscards.error.unblock");
 			}
 		}
 		
 		try {
 			this.json.put("data", dto.toJSONObject());
+
 			this.json.put("full_data", true);
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
+
 			return;
 		}
 	}
