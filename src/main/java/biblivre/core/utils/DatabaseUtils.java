@@ -98,6 +98,16 @@ public class DatabaseUtils {
 		return InetAddress.getLoopbackAddress().getHostName();
 	}
 
+	public static String getDatabaseName() {
+		String databaseName = System.getenv(Constants.DATABASE_NAME);
+
+		if (databaseName != null) {
+			return databaseName;
+		}
+
+		return Constants.DEFAULT_DATABASE_NAME;
+	}
+
 	public static String getDatabasePort() {
 		String databasePort = System.getenv(Constants.DATABASE_PORT);
 
@@ -106,6 +116,16 @@ public class DatabaseUtils {
 		}
 
 		return  String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT);
+	}
+
+	public static String getDatabasePassword() {
+		String databasePassword = System.getenv(Constants.DATABASE_PASSWORD);
+
+		if (databasePassword != null) {
+			return databasePassword;
+		}
+
+		return Constants.DEFAULT_DATABASE_PASSWORD;
 	}
 
 	private static File getFromFilesystem(String fileName) {
