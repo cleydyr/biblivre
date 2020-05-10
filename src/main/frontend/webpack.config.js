@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+	mode: 'development',
 	entry: './src/index.js',
 	output: {
 		filename: 'bundle.js',
@@ -27,9 +28,11 @@ module.exports = {
         test: /\.svg$/,
         use: [
           {
-            loader: 'svg-url-loader',
+            loader: 'file-loader',
             options: {
-              limit: 10000,
+							name: '[hash]-[name].[ext]',
+							outputPath: '../images',
+							publicPath: 'static/images'
             },
           },
         ],

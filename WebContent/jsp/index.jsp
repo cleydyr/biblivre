@@ -8,6 +8,6 @@
 	</head>
 	<body>
 		<div id="root"></div>
-		<script type="text/javascript" src="static/scripts/bundle.js"></script>
+		<script crossorigin="anonymous" type="text/javascript" src="static/scripts/bundle.js"></script>
 	</body>
 </html>
