@@ -30,12 +30,13 @@ import java.util.List;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class ConfigurationsDAO extends AbstractDAO {
+public class ConfigurationsDAO extends AbstractDAO implements ConfigurationsPersistence {
 
 	public static ConfigurationsDAO getInstance(String schema) {
 		return (ConfigurationsDAO) AbstractDAO.getInstance(ConfigurationsDAO.class, schema);
 	}
-	
+
+	@Override
 	public List<ConfigurationsDTO> list() {
 		List<ConfigurationsDTO> list = new ArrayList<ConfigurationsDTO>();
 
@@ -63,6 +64,7 @@ public class ConfigurationsDAO extends AbstractDAO {
 		return list;
 	}
 
+	@Override
 	public boolean save(List<ConfigurationsDTO> configs, int loggedUser) {
 		Connection con = null;
 		try {
