@@ -166,7 +166,7 @@ var HoldingInputClass = {
 		};
 	},
 	deleteRecordConfirm: function() {
-		return _(this.type + '.confirm_delete_record.forever');
+		return Translations.get(this.type + '.confirm_delete_record.forever');
 	},
 	getDeleteRecord: function(id) {
 		return {

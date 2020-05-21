@@ -30,8 +30,8 @@ $(document).ready(function() {
 		months: global.months.names,
 		months_abbr: global.months.namesAbbr,
 		format: Core.convertDateFormat(global.patterns.d),
-		show_select_today: _('common.today'),
-		lang_clear_date: _('common.clear'),
+		show_select_today: Translations.get('common.today'),
+		lang_clear_date: Translations.get('common.clear'),
 		readonly_element: false
 	});
 	
@@ -126,14 +126,14 @@ Reports.createMarcFieldsDropdown = function(datafields) {
 		var datafield = datafields[i];
 		var optgroup = $('<optgroup/>');
 		
-		optgroup.attr('label', datafield.datafield + ' - ' + _(translationPrefix + datafield.datafield));
+		optgroup.attr('label', datafield.datafield + ' - ' + Translations.get(translationPrefix + datafield.datafield));
 		
 		for (var sub = 0; sub < datafield.subfields.length; sub++) {
 			var subfield = datafield.subfields[sub];
 			
 			var option = $('<option></option>');
 			option.attr('value', datafield.datafield + '_' + subfield.subfield);
-			option.text(datafield.datafield + ' $' + subfield.subfield + ' - ' + _(translationPrefix + datafield.datafield + '.subfield.' + subfield.subfield));
+			option.text(datafield.datafield + ' $' + subfield.subfield + ' - ' + Translations.get(translationPrefix + datafield.datafield + '.subfield.' + subfield.subfield));
 			
 			optgroup.append(option);
 		}

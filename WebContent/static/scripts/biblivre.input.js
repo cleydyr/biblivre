@@ -71,11 +71,11 @@ Input.prototype.initializeSelectedRecordArea = function() {
 
 Input.prototype.cancelEdit = function() {
 	Core.popup({
-		title: _(this.prefix + '.confirm_cancel_editing_title'),
-		description: _(this.prefix + '.confirm_cancel_editing.1'),
-		confirm: _(this.prefix + '.confirm_cancel_editing.2'),
-		okText: _('common.yes'),
-		cancelText: _('common.no'),
+		title: Translations.get(this.prefix + '.confirm_cancel_editing_title'),
+		description: Translations.get(this.prefix + '.confirm_cancel_editing.1'),
+		confirm: Translations.get(this.prefix + '.confirm_cancel_editing.2'),
+		okText: Translations.get('common.yes'),
+		cancelText: Translations.get('common.no'),
 		okHandler: $.proxy(this.closeEdit, this),
 		cancelHandler: $.proxy($.noop, this)
 	});
@@ -197,15 +197,15 @@ Input.prototype.saveRecord = function(saveAsNew) {
 
 
 Input.prototype.deleteRecordTitle = function() {
-	return _(this.prefix + '.confirm_delete_record_title');
+	return Translations.get(this.prefix + '.confirm_delete_record_title');
 };
 
 Input.prototype.deleteRecordQuestion = function() {
-	return _(this.prefix + '.confirm_delete_record_question');
+	return Translations.get(this.prefix + '.confirm_delete_record_question');
 };
 
 Input.prototype.deleteRecordConfirm = function() {
-	return _(this.prefix + '.confirm_delete_record_confirm');
+	return Translations.get(this.prefix + '.confirm_delete_record_confirm');
 };
 
 Input.prototype.deleteRecord = function(id) {
@@ -219,8 +219,8 @@ Input.prototype.deleteRecord = function(id) {
 		title: this.deleteRecordTitle(),
 		description: this.deleteRecordQuestion(),
 		confirm: this.deleteRecordConfirm(),
-		okText: _('common.yes'),
-		cancelText: _('common.no'),
+		okText: Translations.get('common.yes'),
+		cancelText: Translations.get('common.no'),
 		okHandler: $.proxy(function() {
 			$.ajax({
 				url: window.location.pathname,

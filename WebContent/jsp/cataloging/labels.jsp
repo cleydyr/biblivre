@@ -48,8 +48,8 @@
 				months: global.months.names,
 				months_abbr: global.months.namesAbbr,
 				format: Core.convertDateFormat(global.patterns.d),
-				show_select_today: _('common.today'),
-				lang_clear_date: _('common.clear'),
+				show_select_today: Translations.get('common.today'),
+				lang_clear_date: Translations.get('common.clear'),
 				direction: false,
 				offset: [-19, -7],
 				readonly_element: false

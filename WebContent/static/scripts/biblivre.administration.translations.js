@@ -100,7 +100,7 @@ Translations.displayTree = function() {
 		return (a > b) ? 1 : (b > a) ? -1 : 0;
 	};
 	
-	var keys = ld.keys(translations).sort(sortKeys);
+	var keys = _.keys(translations).sort(sortKeys);
 	
 	var div = $('#translations_tree').on('input', 'input', function() {
 		var t = $(this);
@@ -140,7 +140,7 @@ Translations.displayTree = function() {
 				d.appendTo(myTree);
 			} else {
 				//var field = $('<fieldset />').append('<legend>' + completeKey + '</legend>').appendTo(myTree);
-				var myKeys = ld.keys(myObj).sort(sortKeys);
+				var myKeys = _.keys(myObj).sort(sortKeys);
 				ld.forEach(myKeys, recurse(myObj, myTree, completeKey));
 			}
 		};
@@ -249,7 +249,7 @@ Translation.upload = function(button) {
 		error: function() {
 			Core.msg({
 				message_level: 'warning',
-				message: _('cataloging.import.error.file_upload_error')
+				message: Translations.get('cataloging.import.error.file_upload_error')
 			});
 		},
 		uploadProgress: function(event, current, total, percentComplete) {

@@ -365,7 +365,7 @@ Search.prototype.displayResults = function(o) {
 			animate: false,
 			sticky: false,
 			translate: false,
-			message: _('search.common.search_limit', [_f(recordCount), _f(recordLimit)])
+			message: Translations.get('search.common.search_limit', [_f(recordCount), _f(recordLimit)])
 		});
 	}
 	
