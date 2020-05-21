@@ -52,7 +52,7 @@ var CirculationSearchClass = {
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 				
-				simpleButton.text($.trim(val) == '' ? _('search.common.button.list_all') : _('search.common.button.search'));
+				simpleButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -67,7 +67,7 @@ var CirculationSearchClass = {
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 				
-				advancedButton.text($.trim(val) == '' ? _('search.common.button.list_all') : _('search.common.button.search'));
+				advancedButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
 			}
 		});
 		
@@ -399,7 +399,7 @@ var CirculationSearchClass = {
 				var fineDiv = $('.user_fines[rel="' + fineId + '"]'); 
 				fineDiv.find('.fines_buttons').remove();
 				fineDiv.find('.description').remove();
-				var newDiv = '<label>' + _('circulation.lending.payment_date') + '</label>: '+  _d(new Date(), 'D') + '<br/>';
+				var newDiv = '<label>' + Translations.get('circulation.lending.payment_date') + '</label>: '+  _d(new Date(), 'D') + '<br/>';
 				fineDiv.find('.record').append(newDiv);
 			}
 

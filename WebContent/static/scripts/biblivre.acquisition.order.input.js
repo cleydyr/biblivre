@@ -107,8 +107,8 @@ var OrderInput = new Input({
 			months: global.months.names,
 			months_abbr: global.months.namesAbbr,
 			format: Core.convertDateFormat(global.patterns.d),
-			show_select_today: _('common.today'),
-			lang_clear_date: _('common.clear'),
+			show_select_today: Translations.get('common.today'),
+			lang_clear_date: Translations.get('common.clear'),
 			readonly_element: false
 		});
 		
@@ -167,7 +167,7 @@ var OrderInput = new Input({
 			quotationSelect.html("");
 			quotationSelect.append($('<option>', { 
 		        value: '',
-		        text : _('acquisition.order.field.quotation_select')
+		        text : Translations.get('acquisition.order.field.quotation_select')
 		    }));
 			this.root.find('.selected_results_area').processTemplate([]);
 			$('#biblivre_order_form_body input[name="delivery_time"]').val('');
@@ -199,7 +199,7 @@ var OrderInput = new Input({
 				quotationSelect.html("");
 				quotationSelect.append($('<option>', { 
 			        value: '',
-			        text : _('acquisition.order.field.quotation_select')
+			        text : Translations.get('acquisition.order.field.quotation_select')
 			    }));
 				$.each(response.list.data, function (i, quotation) {
 					var text = '';
@@ -267,13 +267,13 @@ var OrderInput = new Input({
 		this.root.find('.selected_results_area ul').scrollTop(scroll);
 	},
 	deleteRecordTitle: function() {
-		return _(this.type + '.confirm_delete_record_title.forever');
+		return Translations.get(this.type + '.confirm_delete_record_title.forever');
 	},
 	deleteRecordQuestion: function() {
-		return _(this.type + '.confirm_delete_record_question.forever');
+		return Translations.get(this.type + '.confirm_delete_record_question.forever');
 	},
 	deleteRecordConfirm: function() {
-		return _(this.type + '.confirm_delete_record.forever');
+		return Translations.get(this.type + '.confirm_delete_record.forever');
 	},
 	getDeleteRecord: function(id) {
 		return {
@@ -289,7 +289,7 @@ var OrderInput = new Input({
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
-			return _('common.deleted');
+			return Translations.get('common.deleted');
 		}
 		
 		return '';

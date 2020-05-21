@@ -328,11 +328,11 @@ Administration.reindex.cancel = function(base) {
 
 Administration.reinstall.confirm = function() {
 	Core.popup({
-		title: _('administration.maintenance.reinstall.confirm.title'),
-		description: _('administration.maintenance.reinstall.confirm.description'),
-		confirm: _('administration.maintenance.reinstall.confirm.question'),
-		okText: _('common.yes'),
-		cancelText: _('common.no'),
+		title: Translations.get('administration.maintenance.reinstall.confirm.title'),
+		description: Translations.get('administration.maintenance.reinstall.confirm.description'),
+		confirm: Translations.get('administration.maintenance.reinstall.confirm.question'),
+		okText: Translations.get('common.yes'),
+		cancelText: Translations.get('common.no'),
 		okHandler: function() {
 			window.location.href = window.location.pathname + '?force_setup=true';
 		},

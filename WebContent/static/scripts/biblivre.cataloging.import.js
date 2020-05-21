@@ -138,7 +138,7 @@ Import.upload = function(button) {
 		error: function() {
 			Core.msg({
 				message_level: 'warning',
-				message: _('cataloging.import.error.file_upload_error')
+				message: Translations.get('cataloging.import.error.file_upload_error')
 			});
 		},
 		uploadProgress: function(event, current, total, percentComplete) {
@@ -182,7 +182,7 @@ Import.processUploadData = function(data) {
 	if (!data || !data.record_list || data.record_list.length === 0) {
 		Core.msg({
 			message_level: 'warning',
-			message: _('cataloging.import.error.no_records_found')
+			message: Translations.get('cataloging.import.error.no_records_found')
 		});
 		
 		return;
@@ -241,22 +241,22 @@ Import.updateRecordData = function(i, record, lists) {
 	
 	if (data.material == 'ignore') {
 		data.overlay = 'overlay_normal';
-		data.overlay_text = _('cataloging.import.record_will_be_ignored');
+		data.overlay_text = Translations.get('cataloging.import.record_will_be_ignored');
 	}
 	
 	if (data.imported) {
 		data.overlay = 'overlay_success';
-		data.overlay_text = _('cataloging.import.record_imported_successfully');
+		data.overlay_text = Translations.get('cataloging.import.record_imported_successfully');
 	} else if (data.isbn || data.issn || data.isrc) {
 		data.material = 'ignore';
 		data.overlay = 'overlay_warning';
 
 		if (data.isbn) {
-			data.overlay_text = _('cataloging.import.isbn_already_in_database');
+			data.overlay_text = Translations.get('cataloging.import.isbn_already_in_database');
 		} else if (data.issn) {
-			data.overlay_text = _('cataloging.import.issn_already_in_database');			
+			data.overlay_text = Translations.get('cataloging.import.issn_already_in_database');			
 		} else if (data.isrc) {
-			data.overlay_text = _('cataloging.import.isrc_already_in_database');
+			data.overlay_text = Translations.get('cataloging.import.isrc_already_in_database');
 		}
 	}
 	
