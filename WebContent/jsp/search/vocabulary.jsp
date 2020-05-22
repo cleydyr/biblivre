@@ -91,7 +91,7 @@
 						<table class="record_fields">	
 							{#foreach $T.fields as field}
 								<tr>
-									<td class="label">{_('cataloging.tab.record.custom.field_label.vocabulary_' + $T.field.datafield)}:</td>
+									<td class="label">{Translations.get('cataloging.tab.record.custom.field_label.vocabulary_' + $T.field.datafield)}:</td>
 									<td class="value">{$T.field.value}</td>
 								</tr>
 							{#/for}
@@ -191,12 +191,12 @@
 							{#if $T.group_count.group_id == $T.group.id}
 								{#if $T.group.id == CatalogingSearch.lastPagingParameters.indexing_group}
 									<div class="group selected">
-										<span class="name">{_('cataloging.vocabulary.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
+										<span class="name">{Translations.get('cataloging.vocabulary.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#else}
 									<div class="group">
-										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{_('cataloging.vocabulary.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
+										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{Translations.get('cataloging.vocabulary.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
@@ -212,7 +212,7 @@
 					<select class="combo search_sort_combo combo_auto_size combo_align_right" onchange="CatalogingSearch.changeSort(this.value);">
 						{#foreach $T.indexing_groups as group}
 							{#if $T.group.sortable}
-								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{_('cataloging.vocabulary.indexing_groups.' + $T.group.translation_key)}</option>
+								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{Translations.get('cataloging.vocabulary.indexing_groups.' + $T.group.translation_key)}</option>
 							{#/if}
 						{#/for}
 					</select>

@@ -39,7 +39,7 @@
 		<textarea id="datafields_template" class="template"><!-- 
 			{#foreach $T.datafields as datafield}
 				<fieldset class="block" data-datafield="{ $T.datafield.datafieldTag }">
-					<legend>{$T.datafield.datafieldTag} - { Translations.get('marc.bibliographic.datafield.' + $T.datafield.datafieldTag) }</legend>
+					<legend>{$T.datafield.datafieldTag} - {Translations.get('marc.bibliographic.datafield.' + $T.datafield.datafieldTag) }</legend>
 					<div class="buttons">
 						<span class="cancel-datafield"><i class="fa fa-close"></i></span>
 						<span class="save-datafield"><i class="fa fa-check"></i></span>
@@ -56,21 +56,21 @@
 			<div class="subtitle"><i18n:text key="administration.brief_customization.subfields_title" /></div>
 			<div class="subfields">
 				{#foreach $T.subfields as subfield}
-					<div class="subfield">{ '$' + $T.subfield.subfield }<span class="text"> - { Translations.get('marc.bibliographic.datafield.' + $T.datafield + '.subfield.' + $T.subfield.subfield) }<span></div>
+					<div class="subfield">{ '$' + $T.subfield.subfield }<span class="text"> - {Translations.get('marc.bibliographic.datafield.' + $T.datafield + '.subfield.' + $T.subfield.subfield) }<span></div>
 				{#/for}
 				<div class="clear"></div>
 			</div>
 			<div class="subtitle"><i18n:text key="administration.brief_customization.separators_title" /></div>
 			<div class="separators">
 				{#foreach $T.separators as separator}
-					<div class="separator">{ $T.separator.separator.replace(/ /g, '&nbsp;') }<span class="text">&nbsp;&nbsp;- { Translations.get('administration.brief_customization.separators.' + $T.separator.code) }<span></div>
+					<div class="separator">{ $T.separator.separator.replace(/ /g, '&nbsp;') }<span class="text">&nbsp;&nbsp;- {Translations.get('administration.brief_customization.separators.' + $T.separator.code) }<span></div>
 				{#/for}
 				<div class="clear"></div>
 			</div>
 			<div class="subtitle"><i18n:text key="administration.brief_customization.aggregators_title" /></div>
 			<div class="aggregators">
 				{#foreach $T.aggregators as aggregator}
-					<div class="aggregator">{ $T.aggregator.aggregator.replace(/ /g, '&nbsp;') }<span class="text">&nbsp;&nbsp;&nbsp;- { Translations.get('administration.brief_customization.aggregators.' + $T.aggregator.code) }<span></div>
+					<div class="aggregator">{ $T.aggregator.aggregator.replace(/ /g, '&nbsp;') }<span class="text">&nbsp;&nbsp;&nbsp;- {Translations.get('administration.brief_customization.aggregators.' + $T.aggregator.code) }<span></div>
 				{#/for}
 				<div class="clear"></div>
 			</div>			
@@ -84,7 +84,7 @@
 		<textarea id="disabled_datafields_template" class="template"><!-- 
 			{#foreach $T.disabled_datafields as datafield}
 				<div class="block" data-datafield="{ $T.datafield.datafield }">
-					<div class="data-name">{$T.datafield.datafield} - { Translations.get('marc.bibliographic.datafield.' + $T.datafield.datafield) }</div>
+					<div class="data-name">{$T.datafield.datafield} - {Translations.get('marc.bibliographic.datafield.' + $T.datafield.datafield) }</div>
 					<div class="buttons">
 						<span class="add-datafield"><i class="fa fa-plus"></i></span>
 					</div>

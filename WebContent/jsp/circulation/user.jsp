@@ -47,8 +47,8 @@
 				months: global.months.names,
 				months_abbr: global.months.namesAbbr,
 				format: Core.convertDateFormat(global.patterns.d),
-				show_select_today: Translations.get('common.today'),
-				lang_clear_date: Translations.get('common.clear'),
+				show_select_today:Translations.get('common.today'),
+				lang_clear_date:Translations.get('common.clear'),
 				direction: false,
 				offset: [-19, -7],
 				readonly_element: false
@@ -131,7 +131,7 @@
 				{#if $T.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.name}<br/>{#/if}
 				<label><i18n:text key="circulation.user_field.id" /></label>: {$T.enrollment}<br/>
 				{#if $T.type}<label><i18n:text key="circulation.user_field.type" /></label>: {$T.type_name}<br/>{#/if}
-				<div class="user_status_{$T.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.status)}</div>
+				<div class="user_status_{$T.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.status)}</div>
 	
 				<div class="ncspacer"></div>
 				<div class="ncspacer"></div>						
@@ -330,7 +330,7 @@
 							<div class="fields">
 								{#foreach CirculationInput.userFields as userfield}
 									<div class="field">
-										<div class="label">{_('circulation.custom.user_field.' + $T.userfield.key)}</div>
+										<div class="label">{Translations.get('circulation.custom.user_field.' + $T.userfield.key)}</div>
 										<div class="value">
 											{#if $T.userfield.type == 'string'}
 												<input type="text" name="{$T.userfield.key}" maxlength="{$T.userfield.maxLength || ''}" value="{($T.fields || {})[$T.userfield.key]}">
@@ -340,9 +340,9 @@
 											{#/if}
 											{#if $T.userfield.type == 'list' && $T.userfield.maxLength > 0}
 												<select name="{$T.userfield.key}">
-													{#if !$T.userfield.required}<option value="">{_('circulation.custom.user_field.select.default')}</option>{#/if}
+													{#if !$T.userfield.required}<option value="">{Translations.get('circulation.custom.user_field.select.default')}</option>{#/if}
 													{#for index = 1 to $T.userfield.maxLength}
-														<option value="{$T.index}" {#if ($T.fields && $T.fields[$T.userfield.key] && $T.fields[$T.userfield.key] == $T.index)}selected="selected"{#/if}>{_('circulation.custom.user_field.' + $T.userfield.key + '.' + $T.index)}</option> 
+														<option value="{$T.index}" {#if ($T.fields && $T.fields[$T.userfield.key] && $T.fields[$T.userfield.key] == $T.index)}selected="selected"{#/if}>{Translations.get('circulation.custom.user_field.' + $T.userfield.key + '.' + $T.index)}</option> 
 													{#/for}
 												</select>
 											{#/if}
@@ -472,7 +472,7 @@
 								{#if $T.record.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.record.name}<br/>{#/if}
 								<label><i18n:text key="circulation.user_field.id" /></label>: {$T.record.enrollment}<br/>
 								<label><i18n:text key="circulation.user_field.type" /></label>: {$T.record.type_name}<br/>
-								<div class="user_status_{$T.record.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.record.status)}</div>
+								<div class="user_status_{$T.record.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.record.status)}</div>
 	
 								<div class="ncspacer"></div>
 								<div class="ncspacer"></div>						

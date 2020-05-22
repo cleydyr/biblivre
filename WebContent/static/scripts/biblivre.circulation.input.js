@@ -337,7 +337,7 @@ var CirculationInput = new Input({
 			$input.on('change', function(e) {
 				if (e.target.files[0] !== null) {
 					if (!fileAllowed(e.target.files[0].name)) {
-						alert(_('circulation.user.error.invalid_photo_extension'));
+						alert(Translations.get('circulation.user.error.invalid_photo_extension'));
 						return;
 					}
 
@@ -356,8 +356,8 @@ var CirculationInput = new Input({
 			months: global.months.names,
 			months_abbr: global.months.namesAbbr,
 			format: Core.convertDateFormat(global.patterns.d),
-			show_select_today: Translations.get('common.today'),
-			lang_clear_date: Translations.get('common.clear'),
+			show_select_today:Translations.get('common.today'),
+			lang_clear_date:Translations.get('common.clear'),
 			direction: false,
 			offset: [-19, -7],
 			readonly_element: false

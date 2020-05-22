@@ -51,7 +51,7 @@ var CirculationLabels = {
 
 			option
 				.val(i)
-				.text(_('circulation.user_cards.paper_description', label))
+				.text(Translations.get('circulation.user_cards.paper_description', label))
 				.appendTo(select);
 
 			if (label.selected) {

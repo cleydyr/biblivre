@@ -110,8 +110,8 @@ var QuotationInput = new Input({
 			months: global.months.names,
 			months_abbr: global.months.namesAbbr,
 			format: Core.convertDateFormat(global.patterns.d),
-			show_select_today: Translations.get('common.today'),
-			lang_clear_date: Translations.get('common.clear'),
+			show_select_today:Translations.get('common.today'),
+			lang_clear_date:Translations.get('common.clear'),
 			readonly_element: false
 		});
 	},

@@ -70,7 +70,7 @@
 			</div>			
 			<div class="record">
 				<label><i18n:text key="administration.accesscards.field.code" /></label>: {$T.code}<br/>
-				<label><i18n:text key="administration.accesscards.field.status" /></label>: {#if $T.status}{_('administration.accesscards.status.' + $T.status)}{#/if}<br/>
+				<label><i18n:text key="administration.accesscards.field.status" /></label>: {#if $T.status}{Translations.get('administration.accesscards.status.' + $T.status)}{#/if}<br/>
 				{#if $T.created}<label><i18n:text key="common.created" /></label>: {_d($T.created, 'd t')}<br/>{#/if}
 				{#if $T.modified}<label><i18n:text key="common.modified" /></label>: {_d($T.modified, 'd t')}<br/>{#/if}
 			</div>
@@ -107,7 +107,7 @@
 					<div id="biblivre_accesscards_single_form_body"></div>
 					<textarea id="biblivre_accesscards_single_form_body_template" class="template"><!-- 
 						<fieldset>
-							<legend>{_('administration.accesscards.add_one_card')}</legend>
+							<legend>{Translations.get('administration.accesscards.add_one_card')}</legend>
 							<div class="fields">
 								<div class="field">
 									<div class="label"><i18n:text key="administration.accesscards.field.code" /></div>
@@ -125,7 +125,7 @@
 					<div id="biblivre_accesscards_multiple_form_body"></div>
 					<textarea id="biblivre_accesscards_multiple_form_body_template" class="template"><!-- 
 						<fieldset>
-							<legend>{_('administration.accesscards.add_multiple_cards')}</legend>
+							<legend>{Translations.get('administration.accesscards.add_multiple_cards')}</legend>
 							<div class="fields">
 								<div class="field">
 									<div class="label"><i18n:text key="administration.accesscards.prefix" /></div>
@@ -206,7 +206,7 @@
 							</div>
 							<div class="record">
 								{#if $T.record.code}<label><i18n:text key="administration.accesscards.field.code" /></label>: {$T.record.code}<br/>{#/if}
-								{#if $T.record.status}<label><i18n:text key="administration.accesscards.field.status" /></label>: {_('administration.accesscards.status.' + $T.record.status)}<br/>{#/if}
+								{#if $T.record.status}<label><i18n:text key="administration.accesscards.field.status" /></label>: {Translations.get('administration.accesscards.status.' + $T.record.status)}<br/>{#/if}
 								{#if $T.record.created}<label><i18n:text key="common.created" /></label>: {_d($T.record.created, 'd t')}<br/>{#/if}
 								{#if $T.record.modified}<label><i18n:text key="common.modified" /></label>: {_d($T.record.modified, 'd t')}<br/>{#/if}
 							</div>

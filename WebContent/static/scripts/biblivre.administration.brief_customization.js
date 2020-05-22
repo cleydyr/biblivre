@@ -418,11 +418,11 @@ Customization.disableDatafield = function(fieldset) {
 	var tag = fieldset.attr('data-datafield');
 
 	Core.popup({
-		title: Translations.get('administration.brief_customization.confirm_disable_datafield_title'),
-		description: Translations.get('administration.brief_customization.confirm_disable_datafield_question', tag),
-		confirm: Translations.get('administration.brief_customization.confirm_disable_datafield_confirm'),
-		okText: Translations.get('common.yes'),
-		cancelText: Translations.get('common.no'),
+		title:Translations.get('administration.brief_customization.confirm_disable_datafield_title'),
+		description:Translations.get('administration.brief_customization.confirm_disable_datafield_question', tag),
+		confirm:Translations.get('administration.brief_customization.confirm_disable_datafield_confirm'),
+		okText:Translations.get('common.yes'),
+		cancelText:Translations.get('common.no'),
 		okHandler: $.proxy(function() {
 			var datafield = Customization.indexedDatafields[tag];
 			datafield.enabled = false;
