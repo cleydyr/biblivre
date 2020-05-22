@@ -52,7 +52,7 @@ var CirculationSearchClass = {
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 				
-				simpleButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
+				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -67,7 +67,7 @@ var CirculationSearchClass = {
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 				
-				advancedButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
+				advancedButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
 		
@@ -192,7 +192,7 @@ var CirculationSearchClass = {
 				}
 
 				var record = el.find('.record');
-				record.append($('<label></label>').text(_('circulation.custom.user_field.' + field)));
+				record.append($('<label></label>').text(Translations.get('circulation.custom.user_field.' + field)));
 				record.append(': ' + user.fields[field]);
 			});
 
@@ -345,10 +345,10 @@ var CirculationSearchClass = {
 		
 		
 		var wrap = $('<div class="m30nfc"></div>');
-		div.find('.user_lending_active_lending').wrapAll(wrap).parent().prepend($('<strong></strong>').text(_('circulation.user.active_lendings')));
+		div.find('.user_lending_active_lending').wrapAll(wrap).parent().prepend($('<strong></strong>').text(Translations.get('circulation.user.active_lendings')));
 
 		wrap = $('<div class="m30nfc"></div>');
-		div.find('.user_lending_returned_lending').wrapAll(wrap).parent().prepend($('<strong></strong>').text(_('circulation.user.returned_lendings')));
+		div.find('.user_lending_returned_lending').wrapAll(wrap).parent().prepend($('<strong></strong>').text(Translations.get('circulation.user.returned_lendings')));
 	},
 	loadCirculationReservations: function(record, params) {
 		var div = $('#biblivre_circulation_reservations');
@@ -399,7 +399,7 @@ var CirculationSearchClass = {
 				var fineDiv = $('.user_fines[rel="' + fineId + '"]'); 
 				fineDiv.find('.fines_buttons').remove();
 				fineDiv.find('.description').remove();
-				var newDiv = '<label>' + Translations.get('circulation.lending.payment_date') + '</label>: '+  _d(new Date(), 'D') + '<br/>';
+				var newDiv = '<label>' +Translations.get('circulation.lending.payment_date') + '</label>: '+  _d(new Date(), 'D') + '<br/>';
 				fineDiv.find('.record').append(newDiv);
 			}
 

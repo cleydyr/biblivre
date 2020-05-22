@@ -71,11 +71,11 @@ Input.prototype.initializeSelectedRecordArea = function() {
 
 Input.prototype.cancelEdit = function() {
 	Core.popup({
-		title: Translations.get(this.prefix + '.confirm_cancel_editing_title'),
-		description: Translations.get(this.prefix + '.confirm_cancel_editing.1'),
-		confirm: Translations.get(this.prefix + '.confirm_cancel_editing.2'),
-		okText: Translations.get('common.yes'),
-		cancelText: Translations.get('common.no'),
+		title:Translations.get(this.prefix + '.confirm_cancel_editing_title'),
+		description:Translations.get(this.prefix + '.confirm_cancel_editing.1'),
+		confirm:Translations.get(this.prefix + '.confirm_cancel_editing.2'),
+		okText:Translations.get('common.yes'),
+		cancelText:Translations.get('common.no'),
 		okHandler: $.proxy(this.closeEdit, this),
 		cancelHandler: $.proxy($.noop, this)
 	});
@@ -219,8 +219,8 @@ Input.prototype.deleteRecord = function(id) {
 		title: this.deleteRecordTitle(),
 		description: this.deleteRecordQuestion(),
 		confirm: this.deleteRecordConfirm(),
-		okText: Translations.get('common.yes'),
-		cancelText: Translations.get('common.no'),
+		okText:Translations.get('common.yes'),
+		cancelText:Translations.get('common.no'),
 		okHandler: $.proxy(function() {
 			$.ajax({
 				url: window.location.pathname,

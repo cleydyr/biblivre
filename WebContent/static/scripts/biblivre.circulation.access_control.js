@@ -47,7 +47,7 @@ var AccessControl = {
 		if (!CirculationSearch.selectedRecord) {
 			Core.msg({
 				message_level: 'normal',
-				message: Translations.get('TODO')
+				message:Translations.get('TODO')
 			});
 			return;
 		}
@@ -85,8 +85,8 @@ var AccessControl = {
 				title: 'TODO',
 				description: 'TODO',
 				confirm: 'TODO!',
-				okText: Translations.get('common.yes'),
-				cancelText: Translations.get('common.no'),
+				okText:Translations.get('common.yes'),
+				cancelText:Translations.get('common.no'),
 				okHandler: $.proxy(function() {
 					$.proxy(bind, this)();
 					$(':focus').blur();							
@@ -131,8 +131,8 @@ var AccessControl = {
 				title: 'TODO',
 				description: 'TODO',
 				confirm: 'TODO!',
-				okText: Translations.get('common.yes'),
-				cancelText: Translations.get('common.no'),
+				okText:Translations.get('common.yes'),
+				cancelText:Translations.get('common.no'),
 				okHandler: $.proxy(function() {
 					$.proxy(bind, this)();
 					$(':focus').blur();							

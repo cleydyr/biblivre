@@ -249,7 +249,7 @@ Translation.upload = function(button) {
 		error: function() {
 			Core.msg({
 				message_level: 'warning',
-				message: Translations.get('cataloging.import.error.file_upload_error')
+				message:Translations.get('cataloging.import.error.file_upload_error')
 			});
 		},
 		uploadProgress: function(event, current, total, percentComplete) {

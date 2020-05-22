@@ -222,8 +222,8 @@ var AccessCardsInput = new Input({
 			title: this.changeStatusTitle(status, old_status),
 			description: this.changeStatusQuestion(status, old_status),
 			confirm: this.changeStatusConfirm(status, old_status),
-			okText: Translations.get('common.yes'),
-			cancelText: Translations.get('common.no'),
+			okText:Translations.get('common.yes'),
+			cancelText:Translations.get('common.no'),
 			okHandler: $.proxy(function() {
 				$.ajax({
 					url: window.location.pathname,

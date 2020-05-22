@@ -107,7 +107,7 @@ var HoldingSearchClass = {
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 				
-				simpleButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
+				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
 		
@@ -240,7 +240,7 @@ var HoldingSearchClass = {
 	},
 	lend: function(id) {
 		Core.msg({
-			message: Translations.get('circulation.lending.error.select_reader_first'),
+			message:Translations.get('circulation.lending.error.select_reader_first'),
 			message_level: 'warning'
 		});
 
