@@ -108,7 +108,7 @@ var CatalogingLabels = {
 
 			option
 				.val(i)
-				.text(_('cataloging.labels.paper_description', label))
+				.text(Translations.get('cataloging.labels.paper_description', label))
 				.appendTo(select);
 
 			if (label.selected) {

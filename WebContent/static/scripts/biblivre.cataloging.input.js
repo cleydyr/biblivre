@@ -64,7 +64,7 @@ var CatalogingFormClass = {
 			html.push('" data="', datafield.datafield, '">');
 	
 			html.push('<legend>');
-			html.push(_(translationPrefix + datafield.datafield));
+			html.push(Translations.get(translationPrefix + datafield.datafield));
 			html.push('<span class="marc_numbering">(', datafield.datafield, ')</span>');
 			html.push('</legend>');
 	
@@ -79,7 +79,7 @@ var CatalogingFormClass = {
 					html.push('<div class="indicator">');
 					
 					html.push('<div class="label">');
-					html.push(_(translationPrefix + datafield.datafield + '.indicator.' + ind));
+					html.push(Translations.get(translationPrefix + datafield.datafield + '.indicator.' + ind));
 					html.push('</div>');
 					
 					html.push('<div class="value">');
@@ -89,7 +89,7 @@ var CatalogingFormClass = {
 						var indicator = indicators[j];
 	
 						html.push('<option value="', indicator, '">');
-						html.push(_(translationPrefix + datafield.datafield + '.indicator.' + ind + '.' + indicator));
+						html.push(Translations.get(translationPrefix + datafield.datafield + '.indicator.' + ind + '.' + indicator));
 						html.push('</option>');
 					}
 					
@@ -123,7 +123,7 @@ var CatalogingFormClass = {
 				html.push('" data="', subfield.datafield, '">');
 				
 				html.push('<div class="label">');
-				html.push(_(translationPrefix + datafield.datafield + '.subfield.' + subfield.subfield));
+				html.push(Translations.get(translationPrefix + datafield.datafield + '.subfield.' + subfield.subfield));
 				html.push('</div>');
 	
 				var autocompleteClass = '';
@@ -222,7 +222,7 @@ var CatalogingFormClass = {
 			var fieldset = $(this);
 	
 			fieldset.children('legend').append(
-				$('<a href="javascript:void(0);" class="marc_repeat">[ ' + _('cataloging.tab.form.repeat') + ' ]</a>').click(function() {
+				$('<a href="javascript:void(0);" class="marc_repeat">[ ' +Translations.get('cataloging.tab.form.repeat') + ' ]</a>').click(function() {
 					me.repeatDataField($(this).parents('fieldset'));
 				})
 			);
@@ -238,7 +238,7 @@ var CatalogingFormClass = {
 				clone.find('legend a.marc_repeat').remove();
 	
 				clone.children('legend').append(
-					$('<a href="javascript:void(0);" class="marc_remove">[ ' + _('cataloging.tab.form.remove') + ' ]</a>').click(function() {
+					$('<a href="javascript:void(0);" class="marc_remove">[ ' +Translations.get('cataloging.tab.form.remove') + ' ]</a>').click(function() {
 						$(this).parents('fieldset').remove();
 					})
 				);
@@ -271,7 +271,7 @@ var CatalogingFormClass = {
 			}
 	
 			extra.append(
-				$('<a href="javascript:void(0);" class="marc_repeat">[ ' + _('cataloging.tab.form.repeat') + ' ]</a>').click(function() {
+				$('<a href="javascript:void(0);" class="marc_repeat">[ ' +Translations.get('cataloging.tab.form.repeat') + ' ]</a>').click(function() {
 					me.repeatSubField($(this).parents('div.subfield'));
 				})
 			);
@@ -287,7 +287,7 @@ var CatalogingFormClass = {
 				clone.find('.extra a.marc_repeat').remove();
 		
 				clone.find('.extra').append(
-					$('<a href="javascript:void(0);" class="marc_remove">[ ' + _('cataloging.tab.form.remove') + ' ]</a>').click(function() {
+					$('<a href="javascript:void(0);" class="marc_remove">[ ' +Translations.get('cataloging.tab.form.remove') + ' ]</a>').click(function() {
 						$(this).parents('div.subfield').remove();
 					})
 				);
@@ -877,7 +877,7 @@ var CatalogingInputClass = {
 		});
 	},
 	setDatabaseCount: function(count) {
-		$('#database_count').html(_('cataloging.database.record_count', [count]));
+		$('#database_count').html(Translations.get('cataloging.database.record_count', [count]));
 	},
 	toggleAuthorType: function(val) {
 		Core.trigger(this.prefix + 'author-type-change', val);
@@ -989,7 +989,7 @@ var CatalogingInputClass = {
 		};
 	},
 	deleteRecordConfirm: function() {
-		return _(this.getCurrentDatabase() == 'trash' ? this.type + '.confirm_delete_record.forever' : this.type + '.confirm_delete_record.trash');
+		return Translations.get(this.getCurrentDatabase() == 'trash' ? this.type + '.confirm_delete_record.forever' : this.type + '.confirm_delete_record.trash');
 	},
 	getDeleteRecord: function(id) {
 		return {
@@ -1015,9 +1015,9 @@ var CatalogingInputClass = {
 
 		if (record.database != database) {
 			if (record.database == 'permanent_trash') {
-				return _('cataloging.database.record_deleted');
+				return Translations.get('cataloging.database.record_deleted');
 			} else {
-				return _('cataloging.database.record_moved', [_('cataloging.database.' + record.database + '_full')]);
+				return Translations.get('cataloging.database.record_moved', [Translations.get('cataloging.database.' + record.database + '_full')]);
 			}
 		}
 		
@@ -1025,9 +1025,9 @@ var CatalogingInputClass = {
 	},
 	confirmMoveSelectedRecords: function(database) {
 		Core.popup({
-			//title: _(this.type + '.confirm_move_record_title'),
+			//title:Translations.get(this.type + '.confirm_move_record_title'),
 			//description: _p(this.type + '.confirm_move_record_description', this.search.selectedList.length),
-			title: _('cataloging.bibliographic.confirm_move_record_title'),
+			title:Translations.get('cataloging.bibliographic.confirm_move_record_title'),
 			description: _p('cataloging.bibliographic.confirm_move_record_description', this.search.selectedList.length),
 			okHandler: $.proxy(function() {
 				this.moveSelectedRecords(database);
@@ -1102,8 +1102,8 @@ var CatalogingInputClass = {
 	},
 	removeAttachment: function(button, name, uri) {
 		Core.popup({
-			title: _(this.type + '.confirm_remove_attachment'),
-			description: _(this.type + '.confirm_remove_attachment_description'),
+			title:Translations.get(this.type + '.confirm_remove_attachment'),
+			description:Translations.get(this.type + '.confirm_remove_attachment_description'),
 			okHandler: $.proxy(function() {
 				$.ajax({
 					url: window.location.pathname,
@@ -1134,7 +1134,7 @@ var CatalogingInputClass = {
 	upload: function(button) {
 		Core.clearFormErrors();
 		
-		var description = prompt(_('cataloging.bibliographic.attachment.alias'));
+		var description = prompt(Translations.get('cataloging.bibliographic.attachment.alias'));
 		
 		if (!description) {
 			return;
@@ -1189,7 +1189,7 @@ var CatalogingInputClass = {
 			error: function() {
 				Core.msg({
 					message_level: 'warning',
-					message: _('cataloging.import.error.file_upload_error')
+					message:Translations.get('cataloging.import.error.file_upload_error')
 				});
 			},
 			uploadProgress: function(event, current, total, percentComplete) {

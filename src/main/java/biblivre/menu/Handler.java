@@ -315,10 +315,4 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/setup.jsp";
 		return;
 	}
-	
-	public void test(ExtendedRequest request, ExtendedResponse response) {
-//		this.jspURL = "/jsp/record_tab_config.jsp";
-		this.jspURL = "/jsp/upload.jsp";
-		return; 
-	}
 }

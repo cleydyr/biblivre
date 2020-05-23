@@ -156,13 +156,13 @@ var CirculationInput = new Input({
 		});
 	},	
 	deleteRecordTitle: function() {
-		return _(this.search.selectedRecord.status == 'inactive' ? this.type + '.confirm_delete_record_title.forever' : this.type + '.confirm_delete_record_title.inactive');
+		return Translations.get(this.search.selectedRecord.status == 'inactive' ? this.type + '.confirm_delete_record_title.forever' : this.type + '.confirm_delete_record_title.inactive');
 	},
 	deleteRecordQuestion: function() {
-		return _(this.search.selectedRecord.status == 'inactive' ? this.type + '.confirm_delete_record_question.forever' : this.type + '.confirm_delete_record_question.inactive');
+		return Translations.get(this.search.selectedRecord.status == 'inactive' ? this.type + '.confirm_delete_record_question.forever' : this.type + '.confirm_delete_record_question.inactive');
 	},
 	deleteRecordConfirm: function() {
-		return _(this.search.selectedRecord.status == 'inactive' ? this.type + '.confirm_delete_record.forever' : this.type + '.confirm_delete_record.inactive');
+		return Translations.get(this.search.selectedRecord.status == 'inactive' ? this.type + '.confirm_delete_record.forever' : this.type + '.confirm_delete_record.inactive');
 	},
 	getDeleteRecord: function(id) {
 		return {
@@ -178,7 +178,7 @@ var CirculationInput = new Input({
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
-			return _('circulation.user.user_deleted');
+			return Translations.get('circulation.user.user_deleted');
 		}
 		
 		return '';
@@ -337,7 +337,7 @@ var CirculationInput = new Input({
 			$input.on('change', function(e) {
 				if (e.target.files[0] !== null) {
 					if (!fileAllowed(e.target.files[0].name)) {
-						alert(_('circulation.user.error.invalid_photo_extension'));
+						alert(Translations.get('circulation.user.error.invalid_photo_extension'));
 						return;
 					}
 
@@ -356,8 +356,8 @@ var CirculationInput = new Input({
 			months: global.months.names,
 			months_abbr: global.months.namesAbbr,
 			format: Core.convertDateFormat(global.patterns.d),
-			show_select_today: _('common.today'),
-			lang_clear_date: _('common.clear'),
+			show_select_today:Translations.get('common.today'),
+			lang_clear_date:Translations.get('common.clear'),
 			direction: false,
 			offset: [-19, -7],
 			readonly_element: false

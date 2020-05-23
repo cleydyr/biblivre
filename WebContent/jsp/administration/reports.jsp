@@ -318,12 +318,12 @@
 							{#if $T.group_count.group_id == $T.group.id}
 								{#if $T.group.id == CatalogingSearch.lastPagingParameters.indexing_group}
 									<div class="group selected">
-										<span class="name">{_('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
+										<span class="name">{Translations.get('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#else}
 									<div class="group">
-										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{_('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
+										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{Translations.get('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
@@ -339,7 +339,7 @@
 					<select class="combo search_sort_combo combo_auto_size combo_align_right" onchange="CatalogingSearch.changeSort(this.value);">
 						{#foreach $T.indexing_groups as group}
 							{#if $T.group.sortable}
-								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{_('cataloging.bibliographic.indexing_groups.' + $T.group.translation_key)}</option>
+								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{Translations.get('cataloging.bibliographic.indexing_groups.' + $T.group.translation_key)}</option>
 							{#/if}
 						{#/for}
 					</select>
@@ -417,7 +417,7 @@
 								{#if $T.record.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.record.name}<br/>{#/if}
 								<label><i18n:text key="circulation.user_field.id" /></label>: {$T.record.enrollment}<br/>
 								<label><i18n:text key="circulation.user_field.type" /></label>: {$T.record.type_name}<br/>
-								<div class="user_status_{$T.record.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.record.status)}</div>
+								<div class="user_status_{$T.record.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.record.status)}</div>
 							</div>
 							<div class="clear"></div>
 						</div>

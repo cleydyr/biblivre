@@ -418,11 +418,11 @@ Customization.disableDatafield = function(fieldset) {
 	var tag = fieldset.attr('data-datafield');
 
 	Core.popup({
-		title: _('administration.brief_customization.confirm_disable_datafield_title'),
-		description: _('administration.brief_customization.confirm_disable_datafield_question', tag),
-		confirm: _('administration.brief_customization.confirm_disable_datafield_confirm'),
-		okText: _('common.yes'),
-		cancelText: _('common.no'),
+		title:Translations.get('administration.brief_customization.confirm_disable_datafield_title'),
+		description:Translations.get('administration.brief_customization.confirm_disable_datafield_question', tag),
+		confirm:Translations.get('administration.brief_customization.confirm_disable_datafield_confirm'),
+		okText:Translations.get('common.yes'),
+		cancelText:Translations.get('common.no'),
 		okHandler: $.proxy(function() {
 			var datafield = Customization.indexedDatafields[tag];
 			datafield.enabled = false;
@@ -481,12 +481,12 @@ Customization.loadFormats = function() {
 };
 
 Customization.computeDatafields = function() {
-	var enabledFields = ld.filter(Customization.datafieldsData, function(el) {
+	var enabledFields = _.filter(Customization.datafieldsData, function(el) {
 		return Customization.formFields[Customization.selectedRecordType][el.datafieldTag] && (el.enabled !== false);
 	});
 
-	Customization.datafields = ld.sortBy(enabledFields, 'sortOrder');
-	Customization.indexedDatafields = ld.keyBy(Customization.datafields, 'datafieldTag');
+	Customization.datafields = _.sortBy(enabledFields, 'sortOrder');
+	Customization.indexedDatafields = _.keyBy(Customization.datafields, 'datafieldTag');
 
 	$('#datafields').processTemplate({
 		datafields: Customization.datafields
@@ -494,13 +494,13 @@ Customization.computeDatafields = function() {
 };
 
 Customization.computeDisabledDatafields = function() {
-	var disabledFields = ld.filter(Customization.formFields[Customization.selectedRecordType], function(el) {
+	var disabledFields = _.filter(Customization.formFields[Customization.selectedRecordType], function(el) {
 		var df = Customization.indexedDatafields[el.datafield];
 		return !df || df.enabled === false;
 	});
 
-	Customization.disabledDatafields = ld.sortBy(disabledFields, 'sortOrder');
-	Customization.indexedDisabledDatafields = ld.keyBy(Customization.disabledDatafields, 'datafieldTag');
+	Customization.disabledDatafields = _.sortBy(disabledFields, 'sortOrder');
+	Customization.indexedDisabledDatafields = _.keyBy(Customization.disabledDatafields, 'datafieldTag');
 
 	$('#disabled_datafields').processTemplate({
 		disabled_datafields: Customization.disabledDatafields
@@ -510,7 +510,7 @@ Customization.computeDisabledDatafields = function() {
 Customization.datafieldsData = null;
 Customization.populateDatafields = function(datafields) {
 	Customization.datafieldsData = datafields.data;
-	Customization.indexedDatafieldsData = ld.keyBy(Customization.datafieldsData, 'datafieldTag');
+	Customization.indexedDatafieldsData = _.keyBy(Customization.datafieldsData, 'datafieldTag');
 	
 	Customization.computeDatafields();
 	Customization.computeDisabledDatafields();

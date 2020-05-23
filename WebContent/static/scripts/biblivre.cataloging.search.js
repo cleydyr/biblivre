@@ -82,7 +82,7 @@ var CatalogingSearchClass = {
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 				
-				simpleButton.text($.trim(val) == '' ? _('search.common.button.list_all') : _('search.common.button.search'));
+				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -106,7 +106,7 @@ var CatalogingSearchClass = {
 					}
 				});
 				
-				advancedButton.text(empty ? _('search.common.button.list_all') : _('search.common.button.search'));
+				advancedButton.text(empty ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -643,7 +643,7 @@ var CatalogingSearchClass = {
 		var _action = action || 'reserve';
 		if (!CirculationSearch.selectedRecord) {
 			Core.msg({
-				message: _('circulation.reservation.error.select_reader_first'),
+				message:Translations.get('circulation.reservation.error.select_reader_first'),
 				message_level: 'warning'
 			});
 			return;

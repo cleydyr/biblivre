@@ -63,8 +63,8 @@
 				months: global.months.names,
 				months_abbr: global.months.namesAbbr,
 				format: Core.convertDateFormat(global.patterns.d),
-				show_select_today: _('common.today'),
-				lang_clear_date: _('common.clear'),
+				show_select_today:Translations.get('common.today'),
+				lang_clear_date:Translations.get('common.clear'),
 				direction: false,
 				offset: [-19, -7]
 			});
@@ -134,8 +134,8 @@
 						<input type="hidden" name="material_type" value="{$T.material_type}"/>
 						<table class="record_fields">	
 							<tr>
-								<td class="label">{_('cataloging.bibliographic.material_type')}:</td>
-								<td class="value">{_('marc.material_type.' + $T.material_type)}</td>
+								<td class="label">{Translations.get('cataloging.bibliographic.material_type')}:</td>
+								<td class="value">{Translations.get('marc.material_type.' + $T.material_type)}</td>
 							</tr>
 							{#foreach $T.fields as field}
 								<tr>
@@ -339,12 +339,12 @@
 							{#if $T.group_count.group_id == $T.group.id}
 								{#if $T.group.id == CatalogingSearch.lastPagingParameters.indexing_group}
 									<div class="group selected">
-										<span class="name">{_('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
+										<span class="name">{Translations.get('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#else}
 									<div class="group">
-										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{_('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
+										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{Translations.get('cataloging.bibliographic.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
@@ -360,7 +360,7 @@
 					<select class="combo search_sort_combo combo_auto_size combo_align_right" onchange="CatalogingSearch.changeSort(this.value);">
 						{#foreach $T.indexing_groups as group}
 							{#if $T.group.sortable}
-								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{_('cataloging.bibliographic.indexing_groups.' + $T.group.translation_key)}</option>
+								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{Translations.get('cataloging.bibliographic.indexing_groups.' + $T.group.translation_key)}</option>
 							{#/if}
 						{#/for}
 					</select>
@@ -439,7 +439,7 @@
 			<div class="record">
 				{#if $T.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.accession_number}<br/>{#/if}
 				{#if $T.lent}<label><i18n:text key="search.holding.lending_state" /></label>: {$T.lent}<br/>{#/if}
-				{#if $T.availability}<label><i18n:text key="search.holding.availability" /></label>: {_('cataloging.holding.availability.' + $T.availability)}<br/>{#/if}
+				{#if $T.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.availability)}<br/>{#/if}
 				{#if $T.shelf_location}<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.shelf_location}<br/>{#/if}
 				<label><i18n:text key="search.bibliographic.id" /></label>: {$T.id}<br/>
 			</div>
@@ -521,7 +521,7 @@
 							<div class="record">
 								{#if $T.record.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.record.accession_number}<br/>{#/if}
 								{#if $T.record.lent}<label><i18n:text key="search.holding.lending_state" /></label>: {$T.record.lent}<br/>{#/if}
-								{#if $T.record.availability}<label><i18n:text key="search.holding.availability" /></label>: {_('cataloging.holding.availability.' + $T.record.availability)}<br/>{#/if}
+								{#if $T.record.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.record.availability)}<br/>{#/if}
 								{#if $T.record.shelf_location}<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.record.shelf_location}<br/>{#/if}
 								<label><i18n:text key="search.bibliographic.id" /></label>: {$T.record.id}<br/>
 							</div>

@@ -137,57 +137,57 @@ var AccessCardsInput = new Input({
 		});
 	},
 	deleteRecordTitle: function() {
-		return _(this.type + '.confirm_delete_record_title.forever');
+		return Translations.get(this.type + '.confirm_delete_record_title.forever');
 	},
 	deleteRecordQuestion: function() {
-		return _(this.type + '.confirm_delete_record_question.forever');
+		return Translations.get(this.type + '.confirm_delete_record_question.forever');
 	},
 	deleteRecordConfirm: function() {
-		return _(this.type + '.confirm_delete_record.forever');
+		return Translations.get(this.type + '.confirm_delete_record.forever');
 	},
 	changeStatusTitle: function(status, old_status) {
 		if (status == 'blocked' || status == 'in_use_and_blocked') {
-			return _(this.type + '.change_status.title.block');
+			return Translations.get(this.type + '.change_status.title.block');
 		} else if (status == 'in_use') {
-			return _(this.type + '.change_status.title.unblock');
+			return Translations.get(this.type + '.change_status.title.unblock');
 		} else if (status == 'available') {
 			if (old_status && old_status == 'cancelled') {
-				return _(this.type + '.change_status.title.uncancel');
+				return Translations.get(this.type + '.change_status.title.uncancel');
 			} else {
-				return _(this.type + '.change_status.title.unblock');
+				return Translations.get(this.type + '.change_status.title.unblock');
 			}
 		} else if (status == 'cancelled') {
-			return _(this.type + '.change_status.title.cancel');
+			return Translations.get(this.type + '.change_status.title.cancel');
 		}
 	},
 	changeStatusQuestion: function(status, old_status) {
 		if (status == 'blocked' || status == 'in_use_and_blocked') {
-			return _(this.type + '.change_status.question.block');
+			return Translations.get(this.type + '.change_status.question.block');
 		} else if (status == 'in_use') {
-			return _(this.type + '.change_status.question.unblock');
+			return Translations.get(this.type + '.change_status.question.unblock');
 		} else if (status == 'available') {
 			if (old_status && old_status == 'cancelled') {
-				return _(this.type + '.change_status.question.uncancel');
+				return Translations.get(this.type + '.change_status.question.uncancel');
 			} else {
-				return _(this.type + '.change_status.question.unblock');
+				return Translations.get(this.type + '.change_status.question.unblock');
 			}
 		} else if (status == 'cancelled') {
-			return _(this.type + '.change_status.question.cancel');
+			return Translations.get(this.type + '.change_status.question.cancel');
 		}
 	},
 	changeStatusConfirm: function(status, old_status) {
 		if (status == 'blocked' || status == 'in_use_and_blocked') {
-			return _(this.type + '.change_status.block');
+			return Translations.get(this.type + '.change_status.block');
 		} else if (status == 'in_use') {
-			return _(this.type + '.change_status.unblock');
+			return Translations.get(this.type + '.change_status.unblock');
 		} else if (status == 'available') {
 			if (old_status && old_status == 'cancelled') {
-				return _(this.type + '.change_status.uncancel');
+				return Translations.get(this.type + '.change_status.uncancel');
 			} else {
-				return _(this.type + '.change_status.unblock');
+				return Translations.get(this.type + '.change_status.unblock');
 			}
 		} else if (status == 'cancelled') {
-			return _(this.type + '.change_status.cancel');
+			return Translations.get(this.type + '.change_status.cancel');
 		}
 	},	
 	getDeleteRecord: function(id) {
@@ -204,7 +204,7 @@ var AccessCardsInput = new Input({
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
-			return _('common.deleted');
+			return Translations.get('common.deleted');
 		}
 		
 		return '';
@@ -222,8 +222,8 @@ var AccessCardsInput = new Input({
 			title: this.changeStatusTitle(status, old_status),
 			description: this.changeStatusQuestion(status, old_status),
 			confirm: this.changeStatusConfirm(status, old_status),
-			okText: _('common.yes'),
-			cancelText: _('common.no'),
+			okText:Translations.get('common.yes'),
+			cancelText:Translations.get('common.no'),
 			okHandler: $.proxy(function() {
 				$.ajax({
 					url: window.location.pathname,

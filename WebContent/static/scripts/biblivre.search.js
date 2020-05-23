@@ -365,7 +365,7 @@ Search.prototype.displayResults = function(o) {
 			animate: false,
 			sticky: false,
 			translate: false,
-			message: _('search.common.search_limit', [_f(recordCount), _f(recordLimit)])
+			message:Translations.get('search.common.search_limit', [_f(recordCount), _f(recordLimit)])
 		});
 	}
 	
@@ -506,7 +506,7 @@ Search.prototype.openResult = function(record_id, instant) {
 			totalCount = limitCount;
 		}
 
-		this.root.find('.search_count').text(_('search.common.search_count', { current: _f(currentCount), total: _f(totalCount) }));
+		this.root.find('.search_count').text(Translations.get('search.common.search_count', { current: _f(currentCount), total: _f(totalCount) }));
 	}
 		
 	var highlight = this.createRecordHighlight(node, record);
@@ -771,7 +771,7 @@ Search.prototype.selectRecord = function(id, dontUpdate) {
 		buttons.width(width);
 		
 		var oldText = button.html();
-		button.addClass('disabled').html(_('common.added_to_list'));
+		button.addClass('disabled').html(Translations.get('common.added_to_list'));
 		
 		setTimeout(function() {
 			button.removeClass('disabled').html(oldText);

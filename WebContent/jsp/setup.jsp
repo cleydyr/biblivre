@@ -82,7 +82,7 @@
 						{#foreach $T.restores as backup}
 							<a class="backup {#if $T.backup$first}last_backup{#/if}" rel="{$T.backup.id}" onclick="Administration.setup.biblivre4Restore('{$T.backup.file}');">
 		
-								{_d($T.backup.created, 'd t')} - {_('administration.maintenance.backup.label_' + $T.backup.type)}
+								{_d($T.backup.created, 'd t')} - {Translations.get('administration.maintenance.backup.label_' + $T.backup.type)}
 		
 								{#if $T.backup$first}
 									<div class="last_backup_description"><i18n:text key="administration.setup.biblivre4restore.newest_backup" /></div>
@@ -123,7 +123,7 @@
 					{#foreach $T.restores as backup}
 						<a class="backup {#if $T.backup$first}last_backup{#/if}" rel="{$T.backup.id}" onclick="Administration.setup.biblivre4RestoreMedia('{$T.backup.file}');">
 	
-							{_d($T.backup.created, 'd t')} - {_('administration.maintenance.backup.label_' + $T.backup.type)}
+							{_d($T.backup.created, 'd t')} - {Translations.get('administration.maintenance.backup.label_' + $T.backup.type)}
 	
 							{#if $T.backup$first}
 								<div class="last_backup_description"><i18n:text key="administration.setup.biblivre4restore.newest_backup" /></div>

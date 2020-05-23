@@ -30,9 +30,9 @@ Schemas.url = [window.location.protocol, '//', window.location.host, window.loca
 Schemas.showError = function() {
 	Core.popup({
 		closeable: false,
-		title: _('multi_schema.manage.error'),
-		description: _('multi_schema.manage.error.description'),
-		okText: _('multi_schema.manage.button.show_log'),
+		title:Translations.get('multi_schema.manage.error'),
+		description:Translations.get('multi_schema.manage.error.description'),
+		okText:Translations.get('multi_schema.manage.button.show_log'),
 		okHandler: function() {
 			window.location.href = window.location.pathname + '?controller=log';
 		}
@@ -74,9 +74,9 @@ Schemas.create = function(button) {
 					'<div class="library">', '<a href="', schema, '/" target="_blank">', title, '</a>',
 					'<div class="subtitle">', subtitle, '</div>',
 					'<div><span class="address">', Schemas.url, '</span><strong>', schema, '</strong>/</div>',
-					'<a href="javascript:void(0);" onclick="Schemas.toggle(\'', schema, '\', false, this);" class="enable">[', _('multi_schema.manage.enable'), ']</a> ',
-					'<a href="javascript:void(0);" onclick="Schemas.deleteSchema(\'', schema, '\', this);" class="enable">[', _('common.delete'), ']</a> ',
-					'<a href="javascript:void(0);" onclick="Schemas.toggle(\'', schema, '\', true, this);" class="disable">[', _('multi_schema.manage.disable'), ']</a> ',
+					'<a href="javascript:void(0);" onclick="Schemas.toggle(\'', schema, '\', false, this);" class="enable">[',Translations.get('multi_schema.manage.enable'), ']</a> ',
+					'<a href="javascript:void(0);" onclick="Schemas.deleteSchema(\'', schema, '\', this);" class="enable">[',Translations.get('common.delete'), ']</a> ',
+					'<a href="javascript:void(0);" onclick="Schemas.toggle(\'', schema, '\', true, this);" class="disable">[',Translations.get('multi_schema.manage.disable'), ']</a> ',
 					'</div>'
 				].join('');
 				
@@ -131,7 +131,7 @@ Schemas.restore = function(metadata) {
 				
 				var li = $('<li></li>').appendTo(restoreLimit);
 				
-				$('<a href="#"></a>').text(_('multi_schema.backup.display_and_select_libraries', { min: (min + 1), max: (max + 1) })).click(function(e) {
+				$('<a href="#"></a>').text(Translations.get('multi_schema.backup.display_and_select_libraries', { min: (min + 1), max: (max + 1) })).click(function(e) {
 					select(min, max);
 					
 					e.stopPropagation();
@@ -295,11 +295,11 @@ $(document).ready(function() {
 
 Schemas.showConfirm = function(action, callback) {
 	Core.popup({
-		title: _('multi_schema.' + action + '.confirm_title'),
-		description: _('multi_schema.' + action + '.confirm_description'),
-		confirm: _('multi_schema.' + action + '.confirm'),
-		okText: _('common.yes'),
-		cancelText: _('common.no'),
+		title:Translations.get('multi_schema.' + action + '.confirm_title'),
+		description:Translations.get('multi_schema.' + action + '.confirm_description'),
+		confirm:Translations.get('multi_schema.' + action + '.confirm'),
+		okText:Translations.get('common.yes'),
+		cancelText:Translations.get('common.no'),
 		okHandler: $.proxy(callback, this),
 		cancelHandler: $.proxy($.noop, this)
 	});

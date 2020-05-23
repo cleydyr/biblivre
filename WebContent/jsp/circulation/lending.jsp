@@ -93,7 +93,7 @@
 				{#if $T.user.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.user.name}<br/>{#/if}
 				<label><i18n:text key="circulation.user_field.id" /></label>: {$T.user.enrollment}<br/>
 				<label><i18n:text key="circulation.user_field.type" /></label>: {$T.user.type_name}<br/>
-				<div class="user_status_{$T.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.user.status)}</div>
+				<div class="user_status_{$T.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.user.status)}</div>
 				{#if $T.user.fines}<label><i18n:text key="circulation.user_field.fines" /></label>: {$T.user.fines}<br/>{#/if}
 
 				<div class="ncspacer"></div>
@@ -191,7 +191,7 @@
 								{#if $T.record.user.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.record.user.name}<br/>{#/if}
 								<label><i18n:text key="circulation.user_field.id" /></label>: {$T.record.user.enrollment}<br/>
 								<label><i18n:text key="circulation.user_field.type" /></label>: {$T.record.user.type_name}<br/>
-								<div class="user_status_{$T.record.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.record.user.status)}</div>
+								<div class="user_status_{$T.record.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.record.user.status)}</div>
 
 								<div class="ncspacer"></div>
 								<div class="ncspacer"></div>
@@ -307,7 +307,7 @@
 								<div class="ncspacer"></div>						
 							
 								{#if $T.record.holding.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.record.holding.accession_number}<br/>{#/if}
-								{#if $T.record.holding.availability}<label><i18n:text key="search.holding.availability" /></label>: {_('cataloging.holding.availability.' + $T.record.holding.availability)}<br/>{#/if}
+								{#if $T.record.holding.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.record.holding.availability)}<br/>{#/if}
 
 
 								{#if ($T.record.lending == undefined) && ($T.record.biblio.holdings_reserved > 0) && ($T.record.biblio.holdings_reserved >= $T.record.biblio.holdings_available) && CirculationSearch.selectedRecord && ($.inArray($T.record.biblio.id, CirculationSearch.selectedRecord.reservedRecords) == -1)}

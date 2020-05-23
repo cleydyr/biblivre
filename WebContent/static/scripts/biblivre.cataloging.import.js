@@ -138,7 +138,7 @@ Import.upload = function(button) {
 		error: function() {
 			Core.msg({
 				message_level: 'warning',
-				message: _('cataloging.import.error.file_upload_error')
+				message:Translations.get('cataloging.import.error.file_upload_error')
 			});
 		},
 		uploadProgress: function(event, current, total, percentComplete) {
@@ -182,7 +182,7 @@ Import.processUploadData = function(data) {
 	if (!data || !data.record_list || data.record_list.length === 0) {
 		Core.msg({
 			message_level: 'warning',
-			message: _('cataloging.import.error.no_records_found')
+			message:Translations.get('cataloging.import.error.no_records_found')
 		});
 		
 		return;
@@ -206,8 +206,8 @@ Import.processUploadData = function(data) {
 
 	$('#step_1').hide();
 
-	$('.page_title .step').text(_('common.step') + ' 2');
-	$('.page_title .subtext').text(_('cataloging.import.step_2_title'));
+	$('.page_title .step').text(Translations.get('common.step') + ' 2');
+	$('.page_title .subtext').text(Translations.get('cataloging.import.step_2_title'));
 
 	$('#step_2').fadeIn();
 	Import.paginate(1);
@@ -241,22 +241,22 @@ Import.updateRecordData = function(i, record, lists) {
 	
 	if (data.material == 'ignore') {
 		data.overlay = 'overlay_normal';
-		data.overlay_text = _('cataloging.import.record_will_be_ignored');
+		data.overlay_text = Translations.get('cataloging.import.record_will_be_ignored');
 	}
 	
 	if (data.imported) {
 		data.overlay = 'overlay_success';
-		data.overlay_text = _('cataloging.import.record_imported_successfully');
+		data.overlay_text = Translations.get('cataloging.import.record_imported_successfully');
 	} else if (data.isbn || data.issn || data.isrc) {
 		data.material = 'ignore';
 		data.overlay = 'overlay_warning';
 
 		if (data.isbn) {
-			data.overlay_text = _('cataloging.import.isbn_already_in_database');
+			data.overlay_text = Translations.get('cataloging.import.isbn_already_in_database');
 		} else if (data.issn) {
-			data.overlay_text = _('cataloging.import.issn_already_in_database');			
+			data.overlay_text = Translations.get('cataloging.import.issn_already_in_database');			
 		} else if (data.isrc) {
-			data.overlay_text = _('cataloging.import.isrc_already_in_database');
+			data.overlay_text = Translations.get('cataloging.import.isrc_already_in_database');
 		}
 	}
 	
@@ -278,7 +278,7 @@ Import.createResult = function(data) {
 		
 		if (data.material == 'ignore') {
 			result.addClass('overlay_normal');
-			result.find('.result_overlay .text').text(_('cataloging.import.record_will_be_ignored'));
+			result.find('.result_overlay .text').text(Translations.get('cataloging.import.record_will_be_ignored'));
 		}
 	}).filter('[value="' + material + '"]').prop('checked', true);
 	
@@ -409,7 +409,7 @@ Import.import = function(start, end, page) {
 
 					var result = Import.searchResults.find('.result[data-index="' + index + '"]');
 					result.addClass('overlay_success');
-					result.find('.result_overlay .text').text(_('cataloging.import.record_imported_successfully'));
+					result.find('.result_overlay .text').text(Translations.get('cataloging.import.record_imported_successfully'));
 
 					Import.successImports++;
 				}
