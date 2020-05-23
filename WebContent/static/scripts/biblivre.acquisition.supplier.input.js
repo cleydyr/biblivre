@@ -109,13 +109,13 @@ var SupplierInput = new Input({
 		});
 	},
 	deleteRecordTitle: function() {
-		return _(this.type + '.confirm_delete_record_title.forever');
+		return Translations.get(this.type + '.confirm_delete_record_title.forever');
 	},
 	deleteRecordQuestion: function() {
-		return _(this.type + '.confirm_delete_record_question.forever');
+		return Translations.get(this.type + '.confirm_delete_record_question.forever');
 	},
 	deleteRecordConfirm: function() {
-		return _(this.type + '.confirm_delete_record.forever');
+		return Translations.get(this.type + '.confirm_delete_record.forever');
 	},
 	getDeleteRecord: function(id) {
 		return {
@@ -131,7 +131,7 @@ var SupplierInput = new Input({
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
-			return _('common.deleted');
+			return Translations.get('common.deleted');
 		}
 		
 		return '';

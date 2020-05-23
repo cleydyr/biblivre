@@ -70,7 +70,7 @@
 			<div class="record">
 				{#if $T.name}<label><i18n:text key="search.bibliographic.author" /></label>: {$T.name}<br/>{#/if}
 				{#if $T.other_name}<label><i18n:text key="cataloging.authorities.other_name" /></label>: {$T.other_name}<br/>{#/if}
-				{#if $T.author_type}<label><i18n:text key="cataloging.authorities.author_type" /></label>: {_('cataloging.authorities.author_type.' + $T.author_type)}<br/>{#/if}
+				{#if $T.author_type}<label><i18n:text key="cataloging.authorities.author_type" /></label>: {Translations.get('cataloging.authorities.author_type.' + $T.author_type)}<br/>{#/if}
 				<label><i18n:text key="search.bibliographic.id" /></label>: {$T.id}<br/>
 			</div>
 		--></textarea>		
@@ -89,12 +89,12 @@
 						<input type="hidden" name="author_type" value="{$T.author_type}"/>
 						<table class="record_fields">	
 							<tr>
-								<td class="label">{_('cataloging.authorities.author_type')}:</td>
-								<td class="value">{_('cataloging.authorities.author_type.' + $T.author_type)}</td>
+								<td class="label">{Translations.get('cataloging.authorities.author_type')}:</td>
+								<td class="value">{Translations.get('cataloging.authorities.author_type.' + $T.author_type)}</td>
 							</tr>
 							{#foreach $T.fields as field}
 								<tr>
-									<td class="label">{_('cataloging.tab.record.custom.field_label.authorities_' + $T.field.datafield)}:</td>
+									<td class="label">{Translations.get('cataloging.tab.record.custom.field_label.authorities_' + $T.field.datafield)}:</td>
 									<td class="value">{$T.field.value}</td>
 								</tr>
 							{#/for}
@@ -201,12 +201,12 @@
 							{#if $T.group_count.group_id == $T.group.id}
 								{#if $T.group.id == CatalogingSearch.lastPagingParameters.indexing_group}
 									<div class="group selected">
-										<span class="name">{_('cataloging.authorities.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
+										<span class="name">{Translations.get('cataloging.authorities.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</span>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#else}
 									<div class="group">
-										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{_('cataloging.authorities.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
+										<a href="javascript:void(0);" onclick="CatalogingSearch.changeIndexingGroup('{$T.group.id}');">{Translations.get('cataloging.authorities.indexing_groups.' + ($T.group.id ? $T.group.translation_key : 'total'))}</a>
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
@@ -222,7 +222,7 @@
 					<select class="combo search_sort_combo combo_auto_size combo_align_right" onchange="CatalogingSearch.changeSort(this.value);">
 						{#foreach $T.indexing_groups as group}
 							{#if $T.group.sortable}
-								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{_('cataloging.authorities.indexing_groups.' + $T.group.translation_key)}</option>
+								<option value="{$T.group.id}"{#if ((CatalogingSearch.lastPagingParameters.sort == $T.group.id) || (!CatalogingSearch.lastPagingParameters.sort && $T.group.default_sort))} selected="selected" {#/if}>{Translations.get('cataloging.authorities.indexing_groups.' + $T.group.translation_key)}</option>
 							{#/if}
 						{#/for}
 					</select>
@@ -253,7 +253,7 @@
 							<div class="record">
 								{#if $T.record.name}<label><i18n:text key="search.bibliographic.author" /></label>: {$T.record.name}<br/>{#/if}
 								{#if $T.record.other_name}<label><i18n:text key="cataloging.authorities.other_name" /></label>: {$T.record.other_name}<br/>{#/if}
-								{#if $T.record.author_type}<label><i18n:text key="cataloging.authorities.author_type" /></label>: {_('cataloging.authorities.author_type.' + $T.record.author_type)}<br/>{#/if}
+								{#if $T.record.author_type}<label><i18n:text key="cataloging.authorities.author_type" /></label>: {Translations.get('cataloging.authorities.author_type.' + $T.record.author_type)}<br/>{#/if}
 								<label><i18n:text key="search.bibliographic.id" /></label>: {$T.record.id}<br/>
 							</div>
 							<div class="clear"></div>

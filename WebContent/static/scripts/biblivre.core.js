@@ -24,9 +24,9 @@
  * Translations will work with strings loaded from the i18n javascript file.
  * 
  * Available functions:
- *  Translations.get(key, params)
+ * Translations.get(key, params)
  *  Translations.date(key, date)
- *  _(key, params) => Global helper for Translations.get()
+ * Translations.get(key, params) => Global helper forTranslations.get()
  */
 var Translations = {
 	translations: {},
@@ -45,10 +45,6 @@ var _field = function(field) {
 	var otherKey = 'marc.bibliographic.datafield.' + field;
 	return Translations.translations[key] || Translations.translations[otherKey];
 }
-
-var _ = function(key, params) {
-	return Translations.get(key, params);
-};
 
 var _f = function(elem, param) {
 	return Globalize.format(elem, param || 'n0');
@@ -386,7 +382,7 @@ Core.msg = function(o, level) {
 	}
 
 	if (config.translate) {
-		config.message = _(config.message);
+		config.message = Translations.get(config.message);
 	}
 
 	$('#messages .message:not(.sticky)').remove(); 
@@ -479,9 +475,9 @@ Core.popup = function(settings) {
 	var defaults = {
 		closeable: true,
 		title: '',
-		closeText: _('common.close'),
-		cancelText: _('common.cancel'),
-		okText: _('common.ok')
+		closeText:Translations.get('common.close'),
+		cancelText:Translations.get('common.cancel'),
+		okText:Translations.get('common.ok')
 	};
 	
 	var options = $.extend({}, defaults, settings);
@@ -1287,7 +1283,7 @@ Header.setTime = function() {
 	
 	$.fn.progressbar = function(o) {
 		if (!o) {
-			this.find('.progress_text').text(_('common.wait'));
+			this.find('.progress_text').text(Translations.get('common.wait'));
 			this.find('.progress_bar_inner').width('0%');
 			return this;
 		}
@@ -1299,7 +1295,7 @@ Header.setTime = function() {
 		var secondary = parseInt(o.secondary_current, 10) || 0;
 
 		if (total == 0) {
-			this.find('.progress_text').text(_('common.calculating'));
+			this.find('.progress_text').text(Translations.get('common.calculating'));
 			this.find('.progress_bar_inner').stop().width(0);
 			return this;
 		}
@@ -1317,7 +1313,7 @@ Header.setTime = function() {
 	};
 	
 	$.fn.continuousProgress = function() {
-		this.find('.progress_text').text(_('common.wait'));
+		this.find('.progress_text').text(Translations.get('common.wait'));
 		this.find('.progress_bar_inner').width(0).animate({ width: '100%' }, 2000, 'linear', $.proxy($.fn.continuousProgress, this));
 
 		return this;
@@ -1339,7 +1335,7 @@ Header.setTime = function() {
 		});
 
 		var div = $('<div class="loading_indicator"></div>');
-		var text = config.loadingText || _('common.loading');
+		var text = config.loadingText ||Translations.get('common.loading');
 
 		if (config.showImage) {
 			div.append('<img src="static/images/ajax-loader.gif" width="16" height="16" alt="' + text + '"/> ');

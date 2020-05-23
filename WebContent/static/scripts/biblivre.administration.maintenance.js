@@ -1,12 +1,12 @@
 /**
  *  Este arquivo é parte do Biblivre5.
  *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ * 
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
@@ -128,7 +128,7 @@ Administration.backup.showPopupProgress = function() {
 		.show()
 		.center();
 	
-	$('#backup_popup .progress').progressbar(); 
+	$('#backup_popup .progress').progressbar();
 };
 
 Administration.backup.progressTimeout = null;
@@ -136,7 +136,7 @@ Administration.backup.progressXHR = null;
 Administration.backup.progress = function(delay) {
 	if (Administration.backup.selectedId == null) {
 		return;
-	} 
+	}
 	
 	if (delay) {
 		Administration.backup.progressTimeout = setTimeout(Administration.backup.progress, delay);
@@ -168,7 +168,7 @@ Administration.backup.progress = function(delay) {
 				Administration.backup.cancel();
 				Administration.backup.list(id);
 
-				Core.msg(_('administration.maintenance.backup.auto_download'), 'success');								
+				Core.msg(Translations.get('administration.maintenance.backup.auto_download'), 'success');
 			}
 		},
 		complete: function() {
@@ -179,10 +179,10 @@ Administration.backup.progress = function(delay) {
 
 Administration.backup.download = function(id, delay) {
 	if (delay) {
-		$('#last_backups_list a[rel=' + id + '] .backup_never_downloaded').text(_('administration.maintenance.backup.auto_download'));
+		$('#last_backups_list a[rel=' + id + '] .backup_never_downloaded').text(Translations.get('administration.maintenance.backup.auto_download'));
 
 		setTimeout(function() {
-			Administration.backup.download(id);	
+			Administration.backup.download(id);
 		}, delay);
 
 		return;
@@ -232,7 +232,7 @@ Administration.reindex.showPopupButtons = function() {
 
 Administration.reindex.showPopupProgress = function() {
 	var confirm = $('#reindex_popup .confirm, #reindex_popup .buttons');
-	var progress = $('#reindex_popup .progress'); 
+	var progress = $('#reindex_popup .progress');
 	var close = $('#reindex_popup .close');
 
 	progress
@@ -303,7 +303,7 @@ Administration.reindex.progress = function(delay) {
 
 			if (response.complete) {
 				Administration.reindex.cancel();
-				Core.msg(_('administration.maintenance.reindex.success'), 'success');
+				Core.msg(Translations.get('administration.maintenance.reindex.success'), 'success');
 			}
 		},
 		complete: function() {
@@ -328,11 +328,11 @@ Administration.reindex.cancel = function(base) {
 
 Administration.reinstall.confirm = function() {
 	Core.popup({
-		title: _('administration.maintenance.reinstall.confirm.title'),
-		description: _('administration.maintenance.reinstall.confirm.description'),
-		confirm: _('administration.maintenance.reinstall.confirm.question'),
-		okText: _('common.yes'),
-		cancelText: _('common.no'),
+		title:Translations.get('administration.maintenance.reinstall.confirm.title'),
+		description:Translations.get('administration.maintenance.reinstall.confirm.description'),
+		confirm:Translations.get('administration.maintenance.reinstall.confirm.question'),
+		okText:Translations.get('common.yes'),
+		cancelText:Translations.get('common.no'),
 		okHandler: function() {
 			window.location.href = window.location.pathname + '?force_setup=true';
 		},

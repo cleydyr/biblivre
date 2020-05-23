@@ -86,7 +86,7 @@
 				{#if $T.user.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.user.name}<br/>{#/if}
 				<label><i18n:text key="circulation.user_field.id" /></label>: {$T.user.enrollment}<br/>
 				<label><i18n:text key="circulation.user_field.type" /></label>: {$T.user.type_name}<br/>
-				<div class="user_status_{$T.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.user.status)}</div>
+				<div class="user_status_{$T.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.user.status)}</div>
 				{#if $T.accessCard}<label><i18n:text key="administration.accesscards.field.code" /></label>: {$T.accessCard.code}<br/>{#/if}
 			</div>
 		--></textarea>
@@ -130,7 +130,7 @@
 								{#if $T.record.user.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.record.user.name}<br/>{#/if}
 								<label><i18n:text key="circulation.user_field.id" /></label>: {$T.record.user.enrollment}<br/>
 								<label><i18n:text key="circulation.user_field.type" /></label>: {$T.record.user.type_name}<br/>
-								<div class="user_status_{$T.record.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.record.user.status)}</div>
+								<div class="user_status_{$T.record.user.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.record.user.status)}</div>
 								{#if $T.record.accessCard}<label><i18n:text key="administration.accesscards.field.code" /></label>: {$T.record.accessCard.code}<br/>{#/if}				
 							</div>
 							<div class="clear"></div>
@@ -201,7 +201,7 @@
 
 							<div class="record">
 								{#if $T.record.accessCard.code}<label><i18n:text key="administration.accesscards.field.code" /></label>: {$T.record.accessCard.code}<br/>{#/if}
-								{#if $T.record.accessCard.status}<label><i18n:text key="administration.accesscards.field.status" /></label>: {_('administration.accesscards.status.' + $T.record.accessCard.status)}<br/>{#/if}
+								{#if $T.record.accessCard.status}<label><i18n:text key="administration.accesscards.field.status" /></label>: {Translations.get('administration.accesscards.status.' + $T.record.accessCard.status)}<br/>{#/if}
 								{#if $T.record.user}
 									<div class="ncspacer"></div>
 									<div class="ncspacer"></div>

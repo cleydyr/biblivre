@@ -41,8 +41,8 @@
 				months: global.months.names,
 				months_abbr: global.months.namesAbbr,
 				format: Core.convertDateFormat(global.patterns.d),
-				show_select_today: _('common.today'),
-				lang_clear_date: _('common.clear'),
+				show_select_today:Translations.get('common.today'),
+				lang_clear_date:Translations.get('common.clear'),
 				direction: false,
 				offset: [-19, -7],
 				readonly_element: false
@@ -179,7 +179,7 @@
 								{#if $T.record.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.record.name}<br/>{#/if}
 								<label><i18n:text key="circulation.user_field.id" /></label>: {$T.record.enrollment}<br/>
 								<label><i18n:text key="circulation.user_field.type" /></label>: {$T.record.type_name}<br/>
-								<div class="user_status_{$T.record.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {_('circulation.user_status.' + $T.record.status)}</div>
+								<div class="user_status_{$T.record.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.record.status)}</div>
 	
 								<div class="ncspacer"></div>
 								<div class="ncspacer"></div>						

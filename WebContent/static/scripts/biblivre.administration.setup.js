@@ -110,7 +110,7 @@ Administration.setup.biblivre3Import = function() {
 
 Administration.setup.biblivre3ImportFromFile = function() {
 	if ($('input[name="biblivre3backup"]').val() == '') {
-		alert(_('administration.setup.biblivre3restore.select_file'));
+		alert(Translations.get('administration.setup.biblivre3restore.select_file'));
 		return;
 	}
 
@@ -127,7 +127,7 @@ Administration.setup.biblivre4Restore = function(file, params) {
 
 Administration.setup.biblivre4RestoreFromFile = function(file) {
 	if ($('input[name="biblivre4backup"]').val() == '') {
-		alert(_('administration.setup.biblivre4restore.select_file'));
+		alert(Translations.get('administration.setup.biblivre4restore.select_file'));
 		return;
 	}	
 	
@@ -140,7 +140,7 @@ Administration.setup.biblivre4RestoreFromFileMedia = function(file) {
 	$('input[name="biblivre4backup"]').val('');
 
 	if ($('input[name="biblivre4backupmedia"]').val() == '') {
-		alert(_('administration.setup.biblivre4restore.select_file'));
+		alert(Translations.get('administration.setup.biblivre4restore.select_file'));
 		return;
 	}	
 	
@@ -323,9 +323,9 @@ Administration.setup.confirmBiblivre4Restore = function(file, params) {
 Administration.setup.showError = function(action) {
 	Core.popup({
 		closeable: false,
-		title: _('administration.setup.' + action + '.error'),
-		description: _('administration.setup.' + action + '.error.description'),
-		okText: _('administration.setup.button.show_log'),
+		title:Translations.get('administration.setup.' + action + '.error'),
+		description:Translations.get('administration.setup.' + action + '.error.description'),
+		okText:Translations.get('administration.setup.button.show_log'),
 		okHandler: function() {
 			window.location.href = window.location.pathname + '?controller=log';
 		}
@@ -342,9 +342,9 @@ Administration.setup.cancelRestore = function() {
 Administration.setup.showSuccess = function(action) {
 	Core.popup({
 		closeable: false,
-		title: _('administration.setup.' + action + '.success'),
-		description: _('administration.setup.' + action + '.success.description'),
-		okText: _('administration.setup.button.continue_to_biblivre'),
+		title:Translations.get('administration.setup.' + action + '.success'),
+		description:Translations.get('administration.setup.' + action + '.success.description'),
+		okText:Translations.get('administration.setup.button.continue_to_biblivre'),
 		okHandler: function() {
 			window.location.href = window.location.pathname;
 		}
@@ -353,10 +353,10 @@ Administration.setup.showSuccess = function(action) {
 
 Administration.setup.showConfirm = function(action, callback) {
 	Core.popup({
-		title: _('administration.setup.' + action + '.confirm_title'),
-		description: _('administration.setup.' + action + '.confirm_description'),
-		okText: _('common.yes'),
-		cancelText: _('common.no'),
+		title:Translations.get('administration.setup.' + action + '.confirm_title'),
+		description:Translations.get('administration.setup.' + action + '.confirm_description'),
+		okText:Translations.get('common.yes'),
+		cancelText:Translations.get('common.no'),
 		okHandler: $.proxy(callback, this),
 		cancelHandler: $.proxy($.noop, this)
 	});

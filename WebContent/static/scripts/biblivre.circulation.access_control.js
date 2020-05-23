@@ -36,7 +36,7 @@ var AccessControl = {
 			case 'blocked':
 			case 'in_use_and_blocked':
 			case 'cancelled':
-				return _('cartao bloqueado');
+				return Translations.get('cartao bloqueado');
 				break;
 				
 			default:
@@ -47,7 +47,7 @@ var AccessControl = {
 		if (!CirculationSearch.selectedRecord) {
 			Core.msg({
 				message_level: 'normal',
-				message: _('TODO')
+				message:Translations.get('TODO')
 			});
 			return;
 		}
@@ -85,8 +85,8 @@ var AccessControl = {
 				title: 'TODO',
 				description: 'TODO',
 				confirm: 'TODO!',
-				okText: _('common.yes'),
-				cancelText: _('common.no'),
+				okText:Translations.get('common.yes'),
+				cancelText:Translations.get('common.no'),
 				okHandler: $.proxy(function() {
 					$.proxy(bind, this)();
 					$(':focus').blur();							
@@ -131,8 +131,8 @@ var AccessControl = {
 				title: 'TODO',
 				description: 'TODO',
 				confirm: 'TODO!',
-				okText: _('common.yes'),
-				cancelText: _('common.no'),
+				okText:Translations.get('common.yes'),
+				cancelText:Translations.get('common.no'),
 				okHandler: $.proxy(function() {
 					$.proxy(bind, this)();
 					$(':focus').blur();							

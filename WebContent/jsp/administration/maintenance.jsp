@@ -42,12 +42,12 @@
 
 				{#foreach $T.backups as backup}
 					{#if $T.backup$index == 5}
-						<div class="expand" onclick="Administration.backup.showAll(this);">{_('administration.maintenance.backup.show_all', [$T.backups.length])}</div>
+						<div class="expand" onclick="Administration.backup.showAll(this);">{Translations.get('administration.maintenance.backup.show_all', [$T.backups.length])}</div>
 					{#/if}
 				
 					<a class="backup {#if $T.backup$first}last_backup{#/if} {#if $T.backup$index > 4}hidden_backup{#/if}" rel="{$T.backup.id}" href="?controller=download&module=administration.backup&action=download&id={$T.backup.id}" target="_blank">
 
-						{_d($T.backup.created, 'd t')} - {_('administration.maintenance.backup.label_' + $T.backup.type)}
+						{_d($T.backup.created, 'd t')} - {Translations.get('administration.maintenance.backup.label_' + $T.backup.type)}
 
 						{#if $T.backup.steps != $T.backup.current_step}
 							<div class="backup_never_downloaded"><i18n:text key="administration.maintenance.backup.backup_not_complete" /></div>

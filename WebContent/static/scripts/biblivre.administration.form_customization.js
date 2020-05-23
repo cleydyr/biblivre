@@ -138,7 +138,7 @@ FormCustomization.editIndicatorAddLine = function(table, value, text) {
 
 FormCustomization.editIndicator = function(indicator) {
 	var div = $('<div/>');	
-	var table = $('<table class="indicator_edit_table"><thead><tr><th>' + _('administration.form_customization.indicator.label_value') + '</th><th>' + _('administration.form_customization.indicator.label_text') + '</th></thead><tbody></tbody></table>').appendTo(div);
+	var table = $('<table class="indicator_edit_table"><thead><tr><th>' +Translations.get('administration.form_customization.indicator.label_value') + '</th><th>' +Translations.get('administration.form_customization.indicator.label_text') + '</th></thead><tbody></tbody></table>').appendTo(div);
 
 	$('<div class="right" style="margin-right: 14px; margin-top: 5px;"><a href="javascript:void(0);"><i class="fa fa-fw fa-plus"></i></a></div>').on('click', function(e) {
 		FormCustomization.editIndicatorAddLine(table, '', '');
@@ -177,13 +177,13 @@ FormCustomization.editIndicator = function(indicator) {
 				}
 				
 				if (!value.length || !text.length) {
-					alert(_('administration.form_customization.indicator_edit_fill_error'));
+					alert(Translations.get('administration.form_customization.indicator_edit_fill_error'));
 					ok = false;
 					return;
 				}
 				
 				if (unique[value]) {
-					alert(_('administration.form_customization.indicator_edit_repeated_value_error'));
+					alert(Translations.get('administration.form_customization.indicator_edit_repeated_value_error'));
 					ok = false;
 					return;
 				}
@@ -232,12 +232,12 @@ FormCustomization.saveDatafield = function() {
 	var translations = {};
 	
 	if (!tag && FormCustomization.indexedDatafields[newTag]) {
-		alert(_('administration.form_customization.error.existing_tag'));
+		alert(Translations.get('administration.form_customization.error.existing_tag'));
 		return;
 	}
 	
 	if (newTag.trim().length != 3) {
-		alert(_('administration.form_customization.error.invalid_tag'));
+		alert(Translations.get('administration.form_customization.error.invalid_tag'));
 		return;
 	}
 	
@@ -285,7 +285,7 @@ FormCustomization.saveDatafield = function() {
 		}
 		
 		if (existingSubs[subTag]) {
-			alert(_('administration.form_customization.error.existing_subfield'));
+			alert(Translations.get('administration.form_customization.error.existing_subfield'));
 			tr.find('[name=subfield_tag]').focus();
 			fail = true;
 			return;
@@ -443,8 +443,8 @@ FormCustomization.remove = function(button) {
 	var fieldset = $(button).closest('fieldset');
 	
 	Core.popup({
-		title: _('administration.form_customization.confirm_delete_datafield_title'),
-		description: _('administration.form_customization.confirm_delete_datafield_description'),
+		title:Translations.get('administration.form_customization.confirm_delete_datafield_title'),
+		description:Translations.get('administration.form_customization.confirm_delete_datafield_description'),
 		okHandler: $.proxy(function() {
 			$.ajax({
 				url: window.location.pathname,
@@ -495,8 +495,8 @@ FormCustomization.addDatafield = function(button) {
 FormCustomization.processTemplate = function() {
 	var enabledFields = FormCustomization.formFields[FormCustomization.selectedRecordType];
 
-	FormCustomization.datafields = ld.sortBy(enabledFields, 'sortOrder');
-	FormCustomization.indexedDatafields = ld.keyBy(FormCustomization.datafields, 'datafield');
+	FormCustomization.datafields = _.sortBy(enabledFields, 'sortOrder');
+	FormCustomization.indexedDatafields = _.keyBy(FormCustomization.datafields, 'datafield');
 
 	$('#datafields').processTemplate({
 		datafields: FormCustomization.datafields

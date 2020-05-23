@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.acquisition.quotation.input.js"></script>
 	
-	<script type="text/javascript" src="static/scripts/zebra_datepicker.src.js"></script>
+	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
 	
 	
