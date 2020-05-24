@@ -7,20 +7,7 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />	
-
-	<script type="text/javascript" src="static/scripts/biblivre.administration.form_customization.js"></script>
-	
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
-	<script>FormCustomization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "authorities").getCacheFileName() %>"></script>
-	<script>FormCustomization.formFields['authorities'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "vocabulary").getCacheFileName() %>"></script>
-	<script>FormCustomization.formFields['vocabulary'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	
-	<script>FormCustomization.materialTypes = <%= MaterialType.toJavascriptArray()%>;</script>
-	
+	<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
 </layout:head>
 
 <layout:body multiPart="true">
@@ -191,5 +178,14 @@
 		 	</div>
 		--></textarea>		
 		
-	</div>
+	</div><script type="text/javascript" src="static/scripts/biblivre.administration.form_customization.js"></script>
+	
+	<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
+	<script>FormCustomization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "authorities").getCacheFileName() %>"></script>
+	<script>FormCustomization.formFields['authorities'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "vocabulary").getCacheFileName() %>"></script>
+	<script>FormCustomization.formFields['vocabulary'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
+	<script>FormCustomization.materialTypes = <%= MaterialType.toJavascriptArray()%>;</script>
 </layout:body>

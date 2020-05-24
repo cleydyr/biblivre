@@ -18,13 +18,9 @@
 
 				<link rel="shortcut icon" type="image/x-icon" href="static/images/favicon.ico" />
 				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.core.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.print.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/jquery-ui.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
+				<link rel="stylesheet" type="text/css" media="print" href="static/styles/biblivre.print.css" />
 
-				<script type="text/javascript" src="static/scripts/json.js"></script>
 				<script type="text/javascript" src="static/scripts/jquery.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
 				<script type="text/javascript" src="static/scripts/jquery.extras.js"></script>
 				<script type="text/javascript" src="static/scripts/lodash.js"></script>
 
