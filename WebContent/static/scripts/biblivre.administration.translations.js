@@ -45,7 +45,7 @@ $(document).ready(function() {
 Translations.displayTree = function() {
 	var translations = {};
 	
-	ld.forEach(Translations.translations, function(value, key) {
+	_.forEach(Translations.translations, function(value, key) {
 		var ns = key.split(/\./);
 		var obj = translations;
 		var parent = null;
@@ -141,12 +141,12 @@ Translations.displayTree = function() {
 			} else {
 				//var field = $('<fieldset />').append('<legend>' + completeKey + '</legend>').appendTo(myTree);
 				var myKeys = _.keys(myObj).sort(sortKeys);
-				ld.forEach(myKeys, recurse(myObj, myTree, completeKey));
+				_.forEach(myKeys, recurse(myObj, myTree, completeKey));
 			}
 		};
 	};
 	
-	ld.forEach(keys, recurse(translations, div, ''));
+	_.forEach(keys, recurse(translations, div, ''));
 };
 
 Translation.dump = function(language) {
