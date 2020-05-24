@@ -129,7 +129,7 @@ public class JsonController extends Controller {
 		}
 		
         try {
-			this.xResponse.print(json.toString(2));
+			this.xResponse.print(json.toString());
 		} catch (JSONException e) {
 			this.log.error(e.getMessage(), e);
 		}
