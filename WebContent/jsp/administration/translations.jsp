@@ -7,8 +7,6 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />	
-
-	<script type="text/javascript" src="static/scripts/biblivre.administration.translations.js"></script>
 </layout:head>
 
 <layout:body multiPart="true">
@@ -99,5 +97,6 @@
 			</div>
 		</fieldset>
 	</div>
-			
+	<script type="text/javascript" src="static/scripts/lodash.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.administration.translations.js"></script>
 </layout:body>

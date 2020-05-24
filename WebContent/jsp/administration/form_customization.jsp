@@ -178,8 +178,9 @@
 		 	</div>
 		--></textarea>		
 		
-	</div><script type="text/javascript" src="static/scripts/biblivre.administration.form_customization.js"></script>
-	
+	</div>
+	<script type="text/javascript" src="static/scripts/lodash.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.administration.form_customization.js"></script>
 	<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
 	<script>FormCustomization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>

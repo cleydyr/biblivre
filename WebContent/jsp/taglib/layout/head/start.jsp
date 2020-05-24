@@ -22,7 +22,6 @@
 
 				<script type="text/javascript" src="static/scripts/jquery.js"></script>
 				<script type="text/javascript" src="static/scripts/jquery.extras.js"></script>
-				<script type="text/javascript" src="static/scripts/lodash.js"></script>
 
 				<script type="text/javascript" src="static/scripts/globalize.js"></script>
 				<script type="text/javascript" src="static/scripts/cultures/globalize.culture.<i18n:text key='language_code' />.js"></script>

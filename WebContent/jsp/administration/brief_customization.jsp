@@ -82,6 +82,7 @@
 			{#/for}
 		--></textarea>
 	</div>
+	<script type="text/javascript" src="static/scripts/lodash.js"></script>
 	<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.administration.brief_customization.js"></script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>

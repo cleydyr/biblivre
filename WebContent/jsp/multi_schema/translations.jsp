@@ -5,10 +5,6 @@
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<layout:head>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.translations.js"></script>
-</layout:head>
-
 <layout:body multiPart="true">
 
 	<div class="page_help"><i18n:text key="multi_schema.translations.page_help" /></div>
@@ -75,4 +71,6 @@
 			</div>
 		</fieldset>
 	</div>
+	<script type="text/javascript" src="static/scripts/lodash.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.administration.translations.js"></script>
 </layout:body>
