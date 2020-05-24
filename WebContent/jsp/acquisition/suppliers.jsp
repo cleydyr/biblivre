@@ -5,23 +5,6 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />	
-
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.supplier.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.supplier.input.js"></script>
-	<script type="text/javascript">
-		var SupplierSearch = CreateSearch(SupplierSearchClass, {
-			type: 'acquisition.supplier',
-			root: '#suppliers',
-			enableTabs: true,
-			enableHistory: false
-		});	
-	
-		SupplierInput.type = 'acquisition.supplier';
-		SupplierInput.root = '#suppliers';
-		SupplierInput.search = SupplierSearch;
-	</script>
 </layout:head>
 
 <layout:body>
@@ -260,6 +243,22 @@
 			
 			<div class="paging_bar"></div>		
 		</div>
-	</div>	
+	</div>
+	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.supplier.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.supplier.input.js"></script>
+	<script type="text/javascript">
+		var SupplierSearch = CreateSearch(SupplierSearchClass, {
+			type: 'acquisition.supplier',
+			root: '#suppliers',
+			enableTabs: true,
+			enableHistory: false
+		});
+
+		SupplierInput.type = 'acquisition.supplier';
+		SupplierInput.root = '#suppliers';
+		SupplierInput.search = SupplierSearch;
+	</script>
 </layout:body>
 

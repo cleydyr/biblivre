@@ -8,28 +8,7 @@
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.acquisition.css" />
-
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.order.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.order.input.js"></script>
-	
-	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
-	
-	
-	<script type="text/javascript">
-		var OrderSearch = CreateSearch(OrderSearchClass, {
-			type: 'acquisition.order',
-			root: '#orders',
-			enableTabs: true,
-			enableHistory: false
-		});	
-	
-		OrderInput.type = 'acquisition.order';
-		OrderInput.root = '#orders';
-		OrderInput.search = OrderSearch;		
-	</script>
 </layout:head>
 
 <layout:body>
@@ -280,6 +259,23 @@
 			
 			<div class="paging_bar"></div>		
 		</div>
-	</div>	
+	</div>
+	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.order.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.order.input.js"></script>
+	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
+	<script type="text/javascript">
+		var OrderSearch = CreateSearch(OrderSearchClass, {
+			type: 'acquisition.order',
+			root: '#orders',
+			enableTabs: true,
+			enableHistory: false
+		});
+
+		OrderInput.type = 'acquisition.order';
+		OrderInput.root = '#orders';
+		OrderInput.search = OrderSearch;
+	</script>
 </layout:body>
 

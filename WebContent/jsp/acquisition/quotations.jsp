@@ -8,28 +8,7 @@
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.acquisition.css" />
-
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.quotation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.quotation.input.js"></script>
-	
-	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
-	
-	
-	<script type="text/javascript">
-		var QuotationSearch = CreateSearch(QuotationSearchClass, {
-			type: 'acquisition.quotation',
-			root: '#quotations',
-			enableTabs: true,
-			enableHistory: false
-		});	
-	
-		QuotationInput.type = 'acquisition.quotation';
-		QuotationInput.root = '#quotations';
-		QuotationInput.search = QuotationSearch;		
-	</script>
 </layout:head>
 
 <layout:body>
@@ -272,6 +251,23 @@
 			
 			<div class="paging_bar"></div>		
 		</div>
-	</div>	
+	</div>
+	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.quotation.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.quotation.input.js"></script>
+	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
+	<script type="text/javascript">
+		var QuotationSearch = CreateSearch(QuotationSearchClass, {
+			type: 'acquisition.quotation',
+			root: '#quotations',
+			enableTabs: true,
+			enableHistory: false
+		});
+
+		QuotationInput.type = 'acquisition.quotation';
+		QuotationInput.root = '#quotations';
+		QuotationInput.search = QuotationSearch;
+	</script>
 </layout:body>
 

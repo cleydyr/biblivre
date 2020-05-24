@@ -5,23 +5,6 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />	
-
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.input.js"></script>
-	<script type="text/javascript">
-		var RequestSearch = CreateSearch(RequestSearchClass, {
-			type: 'acquisition.request',
-			root: '#requests',
-			enableTabs: true,
-			enableHistory: false
-		});	
-	
-		RequestInput.type = 'acquisition.request';
-		RequestInput.root = '#requests';
-		RequestInput.search = RequestSearch;
-	</script>
 </layout:head>
 
 <layout:body>
@@ -203,6 +186,22 @@
 			
 			<div class="paging_bar"></div>		
 		</div>
-	</div>	
+	</div>
+	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.search.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.input.js"></script>
+	<script type="text/javascript">
+		var RequestSearch = CreateSearch(RequestSearchClass, {
+			type: 'acquisition.request',
+			root: '#requests',
+			enableTabs: true,
+			enableHistory: false
+		});
+
+		RequestInput.type = 'acquisition.request';
+		RequestInput.root = '#requests';
+		RequestInput.search = RequestSearch;
+	</script>
 </layout:body>
 
