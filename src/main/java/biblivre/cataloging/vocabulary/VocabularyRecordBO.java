@@ -32,6 +32,7 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 
 public class VocabularyRecordBO extends RecordBO {
@@ -63,7 +64,7 @@ public class VocabularyRecordBO extends RecordBO {
 			}
 			
 			if (record != null) {
-				MarcDataReader marcDataReader = new MarcDataReader(record);
+				MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				dto.setTermTE(marcDataReader.getFirstSubfieldData("150", 'a'));
 				dto.setTermUP(marcDataReader.getFirstSubfieldData("450", 'a'));
 				dto.setTermTG(marcDataReader.getFirstSubfieldData("550", 'a'));

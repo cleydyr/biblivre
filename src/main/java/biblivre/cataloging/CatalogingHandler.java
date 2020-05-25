@@ -48,6 +48,7 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
@@ -202,7 +203,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 		
 		
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
-		MarcDataReader marcDataReader = new MarcDataReader(record);
+		MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 
 		bo.populateDetails(dto, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.HOLDING_LIST | RecordBO.LENDING_INFO);
 
@@ -393,7 +394,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 					dto.setJson(MarcUtils.recordToJson(record));
 					break;
 				case RECORD:
-					MarcDataReader marcDataReader = new MarcDataReader(record);
+					MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 					List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, this.recordType);
 					List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
 
@@ -594,7 +595,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 		RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 		RecordDTO dto = bo.addAttachment(recordId, uri, description, userId);
 		
-		MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
+		MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(dto.getRecord());
 		dto.setAttachments(marcDataReader.getAttachments());
 	}
 	

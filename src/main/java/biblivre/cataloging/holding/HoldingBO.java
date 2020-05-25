@@ -69,6 +69,7 @@ import biblivre.core.utils.ParagraphAlignmentUtil;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
@@ -152,7 +153,7 @@ public class HoldingBO extends RecordBO {
 	public DTOCollection<HoldingDTO> search(String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
 		DTOCollection<HoldingDTO> searchResults = this.dao.search(query, database, lentOnly, offset, limit); 
 		for (HoldingDTO holding : searchResults) {
-			MarcDataReader reader = new MarcDataReader(holding.getRecord());
+			MarcDataReader reader = MarcDataReaderFactory.getMarcDataReader(holding.getRecord());
 			holding.setShelfLocation(reader.getShelfLocation());
 		}
 		return searchResults;
@@ -167,7 +168,7 @@ public class HoldingBO extends RecordBO {
 	public boolean save(RecordDTO dto) {
 		HoldingDTO hdto = (HoldingDTO) dto;
 		Record record = hdto.getRecord();
-		MarcDataReader marcReader = new MarcDataReader(record);
+		MarcDataReader marcReader = MarcDataReaderFactory.getMarcDataReader(record);
 
 		String accessionNumber = marcReader.getAccessionNumber();
 		String holdingLocation = marcReader.getHoldingLocation();
@@ -214,7 +215,7 @@ public class HoldingBO extends RecordBO {
 	public boolean update(RecordDTO dto) {
 		HoldingDTO hdto = (HoldingDTO) dto;
 		Record record = hdto.getRecord();
-		MarcDataReader marcReader = new MarcDataReader(record);
+		MarcDataReader marcReader = MarcDataReaderFactory.getMarcDataReader(record);
 
 		String accessionNumber = marcReader.getAccessionNumber();
 		String holdingLocation = marcReader.getHoldingLocation();
@@ -273,7 +274,7 @@ public class HoldingBO extends RecordBO {
 	public void populateDetails(RecordDTO rdto, int mask) {
 		
 		if ((mask & RecordBO.MARC_INFO) != 0) {
-			MarcDataReader reader = new MarcDataReader(rdto.getRecord());
+			MarcDataReader reader = MarcDataReaderFactory.getMarcDataReader(rdto.getRecord());
 			((HoldingDTO)rdto).setShelfLocation(reader.getShelfLocation());
 		}
 		return;
@@ -370,7 +371,7 @@ public class HoldingBO extends RecordBO {
 		if (biblioDto.getRecord() == null) {
 			biblioDto.setRecord(MarcUtils.iso2709ToRecord(biblioDto.getIso2709()));
 		}
-		MarcDataReader mdr = new MarcDataReader(biblioDto.getRecord());
+		MarcDataReader mdr = MarcDataReaderFactory.getMarcDataReader(biblioDto.getRecord());
 
 		String biblioLocationA = mdr.getLocation();
 		biblioLocationA = StringUtils.defaultString(biblioLocationA);

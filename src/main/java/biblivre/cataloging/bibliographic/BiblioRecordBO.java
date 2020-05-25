@@ -40,6 +40,7 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 
 public class BiblioRecordBO extends RecordBO {
@@ -71,16 +72,16 @@ public class BiblioRecordBO extends RecordBO {
 			}
 			
 			if (record != null) {
-				MarcDataReader marcDataReader = new MarcDataReader(record);
+				MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				
-				dto.setAuthor(marcDataReader.getAuthor(true));
-				dto.setTitle(marcDataReader.getTitle(false));
+				dto.setAuthor(marcDataReader.getAuthors());
+				dto.setTitle(marcDataReader.getTitle());
 				dto.setIsbn(marcDataReader.getIsbn());
 				dto.setIssn(marcDataReader.getIssn());
 				dto.setIsrc(marcDataReader.getIsrc());
 				dto.setPublicationYear(marcDataReader.getPublicationYear());
 				dto.setShelfLocation(marcDataReader.getShelfLocation());
-				dto.setSubject(marcDataReader.getSubject(true));
+				dto.setSubject(marcDataReader.getSubjects());
 			}
 		}
 
@@ -117,7 +118,7 @@ public class BiblioRecordBO extends RecordBO {
 			Collections.sort(holdingsList);
 
 			for (HoldingDTO holding : holdingsList) {
-				MarcDataReader marcDataReader = new MarcDataReader(holding.getRecord());
+				MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(holding.getRecord());
 				
 				String holdingLocation = marcDataReader.getShelfLocation();
 				holding.setShelfLocation(StringUtils.isNotBlank(holdingLocation) ? holdingLocation : dto.getShelfLocation());

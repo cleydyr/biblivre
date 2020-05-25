@@ -41,6 +41,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 
 public class IndexingBO extends AbstractBO {
@@ -138,7 +139,7 @@ public class IndexingBO extends AbstractBO {
 	
 	private void populateIndexes(RecordDTO dto, List<IndexingGroupDTO> indexingGroups, List<IndexingDTO> indexes, List<IndexingDTO> sortIndexes) {
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
-		MarcDataReader marcDataReader = new MarcDataReader(record);
+		MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 
 		//		System.out.println((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + " free: " + Runtime.getRuntime().freeMemory());
 
@@ -233,7 +234,7 @@ public class IndexingBO extends AbstractBO {
 	private void populateAutocompleteIndexes(RecordDTO dto, List<FormTabSubfieldDTO> autocompleteSubfields, List<AutocompleteDTO> autocompleteIndexes) {
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
 
-		MarcDataReader marcDataReader = new MarcDataReader(record);
+		MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 		AutocompleteDTO autocomplete;
 		List<DataField> datafields;
 		List<Subfield> subfields;

@@ -35,6 +35,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 
@@ -104,14 +105,14 @@ public class Handler extends CatalogingHandler {
 		// Form tab
 		dto.setJson(MarcUtils.recordToJson(record));
 
-		MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
+		MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(dto.getRecord());
 		String holdingLocation = marcDataReader.getShelfLocation();
 
 		if (StringUtils.isBlank(holdingLocation)) {
 			RecordBO parentBO = RecordBO.getInstance(schema, RecordType.BIBLIO);
 			RecordDTO parent = parentBO.get(((HoldingDTO) dto).getRecordId()); 
 			
-			marcDataReader = new MarcDataReader(MarcUtils.iso2709ToRecord(parent.getIso2709()));
+			marcDataReader = MarcDataReaderFactory.getMarcDataReader(MarcUtils.iso2709ToRecord(parent.getIso2709()));
 			holdingLocation = marcDataReader.getShelfLocation();
 		}
 		

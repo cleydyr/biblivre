@@ -24,6 +24,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 
 public class ReportsBO extends AbstractBO {
@@ -125,7 +126,7 @@ public class ReportsBO extends AbstractBO {
 		
 		for (RecordDTO biblio : records) {
 			Record record = MarcUtils.iso2709ToRecord(biblio.getIso2709());
-			MarcDataReader reader = new MarcDataReader(record);
+			MarcDataReader reader = MarcDataReaderFactory.getMarcDataReader(record);
 			List<DataField> datafields = reader.getDataFields(field);
 			
 			for (DataField df : datafields) {

@@ -58,6 +58,7 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 
 public class ReportsDAO extends AbstractDAO {
@@ -87,11 +88,11 @@ public class ReportsDAO extends AbstractDAO {
 			List<String[]> dataList = new ArrayList<String[]>();
 			while (rs.next()) {
 				Record record = MarcUtils.iso2709ToRecord(rs.getBytes("iso2709"));
-				MarcDataReader dataReader = new MarcDataReader(record);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				String[] data = new String[8];
-				String title = dataReader.getTitle(false); 
+				String title = dataReader.getTitle(); 
 				data[0] = StringUtils.isNotBlank(title) ? title : "";
-				String author = dataReader.getAuthor(true);
+				String author = dataReader.getAuthors();
 				data[1] = StringUtils.isNotBlank(author) ? author : "";
 				String isbn = dataReader.getIsbn();
 				data[2] = StringUtils.isNotBlank(isbn) ? isbn : "";
@@ -143,7 +144,7 @@ public class ReportsDAO extends AbstractDAO {
 
 				String dewey = "";
 
-				MarcDataReader dataReader = new MarcDataReader(record);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				if (datafield.equals("082")) {
 					dewey = dataReader.getDDCN();
 				} else if (datafield.equals("090")) {
@@ -198,12 +199,12 @@ public class ReportsDAO extends AbstractDAO {
 			List<String[]> dataList = new ArrayList<String[]>();
 			while (rs.next()) {
 				Record record = MarcUtils.iso2709ToRecord(rs.getBytes("iso2709"));
-				MarcDataReader dataReader = new MarcDataReader(record);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				String assetHolding = rs.getString("accession_number");
 				String[] data = new String[5];
 				data[0] = assetHolding;
-				data[1] = dataReader.getAuthorName(false);
-				data[2] = dataReader.getTitle(false);
+				data[1] = dataReader.getAuthorName();
+				data[2] = dataReader.getTitle();
 				data[3] = dataReader.getEdition();
 				data[4] = dataReader.getPublicationYear();
 				dataList.add(data);
@@ -234,14 +235,14 @@ public class ReportsDAO extends AbstractDAO {
 			List<String[]> dataList = new ArrayList<String[]>();
 			while (rs.next()) {
 				Record record = MarcUtils.iso2709ToRecord(rs.getBytes("iso2709"));
-				MarcDataReader dataReader = new MarcDataReader(record);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				String assetHolding = rs.getString("accession_number");
 				String serial = rs.getString("id");
 				String[] data = new String[7];
 				data[0] = serial;
 				data[1] = assetHolding;
-				data[2] = dataReader.getTitle(false);
-				data[3] = dataReader.getAuthorName(false);
+				data[2] = dataReader.getTitle();
+				data[3] = dataReader.getAuthorName();
 				String location = dataReader.getShelfLocation();
 				data[4] = StringUtils.isNotBlank(location) ? location : "";
 				data[5] = dataReader.getEdition();
@@ -283,15 +284,15 @@ public class ReportsDAO extends AbstractDAO {
 				String assetHolding = rs.getString("accession_number");
 				String creationDate = rs.getString(2);
 				String[] data = new String[6];
-				MarcDataReader dataReader = new MarcDataReader(record);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				data[0] = creationDate;
 				data[1] = assetHolding;
-				data[2] = dataReader.getTitle(false);
-				data[3] = dataReader.getAuthorName(false);
+				data[2] = dataReader.getTitle();
+				data[3] = dataReader.getAuthorName();
 				data[4] = dataReader.getPublicationYear();
 				
 				Record holding = MarcUtils.iso2709ToRecord(rs.getBytes(4));
-				MarcDataReader holdingReader = new MarcDataReader(holding);
+				MarcDataReader holdingReader = MarcDataReaderFactory.getMarcDataReader(holding);
 				data[5] = holdingReader.getSourceAcquisitionDate();
 				dataList.add(data);
 			}
@@ -477,11 +478,11 @@ public class ReportsDAO extends AbstractDAO {
 				Integer count = rs.getInt(2);
 				RecordDTO recordDto = biblioBO.get(biblioId);
 				Record record = MarcUtils.iso2709ToRecord(recordDto.getIso2709());
-				MarcDataReader dataReader = new MarcDataReader(record);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				String[] arrayData = new String[3];
 				arrayData[0] = String.valueOf(count);// count
-				arrayData[1] = dataReader.getTitle(false);// title
-				arrayData[2] = dataReader.getAuthorName(false);// author
+				arrayData[1] = dataReader.getTitle();// title
+				arrayData[2] = dataReader.getAuthorName();// author
 				data.add(arrayData);
 			}
 			dto.setData(data);
@@ -518,8 +519,8 @@ public class ReportsDAO extends AbstractDAO {
 				lending[1] = rs.getString("username"); // nome do usuario
 				Record record = MarcUtils.iso2709ToRecord(
 						new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
-				MarcDataReader dataReader = new MarcDataReader(record);
-				lending[2] = dataReader.getTitle(false); // titulo
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
+				lending[2] = dataReader.getTitle(); // titulo
 				lending[3] = dd_MM_yyyy.format(rs.getDate("expected_return_date"));
 				data.add(lending);
 			}
@@ -692,7 +693,7 @@ public class ReportsDAO extends AbstractDAO {
 					Integer id = rs.getInt("id");
 					String iso2709 = new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET);
 					Record record = MarcUtils.iso2709ToRecord(iso2709);
-					String name = new MarcDataReader(record).getAuthor(false);
+					String name = MarcDataReaderFactory.getMarcDataReader(record).getAuthor();
 					if (results.containsKey(name)) {
 						Set<Integer> ids = results.get(name);
 						ids.add(id);
@@ -734,9 +735,9 @@ public class ReportsDAO extends AbstractDAO {
 			while (rs.next()) {
 				String iso2709 = new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET);
 				Record record = MarcUtils.iso2709ToRecord(iso2709);
-				MarcDataReader dataReader = new MarcDataReader(record);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				String[] lending = new String[5];
-				lending[0] = dataReader.getTitle(false);
+				lending[0] = dataReader.getTitle();
 				lending[1] = dataReader.getEdition();
 				lending[2] = dataReader.getEditor();
 				lending[3] = dataReader.getPublicationYear();
@@ -777,9 +778,9 @@ public class ReportsDAO extends AbstractDAO {
 				reservation[1] = String.valueOf(rs.getInt("id"));
 				String iso2709 = new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET);
 				Record record = MarcUtils.iso2709ToRecord(iso2709);
-				MarcDataReader dataReader = new MarcDataReader(record);
-				reservation[2] = dataReader.getTitle(false);
-				reservation[3] = dataReader.getAuthorName(false);
+				MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(record);
+				reservation[2] = dataReader.getTitle();
+				reservation[3] = dataReader.getAuthorName();
 				reservation[4] = rs.getString("created");
 				biblioReservations.add(reservation);
 			}

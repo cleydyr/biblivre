@@ -468,7 +468,7 @@ public class MarcUtils {
 	public static Record removeAttachment(Record record, String uri, String description) throws Exception {
 		VariableField dataFieldToRemove = null;
 		
-		MarcDataReader marcReader = new MarcDataReader(record);
+		MarcDataReader marcReader = MarcDataReaderFactory.getMarcDataReader(record);
 		
 		for (DataField df : marcReader.getDataFields(MarcConstants.ELECTRONIC_LOCATION)) {
 			String sfName = marcReader.getFirstSubfieldData(df, 'y');

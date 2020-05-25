@@ -43,6 +43,7 @@ import biblivre.core.LabelPrintDTO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 
 public class Handler extends AbstractHandler {
@@ -102,13 +103,13 @@ public class Handler extends AbstractHandler {
 			
 			BiblioRecordDTO biblio = (BiblioRecordDTO) biblioBo.get(holding.getRecordId());
 			Record biblioRecord = MarcUtils.iso2709ToRecord(biblio.getIso2709());
-			MarcDataReader dataReader = new MarcDataReader(biblioRecord);
+			MarcDataReader dataReader = MarcDataReaderFactory.getMarcDataReader(biblioRecord);
 			
-			label.setAuthor(StringUtils.defaultString(dataReader.getAuthorName(false)));
-			label.setTitle(StringUtils.defaultString(dataReader.getTitle(false)));
+			label.setAuthor(StringUtils.defaultString(dataReader.getAuthorName()));
+			label.setTitle(StringUtils.defaultString(dataReader.getTitle()));
 			
 			Record holdingRecord = MarcUtils.iso2709ToRecord(holding.getIso2709());
-			dataReader = new MarcDataReader(holdingRecord);
+			dataReader = MarcDataReaderFactory.getMarcDataReader(holdingRecord);
 			label.setLocationA(StringUtils.defaultString(dataReader.getLocation()));
 			label.setLocationB(StringUtils.defaultString(dataReader.getLocationB()));
 			label.setLocationC(StringUtils.defaultString(dataReader.getLocationC()));

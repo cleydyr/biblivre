@@ -32,6 +32,7 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 
 public class AuthorityRecordBO extends RecordBO {
@@ -63,10 +64,10 @@ public class AuthorityRecordBO extends RecordBO {
 			}
 			
 			if (record != null) {
-				MarcDataReader marcDataReader = new MarcDataReader(record);
+				MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 				
-				dto.setAuthorName(marcDataReader.getAuthorName(true));
-				dto.setAuthorOtherName(marcDataReader.getAuthorOtherName(true));
+				dto.setAuthorName(marcDataReader.getAuthorNames());
+				dto.setAuthorOtherName(marcDataReader.getAuthorOtherNames());
 			}
 		}
 

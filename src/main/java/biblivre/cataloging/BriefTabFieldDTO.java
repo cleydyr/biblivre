@@ -31,18 +31,10 @@ public class BriefTabFieldDTO extends AbstractDTO {
 	private String value;
 
 	public BriefTabFieldDTO(String datafieldTag, String value) {
-		this.setDatafieldTag(datafieldTag);
-		this.setValue(value);
-	}
-
-	public String getDatafieldTag() {
-		return this.datafieldTag;
-	}
-
-	public void setDatafieldTag(String datafieldTag) {
 		this.datafieldTag = datafieldTag;
+		this.value = value;
 	}
-	
+
 	public String getValue() {
 		return this.value;
 	}
@@ -56,7 +48,7 @@ public class BriefTabFieldDTO extends AbstractDTO {
 		JSONObject json = new JSONObject();
 
 		try {
-			json.putOpt("datafield", this.getDatafieldTag());
+			json.putOpt("datafield", datafieldTag);
 			json.putOpt("value", this.getValue());
 		} catch (JSONException e) {
 		}

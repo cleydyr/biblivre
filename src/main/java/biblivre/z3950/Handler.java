@@ -44,6 +44,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcDataReaderFactory;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 
@@ -160,7 +161,7 @@ public class Handler extends AbstractHandler {
 		
 		RecordDTO recordDTO = dto.getRecord();
 		Record record = recordDTO.getRecord();
-		MarcDataReader marcDataReader = new MarcDataReader(record);
+		MarcDataReader marcDataReader = MarcDataReaderFactory.getMarcDataReader(record);
 		
 		bo.populateDetails(recordDTO, RecordBO.MARC_INFO);
 		recordDTO.setId(index);
