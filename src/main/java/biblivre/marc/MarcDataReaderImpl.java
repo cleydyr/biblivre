@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.marc;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -353,8 +353,12 @@ public class MarcDataReaderImpl implements MarcDataReader {
 		return record.getDataFields().stream()
 			.collect(Collectors.groupingBy(DataField::getTag));
 	}
-	
-	private static String _formatDataField(String format, DataField ... datafields) {
+
+	private static String _formatDataField(String format, DataField datafield) {
+		return _formatDataField(format, Collections.singleton(datafield));
+	}
+
+	private static String _formatDataField(String format, Collection<DataField> datafields) {
 		if (datafields == null) {
 			return StringPool.BLANK;
 		}
@@ -362,30 +366,23 @@ public class MarcDataReaderImpl implements MarcDataReader {
 		Matcher matcher = MarcConstants.DATAFIELD_FORMAT_PATTERN.matcher(format);
 		
 		StringBuilder result = new StringBuilder();
-		StringBuilder values;
-		
-		String specialGroup;
-		String element;
-		String content;
-		String value;
-		String subfieldSeparator;
-		
-		List<Subfield> subfields;
-		
+
 		for (DataField dataField : datafields) {
 			if (dataField == null) {
 				continue;
 			}
-			
+
 			String lastSeparator = null;
 			String lastValue = null;
 			boolean newSeparator = false;
 			boolean endsWithSeparator = false;
 			boolean shouldAddStartParenthesis = false;
-		
+
 			while (matcher.find()) {
-				specialGroup = matcher.group(1);
+				String specialGroup = matcher.group(1);
 		
+				String element;
+				String content;
 				if (specialGroup == null) {
 					element = matcher.group(2);
 					content = matcher.group(3);
@@ -395,21 +392,22 @@ public class MarcDataReaderImpl implements MarcDataReader {
 				}
 		
 				if (element.equals("$")) {
-					subfields = dataField.getSubfields(content.charAt(0));
+					List<Subfield> subfields = dataField.getSubfields(content.charAt(0));
 		
-					subfieldSeparator = (content.length() == 1) ? ", " : content.substring(1);
+					String subfieldSeparator = (content.length() == 1) ? ", " : content.substring(1);
 					endsWithSeparator = false;
 		
-					values = new StringBuilder();
-					for (Subfield s : subfields) {
-						value = s.getData();
+					StringBuilder values = new StringBuilder();
+
+					for (Subfield subfield : subfields) {
+						String subfieldData = subfield.getData();
 		
-						if (StringUtils.isNotBlank(value)) {
-							value = value.trim();
+						if (StringUtils.isNotBlank(subfieldData)) {
+							subfieldData = subfieldData.trim();
 		
-							values.append(value);
+							values.append(subfieldData);
 		
-							if (TextUtils.endsInValidCharacter(value)) {
+							if (TextUtils.endsInValidCharacter(subfieldData)) {
 								values.append(subfieldSeparator);
 								endsWithSeparator = true;
 							} else {
@@ -418,7 +416,8 @@ public class MarcDataReaderImpl implements MarcDataReader {
 							}
 						}
 					}
-					value = values.toString();
+
+					String value = values.toString();
 		
 					if (endsWithSeparator) {
 						value = value.substring(0, value.length() - subfieldSeparator.length());
@@ -476,148 +475,36 @@ public class MarcDataReaderImpl implements MarcDataReader {
 	private String _formatDataField(BriefTabFieldFormatDTO format) {
 		List<DataField> dataFieldList = getDataFields(format.getDatafieldTag());
 
-		if (dataFieldList == null || dataFieldList.isEmpty()) {
-			return StringPool.BLANK;
-		}
-		
-		Matcher matcher = MarcConstants.DATAFIELD_FORMAT_PATTERN.matcher(format.getFormat());
-		
-		StringBuilder result = new StringBuilder();
-		StringBuilder values;
-		
-		String specialGroup;
-		String element;
-		String content;
-		String value;
-		String subfieldSeparator;
-		
-		List<Subfield> subfields;
-		
-		for (DataField dataField : dataFieldList) {
-			if (dataField == null) {
-				continue;
-			}
-			
-			String lastSeparator = null;
-			String lastValue = null;
-			boolean newSeparator = false;
-			boolean endsWithSeparator = false;
-			boolean shouldAddStartParenthesis = false;
-		
-			while (matcher.find()) {
-				specialGroup = matcher.group(1);
-		
-				if (specialGroup == null) {
-					element = matcher.group(2);
-					content = matcher.group(3);
-				} else {
-					element = specialGroup;
-					content = "";
-				}
-		
-				if (element.equals("$")) {
-					subfields = dataField.getSubfields(content.charAt(0));
-		
-					subfieldSeparator = (content.length() == 1) ? ", " : content.substring(1);
-					endsWithSeparator = false;
-		
-					values = new StringBuilder();
-					for (Subfield s : subfields) {
-						value = s.getData();
-		
-						if (StringUtils.isNotBlank(value)) {
-							value = value.trim();
-		
-							values.append(value);
-		
-							if (TextUtils.endsInValidCharacter(value)) {
-								values.append(subfieldSeparator);
-								endsWithSeparator = true;
-							} else {
-								values.append(" ");
-								endsWithSeparator = false;
-							}
-						}
-					}
-					value = values.toString();
-		
-					if (endsWithSeparator) {
-						value = value.substring(0, value.length() - subfieldSeparator.length());
-					} else {
-						value = value.trim();
-					}
-		
-					if (StringUtils.isNotBlank(value)) {
-						if (newSeparator) {
-							newSeparator = false;
-							
-							if (StringUtils.isNotBlank(lastValue)) {
-								if (TextUtils.endsInValidCharacter(lastValue)) {
-									result.append(lastSeparator);
-								} else {
-									result.append(" ");
-								}
-							}
-						}
-		
-						lastValue = value.trim();
-						
-						if (shouldAddStartParenthesis) {
-							shouldAddStartParenthesis = false;
-							result.append("(");
-						}
-		
-						result.append(lastValue);
-					}
-					
-				} else if (element.equals("_")) {
-					lastSeparator = content;
-					newSeparator = true;
-					
-				} else if (element.equals("(")) {
-					shouldAddStartParenthesis = true;
-					
-				} else if (element.equals(")")) {
-					if (result.toString().endsWith("(")) {
-						result.deleteCharAt(result.length() - 1);
-					} else if (!shouldAddStartParenthesis) {
-						result.append(")");
-						shouldAddStartParenthesis = false;
-					}
-				}
-			}
-		
-			matcher.reset();
-			result.append("\n");
-		}
-		
-		return StringUtils.chomp(result.toString());
+		return _formatDataField(format.getFormat(), dataFieldList);
 	}
 
 	private String _getFieldValue(BriefTabFieldFormatDTO ... dataFieldFormats) {
 		return _getAllFieldValues(StringPool.NEW_LINE, dataFieldFormats);
 	}
 
-	private String _getFirstFieldValue(BriefTabFieldFormatDTO... dataFieldFormats) {
-		return Stream.of(dataFieldFormats)
-			.flatMap(format -> {
-				return _getDataFields(format.getDatafieldTag()).map(datafield -> _formatDataField(format.getFormat(), datafield));
-			})
+	private String _getFirstFieldValue(BriefTabFieldFormatDTO... formats) {
+		return Stream.of(formats)
+			.flatMap(this::_getAllFormattedDataFields)
 			.filter(StringUtils::isNotBlank)
 			.findFirst()
-			.get();
+			.orElseGet(() -> StringPool.BLANK);
 	}
 
-	private String _getAllFieldValues(BriefTabFieldFormatDTO ... dataFieldFormats) {
-		return _getAllFieldValues(StringPool.NEW_LINE, dataFieldFormats);
+	private String _getAllFieldValues(BriefTabFieldFormatDTO ... formats) {
+		return _getAllFieldValues(StringPool.NEW_LINE, formats);
 	}
 
-	private String _getAllFieldValues(String separator, BriefTabFieldFormatDTO ... dataFieldFormats) {
-		return Stream.of(dataFieldFormats)
-			.flatMap(format -> {
-				return _getDataFields(format.getDatafieldTag()).map(datafield -> _formatDataField(format.getFormat(), datafield));
-			})
+	private String _getAllFieldValues(String separator, BriefTabFieldFormatDTO ... formats) {
+		return Stream.of(formats)
+			.flatMap(this::_getAllFormattedDataFields)
 			.filter(StringUtils::isNotBlank)
 			.collect(Collectors.joining(separator));
+	}
+
+	private Stream<String> _getAllFormattedDataFields(BriefTabFieldFormatDTO format) {
+		return _getDataFields(format.getDatafieldTag())
+			.map(datafield ->
+				_formatDataField(format.getFormat(), datafield)
+			);
 	}
 }
