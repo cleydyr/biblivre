@@ -68,7 +68,7 @@ public class AccessControlBO extends AbstractBO {
 		try {
 			udto = userBO.get(dto.getUserId());
 		} catch (Exception e) {
-			this.logger.error(e);
+			this.logger.error(e.getMessage(), e);
 		}
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
@@ -96,7 +96,7 @@ public class AccessControlBO extends AbstractBO {
 			cardBO.update(cardDto);
 			return this.dao.save(dto);
 		} catch (Exception e) {
-			this.logger.error(e);
+			this.logger.error(e.getMessage(), e);
 		}
 
         return false;
@@ -109,7 +109,7 @@ public class AccessControlBO extends AbstractBO {
 		try {
 			udto = userBO.get(dto.getUserId());
 		} catch (Exception e) {
-			this.logger.error(e);
+			this.logger.error(e.getMessage(), e);
 		}
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
@@ -145,7 +145,7 @@ public class AccessControlBO extends AbstractBO {
 				return this.dao.update(existingAccess);
 			}
 		} catch (Exception e) {
-			this.logger.error(e);
+			this.logger.error(e.getMessage(), e);
 		}
 
         return false;

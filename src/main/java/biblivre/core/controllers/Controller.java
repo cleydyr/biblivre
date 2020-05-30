@@ -26,7 +26,8 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
@@ -44,7 +45,7 @@ import biblivre.core.utils.TextUtils;
 
 public abstract class Controller {
 
-	protected final Logger log = Logger.getLogger(this.getClass());
+	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected ExtendedRequest xRequest;
 	protected ExtendedResponse xResponse;
 	protected AbstractHandler handler;

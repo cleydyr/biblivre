@@ -29,11 +29,8 @@ import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
-import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.core.file.DiskFile;
-import biblivre.core.translations.TranslationsMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -49,9 +46,13 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
 
+import biblivre.administration.reports.dto.BaseReportDto;
+import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationsMap;
+
 public abstract class BaseBiblivreReport extends PdfPageEventHelper implements IBiblivreReport {
 
-	protected final Logger logger = Logger.getLogger(this.getClass().getName());
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	protected final Float headerBorderWidth = 0.8f;
 	protected final Float smallFontSize = 8f;
 	protected final Float reportFontSize = 10f;

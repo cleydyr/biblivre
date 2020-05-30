@@ -32,7 +32,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
@@ -40,7 +41,7 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 
 public class Translations extends StaticBO {
-	private static Logger logger = Logger.getLogger(Translations.class);
+	private static Logger logger = LoggerFactory.getLogger(Translations.class);
 
 	// HashMap<Pair<Schema, Language>, TranslationsMap>
 	private static HashMap<Pair<String, String>, TranslationsMap> translations;

@@ -27,7 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.PreparedStatementUtil;
@@ -37,7 +38,7 @@ import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Pair;
 
 public class IndexingGroups extends StaticBO {
-	private static Logger logger = Logger.getLogger(IndexingGroups.class);
+	private static Logger logger = LoggerFactory.getLogger(IndexingGroups.class);
 
 	private static HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>> groups;
 
