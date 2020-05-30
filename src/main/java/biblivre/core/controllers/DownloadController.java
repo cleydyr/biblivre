@@ -48,7 +48,12 @@ public class DownloadController extends Controller {
 		int returnCode = this.handler.getReturnCode();
 
 		if (StringUtils.isNotBlank(message.getText()) || returnCode != 0) {
-			this.xResponse.setStatus(returnCode == 0 ? HttpServletResponse.SC_BAD_REQUEST : returnCode, message.getText());
+			if (returnCode == 0) {
+				this.xResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, message.getText());
+			}
+			else {
+				this.xResponse.setStatus(returnCode);
+			}
 
 			this.xRequest.getRequestDispatcher("/jsp/error_fatal.jsp").forward(this.xRequest, this.xResponse);
 

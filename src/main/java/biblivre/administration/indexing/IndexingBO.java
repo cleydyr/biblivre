@@ -136,7 +136,6 @@ public class IndexingBO extends AbstractBO {
 		this.dao.reindexAutocompleteFixedTable(recordType, datafield, subfield, phrases);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void populateIndexes(RecordDTO dto, List<IndexingGroupDTO> indexingGroups, List<IndexingDTO> indexes, List<IndexingDTO> sortIndexes) {
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
 		MarcDataReader marcDataReader = new MarcDataReader(record);
@@ -231,7 +230,6 @@ public class IndexingBO extends AbstractBO {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void populateAutocompleteIndexes(RecordDTO dto, List<FormTabSubfieldDTO> autocompleteSubfields, List<AutocompleteDTO> autocompleteIndexes) {
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
 

@@ -125,10 +125,10 @@ public class Handler extends AbstractHandler {
 		String language = request.getLanguage();
 		HttpSession session = request.getSession();
 
-		@SuppressWarnings("unchecked")
-		Enumeration<String> attributes = session.getAttributeNames();
+		Enumeration<?> attributes = session.getAttributeNames();
+
 		while (attributes.hasMoreElements()) {
-			String attribute = attributes.nextElement();
+			String attribute = (String) attributes.nextElement();
 
 			if (attribute != null && attribute.startsWith(schema + ".")) {
 				session.removeAttribute(attribute);

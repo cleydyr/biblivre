@@ -266,7 +266,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 		return 0;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void loadMultiPart() {
 		this.multiPart = ServletFileUpload.isMultipartContent(this);
 
@@ -335,10 +334,11 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 	}
 
 	public void clearSessionAttributes(String schema) {
-		@SuppressWarnings("unchecked")
-		Enumeration<String> atributes = this.getSession().getAttributeNames();
+		Enumeration<?> atributes = this.getSession().getAttributeNames();
+
 		while (atributes.hasMoreElements()) {
-			String attribute = atributes.nextElement();
+			String attribute = (String) atributes.nextElement();
+
 			if (StringUtils.defaultString(attribute).startsWith("schema.")) {
 				this.getSession().removeAttribute(attribute);
 			}

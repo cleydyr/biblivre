@@ -398,7 +398,6 @@ public class MarcDataReader {
 		return this.formatDataField(format, dataFieldList);
 	}
 
-	@SuppressWarnings("unchecked")
 	private String formatDataField(String format, List<DataField> dataFieldList) {
 		if (dataFieldList == null || dataFieldList.isEmpty()) {
 			return "";
