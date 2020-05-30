@@ -23,13 +23,14 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.StaticBO;
 import biblivre.core.utils.Constants;
 
 public class Languages extends StaticBO {
-	private static Logger logger = Logger.getLogger(Languages.class);
+	private static Logger logger = LoggerFactory.getLogger(Languages.class);
 
 	private static HashMap<String, Set<LanguageDTO>> languages;
 

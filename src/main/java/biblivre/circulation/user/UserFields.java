@@ -23,14 +23,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.JavascriptCacheableList;
 import biblivre.core.StaticBO;
 
 public class UserFields extends StaticBO {
 
-	private static Logger logger = Logger.getLogger(UserFields.class);
+	private static Logger logger = LoggerFactory.getLogger(UserFields.class);
 
 	private static HashMap<String, JavascriptCacheableList<UserFieldDTO>> fields;	 // FormTab
 

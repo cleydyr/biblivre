@@ -25,15 +25,16 @@ import java.util.Map;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.JavascriptCache;
 import biblivre.core.utils.Constants;
 
 public class TranslationsMap extends HashMap<String, TranslationDTO> implements IFCacheableJavascript {
-	private Logger logger = Logger.getLogger(this.getClass());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final long serialVersionUID = 1L;
 
 	private String schema;

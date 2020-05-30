@@ -33,7 +33,8 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.administration.setup.State;
 import biblivre.core.BiblivreInitializer;
@@ -47,7 +48,7 @@ import biblivre.z3950.server.Z3950ServerBOAdapter;
 
 public class Schemas extends StaticBO {
 
-	protected static Logger logger = Logger.getLogger(Schemas.class);
+	protected static Logger logger = LoggerFactory.getLogger(Schemas.class);
 
 	private static Set<SchemaDTO> schemas;
 	private static final List<String> schemaBlacklist = new ArrayList<String>();

@@ -26,7 +26,8 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.translations.TranslationsMap;
 
@@ -37,7 +38,7 @@ public class Translations extends SimpleTagSupport {
 	private String param2;
 	private String param3;
 	private boolean escapeHTML;
-	protected Logger logger = Logger.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public void doTag() throws JspException {
