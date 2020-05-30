@@ -60,12 +60,6 @@ public class ExtendedResponse extends HttpServletResponseWrapper {
     	this.httpStatus = sc;
     }
 
-    @Override
-    public void setStatus(int sc, String msg) {
-    	super.setStatus(sc, msg);
-    	this.httpStatus = sc;
-    }
-	
 	public int getStatus() {
 		return this.httpStatus;
  	}

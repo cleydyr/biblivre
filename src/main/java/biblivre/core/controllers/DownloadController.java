@@ -41,7 +41,6 @@ public class DownloadController extends Controller {
 		super(xRequest, xResponse);
 	}
 
-	// http://balusc.blogspot.com/2009/02/fileservlet-supporting-resume-and.html
 	@Override
 	protected void doReturn() throws ServletException, IOException {
 		BiblivreFile file = this.handler.getFile();
@@ -49,14 +48,22 @@ public class DownloadController extends Controller {
 		int returnCode = this.handler.getReturnCode();
 
 		if (StringUtils.isNotBlank(message.getText()) || returnCode != 0) {
-			this.xResponse.setStatus(returnCode == 0 ? HttpServletResponse.SC_BAD_REQUEST : returnCode, message.getText());
+			if (returnCode == 0) {
+				this.xResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, message.getText());
+			}
+			else {
+				this.xResponse.setStatus(returnCode);
+			}
+
 			this.xRequest.getRequestDispatcher("/jsp/error_fatal.jsp").forward(this.xRequest, this.xResponse);
+
 			return;
 		}
 
 		FileIOUtils.sendHttpFile(file, this.xRequest, this.xResponse, this.headerOnly);
 
 		HttpCallback callback = this.handler.getCallback();
+
 		if (callback != null) {
 			callback.success();
 		}
@@ -108,7 +115,6 @@ public class DownloadController extends Controller {
 
 		this.xResponse.setContentType("text/html;charset=UTF-8");
 		this.xRequest.getRequestDispatcher(jsp).forward(this.xRequest, this.xResponse);
-		//this.xRequest.dispatch(jsp, this.xResponse);
 	}
 
 }

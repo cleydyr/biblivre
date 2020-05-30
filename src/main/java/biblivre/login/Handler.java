@@ -125,7 +125,6 @@ public class Handler extends AbstractHandler {
 		String language = request.getLanguage();
 		HttpSession session = request.getSession();
 
-		@SuppressWarnings("unchecked")
 		Enumeration<String> attributes = session.getAttributeNames();
 		while (attributes.hasMoreElements()) {
 			String attribute = attributes.nextElement();
