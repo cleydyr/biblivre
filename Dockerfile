@@ -6,4 +6,5 @@ RUN apt-get install -y netcat postgresql-client-11 && rm -rf /var/cache/apk/*
 COPY target/Biblivre4/ ${CATALINA_HOME}/webapps/Biblivre4/
 COPY scripts/wait-for.sh /usr/local/bin/wait-for.sh
 RUN chmod +x /usr/local/bin/wait-for.sh
+RUN rm -rf ${CATALINA_HOME}/webapps/ROOT
 EXPOSE 8080
