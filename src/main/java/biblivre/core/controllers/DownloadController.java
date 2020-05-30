@@ -55,8 +55,6 @@ public class DownloadController extends Controller {
 				this.xResponse.setStatus(returnCode);
 			}
 
-			this.xRequest.getRequestDispatcher("/jsp/error_fatal.jsp").forward(this.xRequest, this.xResponse);
-
 			return;
 		}
 
