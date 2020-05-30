@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 
 var OrderInput = new Input({
@@ -24,11 +24,11 @@ var OrderInput = new Input({
 		$('#biblivre_order_form_body').setTemplateElement('biblivre_order_form_body_template');
 		$('#biblivre_order_form').setTemplateElement('biblivre_order_form_template');
 		$('#biblivre_order_info_form').setTemplateElement('biblivre_order_info_form_template');
-		
-		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {			
+
+		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {
 			if (this.search.lastSearchResult && this.search.lastSearchResult[id]) {
 				this.search.lastSearchResult[id].deleted = true;
-				
+
 				this.search.processResultTemplate();
 			}
 
@@ -54,14 +54,14 @@ var OrderInput = new Input({
 			var value = input.val();
 			input.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 		});
-		
+
 		root.find('select:not(.autocreated)').each(function() {
 			var combo = $(this);
-	
+
 			var value = combo.find('option[value=' + combo.val() + ']').text();
 			combo.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 		});
-		
+
 		root.find('input:checkbox').each(function() {
 			$(this).disable();
 		});
@@ -71,7 +71,7 @@ var OrderInput = new Input({
 
 		root.find('.readonly_text').remove();
 		root.find('.readonly_hidden').removeClass('readonly_hidden');
-		
+
 		root.find('input:checkbox').each(function() {
 			$(this).enable();
 		});
@@ -82,14 +82,14 @@ var OrderInput = new Input({
 		if (this.editing) {
 			return;
 		}
-		
+
 		if (Core.trigger(this.prefix + 'edit-record-start', id) === false) {
 			return;
 		}
 
 		this.editing = true;
 		this.recordIdBeingEdited = id;
-		
+
 		var tab = this.search.selectedTab;
 		if (tab != 'form') {
 			tab = 'form';
@@ -98,9 +98,9 @@ var OrderInput = new Input({
 		}
 
 		Core.changeTab(tab, this.search, { keepEditing: true, skipConvert: true });
-		
+
 		var global = Globalize.culture().calendars.standard;
-		
+
 		$('input.datepicker').Zebra_DatePicker({
 			days: global.days.names,
 			days_abbr: global.days.namesAbbr,
@@ -111,7 +111,7 @@ var OrderInput = new Input({
 			lang_clear_date:Translations.get('common.clear'),
 			readonly_element: false
 		});
-		
+
 		this.toggleDeliveryInputs($('input:checkbox[name="delivered"]').is(':checked'));
 	},
 	getNewRecord: function() {
@@ -133,14 +133,14 @@ var OrderInput = new Input({
 			var input = $(this);
 			params[input.attr('name')] = input.val();
 		});
-		
+
 		var delivered = $('#biblivre_order_form input[name="delivered"').is(':checked') ? 'checked' : '';
-		
-		
+
+
 		var created = $('#biblivre_order_form_body :input[name="created"]').getIsoDate();
 		var deadlineDate = $('#biblivre_order_form_body :input[name="deadline_date"]').getIsoDate();
 		var receiptDate = $('#biblivre_order_form :input[name="receipt_date"]').getIsoDate();
-		
+
 		return $.extend(params, {
 			oldId: this.recordIdBeingEdited || 0,
 			id: (saveAsNew) ? 0 : this.recordIdBeingEdited,
@@ -160,12 +160,12 @@ var OrderInput = new Input({
 	quotationList: [],
 	listQuotations: function(supplierId) {
 		this.quotationList = [];
-		
+
 		if (!supplierId) {
 			var quotationSelect =  $('#quotation');
-			
+
 			quotationSelect.html("");
-			quotationSelect.append($('<option>', { 
+			quotationSelect.append($('<option>', {
 		        value: '',
 		        text :Translations.get('acquisition.order.field.quotation_select')
 		    }));
@@ -179,7 +179,7 @@ var OrderInput = new Input({
 			action: 'list',
 			supplier_id: supplierId
 		};
-		
+
 		$.ajax({
 			url: window.location.pathname,
 			type: 'POST',
@@ -192,65 +192,65 @@ var OrderInput = new Input({
 					return true;
 				}
 
-				this.quotationList = response.list.data; 
-				
+				this.quotationList = response.list.data;
+
 				var quotationSelect =  $('#quotation');
-				
+
 				quotationSelect.html("");
-				quotationSelect.append($('<option>', { 
+				quotationSelect.append($('<option>', {
 			        value: '',
 			        text :Translations.get('acquisition.order.field.quotation_select')
 			    }));
 				$.each(response.list.data, function (i, quotation) {
 					var text = '';
-					
+
 					$.each(quotation.quotationsList, function(i, item) {
 						text += item.quantity + "x " + item.author + " - " + item.title + ", ";
-					}); 
-                    
+					});
+
                     if (text.length > 50) {
                         text = text.substring(0, 50) + '...';
                     }
                     if (OrderSearch.selectedRecord && OrderSearch.selectedRecord.quotationId == quotation.id) {
-                        quotationSelect.append($('<option>', { 
+                        quotationSelect.append($('<option>', {
     				        value: quotation.id,
     				        text: text,
     				        selected: "selected"
     				    }));
-                        
+
                         quotationSelect.next('.readonly_text').text(text);
                     } else {
-                        quotationSelect.append($('<option>', { 
+                        quotationSelect.append($('<option>', {
     				        value: quotation.id,
     				        text: text
     				    }));
                     }
 				});
-				
+
 				this.updateQuotationList(quotationSelect.val());
 			}
 		}, this));
 	},
 	updateQuotationList: function(quotationId) {
 		var quotation = null;
-		
+
 		for (var i = 0; i < this.quotationList.length; i++) {
 			if (this.quotationList[i].id == quotationId) {
 				quotation = this.quotationList[i];
 				break;
 			}
 		}
-		
+
 		var deliveryTimeInput = $('#biblivre_order_form_body input[name="delivery_time"]');
-		
+
 		if (!quotation) {
 			this.root.find('.selected_results_area').processTemplate([]);
 			deliveryTimeInput.val('');
 			return true;
 		}
-		
+
 		deliveryTimeInput.val(quotation.deliveryTime);
-		
+
 		var quotationItems = [];
 		for (var i = 0; i < quotation.quotationsList.length; i++) {
 			var item = quotation.quotationsList[i];
@@ -261,7 +261,7 @@ var OrderInput = new Input({
 				value: item.unitValue
 			});
 		}
-		
+
 		var scroll = this.root.find('.selected_results_area ul').scrollTop();
 		this.root.find('.selected_results_area').processTemplate(quotationItems);
 		this.root.find('.selected_results_area ul').scrollTop(scroll);
@@ -284,14 +284,14 @@ var OrderInput = new Input({
 		if (record.deleted) {
 			return 'overlay_error';
 		}
-		
+
 		return '';
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
 			return Translations.get('common.deleted');
 		}
-		
+
 		return '';
 	}
 });

@@ -1,26 +1,26 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
 package biblivre.core.auth;
 
 public enum AuthorizationPointTypes {
-	
+
 	LOGIN(AuthorizationSchemaScope.ANY, AuthorizationUserScope.ANY, AuthorizationPointGroups.LOGIN, true),
 	LOGIN_CHANGE_PASSWORD(AuthorizationSchemaScope.ANY, AuthorizationUserScope.ANY, AuthorizationPointGroups.LOGIN, false, true),
 
@@ -59,7 +59,7 @@ public enum AuthorizationPointTypes {
 	CIRCULATION_PRINT_USER_CARDS(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.CIRCULATION),
 
 	CIRCULATION_USER_RESERVATION(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.READER, AuthorizationPointGroups.CIRCULATION),
-	
+
 	ACQUISITION_SUPPLIER_LIST(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ACQUISITION),
 	ACQUISITION_SUPPLIER_SAVE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ACQUISITION),
 	ACQUISITION_SUPPLIER_DELETE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ACQUISITION),
@@ -91,7 +91,7 @@ public enum AuthorizationPointTypes {
 	ADMINISTRATION_ACCESSCARDS_LIST(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_ACCESSCARDS_SAVE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 	ADMINISTRATION_ACCESSCARDS_DELETE(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
-	
+
 	ADMINISTRATION_MULTI_SCHEMA(AuthorizationSchemaScope.GLOBAL_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.ADMIN),
 
 	DIGITALMEDIA_UPLOAD(AuthorizationSchemaScope.SINGLE_SCHEMA, AuthorizationUserScope.EMPLOYEE, AuthorizationPointGroups.DIGITALMEDIA),
@@ -120,7 +120,7 @@ public enum AuthorizationPointTypes {
 		this._public = _public;
 		this._publicForLoggedUsers = _publicForLoggedUsers;
 	}
-	
+
 	public AuthorizationPointGroups getGroup() {
 		return this.group;
 	}

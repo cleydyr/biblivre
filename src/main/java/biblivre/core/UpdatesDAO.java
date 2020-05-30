@@ -52,14 +52,14 @@ public class UpdatesDAO extends AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
-	}	
+	}
 
 	public Connection beginUpdate() throws SQLException {
 		Connection con = this.getConnection();
 		con.setAutoCommit(false);
 
 		return con;
-	}	
+	}
 
 	public void commitUpdate(String version, Connection con) throws SQLException {
 		this.commitUpdate(version, con, true);
@@ -83,7 +83,7 @@ public class UpdatesDAO extends AbstractDAO {
 		finally {
 			this.closeConnection(con);
 		}
-	}	
+	}
 
 
 	public void rollbackUpdate(Connection con) {
@@ -92,7 +92,7 @@ public class UpdatesDAO extends AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
-	}	
+	}
 
 	public void createArrayAgg() throws SQLException {
 		Connection con = null;
@@ -107,7 +107,7 @@ public class UpdatesDAO extends AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
-	}	
+	}
 
 	public void create81ArrayAgg() throws SQLException {
 

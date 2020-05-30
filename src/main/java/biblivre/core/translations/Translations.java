@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -74,11 +74,11 @@ public class Translations extends StaticBO {
 
 	private Translations() {
 	}
-	
+
 	static {
 		Translations.reset();
 	}
-	
+
 	public static void reset() {
 		Translations.translations = new HashMap<Pair<String, String>, TranslationsMap>();
 	}
@@ -87,7 +87,7 @@ public class Translations extends StaticBO {
 		Pair<String, String> pair = new Pair<String, String>(schema, language);
 		Translations.translations.remove(pair);
 	}
-	
+
 	public static TranslationsMap get(String schema, String language) {
 		Pair<String, String> pair = new Pair<String, String>(schema, language);
 		TranslationsMap map = Translations.translations.get(pair);
@@ -104,24 +104,24 @@ public class Translations extends StaticBO {
 		translations.put(language, translation);
 
 		HashMap<String, HashMap<String, String>> removeTranslations = null;
-		
+
 		if (removeTranslation != null) {
 			removeTranslations = new HashMap<String, HashMap<String, String>>();
 			removeTranslations.put(language, removeTranslation);
 		}
-		
+
 		return Translations.save(schema, translations, removeTranslations, loggedUser);
 	}
-	
+
 	public static boolean save(String schema, HashMap<String, HashMap<String, String>> translations, HashMap<String, HashMap<String, String>> removeTranslations, int loggedUser) {
 		TranslationsDAO.getInstance(schema).save(translations, removeTranslations, loggedUser);
-		
+
 		for (String language : translations.keySet()) {
 			Translations.reset(schema, language);
 		}
-		
+
 		Languages.reset(schema);
-		
+
 		return true;
 	}
 
@@ -140,7 +140,7 @@ public class Translations extends StaticBO {
 		boolean success = TranslationsDAO.getInstance(schema).save(translations, loggedUser);
 
 		Translations.reset(schema, language);
-		
+
 		return success;
 	}
 
@@ -148,25 +148,25 @@ public class Translations extends StaticBO {
 		if (locale == null) {
 			return null;
 		}
-		
+
 		locale = locale.replaceAll("-", "_");
-		
+
 		try {
 			return LocaleUtils.toLocale(locale);
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
 	}
-	
+
 	public static boolean isJavaScriptLocaleAvailable(String language) {
 		if (language == null) {
 			return false;
 		}
-		
+
 		if (Translations.availableJavascriptLocales.contains(language)) {
 			return true;
 		}
-		
+
 		return Translations.availableJavascriptLocales.contains(language.split("-")[0]);
 	}
 
@@ -180,12 +180,12 @@ public class Translations extends StaticBO {
 		if (LocaleUtils.isAvailableLocale(locale)) {
 			return true;
 		}
-		
+
 		locale = Translations.toLocale(language.split("-")[0]);
-		
+
 		return LocaleUtils.isAvailableLocale(locale);
 	}
-	
+
 	public static DiskFile createDumpFile(String schema, String language) {
 		Translations.reset(schema, language);
 
@@ -217,7 +217,7 @@ public class Translations extends StaticBO {
 		}
 		return null;
 	}
-	
+
 	private static synchronized TranslationsMap loadLanguage(String schema, String language) {
 		Pair<String, String> pair = new Pair<String, String>(schema, language);
 		TranslationsMap map = Translations.translations.get(pair);
@@ -248,5 +248,5 @@ public class Translations extends StaticBO {
 
 		return map;
 	}
-	
+
 }

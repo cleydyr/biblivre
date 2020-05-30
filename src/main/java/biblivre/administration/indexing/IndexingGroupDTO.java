@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -34,7 +34,7 @@ import biblivre.core.utils.Pair;
  */
 public class IndexingGroupDTO extends AbstractDTO {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 	private String translationKey;
 
@@ -45,7 +45,7 @@ public class IndexingGroupDTO extends AbstractDTO {
 	private String datafields;
 	private boolean sortable;
 	private boolean defaultSort;
-	
+
 	/**
 	 * List of DataFields and their respective SubFields
 	 * E.g.: [{
@@ -57,15 +57,15 @@ public class IndexingGroupDTO extends AbstractDTO {
 	 * }]
 	 */
 	private transient List<Pair<String, List<Character>>> _array;
-	
+
 	public Integer getId() {
 		return this.id;
 	}
-	
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	public String getTranslationKey() {
 		return this.translationKey;
 	}
@@ -90,7 +90,7 @@ public class IndexingGroupDTO extends AbstractDTO {
 		this._array = null;
 		this.datafields = datafields;
 	}
-	
+
 	public boolean isSortable() {
 		return this.sortable;
 	}
@@ -102,12 +102,12 @@ public class IndexingGroupDTO extends AbstractDTO {
 	public List<Pair<String, List<Character>>> getDatafieldsArray() {
 		if (this._array == null) {
 			List<Pair<String, List<Character>>> list = new ArrayList<Pair<String, List<Character>>>();
-			
+
 			if (this.datafields != null) {
 				String[] fields = this.datafields.split(",");
 				for (String field : fields) {
 					String[] line = field.trim().split("_");
-	
+
 					String datafield = line[0];
 					List<Character> subfields = new ArrayList<Character>(line.length - 1);
 
@@ -121,7 +121,7 @@ public class IndexingGroupDTO extends AbstractDTO {
 
 			this._array = list;
 		}
-		
+
 		return this._array;
 	}
 

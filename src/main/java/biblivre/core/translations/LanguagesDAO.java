@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -34,22 +34,22 @@ public class LanguagesDAO extends AbstractDAO {
 	public static LanguagesDAO getInstance(String schema) {
 		return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class, schema);
 	}
-	
+
 	public Set<LanguageDTO> list() {
 		Set<LanguageDTO> set = new TreeSet<LanguageDTO>();
 
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			StringBuilder sql = new StringBuilder(); 
+			StringBuilder sql = new StringBuilder();
 
-			sql.append("SELECT language, text as name FROM global.translations WHERE key = 'language_name' ");			
+			sql.append("SELECT language, text as name FROM global.translations WHERE key = 'language_name' ");
 
  			if (!this.isGlobalSchema()) {
- 				sql.append("UNION ");					
+ 				sql.append("UNION ");
 				sql.append("SELECT language, text as name FROM translations WHERE key = 'language_name' ");
  			}
-			
+
 			sql.append("ORDER BY name;");
 
 			Statement st = con.createStatement();
@@ -70,7 +70,7 @@ public class LanguagesDAO extends AbstractDAO {
 
 		return set;
 	}
-    
+
     private LanguageDTO populateDTO(ResultSet rs) throws SQLException {
     	LanguageDTO dto = new LanguageDTO();
 
@@ -78,5 +78,5 @@ public class LanguagesDAO extends AbstractDAO {
         dto.setName(rs.getString("name"));
 
         return dto;
-    }    
+    }
 }

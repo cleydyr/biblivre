@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -32,7 +32,7 @@ public abstract class AbstractBO {
 	protected String schema;
 
 	private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances = new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();
-	
+
 	@SuppressWarnings("unchecked")
 	protected static <T extends AbstractBO> T getInstance(Class<T> cls, String schema) {
 		Pair<Class<? extends AbstractBO>, String> pair = new Pair<Class<? extends AbstractBO>, String>(cls, schema);
@@ -61,9 +61,9 @@ public abstract class AbstractBO {
 	public String getSchema() {
 		return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
 	}
-	
+
 	public boolean isGlobalSchema() {
 		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
 	}
-	
+
 }

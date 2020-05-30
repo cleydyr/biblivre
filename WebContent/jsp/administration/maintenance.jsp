@@ -5,7 +5,7 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
-	
+
 	<script type="text/javascript" src="static/scripts/biblivre.administration.maintenance.js"></script>
 </layout:head>
 
@@ -27,7 +27,7 @@
 			<a class="button main_button" onclick="Administration.backup.submit('exclude_digital_media');"><i18n:text key="administration.maintenance.backup.button_exclude_digital_media" /></a>
 			<a class="button main_button" onclick="Administration.backup.submit('digital_media_only');"><i18n:text key="administration.maintenance.backup.button_digital_media_only" /></a>
 		</div>
-		
+
 		<div class="last_backups">
 			<p><strong><i18n:text key="administration.maintenance.backup.title_last_backups" /></strong></p>
 			<p><i18n:text key="administration.maintenance.backup.description_last_backups_1" /></p>
@@ -35,7 +35,7 @@
 
 			<div id="last_backups_list" class="last_backups_list">
 			</div>
-			<textarea id="last_backups_list_template" class="template"><!-- 
+			<textarea id="last_backups_list_template" class="template"><!--
 				{#if $T.backups == null || !$T.backups.length}
 					<p><strong><i18n:text key="administration.maintenance.backup.no_backups_found" /></strong></p>
 				{#/if}
@@ -44,7 +44,7 @@
 					{#if $T.backup$index == 5}
 						<div class="expand" onclick="Administration.backup.showAll(this);">{Translations.get('administration.maintenance.backup.show_all', [$T.backups.length])}</div>
 					{#/if}
-				
+
 					<a class="backup {#if $T.backup$first}last_backup{#/if} {#if $T.backup$index > 4}hidden_backup{#/if}" rel="{$T.backup.id}" href="?controller=download&module=administration.backup&action=download&id={$T.backup.id}" target="_blank">
 
 						{_d($T.backup.created, 'd t')} - {Translations.get('administration.maintenance.backup.label_' + $T.backup.type)}
@@ -60,12 +60,12 @@
 						{#if $T.backup$first}
 							<div class="last_backup_description"><i18n:text key="administration.maintenance.backup.last_backup" /></div>
 						{#/if}
-					</a>		
+					</a>
 				{#/foreach}
 			--></textarea>
 		</div>
 	</fieldset>
-	
+
 	<fieldset class="block reindex">
 		<legend><i18n:text key="administration.maintenance.reindex.title" /></legend>
 		<div class="description">
@@ -77,7 +77,7 @@
 			</ul>
 			<p><i18n:text key="administration.maintenance.reindex.warning" /></p>
 		</div>
-		
+
 		<div class="buttons">
 			<a class="button main_button" onclick="Administration.reindex.confirm('biblio');"><i18n:text key="administration.maintenance.reindex.button_bibliographic" /></a>
 			<a class="button main_button" onclick="Administration.reindex.confirm('authorities');"><i18n:text key="administration.maintenance.reindex.button_authorities" /></a>
@@ -90,7 +90,7 @@
 		<div class="description">
 			<p><i18n:text key="administration.maintenance.reinstall.description" /></p>
 		</div>
-		
+
 		<div class="buttons">
 			<a class="button main_button" onclick="Administration.reinstall.confirm();"><i18n:text key="administration.maintenance.reinstall.button" /></a>
 		</div>
@@ -110,7 +110,7 @@
 			</div>
 		</fieldset>
 	</div>
-	
+
 	<div id="reindex_popup" class="popup">
 		<div class="close" onclick="Administration.reindex.cancel();"><i18n:text key="common.close" /></div>
 
@@ -124,12 +124,12 @@
 			<div class="confirm">
 				<p><i18n:text key="administration.maintenance.reindex.confirm" /></p>
 			</div>
-			
+
 			<div class="buttons">
 				<a class="button" onclick="Administration.reindex.cancel();"><i18n:text key="common.cancel" /></a>
 				<a class="button main_button" onclick="Administration.reindex.submit();"><i18n:text key="common.ok" /></a>
 			</div>
-			
+
 			<div class="progress">
 				<div class="progress_text"><i18n:text key="common.wait" /></div>
 				<div class="progress_bar">

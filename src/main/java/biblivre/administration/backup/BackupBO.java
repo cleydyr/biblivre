@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -62,10 +62,10 @@ public class BackupBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = BackupDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public void simpleBackup() {
 		BackupType backupType = BackupType.FULL;
 		BackupScope backupScope = this.getBackupScope();
@@ -83,7 +83,7 @@ public class BackupBO extends AbstractBO {
 
 		for (String s : list) {
 			if (Schemas.isNotLoaded(s)) {
-				continue;				
+				continue;
 			}
 
 			String title = Configurations.getString(s, Constants.CONFIG_TITLE);
@@ -104,14 +104,14 @@ public class BackupBO extends AbstractBO {
 			return BackupScope.SINGLE_SCHEMA;
 		}
 	}
-	
+
 	public BackupDTO prepare(Map<String, Pair<String, String>> schemas, BackupType type, BackupScope scope) {
 		BackupDTO dto = new BackupDTO(schemas, type, scope);
 		dto.setCurrentStep(0);
-		
+
 		int steps = 0;
 		int schemasCount = dto.getSchemas().size();
-		
+
 		switch (dto.getType()) {
 			case FULL:
 				// schema, data and media for each schema (except media for public) + zip
@@ -126,7 +126,7 @@ public class BackupBO extends AbstractBO {
 				steps = schemasCount;
 				break;
 		}
-				
+
 		dto.setSteps(steps);
 
 		if (this.save(dto)) {
@@ -139,7 +139,7 @@ public class BackupBO extends AbstractBO {
 	public void backup(BackupDTO dto) {
 		try {
 			this.createBackup(dto);
-	
+
 			if (dto.getBackup() != null) {
 				this.move(dto);
 			}
@@ -154,7 +154,7 @@ public class BackupBO extends AbstractBO {
 		if (pgdump == null) {
 			return;
 		}
-		
+
 		File tmpDir = FileIOUtils.createTempDir();
 
 		Map<String, Pair<String, String>> schemas = dto.getSchemas();
@@ -174,7 +174,7 @@ public class BackupBO extends AbstractBO {
 				dumpData(dto, tmpDir, schema);
 			}
 
-			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {	
+			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
 				if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
 					dumpMedia(dto, tmpDir, schema);
 				}
@@ -209,7 +209,7 @@ public class BackupBO extends AbstractBO {
 
 		return list.getFirst();
 	}
-	
+
 	public boolean save(BackupDTO dto) {
 		return this.dao.save(dto);
 	}
@@ -217,7 +217,7 @@ public class BackupBO extends AbstractBO {
 	public boolean move(BackupDTO dto) {
 		File destination = this.getBackupDestination();
 		File backup = dto.getBackup();
-		
+
 		if (destination == null) {
 			destination = backup.getParentFile();
 		}
@@ -299,9 +299,9 @@ public class BackupBO extends AbstractBO {
 			InputStreamReader isr = new InputStreamReader(p.getInputStream());
 			br = new BufferedReader(isr);
 			String line;
-			
+
 			while ((line = br.readLine()) != null) {
-				//There was a system.out.println here for the 'line' var, 
+				//There was a system.out.println here for the 'line' var,
 				//with a FIX_ME tag.  So I changed it to logger.debug().
 				if (this.logger.isDebugEnabled()) {
 					this.logger.debug(line);
@@ -309,7 +309,7 @@ public class BackupBO extends AbstractBO {
 			}
 
 			p.waitFor();
-			
+
 			return p.exitValue() == 0;
 		} catch (IOException e) {
 			this.logger.error(e.getMessage(), e);

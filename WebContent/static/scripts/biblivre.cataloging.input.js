@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var CatalogingFormClass = {
 	formInitialized: false,
@@ -24,14 +24,14 @@ var CatalogingFormClass = {
 		if (this.formInitialized) {
 			return;
 		}
-	
+
 		this.createForm(fields);
-	
+
 		this.initializeMarcHelp(form, type);
 		this.initializeFormCollapse(form);
 		this.initializeRepeatableDataFields(form);
 		this.initializeRepeatableSubFields(form);
-	
+
 		this.formInitialized = true;
 		Core.trigger(this.prefix + 'form-initialized');
 	},
@@ -43,107 +43,107 @@ var CatalogingFormClass = {
 		if (this.formElementId && this.formElementId == '#biblivre_holding_form') {
 			translationPrefix = 'marc.holding.datafield.';
 		}
-		
+
 		for (var i = 0; i < datafields.length; i++) {
 			var datafield = datafields[i];
 			var hasMaterialType = datafield.material_type && datafield.material_type.length > 0;
-	
+
 			if (hasMaterialType) {
 				html.push('<div class="material_type" data="', datafield.material_type.join(','), '">');
 			}
 			html.push('<fieldset class="datafield');
-	
+
 			if (datafield.repeatable) {
 				html.push(' repeatable');
 			}
-	
+
 			if (datafield.collapsed) {
 				html.push(' collapsed');
 			}
-	
+
 			html.push('" data="', datafield.datafield, '">');
-	
+
 			html.push('<legend>');
 			html.push(Translations.get(translationPrefix + datafield.datafield));
 			html.push('<span class="marc_numbering">(', datafield.datafield, ')</span>');
 			html.push('</legend>');
-	
+
 			html.push('<div class="collapse"></div>');
-	
+
 			html.push('<div class="subfields">');
-			
+
 			for (var ind = 1; ind <= 2; ind++) {
 				var indicators = datafield['indicator' + ind];
-	
+
 				if (indicators) {
 					html.push('<div class="indicator">');
-					
+
 					html.push('<div class="label">');
 					html.push(Translations.get(translationPrefix + datafield.datafield + '.indicator.' + ind));
 					html.push('</div>');
-					
+
 					html.push('<div class="value">');
 					html.push('<select name="ind',  ind,  '">');
-					
+
 					for (var j = 0; j < indicators.length; j++) {
 						var indicator = indicators[j];
-	
+
 						html.push('<option value="', indicator, '">');
 						html.push(Translations.get(translationPrefix + datafield.datafield + '.indicator.' + ind + '.' + indicator));
 						html.push('</option>');
 					}
-					
+
 					html.push('</select>');
 					html.push('</div>');
-	
+
 					html.push('<div class="extra"><span class="marc_numbering">#', ind, '</span></div>');
 					html.push('<div class="clear"></div>');
-					
+
 					html.push('</div>');
 				}
 			}
-			
+
 			if (!datafield.subfields) {
 				datafield.subfields = [];
 			}
-			
+
 			for (var sub = 0; sub < datafield.subfields.length; sub++) {
 				var subfield = datafield.subfields[sub];
-	
+
 				html.push('<div class="subfield');
-	
+
 				if (subfield.repeatable) {
 					html.push(' repeatable');
 				}
-	
+
 				if (subfield.collapsed) {
 					html.push(' secondary');
 				}
-	
+
 				html.push('" data="', subfield.datafield, '">');
-				
+
 				html.push('<div class="label">');
 				html.push(Translations.get(translationPrefix + datafield.datafield + '.subfield.' + subfield.subfield));
 				html.push('</div>');
-	
+
 				var autocompleteClass = '';
 				var dataAutocomplete = '';
 				if (subfield.autocomplete_type != 'disabled') {
 					autocompleteClass = 'autocomplete autocomplete_' + subfield.autocomplete_type;
 					dataAutocomplete = 'data-ac="' +  subfield.autocomplete_type + '"';
 				}
-				
-				
+
+
 				html.push('<div class="value"><input type="text" ', dataAutocomplete ,' name="', subfield.subfield, '" class="finput ', autocompleteClass, '" /></div>');
 				html.push('<div class="extra"><span class="marc_numbering">$' + subfield.subfield + '</span></div>');
 				html.push('<div class="clear"></div>');
-				
+
 				html.push('</div>');
 			}
-	
+
 			html.push('</div>');
 			html.push('</fieldset>');
-			
+
 			if (hasMaterialType) {
 				html.push('</div>');
 			}
@@ -154,7 +154,7 @@ var CatalogingFormClass = {
 	},
 	initializeMarcHelp: function(root, type) {
 		root = root || this.root;
-		
+
 		var urls = {
 			'cataloging.authorities': {
 				prefix: 'http://www.loc.gov/marc/authority/ad',
@@ -173,18 +173,18 @@ var CatalogingFormClass = {
 				suffix: '.html'
 			}
 		};
-	
+
 		var url = urls[type];
 		if (!url) {
 			return false;
 		}
-	
+
 		root.find('fieldset.datafield[data]:not(.dont_show_help)').each(function() {
 			var fieldset = $(this);
-	
+
 			var tag = fieldset.attr('data');
 			var legend = fieldset.children('legend');
-	
+
 			legend.append('<a href="' + url.prefix + tag + url.suffix + '" target="_blank" class="marc_help">[ ? ]</a>');
 		});
 	},
@@ -193,16 +193,16 @@ var CatalogingFormClass = {
 
 		root.find('.collapse').click(function() {
 			$(this).parents('fieldset:first').toggleClass('collapsed');
-		
+
 			return false;
 		});
-	
+
 		root.find('fieldset').click(function() {
 			$(this).removeClass('collapsed');
 		}).each(function() {
 			var fieldset = $(this);
 			var hiddenSubfields = fieldset.find('.secondary');
-	
+
 			if (hiddenSubfields.size() > 0) {
 				$('<div class="expand"></div>').html(_p('cataloging.form.hidden_subfields', [hiddenSubfields.size()])).click(function() {
 					$(this).parents('fieldset:first').find('.secondary').show();
@@ -215,12 +215,12 @@ var CatalogingFormClass = {
 	initializeRepeatableDataFields: function(root) {
 		this.repeatableDataFieldsInitialized = true;
 		root = root || this.root;
-		
+
 		var me = this;
-		
+
 		root.find('fieldset.repeatable').each(function() {
 			var fieldset = $(this);
-	
+
 			fieldset.children('legend').append(
 				$('<a href="javascript:void(0);" class="marc_repeat">[ ' +Translations.get('cataloging.tab.form.repeat') + ' ]</a>').click(function() {
 					me.repeatDataField($(this).parents('fieldset'));
@@ -230,25 +230,25 @@ var CatalogingFormClass = {
 	},
 	repeatDataField: function(dataField) {
 		var clone = dataField.clone(true);
-	
+
 		clone.find(':input').val('');
-	
+
 		if (!dataField.is('.autocreated')) {
 			if (this.repeatableDataFieldsInitialized) {
 				clone.find('legend a.marc_repeat').remove();
-	
+
 				clone.children('legend').append(
 					$('<a href="javascript:void(0);" class="marc_remove">[ ' +Translations.get('cataloging.tab.form.remove') + ' ]</a>').click(function() {
 						$(this).parents('fieldset').remove();
 					})
 				);
 			}
-	
+
 			clone.removeClass('repeatable').addClass('repeated');
 		}
-	
+
 		clone.insertAfter(dataField);
-		
+
 		if (clone.find('.autocomplete').size() > 0) {
 			this.autocomplete(clone.find('.autocomplete').unautocomplete());
 		}
@@ -263,13 +263,13 @@ var CatalogingFormClass = {
 
 		root.find('div.repeatable').each(function() {
 			var div = $(this);
-	
+
 			var extra = div.find('div.extra');
-	
+
 			if (!extra.size()) {
 				extra = $('<div class="extra"></div>').insertAfter(div.find('div.value'));
 			}
-	
+
 			extra.append(
 				$('<a href="javascript:void(0);" class="marc_repeat">[ ' +Translations.get('cataloging.tab.form.repeat') + ' ]</a>').click(function() {
 					me.repeatSubField($(this).parents('div.subfield'));
@@ -279,29 +279,29 @@ var CatalogingFormClass = {
 	},
 	repeatSubField: function(subField) {
 		var clone = subField.clone(true);
-	
+
 		clone.find(':input').val('');
-	
+
 		if (!subField.is('.autocreated')) {
 			if (this.repeatableSubFieldsInitialized) {
 				clone.find('.extra a.marc_repeat').remove();
-		
+
 				clone.find('.extra').append(
 					$('<a href="javascript:void(0);" class="marc_remove">[ ' +Translations.get('cataloging.tab.form.remove') + ' ]</a>').click(function() {
 						$(this).parents('div.subfield').remove();
 					})
 				);
 			}
-	
+
 			clone.removeClass('repeatable').addClass('repeated');
 		}
-		
+
 		clone.insertAfter(subField);
-		
+
 		if (clone.find('.autocomplete').size() > 0) {
 			this.autocomplete(clone.find('.autocomplete').unautocomplete());
 		}
-	
+
 		return clone;
 	},
 	populateDataField: function(fieldset, datafield) {
@@ -309,26 +309,26 @@ var CatalogingFormClass = {
 			if (!datafield.hasOwnProperty(subfieldtag)) {
 				continue;
 			}
-	
+
 			var originalInput = fieldset.find(':input[name="' + subfieldtag + '"]:first');
 			if (originalInput.size() === 0) {
 				var autoCreatedSubField = $('<div class="subfield autocreated"></div>').appendTo(fieldset);
 				originalInput = $('<input type="hidden" name="' + subfieldtag + '"/>').appendTo(autoCreatedSubField);
 			}
-	
+
 			var subfields = datafield[subfieldtag];
-	
+
 			if (!$.isArray(subfields)) {
 				// ind1 or ind2
 				originalInput.val(subfields);
 				continue;
 			}
-	
+
 			// other subfields
 			for (var i = 0; i < subfields.length; i++) {
 				var subfield = subfields[i];
 				var input = (i == 0) ? originalInput : this.repeatSubField(originalInput.parents('div.subfield')).find(':input[name="' + subfieldtag + '"]');
-	
+
 				input.val(subfield);
 			}
 		}
@@ -336,12 +336,12 @@ var CatalogingFormClass = {
 	createJson: function(root) {
 		var json = {};
 		root = root || this.root;
-	
+
 		root.find('input.autocreated.controlfield[data]').each(function() {
 			var controlField = $(this);
 			json[controlField.attr('data')] = controlField.val();
 		});
-	
+
 		root.find('fieldset.datafield[data]')
 	//		.filter(function() {
 	//			var $this = $(this);
@@ -352,21 +352,21 @@ var CatalogingFormClass = {
 			var dataFieldTag = fieldSet.attr('data');
 			var dataField = {};
 			var foundSubfield = false;
-	
+
 			fieldSet.find(':input').each(function() {
 				var input = $(this);
 				var subFieldTag = input.attr('name');
 				var value = input.val();
-	
+
 				if (!value) {
 					return;
 				}
-	
+
 				if (subFieldTag == 'ind1' || subFieldTag == 'ind2') {
 					dataField[subFieldTag] = value;
 				} else {
 					foundSubfield = true;
-	
+
 					if (dataField[subFieldTag]) {
 						dataField[subFieldTag].push(value);
 					} else {
@@ -374,54 +374,54 @@ var CatalogingFormClass = {
 					}
 				}
 			});
-	
+
 			if (!foundSubfield) {
 				return;
 			}
-	
+
 			if (json[dataFieldTag]) {
 				json[dataFieldTag].push(dataField);
 			} else {
 				json[dataFieldTag] = [dataField];
 			}
 		});
-	
+
 		return JSON.stringify(json);
 	},
 	loadJson: function(root, record) {
 		root = root || this.root;
-		
+
 		for (var datafieldtag in record) {
 			if (!record.hasOwnProperty(datafieldtag)) {
 				continue;
 			}
-	
+
 			if (parseInt(datafieldtag, 10) < 10) {
 				$('<input type="hidden" class="controlfield autocreated" data="' + datafieldtag + '"/>').val(record[datafieldtag]).appendTo(root);
 				continue;
 			}
-	
+
 			var originalFieldset = root.find('fieldset.datafield[data="' + datafieldtag + '"]:first');
 			if (originalFieldset.size() == 0) {
 				originalFieldset = $('<fieldset class="datafield autocreated" data="' + datafieldtag + '"></fieldset>').appendTo(root);
 			}
-	
+
 			var datafields = record[datafieldtag];
-	
+
 			for (var i = 0; i < datafields.length; i++) {
 				var datafield = datafields[i];
 				var fieldset = (i == 0) ? originalFieldset : this.repeatDataField(originalFieldset);
-	
+
 				this.populateDataField(fieldset, datafield);
 			}
 		}
-	
+
 		return record;
 	},
 	setAsReadOnly: function(tab) {
 		var root;
 		var me = this;
-	
+
 		switch (tab) {
 			case 'form':
 			case 'holding_form':
@@ -435,10 +435,10 @@ var CatalogingFormClass = {
 						form.addClass('readonly_hidden');
 					}
 				});
-			
+
 				root.find('input:not(.autocreated)').each(function() {
 					var input = $(this);
-			
+
 					var value = input.val();
 					if (value == '') {
 						input.parents('.subfield:first').addClass('readonly_hidden');
@@ -446,69 +446,69 @@ var CatalogingFormClass = {
 						input.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 					}
 				});
-			
+
 				root.find('select:not(.autocreated)').each(function() {
 					var combo = $(this);
-			
+
 					var value = combo.find('option[value=' + combo.val() + ']').text();
 					combo.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 				});
-			
+
 				root.find('.marc_repeat, .marc_remove').addClass('readonly_hidden');
 				break;
-	
+
 			case 'marc':
 			case 'holding_marc':
 				root = $('#biblivre_' + tab + ', .biblivre_' + tab + '_body');
 				var textarea = $('#biblivre_' + tab + '_textarea').addClass('readonly_hidden');
-	
+
 				var marcLines = textarea.val().split(/\r?\n/);
 				var fields = [];
-	
+
 				for (var i = 0, len = marcLines.length; i < len; i++) {
 					var line = marcLines[i];
-	
+
 					if (line && line.match(/(\d\d\d) (.*)/)) {
 						var field = RegExp.$1;
 						var value = RegExp.$2;
-	
+
 						fields.push({
 							field: field,
 							value: value
 						});
 					}
 				}
-				
+
 				root.find('select').each(function() {
 					var combo = $(this);
-			
+
 					var value = combo.find('option[value=' + combo.val() + ']').text();
 					combo.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 				});
-	
+
 				root.processTemplate({ fields: fields });
 				break;
 		}
 	},
 	setAsEditable: function(tab) {
 		var root;
-		
+
 		switch (tab) {
 			case 'form':
 			case 'holding_form':
 				root = $('#biblivre_' + tab + ', .biblivre_' + tab + '_body');
 				break;
-	
+
 			case 'marc':
 			case 'holding_marc':
 				root = $('div.tab_body[data-tab=' + tab + '], div.tab_extra_content[data-tab=' + tab + ']');
 				break;
-	
-			default: 
+
+			default:
 				root = $(document);
 				break;
 		}
-	
+
 		root.find('.readonly_text').remove();
 		root.find('.readonly_hidden').removeClass('readonly_hidden');
 	},
@@ -516,7 +516,7 @@ var CatalogingFormClass = {
 		if (!root) {
 			root = this.root.find('.autocomplete');
 		}
-		
+
 		var module = this.type;
 		root.each(function() {
 			var type = $(this).data('ac');
@@ -538,13 +538,13 @@ var CatalogingFormClass = {
 				scroll: true,
 				parse: function(json) {
  					var parsed = [];
-					
+
 					if (json.success && json.data) {
 						if (type == 'authorities' || type == 'vocabulary') {
 							if (json.data.data) {
 								for (var i=0; i < json.data.data.length; i++) {
 									var row = json.data.data[i];
-									
+
 									parsed.push({
 										data: row,
 										value: row.phrase,
@@ -555,7 +555,7 @@ var CatalogingFormClass = {
 						} else {
 							for (var i=0; i < json.data.length; i++) {
 								var row = json.data[i];
-								
+
 								parsed.push({
 									data: row,
 									value: row,
@@ -570,7 +570,7 @@ var CatalogingFormClass = {
 			}).result(function(event, item) {
 				var field = $(this);
 				var type = field.data('ac');
-				
+
 				if (type == 'authorities' || type == 'vocabulary') {
 					var datafield = field.closest('.subfield').attr('data');
 					var marc = ((item.record || {}).json || {})[type == 'vocabulary' ? '150' : datafield];
@@ -578,16 +578,16 @@ var CatalogingFormClass = {
 					if (!marc || !marc[0]) {
 						return;
 					}
-					
+
 					marc = marc[0];
-					
+
 					var fieldset = field.closest('.subfields');
-					
+
 					for (var sub in marc) {
 						if (!marc.hasOwnProperty(sub)) {
 							continue;
 						}
-						
+
 						var data = marc[sub];
 						if (!$.isArray(data)) {
 							fieldset.find(':input[name="' + sub + '"]').val(data);
@@ -609,11 +609,11 @@ var CatalogingFormClass = {
 		var material_type = this.getMaterialType(from);
 		var author_type = this.getAuthorType ? this.getAuthorType(from) : '';
 		var database = this.getCurrentDatabase();
-	
+
 		if (this._convertXHR) {
 			this._convertXHR.abort();
 		}
-	
+
 		this._convertXHR = $.ajax({
 			url: window.location.pathname,
 			type: 'POST',
@@ -634,7 +634,7 @@ var CatalogingFormClass = {
 		}).done(function(response) {
 			if (response.success) {
 				if ($.isFunction(callback)) {
-					callback(response.data);		
+					callback(response.data);
 				}
 			} else {
 				Core.msg(response);
@@ -662,7 +662,7 @@ var CatalogingInputClass = {
 		//		.setTemplateElement('biblivre_holdings_template');
 
 		this.initializeDatabaseArea();
-	
+
 		$.History.bind($.proxy(function(trigger) {
 			return this.historyRead(trigger);
 		}, this));
@@ -682,7 +682,7 @@ var CatalogingInputClass = {
 					$('.automatic_holding input[name="holding_volume_type"][value="number"]').prop('checked', false).trigger('change');
 				}
 			});
-	
+
 			$('.automatic_holding input[name="holding_volume_count"]').anyChange(function() {
 				var el = $(this);
 				if (el.val() != '') {
@@ -691,31 +691,31 @@ var CatalogingInputClass = {
 					$('.automatic_holding input[name="holding_volume_type"][value="count"]').prop('checked', false).trigger('change');
 				}
 			});
-	
+
 			$('.automatic_holding input[name="holding_volume_type"]').on('change', function() {
 				var el = $(this);
 				var value = el.val();
-	
+
 				switch (value) {
 					case 'count':
 						var other = $('.automatic_holding input[name="holding_volume_type"][value="number"]');
 						$('.automatic_holding input[name="holding_volume_number"]').prop('disabled', el.prop('checked'));
 						$('.automatic_holding input[name="holding_volume_count"]').prop('disabled', other.prop('checked'));
 						break;
-	
+
 					case 'number':
-						var other = $('.automatic_holding input[name="holding_volume_type"][value="count"]');					
+						var other = $('.automatic_holding input[name="holding_volume_type"][value="count"]');
 						$('.automatic_holding input[name="holding_volume_count"]').prop('disabled', el.prop('checked'));
 						$('.automatic_holding input[name="holding_volume_number"]').prop('disabled', other.prop('checked'));
 						break;
 				}
 			});
-			
+
 			Core.subscribe(this.search.prefix + 'open-record', function(e, record) {
 				$('.automatic_holding').hide();
 			}, this);
 		}
-		
+
 		Core.subscribe(this.prefix + 'edit-record-start', function(e, id) {
 			if (id == ' ') {
 				$('.automatic_holding').show().find(':input:not(:radio)').val('').trigger('change');
@@ -737,22 +737,22 @@ var CatalogingInputClass = {
 			Core.historyTrigger({
 				database: this.getCurrentDatabase()
 			});
-	
+
 			this.updateDatabaseCount();
 			this.search.redoSearch();
 			//	this.clearExportList();
 		}, this);
 
-		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {			
+		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {
 			if (this.search.lastSearchResult && this.search.lastSearchResult[id]) {
 				var database = this.getCurrentDatabase();
-				
+
 				if (database == 'trash') {
 					this.search.lastSearchResult[id].database = 'permanent_trash';
-				} else {					
+				} else {
 					this.search.lastSearchResult[id].database = 'trash';
 				}
-				
+
 				this.search.processResultTemplate();
 			}
 
@@ -764,7 +764,7 @@ var CatalogingInputClass = {
 			if (this.type == 'cataloging.bibliographic') {
 				var autoHolding = {};
 				var auto = false;
-				
+
 				$('.automatic_holding :input:not(:disabled)').each(function() {
 					var el = $(this);
 
@@ -783,7 +783,7 @@ var CatalogingInputClass = {
 					autoHolding.controller = 'json';
 					autoHolding.module = 'cataloging.holding';
 					autoHolding.action = 'create_automatic_holding';
-					
+
 					record.promise = $.ajax({
 						url: window.location.pathname,
 						type: 'POST',
@@ -797,10 +797,10 @@ var CatalogingInputClass = {
 					});
 				}
 			}
-			
+
 			this.updateDatabaseCount();
 		}, this);
-		
+
 		Core.subscribe(this.prefix + 'record-moved', function(e, id) {
 			this.updateDatabaseCount();
 		}, this);
@@ -828,7 +828,7 @@ var CatalogingInputClass = {
 			if (val == 'all') {
 				this.root.find('.material_type').show();
 			} else {
-				Core.toggleAreas('material_type', val, this.root);				
+				Core.toggleAreas('material_type', val, this.root);
 			}
 		}, this);
 	},
@@ -848,11 +848,11 @@ var CatalogingInputClass = {
 	_updateDatabaseCountXHR: null,
 	updateDatabaseCount: function() {
 		var database = this.getCurrentDatabase();
-	
+
 		if (this._updateDatabaseCountXHR) {
 			this._updateDatabaseCountXHR.abort();
 		}
-	
+
 		this._updateDatabaseCountXHR = $.ajax({
 			url: window.location.pathname,
 			type: 'POST',
@@ -889,16 +889,16 @@ var CatalogingInputClass = {
 		switch (tab) {
 			case 'form':
 				root = $('#biblivre_form, .biblivre_form_body');
-	
+
 				this.setAsEditable('form');
-	
+
 				root.find('fieldset.repeated, div.repeated, fieldset.autocreated, input.autocreated').remove();
 				root.find('fieldset.datafield').find(':input').not('.dont_clear').val('');
 				break;
 
 			case 'marc':
 				this.setAsEditable('marc');
-				break;			
+				break;
 		}
 	},
 	clearAll: function() {
@@ -919,7 +919,7 @@ var CatalogingInputClass = {
 
 		this.editing = true;
 		this.recordIdBeingEdited = id;
-	
+
 		var tab = this.search.selectedTab;
 		if (tab != 'form' && tab != 'marc') {
 			tab = 'form';
@@ -977,7 +977,7 @@ var CatalogingInputClass = {
 		var data = this.getRecordData(from);
 		var material_type = this.getMaterialType(from);
 		var author_type = this.getAuthorType(from);
-		
+
 		return {
 			oldId: oldId,
 			id: id,
@@ -1007,7 +1007,7 @@ var CatalogingInputClass = {
 				return 'overlay_normal';
 			}
 		}
-		
+
 		return '';
 	},
 	getOverlayText: function(record) {
@@ -1020,7 +1020,7 @@ var CatalogingInputClass = {
 				return Translations.get('cataloging.database.record_moved', [Translations.get('cataloging.database.' + record.database + '_full')]);
 			}
 		}
-		
+
 		return '';
 	},
 	confirmMoveSelectedRecords: function(database) {
@@ -1041,15 +1041,15 @@ var CatalogingInputClass = {
 		this.search.updateSelectList();
 
 		var list = [];
-		
+
 		for (var i = 0; i < this.search.selectedList.length; i++) {
 			list.push(this.search.selectedList[i].id);
 		}
-		
+
 		if (list.length === 0) {
 			return;
 		}
-		
+
 		$.ajax({
 			url: window.location.pathname,
 			type: 'POST',
@@ -1082,14 +1082,14 @@ var CatalogingInputClass = {
 	},
 	hideUploadProgress: function() {
 		Core.hideOverlay();
-		$('#upload_popup').hide().stopContinuousProgress();	
+		$('#upload_popup').hide().stopContinuousProgress();
 	},
 	_continuousUploadProgressTimeout: null,
 	continuousUploadProgress: function() {
 		$('#upload_popup').continuousProgress();
 	},
 	stopContinuousUploadProgress: function() {
-		clearTimeout(this._continuousUploadProgressTimeout);	
+		clearTimeout(this._continuousUploadProgressTimeout);
 		$('#upload_popup').stopContinuousProgress();
 	},
 	updateUploadProgress: function(current, total, percentComplete) {
@@ -1121,7 +1121,7 @@ var CatalogingInputClass = {
 					context: this
 				}).done(function(response) {
 					Core.msg(response);
-					
+
 					if (response.success) {
 						this.search.reloadResult();
 					}
@@ -1133,17 +1133,17 @@ var CatalogingInputClass = {
 	},
 	upload: function(button) {
 		Core.clearFormErrors();
-		
+
 		var description = prompt(Translations.get('cataloging.bibliographic.attachment.alias'));
-		
+
 		if (!description) {
 			return;
 		}
-		
+
 		var me = this;
-		
+
 		$('#page_submit').ajaxSubmit({
-			beforeSerialize: function($form, options) { 
+			beforeSerialize: function($form, options) {
 				$('#controller').val('json');
 				$('#module').val('digitalmedia');
 				$('#action').val('upload');
@@ -1154,12 +1154,12 @@ var CatalogingInputClass = {
 			},
 			dataType: 'json',
 			forceSync: true,
-			complete: function() { 
+			complete: function() {
 				$('#controller').val('jsp');
 				me.hideUploadProgress();
 			},
 			success: function(response) {
-				
+
 				if (response.success && response.id) {
 					$.ajax({
 						url: window.location.pathname,
@@ -1177,7 +1177,7 @@ var CatalogingInputClass = {
 						context: me
 					}).done(function(response) {
 						Core.msg(response);
-						
+
 						if (response.success) {
 							me.search.reloadResult();
 						}
@@ -1195,7 +1195,7 @@ var CatalogingInputClass = {
 			uploadProgress: function(event, current, total, percentComplete) {
 				me.updateUploadProgress(current, total, percentComplete);
 			}
-		}); 
+		});
 	}
 };
 

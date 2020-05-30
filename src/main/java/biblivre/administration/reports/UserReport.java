@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -48,7 +48,7 @@ import com.lowagie.text.pdf.PdfPTable;
 
 
 public class UserReport extends BaseBiblivreReport {
-	
+
 	public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
@@ -56,15 +56,15 @@ public class UserReport extends BaseBiblivreReport {
 		UserReportDto urdto = new UserReportDto();
 		UserBO ubo = UserBO.getInstance(this.getSchema());
 		Integer userId = Integer.valueOf(dto.getUserId());
-		
+
 		UserDTO user = ubo.get(userId);
 		urdto.setUser(user);
 
 		LendingBO lbo = LendingBO.getInstance(this.getSchema());
 		LendingFineBO lfbo = LendingFineBO.getInstance(this.getSchema());
-		
+
 		List<LendingDTO> history = lbo.listHistory(user);
-		
+
 		List<LendingInfoDTO> historyInfo = lbo.populateLendingInfo(history);
 		List<String[]> returnedLendings = new ArrayList<String[]>();
 		for (LendingInfoDTO lidto : historyInfo) {
@@ -78,7 +78,7 @@ public class UserReport extends BaseBiblivreReport {
 
 		List<String[]> currentLendings = new ArrayList<String[]>();
 		List<String[]> lateLendings = new ArrayList<String[]>();
-		
+
 		List<LendingDTO> currentLendingsList = lbo.listUserLendings(user);
 		List<LendingInfoDTO> currentLendingsInfo = lbo.populateLendingInfo(currentLendingsList);
 		for (LendingInfoDTO lidto : currentLendingsInfo) {
@@ -224,7 +224,7 @@ public class UserReport extends BaseBiblivreReport {
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		table.addCell(cell);
-		
+
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.user_type"))));
 		cell.setBackgroundColor(this.headerBgColor);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -268,9 +268,9 @@ public class UserReport extends BaseBiblivreReport {
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-		}		
+		}
 
 		return table;
 	}
-	
+
 }

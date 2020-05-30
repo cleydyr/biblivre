@@ -48,11 +48,11 @@
 					<div class="clear"></div>
 				</div>
 			</div>
-			
+
 			<div class="buttons">
 				<a class="main_button arrow_right" onclick="Administration.password.submit(this);"><i18n:text key="administration.change_password.submit_button" /></a>
 				<div class="clear"></div>
 			</div>
-		</fieldset>	
+		</fieldset>
 	</div>
 </layout:body>

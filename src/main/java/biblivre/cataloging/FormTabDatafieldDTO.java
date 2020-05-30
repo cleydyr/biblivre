@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -42,16 +42,16 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 	private List<FormTabSubfieldDTO> subfields;
 	private Integer sortOrder;
 
-	
+
 	public FormTabDatafieldDTO(JSONObject jsonObject) {
 		this.fromJSONObject(jsonObject);
 		this.subfields = new LinkedList<FormTabSubfieldDTO>();
-		
+
 		if (jsonObject.has("subfields")) {
 			JSONArray array = jsonObject.getJSONArray("subfields");
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject subfield = array.getJSONObject(i);
-				
+
 				this.subfields.add(new FormTabSubfieldDTO(subfield));
 			}
 		}
@@ -60,7 +60,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 	public FormTabDatafieldDTO() {
 		this.subfields = new LinkedList<FormTabSubfieldDTO>();
 	}
-	
+
 	public String getDatafield() {
 		return this.datafield;
 	}
@@ -100,7 +100,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 	public String[] getIndicator1Values() {
 		return StringUtils.split(this.getIndicator1(), ",");
 	}
-	
+
 	public void setIndicator1(String indicator1) {
 		this.indicator1 = indicator1;
 	}
@@ -124,11 +124,11 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 	public String[] getMaterialTypeValues() {
 		return StringUtils.split(this.getMaterialType(), ",");
 	}
-	
+
 	public void setMaterialType(String materialType) {
 		this.materialType = materialType;
 	}
-	
+
 	public Integer getSortOrder() {
 		return this.sortOrder;
 	}
@@ -147,7 +147,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 			json.putOpt("repeatable", this.isRepeatable());
 			json.putOpt("material_type", this.getMaterialType());
 			json.putOpt("sortOrder", this.getSortOrder());
-			
+
 			if (StringUtils.isNotBlank(this.getIndicator1())) {
 				json.putOpt("indicator1", new JSONArray(this.getIndicator1Values()));
 			}
@@ -168,7 +168,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 
 		return json;
 	}
-	
+
 	@Override
 	public int compareTo(BriefTabFieldFormatDTO other) {
 		if (other == null) {

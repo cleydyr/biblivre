@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
+ *
  *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
  *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
  *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- * 
+ *
  *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var Administration = Administration || {};
 
@@ -25,12 +25,12 @@ Administration.reindex = {};
 Administration.reinstall = {};
 
 $(document).ready(function() {
-	
+
 	var div = $('#last_backups_list');
 	if (div.size() > 0) {
 		div.setTemplateElement('last_backups_list_template');
 	}
-	
+
 	Administration.backup.list();
 });
 
@@ -62,18 +62,18 @@ Administration.backup.list = function(id) {
 
 Administration.backup.showAll = function(el) {
 	var obj = $(el);
-	
+
 	obj.siblings('.hidden_backup').removeClass('hidden_backup');
 	obj.remove();
 };
 
 Administration.backup.submit = function(type) {
 	var schemas = [];
-	
+
 	$('#multischema :checkbox:checked[name="library"]').each(function() {
 		schemas.push($(this).val());
 	});
-	
+
 	$.ajax({
 		url: window.location.pathname,
 		type: 'POST',
@@ -93,7 +93,7 @@ Administration.backup.submit = function(type) {
 			}
 
 			$('.system_warning_backup').remove();
-			
+
 			Administration.backup.selectedId = response.id;
 			Administration.backup.progress(100);
 
@@ -127,7 +127,7 @@ Administration.backup.showPopupProgress = function() {
 		.appendTo('body')
 		.show()
 		.center();
-	
+
 	$('#backup_popup .progress').progressbar();
 };
 
@@ -137,12 +137,12 @@ Administration.backup.progress = function(delay) {
 	if (Administration.backup.selectedId == null) {
 		return;
 	}
-	
+
 	if (delay) {
 		Administration.backup.progressTimeout = setTimeout(Administration.backup.progress, delay);
 		return;
 	}
-	
+
 	Administration.backup.progressXHR = $.ajax({
 		url: window.location.pathname,
 		type: 'POST',
@@ -187,7 +187,7 @@ Administration.backup.download = function(id, delay) {
 
 		return;
 	}
-	
+
 	window.open($('#last_backups_list a[rel=' + id + ']').attr('href'));
 };
 
@@ -199,7 +199,7 @@ Administration.backup.cancel = function(base) {
 		Administration.backup.progressXHR.abort();
 		Administration.backup.progressXHR = null;
 	}
-	
+
 	Core.hideOverlay();
 	$('#backup_popup').hide();
 };
@@ -215,13 +215,13 @@ Administration.reindex.confirm = function(type) {
 	Administration.reindex.showPopupButtons();
 
 	var popup = $('#reindex_popup');
-	
+
 	popup
 		.appendTo('body')
 		.show()
 		.center()
 		.height(popup.height());
-	
+
 };
 
 Administration.reindex.showPopupButtons = function() {
@@ -238,9 +238,9 @@ Administration.reindex.showPopupProgress = function() {
 	progress
 		.progressbar()
 		.show();
-	
+
 	confirm.hide();
-	
+
 	close.css('visibility', 'hidden');
 };
 
@@ -263,7 +263,7 @@ Administration.reindex.submit = function() {
 			}
 		}
 	});
-	
+
 	$('.system_warning_reindex').remove();
 
 	Administration.reindex.showPopupProgress();
@@ -281,7 +281,7 @@ Administration.reindex.progress = function(delay) {
 		Administration.reindex.progressTimeout = setTimeout(Administration.reindex.progress, delay);
 		return;
 	}
-	
+
 	Administration.reindex.progressXHR = $.ajax({
 		url: window.location.pathname,
 		type: 'POST',
@@ -320,7 +320,7 @@ Administration.reindex.cancel = function(base) {
 		Administration.reindex.progressXHR.abort();
 		Administration.reindex.progressXHR = null;
 	}
-	
+
 	Core.hideOverlay();
 	$('#reindex_popup').hide();
 };

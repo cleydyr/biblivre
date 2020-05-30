@@ -1,29 +1,29 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 $(document).ready(function() {
 
 	Core.subscribe(CirculationSearch.prefix + 'display-search', function(e, id) {
 		delete CirculationSearch.selectedRecord;
 	});
-	
+
 	Core.subscribe(CatalogingSearch.prefix + 'reservation-deleted', function(e, id) {
 		if (!CirculationSearch.lastSearchResult) {
 			return;
@@ -47,20 +47,20 @@ $(document).ready(function() {
 						CirculationSearch.root.find('.user_reservation[rel="' + id + '"]').fadeOut('normal', function() {
 							// Update circulation search
 							CirculationSearch.processResultTemplate();
-							
+
 							// Update highlight
 							if (CirculationSearch.selectedRecord && CirculationSearch.selectedRecord.id == localResult.id) {
 								CirculationSearch.root.find('.selected_highlight .clone').processTemplate(localResult);
-							}							
+							}
 						});
-					})(result); 
-					
+					})(result);
+
 					break;
 				}
 			}
 		}
 	});
-	
+
 	Core.subscribe(CatalogingSearch.prefix + 'reservation-deleted', function(e, id) {
 		if (!CatalogingSearch.lastSearchResult) {
 			return;
@@ -110,20 +110,20 @@ $(document).ready(function() {
 					if (CirculationSearch.selectedRecord && CirculationSearch.selectedRecord.id == localResult.user.id) {
 						var contentOuter = $('#content_outer');
 						var contentInner = $('#content_inner');
-						
+
 						var scroll = contentOuter.scrollTop();
 						var innerHeight = contentInner.height();
 						var outerHeight = contentOuter.height();
-						
+
 						CirculationSearch.root.find('.selected_highlight .clone').processTemplate(localResult);
 
 						var innerHeightDiff = contentInner.height() - innerHeight;
 						var outerHeightDiff = contentOuter.height() - outerHeight;
-						
+
 						setTimeout(function() {
 							contentOuter.scrollTop(scroll + innerHeightDiff + outerHeightDiff);
 						}, 10);
-					}							
+					}
 				})(result);
 
 				break;
@@ -141,12 +141,12 @@ $(document).ready(function() {
 				continue;
 			}
 
-			var result = CatalogingSearch.lastSearchResult[key];			
+			var result = CatalogingSearch.lastSearchResult[key];
 			if (result.id == reservationInfo.biblio.id) {
 				if (!result.reservationInfo) {
 					result.reservationInfo = [];
 				}
-				
+
 				result.reservationInfo.push(reservationInfo);
 
 				CatalogingSearch.processResultTemplate();
@@ -154,6 +154,6 @@ $(document).ready(function() {
 			}
 		}
 	});
-	
+
 	CirculationSearch.search('simple');
 });

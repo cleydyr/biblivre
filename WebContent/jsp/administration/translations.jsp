@@ -6,7 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />	
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />
 
 	<script type="text/javascript" src="static/scripts/biblivre.administration.translations.js"></script>
 </layout:head>
@@ -14,9 +14,9 @@
 <layout:body multiPart="true">
 
 	<input type="hidden" name="from_translations" value="true"/>
-	
+
 	<div class="page_help"><i18n:text key="administration.translations.page_help" /></div>
-	
+
 	<% String schema = (String) request.getAttribute("schema"); %>
 	<div class="biblivre_form">
 		<fieldset>
@@ -35,13 +35,13 @@
 					</div>
 					<div class="clear"></div>
 				</div>
-				
+
 				<div class="buttons">
 					<a class="main_button arrow_right" onclick="Translation.upload(this);"><i18n:text key="administration.translations.upload.button" /></a>
 					<div class="clear"></div>
 				</div>
 			</div>
-		</fieldset>	
+		</fieldset>
 		<fieldset>
 			<legend><i18n:text key="administration.translations.download.title" /></legend>
 			<div class="description"><i18n:text key="administration.translations.download.description" /></div>
@@ -58,7 +58,7 @@
 				</div>
 			</div>
 		</fieldset>
-		
+
 		<fieldset>
 			<legend><i18n:text key="administration.translations.edit.title" /></legend>
 			<div class="description"><i18n:text key="administration.translations.edit.description" /></div>
@@ -79,9 +79,9 @@
 			<div class="buttons">
 				<a class="main_button arrow_right" onclick="Translation.save();"><i18n:text key="administration.translations.save" /></a>
 			</div>
-		</fieldset>	
+		</fieldset>
 	</div>
-	
+
 	<div id="upload_popup" class="popup">
 		<fieldset class="upload">
 			<legend><i18n:text key="administration.translations.upload_popup.title" /></legend>
@@ -99,5 +99,5 @@
 			</div>
 		</fieldset>
 	</div>
-			
+
 </layout:body>

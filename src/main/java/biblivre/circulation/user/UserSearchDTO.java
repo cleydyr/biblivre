@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -49,15 +49,15 @@ public class UserSearchDTO extends AbstractDTO {
 
 	public UserSearchDTO() {
 	}
-	
+
 	public UserSearchDTO(String jsonString) throws ValidationException {
 		try {
 			this.fromJson(jsonString);
 		} catch (Exception e) {
-			throw new ValidationException("cataloging.error.invalid_search_parameters");			
+			throw new ValidationException("cataloging.error.invalid_search_parameters");
 		}
 	}
-	
+
 	private void fromJson(String jsonString) throws JSONException {
 		JSONObject json = new JSONObject(jsonString);
 
@@ -75,15 +75,15 @@ public class UserSearchDTO extends AbstractDTO {
 		this.setModifiedStartDate(json.optString("modified_start"));
 		this.setModifiedEndDate(json.optString("modified_end"));
 	}
-	
+
 	public SearchMode getSearchMode() {
 		return this.searchMode;
 	}
-	
+
 	public void setSearchMode(SearchMode searchMode) {
 		this.searchMode = searchMode;
 	}
-	
+
 	public String getField() {
 		return this.field;
 	}
@@ -139,7 +139,7 @@ public class UserSearchDTO extends AbstractDTO {
 	public void setUserCardNeverPrinted(boolean userCardNeverPrinted) {
 		this.userCardNeverPrinted = userCardNeverPrinted;
 	}
-	
+
 	public boolean isInactiveOnly() {
 		return this.inactiveOnly;
 	}
@@ -157,7 +157,7 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(createdStartDate)) {
 			try {
 				this.createdStartDate = TextUtils.parseDate(createdStartDate);
-			} catch(Exception e) {	
+			} catch(Exception e) {
 			}
 		}
 	}
@@ -171,7 +171,7 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(createdEndDate)) {
 			try {
 				this.createdEndDate = TextUtils.parseDate(createdEndDate);
-			} catch(Exception e) {	
+			} catch(Exception e) {
 			}
 		}
 	}
@@ -185,7 +185,7 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(modifiedStartDate)) {
 			try {
 				this.modifiedStartDate = TextUtils.parseDate(modifiedStartDate);
-			} catch(Exception e) {	
+			} catch(Exception e) {
 			}
 		}
 
@@ -200,9 +200,9 @@ public class UserSearchDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(modifiedEndDate)) {
 			try {
 				this.modifiedEndDate = TextUtils.parseDate(modifiedEndDate);
-			} catch(Exception e) {	
+			} catch(Exception e) {
 			}
 		}
 	}
-	
+
 }

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -77,7 +77,7 @@ public class MarcUtils {
 	public static Record iso2709ToRecord(String iso2709) {
 		return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));
 	}
-	
+
 	public static Record iso2709ToRecord(byte[] iso2709) {
 		Record record = null;
 
@@ -149,7 +149,7 @@ public class MarcUtils {
 		MarcUtils.setControlFields(record, tags, values);
 		MarcUtils.setDataFields(record, tags, values, splitter);
 		return record;
-	} 
+	}
 
 	public static String recordToMarc(Record record) {
 		if (record == null) {
@@ -167,7 +167,7 @@ public class MarcUtils {
 			sb.append('\n');
 		}
 
-		List<DataField> dataFields = record.getDataFields();		
+		List<DataField> dataFields = record.getDataFields();
 		for (DataField field : dataFields) {
 			sb.append(field.getTag());
 			sb.append(' ');
@@ -421,7 +421,7 @@ public class MarcUtils {
 		MarcFactory factory = MarcFactory.newInstance();
 		for (int i = 0; i < tags.length; i++) {
 			String tag = tags[i];
-			String value = values[i];        	
+			String value = values[i];
 
 			if (StringUtils.isNumeric(tag)) {
 				int iTag = Integer.parseInt(tags[i]);
@@ -464,12 +464,12 @@ public class MarcUtils {
 		record.addVariableField(field);
 		return record;
 	}
-	
+
 	public static Record removeAttachment(Record record, String uri, String description) throws Exception {
 		VariableField dataFieldToRemove = null;
-		
+
 		MarcDataReader marcReader = new MarcDataReader(record);
-		
+
 		for (DataField df : marcReader.getDataFields(MarcConstants.ELECTRONIC_LOCATION)) {
 			String sfName = marcReader.getFirstSubfieldData(df, 'y');
 			String sfUri = marcReader.getFirstSubfieldData(df, 'u');
@@ -477,17 +477,17 @@ public class MarcUtils {
 			if (StringUtils.isBlank(sfName)) {
 				sfName = sfUri;
 			}
-			
+
 			if (description.equals(sfName) && uri.equals(sfUri)) {
 				dataFieldToRemove = df;
 				break;
 			}
 		}
-		
+
 		if (dataFieldToRemove != null) {
 			record.removeVariableField(dataFieldToRemove);
 		}
-		
+
 		return record;
 	}
 
@@ -526,11 +526,11 @@ public class MarcUtils {
 			field = factory.newControlField("004");
 			holding.addVariableField(field);
 		}
-		
+
 		field.setData(recordId.toString());
 		return holding;
 	}
-	
+
 	public static Record setCF005(Record record) {
 		return MarcUtils.setCF005(record, new Date());
 	}

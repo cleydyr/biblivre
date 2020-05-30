@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -37,7 +37,7 @@ import biblivre.core.utils.Constants;
 public class Handler extends AbstractHandler {
 
 	public void create(ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String titleParam = request.getString("title");
 		String subtitleParam = request.getString("subtitle");
 		String schemaParam = request.getString("schema");
@@ -46,7 +46,7 @@ public class Handler extends AbstractHandler {
 		dto.setName(titleParam);
 		dto.setSchema(schemaParam);
 		dto.setCreatedBy(request.getLoggedUserId());
-		
+
 		State.start();
 		State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
 
@@ -55,16 +55,16 @@ public class Handler extends AbstractHandler {
 		boolean success = Schemas.createSchema(dto, template, true);
 		if (success) {
 			State.finish();
-			
+
 			Configurations.save(schemaParam, new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam), request.getLoggedUserId());
 			Configurations.save(schemaParam, new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam), request.getLoggedUserId());
-			this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");			
-		} else {			
+			this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
+		} else {
 			State.cancel();
 
 			this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
 		}
-		
+
 		try {
 			this.json.put("success", success);
 
@@ -79,26 +79,26 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 
 	public void toggle(ExtendedRequest request, ExtendedResponse response) {
 		String schemaParam = request.getString("schema");
-		boolean disable = request.getBoolean("disable", false);	
+		boolean disable = request.getBoolean("disable", false);
 
 		SchemaDTO dto = Schemas.getSchema(schemaParam);
-		
+
 		if (dto == null) {
 			this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.toggle");
 			return;
 		}
 
-		if (disable) {			
+		if (disable) {
 			if (Schemas.countEnabledSchemas() <= 1) {
 				this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.cant_disable_last_library");
 				return;
 			}
 		}
-		
+
 		boolean success = (disable) ? Schemas.disable(dto) : Schemas.enable(dto);
 		try {
 			this.json.put("success", success);
@@ -107,14 +107,14 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void deleteSchema(ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String schemaParam = request.getString("schema");
 
 		SchemaDTO dto = Schemas.getSchema(schemaParam);
 		boolean success = Schemas.deleteSchema(dto);
-		
+
 		try {
 			this.json.put("success", success);
 		} catch (JSONException e) {
@@ -122,5 +122,5 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 }

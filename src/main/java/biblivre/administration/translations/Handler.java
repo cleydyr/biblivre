@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -62,10 +62,10 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
-	
+
+
 	public void downloadDump(ExtendedRequest request, ExtendedResponse response) {
-		
+
 		String dumpId = request.getString("id");
 		String schema = request.getSchema();
 		String language = (String)request.getSessionAttribute(schema, dumpId);
@@ -102,7 +102,7 @@ public class Handler extends AbstractHandler {
 				if (line.length() == 0) {
 					continue;
 				}
-				
+
 				line = line.replace("\\n", "\n");
 
 				int eq = line.indexOf("=");
@@ -111,8 +111,8 @@ public class Handler extends AbstractHandler {
 				if (start == '#') {
 					continue;
 				}
-				
-				if ((eq != -1) && (start == '*' || start == '+' || start == '-')) {					
+
+				if ((eq != -1) && (start == '*' || start == '+' || start == '-')) {
 					if (key != null) {
 						switch (type) {
 							case '*':
@@ -151,11 +151,11 @@ public class Handler extends AbstractHandler {
 						break;
 				}
 			}
-			
+
 			sc.close();
 		} catch (Exception e) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.load");
-			return;			
+			return;
 		}
 
 		String language = addTranslation.get("language_code");
@@ -167,14 +167,14 @@ public class Handler extends AbstractHandler {
 
 		if (!Translations.isJavaScriptLocaleAvailable(language)) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.javascript_locale_not_available");
-			return;			
+			return;
 		}
 
 		if (!Translations.isJavaLocaleAvailable(language)) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.java_locale_not_available");
-			return;			
+			return;
 		}
-		
+
 		try {
 			boolean success = Translations.save(schema, language, addTranslation, removeTranslation, loggedUser);
 			if (success) {
@@ -187,7 +187,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void list(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
@@ -214,7 +214,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
@@ -254,7 +254,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void saveLanguageTranslations(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
@@ -284,5 +284,5 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
 			return;
 		}
-	}	
+	}
 }

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -56,7 +56,7 @@ public class Handler extends AbstractHandler {
 		String servers = null;
 		String attribute = null;
 		String query = null;
-		
+
 		try {
 			JSONObject json = new JSONObject(searchParameters);
 			servers = json.optString("server");
@@ -66,9 +66,9 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
 			return;
 		}
-		
+
 		Z3950BO bo = Z3950BO.getInstance(schema);
-		
+
 		String[] serverIds = servers.split(",");
 		List<Integer> ids = new LinkedList<Integer>();
 		for (String serverId : serverIds) {
@@ -82,45 +82,45 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 			return;
 		}
-		
+
 		List<Z3950AddressDTO> serverList = bo.list(ids);
 		Pair<String, String> search = new Pair<String, String>(attribute, query);
 		List<Z3950RecordDTO> results = bo.search(serverList, search);
-		
+
 		if (results.isEmpty()) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 			return;
 		}
-		
+
 		Integer searchId = (Integer) request.getSessionAttribute(schema, "z3950_search.last_id");
 		if (searchId == null) {
 			searchId = 1;
 		} else {
 			searchId++;
 		}
-		
+
 		request.setSessionAttribute(schema, "z3950_search." + searchId, results);
 		request.setSessionAttribute(schema, "z3950_search.last_id", searchId);
-		
+
 		DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, 1);
 		collection.setId(searchId);
-		
+
 		try {
 			this.json.putOpt("search", collection.toJSONObject());
 		} catch(JSONException e) { }
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		String searchId = request.getString("search_id");
 		if (StringUtils.isBlank(searchId)) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 			return;
 		}
 		Integer page = request.getInteger("page", 1);
-		
+
 		String uuid = "z3950_search." + searchId;
 		List<Z3950RecordDTO> results = (List<Z3950RecordDTO>)request.getSessionAttribute(schema, uuid);
 		if (results == null) {
@@ -130,10 +130,10 @@ public class Handler extends AbstractHandler {
 		DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, page);
 		try {
 			this.json.putOpt("search", collection.toJSONObject());
-		} catch(JSONException e) { 
+		} catch(JSONException e) {
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -142,7 +142,7 @@ public class Handler extends AbstractHandler {
 		if (StringUtils.isBlank(searchId)) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 			return;
-		}		
+		}
 		String uuid = "z3950_search." + searchId;
 		List<Z3950RecordDTO> results = (List<Z3950RecordDTO>)request.getSessionAttribute(schema, uuid);
 		if (results == null) {
@@ -150,18 +150,18 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 		Z3950RecordDTO dto = results.get(index);
-		
+
 		RecordBO bo = RecordBO.getInstance(schema, RecordType.BIBLIO);
-		
+
 		if (dto == null) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
 			return;
 		}
-		
+
 		RecordDTO recordDTO = dto.getRecord();
 		Record record = recordDTO.getRecord();
 		MarcDataReader marcDataReader = new MarcDataReader(record);
-		
+
 		bo.populateDetails(recordDTO, RecordBO.MARC_INFO);
 		recordDTO.setId(index);
 		recordDTO.setMaterialType(MaterialType.fromRecord(record));
@@ -177,18 +177,18 @@ public class Handler extends AbstractHandler {
 
 		// Form tab
 		recordDTO.setJson(MarcUtils.recordToJson(record));
-	
+
 		// Attachments
 		recordDTO.setAttachments(marcDataReader.getAttachments());
-		
+
 		try {
 			this.json.put("data", recordDTO.toJSONObject());
 		} catch (Exception e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
-		
+
 	}
-	
+
 	private DTOCollection<Z3950RecordDTO> paginateResults(String schema, List<Z3950RecordDTO> results, int page) {
 		Integer recordsPerPage = Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20);
 		Integer start = (page - 1) * recordsPerPage;
@@ -197,17 +197,17 @@ public class Handler extends AbstractHandler {
 
 		List<Z3950RecordDTO> sublist = results.subList(start, Math.min(start + recordsPerPage, results.size()));
 		BiblioRecordBO brbo = BiblioRecordBO.getInstance(schema);
-		
+
 		int autoGeneratedId = start;
 		for (Z3950RecordDTO z3950 : sublist) {
 			z3950.setAutogenId(autoGeneratedId++);
 
 			brbo.populateDetails(z3950.getRecord(), RecordBO.MARC_INFO);
 		}
-		
+
 		collection.addAll(sublist);
 		collection.setPaging(paging);
 		return collection;
 	}
-	
+
 }

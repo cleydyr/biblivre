@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var Translation = {
 	uploadData: [],
@@ -25,13 +25,13 @@ var Translation = {
 
 $(document).ready(function() {
 	Translation.uploadPopup = $('#upload_popup');
-	
+
 	Translations.displayTree();
-	
+
 	$('#translations_filter').click(function() {
 		var checkbox = $(this);
 		var checked = checkbox.attr('checked');
-		
+
 		if (!checked) {
 			$('#translations_tree').children().show();
 		} else {
@@ -44,17 +44,17 @@ $(document).ready(function() {
 
 Translations.displayTree = function() {
 	var translations = {};
-	
+
 	_.forEach(Translations.translations, function(value, key) {
 		var ns = key.split(/\./);
 		var obj = translations;
 		var parent = null;
 		var k = null;
 		var lastK = null;
-		
+
 		for (var i = 0; i < ns.length - 1; i++) {
 			k = ns[i];
-			
+
 			if (typeof obj[k] == 'string') {
 				obj[k] = {
 					_root: obj[k]
@@ -62,20 +62,20 @@ Translations.displayTree = function() {
 			} else if (!obj[k]) {
 				obj[k] = {};
 			}
-			
+
 			parent = obj;
 			obj = obj[k];
 			lastK = k;
 		}
-		
+
 		k = ns[ns.length - 1];
-		
+
 		if (typeof obj[k] == 'string') {
 			var root = obj[k];
 			parent[lastK] = {
 				_root: root
 			};
-			
+
 			parent[lastK][k] = value;
 		} else if (typeof obj[k] == 'object') {
 			obj[k]['_root'] = value;
@@ -83,25 +83,25 @@ Translations.displayTree = function() {
 			obj[k] = value;
 		}
 	});
-	
+
 	var sortKeys = function (a, b) {
 		if (typeof translations[a] == 'string' && typeof translations[b] == 'string') {
 			return (a > b) ? 1 : (b > a) ? -1 : 0;
 		}
-		
+
 		if (typeof translations[a] == 'string') {
 			return -1;
 		}
-		
+
 		if (typeof translations[b] == 'string') {
 			return 1;
 		}
 
 		return (a > b) ? 1 : (b > a) ? -1 : 0;
 	};
-	
+
 	var keys = _.keys(translations).sort(sortKeys);
-	
+
 	var div = $('#translations_tree').on('input', 'input', function() {
 		var t = $(this);
 		if (t.val() != t.data('original')) {
@@ -110,7 +110,7 @@ Translations.displayTree = function() {
 			t.removeClass('changed');
 		}
 	});
-	
+
 	var recurse = function(myParent, myTree, root) {
 		return function(key) {
 			if (key == '_root') {
@@ -124,11 +124,11 @@ Translations.displayTree = function() {
 				d.appendTo(myTree);
 				return;
 			}
-			
-			var completeKey = (root) ? root + '.' + key : key; 
-			
+
+			var completeKey = (root) ? root + '.' + key : key;
+
 			var myObj = myParent[key];
-			
+
 			if (typeof myObj == 'string') {
 				var d = $('<div></div>');
 				$('<label></label>').text(completeKey).appendTo(d);
@@ -145,19 +145,19 @@ Translations.displayTree = function() {
 			}
 		};
 	};
-	
+
 	_.forEach(keys, recurse(translations, div, ''));
 };
 
 Translation.dump = function(language) {
-	
+
 	params = $.extend({}, {
 		controller: 'json',
 		module: 'administration.translations',
 		action: 'dump',
 		language: language
 	});
-	
+
 	$.ajax({
 		url: window.location.pathname,
 		type: 'POST',
@@ -167,7 +167,7 @@ Translation.dump = function(language) {
 		context: this
 	}).done(function(response) {
 		if (response.success && response.uuid) {
-			window.open(window.location.pathname + '?controller=download&module=administration.translations&action=download_dump&id=' + response.uuid);				
+			window.open(window.location.pathname + '?controller=download&module=administration.translations&action=download_dump&id=' + response.uuid);
 		}
 
 		Core.msg(response);
@@ -182,14 +182,14 @@ Translation.showPopupProgress = function() {
 
 Translation.hidePopupProgress = function() {
 	Core.hideOverlay();
-	Translation.uploadPopup.hide().stopContinuousProgress();	
+	Translation.uploadPopup.hide().stopContinuousProgress();
 };
 
 Translation.advanceUploadProgress = function(current, total, percentComplete) {
 	Translation.stopProcessProgress();
 
 	Translation.uploadPopup.find('.uploading').show();
-	Translation.uploadPopup.find('.processing').hide();	
+	Translation.uploadPopup.find('.processing').hide();
 
 	Translation.uploadPopup.find('.progress').progressbar({
 		current: current,
@@ -210,7 +210,7 @@ Translation.advanceProcessProgress = function() {
 };
 
 Translation.stopProcessProgress = function() {
-	clearTimeout(Translation._advanceProcessProgressTimeout);	
+	clearTimeout(Translation._advanceProcessProgressTimeout);
 	Translation.uploadPopup.stopContinuousProgress();
 };
 
@@ -218,7 +218,7 @@ Translation.upload = function(button) {
 	Core.clearFormErrors();
 
 	$('#page_submit').ajaxSubmit({
-		beforeSerialize: function($form, options) { 
+		beforeSerialize: function($form, options) {
 			$('#controller').val('json');
 			$('#module').val('administration.translations');
 			$('#action').val('load');
@@ -229,7 +229,7 @@ Translation.upload = function(button) {
 		},
 		dataType: 'json',
 		forceSync: true,
-		complete: function() { 
+		complete: function() {
 			$('#controller').val('jsp');
 			Translation.hidePopupProgress();
 		},
@@ -239,7 +239,7 @@ Translation.upload = function(button) {
 //				location.reload();
 				return;
 			}
-			
+
 			if (response.errors) {
 				Core.formErrors(response.errors);
 			} else {
@@ -255,7 +255,7 @@ Translation.upload = function(button) {
 		uploadProgress: function(event, current, total, percentComplete) {
 			Translation.advanceUploadProgress(current, total, percentComplete);
 		}
-	}); 
+	});
 };
 
 Translation.selectLanguage = function(language) {
@@ -271,14 +271,14 @@ Translation.save = function(button) {
 		var input = $(this);
 		translations[input.attr('name')] = input.val();
 	});
-	
+
 	params = $.extend({}, {
 		controller: 'json',
 		module: 'administration.translations',
 		action: 'save_language_translations',
 		translations: JSON.stringify(translations)
 	});
-	
+
 	$.ajax({
 		url: window.location.pathname,
 		type: 'POST',

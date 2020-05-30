@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -54,21 +54,21 @@ public class SearchQueryDTO extends AbstractDTO {
 	public SearchQueryDTO(String jsonString) throws ValidationException {
 		this.parameters = jsonString;
 		this.terms = new ArrayList<SearchTermDTO>();
-		
+
 		try {
 			this.fromJson(jsonString);
 		} catch (Exception e) {
-			throw new ValidationException("cataloging.error.invalid_search_parameters");			
+			throw new ValidationException("cataloging.error.invalid_search_parameters");
 		}
 
 		if (this.getDatabase() == null) {
 			throw new ValidationException("cataloging.error.invalid_database");
 		}
 	}
-	
+
 	public SearchQueryDTO(RecordDatabase database) {
 		this.setDatabase(database);
-		
+
 		if (this.getDatabase() == null) {
 			throw new ValidationException("cataloging.error.invalid_database");
 		}
@@ -97,7 +97,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			if (searchTerm == null) {
 				continue;
 			}
-			
+
 			String query = searchTerm.optString("query");
 			String field = searchTerm.optString("field");
 			String operator = searchTerm.optString("operator");
@@ -108,7 +108,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			if (f.equals("created") || f.equals("modified") || f.equals("holding_created") || f.equals("holding_modified")) {
 				query = "date";
 			}
-			
+
 			String sanitizedQuery = TextUtils.preparePhrase(query);
 
 			Pattern pattern = Pattern.compile("\\s*(\"[^\"]+\"|[^\\s\"]+)");
@@ -118,7 +118,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			while (matcher.find()) {
 				String group = matcher.group(1);
 				String[] terms;
-				
+
 				if (group.charAt(0) == '"' && group.indexOf(' ') != -1) {
 					//Multiple terms grouped by quotes
 					terms = new String[]{group};
@@ -158,7 +158,7 @@ public class SearchQueryDTO extends AbstractDTO {
 			throw new ValidationException("cataloging.error.no_valid_terms");
 		}
 	}
-	
+
 	public String getParameters() {
 		return this.parameters;
 	}
@@ -202,7 +202,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
 		this.holdingSearch = holdingSearch;
 	}
-	
+
 	public Boolean isReservedOnly() {
 		return this.reservedOnly != null ? this.reservedOnly : false;
 	}
@@ -211,22 +211,22 @@ public class SearchQueryDTO extends AbstractDTO {
 		if (reservedOnly == null) {
 			reservedOnly = Boolean.FALSE;
 		}
-		
+
 		this.reservedOnly = reservedOnly;
 	}
 
 	public List<SearchTermDTO> getTerms() {
 		return this.terms;
 	}
-	
+
 	public Set<String> getSimpleTerms() {
 		if (this.terms == null || this.terms.size() == 0) {
 			return new HashSet<String>();
 		}
-		
+
 		return this.terms.get(0).getTerms();
 	}
-	
+
 	public void addTerm(SearchTermDTO dto) {
 		if (dto == null) {
 			return;
@@ -234,7 +234,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
 		this.terms.add(dto);
 	}
-	
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject json = new JSONObject();
@@ -242,8 +242,8 @@ public class SearchQueryDTO extends AbstractDTO {
 		try {
 			json.putOpt("search_mode", this.getSearchMode());
 			json.putOpt("database", this.getDatabase());
-			json.putOpt("material_type", this.getMaterialType());	
-			json.putOpt("holding_search", this.isHoldingSearch());	
+			json.putOpt("material_type", this.getMaterialType());
+			json.putOpt("holding_search", this.isHoldingSearch());
 			json.putOpt("terms", this.getTerms());
 		} catch (JSONException e) {
 		}

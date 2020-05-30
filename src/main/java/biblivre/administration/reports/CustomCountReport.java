@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -43,13 +43,13 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
-		
+
 		this.marcField = dto.getMarcField();
 		if (StringUtils.isNotBlank(this.marcField)) {
 			this.datafield = this.marcField.split("\\_")[0];
 			this.subfield = this.marcField.split("\\_")[1];
 		}
-		
+
 		String order = "1";
 		if (StringUtils.isNotBlank(dto.getCountOrder())) {
 			order = dto.getCountOrder();
@@ -97,7 +97,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
-		
+
 		if (total != 0) {
 			cell = new PdfPCell(new Paragraph(this.getBoldChunk("Total")));
 			cell.setColspan(2);
@@ -109,7 +109,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
 		}
-		
+
 		document.add(table);
 	}
 
@@ -136,15 +136,15 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		if (o1 == null) {
 			return 0;
 		}
-		
+
 		if (o2 == null) {
 			return 0;
 		}
-		
+
 		if (o1[this.index] == null && o2[this.index] == null) {
 			return 0;
 		}
-		
+
 		switch (this.index) {
 		case 0:
 			return o1[this.index].compareTo(o2[this.index]);
@@ -153,8 +153,8 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 		default:
 			return o1[this.index].compareTo(o2[this.index]);
 		}
-			
-		
+
+
 	}
 
 }

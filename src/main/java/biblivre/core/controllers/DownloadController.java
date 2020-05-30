@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -66,7 +66,7 @@ public class DownloadController extends Controller {
 			callback.success();
 		}
 	}
-	
+
 	@Override
 	protected void doAuthorizationError() throws ServletException, IOException {
 		Message message = new Message(ActionResult.WARNING, "error.no_permission");
@@ -80,7 +80,7 @@ public class DownloadController extends Controller {
 
 		this.dispatch("/jsp/error.jsp", message);
 	}
-	
+
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -93,7 +93,7 @@ public class DownloadController extends Controller {
 
 		this.dispatch("/jsp/error.jsp", message);
 	}
-	
+
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -101,7 +101,7 @@ public class DownloadController extends Controller {
 		} else {
 			this.log.warn(warning);
 		}
-		
+
 		Message message = new Message(ActionResult.WARNING, warning, e);
 		this.dispatch("/jsp/error.jsp", message);
 	}

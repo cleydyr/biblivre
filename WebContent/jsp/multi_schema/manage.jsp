@@ -33,8 +33,8 @@
 					<a href="javascript:void(0);" onclick="Schemas.toggle('<%= schema.getSchema() %>', true, this);" class="disable">[<i18n:text key="multi_schema.manage.disable" />]</a>
 				</div>
 			<% } %>
-		</fieldset>	
-		
+		</fieldset>
+
 		<fieldset>
 			<legend><i18n:text key="multi_schema.manage.new_schema.title" /></legend>
 			<div class="description"><i18n:text key="multi_schema.manage.new_schema.description" /></div>
@@ -56,14 +56,14 @@
 					<div class="value"><span id="address"></span><input type="text" id="schema_schema" name="schema" maxlength="60" class="finput"/></div>
 					<div class="clear"></div>
 				</div>
-				
+
 				<div class="buttons">
 					<a class="main_button arrow_right" onclick="Schemas.create(this);"><i18n:text key="multi_schema.manage.new_schema.button.create" /></a>
 					<div class="clear"></div>
 				</div>
 			</div>
-		</fieldset>	
-		
+		</fieldset>
+
 	</div>
-			
+
 </layout:body>

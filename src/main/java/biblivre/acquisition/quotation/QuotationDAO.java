@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -40,15 +40,15 @@ public class QuotationDAO extends AbstractDAO {
 	}
 
 	public Integer save(QuotationDTO dto) {
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			int quotationId = this.getNextSerial("quotations_id_seq");
 			dto.setId(quotationId);
-			
+
 			StringBuilder sqlQuotations = new StringBuilder();
 			sqlQuotations.append("INSERT INTO quotations (id, supplier_id, ");
 			sqlQuotations.append("response_date, expiration_date, delivery_time, ");
@@ -64,9 +64,9 @@ public class QuotationDAO extends AbstractDAO {
 			pstQuotations.setString(6, dto.getInfo());
 			pstQuotations.setInt(7, dto.getCreatedBy());
 			pstQuotations.setDate(8, new java.sql.Date(dto.getCreated().getTime()));
-			
+
 			pstQuotations.executeUpdate();
-			
+
 			StringBuilder sqlRQuotations = new StringBuilder();
 			sqlRQuotations.append("INSERT INTO request_quotation ");
 			sqlRQuotations.append("(request_id, quotation_id, quotation_quantity, unit_value, ");
@@ -74,7 +74,7 @@ public class QuotationDAO extends AbstractDAO {
 			sqlRQuotations.append("VALUES (?, ?, ?, ?, ?);");
 
 			PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations.toString());
-			
+
 			for (RequestQuotationDTO rqdto : dto.getQuotationsList()) {
 				pstRQuotations.setInt(1, rqdto.getRequestId());
 				pstRQuotations.setInt(2, quotationId);
@@ -85,10 +85,10 @@ public class QuotationDAO extends AbstractDAO {
 			}
 
 			pstRQuotations.executeBatch();
-			
+
 			con.commit();
 			return quotationId;
-			
+
 		} catch (Exception e) {
 			this.rollback(con);
 			throw new DAOException(e);
@@ -96,14 +96,14 @@ public class QuotationDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		if (dtoList == null || dtoList.isEmpty()) {
 			return true;
 		}
-		
+
 		AbstractDTO abstractDto = dtoList.get(0);
-		
+
 		if (abstractDto instanceof QuotationDTO) {
 			return this.saveQuotationFromBiblivre3(dtoList);
 		} else if (abstractDto instanceof RequestQuotationDTO) {
@@ -111,15 +111,15 @@ public class QuotationDAO extends AbstractDAO {
 		} else {
 			throw new IllegalArgumentException("List is not of QuotationDTO or RequestQuotationDTO objects.");
 		}
-		
+
 	}
-	
+
 	private boolean saveQuotationFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			StringBuilder sqlQuotations = new StringBuilder();
 			sqlQuotations.append("INSERT INTO quotations (id, supplier_id, ");
 			sqlQuotations.append("response_date, expiration_date, delivery_time, ");
@@ -127,7 +127,7 @@ public class QuotationDAO extends AbstractDAO {
 			sqlQuotations.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 
 			PreparedStatement pstQuotations = con.prepareStatement(sqlQuotations.toString());
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				QuotationDTO dto = (QuotationDTO) abstractDto;
 				pstQuotations.setInt(1, dto.getId());
@@ -140,11 +140,11 @@ public class QuotationDAO extends AbstractDAO {
 				pstQuotations.setDate(8, new java.sql.Date(dto.getCreated().getTime()));
 				pstQuotations.addBatch();
 			}
-			
+
 			pstQuotations.executeBatch();
-			
+
 			con.commit();
-			
+
 		} catch (Exception e) {
 			this.rollback(con);
 			throw new DAOException(e);
@@ -153,13 +153,13 @@ public class QuotationDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	private boolean saveRequestQuotationFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			StringBuilder sqlRQuotations = new StringBuilder();
 			sqlRQuotations.append("INSERT INTO request_quotation ");
 			sqlRQuotations.append("(request_id, quotation_id, quotation_quantity, unit_value, ");
@@ -167,7 +167,7 @@ public class QuotationDAO extends AbstractDAO {
 			sqlRQuotations.append("VALUES (?, ?, ?, ?, ?);");
 
 			PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations.toString());
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				RequestQuotationDTO rqdto = (RequestQuotationDTO) abstractDto;
 				pstRQuotations.setInt(1, rqdto.getRequestId());
@@ -177,11 +177,11 @@ public class QuotationDAO extends AbstractDAO {
 				pstRQuotations.setInt(5, rqdto.getResponseQuantity());
 				pstRQuotations.addBatch();
 			}
-			
+
 			pstRQuotations.executeBatch();
-			
+
 			con.commit();
-			
+
 		} catch (Exception e) {
 			this.rollback(con);
 			throw new DAOException(e);
@@ -193,12 +193,12 @@ public class QuotationDAO extends AbstractDAO {
 
 
 	public boolean update(QuotationDTO dto) {
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-						
+
 			StringBuilder sqlQuotations = new StringBuilder();
 			sqlQuotations.append("UPDATE quotations SET supplier_id = ?, ");
 			sqlQuotations.append("response_date = ?, expiration_date = ?, delivery_time = ?, ");
@@ -213,16 +213,16 @@ public class QuotationDAO extends AbstractDAO {
 			pstQuotations.setString(5, dto.getInfo());
 			pstQuotations.setInt(6, dto.getModifiedBy());
 			pstQuotations.setInt(7, dto.getId());
-			
+
 			pstQuotations.executeUpdate();
-			
+
 			StringBuilder sqlItemQuotations = new StringBuilder();
 			sqlItemQuotations.append("DELETE FROM request_quotation ");
 			sqlItemQuotations.append("WHERE quotation_id = ?;");
 			PreparedStatement pstItemQuotations = con.prepareStatement(sqlItemQuotations.toString());
 			pstItemQuotations.setInt(1, dto.getId());
 			pstItemQuotations.executeUpdate();
-			
+
 			StringBuilder sqlRQuotations = new StringBuilder();
 			sqlRQuotations.append("INSERT INTO request_quotation ");
 			sqlRQuotations.append("(request_id, quotation_id, quotation_quantity, unit_value, ");
@@ -230,7 +230,7 @@ public class QuotationDAO extends AbstractDAO {
 			sqlRQuotations.append("VALUES (?, ?, ?, ?, ?);");
 
 			PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations.toString());
-			
+
 			for (RequestQuotationDTO rqdto : dto.getQuotationsList()) {
 				pstRQuotations.setInt(1, rqdto.getRequestId());
 				pstRQuotations.setInt(2, dto.getId());
@@ -241,20 +241,20 @@ public class QuotationDAO extends AbstractDAO {
 			}
 
 			pstRQuotations.executeBatch();
-			
+
 			con.commit();
-			
+
 			return true;
-			
+
 		} catch (Exception e) {
 			this.rollback(con);
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
-		
+
 	}
-	
+
 	public QuotationDTO get(int id) {
 		Connection con = null;
 		try {
@@ -278,7 +278,7 @@ public class QuotationDAO extends AbstractDAO {
 		}
 		return null;
 	}
-	
+
 	public List<RequestQuotationDTO> listRequestQuotation(int quotationId) {
 		List<RequestQuotationDTO> list = new ArrayList<RequestQuotationDTO>();
 		Connection con = null;
@@ -303,7 +303,7 @@ public class QuotationDAO extends AbstractDAO {
 		}
 		return list;
 	}
-	
+
 	public boolean delete(QuotationDTO dto) {
 		Connection con = null;
 		try {
@@ -340,7 +340,7 @@ public class QuotationDAO extends AbstractDAO {
 				sql.append("WHERE trademark ilike ? ");
 			}
 			sql.append("ORDER BY q.id ASC LIMIT ? OFFSET ? ");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			int i = 1;
 			if (StringUtils.isNumeric(value)) {
@@ -350,7 +350,7 @@ public class QuotationDAO extends AbstractDAO {
 			}
 			pst.setInt(i++, limit);
 			pst.setInt(i++, offset);
-			
+
 			StringBuilder sqlCount = new StringBuilder("SELECT count(*) as total FROM quotations q ");
 			if (StringUtils.isNumeric(value)) {
 				sql.append("WHERE id = ? ");
@@ -358,14 +358,14 @@ public class QuotationDAO extends AbstractDAO {
 				sql.append("INNER JOIN suppliers s ON q.supplier_id = s.id ");
 				sql.append("WHERE trademark ilike ? ");
 			}
-			
-			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());			
+
+			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
 			if (StringUtils.isNumeric(value)) {
 				pst.setInt(1, Integer.valueOf(value));
 			} else {
 				pst.setString(1, "%" + value + "%");
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDto(rs));
@@ -387,7 +387,7 @@ public class QuotationDAO extends AbstractDAO {
 
 		return list;
 	}
-	
+
 	public DTOCollection<QuotationDTO> list(Integer supplierId) {
 		DTOCollection<QuotationDTO> list = new DTOCollection<QuotationDTO>();
 
@@ -400,10 +400,10 @@ public class QuotationDAO extends AbstractDAO {
 			//and it won't find quotations for the same day
 			//sql.append("WHERE supplier_id = ? AND expiration_date + interval '1 day' >= now(); ");
 			sql.append("WHERE supplier_id = ? AND expiration_date >= now()::date; ");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, supplierId);
-			
+
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDto(rs));
@@ -419,14 +419,14 @@ public class QuotationDAO extends AbstractDAO {
 
 	private QuotationDTO populateDto(ResultSet rs) throws Exception {
 		QuotationDTO dto = new QuotationDTO();
-		
+
 		dto.setId(rs.getInt("id"));
 		dto.setSupplierId(rs.getInt("supplier_id"));
 		dto.setResponseDate(rs.getDate("response_date"));
 		dto.setExpirationDate(rs.getDate("expiration_date"));
 		dto.setDeliveryTime(rs.getInt("delivery_time"));
 		dto.setInfo(rs.getString("info"));
-		
+
 		dto.setCreated(rs.getTimestamp("created"));
 		dto.setCreatedBy(rs.getInt("created_by"));
 		dto.setModified(rs.getTimestamp("modified"));
@@ -436,13 +436,13 @@ public class QuotationDAO extends AbstractDAO {
 
 	private RequestQuotationDTO populateRequestQuotationDto(ResultSet rs) throws Exception {
 		RequestQuotationDTO dto = new RequestQuotationDTO();
-		
+
 		dto.setRequestId(rs.getInt("request_id"));
 		dto.setQuotationId(rs.getInt("quotation_id"));
 		dto.setQuantity(rs.getInt("quotation_quantity"));
 		dto.setUnitValue(rs.getFloat("unit_value"));
 		dto.setResponseQuantity(rs.getInt("response_quantity"));
-		
+
 		return dto;
 	}
 }

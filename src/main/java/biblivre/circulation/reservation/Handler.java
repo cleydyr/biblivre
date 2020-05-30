@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -41,13 +41,13 @@ import biblivre.core.enums.ActionResult;
 
 public class Handler extends AbstractHandler {
 
-	
+
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
 		biblivre.cataloging.bibliographic.Handler catalogingHandler = new biblivre.cataloging.bibliographic.Handler();
 		SearchDTO search = catalogingHandler.searchHelper(request, response, this);
-				
+
 		if (CollectionUtils.isEmpty(search)) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 			return;
@@ -55,9 +55,9 @@ public class Handler extends AbstractHandler {
 
 		ReservationBO rbo = ReservationBO.getInstance(schema);
 		rbo.populateReservationInfoByBiblio(search);
-		
+
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(request.getSchema(), RecordType.BIBLIO);
-		
+
 		try {
 			this.json.put("search", search.toJSONObject());
 
@@ -69,13 +69,13 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
 		biblivre.cataloging.bibliographic.Handler catalogingHandler = new biblivre.cataloging.bibliographic.Handler();
 		SearchDTO search = catalogingHandler.paginateHelper(request, response, this);
-				
+
 		if (CollectionUtils.isEmpty(search)) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 			return;
@@ -85,7 +85,7 @@ public class Handler extends AbstractHandler {
 		rbo.populateReservationInfoByBiblio(search);
 
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(request.getSchema(), RecordType.BIBLIO);
-		
+
 		try {
 			this.json.put("search", search.toJSONObject());
 
@@ -100,7 +100,7 @@ public class Handler extends AbstractHandler {
 
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
 		DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -115,19 +115,19 @@ public class Handler extends AbstractHandler {
 		for (UserDTO user : userList) {
 			list.add(this.populateReservationList(schema, user));
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	private ReservationListDTO populateReservationList(String schema, UserDTO user) {
 		ReservationBO resBo = ReservationBO.getInstance(schema);
-		
+
 		List<ReservationInfoDTO> infos = resBo.listReservationInfo(user);
-		
+
 		ReservationListDTO reservationList = new ReservationListDTO();
 		reservationList.setUser(user);
 		reservationList.setId(user.getId());
@@ -139,25 +139,25 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		int recordId = request.getInteger("record_id");
 		int userId = request.getInteger("user_id");
-		
+
 		RecordBO rbo = RecordBO.getInstance(schema, RecordType.BIBLIO);
 		BiblioRecordDTO record = (BiblioRecordDTO)rbo.get(recordId, RecordBO.MARC_INFO);
-		
+
 		UserBO userBo = UserBO.getInstance(schema);
 		UserDTO user = userBo.get(userId);
-		
+
 		ReservationBO reservationBo = ReservationBO.getInstance(schema);
 		int reservationId = reservationBo.reserve(record, user, request.getLoggedUserId());
-		
+
 		if (reservationId > 0) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.reservation.reserve_success");
-			
+
 			ReservationDTO reservation = reservationBo.get(reservationId);
 			ReservationInfoDTO info = new ReservationInfoDTO();
 			info.setReservation(reservation);
 			info.setBiblio(record);
 			info.setUser(user);
-			
+
 			try {
 				this.json.put("data", info.toJSONObject());
 				this.json.put("full_data", true);
@@ -170,33 +170,33 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "circulation.reservation.reserve_failure");
 		}
 	}
-	
+
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int reserveId = request.getInteger("id");
-		
+
 		ReservationBO reservationBo = ReservationBO.getInstance(schema);
 		boolean success = reservationBo.delete(reserveId);
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.reservation.delete_success");
 		} else {
 			this.setMessage(ActionResult.WARNING, "circulation.reservation.delete_failure");
 		}
 	}
-	
+
 	public void selfSearch(ExtendedRequest request, ExtendedResponse response) {
 
 		biblivre.cataloging.bibliographic.Handler catalogingHandler = new biblivre.cataloging.bibliographic.Handler();
 		SearchDTO search = catalogingHandler.searchHelper(request, response, this);
-				
+
 		if (CollectionUtils.isEmpty(search)) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 			return;
 		}
 
 		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(request.getSchema(), RecordType.BIBLIO);
-		
+
 		try {
 			this.json.put("search", search.toJSONObject());
 
@@ -208,14 +208,14 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void selfReserve(ExtendedRequest request, ExtendedResponse response) {
-		
+
 		try {
 			int userId = request.getInteger("user_id");
 			int loggedUser = request.getLoggedUserId();
 			int dbUserId = UserBO.getInstance(request.getSchema()).getUserByLoginId(loggedUser).getId();
-			
+
 			if (userId != dbUserId) {
 				this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
 				return;
@@ -224,21 +224,21 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
 			return;
 		}
-		
+
 		this.reserve(request, response);
 	}
-	
+
 	public void selfOpen(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		String searchParameters = request.getString("search_parameters");
 		UserSearchDTO searchDto = new UserSearchDTO(searchParameters);
-		
+
 		try {
 			int userId = Integer.valueOf(searchDto.getQuery());
 			int loggedUser = request.getLoggedUserId();
 			int dbUserId = UserBO.getInstance(schema).getUserByLoginId(loggedUser).getId();
-			
+
 			if (userId != dbUserId) {
 				this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
 				return;
@@ -247,7 +247,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
 			return;
 		}
-		
+
 		biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
 		DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -262,7 +262,7 @@ public class Handler extends AbstractHandler {
 		for (UserDTO user : userList) {
 			list.add(this.populateReservationList(schema, user));
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
@@ -270,27 +270,27 @@ public class Handler extends AbstractHandler {
 		}
 	}
 
-	
+
 	public void selfDelete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int reservationId = request.getInteger("id");
 		int loggedUser = request.getLoggedUserId();
-		
+
 		ReservationBO reservationBo = ReservationBO.getInstance(schema);
 		ReservationDTO reservationDto = reservationBo.get(reservationId);
-		
+
 		if (reservationDto == null) {
 			this.setMessage(ActionResult.WARNING, "circulation.reservation.delete_failure");
 			return;
 		}
-		
+
 		int userId = reservationDto.getUserId();
-		
+
 		if (userId != loggedUser) {
 			this.setMessage(ActionResult.WARNING, "circulation.reservation.delete_failure");
 			return;
 		}
-		
+
 		this.delete(request, response);
 	}
 }

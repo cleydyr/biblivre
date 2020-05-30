@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var CirculationSearch = CirculationSearch || null;
 var CatalogingSearch = CatalogingSearch || null;
@@ -34,18 +34,18 @@ var HoldingSearchClass = {
 		if (CirculationSearch) {
 			Core.subscribe(CirculationSearch.prefix + 'open-record', function(e, record) {
 				$('#holding_search').hide();
-			}, this);	
-			
+			}, this);
+
 			Core.subscribe(CirculationSearch.prefix + 'record-selected', function(e, record) {
 				$('#holding_search').show();
-			}, this);	
+			}, this);
 		}
 
 		if (CatalogingSearch) {
 			Core.subscribe(CatalogingSearch.prefix + 'record-selected', function(e) {
 				$('#holding_search').show();
 				this.toggleSearch(false, true);
-			}, this);	
+			}, this);
 
 			Core.subscribe(CatalogingSearch.prefix + 'display-search', function(e) {
 				$('#holding_search').hide();
@@ -59,12 +59,12 @@ var HoldingSearchClass = {
 			Core.subscribe(CatalogingSearch.prefix + 'next-result', function(e) {
 				this.closeResult();
 			}, this);
-			
+
 			Core.subscribe(CatalogingSearch.prefix + 'previous-result', function(e) {
 				this.closeResult();
 			}, this);
-			
-			
+
+
 			if (HoldingInput) {
 				Core.subscribe(HoldingInput.prefix + 'edit-record-start', function() {
 					$('#database_selection_combo, #new_record_button, #new_holding_button').disable();
@@ -73,16 +73,16 @@ var HoldingSearchClass = {
 				Core.subscribe(HoldingInput.prefix + 'edit-record-end', function() {
 					$('#database_selection_combo, #new_record_button, #new_holding_button').enable();
 				}, this);
-				
+
 			}
-			
+
 		}
-		
+
 		if (CatalogingInput) {
 			Core.subscribe(CatalogingInput.prefix + 'record-new', function(e) {
 				this.closeResult();
 			}, this);
-			
+
 			if (HoldingInput) {
 				Core.subscribe(HoldingInput.prefix + 'edit-record-start', function() {
 					CatalogingInput.root.find('.page_navigation .button').disable();
@@ -95,7 +95,7 @@ var HoldingSearchClass = {
 				}, this);
 			}
 		}
-		
+
 		var simpleButton = this.root.find('.simple_search .main_button');
 		var simpleQuery = this.root.find('.simple_search :input[name=query]');
 		simpleQuery.data('oldVal', simpleQuery.val());
@@ -106,11 +106,11 @@ var HoldingSearchClass = {
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
-				
+
 				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
-		
+
 		if (this.enableHistory) {
 			this.initializeHistory();
 		} else {
@@ -142,12 +142,12 @@ var HoldingSearchClass = {
 
 			return false;
 		}
-		
+
 		switch (tab) {
 			case 'holding_marc':
 				this.loadHoldingMarc(data, params);
 				break;
-				
+
 			case 'holding_form':
 				this.loadHoldingForm(data, params);
 				break;
@@ -157,7 +157,7 @@ var HoldingSearchClass = {
 		if (!this.enableTabs) {
 			return;
 		}
-		
+
 		HoldingInput.clearTab(tab);
 
 		switch (tab) {
@@ -175,7 +175,7 @@ var HoldingSearchClass = {
 		if (!this.enableTabs) {
 			return;
 		}
-		
+
 		this.clearTab('holding_form');
 		this.clearTab('holding_marc');
 	},
@@ -227,7 +227,7 @@ var HoldingSearchClass = {
 	simpleSearch: function() {
 		var query = this.root.find('.search_box .simple_search :input[name=query]').val();
 		var holding_list_lendings = this.root.find('.search_box :input[name=holding_list_lendings]').attr('checked');
-		
+
 		var searchParameters = {
 			query: query
 		};
@@ -235,7 +235,7 @@ var HoldingSearchClass = {
 		if (holding_list_lendings) {
 			searchParameters.holding_list_lendings = true;
 		}
-		
+
 		this.submit(searchParameters);
 	},
 	lend: function(id) {
@@ -244,7 +244,7 @@ var HoldingSearchClass = {
 			message_level: 'warning'
 		});
 
-		
+
 		var data = {
 			controller: 'json',
 			module: this.type,
@@ -264,7 +264,7 @@ var HoldingSearchClass = {
 			if (response.success) {
 				Core.trigger(this.prefix + 'holding-lent', id, response.data);
 			}
-			
+
 			Core.msg(response);
 		});
 	},
@@ -272,10 +272,10 @@ var HoldingSearchClass = {
 		if (!lendingInfo || !lendingInfo.lending) {
 			return;
 		}
-		
+
 		if (lendingInfo.lending.daysLate > 0) {
 			this.selectedLendingInfo = lendingInfo;
-			
+
 			Core.showOverlay();
 
 			var popup = $('#fine_popup')
@@ -307,7 +307,7 @@ var HoldingSearchClass = {
 			context: this
 		}).done(function(response) {
 			if (response.success) {
-				Core.trigger(this.prefix + 'holding-renewed', lendingInfo.lending.id, response.data);				
+				Core.trigger(this.prefix + 'holding-renewed', lendingInfo.lending.id, response.data);
 			}
 
 			Core.msg(response);
@@ -332,7 +332,7 @@ var HoldingSearchClass = {
 			context: this
 		}).done(function(response) {
 			if (response.success) {
-				Core.trigger(this.prefix + 'holding-returned', lendingInfo.lending.id);				
+				Core.trigger(this.prefix + 'holding-returned', lendingInfo.lending.id);
 				this.closeFinePopup();
 			}
 

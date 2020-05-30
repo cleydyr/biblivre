@@ -30,8 +30,8 @@
 					<div class="clear"></div>
 				</div>
 			</div>
-		</fieldset>	
-		
+		</fieldset>
+
 		<fieldset>
 			<legend><i18n:text key="administration.translations.upload.title" /></legend>
 			<div class="description"><i18n:text key="administration.translations.upload.description" /></div>
@@ -48,16 +48,16 @@
 					</div>
 					<div class="clear"></div>
 				</div>
-				
+
 				<div class="buttons">
 					<a class="main_button arrow_right" onclick="Translation.upload(this);"><i18n:text key="administration.translations.upload.button" /></a>
 					<div class="clear"></div>
 				</div>
 			</div>
-		</fieldset>	
-		
+		</fieldset>
+
 	</div>
-	
+
 	<div id="upload_popup" class="popup">
 		<fieldset class="upload">
 			<legend><i18n:text key="administration.translations.upload_popup.title" /></legend>

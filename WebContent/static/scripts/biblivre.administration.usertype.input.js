@@ -1,31 +1,31 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var UserTypeInput = new Input({
 	initialize: function() {
 		$('#biblivre_usertype_form_body').setTemplateElement('biblivre_usertype_form_body_template');
-		
-		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {			
+
+		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {
 			if (this.search.lastSearchResult && this.search.lastSearchResult[id]) {
 				this.search.lastSearchResult[id].deleted = true;
-				
+
 				this.search.processResultTemplate();
 			}
 
@@ -64,14 +64,14 @@ var UserTypeInput = new Input({
 		if (this.editing) {
 			return;
 		}
-		
+
 		if (Core.trigger(this.prefix + 'edit-record-start', id) === false) {
 			return;
 		}
 
 		this.editing = true;
 		this.recordIdBeingEdited = id;
-		
+
 		var tab = this.search.selectedTab;
 		if (tab != 'form') {
 			tab = 'form';
@@ -88,9 +88,9 @@ var UserTypeInput = new Input({
 	},
 	getSaveRecord: function(saveAsNew) {
 		var body = $('#biblivre_usertype_form_body');
-		
+
 		var params = {};
-		
+
 		return $.extend(params, {
 			oldId: this.recordIdBeingEdited || 0,
 			id: (saveAsNew) ? 0 : this.recordIdBeingEdited,
@@ -121,14 +121,14 @@ var UserTypeInput = new Input({
 		if (record.deleted) {
 			return 'overlay_error';
 		}
-		
+
 		return '';
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
 			return Translations.get('common.deleted');
 		}
-		
+
 		return '';
 	}
 });

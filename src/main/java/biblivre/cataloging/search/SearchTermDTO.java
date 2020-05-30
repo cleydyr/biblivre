@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -44,7 +44,7 @@ public class SearchTermDTO extends AbstractDTO {
 	public Set<String> getTerms() {
 		return this.terms;
 	}
-	
+
 	public boolean addTerm(String term) {
 		if (this.terms == null) {
 			this.terms = new HashSet<String>();
@@ -52,7 +52,7 @@ public class SearchTermDTO extends AbstractDTO {
 
 		return this.terms.add(term);
 	}
-	
+
 	public boolean addTerms(Set<String> terms) {
 		if (this.terms == null) {
 			this.terms = new HashSet<String>();
@@ -72,7 +72,7 @@ public class SearchTermDTO extends AbstractDTO {
 	public SearchOperator getOperator() {
 		return this.operator;
 	}
-	
+
 	public void setOperator(SearchOperator operator) {
 		this.operator = operator;
 	}
@@ -86,7 +86,7 @@ public class SearchTermDTO extends AbstractDTO {
 		if (StringUtils.isNotBlank(startDate)) {
 			try {
 				this.startDate = TextUtils.parseDate(startDate);
-			} catch(Exception e) {	
+			} catch(Exception e) {
 			}
 		}
 	}
@@ -121,7 +121,7 @@ public class SearchTermDTO extends AbstractDTO {
 			if (this.getStartDate() != null) {
 				json.putOpt("start_date", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getStartDate()));
 			}
-			
+
 			if (this.getEndDate() != null) {
 				json.putOpt("end_date", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getEndDate()));
 			}

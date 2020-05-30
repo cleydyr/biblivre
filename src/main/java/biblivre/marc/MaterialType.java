@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -53,7 +53,7 @@ public enum MaterialType implements BiblivreEnum {
 	private final static List<MaterialType> bibliographicMaterials;
 	private final static List<MaterialType> searchableMaterials;
 	private final static String javascriptArray;
-	
+
 	static {
 		List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
 		List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
@@ -118,16 +118,16 @@ public enum MaterialType implements BiblivreEnum {
 
 	public static MaterialType fromTypeAndImplDef(char typeOfRecord, char[] implDef1) {
 		String imp = String.valueOf(implDef1);
-		
+
 		for (MaterialType type : MaterialType.values()) {
 			if (type.getTypeOfRecord() == typeOfRecord && type.getImplDefined1().equals(imp)) {
 				return type;
 			}
 		}
-		
+
 		return MaterialType.BOOK;
 	}
-	
+
 	public static MaterialType fromRecord(Record record) {
 		MaterialType mt = null;
 
@@ -138,19 +138,19 @@ public enum MaterialType implements BiblivreEnum {
 
 		return (mt != null && mt != MaterialType.ALL) ? mt : MaterialType.BOOK;
 	}
-	
+
 	public static List<MaterialType> bibliographicValues() {
 		return bibliographicMaterials;
 	}
-	
+
 	public static List<MaterialType> searchableValues() {
 		return searchableMaterials;
 	}
-	
+
 	public static String toJavascriptArray(){
 		return javascriptArray;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name().toLowerCase();

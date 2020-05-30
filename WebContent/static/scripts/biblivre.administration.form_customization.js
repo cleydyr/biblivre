@@ -1,31 +1,31 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var FormCustomization = FormCustomization || {};
 var CatalogingInput = CatalogingInput || {};
 
 $(document).ready(function() {
 	var firstSort = true;
-	
-	var datafields = $('#datafields'); 
-	
+
+	var datafields = $('#datafields');
+
 	// Enable sorting
 	datafields.sortable({
 		handle: '.move-datafield',
@@ -41,9 +41,9 @@ $(document).ready(function() {
 			}
 		}
 	});
-	
+
 	datafields.disableSelection();
-	
+
 	// Datafield Buttons
 	datafields.on('click', '.edit-datafield', function(el) {
 		if (FormCustomization.editMode) {
@@ -54,26 +54,26 @@ $(document).ready(function() {
 
 		FormCustomization.enterEditMode(fieldset);
 	});
-	
+
 	datafields.on('click', '.cancel-datafield', function() {
 		FormCustomization.exitEditMode(false);
 	});
-	
+
 	datafields.on('click', '.trash-datafield', function() {
 		FormCustomization.remove(this);
 	});
-	
+
 	datafields.on('click', '.save-datafield', FormCustomization.saveDatafield);
-	
+
 	// Defining Template
 	datafields.setTemplateElement($('#datafields_template'));
-	
+
 	//Adding behaviour to record_type select
-	var recordTypeSelect = $(':input[name=record_type_field]'); 
+	var recordTypeSelect = $(':input[name=record_type_field]');
 	recordTypeSelect.on('change', function() {
 		var selectedType = $(this).val();
 		if (FormCustomization.formFields[selectedType]) {
-			FormCustomization.selectedRecordType = selectedType; 
+			FormCustomization.selectedRecordType = selectedType;
 			FormCustomization.processTemplate();
 		}
 	}).trigger('change');
@@ -97,23 +97,23 @@ FormCustomization.enterEditMode = function(fieldset) {
 	FormCustomization.disableSort();
 	$('#datafields .edit-datafield, #datafields .trash-datafield').addClass('disabled');
 	fieldset.addClass('editing');
-	
+
 	var editArea = fieldset.find('.edit_area');
 	editArea.setTemplateElement($('#datafields_edit_template'));
-	
+
 	var tag = fieldset.attr('data-datafield');
 	var datafield = FormCustomization.formFields[FormCustomization.selectedRecordType][tag];
-	
+
 	editArea.processTemplate({
 		datafieldTag: tag,
-		datafield: datafield 
+		datafield: datafield
 	});
 
 	editArea.find('input[name=indicator_1_enabled], input[name=indicator_2_enabled]').on('change', function() {
 		var el = $(this);
 		el.closest('tr').find(':input').not(this).attr('disabled', !el.attr('checked'));
 	}).trigger('change');
-	
+
 	editArea.find('.subfield_table tbody').sortable({
 		handle: '.move-subfield',
 		axis: 'y',
@@ -132,12 +132,12 @@ FormCustomization.editIndicatorAddLine = function(table, value, text) {
 			$(this).closest('tr').remove();
 		}))
 		.appendTo(tr);
-	
+
 	tr.appendTo(table.find('tbody'));
 };
 
 FormCustomization.editIndicator = function(indicator) {
-	var div = $('<div/>');	
+	var div = $('<div/>');
 	var table = $('<table class="indicator_edit_table"><thead><tr><th>' +Translations.get('administration.form_customization.indicator.label_value') + '</th><th>' +Translations.get('administration.form_customization.indicator.label_text') + '</th></thead><tbody></tbody></table>').appendTo(div);
 
 	$('<div class="right" style="margin-right: 14px; margin-top: 5px;"><a href="javascript:void(0);"><i class="fa fa-fw fa-plus"></i></a></div>').on('click', function(e) {
@@ -145,7 +145,7 @@ FormCustomization.editIndicator = function(indicator) {
 		e.preventDefault();
 		e.stopPropagation();
 	}).appendTo(div);
-	
+
 	var combo = $(indicator).siblings('select');
 	var added = false;
 	combo.find('option').each(function() {
@@ -153,11 +153,11 @@ FormCustomization.editIndicator = function(indicator) {
 		var option = $(this);
 		FormCustomization.editIndicatorAddLine(table, option.val(), option.text());
 	});
-	
+
 	if (!added) {
 		FormCustomization.editIndicatorAddLine(table, '', '');
-	}	
-	
+	}
+
 	var popup = Core.popup({
 		body: div,
 		cancelHandler: function() {
@@ -171,33 +171,33 @@ FormCustomization.editIndicator = function(indicator) {
 				var tr = $(this);
 				var value = $.trim(tr.find('.indicator-value').val());
 				var text = $.trim(tr.find('.indicator-text').val());
-				
+
 				if (!value.length && !text.length) {
 					return;
 				}
-				
+
 				if (!value.length || !text.length) {
 					alert(Translations.get('administration.form_customization.indicator_edit_fill_error'));
 					ok = false;
 					return;
 				}
-				
+
 				if (unique[value]) {
 					alert(Translations.get('administration.form_customization.indicator_edit_repeated_value_error'));
 					ok = false;
 					return;
 				}
-				
+
 				unique[value] = true;
-				
+
 				$('<option></option>').attr('value', value).text(text).appendTo(list);
 			});
-			
+
 			if (ok) {
 				combo.empty();
 				combo.append(list.children());
 			}
-			
+
 			return ok;
 		}
 	});
@@ -206,7 +206,7 @@ FormCustomization.editIndicator = function(indicator) {
 FormCustomization.exitEditMode = function(success) {
 	FormCustomization.enableSort();
 	$('#datafields .edit-datafield, #datafields .trash-datafield').removeClass('disabled');
-	
+
 	var fieldset = $('#datafields fieldset.editing').removeClass('editing').addClass(success ? 'bg-success' : 'bg-cancel');
 
 	fieldset.find('.edit_area').empty();
@@ -219,7 +219,7 @@ FormCustomization.exitEditMode = function(success) {
 	} else {
 		fieldset.remove();
 	}
-	
+
 	FormCustomization.editMode = false;
 };
 
@@ -227,20 +227,20 @@ FormCustomization.saveDatafield = function() {
 	var fieldset = $('#datafields fieldset.editing');
 	var tag = fieldset.attr('data-datafield');
 	var datafield = FormCustomization.indexedDatafields[tag];
-	
+
 	var newTag = fieldset.find('[name=datafield_tag]').val() || '';
 	var translations = {};
-	
+
 	if (!tag && FormCustomization.indexedDatafields[newTag]) {
 		alert(Translations.get('administration.form_customization.error.existing_tag'));
 		return;
 	}
-	
+
 	if (newTag.trim().length != 3) {
 		alert(Translations.get('administration.form_customization.error.invalid_tag'));
 		return;
 	}
-	
+
 	var ind1 = [];
 	if (fieldset.find('[name=indicator_1_enabled]').attr('checked')) {
 		fieldset.find('[name=indicator_1_values] option').each(function() {
@@ -250,7 +250,7 @@ FormCustomization.saveDatafield = function() {
 			ind1.push(this.value);
 			translations['marc.bibliographic.datafield.' + newTag + '.indicator.1.' + this.value] = $(this).text();
 		});
-		
+
 		translations['marc.bibliographic.datafield.' + newTag + '.indicator.1'] = fieldset.find('[name=indicator_1_name]').val();
 	}
 
@@ -266,12 +266,12 @@ FormCustomization.saveDatafield = function() {
 
 		translations['marc.bibliographic.datafield.' + newTag + '.indicator.2'] = fieldset.find('[name=indicator_2_name]').val();
 	}
-	
+
 	var materials = [];
 	fieldset.find('.material-types input:checked').each(function() {
 		materials.push(this.name);
 	});
-	
+
 	var subfields = [];
 	var existingSubs = {};
 	var i = 0;
@@ -279,18 +279,18 @@ FormCustomization.saveDatafield = function() {
 	fieldset.find('.subfield_row').each(function() {
 		var tr = $(this);
 		var subTag = tr.find('[name=subfield_tag]').val();
-		
+
 		if (!subTag) {
 			return;
 		}
-		
+
 		if (existingSubs[subTag]) {
 			alert(Translations.get('administration.form_customization.error.existing_subfield'));
 			tr.find('[name=subfield_tag]').focus();
 			fail = true;
 			return;
 		}
-		
+
 		existingSubs[subTag] = true;
 
 		subfields.push({
@@ -301,19 +301,19 @@ FormCustomization.saveDatafield = function() {
 			repeatable: !!tr.find('[name=subfield_repeatable]').attr('checked'),
 			sortOrder: i++
 		});
-		
+
 		translations['marc.bibliographic.datafield.' + newTag + '.subfield.' + subTag] = tr.find('[name=subfield_name]').val();
 	});
 
 	if (fail) {
 		return;
 	}
-	
+
 	translations['marc.bibliographic.datafield.' + newTag] = fieldset.find('[name=datafield_name]').val();
 
-	
+
 	var updatedDatafield = {};
-	
+
 	updatedDatafield[datafield ? datafield.datafield : newTag] = {
 		formtab: {
 			datafield: newTag,
@@ -327,7 +327,7 @@ FormCustomization.saveDatafield = function() {
 		},
 		translations: translations
 	};
-	
+
 	FormCustomization.save(updatedDatafield, function(response) {
 		var t = datafield ? datafield.datafield : newTag;
 		delete FormCustomization.indexedDatafields[t];
@@ -340,15 +340,15 @@ FormCustomization.saveDatafield = function() {
 		FormCustomization.indexedDatafields[t].materialType = ftab.materialType.split(',');
 
 		FormCustomization.formFields[FormCustomization.selectedRecordType][t] = FormCustomization.indexedDatafields[t];
-		
+
 		fieldset.attr('data-datafield', t).children('legend').text(t + ' - ' + fieldset.find('[name=datafield_name]').val());
-		
+
 		for (var t in translations) {
 			if (translations.hasOwnProperty(t)) {
 				Translations.translations[t] = translations[t];
 			}
 		}
-		
+
 		FormCustomization.exitEditMode(response.success);
 	});
 };
@@ -357,14 +357,14 @@ FormCustomization.updateOrder = function() {
 	FormCustomization.disableSort();
 
 	var updatedOrder = {};
-	
+
 	$('#datafields > fieldset').each(function(index, element) {
 		var tag = $(element).attr('data-datafield');
 		var datafield = FormCustomization.indexedDatafields[tag];
-		
+
 		if (datafield.sortOrder != index) {
 			datafield.sortOrder = index;
-			
+
 			updatedOrder[datafield.datafield] = {
 				formtab: {
 					datafield: datafield.datafield,
@@ -381,7 +381,7 @@ FormCustomization.updateOrder = function() {
 			};
 		}
 	});
-	
+
 	FormCustomization.save(updatedOrder, FormCustomization.enableSort);
 };
 
@@ -390,7 +390,7 @@ FormCustomization.save = function(fields, callback) {
 		url: window.location.pathname,
 		type: 'POST',
 		dataType: 'json',
-		loadingTimedOverlay: true,		
+		loadingTimedOverlay: true,
 		data: {
 			controller: 'json',
 			module: 'administration.customization',
@@ -405,7 +405,7 @@ FormCustomization.save = function(fields, callback) {
 				if ($.isFunction(callback)) {
 					callback(response);
 				}
-			}			
+			}
 		}
 	});
 };
@@ -415,7 +415,7 @@ FormCustomization.insert = function(formats, callback) {
 		url: window.location.pathname,
 		type: 'POST',
 		dataType: 'json',
-		loadingTimedOverlay: true,		
+		loadingTimedOverlay: true,
 		data: {
 			controller: 'json',
 			module: 'administration.customization',
@@ -430,7 +430,7 @@ FormCustomization.insert = function(formats, callback) {
 				if ($.isFunction(callback)) {
 					callback(response);
 				}
-			}			
+			}
 		}
 	});
 };
@@ -441,7 +441,7 @@ FormCustomization.remove = function(button) {
 		return;
 	}
 	var fieldset = $(button).closest('fieldset');
-	
+
 	Core.popup({
 		title:Translations.get('administration.form_customization.confirm_delete_datafield_title'),
 		description:Translations.get('administration.form_customization.confirm_delete_datafield_description'),
@@ -450,7 +450,7 @@ FormCustomization.remove = function(button) {
 				url: window.location.pathname,
 				type: 'POST',
 				dataType: 'json',
-				loadingTimedOverlay: true,		
+				loadingTimedOverlay: true,
 				data: {
 					controller: 'json',
 					module: 'administration.customization',

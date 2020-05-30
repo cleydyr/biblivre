@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -34,7 +34,7 @@ import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Pair;
 
-public class JsonController extends Controller { 
+public class JsonController extends Controller {
 
 	public JsonController(ExtendedRequest xRequest, ExtendedResponse xResponse) {
 		super(xRequest, xResponse);
@@ -54,14 +54,14 @@ public class JsonController extends Controller {
 
 		this.dispatch(null, message);
 	}
-	
+
 	@Override
 	protected void doLockedStateError() throws ServletException, IOException {
 		Message message = new Message(ActionResult.WARNING, "error.biblivre_is_locked_please_wait");
 
 		this.dispatch(null, message);
 	}
-	
+
 	@Override
 	protected void doError(String error, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -69,13 +69,13 @@ public class JsonController extends Controller {
 		} else {
 			this.log.error(error);
 		}
-		
+
 		//e.printStackTrace();
 
 		Message message = new Message(ActionResult.ERROR, error, e);
 		this.dispatch(null, message);
 	}
-	
+
 	@Override
 	protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
 		if (e != null && this.log.isDebugEnabled()) {
@@ -83,22 +83,22 @@ public class JsonController extends Controller {
 		} else {
 			this.log.warn(warning);
 		}
-		
+
 		//e.printStackTrace();
 
 		Message message = new Message(ActionResult.WARNING, warning, e);
 		this.dispatch(null, message);
 	}
-	
+
 	private void dispatch(JSONObject json, Message message) throws IOException {
 		if (json == null) {
 			json = new JSONObject();
 		}
-		
+
 		if (message == null) {
 			message = new Message();
 		}
-		
+
 		try {
 			json.putOnce("success", message.isSuccess());
 
@@ -122,12 +122,12 @@ public class JsonController extends Controller {
 			}
 		} catch (JSONException je) {}
 
-		if (this.xRequest.isMultiPart()) {			
-	        this.xResponse.setContentType("text/html;charset=UTF-8");			
+		if (this.xRequest.isMultiPart()) {
+	        this.xResponse.setContentType("text/html;charset=UTF-8");
 		} else {
-	        this.xResponse.setContentType("application/json;charset=UTF-8");			
+	        this.xResponse.setContentType("application/json;charset=UTF-8");
 		}
-		
+
         try {
 			this.xResponse.print(json.toString());
 		} catch (JSONException e) {

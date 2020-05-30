@@ -102,7 +102,7 @@ public class IndexingGroups extends StaticBO {
 
 				if (sort == null) {
 					sort = group;
-				}				
+				}
 			}
 		}
 

@@ -15,7 +15,7 @@
 	if (l != null && l.length() > 0) {
 		selected = l.charAt(0);
 	}
-	
+
 %>
 <layout:body>
 	<div class="paging_bar center">
@@ -27,7 +27,7 @@
 			<% } %>
 		<% } %>
 	</div>
-	
+
 	<div id="list_results">
 		<c:forEach var="record" varStatus="status" items="${records}" >
 			<div class="result ${status.index % 2 == 0 ? 'even' : 'odd'}">

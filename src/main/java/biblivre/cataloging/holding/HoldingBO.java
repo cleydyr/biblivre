@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -76,7 +76,7 @@ import biblivre.marc.RecordStatus;
 public class HoldingBO extends RecordBO {
 
 	private HoldingDAO dao;
-	
+
 	public static HoldingBO getInstance(String schema) {
 		HoldingBO bo = AbstractBO.getInstance(HoldingBO.class, schema);
 
@@ -95,11 +95,11 @@ public class HoldingBO extends RecordBO {
 	@Override
 	public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
 		Map<Integer, RecordDTO> map = this.dao.map(ids);
-		
+
 		for (RecordDTO dto : map.values()) {
 			this.populateDetails(dto, mask);
 		}
-		
+
 		return map;
 	}
 
@@ -112,27 +112,27 @@ public class HoldingBO extends RecordBO {
 	public Integer count() {
 		return this.count(0);
 	}
-	
+
 	public Integer count(int recordId) {
 		return this.dao.count(recordId, false);
 	}
-	
+
 	public Integer countAvailableHoldings(int recordId) {
 		return this.dao.count(recordId, true);
 	}
-	
+
 	public void markAsPrinted(Set<Integer> ids) {
 		this.dao.markAsPrinted(ids);
 	}
-	
+
 	public String getNextAccessionNumber() {
 		String prefix = Configurations.getString(this.getSchema(), Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
 		int year = Calendar.getInstance().get(Calendar.YEAR);
-		
+
 		String accessionPrefix = prefix + "." + year + ".";
 		return accessionPrefix + this.dao.getNextAccessionNumber(accessionPrefix);
 	}
-	
+
 	public boolean isAccessionNumberAvailable(String accessionNumber, int holdingSerial) {
 		return this.dao.isAccessionNumberAvailable(accessionNumber, holdingSerial);
 	}
@@ -144,25 +144,25 @@ public class HoldingBO extends RecordBO {
 	public DTOCollection<HoldingDTO> list(int recordId) {
 		return this.dao.list(recordId);
 	}
-	
+
 	public HoldingDTO getByAccessionNumber(String accessionNumber) {
 		return this.dao.getByAccessionNumber(accessionNumber);
 	}
-	
+
 	public DTOCollection<HoldingDTO> search(String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
-		DTOCollection<HoldingDTO> searchResults = this.dao.search(query, database, lentOnly, offset, limit); 
+		DTOCollection<HoldingDTO> searchResults = this.dao.search(query, database, lentOnly, offset, limit);
 		for (HoldingDTO holding : searchResults) {
 			MarcDataReader reader = new MarcDataReader(holding.getRecord());
 			holding.setShelfLocation(reader.getShelfLocation());
 		}
 		return searchResults;
 	}
-	
+
 	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
 	}
-	
+
 	@Override
 	public boolean save(RecordDTO dto) {
 		HoldingDTO hdto = (HoldingDTO) dto;
@@ -195,7 +195,7 @@ public class HoldingBO extends RecordBO {
 		dto.setIso2709(iso2709);
 
 		boolean success = this.dao.save(dto);
-		
+
 		if (success) {
 			//UPDATE holding_creation_counter
 			try {
@@ -206,10 +206,10 @@ public class HoldingBO extends RecordBO {
 				this.logger.error(e);
 			}
 		}
-		
+
 		return success;
-	}	
-	
+	}
+
 	@Override
 	public boolean update(RecordDTO dto) {
 		HoldingDTO hdto = (HoldingDTO) dto;
@@ -265,20 +265,20 @@ public class HoldingBO extends RecordBO {
 		if (lbo.isLent(holding) || lbo.wasEverLent(holding)) {
 			throw new ValidationException("cataloging.holding.error.shouldnt_delete_because_holding_is_or_was_lent");
 		}
-		
+
 		return true;
 	}
 
 	@Override
 	public void populateDetails(RecordDTO rdto, int mask) {
-		
+
 		if ((mask & RecordBO.MARC_INFO) != 0) {
 			MarcDataReader reader = new MarcDataReader(rdto.getRecord());
 			((HoldingDTO)rdto).setShelfLocation(reader.getShelfLocation());
 		}
 		return;
 	}
-	
+
 	public boolean paginateHoldingSearch(SearchDTO search) {
 		Map<Integer, Integer> groupCount = this.dao.countSearchResults(search);
 		Integer count = groupCount.get(search.getIndexingGroup());
@@ -299,7 +299,7 @@ public class HoldingBO extends RecordBO {
 
 		return true;
 	}
-	
+
 	public DiskFile printLabelsToPDF(List<LabelDTO> labels, LabelPrintDTO printDTO) {
 		OutputStream fos = null;
 

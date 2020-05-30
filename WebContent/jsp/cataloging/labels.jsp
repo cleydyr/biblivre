@@ -11,12 +11,12 @@
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
 
 	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>	
+	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
 
 	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
-	
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.labels.js"></script>		
+
+	<script type="text/javascript" src="static/scripts/biblivre.cataloging.labels.js"></script>
 
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
@@ -33,10 +33,10 @@
 				holding_search: true
 			}
 		});
-		
+
 		CatalogingInput.type = 'cataloging.bibliographic';
 		CatalogingInput.root = '#cataloging_search';
-		
+
 		CatalogingInput.search = CatalogingSearch;
 
 		$(document).ready(function() {
@@ -78,20 +78,20 @@
 
 		<div class="page_title">
 			<div class="image"><img src="static/images/titles/search.png" /></div>
-	
+
 			<div class="simple_search text contains_subtext">
 				<i18n:text key="search.common.simple_search" />
 				<div class="subtext"><i18n:text key="search.common.switch_to" /> <a href="javascript:void(0);" onclick="CatalogingSearch.switchToAdvancedSearch();"><i18n:text key="search.common.advanced_search" /></a></div>
 			</div>
-	
+
 			<div class="advanced_search text contains_subtext">
 				<i18n:text key="search.common.advanced_search" />
 				<div class="subtext"><i18n:text key="search.common.switch_to" /> <a href="javascript:void(0);" onclick="CatalogingSearch.switchToSimpleSearch();"><i18n:text key="search.common.simple_search" /></a></div>
 			</div>
-			
+
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -107,7 +107,7 @@
 					<a class="main_button arrow_right" onclick="CatalogingSearch.search('simple');"><i18n:text key="search.common.button.list_all" /></a>
 				</div>
 			</div>
-	
+
 			<div class="advanced_search submit_on_enter">
 				<div class="search_entry">
 					<div class="operator">
@@ -132,11 +132,11 @@
 					</div>
 					<div class="clear"></div>
 				</div>
-	
+
 				<div class="add_term ico_add">
 					<a href="javascript:void(0);" onclick="CatalogingSearch.addEntryAdvancedSearch();"><i18n:text key="search.common.add_field" /></a>
 				</div>
-						
+
 				<div class="filter_search">
 					<div class="fleft filter_material">
 						<label class="search_label"><i18n:text key="search.bibliographic.material_type" /></label>
@@ -158,7 +158,7 @@
 					<div class="filter_checkbox">
 						<input type="checkbox" name="holding_label_never_printed" id="holding_label_never_printed" value="true" checked="checked">
 						<label class="search_label" for="holding_label_never_printed"><i18n:text key="search.bibliographic.labels.never_printed" /></label>
-					</div>					
+					</div>
 				</div>
 
 				<div class="fleft clear_search ico_clear">
@@ -171,7 +171,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="selected_results_area">
 		</div>
 		<textarea class="selected_results_area_template template"><!--
@@ -189,10 +189,10 @@
 				</fieldset>
 			{/#if}
 		--></textarea>
-	
+
 		<div class="search_results_area">
 			<div class="search_ordering_bar">
-	
+
 				<div class="search_indexing_groups"></div>
 				<textarea class="search_indexing_groups_template template"><!--
 					{#foreach $T.search.indexing_group_count as group_count}
@@ -209,12 +209,12 @@
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
-							{#/if}						
+							{#/if}
 						{#/for}
 						{#if !$T.group_count$last} <div class="hspacer">|</div> {#/if}
 					{#/for}
 				--></textarea>
-	
+
 				<div class="search_sort_by"></div>
 				<textarea class="search_sort_by_template template"><!--
 					<i18n:text key="search.common.sort_by" />:
@@ -225,22 +225,22 @@
 							{#/if}
 						{#/for}
 					</select>
-				--></textarea>			
-				
+				--></textarea>
+
 				<div class="clear"></div>
 			</div>
-	
+
 			<div class="search_loading_indicator loading_indicator"></div>
-		
+
 			<div class="select_bar">
-				<a class="button center" onclick="CatalogingSearch.selectPageResults();"><i18n:text key="cataloging.labels.button.select_page" /></a> 
+				<a class="button center" onclick="CatalogingSearch.selectPageResults();"><i18n:text key="cataloging.labels.button.select_page" /></a>
 			</div>
 			<div class="paging_bar"></div>
 			<div class="clear"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']} {CatalogingInput.getOverlayClass($T.record)}" rel="{$T.record.id}">
 							<div class="buttons">
@@ -265,11 +265,11 @@
 					{#/for}
 				--></textarea>
 			</div>
-	
+
 			<div class="paging_bar"></div>
 		</div>
 	</div>
-	
+
 	<div id="label_select_popup" class="popup">
 		<div class="close" onclick="CatalogingLabels.hidePopup();"><i18n:text key="common.close" /></div>
 
@@ -277,7 +277,7 @@
 			<legend><i18n:text key="cataloging.labels.popup.title" /></legend>
 			<div class="content"><select id="label_format_select"></select></div>
 		</fieldset>
-		
+
 		<fieldset>
 			<legend><i18n:text key="cataloging.labels.popup.description" /></legend>
 			<div class="content">

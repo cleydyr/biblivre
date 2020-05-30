@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -38,26 +38,26 @@ public class AccessControlDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO access_control ");
 			sql.append("(access_card_id, user_id, created_by) ");
 			sql.append("VALUES (?, ?, ?);");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, dto.getAccessCardId());
 			pst.setInt(2, dto.getUserId());
 			pst.setInt(3, dto.getCreatedBy());
-			
+
 			return pst.executeUpdate() > 0;
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
@@ -67,9 +67,9 @@ public class AccessControlDAO extends AbstractDAO {
 			sql.append("INSERT INTO access_control ");
 			sql.append("(access_card_id, user_id, created_by, id) ");
 			sql.append("VALUES (?, ?, ?, ?);");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				AccessControlDTO dto = (AccessControlDTO) abstractDto;
 				pst.setInt(1, dto.getAccessCardId());
@@ -78,9 +78,9 @@ public class AccessControlDAO extends AbstractDAO {
 				pst.setInt(4, dto.getId());
 				pst.addBatch();
 			}
-			
+
 			return pst.executeBatch()[0] > 0;
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -99,13 +99,13 @@ public class AccessControlDAO extends AbstractDAO {
 			sql.append("modified = now(), ");
 			sql.append("modified_by = ? ");
 			sql.append("WHERE id = ?;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, dto.getModifiedBy());
 			pst.setInt(2, dto.getId());
-			
+
 			return pst.executeUpdate() > 0;
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -122,15 +122,15 @@ public class AccessControlDAO extends AbstractDAO {
 			sql.append("SELECT * FROM access_control ");
 			sql.append("WHERE access_card_id = ? AND ");
 			sql.append("departure_time is null;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, cardId);
-			
+
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
 				return this.populateDto(rs);
 			}
-		
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -149,10 +149,10 @@ public class AccessControlDAO extends AbstractDAO {
 			sql.append("SELECT * FROM access_control ");
 			sql.append("WHERE user_id = ? and ");
 			sql.append("departure_time is null;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, userId);
-			
+
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
 				return this.populateDto(rs);
@@ -178,5 +178,5 @@ public class AccessControlDAO extends AbstractDAO {
 		dto.setModifiedBy(rs.getInt("modified_by"));
 		return dto;
 	}
-	
+
 }

@@ -15,12 +15,12 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />	
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
 
 	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>	
+	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {
 			type: 'circulation.reservation',
@@ -33,18 +33,18 @@
 			enableTabs: false,
 			enableHistory: false
 		});
-		
+
 		var CatalogingSearch = CreateSearch(CatalogingSearchClass, {
 			type: 'circulation.reservation',
 			prefix: 'user_reservation.record',
 			root: '#cataloging_search',
 			searchAction: 'self_search',
 			paginateAction: 'self_search',
-			autoSelect: false,			
+			autoSelect: false,
 			enableTabs: false,
 			enableHistory: false
 		});
-		
+
 	</script>
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.user_reservation.js"></script>
 </layout:head>
@@ -57,16 +57,16 @@
 	<div id="circulation_search">
 		<div class="page_title">
 			<div class="image"><img src="static/images/titles/search.png" /></div>
-	
+
 			<div class="text">
 				<i18n:text key="circulation.reservation.users.title" />
 			</div>
 
 			<div class="clear"></div>
 		</div>
-		
+
 		<div class="selected_highlight"></div>
-		<textarea class="selected_highlight_template template"><!-- 			
+		<textarea class="selected_highlight_template template"><!--
 			<div class="record">
 				{#if $T.user.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.user.name}<br/>{#/if}
 				<label><i18n:text key="circulation.user_field.id" /></label>: {$T.user.enrollment}<br/>
@@ -106,7 +106,7 @@
 				{#/if}
 			</div>
 		--></textarea>
-	
+
 		<div class="search_box hidden">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -125,15 +125,15 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="search_results_area">
 			<div class="search_loading_indicator loading_indicator"></div>
-		
+
 			<div class="paging_bar"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']}" rel="{$T.record.id}">
 							<div class="buttons user_status_{$T.record.user.status}">
@@ -155,15 +155,15 @@
 					{#/for}
 				--></textarea>
 			</div>
-			
-			<div class="paging_bar"></div>		
+
+			<div class="paging_bar"></div>
 		</div>
 	</div>
 
 	<div id="cataloging_search">
 		<div class="page_title">
 			<div class="image"><img src="static/images/titles/search.png" /></div>
-	
+
 			<div class="text">
 				<i18n:text key="circulation.reservation.holdings.title" />
 			</div>
@@ -182,9 +182,9 @@
 
 			<div class="clear"></div>
 		</div>
-		
+
 		<div class="clear"></div>
-	
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -210,7 +210,7 @@
 				<a href="javascript:void(0);" onclick="CatalogingSearch.clearSimpleSearch();"><i18n:text key="search.common.clear_simple_search" /></a>
 			</div>
 		</div>
-	
+
 		<div class="search_results_area">
 			<div class="search_ordering_bar">
 				<div class="search_indexing_groups"></div>
@@ -229,12 +229,12 @@
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
-							{#/if}						
+							{#/if}
 						{#/for}
 						{#if !$T.group_count$last} <div class="hspacer">|</div> {#/if}
 					{#/for}
 				--></textarea>
-	
+
 				<div class="search_sort_by"></div>
 				<textarea class="search_sort_by_template template"><!--
 					<i18n:text key="search.common.sort_by" />:
@@ -245,24 +245,24 @@
 							{#/if}
 						{#/for}
 					</select>
-				--></textarea>			
-				
+				--></textarea>
+
 				<div class="clear"></div>
 			</div>
 
 			<div class="search_loading_indicator loading_indicator"></div>
-		
+
 			<div class="paging_bar"></div>
 
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']}" rel="{$T.record.id}">
 							<div class="buttons">
 								<a class="button center" onclick="CatalogingSearch.reserve('{$T.record.id}', 'self_reserve');"><i18n:text key="circulation.reservation.button.reserve" /></a>
 							</div>
- 
+
 							<div class="record">
 								{#if $T.record.title}<label><i18n:text key="search.bibliographic.title" /></label>: {$T.record.title}<br/>{#/if}
 								{#if $T.record.author}<label><i18n:text key="search.bibliographic.author" /></label>: {$T.record.author}<br/>{#/if}
@@ -271,9 +271,9 @@
 								{#if $T.record.isbn}<label><i18n:text key="search.bibliographic.isbn" /></label>: {$T.record.isbn}<br/>{#/if}
 								{#if $T.record.issn}<label><i18n:text key="search.bibliographic.issn" /></label>: {$T.record.issn}<br/>{#/if}
 								{#if $T.record.isrc}<label><i18n:text key="search.bibliographic.isrc" /></label>: {$T.record.isrc}<br/>{#/if}
-	
+
 								<div class="ncspacer"></div>
-								<div class="ncspacer"></div>						
+								<div class="ncspacer"></div>
 
 								<label><i18n:text key="search.bibliographic.holdings_count" /></label>: {$T.record.holdings_count}
 								-
@@ -282,14 +282,14 @@
 									<label><i18n:text key="search.bibliographic.holdings_lent" /></label>: {$T.record.holdings_lent}&#160;
 									<label><i18n:text key="search.bibliographic.holdings_reserved" /></label>: {$T.record.holdings_reserved}
 								</small>
-								
+
 							</div>
 							<div class="clear"></div>
 						</div>
 					{#/for}
 				--></textarea>
 			</div>
-	
+
 			<div class="paging_bar"></div>
 		</div>
 	</div>

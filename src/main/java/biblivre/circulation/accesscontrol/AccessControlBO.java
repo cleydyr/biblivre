@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -39,15 +39,15 @@ public class AccessControlBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = AccessControlDAO.getInstance(schema);
 		}
-		
+
 		return bo;
 	}
-	
+
 	public AccessControlDTO populateDetails(AccessControlDTO dto) {
 		if (dto == null) {
 			return null;
 		}
-		
+
 		if (dto.getAccessCardId() != null) {
 			AccessCardBO cardBo = AccessCardBO.getInstance(this.getSchema());
 			dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
@@ -57,12 +57,12 @@ public class AccessControlBO extends AbstractBO {
 			UserBO userBo = UserBO.getInstance(this.getSchema());
 			dto.setUser(userBo.get(dto.getUserId()));
 		}
-		
+
 		return dto;
 	}
-	
+
     public boolean lendCard(AccessControlDTO dto) {
-    	
+
     	UserBO userBO = UserBO.getInstance(this.getSchema());
 		UserDTO udto = null;
 		try {
@@ -73,7 +73,7 @@ public class AccessControlBO extends AbstractBO {
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
-		
+
 		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
 		AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
 		if (cardDto == null) {
@@ -81,7 +81,7 @@ public class AccessControlBO extends AbstractBO {
 		} else if (!cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
 			throw new ValidationException("circulation.access_control.card_unavailable");
 		}
-		
+
 		AccessControlDTO existingAccess = this.getByCardId(dto.getAccessCardId());
 		if (existingAccess != null) {
 			throw new ValidationException("circulation.access_control.card_in_use");
@@ -90,7 +90,7 @@ public class AccessControlBO extends AbstractBO {
 		if (existingAccess != null) {
 			throw new ValidationException("circulation.access_control.user_has_card");
 		}
-    	
+
 		try {
 			cardDto.setStatus(AccessCardStatus.IN_USE);
 			cardBO.update(cardDto);
@@ -98,12 +98,12 @@ public class AccessControlBO extends AbstractBO {
 		} catch (Exception e) {
 			this.logger.error(e);
 		}
-		
+
         return false;
     }
 
     public boolean returnCard(AccessControlDTO dto) {
-    	
+
     	UserBO userBO = UserBO.getInstance(this.getSchema());
 		UserDTO udto = null;
 		try {
@@ -114,7 +114,7 @@ public class AccessControlBO extends AbstractBO {
 		if (udto == null) {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
-		
+
 		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
 		AccessControlDTO existingAccess = null;
 
@@ -125,7 +125,7 @@ public class AccessControlBO extends AbstractBO {
 			} else if (cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
 				throw new ValidationException("circulation.access_control.card_available");
 			}
-			
+
 			existingAccess = this.getByCardId(dto.getAccessCardId());
 			if (existingAccess == null) {
 				existingAccess = this.getByUserId(dto.getUserId());
@@ -134,7 +134,7 @@ public class AccessControlBO extends AbstractBO {
 				}
 			}
 		}
-		
+
 		try {
 			if (existingAccess != null) {
 				AccessCardDTO cardDto = cardBO.get(existingAccess.getAccessCardId());
@@ -147,7 +147,7 @@ public class AccessControlBO extends AbstractBO {
 		} catch (Exception e) {
 			this.logger.error(e);
 		}
-		
+
         return false;
     }
 

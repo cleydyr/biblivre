@@ -6,7 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />	
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
 </layout:head>
 
@@ -16,7 +16,7 @@
 	<div id="form_customization">
 		<fieldset class="block">
 			<legend><i18n:text key="administration.brief_customization.select_record_type" /></legend>
-	
+
 			<div class="record_type_selection">
 				<select id="record_type_select" name="record_type_field" class="combo combo_auto_size">
 					<option value="bibliographic"><i18n:text key="administration.brief_customization.biblio" /></option>
@@ -24,14 +24,14 @@
 					<option value="vocabulary"><i18n:text key="administration.brief_customization.vocabulary" /></option>
 				</select>
 			</div>
-			
+
 			<div class="buttons">
 				<a class="main_button center" onclick="FormCustomization.addDatafield();"><i18n:text key="administration.form_customization.button_add_field" /></a>
 			</div>
 		</fieldset>
-		
+
 		<div id="datafields"></div>
-		<textarea id="datafields_template" class="template"><!-- 
+		<textarea id="datafields_template" class="template"><!--
 			{#foreach $T.datafields as datafield}
 				<fieldset class="block" data-datafield="{ $T.datafield.datafield }">
 					<legend>{$T.datafield.datafield} - {Translations.get('marc.bibliographic.datafield.' + $T.datafield.datafield) }</legend>
@@ -101,8 +101,8 @@
 							</td>
 						</tr>
 					</tbody>
-				</table>	
-	
+				</table>
+
 				<div class="title"><i18n:text key="administration.form_customization.material_type" /></div>
 				<ul class="material-types">
 				{#foreach FormCustomization.materialTypes as materialType}
@@ -111,10 +111,10 @@
 							<input type="checkbox" name="{$T.materialType}" {#if $T.datafield.material_type.indexOf($T.materialType) > -1}checked="checked"{#/if} />
 							{Translations.get('marc.material_type.' + $T.materialType) }
 						</label>
-					</li>							
+					</li>
 				{#/for}
 				</ul>
-				
+
 				<div class="title"><i18n:text key="administration.form_customization.subfields" /></div>
 				<table class="subfield_table">
 					<thead>
@@ -176,10 +176,10 @@
 					</tbody>
 				</table>
 		 	</div>
-		--></textarea>		
-		
+		--></textarea>
+
 	</div><script type="text/javascript" src="static/scripts/biblivre.administration.form_customization.js"></script>
-	
+
 	<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
 	<script>FormCustomization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>

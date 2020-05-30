@@ -4,7 +4,7 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
-<% 
+<%
 	try {
 		ExtendedRequest xRequest = (ExtendedRequest) request;
 	} catch (Exception e) {

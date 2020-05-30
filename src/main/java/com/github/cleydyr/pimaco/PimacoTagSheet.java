@@ -212,7 +212,7 @@ public enum PimacoTagSheet {
 	}
 
 	public Quantity<Length> getHoriziontalSpacing() {
-		return this.getHorizontalDensity().subtract(this.getTagWidth()); 
+		return this.getHorizontalDensity().subtract(this.getTagWidth());
 	}
 
 	public Quantity<Length> getVerticalSpacing() {

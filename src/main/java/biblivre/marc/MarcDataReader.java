@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -39,12 +39,12 @@ import biblivre.core.utils.TextUtils;
 public class MarcDataReader {
 	private Record record;
 	private HashMap<String, List<DataField>> cache;
-	
+
 	public MarcDataReader(Record record) {
 		this.record = record;
 		this.cache = this.readDataFieldMap();
 	}
-	
+
 	public Record getRecord() {
 		return this.record;
 	}
@@ -52,7 +52,7 @@ public class MarcDataReader {
 	public HashMap<String, List<DataField>> getCache() {
 		return this.cache;
 	}
-	
+
 	public List<BriefTabFieldDTO> getFieldList(List<BriefTabFieldFormatDTO> dataFieldFormats) {
 		List<BriefTabFieldDTO> list = new LinkedList<BriefTabFieldDTO>();
 
@@ -77,7 +77,7 @@ public class MarcDataReader {
 	public String getFieldValue(String separator, BriefTabFieldFormatDTO ... dataFieldFormats) {
 		return this.getFieldValue(true, separator, dataFieldFormats);
 	}
-	
+
 	public String getFieldValue(boolean listAll, String separator, BriefTabFieldFormatDTO ... dataFieldFormats) {
 		List<String> formattedFields = new LinkedList<String>();
 
@@ -97,10 +97,10 @@ public class MarcDataReader {
 				}
 			}
 		}
-		
+
 		return formattedFields.size() > 0 ? StringUtils.join(formattedFields, separator) : null;
 	}
-	
+
 	public List<RecordAttachmentDTO> getAttachments() {
 		List<DataField> fields = this.getDataFields(MarcConstants.ELECTRONIC_LOCATION);
 		List<RecordAttachmentDTO> attachments = new LinkedList<RecordAttachmentDTO>();
@@ -144,7 +144,7 @@ public class MarcDataReader {
 
 		return attachments;
 	}
-	
+
 	public String getAuthor(boolean listAll) {
 		return this.getFieldValue(listAll,
 				new BriefTabFieldFormatDTO(MarcConstants.AUTHOR_PERSONAL_NAME, "${a}"),
@@ -158,7 +158,7 @@ public class MarcDataReader {
 				new BriefTabFieldFormatDTO(MarcConstants.SECONDARY_AUTHOR_CONGRESS_NAME, "${a}")
 		);
 	}
-	
+
 	public String getAuthorName(boolean listAll) {
 		return this.getFieldValue(listAll,
 				new BriefTabFieldFormatDTO(MarcConstants.AUTHOR_PERSONAL_NAME, "${a}"),
@@ -166,7 +166,7 @@ public class MarcDataReader {
 				new BriefTabFieldFormatDTO(MarcConstants.AUTHOR_CONGRESS_NAME, "${a}")
 		);
 	}
-	
+
 	public String getAuthorOtherName(boolean listAll) {
 		return this.getFieldValue(listAll,
 				new BriefTabFieldFormatDTO(MarcConstants.AUTHOR_OTHER_PERSONAL_NAMES, "${a}"),
@@ -185,7 +185,7 @@ public class MarcDataReader {
 				new BriefTabFieldFormatDTO(MarcConstants.SECONDARY_INPUT_SERIAL_TITLE, "${a}_{ }${v}")
 		);
 	}
-	
+
 	public String getIsbn() {
 		return this.getFieldValue(" ",
 				new BriefTabFieldFormatDTO(MarcConstants.ISBN, "${a}")
@@ -222,37 +222,37 @@ public class MarcDataReader {
 				new BriefTabFieldFormatDTO(MarcConstants.SHELF_LOCATION, "${d}")
 		);
 	}
-	
+
 	public String getLocation() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.SHELF_LOCATION, "${a}")
 		);
 	}
-	
+
 	public String getLocationB() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.SHELF_LOCATION, "${b}")
 		);
 	}
-	
+
 	public String getLocationC() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.SHELF_LOCATION, "${c}")
 		);
 	}
-	
+
 	public String getLocationD() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.SHELF_LOCATION, "${d}")
 		);
 	}
-	
+
 	public String getDDCN() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.DDCN, "${a}")
 		);
 	}
-	
+
 	public String getSourceAcquisitionDate() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.SOURCE_ACQUISITION_NOTES, "${d}")
@@ -270,13 +270,13 @@ public class MarcDataReader {
 				new BriefTabFieldFormatDTO(MarcConstants.SUBJECT_ADDED_ENTRY_LOCAL, "${a}_{ - }${x}_{ - }${y}_{ - }${z}")
 		);
 	}
-	
+
 	public String getEditor() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.PUBLICATION, "${b}")
 		);
 	}
-	
+
 	public String getEdition() {
 		return this.getFieldValue(false,
 				new BriefTabFieldFormatDTO(MarcConstants.EDITION, "${a}")
@@ -286,7 +286,7 @@ public class MarcDataReader {
     public String getAccessionNumber() {
 		return this.getFieldValue(false, new BriefTabFieldFormatDTO(MarcConstants.ACCESSION_NUMBER, "${a}"));
     }
-	
+
 	public ControlField getControlField(String tag) {
 		Record record = this.getRecord();
 
@@ -307,11 +307,11 @@ public class MarcDataReader {
 
 	public DataField getFirstDataField(String tag) {
 		List<DataField> list = this.getDataFields(tag);
-		
+
 		if (list != null && list.size() > 0) {
 			return list.get(0);
 		}
-		
+
 		return null;
 	}
 
@@ -323,18 +323,18 @@ public class MarcDataReader {
 		}
 
 		List<DataField> list = this.getCache().get(tag);
-		
+
 		if (list != null) {
 			return list;
 		}
-		
+
 		return new LinkedList<DataField>();
 	}
 
 
 	public Subfield getFirstSubfield(String tag, char subfield) {
 		List<DataField> dataFields = this.getDataFields(tag);
-		
+
 		for (DataField field : dataFields) {
 			Subfield sf = field.getSubfield(subfield);
 
@@ -351,7 +351,7 @@ public class MarcDataReader {
 
 		return sf != null ? sf.getData() : "";
 	}
-	
+
 	public String getFirstSubfieldData(DataField datafield, char subfield) {
 		// Get a single subfield value
 		if (datafield == null) {
@@ -362,7 +362,7 @@ public class MarcDataReader {
 
 		return sf != null ? sf.getData() : "";
 	}
-	
+
 	private HashMap<String, List<DataField>> readDataFieldMap() {
 		HashMap<String, List<DataField>> hash = new HashMap<String, List<DataField>>();
 		Record record = this.getRecord();
@@ -391,13 +391,13 @@ public class MarcDataReader {
 
 		return hash;
 	}
-	
+
 	private String formatDataField(String format, DataField ... datafields) {
 		List<DataField> dataFieldList = Arrays.asList(datafields);
-		
+
 		return this.formatDataField(format, dataFieldList);
 	}
-	
+
 	private String formatDataField(String format, List<DataField> dataFieldList) {
 		if (dataFieldList == null || dataFieldList.isEmpty()) {
 			return "";
@@ -420,7 +420,7 @@ public class MarcDataReader {
 			if (dataField == null) {
 				continue;
 			}
-			
+
 			String lastSeparator = null;
 			String lastValue = null;
 			boolean newSeparator = false;
@@ -473,7 +473,7 @@ public class MarcDataReader {
 					if (StringUtils.isNotBlank(value)) {
 						if (newSeparator) {
 							newSeparator = false;
-							
+
 							if (StringUtils.isNotBlank(lastValue)) {
 								if (TextUtils.endsInValidCharacter(lastValue)) {
 									result.append(lastSeparator);
@@ -484,7 +484,7 @@ public class MarcDataReader {
 						}
 
 						lastValue = value.trim();
-						
+
 						if (shouldAddStartParenthesis) {
 							shouldAddStartParenthesis = false;
 							result.append("(");
@@ -492,14 +492,14 @@ public class MarcDataReader {
 
 						result.append(lastValue);
 					}
-					
+
 				} else if (element.equals("_")) {
 					lastSeparator = content;
 					newSeparator = true;
-					
+
 				} else if (element.equals("(")) {
 					shouldAddStartParenthesis = true;
-					
+
 				} else if (element.equals(")")) {
 					if (result.toString().endsWith("(")) {
 						result.deleteCharAt(result.length() - 1);

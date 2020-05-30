@@ -11,22 +11,22 @@
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />	
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
-	
+
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
-	
+
 	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>	
+	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
-	
+
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	
+
 	<script type="text/javascript" src="static/scripts/biblivre.administration.reports.js"></script>
-	
+
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {
 			type: 'circulation.user',
@@ -34,29 +34,29 @@
 			enableTabs: false,
 			enableHistory: false
 		});
-	
+
 	</script>
-	
+
 </layout:head>
 
 <layout:body>
 	<div class="page_help"><i18n:text key="administration.reports.page_help" /></div>
-	
+
 	<fieldset id="biblivre_reports_form" class="block reports">
 		<legend><i18n:text key="administration.reports.title" /></legend>
-		
+
 		<div id="reportSelection" class="reports center">
 			<div class="title"><i18n:text key="administration.reports.select_report" /></div>
 			<div class="ncspacer"></div>
 			<div class="ncspacer"></div>
 			<select name="report" id="reportSelect" onchange="Reports.toggleDivs(this.value)" >
-			
+
 				<option value=""><i18n:text key="administration.reports.select.option.default"/></option>
-				
+
 				<optgroup label="<i18n:text key="administration.reports.select.group.acquisition"/>">
 					<option value="1"><i18n:text key="administration.reports.select.option.acquisition"/></option>
 				</optgroup>
-				
+
 				<optgroup label="<i18n:text key="administration.reports.select.group.cataloging"/>">
 					<option value="2"><i18n:text key="administration.reports.select.option.summary"/></option>
 					<option value="3"><i18n:text key="administration.reports.select.option.dewey"/></option>
@@ -67,7 +67,7 @@
 					<option value="15"><i18n:text key="administration.reports.select.option.topographic"/></option>
 					<option value="16"><i18n:text key="administration.reports.select.option.holdings"/></option>
 				</optgroup>
-				
+
 				<optgroup label="<i18n:text key="administration.reports.select.group.circulation"/>">
 					<option value="6"><i18n:text key="administration.reports.select.option.user"/></option>
 					<option value="7"><i18n:text key="administration.reports.select.option.all_users"/></option>
@@ -76,34 +76,34 @@
 					<option value="9"><i18n:text key="administration.reports.select.option.searches"/></option>
 					<option value="10"><i18n:text key="administration.reports.select.option.lendings"/></option>
 				</optgroup>
-				
+
 				<optgroup label="<i18n:text key="administration.reports.select.group.custom"/>">
 					<option value="17"><i18n:text key="administration.reports.select.option.custom_count"/></option>
 				</optgroup>
 			</select>
 		</div>
 	</fieldset>
-	
+
 	<fieldset id="dateDiv" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.dates" /></legend>
-		
+
 		<div class="biblivre_form_body reports">
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.start_date" /></div>
 				<div class="value"><input type="text" name="start" class="datepicker"></div>
-				<div class="clear"></div>	
+				<div class="clear"></div>
 			</div>
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.start_date" /></div>
 				<div class="value"><input type="text" name="end" class="datepicker"></div>
-				<div class="clear"></div>	
+				<div class="clear"></div>
 			</div>
 		</div>
 	</fieldset>
-	
+
 	<fieldset id="databaseSelection" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.database" /></legend>
-		
+
 		<div class="biblivre_form_body reports">
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.database" /></div>
@@ -113,14 +113,14 @@
 						<option value="<%=RecordDatabase.WORK%>"><i18n:text key="administration.reports.option.database.work"/></option>
 					</select>
 				</div>
-				<div class="clear"></div>	
+				<div class="clear"></div>
 			</div>
 		</div>
 	</fieldset>
-	
+
 	<fieldset id="orderDiv" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.order" /></legend>
-		
+
 		<div class="biblivre_form_body reports">
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.order" /></div>
@@ -131,14 +131,14 @@
 						<option value="3"><i18n:text key="administration.reports.option.author"/></option>
 					</select>
 				</div>
-				<div class="clear"></div>	
+				<div class="clear"></div>
 			</div>
 		</div>
 	</fieldset>
-	
+
 	<fieldset id="deweyDiv" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.dewey" /></legend>
-		
+
 		<div class="biblivre_form_body reports">
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.datafield" /></div>
@@ -148,7 +148,7 @@
 						<option value="090">090 |a (<i18n:text key="administration.reports.option.location"/>)</option>
 					</select>
 				</div>
-				<div class="clear"></div>	
+				<div class="clear"></div>
 			</div>
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.digits" /></div>
@@ -167,14 +167,14 @@
 			</div>
 		</div>
 	</fieldset>
-	
+
 	<fieldset id="authorDiv" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.author" /></legend>
-		
-	
+
+
 		<div class="selected_highlight"></div>
 		<textarea class="selected_highlight_template template"></textarea>
-		
+
 		<div class="selected_record tabs">
 			<div class="tabs_body">
 				<div class="tab_body" data-tab="record">
@@ -196,11 +196,11 @@
 							<div id="biblivre_marc"></div>
 							<textarea id="biblivre_marc_template" class="template"></textarea>
 						</fieldset>
-					</div>				
+					</div>
 				</div>
 			</div>
 		</div>
-	
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -211,16 +211,16 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="search_results_area">
 			<div class="search_loading_indicator loading_indicator"></div>
 
 			<div class="paging_bar"></div>
 			<div class="clear"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result" rel="{$T.record.id}">
 							<div class="buttons">
@@ -235,22 +235,22 @@
 					{#/for}
 				--></textarea>
 			</div>
-	
+
 			<div class="paging_bar"></div>
 		</div>
 	</fieldset>
-	
+
 	<fieldset id="fieldCountDiv" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.field_count" /></legend>
 		<div class="description"><i18n:text key="administration.reports.field_count.description" /></div>
-		
+
 		<div class="biblivre_form_body reports">
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.marc_field" /></div>
 				<div class="value" id="marc_field_combo"></div>
-				<div class="clear"></div>	
+				<div class="clear"></div>
 			</div>
-			
+
 			<div class="field">
 				<div class="label"><i18n:text key="administration.reports.field.order" /></div>
 				<div class="value">
@@ -263,14 +263,14 @@
 			</div>
 		</div>
 	</fieldset>
-	
-	
+
+
 	<fieldset id="catalogingDiv" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.cataloging" /></legend>
-	
+
 		<div class="selected_highlight"></div>
 		<textarea class="selected_highlight_template template"></textarea>
-		
+
 		<div class="selected_record tabs">
 			<div class="tabs_body">
 				<div class="tab_body" data-tab="record">
@@ -292,11 +292,11 @@
 							<div id="biblivre_marc"></div>
 							<textarea id="biblivre_marc_template" class="template"></textarea>
 						</fieldset>
-					</div>				
+					</div>
 				</div>
 			</div>
 		</div>
-	
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -307,10 +307,10 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="search_results_area">
 			<div class="search_ordering_bar" style="padding: 0px 10px;">
-	
+
 				<div class="search_indexing_groups"></div>
 				<textarea class="search_indexing_groups_template template"><!--
 					{#foreach $T.search.indexing_group_count as group_count}
@@ -327,12 +327,12 @@
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
-							{#/if}						
+							{#/if}
 						{#/for}
 						{#if !$T.group_count$last} <div class="hspacer">|</div> {#/if}
 					{#/for}
 				--></textarea>
-	
+
 				<div class="search_sort_by"></div>
 				<textarea class="search_sort_by_template template"><!--
 					<i18n:text key="search.common.sort_by" />:
@@ -343,19 +343,19 @@
 							{#/if}
 						{#/for}
 					</select>
-				--></textarea>			
-				
+				--></textarea>
+
 				<div class="clear"></div>
 			</div>
-		
+
 			<div class="search_loading_indicator loading_indicator"></div>
 
 			<div class="paging_bar"></div>
 			<div class="clear"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result" rel="{$T.record.id}">
 							<div class="record_cataloging">
@@ -366,7 +366,7 @@
 								{#if $T.record.isbn}<label><i18n:text key="search.bibliographic.isbn" /></label>: {$T.record.isbn}<br/>{#/if}
 								{#if $T.record.issn}<label><i18n:text key="search.bibliographic.issn" /></label>: {$T.record.issn}<br/>{#/if}
 								{#if $T.record.isrc}<label><i18n:text key="search.bibliographic.isrc" /></label>: {$T.record.isrc}<br/>{#/if}
-	
+
 								{#if $T.record.subject}
 									<label><i18n:text key="search.bibliographic.subject" /></label>: {$T.record.subject}<br/>
 								{#/if}
@@ -375,18 +375,18 @@
 						</div>
 				--></textarea>
 			</div>
-	
+
 			<div class="paging_bar"></div>
 		</div>
 	</fieldset>
-	
-	
+
+
 	<fieldset id="userDiv" class="block reports">
 		<legend><i18n:text key="administration.reports.fieldset.user" /></legend>
-		
+
 		<div class="selected_highlight"></div>
 		<textarea class="selected_highlight_template template"></textarea>
-	
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -398,16 +398,16 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="search_results_area">
 			<div class="search_loading_indicator loading_indicator"></div>
-		
+
 			<div class="paging_bar"></div>
 			<div class="clear"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result" rel="{$T.record.id}">
 							<div class="buttons">
@@ -424,11 +424,11 @@
 					{#/for}
 				--></textarea>
 			</div>
-			
-			<div class="paging_bar"></div>	
+
+			<div class="paging_bar"></div>
 		</div>
 	</fieldset>
-	
+
 	<fieldset id="buttonDiv" class="block reports">
 		<div class="biblivre_form_body">
 			<div class="buttons">
@@ -437,6 +437,6 @@
 			<div class="clear"></div>
 		</div>
 	</fieldset>
-	
-	
+
+
 </layout:body>

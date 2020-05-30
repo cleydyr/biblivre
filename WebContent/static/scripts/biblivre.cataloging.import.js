@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var Import = {
 	currentPage: 1,
@@ -38,11 +38,11 @@ $(document).ready(function() {
 	$('#step_1 .selection_box').click(function() {
 		Import.changeSourceSelection(this);
 	});
-	
+
 	$('#step_1 .selection_box .title input[type=radio]').click(function(event) {
 		event.stopPropagation();
 	});
-	
+
 	$('select[name="search_attribute"]').combo({
 		expand: true
 	});
@@ -55,7 +55,7 @@ $(document).ready(function() {
 	Import.uploadPopup = $('#upload_popup');
 	Import.importPopup = $('#import_popup');
 	Import.searchResults = $('#search_results');
-	
+
 //	$('.record input[type=checkbox]').change(function() {
 //		if (this.checked) {
 //			$(this).closest('.record').addClass('selected');
@@ -72,14 +72,14 @@ Import.showPopupProgress = function() {
 
 Import.hidePopupProgress = function() {
 	Core.hideOverlay();
-	Import.uploadPopup.hide().stopContinuousProgress();	
+	Import.uploadPopup.hide().stopContinuousProgress();
 };
 
 Import.advanceUploadProgress = function(current, total, percentComplete) {
 	Import.stopProcessProgress();
 
 	Import.uploadPopup.find('.uploading').show();
-	Import.uploadPopup.find('.processing').hide();	
+	Import.uploadPopup.find('.processing').hide();
 
 	Import.uploadPopup.find('.progress').progressbar({
 		current: current,
@@ -100,7 +100,7 @@ Import.advanceProcessProgress = function() {
 };
 
 Import.stopProcessProgress = function() {
-	clearTimeout(Import._advanceProcessProgressTimeout);	
+	clearTimeout(Import._advanceProcessProgressTimeout);
 	Import.uploadPopup.stopContinuousProgress();
 };
 
@@ -108,7 +108,7 @@ Import.upload = function(button) {
 	Core.clearFormErrors();
 
 	$('#page_submit').ajaxSubmit({
-		beforeSerialize: function($form, options) { 
+		beforeSerialize: function($form, options) {
 			$('#controller').val('json');
 			$('#module').val('cataloging');
 			$('#action').val('import_upload');
@@ -119,7 +119,7 @@ Import.upload = function(button) {
 		},
 		dataType: 'json',
 		forceSync: true,
-		complete: function() { 
+		complete: function() {
 			$('#controller').val('jsp');
 			Import.hidePopupProgress();
 		},
@@ -128,7 +128,7 @@ Import.upload = function(button) {
 				Import.processUploadData(response.data);
 				return;
 			}
-			
+
 			if (response.errors) {
 				Core.formErrors(response.errors);
 			} else {
@@ -144,7 +144,7 @@ Import.upload = function(button) {
 		uploadProgress: function(event, current, total, percentComplete) {
 			Import.advanceUploadProgress(current, total, percentComplete);
 		}
-	}); 
+	});
 };
 
 Import.search = function(button) {
@@ -168,14 +168,14 @@ Import.search = function(button) {
 				Import.processUploadData(response.data);
 				return;
 			}
-			
+
 			if (response.errors) {
 				Core.formErrors(response.errors);
 			} else {
 				Core.msg(response);
 			}
 		}
-	}); 
+	});
 };
 
 Import.processUploadData = function(data) {
@@ -184,7 +184,7 @@ Import.processUploadData = function(data) {
 			message_level: 'warning',
 			message:Translations.get('cataloging.import.error.no_records_found')
 		});
-		
+
 		return;
 	}
 
@@ -221,29 +221,29 @@ Import.updateRecordData = function(i, record, lists) {
 		if (material != 'authorities' && material != 'vocabulary') {
 			material = 'biblio';
 		}
-		
+
 		data = Import.uploadData[i] = {
 			record: record,
 			index: i,
 			material: material
 		};
 	}
-	
+
 	if (record) {
-		data.record = record;		
+		data.record = record;
 	}
-	
+
 	if (lists) {
 		data.isbn = (record.isbn && lists.isbn[record.isbn.toLowerCase()]) || lists.isbn === true;
 		data.issn = (record.issn && lists.issn[record.issn.toLowerCase()]) || lists.issn === true;
 		data.isrc = (record.isrc && lists.isrc[record.isrc.toLowerCase()]) || lists.isrc === true;
 	}
-	
+
 	if (data.material == 'ignore') {
 		data.overlay = 'overlay_normal';
 		data.overlay_text = Translations.get('cataloging.import.record_will_be_ignored');
 	}
-	
+
 	if (data.imported) {
 		data.overlay = 'overlay_success';
 		data.overlay_text = Translations.get('cataloging.import.record_imported_successfully');
@@ -254,12 +254,12 @@ Import.updateRecordData = function(i, record, lists) {
 		if (data.isbn) {
 			data.overlay_text = Translations.get('cataloging.import.isbn_already_in_database');
 		} else if (data.issn) {
-			data.overlay_text = Translations.get('cataloging.import.issn_already_in_database');			
+			data.overlay_text = Translations.get('cataloging.import.issn_already_in_database');
 		} else if (data.isrc) {
 			data.overlay_text = Translations.get('cataloging.import.isrc_already_in_database');
 		}
 	}
-	
+
 	return data;
 };
 
@@ -272,22 +272,22 @@ Import.createResult = function(data) {
 	}).find('.result');
 
 	var material = data.material;
-	
+
 	result.find('input:radio').change(function() {
 		data.material = $(this).val();
-		
+
 		if (data.material == 'ignore') {
 			result.addClass('overlay_normal');
 			result.find('.result_overlay .text').text(Translations.get('cataloging.import.record_will_be_ignored'));
 		}
 	}).filter('[value="' + material + '"]').prop('checked', true);
-	
+
 	return result;
 };
 
 Import.paginate = function(currentPage) {
 	Import.currentPage = currentPage;
-	
+
 	Core.pagingGenerator({
 		pagingHolder: $('div.paging_bar'),
 		pageCount: Math.ceil(Import.uploadData.length / Import.recordsPerPage),
@@ -299,10 +299,10 @@ Import.paginate = function(currentPage) {
 	});
 
 	Import.searchResults.empty();
-	
+
 	var start = (Import.currentPage - 1) * Import.recordsPerPage;
 	var end = Math.min(start + Import.recordsPerPage, Import.uploadData.length);
-	
+
 	for (var i = start; i < end; i++) {
 		Import.createResult(Import.uploadData[i]).appendTo(Import.searchResults).fixButtonsHeight();
 	}
@@ -318,7 +318,7 @@ Import.marcEdit = function(index) {
 
 Import.hideMarcEdit = function() {
 	Core.hideOverlay();
-	$('#marc_popup').hide().stopContinuousProgress();	
+	$('#marc_popup').hide().stopContinuousProgress();
 };
 
 Import.marcChange = function() {
@@ -343,8 +343,8 @@ Import.marcChange = function() {
 					issn: response.issn || {},
 					isrc: response.isrc || {}
 				});
-	
-				var result = Import.createResult(data);				
+
+				var result = Import.createResult(data);
 				var oldResult = Import.searchResults.find('.result[data-index="' + data.index + '"]');
 
 				result.replaceAll(oldResult).fixButtonsHeight();
@@ -358,7 +358,7 @@ Import.marcChange = function() {
 Import.importCurrentPage = function() {
 	var start = Import.searchResults.find('.result:first').data('index');
 	var end = Import.searchResults.find('.result:last').data('index');
-	
+
 	Import.import(start, end);
 };
 
@@ -369,7 +369,7 @@ Import.importAll = function() {
 Import.successImports;
 Import.import = function(start, end, page) {
 	var data = {};
-	
+
 	if (page === undefined) {
 		page = 0;
 		Import.successImports = 0;
@@ -377,15 +377,15 @@ Import.import = function(start, end, page) {
 	}
 
 	Import.advanceImportProgress(Import.recordsPerPage * page, end - start + 1);
-	
+
 	var realStart = start + (Import.recordsPerPage * page);
 	var realEnd = Math.min(end, realStart + Import.recordsPerPage - 1);
-	
+
 	for (var i = realStart; i <= realEnd; i++) {
 		data['marc_' + i] = Import.uploadData[i].record.marc;
 		data['record_type_' + i] = Import.uploadData[i].material;
 	}
-	
+
 	data = $.extend(data, {
 		controller: 'json',
 		module: 'cataloging',
@@ -400,7 +400,7 @@ Import.import = function(start, end, page) {
 		dataType: 'json',
 		data: data,
 //		loadingTimedOverlay: true,
-		success: function(response) {			
+		success: function(response) {
 			if (response.success) {
 				for (var i = 0; i < response.saved.length; i++) {
 					var index = response.saved[i];
@@ -414,9 +414,9 @@ Import.import = function(start, end, page) {
 					Import.successImports++;
 				}
 			}
-			
+
 			if (realEnd == end) {
-				Core.msg(response);	
+				Core.msg(response);
 			}
 		},
 		complete: function() {
@@ -436,7 +436,7 @@ Import.showPopupImportProgress = function() {
 
 Import.hidePopupImportProgress = function() {
 	Core.hideOverlay();
-	Import.importPopup.hide();	
+	Import.importPopup.hide();
 };
 
 Import.advanceImportProgress = function(current, total) {

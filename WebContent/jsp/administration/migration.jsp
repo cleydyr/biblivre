@@ -8,18 +8,18 @@
 <layout:head>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			
+
 		});
-		
+
 		var migrate = function(button) {
-			
+
 			var phaseGroups = [];
 			$('input:checkbox:checked[name="phases"]').each(function() {
 				phaseGroups.push($(this).val());
 			});
-			
+
 			Core.clearFormErrors();
-			
+
 			$.ajax({
 				url: window.location.pathname,
 				type: 'POST',
@@ -34,12 +34,12 @@
 				loadingTimedOverlay: true
 			}).done($.proxy(function(response) {
 				Core.msg(response);
-				
+
 				if (!response.success) {
 					Core.formErrors(response.errors);
 				}
 			}, this));
-	
+
 		};
 	</script>
 </layout:head>
@@ -60,11 +60,11 @@
 					}
 				%>
 			</div>
-		</fieldset>	
-		
+		</fieldset>
+
 		<div class="footer_buttons">
 			<a class="button center main_button" onclick="migrate(this);"><i18n:text key="administration.migration.button.migrate" /></a>
-		</div>		
+		</div>
 	</div>
-			
+
 </layout:body>
