@@ -22,7 +22,7 @@ package biblivre.core.auth;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
@@ -390,7 +390,7 @@ public class AuthorizationPoints implements Serializable {
 		Boolean allowed = this.points.get(pair);
 
 		if (allowed == null) {
-			Logger.getLogger(this.getClass()).error("Action not found: " + pair);
+			LoggerFactory.getLogger(this.getClass()).error("Action not found: " + pair);
 			return false;
 		}
 

@@ -26,7 +26,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.jzkit.search.provider.iface.IRQuery;
 import org.jzkit.search.provider.iface.Searchable;
 import org.jzkit.search.provider.z3950.Z3950ServiceFactory;
@@ -36,6 +35,8 @@ import org.jzkit.search.util.ResultSet.IRResultSet;
 import org.jzkit.search.util.ResultSet.IRResultSetStatus;
 import org.jzkit.search.util.ResultSet.ReadAheadEnumeration;
 import org.marc4j.marc.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import biblivre.core.utils.Constants;
@@ -46,7 +47,7 @@ import biblivre.z3950.Z3950AddressDTO;
 
 public class Z3950Client {
 
-	private final Logger log = Logger.getLogger(this.getClass().getName());
+	private final Logger log = LoggerFactory.getLogger(this.getClass().getName());
 	private ApplicationContext z3950Context;
 	private Z3950ServiceFactory factory;
 	private static final String QUERY_PREFIX = "@attrset bib-1 @attr 1=";

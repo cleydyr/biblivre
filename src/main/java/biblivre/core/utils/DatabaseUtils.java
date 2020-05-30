@@ -28,13 +28,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.configurations.Configurations;
 
 public class DatabaseUtils {
 
-	private static Logger logger = Logger.getLogger(DatabaseUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
 	public static File getPgDump(String schema) {
 		File pgdump = DatabaseUtils.getPgDumpFromConfiguration(schema);

@@ -26,7 +26,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.StaticBO;
 import biblivre.core.exceptions.ValidationException;
@@ -36,7 +37,7 @@ import biblivre.core.utils.Constants;
 
 public class Configurations extends StaticBO {
 
-	private static Logger logger = Logger.getLogger(Translations.class);
+	private static Logger logger = LoggerFactory.getLogger(Translations.class);
 	// HashMap<Schema, HashMap<Key, Value>>
 	private static HashMap<String, HashMap<String, ConfigurationsDTO>> configurations;
 

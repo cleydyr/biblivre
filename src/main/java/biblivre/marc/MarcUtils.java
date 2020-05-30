@@ -33,7 +33,8 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +55,7 @@ import biblivre.core.utils.Constants;
 
 public class MarcUtils {
 
-	private static Logger logger = Logger.getLogger(MarcUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(MarcUtils.class);
 	private static Format CF001_FORMAT = new DecimalFormat("0000000");
 	private static Format CF008_FORMAT = new SimpleDateFormat("yyMMdd");
 	private static Format COMPACT_ISO = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
