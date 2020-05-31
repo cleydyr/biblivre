@@ -19,12 +19,12 @@
  ******************************************************************************/
 package biblivre.core;
 
-import biblivre.z3950.server.Z3950ServerBOAdapter;
+import biblivre.z3950.server.Z3950ServerBO;
 
 public class BiblivreInitializer {
 
 	private static boolean initialized = false;
-	public static Z3950ServerBOAdapter Z3950server = null;
+	public static Z3950ServerBO Z3950server = null;
 
 	public synchronized static void initialize() {
 		if (!BiblivreInitializer.initialized) {
@@ -32,7 +32,7 @@ public class BiblivreInitializer {
 				Updates.fixPostgreSQL81();
 				Updates.globalUpdate();
 
-				BiblivreInitializer.Z3950server = new Z3950ServerBOAdapter();
+				BiblivreInitializer.Z3950server = new Z3950ServerBO();
 				BiblivreInitializer.Z3950server.startServer();
 
 				BiblivreInitializer.initialized = true;

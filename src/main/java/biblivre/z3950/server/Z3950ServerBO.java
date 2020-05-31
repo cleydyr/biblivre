@@ -14,9 +14,8 @@ import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.schemas.SchemasDAO;
 import biblivre.core.utils.Constants;
 import biblivre.z3950.client.config.Z3950Config;
-import br.org.biblivre.z3950server.Z3950LocalServer;
 
-public class Z3950ServerBOAdapter {
+public class Z3950ServerBO {
 	private static ApplicationContext _context;
 	private static Z3950LocalServer server;
 	private static Set<String> loadedSchemas;
@@ -37,16 +36,16 @@ public class Z3950ServerBOAdapter {
 	public boolean startServer() {
 		if (server == null) {
 			server = new Z3950LocalServer();
-			Z3950Listener listener = new Z3950Listener();
-			listener.setBackendBeanName("backend");
-			listener.setDefault("default");
-			listener.setPort(2200);
-			listener.setApplicationContext(_getContext());
+
+			Z3950Listener listener = _buildZ390Listener();
+
 			server.setListener(listener);
 		}
+
 		if (!server.isActive()) {
 			server.startServer();
 		}
+
 		return server.isActive();
 	}
 
@@ -64,7 +63,7 @@ public class Z3950ServerBOAdapter {
 		return startServer();
 	}
 
-	public Z3950ServerBOAdapter() {
+	public Z3950ServerBO() {
 		_getContext();
 		_loadCollections();
 	}
@@ -77,6 +76,7 @@ public class Z3950ServerBOAdapter {
 				e.printStackTrace();
 			}
 		}
+
 		return _context;
 	}
 
@@ -88,6 +88,7 @@ public class Z3950ServerBOAdapter {
 		}
 
 		SchemasDAO schemasDao = SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA);
+
 		Set<SchemaDTO> schemas = schemasDao.list();
 
 		for (SchemaDTO schema : schemas) {
@@ -114,5 +115,15 @@ public class Z3950ServerBOAdapter {
 				}
 			}
 		}
+	}
+
+	private Z3950Listener _buildZ390Listener() {
+		Z3950Listener listener = new Z3950Listener();
+
+		listener.setBackendBeanName("backend");
+		listener.setDefault("default");
+		listener.setPort(2200);
+		listener.setApplicationContext(_getContext());
+		return listener;
 	}
 }
