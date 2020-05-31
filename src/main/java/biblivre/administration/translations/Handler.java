@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -45,25 +45,25 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		String dumpId = UUID.randomUUID().toString();
 		String language = request.getString("language");
-		
+
 		if (StringUtils.isBlank(language)) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.invalid_language");
 			return;
 		}
-		
+
 		request.setSessionAttribute(schema, dumpId, language);
-		
+
 		try {
 			this.json.put("uuid", dumpId);
 		} catch(JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
-	
+
+
 	public void downloadDump(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		String dumpId = request.getString("id");
 		String language = (String)request.getSessionAttribute(schema, dumpId);
 
@@ -75,7 +75,7 @@ public class Handler extends AbstractHandler {
 		final DiskFile exportFile = Translations.createDumpFile(schema, language);
 
 		this.setFile(exportFile);
-		
+
 		this.setCallback(exportFile::delete);
 	}
 
@@ -100,7 +100,7 @@ public class Handler extends AbstractHandler {
 				if (line.length() == 0) {
 					continue;
 				}
-				
+
 				line = line.replace("\\n", "\n");
 
 				int eq = line.indexOf("=");
@@ -109,8 +109,8 @@ public class Handler extends AbstractHandler {
 				if (start == '#') {
 					continue;
 				}
-				
-				if ((eq != -1) && (start == '*' || start == '+' || start == '-')) {					
+
+				if ((eq != -1) && (start == '*' || start == '+' || start == '-')) {
 					if (key != null) {
 						switch (type) {
 							case '*':
@@ -149,11 +149,11 @@ public class Handler extends AbstractHandler {
 						break;
 				}
 			}
-			
+
 			sc.close();
 		} catch (Exception e) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.load");
-			return;			
+			return;
 		}
 
 		String language = addTranslation.get("language_code");
@@ -165,14 +165,14 @@ public class Handler extends AbstractHandler {
 
 		if (!Translations.isJavaScriptLocaleAvailable(language)) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.javascript_locale_not_available");
-			return;			
+			return;
 		}
 
 		if (!Translations.isJavaLocaleAvailable(language)) {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.java_locale_not_available");
-			return;			
+			return;
 		}
-		
+
 		try {
 			boolean success = Translations.save(schema, language, addTranslation, removeTranslation, loggedUser);
 			if (success) {
@@ -185,13 +185,13 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void list(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Languages.reset(schema);
 		Set<LanguageDTO> languages = Languages.getLanguages(schema);
-		
+
 		HashMap<String, HashMap<String, TranslationDTO>> translations = new HashMap<String, HashMap<String, TranslationDTO>>();
 
 		for (LanguageDTO languageDTO : languages) {
@@ -208,7 +208,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
@@ -220,9 +220,9 @@ public class Handler extends AbstractHandler {
 
 			if (jsonTranslations == null) {
 				this.setMessage(ActionResult.WARNING, "error.invalid_json");
-				return;				
+				return;
 			}
-		
+
 			HashMap<String, HashMap<String, String>> newTranslations = new HashMap<String, HashMap<String, String>>();
 
 			Iterator<String> it = jsonTranslations.keys();
@@ -240,7 +240,7 @@ public class Handler extends AbstractHandler {
 				while (tit.hasNext()) {
 					String key = tit.next();
 					String value = jsonTranslation.optString(key);
-					
+
 					if (value != null) {
 						newTranslation.put(key, value);
 					}
@@ -248,11 +248,11 @@ public class Handler extends AbstractHandler {
 
 				newTranslations.put(language, newTranslation);
 			}
-			
+
 			Translations.save(schema, newTranslations, null, loggedUser);
-			
+
 			this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
-			
+
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
@@ -261,7 +261,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void saveLanguageTranslations(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
@@ -282,7 +282,7 @@ public class Handler extends AbstractHandler {
 			while (tit.hasNext()) {
 				String key = tit.next();
 				String value = json.optString(key);
-				
+
 				if (value != null) {
 					newTranslation.put(key, value);
 				}
@@ -299,5 +299,5 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
 			return;
 		}
-	}	
+	}
 }

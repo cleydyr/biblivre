@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -38,9 +38,9 @@ public class DataMigrationDTO extends AbstractDTO {
 
 	public DataMigrationDTO() {
 		this.phases = new HashMap<DataMigrationPhase, Boolean>();
-		this.completedPhases = new TreeSet<DataMigrationPhase>(); 
+		this.completedPhases = new TreeSet<DataMigrationPhase>();
 	}
-	
+
 	public String getDataSourceName() {
 		return this.dataSourceName;
 	}
@@ -72,7 +72,7 @@ public class DataMigrationDTO extends AbstractDTO {
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
-	
+
 	public void enablePhase(String phase) {
 		this.enablePhase(DataMigrationPhase.fromString(phase));
 	}
@@ -82,9 +82,9 @@ public class DataMigrationDTO extends AbstractDTO {
 			this.phases.put(phase, true);
 		}
 	}
-	
+
 	public void disablePhase(String phase) {
-		this.disablePhase(DataMigrationPhase.fromString(phase));	
+		this.disablePhase(DataMigrationPhase.fromString(phase));
 	}
 
 	public void disablePhase(DataMigrationPhase phase) {
@@ -92,19 +92,19 @@ public class DataMigrationDTO extends AbstractDTO {
 			this.phases.put(phase, false);
 		}
 	}
-	
+
 	public boolean isPhaseEnabled(DataMigrationPhase phase) {
 		if (!this.phases.containsKey(phase)) {
 			return false;
 		}
-		
+
 		return this.phases.get(phase);
 	}
 
 	public void completePhase(DataMigrationPhase phase) {
 		this.completedPhases.add(phase);
 	}
-	
+
 	public Set<DataMigrationPhase> getCompletedPhases() {
 		return this.completedPhases;
 	}

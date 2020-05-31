@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -56,113 +56,113 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.jspURL = "/jsp/index.jsp";
 		}
-		return; 
+		return;
 	}
 
 	public void listBibliographic(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		RecordType type = RecordType.BIBLIO;
-		
+
 		String letter = request.getString("letter");
 		Integer order = request.getInteger("order",IndexingGroups.getDefaultSortableGroupId(schema, type));
-		
+
 		if (StringUtils.isBlank(letter)) {
 			letter = "a";
 		}
-		
+
 		RecordBO rbo = RecordBO.getInstance(schema, type);
 		List<RecordDTO> records = rbo.listByLetter(letter.charAt(0), order);
 
 		request.setAttribute("records", records);
-		
+
 		this.jspURL = "/jsp/list/bibliographic.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void listAuthorities(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/list/authorities.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void listVocabulary(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/list/vocabulary.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void searchBibliographic(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/search/bibliographic.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void searchAuthorities(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/search/authorities.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void searchVocabulary(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/search/vocabulary.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Z3950BO bo = Z3950BO.getInstance(schema);
-		
+
 		List<Z3950AddressDTO> servers = bo.listAll();
 
 		request.setAttribute("servers", servers);
-		
+
 		this.jspURL = "/jsp/search/z3950.jsp";
-		return; 
+		return;
 	}
 
 	public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/cataloging/bibliographic.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void catalogingAuthorities(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/cataloging/authorities.jsp";
-		return; 
+		return;
 	}
 
 	public void catalogingVocabulary(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/cataloging/vocabulary.jsp";
-		return; 
+		return;
 	}
 
 	public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Z3950BO bo = Z3950BO.getInstance(schema);
-		
+
 		List<Z3950AddressDTO> servers = bo.listAll();
 
 		request.setAttribute("servers", servers);
-		
+
 		this.jspURL = "/jsp/cataloging/import.jsp";
-		return; 
+		return;
 	}
 
 	public void catalogingLabels(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/cataloging/labels.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/user.jsp";
-		return; 
+		return;
 	}
 
 	public void circulationLending(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/lending.jsp";
-		return; 
+		return;
 	}
 
 	public void circulationReservation(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/reservation.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void circulationUserReservation(ExtendedRequest request, ExtendedResponse response) {
 		Integer loggedUser = request.getLoggedUserId();
 		if (loggedUser == null || loggedUser == 0) {
@@ -174,58 +174,58 @@ public class Handler extends AbstractHandler {
 			} else {
 				request.setAttribute("RESERVATION_USER_ID", 0);
 			}
-			
+
 			this.jspURL = "/jsp/circulation/user_reservation.jsp";
 		}
 		return;
 	}
-	
+
 	public void circulationAccess(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/access_control.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void circulationUserCards(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/circulation/user_cards.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void acquisitionSupplier(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/acquisition/suppliers.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void acquisitionRequest(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/acquisition/requests.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		SupplierBO bo = SupplierBO.getInstance(schema);
 		List<SupplierDTO> suppliers = bo.list();
 		request.setAttribute("suppliers", suppliers);
-		
+
 		RequestBO rbo = RequestBO.getInstance(schema);
 		List<RequestDTO> requests = rbo.list();
 		request.setAttribute("requests", requests);
-		
+
 		this.jspURL = "/jsp/acquisition/quotations.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		SupplierBO bo = SupplierBO.getInstance(schema);
 		List<SupplierDTO> suppliers = bo.list();
 		request.setAttribute("suppliers", suppliers);
-		
+
 		this.jspURL = "/jsp/acquisition/orders.jsp";
-		return; 
+		return;
 	}
-	
+
 	public void administrationPassword(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/password.jsp";
 		return;
@@ -235,7 +235,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/administration/maintenance.jsp";
 		return;
 	}
-	
+
 	public void administrationPermissions(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/permissions.jsp";
 		return;
@@ -250,27 +250,27 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/administration/z3950_servers.jsp";
 		return;
 	}
-	
+
 	public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/reports.jsp";
 		return;
 	}
-	
+
 	public void administrationUserTypes(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/user_types.jsp";
 		return;
 	}
-	
+
 	public void administrationAccessCards(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/access_cards.jsp";
 		return;
 	}
-	
+
 	public void administrationDatamigration(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/migration.jsp";
 		return;
 	}
-	
+
 	public void administrationTranslations(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/administration/translations.jsp";
 		return;
@@ -285,7 +285,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/administration/form_customization.jsp";
 		return;
 	}
-	
+
 	public void multiSchemaTranslations(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/multi_schema/translations.jsp";
 		return;
@@ -310,7 +310,7 @@ public class Handler extends AbstractHandler {
 		this.jspURL = "/jsp/help/about_biblivre.jsp";
 		return;
 	}
-	
+
 	public void setup(ExtendedRequest request, ExtendedResponse response) {
 		this.jspURL = "/jsp/setup.jsp";
 		return;

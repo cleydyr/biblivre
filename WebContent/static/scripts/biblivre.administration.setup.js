@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var Administration = Administration || {};
 
@@ -24,7 +24,7 @@ Administration.setup = {};
 
 $(document).ready(function() {
 	$('#found_backups_list').setTemplateElement('found_backups_list_template');
-	
+
 	if ($('#found_media_backups_list').size()) {
 		$('#found_media_backups_list').setTemplateElement('found_media_backups_list_template');
 	}
@@ -54,7 +54,7 @@ Administration.setup.list = function(id) {
 			$.each(arr, function(item) {
 				arr[item].schemas_list = $.map(arr[item].schemas, function(i, key) {
 					if (key != 'global') {
-						return i.left;						
+						return i.left;
 					}
 				}).join(', ');
 			});
@@ -62,15 +62,15 @@ Administration.setup.list = function(id) {
 			response.restores = $.grep(arr, function(e) {
 				return e.valid && e.type != 'digital_media_only';
 			});
-						
+
 			$('#found_backups_list').processTemplate(response);
 
 			response.restores = $.grep(arr, function(e) {
 				return e.valid && e.type == 'digital_media_only';
 			});
-			
-			
-			
+
+
+
 			$('#found_media_backups_list').processTemplate(response);
 		}
 	});
@@ -92,7 +92,7 @@ Administration.setup.cleanInstall = function(button) {
 			if (response.success) {
 				window.location.href = window.location.pathname;
 			} else {
-				window.location.href = window.location.pathname + '?controller=log';				
+				window.location.href = window.location.pathname + '?controller=log';
 			}
 		}
 	});
@@ -129,8 +129,8 @@ Administration.setup.biblivre4RestoreFromFile = function(file) {
 	if ($('input[name="biblivre4backup"]').val() == '') {
 		alert(Translations.get('administration.setup.biblivre4restore.select_file'));
 		return;
-	}	
-	
+	}
+
 	Administration.setup.showConfirm('biblivre4restore', function() {
 		Administration.setup.biblivre4UploadBackup();
 	});
@@ -142,14 +142,14 @@ Administration.setup.biblivre4RestoreFromFileMedia = function(file) {
 	if ($('input[name="biblivre4backupmedia"]').val() == '') {
 		alert(Translations.get('administration.setup.biblivre4restore.select_file'));
 		return;
-	}	
-	
+	}
+
 	Administration.setup.biblivre4UploadBackup(true);
 };
 
 Administration.setup.biblivre3UploadBackup = function() {
 	$('#page_submit').ajaxSubmit({
-		beforeSerialize: function($form, options) { 
+		beforeSerialize: function($form, options) {
 			$('#controller').val('json');
 			$('#module').val('administration.setup');
 			$('#action').val('upload_biblivre3');
@@ -159,7 +159,7 @@ Administration.setup.biblivre3UploadBackup = function() {
 		},
 		dataType: 'json',
 		forceSync: true,
-		complete: function() { 
+		complete: function() {
 			$('#controller').val('jsp');
 		},
 		success: function(response) {
@@ -168,9 +168,9 @@ Administration.setup.biblivre3UploadBackup = function() {
 
 			if (response.success) {
 				Administration.setup.confirmBiblivre3Import('restore');
-			} else {	
+			} else {
 				Administration.setup.showError('biblivre3restore');
-			}		
+			}
 		},
 		error: function() {
 			Upload.cancel();
@@ -188,7 +188,7 @@ Administration.setup.biblivre3UploadBackup = function() {
 
 Administration.setup.biblivre4UploadBackup = function(mediaUpload) {
 	$('#page_submit').ajaxSubmit({
-		beforeSerialize: function($form, options) { 
+		beforeSerialize: function($form, options) {
 			$('#controller').val('json');
 			$('#module').val('administration.setup');
 			$('#action').val('upload_biblivre4');
@@ -201,7 +201,7 @@ Administration.setup.biblivre4UploadBackup = function(mediaUpload) {
 		},
 		dataType: 'json',
 		forceSync: true,
-		complete: function() { 
+		complete: function() {
 			$('#controller').val('jsp');
 		},
 		success: function(response) {
@@ -214,7 +214,7 @@ Administration.setup.biblivre4UploadBackup = function(mediaUpload) {
 					if (Administration.setup.multiLibrary) {
 						Schemas.restore(response.metadata);
 					} else {
-						Administration.setup.confirmBiblivre4Restore(response.file);											
+						Administration.setup.confirmBiblivre4Restore(response.file);
 					}
 				}
 			} else {
@@ -261,9 +261,9 @@ Administration.setup.confirmBiblivre3Import = function(type) {
 
 			if (response.success) {
 				Administration.setup.showSuccess('biblivre3' + type);
-			} else {	
+			} else {
 				Administration.setup.showError('biblivre3' + type);
-			}			
+			}
 		},
 		error: function(response) {
 			Administration.progress.cancel();
@@ -289,7 +289,7 @@ Administration.setup.confirmBiblivre4Restore = function(file, params) {
 		action: 'restore',
 		filename: file
 	}, params || {});
-	
+
 	$.ajax({
 		url: window.location.pathname,
 		type: 'POST',
@@ -302,7 +302,7 @@ Administration.setup.confirmBiblivre4Restore = function(file, params) {
 				if (response.ask_for_media_backup) {
 					Administration.setup.confirmBiblivre4RestoreFile = file;
 					Administration.setup.confirmBiblivre4RestoreParams = params;
-					
+
 					$('.biblivre_form > fieldset').hide();
 					$('.biblivre_form .digital_media_restore').show();
 				} else {
@@ -335,7 +335,7 @@ Administration.setup.showError = function(action) {
 Administration.setup.cancelRestore = function() {
 	$('.biblivre_form > fieldset').show();
 	$('.biblivre_form .digital_media_restore').hide();
-	
+
 	// TODO: Enviar ao server uma requisição para apagar o backup enviado
 };
 
@@ -348,7 +348,7 @@ Administration.setup.showSuccess = function(action) {
 		okHandler: function() {
 			window.location.href = window.location.pathname;
 		}
-	});	
+	});
 };
 
 Administration.setup.showConfirm = function(action, callback) {

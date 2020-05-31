@@ -1520,7 +1520,7 @@ public class JSONObject {
         }
         if (value instanceof Date) {
             return quote(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(value));
-        }        
+        }
         if (value instanceof Map) {
             return new JSONObject((Map<String, Object>)value).toString();
         }
@@ -1563,7 +1563,7 @@ public class JSONObject {
             if (object instanceof Collection) {
                 return new JSONArray((Collection<Object>) object);
             }
-            
+
             if (object.getClass().isArray()) {
                 return new JSONArray(object);
             }
@@ -1691,7 +1691,7 @@ public class JSONObject {
             throw new JSONException(exception);
         }
     }
-    
+
     public Iterator<String> sortedKeys() {
       return new TreeSet<String>(this.map.keySet()).iterator();
     }

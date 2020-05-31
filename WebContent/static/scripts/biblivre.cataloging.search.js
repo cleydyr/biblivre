@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var CirculationSearch = CirculationSearch || null;
 var HoldingSearch = HoldingSearch || null;
@@ -36,28 +36,28 @@ var CatalogingSearchClass = {
 		if (CirculationSearch) {
 			Core.subscribe(CirculationSearch.prefix + 'open-record', function(e, record) {
 				$('#cataloging_search').hide();
-			}, this);	
-			
+			}, this);
+
 			Core.subscribe(CirculationSearch.prefix + 'record-selected', function(e, record) {
 				$('#cataloging_search').show();
-			}, this);	
+			}, this);
 		}
 
 		var div = this.root.find('.search_indexing_groups');
 		if (div.size() > 0) {
 			div.setTemplateElement(this.root.find('.search_indexing_groups_template'));
 		}
-		
+
 		div = this.root.find('.search_sort_by');
 		if (div.size() > 0) {
 			div.setTemplateElement(this.root.find('.search_sort_by_template'));
 		}
-		
+
 		div = this.root.find('.search_results');
 		if (div.size() > 0) {
 			div.setTemplateElement(this.root.find('.search_results_template'));
 		}
-		
+
 		div = this.root.find('.selected_results_area');
 		if (div.size() > 0) {
 			div.setTemplateElement(this.root.find('.selected_results_area_template'));
@@ -70,7 +70,7 @@ var CatalogingSearchClass = {
 
 		this.addEntryAdvancedSearch();
 		this.addEntryAdvancedSearch();
-		
+
 		var simpleButton = this.root.find('.simple_search .main_button');
 		var simpleQuery = this.root.find('.simple_search :input[name=query]');
 		simpleQuery.data('oldVal', simpleQuery.val());
@@ -81,7 +81,7 @@ var CatalogingSearchClass = {
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
-				
+
 				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
@@ -105,7 +105,7 @@ var CatalogingSearchClass = {
 						return false;
 					}
 				});
-				
+
 				advancedButton.text(empty ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
@@ -135,7 +135,7 @@ var CatalogingSearchClass = {
 			if (query.changed || group.changed) {
 				if (query.value !== null) {
 					this.searchTerm({
-						query: query.value, 
+						query: query.value,
 						group: group.value
 					});
 				}
@@ -143,25 +143,25 @@ var CatalogingSearchClass = {
 		} else {
 			var query = Core.historyCheckAndSet(trigger, this.historyQueryParam);
 			var material = Core.historyCheckAndSet(trigger, this.historyMaterialParam);
-			
+
 			if (query.changed || material.changed) {
 				if (query.value !== null) {
 					this.searchTerm({
-						query: query.value, 
+						query: query.value,
 						material: material.value
 					});
 				}
-			}			
+			}
 		}
 	},
 	clearResults: function(keepOrderingBar) {
 		Core.trigger(this.prefix + 'clear-search');
-		
+
 		if (!keepOrderingBar) {
 			this.root.find('.search_ordering_bar').hide();
 			this.root.find('.search_indexing_groups').empty();
 			this.root.find('.search_sort_by').empty();
-			
+
 			Core.removeMsg();
 		}
 	},
@@ -173,14 +173,14 @@ var CatalogingSearchClass = {
 		form.find(':input.datepicker').val('');
 		form.find('.combo_wrap').trigger('reset');
 		form.find(':input[name="holding_label_never_printed"]').attr('checked', 'checked');
-		
+
 		this.addEntryAdvancedSearch();
 		this.addEntryAdvancedSearch();
 	},
 	addEntryAdvancedSearch: function() {
 		var entry = this.advancedSearchForm.find('.search_entry:last');
 		var clone = entry.clone(true);
-		
+
 		clone.find(':input[name=query]').val('');
 		clone.find('.combo_wrap').trigger('reset');
 		clone.find('.search_label').remove();
@@ -204,7 +204,7 @@ var CatalogingSearchClass = {
 	simpleSearch: function() {
 		var query = this.simpleSearchForm.find(':input[name=query]').val();
 		var materialType = this.simpleSearchForm.find(':input[name=material]').val();
-		
+
 		var searchParameters = $.extend({
 			database: this.getCurrentDatabase(),
 			material_type: materialType
@@ -215,7 +215,7 @@ var CatalogingSearchClass = {
 		if (reserved) {
 			searchParameters.reserved_only = true;
 		}
-		
+
 		if (query) {
 			searchParameters.search_mode = 'simple';
 			searchParameters.search_terms = [{
@@ -232,7 +232,7 @@ var CatalogingSearchClass = {
 
 			Core.historyTrigger(terms);
 		}
-		
+
 		this.submit(searchParameters);
 	},
 	advancedSearch: function() {
@@ -241,7 +241,7 @@ var CatalogingSearchClass = {
 			material_type: this.advancedSearchForm.find(':input[name=material]').val(),
 			search_mode: 'advanced'
 		}, this.extraParams || {});
-				
+
 		var searchTerms = [];
 
 		this.advancedSearchForm.find('.search_entry').each(function() {
@@ -258,13 +258,13 @@ var CatalogingSearchClass = {
 				});
 			}
 		});
-		
+
 		var createdStartDate = this.advancedSearchForm.find(':input[name="created_start"]').val();
 		var createdEndDate = this.advancedSearchForm.find(':input[name="created_end"]').val();
-		
+
 		createdStartDate = Globalize.parseDate(createdStartDate, 'd');
 		createdEndDate = Globalize.parseDate(createdEndDate, 'd');
-		
+
 		if (createdStartDate || createdEndDate) {
 			searchTerms.push({
 				field: searchParameters.holding_search ? 'holding_created' : 'created',
@@ -273,13 +273,13 @@ var CatalogingSearchClass = {
 				end_date: Globalize.format(createdEndDate, 'S')
 			});
 		}
-		
+
 		var modifiedStartDate = this.advancedSearchForm.find(':input[name="modified_start"]').val();
 		var modifiedEndDate = this.advancedSearchForm.find(':input[name="modified_end"]').val();
-		
+
 		modifiedStartDate = Globalize.parseDate(modifiedStartDate, 'd');
 		modifiedEndDate = Globalize.parseDate(modifiedEndDate, 'd');
-		
+
 		if (modifiedStartDate || modifiedEndDate) {
 			searchTerms.push({
 				field: searchParameters.holding_search ? 'holding_modified' : 'modified',
@@ -288,7 +288,7 @@ var CatalogingSearchClass = {
 				end_date: Globalize.format(modifiedEndDate, 'S')
 			});
 		}
-		
+
 		if (searchParameters.holding_search) {
 			var label = this.advancedSearchForm.find(':input[name=holding_label_never_printed]').attr('checked');
 
@@ -310,7 +310,7 @@ var CatalogingSearchClass = {
 				operator: 'AND'
 			});
 		}
-		
+
 		searchParameters.search_terms = searchTerms;
 		this.submit(searchParameters);
 	},
@@ -323,7 +323,7 @@ var CatalogingSearchClass = {
 		if (!this.lastPagingParameters) {
 			return;
 		}
-		
+
 		this.lastPagingParameters.indexing_group = indexingGroup;
 		this.lastPagingParameters.page = 1;
 		this.paginate(this.lastPagingParameters);
@@ -332,12 +332,12 @@ var CatalogingSearchClass = {
 		if (!this.lastPagingParameters) {
 			return;
 		}
-		
+
 		this.lastPagingParameters.sort = sort;
 		this.lastPagingParameters.page = 1;
 		this.paginate(this.lastPagingParameters);
 	},
-	searchTerm: function(obj) {	
+	searchTerm: function(obj) {
 		var query = $('<div />').html(obj.query).text();
 
 		if (this.isSimpleSearch) {
@@ -347,7 +347,7 @@ var CatalogingSearchClass = {
 				this.simpleSearchForm.find(':input[name=material]').trigger('setvalue', obj.material || 'all');
 			}
 		}
-		
+
 		if (this.isAdvancedSearch) {
 			this.advancedSearchForm.find('.search_entry:first :input[name=query]').val(query).trigger('keyup');
 
@@ -364,7 +364,7 @@ var CatalogingSearchClass = {
 				return false;
 			}
 		} catch (e) {}
-		
+
 		params = params || {};
 		data = params.data || this.selectedRecord;
 
@@ -381,20 +381,20 @@ var CatalogingSearchClass = {
 		}
 
 		this.selectedTab = tab;
-		
+
 		switch (tab) {
 			case 'record':
 				this.loadCatalogingRecord(data, params);
 				break;
-				
+
 			case 'marc':
 				this.loadCatalogingMarc(data, params);
 				break;
-				
+
 			case 'form':
 				this.loadCatalogingForm(data, params);
 				break;
-				
+
 			case 'holding':
 				this.loadHoldingList(data, params);
 				break;
@@ -409,7 +409,7 @@ var CatalogingSearchClass = {
 		if (!this.enableTabs) {
 			return;
 		}
-		
+
 		CatalogingInput.clearTab(tab);
 
 		switch (tab) {
@@ -418,7 +418,7 @@ var CatalogingSearchClass = {
 				$('#biblivre_record_textarea').val('');
 				$('#biblivre_attachments').empty();
 				break;
-				
+
 			case 'form':
 				$('#biblivre_form').addClass('template').data('loaded', false);
 				break;
@@ -427,7 +427,7 @@ var CatalogingSearchClass = {
 				$('#biblivre_marc').empty().data('loaded', false);
 				$('#biblivre_marc_textarea').val('');
 				break;
-				
+
 			case 'holding':
 				this.root.find('.biblivre_holdings').empty().data('loaded', false);
 				if (HoldingSearch) {
@@ -440,7 +440,7 @@ var CatalogingSearchClass = {
 		if (!this.enableTabs) {
 			return;
 		}
-		
+
 		this.clearTab('record');
 		this.clearTab('marc');
 		this.clearTab('form');
@@ -462,10 +462,10 @@ var CatalogingSearchClass = {
 		var materialType = (record.material_type || '').toLowerCase();
 		this.root.find('#biblivre_record input[name=material_type]').val(materialType);
 		$('#biblivre_record_textarea').val(record.marc);
-		
+
 		div.processTemplate(record);
 
-		$('#biblivre_attachments').processTemplate(record);		
+		$('#biblivre_attachments').processTemplate(record);
 	},
 	loadCatalogingMarc: function(record, params) {
 		var div = $('#biblivre_marc');
@@ -481,17 +481,17 @@ var CatalogingSearchClass = {
 		div.data('loaded', true);
 
 		var materialType = (record.material_type || '').toLowerCase();
-		var materialTypeDiv = this.root.find('div.biblivre_marc_body select[name=material_type]'); 
+		var materialTypeDiv = this.root.find('div.biblivre_marc_body select[name=material_type]');
 		if (materialTypeDiv.length > 0) {
 			materialTypeDiv.val(materialType);
 		}
 
 		var authorType = (record.author_type || '').toLowerCase();
-		var authorTypeDiv = this.root.find('div.biblivre_marc_body select[name=author_type]'); 
+		var authorTypeDiv = this.root.find('div.biblivre_marc_body select[name=author_type]');
 		if (authorTypeDiv.length > 0) {
 			authorTypeDiv.val(authorType);
 		}
-		
+
 		$('#biblivre_marc_textarea').val(record.marc);
 
 		if (!params.keepEditing) {
@@ -508,7 +508,7 @@ var CatalogingSearchClass = {
 
 			this.clearTab('form');
 		}
-		
+
 		form.data('loaded', true).removeClass('template');
 
 		CatalogingInput.initializeForm(form, CatalogingInput.formFields, this.type);
@@ -519,7 +519,7 @@ var CatalogingSearchClass = {
 			materialTypeDiv.val(materialType);
 			CatalogingInput.toggleMaterialType(materialType);
 		}
-			
+
 		var authorType = (record.author_type || '').toLowerCase();
 		var authorTypeDiv = this.root.find('div.biblivre_form_body select[name=author_type]');
 		if (authorTypeDiv.length > 0) {
@@ -535,11 +535,11 @@ var CatalogingSearchClass = {
 	},
 	loadHoldingList: function(record, params) {
 		var div = this.root.find('.biblivre_holdings');
-		
+
 		this.clearTab('holdings');
-		
+
 		div.processTemplate(record);
-		
+
 		HoldingSearch.displayLocalResults({
 			data: record.holdings
 		});
@@ -547,25 +547,25 @@ var CatalogingSearchClass = {
 	linkToSearch: function(text, group) {
 		var terms = (text || '').split('\n');
 		var database = this.getCurrentDatabase();
-		
+
 		var html = [];
 		for (var i = 0; i < terms.length; i++) {
 			html.push('<a href="#query=' + encodeURIComponent(terms[i]) + '&database=' + database + '&group=' + group + '&search=advanced">' + terms[i] + '</a>');
 		}
-		
+
 		return html.join('; ');
 	},
 	openHolding: function(holding_id) {
 		var holding = {};
 		var node = this.root.find('.holding_list div.result[rel=' + holding_id + ']');
-		
+
 		this.clearTab('holding_form');
 		this.clearTab('holding_marc');
 		this.selectedHolding = holding;
 
 		var highlight = this.createRecordHighlight(node, holding, this.root.find('.selected_holding_highlight_template'));
 		var selectedHighlight = this.root.find('.selected_holding_highlight');
-		
+
 		this.root.find('.selected_record').fadeOut(300);
 
 		$('#content_inner').height($('#content_inner').height());
@@ -573,12 +573,12 @@ var CatalogingSearchClass = {
 			$('#content_outer').stop().scrollTo(0, {
 				duration: 600
 			})
-		).then(function() {			
+		).then(function() {
 			$('#content_inner').height('auto');
 		});
 
 		var me = this;
-		
+
 		highlight
 			.appendTo('#content_inner')
 			.css({
@@ -588,7 +588,7 @@ var CatalogingSearchClass = {
 			})
 			.animate({
 				top: selectedHighlight.getHiddenDimensions().position.top
-			}, 600, function() {				
+			}, 600, function() {
 				highlight.css({
 					position: 'relative',
 					top: 0,
@@ -597,7 +597,7 @@ var CatalogingSearchClass = {
 
 				selectedHighlight.show();
 				highlight.fixButtonsHeight();
-				
+
 				me.root.find('.record_tabs').hide();
 				me.root.find('.holding_tabs').show();
 				me.root.find('.selected_record').fadeIn(300);
@@ -607,15 +607,15 @@ var CatalogingSearchClass = {
 	},
 	exportSelectedRecords: function() {
 		var list = [];
-		
+
 		for (var i = 0; i < this.selectedList.length; i++) {
 			list.push(this.selectedList[i].id);
 		}
-		
+
 		if (list.length === 0) {
 			return;
 		}
-		
+
 		$.ajax({
 			url: window.location.pathname,
 			type: 'POST',
@@ -648,7 +648,7 @@ var CatalogingSearchClass = {
 			});
 			return;
 		}
-		
+
 		var data = {
 			controller: 'json',
 			module: this.type,
@@ -668,7 +668,7 @@ var CatalogingSearchClass = {
 			if (response.success) {
 				Core.trigger(this.prefix + 'reservation-created', id, response.data);
 			}
-			
+
 			Core.msg(response);
 		});
 	},
@@ -677,7 +677,7 @@ var CatalogingSearchClass = {
 		if (!reservationInfo || !reservationInfo.reservation) {
 			return;
 		}
-		
+
 		var data = {
 			controller: 'json',
 			module: this.type,
@@ -694,7 +694,7 @@ var CatalogingSearchClass = {
 			context: this
 		}).done(function(response) {
 			if (response.success) {
-				Core.trigger(this.prefix + 'reservation-deleted', reservationInfo.reservation.id);				
+				Core.trigger(this.prefix + 'reservation-deleted', reservationInfo.reservation.id);
 			}
 
 			Core.msg(response);

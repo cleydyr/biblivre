@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -50,10 +50,10 @@ public class Configurations extends StaticBO {
 	public static void reset() {
 		Configurations.configurations = new HashMap<String, HashMap<String, ConfigurationsDTO>>();
 	}
-	
+
 	public static String getString(String schema, String key) {
 		String value = Configurations.getValue(schema, key);
-		
+
 		return value;
 	}
 
@@ -74,7 +74,7 @@ public class Configurations extends StaticBO {
 
 	public static int getInt(String schema, String key, int def) {
 		String value = Configurations.getValue(schema, key);
-		
+
 		try {
 			return Integer.valueOf(value);
 		} catch (Exception e) {
@@ -85,7 +85,7 @@ public class Configurations extends StaticBO {
 
 	public static float getFloat(String schema, String key) {
 		String value = Configurations.getValue(schema, key);
-		
+
 		try {
 			return Float.valueOf(value.replace(',', '.'));
 		} catch (Exception e) {
@@ -96,36 +96,36 @@ public class Configurations extends StaticBO {
 
 	public static boolean getBoolean(String schema, String key) {
 		String value = Configurations.getValue(schema, key);
-		
+
 		return value.equals("true");
 	}
-	
+
 	public static List<Integer> getIntArray(String schema, String key, String def) {
 		String value = Configurations.getValue(schema, key);
-		
+
 		if (StringUtils.isBlank(value)) {
 			value = def;
 		}
-		
+
 		try {
 			return Configurations.stringToIntArray(value);
 		} catch (Exception e) {
 			return Configurations.stringToIntArray(def);
 		}
 	}
-	
+
 	private static List<Integer> stringToIntArray(String string) {
 		String[] array = string.split(",");
-		
+
 		List<Integer> list = new ArrayList<Integer>(array.length);
-		
+
 		for (String val : array) {
 			list.add(Integer.valueOf(val));
 		}
-		
+
 		return list;
 	}
-	
+
 	public static List<ConfigurationsDTO> validate(String schema, List<ConfigurationsDTO> configs) throws ValidationException {
 		List<ConfigurationsDTO> validConfigs = new ArrayList<ConfigurationsDTO>(configs.size());
 		ValidationException e = new ValidationException("administration.configurations.error.invalid");
@@ -143,7 +143,7 @@ public class Configurations extends StaticBO {
 				if (Schemas.countEnabledSchemas() > 1) {
 					errors = true;
 					e.addError(config.getKey(), "multi_schema.configurations.error.disable_multi_schema_schema_count");
-					continue;					
+					continue;
 				}
 
 				validConfigs.add(config);
@@ -173,13 +173,13 @@ public class Configurations extends StaticBO {
 		if (errors) {
 			throw e;
 		}
-		
+
 		return validConfigs;
 	}
 
 	public static void save(String schema, List<ConfigurationsDTO> configs, int loggedUser) {
 		ConfigurationsDTO multiSchemaConfig = null;
-		
+
 		for (Iterator<ConfigurationsDTO> it = configs.iterator(); it.hasNext();) {
 			ConfigurationsDTO configDto = it.next();
 			if (configDto.getKey().equals(Constants.CONFIG_MULTI_SCHEMA)) {
@@ -188,20 +188,20 @@ public class Configurations extends StaticBO {
 				break;
 			}
 		}
-		
+
 		if (multiSchemaConfig != null) {
 			ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance(Constants.GLOBAL_SCHEMA);
-			
+
 			List<ConfigurationsDTO> multiSchemaList = new ArrayList<ConfigurationsDTO>();
 			multiSchemaList.add(multiSchemaConfig);
 			globalDao.save(multiSchemaList, loggedUser);
-			
+
 			HashMap<String, ConfigurationsDTO> map = Configurations.getMap(Constants.GLOBAL_SCHEMA);
 			map.put(multiSchemaConfig.getKey(), multiSchemaConfig);
-			
+
 			Schemas.reset();
 		}
-		
+
 		ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
 
 		if (dao.save(configs, loggedUser)) {
@@ -216,7 +216,7 @@ public class Configurations extends StaticBO {
 	public static void save(String schema, ConfigurationsDTO config, int loggedUser) {
 		List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>(1);
 		configs.add(config);
-		
+
 		Configurations.save(schema, configs, loggedUser);
 	}
 
@@ -233,25 +233,25 @@ public class Configurations extends StaticBO {
 	}
 
 	public static void setMultipleSchemasEnabled(Integer loggedUser) {
-		
+
 		ConfigurationsDTO config = Configurations.get(Constants.GLOBAL_SCHEMA,  Constants.CONFIG_MULTI_SCHEMA);
-		
+
 		config.setValue("true");
-		
+
 		Configurations.save(Constants.GLOBAL_SCHEMA, config, loggedUser);
-		
+
 		Configurations.reset();
 	}
-	
+
 	private static ConfigurationsDTO get(String schema, String key) {
 		HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
 
 		ConfigurationsDTO config = map.get(key);
-		
+
 		if (config == null) {
 			return schema.equals(Constants.GLOBAL_SCHEMA) ? null : Configurations.get(Constants.GLOBAL_SCHEMA, key);
 		}
-		
+
 		return config;
 	}
 

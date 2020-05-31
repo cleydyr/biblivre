@@ -13,13 +13,13 @@
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
 
 	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>	
+	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.holding.search.js"></script>
-	
+
 	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.holding.input.js"></script>
-	
+
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "holding").getCacheFileName() %>"></script>
 
@@ -34,13 +34,13 @@
 			enableTabs: true,
 			enableHistory: true
 		});
-	
+
 		CatalogingInput.type = 'cataloging.bibliographic';
 		CatalogingInput.root = '#cataloging_search';
-	
+
 		CatalogingInput.search = CatalogingSearch;
 		CatalogingInput.defaultMaterialType = 'book';
-		
+
 		var HoldingSearch = CreateSearch(HoldingSearchClass, {
 			type: 'cataloging.holding',
 			root: '#holding_search',
@@ -53,7 +53,7 @@
 		HoldingInput.type = 'cataloging.holding';
 		HoldingInput.root = '#holding_search';
 		HoldingInput.search = HoldingSearch;
-		
+
 		$(document).ready(function() {
 			var global = Globalize.culture().calendars.standard;
 
@@ -69,7 +69,7 @@
 				offset: [-19, -7]
 			});
 		});
-		
+
 	</script>
 </layout:head>
 
@@ -79,20 +79,20 @@
 	<div id="cataloging_search">
 		<div class="page_title">
 			<div class="image"><img src="static/images/titles/search.png" /></div>
-	
+
 			<div class="simple_search text contains_subtext">
 				<i18n:text key="search.bibliographic.simple_search" />
 				<div class="subtext"><i18n:text key="search.common.switch_to" /> <a href="javascript:void(0);" onclick="CatalogingSearch.switchToAdvancedSearch();"><i18n:text key="search.common.advanced_search" /></a></div>
 			</div>
-	
+
 			<div class="advanced_search text contains_subtext">
 				<i18n:text key="search.bibliographic.advanced_search" />
 				<div class="subtext"><i18n:text key="search.common.switch_to" /> <a href="javascript:void(0);" onclick="CatalogingSearch.switchToSimpleSearch();"><i18n:text key="search.common.simple_search" /></a></div>
 			</div>
-			
+
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="page_navigation">
 			<a href="javascript:void(0);" class="button paging_button back_to_search" onclick="CatalogingSearch.closeResult();"><i18n:text key="search.common.back_to_search" /></a>
 
@@ -104,9 +104,9 @@
 
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="selected_highlight"></div>
-		<textarea class="selected_highlight_template template"><!-- 
+		<textarea class="selected_highlight_template template"><!--
 			<div class="record">
 				{#if $T.title}<label><i18n:text key="search.bibliographic.title" /></label>: {$T.title}<br/>{#/if}
 				{#if $T.author}<label><i18n:text key="search.bibliographic.author" /></label>: {$T.author}<br/>{#/if}
@@ -117,8 +117,8 @@
 				{#if $T.isrc}<label><i18n:text key="search.bibliographic.isrc" /></label>: {$T.isrc}<br/>{#/if}
 				<label><i18n:text key="search.bibliographic.id" /></label>: {$T.id}<br/>
 			</div>
-		--></textarea>		
-	
+		--></textarea>
+
 		<div class="selected_record tabs">
 			<ul class="tabs_head">
 				<li class="tab" onclick="Core.changeTab(this, CatalogingSearch);" data-tab="record"><i18n:text key="cataloging.tabs.brief" /></li>
@@ -126,13 +126,13 @@
 				<li class="tab" onclick="Core.changeTab(this, CatalogingSearch);" data-tab="marc"><i18n:text key="cataloging.tabs.marc" /></li>
 				<li class="tab" onclick="Core.changeTab(this, CatalogingSearch);" data-tab="holding"><i18n:text key="cataloging.tabs.holdings" /></li>
 			</ul>
-	
+
 			<div class="tabs_body">
 				<div class="tab_body" data-tab="record">
 					<div id="biblivre_record"></div>
-					<textarea id="biblivre_record_template" class="template"><!-- 
+					<textarea id="biblivre_record_template" class="template"><!--
 						<input type="hidden" name="material_type" value="{$T.material_type}"/>
-						<table class="record_fields">	
+						<table class="record_fields">
 							<tr>
 								<td class="label">{Translations.get('cataloging.bibliographic.material_type')}:</td>
 								<td class="value">{Translations.get('marc.material_type.' + $T.material_type)}</td>
@@ -146,7 +146,7 @@
 						</table>
 					--></textarea>
 				</div>
-				
+
 				<div class="tab_body" data-tab="form">
 					<div class="biblivre_form_body">
 						<div class="field">
@@ -162,7 +162,7 @@
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="tab_body" data-tab="marc">
 					<div class="biblivre_marc_body">
 						<div class="field">
@@ -181,7 +181,7 @@
 
 				<div class="tab_body" data-tab="holding">
 					<div class="biblivre_holdings"></div>
-					<textarea class="biblivre_holdings_template template"><!-- 
+					<textarea class="biblivre_holdings_template template"><!--
 						<label><i18n:text key="search.bibliographic.holdings_count" /></label>: {$T.holdings_count}
 						<br/>
 						<label><i18n:text key="search.bibliographic.holdings_available" /></label>: {$T.holdings_available}
@@ -192,14 +192,14 @@
 					--></textarea>
 				</div>
 			</div>
-			
+
 			<div class="tabs_extra_content">
 				<div class="tab_extra_content biblivre_record_extra" data-tab="record">
 					<fieldset>
 						<legend><i18n:text key="cataloging.common.digital_files" /></legend>
-						
+
 						<ul id="biblivre_attachments"></ul>
-						<textarea id="biblivre_attachments_template" class="template"><!-- 
+						<textarea id="biblivre_attachments_template" class="template"><!--
 							{#if !$T.attachments || $T.attachments.length == 0}
 								<div class="center" style="margin-bottom: 10px;"><strong><i18n:text key="cataloging.bibliographic.no_attachments" /></strong></div>
 							{#/if}
@@ -214,12 +214,12 @@
 				<div class="tab_extra_content biblivre_form" data-tab="form">
 					<div id="biblivre_form"></div>
 				</div>
-	
+
 				<div class="tab_extra_content biblivre_marc" data-tab="marc">
 					<fieldset>
 						<div id="biblivre_marc"></div>
-						<textarea id="biblivre_marc_template" class="template"><!-- 
-								<table class="record_fields readonly_text">				
+						<textarea id="biblivre_marc_template" class="template"><!--
+								<table class="record_fields readonly_text">
 									{#foreach $T.fields as field}
 										<tr>
 											<td class="label">{$T.field.field}</td>
@@ -230,10 +230,10 @@
 						--></textarea>
 						<textarea id="biblivre_marc_textarea"></textarea>
 					</fieldset>
-				</div>				
+				</div>
 			</div>
 		</div>
-		
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -249,7 +249,7 @@
 					<a class="main_button arrow_right" onclick="CatalogingSearch.search('simple');"><i18n:text key="search.common.button.list_all" /></a>
 				</div>
 			</div>
-	
+
 			<div class="advanced_search submit_on_enter">
 				<div class="search_entry">
 					<div class="operator">
@@ -274,11 +274,11 @@
 					</div>
 					<div class="clear"></div>
 				</div>
-	
+
 				<div class="add_term ico_add">
 					<a href="javascript:void(0);" onclick="CatalogingSearch.addEntryAdvancedSearch();"><i18n:text key="search.common.add_field" /></a>
 				</div>
-						
+
 				<div class="filter_search">
 					<div class="fleft filter_material">
 						<label class="search_label"><i18n:text key="search.bibliographic.material_type" /></label>
@@ -297,20 +297,20 @@
 						<input type="text" name="modified_start" class="small_input datepicker" /><input type="text" name="modified_end" class="small_input datepicker" />
 					</div>
 					<div class="clear"></div>
-				</div>				
-	
+				</div>
+
 				<div class="fleft clear_search ico_clear">
 					<a href="javascript:void(0);" onclick="CatalogingSearch.clearAdvancedSearch();"><i18n:text key="search.common.clear_search" /></a>
 				</div>
-	
+
 				<div class="buttons">
 					<a class="main_button arrow_right" onclick="CatalogingSearch.search('advanced');"><i18n:text key="search.common.button.list_all" /></a>
 					<div class="clear"></div>
 				</div>
 			</div>
-			
+
 		</div>
-		
+
 		<div class="selected_results_area">
 		</div>
 
@@ -329,7 +329,7 @@
 				</fieldset>
 			{/#if}
 		--></textarea>
-	
+
 		<div class="search_results_area">
 			<div class="search_ordering_bar">
 				<div class="search_indexing_groups"></div>
@@ -348,12 +348,12 @@
 										<span class="value">({_f($T.group_count.result_count)})</span>
 									</div>
 								{#/if}
-							{#/if}						
+							{#/if}
 						{#/for}
 						{#if !$T.group_count$last} <div class="hspacer">|</div> {#/if}
 					{#/for}
 				--></textarea>
-	
+
 				<div class="search_sort_by"></div>
 				<textarea class="search_sort_by_template template"><!--
 					<i18n:text key="search.common.sort_by" />:
@@ -364,23 +364,23 @@
 							{#/if}
 						{#/for}
 					</select>
-				--></textarea>			
-				
+				--></textarea>
+
 				<div class="clear"></div>
 			</div>
-	
+
 			<div class="search_loading_indicator loading_indicator"></div>
 
-		
+
 			<div class="select_bar">
-				<a class="button center" onclick="CatalogingSearch.selectPageResults();"><i18n:text key="cataloging.bibliographic.button.select_page" /></a> 
+				<a class="button center" onclick="CatalogingSearch.selectPageResults();"><i18n:text key="cataloging.bibliographic.button.select_page" /></a>
 			</div>
 			<div class="paging_bar"></div>
 			<div class="clear"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']} {CatalogingInput.getOverlayClass($T.record)}" rel="{$T.record.id}">
 							<div class="result_overlay"><div class="text">{CatalogingInput.getOverlayText($T.record)}</div></div>
@@ -396,13 +396,13 @@
 								{#if $T.record.isbn}<label><i18n:text key="search.bibliographic.isbn" /></label>: {$T.record.isbn}<br/>{#/if}
 								{#if $T.record.issn}<label><i18n:text key="search.bibliographic.issn" /></label>: {$T.record.issn}<br/>{#/if}
 								{#if $T.record.isrc}<label><i18n:text key="search.bibliographic.isrc" /></label>: {$T.record.isrc}<br/>{#/if}
-	
+
 								{#if $T.record.subject}
 									<label><i18n:text key="search.bibliographic.subject" /></label>: {CatalogingSearch.linkToSearch($T.record.subject, 4)}<br/>
 								{#/if}
-	
+
 								<div class="ncspacer"></div>
-								<div class="ncspacer"></div>						
+								<div class="ncspacer"></div>
 								<label><i18n:text key="search.bibliographic.holdings_count" /></label>: {$T.record.holdings_count}
 								-
 								<small>
@@ -416,7 +416,7 @@
 					{#/for}
 				--></textarea>
 			</div>
-	
+
 			<div class="paging_bar"></div>
 		</div>
 	</div>
@@ -424,7 +424,7 @@
 	<div id="holding_search">
 		<div class="page_navigation">
 			<a href="javascript:void(0);" class="button paging_button back_to_search" onclick="HoldingSearch.closeResult();"><i18n:text key="search.common.back_to_search" /></a>
-			
+
 			<div class="fright">
 				<a href="javascript:void(0);" class="button paging_button paging_button_prev" onclick="HoldingSearch.previousResult();"><i18n:text key="search.common.previous" /></a>
 				<span class="search_count"></span>
@@ -433,9 +433,9 @@
 
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="selected_highlight"></div>
-		<textarea class="selected_highlight_template template"><!-- 
+		<textarea class="selected_highlight_template template"><!--
 			<div class="record">
 				{#if $T.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.accession_number}<br/>{#/if}
 				{#if $T.lent}<label><i18n:text key="search.holding.lending_state" /></label>: {$T.lent}<br/>{#/if}
@@ -444,13 +444,13 @@
 				<label><i18n:text key="search.bibliographic.id" /></label>: {$T.id}<br/>
 			</div>
 		--></textarea>
-		
+
 		<div class="selected_record tabs">
 			<ul class="tabs_head">
 				<li class="tab" onclick="Core.changeTab(this, HoldingSearch);" data-tab="holding_form"><i18n:text key="cataloging.tabs.form" /></li>
 				<li class="tab" onclick="Core.changeTab(this, HoldingSearch);" data-tab="holding_marc"><i18n:text key="cataloging.tabs.marc" /></li>
 			</ul>
-	
+
 			<div class="tabs_body">
 				<div class="tab_body" data-tab="holding_form">
 					<div class="biblivre_holding_form_body">
@@ -460,14 +460,14 @@
 								<select name="holding_availability">
 									<c:forEach var="availability" items="<%= HoldingAvailability.values() %>" >
 										<option value="${availability}"><i18n:text key="cataloging.holding.availability.${availability}" /></option>
-									</c:forEach>								
+									</c:forEach>
 								</select>
 							</div>
 							<div class="clear"></div>
 						</div>
 					</div>
 				</div>
-	
+
 				<div class="tab_body" data-tab="holding_marc">
 					<div class="biblivre_holding_marc_body">
 						<div class="field">
@@ -476,7 +476,7 @@
 								<select name="holding_availability">
 									<c:forEach var="availability" items="<%= HoldingAvailability.values() %>" >
 										<option value="${availability}"><i18n:text key="cataloging.holding.availability.${availability}" /></option>
-									</c:forEach>								
+									</c:forEach>
 								</select>
 							</div>
 							<div class="clear"></div>
@@ -484,17 +484,17 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="tabs_extra_content">
 				<div class="tab_extra_content biblivre_form" data-tab="holding_form">
 					<div id="biblivre_holding_form"></div>
 				</div>
-	
+
 				<div class="tab_extra_content biblivre_marc" data-tab="holding_marc">
 					<fieldset>
 						<div id="biblivre_holding_marc"></div>
-						<textarea id="biblivre_holding_marc_template" class="template"><!-- 
-								<table class="record_fields readonly_text">				
+						<textarea id="biblivre_holding_marc_template" class="template"><!--
+								<table class="record_fields readonly_text">
 									{#foreach $T.fields as field}
 										<tr>
 											<td class="label">{$T.field.field}</td>
@@ -511,10 +511,10 @@
 
 		<div class="search_results_area">
 			<div class="search_loading_indicator loading_indicator"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']}" rel="{$T.record.id}">
 							<div class="result_overlay"><div class="text">{$T.data.overlay_text}</div></div>
@@ -532,5 +532,5 @@
 			</div>
 		</div>
 	</div>
-	
+
 </layout:body>

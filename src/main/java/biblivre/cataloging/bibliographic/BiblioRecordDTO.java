@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -46,10 +46,10 @@ public class BiblioRecordDTO extends RecordDTO {
 	private Integer holdingsAvailable;
 	private Integer holdingsLent;
 	private Integer holdingsReserved;
-	
+
 	private List<HoldingDTO> holdings;
 	private Map<Integer, LendingDTO> lendings;
-	
+
 	public String getTitle() {
 		return this.title;
 	}
@@ -81,7 +81,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
 	}
-	
+
 	public String getIssn() {
 		return this.issn;
 	}
@@ -89,7 +89,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setIssn(String issn) {
 		this.issn = issn;
 	}
-	
+
 	public String getIsrc() {
 		return this.isrc;
 	}
@@ -113,7 +113,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
-	
+
 	public Integer getHoldingsCount() {
 		return this.holdingsCount;
 	}
@@ -145,7 +145,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setHoldingsReserved(Integer holdingsReserved) {
 		this.holdingsReserved = holdingsReserved;
 	}
-	
+
 	public List<HoldingDTO> getHoldings() {
 		return this.holdings;
 	}
@@ -153,7 +153,7 @@ public class BiblioRecordDTO extends RecordDTO {
 	public void setHoldings(List<HoldingDTO> holdings) {
 		this.holdings = holdings;
 	}
-	
+
 	public Map<Integer, LendingDTO> getLendings() {
 		return this.lendings;
 	}
@@ -177,12 +177,12 @@ public class BiblioRecordDTO extends RecordDTO {
 			json.putOpt("isrc", this.getIsrc());
 			json.putOpt("shelf_location", this.getShelfLocation());
 			json.putOpt("subject", this.getSubject());
-			
+
 			json.putOpt("holdings_count", this.getHoldingsCount());
 			json.putOpt("holdings_available", this.getHoldingsAvailable());
 			json.putOpt("holdings_lent", this.getHoldingsLent());
 			json.putOpt("holdings_reserved", this.getHoldingsReserved());
-			
+
 			if (this.getHoldings() != null) {
 				for (HoldingDTO holding : this.getHoldings()) {
 					json.append("holdings", holding.toJSONObject());
@@ -191,11 +191,11 @@ public class BiblioRecordDTO extends RecordDTO {
 
 			if (this.getLendings() != null) {
 				JSONObject lendings = new JSONObject();
-				
+
 				for (Entry<Integer, LendingDTO> entry : this.getLendings().entrySet()) {
 					lendings.put(entry.getKey().toString(), entry.getValue().toJSONObject());
 				}
-				
+
 				json.put("lendings", lendings);
 			}
 		} catch (JSONException e) {

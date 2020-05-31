@@ -16,9 +16,9 @@
 </layout:head>
 
 <layout:body>
-	<% 	
+	<%
 	ExtendedRequest req = (ExtendedRequest) request;
-	
+
 	if (!req.isGlobalSchema()) {
 	%>
 		<div class="picture">
@@ -29,12 +29,12 @@
 			<%
 				LoginDTO login = (LoginDTO) session.getAttribute(request.getAttribute("schema") + ".logged_user");
 				pageContext.setAttribute("login", login);
-	
+
 				if (login != null) {
 					pageContext.setAttribute("name", login.getFirstName());
 				}
 			%>
-	
+
 			<c:choose>
 				<c:when test="${empty login}">
 					<i18n:text key="text.main.logged_out" />
@@ -57,9 +57,9 @@
 						<div class="subtitle"><%= Configurations.getHtml(schema.getSchema(), Constants.CONFIG_SUBTITLE) %></div>
 					</div>
 				<% } %>
-			</fieldset>	
+			</fieldset>
 		</div>
 	<%
-	}	
+	}
 	%>
 </layout:body>

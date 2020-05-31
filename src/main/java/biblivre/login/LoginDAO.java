@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -38,7 +38,7 @@ public class LoginDAO extends AbstractDAO {
 	public static LoginDAO getInstance(String schema) {
 		return (LoginDAO) AbstractDAO.getInstance(LoginDAO.class, schema);
 	}
-	
+
 	public LoginDTO get(Integer loginId) {
 		Connection con = null;
 		try {
@@ -62,16 +62,16 @@ public class LoginDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
-	
+
+
 	public LoginDTO login(String login, String password) {
 		LoginDTO dto = null;
 		Connection con = null;
-		
+
 		try {
 			con = this.getConnection();
 			StringBuilder sql = new StringBuilder();
-			
+
 			if (this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
 				sql.append("SELECT id, login, employee, login as name FROM logins ");
 				sql.append("WHERE login = ? and password = ?;");
@@ -84,7 +84,7 @@ public class LoginDAO extends AbstractDAO {
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setString(1, login);
 			pst.setString(2, password);
-			
+
 			ResultSet rs = pst.executeQuery();
 
 			if (rs.next()) {
@@ -98,21 +98,21 @@ public class LoginDAO extends AbstractDAO {
 
 		return dto;
 	}
-	
+
 	public boolean update(LoginDTO login) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("UPDATE logins SET employee = ?, modified = now(), modified_by = ? ");
 			if (StringUtils.isNotBlank(login.getEncPassword())) {
 				sql.append(", password = ? ");
 			}
 			sql.append("WHERE id = ?;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			int index = 1;
 			pst.setBoolean(index++, login.isEmployee());
 			pst.setInt(index++, login.getModifiedBy());
@@ -120,7 +120,7 @@ public class LoginDAO extends AbstractDAO {
 				pst.setString(index++, login.getEncPassword());
 			}
 			pst.setInt(index++, login.getId());
-			
+
 			return pst.executeUpdate() > 0;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -153,13 +153,13 @@ public class LoginDAO extends AbstractDAO {
 		}
 		return null;
 	}
-	
+
 	public boolean delete(UserDTO userDTO) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			String sql = null;
 			PreparedStatement pst = null;
 
@@ -183,7 +183,7 @@ public class LoginDAO extends AbstractDAO {
 				pst.setInt(1, loginId);
 				pst.executeUpdate();
 			}
-			
+
 			con.commit();
 			return true;
 		} catch (Exception e) {
@@ -192,16 +192,16 @@ public class LoginDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public synchronized boolean save(LoginDTO dto, UserDTO udto) {
 		Connection con = null;
 		int loginId = 0;
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			loginId = this.getNextSerial("logins_id_seq");
-			
+
 			if (loginId != 0) {
 				dto.setId(loginId);
 				String sqlInsertLogin = "INSERT INTO logins (id, login, password, employee, created_by) VALUES (?, ?, ?, ?, ?);";
@@ -212,7 +212,7 @@ public class LoginDAO extends AbstractDAO {
 				pstInsertLogin.setBoolean(4, dto.isEmployee());
 				pstInsertLogin.setInt(5, dto.getCreatedBy());
 				pstInsertLogin.executeUpdate();
-				
+
 				String sqlUpdateUser = "UPDATE users SET login_id = ?, modified = now(), modified_by = ? WHERE id = ?;";
 				PreparedStatement pstUpdateUser = con.prepareStatement(sqlUpdateUser);
 				pstUpdateUser.setInt(1, dto.getId());
@@ -222,9 +222,9 @@ public class LoginDAO extends AbstractDAO {
 
 				udto.setLoginId(dto.getId());
 			}
-			
+
 			this.commit(con);
-			
+
 			return true;
 		} catch (Exception e) {
 			this.rollback(con);
@@ -238,7 +238,7 @@ public class LoginDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			String sqlInsertLogin = "INSERT INTO logins (id, login, password, employee, created_by) VALUES (?, ?, ?, ?, ?);";
 			PreparedStatement pstInsertLogin = con.prepareStatement(sqlInsertLogin);
 			for (AbstractDTO abstractDto : dtoList) {
@@ -250,9 +250,9 @@ public class LoginDAO extends AbstractDAO {
 				pstInsertLogin.setInt(5, dto.getCreatedBy());
 				pstInsertLogin.addBatch();
 			}
-			
+
 			pstInsertLogin.executeBatch();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -260,7 +260,7 @@ public class LoginDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	private LoginDTO populateDTO(ResultSet rs) throws SQLException {
 		LoginDTO dto = new LoginDTO();
 
@@ -268,10 +268,10 @@ public class LoginDAO extends AbstractDAO {
 		dto.setLogin(rs.getString("login"));
 		dto.setEmployee(rs.getBoolean("employee"));
 		dto.setName(rs.getString("name"));
-		
+
 		return dto;
 	}
-	
+
 	/*
 	private static final Format ISO8601_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
 

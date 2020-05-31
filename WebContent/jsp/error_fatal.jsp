@@ -2,7 +2,7 @@
 <%@ page import="biblivre.core.utils.NetworkUtils" %>
 <%@ page import="biblivre.core.exceptions.DAOException" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page isErrorPage="true" import="java.io.*" %> 
+<%@ page isErrorPage="true" import="java.io.*" %>
 
 <!doctype html>
 <html class="noscript">
@@ -49,12 +49,12 @@
 				if (NetworkUtils.isLocalRequest(request)) {
 					StringWriter sw = new StringWriter();
 					PrintWriter pw = new PrintWriter(sw);
-	
+
 					exception.printStackTrace(pw);
-				
+
 					sw.close();
 					pw.close();
-				
+
 					out.print("<pre>");
 					out.print(sw);
 					out.print("</pre>");
@@ -63,7 +63,7 @@
 					Ocorreu um erro de aplicação durante a execução deste pedido. Os detalhes deste erro não podem ser visualizados a partir de um computador remoto (por medidas de segurança), mas podem ser vistos através de um navegador executado a partir do computador onde o Biblivre está instalado.<br><br>
 					An application error occurred on the server. The application prevents the details of this error from being viewed remotely (for security reasons). It could, however, be viewed by browsers running on the local Biblivre server machine.
 					<%
-				} 
+				}
 			}
 		%>
 	</div>

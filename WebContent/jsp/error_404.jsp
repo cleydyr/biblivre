@@ -3,7 +3,7 @@
 <%@ page import="biblivre.core.utils.NetworkUtils" %>
 <%@ page import="biblivre.core.exceptions.DAOException" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page isErrorPage="true" import="java.io.*" %> 
+<%@ page isErrorPage="true" import="java.io.*" %>
 
 <!doctype html>
 <html class="noscript">

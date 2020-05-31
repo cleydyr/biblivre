@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -60,7 +60,7 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 
 public class ReportsDAO extends AbstractDAO {
-	
+
 	public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 	public static ReportsDAO getInstance(String schema) {
@@ -88,7 +88,7 @@ public class ReportsDAO extends AbstractDAO {
 				Record record = MarcUtils.iso2709ToRecord(rs.getBytes("iso2709"));
 				MarcDataReader dataReader = new MarcDataReader(record);
 				String[] data = new String[8];
-				String title = dataReader.getTitle(false); 
+				String title = dataReader.getTitle(false);
 				data[0] = StringUtils.isNotBlank(title) ? title : "";
 				String author = dataReader.getAuthor(true);
 				data[1] = StringUtils.isNotBlank(author) ? author : "";
@@ -102,7 +102,7 @@ public class ReportsDAO extends AbstractDAO {
 				data[5] = StringUtils.isNotBlank(edition) ? edition : "";
 				String dewey = dataReader.getDDCN();
 				data[6] = StringUtils.isNotBlank(dewey) ? dewey : "";
-				
+
 
 				count.setInt(1, rs.getInt("id"));
 				ResultSet countRs = count.executeQuery();
@@ -118,7 +118,7 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public DeweyReportDto getDeweyReportData(RecordDatabase db, String datafield, int digits) {
 		Connection con = null;
 		DeweyReportDto dto = new DeweyReportDto();
@@ -179,7 +179,7 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public AssetHoldingDto getAssetHoldingReportData() {
 		AssetHoldingDto dto = new AssetHoldingDto();
 		Connection con = null;
@@ -215,7 +215,7 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public AssetHoldingDto getAssetHoldingFullReportData() {
 		AssetHoldingDto dto = new AssetHoldingDto();
 		Connection con = null;
@@ -255,7 +255,7 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public AssetHoldingByDateDto getAssetHoldingByDateReportData(String initialDate, String finalDate) {
 		AssetHoldingByDateDto dto = new AssetHoldingByDateDto();
 		Connection con = null;
@@ -278,7 +278,7 @@ public class ReportsDAO extends AbstractDAO {
 			List<String[]> dataList = new ArrayList<String[]>();
 			while (rs.next()) {
 				Record record = MarcUtils.iso2709ToRecord(rs.getBytes(3));
-				
+
 				String assetHolding = rs.getString("accession_number");
 				String creationDate = rs.getString(2);
 				String[] data = new String[6];
@@ -288,7 +288,7 @@ public class ReportsDAO extends AbstractDAO {
 				data[2] = dataReader.getTitle(false);
 				data[3] = dataReader.getAuthorName(false);
 				data[4] = dataReader.getPublicationYear();
-				
+
 				Record holding = MarcUtils.iso2709ToRecord(rs.getBytes(4));
 				MarcDataReader holdingReader = new MarcDataReader(holding);
 				data[5] = holdingReader.getSourceAcquisitionDate();
@@ -394,7 +394,7 @@ public class ReportsDAO extends AbstractDAO {
 		dto.setTotalHoldingWork(totalHoldingWork);
 		return dto;
 	}
-	
+
 	public LendingsByDateReportDto getLendingsByDateReportData(String initialDate, String finalDate) {
 		Connection con = null;
 		PreparedStatement st = null;
@@ -404,7 +404,7 @@ public class ReportsDAO extends AbstractDAO {
 		int lended = 0, late = 0, total = 0;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sqlLent = new StringBuilder();
 			sqlLent.append(" SELECT count(*) FROM lendings ");
 			sqlLent.append(" WHERE created >= to_date(?, 'DD-MM-YYYY') ");
@@ -418,7 +418,7 @@ public class ReportsDAO extends AbstractDAO {
 				lended = rs.getInt(1);
 			}
 			rs.close();
-			
+
 			StringBuilder sqlHistory = new StringBuilder();
 			sqlHistory.append(" SELECT count(*) FROM lendings ");
 			sqlHistory.append(" WHERE created >= to_date(?, 'DD-MM-YYYY') ");
@@ -432,7 +432,7 @@ public class ReportsDAO extends AbstractDAO {
 				total = rs.getInt(1) + lended;
 			}
 			rs.close();
-			
+
 			StringBuilder sqlLate = new StringBuilder();
 			sqlLate.append(" SELECT count(*) FROM lendings ");
 			sqlLate.append(" WHERE created >= to_date(?, 'DD-MM-YYYY') ");
@@ -449,10 +449,10 @@ public class ReportsDAO extends AbstractDAO {
 			}
 			rs.close();
 
-			
+
 			String[] totals = { String.valueOf(total), String.valueOf(lended), String.valueOf(late) };
 			dto.setTotals(totals);
-			
+
 			StringBuilder sqlTop20 = new StringBuilder();
 			sqlTop20.append(" SELECT b.id, count(b.id) AS rec_count ");
 			sqlTop20.append(" FROM lendings l, biblio_records b, biblio_holdings h ");
@@ -468,9 +468,9 @@ public class ReportsDAO extends AbstractDAO {
 			st.setString(2, finalDate);
 			rs = st.executeQuery();
 			List<String[]> data = new ArrayList<String[]>();
-			
+
 			BiblioRecordBO biblioBO = BiblioRecordBO.getInstance(this.getSchema());
-			
+
 			while (rs.next()) {
 				Integer biblioId = rs.getInt(1);
 				Integer count = rs.getInt(2);
@@ -491,7 +491,7 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public LateLendingsDto getLateReturnLendingsReportData() {
 		LateLendingsDto dto = new LateLendingsDto();
 		Connection con = null;
@@ -530,7 +530,7 @@ public class ReportsDAO extends AbstractDAO {
 
 		return dto;
 	}
-	
+
 	public SearchesByDateReportDto getSearchesByDateReportData(String initialDate, String finalDate) {
 		Connection con = null;
 		SearchesByDateReportDto dto = new SearchesByDateReportDto();
@@ -570,13 +570,13 @@ public class ReportsDAO extends AbstractDAO {
 		AllUsersReportDto dto = new AllUsersReportDto();
 		dto.setTypesMap(new HashMap<String, Integer>());
 		dto.setData(new HashMap<String, List<String>>());
-		
+
 		Connection con = null;
 		Connection con2 = null;
 		try {
 			con = this.getConnection();
 			con2 = this.getConnection();
-			
+
 			StringBuilder firstSql = new StringBuilder();
 			firstSql.append("SELECT count(u.type) as total, t.description, t.id ");
 			firstSql.append("FROM users u, users_types t ");
@@ -606,7 +606,7 @@ public class ReportsDAO extends AbstractDAO {
 				}
 				dto.getData().put(description, dataList);
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -615,7 +615,7 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public RequestsByDateReportDto getRequestsByDateReportData(String initialDate, String finalDate) {
 		RequestsByDateReportDto dto = new RequestsByDateReportDto();
 		dto.setInitialDate(initialDate);
@@ -654,7 +654,7 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public TreeMap<String, Set<Integer>> searchAuthors(String authorName, RecordDatabase database) {
 		TreeMap<String, Set<Integer>> results = new TreeMap<String, Set<Integer>>();
 
@@ -673,7 +673,7 @@ public class ReportsDAO extends AbstractDAO {
 					sql.append("AND B.id in (SELECT record_id FROM biblio_idx_fields WHERE word >= ? and word < ?) ");
 				}
 			}
-			
+
 			PreparedStatement st = con.prepareStatement(sql.toString());
 			int index = 1;
 			st.setString(index++, database.toString());
@@ -708,25 +708,25 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return results;
 	}
-	
+
 	public BibliographyReportDto getBibliographyReportData(String authorName, Integer[] recordIdArray) {
 		BibliographyReportDto dto = new BibliographyReportDto();
 		dto.setAuthorName(authorName);
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append(" SELECT iso2709 FROM biblio_records WHERE id IN (");
 			sql.append(StringUtils.repeat("?", ", ", recordIdArray.length));
 			sql.append(") ORDER BY id ASC; ");
-			
+
 			PreparedStatement st = con.prepareStatement(sql.toString());
 			for (int i = 0; i < recordIdArray.length; i++) {
 				st.setInt(i + 1, recordIdArray[i]);
 			}
-			
+
 			ResultSet rs = st.executeQuery();
 			List<String[]> data = new ArrayList<String[]>();
 			while (rs.next()) {
@@ -749,14 +749,14 @@ public class ReportsDAO extends AbstractDAO {
 		}
 		return dto;
 	}
-	
+
 	public ReservationReportDto getReservationReportData() {
 		ReservationReportDto dto = new ReservationReportDto();
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			Statement st = con.createStatement();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append(" SELECT u.name, u.id, b.iso2709, ");
 			sql.append(" to_char(r.created, 'DD/MM/YYYY') AS created ");
@@ -765,9 +765,9 @@ public class ReportsDAO extends AbstractDAO {
 			sql.append(" AND r.record_id = b.id ");
 			sql.append(" AND r.record_id is not null ");
 			sql.append(" ORDER BY u.name ASC; ");
-			
+
 			ResultSet rs = st.executeQuery(sql.toString());
-			
+
 			List<String[]> biblioReservations = new ArrayList<String[]>();
 			while (rs.next()) {
 				String[] reservation = new String[5];

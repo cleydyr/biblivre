@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var Administration = Administration || {};
 
@@ -29,8 +29,8 @@ Administration.progress.showPopupProgress = function() {
 		.appendTo('body')
 		.show()
 		.center();
-		
-	$('#progress_popup .progress').progressbar(); 
+
+	$('#progress_popup .progress').progressbar();
 };
 
 Administration.progress.progressTimeout = null;
@@ -40,7 +40,7 @@ Administration.progress.progress = function(delay) {
 		Administration.progress.progressTimeout = setTimeout(Administration.progress.progress, delay);
 		return;
 	}
-	
+
 	Administration.progress.progressXHR = $.ajax({
 		url: window.location.pathname,
 		type: 'POST',
@@ -76,7 +76,7 @@ Administration.progress.cancel = function() {
 		Administration.progress.progressXHR.abort();
 		Administration.progress.progressXHR = null;
 	}
-	
+
 	Core.hideOverlay();
 	$('#progress_popup').hide();
 };
@@ -91,7 +91,7 @@ Upload.showUploadPopup = function() {
 		.appendTo('body')
 		.show()
 		.center();
-		
+
 	$('#upload_popup .progress').progressbar().continuousProgress();
 };
 
@@ -101,7 +101,7 @@ Upload.stopUploadProgress = function() {
 
 Upload.advanceUploadProgress = function(current, total, percentComplete) {
 	Upload.stopUploadProgress();
-	
+
 	$('#upload_popup .progress').progressbar({
 		current: current,
 		total: total

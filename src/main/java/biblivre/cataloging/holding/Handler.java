@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -39,11 +39,11 @@ import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 
 public class Handler extends CatalogingHandler {
-	
+
 	public Handler() {
 		super(RecordType.HOLDING, MaterialType.HOLDINGS);
 	}
-	
+
 	@Override
 	protected RecordDTO createRecordDTO(ExtendedRequest request) {
 		return new HoldingDTO();
@@ -55,14 +55,14 @@ public class Handler extends CatalogingHandler {
 			this.json.put("success", false);
 		} catch (JSONException e) {}
 	}
-	
+
 	@Override
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		try {
 			this.json.put("success", false);
 		} catch (JSONException e) {}
 	}
-	
+
 	@Override
 	public void itemCount(ExtendedRequest request, ExtendedResponse response) {
 		try {
@@ -76,12 +76,12 @@ public class Handler extends CatalogingHandler {
 			this.json.put("success", false);
 		} catch (JSONException e) {}
 	}
-	
+
 	@Override
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id", null);
-		
+
 		if (id == null) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
 			return;
@@ -89,12 +89,12 @@ public class Handler extends CatalogingHandler {
 
 		RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 		RecordDTO dto = bo.get(id);
-		
+
 		if (dto == null) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
 			return;
 		}
-		
+
 		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
 		dto.setRecord(record);
 
@@ -109,14 +109,14 @@ public class Handler extends CatalogingHandler {
 
 		if (StringUtils.isBlank(holdingLocation)) {
 			RecordBO parentBO = RecordBO.getInstance(schema, RecordType.BIBLIO);
-			RecordDTO parent = parentBO.get(((HoldingDTO) dto).getRecordId()); 
-			
+			RecordDTO parent = parentBO.get(((HoldingDTO) dto).getRecordId());
+
 			marcDataReader = new MarcDataReader(MarcUtils.iso2709ToRecord(parent.getIso2709()));
 			holdingLocation = marcDataReader.getShelfLocation();
 		}
-		
+
 		((HoldingDTO) dto).setShelfLocation(holdingLocation);
-	
+
 		try {
 			this.json.put("data", dto.toJSONObject());
 		} catch (Exception e) {
@@ -138,12 +138,12 @@ public class Handler extends CatalogingHandler {
 			return;
 		}
 	}
-	
+
 	@Override
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id", null);
-		
+
 		if (id == null) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
 			return;
@@ -151,23 +151,23 @@ public class Handler extends CatalogingHandler {
 
 		RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 		RecordDTO dto = bo.get(id);
-		
+
 		if (dto == null) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
 			return;
 		}
 
 		boolean success = bo.delete(dto);
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
 		} else {
 			this.setMessage(ActionResult.WARNING, "cataloging.record.error.delete");
 		}
-		
+
 	}
 
-	
+
 	@Override
 	protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
 		if (dto == null || !(dto instanceof HoldingDTO)) {
@@ -185,7 +185,7 @@ public class Handler extends CatalogingHandler {
 	public void createAutomaticHolding(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer recordId = request.getInteger("record_id", null);
-		
+
 		if (recordId == null) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
 			return;
@@ -193,7 +193,7 @@ public class Handler extends CatalogingHandler {
 
 		RecordBO rbo = RecordBO.getInstance(schema, RecordType.BIBLIO);
 		RecordDTO rdto = rbo.get(recordId);
-		
+
 		if (rdto == null) {
 			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
 			return;
@@ -201,9 +201,9 @@ public class Handler extends CatalogingHandler {
 
 		AutomaticHoldingDTO autoDto = this.createAutomaticHoldingDto(request);
 		autoDto.setBiblioRecordDto(rdto);
-		
+
         HoldingBO hbo = HoldingBO.getInstance(schema);
-        
+
         if (autoDto.getHoldingCount() <= 0) {
         	this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
         	return;
@@ -214,12 +214,12 @@ public class Handler extends CatalogingHandler {
         } else {
         	this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
         }
-		
+
 	}
-	
+
 	private AutomaticHoldingDTO createAutomaticHoldingDto(ExtendedRequest request) {
 		AutomaticHoldingDTO dto = new AutomaticHoldingDTO();
-		
+
 		dto.setHoldingCount(request.getInteger("holding_count", 1));
 		dto.setIssueNumber(request.getInteger("holding_volume_number", 0));
 		dto.setNumberOfIssues(request.getInteger("holding_volume_count", 1));
@@ -228,7 +228,7 @@ public class Handler extends CatalogingHandler {
 		dto.setAcquisitionDate(request.getString("holding_acquisition_date"));
 		dto.setDatabase(request.getEnum(RecordDatabase.class, "database"));
 		dto.setCreatedBy(request.getLoggedUserId());
-		
+
 		return dto;
 	}
 }

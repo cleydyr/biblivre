@@ -25,14 +25,14 @@
 <layout:body>
 
 	<div class="page_help"><i18n:text key="multi_schema.configurations.page_help" /></div>
-	
+
 	<% String value; %>
 	<% String key; %>
 	<% boolean active; %>
 	<% String schema = (String) request.getAttribute("schema"); %>
 	<div class="biblivre_form">
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_TITLE;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -59,10 +59,10 @@
 					<div class="clear"></div>
 				</div>
 			</div>
-		</fieldset>	
+		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_SUBTITLE;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -89,10 +89,10 @@
 					<div class="clear"></div>
 				</div>
 			</div>
-		</fieldset>	
+		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_MULTI_SCHEMA;
 				active = Schemas.isMultipleSchemasEnabled();
 				request.setAttribute("key", key);
@@ -110,7 +110,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_ACCESSION_NUMBER_PREFIX;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -140,7 +140,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_BUSINESS_DAYS;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -153,7 +153,7 @@
 					<div class="label"><i18n:text key="administration.configuration.current_value" /></div>
 					<div class="value" id="business_days_current"><script>var BusinessValues = '<c:out value="${value}"/>';</script></div>
 					<div class="clear"></div>
-					
+
 				</div>
 				<div>
 					<div class="label"><i18n:text key="administration.configuration.new_value" /></div>
@@ -165,7 +165,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_DEFAULT_LANGUAGE;
 				value = Configurations.getString(schema, key);
 
@@ -173,7 +173,7 @@
 				if (ldto != null) {
 					request.setAttribute("default_language", ldto.getName());
 				}
-				
+
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -204,7 +204,7 @@
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
-						</select>						
+						</select>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -212,7 +212,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_CURRENCY;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -239,10 +239,10 @@
 					<div class="clear"></div>
 				</div>
 			</div>
-		</fieldset>	
+		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_SEARCH_RESULTS_PER_PAGE;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -272,7 +272,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_SEARCH_RESULT_LIMIT;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -302,7 +302,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_Z3950_RESULT_LIMIT;
 				value = Configurations.getString(schema, key);
 				request.setAttribute("key", key);
@@ -332,12 +332,12 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_BACKUP_PATH;
 				value = BackupBO.getInstance(schema).getBackupPath();
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
-				
+
 				boolean writeable = FileIOUtils.isWritablePath(value);
 			%>
 			<legend>* <i18n:text key="administration.configuration.title.${key}" /></legend>
@@ -363,7 +363,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_PGDUMP_PATH;
 				File pgDump = DatabaseUtils.getPgDump(schema);
 				value = (pgDump == null) ? null : pgDump.getAbsolutePath();
@@ -393,7 +393,7 @@
 		</fieldset>
 
 		<fieldset>
-			<% 
+			<%
 				key = Constants.CONFIG_PSQL_PATH;
 				File psql = DatabaseUtils.getPsql(schema);
 				value = (psql == null) ? null : psql.getAbsolutePath();
@@ -421,9 +421,9 @@
 				</div>
 			</div>
 		</fieldset>
-		
+
 		<div class="footer_buttons">
 			<a class="button center main_button" onclick="Configurations.save(this);"><i18n:text key="common.save" /></a>
-		</div>		
+		</div>
 	</div>
 </layout:body>

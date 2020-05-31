@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -37,18 +37,18 @@ public class Handler extends AbstractHandler {
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		DTOCollection<AccessCardDTO> list = this.searchHelper(request, response, this);
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public DTOCollection<AccessCardDTO> searchHelper(ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
 		String schema = request.getSchema();
 		String searchParameters = request.getString("search_parameters");
-		
+
 		String query = null;
 		AccessCardStatus status = null;
 		try {
@@ -59,7 +59,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
 			return null;
 		}
-		
+
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
@@ -69,33 +69,33 @@ public class Handler extends AbstractHandler {
 		if (list.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
 		}
-		
+
 		return list;
 	}
-	
+
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		this.search(request, response);
 	}
-	
+
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
 		AccessCardBO bo = AccessCardBO.getInstance(schema);
 		AccessCardDTO card = bo.get(id);
-		
+
 		if (card == null) {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.card_not_found");
 			return;
 		}
-		
+
 		try {
 			this.json.put("card", card.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
-	}	
-	
+	}
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		AccessCardBO bo = AccessCardBO.getInstance(schema);
@@ -106,10 +106,10 @@ public class Handler extends AbstractHandler {
 		String start = request.getString("start");
 		String end = request.getString("end");
 		String suffix = request.getString("suffix");
-		
+
 		boolean success = false;
 		AccessCardDTO returnDto = null;
-		
+
 		if (StringUtils.isNotBlank(code)) {
 			returnDto = this.createCard(request, code, status);
 			success = bo.save(returnDto);
@@ -122,13 +122,13 @@ public class Handler extends AbstractHandler {
 				success = false;
 			}
 		}
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.save");
 		} else {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.save");
 		}
-		
+
 		try {
 			this.json.put("data", returnDto.toJSONObject());
 			this.json.put("full_data", true);
@@ -137,7 +137,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -152,7 +152,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.delete");
 		}
 	}
-	
+
 	public void changeStatus(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -175,7 +175,7 @@ public class Handler extends AbstractHandler {
 				this.setMessage(ActionResult.WARNING, "administration.accesscards.error.unblock");
 			}
 		}
-		
+
 		try {
 			this.json.put("data", dto.toJSONObject());
 			this.json.put("full_data", true);
@@ -184,13 +184,13 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-	
+
 	private final AccessCardDTO createCard(ExtendedRequest request, String code, AccessCardStatus status) {
 		AccessCardDTO dto = new AccessCardDTO();
 		dto.setCode(code);
 		dto.setStatus(status);
 		dto.setCreatedBy(request.getLoggedUserId());
 		return dto;
-	}	
-	
+	}
+
 }

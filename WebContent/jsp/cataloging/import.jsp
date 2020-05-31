@@ -50,7 +50,7 @@
 				</div>
 
 				<div class="clear"></div>
-				
+
 				<div class="search_attribute_div">
 					<label class="search_label"><i18n:text key="search.common.on_the_field" /> </label>
 					<select name="search_attribute">
@@ -60,7 +60,7 @@
 						<option value="8"><i18n:text key="search.distributed.issn" /></option>
 						<option value="21"><i18n:text key="search.distributed.subject" /></option>
 						<option value="1016"><i18n:text key="search.distributed.any" /></option>
-					</select>					
+					</select>
 				</div>
 
 				<div class="search_server_div">
@@ -71,9 +71,9 @@
 						</c:forEach>
 					</select>
 				</div>
-				
+
 				<div class="clear"></div>
-				
+
 				<div class="search_button_div">
 					<a class="button arrow_right main_button" onclick="Import.search();"><i18n:text key="cataloging.import.search_button" /></a>
 				</div>
@@ -83,13 +83,13 @@
 
 	<fieldset class="wizard" id="step_2">
 		<div class="step_description"><i18n:text key="cataloging.import.step_2_description" /></div>
-		
+
 		<div class="paging_bar"></div>
 
 		<div class="search_results_box">
 			<div id="search_results" class="search_results"></div>
 
-			<textarea class="search_result_template template"><!-- 
+			<textarea class="search_result_template template"><!--
 				<div class="result {#if ($T.data.index + 1) % 2}odd{#else}even{#/if} {#if $T.data.overlay}{$T.data.overlay}{#/if}" data-index="{$T.data.index}">
 					<div class="result_overlay"><div class="text">{$T.data.overlay_text}</div></div>
 					<div class="buttons">
@@ -116,17 +116,17 @@
 				</div>
 			--></textarea>
 		</div>
-		
+
 		<div class="footer_buttons">
 			<a class="main_button center" onclick="Import.importCurrentPage();"><i18n:text key="cataloging.import.button.import_this_page" /></a>
 			<a class="main_button center" onclick="Import.importAll();"><i18n:text key="cataloging.import.button.import_all" /></a>
 		</div>
 
-		
+
 		<div class="paging_bar"></div>
 
 	</fieldset>
-	
+
 	<div id="upload_popup" class="popup">
 		<fieldset class="upload">
 			<legend><i18n:text key="cataloging.import.upload_popup.title" /></legend>
@@ -161,7 +161,7 @@
 			</div>
 		</fieldset>
 	</div>
-	
+
 	<div id="marc_popup" class="popup">
 		<fieldset class="upload">
 			<legend><i18n:text key="cataloging.import.marc_popup.title" /></legend>
@@ -169,11 +169,11 @@
 			<div class="description">
 				<p><i18n:text key="cataloging.import.marc_popup.description" /></p>
 			</div>
-			
+
 			<div class="marc">
 				<textarea id="marc_popup_textarea"></textarea>
 			</div>
-			
+
 			<div class="buttons">
 				<a class="button" onclick="Import.hideMarcEdit();"><i18n:text key="common.cancel" /></a>
 				<a class="button main_button" onclick="Import.marcChange();"><i18n:text key="common.ok" /></a>

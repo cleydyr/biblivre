@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -50,19 +50,19 @@ public class DigitalMediaDAO extends AbstractDAO {
 		try (InputStream is = file.getNewInputStream()) {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			PGConnection pgcon = this.getPGConnection(con);
 
 			if (pgcon == null) {
 				throw new Exception("Invalid Delegating Connection");
 			}
-			
+
 			Integer serial = file.getId();
 			if (serial == null) {
 				serial = this.getNextSerial("digital_media_id_seq");
 				file.setId(serial);
 			}
-			
+
 			if (serial != 0) {
 				LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 				long oid = lobj.createLO();
@@ -133,7 +133,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 			obj.close();
 
 			this.commit(con);
-			
+
 			return oid;
 		} catch (Exception e) {
 			this.rollback(con);
@@ -156,7 +156,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 			if (pgcon == null) {
 				throw new Exception("Invalid Delegating Connection");
 			}
-			
+
 			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
 			StringBuilder sql = new StringBuilder();
@@ -173,7 +173,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 			if (rs.next()) {
 				long oid = rs.getLong("blob");
 				LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
-				
+
 				file = new DatabaseFile(con, obj);
 
 				file.setName(rs.getString("name"));
@@ -192,7 +192,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 
 		return file;
 	}
-	
+
 	public boolean delete(int id) {
 		Connection con = null;
 		try {
@@ -215,7 +215,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public List<DigitalMediaDTO> list() {
 		Connection con = null;
 		List<DigitalMediaDTO> list = new ArrayList<DigitalMediaDTO>();
@@ -223,7 +223,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 			con = this.getConnection();
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT id, blob, name FROM digital_media;");
-			
+
 			while (rs.next()) {
 				DigitalMediaDTO dto = new DigitalMediaDTO();
 				dto.setId(rs.getInt("id"));
@@ -231,7 +231,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 				dto.setName(rs.getString("name"));
 				list.add(dto);
 			}
-			
+
 			return list;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -239,5 +239,5 @@ public class DigitalMediaDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 }

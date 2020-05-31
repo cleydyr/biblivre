@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -69,7 +69,7 @@ public class LendingDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM lendings WHERE ");
 			sql.append("holding_id = ? AND return_date IS null ORDER BY id DESC;");
@@ -80,7 +80,7 @@ public class LendingDAO extends AbstractDAO {
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
 				return this.populateDTO(rs);
-			}			
+			}
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -92,11 +92,11 @@ public class LendingDAO extends AbstractDAO {
 
 	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
 		Map<Integer, LendingDTO> map = new LinkedHashMap<Integer, LendingDTO>();
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM lendings WHERE ");
 			sql.append("holding_id in (");
@@ -112,7 +112,7 @@ public class LendingDAO extends AbstractDAO {
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				map.put(rs.getInt("holding_id"), this.populateDTO(rs));
-			}			
+			}
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -122,20 +122,20 @@ public class LendingDAO extends AbstractDAO {
 		return map;
 	}
 
-	
+
 	public List<LendingDTO> listHistory(HoldingDTO holding) {
 		List<LendingDTO> list = new ArrayList<LendingDTO>();
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM lendings WHERE holding_id = ? ");
 			sql.append("AND return_date IS NOT null ORDER BY id DESC;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, holding.getId());
-			
+
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDTO(rs));
@@ -151,17 +151,17 @@ public class LendingDAO extends AbstractDAO {
 	public List<LendingDTO> listLendings(UserDTO user) {
 		return this.list(user, false);
 	}
-	
+
 	public List<LendingDTO> listHistory(UserDTO user) {
 		return this.list(user, true);
 	}
-	
+
 	private List<LendingDTO> list(UserDTO user, boolean history) {
 		List<LendingDTO> list = new ArrayList<LendingDTO>();
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM lendings WHERE user_id = ? ");
 			sql.append("AND return_date IS ");
@@ -169,16 +169,16 @@ public class LendingDAO extends AbstractDAO {
 				sql.append("NOT ");
 			}
 			sql.append("null ORDER BY id ASC;");
-			
+
 			PreparedStatement ppst = con.prepareStatement(sql.toString());
 			ppst.setInt(1, user.getId());
-			
-			
+
+
 			ResultSet rs = ppst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDTO(rs));
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -190,16 +190,16 @@ public class LendingDAO extends AbstractDAO {
 	public Integer countLendings(UserDTO user) {
 		return this.count(user, false);
 	}
-	
+
 	public Integer countHistory(UserDTO user) {
 		return this.count(user, true);
 	}
-	
+
 	private Integer count(UserDTO user, boolean history) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT COUNT(*) AS total FROM lendings WHERE user_id = ? ");
 			sql.append("AND return_date IS ");
@@ -207,16 +207,16 @@ public class LendingDAO extends AbstractDAO {
 				sql.append("NOT ");
 			}
 			sql.append("null ORDER BY id DESC;");
-			
+
 			PreparedStatement ppst = con.prepareStatement(sql.toString());
 			ppst.setInt(1, user.getId());
-			
-			
+
+
 			ResultSet rs = ppst.executeQuery();
 			if (rs.next()) {
 				return rs.getInt("total");
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -230,7 +230,7 @@ public class LendingDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM lendings l ");
 			sql.append("INNER JOIN biblio_holdings h ");
@@ -239,12 +239,12 @@ public class LendingDAO extends AbstractDAO {
 
 			PreparedStatement ppst = con.prepareStatement(sql.toString());
 			ppst.setInt(1, recordId);
-			
+
 			ResultSet rs = ppst.executeQuery();
 			while (rs.next()) {
 				list.add(this.populateDTO(rs));
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -252,7 +252,7 @@ public class LendingDAO extends AbstractDAO {
 		}
 		return list;
 	}
-	
+
 	public List<LendingDTO> listLendings(int offset, int limit) {
 		List<LendingDTO> list = new ArrayList<LendingDTO>();
 		Connection con = null;
@@ -264,16 +264,16 @@ public class LendingDAO extends AbstractDAO {
 			sql.append("ORDER BY return_date ASC ");
 			sql.append("LIMIT ? OFFSET ?;");
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			pst.setInt(1, limit);
 			pst.setInt(2, offset);
-			
+
 			ResultSet rs = pst.executeQuery();
-			
+
 			while (rs.next()) {
 				list.add(this.populateDTO(rs));
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -281,24 +281,24 @@ public class LendingDAO extends AbstractDAO {
 		}
 		return list;
 	}
-	
+
 	public Integer countLendings() {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder countSql = new StringBuilder();
 			countSql.append("SELECT count(*) as total FROM lendings ");
 			countSql.append("WHERE return_date IS null;");
 			PreparedStatement pstCount = con.prepareStatement(countSql.toString());
-			
+
 			ResultSet rsCount = pstCount.executeQuery();
-			
+
 			int total = 0;
 			if (rsCount.next()) {
 				total = rsCount.getInt("total");
 			}
-			
+
 			return total;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -307,25 +307,25 @@ public class LendingDAO extends AbstractDAO {
 		}
 
 	}
-	
+
 	public Integer getCurrentLendingsCount(UserDTO user) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT COUNT(*) FROM lendings ");
 			sql.append("WHERE user_id = ? ");
 			sql.append("AND return_date IS null;");
-			
+
 			PreparedStatement ppst = con.prepareStatement(sql.toString());
 			ppst.setInt(1, user.getId());
-			
+
 			ResultSet rs = ppst.executeQuery();
 			if (rs.next()) {
 				return rs.getInt(1);
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -337,14 +337,14 @@ public class LendingDAO extends AbstractDAO {
 	public boolean doLend(LendingDTO lending) {
 		return this.doLend(lending, null);
 	}
-	
+
 	public boolean doLend(LendingDTO lending, Connection con) {
 		boolean externalCall = (con == null);
 		try {
 			if (externalCall) {
 				con = this.getConnection();
 			}
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO lendings (holding_id, user_id, previous_lending_id, ");
 			sql.append("expected_return_date, created_by) VALUES (?, ?, ?, ?, ?) ");
@@ -359,7 +359,7 @@ public class LendingDAO extends AbstractDAO {
 			}
 			pst.setTimestamp(4, CalendarUtils.toSqlTimestamp(lending.getExpectedReturnDate()));
 			pst.setInt(5, lending.getCreatedBy());
-			
+
 			return pst.executeUpdate() > 0;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -374,13 +374,13 @@ public class LendingDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO lendings (holding_id, user_id, previous_lending_id, ");
 			sql.append("expected_return_date, created_by, id, created, return_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
 
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				LendingDTO lending = (LendingDTO)abstractDto;
 				pst.setInt(1, lending.getHoldingId());
@@ -390,20 +390,20 @@ public class LendingDAO extends AbstractDAO {
 				} else {
 					pst.setNull(3, Types.INTEGER);
 				}
-				if (lending.getExpectedReturnDate() != null) { 
+				if (lending.getExpectedReturnDate() != null) {
 					pst.setDate(4, CalendarUtils.toSqlDate(lending.getExpectedReturnDate()));
 				} else {
 					pst.setNull(4, Types.DATE);
 				}
 				pst.setInt(5, lending.getCreatedBy());
 				pst.setInt(6, lending.getId());
-				
+
 				if (lending.getCreated() != null) {
 					pst.setTimestamp(7, CalendarUtils.toSqlTimestamp(lending.getCreated()));
 				} else {
 					pst.setNull(7, Types.TIMESTAMP);
 				}
-				
+
 				if (lending.getReturnDate() != null) {
 					pst.setTimestamp(8, CalendarUtils.toSqlTimestamp(lending.getReturnDate()));
 				} else {
@@ -411,9 +411,9 @@ public class LendingDAO extends AbstractDAO {
 				}
 				pst.addBatch();
 			}
-			
+
 			pst.executeBatch();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -421,11 +421,11 @@ public class LendingDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	public boolean doReturn(int lendingId) {
 		return this.doReturn(lendingId, null);
 	}
-	
+
 	public boolean doReturn(int lendingId, Connection con) {
 		boolean externalCall = (con == null);
 		try {
@@ -440,7 +440,7 @@ public class LendingDAO extends AbstractDAO {
 
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, lendingId);
-			
+
 			return pst.executeUpdate() > 0;
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -456,15 +456,15 @@ public class LendingDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 			con.setAutoCommit(false);
-			
+
 			this.doReturn(lendingId, con);
-			
+
 			LendingDTO oldLending = this.get(lendingId);
 			oldLending.setPreviousLendingId(lendingId);
 			oldLending.setExpectedReturnDate(expectedReturnDate);
 			oldLending.setCreatedBy(createdBy);
 			this.doLend(oldLending, con);
-			
+
 			this.commit(con);
 
 		} catch (Exception e) {
@@ -480,7 +480,7 @@ public class LendingDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT COUNT(*) FROM lendings L INNER JOIN biblio_holdings H ");
 			sql.append("ON L.holding_id = H.id ");
@@ -488,12 +488,12 @@ public class LendingDAO extends AbstractDAO {
 
 			PreparedStatement ppst = con.prepareStatement(sql.toString());
 			ppst.setInt(1, recordId);
-			
+
 			ResultSet rs = ppst.executeQuery();
 			while (rs.next()) {
 				return rs.getInt(1);
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -501,18 +501,18 @@ public class LendingDAO extends AbstractDAO {
 		}
 		return null;
 	}
-	
+
 	public LendingDTO getLatest(int holdingSerial, int userId) {
 		LendingDTO dto = null;
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			
+
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM lendings ");
 			sql.append("WHERE holding_id = ? AND user_id = ?");
 			sql.append("ORDER BY id DESC LIMIT 1;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, holdingSerial);
 			pst.setInt(2, userId);
@@ -521,7 +521,7 @@ public class LendingDAO extends AbstractDAO {
 			if (rs.next()) {
 				dto = this.populateDTO(rs);
 			}
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {

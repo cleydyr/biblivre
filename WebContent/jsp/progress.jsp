@@ -7,7 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.setup.css" />
 
 	<script type="text/javascript" src="static/scripts/biblivre.administration.progress.js"></script>
-	
+
 	<script type="text/javascript">
 		$(document).ready(function() {
 			Administration.progress.autoReload = true;
@@ -17,7 +17,7 @@
 	</script>
 </layout:head>
 
-<layout:body disableMenu="true">	
+<layout:body disableMenu="true">
 	<div id="progress_popup" class="popup">
 		<fieldset class="upload">
 			<legend><i18n:text key="administration.setup.progress_popup.title" /></legend>

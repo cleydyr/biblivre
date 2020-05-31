@@ -31,7 +31,7 @@
 
 				<script type="text/javascript" src="static/scripts/biblivre.core.js"></script>
 				<script type="text/javascript" src="static/scripts/${requestScope.translationsMap.getCacheFileName()}"></script>
-	
+
 				<c:set var="translateError" value="false" />
 				<c:if test="${pageContext.getResponse().getStatus() == 404}">
 					<c:set var="message" value="error.file_not_found" />

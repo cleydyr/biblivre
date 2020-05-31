@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 
 var HoldingInputClass = {
@@ -32,7 +32,7 @@ var HoldingInputClass = {
 
 				var searchResult = (CatalogingSearch.lastSearchResult || {})[CatalogingSearch.selectedRecord.id] || {};
 
-				
+
 				CatalogingSearch.selectedRecord.holdings_count++;
 				searchResult.holdings_count++;
 
@@ -40,16 +40,16 @@ var HoldingInputClass = {
 					CatalogingSearch.selectedRecord.holdings_available++;
 					searchResult.holdings_available++;
 				}
-				
+
 				CatalogingSearch.loadHoldingList(CatalogingSearch.selectedRecord);
 				CatalogingSearch.processResultTemplate();
 			}
 		}, this);
-		
+
 		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {
 			if (CatalogingSearch.selectedRecord) {
 				var holdings = CatalogingSearch.selectedRecord.holdings || [];
-				
+
 				for (var i = 0; i < holdings.length; i++) {
 					var holding = holdings[i];
 
@@ -57,7 +57,7 @@ var HoldingInputClass = {
 						holdings.splice(i, 1);
 
 						var searchResult = (CatalogingSearch.lastSearchResult || {})[CatalogingSearch.selectedRecord.id] || {};
-						
+
 						CatalogingSearch.selectedRecord.holdings_count--;
 						searchResult.holdings_count--;
 
@@ -66,7 +66,7 @@ var HoldingInputClass = {
 							searchResult.holdings_available--;
 						}
 
-						CatalogingSearch.processResultTemplate();				
+						CatalogingSearch.processResultTemplate();
 						CatalogingSearch.loadHoldingList(CatalogingSearch.selectedRecord);
 
 						return;
@@ -79,16 +79,16 @@ var HoldingInputClass = {
 		switch (tab) {
 			case 'holding_form':
 				root = $('#biblivre_holding_form, .biblivre_holding_form_body');
-	
+
 				this.setAsEditable('holding_form');
-	
+
 				root.find('fieldset.repeated, div.repeated, fieldset.autocreated, input.autocreated').remove();
 				root.find('fieldset.datafield').find(':input').not('.dont_clear').val('');
 				break;
 
 			case 'holding_marc':
 				this.setAsEditable('holding_marc');
-				break;			
+				break;
 		}
 	},
 	clearAll: function() {
@@ -109,7 +109,7 @@ var HoldingInputClass = {
 
 		this.editing = true;
 		this.recordIdBeingEdited = id;
-	
+
 		var tab = this.search.selectedTab;
 		if (tab != 'holding_form' && tab != 'holding_marc') {
 			tab = 'holding_form';
@@ -155,7 +155,7 @@ var HoldingInputClass = {
 		var from = this.search.selectedTab;
 		var data = this.getRecordData(from);
 		var availability = this.getAvailability(from);
-		
+
 		return {
 			oldId: oldId,
 			id: id,

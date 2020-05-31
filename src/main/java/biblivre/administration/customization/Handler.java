@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -49,7 +49,7 @@ public class Handler extends AbstractHandler {
 
 		String briefFormats = request.getString("formats", "{}");
 		List<BriefTabFieldFormatDTO> list = new ArrayList<BriefTabFieldFormatDTO>();
-		
+
 		try {
 			JSONArray json = new JSONArray(briefFormats);
 
@@ -66,25 +66,25 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
 		}
-		
+
 		boolean success = Fields.updateBriefFormats(schema, recordType, list, loggedUser);
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
 		} else {
 			this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
 		}
 	}
-	
+
 	public void insertBriefFormat(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
 
 		RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
-		
+
 		String briefFormats = request.getString("formats", "{}");
 		BriefTabFieldFormatDTO dto = null;
-		
+
 		try {
 			JSONArray json = new JSONArray(briefFormats);
 
@@ -101,24 +101,24 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
 		}
-		
+
 		boolean success = Fields.insertBriefFormat(schema, recordType, dto, loggedUser);
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
 		} else {
 			this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
 		}
 	}
-	
+
 	public void deleteBriefFormat(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
-		
+
 		String briefFormats = request.getString("formats", "{}");
 		BriefTabFieldFormatDTO dto = null;
-		
+
 		try {
 			JSONArray json = new JSONArray(briefFormats);
 
@@ -135,45 +135,45 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
 		}
-		
+
 		boolean success = Fields.deleteBriefFormat(schema, recordType, dto.getDatafieldTag());
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
 		} else {
 			this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
 		}
 	}
-	
+
 	public void saveFormDatafields(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		int loggedUser = request.getLoggedUserId();
-		
+
 		RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
-		
+
 		String fields = request.getString("fields", "{}");
 		HashMap<String, FormTabDatafieldDTO> map = new HashMap<String, FormTabDatafieldDTO>();
 		HashMap<String, String> translations = new HashMap<String, String>();
-		
+
 		try {
 			JSONObject json = new JSONObject(fields);
 			Iterator<String> it = json.keys();
-			
+
 			while (it.hasNext()) {
 				String datafield = it.next();
-				
+
 				if (StringUtils.isBlank(datafield) || datafield.trim().length() != 3 || !StringUtils.isNumeric(datafield)) {
 					this.setMessage(ActionResult.WARNING, "administration.form_customization.error.invalid_tag");
 					return;
 				}
-				
+
 				datafield = datafield.trim();
-				
+
 				JSONObject jsonObject = json.getJSONObject(datafield).getJSONObject("formtab");
 				map.put(datafield, new FormTabDatafieldDTO(jsonObject));
-				
+
 				JSONObject translationsObject = json.getJSONObject(datafield).getJSONObject("translations");
-				
+
 				for (String key : translationsObject.keySet()) {
 					translations.put(key, translationsObject.getString(key));
 				}
@@ -182,35 +182,35 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
 		}
-		
+
 		if (map.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 			return;
 		}
-		
+
 		boolean success = Fields.updateFormTabDatafield(schema, recordType, map, loggedUser);
 		success = success && Translations.save(schema, request.getLanguage(), translations, null, loggedUser);
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
 		} else {
 			this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
 		}
 	}
-	
+
 	public void deleteFormDatafield(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
 		String datafieldTag = request.getString("datafield");
-				
+
 		boolean success = Fields.deleteFormTabDatafield(schema, recordType, datafieldTag);
-		
+
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
 		} else {
 			this.setMessage(ActionResult.WARNING, "cataloging.record.error.delete");
 		}
 	}
-	
+
 }

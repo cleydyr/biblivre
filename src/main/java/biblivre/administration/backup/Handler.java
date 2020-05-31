@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -49,16 +49,16 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.ERROR, "administration.maintenance.backup.error.invalid_backup_type");
 			return;
 		}
-		
+
 		BackupBO bo = BackupBO.getInstance(schema);
 		BackupScope backupScope = bo.getBackupScope();
-		
+
 		LinkedList<String> list = new LinkedList<String>();
 		list.add(Constants.GLOBAL_SCHEMA);
 
 		if (request.isGlobalSchema()) {
 			list.addAll(Arrays.asList(StringUtils.split(schemas, ",")));
-			
+
 			if (list.size() == 2) {
 				// Only one schema is being backuped. We can say that the backupScope is:
 				backupScope = BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;
@@ -72,14 +72,14 @@ public class Handler extends AbstractHandler {
 		for (String s : list) {
 			if (Schemas.isNotLoaded(s)) {
 				this.setMessage(ActionResult.ERROR, "administration.maintenance.backup.error.invalid_schema");
-				return;				
+				return;
 			}
 
 			String title = Configurations.getString(s, Constants.CONFIG_TITLE);
 			String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
 			map.put(s, new Pair<String, String>(title, subtitle));
 		}
-		
+
 		BackupDTO dto = bo.prepare(map, backupType, backupScope);
 
 		try {
@@ -87,7 +87,7 @@ public class Handler extends AbstractHandler {
 			this.json.put("id", dto.getId());
 		} catch (JSONException e) {}
 	}
-	
+
 	//http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=backup
 	public void backup(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -129,7 +129,7 @@ public class Handler extends AbstractHandler {
 			}
 		);
 	}
-	
+
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -149,7 +149,7 @@ public class Handler extends AbstractHandler {
 			this.json.put("complete", dto.getCurrentStep() == dto.getSteps());
 		} catch (JSONException e) {}
 	}
-	
+
 	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
 	public void list(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();

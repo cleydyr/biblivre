@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -34,7 +34,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 *
 	 */
 	private List<RecordDTO> recordList = new LinkedList<RecordDTO>();
 	private List<String> foundISBN;
@@ -44,20 +44,20 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	private int success;
 	private int failure;
 	private int found;
-	
+
 	private ImportFormat format;
 	private ImportEncoding encoding;
-	
+
 	public boolean isPerfect() {
 		return this.getFound() > 0 && this.getFailure() == 0;
 	}
-	
+
 	public void addRecord(RecordDTO record) {
 		if (record != null) {
 			this.recordList.add(record);
 		}
 	}
-	
+
 	public List<RecordDTO> getRecordList() {
 		return this.recordList;
 	}
@@ -65,19 +65,19 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	public int getSuccess() {
 		return this.success;
 	}
-	
+
 	public void setSuccess(int success) {
 		this.success = success;
 	}
-	
+
 	public void incrementSuccess() {
 		this.success++;
 	}
-	
+
 	public int getFailure() {
 		return this.failure;
 	}
-	
+
 	public void setFailure(int failure) {
 		this.failure = failure;
 	}
@@ -85,19 +85,19 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	public void incrementFailure() {
 		this.failure++;
 	}
-	
+
 	public int getFound() {
 		return this.found;
 	}
-	
+
 	public void setFound(int found) {
 		this.found = found;
 	}
-	
+
 	public void incrementFound() {
 		this.found++;
 	}
-	
+
 	public ImportFormat getFormat() {
 		return this.format;
 	}
@@ -113,7 +113,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 	public void setEncoding(ImportEncoding encoding) {
 		this.encoding = encoding;
 	}
-	
+
 	public List<String> getFoundISBN() {
 		return this.foundISBN;
 	}
@@ -157,11 +157,11 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 			json.putOpt("found", this.getFound());
 			json.putOpt("format", this.getFormat());
 			json.putOpt("encoding", this.getEncoding());
-			
-			for (RecordDTO dto : this.getRecordList()) { 
+
+			for (RecordDTO dto : this.getRecordList()) {
 				json.append("record_list", dto.toJSONObject());
 			}
-			
+
 			JSONObject isbnJSON = new JSONObject();
 			JSONObject issnJSON = new JSONObject();
 			JSONObject isrcJSON = new JSONObject();
@@ -173,7 +173,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
 					} catch (JSONException e) {}
 				}
 			}
-			
+
 			if (this.getFoundISSN() != null) {
 				for (String term : this.getFoundISSN()) {
 					try {

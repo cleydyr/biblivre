@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var Schemas = Schemas || {};
 
@@ -43,13 +43,13 @@ Schemas.create = function(button) {
 	var schema = $('input[name="schema"]').val();
 	var title = $('input[name="title"]').val();
 	var subtitle = $('input[name="subtitle"]').val();
-	
+
 	$.ajax({
 		url: window.location.pathname,
 		type: 'POST',
 		dataType: 'json',
 		loadingButton: button,
-		loadingTimedOverlay: true,		
+		loadingTimedOverlay: true,
 		data: {
 			controller: 'json',
 			module: 'multi_schema',
@@ -60,15 +60,15 @@ Schemas.create = function(button) {
 		},
 		success: function(response) {
 			if (!response.success) {
-				Core.msg(response);			
+				Core.msg(response);
 
 				if (response.errors) {
 					Core.formErrors(response.errors);
 				}
 
 				if (response.log) {
-					Schemas.showError();			
-				}				
+					Schemas.showError();
+				}
 			} else {
 				var html = [
 					'<div class="library">', '<a href="', schema, '/" target="_blank">', title, '</a>',
@@ -79,7 +79,7 @@ Schemas.create = function(button) {
 					'<a href="javascript:void(0);" onclick="Schemas.toggle(\'', schema, '\', true, this);" class="disable">[',Translations.get('multi_schema.manage.disable'), ']</a> ',
 					'</div>'
 				].join('');
-				
+
 				$('#multischema').append(html);
 			}
 		}
@@ -90,21 +90,21 @@ Schemas.selectedBackup = null;
 Schemas.maxRestoreCount = 20;
 Schemas.restore = function(metadata) {
 	Schemas.selectedBackup = metadata;
-	
+
 	$('#multischema, #multischema_select_restore').hide();
 	$('#multischema_partial_restore, #partial_restore_button').show();
-	
+
 	delete Schemas.selectedBackup.schemas.global;
-	
+
 	var i = 0;
 	for (var schema in Schemas.selectedBackup.schemas) {
 		if (Schemas.selectedBackup.schemas.hasOwnProperty(schema)) {
 			i++;
 		}
 	}
-	
+
 	var div = $('#schemas_match').processTemplate(metadata);
-	
+
 
 	if (i < Schemas.maxRestoreCount) {
 		$('#multischema_full_restore').show();
@@ -116,50 +116,50 @@ Schemas.restore = function(metadata) {
 			libraries.hide().find('input[value=skip]').prop('checked', true);
 
 			libraries = libraries.filter(':lt(' + (max + 1) + ')');
-			
+
 			if (min > 0) {
 				libraries = libraries.filter(':gt(' + (min - 1) + ')');
 			}
-			
-			libraries.show().find('input[value=original]').prop('checked', true);		
+
+			libraries.show().find('input[value=original]').prop('checked', true);
 		};
-		
+
 		for (var j = 0; j < i; j += Schemas.maxRestoreCount) {
 			(function(j) {
 				var min = j;
 				var max = Math.min(j + Schemas.maxRestoreCount - 1, i - 1);
-				
+
 				var li = $('<li></li>').appendTo(restoreLimit);
-				
+
 				$('<a href="#"></a>').text(Translations.get('multi_schema.backup.display_and_select_libraries', { min: (min + 1), max: (max + 1) })).click(function(e) {
 					select(min, max);
-					
+
 					e.stopPropagation();
 					e.preventDefault();
 				}).appendTo(li);
 			})(j);
 		}
- 
+
 		select(0, Schemas.maxRestoreCount - 1);
 	}
-	
+
 	div.find('.address').text(function() {
 		return Schemas.url;
 	});
-	
+
 	div.find(':input[type="text"]').anyChange(function() {
 		var el = $(this);
 		var div = el.closest('.new_schema');
 
 		div.find(':input[type="radio"]').prop('checked', true);
-		
+
 		if (Schemas.loadedSchemas[el.val()]) {
 			div.find('.warn').show();
 		} else {
 			div.find('.warn').hide();
 		}
 	});
-	
+
 	$('#content_outer').stop().scrollTo(0);
 };
 
@@ -167,7 +167,7 @@ Schemas.fullRestore = function() {
 	if (!Schemas.selectedBackup) {
 		return;
 	}
-	
+
 	Administration.setup.biblivre4Restore(Schemas.selectedBackup.file, {
 		type: 'complete'
 	});
@@ -177,33 +177,33 @@ Schemas.partialRestore = function() {
 	if (!Schemas.selectedBackup) {
 		return;
 	}
-	
+
 	var params = {
-		type: 'partial'	
+		type: 'partial'
 	};
-	
+
 	var schemas = [];
-	
+
 	for (var key in Schemas.selectedBackup.schemas) {
 		if (!Schemas.selectedBackup.schemas.hasOwnProperty(key)) {
 			continue;
 		}
-		
+
 		switch ($('#schemas_match').find(':radio:checked[name="restore_library_' + key + '"]').val()) {
 			case 'original':
 				schemas.push(key + ':' + key);
 				break;
-								
+
 			case 'new':
 				var name = $('#schemas_match').find(':input[name="schema_name_' + key + '"]').val();
 				schemas.push(key + ':' + name);
 				break;
-				
+
 			case 'skip':
 				break;
 		}
 	}
-	
+
 	params.schemas_map = schemas.join();
 
 	Administration.setup.biblivre4Restore(Schemas.selectedBackup.file, params);
@@ -214,7 +214,7 @@ Schemas.toggle = function(schema, disable, button) {
 		url: window.location.pathname,
 		type: 'POST',
 		dataType: 'json',
-		loadingTimedOverlay: true,		
+		loadingTimedOverlay: true,
 		data: {
 			controller: 'json',
 			module: 'multi_schema',
@@ -224,7 +224,7 @@ Schemas.toggle = function(schema, disable, button) {
 		},
 		success: function(response) {
 			if (!response.success) {
-				Core.msg(response);			
+				Core.msg(response);
 			} else {
 				$(button).closest('div').toggleClass('disabled', disable);
 			}
@@ -238,7 +238,7 @@ Schemas.deleteSchema = function(schema, button) {
 			url: window.location.pathname,
 			type: 'POST',
 			dataType: 'json',
-			loadingTimedOverlay: true,		
+			loadingTimedOverlay: true,
 			data: {
 				controller: 'json',
 				module: 'multi_schema',
@@ -247,7 +247,7 @@ Schemas.deleteSchema = function(schema, button) {
 			},
 			success: function(response) {
 				if (!response.success) {
-					Core.msg(response);			
+					Core.msg(response);
 				} else {
 					$(button).closest('div').remove();
 				}
@@ -282,11 +282,11 @@ $(document).ready(function() {
 			el.val(suggestion);
 		}
 	});
-	
+
 	var schemaWidth = schema.width();
 	var addressWidth = $('#address').text(Schemas.url).width();
 	schema.width(schemaWidth - addressWidth).closest('div').css('white-space', 'nowrap');
-	
+
 	$('.address').text(function() {
 		return Schemas.url + $(this).text();
 	});

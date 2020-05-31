@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var AccessControl = {
 	getOverlayClass: function(record) {
@@ -26,7 +26,7 @@ var AccessControl = {
 			case 'cancelled':
 				return 'overlay_warning';
 				break;
-				
+
 			default:
 				return '';
 		}
@@ -38,7 +38,7 @@ var AccessControl = {
 			case 'cancelled':
 				return Translations.get('cartao bloqueado');
 				break;
-				
+
 			default:
 				return '';
 		}
@@ -79,8 +79,8 @@ var AccessControl = {
 				Core.msg(response);
 			}, this));
 		};
-		
-		if (askForConfirmation) {			
+
+		if (askForConfirmation) {
 			Core.popup({
 				title: 'TODO',
 				description: 'TODO',
@@ -89,7 +89,7 @@ var AccessControl = {
 				cancelText:Translations.get('common.no'),
 				okHandler: $.proxy(function() {
 					$.proxy(bind, this)();
-					$(':focus').blur();							
+					$(':focus').blur();
 				}, this),
 				cancelHandler: $.proxy($.noop, this)
 			});
@@ -125,8 +125,8 @@ var AccessControl = {
 				Core.msg(response);
 			}, this));
 		};
-		
-		if (askForConfirmation) {			
+
+		if (askForConfirmation) {
 			Core.popup({
 				title: 'TODO',
 				description: 'TODO',
@@ -135,7 +135,7 @@ var AccessControl = {
 				cancelText:Translations.get('common.no'),
 				okHandler: $.proxy(function() {
 					$.proxy(bind, this)();
-					$(':focus').blur();							
+					$(':focus').blur();
 				}, this),
 				cancelHandler: $.proxy($.noop, this)
 			});

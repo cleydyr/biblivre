@@ -13,7 +13,7 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />	
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
 
 	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
@@ -42,7 +42,7 @@
 			enableTabs: false,
 			enableHistory: false
 		});
-		
+
 	</script>
 </layout:head>
 
@@ -57,14 +57,14 @@
 	<div id="circulation_search">
 		<div class="page_title">
 			<div class="image"><img src="static/images/titles/search.png" /></div>
-	
+
 			<div class="text">
 				<i18n:text key="circulation.lending.users.title" />
 			</div>
 
 			<div class="clear"></div>
 		</div>
-		
+
 		<div class="page_navigation">
 			<a href="javascript:void(0);" class="button paging_button back_to_search" onclick="CirculationSearch.closeResult();"><i18n:text key="search.common.back_to_search" /></a>
 
@@ -76,9 +76,9 @@
 
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="selected_highlight"></div>
-		<textarea class="selected_highlight_template template"><!-- 
+		<textarea class="selected_highlight_template template"><!--
 			<div class="record">
 				<div class="fright" style="text-align: center">
 					{#if $T.user.photo_id}
@@ -102,7 +102,7 @@
 				<label><i18n:text key="circulation.lending.lending_count" /></label>:  {($T.lendingInfo || {}).length || 0}
 
 				<div class="clear"></div>
-				
+
 				{#if $T.lendingInfo && $T.lendingInfo.length > 0}
 					{#foreach $T.lendingInfo as info}
 						<div class="result user_lending" rel="{$T.info.lending.id}">
@@ -118,7 +118,7 @@
 								{#if $T.info.biblio.isrc}<label><i18n:text key="search.bibliographic.isrc" /></label>: {$T.info.biblio.isrc}<br/>{#/if}
 
 								<div class="ncspacer"></div>
-								<div class="ncspacer"></div>						
+								<div class="ncspacer"></div>
 
 								<label><i18n:text key="search.holding.accession_number" /></label>: {$T.info.holding.accession_number}<br/>
 								<label><i18n:text key="circulation.lending.lending_date" /></label>: {_d($T.info.lending.created,'f')}<br/>
@@ -151,7 +151,7 @@
 
 			</div>
 		--></textarea>
-	
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="query">
@@ -173,15 +173,15 @@
 				<a href="javascript:void(0);" onclick="CirculationSearch.clearSimpleSearch();"><i18n:text key="search.common.clear_simple_search" /></a>
 			</div>
 		</div>
-		
+
 		<div class="search_results_area">
 			<div class="search_loading_indicator loading_indicator"></div>
-		
+
 			<div class="paging_bar"></div>
-		
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']}" rel="{$T.record.id}">
 							<div class="buttons user_status_{$T.record.user.status}">
@@ -203,22 +203,22 @@
 					{#/for}
 				--></textarea>
 			</div>
-			
-			<div class="paging_bar"></div>		
+
+			<div class="paging_bar"></div>
 		</div>
 	</div>
 
 	<div id="holding_search">
 		<div class="page_title">
 			<div class="image"><img src="static/images/titles/search.png" /></div>
-	
+
 			<div class="text">
 				<i18n:text key="circulation.lending.holdings.title" />
 			</div>
 
 			<div class="clear"></div>
 		</div>
-				
+
 		<div class="page_navigation">
 			<a href="javascript:void(0);" class="button paging_button back_to_search" onclick="HoldingSearch.closeResult();"><i18n:text key="search.common.back_to_search" /></a>
 
@@ -230,11 +230,11 @@
 
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="clear"></div>
-	
+
 		<div class="selected_highlight"></div>
-		<textarea class="selected_highlight_template template"><!-- 
+		<textarea class="selected_highlight_template template"><!--
 			<div class="record">
 				{#if $T.title}<label><i18n:text key="search.bibliographic.title" /></label>: {$T.title}<br/>{#/if}
 				{#if $T.author}<label><i18n:text key="search.bibliographic.author" /></label>: {$T.author}<br/>{#/if}
@@ -246,7 +246,7 @@
 				<label><i18n:text key="search.bibliographic.id" /></label>: {$T.id}<br/>
 			</div>
 		--></textarea>
-		
+
 		<div class="search_box">
 			<div class="simple_search submit_on_enter">
 				<div class="wide_query">
@@ -266,7 +266,7 @@
 				<a href="javascript:void(0);" onclick="HoldingSearch.clearSimpleSearch();"><i18n:text key="search.common.clear_simple_search" /></a>
 			</div>
 		</div>
-	
+
 		<div class="search_results_area">
 			<div class="search_loading_indicator loading_indicator"></div>
 
@@ -274,17 +274,17 @@
 
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']}" rel="{$T.record.id}">
 							<div class="buttons">
 								{#if $T.record.lending}
-									{#if $T.record.lending.daysLate > 0}										
+									{#if $T.record.lending.daysLate > 0}
 										<a class="button center disabled"><i18n:text key="circulation.lending.button.renew" /></a>
 									{#else}
 										<a class="button center" onclick="HoldingSearch.renewLending({#var $T.record});"><i18n:text key="circulation.lending.button.renew" /></a>
 									{#/if}
-									
+
 									<a class="button center" onclick="HoldingSearch.returnLending({#var $T.record});"><i18n:text key="circulation.lending.button.return" /></a>
 								{#elseif $T.record.holding.availability == 'available'}
 									<a class="button center" onclick="HoldingSearch.lend('{$T.record.holding.id}');"><i18n:text key="circulation.lending.button.lend" /></a>
@@ -304,8 +304,8 @@
 								{#if $T.record.biblio.isrc}<label><i18n:text key="search.bibliographic.isrc" /></label>: {$T.record.biblio.isrc}<br/>{#/if}
 
 								<div class="ncspacer"></div>
-								<div class="ncspacer"></div>						
-							
+								<div class="ncspacer"></div>
+
 								{#if $T.record.holding.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.record.holding.accession_number}<br/>{#/if}
 								{#if $T.record.holding.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.record.holding.availability)}<br/>{#/if}
 
@@ -315,11 +315,11 @@
 									<div class="warn"><strong><i18n:text key="circulation.lending.reserved.warning" /></strong></div>
 									<div class="ncspacer"></div>
 								{#/if}
-								
+
 								{#if $T.record.lending !== undefined}
-									<div class="user_lending">				
+									<div class="user_lending">
 										<label><i18n:text key="circulation.lending.holding_lent_to_the_following_reader" />:</label><br/>
-	
+
 										<div class="ncspacer"></div>
 										<div class="ncspacer"></div>
 
@@ -333,11 +333,11 @@
 
 										<label><i18n:text key="circulation.lending.lending_date" /></label>: {_d($T.record.lending.created,'f')}<br/>
 										{#if $T.record.lending.expectedReturnDate}<label><i18n:text key="circulation.lending.expected_return_date" /></label>: {_d($T.record.lending.expectedReturnDate, 'D')}<br/>{#/if}
-	
+
 										{#if $T.record.lending.daysLate > 0}
 											<div class="ncspacer"></div>
 											<div class="ncspacer"></div>
-		
+
 											<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.record.lending.daysLate || 0) }</span><br/>
 											<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.dailyFine || 0, 'n2') }<br/>
 											<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.estimatedFine || 0, 'n2') }</span><br/>
@@ -351,11 +351,11 @@
 					{#/for}
 				--></textarea>
 			</div>
-	
+
 			<div class="paging_bar"></div>
 		</div>
 	</div>
-		
+
 	<div id="fine_popup" class="popup">
 		<div class="close" onclick="HoldingSearch.closeFinePopup();"><i18n:text key="common.close" /></div>
 

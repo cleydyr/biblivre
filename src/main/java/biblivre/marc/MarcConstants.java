@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -38,9 +38,9 @@ public final class MarcConstants {
     public static final String SECONDARY_AUTHOR_PERSONAL_NAME = "700";
     public static final String SECONDARY_AUTHOR_CORPORATION_NAME = "710";
     public static final String SECONDARY_AUTHOR_CONGRESS_NAME = "711";
-	
+
 	public static final String PUBLICATION = "260";
-	public static final String EDITION = "250"; 
+	public static final String EDITION = "250";
 	public static final String PUBLICATION_FUNCTIONS = "264";
 
     public static final String TITLE = "245";
@@ -49,12 +49,12 @@ public final class MarcConstants {
     public static final String ADDED_UNIFORM_TITLE = "730";
     public static final String ADDED_ANALYTICAL_TITLE = "740";
     public static final String SECONDARY_INPUT_SERIAL_TITLE = "830";
-	
+
 	public static final String SHELF_LOCATION = "090";
     public static final String DDCN = "082";
     public static final String CNPQ = "095";
     public static final String PATENT = "013";
-	
+
 	public static final String NETWORK_LOCATION = "852";
 	public static final String ELECTRONIC_LOCATION = "856";
 
@@ -65,8 +65,8 @@ public final class MarcConstants {
 	public static final String SUBJECT_ADDED_ENTRY_TOPICAL_TERM = "650";
 	public static final String SUBJECT_ADDED_ENTRY_GEOGRAPHIC_NAME = "651";
 	public static final String SUBJECT_ADDED_ENTRY_LOCAL = "699";
-		
+
 	public static final String ACCESSION_NUMBER = "949";
-	
+
 	public static final String SOURCE_ACQUISITION_NOTES= "541";
 }

@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var CirculationInput = new Input({
 	initialize: function() {
@@ -25,11 +25,11 @@ var CirculationInput = new Input({
 		$('#biblivre_circulation_lendings').setTemplateElement('biblivre_circulation_lendings_template');
 		$('#biblivre_circulation_reservations').setTemplateElement('biblivre_circulation_reservations_template');
 		$('#biblivre_circulation_fines').setTemplateElement('biblivre_circulation_fines_template');
-		
-		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {			
+
+		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {
 			if (this.search.lastSearchResult && this.search.lastSearchResult[id]) {
 				this.search.lastSearchResult[id].deleted = true;
-				
+
 				this.search.processResultTemplate();
 			}
 
@@ -41,13 +41,13 @@ var CirculationInput = new Input({
 			case 'form':
 				this.setAsEditable();
 				break;
-				
+
 			case 'lendings':
 				break;
-				
+
 			case 'reservations':
-				break;	
-				
+				break;
+
 			case 'fines':
 				break;
 		}
@@ -72,7 +72,7 @@ var CirculationInput = new Input({
 			$(this).addClass('readonly_checkbox').attr('disabled', 'disabled');
 		});
 
-		
+
 		root.find('select').each(function() {
 			var combo = $(this);
 
@@ -98,7 +98,7 @@ var CirculationInput = new Input({
 		var photo = root.find('.photo_field').show();
 		var currentPhoto = this.root.find('img.user_photo');
 		currentPhoto.data('original_src', currentPhoto.attr('src'));
-		
+
 		this.setupPhotoUpload(photo);
 	},
 	editing: false,
@@ -107,14 +107,14 @@ var CirculationInput = new Input({
 		if (this.editing) {
 			return;
 		}
-		
+
 		if (Core.trigger(this.prefix + 'edit-record-start', id) === false) {
 			return;
 		}
 
 		this.editing = true;
 		this.recordIdBeingEdited = id;
-		
+
 		var tab = this.search.selectedTab;
 		if (tab != 'form') {
 			tab = 'form';
@@ -146,7 +146,7 @@ var CirculationInput = new Input({
 		if (img.data('changed')) {
 			params['photo_data'] = img.attr('src').split(',')[1];
 		}
-		
+
 		return $.extend(params, {
 			oldId: this.recordIdBeingEdited || 0,
 			id: (saveAsNew) ? 0 : this.recordIdBeingEdited,
@@ -154,7 +154,7 @@ var CirculationInput = new Input({
 			type: body.find(':input[name=type]').val(),
 			status: body.find(':input[name=status]').val()
 		});
-	},	
+	},
 	deleteRecordTitle: function() {
 		return Translations.get(this.search.selectedRecord.status == 'inactive' ? this.type + '.confirm_delete_record_title.forever' : this.type + '.confirm_delete_record_title.inactive');
 	},
@@ -173,17 +173,17 @@ var CirculationInput = new Input({
 		if (record.deleted) {
 			return 'overlay_error';
 		}
-		
+
 		return '';
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
 			return Translations.get('circulation.user.user_deleted');
 		}
-		
+
 		return '';
 	},
-	photoChanged: false,	
+	photoChanged: false,
 	closePhotoUploadPopup: function() {
 		$('#photo_area img').imgAreaSelect({ remove: true });
 		$('#photo_upload_popup').hide();
@@ -215,7 +215,7 @@ var CirculationInput = new Input({
 		var hideLoading = function() {
 			var viewPortHeight = $(window).height() - $popup.outerHeight() - 50;
 			var viewPortWidth = $popup.width() - 20;
-			
+
 			$photo.appendTo($photo_area);
 
 			if ($photo.height() > viewPortHeight) {
@@ -230,7 +230,7 @@ var CirculationInput = new Input({
 					width: viewPortWidth
 				});
 			}
- 			
+
 			$popup.center().find('.progress').stopContinuousProgress().hide();
 		};
 
@@ -253,13 +253,13 @@ var CirculationInput = new Input({
 			var oWidth = img.attr('data-original-width');
 			var oHeight = img.attr('data-original-height');
 			var r;
-			
+
 			if (oWidth > oHeight) {
 				r = oHeight / img.height();
 			} else {
 				r = oWidth / img.width();
 			}
-			
+
 			var sourceX = Math.round(x * r);
 			var sourceY = Math.round(y * r);
 			var sourceWidth = Math.round(width * r);
@@ -277,7 +277,7 @@ var CirculationInput = new Input({
 			var image = $photo;
 			var x2;
 			var y2;
-			
+
 			if (image.width() / settings.width >= image.height() / settings.height) {
 				y2 = image.height();
 				x2 = Math.round(settings.width * (image.height() / settings.height));
@@ -288,14 +288,14 @@ var CirculationInput = new Input({
 
 			var oX = (image.width() - x2) / 2;
 			var oY = (image.height() - y2) / 2;
-			
+
 			var rX1 = Math.round(oX + (x2 * 0.1));
 			var rX2 = Math.round(oX + (x2 * 0.9));
 			var rY1 = Math.round(oY + (y2 * 0.1));
 			var rY2 = Math.round(oY + (y2 * 0.9));
 
 			setTimeout(function() {
-				drawImage(image, rX1, rY1, rX2 - rX1 - 1, rY2 - rY1 - 1);				
+				drawImage(image, rX1, rY1, rX2 - rX1 - 1, rY2 - rY1 - 1);
 			}, 1);
 
 			image.imgAreaSelect({

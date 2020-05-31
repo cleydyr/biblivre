@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -44,7 +44,7 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 
 public class UserDAO extends AbstractDAO {
-	
+
 	public static UserDAO getInstance(String schema) {
 		return (UserDAO) AbstractDAO.getInstance(UserDAO.class, schema);
 	}
@@ -63,14 +63,14 @@ public class UserDAO extends AbstractDAO {
 			sql.append(StringUtils.repeat("?", ", ", ids.size()));
 			sql.append(") GROUP BY U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed;");
 
-			
-			
+
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			int index = 1;
 			for (Integer id : ids) {
 				pst.setInt(index++, id);
 			}
-			
+
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
@@ -85,15 +85,15 @@ public class UserDAO extends AbstractDAO {
 
 		return map;
 	}
-	
+
 	public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
 		DTOCollection<UserDTO> list = new DTOCollection<UserDTO>();
 		String query = dto.getQuery();
-		
+
 		if (StringUtils.isNotBlank(query)) {
 			query = TextUtils.removeDiacriticals(query);
 		}
-		
+
 		if (limit == 0) {
 			limit = Configurations.getInt(this.getSchema(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
 		}
@@ -105,7 +105,7 @@ public class UserDAO extends AbstractDAO {
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed, array_agg(V.key) as keys, array_agg(V.value) as values FROM users U ");
 			sql.append("LEFT JOIN users_values V on V.user_id = U.id ");
-			
+
 			if (dto.isInactiveOnly()) {
 				sql.append("WHERE U.status = '").append(UserStatus.INACTIVE).append("' ");
 			} else {
@@ -138,48 +138,48 @@ public class UserDAO extends AbstractDAO {
 				sql.append("AND U.type = ? ");
 				countSql.append("AND U.type = ? ");
 			}
-			
+
 			if (dto.isPendingFines()) {
 				sql.append("AND U.id in (SELECT user_id FROM lending_fines WHERE fine_value > 0 AND payment_date is null) ");
 				countSql.append("AND U.id in (SELECT user_id FROM lending_fines WHERE fine_value > 0 AND payment_date is null) ");
 			}
-			
+
 			if (dto.isLateLendings()) {
 				sql.append("AND U.id in (SELECT user_id FROM lendings WHERE return_date is null AND expected_return_date < now()) ");
 				countSql.append("AND U.id in (SELECT user_id FROM lendings WHERE return_date is null AND expected_return_date < now()) ");
 			}
-			
+
 			if (dto.isLoginAccess()) {
 				sql.append("AND U.login_id is not null ");
 				countSql.append("AND U.login_id is not null ");
 			}
-			
+
 			if (dto.isUserCardNeverPrinted()) {
 				sql.append("AND U.user_card_printed = false ");
 				countSql.append("AND U.user_card_printed = false ");
 			}
-			
+
 			if (dto.getCreatedStartDate() != null) {
 				sql.append("AND U.created >= ? ");
 				countSql.append("AND U.created >= ? ");
 			}
-			
+
 			if (dto.getCreatedEndDate() != null) {
 				sql.append("AND U.created < ? ");
 				countSql.append("AND U.created < ? ");
 			}
-			
+
 			if (dto.getModifiedStartDate() != null) {
 				sql.append("AND U.modified >= ? ");
 				countSql.append("AND U.modified >= ? ");
 			}
-			
+
 			if (dto.getModifiedEndDate() != null) {
 				sql.append("AND U.modified < ? ");
 				countSql.append("AND U.modified < ? ");
 			}
-			
-			
+
+
 			sql.append("GROUP BY U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed ");
 			sql.append("ORDER BY UPPER(U.name) ASC ");
 			sql.append("LIMIT ? OFFSET ?;");
@@ -219,24 +219,24 @@ public class UserDAO extends AbstractDAO {
 				pstCount.setTimestamp(psIndex, CalendarUtils.toSqlTimestamp(dto.getCreatedStartDate()));
 				psIndex++;
 			}
-			
+
 			if (dto.getCreatedEndDate() != null) {
 				Date date = dto.getCreatedEndDate();
 				if (CalendarUtils.isMidnight(date)) {
 					date = DateUtils.addDays(date, 1);
 				}
-				
+
 				pst.setTimestamp(psIndex, CalendarUtils.toSqlTimestamp(date));
 				pstCount.setTimestamp(psIndex, CalendarUtils.toSqlTimestamp(date));
 				psIndex++;
 			}
-			
+
 			if (dto.getModifiedStartDate() != null) {
 				pst.setTimestamp(psIndex, CalendarUtils.toSqlTimestamp(dto.getModifiedStartDate()));
 				pstCount.setTimestamp(psIndex, CalendarUtils.toSqlTimestamp(dto.getModifiedStartDate()));
 				psIndex++;
 			}
-			
+
 			if (dto.getModifiedEndDate() != null) {
 				Date date = dto.getModifiedStartDate();
 				if (CalendarUtils.isMidnight(date)) {
@@ -247,7 +247,7 @@ public class UserDAO extends AbstractDAO {
 				pstCount.setTimestamp(psIndex, CalendarUtils.toSqlTimestamp(date));
 				psIndex++;
 			}
-			
+
 			pst.setInt(psIndex++, limit);
 			pst.setInt(psIndex++, offset);
 
@@ -273,7 +273,7 @@ public class UserDAO extends AbstractDAO {
 
 		return list;
 	}
-	
+
 	public boolean save(UserDTO user) {
 		Connection con = null;
 		try {
@@ -283,7 +283,7 @@ public class UserDAO extends AbstractDAO {
 			StringBuilder sql = new StringBuilder();
 			PreparedStatement pst = null;
 			Boolean newUser = user.getId() == 0;
-			
+
 			if (newUser) {
 				user.setId(this.getNextSerial("users_id_seq"));
 				sql.append("INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii) ");
@@ -310,9 +310,9 @@ public class UserDAO extends AbstractDAO {
 				pst.setString(7, TextUtils.removeDiacriticals(user.getName()));
 				pst.setInt(8, user.getId());
 			}
-			
+
 			pst.executeUpdate();
-			
+
 			CallableStatement function = con.prepareCall("{ call global.update_user_value(?, ?, ?, ?) }");
 
 			for (String key : user.getFields().keySet()) {
@@ -326,7 +326,7 @@ public class UserDAO extends AbstractDAO {
 
 			function.executeBatch();
 			function.close();
-			
+
 			con.commit();
 			return true;
 		} catch (Exception e) {
@@ -335,8 +335,8 @@ public class UserDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
-	
+
+
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
@@ -346,11 +346,11 @@ public class UserDAO extends AbstractDAO {
 			StringBuilder sql = new StringBuilder();
 			sql.append("INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii) ");
 			sql.append("VALUES (?, ?, ?, ?, ?, ?, ?);");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
-			
+
 			CallableStatement function = con.prepareCall("{ call global.update_user_value(?, ?, ?, ?) }");
-			
+
 			for (AbstractDTO abstractDto : dtoList) {
 				UserDTO user = (UserDTO) abstractDto;
 				pst.setInt(1, user.getId());
@@ -360,9 +360,9 @@ public class UserDAO extends AbstractDAO {
 				pst.setString(5, user.getStatus().toString());
 				pst.setInt(6, user.getCreatedBy());
 				pst.setString(7, TextUtils.removeDiacriticals(user.getName()));
-				
+
 				pst.addBatch();
-				
+
 				for (String key : user.getFields().keySet()) {
 					String value = user.getFields().get(key);
 					function.setInt(1, user.getId());
@@ -371,15 +371,15 @@ public class UserDAO extends AbstractDAO {
 					function.setString(4, TextUtils.removeDiacriticals(value));
 					function.addBatch();
 				}
-				
+
 			}
-			
+
 			pst.executeBatch();
 			function.executeBatch();
 			function.close();
-			
+
 			con.commit();
-			
+
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
@@ -387,7 +387,7 @@ public class UserDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	public boolean delete(UserDTO user) {
 		Connection con = null;
 		try {
@@ -402,7 +402,7 @@ public class UserDAO extends AbstractDAO {
 			sql.append("WHERE id = ? AND status = '" + UserStatus.INACTIVE + "';");
 			pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, user.getId());
-			
+
 
 			if (pst.executeUpdate() > 0) {
 				//Delete from logins table
@@ -421,7 +421,7 @@ public class UserDAO extends AbstractDAO {
 					loginPst.setInt(1, loginId);
 					loginPst.executeUpdate();
 				}
-				
+
 			} else {
 				sql = new StringBuilder();
 				sql.append("UPDATE users SET status = '" + UserStatus.INACTIVE + "' ");
@@ -439,7 +439,7 @@ public class UserDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	private UserDTO populateDTO(ResultSet rs) throws SQLException {
 		UserDTO dto = new UserDTO();
 
@@ -466,10 +466,10 @@ public class UserDAO extends AbstractDAO {
 
 		return dto;
 	}
-	
+
 	public void markAsPrinted(Set<Integer> ids) {
 		Connection con = null;
- 
+
 		try {
 			con = this.getConnection();
 
@@ -478,7 +478,7 @@ public class UserDAO extends AbstractDAO {
 			sql.append("WHERE id in (");
 			sql.append(StringUtils.repeat("?", ", ", ids.size()));
 			sql.append(");");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			int index = 1;
 			for (Integer id : ids) {
@@ -492,21 +492,21 @@ public class UserDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
+
 	public boolean updateUserStatus(Integer userId, UserStatus status) {
 		Connection con = null;
- 
+
 		try {
 			con = this.getConnection();
 
 			StringBuilder sql = new StringBuilder();
 			sql.append("UPDATE users SET status = ? ");
 			sql.append("WHERE id = ?;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setString(1, status.toString());
 			pst.setInt(2, userId);
-			
+
 			pst.executeUpdate();
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -515,25 +515,25 @@ public class UserDAO extends AbstractDAO {
 		}
 		return true;
 	}
-	
+
 	public Integer getUserIdByLoginId(Integer loginId) {
-		
+
 		if (loginId == null) return null;
-		
+
 		Connection con = null;
 		try {
 			con = this.getConnection();
 
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT id FROM users WHERE login_id = ?;");
-			
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, loginId);
-			
+
 			ResultSet rs = pst.executeQuery();
 
 			if (rs.next()) {
-				return rs.getInt("id"); 
+				return rs.getInt("id");
 			}
 		} catch (Exception e) {
 			throw new DAOException(e);

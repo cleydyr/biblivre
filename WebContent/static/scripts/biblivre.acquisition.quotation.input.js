@@ -1,44 +1,44 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var QuotationInput = new Input({
 	initialize: function() {
 		$('#biblivre_quotation_form_body').setTemplateElement('biblivre_quotation_form_body_template');
 		$('#biblivre_quotation_form').setTemplateElement('biblivre_quotation_form_template');
 		$('#biblivre_quotation_info_form').setTemplateElement('biblivre_quotation_info_form_template');
-		
-		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {			
+
+		Core.subscribe(this.prefix + 'record-deleted', function(e, id) {
 			if (this.search.lastSearchResult && this.search.lastSearchResult[id]) {
 				this.search.lastSearchResult[id].deleted = true;
-				
+
 				this.search.processResultTemplate();
 			}
 
 			this.search.closeResult();
 		}, this);
 
-		Core.subscribe(this.prefix + 'edit-record-end', function(e, id) {			
+		Core.subscribe(this.prefix + 'edit-record-end', function(e, id) {
 			$('input.datepicker').each(function() {
 				$(this).data('Zebra_DatePicker').destroy();
 			});
-		}, this);		
+		}, this);
 	},
 	clearTab: function(tab) {
 		this.quotationList = [];
@@ -60,10 +60,10 @@ var QuotationInput = new Input({
 			var value = input.val();
 			input.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 		});
-		
+
 		root.find('select:not(.autocreated)').each(function() {
 			var combo = $(this);
-	
+
 			var value = combo.find('option[value=' + combo.val() + ']').text();
 			combo.after($('<div class="readonly_text"></div>').text(value)).addClass('readonly_hidden');
 		});
@@ -76,7 +76,7 @@ var QuotationInput = new Input({
 
 		root.find('.readonly_text').remove();
 		root.find('.readonly_hidden').removeClass('readonly_hidden');
-		
+
 		$('#biblivre_quotation_form').show();
 		$('.xclose').show();
 	},
@@ -86,14 +86,14 @@ var QuotationInput = new Input({
 		if (this.editing) {
 			return;
 		}
-		
+
 		if (Core.trigger(this.prefix + 'edit-record-start', id) === false) {
 			return;
 		}
 
 		this.editing = true;
 		this.recordIdBeingEdited = id;
-		
+
 		var tab = this.search.selectedTab;
 		if (tab != 'form') {
 			tab = 'form';
@@ -101,9 +101,9 @@ var QuotationInput = new Input({
 			this.setAsEditable('form');
 		}
 		Core.changeTab(tab, this.search, { keepEditing: true, skipConvert: true });
-		
+
 		var global = Globalize.culture().calendars.standard;
-		
+
 		$('input.datepicker').Zebra_DatePicker({
 			days: global.days.names,
 			days_abbr: global.days.namesAbbr,
@@ -131,7 +131,7 @@ var QuotationInput = new Input({
 			action: 'open',
 			id: value
 		};
-		
+
 		$.ajax({
 			url: window.location.pathname,
 			type: 'POST',
@@ -145,23 +145,23 @@ var QuotationInput = new Input({
 			}
 		}, this));
 	},
-	
+
 	quotationList: [],
 	addQuotation: function() {
 		var id = $('#biblivre_quotation_form select[name="request"]').val();
 		var request = $('#biblivre_quotation_form select[name="request"] :selected').text();
 		var quantity = $('#biblivre_quotation_form input[name="quantity"]').val();
 		var unitValue = $('#biblivre_quotation_form input[name="unit_value"]').val();
-		
+
 		unitValue = Globalize.parseFloat(unitValue);
-		
+
 		var quotation = {
 				id: id,
 				name: request,
 				quantity: quantity,
 				value: unitValue
 		};
-		
+
 		var found = false;
 		for (var i = 0; i < this.quotationList.length; i++) {
 			if (this.quotationList[i].id == id) {
@@ -169,8 +169,8 @@ var QuotationInput = new Input({
 				break;
 			}
 		}
-		
-		if (!found) { 			
+
+		if (!found) {
 			this.quotationList.push(quotation);
 			this.updateQuotationList();
 		}
@@ -182,7 +182,7 @@ var QuotationInput = new Input({
 				break;
 			}
 		}
-		
+
 		this.updateQuotationList();
 	},
 	updateQuotationList: function() {
@@ -204,15 +204,15 @@ var QuotationInput = new Input({
 			var input = $(this);
 			params[input.attr('name')] = input.val();
 		});
-		
+
 		var quotationDate = $('#biblivre_quotation_form_body :input[name="quotation_date"]').val();
 		var responseDate = $('#biblivre_quotation_form_body :input[name="response_date"]').val();
 		var expirationDate = $('#biblivre_quotation_form_body :input[name="expiration_date"]').val();
-		
+
 		quotationDate = Globalize.parseDate(quotationDate, 'd');
 		responseDate = Globalize.parseDate(responseDate, 'd');
 		expirationDate = Globalize.parseDate(expirationDate, 'd');
-		
+
 		return $.extend(params, {
 			oldId: this.recordIdBeingEdited || 0,
 			id: (saveAsNew) ? 0 : this.recordIdBeingEdited,
@@ -241,14 +241,14 @@ var QuotationInput = new Input({
 		if (record.deleted) {
 			return 'overlay_error';
 		}
-		
+
 		return '';
 	},
 	getOverlayText: function(record) {
 		if (record.deleted) {
 			return Translations.get('common.deleted');
 		}
-		
+
 		return '';
 	}
 });

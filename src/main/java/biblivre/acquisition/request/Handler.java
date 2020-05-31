@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Este arquivo é parte do Biblivre5.
- * 
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da
  * Licença, ou (caso queira) qualquer versão posterior.
- * 
- * Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ * Este programa é distribuído na esperança de que possa ser  útil,
  * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  * Licença Pública Geral GNU para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
@@ -37,7 +37,7 @@ public class Handler extends AbstractHandler {
 		String searchParameters = request.getString("search_parameters");
 
 		String query = null;
-		
+
 		try {
 			JSONObject json = new JSONObject(searchParameters);
 			query = json.optString("query");
@@ -56,19 +56,19 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.no_request_found");
 			return;
 		}
-		
+
 		try {
 			this.json.put("search", list.toJSONObject());
 		} catch (JSONException e) {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void paginate(ExtendedRequest request, ExtendedResponse response) {
 		this.search(request, response);
 	}
 
-	
+
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -82,15 +82,15 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_json");
 		}
 	}
-	
+
 	public void save(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
-		Integer id = request.getInteger("id");		
+
+		Integer id = request.getInteger("id");
 		RequestDTO dto = this.populateDTO(request);
 
 		RequestBO bo = RequestBO.getInstance(schema);
-		
+
 		boolean result = false;
 		if (id == 0) {
 			dto.setStatus(RequestStatus.PENDING);;
@@ -110,7 +110,7 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.save");
 		}
-		
+
 		try {
 			this.json.put("data", dto.toJSONObject());
 			this.json.put("full_data", true);
@@ -120,12 +120,12 @@ public class Handler extends AbstractHandler {
 		}
 
 	}
-	
+
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		
+
 		Integer id = request.getInteger("id");
-		
+
 		RequestBO bo = RequestBO.getInstance(schema);
 		RequestDTO dto = new RequestDTO();
 		dto.setId(id);
@@ -136,7 +136,7 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.delete");
 		}
 	}
-	
+
 	private RequestDTO populateDTO(ExtendedRequest request) {
 		RequestDTO dto = new RequestDTO();
 		dto.setId(request.getInteger("id"));
@@ -150,5 +150,5 @@ public class Handler extends AbstractHandler {
 		dto.setStatus(RequestStatus.fromString(request.getString("status")));
 		dto.setQuantity(request.getInteger("quantity"));
 		return dto;
-	}	
+	}
 }

@@ -1,22 +1,22 @@
 /**
  *  Este arquivo é parte do Biblivre5.
- *  
- *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou 
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da 
+ *
+ *  Biblivre5 é um software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
+ *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
  *  Licença, ou (caso queira) qualquer versão posterior.
- *  
- *  Este programa é distribuído na esperança de que possa ser  útil, 
+ *
+ *  Este programa é distribuído na esperança de que possa ser  útil,
  *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
  *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
  *  Licença Pública Geral GNU para maiores detalhes.
- *  
+ *
  *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
  *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- * 
+ *
  *  @author Alberto Wagner <alberto@biblivre.org.br>
  *  @author Danniel Willian <danniel@biblivre.org.br>
- * 
+ *
  */
 var CirculationInput = CirculationInput || {};
 
@@ -30,7 +30,7 @@ var CirculationSearchClass = {
 	initialize: function() {
 		this.advancedSearchForm = this.root.find('.search_box .advanced_search');
 		this.simpleSearchForm = this.root.find('.search_box .simple_search');
-		
+
 		var div = this.root.find('.search_results');
 		if (div.size() > 0) {
 			div.setTemplateElement(this.root.find('.search_results_template'));
@@ -51,7 +51,7 @@ var CirculationSearchClass = {
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
-				
+
 				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
@@ -66,11 +66,11 @@ var CirculationSearchClass = {
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
-				
+
 				advancedButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
 			}
 		});
-		
+
 		if (this.enableHistory) {
 			this.initializeHistory();
 		} else if (this.advancedSearchAsDefault) {
@@ -131,7 +131,7 @@ var CirculationSearchClass = {
 
 			Core.historyTrigger(terms);
 		}
-		
+
 		this.submit(searchParameters);
 	},
 	advancedSearch: function() {
@@ -152,7 +152,7 @@ var CirculationSearchClass = {
 		if (label) {
 			searchParameters.users_with_pending_fines = true;
 		}
-		
+
 		label = this.advancedSearchForm.find(':input[name=users_with_late_lendings]').attr('checked');
 		if (label) {
 			searchParameters.users_with_late_lendings = true;
@@ -174,7 +174,7 @@ var CirculationSearchClass = {
 			searchParameters.inactive_users_only = true;
 		}
 
-		this.submit(searchParameters);		
+		this.submit(searchParameters);
 	},
 	afterDisplayResult: function(config) {
 		if (this.lastSearchParameters.field) {
@@ -186,7 +186,7 @@ var CirculationSearchClass = {
 				var id = el.attr('rel');
 
 				var user = me.lastSearchResult[id];
-				
+
 				if (!user || !user.fields || !user.fields[field]) {
 					return;
 				}
@@ -212,7 +212,7 @@ var CirculationSearchClass = {
 	loadRecord: function(record, callback) {
 		this.clearAll();
 		this.selectedRecord = record;
-		
+
 		if (this.enableTabs) {
 			Core.changeTab(this.selectedTab || this.defaultTab, this);
 		}
@@ -249,7 +249,7 @@ var CirculationSearchClass = {
 			case 'reservations':
 				this.loadCirculationReservations(data, params);
 				break;
-				
+
 			case 'fines':
 				this.loadCirculationFines(data, params);
 				break;
@@ -262,7 +262,7 @@ var CirculationSearchClass = {
 		if (this._loadTabDataXHR) {
 			this._loadTabDataXHR.abort();
 		}
-	
+
 		this._loadTabDataXHR = $.ajax({
 			url: window.location.pathname,
 			type: 'POST',
@@ -291,24 +291,24 @@ var CirculationSearchClass = {
 				$('#biblivre_circulation_form').empty().data('loaded', false);
 				$('#biblivre_circulation_form_body').empty();
 				break;
-				
+
 			case 'lendings':
 				$('#biblivre_circulation_lendings').empty().data('loaded', false);
 				break;
-				
+
 			case 'reservations':
-				break;	
-				
+				break;
+
 			case 'fines':
 				break;
 		}
-	},	
+	},
 	clearAll: function() {
 		this.clearTab('form');
 		this.clearTab('lendings');
 		this.clearTab('reservations');
 		this.clearTab('fines');
-	},	
+	},
 	loadCirculationForm: function(record, params) {
 		var div = $('#biblivre_circulation_form');
 
@@ -328,7 +328,7 @@ var CirculationSearchClass = {
 		if (!params.keepEditing && CirculationInput) {
 			CirculationInput.setAsReadOnly();
 		}
-	},	
+	},
 	loadCirculationLendings: function(record, params) {
 		var div = $('#biblivre_circulation_lendings');
 
@@ -339,11 +339,11 @@ var CirculationSearchClass = {
 				return;
 			}
 		}
-		
+
 		div.data('loaded', true);
 		div.processTemplate(record);
-		
-		
+
+
 		var wrap = $('<div class="m30nfc"></div>');
 		div.find('.user_lending_active_lending').wrapAll(wrap).parent().prepend($('<strong></strong>').text(Translations.get('circulation.user.active_lendings')));
 
@@ -360,7 +360,7 @@ var CirculationSearchClass = {
 				return;
 			}
 		}
-		
+
 		div.data('loaded', true);
 		div.processTemplate(record);
 	},
@@ -374,7 +374,7 @@ var CirculationSearchClass = {
 				return;
 			}
 		}
-		
+
 		div.data('loaded', true);
 		div.processTemplate(record);
 	},
@@ -396,7 +396,7 @@ var CirculationSearchClass = {
 			context: this
 		}).done(function(response) {
 			if (response.success) {
-				var fineDiv = $('.user_fines[rel="' + fineId + '"]'); 
+				var fineDiv = $('.user_fines[rel="' + fineId + '"]');
 				fineDiv.find('.fines_buttons').remove();
 				fineDiv.find('.description').remove();
 				var newDiv = '<label>' +Translations.get('circulation.lending.payment_date') + '</label>: '+  _d(new Date(), 'D') + '<br/>';

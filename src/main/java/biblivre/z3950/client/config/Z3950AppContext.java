@@ -24,32 +24,32 @@ public class Z3950AppContext {
 	public OIDRegister OIDRegister() {
 		return new OIDRegister("/a2j.properties");
 	}
-	
+
 	@Bean
 	public PropsHolder RPNToInternalRules() {
 		return new PropsHolder("/InternalAttrTypes.properties");
 	}
-	
+
 	@Bean
 	public PropsBasedInternalToType1ConversionRules InternalToType1ConversionRules() {
 		return new PropsBasedInternalToType1ConversionRules("/InternalToType1Rules.properties");
 	}
-	
+
 	@Bean
 	public XMLImpl JZKitConfig() {
 		return new XMLImpl("/z3950Config.xml");
 	}
-	
+
 	@Bean
 	public FragmentTransformerService TransformationService() {
 		return new FragmentTransformerService(JZKitConfig());
 	}
-	
+
 	@Bean
 	public ProfileService ProfileService() {
 		return new ProfileServiceImpl();
 	}
-	
+
 	@Bean
 	public DataSource z3950DataSource() throws NamingException {
 		return HikariDataSourceConnectionProvider.getDataSource();

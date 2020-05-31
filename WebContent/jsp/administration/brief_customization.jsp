@@ -5,7 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />	
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />
 	<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
 </layout:head>
 
@@ -15,7 +15,7 @@
 	<div id="brief_customization">
 		<fieldset class="block">
 			<legend><i18n:text key="administration.brief_customization.select_record_type" /></legend>
-	
+
 			<div class="record_type_selection">
 				<select id="record_type_select" name="record_type_field" class="combo combo_auto_size">
 					<option value="bibliographic"><i18n:text key="administration.brief_customization.biblio" /></option>
@@ -24,9 +24,9 @@
 				</select>
 			</div>
 		</fieldset>
-		
+
 		<div id="datafields"></div>
-		<textarea id="datafields_template" class="template"><!-- 
+		<textarea id="datafields_template" class="template"><!--
 			{#foreach $T.datafields as datafield}
 				<fieldset class="block" data-datafield="{ $T.datafield.datafieldTag }">
 					<legend>{$T.datafield.datafieldTag} - {Translations.get('marc.bibliographic.datafield.' + $T.datafield.datafieldTag) }</legend>
@@ -41,7 +41,7 @@
 				</fieldset>
 			{#/for}
 		--></textarea>
-		<textarea id="datafields_edit_template" class="template"><!-- 
+		<textarea id="datafields_edit_template" class="template"><!--
 			<div class="format-input">{ $T.format }</div>
 			<div class="subtitle"><i18n:text key="administration.brief_customization.subfields_title" /></div>
 			<div class="subfields">
@@ -63,15 +63,15 @@
 					<div class="aggregator">{ $T.aggregator.aggregator.replace(/ /g, '&nbsp;') }<span class="text">&nbsp;&nbsp;&nbsp;- {Translations.get('administration.brief_customization.aggregators.' + $T.aggregator.code) }<span></div>
 				{#/for}
 				<div class="clear"></div>
-			</div>			
+			</div>
 		--></textarea>
 
-		<br />		
+		<br />
 		<h1><i18n:text key="administration.brief_customization.available_fields.description" /></h1>
 		<div class="spacer"></div>
-		
+
 		<div id="disabled_datafields"></div>
-		<textarea id="disabled_datafields_template" class="template"><!-- 
+		<textarea id="disabled_datafields_template" class="template"><!--
 			{#foreach $T.disabled_datafields as datafield}
 				<div class="block" data-datafield="{ $T.datafield.datafield }">
 					<div class="data-name">{$T.datafield.datafield} - {Translations.get('marc.bibliographic.datafield.' + $T.datafield.datafield) }</div>

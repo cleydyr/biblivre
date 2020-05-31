@@ -10,14 +10,14 @@
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />	
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
 
 	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.user_cards.js"></script>		
+	<script type="text/javascript" src="static/scripts/biblivre.circulation.user_cards.js"></script>
 
 	<script type="text/javascript" src="static/scripts/<%= UserFields.getFields((String) request.getAttribute("schema")).getCacheFileName() %>"></script>
-	
+
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
 
@@ -59,15 +59,15 @@
 <layout:body>
 	<div id="circulation_user">
 		<div class="page_help"><i18n:text key="circulation.user_cards.page_help" /></div>
-		
+
 		<div class="page_title">
 			<div class="image"><img src="static/images/titles/search.png" /></div>
-	
+
 			<div class="simple_search text contains_subtext">
 				<i18n:text key="search.common.simple_search" />
 				<div class="subtext"><i18n:text key="search.common.switch_to" /> <a href="javascript:void(0);" onclick="CirculationSearch.switchToAdvancedSearch();"><i18n:text key="search.common.advanced_search" /></a></div>
 			</div>
-	
+
 			<div class="advanced_search text contains_subtext">
 				<i18n:text key="search.common.advanced_search" />
 				<div class="subtext"><i18n:text key="search.common.switch_to" /> <a href="javascript:void(0);" onclick="CirculationSearch.switchToSimpleSearch();"><i18n:text key="search.common.simple_search" /></a></div>
@@ -93,7 +93,7 @@
 					<a class="main_button arrow_right" onclick="CirculationSearch.search('simple');"><i18n:text key="search.common.button.list_all" /></a>
 				</div>
 			</div>
-			
+
 			<div class="advanced_search submit_on_enter">
 				<div class="query">
 					<input type="text" name="query" class="big_input auto_focus" placeholder="<i18n:text key="search.user.simple_term_title" />"/>
@@ -135,9 +135,9 @@
 					<a class="main_button arrow_right" onclick="CirculationSearch.search('advanced');"><i18n:text key="search.common.button.list_all" /></a>
 					<div class="clear"></div>
 				</div>
-			</div>			
+			</div>
 		</div>
-		
+
 		<div class="selected_results_area"></div>
 		<textarea class="selected_results_area_template template"><!--
 			{#if $T.length > 0}
@@ -154,22 +154,22 @@
 				</fieldset>
 			{/#if}
 		--></textarea>
-	
+
 		<div class="search_results_area">
 			<div class="search_loading_indicator loading_indicator"></div>
-		
+
 			<div class="select_bar">
-				<a class="button center" onclick="CirculationSearch.selectPageResults();"><i18n:text key="circulation.user_cards.button.select_page" /></a> 
+				<a class="button center" onclick="CirculationSearch.selectPageResults();"><i18n:text key="circulation.user_cards.button.select_page" /></a>
 			</div>
-		
+
 			<div class="paging_bar"></div>
 
 			<div class="clear"></div>
-			
-		
+
+
 			<div class="search_results_box">
 				<div class="search_results"></div>
-				<textarea class="search_results_template template"><!-- 
+				<textarea class="search_results_template template"><!--
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']}" rel="{$T.record.id}">
 							<div class="buttons user_status_{$T.record.status}">
@@ -180,9 +180,9 @@
 								<label><i18n:text key="circulation.user_field.id" /></label>: {$T.record.enrollment}<br/>
 								<label><i18n:text key="circulation.user_field.type" /></label>: {$T.record.type_name}<br/>
 								<div class="user_status_{$T.record.status}"><label><i18n:text key="circulation.user_field.status" /></label>: {Translations.get('circulation.user_status.' + $T.record.status)}</div>
-	
+
 								<div class="ncspacer"></div>
-								<div class="ncspacer"></div>						
+								<div class="ncspacer"></div>
 								<label><i18n:text key="common.created" /></label>: {_d($T.record.created, 'd t')} {#if $T.record.modified && $T.record.modified != $T.record.created}<br/><label><i18n:text key="common.modified" /></label>: {_d($T.record.modified, 'd t')}{#/if}
 							</div>
 							<div class="clear"></div>
@@ -190,11 +190,11 @@
 					{#/for}
 				--></textarea>
 			</div>
-			
-			<div class="paging_bar"></div>		
+
+			<div class="paging_bar"></div>
 		</div>
 	</div>
-	
+
 	<div id="label_select_popup" class="popup">
 		<div class="close" onclick="CirculationLabels.hidePopup();"><i18n:text key="common.close" /></div>
 
@@ -202,7 +202,7 @@
 			<legend><i18n:text key="circulation.user_cards.popup.title" /></legend>
 			<div class="content"><select id="label_format_select"></select></div>
 		</fieldset>
-		
+
 		<fieldset>
 			<legend><i18n:text key="circulation.user_cards.popup.description" /></legend>
 			<div class="content">
