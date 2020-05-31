@@ -1,18 +1,19 @@
 #!/bin/bash
-rootPath=$PWD/../nginx/conf.d/biblivre.conf
-nginxVersion=latest
 
-result=`docker run --rm -t -a stdout --name tmp-nginx -v $PWD/nginx/conf.d/:/etc/nginx/conf.d:ro nginx nginx -c /etc/nginx/nginx.conf -t`
+docker network create tmp >> /dev/null
 
-# Look for the word successful and count the lines that have it
-# This validation could be improved if needed
-successful=$(echo $result | grep successful | wc -l)
+docker run --network tmp -t --rm -d --name app tomcat:9-jdk8 >> /dev/null
+docker run --network tmp --rm -t -a stdout --name tmp-nginx -v $PWD/nginx/conf.d/:/etc/nginx/conf.d:ro nginx nginx -c /etc/nginx/nginx.conf -t
 
-if [ $successful = 0 ]; then
+exitCode=$?
+
+if [ $exitCode -ne 0 ]; then
     echo FAILED
-    echo "$result"
-    exit 1
 else
     echo SUCCESS
-    exit 0
 fi
+
+docker stop app >> /dev/null
+docker network rm tmp  >> /dev/null
+
+exit $exitCode
