@@ -34,8 +34,9 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.postgresql.PGConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
@@ -44,7 +45,7 @@ import biblivre.core.utils.Pair;
 public abstract class AbstractDAO {
 	private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
 
-	protected Logger logger = Logger.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String schema;
 	private String dataSourceName;
 

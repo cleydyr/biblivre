@@ -22,13 +22,14 @@ package biblivre.core;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 
 public abstract class AbstractBO {
-	protected Logger logger = Logger.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	protected String schema;
 
 	private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances = new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();

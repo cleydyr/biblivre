@@ -1,6 +1,6 @@
 <ServiceDirectory>
   
-  <Repository className="br.org.biblivre.z3950server.BiblivreJDBCSearchable"
+  <Repository className="biblivre.z3950.server.BiblivreJDBCSearchable"
               code="default"
               serviceName="default">
     <Preferences>
@@ -47,8 +47,8 @@
        instance means that queries will be sent to that collection 
        with no checking as to suitability. -->
   <ApplicationProfiles>
-    <ClasspathProfile resource="/br/org/biblivre/z3950server/config/profiles/bath.xml"/>
-    <ClasspathProfile resource="/br/org/biblivre/z3950server/config/profiles/lom.xml"/>
+    <ClasspathProfile resource="/z3950server/config/profiles/bath.xml"/>
+    <ClasspathProfile resource="/z3950server/config/profiles/lom.xml"/>
   </ApplicationProfiles>
 
   <Crosswalks>

@@ -22,14 +22,15 @@ package biblivre.core.exceptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.utils.Pair;
 
 
 public class ValidationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
-	private Logger logger = Logger.getLogger(this.getClass());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private List<Pair<String, String>> errorList;
 
