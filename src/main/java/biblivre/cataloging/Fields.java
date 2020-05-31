@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordType;
@@ -37,7 +38,7 @@ import biblivre.core.utils.Pair;
 
 public class Fields extends StaticBO {
 
-	private static Logger logger = Logger.getLogger(Fields.class);
+	private static Logger logger = LoggerFactory.getLogger(Fields.class);
 
 	private static HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>
 		briefTabFieldFormats;

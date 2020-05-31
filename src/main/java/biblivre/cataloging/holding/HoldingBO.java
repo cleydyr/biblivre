@@ -203,7 +203,7 @@ public class HoldingBO extends RecordBO {
 				LoginDTO ldto = LoginBO.getInstance(this.getSchema()).get(dto.getCreatedBy());
 				this.dao.updateHoldingCreationCounter(udto, ldto);
 			} catch (Exception e) {
-				this.logger.error(e);
+				this.logger.error(e.getMessage(), e);
 			}
 		}
 

@@ -129,12 +129,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
@@ -259,22 +253,6 @@
 			<groupId>tech.units</groupId>
 			<artifactId>indriya</artifactId>
 			<version>2.0-EDR</version>
-		</dependency>
-
-		<!-- z3950server e suas dependências transitivas -->
-		<!-- Embora elas não sejam explicitamente requisitadas no código, elas 
-			são necessárias em tempo de execução pela biblioteca z3950server e suas dependências -->
-
-		<dependency>
-			<groupId>br.org.biblivre</groupId>
-			<artifactId>z3950server</artifactId>
-			<version>1.0.2</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-dbcp</artifactId>
-					<groupId>commons-dbcp</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>

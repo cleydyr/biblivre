@@ -20,22 +20,23 @@
 package biblivre.z3950.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.jzkit.search.provider.iface.IRQuery;
 import org.jzkit.search.provider.iface.Searchable;
 import org.jzkit.search.provider.z3950.Z3950ServiceFactory;
+import org.jzkit.search.util.QueryModel.PrefixString.PrefixString;
 import org.jzkit.search.util.RecordModel.ArchetypeRecordFormatSpecification;
 import org.jzkit.search.util.RecordModel.iso2709;
 import org.jzkit.search.util.ResultSet.IRResultSet;
 import org.jzkit.search.util.ResultSet.IRResultSetStatus;
 import org.jzkit.search.util.ResultSet.ReadAheadEnumeration;
 import org.marc4j.marc.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import biblivre.core.utils.Constants;
@@ -45,8 +46,7 @@ import biblivre.marc.MarcUtils;
 import biblivre.z3950.Z3950AddressDTO;
 
 public class Z3950Client {
-
-	private final Logger log = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	private ApplicationContext z3950Context;
 	private Z3950ServiceFactory factory;
 	private static final String QUERY_PREFIX = "@attrset bib-1 @attr 1=";
@@ -68,58 +68,49 @@ public class Z3950Client {
 		return this.z3950Context;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	public List<Record> search(Z3950AddressDTO address, Pair<String, String> search, int limit) {
-		List<Record> listRecords = new ArrayList<Record>();
+		_populateFactory(address);
 
-		this.factory.setHost(address.getUrl());
-		this.factory.setPort(address.getPort());
-		this.factory.setCharsetEncoding(CHARSET);
-
-		this.factory.setApplicationContext(this.z3950Context);
-		this.factory.setDefaultRecordSyntax("usmarc");
-		this.factory.setDefaultElementSetName("F");
-
-		this.factory.setDoCharsetNeg(true);
-
-		this.factory.getRecordArchetypes().put("Default","usmarc::F");
-		this.factory.getRecordArchetypes().put("FullDisplay","usmarc::F");
-		this.factory.getRecordArchetypes().put("BriefDisplay","usmarc::B");
-
-		final String qry = QUERY_PREFIX + search.getLeft() + " \"" + TextUtils.removeDiacriticals(search.getRight()) + "\"";
-
-		IRQuery query = new IRQuery();
-		query.collections = new Vector();
-		query.collections.add(address.getCollection());
-		query.query = new org.jzkit.search.util.QueryModel.PrefixString.PrefixString(qry);
+		IRQuery query = _buildIRQuery(address, search);
 
 		Searchable searchable = null;
+
 		IRResultSet result = null;
+
+		List<Record> listRecords = new ArrayList<Record>();
 
 		try {
 			searchable = this.factory.newSearchable();
+
 			searchable.setApplicationContext(this.z3950Context);
+
 			result = searchable.evaluate(query);
 
-			result.addObserver(new z3950Observer());
-			//TODO IMPLEMENT THE OBSERVER BELOW TO CHECK FOR DIFFERENT ERROR TYPES AND RESPOND ACCORDINGLY
+			result.addObserver((observable, payload) -> logger.info(payload.toString()));
+
 			// Wait without timeout until result set is complete or failure
 			result.waitForStatus(IRResultSetStatus.COMPLETE | IRResultSetStatus.FAILURE, 0);
+
 			if (result.getStatus() == IRResultSetStatus.FAILURE) {
-				this.log.error("IRResultSetStatus == FAILURE");
-			}
-			if (result.getFragmentCount() == 0) {
-				return listRecords;
+				this.logger.error("IRResultSetStatus == FAILURE");
 			}
 
+			if (result.getFragmentCount() == 0) {
+				return Collections.emptyList();
+			}
 
 			Enumeration e = new ReadAheadEnumeration(result, new ArchetypeRecordFormatSpecification("Default"));
+
 			int errorRecords = 0;
+
 			int validRecords = limit;
 
 			Record record = null;
+
 			while (e.hasMoreElements() && validRecords > 0) {
 				iso2709 o = (iso2709) e.nextElement();
+
 				if (o == null) {
 					continue;
 				}
@@ -135,11 +126,11 @@ public class Z3950Client {
 			}
 
 			if (errorRecords > 0) {
-				this.log.warn("Total number of records that failed the conversion: " + errorRecords);
+				this.logger.warn("Total number of records that failed the conversion: " + errorRecords);
 			}
 
 		} catch (Exception e) {
-			this.log.error(e.getMessage(), e);
+			this.logger.error(e.getMessage(), e);
 		} finally {
 			if (result != null) {
 				result.close();
@@ -152,14 +143,41 @@ public class Z3950Client {
 		return listRecords;
 	}
 
-}
+	@SuppressWarnings("unchecked")
+	private IRQuery _buildIRQuery(Z3950AddressDTO address, Pair<String, String> search) {
+		IRQuery query = new IRQuery();
 
-class z3950Observer implements Observer {
+		query.collections = new Vector<String>();
+		query.collections.add(address.getCollection());
+		query.query = new PrefixString( _buildQuery(search));
 
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		System.out.println();
+		return query;
 	}
 
+	@SuppressWarnings("unchecked")
+	private void _populateFactory(Z3950AddressDTO address) {
+		this.factory.setHost(address.getUrl());
+		this.factory.setPort(address.getPort());
+		this.factory.setCharsetEncoding(CHARSET);
+		this.factory.setApplicationContext(this.z3950Context);
+		this.factory.setDefaultRecordSyntax("usmarc");
+		this.factory.setDefaultElementSetName("F");
+		this.factory.setDoCharsetNeg(true);
+		this.factory.getRecordArchetypes().put("Default","usmarc::F");
+		this.factory.getRecordArchetypes().put("FullDisplay","usmarc::F");
+		this.factory.getRecordArchetypes().put("BriefDisplay","usmarc::B");
+	}
+
+	private String _buildQuery(Pair<String, String> search) {
+		StringBuilder sb = new StringBuilder(5);
+
+		sb.append(QUERY_PREFIX)
+			.append(search.getLeft())
+			.append(" \"")
+			.append(TextUtils.removeDiacriticals(search.getRight()))
+			.append("\"");
+
+		return sb.toString();
+	}
 
 }
