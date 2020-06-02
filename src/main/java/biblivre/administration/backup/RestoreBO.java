@@ -488,6 +488,8 @@ public class RestoreBO extends AbstractBO {
 			bw.write("CREATE DATABASE biblivre4_b3b_restore WITH OWNER = biblivre ENCODING = 'UTF8';\n");
 			bw.flush();
 
+			bw.close();
+
 			p.waitFor();
 			
 			return p.exitValue() == 0;
