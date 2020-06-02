@@ -607,6 +607,8 @@ public class RestoreBO extends AbstractBO {
 
 			//bw.write("ANALYZE;\n");
 
+			bw.close();
+
 			p.waitFor();
 
 			return p.exitValue() == 0;
