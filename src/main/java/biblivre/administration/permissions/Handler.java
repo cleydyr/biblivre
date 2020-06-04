@@ -20,7 +20,7 @@
 package biblivre.administration.permissions;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
 		if (loginId > 0) {
 			dto.setLogin(lbo.get(loginId));
 			PermissionBO bo = PermissionBO.getInstance(schema);
-			List<String> list = bo.getByLoginId(loginId);
+			Set<String> list = bo.getByLoginId(loginId);
 			if (list != null) {
 				dto.setPermissions(list);
 			}
@@ -222,9 +222,9 @@ public class Handler extends AbstractHandler {
 		}
 		
 		dto.setLogin(ldto);
-		
-		List<String> permissions = pbo.getByLoginId(user.getLoginId());
-		
+
+		Set<String> permissions = pbo.getByLoginId(user.getLoginId());
+
 		if (permissions == null) {
 			return dto;
 		}

@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.administration.setup;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,7 @@ import biblivre.acquisition.quotation.QuotationBO;
 import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
+import biblivre.administration.permissions.PermissionDAO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -103,7 +107,9 @@ public class DataMigrationBO extends AbstractBO {
 				migrateDigitalMedia = true;
 				selectedPhases.remove(DataMigrationPhase.DIGITAL_MEDIA);
 			}
-			
+
+			_migratePermissions();
+
 			for (DataMigrationPhase phase : selectedPhases) {
 				this.currentPhase = phase;
 				this.setCurrentCount(0);
@@ -172,6 +178,30 @@ public class DataMigrationBO extends AbstractBO {
 			
 			return true;
 		}
+	}
+
+	private void _migratePermissions() {
+		try {
+			PermissionDAO permissionDAO = PermissionDAO.getInstance(this.schema);
+
+			PermissionsV3toV5Migration permissionsV3ToV5Migration = new PermissionsV3toV5Migration(permissionDAO, dao);
+
+			permissionsV3ToV5Migration.migrate();
+		} catch (SQLException sqle) {
+			_handleSQLException(sqle);
+		}
+	}
+
+	private void _handleSQLException(SQLException e1) {
+		State.writeLog("Error while migrating permissions");
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		e1.printStackTrace(new PrintWriter(outputStream));
+
+		State.writeLog(outputStream.toString());
+
+		e1.printStackTrace();
 	}
 
 	private List<? extends AbstractDTO> listDTOs(DataMigrationPhase phase, int limit, int offset) {

@@ -20,6 +20,7 @@
 package biblivre.administration.permissions;
 
 import java.util.List;
+import java.util.Set;
 
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
@@ -50,7 +51,7 @@ public class PermissionBO extends AbstractBO {
 		return false;
 	}
 
-	public List<String> getByLoginId(Integer loginid) {
+	public Set<String> getByLoginId(Integer loginid) {
 		return this.dao.getByLoginId(loginid);
 	}
 	

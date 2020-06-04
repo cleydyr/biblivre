@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.administration.permissions;
 
-import java.util.List;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +32,7 @@ public class PermissionDTO extends AbstractDTO {
 	
 	private static final long serialVersionUID = 1L;
 
-    private List<String> permissions;
+    private Set<String> permissions;
     private LoginDTO login;
     private UserDTO user;
 
@@ -44,11 +44,11 @@ public class PermissionDTO extends AbstractDTO {
 		this.login = login;
 	}
 
-	public List<String> getPermissions() {
+	public Set<String> getPermissions() {
 		return this.permissions;
 	}
 
-	public void setPermissions(List<String> permissions) {
+	public void setPermissions(Set<String> permissions) {
 		this.permissions = permissions;
 	}
 

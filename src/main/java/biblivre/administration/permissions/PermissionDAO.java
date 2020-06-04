@@ -22,8 +22,9 @@ package biblivre.administration.permissions;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
@@ -57,10 +58,10 @@ public class PermissionDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-		
-	public List<String> getByLoginId(Integer loginid) {
+
+	public Set<String> getByLoginId(Integer loginid) {
 		Connection con = null;
-		List<String> list = new ArrayList<String>();
+		Set<String> set = new HashSet<>();
 		try {
 			con = this.getConnection();
 			String sql = "SELECT login_id, permission FROM permissions WHERE login_id = ?;";
@@ -69,15 +70,16 @@ public class PermissionDAO extends AbstractDAO {
 			pst.setInt(1, loginid);
 
 			ResultSet rs = pst.executeQuery();
+
 			while (rs.next()) {
-				list.add(rs.getString("permission"));
+				set.add(rs.getString("permission"));
 			}
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
-		return list;
+		return set;
 	}
 
 	public boolean save(int loginid, String permission) {
@@ -96,8 +98,8 @@ public class PermissionDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-	
-	public boolean save(int loginId, List<String> permissions) {
+
+	public boolean save(int loginId, Collection<String> permissions) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
