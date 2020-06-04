@@ -35,7 +35,7 @@ public class Update implements UpdateService {
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
 	private static final Map<String, Map<String, String>> _TRANSLATIONS = new HashMap() {{
-		put("circulation.error.invalid_user_name", new HashMap() {{
+		put("administration.migration.groups.users", new HashMap() {{
 			put("pt-BR", "Usuários, logins de acesso, permissões e tipos de usuários");
 			put("es", "Usuarios, logins de acceso, permisos y tipos de usuarios");
 			put("en-US", "Users, access logins, permissions and user types");

@@ -34,7 +34,6 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.permissions.PermissionBO;
-import biblivre.administration.permissions.PermissionDTO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.enums.RecordType;
