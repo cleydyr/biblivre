@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.compress.utils.Sets;
 
-import biblivre.administration.permissions.PermissionDAO;
+import biblivre.administration.permissions.PermissionBO;
 
 /**
  * @author Cleydyr Albuquerque
@@ -25,15 +25,15 @@ public class PermissionsV3toV5Migration {
 			PermissionsV3toV5Migration.class.getClassLoader()
 				.getResource(MAPPING_FILE_NAME).getFile());
 
-	private PermissionDAO permissionDAO;
+	private PermissionBO permissionBO;
 	private DataMigrationDAO dataMigrationDAO;
 
 	private static Map<String, Collection<String>> V3_TO_V5_PERMISSION_MAPPING =
 			_loadV3ToV5PermissionMapping();
 
 	public PermissionsV3toV5Migration(
-		PermissionDAO permissionDAO, DataMigrationDAO dataMigrationDAO) {
-		this.permissionDAO = permissionDAO;
+		PermissionBO permissionBO, DataMigrationDAO dataMigrationDAO) {
+		this.permissionBO = permissionBO;
 		this.dataMigrationDAO = dataMigrationDAO;
 	}
 
@@ -54,7 +54,7 @@ public class PermissionsV3toV5Migration {
 	}
 
 	private void _save(int loginId, Collection<String> newPermissions) {
-		permissionDAO.save(loginId, newPermissions);
+		permissionBO.save(loginId, newPermissions);
 	}
 
 	private static Set<String> _getV5PermissionSetFrom(

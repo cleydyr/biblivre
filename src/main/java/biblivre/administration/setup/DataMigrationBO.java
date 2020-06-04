@@ -32,7 +32,7 @@ import biblivre.acquisition.quotation.QuotationBO;
 import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
-import biblivre.administration.permissions.PermissionDAO;
+import biblivre.administration.permissions.PermissionBO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -108,8 +108,6 @@ public class DataMigrationBO extends AbstractBO {
 				selectedPhases.remove(DataMigrationPhase.DIGITAL_MEDIA);
 			}
 
-			_migratePermissions();
-
 			for (DataMigrationPhase phase : selectedPhases) {
 				this.currentPhase = phase;
 				this.setCurrentCount(0);
@@ -147,7 +145,9 @@ public class DataMigrationBO extends AbstractBO {
 				this.setupDao.fixSequence(this.currentPhase);
 				State.incrementCurrentStep();
 			}
-			
+
+			_migratePermissions();
+
 			if (migrateDigitalMedia) {
 				this.currentPhase = DataMigrationPhase.DIGITAL_MEDIA;
 				this.setCurrentCount(0);
@@ -182,9 +182,9 @@ public class DataMigrationBO extends AbstractBO {
 
 	private void _migratePermissions() {
 		try {
-			PermissionDAO permissionDAO = PermissionDAO.getInstance(this.schema);
+			PermissionBO permissionBO = PermissionBO.getInstance(getSchema());
 
-			PermissionsV3toV5Migration permissionsV3ToV5Migration = new PermissionsV3toV5Migration(permissionDAO, dao);
+			PermissionsV3toV5Migration permissionsV3ToV5Migration = new PermissionsV3toV5Migration(permissionBO, dao);
 
 			permissionsV3ToV5Migration.migrate();
 		} catch (SQLException sqle) {

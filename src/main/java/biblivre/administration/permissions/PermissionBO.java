@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.administration.permissions;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 
 import biblivre.circulation.user.UserDTO;
@@ -42,7 +42,7 @@ public class PermissionBO extends AbstractBO {
 		return this.dao.delete(user);
 	}
 	
-	public boolean save(Integer loginId, List<String> permissions) {
+	public boolean save(Integer loginId, Collection<String> permissions) {
 		UserDTO dto = new UserDTO();
 		dto.setLoginId(loginId);
 		if (this.delete(dto)) {
