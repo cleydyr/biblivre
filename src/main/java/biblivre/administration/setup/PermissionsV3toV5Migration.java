@@ -1,11 +1,18 @@
 package biblivre.administration.setup;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.compress.utils.Sets;
 
 import biblivre.administration.permissions.PermissionDAO;
 
@@ -13,6 +20,11 @@ import biblivre.administration.permissions.PermissionDAO;
  * @author Cleydyr Albuquerque
  */
 public class PermissionsV3toV5Migration {
+	private static final String MAPPING_FILE_NAME = "v3_to_v5_permission_mapping.properties";
+	private static final File MAPPING_FILE = new File(
+			PermissionsV3toV5Migration.class.getClassLoader()
+				.getResource(MAPPING_FILE_NAME).getFile());
+
 	private PermissionDAO permissionDAO;
 	private DataMigrationDAO dataMigrationDAO;
 
@@ -62,6 +74,25 @@ public class PermissionsV3toV5Migration {
 	private static Map<String, Collection<String>>
 		_loadV3ToV5PermissionMapping() {
 
-		return new HashMap<>();
+		Properties props = new Properties();
+
+		try {
+			Map<String, Collection<String>> result = new HashMap<>();
+
+			props.load(new FileInputStream(MAPPING_FILE));
+
+			props.forEach((key, value) -> {
+				Set<String> values = Collections.unmodifiableSet(
+					Sets.newHashSet(((String) value).split(",")));
+
+				result.put((String) key, values);
+			});
+
+			return result;
+		} catch (IOException e) {
+			e.printStackTrace();
+
+			return Collections.emptyMap();
+		}
 	}
 }
