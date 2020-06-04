@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.permissions.PermissionBO;
+import biblivre.administration.permissions.PermissionDTO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -53,6 +55,7 @@ import biblivre.z3950.Z3950BO;
 
 public class DataMigrationBO extends AbstractBO {
 
+	private static final List<PermissionDTO> DUMMY_LIST = Collections.singletonList(new PermissionDTO());
 	private DataMigrationDAO dao;
 	private SetupDAO setupDao;
 	private final Integer limit = 50;
@@ -146,8 +149,6 @@ public class DataMigrationBO extends AbstractBO {
 				State.incrementCurrentStep();
 			}
 
-			_migratePermissions();
-
 			if (migrateDigitalMedia) {
 				this.currentPhase = DataMigrationPhase.DIGITAL_MEDIA;
 				this.setCurrentCount(0);
@@ -180,15 +181,19 @@ public class DataMigrationBO extends AbstractBO {
 		}
 	}
 
-	private void _migratePermissions() {
+	private boolean _migratePermissions() {
 		try {
 			PermissionBO permissionBO = PermissionBO.getInstance(getSchema());
 
 			PermissionsV3toV5Migration permissionsV3ToV5Migration = new PermissionsV3toV5Migration(permissionBO, dao);
 
 			permissionsV3ToV5Migration.migrate();
+
+			return true;
 		} catch (SQLException sqle) {
 			_handleSQLException(sqle);
+
+			return false;
 		}
 	}
 
@@ -287,6 +292,9 @@ public class DataMigrationBO extends AbstractBO {
 		case RESERVATIONS:
 			return this.dao.listReservations(limit, offset);
 			
+		case PERMISSIONS:
+			return DUMMY_LIST;
+
 		case DIGITAL_MEDIA:
 		default:
 			return null;
@@ -358,7 +366,10 @@ public class DataMigrationBO extends AbstractBO {
 				
 			case RESERVATIONS:
 				return ReservationBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
+			case PERMISSIONS:
+				return _migratePermissions();
+
 			case DIGITAL_MEDIA:
 			default:
 				return true;
