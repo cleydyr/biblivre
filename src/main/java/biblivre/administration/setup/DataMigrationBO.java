@@ -55,7 +55,7 @@ import biblivre.z3950.Z3950BO;
 
 public class DataMigrationBO extends AbstractBO {
 
-	private static final List<PermissionDTO> DUMMY_LIST = Collections.singletonList(new PermissionDTO());
+	private static final List<? extends AbstractDTO> DUMMY_LIST = Collections.singletonList(null);
 	private DataMigrationDAO dao;
 	private SetupDAO setupDao;
 	private final Integer limit = 50;
@@ -293,7 +293,12 @@ public class DataMigrationBO extends AbstractBO {
 			return this.dao.listReservations(limit, offset);
 			
 		case PERMISSIONS:
-			return DUMMY_LIST;
+			if (offset == 0) {
+				return DUMMY_LIST;
+			}
+			else {
+				return Collections.emptyList();
+			}
 
 		case DIGITAL_MEDIA:
 		default:
