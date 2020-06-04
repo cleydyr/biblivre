@@ -344,8 +344,8 @@ public class UserDAO extends AbstractDAO {
 			con.setAutoCommit(false);
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii) ");
-			sql.append("VALUES (?, ?, ?, ?, ?, ?, ?);");
+			sql.append("INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii, login_id) ");
+			sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 			
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			
@@ -360,6 +360,7 @@ public class UserDAO extends AbstractDAO {
 				pst.setString(5, user.getStatus().toString());
 				pst.setInt(6, user.getCreatedBy());
 				pst.setString(7, TextUtils.removeDiacriticals(user.getName()));
+				pst.setInt(8, user.getLoginId());
 				
 				pst.addBatch();
 				
