@@ -30,7 +30,7 @@ public class Update implements UpdateService {
 
 				String translation = entry2.getValue();
 
-				Translations.addSingleTranslation(language, key, translation);
+				Translations.addOrReplaceSingleTranslation(language, key, translation);
 			}
 		}
 	}

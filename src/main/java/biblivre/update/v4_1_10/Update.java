@@ -13,22 +13,22 @@ public class Update implements UpdateService {
 
 	@Override
 	public void doUpdate(Connection connection) {
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "cataloging.bibliographic.indexing_groups.publisher", "Editora");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "cataloging.bibliographic.indexing_groups.publisher", "Publisher");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "cataloging.bibliographic.indexing_groups.publisher", "Editora");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "cataloging.bibliographic.indexing_groups.series", "Série");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "cataloging.bibliographic.indexing_groups.series", "Series");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "cataloging.bibliographic.indexing_groups.series", "Serie");
 	}
 

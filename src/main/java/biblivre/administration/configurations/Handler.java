@@ -55,7 +55,7 @@ public class Handler extends AbstractHandler {
 				String value = json.getString(key);
 
 				if (key.equals("text.main.logged_in") || key.equals("text.main.logged_out")) {
-					Translations.addSingleTranslation(schema, language, key, value, loggedUser);
+					Translations.addOrReplaceSingleTranslation(schema, language, key, value, loggedUser);
 				} else {
 					configs.add(new ConfigurationsDTO(key, value));
 				}
