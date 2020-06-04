@@ -957,19 +957,21 @@ public class DataMigrationDAO extends AbstractDAO {
 		String sql)
 		throws SQLException {
 
-		try (Connection con = this.getConnection();
-				PreparedStatement pst = con.prepareStatement(sql)) {
+		Connection con = this.getConnection();
 
-			ResultSet rs = pst.executeQuery();
+		PreparedStatement pst = con.prepareStatement(sql);
 
-			return  csmr -> {
-				while (rs.next()) {
-					csmr.accept(rs);
-				}
+		ResultSet rs = pst.executeQuery();
 
-				rs.close();
-			};
-		}
+		return  csmr -> {
+			while (rs.next()) {
+				csmr.accept(rs);
+			}
+
+			rs.close();
+			pst.close();
+			con.close();
+		};
 	}
 
 	private MaterialType convertMaterialType(String mt) {
