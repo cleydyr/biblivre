@@ -1,4 +1,4 @@
-package biblivre.update.v5_1_28;
+package biblivre.update.v5_1_30;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,7 +16,7 @@ public class Update implements UpdateService {
 
 	@Override
 	public String getVersion() {
-		return "5.1.28";
+		return "5.1.30";
 	}
 
 	private void _addTranslations() throws SQLException {
@@ -35,10 +35,10 @@ public class Update implements UpdateService {
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
 	private static final Map<String, Map<String, String>> _TRANSLATIONS = new HashMap() {{
-		put("circulation.error.invalid_user_name", new HashMap() {{
-			put("pt-BR", "Este usuário possui nome com caracteres inválidos (:)");
-			put("es", "Este usuario posee un nombre con caracteres inválidos (:)");
-			put("en-US", "This user has a name with invalid characters (:)");
+		put("administration.migration.groups.users", new HashMap() {{
+			put("pt-BR", "Usuários, logins de acesso, permissões e tipos de usuários");
+			put("es", "Usuarios, logins de acceso, permisos y tipos de usuarios");
+			put("en-US", "Users, access logins, permissions and user types");
 		}});
 	}};
 }

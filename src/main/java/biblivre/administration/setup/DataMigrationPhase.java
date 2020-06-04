@@ -43,7 +43,8 @@ public enum DataMigrationPhase {
 	LENDINGS("lending", "lendings", "lendings_id_seq", "id"), 
 	LENDINGS_HISTORY("lending_history", "lendings", "lendings_id_seq", "id"), 
 	LENDING_FINE("lending_fine", "lending_fines", "lending_fines_id_seq", "id"), 
-	RESERVATIONS("reservation", "reservations", "reservations_id_seq", "id");
+	RESERVATIONS("reservation", "reservations", "reservations_id_seq", "id"),
+	PERMISSIONS("permissions", "permissions", null, null);
 	
 	private String biblivre3TableName;
 	private String biblivre4TableName;

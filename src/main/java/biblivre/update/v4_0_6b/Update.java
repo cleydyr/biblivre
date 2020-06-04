@@ -9,54 +9,54 @@ public class Update implements UpdateService {
 
 	@Override
 	public void doUpdate(Connection connection) {
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "administration.reports.title.custom_count",
 				"Relatório de contagem pelo campo Marc");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "cataloging.bibliographic.search.holding_accession_number",
 				"Tombo patrimonial");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "cataloging.bibliographic.search.holding_id",
 				"Código de barras da etiqueta");
 
-		Translations.addSingleTranslation("pt-BR", "search.holding.shelf_location", "Localização");
+		Translations.addOrReplaceSingleTranslation("pt-BR", "search.holding.shelf_location", "Localização");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "circulation.lending.no_holding_found", "Nenhum exemplar encontrado");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "administration.reports.title.custom_count", "Marc field counting report");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "cataloging.bibliographic.search.holding_accession_number",
 				"Asset number");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "cataloging.bibliographic.search.holding_id",
 				"Label barcode number");
 
-		Translations.addSingleTranslation("en-US", "search.holding.shelf_location",	"Location");
+		Translations.addOrReplaceSingleTranslation("en-US", "search.holding.shelf_location",	"Location");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "circulation.lending.no_holding_found", "No copy found");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "administration.reports.title.custom_count",
 				"Informe de recuento del campo Marc");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "cataloging.bibliographic.search.holding_accession_number",
 				"Sello patrimonial");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "cataloging.bibliographic.search.holding_id",
 				"Código de barras de la etiqueta");
 
-		Translations.addSingleTranslation("es", "search.holding.shelf_location", "Localización");
+		Translations.addOrReplaceSingleTranslation("es", "search.holding.shelf_location", "Localización");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "circulation.lending.no_holding_found",
 				"Ningún ejemplar encontrado");
 	}

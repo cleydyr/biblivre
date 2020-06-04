@@ -9,40 +9,40 @@ public class Update implements UpdateService {
 
 	@Override
 	public void doUpdate(Connection connection) {
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "multi_schema.backup.display_and_select_libraries",
 				"Exibir e selecionar bibliotecas {min} a {max}");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "multi_schema.backup.display_and_select_libraries",
 				"Show and select libraries from {min} to {max}");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "multi_schema.backup.display_and_select_libraries",
 				"Ver y seleccionar las bibliotecas de {min} a {max}");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "administration.setup.biblivre4restore.select_file",
 				"Selecione um arquivo de backup do Biblivre 4");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "administration.setup.biblivre4restore.select_file",
 				"Select a Biblivre 4 backup file");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "administration.setup.biblivre4restore.select_file",
 				"Seleccione un archivo de copia de seguridad Biblivre 4");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "multi_schema.restore.limit.title", "Bibliotecas no arquivo selecionado");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "multi_schema.restore.limit.title", "Libraries in the selected file");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "multi_schema.restore.limit.title", "Bibliotecas en el archivo seleccionado");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "multi_schema.restore.limit.description",
 				"O arquivo selecionado possui um número muito grande de bibliotecas. Por limites " +
 						"do banco de dados, a restauração deverá ser feita em passos, de no " +
@@ -51,7 +51,7 @@ public class Update implements UpdateService {
 						"restauradas. Repita esse procedimento até que todas as bibliotecas " +
 						"desejadas tenham sido restauradas.");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "multi_schema.restore.limit.description",
 				"The selected file contains a high number of libraries. Due to database " +
 						"limitations, you should restore those libraries in steps, limited to 20 " +
@@ -59,7 +59,7 @@ public class Update implements UpdateService {
 						"libraries, and select the ones you want to restore. Repeat these steps " +
 						"untill you've restored all the libraries you need.");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "multi_schema.restore.limit.description",
 				" El archivo seleccionado tiene un gran número de bibliotecas. Debido a las " +
 						"limitaciones de la base de datos, la restauración debe hacerse en pasos " +

@@ -19,7 +19,11 @@
  ******************************************************************************/
 package biblivre.administration.setup;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +33,7 @@ import biblivre.acquisition.quotation.QuotationBO;
 import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
+import biblivre.administration.permissions.PermissionBO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -49,6 +54,7 @@ import biblivre.z3950.Z3950BO;
 
 public class DataMigrationBO extends AbstractBO {
 
+	private static final List<? extends AbstractDTO> DUMMY_LIST = Collections.singletonList(null);
 	private DataMigrationDAO dao;
 	private SetupDAO setupDao;
 	private final Integer limit = 50;
@@ -103,7 +109,7 @@ public class DataMigrationBO extends AbstractBO {
 				migrateDigitalMedia = true;
 				selectedPhases.remove(DataMigrationPhase.DIGITAL_MEDIA);
 			}
-			
+
 			for (DataMigrationPhase phase : selectedPhases) {
 				this.currentPhase = phase;
 				this.setCurrentCount(0);
@@ -141,7 +147,7 @@ public class DataMigrationBO extends AbstractBO {
 				this.setupDao.fixSequence(this.currentPhase);
 				State.incrementCurrentStep();
 			}
-			
+
 			if (migrateDigitalMedia) {
 				this.currentPhase = DataMigrationPhase.DIGITAL_MEDIA;
 				this.setCurrentCount(0);
@@ -172,6 +178,34 @@ public class DataMigrationBO extends AbstractBO {
 			
 			return true;
 		}
+	}
+
+	private boolean _migratePermissions() {
+		try {
+			PermissionBO permissionBO = PermissionBO.getInstance(getSchema());
+
+			PermissionsV3toV5Migration permissionsV3ToV5Migration = new PermissionsV3toV5Migration(permissionBO, dao);
+
+			permissionsV3ToV5Migration.migrate();
+
+			return true;
+		} catch (SQLException sqle) {
+			_handleSQLException(sqle);
+
+			return false;
+		}
+	}
+
+	private void _handleSQLException(SQLException e1) {
+		State.writeLog("Error while migrating permissions");
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		e1.printStackTrace(new PrintWriter(outputStream));
+
+		State.writeLog(outputStream.toString());
+
+		e1.printStackTrace();
 	}
 
 	private List<? extends AbstractDTO> listDTOs(DataMigrationPhase phase, int limit, int offset) {
@@ -257,6 +291,14 @@ public class DataMigrationBO extends AbstractBO {
 		case RESERVATIONS:
 			return this.dao.listReservations(limit, offset);
 			
+		case PERMISSIONS:
+			if (offset == 0) {
+				return DUMMY_LIST;
+			}
+			else {
+				return Collections.emptyList();
+			}
+
 		case DIGITAL_MEDIA:
 		default:
 			return null;
@@ -328,7 +370,10 @@ public class DataMigrationBO extends AbstractBO {
 				
 			case RESERVATIONS:
 				return ReservationBO.getInstance(schema).saveFromBiblivre3(dtoList);
-				
+
+			case PERMISSIONS:
+				return _migratePermissions();
+
 			case DIGITAL_MEDIA:
 			default:
 				return true;

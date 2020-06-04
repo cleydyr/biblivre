@@ -16,31 +16,31 @@ public class Update implements UpdateService {
 
 	@Override
 	public void doUpdate(Connection connection) {
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "cataloging.tab.record.custom.field_label.biblio_501", "Notas");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "cataloging.tab.record.custom.field_label.biblio_501", "Notes");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "cataloging.tab.record.custom.field_label.biblio_501", "Notas");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "cataloging.tab.record.custom.field_label.biblio_530", "Notas");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "cataloging.tab.record.custom.field_label.biblio_530", "Notes");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "cataloging.tab.record.custom.field_label.biblio_530", "Notas");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"pt-BR", "cataloging.tab.record.custom.field_label.biblio_595", "Notas");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"en-US", "cataloging.tab.record.custom.field_label.biblio_595", "Notes");
 
-		Translations.addSingleTranslation(
+		Translations.addOrReplaceSingleTranslation(
 				"es", "cataloging.tab.record.custom.field_label.biblio_595", "Notas");
 	}
 

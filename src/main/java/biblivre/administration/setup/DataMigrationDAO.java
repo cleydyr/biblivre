@@ -23,7 +23,10 @@ import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +66,11 @@ import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950AddressDTO;
 
 public class DataMigrationDAO extends AbstractDAO {
-	
+	@FunctionalInterface
+	private static interface UncheckedConsumer<T> {
+		public void accept(T input) throws SQLException;
+	}
+
 	private String userSchema;
 	private static final Map<String, String> userFieldsMap = new HashMap<String, String>(); 
 	
@@ -928,7 +935,45 @@ public class DataMigrationDAO extends AbstractDAO {
 		}
 		return list;
 	}
-	
+
+	public Map<Integer, Collection<String>> listPermissions() throws SQLException {
+
+		Map<Integer, Collection<String>> mapping = new HashMap<>();
+
+		_executeQuery("SELECT * FROM permissions")
+			.accept(rs -> {
+				int loginId = rs.getInt("loginid");
+				String permission = rs.getString("permission");
+
+				mapping
+					.computeIfAbsent(loginId, __ -> new HashSet<>())
+					.add(permission);
+			});
+
+		return mapping;
+	}
+
+	private UncheckedConsumer<UncheckedConsumer<ResultSet>> _executeQuery(
+		String sql)
+		throws SQLException {
+
+		Connection con = this.getConnection();
+
+		PreparedStatement pst = con.prepareStatement(sql);
+
+		ResultSet rs = pst.executeQuery();
+
+		return  csmr -> {
+			while (rs.next()) {
+				csmr.accept(rs);
+			}
+
+			rs.close();
+			pst.close();
+			con.close();
+		};
+	}
+
 	private MaterialType convertMaterialType(String mt) {
 		MaterialType material;
 
@@ -1034,5 +1079,4 @@ public class DataMigrationDAO extends AbstractDAO {
 	private String getUserFieldColumnName(String biblivre4UserFieldKey) {
 		return userFieldsMap.get(biblivre4UserFieldKey);
 	}
-	
 }
