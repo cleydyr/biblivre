@@ -958,13 +958,16 @@ public class DataMigrationDAO extends AbstractDAO {
 		throws SQLException {
 
 		try (Connection con = this.getConnection();
-				PreparedStatement pst = con.prepareStatement(sql);
-				ResultSet rs = pst.executeQuery()) {
+				PreparedStatement pst = con.prepareStatement(sql)) {
+
+			ResultSet rs = pst.executeQuery();
 
 			return  csmr -> {
 				while (rs.next()) {
 					csmr.accept(rs);
 				}
+
+				rs.close();
 			};
 		}
 	}
