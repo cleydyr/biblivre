@@ -10,9 +10,7 @@ ENTRYPOINT echo "listen_addresses = '*'" >> /etc/postgresql/9.6/main/postgresql.
 && 	/etc/init.d/postgresql start \
 &&	wget https://github.com/$GITHUB_USER/$REPO_NAME/archive/$BRANCH_NAME.zip \
 &&	unzip $BRANCH_NAME.zip -d /tmp && rm $BRANCH_NAME.zip \
-&&	cd /tmp/$REPO_NAME-$BRANCH_NAME/lib/ \
-&&	sh maven_deps.sh \
-&&	cd .. \
+&&	cd /tmp/$REPO_NAME-$BRANCH_NAME/ \
 &&	mvn sass:update-stylesheets package -Ddebug=true \
 &&	su postgres -c "psql -U postgres -f sql/createdatabase.sql" \
 &&	su postgres -c "psql -U postgres -f sql/biblivre4.sql -d biblivre4" \
