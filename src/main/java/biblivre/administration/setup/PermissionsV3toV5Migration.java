@@ -49,15 +49,11 @@ public class PermissionsV3toV5Migration {
 			Set<String> newPermissions =
 				_getV5PermissionSetFrom(oldPermissions);
 
-			_saveIfNotPresent(loginId, newPermissions);
+			_save(loginId, newPermissions);
 		});
 	}
 
-	private void _saveIfNotPresent(int loginId, Collection<String> newPermissions) {
-		Set<String> existingPermissions = permissionDAO.getByLoginId(loginId);
-
-		newPermissions.removeAll(existingPermissions);
-
+	private void _save(int loginId, Collection<String> newPermissions) {
 		permissionDAO.save(loginId, newPermissions);
 	}
 
