@@ -33,7 +33,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import biblivre.z3950.client.Z3950Client;
 import biblivre.z3950.client.config.Z3950Config;
 

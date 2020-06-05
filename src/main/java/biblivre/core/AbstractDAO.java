@@ -34,13 +34,13 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.postgresql.PGConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 
 public abstract class AbstractDAO {
 	private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
@@ -59,7 +59,7 @@ public abstract class AbstractDAO {
 	}
 
 	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema, String dataSourceName) {
-		Pair<Class<? extends AbstractDAO>, String> pair = new Pair<Class<? extends AbstractDAO>, String>(cls, schema + ":" + dataSourceName);
+		Pair<Class<? extends AbstractDAO>, String> pair = Pair.of(cls, schema + ":" + dataSourceName);
 		AbstractDAO instance = AbstractDAO.instances.get(pair);
 
 		if (instance == null) {
