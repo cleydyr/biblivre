@@ -22,16 +22,15 @@ package biblivre.administration.backup;
 import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
+import biblivre.core.utils.SchemaUtils;
 
 public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	private static final long serialVersionUID = 1L;
@@ -88,22 +87,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 	}
 
 	public void setSchemas(String schemas) {
-		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
-
-		try {
-			JSONObject json = new JSONObject(schemas);
-
-			Iterator<String> iterator = json.keys();
-
-			while (iterator.hasNext()) {
-				String key = iterator.next();
-				map.put(key, Pair.<String, String>fromJSONObject(json.getJSONObject(key)));
-			}
-
-		} catch (JSONException e) {
-		}
-
-		this.schemas = map;
+		this.schemas = SchemaUtils.buildSchemasMap(schemas);;
 	}
 
 	public BackupType getType() {

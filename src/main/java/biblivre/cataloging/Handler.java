@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.marc4j.marc.Record;
 
@@ -44,7 +45,6 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
@@ -123,7 +123,7 @@ public class Handler extends AbstractHandler {
 
 		List<Z3950AddressDTO> serverList = new LinkedList<Z3950AddressDTO>();
 		serverList.add(server);
-		Pair<String, String> search = new Pair<String, String>(attribute, value);
+		Pair<String, String> search = Pair.of(attribute, value);
 
 		List<Z3950RecordDTO> recordList = bo.search(serverList, search);
 

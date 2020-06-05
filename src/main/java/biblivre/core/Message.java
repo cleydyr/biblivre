@@ -22,10 +22,10 @@ package biblivre.core;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
 
 public class Message {

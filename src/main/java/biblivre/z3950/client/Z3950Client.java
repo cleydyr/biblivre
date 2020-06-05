@@ -25,6 +25,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jzkit.search.provider.iface.IRQuery;
 import org.jzkit.search.provider.iface.Searchable;
 import org.jzkit.search.provider.z3950.Z3950ServiceFactory;
@@ -40,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcUtils;
 import biblivre.z3950.Z3950AddressDTO;
