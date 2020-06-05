@@ -20,8 +20,6 @@
 package biblivre.administration.backup;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
+import biblivre.core.utils.SchemaUtils;
 
 public class BackupDTO extends AbstractDTO {
 	private static final long serialVersionUID = 1L;
@@ -72,25 +71,7 @@ public class BackupDTO extends AbstractDTO {
 	}
 
 	public void setSchemas(String schemas) {
-		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
-
-		try {
-			JSONObject json = new JSONObject(schemas);
-
-			Iterator<String> iterator = json.keys();
-
-			while (iterator.hasNext()) {
-				String key = iterator.next();
-				JSONObject jsonObject = json.getJSONObject(key);
-				String left = jsonObject.getString("left");
-				String right = jsonObject.getString("right");
-				map.put(key, Pair.of(left, right));
-			}
-
-		} catch (JSONException e) {
-		}
-
-		this.schemas = map;
+		this.schemas = SchemaUtils.buildSchemasMap(schemas);
 	}
 
 	public String getSchemasString() {
