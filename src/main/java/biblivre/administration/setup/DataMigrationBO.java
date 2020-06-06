@@ -82,10 +82,6 @@ public class DataMigrationBO extends AbstractBO {
 		return bo;
 	}
 
-	public boolean isBiblivre3Available() {
-		return this.dao.testDatabaseConnection();
-	}
-
 	public boolean migrate(List<DataMigrationPhase> selectedPhases) {
 		synchronized (this) {
 			this.migratingDatabase = true;

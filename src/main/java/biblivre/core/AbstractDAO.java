@@ -79,21 +79,6 @@ public abstract class AbstractDAO {
 		return instance;
 	}
 
-	public boolean testDatabaseConnection() {
-		Connection con = null;
-
-		try {
-			con = this.getConnection();
-			Statement st = con.createStatement();
-			st.executeQuery("select version();");
-			return true;
-		} catch (Exception e) {
-			return false;
-		} finally {
-			this.closeConnection(con);
-		}
-	}
-
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}

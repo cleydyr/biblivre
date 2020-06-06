@@ -21,7 +21,6 @@ package biblivre.core.controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -30,8 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
@@ -44,7 +41,6 @@ import biblivre.core.IFCacheableJavascript;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
-import biblivre.core.schemas.SchemasDAO;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
@@ -83,31 +79,8 @@ public final class SchemaServlet extends HttpServlet {
 			return;
 		}
 
-		String controller = xRequest.getController();
-
-		if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
-			Writer out = response.getWriter();
-			JSONObject json = new JSONObject();
-
-			try {
-				// TODO: Completar com mais mensagens.
-				// Checking Database
-				if (!SchemasDAO.getInstance("public").testDatabaseConnection()) {
-					json.put("success", false);
-					json.put("status_message", "Falha no acesso ao Banco de Dados");
-				} else {
-					json.put("success", true);
-					json.put("status_message", "Disponível");
-				}
-			} catch (JSONException e) {
-			}
-
-			out.write(json.toString());
-
-			return;
-		}
-
 		String path = request.getServletPath();
+
 		boolean isStatic = path.contains("static/") || path.contains("extra/");
 
 		if (isStatic) {

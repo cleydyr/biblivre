@@ -44,7 +44,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
-import biblivre.administration.setup.DataMigrationDAO;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
@@ -176,15 +175,6 @@ public class RestoreBO extends AbstractBO {
 			boolean success = (this.recreateBiblivre3RestoreDatabase(false) || this.recreateBiblivre3RestoreDatabase(true));
 			if (!success) {
 				return false;
-			}
-
-			try {
-				DataMigrationDAO dao = DataMigrationDAO.getInstance(this.getSchema(), "biblivre4_b3b_restore");
-				for (int i = 0; i < 1000; i++) {
-					dao.testDatabaseConnection();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 
 			return this.restoreBackupBiblivre3(sql);
