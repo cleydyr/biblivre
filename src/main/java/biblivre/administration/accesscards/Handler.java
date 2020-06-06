@@ -124,17 +124,12 @@ public class Handler extends AbstractHandler {
 		}
 
 		if (success) {
+			this.json.put("data", returnDto.toJSONObject());
+			this.json.put("full_data", true);
+
 			this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.save");
 		} else {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.save");
-		}
-
-		try {
-			this.json.put("data", returnDto.toJSONObject());
-			this.json.put("full_data", true);
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
 		}
 	}
 
