@@ -196,10 +196,6 @@ public abstract class AbstractDAO {
 		return serial;
 	}
 
-	public final void fixSequence(String sequence, String tableName) {
-		this.fixSequence(sequence, tableName, "id");
-	}
-
 	public final void fixSequence(String sequence, String tableName, String tableIdColumnName) {
 		Connection con = null;
 
