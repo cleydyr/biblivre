@@ -50,10 +50,10 @@
 			<id>central</id>
 			<url>https://repo1.maven.org/maven2/</url>
 		</repository>
-    <repository>
-      <id>legacy-libs</id>
-      <url>file://${project.basedir}/lib</url>
-    </repository>
+		<repository>
+			<id>legacy-libs</id>
+			<url>file://${project.basedir}/lib</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -291,9 +291,9 @@
 		</dependency>
 
 		<dependency>
-	       <groupId>com.zaxxer</groupId>
-	       <artifactId>HikariCP</artifactId>
-	   </dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
 		<!-- / -->
 
 	</dependencies>
