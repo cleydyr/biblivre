@@ -49,6 +49,7 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
@@ -268,29 +269,18 @@ public class HoldingDAO extends AbstractDAO {
 	}
 
 	public boolean updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		String sql = "INSERT INTO holding_creation_counter "
+			+ "(user_name, user_login, created_by) VALUES (?, ?, ?); ";
 
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO holding_creation_counter ");
-			sql.append("(user_name, user_login, created_by) ");
-			sql.append("VALUES (?, ?, ?); ");
+		try (Connection con = getConnection();
+				PreparedStatement pst = con.prepareStatement(sql.toString())) {
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setString(1, dto.getName());
-			if (ldto != null) {
-				pst.setString(2, ldto.getLogin());
-			} else {
-				pst.setNull(2, java.sql.Types.VARCHAR);
-			}
-			pst.setInt(3, ldto.getId());
+			PreparedStatementUtil.setAllParameters(
+				pst, dto.getName(), ldto.getLogin(), ldto.getId());
 
 			return pst.executeUpdate() > 0;
 		} catch (Exception e) {
 			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
 		}
 	}
 
