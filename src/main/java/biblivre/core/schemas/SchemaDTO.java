@@ -87,6 +87,11 @@ public class SchemaDTO extends AbstractDTO implements Comparable<SchemaDTO> {
 	}
 
 	@Override
+	public int hashCode() {
+		return schema.hashCode();
+	}
+
+	@Override
 	public int compareTo(SchemaDTO other) {
 		return this.getSchema().compareTo(other.getSchema());
 	}
