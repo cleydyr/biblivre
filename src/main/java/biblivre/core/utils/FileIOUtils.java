@@ -45,10 +45,13 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.file.BiblivreFile;
 
 public class FileIOUtils {
+	private static final Logger _log = LoggerFactory.getLogger(FileIOUtils.class);
 
 	public static File createTempDir() throws IOException {
 		final File sysTempDir = FileUtils.getTempDirectory();
@@ -156,7 +159,14 @@ public class FileIOUtils {
 					is.close();
 				}
 
-				destination.setLastModified(entry.getTime());
+				boolean isLastModifiedSet =
+					destination.setLastModified(entry.getTime());
+
+				if (!isLastModifiedSet) {
+					_log.warn(
+						"Can't set last modified date on file " +
+						destination.getAbsolutePath());
+				}
 			}
 		}
 
