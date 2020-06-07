@@ -106,15 +106,11 @@ public class BackupBO extends AbstractBO {
 		}
 	}
 
-	public void backup(BackupDTO dto) {
-		try {
-			this.createBackup(dto);
+	public void backup(BackupDTO dto) throws IOException {
+		this.createBackup(dto);
 
-			if (dto.getBackup() != null) {
-				this.move(dto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (dto.getBackup() != null) {
+			this.move(dto);
 		}
 	}
 
@@ -348,6 +344,7 @@ public class BackupBO extends AbstractBO {
 
 	private void dumpMedia(BackupDTO dto, File tmpDir, String schema)
 			throws IOException {
+
 		File mediaBackup = new File(tmpDir, schema + ".media.b5b");
 		boolean isSchemaOnly = false;
 		boolean isDataOnly = true;
@@ -358,8 +355,16 @@ public class BackupBO extends AbstractBO {
 				excludeTablePattern, includeTablePattern);
 
 		File schemaBackup = new File(tmpDir, schema);
-		schemaBackup.mkdir();
+
+		boolean created = schemaBackup.mkdir();
+
+		if (!created) {
+			throw new IOException(
+				"Can't create directory " + schemaBackup.getAbsolutePath());
+		}
+
 		this.exportDigitalMedia(schema, schemaBackup);
+
 		this.save(dto);
 	}
 }

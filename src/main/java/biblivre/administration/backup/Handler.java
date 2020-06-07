@@ -101,8 +101,13 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		bo.backup(dto);
-		request.setSessionAttribute(schema, "system_warning_backup", false);
+		try {
+			bo.backup(dto);
+			request.setSessionAttribute(schema, "system_warning_backup", false);
+		}
+		catch (Exception e) {
+			this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
+		}
 	}
 
 	// http://localhost:8080/Biblivre5/?controller=download&module=administration.backup&action=download&id=1
@@ -114,7 +119,7 @@ public class Handler extends AbstractHandler {
 		final BackupDTO dto = bo.get(id);
 
 		if (dto == null) {
-			// TODO: Error
+			this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
 			return;
 		}
 

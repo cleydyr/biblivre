@@ -94,7 +94,6 @@ public class Handler extends AbstractHandler {
 					BackupDTO lastBackup = bbo.getLastBackup();
 
 					if (lastBackup == null) {
-						// bbo.simpleBackup();
 						warningBackup = true;
 					} else {
 						int diff = Days.daysBetween(new DateTime(lastBackup.getCreated()), new DateTime()).getDays();
