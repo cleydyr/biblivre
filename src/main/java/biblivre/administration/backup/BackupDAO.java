@@ -73,18 +73,8 @@ public class BackupDAO extends AbstractDAO {
 				pst.setString(4, dto.getType().toString());
 				pst.setString(5, dto.getBackupScope().toString());
 				pst.setBoolean(6, dto.isDownloaded());
-
-				if (dto.getSteps() != null) {
-					pst.setInt(7, dto.getSteps());
-				} else {
-					pst.setNull(7, Types.INTEGER);
-				}
-
-				if (dto.getCurrentStep() != null) {
-					pst.setInt(8, dto.getCurrentStep());
-				} else {
-					pst.setNull(8, Types.INTEGER);
-				}
+				pst.setInt(7, dto.getSteps());
+				pst.setInt(8, dto.getCurrentStep());
 
 				return pst.executeUpdate() > 0;
 

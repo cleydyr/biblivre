@@ -39,8 +39,8 @@ public class BackupDTO extends AbstractDTO {
 	private BackupScope backupScope;
 	private File backup;
 
-	private Integer steps;
-	private Integer currentStep;
+	private int steps;
+	private int currentStep;
 	private boolean downloaded;
 
 	public BackupDTO(Map<String, Pair<String, String>> schemas, BackupType type, BackupScope backupScope) {
@@ -126,19 +126,19 @@ public class BackupDTO extends AbstractDTO {
 		this.downloaded = downloaded;
 	}
 
-	public Integer getSteps() {
+	public int getSteps() {
 		return this.steps;
 	}
 
-	public void setSteps(Integer steps) {
+	public void setSteps(int steps) {
 		this.steps = steps;
 	}
 
-	public Integer getCurrentStep() {
+	public int getCurrentStep() {
 		return this.currentStep;
 	}
 
-	public void setCurrentStep(Integer currentStep) {
+	public void setCurrentStep(int currentStep) {
 		this.currentStep = currentStep;
 	}
 
