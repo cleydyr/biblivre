@@ -1,6 +1,7 @@
 package biblivre.core;
 
 import java.sql.PreparedStatement;
+import java.util.Date;
 
 public class ParameterSetterFactory {
 
@@ -21,6 +22,10 @@ public class ParameterSetterFactory {
 		else if (parameterClass.isAssignableFrom(Boolean.class)) {
 			return (PreparedStatement preparedStatement, Object parameter, int position) ->
 				preparedStatement.setBoolean(position, (Boolean) parameter);
+		}
+		else if (parameterClass.isAssignableFrom(Date.class)) {
+			return (PreparedStatement preparedStatement, Object parameter, int position) ->
+				preparedStatement.setDate(position, new java.sql.Date(((Date) parameter).getTime()));
 		}
 		else {
 			throw new ParameterSetterNotFoundException(parameterClass);

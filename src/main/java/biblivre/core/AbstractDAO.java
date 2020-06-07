@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.CheckedFunction;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 
@@ -363,6 +364,40 @@ public abstract class AbstractDAO {
 
 		pgcon =	 (PGConnection) m.invoke(o);
 		return pgcon;
+	}
+
+	public <T> T executePreparedStatement(
+		CheckedFunction<ResultSet, T> f, String sql, Object... parameters)
+		throws DAOException {
+	
+		try (Connection con = getConnection();
+				PreparedStatement pst = con.prepareStatement(sql)) {
+	
+			PreparedStatementUtil.setAllParameters(pst, parameters);
+	
+			try (ResultSet rs = pst.executeQuery()) {
+				if (rs.next()) {
+					return f.apply(rs);
+				}
+			}
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+		
+		return null;
+	}
+
+	public <T> T executePreparedStatement(
+		CheckedFunction<PreparedStatement, T> f, String sql)
+		throws DAOException {
+	
+		try (Connection con = this.getConnection();
+			PreparedStatement pst = con.prepareStatement(sql)) {
+	
+			return f.apply(pst);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
 	}
 
 }
