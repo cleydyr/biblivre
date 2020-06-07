@@ -241,17 +241,25 @@ public class BackupBO extends AbstractBO {
 	}
 
 	public String getBackupPath() {
-		String path = Configurations.getString(this.getSchema(), Constants.CONFIG_BACKUP_PATH);
+		String path = Configurations.getString(
+			this.getSchema(), Constants.CONFIG_BACKUP_PATH);
 
 		if (StringUtils.isBlank(path) || FileIOUtils.doesNotExists(path)) {
 			File home = new File(System.getProperty("user.home"));
 			File biblivre = new File(home, "Biblivre");
 
+			boolean directoryCreated = false;
+
 			if (!biblivre.exists() && home.isDirectory() && home.canWrite()) {
-				biblivre.mkdir();
+				directoryCreated = biblivre.mkdir();
 			}
 
-			path = biblivre.getAbsolutePath();
+			if (directoryCreated) {
+				path = biblivre.getAbsolutePath();
+			}
+			else {
+				return null;
+			}
 		}
 
 		return path;
