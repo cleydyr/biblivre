@@ -29,7 +29,6 @@ import java.io.Writer;
 import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.Formatter;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -64,35 +63,6 @@ public class BackupBO extends AbstractBO {
 		}
 
 		return bo;
-	}
-
-	public void simpleBackup() {
-		BackupType backupType = BackupType.FULL;
-		BackupScope backupScope = this.getBackupScope();
-
-		LinkedList<String> list = new LinkedList<String>();
-		list.add(Constants.GLOBAL_SCHEMA);
-
-		if (this.isGlobalSchema()) {
-			list.addAll(Schemas.getEnabledSchemasList());
-		} else {
-			list.add(this.getSchema());
-		}
-
-		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
-
-		for (String s : list) {
-			if (Schemas.isNotLoaded(s)) {
-				continue;
-			}
-
-			String title = Configurations.getString(s, Constants.CONFIG_TITLE);
-			String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
-			map.put(s, new Pair<String, String>(title, subtitle));
-		}
-
-		BackupDTO dto = this.prepare(map, backupType, backupScope);
-		this.backup(dto);
 	}
 
 	public BackupScope getBackupScope() {
