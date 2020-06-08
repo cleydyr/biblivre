@@ -27,6 +27,10 @@ public class ParameterSetterFactory {
 			return (PreparedStatement preparedStatement, Object parameter, int position) ->
 				preparedStatement.setDate(position, new java.sql.Date(((Date) parameter).getTime()));
 		}
+		else if (parameterClass.isAssignableFrom(Float.class)) {
+			return (PreparedStatement preparedStatement, Object parameter, int position) ->
+				preparedStatement.setFloat(position, (Long) parameter);
+		}
 		else {
 			throw new ParameterSetterNotFoundException(parameterClass);
 		}
