@@ -28,7 +28,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -366,15 +368,15 @@ public abstract class AbstractDAO {
 		return pgcon;
 	}
 
-	public <T> T executePreparedStatement(
+	public <T extends AbstractDTO> T fetchOne(
 		CheckedFunction<ResultSet, T> f, String sql, Object... parameters)
 		throws DAOException {
-	
+
 		try (Connection con = getConnection();
 				PreparedStatement pst = con.prepareStatement(sql)) {
-	
+
 			PreparedStatementUtil.setAllParameters(pst, parameters);
-	
+
 			try (ResultSet rs = pst.executeQuery()) {
 				if (rs.next()) {
 					return f.apply(rs);
@@ -383,18 +385,94 @@ public abstract class AbstractDAO {
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}
-		
+
 		return null;
 	}
 
-	public <T> T executePreparedStatement(
+	public <T> T executeQuery(
 		CheckedFunction<PreparedStatement, T> f, String sql)
 		throws DAOException {
-	
+
 		try (Connection con = this.getConnection();
 			PreparedStatement pst = con.prepareStatement(sql)) {
-	
+
 			return f.apply(pst);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+	}
+
+	public <T> T executeQuery(
+		CheckedFunction<PreparedStatement, T> f, String sql,
+		Object... parameters)
+		throws DAOException {
+
+		try (Connection con = this.getConnection();
+			PreparedStatement pst = con.prepareStatement(sql)) {
+
+			PreparedStatementUtil.setAllParameters(pst, parameters);
+
+			return f.apply(pst);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+	}
+
+	public <T extends AbstractDTO> DTOCollection<T> pagedListWith(
+		CheckedFunction<ResultSet, T> mapper, String sql, int limit, int offset,
+		Object... parameters) {
+
+		DTOCollection<T> list = new DTOCollection<>();
+
+		executeQuery(pst -> {
+			Object[] newParameters = new Object[parameters.length + 2];
+
+			System.arraycopy(
+				parameters, 0, newParameters, 0, parameters.length);
+
+			newParameters[parameters.length] = limit;
+			newParameters[parameters.length + 1] = offset;
+
+			PreparedStatementUtil.setAllParameters(pst, newParameters);
+
+			try (ResultSet rs = pst.executeQuery()) {
+				int count = 0;
+
+				while (rs.next()) {
+					list.add(mapper.apply(rs));
+
+					count++;
+				}
+
+				PagingDTO paging = new PagingDTO(count, limit, offset);
+
+				list.setPaging(paging);
+			}
+
+			return null;
+		}, sql);
+
+		return list;
+	}
+
+	public <T extends AbstractDTO> List<T> listWith(
+		CheckedFunction<ResultSet, T> mapper, String sql, Object... parameters)
+		throws DAOException {
+
+		List<T> list = new ArrayList<>();
+
+		try (Connection con = this.getConnection();
+			PreparedStatement pst = con.prepareStatement(sql)) {
+
+			PreparedStatementUtil.setAllParameters(pst, parameters);
+
+			try (ResultSet rs = pst.executeQuery()) {
+				while (rs.next()) {
+					list.add(mapper.apply(rs));
+				}
+			}
+
+			return list;
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}

@@ -89,11 +89,11 @@ public class OrderDAO extends AbstractDAO {
 	}
 
 	public OrderDTO get(Integer orderId) {
-		return executePreparedStatement(this::populateDto, _GET_SQL, orderId);
+		return fetchOne(this::populateDto, _GET_SQL, orderId);
 	}
 
 	public Integer save(OrderDTO dto) {
-		return executePreparedStatement(pst ->  {
+		return executeQuery(pst ->  {
 			int orderId = this.getNextSerial("orders_id_seq");
 
 			pst.setInt(1, dto.getQuotationId());
@@ -136,7 +136,7 @@ public class OrderDAO extends AbstractDAO {
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return executePreparedStatement(pst -> {
+		return executeQuery(pst -> {
 			for (AbstractDTO abstractDto : dtoList) {
 				OrderDTO dto = (OrderDTO) abstractDto;
 				pst.setInt(1, dto.getQuotationId());
@@ -181,7 +181,7 @@ public class OrderDAO extends AbstractDAO {
 	}
 
 	public boolean update(OrderDTO dto) {
-		return executePreparedStatement(pst -> {
+		return executeQuery(pst -> {
 			pst.setInt(1, dto.getQuotationId());
 			pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
 			pst.setInt(3, dto.getCreatedBy());
@@ -218,7 +218,7 @@ public class OrderDAO extends AbstractDAO {
 	}
 
 	public boolean delete(OrderDTO dto) {
-		return executePreparedStatement(pst -> {
+		return executeQuery(pst -> {
 			pst.setInt(1, dto.getId());
 			return pst.executeUpdate() > 0;
 		}, _DELETE_SQL);
@@ -227,7 +227,7 @@ public class OrderDAO extends AbstractDAO {
 	public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
 		String sql = _buildSearchSQL(value);
 
-		return executePreparedStatement(pst -> {
+		return executeQuery(pst -> {
 			DTOCollection<OrderDTO> list = new DTOCollection<OrderDTO>();
 
 			int i = 1;

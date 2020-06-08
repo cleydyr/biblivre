@@ -22,7 +22,6 @@ package biblivre.acquisition.quotation;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,71 +29,131 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.PagingDTO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.CheckedConsumer;
 
 public class QuotationDAO extends AbstractDAO {
+	private static final String _LIST_SQL =
+		"SELECT * FROM quotations " +
+		"WHERE supplier_id = ? AND expiration_date >= now()::date;";
+
+	private static final String _SEARCH_KEYWORD_SQL =
+		"SELECT * FROM quotations q " +
+		"INNER JOIN suppliers s " +
+		"ON q.supplier_id = s.id " +
+		"WHERE trademark ilike ? " +
+		"ORDER BY q.id ASC LIMIT ? OFFSET ?";
+
+	private static final String _SEARCH_NUMERIC_SQL =
+		"SELECT * FROM quotations q" +
+		"WHERE id = ? " +
+		"ORDER BY q.id ASC " +
+		"LIMIT ? OFFSET ?";
+
+	private static final String _DELETE_SQL =
+		"DELETE FROM quotations " +
+		"WHERE id = ?;";
+
+	private static final String _LIST_RQ_SQL =
+		"SELECT * FROM request_quotation " +
+		"WHERE quotation_id = ?;";
+
+	private static final String _GET_SQL =
+		"SELECT * FROM quotations " +
+		"WHERE id = ?;";
+
+	private static final String _INSERT_RQ_SQL =
+		"INSERT INTO request_quotation " +
+		"(request_id, quotation_id, quotation_quantity, unit_value, " +
+			"response_quantity) " +
+		"VALUES (?, ?, ?, ?, ?);";
+
+	private static final String _DELETE_RQ_SQL =
+		"DELETE FROM request_quotation " +
+		"WHERE quotation_id = ?;";
+
+	private static final String _UPDATE_QUOTATION_SQL =
+		"UPDATE quotations" +
+		"SET supplier_id = ?, response_date = ?, expiration_date = ?, " +
+			"delivery_time = ?, info = ?, modified_by = ?, modified = now() " +
+		"WHERE id = ?;";
+
+	private static final String _SAVE_SQL =
+		"INSERT INTO quotations " +
+		"(id, supplier_id, response_date, expiration_date, delivery_time, " +
+			"info, created_by, created) " +
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+
+	private static final String _SAVE_RQ_SQL =
+		"INSERT INTO request_quotation " +
+		"(request_id, quotation_id, quotation_quantity, unit_value, " +
+			"response_quantity)" +
+		"VALUES (?, ?, ?, ?, ?);";
 
 	public static QuotationDAO getInstance(String schema) {
 		return (QuotationDAO) AbstractDAO.getInstance(QuotationDAO.class, schema);
 	}
 
-	public Integer save(QuotationDTO dto) {
+	public final void onTransactionContext(
+		CheckedConsumer<Connection> consumer) {
 
 		Connection con = null;
+
 		try {
-			con = this.getConnection();
+			con  = this.getConnection();
+
 			con.setAutoCommit(false);
 
-			int quotationId = this.getNextSerial("quotations_id_seq");
-			dto.setId(quotationId);
-
-			StringBuilder sqlQuotations = new StringBuilder();
-			sqlQuotations.append("INSERT INTO quotations (id, supplier_id, ");
-			sqlQuotations.append("response_date, expiration_date, delivery_time, ");
-			sqlQuotations.append("info, created_by, created) ");
-			sqlQuotations.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-
-			PreparedStatement pstQuotations = con.prepareStatement(sqlQuotations.toString());
-			pstQuotations.setInt(1, dto.getId());
-			pstQuotations.setInt(2, dto.getSupplierId());
-			pstQuotations.setDate(3, new java.sql.Date(dto.getResponseDate().getTime()));
-			pstQuotations.setDate(4, new java.sql.Date(dto.getExpirationDate().getTime()));
-			pstQuotations.setInt(5, dto.getDeliveryTime());
-			pstQuotations.setString(6, dto.getInfo());
-			pstQuotations.setInt(7, dto.getCreatedBy());
-			pstQuotations.setDate(8, new java.sql.Date(dto.getCreated().getTime()));
-
-			pstQuotations.executeUpdate();
-
-			StringBuilder sqlRQuotations = new StringBuilder();
-			sqlRQuotations.append("INSERT INTO request_quotation ");
-			sqlRQuotations.append("(request_id, quotation_id, quotation_quantity, unit_value, ");
-			sqlRQuotations.append("response_quantity) ");
-			sqlRQuotations.append("VALUES (?, ?, ?, ?, ?);");
-
-			PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations.toString());
-
-			for (RequestQuotationDTO rqdto : dto.getQuotationsList()) {
-				pstRQuotations.setInt(1, rqdto.getRequestId());
-				pstRQuotations.setInt(2, quotationId);
-				pstRQuotations.setInt(3, rqdto.getQuantity());
-				pstRQuotations.setFloat(4, rqdto.getUnitValue());
-				pstRQuotations.setInt(5, rqdto.getResponseQuantity());
-				pstRQuotations.addBatch();
-			}
-
-			pstRQuotations.executeBatch();
+			consumer.accept(con);
 
 			con.commit();
-			return quotationId;
-
 		} catch (Exception e) {
 			this.rollback(con);
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
+	}
+
+	public Integer save(QuotationDTO dto) {
+		int quotationId = this.getNextSerial("quotations_id_seq");
+
+		onTransactionContext(
+			con -> {
+				try (PreparedStatement save = con.prepareStatement(_SAVE_SQL);
+					PreparedStatement saveRQ =
+						con.prepareStatement(_SAVE_RQ_SQL)) {
+
+					dto.setId(quotationId);
+
+					PreparedStatementUtil.setAllParameters(
+						save, dto.getId(), dto.getSupplierId(),
+						dto.getResponseDate(), dto.getExpirationDate(),
+						dto.getDeliveryTime(), dto.getInfo(),
+						dto.getCreatedBy(),	dto.getCreated());
+
+					save.executeUpdate();
+
+					for (RequestQuotationDTO requestQuotation :
+						dto.getQuotationsList()) {
+
+						PreparedStatementUtil.setAllParameters(
+							saveRQ,	requestQuotation.getRequestId(),
+							requestQuotation.getQuotationId(),
+							requestQuotation.getQuantity(),
+							requestQuotation.getUnitValue(),
+							requestQuotation.getResponseQuantity());
+
+						saveRQ.addBatch();
+					}
+
+					saveRQ.executeBatch();
+				}
+			}
+		);
+
+		return quotationId;
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
@@ -109,312 +168,140 @@ public class QuotationDAO extends AbstractDAO {
 		} else if (abstractDto instanceof RequestQuotationDTO) {
 			return this.saveRequestQuotationFromBiblivre3(dtoList);
 		} else {
-			throw new IllegalArgumentException("List is not of QuotationDTO or RequestQuotationDTO objects.");
+			throw new IllegalArgumentException("List is not of QuotationDTO " +
+				"or RequestQuotationDTO objects.");
 		}
 
 	}
 
-	private boolean saveQuotationFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
+	private boolean saveQuotationFromBiblivre3(
+		List<? extends AbstractDTO> dtoList) {
 
-			StringBuilder sqlQuotations = new StringBuilder();
-			sqlQuotations.append("INSERT INTO quotations (id, supplier_id, ");
-			sqlQuotations.append("response_date, expiration_date, delivery_time, ");
-			sqlQuotations.append("info, created_by, created) ");
-			sqlQuotations.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+		onTransactionContext(con -> {
+			try (PreparedStatement save = con.prepareStatement(_SAVE_SQL)) {
+				for (AbstractDTO item : dtoList) {
+					QuotationDTO quotation = (QuotationDTO) item;
 
-			PreparedStatement pstQuotations = con.prepareStatement(sqlQuotations.toString());
+					PreparedStatementUtil.setAllParameters(
+						save, quotation.getId(), quotation.getSupplierId(),
+						quotation.getResponseDate(),
+						quotation.getExpirationDate(),
+						quotation.getDeliveryTime(), quotation.getInfo(),
+						quotation.getCreatedBy(), quotation.getCreated());
+				}
 
-			for (AbstractDTO abstractDto : dtoList) {
-				QuotationDTO dto = (QuotationDTO) abstractDto;
-				pstQuotations.setInt(1, dto.getId());
-				pstQuotations.setInt(2, dto.getSupplierId());
-				pstQuotations.setDate(3, new java.sql.Date(dto.getResponseDate().getTime()));
-				pstQuotations.setDate(4, new java.sql.Date(dto.getExpirationDate().getTime()));
-				pstQuotations.setInt(5, dto.getDeliveryTime());
-				pstQuotations.setString(6, dto.getInfo());
-				pstQuotations.setInt(7, dto.getCreatedBy());
-				pstQuotations.setDate(8, new java.sql.Date(dto.getCreated().getTime()));
-				pstQuotations.addBatch();
+				save.executeBatch();
 			}
+		});
 
-			pstQuotations.executeBatch();
-
-			con.commit();
-
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
 		return true;
 	}
 
-	private boolean saveRequestQuotationFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
+	private boolean saveRequestQuotationFromBiblivre3(
+			List<? extends AbstractDTO> dtoList) {
 
-			StringBuilder sqlRQuotations = new StringBuilder();
-			sqlRQuotations.append("INSERT INTO request_quotation ");
-			sqlRQuotations.append("(request_id, quotation_id, quotation_quantity, unit_value, ");
-			sqlRQuotations.append("response_quantity) ");
-			sqlRQuotations.append("VALUES (?, ?, ?, ?, ?);");
+		onTransactionContext(con -> {
+			try (PreparedStatement saveRQ =
+				con.prepareStatement(_SAVE_RQ_SQL)) {
 
-			PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations.toString());
+				for (AbstractDTO abstractDto : dtoList) {
+					RequestQuotationDTO requestQuotation =
+						(RequestQuotationDTO) abstractDto;
 
-			for (AbstractDTO abstractDto : dtoList) {
-				RequestQuotationDTO rqdto = (RequestQuotationDTO) abstractDto;
-				pstRQuotations.setInt(1, rqdto.getRequestId());
-				pstRQuotations.setInt(2, rqdto.getQuotationId());
-				pstRQuotations.setInt(3, rqdto.getQuantity());
-				pstRQuotations.setFloat(4, rqdto.getUnitValue());
-				pstRQuotations.setInt(5, rqdto.getResponseQuantity());
-				pstRQuotations.addBatch();
+					PreparedStatementUtil.setAllParameters(
+						saveRQ,	requestQuotation.getRequestId(),
+						requestQuotation.getQuotationId(),
+						requestQuotation.getQuantity(),
+						requestQuotation.getUnitValue(),
+						requestQuotation.getResponseQuantity());
+
+					saveRQ.addBatch();
+				}
+
+				saveRQ.executeBatch();
 			}
+		});
 
-			pstRQuotations.executeBatch();
-
-			con.commit();
-
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
 		return true;
 	}
 
 
 	public boolean update(QuotationDTO dto) {
+		onTransactionContext(con -> {
+			try (PreparedStatement updateQuotations =
+					con.prepareStatement(_UPDATE_QUOTATION_SQL);
+				PreparedStatement deleteRQ =
+					con.prepareStatement(_DELETE_RQ_SQL);
+				PreparedStatement insertRQ =
+					con.prepareStatement(_INSERT_RQ_SQL)) {
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
+				PreparedStatementUtil.setAllParameters(
+					updateQuotations, dto.getSupplierId(),
+					dto.getResponseDate(), dto.getExpirationDate(),
+					dto.getDeliveryTime(), dto.getInfo(), dto.getModifiedBy(),
+					dto.getId());
 
-			StringBuilder sqlQuotations = new StringBuilder();
-			sqlQuotations.append("UPDATE quotations SET supplier_id = ?, ");
-			sqlQuotations.append("response_date = ?, expiration_date = ?, delivery_time = ?, ");
-			sqlQuotations.append("info = ?, modified_by = ?, modified = now() ");
-			sqlQuotations.append("WHERE id = ?;");
+				updateQuotations.executeUpdate();
 
-			PreparedStatement pstQuotations = con.prepareStatement(sqlQuotations.toString());
-			pstQuotations.setInt(1, dto.getSupplierId());
-			pstQuotations.setDate(2, new java.sql.Date(dto.getResponseDate().getTime()));
-			pstQuotations.setDate(3, new java.sql.Date(dto.getExpirationDate().getTime()));
-			pstQuotations.setInt(4, dto.getDeliveryTime());
-			pstQuotations.setString(5, dto.getInfo());
-			pstQuotations.setInt(6, dto.getModifiedBy());
-			pstQuotations.setInt(7, dto.getId());
+				deleteRQ.setInt(1, dto.getId());
 
-			pstQuotations.executeUpdate();
+				deleteRQ.executeUpdate();
 
-			StringBuilder sqlItemQuotations = new StringBuilder();
-			sqlItemQuotations.append("DELETE FROM request_quotation ");
-			sqlItemQuotations.append("WHERE quotation_id = ?;");
-			PreparedStatement pstItemQuotations = con.prepareStatement(sqlItemQuotations.toString());
-			pstItemQuotations.setInt(1, dto.getId());
-			pstItemQuotations.executeUpdate();
+				for (RequestQuotationDTO rqdto : dto.getQuotationsList()) {
+					PreparedStatementUtil.setAllParameters(
+						deleteRQ, rqdto.getRequestId(), dto.getId(),
+						rqdto.getQuantity(), rqdto.getUnitValue(),
+						rqdto.getResponseQuantity());
 
-			StringBuilder sqlRQuotations = new StringBuilder();
-			sqlRQuotations.append("INSERT INTO request_quotation ");
-			sqlRQuotations.append("(request_id, quotation_id, quotation_quantity, unit_value, ");
-			sqlRQuotations.append("response_quantity) ");
-			sqlRQuotations.append("VALUES (?, ?, ?, ?, ?);");
+					insertRQ.addBatch();
+				}
 
-			PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations.toString());
-
-			for (RequestQuotationDTO rqdto : dto.getQuotationsList()) {
-				pstRQuotations.setInt(1, rqdto.getRequestId());
-				pstRQuotations.setInt(2, dto.getId());
-				pstRQuotations.setInt(3, rqdto.getQuantity());
-				pstRQuotations.setFloat(4, rqdto.getUnitValue());
-				pstRQuotations.setInt(5, rqdto.getResponseQuantity());
-				pstRQuotations.addBatch();
+				insertRQ.executeBatch();
 			}
+		});
 
-			pstRQuotations.executeBatch();
-
-			con.commit();
-
-			return true;
-
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
+		return true;
 	}
 
 	public QuotationDTO get(int id) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM quotations ");
-			sql.append("WHERE id = ?;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, id);
-
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				return this.populateDto(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return null;
+		return fetchOne(this::populateDto, _GET_SQL, id);
 	}
 
 	public List<RequestQuotationDTO> listRequestQuotation(int quotationId) {
-		List<RequestQuotationDTO> list = new ArrayList<RequestQuotationDTO>();
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM request_quotation ");
-			sql.append("WHERE quotation_id = ?;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, quotationId);
-
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateRequestQuotationDto(rs));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return list;
+		return listWith(
+			this::populateRequestQuotationDto, _LIST_RQ_SQL, quotationId);
 	}
 
 	public boolean delete(QuotationDTO dto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("DELETE FROM quotations ");
-			sql.append("WHERE id = ?;");
-
-			PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-			pstInsert.setInt(1, dto.getId());
-
-			return pstInsert.executeUpdate() > 0;
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeQuery(
+			pst -> pst.executeUpdate() > 0, _DELETE_SQL, dto.getId());
 	}
 
-	public DTOCollection<QuotationDTO> search(String value, int limit, int offset) {
-		DTOCollection<QuotationDTO> list = new DTOCollection<QuotationDTO>();
+	public DTOCollection<QuotationDTO> search(
+		String value, int limit, int offset) {
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		boolean isNumeric = StringUtils.isNumeric(value);
 
-			StringBuilder sql = new StringBuilder("SELECT * FROM quotations q ");
-			if (StringUtils.isNumeric(value)) {
-				sql.append("WHERE id = ? ");
-			} else {
-				sql.append("INNER JOIN suppliers s ON q.supplier_id = s.id ");
-				sql.append("WHERE trademark ilike ? ");
-			}
-			sql.append("ORDER BY q.id ASC LIMIT ? OFFSET ? ");
+		String sql = isNumeric ? _SEARCH_NUMERIC_SQL : _SEARCH_KEYWORD_SQL;
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			int i = 1;
-			if (StringUtils.isNumeric(value)) {
-				pst.setInt(i++, Integer.valueOf(value));
-			} else {
-				pst.setString(i++, "%" + value + "%");
-			}
-			pst.setInt(i++, limit);
-			pst.setInt(i++, offset);
+		Object keyword = isNumeric ? Integer.valueOf(value) : "%" + value + "%";
 
-			StringBuilder sqlCount = new StringBuilder("SELECT count(*) as total FROM quotations q ");
-			if (StringUtils.isNumeric(value)) {
-				sql.append("WHERE id = ? ");
-			} else {
-				sql.append("INNER JOIN suppliers s ON q.supplier_id = s.id ");
-				sql.append("WHERE trademark ilike ? ");
-			}
-
-			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
-			if (StringUtils.isNumeric(value)) {
-				pst.setInt(1, Integer.valueOf(value));
-			} else {
-				pst.setString(1, "%" + value + "%");
-			}
-
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateDto(rs));
-			}
-
-			ResultSet rsCount = pstCount.executeQuery();
-			if (rsCount.next()) {
-				int total = rsCount.getInt("total");
-
-				PagingDTO paging = new PagingDTO(total, limit, offset);
-				list.setPaging(paging);
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
-		return list;
+		return pagedListWith(
+			this::populateDto, sql, limit, offset, keyword);
 	}
 
 	public DTOCollection<QuotationDTO> list(Integer supplierId) {
-		DTOCollection<QuotationDTO> list = new DTOCollection<QuotationDTO>();
+		List<QuotationDTO> list =
+			listWith(this::populateDto, _LIST_SQL, supplierId);
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		DTOCollection<QuotationDTO> collection =
+			new DTOCollection<QuotationDTO>();
 
-			StringBuilder sql = new StringBuilder("SELECT * FROM quotations ");
-			//Add 1 day to expiration_date, else it'll check for expiration_date at midnight (00:00H)
-			//and it won't find quotations for the same day
-			//sql.append("WHERE supplier_id = ? AND expiration_date + interval '1 day' >= now(); ");
-			sql.append("WHERE supplier_id = ? AND expiration_date >= now()::date; ");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, supplierId);
-
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateDto(rs));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
+		for (QuotationDTO quotation : list) {
+			collection.add(quotation);
 		}
 
-		return list;
+		return collection;
 	}
 
 	private QuotationDTO populateDto(ResultSet rs) throws Exception {
@@ -431,10 +318,12 @@ public class QuotationDAO extends AbstractDAO {
 		dto.setCreatedBy(rs.getInt("created_by"));
 		dto.setModified(rs.getTimestamp("modified"));
 		dto.setModifiedBy(rs.getInt("modified_by"));
+
 		return dto;
 	}
 
-	private RequestQuotationDTO populateRequestQuotationDto(ResultSet rs) throws Exception {
+	private RequestQuotationDTO populateRequestQuotationDto(ResultSet rs)
+		throws Exception {
 		RequestQuotationDTO dto = new RequestQuotationDTO();
 
 		dto.setRequestId(rs.getInt("request_id"));
