@@ -273,8 +273,7 @@ public class QuotationDAO extends AbstractDAO {
 	}
 
 	public boolean delete(QuotationDTO dto) {
-		return executeQuery(
-			pst -> pst.executeUpdate() > 0, _DELETE_SQL, dto.getId());
+		return executeUpdate(_DELETE_SQL, dto.getId());
 	}
 
 	public DTOCollection<QuotationDTO> search(

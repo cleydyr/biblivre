@@ -418,6 +418,10 @@ public abstract class AbstractDAO {
 		}
 	}
 
+	public boolean executeUpdate(String sql, Object... parameters) {
+		return executeQuery(pst -> pst.executeUpdate() > 0, sql, parameters);
+	}
+
 	public <T extends AbstractDTO> DTOCollection<T> pagedListWith(
 		CheckedFunction<ResultSet, T> mapper, String sql, int limit, int offset,
 		Object... parameters) {
