@@ -121,7 +121,7 @@ public class QuotationDAO extends AbstractDAO {
 
 		onTransactionContext(con -> {
 			executeUpdate(
-				_SAVE_SQL, dto.getId(), dto.getSupplierId(),
+				_SAVE_SQL, quotationId, dto.getSupplierId(),
 				dto.getResponseDate(), dto.getExpirationDate(),
 				dto.getDeliveryTime(), dto.getInfo(), dto.getCreatedBy(),
 				dto.getCreated());
