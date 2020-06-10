@@ -20,7 +20,6 @@
 package biblivre.acquisition.quotation;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
@@ -119,39 +118,22 @@ public class QuotationDAO extends AbstractDAO {
 	public Integer save(QuotationDTO dto) {
 		int quotationId = this.getNextSerial("quotations_id_seq");
 
-		onTransactionContext(
-			con -> {
-				try (PreparedStatement save = con.prepareStatement(_SAVE_SQL);
-					PreparedStatement saveRQ =
-						con.prepareStatement(_SAVE_RQ_SQL)) {
+		onTransactionContext(con -> {
+			executeUpdate(
+				_SAVE_SQL, dto.getId(), dto.getSupplierId(),
+				dto.getResponseDate(), dto.getExpirationDate(),
+				dto.getDeliveryTime(), dto.getInfo(), dto.getCreatedBy(),
+				dto.getCreated());
 
-					dto.setId(quotationId);
-
-					PreparedStatementUtil.setAllParameters(
-						save, dto.getId(), dto.getSupplierId(),
-						dto.getResponseDate(), dto.getExpirationDate(),
-						dto.getDeliveryTime(), dto.getInfo(),
-						dto.getCreatedBy(),	dto.getCreated());
-
-					save.executeUpdate();
-
-					for (RequestQuotationDTO requestQuotation :
-						dto.getQuotationsList()) {
-
-						PreparedStatementUtil.setAllParameters(
-							saveRQ,	requestQuotation.getRequestId(),
-							requestQuotation.getQuotationId(),
-							requestQuotation.getQuantity(),
-							requestQuotation.getUnitValue(),
-							requestQuotation.getResponseQuantity());
-
-						saveRQ.addBatch();
-					}
-
-					saveRQ.executeBatch();
-				}
-			}
-		);
+			executeBatchUpdate((pst, requestQuotation) -> {
+				PreparedStatementUtil.setAllParameters(
+					pst,	requestQuotation.getRequestId(),
+					requestQuotation.getQuotationId(),
+					requestQuotation.getQuantity(),
+					requestQuotation.getUnitValue(),
+					requestQuotation.getResponseQuantity());
+			}, dto.getQuotationsList(),_SAVE_RQ_SQL);
+		});
 
 		return quotationId;
 	}
@@ -177,87 +159,51 @@ public class QuotationDAO extends AbstractDAO {
 	private boolean saveQuotationFromBiblivre3(
 		List<? extends AbstractDTO> dtoList) {
 
-		onTransactionContext(con -> {
-			try (PreparedStatement save = con.prepareStatement(_SAVE_SQL)) {
-				for (AbstractDTO item : dtoList) {
-					QuotationDTO quotation = (QuotationDTO) item;
+		return executeBatchUpdate((pst, item) -> {
+			QuotationDTO quotation = (QuotationDTO) item;
 
-					PreparedStatementUtil.setAllParameters(
-						save, quotation.getId(), quotation.getSupplierId(),
-						quotation.getResponseDate(),
-						quotation.getExpirationDate(),
-						quotation.getDeliveryTime(), quotation.getInfo(),
-						quotation.getCreatedBy(), quotation.getCreated());
-				}
-
-				save.executeBatch();
-			}
-		});
-
-		return true;
+			PreparedStatementUtil.setAllParameters(
+				pst, quotation.getId(), quotation.getSupplierId(),
+				quotation.getResponseDate(),
+				quotation.getExpirationDate(),
+				quotation.getDeliveryTime(), quotation.getInfo(),
+				quotation.getCreatedBy(), quotation.getCreated());
+		}, dtoList, _SAVE_SQL);
 	}
 
 	private boolean saveRequestQuotationFromBiblivre3(
 			List<? extends AbstractDTO> dtoList) {
 
-		onTransactionContext(con -> {
-			try (PreparedStatement saveRQ =
-				con.prepareStatement(_SAVE_RQ_SQL)) {
+		return executeBatchUpdate((pst, item) -> {
+			RequestQuotationDTO requestQuotation =
+					(RequestQuotationDTO) item;
 
-				for (AbstractDTO abstractDto : dtoList) {
-					RequestQuotationDTO requestQuotation =
-						(RequestQuotationDTO) abstractDto;
-
-					PreparedStatementUtil.setAllParameters(
-						saveRQ,	requestQuotation.getRequestId(),
-						requestQuotation.getQuotationId(),
-						requestQuotation.getQuantity(),
-						requestQuotation.getUnitValue(),
-						requestQuotation.getResponseQuantity());
-
-					saveRQ.addBatch();
-				}
-
-				saveRQ.executeBatch();
-			}
-		});
-
-		return true;
+			PreparedStatementUtil.setAllParameters(
+				pst, requestQuotation.getRequestId(),
+				requestQuotation.getQuotationId(),
+				requestQuotation.getQuantity(),
+				requestQuotation.getUnitValue(),
+				requestQuotation.getResponseQuantity());
+		}, dtoList, _SAVE_RQ_SQL);
 	}
 
 
 	public boolean update(QuotationDTO dto) {
 		onTransactionContext(con -> {
-			try (PreparedStatement updateQuotations =
-					con.prepareStatement(_UPDATE_QUOTATION_SQL);
-				PreparedStatement deleteRQ =
-					con.prepareStatement(_DELETE_RQ_SQL);
-				PreparedStatement insertRQ =
-					con.prepareStatement(_INSERT_RQ_SQL)) {
+			executeUpdate(
+				_UPDATE_QUOTATION_SQL, dto.getSupplierId(),
+				dto.getResponseDate(), dto.getExpirationDate(),
+				dto.getDeliveryTime(), dto.getInfo(), dto.getModifiedBy(),
+				dto.getId());
 
+			executeUpdate(_DELETE_RQ_SQL, dto.getId());
+
+			executeBatchUpdate((pst, item) -> {
 				PreparedStatementUtil.setAllParameters(
-					updateQuotations, dto.getSupplierId(),
-					dto.getResponseDate(), dto.getExpirationDate(),
-					dto.getDeliveryTime(), dto.getInfo(), dto.getModifiedBy(),
-					dto.getId());
-
-				updateQuotations.executeUpdate();
-
-				deleteRQ.setInt(1, dto.getId());
-
-				deleteRQ.executeUpdate();
-
-				for (RequestQuotationDTO rqdto : dto.getQuotationsList()) {
-					PreparedStatementUtil.setAllParameters(
-						deleteRQ, rqdto.getRequestId(), dto.getId(),
-						rqdto.getQuantity(), rqdto.getUnitValue(),
-						rqdto.getResponseQuantity());
-
-					insertRQ.addBatch();
-				}
-
-				insertRQ.executeBatch();
-			}
+					pst, item.getRequestId(), dto.getId(),
+					item.getQuantity(), item.getUnitValue(),
+					item.getResponseQuantity());
+			}, dto.getQuotationsList(), _INSERT_RQ_SQL);
 		});
 
 		return true;

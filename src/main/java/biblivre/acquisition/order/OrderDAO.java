@@ -136,8 +136,7 @@ public class OrderDAO extends AbstractDAO {
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return executeQuery(pst -> {
-			for (AbstractDTO abstractDto : dtoList) {
+		return executeBatchUpdate((pst, abstractDto) -> {
 				OrderDTO dto = (OrderDTO) abstractDto;
 				pst.setInt(1, dto.getQuotationId());
 				pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
@@ -171,13 +170,7 @@ public class OrderDAO extends AbstractDAO {
 				pst.setDate(
 					11, new java.sql.Date(dto.getDeadlineDate().getTime()));
 				pst.setInt(12, dto.getId());
-				pst.addBatch();
-			}
-
-			pst.executeBatch();
-
-			return true;
-		}, _SAVE_FROM_V3_SQL);
+			}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
 	public boolean update(OrderDTO dto) {

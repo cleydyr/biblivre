@@ -93,29 +93,22 @@ public class SupplierDAO extends AbstractDAO {
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return executeQuery(pst -> {
-			for (AbstractDTO abstractDto : dtoList) {
-				SupplierDTO dto = (SupplierDTO) abstractDto;
+		return executeBatchUpdate((pst, abstractDto) -> {
+			SupplierDTO dto = (SupplierDTO) abstractDto;
 
-				PreparedStatementUtil.setAllParameters(
-					pst, dto.getTrademark(), dto.getName(),
-					dto.getSupplierNumber(), dto.getVatRegistrationNumber(),
-					dto.getAddress(), dto.getAddressNumber(),
-					dto.getComplement(), dto.getArea(), dto.getCity(),
-					dto.getState(), dto.getCountry(), dto.getZipCode(),
-					dto.getTelephone1(), dto.getTelephone2(),
-					dto.getTelephone3(), dto.getTelephone4(),
-					dto.getContact1(), dto.getContact2(), dto.getContact3(),
-					dto.getContact4(), dto.getInfo(), dto.getUrl(),
-					dto.getEmail(), dto.getCreatedBy(), dto.getId());
+			PreparedStatementUtil.setAllParameters(
+				pst, dto.getTrademark(), dto.getName(),
+				dto.getSupplierNumber(), dto.getVatRegistrationNumber(),
+				dto.getAddress(), dto.getAddressNumber(),
+				dto.getComplement(), dto.getArea(), dto.getCity(),
+				dto.getState(), dto.getCountry(), dto.getZipCode(),
+				dto.getTelephone1(), dto.getTelephone2(),
+				dto.getTelephone3(), dto.getTelephone4(),
+				dto.getContact1(), dto.getContact2(), dto.getContact3(),
+				dto.getContact4(), dto.getInfo(), dto.getUrl(),
+				dto.getEmail(), dto.getCreatedBy(), dto.getId());
 
-				pst.addBatch();
-			}
-
-			pst.executeBatch();
-
-			return true;
-		}, _SAVE_FROM_V3_SQL);
+		}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
 	public boolean update(SupplierDTO dto) {

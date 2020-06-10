@@ -19,11 +19,9 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,20 +30,38 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.PagingDTO;
-import biblivre.core.exceptions.DAOException;
+import biblivre.core.PreparedStatementUtil;
 
 public class AccessCardDAO extends AbstractDAO {
+
+	private static final String _DELETE_SQL =
+		"DELETE FROM access_cards WHERE id = ?";
+
+	private static final String _UPDATE_SQL =
+		"UPDATE access_cards " +
+		"SET status = ?, modified = now(), modified_by = ? " +
+		"WHERE id = ?";
+
+	private static final String _SAVE_FROM_V3_SQL =
+		"INSERT INTO access_cards" +
+			"(code, status, created_by, id) " +
+		"VALUES (?, ?, ?, ?)";
+
+	private static final String _SAVE_SQL =
+		"INSERT INTO access_cards" +
+			"(id, code, status, created_by) " +
+		"VALUES (?, ?, ?)";
+
+	private static final String _GET_SQL =
+		"SELECT * FROM access_cards WHERE id = ?";
 
 	public static AccessCardDAO getInstance(String schema) {
 		return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAO.class, schema);
 	}
 
 	public AccessCardDTO get(String code) {
-		List<String> codes = new LinkedList<String>();
-		codes.add(code);
+		List<AccessCardDTO> list = this.get(Collections.singletonList(code));
 
-		List<AccessCardDTO> list = this.get(codes, null);
 		if (list.size() == 0) {
 			return null;
 		}
@@ -53,269 +69,86 @@ public class AccessCardDAO extends AbstractDAO {
 		return list.get(0);
 	}
 
-	public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
-		List<AccessCardDTO> list = new LinkedList<AccessCardDTO>();
+	public List<AccessCardDTO> get(
+		List<String> codes) {
 
-		boolean hasCodes = (codes != null && codes.size() > 0);
-		boolean hasStatus = (status != null && status.size() > 0);
+		int codesSize = codes != null ? codes.size() : 0;
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		String sql = _getSQL(codesSize);
 
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM access_cards WHERE 1 = 1 ");
-
-			if (hasCodes) {
-				sql.append("and code in (");
-				sql.append(StringUtils.repeat("?", ", ", codes.size()));
-				sql.append(");");
-			}
-
-			if (hasStatus) {
-				sql.append("and status in (");
-				sql.append(StringUtils.repeat("?", ", ", status.size()));
-				sql.append(");");
-			}
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			int index = 1;
-			if (hasCodes) {
-				for (String code : codes) {
-					pst.setString(index++, code);
-				}
-			}
-
-			if (hasStatus) {
-				for (AccessCardStatus stat : status) {
-					pst.setString(index++, stat.toString());
-				}
-			}
-
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
+		if (codesSize > 0) {
+			return listWith(this::populateDTO, sql, codes.toArray());
 		}
-		return list;
+		else {
+			return listWith(this::populateDTO, sql);
+		}
 	}
 
 	public AccessCardDTO get(int id) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM access_cards WHERE id = ?; ");
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, id);
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				return this.populateDTO(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return null;
+		return fetchOne(
+			this::populateDTO, _GET_SQL, id);
 	}
 
-	public DTOCollection<AccessCardDTO> search(String code, AccessCardStatus status, int limit, int offset) {
-		DTOCollection<AccessCardDTO> list = new DTOCollection<AccessCardDTO>();
-		Connection con = null;
-		try {
-			con = this.getConnection();
+	public DTOCollection<AccessCardDTO> search(
+		String code, AccessCardStatus status, int limit, int offset) {
 
-			StringBuilder sql = new StringBuilder();
-			StringBuilder sqlCount = new StringBuilder();
+		boolean isNotBlankCode = StringUtils.isNotBlank(code);
 
-			sql.append("SELECT * FROM access_cards WHERE ");
-			sqlCount.append("SELECT count(*) as total FROM access_cards WHERE ");
+		Object[] parameters = new Object[isNotBlankCode ? 2 : 1];
 
-			if (status == null) {
-				sql.append("status <> ? ");
-				sqlCount.append("status <> ? ");
-			} else {
-				sql.append("status = ? ");
-				sqlCount.append("status = ? ");
-			}
+		parameters[0] =
+			status == null ? AccessCardStatus.CANCELLED.toString() :
+				status.toString();
 
-			if (StringUtils.isNotBlank(code)) {
-				sql.append("AND code ILIKE ? ");
-				sqlCount.append("AND code ILIKE ? ");
-			}
-			sql.append("ORDER BY id ASC LIMIT ? OFFSET ?;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
-
-			int idx = 1;
-
-			if (status == null) {
-				pst.setString(idx, AccessCardStatus.CANCELLED.toString());
-				pstCount.setString(idx++, AccessCardStatus.CANCELLED.toString());
-			} else {
-				pst.setString(idx,status.toString());
-				pstCount.setString(idx++, status.toString());
-			}
-
-			if (StringUtils.isNotBlank(code)) {
-				pst.setString(idx,"%" + code + "%");
-				pstCount.setString(idx++, "%" + code + "%");
-			}
-
-			pst.setInt(idx++, limit);
-			pst.setInt(idx++, offset);
-
-			ResultSet rs = pst.executeQuery();
-			ResultSet rsCount = pstCount.executeQuery();
-
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-
-			if (rsCount.next()) {
-				int total = rsCount.getInt("total");
-
-				PagingDTO paging = new PagingDTO(total, limit, offset);
-				list.setPaging(paging);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
+		if (isNotBlankCode) {
+			parameters[1] = "%" + code + "%";
 		}
-		return list;
+
+		String searchSQL = _getSearchSQL(code, status);
+
+		return pagedListWith(
+			this::populateDTO, searchSQL, limit, offset, parameters);
+	}
+
+	public AccessCardDTO create() {
+		AccessCardDTO accessCard = new AccessCardDTO();
+
+		accessCard.setId(getNextSerial("access_cards_id_seq"));
+
+		return accessCard;
 	}
 
 	public boolean save(AccessCardDTO dto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO access_cards(code, status, created_by) ");
-			sql.append("VALUES (?, ?, ?);");
-			PreparedStatement pst = con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
-			pst.setString(1, dto.getCode());
-			pst.setString(2, dto.getStatus().toString());
-			pst.setInt(3, dto.getCreatedBy());
-
-			pst.executeUpdate();
-
-			ResultSet keys = pst.getGeneratedKeys();
-			if (keys.next()) {
-				dto.setId(keys.getInt(1));
-			}
-
-			return true;
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeUpdate(
+			_SAVE_SQL, dto.getCode(), dto.getStatus().toString(),
+			dto.getCreatedBy());
 	}
 
 	public boolean save(LinkedList<AccessCardDTO> cardList) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO access_cards(code, status, created_by) ");
-			sql.append("VALUES (?, ?, ?);");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
-
-			for (AccessCardDTO card : cardList) {
-				pst.setString(1, card.getCode());
-				pst.setString(2, card.getStatus().toString());
-				pst.setInt(3, card.getCreatedBy());
-				pst.addBatch();
-			}
-
-			pst.executeBatch();
-
-			ResultSet keys = pst.getGeneratedKeys();
-			if (keys.next()) {
-				AccessCardDTO dto = cardList.get(0);
-				dto.setId(keys.getInt(1));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return true;
+		return executeBatchUpdate((pst, card) -> {
+			PreparedStatementUtil.setAllParameters(
+					pst, card.getCode(), card.getStatus().toString(),
+					card.getCreatedBy());
+		}, cardList, _SAVE_SQL);
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO access_cards(code, status, created_by, id) ");
-			sql.append("VALUES (?, ?, ?, ?);");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-
-			for (AbstractDTO abstractDto : dtoList) {
-				AccessCardDTO dto = (AccessCardDTO) abstractDto;
-				pst.setString(1, dto.getCode());
-				pst.setString(2, dto.getStatus().toString());
-				pst.setInt(3, dto.getCreatedBy());
-				pst.setInt(4, dto.getId());
-				pst.addBatch();
-			}
-
-			pst.executeBatch();
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return true;
+		return executeBatchUpdate((pst, item) -> {
+			AccessCardDTO accessCard = (AccessCardDTO) item;
+			PreparedStatementUtil.setAllParameters(
+				pst, accessCard.getCode(), accessCard.getStatus().toString(),
+				accessCard.getCreatedBy(), accessCard.getId());
+		}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
-
 	public boolean update(AccessCardDTO dto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("UPDATE access_cards SET status = ?, ");
-			sql.append("modified = now(), modified_by = ? ");
-			sql.append("WHERE id = ?;");
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setString(1, dto.getStatus().toString());
-			pst.setInt(2, dto.getModifiedBy());
-			pst.setInt(3, dto.getId());
-			return pst.executeUpdate() > 0;
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeUpdate(
+			_UPDATE_SQL, dto.getStatus().toString(), dto.getModifiedBy(),
+			dto.getId());
 	}
 
 	public boolean delete(int id) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			String sql = " DELETE FROM access_cards WHERE id = ?;";
-			PreparedStatement pst = con.prepareStatement(sql);
-			pst.setInt(1, id);
-			return pst.executeUpdate() > 0;
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeUpdate(_DELETE_SQL, id);
 	}
 
 	private AccessCardDTO populateDTO(ResultSet rs) throws SQLException {
@@ -330,38 +163,38 @@ public class AccessCardDAO extends AbstractDAO {
 		return dto;
 	}
 
+	private String _getSQL(int codesSize) {
+		StringBuilder sb = new StringBuilder(codesSize > 0 ? 4 : 1);
 
-//	public AccessCardDTO get(String code) {
-//		Connection con = null;
-//		try {
-//			con = getDataSource().getConnection();
-//			String sql = "SELECT C.*, A.entrance_datetime, U.userid as userserial, U.username FROM cards C " +
-//						 "LEFT JOIN access_control A ON A.serial_card = C.serial_card and A.departure_datetime is null " +
-//						 "LEFT JOIN users U ON U.userid = A.serial_reader " +
-//						 "WHERE C.card_number = ? AND C.status <> '" + AccessCardStatus.CANCELLED.ordinal() + "';";
-//
-//			PreparedStatement pst = con.prepareStatement(sql);
-//			pst.setString(1, cardNumber);
-//			ResultSet rs = pst.executeQuery();
-//			if (rs.next()) {
-//				AccessCardDTO dto = new AccessCardDTO();
-//				dto.setSerialCard(rs.getInt("serial_card"));
-//				dto.setCardNumber(rs.getString("card_number"));
-//				dto.setStatus(AccessCardStatus.values()[rs.getInt("status")]);
-//				dto.setUserid(rs.getInt("userid"));
-//				dto.setDateTime(rs.getTimestamp("date_time"));
-//				dto.setEntranceDatetime(rs.getTimestamp("entrance_datetime"));
-//				dto.setUserSerial(rs.getInt("userserial"));
-//				dto.setUserName(rs.getString("username"));
-//				return dto;
-//			}
-//		} catch (Exception e) {
-//			log.error(e);
-//			throw new ExceptionUser("Exception at AdminDAO.listCards");
-//		} finally {
-//			closeConnection(con);
-//		}
-//		return null;
-//	}
+		sb.append("SELECT * FROM access_cards WHERE 1 = 1 ");
 
+		if (codesSize > 0) {
+			sb.append("and code in (");
+			sb.append(StringUtils.repeat("?", ", ", codesSize));
+			sb.append(");");
+		}
+
+		return sb.toString();
+	}
+
+	private String _getSearchSQL(String code, AccessCardStatus status) {
+		StringBuilder sql =
+			new StringBuilder(StringUtils.isNotBlank(code) ? 4 : 3);
+
+		sql.append("SELECT * FROM access_cards WHERE ");
+
+		if (status == null) {
+			sql.append("status <> ? ");
+		} else {
+			sql.append("status = ? ");
+		}
+
+		if (StringUtils.isNotBlank(code)) {
+			sql.append("AND code ILIKE ? ");
+		}
+
+		sql.append("ORDER BY id ASC LIMIT ? OFFSET ?;");
+
+		return sql.toString();
+	}
 }

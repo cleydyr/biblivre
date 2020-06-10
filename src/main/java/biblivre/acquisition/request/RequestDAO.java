@@ -82,25 +82,17 @@ public class RequestDAO extends AbstractDAO {
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return executeQuery(pst -> {
-			for (AbstractDTO abstractDto : dtoList) {
-				RequestDTO dto = (RequestDTO) abstractDto;
+		return executeBatchUpdate((pst, abstractDto) -> {
+			RequestDTO dto = (RequestDTO) abstractDto;
 
-				PreparedStatementUtil.setAllParameters(
-					pst, dto.getRequester(), dto.getAuthor(), dto.getTitle(),
-					dto.getSubtitle(), dto.getEditionNumber(),
-					dto.getPublisher(), dto.getInfo(),
-					dto.getStatus().toString(), dto.getQuantity(),
-					dto.getCreatedBy(), dto.getId()
-				);
-
-				pst.addBatch();
-			}
-
-			pst.executeBatch();
-
-			return true;
-		}, _SAVE_FROM_V3_SQL);
+			PreparedStatementUtil.setAllParameters(
+				pst, dto.getRequester(), dto.getAuthor(), dto.getTitle(),
+				dto.getSubtitle(), dto.getEditionNumber(),
+				dto.getPublisher(), dto.getInfo(),
+				dto.getStatus().toString(), dto.getQuantity(),
+				dto.getCreatedBy(), dto.getId()
+			);
+		}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
 	public RequestDTO get(int id) {

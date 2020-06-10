@@ -29,6 +29,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -420,6 +421,23 @@ public abstract class AbstractDAO {
 
 	public boolean executeUpdate(String sql, Object... parameters) {
 		return executeQuery(pst -> pst.executeUpdate() > 0, sql, parameters);
+	}
+
+	public <T> boolean executeBatchUpdate(
+		CheckedBiConsumer<PreparedStatement, T> consumer, Collection<T> items,
+		String sql) {
+
+		return executeQuery(pst -> {
+			for (T item : items) {
+				consumer.accept(pst, item);
+
+				pst.addBatch();
+			}
+
+			pst.executeBatch();
+
+			return true;
+		}, sql);
 	}
 
 	public <T extends AbstractDTO> DTOCollection<T> pagedListWith(
