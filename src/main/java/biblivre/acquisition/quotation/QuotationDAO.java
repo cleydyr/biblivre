@@ -91,7 +91,8 @@ public class QuotationDAO extends AbstractDAO {
 		"VALUES (?, ?, ?, ?, ?);";
 
 	public static QuotationDAO getInstance(String schema) {
-		return (QuotationDAO) AbstractDAO.getInstance(QuotationDAO.class, schema);
+		return (QuotationDAO) AbstractDAO.getInstance(
+			QuotationDAO.class, schema);
 	}
 
 	public final void onTransactionContext(

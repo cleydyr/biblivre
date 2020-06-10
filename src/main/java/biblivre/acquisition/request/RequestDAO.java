@@ -70,7 +70,8 @@ public class RequestDAO extends AbstractDAO {
 			"VALUES (" + StringUtils.repeat("?", ", ", 10) + ");";
 
 	public static RequestDAO getInstance(String schema) {
-		return (RequestDAO) AbstractDAO.getInstance(RequestDAO.class, schema);
+		return (RequestDAO) AbstractDAO.getInstance(
+			RequestDAO.class, schema);
 	}
 
 	public boolean save(RequestDTO dto) {

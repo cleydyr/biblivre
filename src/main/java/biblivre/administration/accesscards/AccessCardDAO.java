@@ -56,7 +56,8 @@ public class AccessCardDAO extends AbstractDAO {
 		"SELECT * FROM access_cards WHERE id = ?";
 
 	public static AccessCardDAO getInstance(String schema) {
-		return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAO.class, schema);
+		return (AccessCardDAO) AbstractDAO.getInstance(
+			AccessCardDAO.class, schema);
 	}
 
 	public AccessCardDTO get(String code) {
