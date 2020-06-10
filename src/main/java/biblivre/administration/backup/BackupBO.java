@@ -214,9 +214,9 @@ public class BackupBO extends AbstractBO {
 			File home = new File(System.getProperty("user.home"));
 			File biblivre = new File(home, "Biblivre");
 
-			boolean directoryCreated = false;
+			boolean directoryCreated = biblivre.exists() && home.isDirectory();
 
-			if (!biblivre.exists() && home.isDirectory() && home.canWrite()) {
+			if (!directoryCreated && home.canWrite()) {
 				directoryCreated = biblivre.mkdir();
 			}
 
