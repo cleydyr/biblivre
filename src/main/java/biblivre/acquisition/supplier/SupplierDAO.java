@@ -19,8 +19,6 @@
  ******************************************************************************/
 package biblivre.acquisition.supplier;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
@@ -29,285 +27,132 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.PagingDTO;
-import biblivre.core.exceptions.DAOException;
+import biblivre.core.PreparedStatementUtil;
 
 public class SupplierDAO extends AbstractDAO {
+
+	private static final String _SEARCH_ALL_SQL =
+		"SELECT * FROM suppliers ORDER BY id ASC LIMIT ? OFFSET ?";
+
+	private static final String _SEARCH_KEYWORD_SQL =
+		"SELECT * FROM suppliers " +
+		"WHERE trademark ilike ? OR supplier_name ilike ? " +
+			"OR supplier_number = ? " +
+		"ORDER BY id ASC LIMIT ? OFFSET ?";
+
+	private static final String _GET_SQL =
+		"SELECT * FROM suppliers WHERE id = ?";
+
+	private static final String _DELETE_SQL =
+		"DELETE FROM suppliers WHERE id = ?";
+
+	private static final String _UPDATE_SQL =
+		"UPDATE suppliers " +
+		"SET trademark = ?, supplier_name = ?, supplier_number = ?, " +
+			"vat_registration_number = ?, address = ?, address_number = ?, " +
+			"address_complement = ?, area = ?, city = ?, state = ?, " +
+			"country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?, " +
+			"telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?, " +
+			"contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?, " +
+			"modified = now(), modified_by = ? " +
+		"WHERE id = ?";
+
+	private static final String _SAVE_SQL =
+		"INSERT INTO suppliers" +
+			"(trademark, supplier_name, supplier_number, " +
+			"vat_registration_number, address, address_number, " +
+			"address_complement, area, city, state, country, zip_code, " +
+			"telephone_1, telephone_2, telephone_3, telephone_4, contact_1, " +
+			"contact_2, contact_3, contact_4, info, url, email, created_by) " +
+		"VALUES (" + StringUtils.repeat("?", ", ", 24) + ")";
+
+	private static final String _SAVE_FROM_V3_SQL =
+		"INSERT INTO suppliers" +
+			"(trademark, supplier_name, supplier_number, " +
+			"vat_registration_number, address, address_number, " +
+			"address_complement, area, city, state, country, zip_code, " +
+			"telephone_1, telephone_2, telephone_3, telephone_4, contact_1, " +
+			"contact_2, contact_3, contact_4, info, url, email, created_by, " +
+			"id) " +
+		"VALUES (" + StringUtils.repeat("?", ", ", 25) + ")";
 
 	public static SupplierDAO getInstance(String schema) {
 		return (SupplierDAO) AbstractDAO.getInstance(SupplierDAO.class, schema);
 	}
 
 	public boolean save(SupplierDTO dto) {
-
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO suppliers ( ");
-			sql.append("trademark, supplier_name, supplier_number, ");
-			sql.append("vat_registration_number, address, address_number, ");
-			sql.append("address_complement, area, city, state, country, ");
-			sql.append("zip_code, telephone_1, telephone_2, telephone_3, ");
-			sql.append("telephone_4, contact_1, contact_2, contact_3, ");
-			sql.append("contact_4, info, url, email, created_by) ");
-			sql.append("VALUES (");
-			sql.append(StringUtils.repeat("?", ", ", 24));
-			sql.append(");");
-
-
-			PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-			pstInsert.setString(1, dto.getTrademark());
-			pstInsert.setString(2, dto.getName());
-			pstInsert.setString(3, dto.getSupplierNumber());
-			pstInsert.setString(4, dto.getVatRegistrationNumber());
-			pstInsert.setString(5, dto.getAddress());
-			pstInsert.setString(6, dto.getAddressNumber());
-			pstInsert.setString(7, dto.getComplement());
-			pstInsert.setString(8, dto.getArea());
-			pstInsert.setString(9, dto.getCity());
-			pstInsert.setString(10, dto.getState());
-			pstInsert.setString(11, dto.getCountry());
-			pstInsert.setString(12, dto.getZipCode());
-			pstInsert.setString(13, dto.getTelephone1());
-			pstInsert.setString(14, dto.getTelephone2());
-			pstInsert.setString(15, dto.getTelephone3());
-			pstInsert.setString(16, dto.getTelephone4());
-			pstInsert.setString(17, dto.getContact1());
-			pstInsert.setString(18, dto.getContact2());
-			pstInsert.setString(19, dto.getContact3());
-			pstInsert.setString(20, dto.getContact4());
-			pstInsert.setString(21, dto.getInfo());
-			pstInsert.setString(22, dto.getUrl());
-			pstInsert.setString(23, dto.getEmail());
-			pstInsert.setInt(24, dto.getCreatedBy());
-
-			pstInsert.executeUpdate();
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return true;
+		return executeUpdate(
+			_SAVE_SQL, dto.getTrademark(), dto.getName(),
+			dto.getSupplierNumber(), dto.getVatRegistrationNumber(),
+			dto.getAddress(), dto.getAddressNumber(), dto.getComplement(),
+			dto.getArea(), dto.getCity(), dto.getState(), dto.getCountry(),
+			dto.getZipCode(), dto.getTelephone1(), dto.getTelephone2(),
+			dto.getTelephone3(), dto.getTelephone4(), dto.getContact1(),
+			dto.getContact2(), dto.getContact3(), dto.getContact4(),
+			dto.getInfo(), dto.getUrl(), dto.getEmail(), dto.getCreatedBy());
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO suppliers ( ");
-			sql.append("trademark, supplier_name, supplier_number, ");
-			sql.append("vat_registration_number, address, address_number, ");
-			sql.append("address_complement, area, city, state, country, ");
-			sql.append("zip_code, telephone_1, telephone_2, telephone_3, ");
-			sql.append("telephone_4, contact_1, contact_2, contact_3, ");
-			sql.append("contact_4, info, url, email, created_by, id) ");
-			sql.append("VALUES (");
-			sql.append(StringUtils.repeat("?", ", ", 25));
-			sql.append(");");
-
-
-			PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-
+		return executeQuery(pst -> {
 			for (AbstractDTO abstractDto : dtoList) {
 				SupplierDTO dto = (SupplierDTO) abstractDto;
-				pstInsert.setString(1, dto.getTrademark());
-				pstInsert.setString(2, dto.getName());
-				pstInsert.setString(3, dto.getSupplierNumber());
-				pstInsert.setString(4, dto.getVatRegistrationNumber());
-				pstInsert.setString(5, dto.getAddress());
-				pstInsert.setString(6, dto.getAddressNumber());
-				pstInsert.setString(7, dto.getComplement());
-				pstInsert.setString(8, dto.getArea());
-				pstInsert.setString(9, dto.getCity());
-				pstInsert.setString(10, dto.getState());
-				pstInsert.setString(11, dto.getCountry());
-				pstInsert.setString(12, dto.getZipCode());
-				pstInsert.setString(13, dto.getTelephone1());
-				pstInsert.setString(14, dto.getTelephone2());
-				pstInsert.setString(15, dto.getTelephone3());
-				pstInsert.setString(16, dto.getTelephone4());
-				pstInsert.setString(17, dto.getContact1());
-				pstInsert.setString(18, dto.getContact2());
-				pstInsert.setString(19, dto.getContact3());
-				pstInsert.setString(20, dto.getContact4());
-				pstInsert.setString(21, dto.getInfo());
-				pstInsert.setString(22, dto.getUrl());
-				pstInsert.setString(23, dto.getEmail());
-				pstInsert.setInt(24, dto.getCreatedBy());
-				pstInsert.setInt(25, dto.getId());
-				pstInsert.addBatch();
+
+				PreparedStatementUtil.setAllParameters(
+					pst, dto.getTrademark(), dto.getName(),
+					dto.getSupplierNumber(), dto.getVatRegistrationNumber(),
+					dto.getAddress(), dto.getAddressNumber(),
+					dto.getComplement(), dto.getArea(), dto.getCity(),
+					dto.getState(), dto.getCountry(), dto.getZipCode(),
+					dto.getTelephone1(), dto.getTelephone2(),
+					dto.getTelephone3(), dto.getTelephone4(),
+					dto.getContact1(), dto.getContact2(), dto.getContact3(),
+					dto.getContact4(), dto.getInfo(), dto.getUrl(),
+					dto.getEmail(), dto.getCreatedBy(), dto.getId());
+
+				pst.addBatch();
 			}
 
-			pstInsert.executeBatch();
+			pst.executeBatch();
 
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return true;
+			return true;
+		}, _SAVE_FROM_V3_SQL);
 	}
 
 	public boolean update(SupplierDTO dto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("UPDATE suppliers SET ");
-			sql.append("trademark = ?, supplier_name = ?, supplier_number = ?, vat_registration_number = ?, ");
-			sql.append("address = ?, address_number = ?, address_complement = ?, area = ?, city = ?, ");
-			sql.append("state = ?, country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?, ");
-			sql.append("telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?, ");
-			sql.append("contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?, ");
-			sql.append("modified = now(), modified_by = ? ");
-			sql.append("WHERE id = ?; ");
-
-			PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-			pstInsert.setString(1, dto.getTrademark());
-			pstInsert.setString(2, dto.getName());
-			pstInsert.setString(3, dto.getSupplierNumber());
-			pstInsert.setString(4, dto.getVatRegistrationNumber());
-			pstInsert.setString(5, dto.getAddress());
-			pstInsert.setString(6, dto.getAddressNumber());
-			pstInsert.setString(7, dto.getComplement());
-			pstInsert.setString(8, dto.getArea());
-			pstInsert.setString(9, dto.getCity());
-			pstInsert.setString(10, dto.getState());
-			pstInsert.setString(11, dto.getCountry());
-			pstInsert.setString(12, dto.getZipCode());
-			pstInsert.setString(13, dto.getTelephone1());
-			pstInsert.setString(14, dto.getTelephone2());
-			pstInsert.setString(15, dto.getTelephone3());
-			pstInsert.setString(16, dto.getTelephone4());
-			pstInsert.setString(17, dto.getContact1());
-			pstInsert.setString(18, dto.getContact2());
-			pstInsert.setString(19, dto.getContact3());
-			pstInsert.setString(20, dto.getContact4());
-			pstInsert.setString(21, dto.getInfo());
-			pstInsert.setString(22, dto.getUrl());
-			pstInsert.setString(23, dto.getEmail());
-			pstInsert.setInt(24, dto.getModifiedBy());
-			pstInsert.setInt(25, dto.getId());
-
-			return pstInsert.executeUpdate() > 0;
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeUpdate(
+			_UPDATE_SQL, dto.getTrademark(), dto.getName(),
+			dto.getSupplierNumber(), dto.getVatRegistrationNumber(),
+			dto.getAddress(), dto.getAddressNumber(), dto.getComplement(),
+			dto.getArea(), dto.getCity(), dto.getState(), dto.getCountry(),
+			dto.getZipCode(), dto.getTelephone1(), dto.getTelephone2(),
+			dto.getTelephone3(), dto.getTelephone4(), dto.getContact1(),
+			dto.getContact2(), dto.getContact3(), dto.getContact4(),
+			dto.getInfo(), dto.getUrl(), dto.getEmail(), dto.getCreatedBy(),
+			dto.getId());
 	}
 
 	public boolean delete(SupplierDTO dto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("DELETE FROM suppliers ");
-			sql.append("WHERE id = ?;");
-
-			PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-			pstInsert.setInt(1, dto.getId());
-
-			return pstInsert.executeUpdate() > 0;
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeUpdate(_DELETE_SQL, dto.getId());
 	}
 
 	public SupplierDTO get(int id) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM suppliers ");
-			sql.append("WHERE id = ?;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, id);
-
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				return this.populateDto(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return null;
+		return fetchOne(this::populateDto, _GET_SQL, id);
 	}
 
-	public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
-		DTOCollection<SupplierDTO> list = new DTOCollection<SupplierDTO>();
+	public DTOCollection<SupplierDTO> search(
+		String value, int limit, int offset) {
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		if (StringUtils.isNotBlank(value)) {
+			String likeValue = "%" + value + "%";
 
-			StringBuilder sql = new StringBuilder("SELECT * FROM suppliers ");
-			if (StringUtils.isNotBlank(value)) {
-				sql.append("WHERE trademark ilike ? ");
-				sql.append("OR supplier_name ilike ? ");
-				sql.append("OR supplier_number = ? ");
-			}
-			sql.append("ORDER BY id ASC LIMIT ? OFFSET ? ");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			int i = 1;
-			if (StringUtils.isNotBlank(value)) {
-				pst.setString(i++, "%" + value + "%");
-				pst.setString(i++, "%" + value + "%");
-				pst.setString(i++, value);
-			}
-			pst.setInt(i++, limit);
-			pst.setInt(i++, offset);
-
-			StringBuilder sqlCount = new StringBuilder("SELECT count(*) as total FROM suppliers ");
-			if (StringUtils.isNotBlank(value)) {
-				sqlCount.append("WHERE trademark ilike ? ");
-				sqlCount.append("OR supplier_name ilike ? ");
-				sqlCount.append("OR supplier_number = ? ");
-			}
-
-			PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
-			if (StringUtils.isNotBlank(value)) {
-				pstCount.setString(1, "%" + value + "%");
-				pstCount.setString(2, "%" + value + "%");
-				pstCount.setString(3, value);
-			}
-
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateDto(rs));
-			}
-
-			ResultSet rsCount = pstCount.executeQuery();
-			if (rsCount.next()) {
-				int total = rsCount.getInt("total");
-
-				PagingDTO paging = new PagingDTO(total, limit, offset);
-				list.setPaging(paging);
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
+			return pagedListWith(
+				this::populateDto, _SEARCH_KEYWORD_SQL, limit, offset,
+				likeValue, likeValue, value);
 		}
-
-		return list;
+		else {
+			return pagedListWith(
+				this::populateDto, _SEARCH_ALL_SQL, limit, offset);
+		}
 	}
 
 	private SupplierDTO populateDto(ResultSet rs) throws Exception {
