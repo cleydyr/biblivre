@@ -458,13 +458,25 @@ public abstract class AbstractDAO {
 			PreparedStatementUtil.setAllParameters(pst, newParameters);
 
 			try (ResultSet rs = pst.executeQuery()) {
-				int count = 0;
-
 				while (rs.next()) {
 					list.add(mapper.apply(rs));
-
-					count++;
 				}
+			}
+
+			return null;
+		}, sql);
+
+		String countSql = sql
+			.substring(0, sql.lastIndexOf("ORDER BY"))
+			.replace("*", "count(*)");
+
+		executeQuery(pst -> {
+			PreparedStatementUtil.setAllParameters(pst, parameters);
+
+			try (ResultSet rs = pst.executeQuery()) {
+				rs.next();
+
+				int count = rs.getInt(1);
 
 				PagingDTO paging = new PagingDTO(count, limit, offset);
 
@@ -472,7 +484,7 @@ public abstract class AbstractDAO {
 			}
 
 			return null;
-		}, sql);
+		}, countSql);
 
 		return list;
 	}
