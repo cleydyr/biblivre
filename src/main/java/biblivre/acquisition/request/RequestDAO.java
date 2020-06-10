@@ -111,18 +111,16 @@ public class RequestDAO extends AbstractDAO {
 	public DTOCollection<RequestDTO> search(
 		String value, int limit, int offset) {
 
-		boolean isNotBlank = StringUtils.isNotBlank(value);
-
-		if (isNotBlank) {
-			return pagedListWith(
-				this::populateDto, _SEARCH_KEYWORD_SQL, limit, offset, value);
-		}
-		else {
+		if (StringUtils.isNotBlank(value)) {
 			String likeValue = "%" + value + "%";
 
 			return pagedListWith(
-				this::populateDto, _SEARCH_ALL_SQL, limit, offset, likeValue,
-				likeValue, "%", value);
+				this::populateDto, _SEARCH_KEYWORD_SQL, limit, offset, value,
+				likeValue, likeValue, value);
+		}
+		else {
+			return pagedListWith(
+				this::populateDto, _SEARCH_ALL_SQL, limit, offset);
 		}
 	}
 
