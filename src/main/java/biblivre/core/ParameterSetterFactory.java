@@ -29,7 +29,7 @@ public class ParameterSetterFactory {
 		}
 		else if (parameterClass.isAssignableFrom(Float.class)) {
 			return (PreparedStatement preparedStatement, Object parameter, int position) ->
-				preparedStatement.setFloat(position, (Long) parameter);
+				preparedStatement.setFloat(position, (Float) parameter);
 		}
 		else {
 			throw new ParameterSetterNotFoundException(parameterClass);
