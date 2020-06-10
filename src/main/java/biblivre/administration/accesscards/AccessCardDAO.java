@@ -50,7 +50,7 @@ public class AccessCardDAO extends AbstractDAO {
 	private static final String _SAVE_SQL =
 		"INSERT INTO access_cards" +
 			"(id, code, status, created_by) " +
-		"VALUES (?, ?, ?)";
+		"VALUES (?, ?, ?, ?)";
 
 	private static final String _GET_SQL =
 		"SELECT * FROM access_cards WHERE id = ?";
@@ -121,15 +121,15 @@ public class AccessCardDAO extends AbstractDAO {
 
 	public boolean save(AccessCardDTO dto) {
 		return executeUpdate(
-			_SAVE_SQL, dto.getCode(), dto.getStatus().toString(),
+			_SAVE_SQL, dto.getId(), dto.getCode(), dto.getStatus().toString(),
 			dto.getCreatedBy());
 	}
 
 	public boolean save(LinkedList<AccessCardDTO> cardList) {
 		return executeBatchUpdate((pst, card) -> {
 			PreparedStatementUtil.setAllParameters(
-					pst, card.getCode(), card.getStatus().toString(),
-					card.getCreatedBy());
+				pst, card.getId(), card.getCode(), card.getStatus().toString(),
+				card.getCreatedBy());
 		}, cardList, _SAVE_SQL);
 	}
 
