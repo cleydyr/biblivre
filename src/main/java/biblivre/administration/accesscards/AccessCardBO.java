@@ -78,7 +78,7 @@ public class AccessCardBO extends AbstractBO {
 		}
 
 		//Validate existing cards
-		List<AccessCardDTO> existingCards = this.dao.get(codeList, null);
+		List<AccessCardDTO> existingCards = this.dao.get(codeList);
 		List<String> existingCodes = new LinkedList<String>();
 		for (AccessCardDTO card : existingCards) {
 			existingCodes.add(card.getCode());
@@ -90,8 +90,9 @@ public class AccessCardBO extends AbstractBO {
 		}
 
 		LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
+
 		for (String code : codeList) {
-			AccessCardDTO dto = new AccessCardDTO();
+			AccessCardDTO dto = dao.create();
 			dto.setCode(code);
 			dto.setStatus(status);
 			dto.setCreatedBy(loggedUserId);
@@ -132,5 +133,17 @@ public class AccessCardBO extends AbstractBO {
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return this.dao.saveFromBiblivre3(dtoList);
+	}
+
+	public AccessCardDTO createCard(
+		int loggedUserId, String code, AccessCardStatus status) {
+
+		AccessCardDTO dto = dao.create();
+
+		dto.setCode(code);
+		dto.setStatus(status);
+		dto.setCreatedBy(loggedUserId);
+
+		return dto;
 	}
 }

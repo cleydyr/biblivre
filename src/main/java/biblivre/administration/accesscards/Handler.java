@@ -111,8 +111,7 @@ public class Handler extends AbstractHandler {
 		AccessCardDTO returnDto = null;
 
 		if (StringUtils.isNotBlank(code)) {
-			returnDto = this.createCard(request, code, status);
-			success = bo.save(returnDto);
+			returnDto = bo.createCard(request.getLoggedUserId(), code, status);
 		} else {
 			LinkedList<AccessCardDTO> list = bo.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
 			if (list != null) {
@@ -179,13 +178,4 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 	}
-
-	private final AccessCardDTO createCard(ExtendedRequest request, String code, AccessCardStatus status) {
-		AccessCardDTO dto = new AccessCardDTO();
-		dto.setCode(code);
-		dto.setStatus(status);
-		dto.setCreatedBy(request.getLoggedUserId());
-		return dto;
-	}
-
 }
