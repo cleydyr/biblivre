@@ -44,6 +44,28 @@ public class DigitalMediaDAO extends AbstractDAO {
 		return (DigitalMediaDAO) AbstractDAO.getInstance(DigitalMediaDAO.class, schema);
 	}
 
+	public long createOID() {
+		Connection con = null;
+		try {
+			con = this.getConnection();
+			con.setAutoCommit(false);
+
+			PGConnection pgcon = getPGConnection(con);
+
+			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+			long oid = lobj.createLO();
+
+			this.commit(con);
+
+			return oid;
+		} catch (Exception e) {
+			this.rollback(con);
+			throw new DAOException(e);
+		} finally {
+			this.closeConnection(con);
+		}
+	}
+
 	public final Integer save(MemoryFile file) {
 		Connection con = null;
 

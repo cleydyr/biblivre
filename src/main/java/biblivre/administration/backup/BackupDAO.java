@@ -20,7 +20,6 @@
 package biblivre.administration.backup;
 
 import java.io.File;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -29,12 +28,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.postgresql.PGConnection;
-import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.AbstractDAO;
 import biblivre.core.NullableSQLObject;
-import biblivre.core.exceptions.DAOException;
 
 public class BackupDAO extends AbstractDAO {
 	private static final String _LIST_SQL =
@@ -91,28 +87,6 @@ public class BackupDAO extends AbstractDAO {
 
 		return fetchOne(
 			this::populateDTO, _GET_SQL, id);
-	}
-
-	public long createOID() {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
-
-			PGConnection pgcon = getPGConnection(con);
-
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-			long oid = lobj.createLO();
-
-			this.commit(con);
-
-			return oid;
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
 	}
 
 	public Set<String> listDatabaseSchemas() {
