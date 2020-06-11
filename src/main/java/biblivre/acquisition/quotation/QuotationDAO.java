@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.acquisition.quotation;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.List;
 
@@ -29,8 +28,6 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
-import biblivre.core.exceptions.DAOException;
-import biblivre.core.utils.CheckedConsumer;
 
 public class QuotationDAO extends AbstractDAO {
 	private static final String _LIST_SQL =
@@ -93,27 +90,6 @@ public class QuotationDAO extends AbstractDAO {
 	public static QuotationDAO getInstance(String schema) {
 		return (QuotationDAO) AbstractDAO.getInstance(
 			QuotationDAO.class, schema);
-	}
-
-	public final void onTransactionContext(
-		CheckedConsumer<Connection> consumer) {
-
-		Connection con = null;
-
-		try {
-			con  = this.getConnection();
-
-			con.setAutoCommit(false);
-
-			consumer.accept(con);
-
-			con.commit();
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
 	}
 
 	public Integer save(QuotationDTO dto) {

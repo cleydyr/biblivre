@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.CheckedConsumer;
 import biblivre.core.utils.CheckedFunction;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
@@ -370,7 +371,7 @@ public abstract class AbstractDAO {
 		return pgcon;
 	}
 
-	public <T extends AbstractDTO> T fetchOne(
+	public <T> T fetchOne(
 		CheckedFunction<ResultSet, T> f, String sql, Object... parameters)
 		throws DAOException {
 
@@ -443,7 +444,7 @@ public abstract class AbstractDAO {
 
 	@SafeVarargs
 	public final <T> boolean executeBatchUpdate(
-		Collection<? extends AbstractDTO> items, Class<T> target, String sql,
+		Collection<?> items, Class<T> target, String sql,
 		Function<T, ?>... fs) {
 
 			return executeQuery(pst -> {
@@ -537,6 +538,26 @@ public abstract class AbstractDAO {
 			return list;
 		} catch (Exception e) {
 			throw new DAOException(e);
+		}
+	}
+
+	public final void onTransactionContext(CheckedConsumer<Connection> consumer) {
+	
+		Connection con = null;
+	
+		try {
+			con  = this.getConnection();
+	
+			con.setAutoCommit(false);
+	
+			consumer.accept(con);
+	
+			con.commit();
+		} catch (Exception e) {
+			this.rollback(con);
+			throw new DAOException(e);
+		} finally {
+			this.closeConnection(con);
 		}
 	}
 

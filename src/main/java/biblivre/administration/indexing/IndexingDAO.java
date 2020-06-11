@@ -21,12 +21,12 @@ package biblivre.administration.indexing;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,277 +34,193 @@ import biblivre.cataloging.AutocompleteDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.CheckedFunction;
 import biblivre.core.utils.TextUtils;
 
 public class IndexingDAO extends AbstractDAO {
+	
+	private static final String _CLEAR_INDEXES_AUTOCOMPLETE_SQL_TPL =
+		"DELETE FROM %s_idx_autocomplete WHERE record_id is not null";
+
+	private static final String _CLEAR_INDEXES_SORT_SQL_TPL =
+		"TRUNCATE TABLE %s_idx_sort";
+
+	private static final String _CLEAR_INDEXES_FIELDS_SQL_TPL =
+		"TRUNCATE TABLE %s_idx_fields";
+
+	private static final String _SEARCH_EXTRACT_TERMS_SQL_TPL =
+		"SELECT phrase FROM %s_idx_sort "
+		+ "WHERE indexing_group_id = ? AND phrase in (%s)";
+
+	private static final String _DELETE_INDEXES_AUTOCOMPLETE_SQL_TPL =
+		"DELETE FROM %s_idx_autocomplete "
+		+ "WHERE record_id = ?";
+
+	private static final String _DELETE_INDEX_SORT_SQL_TPL =
+		"DELETE FROM %s_idx_sort WHERE record_id = ?";
+
+	private static final String _DELETE_INDEXES_FIELDS_SQL_TPL =
+		"DELETE FROM %s_idx_fields WHERE record_id = ?";
+
+	private static final String _REINDEX_AUTOCOMPLETE_FIXED_TABLE_INSERT_SQL_TPL =
+		"INSERT INTO %s_idx_autocomplete "
+		+ "(datafield, subfield, word, phrase, record_id) "
+		+ "VALUES (?, ?, ?, ?, null)";
+
+	private static final String _REINDEX_AUTOCOMPLETE_FIXED_TABLE_DELETE_SQL_TPL =
+		"DELETE FROM %s_idx_autocomplete "
+		+ "WHERE datafield = ? and subfield = ? and record_id is null";
+
+	private static final String _INSERT_AUTOCOMPLETE_SQL_TPL =
+		"INSERT INTO %s_idx_autocomplete "
+		+ "(datafield, subfield, word, phrase, record_id) "
+		+ "VALUES (?, ?, ?, ?, ?)";
+
+	private static final String _INSERT_SORT_INDEXES_SQL_TPL =
+		"INSERT INTO %s_idx_sort "
+		+ "(record_id, indexing_group_id, phrase, ignore_chars_count) "
+		+ "VALUES (?, ?, ?, ?)";
+
+	private static final String _INSERT_INDEXES_SQL_TPL = 
+		"INSERT INTO %s_idx_fields "
+		+ "(record_id, indexing_group_id, word, datafield) "
+		+ "VALUES (?, ?, ?, ?)";
+
+	private static final String _COUNT_INDEXED_SQL_TPL =
+		"SELECT count(DISTINCT record_id) as total FROM %s_idx_sort";
+
 	public static IndexingDAO getInstance(String schema) {
 		return (IndexingDAO) AbstractDAO.getInstance(IndexingDAO.class, schema);
 	}
 
 	public Integer countIndexed(RecordType recordType) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			String sql = "SELECT count(DISTINCT record_id) as total FROM " + recordType + "_idx_sort";
+		String sql = String.format(
+				_COUNT_INDEXED_SQL_TPL, recordType.toString());
 
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(sql);
-
-			if (rs.next()) {
-				return rs.getInt("total");
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
-		return 0;
+		return fetchOne(rs -> rs.getInt("total"), sql);
 	}
 
 	public void clearIndexes(RecordType recordType) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		CheckedFunction<PreparedStatement, PreparedStatement> noop = __ -> __;
 
-			String sql = "TRUNCATE TABLE " + recordType + "_idx_fields";
-			String sql2 = "TRUNCATE TABLE " + recordType + "_idx_sort";
-			String sql3 = "DELETE FROM " + recordType + "_idx_autocomplete WHERE record_id is not null";
+		executeQuery(
+			noop, String.format(_CLEAR_INDEXES_FIELDS_SQL_TPL, recordType));
 
-			Statement st = con.createStatement();
-			st.execute(sql);
-			st.execute(sql2);
-			st.execute(sql3);
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		executeQuery(
+			noop, String.format(_CLEAR_INDEXES_SORT_SQL_TPL, recordType));
+
+		executeQuery(
+			noop,
+			String.format(_CLEAR_INDEXES_AUTOCOMPLETE_SQL_TPL, recordType));
 	}
 
-	public void startIndexing() {
+	public void insertIndexes(
+		RecordType recordType, List<IndexingDTO> indexes) {
 
-	}
-
-	public void insertIndexes(RecordType recordType, List<IndexingDTO> indexes) {
-		int total = 0;
-		for (IndexingDTO index : indexes) {
-			total += index.getCount();
-		}
+		int total = indexes.stream()
+			.mapToInt(IndexingDTO::getCount)
+			.sum();
 
 		if (total == 0) {
 			return;
 		}
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO ").append(recordType).append("_idx_fields ");
-			sql.append("(record_id, indexing_group_id, word, datafield) VALUES (?, ?, ?, ?);");
+		String sql = String.format(_INSERT_INDEXES_SQL_TPL, recordType);
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
+		Collection<Object[]> quartets = _prepareParameters(indexes);
 
-			for (IndexingDTO index : indexes) {
-				final int recordId = index.getRecordId();
-				final int groupId = index.getIndexingGroupId();
-
-				HashMap<Integer, HashSet<String>> wordsGroups = index.getWords();
-				for (Integer key : wordsGroups.keySet()) {
-					HashSet<String> words = wordsGroups.get(key);
-
-					for (String word : words) {
-						pst.setInt(1, recordId);
-						pst.setInt(2, groupId);
-						pst.setString(3, word);
-						pst.setInt(4, key);
-						pst.addBatch();
-					}
-				}
-			}
-
-			pst.executeBatch();
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		executeBatchUpdate(
+			quartets, Object[].class, sql, q -> q[0], q -> q[1], q -> q[2],
+			q -> q[3]);
 	}
 
-	public void insertSortIndexes(RecordType recordType, List<IndexingDTO> sortIndexes) {
-		int total = sortIndexes.size();
+	public void insertSortIndexes(
+		RecordType recordType, List<IndexingDTO> sortIndexes) {
 
-		if (total == 0) {
+		if (sortIndexes.size() == 0) {
 			return;
 		}
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO ").append(recordType).append("_idx_sort ");
-			sql.append("(record_id, indexing_group_id, phrase, ignore_chars_count) VALUES (?, ?, ?, ?);");
+		String sql = String.format(
+			_INSERT_SORT_INDEXES_SQL_TPL, recordType.toString());
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-
-			for (IndexingDTO sortIndex : sortIndexes) {
-				pst.setInt(1, sortIndex.getRecordId());
-				pst.setInt(2, sortIndex.getIndexingGroupId());
-				pst.setString(3, sortIndex.getPhrase());
-				pst.setInt(4, sortIndex.getIgnoreCharsCount());
-				pst.addBatch();
-			}
-
-			pst.executeBatch();
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		executeBatchUpdate(
+			sortIndexes, IndexingDTO.class, sql, IndexingDTO::getRecordId,
+			IndexingDTO::getIndexingGroupId, IndexingDTO::getPhrase,
+			IndexingDTO::getIgnoreCharsCount);
 	}
 
-	public void insertAutocompleteIndexes(RecordType recordType, List<AutocompleteDTO> autocompleteIndexes) {
+	public void insertAutocompleteIndexes(
+			RecordType recordType, List<AutocompleteDTO> autocompleteIndexes) {
+
 		if (autocompleteIndexes.size() == 0) {
 			return;
 		}
 
-		boolean batched = false;
+		String sql = String.format(
+			_INSERT_AUTOCOMPLETE_SQL_TPL, recordType.toString());
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO ").append(recordType).append("_idx_autocomplete ");
-			sql.append("(datafield, subfield, word, phrase, record_id) VALUES (?, ?, ?, ?, ?);");
+		executeBatchUpdate((pst, autocomplete) -> {
+			final Integer recordId = autocomplete.getRecordId();
+			final String datafield = autocomplete.getDatafield();
+			final String subfield = autocomplete.getSubfield();
+			final String phrase = autocomplete.getPhrase();
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-
-			for (AutocompleteDTO index : autocompleteIndexes) {
-				final Integer recordId = index.getRecordId();
-				final String datafield = index.getDatafield();
-				final String subfield = index.getSubfield();
-				final String phrase = index.getPhrase();
-
-				for (String word : TextUtils.prepareAutocomplete(phrase)) {
-					if (StringUtils.isBlank(word) || word.length() < 2) {
-						continue;
-					}
-
-					pst.setString(1, datafield);
-					pst.setString(2, subfield);
-					pst.setString(3, word);
-					pst.setString(4, phrase);
-					pst.setInt(5, recordId);
-
-					pst.addBatch();
-					batched = true;
+			for (String word : TextUtils.prepareAutocomplete(phrase)) {
+				if (StringUtils.isBlank(word) || word.length() < 2) {
+					continue;
 				}
-			}
 
-			if (batched) {
-				pst.executeBatch();
+				PreparedStatementUtil.setAllParameters(
+					pst, datafield, subfield, word, phrase, recordId);
 			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		}, autocompleteIndexes, sql);
 	}
 
-	public void reindexAutocompleteFixedTable(RecordType recordType, String datafield, String subfield, List<String> phrases) {
-		boolean batched = false;
+	public void reindexAutocompleteFixedTable(
+		RecordType recordType, String datafield, String subfield,
+		List<String> phrases) {
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
+		String deleteSql = String.format(
+			_REINDEX_AUTOCOMPLETE_FIXED_TABLE_DELETE_SQL_TPL, recordType);
 
+		String insertSql = String.format(
+			_REINDEX_AUTOCOMPLETE_FIXED_TABLE_INSERT_SQL_TPL, recordType);
 
-			StringBuilder sql = new StringBuilder();
+		onTransactionContext(con -> {
+			executeUpdate(deleteSql, datafield, subfield);
 
-			sql.append("DELETE FROM ").append(recordType).append("_idx_autocomplete ");
-			sql.append("WHERE datafield = ? and subfield = ? and record_id is null;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setString(1, datafield);
-			pst.setString(2, subfield);
-
-			pst.executeUpdate();
-
-			sql = new StringBuilder();
-			sql.append("INSERT INTO ").append(recordType).append("_idx_autocomplete ");
-			sql.append("(datafield, subfield, word, phrase, record_id) VALUES (?, ?, ?, ?, null);");
-
-			pst = con.prepareStatement(sql.toString());
-
-			for (String phrase : phrases) {
+			executeBatchUpdate((pst, phrase) -> {
 				for (String word : TextUtils.prepareAutocomplete(phrase)) {
 					if (StringUtils.isBlank(word) || word.length() < 2) {
 						continue;
 					}
 
-					pst.setString(1, datafield);
-					pst.setString(2, subfield);
-					pst.setString(3, word);
-					pst.setString(4, phrase);
-
-					pst.addBatch();
-					batched = true;
+					PreparedStatementUtil.setAllParameters(
+						pst, datafield, subfield, word, phrase);
 				}
-			}
-
-			if (batched) {
-				pst.executeBatch();
-			}
-
-			con.commit();
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+			}, phrases, insertSql);
+		});
 	}
 
 	public boolean deleteIndexes(RecordType recordType, RecordDTO dto) {
-		Connection con = null;
+		onTransactionContext(con -> {
+			executeUpdate(
+				String.format(_DELETE_INDEXES_FIELDS_SQL_TPL, recordType),
+				dto.getId());
 
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
+			executeUpdate(
+				String.format(_DELETE_INDEX_SORT_SQL_TPL, recordType),
+				dto.getId());
 
-			StringBuilder sql = new StringBuilder();
-			sql.append("DELETE FROM ").append(recordType).append("_idx_fields ");
-			sql.append("WHERE record_id = ?;");
+			executeUpdate(
+				String.format(_DELETE_INDEXES_AUTOCOMPLETE_SQL_TPL, recordType),
+				dto.getId());
+		});
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, dto.getId());
-			pst.executeUpdate();
-
-			sql = new StringBuilder();
-			sql.append("DELETE FROM ").append(recordType).append("_idx_sort ");
-			sql.append("WHERE record_id = ?;");
-
-			pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, dto.getId());
-			pst.executeUpdate();
-
-			sql = new StringBuilder();
-			sql.append("DELETE FROM ").append(recordType).append("_idx_autocomplete ");
-			sql.append("WHERE record_id = ?;");
-
-			pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, dto.getId());
-			pst.executeUpdate();
-
-			this.commit(con);
-			return true;
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return true;
 	}
 
 	public void reindexDatabase(RecordType recordType) {
@@ -325,38 +241,52 @@ public class IndexingDAO extends AbstractDAO {
 		}
 	}
 
-	public List<String> searchExactTerms(RecordType recordType, int indexingGroupId, List<String> terms) {
-		List<String> list = new LinkedList<String>();
+	public List<String> searchExactTerms(
+		RecordType recordType, int indexingGroupId, List<String> terms) {
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
+		String sql = _getExtractTermsSql(recordType, terms);
 
-			sql.append("SELECT phrase FROM ").append(recordType).append("_idx_sort WHERE indexing_group_id = ? AND phrase in (");
-			sql.append(StringUtils.repeat("?", ", ", terms.size()));
-			sql.append(");");
+		Object[] parameters = _prepareParameters(indexingGroupId, terms);
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
+		return listWith(
+			rs -> rs.getString("phrase"), sql.toString(), parameters);
+	}
 
-			int index = 1;
-			pst.setInt(index++, indexingGroupId);
+	private Object[] _prepareParameters(
+		int indexingGroupId, List<String> terms) {
 
-			for (String term : terms) {
-				pst.setString(index++, term.toLowerCase());
+		List<String> parameters = new ArrayList<>();
+
+		parameters.add(String.valueOf(indexingGroupId));
+
+		parameters.addAll(terms);
+
+		return parameters.toArray();
+	}
+
+	private Collection<Object[]> _prepareParameters(List<IndexingDTO> indexes) {
+		Collection<Object[]> quartets = new ArrayList<>();
+
+		for (IndexingDTO index : indexes) {
+			Map<Integer, Set<String>> wordsGroups = index.getWords();
+			for (Integer key : wordsGroups.keySet()) {
+				Collection<String> words = wordsGroups.get(key);
+				for (String word : words) {
+					quartets.add(
+						new Object[] {
+							index.getRecordId(), index.getIndexingGroupId(),
+							word, key});
+				}
 			}
-
-			ResultSet rs = pst.executeQuery();
-
-			while (rs.next()) {
-				list.add(rs.getString("phrase"));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
 		}
+		return quartets;
+	}
 
-		return list;
+	private String _getExtractTermsSql(
+		RecordType recordType, List<String> terms) {
+
+		return String.format(
+			_SEARCH_EXTRACT_TERMS_SQL_TPL, recordType.toString(),
+			StringUtils.repeat("?", ", ", terms.size()));
 	}
 }
