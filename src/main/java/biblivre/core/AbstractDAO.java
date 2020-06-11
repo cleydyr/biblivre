@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.sql.DataSource;
 
@@ -439,6 +440,33 @@ public abstract class AbstractDAO {
 			return true;
 		}, sql);
 	}
+
+	@SafeVarargs
+	public final <T> boolean executeBatchUpdate(
+		Collection<? extends AbstractDTO> items, Class<T> target, String sql,
+		Function<T, ?>... fs) {
+
+			return executeQuery(pst -> {
+				for (Object item : items) {
+					T targetItem = target.cast(item);
+
+					List<Object> parameters = new ArrayList<>();
+
+					for (Function<T, ?> f : fs) {
+						parameters.add(f.apply(targetItem));
+					}
+
+					PreparedStatementUtil.setAllParameters(
+						pst, parameters.toArray());
+
+					pst.addBatch();
+				}
+
+				pst.executeBatch();
+
+				return true;
+			}, sql);
+		}
 
 	public <T extends AbstractDTO> DTOCollection<T> pagedListWith(
 		CheckedFunction<ResultSet, T> mapper, String sql, int limit, int offset,

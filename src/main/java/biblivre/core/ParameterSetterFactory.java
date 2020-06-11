@@ -31,6 +31,10 @@ public class ParameterSetterFactory {
 			return (PreparedStatement preparedStatement, Object parameter, int position) ->
 				preparedStatement.setFloat(position, (Float) parameter);
 		}
+		else if (parameterClass.isAssignableFrom(NullableSQLObject.class)) {
+			return (PreparedStatement preparedStatement, Object parameter, int position) ->
+				preparedStatement.setNull(position, ((NullableSQLObject) parameter).getType());
+		}
 		else {
 			throw new ParameterSetterNotFoundException(parameterClass);
 		}
