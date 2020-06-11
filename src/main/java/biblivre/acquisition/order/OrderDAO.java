@@ -20,7 +20,8 @@
 package biblivre.acquisition.order;
 
 import java.sql.ResultSet;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.PagingDTO;
+import biblivre.core.NullableSQLObject;
+import biblivre.core.PreparedStatementUtil;
 
 public class OrderDAO extends AbstractDAO {
 	private static final String _GET_SQL =
@@ -93,162 +95,62 @@ public class OrderDAO extends AbstractDAO {
 	}
 
 	public Integer save(OrderDTO dto) {
-		return executeQuery(pst ->  {
-			int orderId = this.getNextSerial("orders_id_seq");
+		int orderId = this.getNextSerial("orders_id_seq");
 
-			pst.setInt(1, dto.getQuotationId());
-			pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
-			pst.setInt(3, dto.getCreatedBy());
-			pst.setString(4, dto.getInfo());
-			pst.setString(5, dto.getStatus());
-			pst.setString(6, dto.getInvoiceNumber());
+		boolean update = executeUpdate(
+			_SAVE_SQL, dto.getQuotationId(), dto.getCreated(),
+			dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
+			dto.getInvoiceNumber(), _getReceitptDate(dto),
+			_getTotalValue(dto), _getDeliveredQuantity(dto),
+			dto.getTermsOfPayment(), dto.getDeadlineDate(), orderId);
 
-			Date receiptDate = dto.getReceiptDate();
-
-			if (receiptDate != null) {
-				pst.setDate(7, new java.sql.Date(receiptDate.getTime()));
-			} else {
-				pst.setNull(7, java.sql.Types.DATE);
-			}
-
-			Float totalValue = dto.getTotalValue();
-
-			if (totalValue != null) {
-				pst.setFloat(8, totalValue);
-			} else {
-				pst.setNull(8, java.sql.Types.FLOAT);
-			}
-
-			Integer deliveryQuantity = dto.getDeliveredQuantity();
-
-			if (deliveryQuantity != null) {
-				pst.setInt(9, deliveryQuantity);
-			} else {
-				pst.setNull(9, java.sql.Types.INTEGER);
-			}
-
-			pst.setString(10, dto.getTermsOfPayment());
-			pst.setDate(11, new java.sql.Date(dto.getDeadlineDate().getTime()));
-			pst.setInt(12, orderId);
-
-			return pst.executeUpdate() > 0 ? orderId : 0;
-		}, _SAVE_SQL);
+		return update ? orderId : 0;
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return executeBatchUpdate((pst, abstractDto) -> {
-				OrderDTO dto = (OrderDTO) abstractDto;
-				pst.setInt(1, dto.getQuotationId());
-				pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
-				pst.setInt(3, dto.getCreatedBy());
-				pst.setString(4, dto.getInfo());
-				pst.setString(5, dto.getStatus());
-				pst.setString(6, dto.getInvoiceNumber());
+		return executeBatchUpdate((pst, item) -> {
+				OrderDTO dto = (OrderDTO) item;
 
-				Date receiptDate = dto.getReceiptDate();
-				if (receiptDate != null) {
-					pst.setDate(7, new java.sql.Date(receiptDate.getTime()));
-				} else {
-					pst.setNull(7, java.sql.Types.DATE);
-				}
-
-				Float totalValue = dto.getTotalValue();
-				if (totalValue != null) {
-					pst.setFloat(8, totalValue);
-				} else {
-					pst.setNull(8, java.sql.Types.FLOAT);
-				}
-
-				Integer deliveryQuantity = dto.getDeliveredQuantity();
-				if (deliveryQuantity != null) {
-					pst.setInt(9, deliveryQuantity);
-				} else {
-					pst.setNull(9, java.sql.Types.INTEGER);
-				}
-
-				pst.setString(10, dto.getTermsOfPayment());
-				pst.setDate(
-					11, new java.sql.Date(dto.getDeadlineDate().getTime()));
-				pst.setInt(12, dto.getId());
+				PreparedStatementUtil.setAllParameters(
+					pst, dto.getQuotationId(), dto.getCreated(),
+					dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
+					dto.getInvoiceNumber(), _getReceitptDate(dto),
+					_getTotalValue(dto), _getDeliveredQuantity(dto),
+					dto.getTermsOfPayment(), dto.getDeadlineDate(),
+					dto.getId());
 			}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
 	public boolean update(OrderDTO dto) {
-		return executeQuery(pst -> {
-			pst.setInt(1, dto.getQuotationId());
-			pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
-			pst.setInt(3, dto.getCreatedBy());
-			pst.setString(4, dto.getInfo());
-			pst.setString(5, dto.getStatus());
-			pst.setString(6, dto.getInvoiceNumber());
-
-			Date receiptDate = dto.getReceiptDate();
-			if (receiptDate != null) {
-				pst.setDate(7, new java.sql.Date(receiptDate.getTime()));
-			} else {
-				pst.setNull(7, java.sql.Types.DATE);
-			}
-
-			Float totalValue = dto.getTotalValue();
-			if (totalValue != null) {
-				pst.setFloat(8, totalValue);
-			} else {
-				pst.setNull(8, java.sql.Types.FLOAT);
-			}
-
-			Integer deliveryQuantity = dto.getDeliveredQuantity();
-			if (deliveryQuantity != null) {
-				pst.setInt(9, deliveryQuantity);
-			} else {
-				pst.setNull(9, java.sql.Types.INTEGER);
-			}
-
-			pst.setString(10, dto.getTermsOfPayment());
-			pst.setDate(11, new java.sql.Date(dto.getDeadlineDate().getTime()));
-			pst.setInt(12, dto.getId());
-			return pst.executeUpdate() > 0;
-		}, _UPDATE_SQL);
+		return executeUpdate(
+			_UPDATE_SQL, dto.getQuotationId(), dto.getCreated(),
+			dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
+			dto.getInvoiceNumber(), _getReceitptDate(dto),
+			_getTotalValue(dto), _getDeliveredQuantity(dto),
+			dto.getTermsOfPayment(), dto.getDeadlineDate(), dto.getId());
 	}
 
 	public boolean delete(OrderDTO dto) {
-		return executeQuery(pst -> {
-			pst.setInt(1, dto.getId());
-			return pst.executeUpdate() > 0;
-		}, _DELETE_SQL);
+		return executeUpdate(_DELETE_SQL, dto.getId());
 	}
 
 	public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
 		String sql = _buildSearchSQL(value);
 
-		return executeQuery(pst -> {
-			DTOCollection<OrderDTO> list = new DTOCollection<OrderDTO>();
+		boolean isNumericValue = StringUtils.isNumeric(value);
 
-			int i = 1;
-			if (StringUtils.isNumeric(value)) {
-				pst.setInt(i++, Integer.valueOf(value));
-			} else  if (StringUtils.isNotBlank(value)) {
-				pst.setString(i++, "%" + value + "%");
-				pst.setString(i++, "%" + value + "%");
-				pst.setString(i++, "%" + value + "%");
-			}
-			pst.setInt(i++, offset);
-			pst.setInt(i++, limit);
+		List<Object> parameters = new ArrayList<>();
 
-			int total = 0;
+		if (isNumericValue) {
+			parameters.add(Integer.valueOf(value));
+		} else  if (StringUtils.isNotBlank(value)) {
+			String likeValue = "%" + value + "%";
 
-			ResultSet rs = pst.executeQuery();
+			parameters.addAll(Arrays.asList(likeValue, likeValue, likeValue));
+		}
 
-			while (rs.next()) {
-				list.add(this.populateDto(rs));
-				total++;
-			}
-
-			PagingDTO paging = new PagingDTO(total, limit, offset);
-
-			list.setPaging(paging);
-
-			return list;
-		}, sql);
+		return pagedListWith(
+			this::populateDto, sql, limit, offset, parameters.toArray());
 	}
 
 	private String _buildSearchSQL(String value) {
@@ -261,6 +163,21 @@ public class OrderDAO extends AbstractDAO {
 		else {
 			return _SEARCH_SQL;
 		}
+	}
+
+	private Object _getDeliveredQuantity(OrderDTO dto) {
+		return dto.getDeliveredQuantity() != null ? dto.getDeliveredQuantity() :
+		 NullableSQLObject.INTEGER;
+	}
+
+	private Object _getTotalValue(OrderDTO dto) {
+		return dto.getTotalValue()	!= null ? dto.getTotalValue() :
+			NullableSQLObject.FLOAT;
+	}
+
+	private Object _getReceitptDate(OrderDTO dto) {
+		return dto.getReceiptDate() != null ? dto.getReceiptDate() :
+			NullableSQLObject.DATE;
 	}
 
 	private OrderDTO populateDto(ResultSet rs) throws Exception {
