@@ -542,16 +542,16 @@ public abstract class AbstractDAO {
 	}
 
 	public final void onTransactionContext(CheckedConsumer<Connection> consumer) {
-	
+
 		Connection con = null;
-	
+
 		try {
 			con  = this.getConnection();
-	
+
 			con.setAutoCommit(false);
-	
+
 			consumer.accept(con);
-	
+
 			con.commit();
 		} catch (Exception e) {
 			this.rollback(con);

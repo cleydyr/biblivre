@@ -40,7 +40,7 @@ import biblivre.core.utils.CheckedFunction;
 import biblivre.core.utils.TextUtils;
 
 public class IndexingDAO extends AbstractDAO {
-	
+
 	private static final String _CLEAR_INDEXES_AUTOCOMPLETE_SQL_TPL =
 		"DELETE FROM %s_idx_autocomplete WHERE record_id is not null";
 
@@ -83,7 +83,7 @@ public class IndexingDAO extends AbstractDAO {
 		+ "(record_id, indexing_group_id, phrase, ignore_chars_count) "
 		+ "VALUES (?, ?, ?, ?)";
 
-	private static final String _INSERT_INDEXES_SQL_TPL = 
+	private static final String _INSERT_INDEXES_SQL_TPL =
 		"INSERT INTO %s_idx_fields "
 		+ "(record_id, indexing_group_id, word, datafield) "
 		+ "VALUES (?, ?, ?, ?)";
