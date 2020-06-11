@@ -517,7 +517,7 @@ public abstract class AbstractDAO {
 		return list;
 	}
 
-	public <T extends AbstractDTO> List<T> listWith(
+	public <T> List<T> listWith(
 		CheckedFunction<ResultSet, T> mapper, String sql, Object... parameters)
 		throws DAOException {
 

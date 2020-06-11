@@ -21,13 +21,12 @@ package biblivre.administration.backup;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.PGConnection;
@@ -38,7 +37,26 @@ import biblivre.core.NullableSQLObject;
 import biblivre.core.exceptions.DAOException;
 
 public class BackupDAO extends AbstractDAO {
-	private static final String _INSERT_SQL = "INSERT INTO backups (id, path, schemas, type, scope, downloaded, steps, current_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String _LIST_SQL =
+		"SELECT * FROM backups " +
+		"ORDER BY created DESC ";
+
+	private static final String _LIST_WITH_LIMIT_SQL =
+		"SELECT * FROM backups " +
+		"ORDER BY created DESC LIMIT ?";
+
+	private static final String _LIST_SCHEMAS_SQL =
+		"SELECT schema_name FROM information_schema.schemata " +
+		"WHERE schema_name <> 'information_schema' " +
+			"AND schema_name !~ E'^pg_';";
+
+	private static final String _GET_SQL =
+		"SELECT * FROM backups WHERE id = ?";
+
+	private static final String _INSERT_SQL =
+		"INSERT INTO backups " +
+		"(id, path, schemas, type, scope, downloaded, steps, current_step) " +
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 	public static BackupDAO getInstance(String schema) {
 		return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class, schema);
@@ -71,30 +89,8 @@ public class BackupDAO extends AbstractDAO {
 			return null;
 		}
 
-		BackupDTO dto = null;
-
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM backups WHERE id = ?;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-
-			pst.setInt(1, id);
-
-			ResultSet rs = pst.executeQuery();
-
-			if (rs.next()) {
-				dto = this.populateDTO(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
-		return dto;
+		return fetchOne(
+			this::populateDTO, _GET_SQL, id);
 	}
 
 	public long createOID() {
@@ -120,63 +116,33 @@ public class BackupDAO extends AbstractDAO {
 	}
 
 	public Set<String> listDatabaseSchemas() {
-		Set<String> set = new TreeSet<String>();
+		List<String> list =
+			listWith(rs -> rs.getString("schema_name"), _LIST_SCHEMAS_SQL);
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			String sql = "SELECT schema_name FROM information_schema.schemata WHERE schema_name <> 'information_schema' AND schema_name !~ E'^pg_';";
-
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(sql);
-
-			while (rs.next()) {
-				set.add(rs.getString("schema_name"));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
-		return set;
+		return new HashSet<>(list);
 	}
 
-	public LinkedList<BackupDTO> list() {
+	public List<BackupDTO> list() {
 		return this.list(0);
 	}
 
-	public LinkedList<BackupDTO> list(int limit) {
-		LinkedList<BackupDTO> list = new LinkedList<BackupDTO>();
+	public List<BackupDTO> list(int limit) {
+		List<Object> parameters;
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
+		String sql;
 
-			sql.append("SELECT * FROM backups ORDER BY created DESC ");
+		if (limit > 0) {
+			sql = _LIST_WITH_LIMIT_SQL;
 
-			if (limit > 0) {
-				sql.append("LIMIT ?");
-			}
+			parameters = Collections.singletonList(limit);
+		}
+		else {
+			sql = _LIST_SQL;
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			if (limit > 0) {
-				pst.setInt(1, limit);
-			}
-
-			ResultSet rs = pst.executeQuery();
-
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
+			parameters = Collections.emptyList();
 		}
 
-		return list;
+		return listWith(this::populateDTO, sql, parameters.toArray());
 	}
 
 	private BackupDTO populateDTO(ResultSet rs) throws SQLException {
