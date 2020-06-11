@@ -72,8 +72,8 @@ public class QuotationDAO extends AbstractDAO {
 		"DELETE FROM request_quotation " +
 		"WHERE quotation_id = ?;";
 
-	private static final String _UPDATE_QUOTATION_SQL =
-		"UPDATE quotations" +
+	private static final String _UPDATE_SQL =
+		"UPDATE quotations " +
 		"SET supplier_id = ?, response_date = ?, expiration_date = ?, " +
 			"delivery_time = ?, info = ?, modified_by = ?, modified = now() " +
 		"WHERE id = ?;";
@@ -192,7 +192,7 @@ public class QuotationDAO extends AbstractDAO {
 	public boolean update(QuotationDTO dto) {
 		onTransactionContext(con -> {
 			executeUpdate(
-				_UPDATE_QUOTATION_SQL, dto.getSupplierId(),
+				_UPDATE_SQL, dto.getSupplierId(),
 				dto.getResponseDate(), dto.getExpirationDate(),
 				dto.getDeliveryTime(), dto.getInfo(), dto.getModifiedBy(),
 				dto.getId());
