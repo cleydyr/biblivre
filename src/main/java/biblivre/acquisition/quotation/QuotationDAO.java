@@ -126,14 +126,13 @@ public class QuotationDAO extends AbstractDAO {
 				dto.getDeliveryTime(), dto.getInfo(), dto.getCreatedBy(),
 				dto.getCreated());
 
-			executeBatchUpdate((pst, requestQuotation) -> {
-				PreparedStatementUtil.setAllParameters(
-					pst,	requestQuotation.getRequestId(),
-					requestQuotation.getQuotationId(),
-					requestQuotation.getQuantity(),
-					requestQuotation.getUnitValue(),
-					requestQuotation.getResponseQuantity());
-			}, dto.getQuotationsList(),_SAVE_RQ_SQL);
+			executeBatchUpdate(
+				dto.getQuotationsList(), RequestQuotationDTO.class,
+				_SAVE_RQ_SQL, RequestQuotationDTO::getRequestId,
+				__ -> quotationId,
+				RequestQuotationDTO::getQuantity,
+				RequestQuotationDTO::getUnitValue,
+				RequestQuotationDTO::getResponseQuantity);
 		});
 
 		return quotationId;

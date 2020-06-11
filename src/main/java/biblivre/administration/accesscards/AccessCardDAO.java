@@ -167,10 +167,10 @@ public class AccessCardDAO extends AbstractDAO {
 	private String _getSQL(int codesSize) {
 		StringBuilder sb = new StringBuilder(codesSize > 0 ? 4 : 1);
 
-		sb.append("SELECT * FROM access_cards WHERE 1 = 1 ");
+		sb.append("SELECT * FROM access_cards");
 
 		if (codesSize > 0) {
-			sb.append("and code in (");
+			sb.append("WHERE code in (");
 			sb.append(StringUtils.repeat("?", ", ", codesSize));
 			sb.append(");");
 		}
