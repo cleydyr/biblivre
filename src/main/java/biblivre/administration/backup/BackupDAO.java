@@ -25,7 +25,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,9 +34,12 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.AbstractDAO;
+import biblivre.core.NullableSQLObject;
 import biblivre.core.exceptions.DAOException;
 
 public class BackupDAO extends AbstractDAO {
+	private static final String _INSERT_SQL = "INSERT INTO backups (id, path, schemas, type, scope, downloaded, steps, current_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
 	public static BackupDAO getInstance(String schema) {
 		return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class, schema);
 	}
@@ -47,58 +49,20 @@ public class BackupDAO extends AbstractDAO {
 			return false;
 		}
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		dto.setId(this.getNextSerial("backups_id_seq"));
 
-			StringBuilder sql = new StringBuilder();
-
-			if (dto.getId() == null) {
-				dto.setId(this.getNextSerial("backups_id_seq"));
-
-				sql.append("INSERT INTO backups (id, path, schemas, type, scope, downloaded, steps, current_step) ");
-				sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-
-				PreparedStatement pst = con.prepareStatement(sql.toString());
-
-				pst.setInt(1, dto.getId());
-
-				if (dto.getBackup() != null) {
-					pst.setString(2, dto.getBackup().getAbsolutePath());
-				} else {
-					pst.setNull(2, Types.VARCHAR);
-				}
-
-				pst.setString(3, dto.getSchemasString());
-				pst.setString(4, dto.getType().toString());
-				pst.setString(5, dto.getBackupScope().toString());
-				pst.setBoolean(6, dto.isDownloaded());
-				pst.setInt(7, dto.getSteps());
-				pst.setInt(8, dto.getCurrentStep());
-
-				return pst.executeUpdate() > 0;
-
-			} else {
-				sql.append("UPDATE backups SET path = ?, downloaded = ?, current_step = ? WHERE id = ?;");
-
-				PreparedStatement pst = con.prepareStatement(sql.toString());
-
-				if (dto.getBackup() != null) {
-					pst.setString(1, dto.getBackup().getAbsolutePath());
-				} else {
-					pst.setNull(1, Types.VARCHAR);
-				}
-
-				pst.setBoolean(2, dto.isDownloaded());
-				pst.setInt(3, dto.getCurrentStep());
-				pst.setInt(4, dto.getId());
-
-				return pst.executeUpdate() > 0;
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
+		if (dto.getBackup() != null) {
+			return executeUpdate(
+				_INSERT_SQL, dto.getId(), dto.getBackup().getAbsolutePath(),
+				dto.getSchemasString(), dto.getType().toString(),
+				dto.getBackupScope().toString(), dto.isDownloaded(),
+				dto.getSteps(), dto.getCurrentStep());
+		} else {
+			return executeUpdate(
+				_INSERT_SQL, dto.getId(), NullableSQLObject.VARCHAR,
+				dto.getSchemasString(), dto.getType().toString(),
+				dto.getBackupScope().toString(), dto.isDownloaded(),
+				dto.getSteps(), dto.getCurrentStep());
 		}
 	}
 
