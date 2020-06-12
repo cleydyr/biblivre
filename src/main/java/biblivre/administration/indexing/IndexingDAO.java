@@ -19,8 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.indexing;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,10 +33,20 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
 import biblivre.core.NullableSQLObject;
 import biblivre.core.PreparedStatementUtil;
-import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.TextUtils;
 
 public class IndexingDAO extends AbstractDAO {
+
+	private static final String _ANALYZE_SORT_SQL_TPL = "ANALYZE %s_idx_sort";
+
+	private static final String _ANALYZE_FIELDS_SQL_TPL =
+		"ANALYZE %s_idx_fields";
+
+	private static final String _REINDEX_SORT_SQL_TPL =
+		"REINDEX TABLE %s_idx_sort";
+
+	private static final String _REINDEX_FIELDS_SQL_TPL =
+		"REINDEX TABLE %s_idx_fields";
 
 	private static final String _CLEAR_INDEXES_AUTOCOMPLETE_SQL_TPL =
 		"DELETE FROM %s_idx_autocomplete WHERE record_id is not null";
@@ -114,23 +122,21 @@ public class IndexingDAO extends AbstractDAO {
 	}
 
 	public void insertIndexes(
-		RecordType recordType, List<IndexingDTO> indexes) {
+		RecordType recordType, Collection<IndexingDTO> indexes) {
 
-		int total = indexes.stream()
+		boolean allEmpty = indexes.stream()
 			.mapToInt(IndexingDTO::getCount)
-			.sum();
+			.allMatch(count -> count == 0);
 
-		if (total == 0) {
-			return;
+		if (!allEmpty && !indexes.isEmpty()) {
+			String sql = String.format(_INSERT_INDEXES_SQL_TPL, recordType);
+
+			Collection<Object[]> quartets = _prepareParameters(indexes);
+
+			executeBatchUpdate(
+				quartets, Object[].class, sql, q -> q[0], q -> q[1], q -> q[2],
+				q -> q[3]);
 		}
-
-		String sql = String.format(_INSERT_INDEXES_SQL_TPL, recordType);
-
-		Collection<Object[]> quartets = _prepareParameters(indexes);
-
-		executeBatchUpdate(
-			quartets, Object[].class, sql, q -> q[0], q -> q[1], q -> q[2],
-			q -> q[3]);
 	}
 
 	public void insertSortIndexes(
@@ -221,21 +227,15 @@ public class IndexingDAO extends AbstractDAO {
 	}
 
 	public void reindexDatabase(RecordType recordType) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		onTransactionContext(con -> {
+			executeUpdate(String.format(_REINDEX_FIELDS_SQL_TPL, recordType));
 
-			Statement st = con.createStatement();
+			executeUpdate(String.format(_REINDEX_SORT_SQL_TPL, recordType));
 
-			st.execute("REINDEX TABLE " + recordType + "_idx_fields");
-			st.execute("REINDEX TABLE " + recordType + "_idx_sort");
-			st.execute("ANALYZE " + recordType + "_idx_fields");
-			st.execute("ANALYZE " + recordType + "_idx_sort");
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+			executeUpdate(String.format(_ANALYZE_FIELDS_SQL_TPL, recordType));
+
+			executeUpdate(String.format(_ANALYZE_SORT_SQL_TPL, recordType));
+		});
 	}
 
 	public List<String> searchExactTerms(
@@ -261,7 +261,9 @@ public class IndexingDAO extends AbstractDAO {
 		return parameters.toArray();
 	}
 
-	private Collection<Object[]> _prepareParameters(List<IndexingDTO> indexes) {
+	private Collection<Object[]> _prepareParameters(
+		Collection<IndexingDTO> indexes) {
+
 		Collection<Object[]> quartets = new ArrayList<>();
 
 		for (IndexingDTO index : indexes) {
