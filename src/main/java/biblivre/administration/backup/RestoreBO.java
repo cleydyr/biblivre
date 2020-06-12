@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -308,15 +307,7 @@ public class RestoreBO extends AbstractBO {
 			t.start();
 
 			// Preprocessing renames
-			for (Entry<String, String> entry : preRenameSchemas.entrySet()) {
-				String originalSchemaName = entry.getKey();
-
-				String finalSchemaName = entry.getValue();
-
-				State.writeLog("Renaming schema " + originalSchemaName + " to " + finalSchemaName);
-				bw.write("ALTER SCHEMA \"" + originalSchemaName + "\" RENAME TO \"" + finalSchemaName + "\";\n");
-			}
-			bw.flush();
+			_renameAll(preRenameSchemas, bw);
 
 			if (restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
 				State.writeLog("Processing schema for '" + Constants.GLOBAL_SCHEMA + "'");
@@ -324,6 +315,7 @@ public class RestoreBO extends AbstractBO {
 
 				State.writeLog("Processing data for '" + Constants.GLOBAL_SCHEMA + "'");
 				this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".data." + extension), bw);
+
 				bw.flush();
 			}
 
@@ -349,31 +341,15 @@ public class RestoreBO extends AbstractBO {
 			}
 
 			// Postprocessing renames
-			for (Entry<String, String> entry : postRenameSchemas.entrySet()) {
-				String renamedSchemaName = entry.getKey();
-
-				String originalSchemaName = entry.getValue();
-
-				State.writeLog("Renaming schema " + renamedSchemaName + " to " + originalSchemaName);
-				bw.write("ALTER SCHEMA \"" + renamedSchemaName + "\" RENAME TO \"" + originalSchemaName + "\";\n");
-			}
-			bw.flush();
+			_renameAll(postRenameSchemas, bw);
 
 			// Postprocessing renames
-			for (Entry<String, String> entry : restoreRenamedSchemas.entrySet()) {
-				String renamedSchemaName = entry.getKey();
-
-				String originalSchemaName = entry.getValue();
-
-				State.writeLog("Renaming schema " + renamedSchemaName + " to " + originalSchemaName);
-				bw.write("ALTER SCHEMA \"" + renamedSchemaName + "\" RENAME TO \"" + originalSchemaName + "\";\n");
-			}
-			bw.flush();
-
+			_renameAll(restoreRenamedSchemas, bw);
 
 			// Postprocessing deletes
 			for (String originalSchemaName : deleteSchemas.keySet()) {
 				String aux = deleteSchemas.get(originalSchemaName);
+
 				State.writeLog("Droping schema " + aux);
 
 				if (!originalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
@@ -420,6 +396,28 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		return false;
+	}
+
+	private void _renameAll(
+		Map<String, String> restoreRenamedSchemas, BufferedWriter bw)
+		throws IOException {
+
+		StringBuilder sb = new StringBuilder(restoreRenamedSchemas.size());
+
+		restoreRenamedSchemas.forEach((renamedSchema, originalSchema) -> {
+			State.writeLog(
+				"Renaming schema " + renamedSchema + " to " + originalSchema);
+
+			sb.append("ALTER SCHEMA \"")
+				.append(renamedSchema)
+				.append("\" RENAME TO \"")
+				.append(originalSchema)
+				.append("\";\n");
+		});
+
+		bw.write(sb.toString());
+
+		bw.flush();
 	}
 
 	public synchronized boolean recreateBiblivre3RestoreDatabase(boolean tryPGSQL92) {
