@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,18 +44,6 @@ public class AccessCardBO extends AbstractBO {
 		return bo;
 	}
 
-	public boolean save(AccessCardDTO dto) {
-		if (dto != null) {
-			AccessCardDTO existingCard = this.dao.get(dto.getCode());
-			if (existingCard != null) {
-				throw new ValidationException("administration.accesscards.error.existing_card");
-			}
-			return this.dao.save(dto);
-		}
-
-		return false;
-	}
-
 	public DTOCollection<AccessCardDTO> search(String code, AccessCardStatus status, int limit, int offset) {
 		return this.dao.search(code, status, limit, offset);
 	}
@@ -62,30 +52,28 @@ public class AccessCardBO extends AbstractBO {
 		return this.dao.get(id);
 	}
 
-	public AccessCardDTO get(String code) {
-		return this.dao.get(code);
-	}
-
-	public LinkedList<AccessCardDTO> saveCardList(String prefix, String suffix, String startString, String endString, Integer loggedUserId, AccessCardStatus status) {
-		int start = Integer.parseInt(startString);
-		int end = Integer.parseInt(endString);
-
+	public LinkedList<AccessCardDTO> saveCardList(String prefix, String suffix, int start, int end, Integer loggedUserId, AccessCardStatus status) {
 		LinkedList<String> codeList = new LinkedList<String>();
-		int pad = startString.length();
+
+		int pad = _getPadding(start);
+
 		for (int i = start; i <= end; i++) {
 			String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
 			codeList.add(prefix + number + suffix);
 		}
 
 		//Validate existing cards
-		List<AccessCardDTO> existingCards = this.dao.get(codeList);
-		List<String> existingCodes = new LinkedList<String>();
-		for (AccessCardDTO card : existingCards) {
-			existingCodes.add(card.getCode());
-		}
-		if (existingCodes.size() > 0) {
+		Collection<AccessCardDTO> existingCards = this.dao.get(codeList);
+
+		if (existingCards.size() > 0) {
 			ValidationException ve = new ValidationException("administration.accesscards.error.existing_cards");
-			ve.addError("existing_cards", StringUtils.join(existingCodes, ", "));
+
+			Iterator<String> iterator = existingCards.stream()
+				.map(card -> card.getCode())
+				.iterator();
+
+			ve.addError("existing_cards", StringUtils.join(iterator, ", "));
+
 			throw ve;
 		}
 
@@ -104,6 +92,14 @@ public class AccessCardBO extends AbstractBO {
 		} else {
 			return null;
 		}
+	}
+
+	private int _getPadding(int start) {
+		if (start < 10) {
+			return 1;
+		}
+
+		return 1 + _getPadding(start/10);
 	}
 
 	public boolean removeCard(AccessCardDTO dto) {

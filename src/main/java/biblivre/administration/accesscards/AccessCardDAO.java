@@ -21,7 +21,7 @@ package biblivre.administration.accesscards;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,17 +60,7 @@ public class AccessCardDAO extends AbstractDAO {
 			AccessCardDAO.class, schema);
 	}
 
-	public AccessCardDTO get(String code) {
-		List<AccessCardDTO> list = this.get(Collections.singletonList(code));
-
-		if (list.size() == 0) {
-			return null;
-		}
-
-		return list.get(0);
-	}
-
-	public List<AccessCardDTO> get(
+	public Collection<AccessCardDTO> get(
 		List<String> codes) {
 
 		int codesSize = codes != null ? codes.size() : 0;
@@ -117,12 +107,6 @@ public class AccessCardDAO extends AbstractDAO {
 		accessCard.setId(getNextSerial("access_cards_id_seq"));
 
 		return accessCard;
-	}
-
-	public boolean save(AccessCardDTO dto) {
-		return executeUpdate(
-			_SAVE_SQL, dto.getId(), dto.getCode(), dto.getStatus().toString(),
-			dto.getCreatedBy());
 	}
 
 	public boolean save(LinkedList<AccessCardDTO> cardList) {
