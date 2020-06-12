@@ -22,6 +22,7 @@ package biblivre.administration.reports;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.administration.reports.dto.HoldingCreationByDateReportDto;
@@ -84,12 +85,13 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-			for (String name : userTotal.keySet()) {
+			for (Entry<String, Integer> entry: userTotal.entrySet()) {
+				String name = entry.getKey();
 				cell = new PdfPCell(new Paragraph(this.getNormalChunk(name)));
 				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
-				cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(userTotal.get(name)))));
+				cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(entry.getValue()))));
 				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);

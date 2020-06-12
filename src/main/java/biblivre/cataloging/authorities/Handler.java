@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.cataloging.authorities;
 
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -90,11 +91,11 @@ public class Handler extends CatalogingHandler {
 		try {
 			JSONArray data = new JSONArray();
 			int id = 1;
-			for (String key : result.keySet()) {
-				Set<Integer> ids = result.get(key);
+			for (Entry<String, Set<Integer>> entry : result.entrySet()) {
+				Set<Integer> ids = result.get(entry.getKey());
 				JSONObject obj = new JSONObject();
 				obj.put("id", id++);
-				obj.put("author", key);
+				obj.put("author", entry.getValue());
 				obj.put("count", ids.size());
 				obj.put("ids", StringUtils.join(ids, ","));
 				data.put(obj);

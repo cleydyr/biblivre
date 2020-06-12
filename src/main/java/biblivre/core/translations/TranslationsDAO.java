@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -104,10 +105,10 @@ public class TranslationsDAO extends AbstractDAO {
 				for (String language : translations.keySet()) {
 					Map<String, String> translation = translations.get(language);
 
-					for (String key : translation.keySet()) {
+					for (Entry<String, String> entry : translation.entrySet()) {
 						function.setString(1, language);
-						function.setString(2, key);
-						function.setString(3, translation.get(key));
+						function.setString(2, entry.getKey());
+						function.setString(3, entry.getValue());
 						function.setInt(4, loggedUser);
 						function.addBatch();
 					}

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -109,10 +110,10 @@ public class ReportsBO extends AbstractBO {
 
 		List<String[]> data = new ArrayList<String[]>();
 
-		for (String key : subfieldCounter.keySet()) {
+		for (Entry<String, Integer> entry : subfieldCounter.entrySet()) {
 			String[] valuePair = new String[2];
-			valuePair[0] = key;
-			valuePair[1] = String.valueOf(subfieldCounter.get(key));
+			valuePair[0] = entry.getKey();
+			valuePair[1] = String.valueOf(entry.getValue());
 			data.add(valuePair);
 		}
 

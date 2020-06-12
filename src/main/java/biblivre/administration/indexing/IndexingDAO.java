@@ -22,8 +22,7 @@ package biblivre.administration.indexing;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -264,22 +263,16 @@ public class IndexingDAO extends AbstractDAO {
 	private Collection<Object[]> _prepareParameters(
 		Collection<IndexingDTO> indexes) {
 
-		Collection<Object[]> quartets = new ArrayList<>();
-
-		for (IndexingDTO index : indexes) {
-			Map<Integer, Set<String>> wordsGroups = index.getWords();
-			for (Integer key : wordsGroups.keySet()) {
-				Collection<String> words = wordsGroups.get(key);
-				for (String word : words) {
-					quartets.add(
-						new Object[] {
-							index.getRecordId(), index.getIndexingGroupId(),
-							word, key});
-				}
-			}
-		}
-
-		return quartets;
+		return indexes.stream()
+			.flatMap(index -> index.getWords().entrySet().stream()
+				.map(
+					entry -> new Object[] {
+						index.getRecordId(), index.getIndexingGroupId(),
+						entry.getKey(), entry.getValue()
+					}
+				)
+			)
+			.collect(Collectors.toList());
 	}
 
 	private String _getExtractTermsSql(

@@ -22,9 +22,7 @@ package biblivre.administration.reports;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import biblivre.administration.reports.dto.AllUsersReportDto;
-import biblivre.administration.reports.dto.BaseReportDto;
+import java.util.Map.Entry;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -33,6 +31,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+
+import biblivre.administration.reports.dto.AllUsersReportDto;
+import biblivre.administration.reports.dto.BaseReportDto;
 
 public class AllUsersReport extends BaseBiblivreReport {
 
@@ -75,11 +76,8 @@ public class AllUsersReport extends BaseBiblivreReport {
 		table.setWidthPercentage(50f);
 		table.setHorizontalAlignment(Element.ALIGN_LEFT);
 
-		int total = 0;
-		PdfPCell cell;
-		for (String description : tipos.keySet()) {
-			total += tipos.get(description);
-			cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
+		tipos.keySet().forEach(description -> {
+			PdfPCell cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
 			cell.setBackgroundColor(this.headerBgColor);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -89,13 +87,19 @@ public class AllUsersReport extends BaseBiblivreReport {
 			cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			table.addCell(cell);
-		}
+		});
+
+		PdfPCell cell;
 		cell = new PdfPCell(new Paragraph(this.getHeaderChunk(this.getText("administration.reports.field.total"))));
 		cell.setBackgroundColor(this.headerBgColor);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setColspan(2);
 		table.addCell(cell);
+
+		int total = tipos.values().stream().
+				mapToInt(value -> value.intValue()).sum();
+
 		cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(total))));
 		cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -108,7 +112,10 @@ public class AllUsersReport extends BaseBiblivreReport {
 			ArrayList<PdfPTable> tabelas = new ArrayList<PdfPTable>();
 			PdfPTable table = null;
 			PdfPCell cell;
-			for (String description : data.keySet()) {
+
+			for (Entry<String, List<String>> entry : data.entrySet()) {
+				String description = entry.getKey();
+
 				table = new PdfPTable(4);
 				table.setWidthPercentage(100f);
 				cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
@@ -146,7 +153,9 @@ public class AllUsersReport extends BaseBiblivreReport {
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(cell);
 
-				for (String line : data.get(description)) {
+				List<String> lines = entry.getValue();
+
+				for (String line : lines) {
 					String[] dados = line.split("\t");
 					//Nome
 					cell = new PdfPCell(new Paragraph(this.getNormalChunk(dados[0])));

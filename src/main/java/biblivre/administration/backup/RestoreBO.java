@@ -46,6 +46,7 @@ import org.json.JSONObject;
 
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractBO;
+import biblivre.core.exceptions.DAOException;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -202,16 +203,15 @@ public class RestoreBO extends AbstractBO {
 		long date = new Date().getTime();
 		Set<String> databaseSchemas = this.dao.listDatabaseSchemas();
 
-		Map<String, String> deleteSchemas = new HashMap<String, String>();
-		Map<String, String> preRenameSchemas = new HashMap<String, String>();
-		Map<String, String> postRenameSchemas = new HashMap<String, String>();
-		Map<String, String> restoreRenamedSchemas = new HashMap<String, String>();
+		Map<String, String> deleteSchemas = new HashMap<>();
+		Map<String, String> preRenameSchemas = new HashMap<>();
+		Map<String, String> postRenameSchemas = new HashMap<>();
+		Map<String, String> restoreRenamedSchemas = new HashMap<>();
 
 		// Para cada schema sendo restaurado
-		for (String originalSchemaName : restoreSchemas.keySet()) {
+		restoreSchemas.forEach((originalSchemaName, finalSchemaName) -> {
 			// Verificamos o nome de destino do schema. Lembrando que o usuário pode escolher para qual schema o backup será restaurado.
 			// Isso significa que o originalSchemaName (nome do schema no backup) pode ser diferente do finalSchemaName (nome do schem depois de restaurado).
-			String finalSchemaName = restoreSchemas.get(originalSchemaName);
 
 			if (databaseSchemas.contains(finalSchemaName)) {
 				String aux = "_" + finalSchemaName + "_" + date;
@@ -222,7 +222,7 @@ public class RestoreBO extends AbstractBO {
 			if (!originalSchemaName.equals(finalSchemaName)) {
 				postRenameSchemas.put(originalSchemaName, finalSchemaName);
 			}
-		}
+		});
 
 		for (String originalSchemaName : restoreSchemas.keySet()) {
 			// Verifica se o schema está atrapalhando alguma importação. Neste caso, renomeia temporariamente.
@@ -805,11 +805,13 @@ public class RestoreBO extends AbstractBO {
 
 		bw.write("SET search_path = \"" + schema + "\", pg_catalog;\n");
 
-		for (String oid : oidMap.keySet()) {
-			Long newOid = oidMap.get(oid);
-
-			bw.write("UPDATE digital_media SET blob = '" + newOid + "' WHERE blob = '" + oid + "';\n");
-		}
+		oidMap.forEach((oid, newOid) -> {
+			try {
+				bw.write("UPDATE digital_media SET blob = '" + newOid + "' WHERE blob = '" + oid + "';\n");
+			} catch (IOException e) {
+				throw new DAOException(e);
+			}
+		});
 
 		bw.flush();
 		sc.close();
