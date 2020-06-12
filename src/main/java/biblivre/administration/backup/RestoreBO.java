@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -307,8 +308,10 @@ public class RestoreBO extends AbstractBO {
 			t.start();
 
 			// Preprocessing renames
-			for (String originalSchemaName : preRenameSchemas.keySet()) {
-				String finalSchemaName = preRenameSchemas.get(originalSchemaName);
+			for (Entry<String, String> entry : preRenameSchemas.entrySet()) {
+				String originalSchemaName = entry.getKey();
+
+				String finalSchemaName = entry.getValue();
 
 				State.writeLog("Renaming schema " + originalSchemaName + " to " + finalSchemaName);
 				bw.write("ALTER SCHEMA \"" + originalSchemaName + "\" RENAME TO \"" + finalSchemaName + "\";\n");

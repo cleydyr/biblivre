@@ -102,13 +102,15 @@ public class TranslationsDAO extends AbstractDAO {
 			if (translations != null) {
 				CallableStatement function = con.prepareCall("{ call global.update_translation(?, ?, ?, ?) }");
 
-				for (String language : translations.keySet()) {
-					Map<String, String> translation = translations.get(language);
+				for (Entry<String, HashMap<String, String>> entry : translations.entrySet()) {
+					String language = entry.getKey();
 
-					for (Entry<String, String> entry : translation.entrySet()) {
+					Map<String, String> translation = entry.getValue();
+
+					for (Entry<String, String> subEntry : translation.entrySet()) {
 						function.setString(1, language);
 						function.setString(2, entry.getKey());
-						function.setString(3, entry.getValue());
+						function.setString(3, subEntry.getValue());
 						function.setInt(4, loggedUser);
 						function.addBatch();
 					}
@@ -122,8 +124,10 @@ public class TranslationsDAO extends AbstractDAO {
 				String sql = "DELETE FROM translations WHERE language = ? AND key = ?; ";
 				PreparedStatement pst = con.prepareStatement(sql);
 
-				for (String language : removeTranslations.keySet()) {
-					Map<String, String> translation = removeTranslations.get(language);
+				for (Entry<String, HashMap<String, String>> entry : removeTranslations.entrySet()) {
+					String language = entry.getKey();
+
+					Map<String, String> translation = entry.getValue();
 
 					for (String key : translation.keySet()) {
 						pst.setString(1, language);
