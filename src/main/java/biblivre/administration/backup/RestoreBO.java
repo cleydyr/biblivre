@@ -362,6 +362,7 @@ public class RestoreBO extends AbstractBO {
 					bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" = '" + originalSchemaName + "';\n");
 				}
 			}
+
 			bw.flush();
 
 			for (String originalSchemaName : restoreSchemas.keySet()) {
@@ -779,7 +780,7 @@ public class RestoreBO extends AbstractBO {
 
 					this.logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
 
-					oidMap.put(currentOid, digitalMediaDAO.createOID());
+					oidMap.put(currentOid, newOid);
 				}
 
 			} else if (inputLine.startsWith("SELECT pg_catalog.lo_open")) {
