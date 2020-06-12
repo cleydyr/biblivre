@@ -168,7 +168,7 @@ public class HoldingDAO extends AbstractDAO {
 			con = this.getConnection();
 			String sql = "SELECT * biblio_holdings ORDER BY id OFFSET ? LIMIT ?;";
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
+			PreparedStatement pst = con.prepareStatement(sql);
 
 			pst.setInt(1, offset);
 			pst.setInt(2, limit);
@@ -273,7 +273,7 @@ public class HoldingDAO extends AbstractDAO {
 			+ "(user_name, user_login, created_by) VALUES (?, ?, ?); ";
 
 		try (Connection con = getConnection();
-				PreparedStatement pst = con.prepareStatement(sql.toString())) {
+				PreparedStatement pst = con.prepareStatement(sql)) {
 
 			PreparedStatementUtil.setAllParameters(
 				pst, dto.getName(), ldto.getLogin(), ldto.getId());

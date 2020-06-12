@@ -245,7 +245,7 @@ public class IndexingDAO extends AbstractDAO {
 		Object[] parameters = _prepareParameters(indexingGroupId, terms);
 
 		return listWith(
-			rs -> rs.getString("phrase"), sql.toString(), parameters);
+			rs -> rs.getString("phrase"), sql, parameters);
 	}
 
 	private Object[] _prepareParameters(
