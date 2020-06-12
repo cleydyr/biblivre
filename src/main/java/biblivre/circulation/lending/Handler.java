@@ -275,7 +275,7 @@ public class Handler extends AbstractHandler {
 		Boolean exempt = request.getBoolean("exempt", false);
 
 		LendingFineBO lendingFineBo = LendingFineBO.getInstance(schema);
-		LendingFineDTO dto = lendingFineBo.getById(Integer.valueOf(fineId));
+		LendingFineDTO dto = lendingFineBo.getById(fineId);
 		if (exempt) {
 			dto.setValue(0f);
 		}
