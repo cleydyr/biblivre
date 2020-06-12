@@ -51,6 +51,7 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
+import biblivre.core.utils.Pair;
 import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
@@ -309,36 +310,7 @@ public class RestoreBO extends AbstractBO {
 			// Preprocessing renames
 			_renameAll(preRenameSchemas, bw);
 
-			if (restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
-				State.writeLog("Processing schema for '" + Constants.GLOBAL_SCHEMA + "'");
-				this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".schema." + extension), bw);
-
-				State.writeLog("Processing data for '" + Constants.GLOBAL_SCHEMA + "'");
-				this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".data." + extension), bw);
-
-				bw.flush();
-			}
-
-			for (String schema : restoreSchemas.keySet()) {
-				if (schema.equals(Constants.GLOBAL_SCHEMA)) {
-					continue;
-				}
-
-				// Restoring database schema (creating tables and indexes)
-				State.writeLog("Processing schema for '" + schema + "'");
-				this.processRestore(new File(path, schema + ".schema." + extension), bw);
-
-				// Restoring database data
-				State.writeLog("Processing data for '" + schema + "'");
-				this.processRestore(new File(path, schema + ".data." + extension), bw);
-
-				// Restoring digital media files
-				State.writeLog("Processing media for '" + schema + "'");
-				this.processMediaRestore(new File(path, schema + ".media." + extension), bw, schema);
-				this.processMediaRestoreFolder(new File(path, schema), bw);
-
-				bw.flush();
-			}
+			_doRestore(path, restoreSchemas, extension, bw);
 
 			// Postprocessing renames
 			_renameAll(postRenameSchemas, bw);
@@ -347,37 +319,9 @@ public class RestoreBO extends AbstractBO {
 			_renameAll(restoreRenamedSchemas, bw);
 
 			// Postprocessing deletes
-			for (String originalSchemaName : deleteSchemas.keySet()) {
-				String aux = deleteSchemas.get(originalSchemaName);
+			_postProcessDeletes(deleteSchemas, bw);
 
-				State.writeLog("Droping schema " + aux);
-
-				if (!originalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
-					bw.write("DELETE FROM \"" + aux + "\".digital_media;\n");
-				}
-
-				bw.write("DROP SCHEMA \"" + aux + "\" CASCADE;\n");
-
-				if (!originalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
-					bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" = '" + originalSchemaName + "';\n");
-				}
-			}
-
-			bw.flush();
-
-			for (String originalSchemaName : restoreSchemas.keySet()) {
-				String finalSchemaName = restoreSchemas.get(originalSchemaName);
-
-				if (!finalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
-					String schemaTitle = finalSchemaName;
-
-					schemaTitle = dto.getSchemas().get(originalSchemaName).getLeft();
-					schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\\\", "\\\\");
-
-					bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" = '" + finalSchemaName + "';\n");
-					bw.write("INSERT INTO \"" + Constants.GLOBAL_SCHEMA + "\".schemas (schema, name) VALUES ('" + finalSchemaName + "', E'" + schemaTitle + "');\n");
-				}
-			}
+			_postProcessDeletes2(dto, restoreSchemas, bw);
 
 			bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);\n");
 
@@ -397,28 +341,6 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		return false;
-	}
-
-	private void _renameAll(
-		Map<String, String> restoreRenamedSchemas, BufferedWriter bw)
-		throws IOException {
-
-		StringBuilder sb = new StringBuilder(restoreRenamedSchemas.size());
-
-		restoreRenamedSchemas.forEach((renamedSchema, originalSchema) -> {
-			State.writeLog(
-				"Renaming schema " + renamedSchema + " to " + originalSchema);
-
-			sb.append("ALTER SCHEMA \"")
-				.append(renamedSchema)
-				.append("\" RENAME TO \"")
-				.append(originalSchema)
-				.append("\";\n");
-		});
-
-		bw.write(sb.toString());
-
-		bw.flush();
 	}
 
 	public synchronized boolean recreateBiblivre3RestoreDatabase(boolean tryPGSQL92) {
@@ -821,5 +743,143 @@ public class RestoreBO extends AbstractBO {
 
 		bw.flush();
 		sc.close();
+	}
+
+	private void _doRestore(File path, Map<String, String> restoreSchemas, String extension, BufferedWriter bw)
+			throws IOException {
+		if (restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
+			State.writeLog("Processing schema for '" + Constants.GLOBAL_SCHEMA + "'");
+			this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".schema." + extension), bw);
+
+			State.writeLog("Processing data for '" + Constants.GLOBAL_SCHEMA + "'");
+			this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".data." + extension), bw);
+
+			bw.flush();
+		}
+
+		for (String schema : restoreSchemas.keySet()) {
+			if (schema.equals(Constants.GLOBAL_SCHEMA)) {
+				continue;
+			}
+
+			// Restoring database schema (creating tables and indexes)
+			State.writeLog("Processing schema for '" + schema + "'");
+			this.processRestore(new File(path, schema + ".schema." + extension), bw);
+
+			// Restoring database data
+			State.writeLog("Processing data for '" + schema + "'");
+			this.processRestore(new File(path, schema + ".data." + extension), bw);
+
+			// Restoring digital media files
+			State.writeLog("Processing media for '" + schema + "'");
+			this.processMediaRestore(new File(path, schema + ".media." + extension), bw, schema);
+			this.processMediaRestoreFolder(new File(path, schema), bw);
+
+			bw.flush();
+		}
+	}
+
+	private void _postProcessDeletes2(RestoreDTO dto, Map<String, String> restoreSchemas, BufferedWriter bw)
+			throws IOException {
+		StringBuilder sb = new StringBuilder();
+
+		Map<String, Pair<String, String>> schemas = dto.getSchemas();
+
+		restoreSchemas.forEach((originalSchema, finalSchema) -> {
+			if (!finalSchema.equals(Constants.GLOBAL_SCHEMA)) {
+				String schemaTitle = _getSchemaTitle(schemas, originalSchema);
+
+				StringBuilder sb_ = new StringBuilder(5);
+
+				sb_
+					.append("DELETE FROM \"")
+					.append(Constants.GLOBAL_SCHEMA)
+					.append("\".schemas WHERE \"schema\" = '")
+					.append(finalSchema)
+					.append("';\n")
+					.append("INSERT INTO \"")
+					.append(Constants.GLOBAL_SCHEMA)
+					.append("\".schemas (schema, name) VALUES ('")
+					.append(finalSchema)
+					.append("', E'")
+					.append(schemaTitle)
+					.append("');\n");
+
+				sb.append(sb_);
+			}
+		});
+
+		bw.write(sb.toString());
+	}
+
+	private String _getSchemaTitle(Map<String, Pair<String, String>> schemas,
+			String originalSchema) {
+		String schemaTitle;
+
+		schemaTitle = schemas.get(originalSchema).getLeft();
+		schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\\\", "\\\\");
+		return schemaTitle;
+	}
+
+	private void _postProcessDeletes(Map<String, String> deleteSchemas, BufferedWriter bw) throws IOException {
+		StringBuilder sb = new StringBuilder(deleteSchemas.size());
+
+		deleteSchemas.forEach((originalSchema, aux) -> {
+			State.writeLog("Droping schema " + aux);
+
+			boolean isNotGlobal =
+				!originalSchema.equals(Constants.GLOBAL_SCHEMA);
+
+			StringBuilder sb_ = new StringBuilder(isNotGlobal ? 11 : 3);
+
+			if (isNotGlobal) {
+				sb_
+					.append("DELETE FROM \"")
+					.append(aux)
+					.append("\".digital_media;\n");
+			}
+
+			sb_
+				.append("DROP SCHEMA \"")
+				.append(aux)
+				.append("\" CASCADE;\n");
+
+			if (isNotGlobal) {
+				sb_
+					.append("DELETE FROM \"")
+					.append(Constants.GLOBAL_SCHEMA)
+					.append("\".schemas WHERE \"schema\" = '")
+					.append(originalSchema)
+					.append("';\n");
+			}
+
+			sb.append(sb_);
+		});
+
+		bw.write(sb.toString());
+
+		bw.flush();
+	}
+
+	private void _renameAll(
+		Map<String, String> restoreRenamedSchemas, BufferedWriter bw)
+		throws IOException {
+
+		StringBuilder sb = new StringBuilder(restoreRenamedSchemas.size());
+
+		restoreRenamedSchemas.forEach((renamedSchema, originalSchema) -> {
+			State.writeLog(
+				"Renaming schema " + renamedSchema + " to " + originalSchema);
+
+			sb.append("ALTER SCHEMA \"")
+				.append(renamedSchema)
+				.append("\" RENAME TO \"")
+				.append(originalSchema)
+				.append("\";\n");
+		});
+
+		bw.write(sb.toString());
+
+		bw.flush();
 	}
 }
