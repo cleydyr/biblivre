@@ -20,7 +20,6 @@
 package biblivre.administration.indexing;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,9 +33,9 @@ import biblivre.cataloging.AutocompleteDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
+import biblivre.core.NullableSQLObject;
 import biblivre.core.PreparedStatementUtil;
 import biblivre.core.exceptions.DAOException;
-import biblivre.core.utils.CheckedFunction;
 import biblivre.core.utils.TextUtils;
 
 public class IndexingDAO extends AbstractDAO {
@@ -103,16 +102,14 @@ public class IndexingDAO extends AbstractDAO {
 	}
 
 	public void clearIndexes(RecordType recordType) {
-		CheckedFunction<PreparedStatement, PreparedStatement> noop = __ -> __;
+		executeQuery(
+			EXECUTE, String.format(_CLEAR_INDEXES_FIELDS_SQL_TPL, recordType));
 
 		executeQuery(
-			noop, String.format(_CLEAR_INDEXES_FIELDS_SQL_TPL, recordType));
+			EXECUTE, String.format(_CLEAR_INDEXES_SORT_SQL_TPL, recordType));
 
 		executeQuery(
-			noop, String.format(_CLEAR_INDEXES_SORT_SQL_TPL, recordType));
-
-		executeQuery(
-			noop,
+			EXECUTE,
 			String.format(_CLEAR_INDEXES_AUTOCOMPLETE_SQL_TPL, recordType));
 	}
 
@@ -148,7 +145,7 @@ public class IndexingDAO extends AbstractDAO {
 
 		executeBatchUpdate(
 			sortIndexes, IndexingDTO.class, sql, IndexingDTO::getRecordId,
-			IndexingDTO::getIndexingGroupId, IndexingDTO::getPhrase,
+			IndexingDTO::getIndexingGroupId, this::_getNullablePhrase,
 			IndexingDTO::getIgnoreCharsCount);
 	}
 
@@ -279,6 +276,7 @@ public class IndexingDAO extends AbstractDAO {
 				}
 			}
 		}
+
 		return quartets;
 	}
 
@@ -288,5 +286,11 @@ public class IndexingDAO extends AbstractDAO {
 		return String.format(
 			_SEARCH_EXTRACT_TERMS_SQL_TPL, recordType.toString(),
 			StringUtils.repeat("?", ", ", terms.size()));
+	}
+
+	private Object _getNullablePhrase(IndexingDTO indexing) {
+		String phrase = indexing.getPhrase();
+
+		return phrase == null ? NullableSQLObject.VARCHAR :	phrase;
 	}
 }

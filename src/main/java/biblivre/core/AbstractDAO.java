@@ -55,6 +55,9 @@ public abstract class AbstractDAO {
 	private String schema;
 	private String dataSourceName;
 
+	protected static CheckedFunction<PreparedStatement, Boolean> EXECUTE =
+			pst -> pst.execute();
+
 	private static HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO> instances = new HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO>();
 
 	protected AbstractDAO() {
