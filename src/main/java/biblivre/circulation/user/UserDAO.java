@@ -198,8 +198,8 @@ public class UserDAO extends AbstractDAO {
 				psIndex++;
 			} else if (StringUtils.isNotBlank(query)) {
 				if (StringUtils.isNumeric(query)) {
-					pst.setInt(psIndex, Integer.valueOf(query));
-					pstCount.setInt(psIndex, Integer.valueOf(query));
+					pst.setInt(psIndex, Integer.parseInt(query));
+					pstCount.setInt(psIndex, Integer.parseInt(query));
 					psIndex++;
 				} else {
 					pst.setString(psIndex, "%" + query + "%");

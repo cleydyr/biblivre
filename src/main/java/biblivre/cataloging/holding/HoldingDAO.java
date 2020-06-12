@@ -453,12 +453,8 @@ public class HoldingDAO extends AbstractDAO {
 		DTOCollection<HoldingDTO> list = new DTOCollection<HoldingDTO>();
 		Connection con = null;
 		try {
-			boolean searchId = StringUtils.isNumeric(query);
-			try {
-				Long.valueOf(query);
-			} catch (NumberFormatException nfe) {
-				searchId = false;
-			}
+			boolean isNumericQuery = StringUtils.isNumeric(query);
+
 			boolean listAll = StringUtils.isBlank(query);
 
 			con = this.getConnection();
@@ -470,7 +466,7 @@ public class HoldingDAO extends AbstractDAO {
 			}
 
 			if (!listAll) {
-				if (searchId) {
+				if (isNumericQuery) {
 					sql.append("AND (accession_number ilike ? OR id = ?) ");
 				} else {
 					sql.append("AND accession_number ilike ? ");
@@ -491,7 +487,7 @@ public class HoldingDAO extends AbstractDAO {
 			}
 
 			if (!listAll) {
-				if (searchId) {
+				if (isNumericQuery) {
 					countSql.append("AND (accession_number ilike ? OR id = ?) ");
 				} else {
 					countSql.append("AND accession_number ilike ? ");
@@ -516,9 +512,9 @@ public class HoldingDAO extends AbstractDAO {
 				pst.setString(index, query);
 				pstCount.setString(index++, query);
 
-				if (searchId) {
-					pst.setLong(index, Long.valueOf(query));
-					pstCount.setLong(index++, Long.valueOf(query));
+				if (isNumericQuery) {
+					pst.setLong(index, Long.parseLong(query));
+					pstCount.setLong(index++, Long.parseLong(query));
 				}
 			}
 

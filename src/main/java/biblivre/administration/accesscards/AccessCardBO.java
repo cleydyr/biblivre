@@ -55,10 +55,11 @@ public class AccessCardBO extends AbstractBO {
 	public LinkedList<AccessCardDTO> saveCardList(String prefix, String suffix, int start, int end, Integer loggedUserId, AccessCardStatus status) {
 		LinkedList<String> codeList = new LinkedList<String>();
 
-		int pad = _getPadding(start);
+		int padding = Integer.toString(start).length();
 
 		for (int i = start; i <= end; i++) {
-			String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
+			String number = StringUtils.leftPad(
+				String.valueOf(i), padding, "0");
 			codeList.add(prefix + number + suffix);
 		}
 
@@ -92,14 +93,6 @@ public class AccessCardBO extends AbstractBO {
 		} else {
 			return null;
 		}
-	}
-
-	private int _getPadding(int start) {
-		if (start < 10) {
-			return 1;
-		}
-
-		return 1 + _getPadding(start/10);
 	}
 
 	public boolean removeCard(AccessCardDTO dto) {

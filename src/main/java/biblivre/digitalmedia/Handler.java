@@ -118,7 +118,7 @@ public class Handler extends AbstractHandler {
 			return null;
 		}
 
-		DatabaseFile file = bo.load(Integer.valueOf(fileId), fileName);
+		DatabaseFile file = bo.load(Integer.parseInt(fileId), fileName);
 		return file;
 	}
 

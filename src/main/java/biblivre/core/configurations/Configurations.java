@@ -77,7 +77,7 @@ public class Configurations extends StaticBO {
 		String value = Configurations.getValue(schema, key);
 
 		try {
-			return Integer.valueOf(value);
+			return Integer.parseInt(value);
 		} catch (Exception e) {
 			Configurations.logger.warn("Configuration is not an integer: " + schema + "." + key + " = " + value);
 			return def;

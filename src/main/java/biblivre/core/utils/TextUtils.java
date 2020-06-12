@@ -231,7 +231,7 @@ public class TextUtils {
 
 	public static int defaultInt(String value, int defValue) {
 		try {
-			return Integer.valueOf(value);
+			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
 			return defValue;
 		}
