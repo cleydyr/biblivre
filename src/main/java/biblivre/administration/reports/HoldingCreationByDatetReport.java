@@ -36,8 +36,6 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 
-	private static Map<String, Integer> userTotal;
-
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
@@ -49,7 +47,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 	@Override
 	protected void generateReportBody(Document document, BaseReportDto reportData) throws Exception {
 		HoldingCreationByDateReportDto dto = (HoldingCreationByDateReportDto)reportData;
-		userTotal = new HashMap<String, Integer>();
+		Map<String, Integer> userTotal = new HashMap<String, Integer>();
 		Paragraph p1 = new Paragraph(this.getText("administration.reports.title.holdings_creation_by_date"));
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
@@ -61,7 +59,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 		document.add(new Phrase("\n"));
 
 		if (dto.getData() != null) {
-			PdfPTable table = createTable(dto.getData());
+			PdfPTable table = createTable(dto.getData(), userTotal);
 			document.add(table);
 			document.add(new Phrase("\n"));
 		}
@@ -166,7 +164,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 
 	}
 
-	private PdfPTable createTable(List<String[]> dataList) {
+	private PdfPTable createTable(List<String[]> dataList, Map<String, Integer> userTotal) {
 		PdfPTable table = new PdfPTable(4);
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		createHeader(table);
