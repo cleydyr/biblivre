@@ -360,8 +360,10 @@ public class RestoreBO extends AbstractBO {
 			bw.flush();
 
 			// Postprocessing renames
-			for (String renamedSchemaName : restoreRenamedSchemas.keySet()) {
-				String originalSchemaName = restoreRenamedSchemas.get(renamedSchemaName);
+			for (Entry<String, String> entry : restoreRenamedSchemas.entrySet()) {
+				String renamedSchemaName = entry.getKey();
+
+				String originalSchemaName = entry.getValue();
 
 				State.writeLog("Renaming schema " + renamedSchemaName + " to " + originalSchemaName);
 				bw.write("ALTER SCHEMA \"" + renamedSchemaName + "\" RENAME TO \"" + originalSchemaName + "\";\n");
