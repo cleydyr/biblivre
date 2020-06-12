@@ -33,6 +33,11 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.NullableSQLObject;
 
 public class BackupDAO extends AbstractDAO {
+	private static final String _SAVE_UPDATE_SQL =
+		"UPDATE backups " +
+		"SET path = ?, downloaded = ?, current_step = ? " +
+		"WHERE id = ?";
+
 	private static final String _LIST_SQL =
 		"SELECT * FROM backups " +
 		"ORDER BY created DESC ";
@@ -63,20 +68,18 @@ public class BackupDAO extends AbstractDAO {
 			return false;
 		}
 
-		dto.setId(this.getNextSerial("backups_id_seq"));
-
-		if (dto.getBackup() != null) {
+		if (dto.getId() == null) {
 			return executeUpdate(
-				_INSERT_SQL, dto.getId(), dto.getBackup().getAbsolutePath(),
+				_INSERT_SQL, getNextSerial("backups_id_seq"),
+				_getNullableAbsolutPath(dto),
 				dto.getSchemasString(), dto.getType().toString(),
 				dto.getBackupScope().toString(), dto.isDownloaded(),
 				dto.getSteps(), dto.getCurrentStep());
-		} else {
+		}
+		else {
 			return executeUpdate(
-				_INSERT_SQL, dto.getId(), NullableSQLObject.VARCHAR,
-				dto.getSchemasString(), dto.getType().toString(),
-				dto.getBackupScope().toString(), dto.isDownloaded(),
-				dto.getSteps(), dto.getCurrentStep());
+				_SAVE_UPDATE_SQL, _getNullableAbsolutPath(dto),
+				dto.isDownloaded(), dto.getCurrentStep(), dto.getId());
 		}
 	}
 
@@ -117,6 +120,15 @@ public class BackupDAO extends AbstractDAO {
 		}
 
 		return listWith(this::populateDTO, sql, parameters.toArray());
+	}
+
+	private Object _getNullableAbsolutPath(BackupDTO dto) {
+		if (dto.getBackup() != null) {
+			return dto.getBackup().getAbsolutePath();
+		}
+		else {
+			return NullableSQLObject.VARCHAR;
+		}
 	}
 
 	private BackupDTO populateDTO(ResultSet rs) throws SQLException {
