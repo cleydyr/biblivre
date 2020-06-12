@@ -212,7 +212,7 @@ public class IndexingBO extends AbstractBO {
 						}
 
 						if (indicator >= '1' && indicator <= '9') {
-							sortIndex.setIgnoreCharsCount(Integer.valueOf(Character.toString(indicator)));
+							sortIndex.setIgnoreCharsCount(indicator - '0');
 						}
 
 						charsToIgnoreSet = true;
