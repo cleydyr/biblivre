@@ -45,7 +45,6 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
 			order = Integer.valueOf(dto.getOrder().trim());
 		}
 		switch (order) {
-			case 1 : this.index = 6; break; //dewey
 			case 2 : this.index = 0; break; //title
 			case 3 : this.index = 1; break; //author
 			default : this.index = 6; //dewey

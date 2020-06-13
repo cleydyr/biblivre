@@ -299,8 +299,6 @@ public class DataMigrationBO extends AbstractBO {
 				return RequestBO.getInstance(schema).saveFromBiblivre3(dtoList);
 
 			case ACQUISITION_QUOTATION:
-				return QuotationBO.getInstance(schema).saveFromBiblivre3(dtoList);
-
 			case ACQUISITION_ITEM_QUOTATION:
 				return QuotationBO.getInstance(schema).saveFromBiblivre3(dtoList);
 
@@ -311,8 +309,6 @@ public class DataMigrationBO extends AbstractBO {
 				return Z3950BO.getInstance(schema).saveFromBiblivre3(dtoList);
 
 			case ACCESS_CONTROL:
-				return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
-
 			case ACCESS_CONTROL_HISTORY:
 				return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
 
