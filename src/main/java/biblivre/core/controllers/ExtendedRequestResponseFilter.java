@@ -29,6 +29,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import biblivre.core.ContextThreadLocal;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.utils.Constants;
@@ -42,27 +43,32 @@ public class ExtendedRequestResponseFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-		response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+		try {
+			request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+			response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
-		ExtendedRequest xRequest = null;
-		ExtendedResponse xResponse = null;
+			ExtendedRequest xRequest = null;
+			ExtendedResponse xResponse = null;
 
-		if (request instanceof ExtendedRequest) {
-			// Avoid rewrapping if forwarding
-			xRequest = (ExtendedRequest) request;
-		} else {
-			xRequest = new ExtendedRequest((HttpServletRequest) request);
+			if (request instanceof ExtendedRequest) {
+				// Avoid rewrapping if forwarding
+				xRequest = (ExtendedRequest) request;
+			} else {
+				xRequest = new ExtendedRequest((HttpServletRequest) request);
+			}
+
+			if (response instanceof ExtendedResponse) {
+				// Avoid rewrapping if forwarding
+				xResponse = (ExtendedResponse) response;
+			} else {
+				xResponse = new ExtendedResponse((HttpServletResponse) response);
+			}
+
+			chain.doFilter(xRequest, xResponse);
 		}
-
-		if (response instanceof ExtendedResponse) {
-			// Avoid rewrapping if forwarding
-			xResponse = (ExtendedResponse) response;
-		} else {
-			xResponse = new ExtendedResponse((HttpServletResponse) response);
+		finally {
+			ContextThreadLocal.cleanUp();
 		}
-
-		chain.doFilter(xRequest, xResponse);
 	}
 
 	@Override
