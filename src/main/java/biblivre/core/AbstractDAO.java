@@ -165,6 +165,8 @@ public abstract class AbstractDAO {
 		try (PreparedStatement pst = con.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery()) {
 
+			rs.next();
+
 			return rs.getInt(1);
 		} catch (Exception e) {
 			throw new DAOException(e);
