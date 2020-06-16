@@ -78,7 +78,7 @@ public abstract class AbstractDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected static <T extends AbstractDAO> T getInstance(Class<T> cls) {
+	public static <T extends AbstractDAO> T getInstance(Class<T> cls) {
 		AbstractDAO instance = INSTANCES.computeIfAbsent(cls, __ -> {
 			try {
 				return cls.newInstance();
