@@ -28,15 +28,15 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 
-public class LoginDAO extends AbstractDAO {
+public class LoginDAO extends LegacyAbstractDAO {
 
 	public static LoginDAO getInstance(String schema) {
-		return (LoginDAO) AbstractDAO.getInstance(LoginDAO.class, schema);
+		return (LoginDAO) LegacyAbstractDAO.getInstance(LoginDAO.class, schema);
 	}
 
 	public LoginDTO get(Integer loginId) {

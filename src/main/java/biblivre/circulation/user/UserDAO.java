@@ -33,7 +33,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
@@ -43,10 +43,10 @@ import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 
-public class UserDAO extends AbstractDAO {
+public class UserDAO extends LegacyAbstractDAO {
 
 	public static UserDAO getInstance(String schema) {
-		return (UserDAO) AbstractDAO.getInstance(UserDAO.class, schema);
+		return (UserDAO) LegacyAbstractDAO.getInstance(UserDAO.class, schema);
 	}
 
 	public Map<Integer, UserDTO> map(Set<Integer> ids) {

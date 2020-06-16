@@ -26,13 +26,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.NullableSQLObject;
 import biblivre.core.PreparedStatementUtil;
 
-public class OrderDAO extends AbstractDAO {
+public class OrderDAO extends LegacyAbstractDAO {
 	private static final String _GET_SQL =
 		"SELECT * FROM orders WHERE id = ?; ";
 
@@ -87,7 +87,7 @@ public class OrderDAO extends AbstractDAO {
 		"WHERE id = ?;";
 
 	public static OrderDAO getInstance(String schema) {
-		return (OrderDAO) AbstractDAO.getInstance(OrderDAO.class, schema);
+		return (OrderDAO) LegacyAbstractDAO.getInstance(OrderDAO.class, schema);
 	}
 
 	public OrderDTO get(Integer orderId) {

@@ -37,15 +37,15 @@ import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 
-public class ReservationDAO extends AbstractDAO {
+public class ReservationDAO extends LegacyAbstractDAO {
 
 	public static ReservationDAO getInstance(String schema) {
-		return (ReservationDAO) AbstractDAO.getInstance(ReservationDAO.class,	schema);
+		return (ReservationDAO) LegacyAbstractDAO.getInstance(ReservationDAO.class,	schema);
 	}
 
 	public ReservationDTO get(Integer id) {

@@ -29,13 +29,13 @@ import java.util.TreeSet;
 
 import org.postgresql.core.BaseConnection;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class SchemasDAO extends AbstractDAO {
+public class SchemasDAO extends LegacyAbstractDAO {
 
 	public static SchemasDAO getInstance(String schema) {
-		return (SchemasDAO) AbstractDAO.getInstance(SchemasDAO.class, schema);
+		return (SchemasDAO) LegacyAbstractDAO.getInstance(SchemasDAO.class, schema);
 	}
 
 	public Set<SchemaDTO> list() {

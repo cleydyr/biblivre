@@ -26,13 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class PermissionDAO extends AbstractDAO {
+public class PermissionDAO extends LegacyAbstractDAO {
 
 	public static PermissionDAO getInstance(String schema) {
-		return (PermissionDAO) AbstractDAO.getInstance(PermissionDAO.class, schema);
+		return (PermissionDAO) LegacyAbstractDAO.getInstance(PermissionDAO.class, schema);
 	}
 
 	public boolean delete(UserDTO user) {

@@ -55,7 +55,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldDTO;
 import biblivre.circulation.user.UserFields;
 import biblivre.circulation.user.UserStatus;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
@@ -63,7 +63,7 @@ import biblivre.login.LoginDTO;
 import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950AddressDTO;
 
-public class DataMigrationDAO extends AbstractDAO {
+public class DataMigrationDAO extends LegacyAbstractDAO {
 
 	private String userSchema;
 	private static final Map<String, String> userFieldsMap = new HashMap<String, String>();
@@ -88,7 +88,7 @@ public class DataMigrationDAO extends AbstractDAO {
 	};
 
 	public static DataMigrationDAO getInstance(String userSchema, String datasource) {
-		DataMigrationDAO dao = (DataMigrationDAO) AbstractDAO.getInstance(DataMigrationDAO.class, "public", datasource);
+		DataMigrationDAO dao = (DataMigrationDAO) LegacyAbstractDAO.getInstance(DataMigrationDAO.class, "public", datasource);
 		dao.userSchema = userSchema;
 		return dao;
 	}

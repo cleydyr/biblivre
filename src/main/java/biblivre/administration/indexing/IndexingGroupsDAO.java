@@ -27,13 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class IndexingGroupsDAO extends AbstractDAO {
+public class IndexingGroupsDAO extends LegacyAbstractDAO {
 
 	public static IndexingGroupsDAO getInstance(String schema) {
-		return (IndexingGroupsDAO) AbstractDAO.getInstance(IndexingGroupsDAO.class, schema);
+		return (IndexingGroupsDAO) LegacyAbstractDAO.getInstance(IndexingGroupsDAO.class, schema);
 	}
 
 	public List<IndexingGroupDTO> list(RecordType recordType) {

@@ -21,12 +21,12 @@ package biblivre.cataloging.holding;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDAO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 
 public class HoldingSearchDAO extends SearchDAO {
 
 	public static HoldingSearchDAO getInstance(String schema) {
-		HoldingSearchDAO dao = (HoldingSearchDAO) AbstractDAO.getInstance(HoldingSearchDAO.class, schema);
+		HoldingSearchDAO dao = (HoldingSearchDAO) LegacyAbstractDAO.getInstance(HoldingSearchDAO.class, schema);
 
 		if (dao.recordType == null) {
 			dao.recordType = RecordType.HOLDING;

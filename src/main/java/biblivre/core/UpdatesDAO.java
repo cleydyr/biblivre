@@ -27,10 +27,10 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class UpdatesDAO extends AbstractDAO {
+public class UpdatesDAO extends LegacyAbstractDAO {
 
 	public static UpdatesDAO getInstance(String schema) {
-		return (UpdatesDAO) AbstractDAO.getInstance(UpdatesDAO.class, schema);
+		return (UpdatesDAO) LegacyAbstractDAO.getInstance(UpdatesDAO.class, schema);
 	}
 
 	public Set<String> getInstalledVersions() throws SQLException {

@@ -29,12 +29,12 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.cataloging.AutocompleteDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.NullableSQLObject;
 import biblivre.core.PreparedStatementUtil;
 import biblivre.core.utils.TextUtils;
 
-public class IndexingDAO extends AbstractDAO {
+public class IndexingDAO extends LegacyAbstractDAO {
 
 	private static final String _ANALYZE_SORT_SQL_TPL = "ANALYZE %s_idx_sort";
 
@@ -98,7 +98,7 @@ public class IndexingDAO extends AbstractDAO {
 		"SELECT count(DISTINCT record_id) as total FROM %s_idx_sort";
 
 	public static IndexingDAO getInstance(String schema) {
-		return (IndexingDAO) AbstractDAO.getInstance(IndexingDAO.class, schema);
+		return (IndexingDAO) LegacyAbstractDAO.getInstance(IndexingDAO.class, schema);
 	}
 
 	public Integer countIndexed(RecordType recordType) {

@@ -24,14 +24,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.login.LoginDTO;
 
-public class AuthorizationDAO extends AbstractDAO {
+public class AuthorizationDAO extends LegacyAbstractDAO {
 
 	public static AuthorizationDAO getInstance(String schema) {
-		return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAO.class, schema);
+		return (AuthorizationDAO) LegacyAbstractDAO.getInstance(AuthorizationDAO.class, schema);
 	}
 
 	public HashMap<String, Boolean> getUserPermissions(LoginDTO user) {

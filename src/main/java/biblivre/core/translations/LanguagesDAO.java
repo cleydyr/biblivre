@@ -26,13 +26,13 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class LanguagesDAO extends AbstractDAO {
+public class LanguagesDAO extends LegacyAbstractDAO {
 
 	public static LanguagesDAO getInstance(String schema) {
-		return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class, schema);
+		return (LanguagesDAO) LegacyAbstractDAO.getInstance(LanguagesDAO.class, schema);
 	}
 
 	public Set<LanguageDTO> list() {

@@ -21,12 +21,12 @@ package biblivre.cataloging.authorities;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDAO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 
 public class AuthoritySearchDAO extends SearchDAO {
 
 	public static AuthoritySearchDAO getInstance(String schema) {
-		AuthoritySearchDAO dao = (AuthoritySearchDAO) AbstractDAO.getInstance(AuthoritySearchDAO.class, schema);
+		AuthoritySearchDAO dao = (AuthoritySearchDAO) LegacyAbstractDAO.getInstance(AuthoritySearchDAO.class, schema);
 
 		if (dao.recordType == null) {
 			dao.recordType = RecordType.AUTHORITIES;

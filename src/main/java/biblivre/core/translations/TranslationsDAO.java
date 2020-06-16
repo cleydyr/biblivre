@@ -32,13 +32,13 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class TranslationsDAO extends AbstractDAO {
+public class TranslationsDAO extends LegacyAbstractDAO {
 
 	public static TranslationsDAO getInstance(String schema) {
-		return (TranslationsDAO) AbstractDAO.getInstance(TranslationsDAO.class, schema);
+		return (TranslationsDAO) LegacyAbstractDAO.getInstance(TranslationsDAO.class, schema);
 	}
 
 	public List<TranslationDTO> list() {

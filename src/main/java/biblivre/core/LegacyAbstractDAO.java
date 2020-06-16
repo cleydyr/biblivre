@@ -48,7 +48,7 @@ import biblivre.core.utils.CheckedFunction;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 
-public abstract class AbstractDAO {
+public abstract class LegacyAbstractDAO {
 	private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -58,21 +58,21 @@ public abstract class AbstractDAO {
 	protected static CheckedFunction<PreparedStatement, Boolean> EXECUTE =
 			pst -> pst.execute();
 
-	private static HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO> instances = new HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO>();
+	private static HashMap<Pair<Class<? extends LegacyAbstractDAO>, String>, LegacyAbstractDAO> instances = new HashMap<Pair<Class<? extends LegacyAbstractDAO>, String>, LegacyAbstractDAO>();
 
-	protected AbstractDAO() {
+	protected LegacyAbstractDAO() {
 	}
 
-	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema) {
-		return AbstractDAO.getInstance(cls, schema, "biblivre4");
+	protected static LegacyAbstractDAO getInstance(Class<? extends LegacyAbstractDAO> cls, String schema) {
+		return LegacyAbstractDAO.getInstance(cls, schema, "biblivre4");
 	}
 
-	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema, String dataSourceName) {
-		Pair<Class<? extends AbstractDAO>, String> pair = new Pair<Class<? extends AbstractDAO>, String>(cls, schema + ":" + dataSourceName);
-		AbstractDAO instance = AbstractDAO.instances.get(pair);
+	protected static LegacyAbstractDAO getInstance(Class<? extends LegacyAbstractDAO> cls, String schema, String dataSourceName) {
+		Pair<Class<? extends LegacyAbstractDAO>, String> pair = new Pair<Class<? extends LegacyAbstractDAO>, String>(cls, schema + ":" + dataSourceName);
+		LegacyAbstractDAO instance = LegacyAbstractDAO.instances.get(pair);
 
 		if (instance == null) {
-			if (!AbstractDAO.class.isAssignableFrom(cls)) {
+			if (!LegacyAbstractDAO.class.isAssignableFrom(cls)) {
 				throw new IllegalArgumentException("DAO: getInstance: Class " + cls.getName() + " is not a subclass of DAO.");
 			}
 
@@ -81,7 +81,7 @@ public abstract class AbstractDAO {
 				instance.setSchema(schema);
 				instance.setDataSourceName(dataSourceName);
 
-				AbstractDAO.instances.put(pair, instance);
+				LegacyAbstractDAO.instances.put(pair, instance);
 			} catch(Exception ex) {}
 		}
 
@@ -109,7 +109,7 @@ public abstract class AbstractDAO {
 	}
 
 	public static void setDataSourceMap(Map<String, DataSource> dataSourceMap) {
-		AbstractDAO.dataSourceMap = dataSourceMap;
+		LegacyAbstractDAO.dataSourceMap = dataSourceMap;
 	}
 
 	public boolean isGlobalSchema() {

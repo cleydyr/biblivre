@@ -21,12 +21,12 @@ package biblivre.cataloging.vocabulary;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDAO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 
 public class VocabularySearchDAO extends SearchDAO {
 
 	public static VocabularySearchDAO getInstance(String schema) {
-		VocabularySearchDAO dao = (VocabularySearchDAO) AbstractDAO.getInstance(VocabularySearchDAO.class, schema);
+		VocabularySearchDAO dao = (VocabularySearchDAO) LegacyAbstractDAO.getInstance(VocabularySearchDAO.class, schema);
 
 		if (dao.recordType == null) {
 			dao.recordType = RecordType.VOCABULARY;

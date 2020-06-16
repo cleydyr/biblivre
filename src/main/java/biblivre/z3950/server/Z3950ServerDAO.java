@@ -8,14 +8,14 @@ import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 
-public class Z3950ServerDAO extends AbstractDAO {
+public class Z3950ServerDAO extends LegacyAbstractDAO {
 	public static Z3950ServerDAO getInstance(String schema) {
-		return (Z3950ServerDAO) AbstractDAO.getInstance(Z3950ServerDAO.class, schema);
+		return (Z3950ServerDAO) LegacyAbstractDAO.getInstance(Z3950ServerDAO.class, schema);
 	}
 
 	public Collection<String> search(String value, Integer indexGroupId, int offset, int limit) {

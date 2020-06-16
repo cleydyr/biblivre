@@ -24,14 +24,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 
-public class AccessControlDAO extends AbstractDAO {
+public class AccessControlDAO extends LegacyAbstractDAO {
 
 	public static AccessControlDAO getInstance(String schema) {
-		return (AccessControlDAO) AbstractDAO.getInstance(AccessControlDAO.class, schema);
+		return (AccessControlDAO) LegacyAbstractDAO.getInstance(AccessControlDAO.class, schema);
 	}
 
 	public boolean save(AccessControlDTO dto) {

@@ -32,13 +32,13 @@ import org.apache.commons.lang3.time.DateUtils;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.enums.SearchOperator;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MaterialType;
 
-public abstract class SearchDAO extends AbstractDAO {
+public abstract class SearchDAO extends LegacyAbstractDAO {
 	protected RecordType recordType;
 
 	public SearchDTO getSearch(Integer searchId) {

@@ -29,10 +29,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.NullableSQLObject;
 
-public class BackupDAO extends AbstractDAO {
+public class BackupDAO extends LegacyAbstractDAO {
 	private static final String _SAVE_UPDATE_SQL =
 		"UPDATE backups " +
 		"SET path = ?, downloaded = ?, current_step = ? " +
@@ -60,7 +60,7 @@ public class BackupDAO extends AbstractDAO {
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 	public static BackupDAO getInstance(String schema) {
-		return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class, schema);
+		return (BackupDAO) LegacyAbstractDAO.getInstance(BackupDAO.class, schema);
 	}
 
 	public boolean save(BackupDTO dto) {

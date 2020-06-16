@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class TabFieldsDAO extends AbstractDAO {
+public class TabFieldsDAO extends LegacyAbstractDAO {
 
 	public static TabFieldsDAO getInstance(String schema) {
-		return (TabFieldsDAO) AbstractDAO.getInstance(TabFieldsDAO.class, schema);
+		return (TabFieldsDAO) LegacyAbstractDAO.getInstance(TabFieldsDAO.class, schema);
 	}
 
 	public List<BriefTabFieldFormatDTO> listBriefFormats(RecordType recordType) {

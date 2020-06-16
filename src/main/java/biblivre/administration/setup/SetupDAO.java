@@ -21,13 +21,13 @@ package biblivre.administration.setup;
 
 import java.sql.Connection;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class SetupDAO extends AbstractDAO {
+public class SetupDAO extends LegacyAbstractDAO {
 
 	public static SetupDAO getInstance(String schema) {
-		return (SetupDAO) AbstractDAO.getInstance(SetupDAO.class, schema);
+		return (SetupDAO) LegacyAbstractDAO.getInstance(SetupDAO.class, schema);
 	}
 
 	public final void fixSequence(DataMigrationPhase migrationPhase) {

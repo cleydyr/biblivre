@@ -27,12 +27,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class AccessCardDAO extends AbstractDAO {
+public class AccessCardDAO extends LegacyAbstractDAO {
 
 	private static final String _DELETE_SQL =
 		"DELETE FROM access_cards WHERE id = ?";
@@ -56,7 +56,7 @@ public class AccessCardDAO extends AbstractDAO {
 		"SELECT * FROM access_cards WHERE id = ?";
 
 	public static AccessCardDAO getInstance(String schema) {
-		return (AccessCardDAO) AbstractDAO.getInstance(
+		return (AccessCardDAO) LegacyAbstractDAO.getInstance(
 			AccessCardDAO.class, schema);
 	}
 

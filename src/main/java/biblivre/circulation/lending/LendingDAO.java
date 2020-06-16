@@ -35,15 +35,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 
-public class LendingDAO extends AbstractDAO {
+public class LendingDAO extends LegacyAbstractDAO {
 
 	public static LendingDAO getInstance(String schema) {
-		return (LendingDAO) AbstractDAO.getInstance(LendingDAO.class,	schema);
+		return (LendingDAO) LegacyAbstractDAO.getInstance(LendingDAO.class,	schema);
 	}
 
 	public LendingDTO get(Integer id) {

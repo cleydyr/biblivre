@@ -31,7 +31,7 @@ import org.marc4j.marc.Record;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcUtils;
@@ -40,7 +40,7 @@ import biblivre.marc.MaterialType;
 public class AuthorityRecordDAO extends RecordDAO {
 
 	public static AuthorityRecordDAO getInstance(String schema) {
-		AuthorityRecordDAO dao = (AuthorityRecordDAO) AbstractDAO.getInstance(AuthorityRecordDAO.class, schema);
+		AuthorityRecordDAO dao = (AuthorityRecordDAO) LegacyAbstractDAO.getInstance(AuthorityRecordDAO.class, schema);
 
 		if (dao.recordType == null) {
 			dao.recordType = RecordType.AUTHORITIES;

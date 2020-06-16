@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class RequestDAO extends AbstractDAO {
+public class RequestDAO extends LegacyAbstractDAO {
 
 	private static final String _UPDATE_STATUS_SQL =
 		"UPDATE requests" +
@@ -70,7 +70,7 @@ public class RequestDAO extends AbstractDAO {
 			"VALUES (" + StringUtils.repeat("?", ", ", 10) + ");";
 
 	public static RequestDAO getInstance(String schema) {
-		return (RequestDAO) AbstractDAO.getInstance(
+		return (RequestDAO) LegacyAbstractDAO.getInstance(
 			RequestDAO.class, schema);
 	}
 

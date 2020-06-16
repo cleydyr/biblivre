@@ -45,7 +45,7 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchTermDTO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
@@ -58,11 +58,11 @@ import biblivre.login.LoginDTO;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 
-public class HoldingDAO extends AbstractDAO {
+public class HoldingDAO extends LegacyAbstractDAO {
 
 	public static HoldingDAO getInstance(String schema) {
 
-		HoldingDAO dao = (HoldingDAO) AbstractDAO.getInstance(HoldingDAO.class, schema);
+		HoldingDAO dao = (HoldingDAO) LegacyAbstractDAO.getInstance(HoldingDAO.class, schema);
 
 		return dao;
 	}

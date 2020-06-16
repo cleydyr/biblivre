@@ -54,19 +54,19 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.user.UserStatus;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 
-public class ReportsDAO extends AbstractDAO {
+public class ReportsDAO extends LegacyAbstractDAO {
 
 	public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
 	public static ReportsDAO getInstance(String schema) {
-		return (ReportsDAO) AbstractDAO.getInstance(ReportsDAO.class, schema);
+		return (ReportsDAO) LegacyAbstractDAO.getInstance(ReportsDAO.class, schema);
 	}
 
 	public SummaryReportDto getSummaryReportData(RecordDatabase database) {

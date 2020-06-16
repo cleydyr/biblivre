@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class QuotationDAO extends AbstractDAO {
+public class QuotationDAO extends LegacyAbstractDAO {
 	private static final String _LIST_SQL =
 		"SELECT * FROM quotations " +
 		"WHERE supplier_id = ? AND expiration_date >= now()::date;";
@@ -88,7 +88,7 @@ public class QuotationDAO extends AbstractDAO {
 		"VALUES (?, ?, ?, ?, ?);";
 
 	public static QuotationDAO getInstance(String schema) {
-		return (QuotationDAO) AbstractDAO.getInstance(
+		return (QuotationDAO) LegacyAbstractDAO.getInstance(
 			QuotationDAO.class, schema);
 	}
 

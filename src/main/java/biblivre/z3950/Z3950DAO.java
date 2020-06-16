@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
@@ -38,10 +38,10 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 
-public class Z3950DAO extends AbstractDAO {
+public class Z3950DAO extends LegacyAbstractDAO {
 
 	public static Z3950DAO getInstance(String schema) {
-		return (Z3950DAO) AbstractDAO.getInstance(Z3950DAO.class, schema);
+		return (Z3950DAO) LegacyAbstractDAO.getInstance(Z3950DAO.class, schema);
 	}
 
 	public List<Z3950AddressDTO> listAll() {

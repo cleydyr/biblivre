@@ -21,12 +21,12 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDAO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 
 public class BiblioSearchDAO extends SearchDAO {
 
 	public static BiblioSearchDAO getInstance(String schema) {
-		BiblioSearchDAO dao = (BiblioSearchDAO) AbstractDAO.getInstance(BiblioSearchDAO.class, schema);
+		BiblioSearchDAO dao = (BiblioSearchDAO) LegacyAbstractDAO.getInstance(BiblioSearchDAO.class, schema);
 
 		if (dao.recordType == null) {
 			dao.recordType = RecordType.BIBLIO;

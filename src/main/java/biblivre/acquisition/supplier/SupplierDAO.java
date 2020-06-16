@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class SupplierDAO extends AbstractDAO {
+public class SupplierDAO extends LegacyAbstractDAO {
 
 	private static final String _SEARCH_ALL_SQL =
 		"SELECT * FROM suppliers ORDER BY id ASC LIMIT ? OFFSET ?";
@@ -77,7 +77,7 @@ public class SupplierDAO extends AbstractDAO {
 		"VALUES (" + StringUtils.repeat("?", ", ", 25) + ")";
 
 	public static SupplierDAO getInstance(String schema) {
-		return (SupplierDAO) AbstractDAO.getInstance(SupplierDAO.class, schema);
+		return (SupplierDAO) LegacyAbstractDAO.getInstance(SupplierDAO.class, schema);
 	}
 
 	public boolean save(SupplierDTO dto) {

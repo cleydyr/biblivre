@@ -27,13 +27,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class ConfigurationsDAO extends AbstractDAO {
+public class ConfigurationsDAO extends LegacyAbstractDAO {
 
 	public static ConfigurationsDAO getInstance(String schema) {
-		return (ConfigurationsDAO) AbstractDAO.getInstance(ConfigurationsDAO.class, schema);
+		return (ConfigurationsDAO) LegacyAbstractDAO.getInstance(ConfigurationsDAO.class, schema);
 	}
 
 	public List<ConfigurationsDTO> list() {

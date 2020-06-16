@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
@@ -38,9 +38,9 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 
-public class UserTypeDAO extends AbstractDAO {
+public class UserTypeDAO extends LegacyAbstractDAO {
 	public static UserTypeDAO getInstance(String schema) {
-		return (UserTypeDAO) AbstractDAO.getInstance(UserTypeDAO.class, schema);
+		return (UserTypeDAO) LegacyAbstractDAO.getInstance(UserTypeDAO.class, schema);
 	}
 
 	public UserTypeDTO get(int id) {

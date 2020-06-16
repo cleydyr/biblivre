@@ -26,13 +26,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 
-public class UserFieldsDAO extends AbstractDAO {
+public class UserFieldsDAO extends LegacyAbstractDAO {
 
 	public static UserFieldsDAO getInstance(String schema) {
-		return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class, schema);
+		return (UserFieldsDAO) LegacyAbstractDAO.getInstance(UserFieldsDAO.class, schema);
 	}
 
 	public List<UserFieldDTO> listFields() {

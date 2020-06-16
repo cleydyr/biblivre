@@ -19,12 +19,12 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 
-public class ImportDAO extends AbstractDAO {
+public class ImportDAO extends LegacyAbstractDAO {
 
 	public static ImportDAO getInstance(String schema) {
-		return (ImportDAO) AbstractDAO.getInstance(ImportDAO.class, schema);
+		return (ImportDAO) LegacyAbstractDAO.getInstance(ImportDAO.class, schema);
 	}
 
 }

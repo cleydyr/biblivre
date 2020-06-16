@@ -37,7 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
@@ -47,7 +47,7 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 
-public abstract class RecordDAO extends AbstractDAO {
+public abstract class RecordDAO extends LegacyAbstractDAO {
 	protected RecordType recordType;
 
 	public boolean save(RecordDTO dto) {

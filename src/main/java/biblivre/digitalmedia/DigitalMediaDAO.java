@@ -33,15 +33,15 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 
-public class DigitalMediaDAO extends AbstractDAO {
+public class DigitalMediaDAO extends LegacyAbstractDAO {
 
 	public static DigitalMediaDAO getInstance(String schema) {
-		return (DigitalMediaDAO) AbstractDAO.getInstance(DigitalMediaDAO.class, schema);
+		return (DigitalMediaDAO) LegacyAbstractDAO.getInstance(DigitalMediaDAO.class, schema);
 	}
 
 	public long createOID() {

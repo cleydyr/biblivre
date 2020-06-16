@@ -28,15 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
+import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 
-public class LendingFineDAO extends AbstractDAO {
+public class LendingFineDAO extends LegacyAbstractDAO {
 
 	public static LendingFineDAO getInstance(String schema) {
-		return (LendingFineDAO) AbstractDAO.getInstance(LendingFineDAO.class, schema);
+		return (LendingFineDAO) LegacyAbstractDAO.getInstance(LendingFineDAO.class, schema);
 	}
 
 	public boolean insert(LendingFineDTO fine) {
