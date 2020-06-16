@@ -27,25 +27,15 @@ import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
-import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 
 public class QuotationBO extends AbstractBO {
 	private QuotationDAO dao;
 	private SupplierBO supplierBO;
 
-	public static QuotationBO getInstance(String schema) {
-		QuotationBO bo = AbstractBO.getInstance(QuotationBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = QuotationDAO.getInstance(schema);
-		}
-
-		if (bo.supplierBO == null) {
-			bo.supplierBO = BiblivreInitializer.getSupplierBO();
-		}
-
-		return bo;
+	public QuotationBO(QuotationDAO dao, SupplierBO supplierBO) {
+		this.dao = dao;
+		this.supplierBO = supplierBO;
 	}
 
 	public QuotationDTO get(Integer id) {

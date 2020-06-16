@@ -482,4 +482,29 @@ public abstract class AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
+
+	public final <T> T onTransactionContext(
+			CheckedFunction<Connection, T> function) {
+
+			Context ctx = ContextThreadLocal.getContext();
+
+			Connection con = null;
+
+			try {
+				con  = this.getConnection(ctx);
+
+				con.setAutoCommit(false);
+
+				T result = function.apply(con);
+
+				con.commit();
+
+				return result;
+			} catch (Exception e) {
+				this.rollback(con);
+				throw new DAOException(e);
+			} finally {
+				this.closeConnection(con);
+			}
+		}
 }

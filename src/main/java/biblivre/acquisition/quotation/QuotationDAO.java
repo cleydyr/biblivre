@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class QuotationDAO extends LegacyAbstractDAO {
+public class QuotationDAO extends AbstractDAO {
 	private static final String _LIST_SQL =
 		"SELECT * FROM quotations " +
 		"WHERE supplier_id = ? AND expiration_date >= now()::date;";
@@ -87,15 +87,10 @@ public class QuotationDAO extends LegacyAbstractDAO {
 			"response_quantity)" +
 		"VALUES (?, ?, ?, ?, ?);";
 
-	public static QuotationDAO getInstance(String schema) {
-		return (QuotationDAO) LegacyAbstractDAO.getInstance(
-			QuotationDAO.class, schema);
-	}
-
 	public Integer save(QuotationDTO dto) {
-		int quotationId = this.getNextSerial("quotations_id_seq");
+		return onTransactionContext(con -> {
+			int quotationId = getNextSerial(con, "quotations_id_seq");
 
-		onTransactionContext(con -> {
 			executeUpdate(
 				_SAVE_SQL, quotationId, dto.getSupplierId(),
 				dto.getResponseDate(), dto.getExpirationDate(),
@@ -109,9 +104,9 @@ public class QuotationDAO extends LegacyAbstractDAO {
 				RequestQuotationDTO::getQuantity,
 				RequestQuotationDTO::getUnitValue,
 				RequestQuotationDTO::getResponseQuantity);
-		});
 
-		return quotationId;
+			return quotationId;
+		});
 	}
 
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {

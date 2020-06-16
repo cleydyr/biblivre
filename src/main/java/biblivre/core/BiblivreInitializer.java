@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.acquisition.quotation.QuotationBO;
+import biblivre.acquisition.quotation.QuotationDAO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDAO;
 import biblivre.z3950.server.Z3950ServerBO;
@@ -28,6 +30,8 @@ public class BiblivreInitializer {
 
 	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
+
+	private static QuotationBO quotationBO;
 
 	public synchronized static void initialize() {
 		if (!BiblivreInitializer.initialized) {
@@ -63,5 +67,15 @@ public class BiblivreInitializer {
 		}
 
 		return supplierBO;
+	}
+
+	public static QuotationBO getQuotationBO() {
+		if (quotationBO == null) {
+			quotationBO = new QuotationBO(
+				AbstractDAO.getInstance(QuotationDAO.class),
+				getSupplierBO());
+		}
+
+		return quotationBO;
 	}
 }

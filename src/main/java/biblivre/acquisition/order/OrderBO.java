@@ -36,6 +36,7 @@ import biblivre.core.DTOCollection;
 public class OrderBO extends AbstractBO {
 	private OrderDAO dao;
 	private SupplierBO supplierBO;
+	private QuotationBO quotationBO;
 
 	public static OrderBO getInstance(String schema) {
 		OrderBO bo = AbstractBO.getInstance(OrderBO.class, schema);
@@ -54,9 +55,8 @@ public class OrderBO extends AbstractBO {
 	public OrderDTO get(Integer id) {
 		OrderDTO dto = this.dao.get(id);
 
-		QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
 		RequestBO rbo = RequestBO.getInstance(this.getSchema());
-		this.populateDTO(dto, qbo, supplierBO, rbo);
+		this.populateDTO(dto, quotationBO, supplierBO, rbo);
 
 		return dto;
 	}
@@ -80,10 +80,9 @@ public class OrderBO extends AbstractBO {
 	public DTOCollection<OrderDTO> search(String value, int limit, int offset) {
 		DTOCollection<OrderDTO> list = this.dao.search(value, limit, offset);
 
-		QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
 		RequestBO rbo = RequestBO.getInstance(this.getSchema());
 		for (OrderDTO dto : list) {
-			this.populateDTO(dto, qbo, supplierBO, rbo);
+			this.populateDTO(dto, quotationBO, supplierBO, rbo);
 		}
 
 		return list;
