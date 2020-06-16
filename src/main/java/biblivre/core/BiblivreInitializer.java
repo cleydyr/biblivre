@@ -24,6 +24,7 @@ import biblivre.acquisition.supplier.SupplierDAO;
 import biblivre.z3950.server.Z3950ServerBO;
 
 public class BiblivreInitializer {
+	private static SupplierBO supplierBO;
 
 	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
@@ -57,6 +58,10 @@ public class BiblivreInitializer {
 	}
 
 	public static SupplierBO getSupplierBO() {
-		return new SupplierBO(AbstractDAO.getInstance(SupplierDAO.class));
+		if (supplierBO == null) {
+			supplierBO = new SupplierBO(AbstractDAO.getInstance(SupplierDAO.class));
+		}
+
+		return supplierBO;
 	}
 }
