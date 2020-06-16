@@ -28,14 +28,8 @@ import biblivre.core.DTOCollection;
 public class SupplierBO extends AbstractBO {
 	private SupplierDAO dao;
 
-	public static SupplierBO getInstance(String schema) {
-		SupplierBO bo = AbstractBO.getInstance(SupplierBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = SupplierDAO.getInstance(schema);
-		}
-
-		return bo;
+	public SupplierBO(SupplierDAO dao) {
+		this.dao = dao;
 	}
 
     public SupplierDTO get(Integer id) {

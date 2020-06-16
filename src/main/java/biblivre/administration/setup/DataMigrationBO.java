@@ -41,6 +41,7 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.MemoryFile;
 import biblivre.digitalmedia.DigitalMediaBO;
@@ -60,6 +61,7 @@ public class DataMigrationBO extends AbstractBO {
 	private Map<Integer, Integer> lendingMap = new HashMap<Integer, Integer>();
 	private Map<Integer, Integer> lendingHistoryMap = new HashMap<Integer, Integer>();
 	private String userSchema;
+	private SupplierBO supplierBO;
 
 	@Override
 	public String getSchema() {
@@ -77,6 +79,10 @@ public class DataMigrationBO extends AbstractBO {
 
 		if (bo.setupDao == null) {
 			bo.setupDao = SetupDAO.getInstance(schema);
+		}
+
+		if (bo.supplierBO == null) {
+			bo.supplierBO = BiblivreInitializer.getSupplierBO();
 		}
 
 		return bo;
@@ -293,7 +299,7 @@ public class DataMigrationBO extends AbstractBO {
 				return UserBO.getInstance(schema).saveFromBiblivre3(dtoList);
 
 			case ACQUISITION_SUPPLIER:
-				return SupplierBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return supplierBO.saveFromBiblivre3(dtoList);
 
 			case ACQUISITION_REQUISITION:
 				return RequestBO.getInstance(schema).saveFromBiblivre3(dtoList);

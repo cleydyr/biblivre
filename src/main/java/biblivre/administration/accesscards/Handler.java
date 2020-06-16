@@ -103,8 +103,8 @@ public class Handler extends AbstractHandler {
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status", AccessCardStatus.AVAILABLE);
 		String code = request.getString("code");
 		String prefix = request.getString("prefix");
-		String start = request.getString("start");
-		String end = request.getString("end");
+		int start = request.getInteger("start");
+		int end = request.getInteger("end");
 		String suffix = request.getString("suffix");
 
 		boolean success = false;

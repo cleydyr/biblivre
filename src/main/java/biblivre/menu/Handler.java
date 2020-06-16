@@ -36,12 +36,19 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 
 public class Handler extends AbstractHandler {
+
+	private SupplierBO supplierBO;
+
+	public Handler() {
+		supplierBO = BiblivreInitializer.getSupplierBO();
+	}
 
 	public void ping(ExtendedRequest request, ExtendedResponse response) {
 		try {
@@ -203,8 +210,7 @@ public class Handler extends AbstractHandler {
 	public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 
-		SupplierBO bo = SupplierBO.getInstance(schema);
-		List<SupplierDTO> suppliers = bo.list();
+		List<SupplierDTO> suppliers = supplierBO.list();
 		request.setAttribute("suppliers", suppliers);
 
 		RequestBO rbo = RequestBO.getInstance(schema);
@@ -216,10 +222,7 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
-		SupplierBO bo = SupplierBO.getInstance(schema);
-		List<SupplierDTO> suppliers = bo.list();
+		List<SupplierDTO> suppliers = supplierBO.list();
 		request.setAttribute("suppliers", suppliers);
 
 		this.jspURL = "/jsp/acquisition/orders.jsp";
