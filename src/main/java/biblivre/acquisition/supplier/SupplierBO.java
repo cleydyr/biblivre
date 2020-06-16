@@ -21,11 +21,10 @@ package biblivre.acquisition.supplier;
 
 import java.util.List;
 
-import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 
-public class SupplierBO extends AbstractBO {
+public class SupplierBO {
 	private ISupplierDAO dao;
 
 	public SupplierBO(ISupplierDAO dao) {
