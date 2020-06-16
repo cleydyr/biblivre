@@ -309,9 +309,7 @@ public abstract class AbstractDAO {
 		CheckedFunction<ResultSet, T> f, String sql, Object... parameters)
 		throws DAOException {
 
-		try (Connection con = getConnection();
-				PreparedStatement pst = con.prepareStatement(sql)) {
-
+		return executeQuery(pst -> {
 			PreparedStatementUtil.setAllParameters(pst, parameters);
 
 			try (ResultSet rs = pst.executeQuery()) {
@@ -319,30 +317,17 @@ public abstract class AbstractDAO {
 					return f.apply(rs);
 				}
 			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		}
 
-		return null;
+			return null;
+		}, sql, parameters) ;
 	}
 
 	public <T> T executeQuery(
-			Context ctx, CheckedFunction<PreparedStatement, T> f, String sql)
-		throws DAOException {
-
-		try (Connection con = this.getConnection(ctx);
-			PreparedStatement pst = con.prepareStatement(sql)) {
-
-			return f.apply(pst);
-		} catch (Exception e) {
-			throw new DAOException(e);
-		}
-	}
-
-	public <T> T executeQuery(
-		Context ctx, CheckedFunction<PreparedStatement, T> f, String sql,
+		CheckedFunction<PreparedStatement, T> f, String sql,
 		Object... parameters)
 		throws DAOException {
+
+		Context ctx = ContextThreadLocal.getContext();
 
 		try (Connection con = this.getConnection(ctx);
 			PreparedStatement pst = con.prepareStatement(sql)) {
@@ -356,68 +341,63 @@ public abstract class AbstractDAO {
 	}
 
 	public boolean executeUpdate(
-		Context ctx, String sql, Object... parameters) {
+		String sql, Object... parameters) {
 
 		return executeQuery(
-			ctx, pst -> pst.executeUpdate() > 0, sql, parameters);
+			pst -> pst.executeUpdate() > 0, sql, parameters);
 	}
 
 	public <T> boolean executeBatchUpdate(
-		Context ctx, CheckedBiConsumer<PreparedStatement, T> consumer,
-		Collection<T> items, String sql) {
+		CheckedBiConsumer<PreparedStatement, T> consumer, Collection<T> items,
+		String sql) {
 
-		return executeQuery(ctx,
-			pst -> {
-				for (T item : items) {
-					consumer.accept(pst, item);
-	
-					pst.addBatch();
-				}
-	
-				pst.executeBatch();
-	
-				return true;
-			},
-			sql);
+		return executeQuery(pst -> {
+			for (T item : items) {
+				consumer.accept(pst, item);
+
+				pst.addBatch();
+			}
+
+			pst.executeBatch();
+
+			return true;
+		}, sql);
 	}
 
 	@SafeVarargs
 	public final <T> boolean executeBatchUpdate(
-		Context ctx, Collection<?> items, Class<T> target, String sql,
+		Collection<?> items, Class<T> target, String sql,
 		Function<T, ?>... fs) {
 
-			return executeQuery(ctx,
-				pst -> {
-					for (Object item : items) {
-						T targetItem = target.cast(item);
-	
-						List<Object> parameters = new ArrayList<>();
-	
-						for (Function<T, ?> f : fs) {
-							parameters.add(f.apply(targetItem));
-						}
-	
-						PreparedStatementUtil.setAllParameters(
-							pst, parameters.toArray());
-	
-						pst.addBatch();
-					}
-	
-					pst.executeBatch();
-	
-					return true;
-				},
-				sql);
-		}
+		return executeQuery(pst -> {
+			for (Object item : items) {
+				T targetItem = target.cast(item);
+
+				List<Object> parameters = new ArrayList<>();
+
+				for (Function<T, ?> f : fs) {
+					parameters.add(f.apply(targetItem));
+				}
+
+				PreparedStatementUtil.setAllParameters(
+					pst, parameters.toArray());
+
+				pst.addBatch();
+			}
+
+			pst.executeBatch();
+
+			return true;
+		}, sql);
+	}
 
 	public <T extends AbstractDTO> DTOCollection<T> pagedListWith(
-		Context ctx, CheckedFunction<ResultSet, T> mapper, String sql,
+		CheckedFunction<ResultSet, T> mapper, String sql,
 		int limit, int offset, Object... parameters) {
 
 		DTOCollection<T> list = new DTOCollection<>();
 
-		executeQuery(ctx,
-			pst -> {
+		executeQuery(pst -> {
 			Object[] newParameters = new Object[parameters.length + 2];
 
 			System.arraycopy(
@@ -441,36 +421,32 @@ public abstract class AbstractDAO {
 			.substring(0, sql.lastIndexOf("ORDER BY"))
 			.replace("*", "count(*)");
 
-		executeQuery(ctx,
-			pst -> {
-				PreparedStatementUtil.setAllParameters(pst, parameters);
-	
-				try (ResultSet rs = pst.executeQuery()) {
-					rs.next();
-	
-					int count = rs.getInt(1);
-	
-					PagingDTO paging = new PagingDTO(count, limit, offset);
-	
-					list.setPaging(paging);
-				}
-	
-				return null;
-			},
-			countSql);
+		executeQuery(pst -> {
+			PreparedStatementUtil.setAllParameters(pst, parameters);
+
+			try (ResultSet rs = pst.executeQuery()) {
+				rs.next();
+
+				int count = rs.getInt(1);
+
+				PagingDTO paging = new PagingDTO(count, limit, offset);
+
+				list.setPaging(paging);
+			}
+
+			return null;
+		}, countSql);
 
 		return list;
 	}
 
 	public <T> List<T> listWith(
-		Context ctx, CheckedFunction<ResultSet, T> mapper, String sql,
+		CheckedFunction<ResultSet, T> mapper, String sql,
 		Object... parameters)
 		throws DAOException {
 
-		List<T> list = new ArrayList<>();
-
-		try (Connection con = this.getConnection(ctx);
-			PreparedStatement pst = con.prepareStatement(sql)) {
+		return executeQuery(pst -> {
+			List<T> list = new ArrayList<>();
 
 			PreparedStatementUtil.setAllParameters(pst, parameters);
 
@@ -481,13 +457,13 @@ public abstract class AbstractDAO {
 			}
 
 			return list;
-		} catch (Exception e) {
-			throw new DAOException(e);
-		}
+		}, sql, parameters);
 	}
 
 	public final void onTransactionContext(
-		Context ctx, CheckedConsumer<Connection> consumer) {
+		CheckedConsumer<Connection> consumer) {
+
+		Context ctx = ContextThreadLocal.getContext();
 
 		Connection con = null;
 
