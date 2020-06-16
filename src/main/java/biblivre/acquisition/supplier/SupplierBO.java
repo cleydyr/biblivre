@@ -26,9 +26,9 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 
 public class SupplierBO extends AbstractBO {
-	private SupplierDAO dao;
+	private ISupplierDAO dao;
 
-	public SupplierBO(SupplierDAO dao) {
+	public SupplierBO(ISupplierDAO dao) {
 		this.dao = dao;
 	}
 

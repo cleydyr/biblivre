@@ -29,7 +29,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class SupplierDAO extends AbstractDAO {
+public class SupplierDAO extends AbstractDAO implements ISupplierDAO {
 
 	private static final String _SEARCH_ALL_SQL =
 		"SELECT * FROM suppliers ORDER BY id ASC LIMIT ? OFFSET ?";
@@ -76,6 +76,7 @@ public class SupplierDAO extends AbstractDAO {
 			"id) " +
 		"VALUES (" + StringUtils.repeat("?", ", ", 25) + ")";
 
+	@Override
 	public boolean save(SupplierDTO dto) {
 		return executeUpdate(
 			_SAVE_SQL, dto.getTrademark(), dto.getName(),
@@ -88,6 +89,7 @@ public class SupplierDAO extends AbstractDAO {
 			dto.getInfo(), dto.getUrl(), dto.getEmail(), dto.getCreatedBy());
 	}
 
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return executeBatchUpdate((pst, abstractDto) -> {
 			SupplierDTO dto = (SupplierDTO) abstractDto;
@@ -107,6 +109,7 @@ public class SupplierDAO extends AbstractDAO {
 		}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
+	@Override
 	public boolean update(SupplierDTO dto) {
 		return executeUpdate(
 			_UPDATE_SQL, dto.getTrademark(), dto.getName(),
@@ -120,14 +123,17 @@ public class SupplierDAO extends AbstractDAO {
 			dto.getId());
 	}
 
+	@Override
 	public boolean delete(SupplierDTO dto) {
 		return executeUpdate(_DELETE_SQL, dto.getId());
 	}
 
+	@Override
 	public SupplierDTO get(int id) {
 		return fetchOne(this::populateDto, _GET_SQL, id);
 	}
 
+	@Override
 	public DTOCollection<SupplierDTO> search(
 		String value, int limit, int offset) {
 
