@@ -38,7 +38,7 @@ public class OrderBO extends AbstractBO {
 	private QuotationBO quotationBO;
 	private RequestBO requestBO;
 
-	
+
 	public OrderBO(
 		IOrderDAO dao, SupplierBO supplierBO, QuotationBO quotationBO,
 		RequestBO requestBO) {
