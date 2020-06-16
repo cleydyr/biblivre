@@ -45,9 +45,11 @@ import biblivre.z3950.Z3950BO;
 public class Handler extends AbstractHandler {
 
 	private SupplierBO supplierBO;
+	private RequestBO requestBO;
 
 	public Handler() {
 		supplierBO = BiblivreInitializer.getSupplierBO();
+		requestBO = BiblivreInitializer.getRequestBO();
 	}
 
 	public void ping(ExtendedRequest request, ExtendedResponse response) {
@@ -208,13 +210,10 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
 		List<SupplierDTO> suppliers = supplierBO.list();
 		request.setAttribute("suppliers", suppliers);
 
-		RequestBO rbo = RequestBO.getInstance(schema);
-		List<RequestDTO> requests = rbo.list();
+		List<RequestDTO> requests = requestBO.list();
 		request.setAttribute("requests", requests);
 
 		this.jspURL = "/jsp/acquisition/quotations.jsp";

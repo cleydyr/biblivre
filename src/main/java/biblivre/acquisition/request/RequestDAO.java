@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class RequestDAO extends LegacyAbstractDAO {
+public class RequestDAO extends AbstractDAO implements IRequestDAO {
 
 	private static final String _UPDATE_STATUS_SQL =
 		"UPDATE requests" +
@@ -69,11 +69,7 @@ public class RequestDAO extends LegacyAbstractDAO {
 				"publisher, info, status, quantity, created_by) " +
 			"VALUES (" + StringUtils.repeat("?", ", ", 10) + ");";
 
-	public static RequestDAO getInstance(String schema) {
-		return (RequestDAO) LegacyAbstractDAO.getInstance(
-			RequestDAO.class, schema);
-	}
-
+	@Override
 	public boolean save(RequestDTO dto) {
 		return executeUpdate(
 			_SAVE_SQL, dto.getRequester(), dto.getAuthor(), dto.getTitle(),
@@ -82,6 +78,7 @@ public class RequestDAO extends LegacyAbstractDAO {
 			dto.getCreatedBy());
 	}
 
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return executeBatchUpdate((pst, abstractDto) -> {
 			RequestDTO dto = (RequestDTO) abstractDto;
@@ -96,11 +93,13 @@ public class RequestDAO extends LegacyAbstractDAO {
 		}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
+	@Override
 	public RequestDTO get(int id) {
 		return fetchOne(
 			this::populateDto, "SELECT * FROM requests WHERE id = ?;", id);
 	}
 
+	@Override
 	public DTOCollection<RequestDTO> search(
 		String value, int limit, int offset) {
 
@@ -117,6 +116,7 @@ public class RequestDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public boolean update(RequestDTO dto) {
 		return executeUpdate(
 			_UPDATE_SQL, dto.getAuthor(), dto.getTitle(), dto.getSubtitle(),
@@ -125,10 +125,12 @@ public class RequestDAO extends LegacyAbstractDAO {
 			dto.getId());
 	}
 
+	@Override
 	public boolean updateRequestStatus(int orderId, RequestStatus status) {
 		return executeUpdate(_UPDATE_STATUS_SQL, status.toString(), orderId);
 	}
 
+	@Override
 	public boolean delete(RequestDTO dto) {
 		return executeUpdate("DELETE FROM requests WHERE id = ?", dto.getId());
 	}

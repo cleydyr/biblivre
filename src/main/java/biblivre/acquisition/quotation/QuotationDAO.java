@@ -29,7 +29,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class QuotationDAO extends AbstractDAO {
+public class QuotationDAO extends AbstractDAO implements IQuotationDAO {
 	private static final String _LIST_SQL =
 		"SELECT * FROM quotations " +
 		"WHERE supplier_id = ? AND expiration_date >= now()::date;";
@@ -87,6 +87,7 @@ public class QuotationDAO extends AbstractDAO {
 			"response_quantity)" +
 		"VALUES (?, ?, ?, ?, ?);";
 
+	@Override
 	public Integer save(QuotationDTO dto) {
 		return onTransactionContext(con -> {
 			int quotationId = getNextSerial(con, "quotations_id_seq");
@@ -109,6 +110,7 @@ public class QuotationDAO extends AbstractDAO {
 		});
 	}
 
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		if (dtoList == null || dtoList.isEmpty()) {
 			return true;
@@ -159,6 +161,7 @@ public class QuotationDAO extends AbstractDAO {
 	}
 
 
+	@Override
 	public boolean update(QuotationDTO dto) {
 		onTransactionContext(con -> {
 			executeUpdate(
@@ -180,19 +183,23 @@ public class QuotationDAO extends AbstractDAO {
 		return true;
 	}
 
+	@Override
 	public QuotationDTO get(int id) {
 		return fetchOne(this::populateDto, _GET_SQL, id);
 	}
 
+	@Override
 	public List<RequestQuotationDTO> listRequestQuotation(int quotationId) {
 		return listWith(
 			this::populateRequestQuotationDto, _LIST_RQ_SQL, quotationId);
 	}
 
+	@Override
 	public boolean delete(QuotationDTO dto) {
 		return executeUpdate(_DELETE_SQL, dto.getId());
 	}
 
+	@Override
 	public DTOCollection<QuotationDTO> search(
 		String value, int limit, int offset) {
 
@@ -206,6 +213,7 @@ public class QuotationDAO extends AbstractDAO {
 			this::populateDto, sql, limit, offset, keyword);
 	}
 
+	@Override
 	public DTOCollection<QuotationDTO> list(Integer supplierId) {
 		List<QuotationDTO> list =
 			listWith(this::populateDto, _LIST_SQL, supplierId);

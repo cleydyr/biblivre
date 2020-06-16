@@ -21,21 +21,14 @@ package biblivre.acquisition.request;
 
 import java.util.List;
 
-import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 
-public class RequestBO extends AbstractBO {
-	private RequestDAO dao;
+public class RequestBO {
+	private IRequestDAO dao;
 
-	public static RequestBO getInstance(String schema) {
-		RequestBO bo = AbstractBO.getInstance(RequestBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = RequestDAO.getInstance(schema);
-		}
-
-		return bo;
+	public RequestBO(IRequestDAO dao) {
+		this.dao = dao;
 	}
 
     public RequestDTO get(Integer id) {

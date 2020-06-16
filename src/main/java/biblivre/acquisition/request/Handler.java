@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -31,6 +32,12 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 
 public class Handler extends AbstractHandler {
+
+	private RequestBO requestBO;
+
+	public Handler() {
+		requestBO = BiblivreInitializer.getRequestBO();
+	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -49,8 +56,7 @@ public class Handler extends AbstractHandler {
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-		RequestBO bo = RequestBO.getInstance(schema);
-		DTOCollection<RequestDTO> list = bo.search(query, limit, offset);
+		DTOCollection<RequestDTO> list = requestBO.search(query, limit, offset);
 
 		if (list.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.no_request_found");
@@ -70,11 +76,9 @@ public class Handler extends AbstractHandler {
 
 
 	public void open(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		RequestBO bo = RequestBO.getInstance(schema);
-		RequestDTO dto = bo.get(id);
+		RequestDTO dto = requestBO.get(id);
 
 		try {
 			this.json.put("request", dto.toJSONObject());
@@ -84,22 +88,18 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void save(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
 		Integer id = request.getInteger("id");
 		RequestDTO dto = this.populateDTO(request);
-
-		RequestBO bo = RequestBO.getInstance(schema);
 
 		boolean result = false;
 		if (id == 0) {
 			dto.setStatus(RequestStatus.PENDING);;
 			dto.setCreatedBy(request.getLoggedUserId());
-			result = bo.save(dto);
+			result = requestBO.save(dto);
 		} else {
 			dto.setId(id);
 			dto.setModifiedBy(request.getLoggedUserId());
-			result = bo.update(dto);
+			result = requestBO.update(dto);
 		}
 		if (result) {
 			if (id == 0) {
@@ -122,15 +122,12 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
 		Integer id = request.getInteger("id");
 
-		RequestBO bo = RequestBO.getInstance(schema);
 		RequestDTO dto = new RequestDTO();
 		dto.setId(id);
 
-		if (bo.delete(dto)) {
+		if (requestBO.delete(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "acquisition.request.success.delete");
 		} else {
 			this.setMessage(ActionResult.WARNING, "acquisition.request.error.delete");

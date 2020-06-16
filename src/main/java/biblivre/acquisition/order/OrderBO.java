@@ -30,33 +30,30 @@ import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
-import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 
 public class OrderBO extends AbstractBO {
-	private OrderDAO dao;
+	private IOrderDAO dao;
 	private SupplierBO supplierBO;
 	private QuotationBO quotationBO;
+	private RequestBO requestBO;
 
-	public static OrderBO getInstance(String schema) {
-		OrderBO bo = AbstractBO.getInstance(OrderBO.class, schema);
+	
+	public OrderBO(
+		IOrderDAO dao, SupplierBO supplierBO, QuotationBO quotationBO,
+		RequestBO requestBO) {
 
-		if (bo.dao == null) {
-			bo.dao = OrderDAO.getInstance(schema);
-		}
-
-		if (bo.supplierBO == null) {
-			bo.supplierBO = BiblivreInitializer.getSupplierBO();
-		}
-
-		return bo;
+		super();
+		this.dao = dao;
+		this.supplierBO = supplierBO;
+		this.quotationBO = quotationBO;
+		this.requestBO = requestBO;
 	}
 
 	public OrderDTO get(Integer id) {
 		OrderDTO dto = this.dao.get(id);
 
-		RequestBO rbo = RequestBO.getInstance(this.getSchema());
-		this.populateDTO(dto, quotationBO, supplierBO, rbo);
+		this.populateDTO(dto, quotationBO, supplierBO, requestBO);
 
 		return dto;
 	}
@@ -80,9 +77,8 @@ public class OrderBO extends AbstractBO {
 	public DTOCollection<OrderDTO> search(String value, int limit, int offset) {
 		DTOCollection<OrderDTO> list = this.dao.search(value, limit, offset);
 
-		RequestBO rbo = RequestBO.getInstance(this.getSchema());
 		for (OrderDTO dto : list) {
-			this.populateDTO(dto, quotationBO, supplierBO, rbo);
+			this.populateDTO(dto, quotationBO, supplierBO, requestBO);
 		}
 
 		return list;

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import biblivre.acquisition.order.OrderBO;
+import biblivre.acquisition.quotation.QuotationBO;
 import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
@@ -61,7 +62,9 @@ public class DataMigrationBO extends AbstractBO {
 	private Map<Integer, Integer> lendingHistoryMap = new HashMap<Integer, Integer>();
 	private String userSchema;
 	private SupplierBO supplierBO;
-	private OrderBO quotationBO;
+	private QuotationBO quotationBO;
+	private RequestBO requestBO;
+	private OrderBO orderBO;
 
 	@Override
 	public String getSchema() {
@@ -83,6 +86,18 @@ public class DataMigrationBO extends AbstractBO {
 
 		if (bo.supplierBO == null) {
 			bo.supplierBO = BiblivreInitializer.getSupplierBO();
+		}
+
+		if (bo.quotationBO == null) {
+			bo.quotationBO = BiblivreInitializer.getQuotationBO();
+		}
+
+		if (bo.requestBO == null) {
+			bo.requestBO = BiblivreInitializer.getRequestBO();
+		}
+
+		if (bo.orderBO == null) {
+			bo.orderBO = BiblivreInitializer.getOrderBO();
 		}
 
 		return bo;
@@ -302,14 +317,14 @@ public class DataMigrationBO extends AbstractBO {
 				return supplierBO.saveFromBiblivre3(dtoList);
 
 			case ACQUISITION_REQUISITION:
-				return RequestBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return requestBO.saveFromBiblivre3(dtoList);
 
 			case ACQUISITION_QUOTATION:
 			case ACQUISITION_ITEM_QUOTATION:
 				return quotationBO.saveFromBiblivre3(dtoList);
 
 			case ACQUISITION_ORDER:
-				return OrderBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return orderBO.saveFromBiblivre3(dtoList);
 
 			case Z3950_SERVERS:
 				return Z3950BO.getInstance(schema).saveFromBiblivre3(dtoList);

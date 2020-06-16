@@ -26,13 +26,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.NullableSQLObject;
 import biblivre.core.PreparedStatementUtil;
 
-public class OrderDAO extends LegacyAbstractDAO {
+public class OrderDAO extends AbstractDAO implements IOrderDAO {
 	private static final String _GET_SQL =
 		"SELECT * FROM orders WHERE id = ?; ";
 
@@ -86,27 +86,29 @@ public class OrderDAO extends LegacyAbstractDAO {
 		"delivered_quantity = ?, terms_of_payment = ?, deadline_date= ? " +
 		"WHERE id = ?;";
 
-	public static OrderDAO getInstance(String schema) {
-		return (OrderDAO) LegacyAbstractDAO.getInstance(OrderDAO.class, schema);
-	}
-
+	@Override
 	public OrderDTO get(Integer orderId) {
 		return fetchOne(this::populateDto, _GET_SQL, orderId);
 	}
 
+	@Override
 	public Integer save(OrderDTO dto) {
-		int orderId = this.getNextSerial("orders_id_seq");
+		return onTransactionContext(con -> {
+			int orderId = getNextSerial(con, "orders_id_seq");
 
-		boolean update = executeUpdate(
-			_SAVE_SQL, dto.getQuotationId(), dto.getCreated(),
-			dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
-			dto.getInvoiceNumber(), _getReceitptDate(dto),
-			_getTotalValue(dto), _getDeliveredQuantity(dto),
-			dto.getTermsOfPayment(), dto.getDeadlineDate(), orderId);
+			boolean update = executeUpdate(
+				_SAVE_SQL, dto.getQuotationId(), dto.getCreated(),
+				dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
+				dto.getInvoiceNumber(), _getReceitptDate(dto),
+				_getTotalValue(dto), _getDeliveredQuantity(dto),
+				dto.getTermsOfPayment(), dto.getDeadlineDate(), orderId);
 
-		return update ? orderId : 0;
+			return update ? orderId : 0;
+		});
+		
 	}
 
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return executeBatchUpdate((pst, item) -> {
 				OrderDTO dto = (OrderDTO) item;
@@ -121,6 +123,7 @@ public class OrderDAO extends LegacyAbstractDAO {
 			}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
+	@Override
 	public boolean update(OrderDTO dto) {
 		return executeUpdate(
 			_UPDATE_SQL, dto.getQuotationId(), dto.getCreated(),
@@ -130,10 +133,12 @@ public class OrderDAO extends LegacyAbstractDAO {
 			dto.getTermsOfPayment(), dto.getDeadlineDate(), dto.getId());
 	}
 
+	@Override
 	public boolean delete(OrderDTO dto) {
 		return executeUpdate(_DELETE_SQL, dto.getId());
 	}
 
+	@Override
 	public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
 		String sql = _buildSearchSQL(value);
 

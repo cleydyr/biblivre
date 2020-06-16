@@ -19,19 +19,25 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.acquisition.order.OrderBO;
+import biblivre.acquisition.order.OrderDAO;
 import biblivre.acquisition.quotation.QuotationBO;
 import biblivre.acquisition.quotation.QuotationDAO;
+import biblivre.acquisition.request.RequestBO;
+import biblivre.acquisition.request.RequestDAO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDAO;
 import biblivre.z3950.server.Z3950ServerBO;
 
 public class BiblivreInitializer {
 	private static SupplierBO supplierBO;
+	private static QuotationBO quotationBO;
+	private static RequestBO requestBO;
+	private static OrderBO orderBO;
 
 	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
 
-	private static QuotationBO quotationBO;
 
 	public synchronized static void initialize() {
 		if (!BiblivreInitializer.initialized) {
@@ -73,9 +79,28 @@ public class BiblivreInitializer {
 		if (quotationBO == null) {
 			quotationBO = new QuotationBO(
 				AbstractDAO.getInstance(QuotationDAO.class),
-				getSupplierBO());
+				getSupplierBO(), getRequestBO());
 		}
 
 		return quotationBO;
+	}
+
+	public static RequestBO getRequestBO() {
+		if (requestBO == null) {
+			requestBO = new RequestBO(
+				AbstractDAO.getInstance(RequestDAO.class));
+		}
+
+		return requestBO;
+	}
+
+	public static OrderBO getOrderBO() {
+		if (orderBO == null) {
+			orderBO = new OrderBO(
+				AbstractDAO.getInstance(OrderDAO.class), supplierBO,
+				quotationBO, requestBO);
+		}
+
+		return orderBO;
 	}
 }
