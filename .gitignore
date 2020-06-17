@@ -1,3 +1,5 @@
+.factorypath
+bin/
 .project
 .vscode/
 .classpath
