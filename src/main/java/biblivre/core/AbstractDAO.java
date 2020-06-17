@@ -421,7 +421,7 @@ public abstract class AbstractDAO {
 
 		String countSql = sql
 			.substring(0, sql.lastIndexOf("ORDER BY"))
-			.replace("*", "count(*)");
+			.replace("SELECT .*? FROM", "SELECT count(*) FROM");
 
 		executeQuery(pst -> {
 			PreparedStatementUtil.setAllParameters(pst, parameters);
@@ -486,27 +486,27 @@ public abstract class AbstractDAO {
 	}
 
 	public final <T> T onTransactionContext(
-			CheckedFunction<Connection, T> function) {
+		CheckedFunction<Connection, T> function) {
 
-			Context ctx = ContextThreadLocal.getContext();
+		Context ctx = ContextThreadLocal.getContext();
 
-			Connection con = null;
+		Connection con = null;
 
-			try {
-				con  = this.getConnection(ctx);
+		try {
+			con  = this.getConnection(ctx);
 
-				con.setAutoCommit(false);
+			con.setAutoCommit(false);
 
-				T result = function.apply(con);
+			T result = function.apply(con);
 
-				con.commit();
+			con.commit();
 
-				return result;
-			} catch (Exception e) {
-				this.rollback(con);
-				throw new DAOException(e);
-			} finally {
-				this.closeConnection(con);
-			}
+			return result;
+		} catch (Exception e) {
+			this.rollback(con);
+			throw new DAOException(e);
+		} finally {
+			this.closeConnection(con);
 		}
+	}
 }
