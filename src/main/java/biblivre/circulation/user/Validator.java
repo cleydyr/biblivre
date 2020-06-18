@@ -31,12 +31,18 @@ import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.lending.LendingBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
+	private AccessControlBO accessControlBO;
+
+	public Validator() {
+		accessControlBO = BiblivreInitializer.getAccessControlBO();
+	}
 
 	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 		DateFormat dateFormat = new SimpleDateFormat(request.getLocalizedText("format.date"));
@@ -138,7 +144,7 @@ public class Validator extends AbstractValidator {
 			return;
 		}
 
-		if (AccessControlBO.getInstance(schema).getByUserId(user.getId()) != null) {
+		if (accessControlBO.getByUserId(user.getId()) != null) {
 			handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_accesscard");
 			return;
 		}

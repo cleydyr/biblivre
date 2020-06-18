@@ -65,6 +65,8 @@ public class DataMigrationBO extends AbstractBO {
 	private QuotationBO quotationBO;
 	private RequestBO requestBO;
 	private OrderBO orderBO;
+	private AccessCardBO accessCardBO;
+	private AccessControlBO accessControlBO;
 
 	@Override
 	public String getSchema() {
@@ -98,6 +100,14 @@ public class DataMigrationBO extends AbstractBO {
 
 		if (bo.orderBO == null) {
 			bo.orderBO = BiblivreInitializer.getOrderBO();
+		}
+
+		if (bo.accessCardBO == null) {
+			bo.accessCardBO = BiblivreInitializer.getAccessCardBO();
+		}
+
+		if (bo.accessControlBO == null) {
+			bo.accessControlBO = BiblivreInitializer.getAccessControlBO();
 		}
 
 		return bo;
@@ -302,7 +312,7 @@ public class DataMigrationBO extends AbstractBO {
 				return holdingsBo.saveFromBiblivre3(dtoList);
 
 			case ACCESS_CARDS:
-				return AccessCardBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return accessCardBO.saveFromBiblivre3(dtoList);
 
 			case LOGINS:
 				return LoginBO.getInstance(schema).saveFromBiblivre3(dtoList);
@@ -331,7 +341,7 @@ public class DataMigrationBO extends AbstractBO {
 
 			case ACCESS_CONTROL:
 			case ACCESS_CONTROL_HISTORY:
-				return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return accessControlBO.saveFromBiblivre3(dtoList);
 
 			case LENDINGS:
 				return LendingBO.getInstance(schema).saveFromBiblivre3(dtoList);

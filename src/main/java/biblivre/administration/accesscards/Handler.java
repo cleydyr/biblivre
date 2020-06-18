@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -34,6 +35,11 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 
 public class Handler extends AbstractHandler {
+	private AccessCardBO accessCardBO;
+
+	public Handler() {
+		accessCardBO = BiblivreInitializer.getAccessCardBO();
+	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 		DTOCollection<AccessCardDTO> list = this.searchHelper(request, response, this);
@@ -63,8 +69,7 @@ public class Handler extends AbstractHandler {
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
-		DTOCollection<AccessCardDTO> list = bo.search(query, status, limit, offset);
+		DTOCollection<AccessCardDTO> list = accessCardBO.search(query, status, limit, offset);
 
 		if (list.size() == 0) {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
@@ -78,11 +83,9 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void open(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
-		AccessCardDTO card = bo.get(id);
+		AccessCardDTO card = accessCardBO.get(id);
 
 		if (card == null) {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.card_not_found");
@@ -97,9 +100,6 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void save(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
-
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status", AccessCardStatus.AVAILABLE);
 		String code = request.getString("code");
 		String prefix = request.getString("prefix");
@@ -111,9 +111,9 @@ public class Handler extends AbstractHandler {
 		AccessCardDTO returnDto = null;
 
 		if (StringUtils.isNotBlank(code)) {
-			returnDto = bo.createCard(request.getLoggedUserId(), code, status);
+			returnDto = accessCardBO.createCard(request.getLoggedUserId(), code, status);
 		} else {
-			LinkedList<AccessCardDTO> list = bo.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
+			LinkedList<AccessCardDTO> list = accessCardBO.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
 			if (list != null) {
 				returnDto = list.get(0);
 				success = true;
@@ -133,14 +133,12 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void delete(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
 		AccessCardDTO dto = new AccessCardDTO();
 		dto.setId(id);
 		dto.setModifiedBy(request.getLoggedUserId());
-		if (bo.removeCard(dto)) {
+		if (accessCardBO.removeCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.delete");
 		} else {
 			this.setMessage(ActionResult.WARNING, "administration.accesscards.error.delete");
@@ -148,15 +146,13 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void changeStatus(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 		AccessCardStatus status = request.getEnum(AccessCardStatus.class, "status");
 
-		AccessCardBO bo = AccessCardBO.getInstance(schema);
-		AccessCardDTO dto = bo.get(id);
+		AccessCardDTO dto = accessCardBO.get(id);
 		dto.setModifiedBy(request.getLoggedUserId());
 		dto.setStatus(status);
-		if (bo.update(dto)) {
+		if (accessCardBO.update(dto)) {
 			if (status == AccessCardStatus.BLOCKED || status == AccessCardStatus.IN_USE_AND_BLOCKED) {
 				this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.block");
 			} else {

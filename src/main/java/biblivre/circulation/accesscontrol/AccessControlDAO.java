@@ -19,150 +19,66 @@
  ******************************************************************************/
 package biblivre.circulation.accesscontrol;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
-import biblivre.core.exceptions.DAOException;
 
-public class AccessControlDAO extends LegacyAbstractDAO {
+public class AccessControlDAO extends AbstractDAO implements IAccessControlDAO {
 
-	public static AccessControlDAO getInstance(String schema) {
-		return (AccessControlDAO) LegacyAbstractDAO.getInstance(AccessControlDAO.class, schema);
-	}
+	private static final String _GET_BY_USER_ID_SQL =
+		"SELECT * FROM access_control "
+		+ "WHERE user_id = ? and departure_time is null";
 
+	private static final String _GET_BY_CARD_ID_SQL =
+		"SELECT * FROM access_control "
+		+ "WHERE access_card_id = ? AND departure_time is null";
+
+	private static final String _UPDATE_SQL =
+		"UPDATE access_control "
+		+ "SET departure_time = now(), modified = now(), modified_by = ? "
+		+ "WHERE id = ?";
+
+	private static final String _SAVE_FROM_V3_SQL =
+		"INSERT INTO access_control "
+		+ "(access_card_id, user_id, created_by, id) "
+		+ "VALUES (?, ?, ?, ?)";
+
+	private static final String _SAVE_SQL =
+		"INSERT INTO access_control "
+		+ "(access_card_id, user_id, created_by) "
+		+ "VALUES (?, ?, ?)";
+
+	@Override
 	public boolean save(AccessControlDTO dto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO access_control ");
-			sql.append("(access_card_id, user_id, created_by) ");
-			sql.append("VALUES (?, ?, ?);");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, dto.getAccessCardId());
-			pst.setInt(2, dto.getUserId());
-			pst.setInt(3, dto.getCreatedBy());
-
-			return pst.executeUpdate() > 0;
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeUpdate(
+			_SAVE_SQL, dto.getAccessCardId(), dto.getUserId(),
+			dto.getCreatedBy());
 	}
 
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO access_control ");
-			sql.append("(access_card_id, user_id, created_by, id) ");
-			sql.append("VALUES (?, ?, ?, ?);");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-
-			for (AbstractDTO abstractDto : dtoList) {
-				AccessControlDTO dto = (AccessControlDTO) abstractDto;
-				pst.setInt(1, dto.getAccessCardId());
-				pst.setInt(2, dto.getUserId());
-				pst.setInt(3, dto.getCreatedBy());
-				pst.setInt(4, dto.getId());
-				pst.addBatch();
-			}
-
-			return pst.executeBatch()[0] > 0;
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeBatchUpdate(
+			dtoList, AccessControlDTO.class, _SAVE_FROM_V3_SQL,
+			AccessControlDTO::getAccessCardId, AccessControlDTO::getUserId,
+			AccessControlDTO::getCreatedBy, AccessControlDTO::getId);
 	}
 
+	@Override
 	public boolean update(AccessControlDTO dto) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("UPDATE access_control ");
-			sql.append("SET departure_time = now(), ");
-			sql.append("modified = now(), ");
-			sql.append("modified_by = ? ");
-			sql.append("WHERE id = ?;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, dto.getModifiedBy());
-			pst.setInt(2, dto.getId());
-
-			return pst.executeUpdate() > 0;
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		return executeUpdate(
+			_UPDATE_SQL, dto.getModifiedBy(), dto.getId());
 	}
 
+	@Override
 	public AccessControlDTO getByCardId(Integer cardId) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM access_control ");
-			sql.append("WHERE access_card_id = ? AND ");
-			sql.append("departure_time is null;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, cardId);
-
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				return this.populateDto(rs);
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
-		return null;
+		return fetchOne(this::populateDto, _GET_BY_CARD_ID_SQL, cardId);
 	}
 
+	@Override
 	public AccessControlDTO getByUserId(Integer userId) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM access_control ");
-			sql.append("WHERE user_id = ? and ");
-			sql.append("departure_time is null;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, userId);
-
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				return this.populateDto(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return null;
+		return fetchOne(this::populateDto, _GET_BY_USER_ID_SQL, userId);
 	}
 
 	private AccessControlDTO populateDto(ResultSet rs) throws Exception {

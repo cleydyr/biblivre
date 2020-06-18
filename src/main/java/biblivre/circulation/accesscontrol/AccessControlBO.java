@@ -31,16 +31,13 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
 
 public class AccessControlBO extends AbstractBO {
-	private AccessControlDAO dao;
+	private IAccessControlDAO dao;
+	private AccessCardBO accessCardBO;
 
-	public static AccessControlBO getInstance(String schema) {
-		AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = AccessControlDAO.getInstance(schema);
-		}
-
-		return bo;
+	public AccessControlBO(IAccessControlDAO dao, AccessCardBO accessCardBO) {
+		super();
+		this.dao = dao;
+		this.accessCardBO = accessCardBO;
 	}
 
 	public AccessControlDTO populateDetails(AccessControlDTO dto) {
@@ -49,8 +46,7 @@ public class AccessControlBO extends AbstractBO {
 		}
 
 		if (dto.getAccessCardId() != null) {
-			AccessCardBO cardBo = AccessCardBO.getInstance(this.getSchema());
-			dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
+			dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()));
 		}
 
 		if (dto.getUserId() != null) {
@@ -74,8 +70,7 @@ public class AccessControlBO extends AbstractBO {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
 
-		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
-		AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+		AccessCardDTO cardDto = accessCardBO.get(dto.getAccessCardId());
 		if (cardDto == null) {
 			throw new ValidationException("circulation.access_control.card_not_found");
 		} else if (!cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
@@ -93,7 +88,7 @@ public class AccessControlBO extends AbstractBO {
 
 		try {
 			cardDto.setStatus(AccessCardStatus.IN_USE);
-			cardBO.update(cardDto);
+			accessCardBO.update(cardDto);
 			return this.dao.save(dto);
 		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
@@ -115,11 +110,10 @@ public class AccessControlBO extends AbstractBO {
 			throw new ValidationException("circulation.error.user_not_found");
 		}
 
-		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
 		AccessControlDTO existingAccess = null;
 
 		if (dto.getAccessCardId() != 0) {
-			AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+			AccessCardDTO cardDto = accessCardBO.get(dto.getAccessCardId());
 			if (cardDto == null) {
 				throw new ValidationException("circulation.access_control.card_not_found");
 			} else if (cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
@@ -137,11 +131,11 @@ public class AccessControlBO extends AbstractBO {
 
 		try {
 			if (existingAccess != null) {
-				AccessCardDTO cardDto = cardBO.get(existingAccess.getAccessCardId());
+				AccessCardDTO cardDto = accessCardBO.get(existingAccess.getAccessCardId());
 				//If the cardId was sent in the parameters, it means that the user has returned it.
 				//Else, it means that the user left the library without returning the card, so we have to block it.
 				cardDto.setStatus(dto.getAccessCardId() != 0 ? AccessCardStatus.AVAILABLE : AccessCardStatus.IN_USE_AND_BLOCKED);
-				cardBO.update(cardDto);
+				accessCardBO.update(cardDto);
 				return this.dao.update(existingAccess);
 			}
 		} catch (Exception e) {

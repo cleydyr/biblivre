@@ -27,6 +27,10 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.request.RequestDAO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDAO;
+import biblivre.administration.accesscards.AccessCardBO;
+import biblivre.administration.accesscards.AccessCardDAO;
+import biblivre.circulation.accesscontrol.AccessControlBO;
+import biblivre.circulation.accesscontrol.AccessControlDAO;
 import biblivre.z3950.server.Z3950ServerBO;
 
 public class BiblivreInitializer {
@@ -34,6 +38,8 @@ public class BiblivreInitializer {
 	private static QuotationBO quotationBO;
 	private static RequestBO requestBO;
 	private static OrderBO orderBO;
+	private static AccessCardBO accessCardBO;
+	private static AccessControlBO accessControlBO;
 
 	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
@@ -69,7 +75,8 @@ public class BiblivreInitializer {
 
 	public static SupplierBO getSupplierBO() {
 		if (supplierBO == null) {
-			supplierBO = new SupplierBO(AbstractDAO.getInstance(SupplierDAO.class));
+			supplierBO = new SupplierBO(
+				AbstractDAO.getInstance(SupplierDAO.class));
 		}
 
 		return supplierBO;
@@ -97,10 +104,29 @@ public class BiblivreInitializer {
 	public static OrderBO getOrderBO() {
 		if (orderBO == null) {
 			orderBO = new OrderBO(
-				AbstractDAO.getInstance(OrderDAO.class), supplierBO,
-				quotationBO, requestBO);
+				AbstractDAO.getInstance(OrderDAO.class), getSupplierBO(),
+				getQuotationBO(), getRequestBO());
 		}
 
 		return orderBO;
+	}
+
+	public static AccessCardBO getAccessCardBO() {
+		if (accessCardBO == null) {
+			accessCardBO = new AccessCardBO(
+				AbstractDAO.getInstance(AccessCardDAO.class));
+		}
+
+		return accessCardBO;
+	}
+
+	public static AccessControlBO getAccessControlBO() {
+		if (accessControlBO == null) {
+			accessControlBO = new AccessControlBO(
+				AbstractDAO.getInstance(AccessControlDAO.class),
+				getAccessCardBO());
+		}
+
+		return accessControlBO;
 	}
 }

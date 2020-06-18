@@ -28,16 +28,22 @@ import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 
 public class Handler extends AbstractHandler {
+	private AccessControlBO accessControlBO;
+	private AccessCardBO accessCardBO;
+
+	public Handler() {
+		accessControlBO = BiblivreInitializer.getAccessControlBO();
+		accessCardBO = BiblivreInitializer.getAccessCardBO();
+	}
 
 	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
 		biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
 		DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -48,11 +54,8 @@ public class Handler extends AbstractHandler {
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(userList.getPaging());
 
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
-		AccessCardBO abo = AccessCardBO.getInstance(schema);
-
 		for (UserDTO user : userList) {
-			AccessControlDTO dto = bo.getByUserId(user.getId());
+			AccessControlDTO dto = accessControlBO.getByUserId(user.getId());
 			if (dto == null) {
 				dto = new AccessControlDTO();
 				dto.setUserId(user.getId());
@@ -62,7 +65,7 @@ public class Handler extends AbstractHandler {
 			dto.setUser(user);
 
 			if (dto.getAccessCardId() != null) {
-				dto.setAccessCard(abo.get(dto.getAccessCardId()));
+				dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()));
 			}
 
 			list.add(dto);
@@ -93,11 +96,10 @@ public class Handler extends AbstractHandler {
 		DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
 		list.setPaging(cardList.getPaging());
 
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
 		UserBO ubo = UserBO.getInstance(schema);
 
 		for (AccessCardDTO card : cardList) {
-			AccessControlDTO dto = bo.getByCardId(card.getId());
+			AccessControlDTO dto = accessControlBO.getByCardId(card.getId());
 			if (dto == null) {
 				dto = new AccessControlDTO();
 				dto.setAccessCardId(card.getId());
@@ -127,8 +129,6 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void bind(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
@@ -138,13 +138,11 @@ public class Handler extends AbstractHandler {
 		dto.setCreatedBy(request.getLoggedUserId());
 		dto.setArrivalTime(new Date());
 
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
-
-		if (bo.lendCard(dto)) {
+		if (accessControlBO.lendCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.lend.success");
 			try {
-				dto = bo.getByCardId(cardId);
-				bo.populateDetails(dto);
+				dto = accessControlBO.getByCardId(cardId);
+				accessControlBO.populateDetails(dto);
 				dto.setId(cardId);
 				this.json.put("data", dto.toJSONObject());
 				this.json.put("full_data", true);
@@ -158,8 +156,6 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void unbind(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
 		Integer cardId = request.getInteger("card_id");
 		Integer userId = request.getInteger("user_id");
 
@@ -169,12 +165,10 @@ public class Handler extends AbstractHandler {
 		dto.setModifiedBy(request.getLoggedUserId());
 		dto.setDepartureTime(new Date());
 
-		AccessControlBO bo = AccessControlBO.getInstance(schema);
-
-		if (bo.returnCard(dto)) {
+		if (accessControlBO.returnCard(dto)) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.return.success");
 			try {
-				bo.populateDetails(dto);
+				accessControlBO.populateDetails(dto);
 				dto.setId(cardId);
 				this.json.put("data", dto.toJSONObject());
 				this.json.put("full_data", true);

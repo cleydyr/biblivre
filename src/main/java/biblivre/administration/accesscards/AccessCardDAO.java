@@ -27,12 +27,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PreparedStatementUtil;
 
-public class AccessCardDAO extends LegacyAbstractDAO {
+public class AccessCardDAO extends AbstractDAO implements IAccessCardDAO {
 
 	private static final String _DELETE_SQL =
 		"DELETE FROM access_cards WHERE id = ?";
@@ -55,11 +55,7 @@ public class AccessCardDAO extends LegacyAbstractDAO {
 	private static final String _GET_SQL =
 		"SELECT * FROM access_cards WHERE id = ?";
 
-	public static AccessCardDAO getInstance(String schema) {
-		return (AccessCardDAO) LegacyAbstractDAO.getInstance(
-			AccessCardDAO.class, schema);
-	}
-
+	@Override
 	public Collection<AccessCardDTO> get(
 		List<String> codes) {
 
@@ -75,11 +71,13 @@ public class AccessCardDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public AccessCardDTO get(int id) {
 		return fetchOne(
 			this::populateDTO, _GET_SQL, id);
 	}
 
+	@Override
 	public DTOCollection<AccessCardDTO> search(
 		String code, AccessCardStatus status, int limit, int offset) {
 
@@ -101,14 +99,18 @@ public class AccessCardDAO extends LegacyAbstractDAO {
 			this::populateDTO, searchSQL, limit, offset, parameters);
 	}
 
+	@Override
 	public AccessCardDTO create() {
 		AccessCardDTO accessCard = new AccessCardDTO();
 
-		accessCard.setId(getNextSerial("access_cards_id_seq"));
+		onTransactionContext(con -> {
+			accessCard.setId(getNextSerial(con, "access_cards_id_seq"));
+		});
 
 		return accessCard;
 	}
 
+	@Override
 	public boolean save(LinkedList<AccessCardDTO> cardList) {
 		return executeBatchUpdate((pst, card) -> {
 			PreparedStatementUtil.setAllParameters(
@@ -117,6 +119,7 @@ public class AccessCardDAO extends LegacyAbstractDAO {
 		}, cardList, _SAVE_SQL);
 	}
 
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		return executeBatchUpdate((pst, item) -> {
 			AccessCardDTO accessCard = (AccessCardDTO) item;
@@ -126,12 +129,14 @@ public class AccessCardDAO extends LegacyAbstractDAO {
 		}, dtoList, _SAVE_FROM_V3_SQL);
 	}
 
+	@Override
 	public boolean update(AccessCardDTO dto) {
 		return executeUpdate(
 			_UPDATE_SQL, dto.getStatus().toString(), dto.getModifiedBy(),
 			dto.getId());
 	}
 
+	@Override
 	public boolean delete(int id) {
 		return executeUpdate(_DELETE_SQL, id);
 	}

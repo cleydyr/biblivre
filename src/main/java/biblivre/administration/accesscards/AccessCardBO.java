@@ -32,16 +32,10 @@ import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
 
 public class AccessCardBO extends AbstractBO {
-	private AccessCardDAO dao;
+	private IAccessCardDAO dao;
 
-	public static AccessCardBO getInstance(String schema) {
-		AccessCardBO bo = AbstractBO.getInstance(AccessCardBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = AccessCardDAO.getInstance(schema);
-		}
-
-		return bo;
+	public AccessCardBO(IAccessCardDAO dao) {
+		this.dao = dao;
 	}
 
 	public DTOCollection<AccessCardDTO> search(String code, AccessCardStatus status, int limit, int offset) {
