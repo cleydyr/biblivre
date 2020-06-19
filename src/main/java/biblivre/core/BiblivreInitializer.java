@@ -46,7 +46,7 @@ public class BiblivreInitializer {
 	private static AccessControlBO accessControlBO;
 	private static BackupBO backupBO;
 	private static RestoreBO restoreBO;
-	
+
 	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
 
