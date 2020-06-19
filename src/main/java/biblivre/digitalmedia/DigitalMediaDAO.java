@@ -33,17 +33,14 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 
-public class DigitalMediaDAO extends LegacyAbstractDAO {
+public class DigitalMediaDAO extends AbstractDAO implements IDigitalMediaDAO {
 
-	public static DigitalMediaDAO getInstance(String schema) {
-		return (DigitalMediaDAO) LegacyAbstractDAO.getInstance(DigitalMediaDAO.class, schema);
-	}
-
+	@Override
 	public long createOID() {
 		Connection con = null;
 		try {
@@ -66,72 +63,64 @@ public class DigitalMediaDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public final Integer save(MemoryFile file) {
-		Connection con = null;
+		return onTransactionContext(con -> {
+			try (InputStream is = file.getNewInputStream()) {
+				PGConnection pgcon = this.getPGConnection(con);
 
-		try (InputStream is = file.getNewInputStream()) {
-			con = this.getConnection();
-			con.setAutoCommit(false);
-
-			PGConnection pgcon = this.getPGConnection(con);
-
-			if (pgcon == null) {
-				throw new Exception("Invalid Delegating Connection");
-			}
-
-			Integer serial = file.getId();
-			if (serial == null) {
-				serial = this.getNextSerial("digital_media_id_seq");
-				file.setId(serial);
-			}
-
-			if (serial != 0) {
-				LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-				long oid = lobj.createLO();
-
-				LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-
-				byte buf[] = new byte[4096];
-				int bytesRead = 0;
-				while ((bytesRead = is.read(buf)) > 0) {
-					obj.write(buf, 0, bytesRead);
+				if (pgcon == null) {
+					throw new Exception("Invalid Delegating Connection");
 				}
 
-				obj.close();
+				Integer serial = file.getId();
+				if (serial == null) {
+					serial = getNextSerial(con, "digital_media_id_seq");
+					file.setId(serial);
+				}
 
-				String sql = "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
+				if (serial != 0) {
+					LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+					long oid = lobj.createLO();
 
-				PreparedStatement pst = con.prepareStatement(sql);
-				pst.setInt(1, serial);
-				pst.setString(2, file.getName());
-				pst.setLong(3, oid);
-				pst.setString(4, file.getContentType());
-				pst.setLong(5, file.getSize());
+					LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
 
-				pst.executeUpdate();
-				pst.close();
-				file.close();
+					byte buf[] = new byte[4096];
+					int bytesRead = 0;
+					while ((bytesRead = is.read(buf)) > 0) {
+						obj.write(buf, 0, bytesRead);
+					}
 
-				this.commit(con);
-			} else {
-				this.rollback(con);
+					obj.close();
+
+					String sql = "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
+
+					PreparedStatement pst = con.prepareStatement(sql);
+					pst.setInt(1, serial);
+					pst.setString(2, file.getName());
+					pst.setLong(3, oid);
+					pst.setString(4, file.getContentType());
+					pst.setLong(5, file.getSize());
+
+					pst.executeUpdate();
+					pst.close();
+					file.close();
+
+					this.commit(con);
+				} else {
+					this.rollback(con);
+				}
+				return serial;
 			}
-			return serial;
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+		});
 	}
 
 
+	@Override
 	public final long importFile(File file) {
 		Connection con = null;
 
-		try (
-				InputStream is = new FileInputStream(file)
-				) {
+		try (InputStream is = new FileInputStream(file)) {
 			con = this.getConnection();
 			con.setAutoCommit(false);
 
@@ -165,6 +154,7 @@ public class DigitalMediaDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public final DatabaseFile load(int id, String name) {
 		Connection con = null;
 		DatabaseFile file = null;
@@ -215,6 +205,7 @@ public class DigitalMediaDAO extends LegacyAbstractDAO {
 		return file;
 	}
 
+	@Override
 	public boolean delete(int id) {
 		Connection con = null;
 		try {
@@ -238,6 +229,7 @@ public class DigitalMediaDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public List<DigitalMediaDTO> list() {
 		Connection con = null;
 		List<DigitalMediaDTO> list = new ArrayList<DigitalMediaDTO>();

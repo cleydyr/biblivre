@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.configurations.Configurations;
@@ -38,6 +39,11 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.Pair;
 
 public class Handler extends AbstractHandler {
+	private BackupBO backupBO;
+
+	public Handler() {
+		backupBO = BiblivreInitializer.getBackupBO();
+	}
 
 	public void prepare(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -50,8 +56,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		BackupBO bo = BackupBO.getInstance(schema);
-		BackupScope backupScope = bo.getBackupScope();
+		BackupScope backupScope = backupBO.getBackupScope();
 
 		LinkedList<String> list = new LinkedList<String>();
 		list.add(Constants.GLOBAL_SCHEMA);
@@ -80,7 +85,7 @@ public class Handler extends AbstractHandler {
 			map.put(s, new Pair<String, String>(title, subtitle));
 		}
 
-		BackupDTO dto = bo.prepare(map, backupType, backupScope);
+		BackupDTO dto = backupBO.prepare(map, backupType, backupScope);
 
 		try {
 			this.json.put("success", true);
@@ -93,8 +98,7 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		BackupBO bo = BackupBO.getInstance(schema);
-		BackupDTO dto = bo.get(id);
+		BackupDTO dto = backupBO.get(id);
 
 		if (dto == null) {
 			this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
@@ -102,7 +106,7 @@ public class Handler extends AbstractHandler {
 		}
 
 		try {
-			bo.backup(dto);
+			backupBO.backup(dto);
 			request.setSessionAttribute(schema, "system_warning_backup", false);
 		}
 		catch (Exception e) {
@@ -112,11 +116,9 @@ public class Handler extends AbstractHandler {
 
 	// http://localhost:8080/Biblivre5/?controller=download&module=administration.backup&action=download&id=1
 	public void download(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		final BackupBO bo = BackupBO.getInstance(schema);
-		final BackupDTO dto = bo.get(id);
+		final BackupDTO dto = backupBO.get(id);
 
 		if (dto == null) {
 			this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
@@ -127,16 +129,14 @@ public class Handler extends AbstractHandler {
 
 		this.setFile(diskFile);
 
-		this.setCallback(() -> finishDownload(bo, dto));
+		this.setCallback(() -> finishDownload(backupBO, dto));
 	}
 
 
 	public void progress(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
 
-		final BackupBO bo = BackupBO.getInstance(schema);
-		final BackupDTO dto = bo.get(id);
+		final BackupDTO dto = backupBO.get(id);
 
 		if (dto == null) {
 			this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
@@ -153,14 +153,10 @@ public class Handler extends AbstractHandler {
 
 	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
 	public void list(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
-		BackupBO bo = BackupBO.getInstance(schema);
-
 		try {
 			this.json.put("success", true);
 
-			for (BackupDTO dto : bo.list()) {
+			for (BackupDTO dto : backupBO.list()) {
 				this.json.append("backups", dto.toJSONObject());
 			}
 		} catch (JSONException e) {}

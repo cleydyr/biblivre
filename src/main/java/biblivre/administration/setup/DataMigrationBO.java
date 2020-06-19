@@ -67,6 +67,7 @@ public class DataMigrationBO extends AbstractBO {
 	private OrderBO orderBO;
 	private AccessCardBO accessCardBO;
 	private AccessControlBO accessControlBO;
+	private DigitalMediaBO digitalMediaBO;
 
 	@Override
 	public String getSchema() {
@@ -363,9 +364,8 @@ public class DataMigrationBO extends AbstractBO {
 	}
 
 	private boolean saveDigitalMedia(List<MemoryFile> dtoList) {
-		DigitalMediaBO bo = DigitalMediaBO.getInstance(this.getSchema());
 		for (MemoryFile file : dtoList) {
-			bo.save(file);
+			digitalMediaBO.save(file);
 		}
 		return true;
 	}

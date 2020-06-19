@@ -45,6 +45,8 @@ import biblivre.digitalmedia.DigitalMediaBO;
 
 public class Handler extends AbstractHandler {
 
+	private DigitalMediaBO digitalMediaBO;
+
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
 		Integer id = request.getInteger("id");
@@ -150,7 +152,7 @@ public class Handler extends AbstractHandler {
 				file.setInputStream(new ByteArrayInputStream(arr));
 				file.setSize(arr.length);
 
-				String photoId = mediaHandler.uploadHelper(schema, file);
+				String photoId = mediaHandler.uploadHelper(file);
 				String oldPhotoId = user.getPhotoId();
 
 				if (StringUtils.isNotBlank(photoId)) {
@@ -163,8 +165,7 @@ public class Handler extends AbstractHandler {
 						if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
 							// Try to remove the file from Biblivre DB
 
-							DigitalMediaBO dmbo = DigitalMediaBO.getInstance(schema);
-							dmbo.delete(Integer.valueOf(splitId[0]), splitId[1]);
+							digitalMediaBO.delete(Integer.valueOf(splitId[0]), splitId[1]);
 						}
 					}
 				}

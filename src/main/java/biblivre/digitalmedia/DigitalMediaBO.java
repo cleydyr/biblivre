@@ -24,16 +24,10 @@ import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 
 public class DigitalMediaBO extends AbstractBO {
-	protected DigitalMediaDAO dao;
+	protected IDigitalMediaDAO dao;
 
-	public static DigitalMediaBO getInstance(String schema) {
-		DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = DigitalMediaDAO.getInstance(schema);
-		}
-
-		return bo;
+	public DigitalMediaBO(IDigitalMediaDAO dao) {
+		this.dao = dao;
 	}
 
 	public Integer save(MemoryFile file) {

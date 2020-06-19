@@ -29,8 +29,12 @@ import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDAO;
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDAO;
+import biblivre.administration.backup.BackupBO;
+import biblivre.administration.backup.BackupDAO;
+import biblivre.administration.backup.RestoreBO;
 import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.accesscontrol.AccessControlDAO;
+import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.z3950.server.Z3950ServerBO;
 
 public class BiblivreInitializer {
@@ -40,7 +44,9 @@ public class BiblivreInitializer {
 	private static OrderBO orderBO;
 	private static AccessCardBO accessCardBO;
 	private static AccessControlBO accessControlBO;
-
+	private static BackupBO backupBO;
+	private static RestoreBO restoreBO;
+	
 	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
 
@@ -128,5 +134,23 @@ public class BiblivreInitializer {
 		}
 
 		return accessControlBO;
+	}
+
+	public static BackupBO getBackupBO() {
+		if (backupBO == null) {
+			backupBO = new BackupBO(AbstractDAO.getInstance(BackupDAO.class));
+		}
+
+		return backupBO;
+	}
+
+	public static RestoreBO getRestoreBO() {
+		if (restoreBO == null) {
+			restoreBO = new RestoreBO(
+				AbstractDAO.getInstance(DigitalMediaDAO.class),
+				getBackupBO());
+		}
+
+		return restoreBO;
 	}
 }

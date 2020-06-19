@@ -59,6 +59,7 @@ import biblivre.marc.MarcUtils;
 public abstract class RecordBO extends AbstractBO {
 	protected RecordDAO rdao;
 	protected SearchDAO sdao;
+	private DigitalMediaBO digitalMediaBO;
 
 	public static final int FULL = 1 << 0;
 	public static final int MARC_INFO = 1 << 1;
@@ -326,8 +327,7 @@ public abstract class RecordBO extends AbstractBO {
 				}
 
 				// Try to remove the file from Biblivre DB
-				DigitalMediaBO dmbo = DigitalMediaBO.getInstance(this.getSchema());
-				dmbo.delete(Integer.valueOf(fileId), fileName);
+				digitalMediaBO.delete(Integer.valueOf(fileId), fileName);
 			}
 		} catch (Exception e) {
 		}

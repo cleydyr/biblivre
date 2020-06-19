@@ -29,10 +29,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.AbstractDAO;
 import biblivre.core.NullableSQLObject;
 
-public class BackupDAO extends LegacyAbstractDAO {
+public class BackupDAO extends AbstractDAO implements IBackupDAO {
 	private static final String _SAVE_UPDATE_SQL =
 		"UPDATE backups " +
 		"SET path = ?, downloaded = ?, current_step = ? " +
@@ -59,22 +59,21 @@ public class BackupDAO extends LegacyAbstractDAO {
 		"(id, path, schemas, type, scope, downloaded, steps, current_step) " +
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-	public static BackupDAO getInstance(String schema) {
-		return (BackupDAO) LegacyAbstractDAO.getInstance(BackupDAO.class, schema);
-	}
-
+	@Override
 	public boolean save(BackupDTO dto) {
 		if (dto == null || dto.getType() == null) {
 			return false;
 		}
 
 		if (dto.getId() == null) {
-			return executeUpdate(
-				_INSERT_SQL, getNextSerial("backups_id_seq"),
-				_getNullableAbsolutPath(dto),
-				dto.getSchemasString(), dto.getType().toString(),
-				dto.getBackupScope().toString(), dto.isDownloaded(),
-				dto.getSteps(), dto.getCurrentStep());
+			return onTransactionContext(con -> {
+				return executeUpdate(
+					_INSERT_SQL, getNextSerial(con, "backups_id_seq"),
+					_getNullableAbsolutPath(dto),
+					dto.getSchemasString(), dto.getType().toString(),
+					dto.getBackupScope().toString(), dto.isDownloaded(),
+					dto.getSteps(), dto.getCurrentStep());
+			});
 		}
 		else {
 			return executeUpdate(
@@ -83,6 +82,7 @@ public class BackupDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public BackupDTO get(Integer id) {
 		if (id == null) {
 			return null;
@@ -92,6 +92,7 @@ public class BackupDAO extends LegacyAbstractDAO {
 			this::populateDTO, _GET_SQL, id);
 	}
 
+	@Override
 	public Set<String> listDatabaseSchemas() {
 		List<String> list =
 			listWith(rs -> rs.getString("schema_name"), _LIST_SCHEMAS_SQL);
@@ -99,10 +100,12 @@ public class BackupDAO extends LegacyAbstractDAO {
 		return new HashSet<>(list);
 	}
 
+	@Override
 	public List<BackupDTO> list() {
 		return this.list(0);
 	}
 
+	@Override
 	public List<BackupDTO> list(int limit) {
 		List<Object> parameters;
 

@@ -29,6 +29,7 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
+import biblivre.administration.backup.BackupBO;
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
@@ -39,6 +40,7 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.utils.Constants;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 
@@ -46,10 +48,12 @@ public class Handler extends AbstractHandler {
 
 	private SupplierBO supplierBO;
 	private RequestBO requestBO;
+	private BackupBO backupBO;
 
 	public Handler() {
 		supplierBO = BiblivreInitializer.getSupplierBO();
 		requestBO = BiblivreInitializer.getRequestBO();
+		backupBO = BiblivreInitializer.getBackupBO();
 	}
 
 	public void ping(ExtendedRequest request, ExtendedResponse response) {
@@ -244,6 +248,7 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
+		request.setAttribute(Constants.CONFIG_BACKUP_PATH, backupBO.getBackupPath());
 		this.jspURL = "/jsp/administration/configurations.jsp";
 		return;
 	}
@@ -294,11 +299,13 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void multiSchemaBackup(ExtendedRequest request, ExtendedResponse response) {
+		request.setAttribute(Constants.CONFIG_BACKUP_PATH, backupBO.getBackupPath());
 		this.jspURL = "/jsp/multi_schema/backup.jsp";
 		return;
 	}
 
 	public void multiSchemaConfigurations(ExtendedRequest request, ExtendedResponse response) {
+		request.setAttribute(Constants.CONFIG_BACKUP_PATH, backupBO.getBackupPath());
 		this.jspURL = "/jsp/multi_schema/configurations.jsp";
 		return;
 	}

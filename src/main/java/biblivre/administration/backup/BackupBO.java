@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -38,6 +39,8 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
 
 import biblivre.core.AbstractBO;
+import biblivre.core.Context;
+import biblivre.core.ContextThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.schemas.Schemas;
@@ -48,20 +51,15 @@ import biblivre.core.utils.Pair;
 import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
 import biblivre.core.utils.TextUtils;
-import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
+import biblivre.digitalmedia.IDigitalMediaDAO;
 
 public class BackupBO extends AbstractBO {
-	private BackupDAO dao;
+	private IBackupDAO dao;
+	private IDigitalMediaDAO digitalMediaDAO;
 
-	public static BackupBO getInstance(String schema) {
-		BackupBO bo = AbstractBO.getInstance(BackupBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = BackupDAO.getInstance(schema);
-		}
-
-		return bo;
+	public BackupBO(IBackupDAO dao) {
+		this.dao = dao;
 	}
 
 	public BackupScope getBackupScope() {
@@ -236,14 +234,22 @@ public class BackupBO extends AbstractBO {
 		return FileIOUtils.getWritablePath(path);
 	}
 
+	public Set<String> listDatabaseSchemas() {
+		return dao.listDatabaseSchemas();
+	}
+
 	private boolean exportDigitalMedia(String schema, File path) {
 		OutputStream writer = null;
-		DigitalMediaDAO dao = DigitalMediaDAO.getInstance(schema);
-		List<DigitalMediaDTO> list = dao.list();
+
+		Context context = ContextThreadLocal.getContext();
+
+		ContextThreadLocal.push(new Context(schema));
+
+		List<DigitalMediaDTO> list = digitalMediaDAO.list();
 
 		try {
 			for (DigitalMediaDTO dto : list) {
-				DatabaseFile file = dao.load(dto.getId(), dto.getName());
+				DatabaseFile file = digitalMediaDAO.load(dto.getId(), dto.getName());
 				File destination = new File(path, dto.getId() + "_" + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
 				writer = new FileOutputStream(destination);
 
@@ -257,6 +263,8 @@ public class BackupBO extends AbstractBO {
 			e.printStackTrace();
 			return false;
 		} finally {
+			ContextThreadLocal.push(context);
+
 			IOUtils.closeQuietly(writer);
 		}
 	}

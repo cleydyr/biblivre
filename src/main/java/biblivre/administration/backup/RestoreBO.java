@@ -52,30 +52,19 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.Pair;
-import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.IDigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
-	private BackupDAO dao;
-	private DigitalMediaDAO digitalMediaDAO;
+	private IDigitalMediaDAO digitalMediaDAO;
+	private BackupBO backupBO;
 
-	public static RestoreBO getInstance(String schema) {
-		RestoreBO bo = AbstractBO.getInstance(RestoreBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = BackupDAO.getInstance(schema);
-		}
-
-		if (bo.digitalMediaDAO == null) {
-			bo.digitalMediaDAO = DigitalMediaDAO.getInstance(schema);
-		}
-
-		return bo;
+	public RestoreBO(IDigitalMediaDAO digitalMediaDAO, BackupBO backupBO) {
+		this.digitalMediaDAO = digitalMediaDAO;
+		this.backupBO = backupBO;
 	}
 
 	public LinkedList<RestoreDTO> list() {
 		LinkedList<RestoreDTO> list = new LinkedList<RestoreDTO>();
-
-		BackupBO backupBO = BackupBO.getInstance(this.getSchema());
 
 		File path = backupBO.getBackupDestination();
 
@@ -202,7 +191,7 @@ public class RestoreBO extends AbstractBO {
 		String extension = (dto.getBackup().getPath().endsWith("b5bz")) ? "b5b" : "b4b";
 
 		long date = new Date().getTime();
-		Set<String> databaseSchemas = this.dao.listDatabaseSchemas();
+		Set<String> databaseSchemas = backupBO.listDatabaseSchemas();
 
 		Map<String, String> deleteSchemas = new HashMap<>();
 		Map<String, String> preRenameSchemas = new HashMap<>();
@@ -549,8 +538,6 @@ public class RestoreBO extends AbstractBO {
 
 
 	public RestoreDTO getRestoreDTO(String filename) {
-		BackupBO backupBO = BackupBO.getInstance(this.getSchema());
-
 		File path = backupBO.getBackupDestination();
 
 		if (path == null) {
@@ -648,15 +635,13 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		Pattern filePattern = Pattern.compile("^(\\d+)_(.*)$");
-		DigitalMediaDAO dao = DigitalMediaDAO.getInstance(Constants.GLOBAL_SCHEMA);
-
 		for (File file : path.listFiles()) {
 			Matcher fileMatcher = filePattern.matcher(file.getName());
 
 			if (fileMatcher.find()) {
 				String mediaId = fileMatcher.group(1);
 
-				long oid = dao.importFile(file);
+				long oid = digitalMediaDAO.importFile(file);
 
 				bw.write("UPDATE digital_media SET blob = '" + oid + "' WHERE id = '" + mediaId + "';\n");
 			}

@@ -6,7 +6,6 @@
 <%@page import="biblivre.core.translations.LanguageDTO"%>
 <%@page import="java.io.File"%>
 <%@page import="biblivre.core.utils.DatabaseUtils"%>
-<%@page import="biblivre.administration.backup.BackupBO"%>
 <%@page import="biblivre.core.translations.Languages"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
@@ -434,7 +433,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BACKUP_PATH;
-				value = BackupBO.getInstance(schema).getBackupPath();
+				value = (String) request.getAttribute(Constants.CONFIG_BACKUP_PATH);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 

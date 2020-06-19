@@ -7,6 +7,10 @@ public class ContextThreadLocal {
 		THREADLOCAL = ThreadLocal.withInitial(() -> ctx);
 	}
 
+	public static void push(Context cxt) {
+		THREADLOCAL.set(cxt);
+	}
+
 	public static Context getContext() {
 		return THREADLOCAL.get();
 	}

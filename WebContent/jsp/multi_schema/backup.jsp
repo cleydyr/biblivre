@@ -2,7 +2,6 @@
 <%@page import="biblivre.core.configurations.Configurations"%>
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
 <%@page import="org.json.JSONObject"%>
-<%@page import="biblivre.administration.backup.BackupBO"%>
 <%@page import="biblivre.core.schemas.Schemas"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
@@ -114,7 +113,7 @@
 			<div class="restore">
 				<div class="found_backups">
 					<p><strong><i18n:text key="administration.setup.biblivre4restore.title_found_backups" /></strong></p>
-					<p><i18n:text key="multi_schema.select_restore.description_found_backups" param1="<%= BackupBO.getInstance(\"global\").getBackupPath() %>" /></p>
+					<p><i18n:text key="multi_schema.select_restore.description_found_backups" param1="<%= (String) request.getAttribute(Constants.CONFIG_BACKUP_PATH) %>" /></p>
 
 					<div id="found_backups_list" class="found_backups_list"></div>
 					<textarea id="found_backups_list_template" class="template"><!--

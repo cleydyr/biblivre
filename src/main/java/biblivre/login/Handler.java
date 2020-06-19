@@ -31,6 +31,7 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.backup.BackupDTO;
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.Updates;
@@ -43,6 +44,11 @@ import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.core.utils.TextUtils;
 
 public class Handler extends AbstractHandler {
+	private BackupBO backupBO;
+
+	public Handler() {
+		backupBO = BiblivreInitializer.getBackupBO();
+	}
 
 	public void login(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -90,8 +96,7 @@ public class Handler extends AbstractHandler {
 				if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_BACKUP)) {
 					boolean warningBackup = false;
 
-					BackupBO bbo = BackupBO.getInstance(schema);
-					BackupDTO lastBackup = bbo.getLastBackup();
+					BackupDTO lastBackup = backupBO.getLastBackup();
 
 					if (lastBackup == null) {
 						warningBackup = true;

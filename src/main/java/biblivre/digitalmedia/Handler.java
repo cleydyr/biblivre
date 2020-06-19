@@ -36,6 +36,7 @@ import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
 
 public class Handler extends AbstractHandler {
+	private DigitalMediaBO digitalMediaBO;
 
 	public void download(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -63,8 +64,6 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void upload(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-
 		MemoryFile file = request.getFile("file");
 
 		if (file == null) {
@@ -72,7 +71,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		String encodedId = this.uploadHelper(schema, file);
+		String encodedId = this.uploadHelper(file);
 
 		if (StringUtils.isNotBlank(encodedId)) {
 			try {
@@ -83,10 +82,8 @@ public class Handler extends AbstractHandler {
 		}
 	}
 
-	public String uploadHelper(String schema, MemoryFile file) {
-		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
-
-		Integer serial = bo.save(file);
+	public String uploadHelper(MemoryFile file) {
+		Integer serial = digitalMediaBO.save(file);
 
 		if (serial != null && serial != 0) {
 			String id = serial + ":" + file.getName();
@@ -111,14 +108,12 @@ public class Handler extends AbstractHandler {
 		} catch (Exception e) {
 		}
 
-		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
-
 		if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
 			this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
 			return null;
 		}
 
-		DatabaseFile file = bo.load(Integer.parseInt(fileId), fileName);
+		DatabaseFile file = digitalMediaBO.load(Integer.parseInt(fileId), fileName);
 		return file;
 	}
 
