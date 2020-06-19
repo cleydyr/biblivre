@@ -67,8 +67,12 @@ public class BackupDAO extends AbstractDAO implements IBackupDAO {
 
 		if (dto.getId() == null) {
 			return onTransactionContext(con -> {
+				Integer id = getNextSerial(con, "backups_id_seq");
+
+				dto.setId(id);
+
 				return executeUpdate(
-					_INSERT_SQL, getNextSerial(con, "backups_id_seq"),
+					_INSERT_SQL, id,
 					_getNullableAbsolutPath(dto),
 					dto.getSchemasString(), dto.getType().toString(),
 					dto.getBackupScope().toString(), dto.isDownloaded(),
