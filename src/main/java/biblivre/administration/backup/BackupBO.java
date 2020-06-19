@@ -58,8 +58,9 @@ public class BackupBO extends AbstractBO {
 	private IBackupDAO dao;
 	private IDigitalMediaDAO digitalMediaDAO;
 
-	public BackupBO(IBackupDAO dao) {
+	public BackupBO(IBackupDAO dao, IDigitalMediaDAO digitalMediaDAO) {
 		this.dao = dao;
+		this.digitalMediaDAO = digitalMediaDAO;
 	}
 
 	public BackupScope getBackupScope() {

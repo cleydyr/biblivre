@@ -138,7 +138,9 @@ public class BiblivreInitializer {
 
 	public static BackupBO getBackupBO() {
 		if (backupBO == null) {
-			backupBO = new BackupBO(AbstractDAO.getInstance(BackupDAO.class));
+			backupBO = new BackupBO(
+				AbstractDAO.getInstance(BackupDAO.class),
+				AbstractDAO.getInstance(DigitalMediaDAO.class));
 		}
 
 		return backupBO;
