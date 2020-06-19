@@ -64,7 +64,11 @@ public class BackupBO extends AbstractBO {
 	}
 
 	public BackupScope getBackupScope() {
-		if (this.isGlobalSchema()) {
+		Context context = ContextThreadLocal.getContext();
+
+		String schema = context.getSchema();
+
+		if (schema.equals(Constants.GLOBAL_SCHEMA)) {
 			return BackupScope.MULTI_SCHEMA;
 		} else if (Schemas.isMultipleSchemasEnabled()) {
 			return BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;

@@ -62,9 +62,4 @@ public abstract class AbstractBO {
 	public String getSchema() {
 		return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
 	}
-
-	public boolean isGlobalSchema() {
-		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-	}
-
 }
