@@ -106,7 +106,10 @@ public class Handler extends AbstractHandler {
 		}
 
 		try {
-			backupBO.backup(dto);
+			if (!backupBO.backup(dto)) {
+				this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
+			}
+
 			request.setSessionAttribute(schema, "system_warning_backup", false);
 		}
 		catch (Exception e) {

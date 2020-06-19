@@ -37,6 +37,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.AbstractBO;
 import biblivre.core.Context;
@@ -57,6 +59,8 @@ import biblivre.digitalmedia.IDigitalMediaDAO;
 public class BackupBO extends AbstractBO {
 	private IBackupDAO dao;
 	private IDigitalMediaDAO digitalMediaDAO;
+
+	private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 
 	public BackupBO(IBackupDAO dao, IDigitalMediaDAO digitalMediaDAO) {
 		this.dao = dao;
@@ -108,19 +112,23 @@ public class BackupBO extends AbstractBO {
 		}
 	}
 
-	public void backup(BackupDTO dto) throws IOException {
-		this.createBackup(dto);
-
-		if (dto.getBackup() != null) {
-			this.move(dto);
+	public boolean backup(BackupDTO dto) throws IOException {
+		if (!this.createBackup(dto)) {
+			return false;
 		}
+
+		if (dto.getBackup() != null && !this.move(dto)) {
+			return false;
+		}
+
+		return true;
 	}
 
-	public void createBackup(BackupDTO dto) throws IOException {
+	public boolean createBackup(BackupDTO dto) throws IOException {
 		File pgdump = DatabaseUtils.getPgDump(this.getSchema());
 
 		if (pgdump == null) {
-			return;
+			return false;
 		}
 
 		File tmpDir = FileIOUtils.createTempDir();
@@ -137,14 +145,20 @@ public class BackupBO extends AbstractBO {
 
 		for (String schema : schemas.keySet()) {
 			if (type == BackupType.FULL || type == BackupType.EXCLUDE_DIGITAL_MEDIA) {
-				dumpSchema(dto, tmpDir, schema);
+				if (!dumpSchema(dto, tmpDir, schema)) {
+					return false;
+				}
 
-				dumpData(dto, tmpDir, schema);
+				if (!dumpData(dto, tmpDir, schema)) {
+					return false;
+				}
 			}
 
 			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
 				if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
-					dumpMedia(dto, tmpDir, schema);
+					if (!dumpMedia(dto, tmpDir, schema)) {
+						return false;
+					}
 				}
 			}
 		}
@@ -155,9 +169,14 @@ public class BackupBO extends AbstractBO {
 		FileUtils.deleteQuietly(tmpDir);
 
 		dto.increaseCurrentStep();
-		this.save(dto);
+
+		if (!this.save(dto)) {
+			return false;
+		}
 
 		dto.setBackup(tmpZip);
+
+		return true;
 	}
 
 	public BackupDTO get(Integer id) {
@@ -289,18 +308,16 @@ public class BackupBO extends AbstractBO {
 			while ((line = br.readLine()) != null) {
 				//There was a system.out.println here for the 'line' var,
 				//with a FIX_ME tag.  So I changed it to logger.debug().
-				if (this.logger.isDebugEnabled()) {
-					this.logger.debug(line);
-				}
+				logger.debug(line);
 			}
 
 			p.waitFor();
 
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(br);
 		}
@@ -308,11 +325,11 @@ public class BackupBO extends AbstractBO {
 		return false;
 	}
 
-	private void dumpDatabase(PgDumpCommand command) {
-		this.dumpDatabase(new ProcessBuilder(command.getCommands()));
+	private boolean dumpDatabase(PgDumpCommand command) {
+		return this.dumpDatabase(new ProcessBuilder(command.getCommands()));
 	}
 
-	private void dump(BackupDTO dto, String schema, File backupFile,
+	private boolean dump(BackupDTO dto, String schema, File backupFile,
 			boolean isSchemaOnly, boolean isDataOnly,
 			String excludeTablePattern, String includeTablePattern) {
 
@@ -323,38 +340,39 @@ public class BackupBO extends AbstractBO {
 
 		Format defaultFormat = Format.PLAIN;
 
-		this.dumpDatabase(new PgDumpCommand(pgdump, defaultAddress,
-				Constants.DEFAULT_CHARSET, defaultFormat, schema, backupFile,
-				isSchemaOnly , isDataOnly , excludeTablePattern,
-				includeTablePattern ));
+		boolean successOnDump = this.dumpDatabase(
+			new PgDumpCommand(pgdump, defaultAddress, Constants.DEFAULT_CHARSET,
+				defaultFormat, schema, backupFile, isSchemaOnly, isDataOnly,
+				excludeTablePattern, includeTablePattern));
 
 		dto.increaseCurrentStep();
-		this.save(dto);
+
+		return this.save(dto) && successOnDump;
 	}
 
-	private void dumpData(BackupDTO dto, File tmpDir, String schema) {
+	private boolean dumpData(BackupDTO dto, File tmpDir, String schema) {
 		File dataBackup = new File(tmpDir, schema + ".data.b5b");
 		boolean isSchemaOnly = false;
 		boolean isDataOnly = true;
 		String excludeTablePattern = schema + ".digital_media";
 		String includeTablePattern = null;
 
-		dump(dto, schema, dataBackup, isSchemaOnly, isDataOnly,
+		return dump(dto, schema, dataBackup, isSchemaOnly, isDataOnly,
 				excludeTablePattern,	includeTablePattern);
 	}
 
-	private void dumpSchema(BackupDTO dto, File tmpDir, String schema) {
+	private boolean dumpSchema(BackupDTO dto, File tmpDir, String schema) {
 		File schemaBackup = new File(tmpDir, schema + ".schema.b5b");
 		boolean isSchemaOnly = true;
 		boolean isDataOnly = false;
 		String excludeTablePattern = null;
 		String includeTablePattern = null;
 
-		dump(dto, schema, schemaBackup, isSchemaOnly, isDataOnly,
+		return dump(dto, schema, schemaBackup, isSchemaOnly, isDataOnly,
 				excludeTablePattern, includeTablePattern);
 	}
 
-	private void dumpMedia(BackupDTO dto, File tmpDir, String schema)
+	private boolean dumpMedia(BackupDTO dto, File tmpDir, String schema)
 			throws IOException {
 
 		File mediaBackup = new File(tmpDir, schema + ".media.b5b");
@@ -363,7 +381,8 @@ public class BackupBO extends AbstractBO {
 		String excludeTablePattern = null;
 		String includeTablePattern = schema + ".digital_media";
 
-		dump(dto, schema, mediaBackup, isSchemaOnly, isDataOnly,
+		boolean successOnDump =
+			dump(dto, schema, mediaBackup, isSchemaOnly, isDataOnly,
 				excludeTablePattern, includeTablePattern);
 
 		File schemaBackup = new File(tmpDir, schema);
@@ -377,6 +396,6 @@ public class BackupBO extends AbstractBO {
 
 		this.exportDigitalMedia(schema, schemaBackup);
 
-		this.save(dto);
+		return this.save(dto) && successOnDump;
 	}
 }
