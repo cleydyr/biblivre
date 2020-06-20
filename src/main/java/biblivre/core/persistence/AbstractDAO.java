@@ -322,8 +322,6 @@ public abstract class AbstractDAO {
 		throws DAOException {
 
 		return executeQuery(pst -> {
-			PreparedStatementUtil.setAllParameters(pst, parameters);
-
 			try (ResultSet rs = pst.executeQuery()) {
 				if (rs.next()) {
 					return f.apply(rs);
