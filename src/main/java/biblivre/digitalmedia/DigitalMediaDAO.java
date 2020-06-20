@@ -169,17 +169,15 @@ public class DigitalMediaDAO extends AbstractDAO implements IDigitalMediaDAO {
 			return fetchOne(rs -> {
 				DatabaseFile file = null;
 
-				if (rs.next()) {
-					long oid = rs.getLong("blob");
-					LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
+				long oid = rs.getLong("blob");
+				LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
 
-					file = new DatabaseFile(con, obj);
+				file = new DatabaseFile(con, obj);
 
-					file.setName(rs.getString("name"));
-					file.setContentType(rs.getString("content_type"));
-					file.setLastModified(rs.getTimestamp("created").getTime());
-					file.setSize(rs.getLong("size"));
-				}
+				file.setName(rs.getString("name"));
+				file.setContentType(rs.getString("content_type"));
+				file.setLastModified(rs.getTimestamp("created").getTime());
+				file.setSize(rs.getLong("size"));
 
 				return file;
 			}, _LOAD_SQL, id, name);
