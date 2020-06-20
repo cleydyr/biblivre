@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -91,7 +92,7 @@ public class IndexingDAO extends LegacyAbstractDAO {
 
 	private static final String _INSERT_INDEXES_SQL_TPL =
 		"INSERT INTO %s_idx_fields "
-		+ "(record_id, indexing_group_id, word, datafield) "
+		+ "(record_id, indexing_group_id, datafield, word) "
 		+ "VALUES (?, ?, ?, ?)";
 
 	private static final String _COUNT_INDEXED_SQL_TPL =
@@ -251,9 +252,9 @@ public class IndexingDAO extends LegacyAbstractDAO {
 	private Object[] _prepareParameters(
 		int indexingGroupId, List<String> terms) {
 
-		List<String> parameters = new ArrayList<>();
+		List<Object> parameters = new ArrayList<>();
 
-		parameters.add(String.valueOf(indexingGroupId));
+		parameters.add(indexingGroupId);
 
 		parameters.addAll(terms);
 
@@ -264,11 +265,17 @@ public class IndexingDAO extends LegacyAbstractDAO {
 		Collection<IndexingDTO> indexes) {
 
 		return indexes.stream()
-			.flatMap(index -> index.getWords().entrySet().stream()
-				.map(
-					entry -> new Object[] {
-						index.getRecordId(), index.getIndexingGroupId(),
-						entry.getKey(), entry.getValue()
+			.flatMap(index ->
+				index.getWords().entrySet().stream()
+					.flatMap(entry -> {
+						Stream<String> stream = entry.getValue().stream();
+
+						return stream.map(word ->
+							new Object[] {
+								index.getRecordId(), index.getIndexingGroupId(),
+								entry.getKey(), word
+							}
+						);
 					}
 				)
 			)
