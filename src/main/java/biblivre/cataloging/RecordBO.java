@@ -45,6 +45,7 @@ import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.configurations.Configurations;
@@ -59,7 +60,9 @@ import biblivre.marc.MarcUtils;
 public abstract class RecordBO extends AbstractBO {
 	protected RecordDAO rdao;
 	protected SearchDAO sdao;
-	private DigitalMediaBO digitalMediaBO;
+
+	private DigitalMediaBO digitalMediaBO =
+		BiblivreInitializer.getDigitalMediaBO();
 
 	public static final int FULL = 1 << 0;
 	public static final int MARC_INFO = 1 << 1;

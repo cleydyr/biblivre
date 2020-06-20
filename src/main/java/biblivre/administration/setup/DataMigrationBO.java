@@ -67,7 +67,11 @@ public class DataMigrationBO extends AbstractBO {
 	private OrderBO orderBO;
 	private AccessCardBO accessCardBO;
 	private AccessControlBO accessControlBO;
-	private DigitalMediaBO digitalMediaBO;
+
+	private DigitalMediaBO digitalMediaBO =
+		BiblivreInitializer.getDigitalMediaBO();
+
+	private LendingBO lendingBO = BiblivreInitializer.getLendingBO();
 
 	@Override
 	public String getSchema() {
@@ -345,7 +349,7 @@ public class DataMigrationBO extends AbstractBO {
 				return accessControlBO.saveFromBiblivre3(dtoList);
 
 			case LENDINGS:
-				return LendingBO.getInstance(schema).saveFromBiblivre3(dtoList);
+				return lendingBO.saveFromBiblivre3(dtoList);
 
 			case LENDING_FINE:
 				return LendingFineBO.getInstance(schema).saveFromBiblivre3(dtoList);

@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
@@ -36,7 +37,8 @@ import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
 
 public class Handler extends AbstractHandler {
-	private DigitalMediaBO digitalMediaBO;
+	private DigitalMediaBO digitalMediaBO =
+		BiblivreInitializer.getDigitalMediaBO();
 
 	public void download(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();

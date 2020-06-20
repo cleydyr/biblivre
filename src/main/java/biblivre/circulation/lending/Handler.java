@@ -40,6 +40,7 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -50,6 +51,11 @@ import biblivre.core.utils.Constants;
 import freemarker.template.TemplateException;
 
 public class Handler extends AbstractHandler {
+	private LendingBO lendingBO;
+
+	public Handler() {
+		lendingBO = BiblivreInitializer.getLendingBO();
+	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -79,8 +85,7 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		LendingBO lbo = LendingBO.getInstance(schema);
-		DTOCollection<LendingInfoDTO> lendingInfo = lbo.populateLendingInfoByHolding(holdingList);
+		DTOCollection<LendingInfoDTO> lendingInfo = lendingBO.populateLendingInfoByHolding(holdingList);
 
 		try {
 			this.json.put("search", lendingInfo.toJSONObject());
@@ -116,7 +121,6 @@ public class Handler extends AbstractHandler {
 	}
 
 	private LendingListDTO populateLendingList(String schema, UserDTO user, boolean history) {
-		LendingBO lbo = LendingBO.getInstance(schema);
 		HoldingBO hbo = HoldingBO.getInstance(schema);
 		BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
 		LendingFineBO lfbo = LendingFineBO.getInstance(schema);
@@ -127,9 +131,9 @@ public class Handler extends AbstractHandler {
 		lendingList.setUser(user);
 		lendingList.setId(user.getId());
 
-		List<LendingDTO> lendings = lbo.listUserLendings(user);
+		List<LendingDTO> lendings = lendingBO.listUserLendings(user);
 		if (history) {
-			lendings.addAll(lbo.listHistory(user));
+			lendings.addAll(lendingBO.listHistory(user));
 		}
 
 		List<LendingInfoDTO> infos = new LinkedList<LendingInfoDTO>();
@@ -178,15 +182,14 @@ public class Handler extends AbstractHandler {
 		UserBO userBo = UserBO.getInstance(schema);
 		UserDTO user = userBo.get(userId);
 
-		LendingBO lendingBo = LendingBO.getInstance(schema);
-		boolean success = lendingBo.doLend(holding, user, request.getLoggedUserId());
+		boolean success = lendingBO.doLend(holding, user, request.getLoggedUserId());
 
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.lending.lend_success");
 
 			BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
 			BiblioRecordDTO biblio = (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
-			LendingDTO lending = lendingBo.getCurrentLending(holding);
+			LendingDTO lending = lendingBO.getCurrentLending(holding);
 			LendingInfoDTO info = new LendingInfoDTO();
 			info.setLending(lending);
 			info.setHolding(holding);
@@ -211,14 +214,13 @@ public class Handler extends AbstractHandler {
 		String schema = request.getSchema();
 		Integer lendingId = request.getInteger("id");
 
-		LendingBO lendingBo = LendingBO.getInstance(schema);
-		LendingDTO lending = lendingBo.get(lendingId);
+		LendingDTO lending = lendingBO.get(lendingId);
 
 		Integer holdingId = lending.getHoldingId();
 		Integer userId = lending.getUserId();
 
 		lending.setCreatedBy(request.getLoggedUserId());
-		boolean success = lendingBo.doRenew(lending);
+		boolean success = lendingBO.doRenew(lending);
 
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.lending.renew_success");
@@ -230,7 +232,7 @@ public class Handler extends AbstractHandler {
 			UserBO userBo = UserBO.getInstance(schema);
 			UserDTO user = userBo.get(userId);
 
-			LendingDTO newLending = lendingBo.getCurrentLending(holding);
+			LendingDTO newLending = lendingBO.getCurrentLending(holding);
 
 			LendingInfoDTO info = new LendingInfoDTO();
 			info.setLending(newLending);
@@ -253,14 +255,12 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void returnLending(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		Integer lendingId = request.getInteger("id");
 		Float fineValue = request.getFloat("fine");
 		boolean paid = request.getBoolean("paid");
 
-		LendingBO lendingBo = LendingBO.getInstance(schema);
-		LendingDTO lending = lendingBo.get(lendingId);
-		boolean success = lendingBo.doReturn(lending, fineValue, paid);
+		LendingDTO lending = lendingBO.get(lendingId);
+		boolean success = lendingBO.doReturn(lending, fineValue, paid);
 
 		if (success) {
 			this.setMessage(ActionResult.SUCCESS, "circulation.lending.return_success");
@@ -290,18 +290,17 @@ public class Handler extends AbstractHandler {
 
 	public void listAll(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
-		LendingBO bo = LendingBO.getInstance(schema);
 
 		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
 		Integer offset = request.getInteger("offset", 0);
 
 		DTOCollection<LendingInfoDTO> list = new DTOCollection<LendingInfoDTO>();
 
-		DTOCollection<LendingInfoDTO> lendingInfoList = bo.listLendings(offset, limit);
+		DTOCollection<LendingInfoDTO> lendingInfoList = lendingBO.listLendings(offset, limit);
 
 		list.addAll(lendingInfoList);
 
-		PagingDTO paging = new PagingDTO(bo.countLendings(), limit, offset);
+		PagingDTO paging = new PagingDTO(lendingBO.countLendings(), limit, offset);
 		list.setPaging(paging);
 
 		if (list.size() == 0) {
@@ -318,7 +317,6 @@ public class Handler extends AbstractHandler {
 	}
 
 	public void printReceipt(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
 		String idList = request.getString("id_list");
 
 		String[] idArray = idList.split(",");
@@ -331,11 +329,8 @@ public class Handler extends AbstractHandler {
 			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
 		}
 
-		LendingBO bo = LendingBO.getInstance(schema);
-
-
 		try {
-			String receipt = bo.generateReceipt(ids, request.getTranslationsMap());
+			String receipt = lendingBO.generateReceipt(ids, request.getTranslationsMap());
 
 			this.json.put("receipt", receipt);
 		} catch(JSONException e) {

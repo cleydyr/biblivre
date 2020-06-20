@@ -37,6 +37,7 @@ import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldDTO;
 import biblivre.circulation.user.UserFields;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.JavascriptCacheableList;
 
 import com.lowagie.text.Document;
@@ -51,6 +52,8 @@ public class UserReport extends BaseBiblivreReport {
 
 	public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
+	private LendingBO lendingBO = BiblivreInitializer.getLendingBO();
+
 	@Override
 	protected BaseReportDto getReportData(ReportsDTO dto) {
 		UserReportDto urdto = new UserReportDto();
@@ -60,12 +63,11 @@ public class UserReport extends BaseBiblivreReport {
 		UserDTO user = ubo.get(userId);
 		urdto.setUser(user);
 
-		LendingBO lbo = LendingBO.getInstance(this.getSchema());
 		LendingFineBO lfbo = LendingFineBO.getInstance(this.getSchema());
 
-		List<LendingDTO> history = lbo.listHistory(user);
+		List<LendingDTO> history = lendingBO.listHistory(user);
 
-		List<LendingInfoDTO> historyInfo = lbo.populateLendingInfo(history);
+		List<LendingInfoDTO> historyInfo = lendingBO.populateLendingInfo(history);
 		List<String[]> returnedLendings = new ArrayList<String[]>();
 		for (LendingInfoDTO lidto : historyInfo) {
 			String[] data = new String[3];
@@ -79,8 +81,8 @@ public class UserReport extends BaseBiblivreReport {
 		List<String[]> currentLendings = new ArrayList<String[]>();
 		List<String[]> lateLendings = new ArrayList<String[]>();
 
-		List<LendingDTO> currentLendingsList = lbo.listUserLendings(user);
-		List<LendingInfoDTO> currentLendingsInfo = lbo.populateLendingInfo(currentLendingsList);
+		List<LendingDTO> currentLendingsList = lendingBO.listUserLendings(user);
+		List<LendingInfoDTO> currentLendingsInfo = lendingBO.populateLendingInfo(currentLendingsList);
 		for (LendingInfoDTO lidto : currentLendingsInfo) {
 			String[] data = new String[3];
 			data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());

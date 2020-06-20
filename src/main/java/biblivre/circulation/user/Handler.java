@@ -34,6 +34,7 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.reservation.ReservationInfoDTO;
 import biblivre.circulation.reservation.ReservationListDTO;
 import biblivre.core.AbstractHandler;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -46,6 +47,13 @@ import biblivre.digitalmedia.DigitalMediaBO;
 public class Handler extends AbstractHandler {
 
 	private DigitalMediaBO digitalMediaBO;
+	private LendingBO lendingBO;
+
+	public Handler() {
+		digitalMediaBO = BiblivreInitializer.getDigitalMediaBO();
+
+		lendingBO = BiblivreInitializer.getLendingBO();
+	}
 
 	public void open(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -226,9 +234,8 @@ public class Handler extends AbstractHandler {
 		DTOCollection<?> data = null;
 
 		if (tab.equals("lendings")) {
-			LendingBO lbo = LendingBO.getInstance(schema);
-			DTOCollection<LendingInfoDTO> list = lbo.populateLendingInfo(lbo.listLendings(user), false);
-			list.addAll(lbo.populateLendingInfo(lbo.listHistory(user), false));
+			DTOCollection<LendingInfoDTO> list = lendingBO.populateLendingInfo(lendingBO.listLendings(user), false);
+			list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
 			data = list;
 		} else if (tab.equals("reservations")) {
 			ReservationBO rbo = ReservationBO.getInstance(schema);

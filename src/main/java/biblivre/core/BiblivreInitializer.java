@@ -34,7 +34,10 @@ import biblivre.administration.backup.BackupDAO;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.accesscontrol.AccessControlDAO;
+import biblivre.circulation.lending.LendingBO;
+import biblivre.circulation.lending.LendingDAO;
 import biblivre.core.persistence.AbstractDAO;
+import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.z3950.server.Z3950ServerBO;
 
@@ -47,6 +50,9 @@ public class BiblivreInitializer {
 	private static AccessControlBO accessControlBO;
 	private static BackupBO backupBO;
 	private static RestoreBO restoreBO;
+	private static LendingBO lendingBO;
+	private static DigitalMediaBO digitalMediaBO =
+		BiblivreInitializer.getDigitalMediaBO();
 
 	private static boolean initialized = false;
 	public static Z3950ServerBO Z3950server = null;
@@ -155,5 +161,23 @@ public class BiblivreInitializer {
 		}
 
 		return restoreBO;
+	}
+
+	public static LendingBO getLendingBO() {
+		if (lendingBO == null) {
+			lendingBO = new LendingBO(
+				AbstractDAO.getInstance(LendingDAO.class));
+		}
+
+		return lendingBO;
+	}
+
+	public static DigitalMediaBO getDigitalMediaBO() {
+		if (digitalMediaBO == null) {
+			digitalMediaBO = new DigitalMediaBO(
+				AbstractDAO.getInstance(DigitalMediaDAO.class));
+		}
+
+		return digitalMediaBO;
 	}
 }

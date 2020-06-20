@@ -32,11 +32,13 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.utils.CalendarUtils;
 
 public class LendingFineBO extends AbstractBO {
 
 	private LendingFineDAO dao;
+	private LendingBO lendingBO = BiblivreInitializer.getLendingBO();
 
 	public static LendingFineBO getInstance(String schema) {
 		LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class, schema);
@@ -74,11 +76,10 @@ public class LendingFineBO extends AbstractBO {
 	private void populateFineInfo(LendingFineDTO fine) {
 		Integer lendingId = fine.getLendingId();
 
-		LendingBO lbo = LendingBO.getInstance(this.getSchema());
 		HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
 		BiblioRecordBO rbo = BiblioRecordBO.getInstance(this.getSchema());
 
-		LendingDTO lending = lbo.get(lendingId);
+		LendingDTO lending = lendingBO.get(lendingId);
 		HoldingDTO holding = (HoldingDTO)hbo.get(lending.getHoldingId());
 		BiblioRecordDTO biblio = (BiblioRecordDTO)rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
 

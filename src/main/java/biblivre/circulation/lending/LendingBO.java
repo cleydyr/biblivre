@@ -62,16 +62,10 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class LendingBO extends AbstractBO {
-	private LendingDAO dao;
+	private ILendingDAO dao;
 
-	public static LendingBO getInstance(String schema) {
-		LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = LendingDAO.getInstance(schema);
-		}
-
-		return bo;
+	public LendingBO(ILendingDAO dao) {
+		this.dao = dao;
 	}
 
 	public LendingDTO get(Integer lendingId) {

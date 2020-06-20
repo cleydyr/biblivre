@@ -58,6 +58,7 @@ import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.DTOCollection;
 import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.LabelPrintDTO;
@@ -74,8 +75,8 @@ import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 
 public class HoldingBO extends RecordBO {
-
 	private HoldingDAO dao;
+	private LendingBO lendingBO = BiblivreInitializer.getLendingBO();
 
 	public static HoldingBO getInstance(String schema) {
 		HoldingBO bo = AbstractBO.getInstance(HoldingBO.class, schema);
@@ -260,9 +261,7 @@ public class HoldingBO extends RecordBO {
 	// he must use the force delete function.
 	@Override
 	public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-		LendingBO lbo = LendingBO.getInstance(this.getSchema());
-
-		if (lbo.isLent(holding) || lbo.wasEverLent(holding)) {
+		if (lendingBO.isLent(holding) || lendingBO.wasEverLent(holding)) {
 			throw new ValidationException("cataloging.holding.error.shouldnt_delete_because_holding_is_or_was_lent");
 		}
 

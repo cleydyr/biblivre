@@ -39,6 +39,7 @@ import biblivre.core.exceptions.ValidationException;
 
 public class Validator extends AbstractValidator {
 	private AccessControlBO accessControlBO;
+	private LendingBO lendingBO = BiblivreInitializer.getLendingBO();
 
 	public Validator() {
 		accessControlBO = BiblivreInitializer.getAccessControlBO();
@@ -139,7 +140,7 @@ public class Validator extends AbstractValidator {
 			return;
 		}
 
-		if (LendingBO.getInstance(schema).getCurrentLendingsCount(user) > 0) {
+		if (lendingBO.getCurrentLendingsCount(user) > 0) {
 			handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_lendings");
 			return;
 		}

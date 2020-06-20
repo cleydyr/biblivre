@@ -38,11 +38,13 @@ import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
 import biblivre.core.AbstractBO;
+import biblivre.core.BiblivreInitializer;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 
 public class BiblioRecordBO extends RecordBO {
+	private LendingBO lendingBO = BiblivreInitializer.getLendingBO();
 
 	public static BiblioRecordBO getInstance(String schema) {
 		BiblioRecordBO bo = AbstractBO.getInstance(BiblioRecordBO.class, schema);
@@ -91,7 +93,6 @@ public class BiblioRecordBO extends RecordBO {
 		}
 
 		HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
-		LendingBO lbo = LendingBO.getInstance(this.getSchema());
 		ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
 
 		if ((mask & RecordBO.HOLDING_INFO) != 0) {
@@ -101,7 +102,7 @@ public class BiblioRecordBO extends RecordBO {
 			int reservedCount = 0;
 
 			if (availableHoldings > 0) {
-				lentCount = lbo.countLentHoldings(recordId);
+				lentCount = lendingBO.countLentHoldings(recordId);
 				reservedCount = rbo.countReserved(dto);
 			}
 
@@ -138,7 +139,7 @@ public class BiblioRecordBO extends RecordBO {
 
 			List<LendingDTO> lendings = new LinkedList<LendingDTO>();
 			for (HoldingDTO holding : holdingsList) {
-				lendings.add(lbo.getCurrentLending(holding));
+				lendings.add(lendingBO.getCurrentLending(holding));
 			}
 		}
 

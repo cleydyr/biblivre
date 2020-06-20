@@ -37,15 +37,12 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
-import biblivre.core.persistence.LegacyAbstractDAO;
+import biblivre.core.persistence.AbstractDAO;
 import biblivre.core.utils.CalendarUtils;
 
-public class LendingDAO extends LegacyAbstractDAO {
+public class LendingDAO extends AbstractDAO implements ILendingDAO {
 
-	public static LendingDAO getInstance(String schema) {
-		return (LendingDAO) LegacyAbstractDAO.getInstance(LendingDAO.class,	schema);
-	}
-
+	@Override
 	public LendingDTO get(Integer id) {
 		Connection con = null;
 		try {
@@ -65,6 +62,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return null;
 	}
 
+	@Override
 	public LendingDTO getCurrentLending(HoldingDTO holding) {
 		Connection con = null;
 		try {
@@ -90,6 +88,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return null;
 	}
 
+	@Override
 	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
 		Map<Integer, LendingDTO> map = new LinkedHashMap<Integer, LendingDTO>();
 
@@ -123,6 +122,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 	}
 
 
+	@Override
 	public List<LendingDTO> listHistory(HoldingDTO holding) {
 		List<LendingDTO> list = new ArrayList<LendingDTO>();
 		Connection con = null;
@@ -148,10 +148,12 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return list;
 	}
 
+	@Override
 	public List<LendingDTO> listLendings(UserDTO user) {
 		return this.list(user, false);
 	}
 
+	@Override
 	public List<LendingDTO> listHistory(UserDTO user) {
 		return this.list(user, true);
 	}
@@ -187,10 +189,12 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return list;
 	}
 
+	@Override
 	public Integer countLendings(UserDTO user) {
 		return this.count(user, false);
 	}
 
+	@Override
 	public Integer countHistory(UserDTO user) {
 		return this.count(user, true);
 	}
@@ -225,6 +229,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return 0;
 	}
 
+	@Override
 	public List<LendingDTO> listByRecordId(int recordId) {
 		List<LendingDTO> list = new ArrayList<LendingDTO>();
 		Connection con = null;
@@ -253,6 +258,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return list;
 	}
 
+	@Override
 	public List<LendingDTO> listLendings(int offset, int limit) {
 		List<LendingDTO> list = new ArrayList<LendingDTO>();
 		Connection con = null;
@@ -282,6 +288,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return list;
 	}
 
+	@Override
 	public Integer countLendings() {
 		Connection con = null;
 		try {
@@ -308,6 +315,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 
 	}
 
+	@Override
 	public Integer getCurrentLendingsCount(UserDTO user) {
 		Connection con = null;
 		try {
@@ -334,10 +342,12 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return 0;
 	}
 
+	@Override
 	public boolean doLend(LendingDTO lending) {
 		return this.doLend(lending, null);
 	}
 
+	@Override
 	public boolean doLend(LendingDTO lending, Connection con) {
 		boolean externalCall = (con == null);
 		try {
@@ -370,6 +380,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
 		Connection con = null;
 		try {
@@ -422,10 +433,12 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return true;
 	}
 
+	@Override
 	public boolean doReturn(int lendingId) {
 		return this.doReturn(lendingId, null);
 	}
 
+	@Override
 	public boolean doReturn(int lendingId, Connection con) {
 		boolean externalCall = (con == null);
 		try {
@@ -451,6 +464,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		}
 	}
 
+	@Override
 	public boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy) {
 		Connection con = null;
 		try {
@@ -476,6 +490,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return true;
 	}
 
+	@Override
 	public Integer countLentHoldings(int recordId) {
 		Connection con = null;
 		try {
@@ -502,6 +517,7 @@ public class LendingDAO extends LegacyAbstractDAO {
 		return null;
 	}
 
+	@Override
 	public LendingDTO getLatest(int holdingSerial, int userId) {
 		LendingDTO dto = null;
 		Connection con = null;
