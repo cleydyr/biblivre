@@ -30,6 +30,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.persistence.sql.HikariDataSourceConnectionProvider;
+import biblivre.core.persistence.sql.NullableSQLObject;
 import biblivre.core.persistence.sql.PreparedStatementUtil;
 import biblivre.core.utils.CheckedConsumer;
 import biblivre.core.utils.CheckedFunction;
@@ -516,5 +518,25 @@ public abstract class AbstractDAO {
 		} finally {
 			this.closeConnection(con);
 		}
+	}
+
+	protected Object dateOrNullable(Date value) {
+		return getNullableObject(value, NullableSQLObject.DATE); 
+	}
+
+	protected Object stringOrNullable(String value) {
+		return getNullableObject(value, NullableSQLObject.VARCHAR); 
+	}
+
+	protected Object floatOrNullable(Float value) {
+		return getNullableObject(value, NullableSQLObject.FLOAT); 
+	}
+
+	protected Object integerOrNullable(Integer value) {
+		return getNullableObject(value, NullableSQLObject.INTEGER); 
+	}
+
+	private Object getNullableObject(Object value, NullableSQLObject deflt) {
+		return value != null ? value : deflt;
 	}
 }

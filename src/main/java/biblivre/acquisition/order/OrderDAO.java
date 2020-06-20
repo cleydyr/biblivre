@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.persistence.AbstractDAO;
-import biblivre.core.persistence.sql.NullableSQLObject;
 import biblivre.core.persistence.sql.PreparedStatementUtil;
 
 public class OrderDAO extends AbstractDAO implements IOrderDAO {
@@ -99,13 +98,14 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 			boolean update = executeUpdate(
 				_SAVE_SQL, dto.getQuotationId(), dto.getCreated(),
 				dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
-				dto.getInvoiceNumber(), _getReceitptDate(dto),
-				_getTotalValue(dto), _getDeliveredQuantity(dto),
-				_getTermsOfPayment(dto), dto.getDeadlineDate(), orderId);
+				dto.getInvoiceNumber(), dateOrNullable(dto.getReceiptDate()),
+				floatOrNullable(dto.getTotalValue()),
+				integerOrNullable(dto.getDeliveredQuantity()),
+				stringOrNullable(dto.getTermsOfPayment()), dto.getDeadlineDate(),
+				orderId);
 
 			return update ? orderId : 0;
 		});
-
 	}
 
 	@Override
@@ -116,8 +116,9 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 				PreparedStatementUtil.setAllParameters(
 					pst, dto.getQuotationId(), dto.getCreated(),
 					dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
-					dto.getInvoiceNumber(), _getReceitptDate(dto),
-					_getTotalValue(dto), _getDeliveredQuantity(dto),
+					dto.getInvoiceNumber(), dateOrNullable(dto.getReceiptDate()),
+					floatOrNullable(dto.getTotalValue()),
+					integerOrNullable(dto.getDeliveredQuantity()),
 					dto.getTermsOfPayment(), dto.getDeadlineDate(),
 					dto.getId());
 			}, dtoList, _SAVE_FROM_V3_SQL);
@@ -128,8 +129,9 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 		return executeUpdate(
 			_UPDATE_SQL, dto.getQuotationId(), dto.getCreated(),
 			dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
-			dto.getInvoiceNumber(), _getReceitptDate(dto),
-			_getTotalValue(dto), _getDeliveredQuantity(dto),
+			dto.getInvoiceNumber(), dateOrNullable(dto.getReceiptDate()),
+			floatOrNullable(dto.getTotalValue()),
+			integerOrNullable(dto.getDeliveredQuantity()),
 			dto.getTermsOfPayment(), dto.getDeadlineDate(), dto.getId());
 	}
 
@@ -168,30 +170,6 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 		else {
 			return _SEARCH_SQL;
 		}
-	}
-
-	private Object _getDeliveredQuantity(OrderDTO dto) {
-		return dto.getDeliveredQuantity() != null ? dto.getDeliveredQuantity() :
-		 NullableSQLObject.INTEGER;
-	}
-
-	private Object _getTotalValue(OrderDTO dto) {
-		return dto.getTotalValue()	!= null ? dto.getTotalValue() :
-			NullableSQLObject.FLOAT;
-	}
-
-	private Object _getReceitptDate(OrderDTO dto) {
-		return dto.getReceiptDate() != null ? dto.getReceiptDate() :
-			NullableSQLObject.DATE;
-	}
-
-	private Object _getTermsOfPayment(OrderDTO dto) {
-		Object termsOfPayment = dto.getTermsOfPayment();
-
-		if (termsOfPayment == null) {
-			termsOfPayment = NullableSQLObject.VARCHAR;
-		}
-		return termsOfPayment;
 	}
 
 	private OrderDTO populateDto(ResultSet rs) throws Exception {
