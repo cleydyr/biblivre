@@ -429,7 +429,7 @@ public abstract class AbstractDAO {
 
 		String countSql = sql
 			.substring(0, sql.lastIndexOf("ORDER BY"))
-			.replace("SELECT .*? FROM", "SELECT count(*) FROM");
+			.replaceAll("SELECT .*? FROM", "SELECT count(*) FROM");
 
 		executeQuery(pst -> {
 			PreparedStatementUtil.setAllParameters(pst, parameters);
