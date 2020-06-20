@@ -101,7 +101,7 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 				dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
 				dto.getInvoiceNumber(), _getReceitptDate(dto),
 				_getTotalValue(dto), _getDeliveredQuantity(dto),
-				dto.getTermsOfPayment(), dto.getDeadlineDate(), orderId);
+				_getTermsOfPayment(dto), dto.getDeadlineDate(), orderId);
 
 			return update ? orderId : 0;
 		});
@@ -183,6 +183,15 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 	private Object _getReceitptDate(OrderDTO dto) {
 		return dto.getReceiptDate() != null ? dto.getReceiptDate() :
 			NullableSQLObject.DATE;
+	}
+
+	private Object _getTermsOfPayment(OrderDTO dto) {
+		Object termsOfPayment = dto.getTermsOfPayment();
+
+		if (termsOfPayment == null) {
+			termsOfPayment = NullableSQLObject.VARCHAR;
+		}
+		return termsOfPayment;
 	}
 
 	private OrderDTO populateDto(ResultSet rs) throws Exception {
