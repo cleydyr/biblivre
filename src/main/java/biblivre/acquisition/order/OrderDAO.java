@@ -144,7 +144,7 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 	}
 
 	@Override
-	public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
+	public DTOCollection<OrderDTO> search(String value, int limit, int offset) {
 		String sql = _buildSearchSQL(value);
 
 		boolean isNumericValue = StringUtils.isNumeric(value);
