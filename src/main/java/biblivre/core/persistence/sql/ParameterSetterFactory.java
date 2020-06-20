@@ -1,4 +1,4 @@
-package biblivre.core.persistence.jdbc;
+package biblivre.core.persistence.sql;
 
 import java.sql.PreparedStatement;
 import java.util.Date;

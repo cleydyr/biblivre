@@ -29,8 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.persistence.AbstractDAO;
-import biblivre.core.persistence.jdbc.NullableSQLObject;
-import biblivre.core.persistence.jdbc.PreparedStatementUtil;
+import biblivre.core.persistence.sql.NullableSQLObject;
+import biblivre.core.persistence.sql.PreparedStatementUtil;
 
 public class OrderDAO extends AbstractDAO implements IOrderDAO {
 	private static final String _GET_SQL =

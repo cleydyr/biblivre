@@ -30,8 +30,8 @@ import biblivre.cataloging.AutocompleteDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.persistence.LegacyAbstractDAO;
-import biblivre.core.persistence.jdbc.NullableSQLObject;
-import biblivre.core.persistence.jdbc.PreparedStatementUtil;
+import biblivre.core.persistence.sql.NullableSQLObject;
+import biblivre.core.persistence.sql.PreparedStatementUtil;
 import biblivre.core.utils.TextUtils;
 
 public class IndexingDAO extends LegacyAbstractDAO {

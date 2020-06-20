@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.StaticBO;
-import biblivre.core.persistence.jdbc.PreparedStatementUtil;
+import biblivre.core.persistence.sql.PreparedStatementUtil;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Pair;

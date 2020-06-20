@@ -33,7 +33,7 @@ import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.JavascriptCacheableList;
 import biblivre.core.StaticBO;
-import biblivre.core.persistence.jdbc.PreparedStatementUtil;
+import biblivre.core.persistence.sql.PreparedStatementUtil;
 import biblivre.core.utils.Pair;
 
 public class Fields extends StaticBO {

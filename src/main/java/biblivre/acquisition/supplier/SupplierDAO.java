@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.persistence.AbstractDAO;
-import biblivre.core.persistence.jdbc.PreparedStatementUtil;
+import biblivre.core.persistence.sql.PreparedStatementUtil;
 
 public class SupplierDAO extends AbstractDAO implements ISupplierDAO {
 

@@ -48,8 +48,8 @@ import biblivre.core.ContextThreadLocal;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
-import biblivre.core.persistence.jdbc.HikariDataSourceConnectionProvider;
-import biblivre.core.persistence.jdbc.PreparedStatementUtil;
+import biblivre.core.persistence.sql.HikariDataSourceConnectionProvider;
+import biblivre.core.persistence.sql.PreparedStatementUtil;
 import biblivre.core.utils.CheckedConsumer;
 import biblivre.core.utils.CheckedFunction;
 

@@ -30,7 +30,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import biblivre.core.persistence.AbstractDAO;
-import biblivre.core.persistence.jdbc.NullableSQLObject;
+import biblivre.core.persistence.sql.NullableSQLObject;
 
 public class BackupDAO extends AbstractDAO implements IBackupDAO {
 	private static final String _SAVE_UPDATE_SQL =
