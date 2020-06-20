@@ -16,7 +16,7 @@ import org.jzkit.z3950.QueryModel.PropsBasedInternalToType1ConversionRules;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import biblivre.core.HikariDataSourceConnectionProvider;
+import biblivre.core.persistence.jdbc.HikariDataSourceConnectionProvider;
 
 @Configuration
 public class Z3950AppContext {

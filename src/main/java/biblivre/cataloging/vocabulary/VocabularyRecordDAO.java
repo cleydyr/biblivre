@@ -22,7 +22,7 @@ package biblivre.cataloging.vocabulary;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class VocabularyRecordDAO extends RecordDAO {
 

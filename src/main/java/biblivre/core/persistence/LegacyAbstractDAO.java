@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core;
+package biblivre.core.persistence;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -42,7 +42,13 @@ import org.postgresql.PGConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import biblivre.core.AbstractDTO;
+import biblivre.core.CheckedBiConsumer;
+import biblivre.core.DTOCollection;
+import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.jdbc.HikariDataSourceConnectionProvider;
+import biblivre.core.persistence.jdbc.PreparedStatementUtil;
 import biblivre.core.utils.CheckedConsumer;
 import biblivre.core.utils.CheckedFunction;
 import biblivre.core.utils.Constants;

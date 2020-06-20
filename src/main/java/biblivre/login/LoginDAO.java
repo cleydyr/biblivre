@@ -28,9 +28,9 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 import biblivre.core.utils.Constants;
 
 public class LoginDAO extends LegacyAbstractDAO {

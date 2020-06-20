@@ -32,8 +32,8 @@ import org.apache.commons.lang3.time.DateUtils;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.enums.SearchOperator;
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MaterialType;

@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class PermissionDAO extends LegacyAbstractDAO {
 

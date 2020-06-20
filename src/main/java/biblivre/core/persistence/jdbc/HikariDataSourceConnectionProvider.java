@@ -1,4 +1,4 @@
-package biblivre.core;
+package biblivre.core.persistence.jdbc;
 
 import java.io.PrintWriter;
 import java.sql.Connection;

@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class TabFieldsDAO extends LegacyAbstractDAO {
 

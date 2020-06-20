@@ -31,10 +31,10 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
-import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
+import biblivre.core.persistence.AbstractDAO;
 
 public class DigitalMediaDAO extends AbstractDAO implements IDigitalMediaDAO {
 

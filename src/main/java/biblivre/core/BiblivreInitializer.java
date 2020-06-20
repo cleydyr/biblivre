@@ -34,6 +34,7 @@ import biblivre.administration.backup.BackupDAO;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.accesscontrol.AccessControlDAO;
+import biblivre.core.persistence.AbstractDAO;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.z3950.server.Z3950ServerBO;
 

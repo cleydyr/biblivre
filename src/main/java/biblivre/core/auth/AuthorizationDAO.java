@@ -24,8 +24,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 import biblivre.login.LoginDTO;
 
 public class AuthorizationDAO extends LegacyAbstractDAO {

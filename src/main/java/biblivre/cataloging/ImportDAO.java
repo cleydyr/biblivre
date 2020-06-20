@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class ImportDAO extends LegacyAbstractDAO {
 

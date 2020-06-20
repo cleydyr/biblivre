@@ -27,8 +27,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class ConfigurationsDAO extends LegacyAbstractDAO {
 

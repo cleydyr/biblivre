@@ -21,7 +21,7 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDAO;
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class BiblioSearchDAO extends SearchDAO {
 

@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class IndexingGroupsDAO extends LegacyAbstractDAO {
 

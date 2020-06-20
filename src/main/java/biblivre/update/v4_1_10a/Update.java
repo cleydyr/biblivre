@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.core.PreparedStatementUtil;
+import biblivre.core.persistence.jdbc.PreparedStatementUtil;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.StringPool;
 import biblivre.update.UpdateService;

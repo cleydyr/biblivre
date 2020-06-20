@@ -27,6 +27,9 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
+import biblivre.core.persistence.LegacyAbstractDAO;
+import biblivre.core.persistence.jdbc.PreparedStatementUtil;
+
 public class UpdatesDAO extends LegacyAbstractDAO {
 
 	public static UpdatesDAO getInstance(String schema) {

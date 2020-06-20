@@ -24,10 +24,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.PreparedStatementUtil;
+import biblivre.core.persistence.AbstractDAO;
+import biblivre.core.persistence.jdbc.PreparedStatementUtil;
 
 public class SupplierDAO extends AbstractDAO implements ISupplierDAO {
 

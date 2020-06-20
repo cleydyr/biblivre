@@ -32,8 +32,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class TranslationsDAO extends LegacyAbstractDAO {
 

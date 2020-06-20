@@ -1,4 +1,4 @@
-package biblivre.core;
+package biblivre.core.persistence.jdbc;
 
 @SuppressWarnings("serial")
 public class ParameterSetterNotFoundException extends RuntimeException {

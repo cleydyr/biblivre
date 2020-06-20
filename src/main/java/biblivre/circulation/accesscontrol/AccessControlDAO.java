@@ -22,8 +22,8 @@ package biblivre.circulation.accesscontrol;
 import java.sql.ResultSet;
 import java.util.List;
 
-import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.persistence.AbstractDAO;
 
 public class AccessControlDAO extends AbstractDAO implements IAccessControlDAO {
 

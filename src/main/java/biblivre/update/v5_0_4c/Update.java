@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import biblivre.core.PreparedStatementUtil;
+import biblivre.core.persistence.jdbc.PreparedStatementUtil;
 import biblivre.update.UpdateService;
 
 public class Update implements UpdateService {

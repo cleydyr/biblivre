@@ -21,8 +21,8 @@ package biblivre.administration.setup;
 
 import java.sql.Connection;
 
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class SetupDAO extends LegacyAbstractDAO {
 

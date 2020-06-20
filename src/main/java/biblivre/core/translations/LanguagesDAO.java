@@ -26,8 +26,8 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class LanguagesDAO extends LegacyAbstractDAO {
 

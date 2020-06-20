@@ -21,7 +21,7 @@ package biblivre.cataloging.authorities;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDAO;
-import biblivre.core.LegacyAbstractDAO;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class AuthoritySearchDAO extends SearchDAO {
 

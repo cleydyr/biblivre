@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import biblivre.core.PreparedStatementUtil;
+import biblivre.core.persistence.jdbc.PreparedStatementUtil;
 
 public interface UpdateService {
 	public String getVersion();

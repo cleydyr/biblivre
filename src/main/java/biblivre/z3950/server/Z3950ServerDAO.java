@@ -8,8 +8,8 @@ import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 

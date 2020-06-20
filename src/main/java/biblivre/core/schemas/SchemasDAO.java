@@ -29,8 +29,8 @@ import java.util.TreeSet;
 
 import org.postgresql.core.BaseConnection;
 
-import biblivre.core.LegacyAbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.persistence.LegacyAbstractDAO;
 
 public class SchemasDAO extends LegacyAbstractDAO {
 

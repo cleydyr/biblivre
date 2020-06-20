@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import biblivre.core.PreparedStatementUtil;
+import biblivre.core.persistence.jdbc.PreparedStatementUtil;
 import biblivre.core.utils.TextUtils;
 import biblivre.update.UpdateService;
 
