@@ -521,19 +521,19 @@ public abstract class AbstractDAO {
 	}
 
 	protected Object dateOrNullable(Date value) {
-		return getNullableObject(value, NullableSQLObject.DATE); 
+		return getNullableObject(value, NullableSQLObject.DATE);
 	}
 
 	protected Object stringOrNullable(String value) {
-		return getNullableObject(value, NullableSQLObject.VARCHAR); 
+		return getNullableObject(value, NullableSQLObject.VARCHAR);
 	}
 
 	protected Object floatOrNullable(Float value) {
-		return getNullableObject(value, NullableSQLObject.FLOAT); 
+		return getNullableObject(value, NullableSQLObject.FLOAT);
 	}
 
 	protected Object integerOrNullable(Integer value) {
-		return getNullableObject(value, NullableSQLObject.INTEGER); 
+		return getNullableObject(value, NullableSQLObject.INTEGER);
 	}
 
 	private Object getNullableObject(Object value, NullableSQLObject deflt) {
