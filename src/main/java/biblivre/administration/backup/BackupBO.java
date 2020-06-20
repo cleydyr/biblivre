@@ -68,9 +68,7 @@ public class BackupBO extends AbstractBO {
 	}
 
 	public BackupScope getBackupScope() {
-		boolean isGlobal = isGlobalSchema();
-
-		if (isGlobal) {
+		if (isGlobalSchema()) {
 			return BackupScope.MULTI_SCHEMA;
 		} else if (Schemas.isMultipleSchemasEnabled()) {
 			return BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;
