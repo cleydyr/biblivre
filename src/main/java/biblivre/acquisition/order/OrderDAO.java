@@ -98,7 +98,8 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 			boolean update = executeUpdate(
 				_SAVE_SQL, dto.getQuotationId(), dto.getCreated(),
 				dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
-				dto.getInvoiceNumber(), dateOrNullable(dto.getReceiptDate()),
+				stringOrNullable(dto.getInvoiceNumber()),
+				dateOrNullable(dto.getReceiptDate()),
 				floatOrNullable(dto.getTotalValue()),
 				integerOrNullable(dto.getDeliveredQuantity()),
 				stringOrNullable(dto.getTermsOfPayment()), dto.getDeadlineDate(),
@@ -116,7 +117,8 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 				PreparedStatementUtil.setAllParameters(
 					pst, dto.getQuotationId(), dto.getCreated(),
 					dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
-					dto.getInvoiceNumber(), dateOrNullable(dto.getReceiptDate()),
+					stringOrNullable(dto.getInvoiceNumber()),
+					dateOrNullable(dto.getReceiptDate()),
 					floatOrNullable(dto.getTotalValue()),
 					integerOrNullable(dto.getDeliveredQuantity()),
 					dto.getTermsOfPayment(), dto.getDeadlineDate(),
@@ -129,7 +131,8 @@ public class OrderDAO extends AbstractDAO implements IOrderDAO {
 		return executeUpdate(
 			_UPDATE_SQL, dto.getQuotationId(), dto.getCreated(),
 			dto.getCreatedBy(), dto.getInfo(), dto.getStatus(),
-			dto.getInvoiceNumber(), dateOrNullable(dto.getReceiptDate()),
+			stringOrNullable(dto.getInvoiceNumber()),
+			dateOrNullable(dto.getReceiptDate()),
 			floatOrNullable(dto.getTotalValue()),
 			integerOrNullable(dto.getDeliveredQuantity()),
 			dto.getTermsOfPayment(), dto.getDeadlineDate(), dto.getId());
