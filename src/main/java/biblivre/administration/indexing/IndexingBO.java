@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
@@ -38,7 +39,6 @@ import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
-import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;

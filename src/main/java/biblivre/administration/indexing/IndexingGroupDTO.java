@@ -22,11 +22,11 @@ package biblivre.administration.indexing;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
-import biblivre.core.utils.Pair;
 
 /**
  * Class that defines the format used to index records by a group of datafields.
@@ -115,7 +115,7 @@ public class IndexingGroupDTO extends AbstractDTO {
 						subfields.add(line[i].charAt(0));
 					}
 
-					list.add(new Pair<String, List<Character>>(datafield, subfields));
+					list.add(Pair.of(datafield, subfields));
 				}
 			}
 

@@ -22,11 +22,11 @@ package biblivre.core;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 
 public abstract class AbstractBO {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -36,7 +36,7 @@ public abstract class AbstractBO {
 
 	@SuppressWarnings("unchecked")
 	protected static <T extends AbstractBO> T getInstance(Class<T> cls, String schema) {
-		Pair<Class<? extends AbstractBO>, String> pair = new Pair<Class<? extends AbstractBO>, String>(cls, schema);
+		Pair<Class<? extends AbstractBO>, String> pair = Pair.of(cls, schema);
 		T instance = (T)AbstractBO.instances.get(pair);
 
 		if (instance == null) {

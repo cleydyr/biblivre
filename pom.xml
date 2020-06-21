@@ -36,7 +36,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
 		<debug>false</debug>
-		<sass.OutputStyle>:expanded</sass.OutputStyle>
 		<dockerfile.version>1.4.1</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
 	</properties>
@@ -382,57 +381,30 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.jasig.maven</groupId>
-				<artifactId>sass-maven-plugin</artifactId>
-				<version>1.1.1</version>
+				<groupId>com.gitlab.haynes</groupId>
+				<artifactId>libsass-maven-plugin</artifactId>
+				<version>0.2.24</version>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<sassOptions>
-						<always_update>true</always_update>
-						<style>${sass.OutputStyle}</style>
-						<debug_info>${debug}</debug_info>
-					</sassOptions>
-					<useCompass>true</useCompass>
-					<resources>
-						<resource>
-							<source>
-								<directory>${basedir}/WebContent/static/styles/scss</directory>
-								<includes>
-									<include>*.scss</include>
-								</includes>
-								<excludes />
-							</source>
-							<destination>${basedir}/WebContent/static/styles</destination>
-						</resource>
-					</resources>
+					<outputStyle>expanded</outputStyle>
+					<inputPath>${basedir}/WebContent/static/styles/scss</inputPath>
+					<outputPath>${basedir}/target/Biblivre6/static/styles</outputPath>
 				</configuration>
 			</plugin>
 		</plugins>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.jasig.maven</groupId>
-										<artifactId>sass-maven-plugin</artifactId>
-										<versionRange>[1.0.2,)</versionRange>
-										<goals>
-											<goal>update-stylesheets</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

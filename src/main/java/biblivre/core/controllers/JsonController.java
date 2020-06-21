@@ -25,6 +25,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +33,6 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.utils.Pair;
 
 public class JsonController extends Controller {
 

@@ -35,7 +35,7 @@
 }
 
 @mixin linear-gradient($from, $to, $fromPercent: 0%, $toPercent: 100%) {
-	background-color: ($to / 2) + ($from / 2);
+	background-color: mix($from, $to);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$from}', endColorstr='#{$to}', GradientType=0);
 	background-image: -moz-linear-gradient($from $fromPercent, $to $toPercent);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop($fromPercent, $from), color-stop($toPercent, $to));
