@@ -3,7 +3,7 @@ package biblivre.digitalmedia;
 import java.io.File;
 import java.util.List;
 
-import biblivre.core.file.DatabaseFile;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 
 public interface IDigitalMediaDAO {
@@ -14,7 +14,7 @@ public interface IDigitalMediaDAO {
 
 	long importFile(File file);
 
-	DatabaseFile load(int id, String name);
+	BiblivreFile load(int id, String name);
 
 	boolean delete(int id);
 

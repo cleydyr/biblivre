@@ -32,6 +32,7 @@ import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.persistence.AbstractDAO;
@@ -153,7 +154,7 @@ public class DigitalMediaDAO extends AbstractDAO implements IDigitalMediaDAO {
 	}
 
 	@Override
-	public final DatabaseFile load(int id, String name) {
+	public final BiblivreFile load(int id, String name) {
 		try {
 			Connection con = this.getConnection();
 

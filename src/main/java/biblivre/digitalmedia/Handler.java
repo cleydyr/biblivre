@@ -32,7 +32,7 @@ import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.file.DatabaseFile;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
 
@@ -48,7 +48,7 @@ public class Handler extends AbstractHandler {
 		String fileId = null;
 		String fileName = null;
 
-		DatabaseFile file = _tryFetchingDBFileWithWindowsEncoding(schema, id, fileId, fileName);
+		BiblivreFile file = _tryFetchingDBFileWithWindowsEncoding(schema, id, fileId, fileName);
 
 		if (file == null) {
 			file = _tryFetchingDBFileWithEncoding(
@@ -97,7 +97,7 @@ public class Handler extends AbstractHandler {
 		return "";
 	}
 
-	private DatabaseFile _tryFetchingDBFileWithEncoding(
+	private BiblivreFile _tryFetchingDBFileWithEncoding(
 			String schema, String id, String fileId, String fileName, Charset charset) {
 		try {
 			String decodedId = new String(Base64.getDecoder().decode(id), charset);
@@ -115,11 +115,11 @@ public class Handler extends AbstractHandler {
 			return null;
 		}
 
-		DatabaseFile file = digitalMediaBO.load(Integer.parseInt(fileId), fileName);
+		BiblivreFile file = digitalMediaBO.load(Integer.parseInt(fileId), fileName);
 		return file;
 	}
 
-	private DatabaseFile _tryFetchingDBFileWithWindowsEncoding(
+	private BiblivreFile _tryFetchingDBFileWithWindowsEncoding(
 			String schema, String id, String fileId, String fileName) {
 		return _tryFetchingDBFileWithEncoding(
 				schema, id, fileId, fileName, Constants.WINDOWS_CHARSET);

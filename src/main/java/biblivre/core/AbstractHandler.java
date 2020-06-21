@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.core;
 
+import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -37,7 +39,7 @@ public class AbstractHandler {
 	protected HttpCallback callback;
 
 	public interface HttpCallback {
-		public void success();
+		public void success() throws IOException;
 	}
 
 	public AbstractHandler() {
