@@ -382,9 +382,9 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.jasig.maven</groupId>
+				<groupId>nl.geodienstencentrum.maven</groupId>
 				<artifactId>sass-maven-plugin</artifactId>
-				<version>1.1.1</version>
+				<version>3.7.2</version>
 				<configuration>
 					<sassOptions>
 						<always_update>true</always_update>
@@ -419,9 +419,9 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>org.jasig.maven</groupId>
+										<groupId>nl.geodienstencentrum.maven</groupId>
 										<artifactId>sass-maven-plugin</artifactId>
-										<versionRange>[1.0.2,)</versionRange>
+										<versionRange>[3.7.2,)</versionRange>
 										<goals>
 											<goal>update-stylesheets</goal>
 										</goals>
