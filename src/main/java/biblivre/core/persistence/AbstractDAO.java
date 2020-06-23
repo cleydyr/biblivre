@@ -337,11 +337,15 @@ public abstract class AbstractDAO {
 		Object... parameters)
 		throws DAOException {
 
-		Context ctx = ContextThreadLocal.getContext();
+		return withConnection(con -> executeQuery(con, f, sql, parameters));
+	}
 
-		try (Connection con = this.getConnection(ctx);
-			PreparedStatement pst = con.prepareStatement(sql)) {
+	public <T> T executeQuery(
+		Connection con, CheckedFunction<PreparedStatement, T> f, String sql,
+		Object... parameters)
+		throws DAOException {
 
+		try (PreparedStatement pst = con.prepareStatement(sql)) {
 			PreparedStatementUtil.setAllParameters(pst, parameters);
 
 			return f.apply(pst);
@@ -350,18 +354,29 @@ public abstract class AbstractDAO {
 		}
 	}
 
+	public boolean executeUpdate(String sql, Object... parameters) {
+		return withConnection(con -> executeUpdate(con, sql, parameters));
+	}
+
 	public boolean executeUpdate(
-		String sql, Object... parameters) {
+		Connection con, String sql, Object... parameters) {
 
 		return executeQuery(
-			pst -> pst.executeUpdate() > 0, sql, parameters);
+			con, pst -> pst.executeUpdate() > 0, sql, parameters);
 	}
 
 	public <T> boolean executeBatchUpdate(
 		CheckedBiConsumer<PreparedStatement, T> consumer, Collection<T> items,
 		String sql) {
 
-		return executeQuery(pst -> {
+		return withConnection(con -> executeBatchUpdate(consumer, items, sql));
+	}
+
+	public <T> boolean executeBatchUpdate(
+		Connection con, CheckedBiConsumer<PreparedStatement, T> consumer,
+		Collection<T> items, String sql) {
+
+		return executeQuery(con, pst -> {
 			for (T item : items) {
 				consumer.accept(pst, item);
 
@@ -379,7 +394,16 @@ public abstract class AbstractDAO {
 		Collection<?> items, Class<T> target, String sql,
 		Function<T, ?>... fs) {
 
-		return executeQuery(pst -> {
+		return withConnection(
+			con -> executeBatchUpdate(items, target, sql, fs));
+	}
+
+	@SafeVarargs
+	public final <T> boolean executeBatchUpdate(
+		Connection con, Collection<?> items, Class<T> target, String sql,
+		Function<T, ?>... fs) {
+
+		return executeQuery(con, pst -> {
 			for (Object item : items) {
 				T targetItem = target.cast(item);
 
@@ -403,6 +427,14 @@ public abstract class AbstractDAO {
 
 	public <T extends AbstractDTO> DTOCollection<T> pagedListWith(
 		CheckedFunction<ResultSet, T> mapper, String sql,
+		int limit, int offset, Object... parameters) {
+
+		return withConnection(
+			con -> pagedListWith(mapper, sql, limit, offset, parameters));
+	}
+
+	public <T extends AbstractDTO> DTOCollection<T> pagedListWith(
+		Connection con, CheckedFunction<ResultSet, T> mapper, String sql,
 		int limit, int offset, Object... parameters) {
 
 		DTOCollection<T> list = new DTOCollection<>();
@@ -515,6 +547,16 @@ public abstract class AbstractDAO {
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
+		}
+	}
+
+	private <T> T withConnection(Function<Connection, T> f) {
+		Context ctx = ContextThreadLocal.getContext();
+
+		try (Connection con = this.getConnection(ctx)) {
+			return f.apply(con);
+		} catch (SQLException e) {
+			throw new DAOException(e);
 		}
 	}
 

@@ -103,7 +103,7 @@ public class DigitalMediaDAO extends AbstractDAO implements IDigitalMediaDAO {
 					obj.close();
 
 					executeUpdate(
-						_SAVE_SQL, serial, file.getName(), oid,
+						con, _SAVE_SQL, serial, file.getName(), oid,
 						file.getContentType(), file.getSize());
 
 					file.close();

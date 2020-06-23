@@ -92,14 +92,14 @@ public class QuotationDAO extends AbstractDAO implements IQuotationDAO {
 		return onTransactionContext(con -> {
 			int quotationId = getNextSerial(con, "quotations_id_seq");
 
-			executeUpdate(
-				_SAVE_SQL, quotationId, dto.getSupplierId(),
+			executeUpdate( 
+				con, _SAVE_SQL, quotationId, dto.getSupplierId(),
 				dto.getResponseDate(), dto.getExpirationDate(),
 				dto.getDeliveryTime(), dto.getInfo(), dto.getCreatedBy(),
 				dto.getCreated());
 
 			executeBatchUpdate(
-				dto.getQuotationsList(), RequestQuotationDTO.class,
+				con, dto.getQuotationsList(), RequestQuotationDTO.class,
 				_SAVE_RQ_SQL, RequestQuotationDTO::getRequestId,
 				__ -> quotationId,
 				RequestQuotationDTO::getQuantity,
@@ -165,14 +165,14 @@ public class QuotationDAO extends AbstractDAO implements IQuotationDAO {
 	public boolean update(QuotationDTO dto) {
 		onTransactionContext(con -> {
 			executeUpdate(
-				_UPDATE_SQL, dto.getSupplierId(),
+				con, _UPDATE_SQL, dto.getSupplierId(),
 				dto.getResponseDate(), dto.getExpirationDate(),
 				dto.getDeliveryTime(), dto.getInfo(), dto.getModifiedBy(),
 				dto.getId());
 
-			executeUpdate(_DELETE_RQ_SQL, dto.getId());
+			executeUpdate(con, _DELETE_RQ_SQL, dto.getId());
 
-			executeBatchUpdate((pst, item) -> {
+			executeBatchUpdate(con, (pst, item) -> {
 				PreparedStatementUtil.setAllParameters(
 					pst, item.getRequestId(), dto.getId(),
 					item.getQuantity(), item.getUnitValue(),
