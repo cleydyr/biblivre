@@ -77,12 +77,12 @@ public class LendingBO extends AbstractBO {
 	}
 
 	public boolean wasEverLent(HoldingDTO holding) {
-		List<LendingDTO> history = this.dao.listHistory(holding);
+		List<LendingDTO> history = this.dao.listHoldingHistory(holding.getId());
 		return history.size() > 0;
 	}
 
 	public LendingDTO getCurrentLending(HoldingDTO holding) {
-		return this.dao.getCurrentLending(holding);
+		return this.dao.getCurrentLending(holding.getId());
 	}
 
 	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
@@ -137,13 +137,13 @@ public class LendingBO extends AbstractBO {
 		UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
 		UserTypeDTO type = userTypeBo.get(user.getType());
 		Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
-		Integer count = this.dao.getCurrentLendingsCount(user);
+		Integer count = this.dao.getCurrentLendingsCount(user.getId());
 
 		return renew ? (count <= lendingLimit) : (count < lendingLimit);
 	}
 
 	public Integer getCurrentLendingsCount(UserDTO user) {
-		return this.dao.getCurrentLendingsCount(user);
+		return this.dao.getCurrentLendingsCount(user.getId());
 	}
 
 	public boolean doLend(HoldingDTO holding, UserDTO user, int createdBy) {
@@ -204,21 +204,21 @@ public class LendingBO extends AbstractBO {
 	}
 
 	public List<LendingDTO> listHistory(UserDTO user) {
-		List<LendingDTO> list = this.dao.listHistory(user);
+		List<LendingDTO> list = this.dao.listUserHistory(user.getId());
 		DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
 		collection.addAll(list);
 		return collection;
 	}
 
 	public DTOCollection<LendingDTO> listLendings(UserDTO user) {
-		List<LendingDTO> list = this.dao.listLendings(user);
+		List<LendingDTO> list = this.dao.listUserLendings(user.getId());
 		DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
 		collection.addAll(list);
 		return collection;
 	}
 
 	public List<LendingDTO> listUserLendings(UserDTO user) {
-		return this.dao.listLendings(user);
+		return this.dao.listUserLendings(user.getId());
 	}
 
 
@@ -228,11 +228,11 @@ public class LendingBO extends AbstractBO {
 	}
 
 	public Integer countHistory(UserDTO user) {
-		return this.dao.countHistory(user);
+		return this.dao.userHistoryCount(user.getId());
 	}
 
 	public Integer countLendings(UserDTO user) {
-		return this.dao.countLendings(user);
+		return this.dao.userLendingsCount(user.getId());
 	}
 
 	public DTOCollection<LendingInfoDTO> populateLendingInfoByHolding(DTOCollection<HoldingDTO> holdingList) {

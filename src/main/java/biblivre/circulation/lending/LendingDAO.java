@@ -19,531 +19,243 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
-import biblivre.core.exceptions.DAOException;
 import biblivre.core.persistence.AbstractDAO;
-import biblivre.core.utils.CalendarUtils;
 
 public class LendingDAO extends AbstractDAO implements ILendingDAO {
 
+	private static final String _GET_LATEST_SQL =
+		"SELECT * FROM lendings "
+		+ "WHERE holding_id = ? AND user_id = ? "
+		+ "ORDER BY id DESC LIMIT 1";
+
+	private static final String _COUNT_LENT_HOLDINGS_SQL =
+		"SELECT COUNT(*) FROM lendings L "
+		+ "INNER JOIN biblio_holdings H "
+		+ "ON L.holding_id = H.id "
+		+ "WHERE H.record_id = ? AND H.availability = 'available' "
+			+ "AND L.return_date is NULL";
+
+	private static final String _SAVE_FROM_V3_SQL =
+		"INSERT INTO lendings "
+		+ "(holding_id, user_id, previous_lending_id, expected_return_date, "
+			+ "created_by, id, created, return_date) "
+		+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
+
+	private static final String _DO_RETURN_SQL =
+		"UPDATE lendings SET return_date = now() WHERE id = ?";
+
+	private static final String _DO_LEND_SQL =
+		"INSERT INTO lendings "
+		+ "(holding_id, user_id, previous_lending_id, expected_return_date, "
+			+ "created_by) "
+		+ "VALUES (?, ?, ?, ?, ?)";
+
+	private static final String _GET_CURRENT_LENDINGS_COUNT_SQL =
+		"SELECT COUNT(*) FROM lendings "
+		+ "WHERE user_id = ? AND return_date IS null";
+
+	private static final String _COUNT_LENDINGS_SQL = 
+		"SELECT count(*) as total FROM lendings WHERE return_date IS null";
+
+	private static final String _LIST_LENDINGS_SQL =
+		"SELECT * FROM lendings "
+		+ "WHERE return_date IS null "
+		+ "ORDER BY return_date ASC LIMIT ? OFFSET ?";
+
+	private static final String _LIST_BY_RECORD_ID_SQL =
+		"SELECT * FROM lendings l "
+		+ "INNER JOIN biblio_holdings h "
+		+ "ON l.holding_id = h.id "
+		+ "WHERE h.record_id = ?";
+
+	private static final String _USER_HISTORY_COUNT_SQL =
+		"SELECT COUNT(*) AS total FROM lendings "
+		+ "WHERE user_id = ? AND return_date IS NOT null "
+		+ "ORDER BY id DESC";
+
+	private static final String _USER_LENDINGS_COUNT_SQL =
+		"SELECT COUNT(*) AS total FROM lendings "
+		+ "WHERE user_id = ? AND return_date IS null "
+		+ "ORDER BY id DESC";
+
+	private static final String _LIST_USER_HISTORY_SQL =
+		"SELECT * FROM lendings "
+		+ "WHERE user_id = ? AND return_date IS NOT null "
+		+ "ORDER BY id ASC";
+
+	private static final String _LIST_USER_LENDINGS_SQL =
+		"SELECT * FROM lendings "
+		+ "WHERE user_id = ? AND return_date IS null "
+		+ "ORDER BY id ASC";
+
+	private static final String _LIST_HISTORY_SQL =
+		"SELECT * FROM lendings "
+		+ "WHERE holding_id = ? AND return_date IS NOT null "
+		+ "ORDER BY id DESC";
+
+	private static final String _GET_CURRENT_LENDING_MAP_SQL_TPL =
+		"SELECT * FROM lendings "
+		+ "WHERE holding_id in (%s) AND return_date IS null "
+		+ "ORDER BY id DESC";
+
+	private static final String _GET_SQL =
+		"SELECT * FROM lendings WHERE id = ?";
+
+	private static final String _GET_CURRENT_LENDING_SQL =
+		"SELECT * FROM lendings "
+		+ "WHERE holding_id = ? AND return_date IS null "
+		+ "ORDER BY id DESC";
+
 	@Override
 	public LendingDTO get(Integer id) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			String sql = "SELECT * FROM lendings WHERE id = ?;";
-			PreparedStatement ppst = con.prepareStatement(sql);
-			ppst.setInt(1, id);
-			ResultSet rs = ppst.executeQuery();
-			if (rs.next()) {
-				return this.populateDTO(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return null;
+		return fetchOne(this::populateDTO, _GET_SQL, id);
 	}
 
 	@Override
-	public LendingDTO getCurrentLending(HoldingDTO holding) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM lendings WHERE ");
-			sql.append("holding_id = ? AND return_date IS null ORDER BY id DESC;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, holding.getId());
-
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				return this.populateDTO(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
-		return null;
+	public LendingDTO getCurrentLending(Integer holdingId) {
+		return fetchOne(
+			this::populateDTO, _GET_CURRENT_LENDING_SQL, holdingId);
 	}
 
 	@Override
 	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
-		Map<Integer, LendingDTO> map = new LinkedHashMap<Integer, LendingDTO>();
+		String questionMarks = StringUtils.repeat("?", ", ", ids.size());
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
+		String sql = String.format(
+			_GET_CURRENT_LENDING_MAP_SQL_TPL, questionMarks);
 
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM lendings WHERE ");
-			sql.append("holding_id in (");
-			sql.append(StringUtils.repeat("?", ", ", ids.size()));
-			sql.append(") AND return_date IS null ORDER BY id DESC;");
+		Stream<LendingDTO> stream =
+			listWith(this::populateDTO, sql, ids.toArray()).stream();
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			int index = 1;
-			for (Integer id : ids) {
-				pst.setInt(index++, id);
-			}
-
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				map.put(rs.getInt("holding_id"), this.populateDTO(rs));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
-		return map;
+		return stream
+			.collect(Collectors.toMap(LendingDTO::getHoldingId,
+				Function.identity()));
 	}
 
 
 	@Override
-	public List<LendingDTO> listHistory(HoldingDTO holding) {
-		List<LendingDTO> list = new ArrayList<LendingDTO>();
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM lendings WHERE holding_id = ? ");
-			sql.append("AND return_date IS NOT null ORDER BY id DESC;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, holding.getId());
-
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return list;
+	public List<LendingDTO> listHoldingHistory(int holdingId) {
+		return listWith(this::populateDTO, _LIST_HISTORY_SQL, holdingId);
 	}
 
 	@Override
-	public List<LendingDTO> listLendings(UserDTO user) {
-		return this.list(user, false);
+	public List<LendingDTO> listUserLendings(int userId) {
+		return listWith(
+			this::populateDTO, _LIST_USER_LENDINGS_SQL, userId);
 	}
 
 	@Override
-	public List<LendingDTO> listHistory(UserDTO user) {
-		return this.list(user, true);
-	}
-
-	private List<LendingDTO> list(UserDTO user, boolean history) {
-		List<LendingDTO> list = new ArrayList<LendingDTO>();
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM lendings WHERE user_id = ? ");
-			sql.append("AND return_date IS ");
-			if (history) {
-				sql.append("NOT ");
-			}
-			sql.append("null ORDER BY id ASC;");
-
-			PreparedStatement ppst = con.prepareStatement(sql.toString());
-			ppst.setInt(1, user.getId());
-
-
-			ResultSet rs = ppst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return list;
+	public List<LendingDTO> listUserHistory(int userId) {
+		return listWith(
+			this::populateDTO, _LIST_USER_HISTORY_SQL, userId);
 	}
 
 	@Override
-	public Integer countLendings(UserDTO user) {
-		return this.count(user, false);
+	public Integer userLendingsCount(int userId) {
+		return fetchOne(
+			rs -> rs.getInt("total"), _USER_LENDINGS_COUNT_SQL, userId);
 	}
 
 	@Override
-	public Integer countHistory(UserDTO user) {
-		return this.count(user, true);
-	}
-
-	private Integer count(UserDTO user, boolean history) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT COUNT(*) AS total FROM lendings WHERE user_id = ? ");
-			sql.append("AND return_date IS ");
-			if (history) {
-				sql.append("NOT ");
-			}
-			sql.append("null ORDER BY id DESC;");
-
-			PreparedStatement ppst = con.prepareStatement(sql.toString());
-			ppst.setInt(1, user.getId());
-
-
-			ResultSet rs = ppst.executeQuery();
-			if (rs.next()) {
-				return rs.getInt("total");
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return 0;
+	public Integer userHistoryCount(int userId) {
+		return fetchOne(
+			rs -> rs.getInt("total"), _USER_HISTORY_COUNT_SQL, userId);
 	}
 
 	@Override
 	public List<LendingDTO> listByRecordId(int recordId) {
-		List<LendingDTO> list = new ArrayList<LendingDTO>();
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM lendings l ");
-			sql.append("INNER JOIN biblio_holdings h ");
-			sql.append("ON l.holding_id = h.id ");
-			sql.append("WHERE h.record_id = ?;");
-
-			PreparedStatement ppst = con.prepareStatement(sql.toString());
-			ppst.setInt(1, recordId);
-
-			ResultSet rs = ppst.executeQuery();
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return list;
+		return listWith(this::populateDTO, _LIST_BY_RECORD_ID_SQL, recordId);
 	}
 
 	@Override
 	public List<LendingDTO> listLendings(int offset, int limit) {
-		List<LendingDTO> list = new ArrayList<LendingDTO>();
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM lendings ");
-			sql.append("WHERE return_date IS null ");
-			sql.append("ORDER BY return_date ASC ");
-			sql.append("LIMIT ? OFFSET ?;");
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-
-			pst.setInt(1, limit);
-			pst.setInt(2, offset);
-
-			ResultSet rs = pst.executeQuery();
-
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return list;
+		return listWith(this::populateDTO, _LIST_LENDINGS_SQL, limit, offset);
 	}
 
 	@Override
-	public Integer countLendings() {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder countSql = new StringBuilder();
-			countSql.append("SELECT count(*) as total FROM lendings ");
-			countSql.append("WHERE return_date IS null;");
-			PreparedStatement pstCount = con.prepareStatement(countSql.toString());
-
-			ResultSet rsCount = pstCount.executeQuery();
-
-			int total = 0;
-			if (rsCount.next()) {
-				total = rsCount.getInt("total");
-			}
-
-			return total;
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-
+	public int countLendings() {
+		return fetchOne(rs -> rs.getInt("total"), _COUNT_LENDINGS_SQL);
 	}
 
 	@Override
-	public Integer getCurrentLendingsCount(UserDTO user) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT COUNT(*) FROM lendings ");
-			sql.append("WHERE user_id = ? ");
-			sql.append("AND return_date IS null;");
-
-			PreparedStatement ppst = con.prepareStatement(sql.toString());
-			ppst.setInt(1, user.getId());
-
-			ResultSet rs = ppst.executeQuery();
-			if (rs.next()) {
-				return rs.getInt(1);
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return 0;
+	public int getCurrentLendingsCount(int userId) {
+		return fetchOne(
+			rs -> rs.getInt(1), _GET_CURRENT_LENDINGS_COUNT_SQL, userId);
 	}
 
 	@Override
 	public boolean doLend(LendingDTO lending) {
-		return this.doLend(lending, null);
-	}
-
-	@Override
-	public boolean doLend(LendingDTO lending, Connection con) {
-		boolean externalCall = (con == null);
-		try {
-			if (externalCall) {
-				con = this.getConnection();
-			}
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO lendings (holding_id, user_id, previous_lending_id, ");
-			sql.append("expected_return_date, created_by) VALUES (?, ?, ?, ?, ?) ");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, lending.getHoldingId());
-			pst.setInt(2, lending.getUserId());
-			if (lending.getPreviousLendingId() != null) {
-				pst.setInt(3, lending.getPreviousLendingId());
-			} else {
-				pst.setNull(3, Types.INTEGER);
-			}
-			pst.setTimestamp(4, CalendarUtils.toSqlTimestamp(lending.getExpectedReturnDate()));
-			pst.setInt(5, lending.getCreatedBy());
-
-			return pst.executeUpdate() > 0;
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			if (externalCall) {
-				this.closeConnection(con);
-			}
-		}
+		return executeUpdate(
+			_DO_LEND_SQL, lending.getHoldingId(), lending.getUserId(),
+			integerOrNullable(lending.getPreviousLendingId()),
+			new Timestamp(lending.getExpectedReturnDate().getTime()),
+			lending.getCreatedBy());
 	}
 
 	@Override
 	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO lendings (holding_id, user_id, previous_lending_id, ");
-			sql.append("expected_return_date, created_by, id, created, return_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-
-			for (AbstractDTO abstractDto : dtoList) {
-				LendingDTO lending = (LendingDTO)abstractDto;
-				pst.setInt(1, lending.getHoldingId());
-				pst.setInt(2, lending.getUserId());
-				if (lending.getPreviousLendingId() != null) {
-					pst.setInt(3, lending.getPreviousLendingId());
-				} else {
-					pst.setNull(3, Types.INTEGER);
-				}
-				if (lending.getExpectedReturnDate() != null) {
-					pst.setDate(4, CalendarUtils.toSqlDate(lending.getExpectedReturnDate()));
-				} else {
-					pst.setNull(4, Types.DATE);
-				}
-				pst.setInt(5, lending.getCreatedBy());
-				pst.setInt(6, lending.getId());
-
-				if (lending.getCreated() != null) {
-					pst.setTimestamp(7, CalendarUtils.toSqlTimestamp(lending.getCreated()));
-				} else {
-					pst.setNull(7, Types.TIMESTAMP);
-				}
-
-				if (lending.getReturnDate() != null) {
-					pst.setTimestamp(8, CalendarUtils.toSqlTimestamp(lending.getReturnDate()));
-				} else {
-					pst.setNull(8, Types.DATE);
-				}
-				pst.addBatch();
-			}
-
-			pst.executeBatch();
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return true;
+		return executeBatchUpdate(
+			dtoList, LendingDTO.class, _SAVE_FROM_V3_SQL,
+			LendingDTO::getHoldingId, LendingDTO::getUserId,
+			integerOrNullable(LendingDTO::getPreviousLendingId),
+			dateOrNullable(LendingDTO::getExpectedReturnDate),
+			LendingDTO::getCreatedBy, LendingDTO::getId,
+			timestampOrNullable(LendingDTO::getCreated),
+			dateOrNullable(LendingDTO::getReturnDate));
 	}
 
 	@Override
 	public boolean doReturn(int lendingId) {
-		return this.doReturn(lendingId, null);
+		return executeUpdate(_DO_RETURN_SQL, lendingId);
 	}
 
 	@Override
-	public boolean doReturn(int lendingId, Connection con) {
-		boolean externalCall = (con == null);
-		try {
-			if (externalCall) {
-				con = this.getConnection();
-			}
+	public boolean doRenew(
+		int lendingId, Date expectedReturnDate, int createdBy) {
 
-			StringBuilder sql = new StringBuilder();
-			sql.append("UPDATE lendings ");
-			sql.append("SET return_date = now() ");
-			sql.append("WHERE id = ?;");
+		return onTransactionContext(con -> {
+			executeUpdate(con, _DO_RETURN_SQL, lendingId);
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, lendingId);
+			LendingDTO oldLending = get(lendingId);
 
-			return pst.executeUpdate() > 0;
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			if (externalCall) {
-				this.closeConnection(con);
-			}
-		}
-	}
-
-	@Override
-	public boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
-
-			this.doReturn(lendingId, con);
-
-			LendingDTO oldLending = this.get(lendingId);
 			oldLending.setPreviousLendingId(lendingId);
 			oldLending.setExpectedReturnDate(expectedReturnDate);
 			oldLending.setCreatedBy(createdBy);
-			this.doLend(oldLending, con);
 
-			this.commit(con);
+			executeUpdate(
+				con, _DO_LEND_SQL, oldLending.getHoldingId(),
+				oldLending.getUserId(),
+				integerOrNullable(oldLending.getPreviousLendingId()),
+				new Timestamp(oldLending.getExpectedReturnDate().getTime()),
+				oldLending.getCreatedBy());
 
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			closeConnection(con);
-		}
-		return true;
+			return true;
+		});
 	}
 
 	@Override
 	public Integer countLentHoldings(int recordId) {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT COUNT(*) FROM lendings L INNER JOIN biblio_holdings H ");
-			sql.append("ON L.holding_id = H.id ");
-			sql.append("WHERE H.record_id = ? AND H.availability = 'available' AND L.return_date is NULL;");
-
-			PreparedStatement ppst = con.prepareStatement(sql.toString());
-			ppst.setInt(1, recordId);
-
-			ResultSet rs = ppst.executeQuery();
-			while (rs.next()) {
-				return rs.getInt(1);
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return null;
+		return fetchOne(rs -> rs.getInt(1), _COUNT_LENT_HOLDINGS_SQL);
 	}
 
 	@Override
 	public LendingDTO getLatest(int holdingSerial, int userId) {
-		LendingDTO dto = null;
-		Connection con = null;
-		try {
-			con = this.getConnection();
-
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM lendings ");
-			sql.append("WHERE holding_id = ? AND user_id = ?");
-			sql.append("ORDER BY id DESC LIMIT 1;");
-
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, holdingSerial);
-			pst.setInt(2, userId);
-
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				dto = this.populateDTO(rs);
-			}
-
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-		return dto;
+		return fetchOne(
+			this::populateDTO, _GET_LATEST_SQL, holdingSerial, userId);
 	}
 
 	private LendingDTO populateDTO(ResultSet rs) throws SQLException {
@@ -561,5 +273,4 @@ public class LendingDAO extends AbstractDAO implements ILendingDAO {
 
 		return dto;
 	}
-
 }
