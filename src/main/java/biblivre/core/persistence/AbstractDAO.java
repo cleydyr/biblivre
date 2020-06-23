@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -564,20 +565,55 @@ public abstract class AbstractDAO {
 		return getNullableObject(value, NullableSQLObject.DATE);
 	}
 
+	protected <T> Function<T, Object> dateOrNullable(
+		Function<T, Date> getter) {
+
+		return dto -> dateOrNullable(getter.apply(dto));
+	}
+
 	protected Object stringOrNullable(String value) {
 		return getNullableObject(value, NullableSQLObject.VARCHAR);
+	}
+
+	protected <T> Function<T, Object> stringOrNullable(
+		Function<T, String> getter) {
+
+		return dto -> stringOrNullable(getter.apply(dto));
 	}
 
 	protected Object floatOrNullable(Float value) {
 		return getNullableObject(value, NullableSQLObject.FLOAT);
 	}
 
+	protected <T> Function<T, Object> floatOrNullable(
+		Function<T, Float> getter) {
+
+		return dto -> floatOrNullable(getter.apply(dto));
+	}
+
 	protected Object integerOrNullable(Integer value) {
 		return getNullableObject(value, NullableSQLObject.INTEGER);
 	}
 
+	protected <T> Function<T, Object> integerOrNullable(
+		Function<T, Integer> getter) {
+
+		return dto -> integerOrNullable(getter.apply(dto));
+	}
+
 	protected Object timestampOrNullable(Date value) {
-		return getNullableObject(value, NullableSQLObject.TIMESTAMP);
+		if (value == null) {
+			return  NullableSQLObject.TIMESTAMP;
+		}
+		else {
+			return new Timestamp(value.getTime());
+		}
+	}
+
+	protected <T> Function<T, Object> timestampOrNullable(
+		Function<T, Date> getter) {
+
+		return dto -> timestampOrNullable(getter.apply(dto));
 	}
 
 	private Object getNullableObject(Object value, NullableSQLObject deflt) {
