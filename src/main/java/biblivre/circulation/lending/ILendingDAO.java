@@ -9,11 +9,11 @@ import biblivre.core.AbstractDTO;
 
 public interface ILendingDAO {
 
-	LendingDTO get(Integer id);
+	LendingDTO get(int lendingId);
 
 	LendingDTO getCurrentLending(Integer holdingId);
 
-	Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids);
+	Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> lendingIds);
 
 	List<LendingDTO> listHoldingHistory(int holdingId);
 

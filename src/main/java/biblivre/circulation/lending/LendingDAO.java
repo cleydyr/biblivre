@@ -121,8 +121,8 @@ public class LendingDAO extends AbstractDAO implements ILendingDAO {
 		+ "ORDER BY id DESC";
 
 	@Override
-	public LendingDTO get(Integer id) {
-		return fetchOne(this::populateDTO, _GET_SQL, id);
+	public LendingDTO get(int lendingId) {
+		return fetchOne(this::populateDTO, _GET_SQL, lendingId);
 	}
 
 	@Override
@@ -132,14 +132,14 @@ public class LendingDAO extends AbstractDAO implements ILendingDAO {
 	}
 
 	@Override
-	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
-		String questionMarks = StringUtils.repeat("?", ", ", ids.size());
+	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> lendingIds) {
+		String questionMarks = StringUtils.repeat("?", ", ", lendingIds.size());
 
 		String sql = String.format(
 			_GET_CURRENT_LENDING_MAP_SQL_TPL, questionMarks);
 
 		Stream<LendingDTO> stream =
-			listWith(this::populateDTO, sql, ids.toArray()).stream();
+			listWith(this::populateDTO, sql, lendingIds.toArray()).stream();
 
 		return stream
 			.collect(Collectors.toMap(LendingDTO::getHoldingId,
