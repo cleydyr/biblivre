@@ -576,6 +576,10 @@ public abstract class AbstractDAO {
 		return getNullableObject(value, NullableSQLObject.INTEGER);
 	}
 
+	protected Object timestampOrNullable(Date value) {
+		return getNullableObject(value, NullableSQLObject.TIMESTAMP);
+	}
+
 	private Object getNullableObject(Object value, NullableSQLObject deflt) {
 		return value != null ? value : deflt;
 	}

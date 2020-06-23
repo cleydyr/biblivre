@@ -6,7 +6,8 @@ public enum NullableSQLObject {
 	DATE(Types.DATE),
 	VARCHAR(Types.VARCHAR),
 	FLOAT(Types.FLOAT),
-	INTEGER(Types.INTEGER);
+	INTEGER(Types.INTEGER),
+	TIMESTAMP(Types.TIMESTAMP);
 
 	private int type;
 

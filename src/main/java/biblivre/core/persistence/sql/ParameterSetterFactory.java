@@ -1,6 +1,7 @@
 package biblivre.core.persistence.sql;
 
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class ParameterSetterFactory {
@@ -34,6 +35,10 @@ public class ParameterSetterFactory {
 		else if (parameterClass.isAssignableFrom(NullableSQLObject.class)) {
 			return (PreparedStatement preparedStatement, Object parameter, int position) ->
 				preparedStatement.setNull(position, ((NullableSQLObject) parameter).getType());
+		}
+		else if (parameterClass.isAssignableFrom(Timestamp.class)) {
+			return (PreparedStatement preparedStatement, Object parameter, int position) ->
+				preparedStatement.setTimestamp(position, (Timestamp) parameter);
 		}
 		else {
 			throw new ParameterSetterNotFoundException(parameterClass);
