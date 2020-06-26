@@ -21,10 +21,12 @@ package biblivre.digitalmedia;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,15 +50,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 		Connection con = null;
 
 		try (InputStream is = file.getNewInputStream()) {
-			con = this.getConnection();
-			con.setAutoCommit(false);
-
-			PGConnection pgcon = this.getPGConnection(con);
-
-			if (pgcon == null) {
-				throw new Exception("Invalid Delegating Connection");
-			}
-
 			Integer serial = file.getId();
 			if (serial == null) {
 				serial = this.getNextSerial("digital_media_id_seq");
@@ -64,18 +57,21 @@ public class DigitalMediaDAO extends AbstractDAO {
 			}
 
 			if (serial != 0) {
-				LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-				long oid = lobj.createLO();
+				con = this.getConnection();
 
-				LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+				con.setAutoCommit(false);
 
-				byte buf[] = new byte[4096];
-				int bytesRead = 0;
-				while ((bytesRead = is.read(buf)) > 0) {
-					obj.write(buf, 0, bytesRead);
+				PGConnection pgcon = this.getPGConnection(con);
+
+				if (pgcon == null) {
+					throw new Exception("Invalid Delegating Connection");
 				}
 
-				obj.close();
+				LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+				long oid = lobj.createLO();
+
+				persistBinary(oid, is, file.getSize());
 
 				String sql = "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
 
@@ -103,14 +99,36 @@ public class DigitalMediaDAO extends AbstractDAO {
 		}
 	}
 
+	public void persistBinary(long oid, InputStream is, long size) throws SQLException, IOException {
+		Connection con = this.getConnection();
+
+		con.setAutoCommit(false);
+
+		PGConnection pgcon = this.getPGConnection(con);
+
+		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+		LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+
+		byte buf[] = new byte[4096];
+		int bytesRead = 0;
+		while ((bytesRead = is.read(buf)) > 0) {
+			obj.write(buf, 0, bytesRead);
+		}
+
+		obj.close();
+
+		con.close();
+	}
+
 
 	public final long importFile(File file) {
 		Connection con = null;
 
-		try (
-				InputStream is = new FileInputStream(file)
-				) {
+		try (InputStream is = new FileInputStream(file)) {
+
 			con = this.getConnection();
+
 			con.setAutoCommit(false);
 
 			PGConnection pgcon = this.getPGConnection(con);
@@ -120,17 +138,10 @@ public class DigitalMediaDAO extends AbstractDAO {
 			}
 
 			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
 			long oid = lobj.createLO();
 
-			LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-
-			byte buf[] = new byte[4096];
-			int bytesRead = 0;
-			while ((bytesRead = is.read(buf)) > 0) {
-				obj.write(buf, 0, bytesRead);
-			}
-
-			obj.close();
+			persistBinary(oid, is, file.length());
 
 			this.commit(con);
 
@@ -157,7 +168,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 				throw new Exception("Invalid Delegating Connection");
 			}
 
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
 			StringBuilder sql = new StringBuilder();
 			// We check both ID and FILE_NAME for security reasons, so users can't "guess"
@@ -170,17 +180,8 @@ public class DigitalMediaDAO extends AbstractDAO {
 			pst.setString(2, name);
 
 			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				long oid = rs.getLong("blob");
-				LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
 
-				file = new DatabaseFile(con, obj);
-
-				file.setName(rs.getString("name"));
-				file.setContentType(rs.getString("content_type"));
-				file.setLastModified(rs.getTimestamp("created").getTime());
-				file.setSize(rs.getLong("size"));
-			}
+			file = populateBiblivreFile(rs);
 		} catch (Exception e) {
 			this.rollback(con);
 			this.closeConnection(con);
@@ -189,6 +190,35 @@ public class DigitalMediaDAO extends AbstractDAO {
 		} finally {
 			// We must leave this connection open. file.close() will close it when needed.
 		}
+
+		return file;
+	}
+
+	public DatabaseFile populateBiblivreFile(ResultSet rs) throws SQLException {
+		DatabaseFile file = null;
+
+		Connection con = this.getConnection();
+
+		con.setAutoCommit(false);
+
+		PGConnection pgcon = this.getPGConnection(con);
+
+		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+		if (rs.next()) {
+			long oid = rs.getLong("blob");
+
+			LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
+
+			file = new DatabaseFile(con, obj);
+
+			file.setName(rs.getString("name"));
+			file.setContentType(rs.getString("content_type"));
+			file.setLastModified(rs.getTimestamp("created").getTime());
+			file.setSize(rs.getLong("size"));
+		}
+
+		con.close();
 
 		return file;
 	}
