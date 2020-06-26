@@ -24,7 +24,7 @@ import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 
 public class DigitalMediaBO extends AbstractBO {
-	protected DigitalMediaDAO dao;
+	protected BaseDigitalMediaDAO dao;
 
 	public static DigitalMediaBO getInstance(String schema) {
 		DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class, schema);
