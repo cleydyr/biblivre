@@ -40,6 +40,9 @@ public class S3DigitalMediaDAO extends BaseDigitalMediaDAO {
 
         @Override
         protected BiblivreFile populateBiblivreFile(ResultSet rs) throws Exception {
+        	S3File file = null;
+
+    		if (rs.next()) {
                 long oid = rs.getLong("blob");
 
                 GetObjectRequest request = GetObjectRequest.builder()
@@ -50,13 +53,13 @@ public class S3DigitalMediaDAO extends BaseDigitalMediaDAO {
                 ResponseInputStream<GetObjectResponse> inputStream =
                         s3.getObject(request);
 
-                S3File file = new S3File(inputStream);
+                file = new S3File(inputStream);
 
                 file.setName(rs.getString("name"));
                 file.setContentType(rs.getString("content_type"));
                 file.setLastModified(rs.getTimestamp("created").getTime());
                 file.setSize(rs.getLong("size"));
-
-                return file;
+    		}
+    		return file;
         }
 }
