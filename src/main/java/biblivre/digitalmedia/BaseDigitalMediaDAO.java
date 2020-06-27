@@ -151,7 +151,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 	
 			throw new DAOException(e);
 		} finally {
-			// We must leave this connection open. file.close() will close it when needed.
+			this.closeConnection(con);
 		}
 	
 		return file;
