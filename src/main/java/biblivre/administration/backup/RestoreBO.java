@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -405,9 +406,7 @@ public class RestoreBO extends AbstractBO {
 			p.waitFor();
 
 			return p.exitValue() == 0;
-		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			this.logger.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(bw);
@@ -726,7 +725,7 @@ public class RestoreBO extends AbstractBO {
 		}
 	}
 
-	private void processMediaRestore(File restore, BufferedWriter bw, String schema) throws IOException {
+	private void processMediaRestore(File restore, BufferedWriter bw, String schema) throws IOException, SQLException {
 		if (restore == null) {
 			this.logger.info("===== Skipping File 'null' =====");
 			return;
@@ -750,6 +749,9 @@ public class RestoreBO extends AbstractBO {
 		Pattern loCreatePattern = Pattern.compile("lo_create\\('(.*?)'\\)");
 		Pattern loOpenPattern = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
 
+		BaseDigitalMediaDAO digitalMediaDAO =
+			BaseDigitalMediaDAO.getInstance(Constants.GLOBAL_SCHEMA);
+
 		while (sc.hasNextLine()) {
 			inputLine = sc.nextLine();
 			State.incrementCurrentStep();
@@ -760,11 +762,12 @@ public class RestoreBO extends AbstractBO {
 				Matcher loCreateMatcher = loCreatePattern.matcher(inputLine);
 				if (loCreateMatcher.find()) {
 					String currentOid = loCreateMatcher.group(1);
-					Long newOid = this.dao.createOID();
+					Long newOid = digitalMediaDAO.createOID();
 
 					this.logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
 
-					oidMap.put(currentOid, this.dao.createOID());
+
+					oidMap.put(currentOid, digitalMediaDAO.createOID());
 				}
 
 			} else if (inputLine.startsWith("SELECT pg_catalog.lo_open")) {

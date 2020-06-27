@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,27 +38,18 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 
 		try (InputStream is = file.getNewInputStream()) {
 			Integer serial = file.getId();
+
 			if (serial == null) {
 				serial = this.getNextSerial("digital_media_id_seq");
 				file.setId(serial);
 			}
 
 			if (serial != 0) {
-				con = this.getConnection();
-
-				con.setAutoCommit(false);
-
-				PGConnection pgcon = this.getPGConnection(con);
-
-				if (pgcon == null) {
-					throw new Exception("Invalid Delegating Connection");
-				}
-
-				LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
-				long oid = lobj.createLO();
+				long oid = createOID();
 
 				persistBinary(oid, is, file.getSize());
+
+				con = this.getConnection();
 
 				String sql = "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
 
@@ -72,7 +64,6 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 				pst.close();
 				file.close();
 
-				this.commit(con);
 			} else {
 				this.rollback(con);
 			}
@@ -85,28 +76,31 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 		}
 	}
 
+	public long createOID() throws SQLException {
+		Connection con = this.getConnection();
+
+		con.setAutoCommit(false);
+
+		PGConnection pgcon = this.getPGConnection(con);
+
+		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+		long oid = lobj.createLO();
+
+		this.commit(con);
+
+		con.close();
+
+		return oid;
+	}
+
 	public final long importFile(File file) {
 		Connection con = null;
 
 		try (InputStream is = new FileInputStream(file)) {
-
-			con = this.getConnection();
-
-			con.setAutoCommit(false);
-
-			PGConnection pgcon = this.getPGConnection(con);
-
-			if (pgcon == null) {
-				throw new Exception("Invalid Delegating Connection");
-			}
-
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
-			long oid = lobj.createLO();
+			long oid = createOID();
 
 			persistBinary(oid, is, file.length());
-
-			this.commit(con);
 
 			return oid;
 		} catch (Exception e) {
