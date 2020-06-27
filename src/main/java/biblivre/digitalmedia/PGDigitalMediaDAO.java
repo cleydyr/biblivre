@@ -82,8 +82,6 @@ public class PGDigitalMediaDAO extends BaseDigitalMediaDAO {
 			file.setSize(rs.getLong("size"));
 		}
 
-		con.close();
-
 		return file;
 	}
 
