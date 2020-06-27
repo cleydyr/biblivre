@@ -32,6 +32,8 @@ public class BiblivreInitializer {
 				Updates.fixPostgreSQL81();
 				Updates.globalUpdate();
 
+				DigitalMediaMigrator.processMigration();
+
 				BiblivreInitializer.Z3950server = new Z3950ServerBO();
 				BiblivreInitializer.Z3950server.startServer();
 
