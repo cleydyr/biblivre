@@ -42,6 +42,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
 import biblivre.digitalmedia.DigitalMediaBO;
+import biblivre.digitalmedia.DigitalMediaEncodingUtil;
 
 public class Handler extends AbstractHandler {
 
@@ -140,17 +141,21 @@ public class Handler extends AbstractHandler {
 		try {
 			String photoData = request.getString("photo_data");
 			if (StringUtils.isNotBlank(photoData)) {
-				biblivre.digitalmedia.Handler mediaHandler = new biblivre.digitalmedia.Handler();
-
 				MemoryFile file = new MemoryFile();
 
 				byte[] arr = Base64.getDecoder().decode(photoData);
-				file.setContentType("image/png");
-				file.setName(user.getName() + ".png");
+				file.setName(user.getName() + ".jpeg");
 				file.setInputStream(new ByteArrayInputStream(arr));
 				file.setSize(arr.length);
 
-				String photoId = mediaHandler.uploadHelper(schema, file);
+				DigitalMediaBO digitalMediaBO = DigitalMediaBO.getInstance(schema);
+
+				Integer serial = digitalMediaBO.save(file);
+
+				String photoId =
+					DigitalMediaEncodingUtil.getEncodedId(
+						serial, file.getName());
+
 				String oldPhotoId = user.getPhotoId();
 
 				if (StringUtils.isNotBlank(photoId)) {

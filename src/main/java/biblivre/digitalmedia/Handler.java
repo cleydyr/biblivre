@@ -72,7 +72,12 @@ public class Handler extends AbstractHandler {
 			return;
 		}
 
-		String encodedId = this.uploadHelper(schema, file);
+		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
+
+		Integer serial = bo.save(file);
+
+		String encodedId =
+			DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
 
 		if (StringUtils.isNotBlank(encodedId)) {
 			try {
@@ -81,21 +86,6 @@ public class Handler extends AbstractHandler {
 		} else {
 			this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
 		}
-	}
-
-	public String uploadHelper(String schema, MemoryFile file) {
-		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
-
-		Integer serial = bo.save(file);
-
-		if (serial != null && serial != 0) {
-			String id = serial + ":" + file.getName();
-			String encodedId = new String(Base64.getEncoder().encode(id.getBytes()));
-
-			return encodedId.replaceAll("\\\\", "_");
-		}
-
-		return "";
 	}
 
 	private DatabaseFile _tryFetchingDBFileWithEncoding(
