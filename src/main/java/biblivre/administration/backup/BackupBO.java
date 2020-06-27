@@ -52,7 +52,6 @@ import biblivre.core.utils.PgDumpCommand.Format;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.BaseDigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
-import biblivre.digitalmedia.S3DigitalMediaDAO;
 
 public class BackupBO extends AbstractBO {
 	private BackupDAO dao;
@@ -266,7 +265,9 @@ public class BackupBO extends AbstractBO {
 
 	private boolean exportDigitalMedia(String schema, File path) {
 		OutputStream writer = null;
-		BaseDigitalMediaDAO dao = S3DigitalMediaDAO.getInstance(schema);
+
+		BaseDigitalMediaDAO dao = BaseDigitalMediaDAO.getInstance(schema);
+
 		List<DigitalMediaDTO> list = dao.list();
 
 		try {

@@ -30,7 +30,7 @@ public class DigitalMediaBO extends AbstractBO {
 		DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class, schema);
 
 		if (bo.dao == null) {
-			bo.dao = S3DigitalMediaDAO.getInstance(schema);
+			bo.dao = BaseDigitalMediaDAO.getInstance(schema);
 		}
 
 		return bo;

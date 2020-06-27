@@ -20,8 +20,8 @@ import biblivre.core.file.MemoryFile;
 
 public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 
-	public static S3DigitalMediaDAO getInstance(String schema) {
-		return (S3DigitalMediaDAO) AbstractDAO.getInstance(S3DigitalMediaDAO.class, schema);
+	public static BaseDigitalMediaDAO getInstance(String schema) {
+		return DigitalMediaDAOFactory.getDigitalMediaDAOImpl(schema);
 	}
 
 	protected abstract BiblivreFile populateBiblivreFile(ResultSet rs) throws Exception;

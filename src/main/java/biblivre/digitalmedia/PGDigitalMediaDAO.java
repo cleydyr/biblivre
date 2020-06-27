@@ -31,7 +31,7 @@ import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.file.DatabaseFile;
 
-public class DigitalMediaDAO extends BaseDigitalMediaDAO {
+public class PGDigitalMediaDAO extends BaseDigitalMediaDAO {
 
 	@Override
 	public void persistBinary(long oid, InputStream is, long size) throws SQLException, IOException {
