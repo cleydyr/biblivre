@@ -2,12 +2,10 @@ package biblivre.digitalmedia;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +15,18 @@ import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
-import biblivre.core.file.DatabaseFile;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 
 public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 
-	public static DigitalMediaDAO getInstance(String schema) {
-		return (DigitalMediaDAO) AbstractDAO.getInstance(DigitalMediaDAO.class, schema);
+	public static S3DigitalMediaDAO getInstance(String schema) {
+		return (S3DigitalMediaDAO) AbstractDAO.getInstance(S3DigitalMediaDAO.class, schema);
 	}
 
-	public abstract DatabaseFile populateBiblivreFile(ResultSet rs) throws SQLException;
+	protected abstract BiblivreFile populateBiblivreFile(ResultSet rs) throws Exception;
 
-	public abstract void persistBinary(long oid, InputStream is, long size) throws SQLException, IOException;
+	protected abstract void persistBinary(long oid, InputStream is, long size) throws Exception;
 
 	public BaseDigitalMediaDAO() {
 		super();
@@ -119,9 +117,9 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 		}
 	}
 
-	public final DatabaseFile load(int id, String name) {
+	public final BiblivreFile load(int id, String name) {
 		Connection con = null;
-		DatabaseFile file = null;
+		BiblivreFile file = null;
 	
 		try {
 			con = this.getConnection();

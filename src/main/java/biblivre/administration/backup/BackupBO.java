@@ -41,7 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import biblivre.core.AbstractBO;
 import biblivre.core.configurations.Configurations;
-import biblivre.core.file.DatabaseFile;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -51,8 +51,8 @@ import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.BaseDigitalMediaDAO;
-import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDTO;
+import biblivre.digitalmedia.S3DigitalMediaDAO;
 
 public class BackupBO extends AbstractBO {
 	private BackupDAO dao;
@@ -266,12 +266,12 @@ public class BackupBO extends AbstractBO {
 
 	private boolean exportDigitalMedia(String schema, File path) {
 		OutputStream writer = null;
-		BaseDigitalMediaDAO dao = DigitalMediaDAO.getInstance(schema);
+		BaseDigitalMediaDAO dao = S3DigitalMediaDAO.getInstance(schema);
 		List<DigitalMediaDTO> list = dao.list();
 
 		try {
 			for (DigitalMediaDTO dto : list) {
-				DatabaseFile file = dao.load(dto.getId(), dto.getName());
+				BiblivreFile file = dao.load(dto.getId(), dto.getName());
 				File destination = new File(path, dto.getId() + "_" + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
 				writer = new FileOutputStream(destination);
 

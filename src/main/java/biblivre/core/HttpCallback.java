@@ -1,5 +1,7 @@
 package biblivre.core;
 
+import java.io.IOException;
+
 /**
  * Interface funcional implementada como callback de requisições que necessitam de ações adicionais
  * após completadas.
@@ -9,5 +11,5 @@ package biblivre.core;
  */
 @FunctionalInterface
 public interface HttpCallback {
-	public void success();
+	public void success() throws IOException;
 }

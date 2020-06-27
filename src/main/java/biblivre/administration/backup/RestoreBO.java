@@ -52,7 +52,7 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.digitalmedia.BaseDigitalMediaDAO;
-import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.S3DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
 	private BackupDAO dao;
@@ -710,7 +710,7 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		Pattern filePattern = Pattern.compile("^(\\d+)_(.*)$");
-		BaseDigitalMediaDAO dao = DigitalMediaDAO.getInstance(Constants.GLOBAL_SCHEMA);
+		BaseDigitalMediaDAO dao = S3DigitalMediaDAO.getInstance(Constants.GLOBAL_SCHEMA);
 
 		for (File file : path.listFiles()) {
 			Matcher fileMatcher = filePattern.matcher(file.getName());

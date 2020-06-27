@@ -20,7 +20,7 @@
 package biblivre.digitalmedia;
 
 import biblivre.core.AbstractBO;
-import biblivre.core.file.DatabaseFile;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 
 public class DigitalMediaBO extends AbstractBO {
@@ -30,7 +30,7 @@ public class DigitalMediaBO extends AbstractBO {
 		DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class, schema);
 
 		if (bo.dao == null) {
-			bo.dao = DigitalMediaDAO.getInstance(schema);
+			bo.dao = S3DigitalMediaDAO.getInstance(schema);
 		}
 
 		return bo;
@@ -40,7 +40,7 @@ public class DigitalMediaBO extends AbstractBO {
 		return this.dao.save(file);
 	}
 
-	public DatabaseFile load(int id, String name) {
+	public BiblivreFile load(int id, String name) {
 		return this.dao.load(id, name);
 	}
 
