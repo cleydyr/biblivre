@@ -20,7 +20,7 @@ services:
     command: sh -c 'wait-for.sh -t 30 database:5432 -- /usr/local/tomcat/bin/catalina.sh run'
 
   database:
-    image: postgres
+    image: postgres:11
     ports:
     - "$DATABASE_HOST_PORT:5432"
     volumes:
