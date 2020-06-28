@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.digitalmedia;
+package biblivre.digitalmedia.postgres;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
-import biblivre.core.file.DatabaseFile;
+import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
 

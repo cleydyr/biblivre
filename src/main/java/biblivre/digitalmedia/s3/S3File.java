@@ -1,8 +1,9 @@
-package biblivre.core.file;
+package biblivre.digitalmedia.s3;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.utils.Constants;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
