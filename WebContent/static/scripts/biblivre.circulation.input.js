@@ -189,7 +189,7 @@ var CirculationInput = new Input({
 		$('#photo_upload_popup').hide();
 	},
 	applyPhotoSelection: function() {
-		var result = $('#photo_area canvas').get(0).toDataURL();
+		var result = $('#photo_area canvas').get(0).toDataURL('image/jpeg', 0.7);
 
 		this.root.find('img.user_photo').attr('src', result).data('changed', true);
 
