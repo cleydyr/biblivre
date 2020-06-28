@@ -2,12 +2,10 @@ package biblivre.digitalmedia;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,6 @@ import org.postgresql.largeobject.LargeObjectManager;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.BiblivreFile;
-import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 
 public abstract class DigitalMediaDAO extends AbstractDAO {
@@ -27,9 +24,9 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 		return (DigitalMediaDAO) AbstractDAO.getInstance(PostgresLargeObjectDigitalMediaDAO.class, schema);
 	}
 
-	protected abstract DatabaseFile populateBiblivreFile(ResultSet rs) throws Exception;
+	protected abstract BiblivreFile populateBiblivreFile(ResultSet rs) throws Exception;
 
-	protected abstract void persist(InputStream is, long oid, long size) throws SQLException, IOException;
+	protected abstract void persist(InputStream is, long oid, long size) throws Exception;
 
 	protected DigitalMediaDAO() {
 		super();
@@ -110,7 +107,7 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 	}
 
 	public final BiblivreFile load(int id, String name) {
-		DatabaseFile file = null;
+		BiblivreFile file = null;
 
 		try (Connection con = this.getConnection()) {
 			StringBuilder sql = new StringBuilder();
