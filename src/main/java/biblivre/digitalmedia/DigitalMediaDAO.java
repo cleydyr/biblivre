@@ -21,7 +21,8 @@ import biblivre.core.file.MemoryFile;
 public abstract class DigitalMediaDAO extends AbstractDAO {
 
 	public static DigitalMediaDAO getInstance(String schema) {
-		return (DigitalMediaDAO) AbstractDAO.getInstance(PostgresLargeObjectDigitalMediaDAO.class, schema);
+		return (DigitalMediaDAO)
+			DigitalMediaDAOFactory.getDigitalMediaDAOImpl(schema);
 	}
 
 	protected abstract BiblivreFile populateBiblivreFile(ResultSet rs) throws Exception;
