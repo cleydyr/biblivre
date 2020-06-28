@@ -42,7 +42,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import biblivre.core.AbstractBO;
 import biblivre.core.configurations.Configurations;
-import biblivre.core.file.DatabaseFile;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -270,7 +270,7 @@ public class BackupBO extends AbstractBO {
 
 		try {
 			for (DigitalMediaDTO dto : list) {
-				DatabaseFile file = dao.load(dto.getId(), dto.getName());
+				BiblivreFile file = dao.load(dto.getId(), dto.getName());
 				File destination = new File(path, dto.getId() + "_" + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
 				writer = new FileOutputStream(destination);
 

@@ -36,10 +36,6 @@ public class AbstractHandler {
 	protected int returnCode;
 	protected HttpCallback callback;
 
-	public interface HttpCallback {
-		public void success();
-	}
-
 	public AbstractHandler() {
 		this.setJson(new JSONObject());
 		this.setJspURL("");
