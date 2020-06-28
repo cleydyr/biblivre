@@ -31,6 +31,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
@@ -93,11 +94,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 
 		LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
 
-		byte buf[] = new byte[4096];
-		int bytesRead = 0;
-		while ((bytesRead = is.read(buf)) > 0) {
-			obj.write(buf, 0, bytesRead);
-		}
+		IOUtils.copy(is, obj.getOutputStream());
 
 		obj.close();
 
