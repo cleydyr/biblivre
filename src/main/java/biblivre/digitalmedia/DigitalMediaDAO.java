@@ -143,21 +143,9 @@ public class DigitalMediaDAO extends AbstractDAO {
 	}
 
 	public final BiblivreFile load(int id, String name) {
-		Connection con = null;
 		DatabaseFile file = null;
 
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
-
-			PGConnection pgcon = this.getPGConnection(con);
-
-			if (pgcon == null) {
-				throw new Exception("Invalid Delegating Connection");
-			}
-
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
+		try (Connection con = this.getConnection()) {
 			StringBuilder sql = new StringBuilder();
 			// We check both ID and FILE_NAME for security reasons, so users can't "guess"
 			// id's and get the files.
@@ -169,25 +157,44 @@ public class DigitalMediaDAO extends AbstractDAO {
 			pst.setString(2, name);
 
 			ResultSet rs = pst.executeQuery();
+
 			if (rs.next()) {
-				long oid = rs.getLong("blob");
-				LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
-
-				file = new DatabaseFile(con, obj);
-
-				file.setName(rs.getString("name"));
-				file.setContentType(rs.getString("content_type"));
-				file.setLastModified(rs.getTimestamp("created").getTime());
-				file.setSize(rs.getLong("size"));
+				file = populateBiblivreFile(rs);
 			}
 		} catch (Exception e) {
-			this.rollback(con);
-			this.closeConnection(con);
-
 			throw new DAOException(e);
-		} finally {
-			// We must leave this connection open. file.close() will close it when needed.
 		}
+
+		return file;
+	}
+
+	public DatabaseFile populateBiblivreFile(ResultSet rs)
+		throws Exception {
+
+		DatabaseFile file;
+
+		Connection con = this.getConnection();
+
+		con.setAutoCommit(false);
+
+		PGConnection pgcon = this.getPGConnection(con);
+
+		if (pgcon == null) {
+			throw new Exception("Invalid Delegating Connection");
+		}
+
+		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+		long oid = rs.getLong("blob");
+
+		LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
+
+		file = new DatabaseFile(con, obj);
+
+		file.setName(rs.getString("name"));
+		file.setContentType(rs.getString("content_type"));
+		file.setLastModified(rs.getTimestamp("created").getTime());
+		file.setSize(rs.getLong("size"));
 
 		return file;
 	}
