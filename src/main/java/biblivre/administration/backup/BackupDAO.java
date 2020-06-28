@@ -31,8 +31,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.postgresql.PGConnection;
-import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
@@ -141,28 +139,6 @@ public class BackupDAO extends AbstractDAO {
 		}
 
 		return dto;
-	}
-
-	public long createOID() {
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			con.setAutoCommit(false);
-
-			PGConnection pgcon = getPGConnection(con);
-
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-			long oid = lobj.createLO();
-
-			this.commit(con);
-
-			return oid;
-		} catch (Exception e) {
-			this.rollback(con);
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
 	}
 
 	public Set<String> listDatabaseSchemas() {
