@@ -337,7 +337,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<outputStyle>expanded</outputStyle>
+					<outputStyle>compressed</outputStyle>
 					<inputPath>${basedir}/WebContent/static/styles/scss</inputPath>
 					<outputPath>${basedir}/target/Biblivre4/static/styles</outputPath>
 				</configuration>
