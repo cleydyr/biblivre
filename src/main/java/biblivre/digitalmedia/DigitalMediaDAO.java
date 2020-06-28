@@ -59,7 +59,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 			if (serial != 0) {
 				long oid = createOID();
 
-				persist(is, oid);
+				persist(is, oid, file.getSize());
 
 				try (Connection con2 = this.getConnection()) {
 					String sql = "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
@@ -83,7 +83,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 		}
 	}
 
-	public void persist(InputStream is, long oid) throws SQLException, IOException {
+	public void persist(InputStream is, long oid, long size) throws SQLException, IOException {
 		Connection con = this.getConnection();
 
 		con.setAutoCommit(false);
@@ -129,7 +129,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 		try (InputStream is = new FileInputStream(file)) {
 			long oid = createOID();
 
-			persist(is, oid);
+			persist(is, oid, file.length());
 
 			return oid;
 		} catch (Exception e) {
