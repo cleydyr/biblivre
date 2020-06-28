@@ -38,21 +38,22 @@ public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
 	public void persist(InputStream is, long oid, long size)
 		throws SQLException, IOException {
 
-		Connection con = this.getConnection();
+		try (Connection con = this.getConnection()) {
 
-		con.setAutoCommit(false);
+			con.setAutoCommit(false);
 
-		PGConnection pgcon = this.getPGConnection(con);
+			PGConnection pgcon = this.getPGConnection(con);
 
-		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
-		LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+			LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
 
-		IOUtils.copy(is, obj.getOutputStream());
+			IOUtils.copy(is, obj.getOutputStream());
 
-		obj.close();
+			obj.close();
 
-		this.commit(con);
+			this.commit(con);
+		}
 	}
 
 	@Override
