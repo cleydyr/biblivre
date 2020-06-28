@@ -30,6 +30,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
+import biblivre.core.exceptions.DAOException;
 import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
@@ -88,4 +89,23 @@ public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
 		return file;
 	}
 
+	@Override
+	protected void deleteBlob(long oid) {
+		try (Connection con = this.getConnection()) {
+
+			con.setAutoCommit(false);
+
+			PGConnection pgcon = this.getPGConnection(con);
+
+			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+			lobj.delete(oid);
+
+			this.commit(con);
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+			throw new DAOException(e);
+		}
+	}
 }

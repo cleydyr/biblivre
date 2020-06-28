@@ -137,24 +137,42 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			// We check both ID and FILE_NAME for security reasons, so users can't "guess"
-			// id's and get the files.
-			sql.append("DELETE FROM digital_media ");
-			sql.append("WHERE id = ?;");
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			pst.setInt(1, id);
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT id, blob, name FROM digital_media;");
 
-			int deleted = pst.executeUpdate();
-			// Find out if we need to check how many records were deleted from DB.
-			return deleted > 0;
+			if (rs.next()) {
+				DigitalMediaDTO dto = new DigitalMediaDTO();
+				dto.setId(rs.getInt("id"));
+				dto.setBlob(rs.getLong("blob"));
+				dto.setName(rs.getString("name"));
+
+				StringBuilder sql = new StringBuilder();
+				// We check both ID and FILE_NAME for security reasons, so users can't "guess"
+				// id's and get the files.
+				sql.append("DELETE FROM digital_media ");
+				sql.append("WHERE id = ?;");
+
+				PreparedStatement pst = con.prepareStatement(sql.toString());
+				pst.setInt(1, id);
+
+				int deleted = pst.executeUpdate();
+
+				deleteBlob(dto.getBlob());
+
+				// Find out if we need to check how many records were deleted from DB.
+				return deleted > 0;
+			}
+
+			return false;
 		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
 			this.closeConnection(con);
 		}
 	}
+
+	protected abstract void deleteBlob(long blob);
 
 	public List<DigitalMediaDTO> list() {
 		Connection con = null;
@@ -179,5 +197,4 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 			this.closeConnection(con);
 		}
 	}
-
 }

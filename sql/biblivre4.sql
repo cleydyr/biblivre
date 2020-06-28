@@ -25,26 +25,6 @@ ALTER SCHEMA global OWNER TO biblivre;
 SET search_path = global, pg_catalog;
 
 --
--- TOC entry 265 (class 1255 OID 741237)
--- Dependencies: 785 8
--- Name: unlink(); Type: FUNCTION; Schema: global; Owner: biblivre
---
-
-CREATE FUNCTION unlink() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-	PERFORM pg_catalog.lo_unlink(OLD.blob);
-	RETURN OLD;
-EXCEPTION WHEN OTHERS THEN
-	RETURN OLD;
-END;
-$$;
-
-
-ALTER FUNCTION global.unlink() OWNER TO biblivre;
-
---
 -- TOC entry 444 (class 1255 OID 848588)
 -- Dependencies: 7 1501
 -- Name: update_translation(character varying, character varying, character varying, integer); Type: FUNCTION; Schema: global; Owner: biblivre
@@ -10903,15 +10883,6 @@ CREATE TRIGGER "TRIGGER_clear_vocabulary_indexing_type" AFTER DELETE ON vocabula
 --
 
 CREATE TRIGGER "TRIGGER_clear_vocabulary_record" AFTER DELETE ON vocabulary_records FOR EACH ROW EXECUTE PROCEDURE clear_record('vocabulary');
-
-
---
--- TOC entry 2762 (class 2620 OID 729935)
--- Dependencies: 265 206
--- Name: TRIGGER_digital_media_lo; Type: TRIGGER; Schema: bib4template; Owner: biblivre
---
-
-CREATE TRIGGER "TRIGGER_digital_media_lo" BEFORE DELETE ON digital_media FOR EACH ROW EXECUTE PROCEDURE global.unlink();
 
 
 --

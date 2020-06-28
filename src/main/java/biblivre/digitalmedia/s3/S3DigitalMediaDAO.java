@@ -10,6 +10,7 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -24,12 +25,6 @@ public class S3DigitalMediaDAO extends DigitalMediaDAO {
 			.build();
 
 		this.bucketName = System.getenv("S3_BUCKET_NAME");
-	}
-
-
-	@Override
-	public long createOID() {
-		return System.currentTimeMillis();
 	}
 
 	@Override
@@ -66,5 +61,15 @@ public class S3DigitalMediaDAO extends DigitalMediaDAO {
 		file.setSize(rs.getLong("size"));
 
 		return file;
+	}
+
+	@Override
+	protected void deleteBlob(long oid) {
+		DeleteObjectRequest request = DeleteObjectRequest.builder()
+			.bucket(bucketName)
+			.key(String.valueOf(oid))
+			.build();
+
+		s3.deleteObject(request);
 	}
 }
