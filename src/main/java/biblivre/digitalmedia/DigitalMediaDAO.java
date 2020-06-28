@@ -1,22 +1,3 @@
-/*******************************************************************************
- * Este arquivo é parte do Biblivre5.
- *
- * Biblivre5 é um software livre; você pode redistribuí-lo e/ou
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da
- * Licença, ou (caso queira) qualquer versão posterior.
- *
- * Este programa é distribuído na esperança de que possa ser  útil,
- * mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
- * MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
- * Licença Pública Geral GNU para maiores detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
- * com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
- *
- * @author Alberto Wagner <alberto@biblivre.org.br>
- * @author Danniel Willian <danniel@biblivre.org.br>
- ******************************************************************************/
 package biblivre.digitalmedia;
 
 import java.io.File;
@@ -31,9 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.postgresql.PGConnection;
-import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.AbstractDAO;
@@ -42,10 +21,18 @@ import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 
-public class DigitalMediaDAO extends AbstractDAO {
+public abstract class DigitalMediaDAO extends AbstractDAO {
 
 	public static DigitalMediaDAO getInstance(String schema) {
-		return (DigitalMediaDAO) AbstractDAO.getInstance(DigitalMediaDAO.class, schema);
+		return (DigitalMediaDAO) AbstractDAO.getInstance(PostgresLargeObjectDigitalMediaDAO.class, schema);
+	}
+
+	protected abstract DatabaseFile populateBiblivreFile(ResultSet rs) throws Exception;
+
+	protected abstract void persist(InputStream is, long oid, long size) throws SQLException, IOException;
+
+	protected DigitalMediaDAO() {
+		super();
 	}
 
 	public final Integer save(MemoryFile file) {
@@ -81,26 +68,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}
-	}
-
-	public void persist(InputStream is, long oid, long size)
-		throws SQLException, IOException {
-
-		Connection con = this.getConnection();
-
-		con.setAutoCommit(false);
-
-		PGConnection pgcon = this.getPGConnection(con);
-
-		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
-		LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-
-		IOUtils.copy(is, obj.getOutputStream());
-
-		obj.close();
-
-		this.commit(con);
 	}
 
 	public long createOID() {
@@ -164,37 +131,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}
-
-		return file;
-	}
-
-	public DatabaseFile populateBiblivreFile(ResultSet rs)
-		throws Exception {
-
-		DatabaseFile file;
-
-		Connection con = this.getConnection();
-
-		con.setAutoCommit(false);
-
-		PGConnection pgcon = this.getPGConnection(con);
-
-		if (pgcon == null) {
-			throw new Exception("Invalid Delegating Connection");
-		}
-
-		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
-		long oid = rs.getLong("blob");
-
-		LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
-
-		file = new DatabaseFile(con, obj);
-
-		file.setName(rs.getString("name"));
-		file.setContentType(rs.getString("content_type"));
-		file.setLastModified(rs.getTimestamp("created").getTime());
-		file.setSize(rs.getLong("size"));
 
 		return file;
 	}
