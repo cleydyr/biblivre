@@ -83,7 +83,9 @@ public class DigitalMediaDAO extends AbstractDAO {
 		}
 	}
 
-	public void persist(InputStream is, long oid, long size) throws SQLException, IOException {
+	public void persist(InputStream is, long oid, long size)
+		throws SQLException, IOException {
+
 		Connection con = this.getConnection();
 
 		con.setAutoCommit(false);
