@@ -21,10 +21,12 @@ package biblivre.digitalmedia;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,18 +47,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 	}
 
 	public final Integer save(MemoryFile file) {
-		Connection con = null;
-
 		try (InputStream is = file.getNewInputStream()) {
-			con = this.getConnection();
-			con.setAutoCommit(false);
-
-			PGConnection pgcon = this.getPGConnection(con);
-
-			if (pgcon == null) {
-				throw new Exception("Invalid Delegating Connection");
-			}
-
 			Integer serial = file.getId();
 			if (serial == null) {
 				serial = this.getNextSerial("digital_media_id_seq");
@@ -64,43 +55,53 @@ public class DigitalMediaDAO extends AbstractDAO {
 			}
 
 			if (serial != 0) {
-				LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-				long oid = lobj.createLO();
+				long oid = createOID();
 
-				LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+				persist(is, oid);
 
-				byte buf[] = new byte[4096];
-				int bytesRead = 0;
-				while ((bytesRead = is.read(buf)) > 0) {
-					obj.write(buf, 0, bytesRead);
+				try (Connection con2 = this.getConnection()) {
+					String sql = "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
+
+					PreparedStatement pst = con2.prepareStatement(sql);
+					pst.setInt(1, serial);
+					pst.setString(2, file.getName());
+					pst.setLong(3, oid);
+					pst.setString(4, file.getContentType());
+					pst.setLong(5, file.getSize());
+
+					pst.executeUpdate();
+					pst.close();
+					file.close();
 				}
 
-				obj.close();
-
-				String sql = "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
-
-				PreparedStatement pst = con.prepareStatement(sql);
-				pst.setInt(1, serial);
-				pst.setString(2, file.getName());
-				pst.setLong(3, oid);
-				pst.setString(4, file.getContentType());
-				pst.setLong(5, file.getSize());
-
-				pst.executeUpdate();
-				pst.close();
-				file.close();
-
-				this.commit(con);
-			} else {
-				this.rollback(con);
 			}
+
 			return serial;
 		} catch (Exception e) {
-			this.rollback(con);
 			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
 		}
+	}
+
+	public void persist(InputStream is, long oid) throws SQLException, IOException {
+		Connection con = this.getConnection();
+
+		con.setAutoCommit(false);
+
+		PGConnection pgcon = this.getPGConnection(con);
+
+		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+		LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+
+		byte buf[] = new byte[4096];
+		int bytesRead = 0;
+		while ((bytesRead = is.read(buf)) > 0) {
+			obj.write(buf, 0, bytesRead);
+		}
+
+		obj.close();
+
+		this.commit(con);
 	}
 
 	public long createOID() {
@@ -131,29 +132,9 @@ public class DigitalMediaDAO extends AbstractDAO {
 		try (
 				InputStream is = new FileInputStream(file)
 				) {
-			con = this.getConnection();
-			con.setAutoCommit(false);
+			long oid = createOID();
 
-			PGConnection pgcon = this.getPGConnection(con);
-
-			if (pgcon == null) {
-				throw new Exception("Invalid Delegating Connection");
-			}
-
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-			long oid = lobj.createLO();
-
-			LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-
-			byte buf[] = new byte[4096];
-			int bytesRead = 0;
-			while ((bytesRead = is.read(buf)) > 0) {
-				obj.write(buf, 0, bytesRead);
-			}
-
-			obj.close();
-
-			this.commit(con);
+			persist(is, oid);
 
 			return oid;
 		} catch (Exception e) {
