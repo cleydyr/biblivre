@@ -73,7 +73,6 @@ public class DigitalMediaDAO extends AbstractDAO {
 					pst.close();
 					file.close();
 				}
-
 			}
 
 			return serial;
@@ -129,9 +128,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 	public final long importFile(File file) {
 		Connection con = null;
 
-		try (
-				InputStream is = new FileInputStream(file)
-				) {
+		try (InputStream is = new FileInputStream(file)) {
 			long oid = createOID();
 
 			persist(is, oid);
