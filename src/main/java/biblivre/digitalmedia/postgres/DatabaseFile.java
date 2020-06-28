@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core.file;
+package biblivre.digitalmedia.postgres;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,6 +26,7 @@ import java.sql.SQLException;
 
 import org.postgresql.largeobject.LargeObject;
 
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.utils.Constants;
 
 public class DatabaseFile extends BiblivreFile {

@@ -1,11 +1,11 @@
-package biblivre.digitalmedia;
+package biblivre.digitalmedia.s3;
 
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.util.Collections;
 
 import biblivre.core.file.BiblivreFile;
-import biblivre.core.file.S3File;
+import biblivre.digitalmedia.DigitalMediaDAO;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
