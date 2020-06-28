@@ -37,6 +37,7 @@ import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.DatabaseFile;
 import biblivre.core.file.MemoryFile;
 
@@ -142,7 +143,7 @@ public class DigitalMediaDAO extends AbstractDAO {
 		}
 	}
 
-	public final DatabaseFile load(int id, String name) {
+	public final BiblivreFile load(int id, String name) {
 		Connection con = null;
 		DatabaseFile file = null;
 
