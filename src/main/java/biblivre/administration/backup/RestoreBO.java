@@ -55,12 +55,16 @@ import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
 	private BackupDAO dao;
+	private DigitalMediaDAO digitalMediaDAO;
 
 	public static RestoreBO getInstance(String schema) {
 		RestoreBO bo = AbstractBO.getInstance(RestoreBO.class, schema);
 
 		if (bo.dao == null) {
 			bo.dao = BackupDAO.getInstance(schema);
+		}
+		if (bo.digitalMediaDAO == null) {
+			bo.digitalMediaDAO = DigitalMediaDAO.getInstance(schema);
 		}
 
 		return bo;
@@ -758,11 +762,11 @@ public class RestoreBO extends AbstractBO {
 				Matcher loCreateMatcher = loCreatePattern.matcher(inputLine);
 				if (loCreateMatcher.find()) {
 					String currentOid = loCreateMatcher.group(1);
-					Long newOid = this.dao.createOID();
+					Long newOid = digitalMediaDAO.createOID();
 
 					this.logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
 
-					oidMap.put(currentOid, this.dao.createOID());
+					oidMap.put(currentOid, newOid);
 				}
 
 			} else if (inputLine.startsWith("SELECT pg_catalog.lo_open")) {
