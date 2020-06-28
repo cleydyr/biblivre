@@ -12,7 +12,7 @@ ENTRYPOINT echo "listen_addresses = '*'" >> /etc/postgresql/9.6/main/postgresql.
 &&	unzip $BRANCH_NAME.zip -d /tmp && rm $BRANCH_NAME.zip \
 &&	cd /tmp/$REPO_NAME-$BRANCH_NAME/lib/ \
 &&	cd .. \
-&&	mvn sass:update-stylesheets package -Ddebug=true \
+&&	mvn package -Ddebug=true \
 &&	su postgres -c "psql -U postgres -f sql/createdatabase.sql" \
 &&	su postgres -c "psql -U postgres -f sql/biblivre4.sql -d biblivre4" \
 &&  cp target/Biblivre4.war $CATALINA_HOME/webapps \
