@@ -131,13 +131,13 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO {
 			// id's and get the files.
 			sql.append("SELECT name, blob, content_type, size, created FROM digital_media ");
 			sql.append("WHERE id = ? AND name = ?;");
-	
+
 			PreparedStatement pst = con.prepareStatement(sql.toString());
 			pst.setInt(1, id);
 			pst.setString(2, name);
-	
+
 			ResultSet rs = pst.executeQuery();
-	
+
 			file = populateBiblivreFile(rs);
 		} catch (Exception e) {
 			this.rollback(con);

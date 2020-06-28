@@ -25,7 +25,7 @@ public class DigitalMediaDAOFactory extends AbstractDAO {
 			return (BaseDigitalMediaDAO) AbstractDAO.getInstance(klass, schema);
 		} catch (ClassNotFoundException e) {
 			logger.error(e.getMessage(), e);
-		
+
 			throw new DAOException(e);
 		}
 	}

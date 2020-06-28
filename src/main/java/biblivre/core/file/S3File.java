@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 public class S3File extends BiblivreFile {
 
 	private ResponseInputStream<GetObjectResponse> inputStream;
-	
+
 	public S3File(ResponseInputStream<GetObjectResponse> inputStream) {
 		this.inputStream = inputStream;
 	}
