@@ -12,10 +12,10 @@ services:
     - "PGUSER=biblivre"
     - "PGPASSWORD=$POSTGRES_PASSWORD"
     - "PGDATABASE=$POSTGRES_DB"
+    - "DIGITAL_MEDIA_DAO_IMPL=$DIGITAL_MEDIA_DAO_IMPL"
     depends_on:
     - database
     command: sh -c 'wait-for.sh -t 30 database:5432 -- /usr/local/tomcat/bin/catalina.sh run'
-
   database:
     image: postgres:11
     ports:
