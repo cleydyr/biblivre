@@ -4,6 +4,10 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.util.Collections;
 
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import biblivre.core.file.BiblivreFile;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -19,6 +23,9 @@ public class S3DigitalMediaDAO extends DigitalMediaDAO {
 	private final S3Client s3;
 	private final String bucketName;
 
+	private static final Logger logger =
+			LoggerFactory.getLogger(S3DigitalMediaDAO.class);
+
 	public S3DigitalMediaDAO() {
 		this.s3 = S3Client.builder()
 			.credentialsProvider(DefaultCredentialsProvider.create())
@@ -30,6 +37,10 @@ public class S3DigitalMediaDAO extends DigitalMediaDAO {
 	@Override
 	protected void persist(InputStream is, long oid, long size)
 		throws Exception {
+
+		logger.info(
+				"Uploading file to S3, (oid: {}, size: {})", oid,
+				FileUtils.byteCountToDisplaySize(size));
 
 		PutObjectRequest request = PutObjectRequest.builder()
 			.bucket(bucketName)
