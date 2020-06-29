@@ -28,6 +28,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
@@ -36,6 +38,8 @@ import biblivre.core.utils.TextUtils;
 import biblivre.update.UpdateService;
 
 public class Updates {
+
+	private static final Logger logger = LoggerFactory.getLogger(Updates.class);
 
 	public static String getVersion() {
 		return Constants.BIBLIVRE_VERSION;
@@ -52,6 +56,10 @@ public class Updates {
 
 			for (UpdateService updateService : serviceLoader) {
 				if (!installedVersions.contains(updateService.getVersion())) {
+					logger.info(
+						"Processing global update service {}.",
+						updateService.getVersion());
+
 					con = dao.beginUpdate();
 
 					updateService.doUpdate(con);
@@ -59,6 +67,11 @@ public class Updates {
 					dao.commitUpdate(updateService.getVersion(), con);
 
 					updateService.afterUpdate();
+				}
+				else {
+					logger.info(
+						"Skipping global update service {}.",
+						updateService.getVersion());
 				}
 			}
 
@@ -86,6 +99,10 @@ public class Updates {
 
 			for (UpdateService updateService : serviceLoader) {
 				if (!installedVersions.contains(updateService.getVersion())) {
+					logger.info(
+						"Processing update service {} for schema {}.",
+						updateService.getVersion(), schema);
+
 					con = dao.beginUpdate();
 
 					updateService.doUpdateScopedBySchema(con);
@@ -93,6 +110,11 @@ public class Updates {
 					dao.commitUpdate(updateService.getVersion(), con);
 
 					updateService.afterUpdate();
+				}
+				else {
+					logger.info(
+						"Skipping update service {} for schema {}.",
+						updateService.getVersion(), schema);
 				}
 			}
 
