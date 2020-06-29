@@ -43,6 +43,8 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.administration.setup.DataMigrationDAO;
 import biblivre.administration.setup.State;
@@ -52,10 +54,14 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.digitalmedia.DigitalMediaDAO;
+import org.apache.commons.lang3.StringUtils;
 
 public class RestoreBO extends AbstractBO {
 	private BackupDAO dao;
 	private DigitalMediaDAO digitalMediaDAO;
+
+	private static final Logger logger =
+		LoggerFactory.getLogger(RestoreBO.class);
 
 	public static RestoreBO getInstance(String schema) {
 		RestoreBO bo = AbstractBO.getInstance(RestoreBO.class, schema);
@@ -414,9 +420,9 @@ public class RestoreBO extends AbstractBO {
 
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(bw);
 		}
@@ -497,9 +503,9 @@ public class RestoreBO extends AbstractBO {
 
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 
 		return false;
@@ -617,9 +623,9 @@ public class RestoreBO extends AbstractBO {
 
 			return p.exitValue() == 0;
 		} catch (IOException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			this.logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(bw);
 			IOUtils.closeQuietly(sqlBr);
@@ -687,44 +693,56 @@ public class RestoreBO extends AbstractBO {
 
 	private void processRestore(File restore, BufferedWriter bw) throws IOException {
 		if (restore == null) {
-			this.logger.info("===== Skipping File 'null' =====");
+			logger.info("===== Skipping File 'null' =====");
 			return;
 		}
 
 		if (!restore.exists()) {
-			this.logger.info("===== Skipping File '" + restore.getName() + "' =====");
+			logger.info("===== Skipping File '" + restore.getName() + "' =====");
 			return;
 		}
 
-		this.logger.info("===== Restoring File '" + restore.getName() + "' =====");
+		logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-		BufferedReader sqlBr = new BufferedReader(new InputStreamReader(new FileInputStream(restore), Constants.DEFAULT_CHARSET));
+		BufferedReader reader =
+			new BufferedReader(
+				new InputStreamReader(new FileInputStream(restore), "UTF-8"));
 
-		char[] buf = new char[1024 * 8];
-		int len;
-		while ((len = sqlBr.read(buf)) > 0) {
-
-			for (int i = 0; i < len; i++) {
-				if (buf[i] == '\n') {
+		reader.lines()
+			.filter(StringUtils::isNotBlank)
+			.filter(this::isNotCommentLine)
+			.filter(this::isNotReferringToGlobalUnlink)
+			.forEach(line -> {
+				try {
+					bw.write(line);
+					bw.newLine();
 					State.incrementCurrentStep();
+				} catch (IOException e) {
+					logger.error(e.getMessage(), e);
 				}
-			}
+			});
 
-			bw.write(buf, 0, len);
-			bw.flush();
-		}
+		bw.flush();
 
-		sqlBr.close();
+		reader.close();
+	}
+
+	private boolean isNotCommentLine(String line) {
+		return !line.startsWith("--");
+	}
+
+	private boolean isNotReferringToGlobalUnlink(String line) {
+		return !line.contains("global.unlink");
 	}
 
 	private void processMediaRestoreFolder(File path, BufferedWriter bw) throws IOException {
 		if (path == null) {
-			this.logger.info("===== Skipping File 'null' =====");
+			logger.info("===== Skipping File 'null' =====");
 			return;
 		}
 
 		if (!path.exists() || !path.isDirectory()) {
-			this.logger.info("===== Skipping File '" + path.getName() + "' =====");
+			logger.info("===== Skipping File '" + path.getName() + "' =====");
 			return;
 		}
 
@@ -746,16 +764,16 @@ public class RestoreBO extends AbstractBO {
 
 	private void processMediaRestore(File restore, BufferedWriter bw, String schema) throws IOException {
 		if (restore == null) {
-			this.logger.info("===== Skipping File 'null' =====");
+			logger.info("===== Skipping File 'null' =====");
 			return;
 		}
 
 		if (!restore.exists()) {
-			this.logger.info("===== Skipping File '" + restore.getName() + "' =====");
+			logger.info("===== Skipping File '" + restore.getName() + "' =====");
 			return;
 		}
 
-		this.logger.info("===== Restoring File '" + restore.getName() + "' =====");
+		logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
 		Scanner sc = new Scanner(restore, Constants.DEFAULT_CHARSET.name());
 
@@ -781,7 +799,7 @@ public class RestoreBO extends AbstractBO {
 					String currentOid = loCreateMatcher.group(1);
 					Long newOid = digitalMediaDAO.createOID();
 
-					this.logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
+					logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
 
 					oidMap.put(currentOid, newOid);
 				}
@@ -802,7 +820,7 @@ public class RestoreBO extends AbstractBO {
 				// Ignore internal transactions (we are already using --single-transaction)
 			} else {
 				if (inputLine.startsWith("COPY")) {
-					this.logger.info(inputLine);
+					logger.info(inputLine);
 				}
 
 				bw.write(inputLine);
