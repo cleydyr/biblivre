@@ -328,10 +328,10 @@ public class RestoreBO extends AbstractBO {
 
 			if (restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
 				State.writeLog("Processing schema for '" + Constants.GLOBAL_SCHEMA + "'");
-				this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".schema." + extension), bw);
+				processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".schema." + extension), bw);
 
 				State.writeLog("Processing data for '" + Constants.GLOBAL_SCHEMA + "'");
-				this.processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".data." + extension), bw);
+				processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".data." + extension), bw);
 				bw.flush();
 			}
 
@@ -342,11 +342,11 @@ public class RestoreBO extends AbstractBO {
 
 				// Restoring database schema (creating tables and indexes)
 				State.writeLog("Processing schema for '" + schema + "'");
-				this.processRestore(new File(path, schema + ".schema." + extension), bw);
+				processRestore(new File(path, schema + ".schema." + extension), bw);
 
 				// Restoring database data
 				State.writeLog("Processing data for '" + schema + "'");
-				this.processRestore(new File(path, schema + ".data." + extension), bw);
+				processRestore(new File(path, schema + ".data." + extension), bw);
 
 				// Restoring digital media files
 				State.writeLog("Processing media for '" + schema + "'");
@@ -675,7 +675,7 @@ public class RestoreBO extends AbstractBO {
 		return dto;
 	}
 
-	private void processRestore(File restore, BufferedWriter bw) throws IOException {
+	public static void processRestore(File restore, BufferedWriter bw) throws IOException {
 		if (restore == null) {
 			logger.info("===== Skipping File 'null' =====");
 			return;
@@ -694,8 +694,8 @@ public class RestoreBO extends AbstractBO {
 
 		reader.lines()
 			.filter(StringUtils::isNotBlank)
-			.filter(this::isNotCommentLine)
-			.filter(this::isNotReferringToGlobalUnlink)
+			.filter(RestoreBO::_isNotCommentLine)
+			.filter(RestoreBO::_isNotReferringToGlobalUnlink)
 			.forEach(line -> {
 				try {
 					bw.write(line);
@@ -711,11 +711,11 @@ public class RestoreBO extends AbstractBO {
 		reader.close();
 	}
 
-	private boolean isNotCommentLine(String line) {
-		return !line.startsWith("--");
+	private static boolean _isNotCommentLine(String line) {
+		return !line.trim().startsWith("--");
 	}
 
-	private boolean isNotReferringToGlobalUnlink(String line) {
+	private static boolean _isNotReferringToGlobalUnlink(String line) {
 		return !line.contains("global.unlink");
 	}
 
