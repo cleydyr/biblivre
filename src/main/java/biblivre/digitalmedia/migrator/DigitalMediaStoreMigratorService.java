@@ -24,7 +24,7 @@ public class DigitalMediaStoreMigratorService {
 
 		throw new DigitalMediaStoreNotFoundException(
 			String.format(
-				"Can't find class corresponding to id: %d", migratorId));
+				"Can't find class corresponding to id: %s", migratorId));
 	}
 
 	public static Iterable<DigitalMediaStoreMigrator> getMigrators() {
