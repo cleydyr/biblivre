@@ -22,7 +22,6 @@ package biblivre.digitalmedia.postgres;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.io.IOUtils;
@@ -31,6 +30,7 @@ import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.file.BiblivreFile;
 import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
@@ -58,38 +58,6 @@ public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
 	}
 
 	@Override
-	public DatabaseFile populateBiblivreFile(ResultSet rs)
-		throws Exception {
-
-		DatabaseFile file;
-
-		Connection con = this.getConnection();
-
-		con.setAutoCommit(false);
-
-		PGConnection pgcon = this.getPGConnection(con);
-
-		if (pgcon == null) {
-			throw new Exception("Invalid Delegating Connection");
-		}
-
-		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
-		long oid = rs.getLong("blob");
-
-		LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
-
-		file = new DatabaseFile(con, obj);
-
-		file.setName(rs.getString("name"));
-		file.setContentType(rs.getString("content_type"));
-		file.setLastModified(rs.getTimestamp("created").getTime());
-		file.setSize(rs.getLong("size"));
-
-		return file;
-	}
-
-	@Override
 	protected void deleteBlob(long oid) {
 		try (Connection con = this.getConnection()) {
 
@@ -107,5 +75,24 @@ public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
 
 			throw new DAOException(e);
 		}
+	}
+
+	@Override
+	protected BiblivreFile getFile(long oid) throws Exception {
+		Connection con = this.getConnection();
+
+		con.setAutoCommit(false);
+
+		PGConnection pgcon = this.getPGConnection(con);
+
+		if (pgcon == null) {
+			throw new Exception("Invalid Delegating Connection");
+		}
+
+		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+
+		LargeObject obj = lobj.open(oid);
+
+		return new DatabaseFile(con, obj);
 	}
 }

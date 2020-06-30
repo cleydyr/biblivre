@@ -25,7 +25,7 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 			DigitalMediaDAOFactory.getDigitalMediaDAOImpl(schema);
 	}
 
-	protected abstract BiblivreFile populateBiblivreFile(ResultSet rs) throws Exception;
+	protected abstract BiblivreFile getFile(long oid) throws Exception;
 
 	protected abstract void persist(InputStream is, long oid, long size) throws Exception;
 
@@ -124,7 +124,16 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 			ResultSet rs = pst.executeQuery();
 
 			if (rs.next()) {
-				file = populateBiblivreFile(rs);
+				long oid = rs.getLong("blob");
+
+				file = getFile(oid);
+
+				file.setName(rs.getString("name"));
+				file.setContentType(rs.getString("content_type"));
+				file.setLastModified(rs.getTimestamp("created").getTime());
+				file.setSize(rs.getLong("size"));
+
+				return file;
 			}
 		} catch (Exception e) {
 			throw new DAOException(e);

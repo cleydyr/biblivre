@@ -1,7 +1,6 @@
 package biblivre.digitalmedia.s3;
 
 import java.io.InputStream;
-import java.sql.ResultSet;
 import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
@@ -53,9 +52,17 @@ public class S3DigitalMediaDAO extends DigitalMediaDAO {
 	}
 
 	@Override
-	protected BiblivreFile populateBiblivreFile(ResultSet rs) throws Exception {
-		long oid = rs.getLong("blob");
+	protected void deleteBlob(long oid) {
+		DeleteObjectRequest request = DeleteObjectRequest.builder()
+			.bucket(bucketName)
+			.key(String.valueOf(oid))
+			.build();
 
+		s3.deleteObject(request);
+	}
+
+	@Override
+	protected BiblivreFile getFile(long oid) throws Exception {
 		GetObjectRequest request = GetObjectRequest.builder()
 			.bucket(bucketName)
 			.key(String.valueOf(oid))
@@ -64,23 +71,6 @@ public class S3DigitalMediaDAO extends DigitalMediaDAO {
 		ResponseInputStream<GetObjectResponse> inputStream =
 			s3.getObject(request);
 
-		S3File file = new S3File(inputStream);
-
-		file.setName(rs.getString("name"));
-		file.setContentType(rs.getString("content_type"));
-		file.setLastModified(rs.getTimestamp("created").getTime());
-		file.setSize(rs.getLong("size"));
-
-		return file;
-	}
-
-	@Override
-	protected void deleteBlob(long oid) {
-		DeleteObjectRequest request = DeleteObjectRequest.builder()
-			.bucket(bucketName)
-			.key(String.valueOf(oid))
-			.build();
-
-		s3.deleteObject(request);
+		return new S3File(inputStream);
 	}
 }
