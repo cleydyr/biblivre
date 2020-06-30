@@ -85,12 +85,20 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
 
 				_delete(databaseFile);
 
-				databaseFile.close();
+				_cleanUp(databaseFile);
 			}
 			catch (SQLException e) {
 				throw new DAOException(e);
 			}
 		}
+	}
+
+	private void _cleanUp(DatabaseFile databaseFile) throws SQLException {
+		Connection connection = databaseFile.getConnection();
+
+		connection.commit();
+
+		connection.close();
 	}
 
 	private void _delete(DatabaseFile databaseFile) throws SQLException {
