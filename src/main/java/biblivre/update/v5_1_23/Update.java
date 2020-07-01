@@ -2,7 +2,9 @@ package biblivre.update.v5_1_23;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,18 +38,31 @@ public class Update implements UpdateService {
 	}
 
 	private void _addConfiguration(Connection connection) {
-		try (PreparedStatement statement = connection.prepareStatement(INSERT_CONFIG_SQL)) {
-			statement.execute();
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet =
+				statement.executeQuery(_CONFIGURATION_SELECT_SQL);
+
+			if (!resultSet.next()) {
+				try (PreparedStatement preparedStatement =
+					connection.prepareStatement(INSERT_CONFIG_SQL)) {
+
+					preparedStatement.execute();
+				}
+			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	private static final String _CONFIGURATION_SELECT_SQL =
+		"SELECT * FROM configurations "
+		+ "WHERE key = 'holding.label_print_paragraph_alignment'";
+
 	private static final String INSERT_CONFIG_SQL =
-			"INSERT INTO configurations (key, value, type, required, modified, modified_by) "
-					+ "VALUES ('holding.label_print_paragraph_alignment', 'ALIGN_CENTER', 'string',"
-					+ "true, '2014-06-21 11:42:07.150326', 1) ON CONFLICT DO NOTHING;";
+		"INSERT INTO configurations (key, value, type, required, modified, "
+			+ "modified_by) "
+		+ "VALUES ('holding.label_print_paragraph_alignment', 'ALIGN_CENTER', "
+			+ "'string',true, '2014-06-21 11:42:07.150326', 1)";
 
 	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
 	private static final Map<String, Map<String, String>> _TRANSLATIONS = new HashMap() {{
