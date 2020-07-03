@@ -53,6 +53,4 @@ Após baixar o código-fonte, para rodar o Biblivre em sua máquina será necess
 
 - Caso esteja usando o Eclipse IDE, configure a [integração com o Maven](http://www.eclipse.org/m2e/);
 
-- Depois disso você deve atualiza as folhas de estilo executando `mvn sass:update-stylesheets` na **raiz do projeto**.
-
 - Para compilar e criar o arquivo WAR você deve executar `mvn package`. O resultado deve estar presente na pasta target.
