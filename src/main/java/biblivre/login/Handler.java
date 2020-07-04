@@ -19,13 +19,24 @@
  ******************************************************************************/
 package biblivre.login;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.backup.BackupDTO;
@@ -69,6 +80,12 @@ public class Handler extends AbstractHandler {
 			
 			request.setSessionAttribute(schema, "logged_user", user);
 			request.setSessionAttribute(schema, "logged_user_atps", atps);
+			
+			try {
+				_populateMenus(request, atps);
+			} catch (Exception e) {	//Should never happen
+				this.setMessage(e);
+			}
 
 			if (atps.isAdmin()) {
 				boolean warningPassword = password.toLowerCase().equals("abracadabra");
@@ -118,6 +135,58 @@ public class Handler extends AbstractHandler {
 			this.jspURL = "/jsp/index.jsp";
 			return; 
 		}
+	}
+
+	private void _populateMenus(
+		ExtendedRequest request, AuthorizationPoints atps) throws Exception {
+
+		JSONObject json = new JSONObject(_readMenusFile());
+
+		Map<Integer, JSONObject> prioritizedMenus = _getPrioritizedMenus(json);
+
+		Map<String, List<String>> allowedModules = new LinkedHashMap<>();
+
+		prioritizedMenus.values().forEach(module -> {
+			JSONArray items = module.getJSONArray("items");
+
+			String name = module.getString("name");
+
+			items.forEach(obj -> {
+				String item = obj.toString();
+
+				if (atps.isAllowed("menu", item)) {
+					allowedModules
+						.computeIfAbsent(name, __ -> new ArrayList<>())
+						.add(item);
+				}
+			});
+		});
+
+		request.setSessionAttribute("modules", allowedModules);
+	}
+
+	private Map<Integer, JSONObject> _getPrioritizedMenus(JSONObject json) {
+		JSONArray modules = json.getJSONArray("modules");
+
+		Map<Integer, JSONObject> prioritizedMenus = new TreeMap<>();
+
+		modules.forEach(obj -> {
+			JSONObject module = (JSONObject) obj;
+
+			int priority = module.getInt("priority");
+
+			prioritizedMenus.put(priority, module);
+		});
+		return prioritizedMenus;
+	}
+
+	private String _readMenusFile() throws IOException, URISyntaxException {
+		return new String(
+			Files.readAllBytes(
+				Paths.get(
+					this.getClass()
+						.getResource("/META-INF/menus/menus.json")
+						.toURI())));
 	}
 
 	public void logout(ExtendedRequest request, ExtendedResponse response) {
