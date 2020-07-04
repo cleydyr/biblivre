@@ -26,10 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractHandler.HttpCallback;
 import biblivre.core.Dialog;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.HttpCallback;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;

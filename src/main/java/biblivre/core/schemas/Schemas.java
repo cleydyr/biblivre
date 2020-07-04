@@ -22,7 +22,6 @@ package biblivre.core.schemas;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -36,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.StaticBO;
@@ -299,7 +299,7 @@ public class Schemas extends StaticBO {
 
 			State.writeLog("Creating schema for '" + dto.getSchema() + "'");
 
-			Schemas.processRestore(template, bw);
+			RestoreBO.processRestore(template, bw);
 
 			State.writeLog("Renaming schema bib4template to " + dto.getSchema());
 			bw.write("ALTER SCHEMA \"bib4template\" RENAME TO \"" + dto.getSchema() + "\";\n");
@@ -327,38 +327,4 @@ public class Schemas extends StaticBO {
 
 		return false;
 	}
-
-	private static void processRestore(File restore, BufferedWriter bw) throws IOException {
-		if (restore == null) {
-			Schemas.logger.info("===== Skipping File 'null' =====");
-			return;
-		}
-
-		if (!restore.exists()) {
-			Schemas.logger.info("===== Skipping File '" + restore.getName() + "' =====");
-			return;
-		}
-
-		Schemas.logger.info("===== Creating schema based on template file '" + restore.getName() + "' =====");
-
-		try (BufferedReader sqlBr = new BufferedReader(
-				new InputStreamReader(
-						new FileInputStream(restore), Constants.DEFAULT_CHARSET))) {
-
-			char[] buf = new char[1024 * 8];
-			int len;
-			while ((len = sqlBr.read(buf)) > 0) {
-
-				for (int i = 0; i < len; i++) {
-					if (buf[i] == '\n') {
-						State.incrementCurrentStep();
-					}
-				}
-
-				bw.write(buf, 0, len);
-				bw.flush();
-			}
-		}
-	}
-
 }
