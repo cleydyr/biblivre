@@ -36,6 +36,8 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.backup.BackupScope;
@@ -57,6 +59,8 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
 
 public class Handler extends AbstractHandler {
+
+	private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
 	public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
 		String schema = request.getSchema();
@@ -133,6 +137,7 @@ public class Handler extends AbstractHandler {
 			RestoreBO rbo = RestoreBO.getInstance(schema);
 			dto = rbo.getRestoreDTO(backup.getName());
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			success = false;
 		}
 		try {
