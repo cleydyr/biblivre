@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.LoggerFactory;
 
 import biblivre.core.utils.Constants;
 
@@ -386,15 +385,15 @@ public class AuthorizationPoints implements Serializable {
 	}
 
 	public boolean isAllowed(String module, String action) {
-		Pair<String, String> pair = Pair.of(module, action);
-		Boolean allowed = this.points.get(pair);
-
-		if (allowed == null) {
-			LoggerFactory.getLogger(this.getClass()).error("Action not found: " + pair);
-			return false;
+		if (admin) {
+			return true;
 		}
 
-		return (this.admin || allowed);
+		Pair<String, String> pair = Pair.of(module, action);
+
+		Boolean allowed = this.points.get(pair);
+
+		return allowed != null && allowed;
 	}
 
 	public boolean isAllowed(AuthorizationPointTypes type) {

@@ -89,62 +89,14 @@
 						</c:when>
 						<c:otherwise>
 							<c:choose>
-								<c:when  test="${isEmployee}">
-									<menu:level module="search">
-										<menu:item module="search" action="search_bibliographic"  />
-										<menu:item module="search" action="search_authorities"  />
-										<menu:item module="search" action="search_vocabulary"  />
-										<menu:item module="search" action="search_z3950"  />
-									</menu:level>
-									<menu:level module="circulation">
-										<menu:item module="circulation" action="circulation_user"  />
-										<menu:item module="circulation" action="circulation_lending"  />
-										<menu:item module="circulation" action="circulation_reservation"  />
-										<menu:item module="circulation" action="circulation_access"  />
-										<menu:item module="circulation" action="circulation_user_cards"  />
-									</menu:level>
-									<menu:level module="cataloging">
-										<menu:item module="cataloging" action="cataloging_bibliographic"  />
-										<menu:item module="cataloging" action="cataloging_authorities"  />
-										<menu:item module="cataloging" action="cataloging_vocabulary"  />
-										<menu:item module="cataloging" action="cataloging_import"  />
-										<menu:item module="cataloging" action="cataloging_labels"  />
-									</menu:level>
-									<menu:level module="acquisition">
-										<menu:item module="acquisition" action="acquisition_supplier"  />
-										<menu:item module="acquisition" action="acquisition_request"  />
-										<menu:item module="acquisition" action="acquisition_quotation"  />
-										<menu:item module="acquisition" action="acquisition_order"  />
-									</menu:level>
-									<menu:level module="administration">
-										<menu:item module="administration" action="administration_password"  />
-										<menu:item module="administration" action="administration_permissions"  />
-										<menu:item module="administration" action="administration_user_types"  />
-										<menu:item module="administration" action="administration_access_cards"  />
-										<menu:item module="administration" action="administration_z3950_servers"  />
-										<menu:item module="administration" action="administration_reports"  />
-										<menu:item module="administration" action="administration_maintenance"  />
-										<menu:item module="administration" action="administration_configurations"  />
-										<menu:item module="administration" action="administration_translations"  />
-										<menu:item module="administration" action="administration_brief_customization"  />
-										<menu:item module="administration" action="administration_form_customization"  />
-									</menu:level>
-									<menu:help />
-									<menu:logout />
-								</c:when>
-								<c:when  test="${isLogged}">
-									<menu:level module="search">
-										<menu:item module="search" action="search_bibliographic"  />
-										<menu:item module="search" action="search_authorities"  />
-										<menu:item module="search" action="search_vocabulary"  />
-										<menu:item module="search" action="search_z3950"  />
-									</menu:level>
-									<menu:level module="self_circulation">
-										<menu:item module="self_circulation" action="circulation_user_reservation"  />
-									</menu:level>
-									<menu:level module="administration">
-										<menu:item module="administration" action="administration_password"  />
-									</menu:level>
+								<c:when test="${isEmployee or isLogged}">
+									<c:forEach var="entry" items="${sessionScope.modules}"> <%-- Map<String, List<String>> --%>
+										<menu:level module="${entry.key}">
+											<c:forEach var="action" items="${entry.value}">
+												<menu:item module="${entry.key}" action="${action}"/>
+											</c:forEach>
+										</menu:level>
+									</c:forEach>
 									<menu:help />
 									<menu:logout />
 								</c:when>
