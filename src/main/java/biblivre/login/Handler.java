@@ -218,15 +218,15 @@ public class Handler extends AbstractHandler {
 
 				String name = module.getString("name");
 
-				items.forEach(obj -> {
-					String item = obj.toString();
+				for (int i = 0; i < items.length(); i++) {
+					String item = items.getString(i);
 
 					if (atps.isAllowed("menu", item)) {
 						allowedModules
 							.computeIfAbsent(name, __ -> new ArrayList<>())
 							.add(item);
 					}
-				});
+				}
 			});
 
 			request.setSessionAttribute("modules", allowedModules);
@@ -239,13 +239,14 @@ public class Handler extends AbstractHandler {
 
 			Map<Integer, JSONObject> prioritizedMenus = new TreeMap<>();
 
-			modules.forEach(obj -> {
-				JSONObject module = (JSONObject) obj;
+			for (int i = 0; i < modules.length(); i++) {
+				JSONObject module = modules.getJSONObject(i);
 
 				int priority = module.getInt("priority");
 
 				prioritizedMenus.put(priority, module);
-			});
+			}
+
 			return prioritizedMenus;
 		}
 
