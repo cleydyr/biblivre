@@ -1,0 +1,63 @@
+{
+    "modules": [
+        {
+            "name": "search",
+            "priority": 1,
+            "items": [
+                "search_bibliographic",
+                "search_authorities",
+                "search_vocabulary",
+                "search_z3950"
+            ]
+        },
+        {
+            "name": "circulation",
+            "priority": 2,
+            "items": [
+                "circulation_user",
+                "circulation_lending",
+                "circulation_reservation",
+                "circulation_access",
+                "circulation_user_cards"
+            ]
+        },
+        {
+            "name": "cataloging",
+            "priority": 3,
+            "items": [
+                "cataloging_bibliographic",
+                "cataloging_authorities",
+                "cataloging_vocabulary",
+                "cataloging_import",
+                "cataloging_labels"
+            ]
+        },
+        {
+            "name": "acquisition",
+            "priority": 4,
+            "items": [
+                "acquisition_supplier",
+                "acquisition_request",
+                "acquisition_quotation",
+                "acquisition_order"
+            ]
+        },
+        {
+            "name": "administration",
+            "priority": 5,
+            "items": [
+                "administration_password",
+                "administration_permissions",
+                "administration_user_types",
+                "administration_access_cards",
+                "administration_z3950_servers",
+                "administration_reports",
+                "administration_maintenance",
+                "administration_configurations",
+                "administration_translations",
+                "administration_brief_customization",
+                "administration_form_customization"
+            ]
+        }
+    ]
+}
