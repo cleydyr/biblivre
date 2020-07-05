@@ -22,10 +22,9 @@ package biblivre.core.auth;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.tuple.Pair;
 
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 
 
 public class AuthorizationPoints implements Serializable {
@@ -325,7 +324,7 @@ public class AuthorizationPoints implements Serializable {
 	}
 
 	private void addAuthPoint(String module, String action, AuthorizationPointTypes ... types) {
-		Pair<String, String> pair = new Pair<String, String>(module, action);
+		Pair<String, String> pair = Pair.of(module, action);
 
 		boolean matchesThisSchema = false;
 
@@ -386,15 +385,15 @@ public class AuthorizationPoints implements Serializable {
 	}
 
 	public boolean isAllowed(String module, String action) {
-		Pair<String, String> pair = new Pair<String, String>(module, action);
-		Boolean allowed = this.points.get(pair);
-
-		if (allowed == null) {
-			LoggerFactory.getLogger(this.getClass()).error("Action not found: " + pair);
-			return false;
+		if (admin) {
+			return true;
 		}
 
-		return (this.admin || allowed);
+		Pair<String, String> pair = Pair.of(module, action);
+
+		Boolean allowed = this.points.get(pair);
+
+		return allowed != null && allowed;
 	}
 
 	public boolean isAllowed(AuthorizationPointTypes type) {
