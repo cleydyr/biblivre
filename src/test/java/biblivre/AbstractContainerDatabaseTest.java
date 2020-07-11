@@ -1,0 +1,97 @@
+package biblivre;
+
+import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
+
+import com.github.stefanbirkner.systemlambda.Statement;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import biblivre.core.utils.Constants;
+
+public abstract class AbstractContainerDatabaseTest {
+	private static DataSource dataSource;
+
+	protected static PostgreSQLContainer<?> container =
+		new PostgreSQLContainer<>("postgres:11");
+
+	@BeforeAll
+	public static void setUp() {
+		try {
+			container.start();
+
+			String createDatabaseSQL =
+				_readSQLAsString("sql/createdatabase.sql");
+
+			performQuery(container, createDatabaseSQL);
+
+			String populateDatabaseSQL =
+				_readSQLAsString("sql/biblivre4.sql");
+
+			performQuery(container, populateDatabaseSQL);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected static void performQuery(
+		JdbcDatabaseContainer<?> container, String sql)
+		throws SQLException {
+
+		DataSource ds = getDataSource(container);
+		java.sql.Statement statement = ds.getConnection().createStatement();
+		statement.execute(sql);
+	}
+
+	protected static DataSource getDataSource(
+		JdbcDatabaseContainer<?> container) {
+
+		if (dataSource == null) {
+			HikariConfig hikariConfig = new HikariConfig();
+			hikariConfig.setJdbcUrl(container.getJdbcUrl());
+			hikariConfig.setUsername(container.getUsername());
+			hikariConfig.setPassword(container.getPassword());
+			hikariConfig.setDriverClassName(container.getDriverClassName());
+
+			dataSource = new HikariDataSource(hikariConfig);
+		}
+
+		return dataSource;
+	}
+
+	private static String _readSQLAsString(String path) throws Exception {
+		ClassLoader classLoader =
+			AbstractContainerDatabaseTest.class.getClassLoader();
+
+		URL resource = classLoader.getResource(path);
+
+		return new String(Files.readAllBytes(Paths.get(resource.toURI())));
+	}
+
+	protected void execute(Statement statement) {
+		try {
+			withEnvironmentVariable(
+				Constants.DATABASE_PORT,
+				String.valueOf(
+					container.getMappedPort(Constants.DEFAULT_POSTGRESQL_PORT)))
+			.and(Constants.DATABASE_NAME, container.getDatabaseName())
+			.and(Constants.DATABASE_PASSWORD, container.getPassword())
+			.and(Constants.DATABASE_USERNAME, container.getUsername())
+			.execute(statement);
+		} catch (Exception e) {
+			fail(e);
+		}
+	}
+}
