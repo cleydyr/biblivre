@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 
 public abstract class AbstractDAO {
 	private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
@@ -49,30 +48,60 @@ public abstract class AbstractDAO {
 	private String schema;
 	private String dataSourceName;
 
-	private static HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO> instances = new HashMap<Pair<Class<? extends AbstractDAO>, String>, AbstractDAO>();
+	private DataSourceProvider dataSourceProvider;
+
+	private static Map<String, AbstractDAO> instances = new HashMap<>();
 
 	protected AbstractDAO() {
 	}
 
-	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema) {
-		return AbstractDAO.getInstance(cls, schema, "biblivre4");
+	protected static AbstractDAO getInstance(
+		DataSourceProvider dataSourceProvider, Class<? extends AbstractDAO> cls,
+		String schema) {
+
+		return AbstractDAO.getInstance(
+			dataSourceProvider, cls, schema, Constants.DEFAULT_DATABASE_NAME);
 	}
 
-	protected static AbstractDAO getInstance(Class<? extends AbstractDAO> cls, String schema, String dataSourceName) {
-		Pair<Class<? extends AbstractDAO>, String> pair = new Pair<Class<? extends AbstractDAO>, String>(cls, schema + ":" + dataSourceName);
-		AbstractDAO instance = AbstractDAO.instances.get(pair);
+	protected static AbstractDAO getInstance(
+		Class<? extends AbstractDAO> cls, String schema) {
+
+		return AbstractDAO.getInstance(
+			cls, schema, Constants.DEFAULT_DATABASE_NAME);
+	}
+
+	public static AbstractDAO getInstance(
+		Class<? extends AbstractDAO> cls, String schema,
+		String dataSourceName) {
+
+		DataSourceProvider dataSourceProvider =
+			new HikariDataSourceProvider();
+
+		return getInstance(dataSourceProvider, cls, schema, dataSourceName);
+	}
+
+	protected static AbstractDAO getInstance(
+		DataSourceProvider dataSourceProvider, Class<? extends AbstractDAO> cls,
+		String schema, String dataSourceName) {
+
+		String key = cls.getName() + "#" + schema + ":" + dataSourceName;
+
+		AbstractDAO instance = AbstractDAO.instances.get(key);
 
 		if (instance == null) {
 			if (!AbstractDAO.class.isAssignableFrom(cls)) {
-				throw new IllegalArgumentException("DAO: getInstance: Class " + cls.getName() + " is not a subclass of DAO.");
+				throw new IllegalArgumentException(
+					"DAO: getInstance: Class " + cls.getName() +
+					" is not a subclass of DAO.");
 			}
 
 			try {
 				instance = cls.newInstance();
 				instance.setSchema(schema);
 				instance.setDataSourceName(dataSourceName);
+				instance.dataSourceProvider = dataSourceProvider;
 
-				AbstractDAO.instances.put(pair, instance);
+				AbstractDAO.instances.put(key, instance);
 			} catch(Exception ex) {}
 		}
 
@@ -141,17 +170,17 @@ public abstract class AbstractDAO {
 	}
 
 	private final DataSource getDataSource() {
-		DataSource ds = dataSourceMap.get(this.getDataSourceName());
+		DataSource ds = dataSourceMap.get(dataSourceName);
 
 		if (ds == null) {
-			ds = HikariDataSourceConnectionProvider.getDataSource();
+			ds = dataSourceProvider.getDataSource(dataSourceName);
 		}
 
 		if (ds == null) {
 			this.logger.error("[DAO.Constructor] Data Source not found.");
 			throw new RuntimeException("Data Source not found!");
 		} else {
-			dataSourceMap.put(this.getDataSourceName(), ds);
+			dataSourceMap.put(dataSourceName, ds);
 		}
 
 		return ds;
