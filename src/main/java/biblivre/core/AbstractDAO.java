@@ -50,8 +50,7 @@ public abstract class AbstractDAO {
 
 	private DataSourceProvider dataSourceProvider;
 
-	private static Map<String, AbstractDAO> instances =
-		new HashMap<>();
+	private static Map<String, AbstractDAO> instances = new HashMap<>();
 
 	protected AbstractDAO() {
 	}
