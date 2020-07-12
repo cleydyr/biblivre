@@ -50,28 +50,29 @@ public abstract class AbstractDAO {
 
 	private DataSourceProvider dataSourceProvider;
 
-	private static Map<String, AbstractDAO> instances = new HashMap<>();
+	private static Map<String, AbstractDAO> instances =
+		new HashMap<>();
 
 	protected AbstractDAO() {
 	}
 
-	protected static AbstractDAO getInstance(
-		DataSourceProvider dataSourceProvider, Class<? extends AbstractDAO> cls,
+	public static <T extends AbstractDAO> T getInstance(
+		DataSourceProvider dataSourceProvider, Class<T> cls,
 		String schema) {
 
 		return AbstractDAO.getInstance(
 			dataSourceProvider, cls, schema, Constants.DEFAULT_DATABASE_NAME);
 	}
 
-	protected static AbstractDAO getInstance(
-		Class<? extends AbstractDAO> cls, String schema) {
+	public static <T extends AbstractDAO> T getInstance(
+		Class<T> cls, String schema) {
 
 		return AbstractDAO.getInstance(
 			cls, schema, Constants.DEFAULT_DATABASE_NAME);
 	}
 
-	public static AbstractDAO getInstance(
-		Class<? extends AbstractDAO> cls, String schema,
+	public static <T extends AbstractDAO> T getInstance(
+		Class<T> cls, String schema,
 		String dataSourceName) {
 
 		DataSourceProvider dataSourceProvider =
@@ -80,8 +81,9 @@ public abstract class AbstractDAO {
 		return getInstance(dataSourceProvider, cls, schema, dataSourceName);
 	}
 
-	protected static AbstractDAO getInstance(
-		DataSourceProvider dataSourceProvider, Class<? extends AbstractDAO> cls,
+	@SuppressWarnings("unchecked")
+	public static <T extends AbstractDAO> T getInstance(
+		DataSourceProvider dataSourceProvider, Class<T> cls,
 		String schema, String dataSourceName) {
 
 		String key = cls.getName() + "#" + schema + ":" + dataSourceName;
@@ -105,7 +107,7 @@ public abstract class AbstractDAO {
 			} catch(Exception ex) {}
 		}
 
-		return instance;
+		return (T) instance;
 	}
 
 	public boolean testDatabaseConnection() {
