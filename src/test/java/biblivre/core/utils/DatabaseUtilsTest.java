@@ -118,7 +118,7 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
 		execute(() -> {
 			assertEquals(
 				container.getMappedPort(Constants.DEFAULT_POSTGRESQL_PORT),
-				Integer.parseInt(DatabaseUtils.getDatabasePort()));
+				Integer.valueOf(DatabaseUtils.getDatabasePort()));
 		});
 	}
 
