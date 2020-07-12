@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -29,11 +31,19 @@ public abstract class AbstractContainerDatabaseTest {
 
 	private static boolean setup = false;
 
+	private static final Logger logger =
+		LoggerFactory.getLogger(AbstractContainerDatabaseTest.class);
+
 	@BeforeAll
 	static void setUp() {
 		if (!setup) {
 			try {
+				logger.info("Starting container");
+
 				container.start();
+
+				logger.info("Creating and populating database with default "
+					+ "data");
 
 				String createDatabaseSQL =
 					_readSQLAsString("sql/createdatabase.sql");
@@ -45,6 +55,7 @@ public abstract class AbstractContainerDatabaseTest {
 
 				performQuery(container, populateDatabaseSQL);
 
+				logger.info("Setup complete!");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
