@@ -18,6 +18,7 @@ import com.github.stefanbirkner.systemlambda.Statement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import biblivre.core.AbstractDAO;
 import biblivre.core.utils.Constants;
 
 public abstract class AbstractContainerDatabaseTest {
@@ -26,24 +27,35 @@ public abstract class AbstractContainerDatabaseTest {
 	protected static PostgreSQLContainer<?> container =
 		new PostgreSQLContainer<>("postgres:11");
 
+	private static boolean setup = false;
+
 	@BeforeAll
-	public static void setUp() {
-		try {
-			container.start();
+	static void setUp() {
+		if (!setup) {
+			try {
+				container.start();
 
-			String createDatabaseSQL =
-				_readSQLAsString("sql/createdatabase.sql");
+				String createDatabaseSQL =
+					_readSQLAsString("sql/createdatabase.sql");
 
-			performQuery(container, createDatabaseSQL);
+				performQuery(container, createDatabaseSQL);
 
-			String populateDatabaseSQL =
-				_readSQLAsString("sql/biblivre4.sql");
+				String populateDatabaseSQL =
+					_readSQLAsString("sql/biblivre4.sql");
 
-			performQuery(container, populateDatabaseSQL);
+				performQuery(container, populateDatabaseSQL);
 
-		} catch (Exception e) {
-			e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			setup = true;
 		}
+	}
+
+	protected static <T extends AbstractDAO> T getInstance(Class<T> clazz) {
+		return AbstractDAO.getInstance(
+			__ -> getDataSource(container), clazz, "single");
 	}
 
 	protected static void performQuery(
