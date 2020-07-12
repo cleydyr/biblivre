@@ -14,6 +14,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import biblivre.core.AbstractDAO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
@@ -147,8 +148,13 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 		try {
 			con = this.getConnection();
 
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT id, blob, name FROM digital_media;");
+			PreparedStatement preparedStatement =
+				con.prepareStatement("SELECT id, blob, name "
+					+ "FROM digital_media WHERE id = ?");
+
+			PreparedStatementUtil.setAllParameters(preparedStatement, id);
+
+			ResultSet rs = preparedStatement.executeQuery();
 
 			if (rs.next()) {
 				DigitalMediaDTO dto = new DigitalMediaDTO();

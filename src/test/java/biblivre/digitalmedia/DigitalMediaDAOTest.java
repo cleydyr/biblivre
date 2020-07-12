@@ -137,6 +137,7 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 		MemoryFile file = new MemoryFile();
 
 		file.setName(fileName);
+
 		file.setContentType("text/plain");
 
 		ByteArrayInputStream inputStream =
@@ -145,6 +146,7 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 		file.setInputStream(inputStream);
 
 		file.setSize(content.length());
+
 		return file;
 	}
 }
