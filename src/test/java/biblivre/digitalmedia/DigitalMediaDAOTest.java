@@ -6,55 +6,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import biblivre.core.AbstractDAO;
+import biblivre.AbstractContainerDatabaseTest;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
-import biblivre.core.utils.Constants;
 import biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO;
 
 @Testcontainers
-@TestInstance(Lifecycle.PER_CLASS)
 public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
-	private DigitalMediaDAO dao;
-
-	private PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:11");
-
-	@BeforeAll
-	public void setUp() {
-		try {
-			container.start();
-
-			String createDatabaseSQL =
-				_readSQLAsString("sql/createdatabase.sql");
-
-			performQuery(container, createDatabaseSQL);
-
-			String populateDatabaseSQL =
-				_readSQLAsString("sql/biblivre4.sql");
-
-			performQuery(container, populateDatabaseSQL);
-
-			dao =
-				AbstractDAO.getInstance(__ -> getDataSource(container),
-				PostgresLargeObjectDigitalMediaDAO.class,
-				Constants.SINGLE_SCHEMA, Constants.DEFAULT_DATABASE_NAME);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	private DigitalMediaDAO dao =
+		getInstance(PostgresLargeObjectDigitalMediaDAO.class);
 
 	@BeforeEach
 	public void deleteAll() {
@@ -63,14 +29,6 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 		for (DigitalMediaDTO digitalMedia : list) {
 			dao.delete(digitalMedia.getId());
 		}
-	}
-
-	private String _readSQLAsString(String path) throws Exception {
-		ClassLoader classLoader = this.getClass().getClassLoader();
-
-		URL resource = classLoader.getResource(path);
-
-		return new String(Files.readAllBytes(Paths.get(resource.toURI())));
 	}
 
 	@Test

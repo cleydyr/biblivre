@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.DatabaseUtils;
 
 public abstract class AbstractDAO {
 	private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
@@ -50,8 +51,7 @@ public abstract class AbstractDAO {
 
 	private DataSourceProvider dataSourceProvider;
 
-	private static Map<String, AbstractDAO> instances =
-		new HashMap<>();
+	private static Map<String, AbstractDAO> instances = new HashMap<>();
 
 	protected AbstractDAO() {
 	}
@@ -68,7 +68,7 @@ public abstract class AbstractDAO {
 		Class<T> cls, String schema) {
 
 		return AbstractDAO.getInstance(
-			cls, schema, Constants.DEFAULT_DATABASE_NAME);
+			cls, schema, DatabaseUtils.getDatabaseName());
 	}
 
 	public static <T extends AbstractDAO> T getInstance(
