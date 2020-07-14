@@ -2,15 +2,20 @@ package biblivre.digitalmedia;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.google.common.io.Files;
 
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.core.file.BiblivreFile;
@@ -29,6 +34,86 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 		for (DigitalMediaDTO digitalMedia : list) {
 			dao.delete(digitalMedia.getId());
 		}
+	}
+
+	@Test
+	public void testDelete() {
+		try {
+			int quantity = 5;
+
+			for (int i = 0; i < quantity; i++) {
+				String fileName = "testfile1.txt";
+
+				String fileContent = "foobar";
+
+				MemoryFile file = _createMemoryFile(fileName, fileContent);
+
+				dao.save(file);
+			}
+
+			List<DigitalMediaDTO> listBefore = dao.list();
+
+			assertEquals(listBefore.size(), quantity);
+
+			for (DigitalMediaDTO digitalMedia : listBefore) {
+				dao.delete(digitalMedia.getId());
+			}
+
+			List<DigitalMediaDTO> listAfter = dao.list();
+
+			assertEquals(listAfter.size(), 0);
+		}
+		catch (Exception e) {
+			fail(e);
+		}
+	}
+
+	@Test
+	public void testImport() {
+		try {
+			File file = File.createTempFile("temp", null);
+
+			String content = "foobar";
+
+			Files.write(content, file, Charset.defaultCharset());
+
+			long oid = dao.importFile(file);
+
+			BiblivreFile retrievedFile = dao.getFile(oid);
+
+			retrievedFile.setSize(content.length());
+
+			assertNull(retrievedFile.getName());
+
+			String retrievedContent = _getContent(retrievedFile);
+
+			assertEquals(content, retrievedContent);
+		} catch (Exception e) {
+			fail(e);
+		}
+	}
+
+	private String _getContent(BiblivreFile retrievedFile) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		retrievedFile.copy(outputStream);
+
+		return outputStream.toString();
+	}
+
+	@Test
+	public void testLoad() {
+		int quantity = 5;
+
+		for (int i = 0; i < quantity; i++) {
+			MemoryFile file = _createMemoryFile("testfile.txt", "foobar");
+
+			dao.save(file);
+
+			file.close();
+		}
+
+		assertEquals(quantity, dao.list().size());
 	}
 
 	@Test
@@ -86,8 +171,8 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 			retrievedFile1.copy(outputStream);
 
 			assertTrue(fileContent1.equals(outputStream.toString()));
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			fail(e);
 		}
 	}
 
