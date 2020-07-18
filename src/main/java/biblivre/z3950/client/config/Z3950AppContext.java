@@ -13,13 +13,19 @@ import org.jzkit.search.util.Profile.ProfileServiceImpl;
 import org.jzkit.search.util.RecordConversion.FragmentTransformerService;
 import org.jzkit.util.PropsHolder;
 import org.jzkit.z3950.QueryModel.PropsBasedInternalToType1ConversionRules;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import biblivre.core.HikariDataSourceConnectionProvider;
+import biblivre.core.DataSourceProvider;
+import biblivre.core.HikariDataSourceProvider;
+import biblivre.core.utils.Constants;
 
 @Configuration
 public class Z3950AppContext {
+	private DataSourceProvider dataSourceProvider =
+		new HikariDataSourceProvider();
+
 	@Bean
 	public OIDRegister OIDRegister() {
 		return new OIDRegister("/a2j.properties");
@@ -52,7 +58,7 @@ public class Z3950AppContext {
 
 	@Bean
 	public DataSource z3950DataSource() throws NamingException {
-		return HikariDataSourceConnectionProvider.getDataSource();
+		return dataSourceProvider.getDataSource(Constants.DEFAULT_DATABASE_NAME);
 	}
 
 	@Bean

@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -18,6 +20,7 @@ import com.github.stefanbirkner.systemlambda.Statement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import biblivre.core.AbstractDAO;
 import biblivre.core.utils.Constants;
 
 public abstract class AbstractContainerDatabaseTest {
@@ -26,24 +29,44 @@ public abstract class AbstractContainerDatabaseTest {
 	protected static PostgreSQLContainer<?> container =
 		new PostgreSQLContainer<>("postgres:11");
 
+	private static boolean setup = false;
+
+	private static final Logger logger =
+		LoggerFactory.getLogger(AbstractContainerDatabaseTest.class);
+
 	@BeforeAll
-	public static void setUp() {
-		try {
-			container.start();
+	static void setUp() {
+		if (!setup) {
+			try {
+				logger.info("Starting container");
 
-			String createDatabaseSQL =
-				_readSQLAsString("sql/createdatabase.sql");
+				container.start();
 
-			performQuery(container, createDatabaseSQL);
+				logger.info("Creating and populating database with default "
+					+ "data");
 
-			String populateDatabaseSQL =
-				_readSQLAsString("sql/biblivre4.sql");
+				String createDatabaseSQL =
+					_readSQLAsString("sql/createdatabase.sql");
 
-			performQuery(container, populateDatabaseSQL);
+				performQuery(container, createDatabaseSQL);
 
-		} catch (Exception e) {
-			e.printStackTrace();
+				String populateDatabaseSQL =
+					_readSQLAsString("sql/biblivre4.sql");
+
+				performQuery(container, populateDatabaseSQL);
+
+				logger.info("Setup complete!");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			setup = true;
 		}
+	}
+
+	protected static <T extends AbstractDAO> T getInstance(Class<T> clazz) {
+		return AbstractDAO.getInstance(
+			__ -> getDataSource(container), clazz, "single");
 	}
 
 	protected static void performQuery(
