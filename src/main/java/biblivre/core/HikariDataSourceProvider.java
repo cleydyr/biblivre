@@ -28,7 +28,7 @@ public class HikariDataSourceProvider implements DataSourceProvider {
 
 		props.setProperty(
 			"dataSource.password", DatabaseUtils.getDatabasePassword());
-	
+
 		props.setProperty(
 			"dataSource.url",
 			String.format(
