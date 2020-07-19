@@ -61,8 +61,21 @@ import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
+	private static final String _UPDATE_DIGITALMEDIA_BLOB_TPL = "UPDATE digital_media SET blob = '%d' WHERE blob = '%d';";
+	private static final Pattern _FILE = Pattern.compile("^(\\d+)_(.*)$");
+	private static final String _UPDATE_DIGITALMEDIA_TPL = "UPDATE digital_media SET blob = '%d' WHERE id = '%s';";
+	private static final String _DROP_RESTORE_DATABASE = "DROP DATABASE IF EXISTS biblivre4_b3b_restore;";
+	private static final String _CREATE_RESTORE_DATABASE = "CREATE DATABASE biblivre4_b3b_restore WITH OWNER = biblivre "
+		+ "ENCODING = 'UTF8';";
+	private static final String _TERMINATE_BACKEND = "SELECT pg_terminate_backend(pg_stat_activity.procpid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND procpid <> pg_backend_pid();";
+	private static final String _TERMINATE_BACKEND_92 = "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND pid <> pg_backend_pid();";
+	private static final String _ALTER_SCHEMA_TPL = "ALTER SCHEMA \"%s\" RENAME TO \"%s\";";
+	private static final String _DELETE_SCHEMA_TPL = "DELETE FROM \"%s\".schemas WHERE \"schema\" = '%s';";
+	private static final String _INSERT_SCHEMA_TPL = "INSERT INTO \"global\".schemas (schema, name) VALUES ('%s', E'%s');";
+	private static final String _DELETE_FROM_SCHEMAS = "DELETE FROM \"global\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);";
 	private static final Pattern _LO_OPEN = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
 	private static final Pattern _LO_CREATE = Pattern.compile("lo_create\\('(.*?)'\\)");
+
 	private BackupDAO dao;
 	private DigitalMediaDAO digitalMediaDAO;
 
@@ -243,15 +256,16 @@ public class RestoreBO extends AbstractBO {
 				processRestore(new File(path, globalSchema + ".data." + extension), bw);
 
 				bw.flush();
-
-				restoreSchemas.remove(globalSchema);
 			}
 
 			for (String schema : restoreSchemas.keySet()) {
-				_processSchema(path, extension, schema, bw);
+				if (!globalSchema.equals(schema)) {
+					_processSchema(path, extension, schema, bw);
 
-				bw.flush();
+					bw.flush();
+				}
 			}
+
 			_processRenames(postRenameSchemas, bw);
 
 			bw.flush();
@@ -262,19 +276,32 @@ public class RestoreBO extends AbstractBO {
 
 			// Postprocessing deletes
 			for (String originalSchemaName : deleteSchemas.keySet()) {
-				String aux = deleteSchemas.get(originalSchemaName);
-				State.writeLog("Droping schema " + aux);
+				String schemaToBeDeleted = deleteSchemas.get(originalSchemaName);
+
+				State.writeLog("Droping schema " + schemaToBeDeleted);
 
 				if (!originalSchemaName.equals(globalSchema)) {
-					bw.write("DELETE FROM \"" + aux + "\".digital_media;\n");
+					_writeLine(
+						bw,
+						String.format(
+							"DELETE FROM \"%s\".digital_media;",
+							schemaToBeDeleted));
 				}
 
-				bw.write("DROP SCHEMA \"" + aux + "\" CASCADE;\n");
+				_writeLine(
+					bw,
+					String.format(
+						"DROP SCHEMA \"%s\" CASCADE;", schemaToBeDeleted));
 
 				if (!originalSchemaName.equals(globalSchema)) {
-					bw.write("DELETE FROM \"" + globalSchema + "\".schemas WHERE \"schema\" = '" + originalSchemaName + "';\n");
+					_writeLine(
+						bw,
+						String.format(
+							_DELETE_SCHEMA_TPL, globalSchema,
+							originalSchemaName));
 				}
 			}
+
 			bw.flush();
 
 			for (String originalSchemaName : restoreSchemas.keySet()) {
@@ -286,14 +313,20 @@ public class RestoreBO extends AbstractBO {
 					schemaTitle = dto.getSchemas().get(originalSchemaName).getLeft();
 					schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\\\", "\\\\");
 
-					bw.write("DELETE FROM \"" + globalSchema + "\".schemas WHERE \"schema\" = '" + finalSchemaName + "';\n");
-					bw.write("INSERT INTO \"" + globalSchema + "\".schemas (schema, name) VALUES ('" + finalSchemaName + "', E'" + schemaTitle + "');\n");
+					_writeLine(
+						bw,
+						String.format(
+							_DELETE_SCHEMA_TPL, globalSchema, finalSchemaName));
+
+					_writeLine(
+						bw,
+						_buildInsertSchemaQuery(finalSchemaName, schemaTitle));
 				}
 			}
 
-			bw.write("DELETE FROM \"" + globalSchema + "\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);\n");
+			_writeLine(bw, _DELETE_FROM_SCHEMAS);
 
-			bw.write("ANALYZE;\n");
+			_writeLine(bw, "ANALYZE");
 
 			bw.close();
 
@@ -309,6 +342,10 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		return false;
+	}
+
+	private String _buildInsertSchemaQuery(String finalSchemaName, String schemaTitle) {
+		return String.format(_INSERT_SCHEMA_TPL, finalSchemaName, schemaTitle);
 	}
 
 	private void _processSchema(File path, String extension, String schema, BufferedWriter bw) throws IOException {
@@ -334,17 +371,10 @@ public class RestoreBO extends AbstractBO {
 				String.format("Renaming schema %s to %s", originalSchemaName,
 					finalSchemaName));
 
-			try {
-				bw.write(
-					String.format(
-						"ALTER SCHEMA \"%s\" RENAME TO \"%s\";",
-						originalSchemaName,
-						finalSchemaName));
-
-				bw.newLine();
-			} catch (IOException e) {
-				throw new RestoreException(e);
-			}
+			_writeLine(
+				bw,
+				String.format(
+					_ALTER_SCHEMA_TPL, originalSchemaName, finalSchemaName));
 		});
 	}
 
@@ -392,26 +422,20 @@ public class RestoreBO extends AbstractBO {
 		return false;
 	}
 
-	private void _createV3Database(BufferedWriter bw) throws IOException {
-		bw.write("CREATE DATABASE biblivre4_b3b_restore WITH OWNER = biblivre ENCODING = 'UTF8';\n");
-		bw.flush();
+	private void _createV3Database(BufferedWriter bw) {
+		_writeLine(bw, _CREATE_RESTORE_DATABASE);
 	}
 
 	private void _dropExistingV3Database(BufferedWriter bw) throws IOException {
-		bw.write("DROP DATABASE IF EXISTS biblivre4_b3b_restore;\n");
-		bw.flush();
+		_writeLine(bw, _DROP_RESTORE_DATABASE);
 	}
 
-	private void _terminateBackendProcess(boolean tryPGSQL92, BufferedWriter bw) throws IOException {
+	private void _terminateBackendProcess(boolean tryPGSQL92, BufferedWriter bw) {
 		if (tryPGSQL92) {
-			bw.write("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND pid <> pg_backend_pid();");
+			_writeLine(bw, _TERMINATE_BACKEND_92);
 		} else {
-			bw.write("SELECT pg_terminate_backend(pg_stat_activity.procpid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND procpid <> pg_backend_pid();");
+			_writeLine(bw, _TERMINATE_BACKEND);
 		}
-
-		bw.newLine();
-
-		bw.flush();
 	}
 
 	private void _connectOutputToStateLogger(Process p) {
@@ -460,11 +484,7 @@ public class RestoreBO extends AbstractBO {
 				.map(RestoreBO::_replaceUserIfGrantingOrRevoking)
 				.map(RestoreBO::_removeLCProperties)
 				.forEach(line -> {
-					try {
-						_writeLine(bw, line);
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
+					_writeLine(bw, line);
 				});
 
 			bw.close();
@@ -560,13 +580,8 @@ public class RestoreBO extends AbstractBO {
 			.filter(RestoreBO::_isNotCommentLine)
 			.filter(RestoreBO::_isNotReferringToGlobalUnlink)
 			.forEach(line -> {
-				try {
-					_writeLine(bw, line);
-					State.incrementCurrentStep();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
-					throw new RuntimeException(e);
-				}
+				_writeLine(bw, line);
+				State.incrementCurrentStep();
 			});
 
 		bw.flush();
@@ -593,20 +608,25 @@ public class RestoreBO extends AbstractBO {
 			return;
 		}
 
-		Pattern filePattern = Pattern.compile("^(\\d+)_(.*)$");
 		DigitalMediaDAO dao = DigitalMediaDAO.getInstance(Constants.GLOBAL_SCHEMA);
 
 		for (File file : path.listFiles()) {
-			Matcher fileMatcher = filePattern.matcher(file.getName());
+			Matcher fileMatcher = _FILE.matcher(file.getName());
 
 			if (fileMatcher.find()) {
 				String mediaId = fileMatcher.group(1);
 
 				long oid = dao.importFile(file);
 
-				bw.write("UPDATE digital_media SET blob = '" + oid + "' WHERE id = '" + mediaId + "';\n");
+				String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
+
+				_writeLine(bw, newLine);
 			}
 		}
+	}
+
+	private String _buildUpdateDigitalMediaQuery(String mediaId, long oid) {
+		return String.format(_UPDATE_DIGITALMEDIA_TPL, oid, mediaId);
 	}
 
 	private void processMediaRestore(File restore, BufferedWriter bw, String schema) 
@@ -629,61 +649,82 @@ public class RestoreBO extends AbstractBO {
 			// restore a digital_media backup. To prevent oid conflicts, we will create
 			// a new oid, replacing the old one.
 	
-			Map<String, Long> oidMap = new HashMap<>();
+			Map<Long, Long> oidMap = new HashMap<>();
 
 			Files.lines(restore.toPath())
 				.forEach(line -> {
 					State.incrementCurrentStep();
-					
-					if (line.startsWith("SELECT pg_catalog.lo_create")) {
-						// New OID detected
-		
-						Matcher loCreateMatcher = _LO_CREATE.matcher(line);
-						if (loCreateMatcher.find()) {
-							String currentOid = loCreateMatcher.group(1);
-							Long newOid = digitalMediaDAO.createOID();
-		
-							logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
-		
-							oidMap.put(currentOid, newOid);
-						}
-		
-					} else if (line.startsWith("SELECT pg_catalog.lo_open")) {
-						// Opening the Large Object for writing purposes
-		
-						Matcher loOpenMatcher = _LO_OPEN.matcher(line);
-						if (loOpenMatcher.find()) {
-							String newLine = loOpenMatcher.replaceFirst("$1" + oidMap.get(loOpenMatcher.group(2)) + "$3");
-		
-							_writeLine(bw, newLine);
-						}
-					} else if (line.startsWith("ALTER LARGE OBJECT")) {
-						// Large objects are already created with the correct owner
-					} else if (line.startsWith("BEGIN;") || line.startsWith("COMMIT;")) {
-						// Ignore internal transactions (we are already using --single-transaction)
-					} else {
-						if (line.startsWith("COPY")) {
-							logger.info(line);
-						}
-		
-						_writeLine(bw, line);
-					}
-		
-					bw.flush();
+
+					_processLOLine(line, oidMap, bw);
 				});
 
-			bw.write("SET search_path = \"" + schema + "\", pg_catalog;\n");
+			bw.flush();
+
+			_writeLine(bw, "SET search_path = \"" + schema + "\", pg_catalog;");
 	
-			for (String oid : oidMap.keySet()) {
-				Long newOid = oidMap.get(oid);
-	
-				bw.write("UPDATE digital_media SET blob = '" + newOid + "' WHERE blob = '" + oid + "';\n");
-			}
+			oidMap.forEach((oid, newOid) -> {
+				String query = _buildUpdateDigitalMediaQuery(oid, newOid);
+
+				_writeLine(bw, query);
+			});
 	
 			bw.flush();
 		} catch (Exception e) {
 			throw new RestoreException(e);
 		}
+	}
+
+	private void _processLOLine(
+		String line, Map<Long, Long> oidMap, BufferedWriter bw) {
+
+		if (line.startsWith("SELECT pg_catalog.lo_create")) {
+			// New OID detected
+
+			Matcher loCreateMatcher = _LO_CREATE.matcher(line);
+
+			if (loCreateMatcher.find()) {
+				Long currentOid = Long.valueOf(loCreateMatcher.group(1));
+
+				Long newOid = digitalMediaDAO.createOID();
+
+				logger.info(
+					"Creating new OID (old: " + currentOid + ", new: "
+						+ newOid + ")");
+
+				oidMap.put(currentOid, newOid);
+			}
+
+		}
+		else if (line.startsWith("SELECT pg_catalog.lo_open")) {
+			// Opening the Large Object for writing purposes
+
+			Matcher loOpenMatcher = _LO_OPEN.matcher(line);
+
+			if (loOpenMatcher.find()) {
+				Long oid = Long.valueOf(loOpenMatcher.group(2));
+
+				String newLine =
+					loOpenMatcher.replaceFirst("$1" + oidMap.get(oid) + "$3");
+
+				_writeLine(bw, newLine);
+			}
+		}
+		else if (!_ignoreLine(line)){
+			if (line.startsWith("COPY")) {
+				logger.info(line);
+			}
+
+			_writeLine(bw, line);
+		}
+	}
+
+	private static boolean _ignoreLine(String line) {
+		return line.startsWith("ALTER LARGE OBJECT") ||
+			line.startsWith("BEGIN;") || line.startsWith("COMMIT;");
+	}
+
+	private static String _buildUpdateDigitalMediaQuery(long oid, long newOid) {
+		return String.format(_UPDATE_DIGITALMEDIA_BLOB_TPL, newOid, oid);
 	}
 
 	private static void _writeLine(BufferedWriter bw, String newLine) {
