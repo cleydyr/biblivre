@@ -594,7 +594,7 @@ public class RestoreBO extends AbstractBO {
 		return String.format(_UPDATE_DIGITALMEDIA_TPL, oid, mediaId);
 	}
 
-	private void processMediaRestore(File restore, BufferedWriter bw, String schema) 
+	private void processMediaRestore(File restore, BufferedWriter bw, String schema)
 		throws RestoreException {
 
 		if (restore == null) {
@@ -613,7 +613,7 @@ public class RestoreBO extends AbstractBO {
 			// Since PostgreSQL uses global OIDs for LargeObjects, we can't simply
 			// restore a digital_media backup. To prevent oid conflicts, we will create
 			// a new oid, replacing the old one.
-	
+
 			Map<Long, Long> oidMap = new HashMap<>();
 
 			Files.lines(restore.toPath())
@@ -626,13 +626,13 @@ public class RestoreBO extends AbstractBO {
 			bw.flush();
 
 			_writeLine(bw, "SET search_path = \"" + schema + "\", pg_catalog;");
-	
+
 			oidMap.forEach((oid, newOid) -> {
 				String query = _buildUpdateDigitalMediaQuery(oid, newOid);
 
 				_writeLine(bw, query);
 			});
-	
+
 			bw.flush();
 		} catch (Exception e) {
 			throw new RestoreException(e);
