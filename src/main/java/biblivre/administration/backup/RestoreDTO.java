@@ -19,6 +19,10 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
+import static biblivre.core.utils.Constants.DEFAULT_DATE_FORMAT;
+import static biblivre.core.utils.Constants.DEFAULT_DATE_FORMAT_TIMEZONE;
+import static biblivre.core.utils.Constants.DEFAULT_DATE_PRINTER_TIMEZONE;
+
 import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
@@ -29,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import biblivre.core.AbstractDTO;
-import biblivre.core.utils.Constants;
 import biblivre.core.utils.SchemaUtils;
 
 public class RestoreDTO extends AbstractDTO {
@@ -64,18 +67,20 @@ public class RestoreDTO extends AbstractDTO {
 
 		String created = json.getString("created");
 
+		Date parsedDate = new Date(0);
+
 		try {
 			if (created != null) {
-				this.setCreated(Constants.DEFAULT_DATE_FORMAT_TIMEZONE.parse(created));
+				parsedDate = DEFAULT_DATE_FORMAT_TIMEZONE.parse(created);
 			}
 		} catch (ParseException e) {
 			try {
-				this.setCreated(Constants.DEFAULT_DATE_FORMAT.parse(created));
+				this.setCreated(DEFAULT_DATE_FORMAT.parse(created));
 			} catch (ParseException e2) {
-				this.setCreated(new Date(0));
 				this.setValid(false);
 			}
 		}
+		this.setCreated(parsedDate);
 	}
 
 	public Map<String, Pair<String, String>> getSchemas() {
@@ -156,7 +161,10 @@ public class RestoreDTO extends AbstractDTO {
 			json.putOpt("backup_scope", this.getBackupScope());
 
 			if (this.getCreated() != null) {
-				json.putOpt("created", Constants.DEFAULT_DATE_FORMAT_TIMEZONE.format(this.getCreated()));
+				String formattedDate =
+					DEFAULT_DATE_PRINTER_TIMEZONE.format(this.getCreated());
+
+				json.putOpt("created", formattedDate);
 			}
 
 			if (this.getBackup() != null) {

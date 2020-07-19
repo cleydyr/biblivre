@@ -21,14 +21,16 @@ package biblivre.core.utils;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.function.Function;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
+
+import org.apache.commons.lang3.time.DateParser;
+import org.apache.commons.lang3.time.DatePrinter;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import tech.units.indriya.unit.Units;
 
@@ -44,8 +46,9 @@ public class Constants {
 	public static final String UPDATE_URL = "http://update.biblivre.org.br";
 	public static final String DOWNLOAD_URL = "http://update.biblivre.org.br";
 
-	public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	public static final DateFormat DEFAULT_DATE_FORMAT_TIMEZONE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	public static final DateParser DEFAULT_DATE_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss");
+	public static final DateParser DEFAULT_DATE_FORMAT_TIMEZONE = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	public static final DatePrinter DEFAULT_DATE_PRINTER_TIMEZONE = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss");
 
 	public static final String LINE_BREAK = System.getProperty("line.separator");
 	public static final float MM_UNIT = 72.0f / 25.4f;

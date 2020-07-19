@@ -22,6 +22,8 @@ package biblivre.administration.setup;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class State {
 	public static AtomicBoolean LOCKED = new AtomicBoolean(false);
@@ -29,6 +31,8 @@ public class State {
 	private static String lastMessage;
 	private static long steps;
 	private static long currentStep;
+
+	private static final Logger logger = LoggerFactory.getLogger(State.class);
 
 	private static long currentSecondaryStep;
 
@@ -105,5 +109,7 @@ public class State {
 
 		State.log.append(message).append("\n");
 		State.lastMessage = message;
+
+		logger.debug(message);
 	}
 }
