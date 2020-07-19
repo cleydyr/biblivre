@@ -61,6 +61,8 @@ import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
+	private static final String _DROP_SCHEMA_TPL = "DROP SCHEMA \"%s\" CASCADE;";
+	private static final String _DELETE_DIGITALMDIA_TPL = "DELETE FROM \"%s\".digital_media;";
 	private static final String _UPDATE_DIGITALMEDIA_BLOB_TPL = "UPDATE digital_media SET blob = '%d' WHERE blob = '%d';";
 	private static final Pattern _FILE = Pattern.compile("^(\\d+)_(.*)$");
 	private static final String _UPDATE_DIGITALMEDIA_TPL = "UPDATE digital_media SET blob = '%d' WHERE id = '%s';";
@@ -70,7 +72,7 @@ public class RestoreBO extends AbstractBO {
 	private static final String _TERMINATE_BACKEND = "SELECT pg_terminate_backend(pg_stat_activity.procpid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND procpid <> pg_backend_pid();";
 	private static final String _TERMINATE_BACKEND_92 = "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND pid <> pg_backend_pid();";
 	private static final String _ALTER_SCHEMA_TPL = "ALTER SCHEMA \"%s\" RENAME TO \"%s\";";
-	private static final String _DELETE_SCHEMA_TPL = "DELETE FROM \"%s\".schemas WHERE \"schema\" = '%s';";
+	private static final String _DELETE_SCHEMA_TPL = "DELETE FROM \"global\".schemas WHERE \"schema\" = '%s';";
 	private static final String _INSERT_SCHEMA_TPL = "INSERT INTO \"global\".schemas (schema, name) VALUES ('%s', E'%s');";
 	private static final String _DELETE_FROM_SCHEMAS = "DELETE FROM \"global\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);";
 	private static final Pattern _LO_OPEN = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
@@ -177,52 +179,49 @@ public class RestoreBO extends AbstractBO {
 		Map<String, String> deleteSchemas = new HashMap<>();
 		Map<String, String> preRenameSchemas = new HashMap<>();
 		Map<String, String> postRenameSchemas = new HashMap<>();
-		Map<String, String> restoreRenamedSchemas = new HashMap<>();
 
-		// Para cada schema sendo restaurado
-		for (String originalSchemaName : restoreSchemas.keySet()) {
-			// Verificamos o nome de destino do schema. Lembrando que o usuário pode escolher para qual schema o backup será restaurado.
-			// Isso significa que o originalSchemaName (nome do schema no backup) pode ser diferente do finalSchemaName (nome do schem depois de restaurado).
-			String finalSchemaName = restoreSchemas.get(originalSchemaName);
-
+		restoreSchemas.forEach((originalSchemaName, finalSchemaName) -> {
 			if (databaseSchemas.contains(finalSchemaName)) {
-				String aux = "_" + finalSchemaName + "_" + currentTimestamp;
-				preRenameSchemas.put(finalSchemaName, aux);
-				deleteSchemas.put(finalSchemaName, aux);
+				String tempSchemaName =
+					"_" + finalSchemaName + "_" + currentTimestamp;
+
+				preRenameSchemas.put(finalSchemaName, tempSchemaName);
+
+				deleteSchemas.put(finalSchemaName, tempSchemaName);
 			}
 
 			if (!originalSchemaName.equals(finalSchemaName)) {
 				postRenameSchemas.put(originalSchemaName, finalSchemaName);
 			}
-		}
+		});
 
-		for (String originalSchemaName : restoreSchemas.keySet()) {
-			// Verifica se o schema está atrapalhando alguma importação. Neste caso, renomeia temporariamente.
-			// Se o schema estiver na lista de schemas a serem deletados, não se preocupar em renomear e restaurar
-			if (!deleteSchemas.containsKey(originalSchemaName) && databaseSchemas.contains(originalSchemaName)) {
-				String aux = "_" + originalSchemaName + "_" + currentTimestamp;
-				preRenameSchemas.put(originalSchemaName, aux);
-				restoreRenamedSchemas.put(aux, originalSchemaName);
+		Map<String, String> restoreRenamedSchemas = new HashMap<>();
+
+		restoreSchemas.keySet().forEach(originalSchemaName -> {
+			if (!deleteSchemas.containsKey(originalSchemaName) &&
+				databaseSchemas.contains(originalSchemaName)) {
+
+				String tempSchemaName = "_" + originalSchemaName + "_" +
+					currentTimestamp;
+
+				preRenameSchemas.put(originalSchemaName, tempSchemaName);
+
+				restoreRenamedSchemas.put(tempSchemaName, originalSchemaName);
 			}
-		}
+		});
 
-		String globalSchema = Constants.GLOBAL_SCHEMA;
 
 		if (dto.isPurgeAll()) {
 			for (String remainingSchema : databaseSchemas) {
-				if (remainingSchema.equals("public")) {
-					continue;
-				}
+				if (_isRelevantSchema(remainingSchema) &&
+					!deleteSchemas.containsKey(remainingSchema)) {
 
-				if (remainingSchema.equals(globalSchema)) {
-					continue;
-				}
-
-				if (!deleteSchemas.containsKey(remainingSchema)) {
 					deleteSchemas.put(remainingSchema, remainingSchema);
 				}
 			}
 		}
+
+		String globalSchema = Constants.GLOBAL_SCHEMA;
 
 		boolean transactional = true;
 
@@ -260,7 +259,7 @@ public class RestoreBO extends AbstractBO {
 
 			for (String schema : restoreSchemas.keySet()) {
 				if (!globalSchema.equals(schema)) {
-					_processSchema(path, extension, schema, bw);
+					_processSchemaRestores(path, extension, schema, bw);
 
 					bw.flush();
 				}
@@ -274,55 +273,11 @@ public class RestoreBO extends AbstractBO {
 
 			bw.flush();
 
-			// Postprocessing deletes
-			for (String originalSchemaName : deleteSchemas.keySet()) {
-				String schemaToBeDeleted = deleteSchemas.get(originalSchemaName);
-
-				State.writeLog("Droping schema " + schemaToBeDeleted);
-
-				if (!originalSchemaName.equals(globalSchema)) {
-					_writeLine(
-						bw,
-						String.format(
-							"DELETE FROM \"%s\".digital_media;",
-							schemaToBeDeleted));
-				}
-
-				_writeLine(
-					bw,
-					String.format(
-						"DROP SCHEMA \"%s\" CASCADE;", schemaToBeDeleted));
-
-				if (!originalSchemaName.equals(globalSchema)) {
-					_writeLine(
-						bw,
-						String.format(
-							_DELETE_SCHEMA_TPL, globalSchema,
-							originalSchemaName));
-				}
-			}
+			_postProcessDeletes(deleteSchemas, bw);
 
 			bw.flush();
 
-			for (String originalSchemaName : restoreSchemas.keySet()) {
-				String finalSchemaName = restoreSchemas.get(originalSchemaName);
-
-				if (!finalSchemaName.equals(globalSchema)) {
-					String schemaTitle = finalSchemaName;
-
-					schemaTitle = dto.getSchemas().get(originalSchemaName).getLeft();
-					schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\\\", "\\\\");
-
-					_writeLine(
-						bw,
-						String.format(
-							_DELETE_SCHEMA_TPL, globalSchema, finalSchemaName));
-
-					_writeLine(
-						bw,
-						_buildInsertSchemaQuery(finalSchemaName, schemaTitle));
-				}
-			}
+			_postProcessRenames(dto, restoreSchemas, bw);
 
 			_writeLine(bw, _DELETE_FROM_SCHEMAS);
 
@@ -344,11 +299,69 @@ public class RestoreBO extends AbstractBO {
 		return false;
 	}
 
+	private void _postProcessRenames(
+		RestoreDTO dto, Map<String, String> restoreSchemas, BufferedWriter bw) {
+
+		restoreSchemas.forEach((originalSchemaName, finalSchemaName) -> {
+			if (!Constants.GLOBAL_SCHEMA.equals(finalSchemaName)) {
+				String schemaTitle = finalSchemaName;
+
+				schemaTitle =
+					dto.getSchemas().get(originalSchemaName).getLeft();
+
+				schemaTitle =
+					schemaTitle.replaceAll("'", "''")
+						.replaceAll("\\\\", "\\\\");
+
+				_writeLine(
+					bw,
+					String.format(_DELETE_SCHEMA_TPL, finalSchemaName));
+
+				_writeLine(
+					bw,
+					_buildInsertSchemaQuery(finalSchemaName, schemaTitle));
+			}
+		});
+	}
+
+	private void _postProcessDeletes(Map<String, String> deleteSchemas, BufferedWriter bw) {
+		deleteSchemas.forEach((originalSchemaName, schemaToBeDeleted) -> {
+			State.writeLog("Droping schema " + schemaToBeDeleted);
+
+			String globalSchema = Constants.GLOBAL_SCHEMA;
+
+			if (!globalSchema.equals(originalSchemaName)) {
+				_writeLine(
+					bw,
+					String.format(
+						_DELETE_DIGITALMDIA_TPL, schemaToBeDeleted));
+			}
+
+			_writeLine(
+				bw,
+				String.format(_DROP_SCHEMA_TPL, schemaToBeDeleted));
+
+			if (!globalSchema.equals(originalSchemaName)) {
+				_writeLine(
+					bw,
+					String.format(_DELETE_SCHEMA_TPL, originalSchemaName));
+			}
+		});
+	}
+
+	private boolean _isRelevantSchema(String remainingSchema) {
+		return !Constants.GLOBAL_SCHEMA.equals(remainingSchema) &&
+			!"public".equals(remainingSchema);
+	}
+
 	private String _buildInsertSchemaQuery(String finalSchemaName, String schemaTitle) {
 		return String.format(_INSERT_SCHEMA_TPL, finalSchemaName, schemaTitle);
 	}
 
-	private void _processSchema(File path, String extension, String schema, BufferedWriter bw) throws IOException {
+	private void _processSchemaRestores(
+		File path, String extension, String schema, BufferedWriter bw)
+		throws IOException {
+
 		// Restoring database schema (creating tables and indexes)
 		State.writeLog("Processing schema for '" + schema + "'");
 		processRestore(new File(path, schema + ".schema." + extension), bw);
@@ -558,7 +571,9 @@ public class RestoreBO extends AbstractBO {
 		return dto;
 	}
 
-	public static void processRestore(File restore, BufferedWriter bw) throws IOException {
+	public static void processRestore(File restore, BufferedWriter bw)
+		throws IOException {
+
 		if (restore == null) {
 			logger.info("===== Skipping File 'null' =====");
 			return;
@@ -571,11 +586,7 @@ public class RestoreBO extends AbstractBO {
 
 		logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-		BufferedReader reader =
-			new BufferedReader(
-				new InputStreamReader(new FileInputStream(restore), "UTF-8"));
-
-		reader.lines()
+		Files.lines(restore.toPath())
 			.filter(StringUtils::isNotBlank)
 			.filter(RestoreBO::_isNotCommentLine)
 			.filter(RestoreBO::_isNotReferringToGlobalUnlink)
@@ -585,16 +596,6 @@ public class RestoreBO extends AbstractBO {
 			});
 
 		bw.flush();
-
-		reader.close();
-	}
-
-	private static boolean _isNotCommentLine(String line) {
-		return !line.trim().startsWith("--");
-	}
-
-	private static boolean _isNotReferringToGlobalUnlink(String line) {
-		return !line.contains("global.unlink");
 	}
 
 	private void processMediaRestoreFolder(File path, BufferedWriter bw) throws IOException {
@@ -902,5 +903,13 @@ public class RestoreBO extends AbstractBO {
 		catch (IOException ioe) {
 			throw new RestoreException(ioe);
 		}
+	}
+
+	private static boolean _isNotCommentLine(String line) {
+		return !line.trim().startsWith("--");
+	}
+
+	private static boolean _isNotReferringToGlobalUnlink(String line) {
+		return !line.contains("global.unlink");
 	}
 }
