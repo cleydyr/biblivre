@@ -32,7 +32,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.SchemaUtils;
 
-public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
+public class RestoreDTO extends AbstractDTO {
 	private static final long serialVersionUID = 1L;
 
 	private Map<String, Pair<String, String>> schemas;
@@ -168,22 +168,5 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
 		}
 
 		return json;
-	}
-
-	@Override
-	public int compareTo(RestoreDTO other) {
-		if (other == null) {
-			return -1;
-		}
-
-		if (this.getCreated() != null && other.getCreated() != null) {
-			return this.getCreated().compareTo(other.getCreated()) * -1; // Order Desc
-		}
-
-		if (this.getBackup() != null && other.getBackup() != null) {
-			return this.getBackup().getName().compareTo(other.getBackup().getName());
-		}
-
-		return 0;
 	}
 }

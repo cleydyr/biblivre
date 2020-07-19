@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,6 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
@@ -104,7 +104,7 @@ public class Handler extends AbstractHandler {
 
 		RestoreBO bo = RestoreBO.getInstance(schema);
 
-		LinkedList<RestoreDTO> list = bo.list();
+		List<RestoreDTO> list = bo.list();
 
 		try {
 			this.json.put("success", true);
@@ -170,7 +170,10 @@ public class Handler extends AbstractHandler {
 			os.close();
 
 			RestoreBO bo = RestoreBO.getInstance(schema);
+
 			success = bo.restoreBiblivre3(gzip);
+
+			FileUtils.deleteQuietly(gzip);
 
 			if (success) {
 				State.finish();

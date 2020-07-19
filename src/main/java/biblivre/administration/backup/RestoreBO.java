@@ -28,37 +28,46 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.administration.setup.DataMigrationDAO;
+import biblivre.administration.backup.exception.RestoreException;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
+import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
-import org.apache.commons.lang3.StringUtils;
 
 public class RestoreBO extends AbstractBO {
+	private static final Pattern _LO_OPEN = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
+	private static final Pattern _LO_CREATE = Pattern.compile("lo_create\\('(.*?)'\\)");
 	private BackupDAO dao;
 	private DigitalMediaDAO digitalMediaDAO;
+
+	private static final String[] _BACKUP_EXTENSIONS =
+		new String[]{"b4bz", "b5bz"};
 
 	private static final Logger logger =
 		LoggerFactory.getLogger(RestoreBO.class);
@@ -69,6 +78,7 @@ public class RestoreBO extends AbstractBO {
 		if (bo.dao == null) {
 			bo.dao = BackupDAO.getInstance(schema);
 		}
+
 		if (bo.digitalMediaDAO == null) {
 			bo.digitalMediaDAO = DigitalMediaDAO.getInstance(schema);
 		}
@@ -76,9 +86,7 @@ public class RestoreBO extends AbstractBO {
 		return bo;
 	}
 
-	public LinkedList<RestoreDTO> list() {
-		LinkedList<RestoreDTO> list = new LinkedList<RestoreDTO>();
-
+	public List<RestoreDTO> list() {
 		BackupBO backupBO = BackupBO.getInstance(this.getSchema());
 
 		File path = backupBO.getBackupDestination();
@@ -88,139 +96,75 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		if (path == null) {
-			throw new ValidationException("administration.maintenance.backup.error.invalid_restore_path");
+			throw new ValidationException(
+				"administration.maintenance.backup.error.invalid_restore_path");
 		}
 
-		for (File backup : FileUtils.listFiles(path, new String[]{"b4bz", "b5bz"}, false)) {
-			RestoreDTO dto = this.getRestoreDTO(backup);
+		List<RestoreDTO> list =
+			FileUtils.listFiles(path, _BACKUP_EXTENSIONS, false).stream()
+				.map(this::getRestoreDTO)
+				.filter(RestoreDTO::isValid)
+				.collect(Collectors.toList());
 
-			if (dto.isValid()) {
-				list.add(dto);
-			}
-		}
-
-		Collections.sort(list);
+		_sortRestores(list);
 
 		return list;
 	}
 
-	public boolean restore(RestoreDTO dto, RestoreDTO partial) {
-		if (!dto.isValid() || dto.getBackup() == null || !dto.getBackup().exists()) {
-			throw new ValidationException("administration.maintenance.backup.error.corrupted_backup_file");
+	public boolean restore(RestoreDTO dto, RestoreDTO partial)
+		throws IOException {
+
+		if (!_verifyDTO(dto)) {
+			throw new ValidationException(
+				"administration.maintenance.backup.error."
+					+ "corrupted_backup_file");
 		}
 
-		File tmpDir = null;
-		try {
-			tmpDir = FileIOUtils.unzip(dto.getBackup());
-		} catch (Exception e) {
-			throw new ValidationException("administration.maintenance.backup.error.couldnt_unzip_backup", e);
-		}
+		File tmpDir = FileIOUtils.unzip(dto.getBackup());
 
-		String extension = (dto.getBackup().getPath().endsWith("b5bz")) ? "b5b" : "b4b";
+		String extension = _getExtension(dto);
 
 		if (partial != null) {
-			File partialTmpDir = null;
-			try {
-				partialTmpDir = FileIOUtils.unzip(partial.getBackup());
-
-				for (File partialFile : partialTmpDir.listFiles()) {
-					if (partialFile.getName().equals("backup.meta")) {
-						FileUtils.deleteQuietly(partialFile);
-
-					} else if (partialFile.isDirectory()) {
-
-						FileUtils.moveDirectoryToDirectory(partialFile, tmpDir, true);
-					} else {
-
-						FileUtils.moveFileToDirectory(partialFile, tmpDir, true);
-					}
-				}
-
-				FileUtils.deleteQuietly(partialTmpDir);
-			} catch (Exception e) {
-				throw new ValidationException("administration.maintenance.backup.error.couldnt_unzip_backup", e);
-			}
+			_movePartialFiles(partial, tmpDir);
 		}
 
+		_countRestoreSteps(dto, tmpDir, extension);
 
-		// Counting restore steps
-		long steps = 0;
+		boolean restoreBackup = this.restoreBackup(dto, tmpDir);
 
-		for (String schema : dto.getRestoreSchemas().keySet()) {
-			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".schema." + extension));
-			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".data." + extension));
+		FileUtils.deleteQuietly(tmpDir);
 
-			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
-				steps += FileIOUtils.countLines(new File(tmpDir, schema + ".media." + extension));
-			}
-		}
-
-		State.setSteps(steps);
-		State.writeLog("Restoring " + dto.getRestoreSchemas().size() + " schemas for a total of " + steps + " SQL lines");
-
-		try {
-			return this.restoreBackup(dto, tmpDir);
-		} catch (ValidationException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ValidationException("administration.maintenance.backup.error.couldnt_restore_backup", e);
-		} finally {
-			FileUtils.deleteQuietly(tmpDir);
-		}
+		return restoreBackup;
 	}
 
+	public boolean restoreBiblivre3(File gzipFile) throws IOException {
+		_validateFile(gzipFile);
 
-	public boolean restoreBiblivre3(File file) {
-		if (file == null || !file.exists()) {
-			throw new ValidationException("administration.maintenance.backup.error.corrupted_backup_file");
+		File sql = FileIOUtils.ungzipBackup(gzipFile);
+
+		boolean success = (this.recreateBiblivre3RestoreDatabase(false) ||
+			this.recreateBiblivre3RestoreDatabase(true));
+
+		if (!success) {
+			return false;
 		}
 
-		File sql = null;
-		try {
-			sql = FileIOUtils.ungzipBackup(file);
-		} catch (Exception e) {
-			throw new ValidationException("administration.maintenance.backup.error.couldnt_unzip_backup", e);
-		}
-
-		try {
-			boolean success = (this.recreateBiblivre3RestoreDatabase(false) || this.recreateBiblivre3RestoreDatabase(true));
-			if (!success) {
-				return false;
-			}
-
-			try {
-				DataMigrationDAO dao = DataMigrationDAO.getInstance(this.getSchema(), "biblivre4_b3b_restore");
-				for (int i = 0; i < 1000; i++) {
-					dao.testDatabaseConnection();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			return this.restoreBackupBiblivre3(sql);
-		} catch (Exception e) {
-			throw new ValidationException("administration.maintenance.backup.error.couldnt_restore_backup", e);
-		} finally {
-			FileUtils.deleteQuietly(file);
-			FileUtils.deleteQuietly(sql);
-		}
+		return restoreBackupBiblivre3(sql);
 	}
 
 	public synchronized boolean restoreBackup(RestoreDTO dto, File path) {
 		Map<String, String> restoreSchemas = dto.getRestoreSchemas();
-		if (restoreSchemas == null || restoreSchemas.size() == 0) {
-			throw new ValidationException("administration.maintenance.backup.error.no_schema_selected");
-		}
 
-		String extension = (dto.getBackup().getPath().endsWith("b5bz")) ? "b5b" : "b4b";
+		_validateRestoreSchemas(restoreSchemas);
 
-		long date = new Date().getTime();
-		Set<String> databaseSchemas = this.dao.listDatabaseSchemas();
+		long currentTimestamp = new Date().getTime();
 
-		Map<String, String> deleteSchemas = new HashMap<String, String>();
-		Map<String, String> preRenameSchemas = new HashMap<String, String>();
-		Map<String, String> postRenameSchemas = new HashMap<String, String>();
-		Map<String, String> restoreRenamedSchemas = new HashMap<String, String>();
+		Set<String> databaseSchemas = dao.listDatabaseSchemas();
+
+		Map<String, String> deleteSchemas = new HashMap<>();
+		Map<String, String> preRenameSchemas = new HashMap<>();
+		Map<String, String> postRenameSchemas = new HashMap<>();
+		Map<String, String> restoreRenamedSchemas = new HashMap<>();
 
 		// Para cada schema sendo restaurado
 		for (String originalSchemaName : restoreSchemas.keySet()) {
@@ -229,7 +173,7 @@ public class RestoreBO extends AbstractBO {
 			String finalSchemaName = restoreSchemas.get(originalSchemaName);
 
 			if (databaseSchemas.contains(finalSchemaName)) {
-				String aux = "_" + finalSchemaName + "_" + date;
+				String aux = "_" + finalSchemaName + "_" + currentTimestamp;
 				preRenameSchemas.put(finalSchemaName, aux);
 				deleteSchemas.put(finalSchemaName, aux);
 			}
@@ -243,11 +187,13 @@ public class RestoreBO extends AbstractBO {
 			// Verifica se o schema está atrapalhando alguma importação. Neste caso, renomeia temporariamente.
 			// Se o schema estiver na lista de schemas a serem deletados, não se preocupar em renomear e restaurar
 			if (!deleteSchemas.containsKey(originalSchemaName) && databaseSchemas.contains(originalSchemaName)) {
-				String aux = "_" + originalSchemaName + "_" + date;
+				String aux = "_" + originalSchemaName + "_" + currentTimestamp;
 				preRenameSchemas.put(originalSchemaName, aux);
 				restoreRenamedSchemas.put(aux, originalSchemaName);
 			}
 		}
+
+		String globalSchema = Constants.GLOBAL_SCHEMA;
 
 		if (dto.isPurgeAll()) {
 			for (String remainingSchema : databaseSchemas) {
@@ -255,7 +201,7 @@ public class RestoreBO extends AbstractBO {
 					continue;
 				}
 
-				if (remainingSchema.equals(Constants.GLOBAL_SCHEMA)) {
+				if (remainingSchema.equals(globalSchema)) {
 					continue;
 				}
 
@@ -265,28 +211,9 @@ public class RestoreBO extends AbstractBO {
 			}
 		}
 
-		File psql = DatabaseUtils.getPsql(this.getSchema());
+		boolean transactional = true;
 
-		if (psql == null) {
-			throw new ValidationException("administration.maintenance.backup.error.psql_not_found");
-		}
-
-		String[] commands = new String[] {
-			psql.getAbsolutePath(),		// 0
-			"--single-transaction",		// 1
-			"--host",					// 2
-			DatabaseUtils.getDatabaseHostName(),				// 3
-			"--port",					// 4
-			DatabaseUtils.getDatabasePort(),						// 5
-			"-v",						// 6
-			"ON_ERROR_STOP=1",			// 7
-			"--file",					// 8
-			"-",						// 9
-		};
-
-		ProcessBuilder pb = new ProcessBuilder(commands);
-
-		pb.redirectErrorStream(true);
+		ProcessBuilder pb = _createProcessBuilder(transactional);
 
 		BufferedWriter bw = null;
 
@@ -295,103 +222,57 @@ public class RestoreBO extends AbstractBO {
 
 			Process p = pb.start();
 
-			InputStreamReader isr = new InputStreamReader(
-					p.getInputStream(), Constants.DEFAULT_CHARSET);
-
-			final BufferedReader br = new BufferedReader(isr);
+			_connectOutputToStateLogger(p);
 
 			OutputStreamWriter osw = new OutputStreamWriter(
 					p.getOutputStream(), Constants.DEFAULT_CHARSET);
 
 			bw = new BufferedWriter(osw);
 
-			Thread t = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					String outputLine;
-					try {
-						while ((outputLine = br.readLine()) != null) {
-							State.writeLog(outputLine);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
+			_processRenames(preRenameSchemas, bw);
 
-			t.start();
-
-			// Preprocessing renames
-			for (String originalSchemaName : preRenameSchemas.keySet()) {
-				String finalSchemaName = preRenameSchemas.get(originalSchemaName);
-
-				State.writeLog("Renaming schema " + originalSchemaName + " to " + finalSchemaName);
-				bw.write("ALTER SCHEMA \"" + originalSchemaName + "\" RENAME TO \"" + finalSchemaName + "\";\n");
-			}
 			bw.flush();
 
-			if (restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
-				State.writeLog("Processing schema for '" + Constants.GLOBAL_SCHEMA + "'");
-				processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".schema." + extension), bw);
+			String extension = _getExtension(dto);
 
-				State.writeLog("Processing data for '" + Constants.GLOBAL_SCHEMA + "'");
-				processRestore(new File(path, Constants.GLOBAL_SCHEMA + ".data." + extension), bw);
+			if (restoreSchemas.containsKey(globalSchema)) {
+				State.writeLog("Processing schema for '" + globalSchema + "'");
+				processRestore(new File(path, globalSchema + ".schema." + extension), bw);
+
+				State.writeLog("Processing data for '" + globalSchema + "'");
+				processRestore(new File(path, globalSchema + ".data." + extension), bw);
+
 				bw.flush();
+
+				restoreSchemas.remove(globalSchema);
 			}
 
 			for (String schema : restoreSchemas.keySet()) {
-				if (schema.equals(Constants.GLOBAL_SCHEMA)) {
-					continue;
-				}
-
-				// Restoring database schema (creating tables and indexes)
-				State.writeLog("Processing schema for '" + schema + "'");
-				processRestore(new File(path, schema + ".schema." + extension), bw);
-
-				// Restoring database data
-				State.writeLog("Processing data for '" + schema + "'");
-				processRestore(new File(path, schema + ".data." + extension), bw);
-
-				// Restoring digital media files
-				State.writeLog("Processing media for '" + schema + "'");
-				this.processMediaRestore(new File(path, schema + ".media." + extension), bw, schema);
-				this.processMediaRestoreFolder(new File(path, schema), bw);
+				_processSchema(path, extension, schema, bw);
 
 				bw.flush();
 			}
+			_processRenames(postRenameSchemas, bw);
 
-			// Postprocessing renames
-			for (String renamedSchemaName : postRenameSchemas.keySet()) {
-				String originalSchemaName = postRenameSchemas.get(renamedSchemaName);
-
-				State.writeLog("Renaming schema " + renamedSchemaName + " to " + originalSchemaName);
-				bw.write("ALTER SCHEMA \"" + renamedSchemaName + "\" RENAME TO \"" + originalSchemaName + "\";\n");
-			}
 			bw.flush();
 
-			// Postprocessing renames
-			for (String renamedSchemaName : restoreRenamedSchemas.keySet()) {
-				String originalSchemaName = restoreRenamedSchemas.get(renamedSchemaName);
+			_processRenames(restoreRenamedSchemas, bw);
 
-				State.writeLog("Renaming schema " + renamedSchemaName + " to " + originalSchemaName);
-				bw.write("ALTER SCHEMA \"" + renamedSchemaName + "\" RENAME TO \"" + originalSchemaName + "\";\n");
-			}
 			bw.flush();
-
 
 			// Postprocessing deletes
 			for (String originalSchemaName : deleteSchemas.keySet()) {
 				String aux = deleteSchemas.get(originalSchemaName);
 				State.writeLog("Droping schema " + aux);
 
-				if (!originalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
+				if (!originalSchemaName.equals(globalSchema)) {
 					bw.write("DELETE FROM \"" + aux + "\".digital_media;\n");
 				}
 
 				bw.write("DROP SCHEMA \"" + aux + "\" CASCADE;\n");
 
-				if (!originalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
-					bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" = '" + originalSchemaName + "';\n");
+				if (!originalSchemaName.equals(globalSchema)) {
+					bw.write("DELETE FROM \"" + globalSchema + "\".schemas WHERE \"schema\" = '" + originalSchemaName + "';\n");
 				}
 			}
 			bw.flush();
@@ -399,18 +280,18 @@ public class RestoreBO extends AbstractBO {
 			for (String originalSchemaName : restoreSchemas.keySet()) {
 				String finalSchemaName = restoreSchemas.get(originalSchemaName);
 
-				if (!finalSchemaName.equals(Constants.GLOBAL_SCHEMA)) {
+				if (!finalSchemaName.equals(globalSchema)) {
 					String schemaTitle = finalSchemaName;
 
 					schemaTitle = dto.getSchemas().get(originalSchemaName).getLeft();
 					schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\\\", "\\\\");
 
-					bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" = '" + finalSchemaName + "';\n");
-					bw.write("INSERT INTO \"" + Constants.GLOBAL_SCHEMA + "\".schemas (schema, name) VALUES ('" + finalSchemaName + "', E'" + schemaTitle + "');\n");
+					bw.write("DELETE FROM \"" + globalSchema + "\".schemas WHERE \"schema\" = '" + finalSchemaName + "';\n");
+					bw.write("INSERT INTO \"" + globalSchema + "\".schemas (schema, name) VALUES ('" + finalSchemaName + "', E'" + schemaTitle + "');\n");
 				}
 			}
 
-			bw.write("DELETE FROM \"" + Constants.GLOBAL_SCHEMA + "\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);\n");
+			bw.write("DELETE FROM \"" + globalSchema + "\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);\n");
 
 			bw.write("ANALYZE;\n");
 
@@ -430,80 +311,80 @@ public class RestoreBO extends AbstractBO {
 		return false;
 	}
 
-	public synchronized boolean recreateBiblivre3RestoreDatabase(boolean tryPGSQL92) {
-		File psql = DatabaseUtils.getPsql(this.getSchema());
+	private void _processSchema(File path, String extension, String schema, BufferedWriter bw) throws IOException {
+		// Restoring database schema (creating tables and indexes)
+		State.writeLog("Processing schema for '" + schema + "'");
+		processRestore(new File(path, schema + ".schema." + extension), bw);
 
-		if (psql == null) {
-			throw new ValidationException("administration.maintenance.backup.error.psql_not_found");
+		// Restoring database data
+		State.writeLog("Processing data for '" + schema + "'");
+		processRestore(new File(path, schema + ".data." + extension), bw);
+
+		// Restoring digital media files
+		State.writeLog("Processing media for '" + schema + "'");
+		this.processMediaRestore(new File(path, schema + ".media." + extension), bw, schema);
+		this.processMediaRestoreFolder(new File(path, schema), bw);
+	}
+
+	private static void _processRenames(
+		Map<String, String> preRenameSchemas, BufferedWriter bw) {
+
+		preRenameSchemas.forEach((originalSchemaName, finalSchemaName) -> {
+			State.writeLog(
+				String.format("Renaming schema %s to %s", originalSchemaName,
+					finalSchemaName));
+
+			try {
+				bw.write(
+					String.format(
+						"ALTER SCHEMA \"%s\" RENAME TO \"%s\";",
+						originalSchemaName,
+						finalSchemaName));
+
+				bw.newLine();
+			} catch (IOException e) {
+				throw new RestoreException(e);
+			}
+		});
+	}
+
+	private void _validateRestoreSchemas(Map<String, String> restoreSchemas) {
+		if (restoreSchemas == null || restoreSchemas.size() == 0) {
+			throw new ValidationException(
+				"administration.maintenance.backup.error.no_schema_selected");
 		}
+	}
 
-		String[] commands = new String[] {
-			psql.getAbsolutePath(),		// 0
-			"--host",					// 1
-			DatabaseUtils.getDatabaseHostName(),				// 2
-			"--port",					// 3
-			DatabaseUtils.getDatabasePort(),						// 4
-			"-v",						// 6
-			"ON_ERROR_STOP=1",			// 7
-			"--file",					// 8
-			"-",						// 9
-		};
+	public synchronized boolean recreateBiblivre3RestoreDatabase(
+		boolean tryPGSQL92)
+		throws IOException {
 
-		ProcessBuilder pb = new ProcessBuilder(commands);
+		boolean transactional = false;
 
-		pb.redirectErrorStream(true);
+		ProcessBuilder pb = _createProcessBuilder(transactional);
 
 		Process p;
 
-		try {
-			p = pb.start();
-		} catch (IOException ioe) {
-			return false;
-		}
+		p = pb.start();
 
-		try (
-				BufferedWriter bw = new BufferedWriter(
-						new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET));
+		try (BufferedWriter bw =
+			new BufferedWriter(
+				new OutputStreamWriter(
+					p.getOutputStream(), Constants.DEFAULT_CHARSET))) {
 
-				final BufferedReader br = new BufferedReader(
-						new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET));
-			) {
+			_connectOutputToStateLogger(p);
 
-			Thread t = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					String outputLine;
-					try {
-						while ((outputLine = br.readLine()) != null) {
-							State.writeLog(outputLine);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
+			_terminateBackendProcess(tryPGSQL92, bw);
 
-			t.start();
+			_dropExistingV3Database(bw);
 
-			if (tryPGSQL92) {
-				bw.write("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND pid <> pg_backend_pid();\n");
-			} else {
-				bw.write("SELECT pg_terminate_backend(pg_stat_activity.procpid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND procpid <> pg_backend_pid();\n");
-			}
-
-			bw.flush();
-			bw.write("DROP DATABASE IF EXISTS biblivre4_b3b_restore;\n");
-			bw.flush();
-			bw.write("CREATE DATABASE biblivre4_b3b_restore WITH OWNER = biblivre ENCODING = 'UTF8';\n");
-			bw.flush();
+			_createV3Database(bw);
 
 			bw.close();
 
 			p.waitFor();
 
 			return p.exitValue() == 0;
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -511,111 +392,80 @@ public class RestoreBO extends AbstractBO {
 		return false;
 	}
 
-	public synchronized boolean restoreBackupBiblivre3(File sql) {
-		File psql = DatabaseUtils.getPsql(this.getSchema());
+	private void _createV3Database(BufferedWriter bw) throws IOException {
+		bw.write("CREATE DATABASE biblivre4_b3b_restore WITH OWNER = biblivre ENCODING = 'UTF8';\n");
+		bw.flush();
+	}
 
-		if (psql == null) {
-			throw new ValidationException("administration.maintenance.backup.error.psql_not_found");
+	private void _dropExistingV3Database(BufferedWriter bw) throws IOException {
+		bw.write("DROP DATABASE IF EXISTS biblivre4_b3b_restore;\n");
+		bw.flush();
+	}
+
+	private void _terminateBackendProcess(boolean tryPGSQL92, BufferedWriter bw) throws IOException {
+		if (tryPGSQL92) {
+			bw.write("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND pid <> pg_backend_pid();");
+		} else {
+			bw.write("SELECT pg_terminate_backend(pg_stat_activity.procpid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND procpid <> pg_backend_pid();");
 		}
 
-		String[] commands = new String[] {
-			psql.getAbsolutePath(),		// 0
-			"--single-transaction",		// 1
-			"--host",					// 2
-			DatabaseUtils.getDatabaseHostName(),				// 3
-			"--port",					// 4
-			DatabaseUtils.getDatabasePort(),						// 5
-			"-v",						// 6
-			"ON_ERROR_STOP=1",			// 7
-			"--file",					// 8
-			"-",						// 9
-		};
+		bw.newLine();
 
-		ProcessBuilder pb = new ProcessBuilder(commands);
+		bw.flush();
+	}
 
-		pb.redirectErrorStream(true);
+	private void _connectOutputToStateLogger(Process p) {
+		InputStreamReader input =
+			new InputStreamReader(
+				p.getInputStream(), Constants.DEFAULT_CHARSET);
 
-		BufferedWriter bw = null;
-		BufferedReader sqlBr = null;
+		Executor executor = Executors.newSingleThreadScheduledExecutor();
+
+		executor.execute(() -> {
+			String outputLine;
+
+			try (BufferedReader br = new BufferedReader(input)) {
+				while ((outputLine = br.readLine()) != null) {
+					State.writeLog(outputLine);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	public synchronized boolean restoreBackupBiblivre3(File sql) {
+		boolean transactional = true;
+
+		ProcessBuilder pb = _createProcessBuilder(transactional);
 
 		try {
 			Process p = pb.start();
 
-			InputStreamReader isr = new InputStreamReader(
-					p.getInputStream(), Constants.DEFAULT_CHARSET);
-
-			OutputStreamWriter osw = new OutputStreamWriter(
+			OutputStreamWriter writer = new OutputStreamWriter(
 					p.getOutputStream(), Constants.DEFAULT_CHARSET);
 
-			bw = new BufferedWriter(osw);
+			final BufferedWriter bw = new BufferedWriter(writer);
 
-			Thread t = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					String outputLine;
-					try (final BufferedReader br = new BufferedReader(isr)){
-						while ((outputLine = br.readLine()) != null) {
-							State.writeLog(outputLine);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
+			_connectOutputToStateLogger(p);
+
+			_validateBackup(sql);
+
+			Files.lines(sql.toPath())
+				.filter(StringUtils::isNotBlank)
+				.filter(RestoreBO::_isNotCommentLine)
+				.filter(RestoreBO::_isNotProceduralLanguageStatement)
+				.filter(RestoreBO::_isNotDatabaseStatement)
+				.map(RestoreBO::_replaceDatabaseConnection)
+				.map(RestoreBO::_replaceUserIfGrantingOrRevoking)
+				.map(RestoreBO::_removeLCProperties)
+				.forEach(line -> {
+					try {
+						_writeLine(bw, line);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
 					}
-				}
-			});
-
-			t.start();
-
-			sqlBr = new BufferedReader(
-					new InputStreamReader(new FileInputStream(sql), Constants.DEFAULT_CHARSET));
-
-			String inputLine;
-			boolean validBackup = false;
-
-			while ((inputLine = sqlBr.readLine()) != null) {
-				if (inputLine.trim().startsWith("\\connect biblivre")) {
-					validBackup = true;
-					break;
-				}
-			}
-
-			if (!validBackup) {
-				sqlBr.close();
-				State.writeLog("Never reached \\connect biblivre;");
-				throw new ValidationException("administration.maintenance.backup.error.corrupted_backup_file");
-			}
-
-			bw.write("\\connect biblivre4_b3b_restore\n");
-			bw.flush();
-
-			while ((inputLine = sqlBr.readLine()) != null) {
-				if (inputLine.trim().startsWith("CREATE PROCEDURAL LANGUAGE")) {
-					continue;
-				}
-
-				if (inputLine.trim().startsWith("ALTER PROCEDURAL LANGUAGE")) {
-					continue;
-				}
-
-				bw.write(inputLine);
-
-				if (inputLine.trim().startsWith("SET search_path =")) {
-					break;
-				}
-			}
-
-			bw.flush();
-
-			char[] buf = new char[1024 * 8];
-			int len;
-
-			while ((len = sqlBr.read(buf)) > 0) {
-				bw.write(buf, 0, len);
-				bw.flush();
-			}
-
-			sqlBr.close();
-
-			//bw.write("ANALYZE;\n");
+				});
 
 			bw.close();
 
@@ -626,14 +476,10 @@ public class RestoreBO extends AbstractBO {
 			logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			logger.error(e.getMessage(), e);
-		} finally {
-			IOUtils.closeQuietly(bw);
-			IOUtils.closeQuietly(sqlBr);
 		}
 
 		return false;
 	}
-
 
 	public RestoreDTO getRestoreDTO(String filename) {
 		BackupBO backupBO = BackupBO.getInstance(this.getSchema());
@@ -650,6 +496,7 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		RestoreDTO dto = this.getRestoreDTO(backup);
+
 		if (dto == null || !dto.isValid()) {
 			throw new ValidationException("administration.maintenance.backup.error.corrupted_backup_file");
 		}
@@ -714,11 +561,11 @@ public class RestoreBO extends AbstractBO {
 			.filter(RestoreBO::_isNotReferringToGlobalUnlink)
 			.forEach(line -> {
 				try {
-					bw.write(line);
-					bw.newLine();
+					_writeLine(bw, line);
 					State.incrementCurrentStep();
 				} catch (IOException e) {
 					logger.error(e.getMessage(), e);
+					throw new RuntimeException(e);
 				}
 			});
 
@@ -762,7 +609,9 @@ public class RestoreBO extends AbstractBO {
 		}
 	}
 
-	private void processMediaRestore(File restore, BufferedWriter bw, String schema) throws IOException {
+	private void processMediaRestore(File restore, BufferedWriter bw, String schema) 
+		throws RestoreException {
+
 		if (restore == null) {
 			logger.info("===== Skipping File 'null' =====");
 			return;
@@ -775,70 +624,234 @@ public class RestoreBO extends AbstractBO {
 
 		logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-		Scanner sc = new Scanner(restore, Constants.DEFAULT_CHARSET.name());
+		try {
+			// Since PostgreSQL uses global OIDs for LargeObjects, we can't simply
+			// restore a digital_media backup. To prevent oid conflicts, we will create
+			// a new oid, replacing the old one.
+	
+			Map<String, Long> oidMap = new HashMap<>();
 
-		String inputLine;
+			Files.lines(restore.toPath())
+				.forEach(line -> {
+					State.incrementCurrentStep();
+					
+					if (line.startsWith("SELECT pg_catalog.lo_create")) {
+						// New OID detected
+		
+						Matcher loCreateMatcher = _LO_CREATE.matcher(line);
+						if (loCreateMatcher.find()) {
+							String currentOid = loCreateMatcher.group(1);
+							Long newOid = digitalMediaDAO.createOID();
+		
+							logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
+		
+							oidMap.put(currentOid, newOid);
+						}
+		
+					} else if (line.startsWith("SELECT pg_catalog.lo_open")) {
+						// Opening the Large Object for writing purposes
+		
+						Matcher loOpenMatcher = _LO_OPEN.matcher(line);
+						if (loOpenMatcher.find()) {
+							String newLine = loOpenMatcher.replaceFirst("$1" + oidMap.get(loOpenMatcher.group(2)) + "$3");
+		
+							_writeLine(bw, newLine);
+						}
+					} else if (line.startsWith("ALTER LARGE OBJECT")) {
+						// Large objects are already created with the correct owner
+					} else if (line.startsWith("BEGIN;") || line.startsWith("COMMIT;")) {
+						// Ignore internal transactions (we are already using --single-transaction)
+					} else {
+						if (line.startsWith("COPY")) {
+							logger.info(line);
+						}
+		
+						_writeLine(bw, line);
+					}
+		
+					bw.flush();
+				});
 
-		// Since PostgreSQL uses global OIDs for LargeObjects, we can't simply
-		// restore a digital_media backup. To prevent oid conflicts, we will create
-		// a new oid, replacing the old one.
+			bw.write("SET search_path = \"" + schema + "\", pg_catalog;\n");
+	
+			for (String oid : oidMap.keySet()) {
+				Long newOid = oidMap.get(oid);
+	
+				bw.write("UPDATE digital_media SET blob = '" + newOid + "' WHERE blob = '" + oid + "';\n");
+			}
+	
+			bw.flush();
+		} catch (Exception e) {
+			throw new RestoreException(e);
+		}
+	}
 
-		HashMap<String, Long> oidMap = new HashMap<String, Long>();
-		Pattern loCreatePattern = Pattern.compile("lo_create\\('(.*?)'\\)");
-		Pattern loOpenPattern = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
+	private static void _writeLine(BufferedWriter bw, String newLine) {
+		try {
+			bw.write(newLine);
+			bw.newLine();
+		}
+		catch (IOException ioe) {
+			throw new RestoreException(ioe);
+		}
+	}
 
-		while (sc.hasNextLine()) {
-			inputLine = sc.nextLine();
-			State.incrementCurrentStep();
+	private static boolean _isNotProceduralLanguageStatement(String line) {
+		return !line.startsWith("CREATE PROCEDURAL LANGUAGE") &&
+			!line.startsWith("ALTER PROCEDURAL LANGUAGE");
+	}
 
-			if (inputLine.startsWith("SELECT pg_catalog.lo_create")) {
-				// New OID detected
+	private static boolean _isNotDatabaseStatement(String line) {
+		return !line.startsWith("CREATE DATABASE") &&
+			!line.startsWith("ALTER DATABASE");
+	}
 
-				Matcher loCreateMatcher = loCreatePattern.matcher(inputLine);
-				if (loCreateMatcher.find()) {
-					String currentOid = loCreateMatcher.group(1);
-					Long newOid = digitalMediaDAO.createOID();
+	private static String _replaceUserIfGrantingOrRevoking(String line) {
+		if (line.startsWith("GRANT") || line.startsWith("REVOKE")) {
+			return line.replace(
+				"postgres", DatabaseUtils.getDatabaseUsername());
+		}
 
-					logger.info("Creating new OID (old: " + currentOid + ", new: " + newOid + ")");
+		return line;
+	}
 
-					oidMap.put(currentOid, newOid);
+	private static String _replaceDatabaseConnection(String line) {
+		if (line.startsWith("\\connect")) {
+			return "\\connect biblivre4_b3b_restore\n";
+		}
+
+		return line;
+	}
+
+	private static void _validateBackup(File sql) throws IOException {
+		boolean validBackup = Files.lines(sql.toPath())
+			.map(String::trim)
+			.anyMatch(line -> line.startsWith("\\connect biblivre"));
+
+		if (!validBackup) {
+			State.writeLog("Never reached \\connect biblivre;");
+			throw new ValidationException("administration.maintenance.backup.error.corrupted_backup_file");
+		}
+	}
+
+	private static String _removeLCProperties(String line) {
+		return line
+			.replaceAll("LC_COLLATE = '[^']*'", StringPool.BLANK)
+			.replaceAll("LC_CTYPE = '[^']*'", StringPool.BLANK);
+	}
+
+	private ProcessBuilder _createProcessBuilder(boolean transactional) {
+		File psql = DatabaseUtils.getPsql(this.getSchema());
+
+		if (psql == null) {
+			throw new ValidationException("administration.maintenance.backup.error.psql_not_found");
+		}
+
+		String[] commands;
+
+		if (transactional) {
+			commands = new String[] {
+				psql.getAbsolutePath(),
+				"--single-transaction",
+				"--host",
+				DatabaseUtils.getDatabaseHostName(),
+				"--port",
+				DatabaseUtils.getDatabasePort(),
+				"-v",
+				"ON_ERROR_STOP=1",
+				"--file",
+				"-",
+			};
+		}
+		else {
+			commands = new String[] {
+				psql.getAbsolutePath(),
+				"--host",
+				DatabaseUtils.getDatabaseHostName(),
+				"--port",
+				DatabaseUtils.getDatabasePort(),
+				"-v",
+				"ON_ERROR_STOP=1",
+				"--file",
+				"-",
+			};
+		}
+
+		ProcessBuilder pb = new ProcessBuilder(commands);
+
+		pb.redirectErrorStream(true);
+
+		return pb;
+	}
+
+	private static void _countRestoreSteps(RestoreDTO dto, File tmpDir, String extension) {
+		long steps = 0;
+
+		for (String schema : dto.getRestoreSchemas().keySet()) {
+			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".schema." + extension));
+			steps += FileIOUtils.countLines(new File(tmpDir, schema + ".data." + extension));
+
+			if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
+				steps += FileIOUtils.countLines(new File(tmpDir, schema + ".media." + extension));
+			}
+		}
+
+		State.setSteps(steps);
+		State.writeLog("Restoring " + dto.getRestoreSchemas().size() + " schemas for a total of " + steps + " SQL lines");
+	}
+
+	private static void _movePartialFiles(RestoreDTO partial, File tmpDir) {
+		try {
+			File partialTmpDir = FileIOUtils.unzip(partial.getBackup());
+
+			for (File partialFile : partialTmpDir.listFiles()) {
+				if (partialFile.getName().equals("backup.meta")) {
+					FileUtils.deleteQuietly(partialFile);
+				} else if (partialFile.isDirectory()) {
+					FileUtils.moveDirectoryToDirectory(partialFile, tmpDir, true);
+				} else {
+					FileUtils.moveFileToDirectory(partialFile, tmpDir, true);
 				}
-
-			} else if (inputLine.startsWith("SELECT pg_catalog.lo_open")) {
-				// Opening the Large Object for writing purposes
-
-				Matcher loOpenMatcher = loOpenPattern.matcher(inputLine);
-				if (loOpenMatcher.find()) {
-					String newLine = loOpenMatcher.replaceFirst("$1" + oidMap.get(loOpenMatcher.group(2)) + "$3");
-
-					bw.write(newLine);
-					bw.write("\n");
-				}
-			} else if (inputLine.startsWith("ALTER LARGE OBJECT")) {
-				// Large objects are already created with the correct owner
-			} else if (inputLine.startsWith("BEGIN;") || inputLine.startsWith("COMMIT;")) {
-				// Ignore internal transactions (we are already using --single-transaction)
-			} else {
-				if (inputLine.startsWith("COPY")) {
-					logger.info(inputLine);
-				}
-
-				bw.write(inputLine);
-				bw.write("\n");
 			}
 
-			bw.flush();
+			FileUtils.deleteQuietly(partialTmpDir);
+		} catch (Exception e) {
+			throw new ValidationException("administration.maintenance.backup.error.couldnt_unzip_backup", e);
 		}
+	}
 
-		bw.write("SET search_path = \"" + schema + "\", pg_catalog;\n");
+	private static void _sortRestores(List<RestoreDTO> list) {
+		Collections.sort(list, (restore1, restore2) -> {
+			if (restore2 == null) {
+				return -1;
+			}
 
-		for (String oid : oidMap.keySet()) {
-			Long newOid = oidMap.get(oid);
+			if (restore1.getCreated() != null && restore2.getCreated() != null) {
+				return restore2.getCreated().compareTo(restore1.getCreated()); // Order Desc
+			}
 
-			bw.write("UPDATE digital_media SET blob = '" + newOid + "' WHERE blob = '" + oid + "';\n");
+			if (restore1.getBackup() != null && restore2.getBackup() != null) {
+				return restore1.getBackup().getName().compareTo(restore2.getBackup().getName());
+			}
+
+			return 0;
+		});
+	}
+
+	private static void _validateFile(File gzipFile) {
+		if (gzipFile == null || !gzipFile.exists()) {
+			throw new ValidationException(
+				"administration.maintenance.backup.error."
+					+ "corrupted_backup_file");
 		}
+	}
 
-		bw.flush();
-		sc.close();
+	private static boolean _verifyDTO(RestoreDTO dto) {
+		return dto.isValid() && dto.getBackup() != null &&
+			dto.getBackup().exists();
+	}
+
+	private static String _getExtension(RestoreDTO dto) {
+		return (dto.getBackup().getPath().endsWith("b5bz")) ? "b5b" : "b4b";
 	}
 }
