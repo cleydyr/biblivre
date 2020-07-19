@@ -680,34 +680,12 @@ public class RestoreBO extends AbstractBO {
 		if (line.startsWith("SELECT pg_catalog.lo_create")) {
 			// New OID detected
 
-			Matcher loCreateMatcher = _LO_CREATE.matcher(line);
-
-			if (loCreateMatcher.find()) {
-				Long currentOid = Long.valueOf(loCreateMatcher.group(1));
-
-				Long newOid = digitalMediaDAO.createOID();
-
-				logger.info(
-					"Creating new OID (old: " + currentOid + ", new: "
-						+ newOid + ")");
-
-				oidMap.put(currentOid, newOid);
-			}
-
+			_processNewOid(line, oidMap);
 		}
 		else if (line.startsWith("SELECT pg_catalog.lo_open")) {
 			// Opening the Large Object for writing purposes
 
-			Matcher loOpenMatcher = _LO_OPEN.matcher(line);
-
-			if (loOpenMatcher.find()) {
-				Long oid = Long.valueOf(loOpenMatcher.group(2));
-
-				String newLine =
-					loOpenMatcher.replaceFirst("$1" + oidMap.get(oid) + "$3");
-
-				_writeLine(bw, newLine);
-			}
+			_processsOpenOid(line, oidMap, bw);
 		}
 		else if (!_ignoreLine(line)){
 			if (line.startsWith("COPY")) {
@@ -715,6 +693,35 @@ public class RestoreBO extends AbstractBO {
 			}
 
 			_writeLine(bw, line);
+		}
+	}
+
+	private static void _processsOpenOid(String line, Map<Long, Long> oidMap, BufferedWriter bw) {
+		Matcher loOpenMatcher = _LO_OPEN.matcher(line);
+
+		if (loOpenMatcher.find()) {
+			Long oid = Long.valueOf(loOpenMatcher.group(2));
+
+			String newLine =
+				loOpenMatcher.replaceFirst("$1" + oidMap.get(oid) + "$3");
+
+			_writeLine(bw, newLine);
+		}
+	}
+
+	private void _processNewOid(String line, Map<Long, Long> oidMap) {
+		Matcher loCreateMatcher = _LO_CREATE.matcher(line);
+
+		if (loCreateMatcher.find()) {
+			Long currentOid = Long.valueOf(loCreateMatcher.group(1));
+
+			Long newOid = digitalMediaDAO.createOID();
+
+			logger.info(
+				"Creating new OID (old: " + currentOid + ", new: "
+					+ newOid + ")");
+
+			oidMap.put(currentOid, newOid);
 		}
 	}
 
@@ -727,15 +734,6 @@ public class RestoreBO extends AbstractBO {
 		return String.format(_UPDATE_DIGITALMEDIA_BLOB_TPL, newOid, oid);
 	}
 
-	private static void _writeLine(BufferedWriter bw, String newLine) {
-		try {
-			bw.write(newLine);
-			bw.newLine();
-		}
-		catch (IOException ioe) {
-			throw new RestoreException(ioe);
-		}
-	}
 
 	private static boolean _isNotProceduralLanguageStatement(String line) {
 		return !line.startsWith("CREATE PROCEDURAL LANGUAGE") &&
@@ -894,5 +892,15 @@ public class RestoreBO extends AbstractBO {
 
 	private static String _getExtension(RestoreDTO dto) {
 		return (dto.getBackup().getPath().endsWith("b5bz")) ? "b5b" : "b4b";
+	}
+
+	private static void _writeLine(BufferedWriter bw, String newLine) {
+		try {
+			bw.write(newLine);
+			bw.newLine();
+		}
+		catch (IOException ioe) {
+			throw new RestoreException(ioe);
+		}
 	}
 }
