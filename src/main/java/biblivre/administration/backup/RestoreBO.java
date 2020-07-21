@@ -236,10 +236,7 @@ public class RestoreBO extends AbstractBO {
 
 			_connectOutputToStateLogger(p);
 
-			OutputStreamWriter osw = new OutputStreamWriter(
-					p.getOutputStream(), Constants.DEFAULT_CHARSET);
-
-			bw = new BufferedWriter(osw);
+			bw = _getBufferedWriter(p);
 
 			_processRenames(context.getPreRenameSchemas(), bw);
 
@@ -293,6 +290,12 @@ public class RestoreBO extends AbstractBO {
 		}
 
 		return false;
+	}
+
+	private BufferedWriter _getBufferedWriter(Process p) {
+		OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream());
+
+		return new BufferedWriter(osw);
 	}
 
 	private void _processGlobalSchema(
@@ -643,13 +646,9 @@ public class RestoreBO extends AbstractBO {
 		String line, Map<Long, Long> oidMap, BufferedWriter bw) {
 
 		if (line.startsWith("SELECT pg_catalog.lo_create")) {
-			// New OID detected
-
 			_processNewOid(line, oidMap);
 		}
 		else if (line.startsWith("SELECT pg_catalog.lo_open")) {
-			// Opening the Large Object for writing purposes
-
 			_processsOpenOid(line, oidMap, bw);
 		}
 		else if (!_ignoreLine(line)){
