@@ -3,6 +3,8 @@ package biblivre.administration.setup;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,23 +15,46 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.compress.utils.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import biblivre.administration.permissions.PermissionBO;
+import biblivre.core.utils.Constants;
 
 /**
  * @author Cleydyr Albuquerque
  */
 public class PermissionsV3toV5Migration {
 	private static final String MAPPING_FILE_NAME = "v3_to_v5_permission_mapping.properties";
-	private static final File MAPPING_FILE = new File(
-			PermissionsV3toV5Migration.class.getClassLoader()
-				.getResource(MAPPING_FILE_NAME).getFile());
+
+	private static final File MAPPING_FILE;
 
 	private PermissionBO permissionBO;
 	private DataMigrationDAO dataMigrationDAO;
 
-	private static Map<String, Collection<String>> V3_TO_V5_PERMISSION_MAPPING =
-			_loadV3ToV5PermissionMapping();
+	private static final Logger _log =
+		LoggerFactory.getLogger(PermissionsV3toV5Migration.class);
+
+	static {
+		String encoding = Constants.DEFAULT_CHARSET.name();
+
+		String path =
+			PermissionsV3toV5Migration.class.getClassLoader()
+				.getResource(MAPPING_FILE_NAME).getFile();
+
+		try {
+			MAPPING_FILE = new File(URLDecoder.decode(path,	encoding));
+
+			V3_TO_V5_PERMISSION_MAPPING = _loadV3ToV5PermissionMapping();
+		} catch (UnsupportedEncodingException e) {
+			_log.error(String.format(
+				"Can't open file %s with encoding %s.", path, encoding), e);
+
+			throw new Error(e);
+		}
+	}
+
+	private static final Map<String, Collection<String>> V3_TO_V5_PERMISSION_MAPPING;
 
 	public PermissionsV3toV5Migration(
 		PermissionBO permissionBO, DataMigrationDAO dataMigrationDAO) {
