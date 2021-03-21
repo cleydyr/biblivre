@@ -184,7 +184,7 @@ public class Handler extends AbstractHandler {
         IndexingBO ibo = IndexingBO.getInstance(schema);
         RecordDTO dto = null;
         try {
-            Record record = MarcUtils.marcToRecord(marc, null, RecordStatus.NEW);
+            Record record = MarcUtils.marcToRecord(marc, RecordStatus.NEW);
             dto = bo.dtoFromRecord(record);
             BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
 
@@ -251,7 +251,7 @@ public class Handler extends AbstractHandler {
 
             Record record = null;
             try {
-                record = MarcUtils.marcToRecord(marc, null, RecordStatus.NEW);
+                record = MarcUtils.marcToRecord(marc, RecordStatus.NEW);
             } catch (Exception e) {
                 failedIds.add(i);
                 this.setMessage(ActionResult.WARNING, "error.invalid_parameters");

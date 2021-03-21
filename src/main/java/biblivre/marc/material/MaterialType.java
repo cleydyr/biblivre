@@ -20,7 +20,6 @@
 package biblivre.marc.material;
 
 public enum MaterialType {
-    ALL('a', "m ", true),
     BOOK('a', "m ", true),
     PAMPHLET('a', "m ", true),
     MANUSCRIPT('t', "m ", true),

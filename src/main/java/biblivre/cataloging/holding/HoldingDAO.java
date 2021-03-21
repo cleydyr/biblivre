@@ -37,8 +37,6 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.material.MaterialType;
-
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -688,7 +686,7 @@ public class HoldingDAO extends AbstractDAO {
 
         if (search != null && search.getQuery() != null) {
             useDatabase = search.getQuery().getDatabase() != null;
-            useMaterialType = search.getQuery().getMaterialType() != MaterialType.ALL;
+            useMaterialType = search.getQuery().getMaterialType().isPresent();
         }
 
         try {
@@ -805,7 +803,7 @@ public class HoldingDAO extends AbstractDAO {
 
         boolean useSearchResult = (search.getSearchMode() != SearchMode.LIST_ALL);
         boolean useIndexingGroup = (search.getIndexingGroup() != 0);
-        boolean useMaterialType = (search.getQuery().getMaterialType() != MaterialType.ALL);
+        boolean useMaterialType = (search.getQuery().getMaterialType().isPresent());
         boolean useLimit = (paging.getRecordLimit() > 0);
 
         Connection con = null;

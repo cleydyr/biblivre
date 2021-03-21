@@ -85,7 +85,7 @@ public class MarcFileReader implements MarcReader {
                 if (this.marc == null) {
                     this.marc = new StringBuilder(line + "\n");
                 } else {
-                    record = MarcUtils.marcToRecord(this.marc.toString(), null, RecordStatus.NEW);
+                    record = MarcUtils.marcToRecord(this.marc.toString(), RecordStatus.NEW);
                     this.marc = new StringBuilder(line + "\n");
                     return record;
                 }

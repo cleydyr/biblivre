@@ -27,10 +27,10 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.material.MaterialType;
 import biblivre.marc.material.MaterialTypeUtil;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +45,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
     private SearchMode searchMode;
     private RecordDatabase database;
-    private MaterialType materialType;
+    private Optional<MaterialType> materialType;
     private List<SearchTermDTO> terms;
     private String parameters;
     private Boolean holdingSearch;
@@ -182,16 +182,12 @@ public class SearchQueryDTO extends AbstractDTO {
         this.database = database;
     }
 
-    public MaterialType getMaterialType() {
-        if (this.materialType == null) {
-            return MaterialType.ALL;
-        }
-
+    public Optional<MaterialType> getMaterialType() {
         return this.materialType;
     }
 
     public void setMaterialType(MaterialType materialType) {
-        this.materialType = materialType;
+        this.materialType = Optional.ofNullable(materialType);
     }
 
     public Boolean isHoldingSearch() {

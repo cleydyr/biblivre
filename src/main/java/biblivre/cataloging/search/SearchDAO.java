@@ -26,13 +26,13 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.material.MaterialType;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -179,8 +179,10 @@ public abstract class SearchDAO extends AbstractDAO {
 
             pst.setString(index++, query.getDatabase().toString());
 
-            if (query.getMaterialType() != MaterialType.ALL) {
-                pst.setString(index++, query.getMaterialType().toString());
+            Optional<MaterialType> materialType = query.getMaterialType();
+
+            if (materialType.isPresent()) {
+                pst.setString(index++, materialType.get().toString());
             }
 
             int records = pst.executeUpdate();
@@ -230,8 +232,10 @@ public abstract class SearchDAO extends AbstractDAO {
 
             pst.setString(index++, query.getDatabase().toString());
 
-            if (query.getMaterialType() != MaterialType.ALL) {
-                pst.setString(index++, query.getMaterialType().toString());
+            Optional<MaterialType> materialType = query.getMaterialType();
+
+            if (materialType.isPresent()) {
+                pst.setString(index++, materialType.get().toString());
             }
 
             List<SearchTermDTO> searchTerms = search.getQuery().getTerms();
@@ -389,7 +393,7 @@ public abstract class SearchDAO extends AbstractDAO {
         sql.append("ON R.id = A.record_id ");
         sql.append("WHERE R.database = ? ");
 
-        if (query.getMaterialType() != MaterialType.ALL) {
+        if (query.getMaterialType().isPresent()) {
             sql.append("AND R.material = ? ");
         }
 
@@ -420,7 +424,7 @@ public abstract class SearchDAO extends AbstractDAO {
         sql.append("FROM ").append(this.recordType).append("_records R ");
         sql.append("WHERE R.database = ? ");
 
-        if (query.getMaterialType() != MaterialType.ALL) {
+        if (query.getMaterialType().isPresent()) {
             sql.append(" AND R.material = ? ");
         }
 

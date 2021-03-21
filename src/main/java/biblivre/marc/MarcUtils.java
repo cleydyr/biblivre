@@ -366,7 +366,7 @@ public class MarcUtils {
         if (pLeader != null && pLeader.length() == 24) {
             leader.setRecordStatus(status.getCode());
 
-            if (materialType != null && !materialType.equals(MaterialType.ALL)) {
+            if (materialType != null) {
                 leader.setTypeOfRecord(materialType.getTypeOfRecord());
                 leader.setImplDefined1(materialType.getImplDefined1().toCharArray());
             } else {
@@ -392,7 +392,7 @@ public class MarcUtils {
 
     public static Leader createBasicLeader(MaterialType materialType, RecordStatus status) {
         if (materialType == null) {
-            materialType = MaterialType.ALL;
+            materialType = MaterialType.BOOK;
         }
 
         Leader leader = MarcFactory.newInstance().newLeader();
@@ -591,4 +591,8 @@ public class MarcUtils {
         }
         return record;
     }
+
+	public static Record marcToRecord(String marc, RecordStatus recordStatus) {
+		return marcToRecord(marc, MaterialType.BOOK, recordStatus);
+	}
 }
