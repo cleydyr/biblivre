@@ -39,6 +39,7 @@
 		<dockerfile.version>1.4.1</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
 		<aws.java.sdk.version>2.13.44</aws.java.sdk.version>
+		<spotless.version>2.9.0</spotless.version>
 	</properties>
 
 	<dependencyManagement>
@@ -323,6 +324,37 @@
 	<build>
 		<finalName>Biblivre4</finalName>
 		<plugins>
+
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>${spotless.version}</version>
+				<configuration>
+					<ratchetFrom>origin/cloud</ratchetFrom>
+					<formats>
+						<format>
+							<includes>
+								<include>*.md</include>
+								<include>.gitignore</include>
+								<include>.xml</include>
+							</includes>
+							<trimTrailingWhitespace />
+							<endWithNewline />
+							<indent>
+								<tabs>true</tabs>
+								<spacesPerTab>4</spacesPerTab>
+							</indent>
+						</format>
+					</formats>
+					<java>
+						<googleJavaFormat>
+							<version>1.8</version>
+							<style>AOSP</style>
+						</googleJavaFormat>
+					</java>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
