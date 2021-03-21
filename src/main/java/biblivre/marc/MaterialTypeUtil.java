@@ -70,7 +70,7 @@ public class MaterialTypeUtil {
         if (record != null) {
             Leader leader = record.getLeader();
             mt =
-                    MaterialType.fromTypeAndImplDef(
+                    fromTypeAndImplDef(
                             leader.getTypeOfRecord(), leader.getImplDefined1());
         }
 
