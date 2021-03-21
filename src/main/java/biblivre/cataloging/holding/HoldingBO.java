@@ -41,8 +41,9 @@ import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
+import biblivre.marc.material.MaterialType;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;

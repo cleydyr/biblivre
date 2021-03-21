@@ -32,7 +32,8 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
+import biblivre.marc.material.MaterialType;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.marc4j.marc.Record;

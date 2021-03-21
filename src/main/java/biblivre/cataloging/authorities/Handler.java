@@ -27,7 +27,8 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
-import biblivre.marc.MaterialType;
+import biblivre.marc.material.MaterialType;
+
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;

@@ -25,7 +25,8 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
-import biblivre.marc.MaterialType;
+import biblivre.marc.material.MaterialType;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

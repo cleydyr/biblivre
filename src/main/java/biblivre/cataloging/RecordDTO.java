@@ -21,8 +21,9 @@ package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.AbstractDTO;
-import biblivre.marc.MaterialType;
-import biblivre.marc.MaterialTypeUtil;
+import biblivre.marc.material.MaterialType;
+import biblivre.marc.material.MaterialTypeUtil;
+
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;

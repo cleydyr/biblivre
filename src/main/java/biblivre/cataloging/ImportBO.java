@@ -33,7 +33,7 @@ import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcFileReader;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialTypeUtil;
+import biblivre.marc.material.MaterialTypeUtil;
 import biblivre.z3950.Z3950RecordDTO;
 import java.io.IOException;
 import java.io.InputStream;

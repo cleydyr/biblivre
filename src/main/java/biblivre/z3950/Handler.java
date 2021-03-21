@@ -36,7 +36,8 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialTypeUtil;
+import biblivre.marc.material.MaterialTypeUtil;
+
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;

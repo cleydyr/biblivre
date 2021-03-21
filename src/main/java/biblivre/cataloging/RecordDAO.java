@@ -29,7 +29,8 @@ import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
+import biblivre.marc.material.MaterialType;
+
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

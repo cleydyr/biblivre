@@ -20,6 +20,8 @@
 package biblivre.marc;
 
 import biblivre.core.utils.Constants;
+import biblivre.marc.material.MaterialType;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;

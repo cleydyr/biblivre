@@ -23,7 +23,8 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.core.utils.NaturalOrderComparator;
-import biblivre.marc.MaterialType;
+import biblivre.marc.material.MaterialType;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -37,7 +37,8 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
+import biblivre.marc.material.MaterialType;
+
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

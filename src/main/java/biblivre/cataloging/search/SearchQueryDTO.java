@@ -25,8 +25,9 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
-import biblivre.marc.MaterialType;
-import biblivre.marc.MaterialTypeUtil;
+import biblivre.marc.material.MaterialType;
+import biblivre.marc.material.MaterialTypeUtil;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

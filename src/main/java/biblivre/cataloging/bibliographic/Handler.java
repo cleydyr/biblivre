@@ -23,7 +23,7 @@ import biblivre.cataloging.CatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.ExtendedRequest;
-import biblivre.marc.MaterialType;
+import biblivre.marc.material.MaterialType;
 
 public class Handler extends CatalogingHandler {
 

@@ -38,8 +38,9 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
+import biblivre.marc.material.MaterialType;
+
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;

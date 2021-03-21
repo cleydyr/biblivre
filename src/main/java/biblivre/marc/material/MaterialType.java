@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.marc;
+package biblivre.marc.material;
 
 public enum MaterialType {
     ALL('a', "m ", true),
