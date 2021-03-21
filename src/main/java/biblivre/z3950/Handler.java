@@ -36,7 +36,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
+import biblivre.marc.MaterialTypeUtil;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -165,7 +165,7 @@ public class Handler extends AbstractHandler {
 
         bo.populateDetails(recordDTO, RecordBO.MARC_INFO);
         recordDTO.setId(index);
-        recordDTO.setMaterialType(MaterialType.fromRecord(record));
+        recordDTO.setMaterialType(MaterialTypeUtil.fromRecord(record));
 
         // Record tab
         List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, RecordType.BIBLIO);

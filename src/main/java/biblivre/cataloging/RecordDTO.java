@@ -22,6 +22,7 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.AbstractDTO;
 import biblivre.marc.MaterialType;
+import biblivre.marc.MaterialTypeUtil;
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,14 +46,14 @@ public class RecordDTO extends AbstractDTO {
 
     public MaterialType getMaterialType() {
         if (this.materialType == null) {
-            return MaterialType.fromRecord(this.record);
+            return MaterialTypeUtil.fromRecord(this.record);
         }
 
         return this.materialType;
     }
 
     public void setMaterialType(String materialType) {
-        this.materialType = MaterialType.fromString(materialType);
+        this.materialType = MaterialTypeUtil.fromString(materialType);
     }
 
     public void setMaterialType(MaterialType materialType) {

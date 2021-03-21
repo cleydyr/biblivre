@@ -33,7 +33,7 @@ import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcFileReader;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
+import biblivre.marc.MaterialTypeUtil;
 import biblivre.z3950.Z3950RecordDTO;
 import java.io.IOException;
 import java.io.InputStream;
@@ -217,7 +217,7 @@ public class ImportBO extends AbstractBO {
         RecordDTO rdto = null;
         RecordBO rbo = null;
 
-        switch (MaterialType.fromRecord(record)) {
+        switch (MaterialTypeUtil.fromRecord(record)) {
             case HOLDINGS:
                 break;
             case VOCABULARY:

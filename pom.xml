@@ -333,6 +333,7 @@
 				<artifactId>spotless-maven-plugin</artifactId>
 				<version>${spotless.version}</version>
 				<configuration>
+					<ratchetFrom>legal-stance-cloud-2</ratchetFrom>
 					<formats>
 						<format>
 							<includes>

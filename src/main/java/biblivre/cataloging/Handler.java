@@ -35,7 +35,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
+import biblivre.marc.MaterialTypeUtil;
 import biblivre.marc.RecordStatus;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
@@ -263,7 +263,7 @@ public class Handler extends AbstractHandler {
             }
 
             dto.setRecord(record);
-            dto.setMaterialType(MaterialType.fromRecord(record));
+            dto.setMaterialType(MaterialTypeUtil.fromRecord(record));
             dto.setRecordDatabase(RecordDatabase.WORK);
             dto.setCreatedBy(request.getLoggedUserId());
 

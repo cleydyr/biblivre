@@ -26,6 +26,7 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MaterialType;
+import biblivre.marc.MaterialTypeUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -77,7 +78,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
         this.setSearchMode(SearchMode.fromString(json.optString("search_mode")));
         this.setDatabase(RecordDatabase.fromString(json.optString("database")));
-        this.setMaterialType(MaterialType.fromString(json.optString("material_type")));
+        this.setMaterialType(MaterialTypeUtil.fromString(json.optString("material_type")));
         this.setHoldingSearch(json.optBoolean("holding_search"));
         this.setReservedOnly(json.optBoolean("reserved_only"));
 

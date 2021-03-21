@@ -49,6 +49,7 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.MemoryFile;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MaterialType;
+import biblivre.marc.MaterialTypeUtil;
 import biblivre.z3950.Z3950AddressDTO;
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
@@ -177,7 +178,7 @@ public class DataMigrationDAO extends AbstractDAO {
 
                 } else {
                     dto.setRecordDatabase(RecordDatabase.MAIN);
-                    dto.setMaterialType(MaterialType.fromString(recordType.toString()));
+                    dto.setMaterialType(MaterialTypeUtil.fromString(recordType.toString()));
                 }
 
                 list.add(dto);
