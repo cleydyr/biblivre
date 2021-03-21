@@ -19,90 +19,89 @@
  ******************************************************************************/
 package biblivre.core;
 
-import java.util.List;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
+import java.util.List;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class Message {
-	private ActionResult level;
-	private String text;
-	private String stackTrace;
-	private List<Pair<String, String>> errorList;
+    private ActionResult level;
+    private String text;
+    private String stackTrace;
+    private List<Pair<String, String>> errorList;
 
-	public Message(ActionResult level, String text) {
-		super();
-		this.setLevel(level);
-		this.setText(text);
-	}
+    public Message(ActionResult level, String text) {
+        super();
+        this.setLevel(level);
+        this.setText(text);
+    }
 
-	public Message(ActionResult level, String message, Throwable exception) {
-		this(level, message);
+    public Message(ActionResult level, String message, Throwable exception) {
+        this(level, message);
 
-		if (exception != null) {
-			if (exception instanceof ValidationException) {
-				this.setErrorList(((ValidationException) exception).getErrorList());
-			} else {
-				this.setStackTrace(ExceptionUtils.getStackTrace(exception));
-			}
-		}
-	}
+        if (exception != null) {
+            if (exception instanceof ValidationException) {
+                this.setErrorList(((ValidationException) exception).getErrorList());
+            } else {
+                this.setStackTrace(ExceptionUtils.getStackTrace(exception));
+            }
+        }
+    }
 
-	public Message() {
-		this(ActionResult.NORMAL, "");
-	}
+    public Message() {
+        this(ActionResult.NORMAL, "");
+    }
 
-	public Message(Throwable exception) {
-		this(ActionResult.WARNING, exception.getMessage(), exception);
-	}
+    public Message(Throwable exception) {
+        this(ActionResult.WARNING, exception.getMessage(), exception);
+    }
 
-	public boolean isSuccess() {
-		return ActionResult.NORMAL.equals(this.getLevel()) || ActionResult.SUCCESS.equals(this.getLevel());
-	}
+    public boolean isSuccess() {
+        return ActionResult.NORMAL.equals(this.getLevel())
+                || ActionResult.SUCCESS.equals(this.getLevel());
+    }
 
-	public ActionResult getLevel() {
-		return this.level;
-	}
+    public ActionResult getLevel() {
+        return this.level;
+    }
 
-	public void setLevel(ActionResult level) {
-		this.level = level;
-	}
+    public void setLevel(ActionResult level) {
+        this.level = level;
+    }
 
-	public String getText() {
-		return this.text;
-	}
+    public String getText() {
+        return this.text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	public String getStackTrace(boolean encode) {
-		if (!encode || this.stackTrace == null) {
-			return this.stackTrace;
-		} else {
-			System.out.println(this.stackTrace);
-			return TextUtils.biblivreEncode(this.stackTrace);
-		}
-	}
+    public String getStackTrace(boolean encode) {
+        if (!encode || this.stackTrace == null) {
+            return this.stackTrace;
+        } else {
+            System.out.println(this.stackTrace);
+            return TextUtils.biblivreEncode(this.stackTrace);
+        }
+    }
 
-	public void setStackTrace(String stackTrace) {
-		this.stackTrace = stackTrace;
-	}
+    public void setStackTrace(String stackTrace) {
+        this.stackTrace = stackTrace;
+    }
 
-	public void setText(ActionResult level, String text) {
-		this.setLevel(level);
-		this.setText(text);
-	}
+    public void setText(ActionResult level, String text) {
+        this.setLevel(level);
+        this.setText(text);
+    }
 
-	public List<Pair<String, String>> getErrorList() {
-		return this.errorList;
-	}
+    public List<Pair<String, String>> getErrorList() {
+        return this.errorList;
+    }
 
-	public void setErrorList(List<Pair<String, String>> errorList) {
-		this.errorList = errorList;
-	}
+    public void setErrorList(List<Pair<String, String>> errorList) {
+        this.errorList = errorList;
+    }
 }

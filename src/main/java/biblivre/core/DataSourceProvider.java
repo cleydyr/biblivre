@@ -4,6 +4,5 @@ import javax.sql.DataSource;
 
 public interface DataSourceProvider {
 
-	DataSource getDataSource(String databaseName);
-
+    DataSource getDataSource(String databaseName);
 }

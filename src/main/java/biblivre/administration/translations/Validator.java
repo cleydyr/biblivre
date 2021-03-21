@@ -19,48 +19,47 @@
  ******************************************************************************/
 package biblivre.administration.translations;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateDump(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateDump(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		String language = request.getString("language");
+        String language = request.getString("language");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		if (StringUtils.isBlank(language)) {
-			ex.addError("language", "administration.translations.error.invalid_language");
-		}
+        if (StringUtils.isBlank(language)) {
+            ex.addError("language", "administration.translations.error.invalid_language");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
-	}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
+    }
 
-	public void validateLoad(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateLoad(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		MemoryFile file = request.getFile("file");
+        MemoryFile file = request.getFile("file");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		if (file == null || file.getSize() <= 0) {
-			ex.addError("file", "administration.translations.error.invalid_file");
-		}
+        if (file == null || file.getSize() <= 0) {
+            ex.addError("file", "administration.translations.error.invalid_file");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
-	}
-
-
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
+    }
 }

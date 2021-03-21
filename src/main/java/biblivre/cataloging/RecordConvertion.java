@@ -20,9 +20,9 @@
 package biblivre.cataloging;
 
 public enum RecordConvertion {
-	FORM,
-	MARC,
-	RECORD,
-	HOLDING_MARC,
-	HOLDING_FORM
+    FORM,
+    MARC,
+    RECORD,
+    HOLDING_MARC,
+    HOLDING_FORM
 }

@@ -19,43 +19,40 @@
  ******************************************************************************/
 package biblivre.core.exceptions;
 
+import biblivre.core.utils.Pair;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.utils.Pair;
-
-
 public class ValidationException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final long serialVersionUID = 1L;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private List<Pair<String, String>> errorList;
+    private List<Pair<String, String>> errorList;
 
     public ValidationException(String s) {
-    	super(s);
+        super(s);
     }
 
-	public ValidationException(String s, Exception cause) {
-    	super(s, cause);
-		this.logger.error(cause.getMessage(), cause);
+    public ValidationException(String s, Exception cause) {
+        super(s, cause);
+        this.logger.error(cause.getMessage(), cause);
     }
 
     public void addError(String key, String value) {
-    	if (this.errorList == null) {
-    		this.errorList = new ArrayList<Pair<String, String>>();
-    	}
+        if (this.errorList == null) {
+            this.errorList = new ArrayList<Pair<String, String>>();
+        }
 
-    	this.errorList.add(new Pair<String, String>(key, value));
+        this.errorList.add(new Pair<String, String>(key, value));
     }
 
     public List<Pair<String, String>> getErrorList() {
-    	return this.errorList;
+        return this.errorList;
     }
 
     public boolean hasErrors() {
-    	return this.errorList != null && this.errorList.size() > 0;
+        return this.errorList != null && this.errorList.size() > 0;
     }
 }

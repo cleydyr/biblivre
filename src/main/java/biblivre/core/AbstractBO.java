@@ -19,52 +19,53 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.Pair;
 import java.util.HashMap;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
-
 public abstract class AbstractBO {
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
-	protected String schema;
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected String schema;
 
-	private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances = new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();
+    private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances =
+            new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();
 
-	@SuppressWarnings("unchecked")
-	protected static <T extends AbstractBO> T getInstance(Class<T> cls, String schema) {
-		Pair<Class<? extends AbstractBO>, String> pair = new Pair<Class<? extends AbstractBO>, String>(cls, schema);
-		T instance = (T)AbstractBO.instances.get(pair);
+    @SuppressWarnings("unchecked")
+    protected static <T extends AbstractBO> T getInstance(Class<T> cls, String schema) {
+        Pair<Class<? extends AbstractBO>, String> pair =
+                new Pair<Class<? extends AbstractBO>, String>(cls, schema);
+        T instance = (T) AbstractBO.instances.get(pair);
 
-		if (instance == null) {
-			if (!AbstractBO.class.isAssignableFrom(cls)) {
-				throw new IllegalArgumentException("BO: getInstance: Class " + cls.getName() + " is not a subclass of BO.");
-			}
+        if (instance == null) {
+            if (!AbstractBO.class.isAssignableFrom(cls)) {
+                throw new IllegalArgumentException(
+                        "BO: getInstance: Class " + cls.getName() + " is not a subclass of BO.");
+            }
 
-			try {
-				instance = cls.newInstance();
-				instance.setSchema(schema);
+            try {
+                instance = cls.newInstance();
+                instance.setSchema(schema);
 
-				AbstractBO.instances.put(pair, instance);
-			} catch (Exception ex) { }
-		}
+                AbstractBO.instances.put(pair, instance);
+            } catch (Exception ex) {
+            }
+        }
 
-		return instance;
-	}
+        return instance;
+    }
 
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
-	public String getSchema() {
-		return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
-	}
+    public String getSchema() {
+        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
+    }
 
-	public boolean isGlobalSchema() {
-		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-	}
-
+    public boolean isGlobalSchema() {
+        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
+    }
 }

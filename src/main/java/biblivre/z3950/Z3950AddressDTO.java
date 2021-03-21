@@ -23,52 +23,51 @@ import biblivre.core.AbstractDTO;
 
 public class Z3950AddressDTO extends AbstractDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private int id;
-	private String name;
-	private String url;
-	private int port;
-	private String collection;
+    private int id;
+    private String name;
+    private String url;
+    private int port;
+    private String collection;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getUrl() {
-		return this.url;
-	}
+    public String getUrl() {
+        return this.url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public int getPort() {
-		return this.port;
-	}
+    public int getPort() {
+        return this.port;
+    }
 
-	public void setPort(int port) {
-		this.port = port;
-	}
+    public void setPort(int port) {
+        this.port = port;
+    }
 
-	public String getCollection() {
-		return this.collection;
-	}
+    public String getCollection() {
+        return this.collection;
+    }
 
-	public void setCollection(String collection) {
-		this.collection = collection;
-	}
-
+    public void setCollection(String collection) {
+        this.collection = collection;
+    }
 }

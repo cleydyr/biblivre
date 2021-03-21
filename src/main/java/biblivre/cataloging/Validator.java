@@ -19,55 +19,56 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateImportUpload(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateImportUpload(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		MemoryFile file = request.getFile("file");
+        MemoryFile file = request.getFile("file");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		if (file == null || file.getSize() <= 0) {
-			ex.addError("file", "cataloging.import.error.invalid_file");
-		}
+        if (file == null || file.getSize() <= 0) {
+            ex.addError("file", "cataloging.import.error.invalid_file");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
-	}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
+    }
 
-	public void validateImportSearch(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("search_server", 0);
-		String attribute = request.getString("search_attribute");
-		String value = request.getString("search_query");
+    public void validateImportSearch(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("search_server", 0);
+        String attribute = request.getString("search_attribute");
+        String value = request.getString("search_query");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		if (id == 0) {
-			ex.addError("search_server", "field.error.invalid");
-		}
+        if (id == 0) {
+            ex.addError("search_server", "field.error.invalid");
+        }
 
-		if (StringUtils.isBlank(attribute)) {
-			ex.addError("search_attribute", "field.error.required");
-		}
+        if (StringUtils.isBlank(attribute)) {
+            ex.addError("search_attribute", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(value)) {
-			ex.addError("search_query", "field.error.required");
-		}
+        if (StringUtils.isBlank(value)) {
+            ex.addError("search_query", "field.error.required");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
-	}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
+    }
 }

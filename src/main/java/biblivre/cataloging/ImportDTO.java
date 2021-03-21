@@ -19,183 +19,183 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.cataloging.enums.ImportEncoding;
 import biblivre.cataloging.enums.ImportFormat;
 import biblivre.core.AbstractDTO;
 import biblivre.core.IFJson;
+import java.util.LinkedList;
+import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJson {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 *
-	 */
-	private List<RecordDTO> recordList = new LinkedList<RecordDTO>();
-	private List<String> foundISBN;
-	private List<String> foundISSN;
-	private List<String> foundISRC;
+    /** */
+    private List<RecordDTO> recordList = new LinkedList<RecordDTO>();
 
-	private int success;
-	private int failure;
-	private int found;
+    private List<String> foundISBN;
+    private List<String> foundISSN;
+    private List<String> foundISRC;
 
-	private ImportFormat format;
-	private ImportEncoding encoding;
+    private int success;
+    private int failure;
+    private int found;
 
-	public boolean isPerfect() {
-		return this.getFound() > 0 && this.getFailure() == 0;
-	}
+    private ImportFormat format;
+    private ImportEncoding encoding;
 
-	public void addRecord(RecordDTO record) {
-		if (record != null) {
-			this.recordList.add(record);
-		}
-	}
+    public boolean isPerfect() {
+        return this.getFound() > 0 && this.getFailure() == 0;
+    }
 
-	public List<RecordDTO> getRecordList() {
-		return this.recordList;
-	}
+    public void addRecord(RecordDTO record) {
+        if (record != null) {
+            this.recordList.add(record);
+        }
+    }
 
-	public int getSuccess() {
-		return this.success;
-	}
+    public List<RecordDTO> getRecordList() {
+        return this.recordList;
+    }
 
-	public void setSuccess(int success) {
-		this.success = success;
-	}
+    public int getSuccess() {
+        return this.success;
+    }
 
-	public void incrementSuccess() {
-		this.success++;
-	}
+    public void setSuccess(int success) {
+        this.success = success;
+    }
 
-	public int getFailure() {
-		return this.failure;
-	}
+    public void incrementSuccess() {
+        this.success++;
+    }
 
-	public void setFailure(int failure) {
-		this.failure = failure;
-	}
+    public int getFailure() {
+        return this.failure;
+    }
 
-	public void incrementFailure() {
-		this.failure++;
-	}
+    public void setFailure(int failure) {
+        this.failure = failure;
+    }
 
-	public int getFound() {
-		return this.found;
-	}
+    public void incrementFailure() {
+        this.failure++;
+    }
 
-	public void setFound(int found) {
-		this.found = found;
-	}
+    public int getFound() {
+        return this.found;
+    }
 
-	public void incrementFound() {
-		this.found++;
-	}
+    public void setFound(int found) {
+        this.found = found;
+    }
 
-	public ImportFormat getFormat() {
-		return this.format;
-	}
+    public void incrementFound() {
+        this.found++;
+    }
 
-	public void setFormat(ImportFormat format) {
-		this.format = format;
-	}
+    public ImportFormat getFormat() {
+        return this.format;
+    }
 
-	public ImportEncoding getEncoding() {
-		return this.encoding;
-	}
+    public void setFormat(ImportFormat format) {
+        this.format = format;
+    }
 
-	public void setEncoding(ImportEncoding encoding) {
-		this.encoding = encoding;
-	}
+    public ImportEncoding getEncoding() {
+        return this.encoding;
+    }
 
-	public List<String> getFoundISBN() {
-		return this.foundISBN;
-	}
+    public void setEncoding(ImportEncoding encoding) {
+        this.encoding = encoding;
+    }
 
-	public void setFoundISBN(List<String> foundISBN) {
-		this.foundISBN = foundISBN;
-	}
+    public List<String> getFoundISBN() {
+        return this.foundISBN;
+    }
 
-	public List<String> getFoundISSN() {
-		return this.foundISSN;
-	}
+    public void setFoundISBN(List<String> foundISBN) {
+        this.foundISBN = foundISBN;
+    }
 
-	public void setFoundISSN(List<String> foundISSN) {
-		this.foundISSN = foundISSN;
-	}
+    public List<String> getFoundISSN() {
+        return this.foundISSN;
+    }
 
-	public List<String> getFoundISRC() {
-		return this.foundISRC;
-	}
+    public void setFoundISSN(List<String> foundISSN) {
+        this.foundISSN = foundISSN;
+    }
 
-	public void setFoundISRC(List<String> foundISRC) {
-		this.foundISRC = foundISRC;
-	}
+    public List<String> getFoundISRC() {
+        return this.foundISRC;
+    }
 
-	@Override
-	public int compareTo(ImportDTO o) {
-		if (o == null) {
-			return -1;
-		}
+    public void setFoundISRC(List<String> foundISRC) {
+        this.foundISRC = foundISRC;
+    }
 
-		return Integer.valueOf(o.getSuccess()).compareTo(this.getSuccess());
-	}
+    @Override
+    public int compareTo(ImportDTO o) {
+        if (o == null) {
+            return -1;
+        }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = new JSONObject();
+        return Integer.valueOf(o.getSuccess()).compareTo(this.getSuccess());
+    }
 
-		try {
-			json.putOpt("success", this.getSuccess());
-			json.putOpt("failure", this.getFailure());
-			json.putOpt("found", this.getFound());
-			json.putOpt("format", this.getFormat());
-			json.putOpt("encoding", this.getEncoding());
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
 
-			for (RecordDTO dto : this.getRecordList()) {
-				json.append("record_list", dto.toJSONObject());
-			}
+        try {
+            json.putOpt("success", this.getSuccess());
+            json.putOpt("failure", this.getFailure());
+            json.putOpt("found", this.getFound());
+            json.putOpt("format", this.getFormat());
+            json.putOpt("encoding", this.getEncoding());
 
-			JSONObject isbnJSON = new JSONObject();
-			JSONObject issnJSON = new JSONObject();
-			JSONObject isrcJSON = new JSONObject();
+            for (RecordDTO dto : this.getRecordList()) {
+                json.append("record_list", dto.toJSONObject());
+            }
 
-			if (this.getFoundISBN() != null) {
-				for (String term : this.getFoundISBN()) {
-					try {
-						isbnJSON.putOpt(term, true);
-					} catch (JSONException e) {}
-				}
-			}
+            JSONObject isbnJSON = new JSONObject();
+            JSONObject issnJSON = new JSONObject();
+            JSONObject isrcJSON = new JSONObject();
 
-			if (this.getFoundISSN() != null) {
-				for (String term : this.getFoundISSN()) {
-					try {
-						issnJSON.putOpt(term, true);
-					} catch (JSONException e) {}
-				}
-			}
+            if (this.getFoundISBN() != null) {
+                for (String term : this.getFoundISBN()) {
+                    try {
+                        isbnJSON.putOpt(term, true);
+                    } catch (JSONException e) {
+                    }
+                }
+            }
 
-			if (this.getFoundISRC() != null) {
-				for (String term : this.getFoundISRC()) {
-					try {
-						isrcJSON.putOpt(term, true);
-					} catch (JSONException e) {}
-				}
-			}
+            if (this.getFoundISSN() != null) {
+                for (String term : this.getFoundISSN()) {
+                    try {
+                        issnJSON.putOpt(term, true);
+                    } catch (JSONException e) {
+                    }
+                }
+            }
 
-			json.putOpt("isbn_list", isbnJSON);
-			json.putOpt("issn_list", issnJSON);
-			json.putOpt("isrc_list", isrcJSON);
-		} catch (JSONException e) {
-		}
+            if (this.getFoundISRC() != null) {
+                for (String term : this.getFoundISRC()) {
+                    try {
+                        isrcJSON.putOpt(term, true);
+                    } catch (JSONException e) {
+                    }
+                }
+            }
 
-		return json;
-	}
+            json.putOpt("isbn_list", isbnJSON);
+            json.putOpt("issn_list", issnJSON);
+            json.putOpt("isrc_list", isrcJSON);
+        } catch (JSONException e) {
+        }
+
+        return json;
+    }
 }

@@ -22,32 +22,31 @@ package biblivre.cataloging.enums;
 import org.apache.commons.lang3.StringUtils;
 
 public enum HoldingAvailability {
+    AVAILABLE,
+    UNAVAILABLE;
 
-	AVAILABLE,
-	UNAVAILABLE;
+    public static HoldingAvailability fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-	public static HoldingAvailability fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+        str = str.toLowerCase();
 
-		str = str.toLowerCase();
+        for (HoldingAvailability availability : HoldingAvailability.values()) {
+            if (str.equals(availability.name().toLowerCase())) {
+                return availability;
+            }
+        }
 
-		for (HoldingAvailability availability : HoldingAvailability.values()) {
-			if (str.equals(availability.name().toLowerCase())) {
-				return availability;
-			}
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
-
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

@@ -20,90 +20,88 @@
 package biblivre.administration.setup;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class State {
-	public static AtomicBoolean LOCKED = new AtomicBoolean(false);
-	private static StringBuilder log;
-	private static String lastMessage;
-	private static long steps;
-	private static long currentStep;
+    public static AtomicBoolean LOCKED = new AtomicBoolean(false);
+    private static StringBuilder log;
+    private static String lastMessage;
+    private static long steps;
+    private static long currentStep;
 
-	private static long currentSecondaryStep;
+    private static long currentSecondaryStep;
 
-	public static void start() {
-		State.LOCKED.set(true);
-		State.log = new StringBuilder();
-		State.lastMessage = "";
-		State.steps = 0;
-		State.currentStep = 0;
-		State.currentSecondaryStep = 0;
-	}
+    public static void start() {
+        State.LOCKED.set(true);
+        State.log = new StringBuilder();
+        State.lastMessage = "";
+        State.steps = 0;
+        State.currentStep = 0;
+        State.currentSecondaryStep = 0;
+    }
 
-	public static void cancel() {
-		State.LOCKED.set(false);
-	}
+    public static void cancel() {
+        State.LOCKED.set(false);
+    }
 
-	public static void finish() {
-		State.LOCKED.set(false);
-	}
+    public static void finish() {
+        State.LOCKED.set(false);
+    }
 
-	public static String getLog() {
-		if (State.log == null) {
-			return "";
-		}
+    public static String getLog() {
+        if (State.log == null) {
+            return "";
+        }
 
-		return State.log.toString();
-	}
+        return State.log.toString();
+    }
 
-	public static String getLastMessage() {
-		return State.lastMessage;
-	}
+    public static String getLastMessage() {
+        return State.lastMessage;
+    }
 
-	public static void setSteps(long steps) {
-		State.steps = steps;
-	}
+    public static void setSteps(long steps) {
+        State.steps = steps;
+    }
 
-	public static long getSteps() {
-		return State.steps;
-	}
+    public static long getSteps() {
+        return State.steps;
+    }
 
-	public static long getCurrentStep() {
-		return State.currentStep;
-	}
+    public static long getCurrentStep() {
+        return State.currentStep;
+    }
 
-	public synchronized static void incrementCurrentStep() {
-		State.currentStep++;
-	}
+    public static synchronized void incrementCurrentStep() {
+        State.currentStep++;
+    }
 
-	public synchronized static void incrementCurrentStep(long count) {
-		State.currentStep += count;
-	}
+    public static synchronized void incrementCurrentStep(long count) {
+        State.currentStep += count;
+    }
 
+    public static void setCurrentSecondaryStep(long steps) {
+        State.currentSecondaryStep = steps;
+    }
 
-	public static void setCurrentSecondaryStep(long steps) {
-		State.currentSecondaryStep = steps;
-	}
+    public static long getCurrentSecondaryStep() {
+        return State.currentSecondaryStep;
+    }
 
-	public static long getCurrentSecondaryStep() {
-		return State.currentSecondaryStep;
-	}
+    public static synchronized void incrementCurrentSecondaryStep() {
+        State.currentSecondaryStep++;
+    }
 
-	public synchronized static void incrementCurrentSecondaryStep() {
-		State.currentSecondaryStep++;
-	}
+    public static synchronized void incrementCurrentSecondaryStep(long count) {
+        State.currentSecondaryStep += count;
+    }
 
-	public synchronized static void incrementCurrentSecondaryStep(long count) {
-		State.currentSecondaryStep += count;
-	}
+    public static synchronized void writeLog(String message) {
+        if (StringUtils.isBlank(message)) {
+            return;
+        }
 
-	public synchronized static void writeLog(String message) {
-		if (StringUtils.isBlank(message)) {
-			return;
-		}
-
-		State.log.append(message).append("\n");
-		State.lastMessage = message;
-	}
+        State.log.append(message).append("\n");
+        State.lastMessage = message;
+    }
 }

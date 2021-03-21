@@ -19,55 +19,53 @@
  ******************************************************************************/
 package biblivre.core.file;
 
+import biblivre.core.utils.Constants;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import biblivre.core.utils.Constants;
-
 public class DiskFile extends BiblivreFile {
-	private File file;
+    private File file;
 
-	public DiskFile(File file, String contentType) {
-		this.file = file;
-		this.setContentType(contentType);
-		if (file != null) {
-			this.setName(file.getName());
-			this.setSize(file.length());
-			this.setLastModified(file.lastModified());
-		}
-	}
+    public DiskFile(File file, String contentType) {
+        this.file = file;
+        this.setContentType(contentType);
+        if (file != null) {
+            this.setName(file.getName());
+            this.setSize(file.length());
+            this.setLastModified(file.lastModified());
+        }
+    }
 
-	@Override
-	public void close() throws IOException {
-	}
+    @Override
+    public void close() throws IOException {}
 
-	@Override
-	public boolean exists() {
-		return this.file != null && this.file.exists();
-	}
+    @Override
+    public boolean exists() {
+        return this.file != null && this.file.exists();
+    }
 
-	@Override
-	public void copy(OutputStream out, long start, long size) throws IOException {
-		if (this.file == null) {
-			return;
-		}
+    @Override
+    public void copy(OutputStream out, long start, long size) throws IOException {
+        if (this.file == null) {
+            return;
+        }
 
-		try (InputStream input = new FileInputStream(this.file)) {
-			input.skip(start);
+        try (InputStream input = new FileInputStream(this.file)) {
+            input.skip(start);
 
-			byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
-			int read;
+            byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
+            int read;
 
-			while ((read = input.read(buffer)) > 0) {
-				out.write(buffer, 0, read);
-			}
-		}
-	}
+            while ((read = input.read(buffer)) > 0) {
+                out.write(buffer, 0, read);
+            }
+        }
+    }
 
-	public boolean delete() {
-		return this.file != null && this.file.delete();
-	}
+    public boolean delete() {
+        return this.file != null && this.file.delete();
+    }
 }

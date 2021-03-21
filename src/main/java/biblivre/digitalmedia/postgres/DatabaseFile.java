@@ -19,111 +19,108 @@
  ******************************************************************************/
 package biblivre.digitalmedia.postgres;
 
+import biblivre.core.file.BiblivreFile;
+import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.postgresql.largeobject.LargeObject;
-
-import biblivre.core.file.BiblivreFile;
-import biblivre.core.utils.Constants;
 
 public class DatabaseFile extends BiblivreFile {
 
-	private Connection connection;
-	private LargeObject largeObject;
+    private Connection connection;
+    private LargeObject largeObject;
 
-	public DatabaseFile() {
-	}
+    public DatabaseFile() {}
 
-	public DatabaseFile(Connection connection, LargeObject largeObject) {
-		this.setConnection(connection);
-		this.setLargeObject(largeObject);
-	}
+    public DatabaseFile(Connection connection, LargeObject largeObject) {
+        this.setConnection(connection);
+        this.setLargeObject(largeObject);
+    }
 
-	public Connection getConnection() {
-		return this.connection;
-	}
+    public Connection getConnection() {
+        return this.connection;
+    }
 
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
 
-	public LargeObject getLargeObject() {
-		return this.largeObject;
-	}
+    public LargeObject getLargeObject() {
+        return this.largeObject;
+    }
 
-	public void setLargeObject(LargeObject largeObject) {
-		this.largeObject = largeObject;
-	}
+    public void setLargeObject(LargeObject largeObject) {
+        this.largeObject = largeObject;
+    }
 
-	@Override
-	public boolean exists() {
-		LargeObject input = this.getLargeObject();
+    @Override
+    public boolean exists() {
+        LargeObject input = this.getLargeObject();
 
-		return input != null;
-	}
+        return input != null;
+    }
 
-	@Override
-	public void copy(OutputStream out, long start, long size) throws IOException {
-		LargeObject input = this.getLargeObject();
+    @Override
+    public void copy(OutputStream out, long start, long size) throws IOException {
+        LargeObject input = this.getLargeObject();
 
-		if (input == null) {
-			return;
-		}
+        if (input == null) {
+            return;
+        }
 
-		byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
-		int read;
+        byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
+        int read;
 
-		try {
-			if (input.size() == size) {
-				while ((read = input.read(buffer, 0, Constants.DEFAULT_BUFFER_SIZE)) > 0) {
-					out.write(buffer, 0, read);
-				}
-			} else {
-				input.seek((int) start);
-				long toRead = size;
+        try {
+            if (input.size() == size) {
+                while ((read = input.read(buffer, 0, Constants.DEFAULT_BUFFER_SIZE)) > 0) {
+                    out.write(buffer, 0, read);
+                }
+            } else {
+                input.seek((int) start);
+                long toRead = size;
 
-				while ((read = input.read(buffer, 0, Constants.DEFAULT_BUFFER_SIZE)) > 0) {
-					if ((toRead -= read) > 0) {
-						out.write(buffer, 0, read);
-					} else {
-						out.write(buffer, 0, (int) toRead + read);
-						break;
-					}
-				}
-			}
-		} catch (SQLException e) {
-			throw new IOException(e);
-		}
-	}
+                while ((read = input.read(buffer, 0, Constants.DEFAULT_BUFFER_SIZE)) > 0) {
+                    if ((toRead -= read) > 0) {
+                        out.write(buffer, 0, read);
+                    } else {
+                        out.write(buffer, 0, (int) toRead + read);
+                        break;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new IOException(e);
+        }
+    }
 
-	@Override
-	public void close() {
-		LargeObject largeObject = this.getLargeObject();
-		if (largeObject != null) {
-			this.setLargeObject(null);
-			try {
-				largeObject.close();
-			} catch (SQLException ignore) {
-			}
-		}
+    @Override
+    public void close() {
+        LargeObject largeObject = this.getLargeObject();
+        if (largeObject != null) {
+            this.setLargeObject(null);
+            try {
+                largeObject.close();
+            } catch (SQLException ignore) {
+            }
+        }
 
-		Connection con = this.getConnection();
-		if (con != null) {
-			this.setConnection(null);
-			try {
-				con.commit();
-			} catch (SQLException ignore) {
-			}
+        Connection con = this.getConnection();
+        if (con != null) {
+            this.setConnection(null);
+            try {
+                con.commit();
+            } catch (SQLException ignore) {
+            }
 
-			try {
-				if (!con.isClosed()) {
-					con.close();
-				}
-			} catch (SQLException ignore) {
-			}
-		}
-	}
+            try {
+                if (!con.isClosed()) {
+                    con.close();
+                }
+            } catch (SQLException ignore) {
+            }
+        }
+    }
 }

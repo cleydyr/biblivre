@@ -19,69 +19,66 @@
  ******************************************************************************/
 package biblivre.view.taglibs;
 
+import biblivre.core.utils.Constants;
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.Constants;
-
 public class LayoutHead extends TagSupport {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String schema;
+    private String schema;
 
-	public boolean isSchemaSelection() {
-		return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-	}
+    public boolean isSchemaSelection() {
+        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
+    }
 
-	private String getSchema() {
-		return StringUtils.defaultString(this.schema);
-	}
+    private String getSchema() {
+        return StringUtils.defaultString(this.schema);
+    }
 
-	private void init() {
-		HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
-		this.schema = (String) request.getAttribute("schema");
-	}
+    private void init() {
+        HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
+        this.schema = (String) request.getAttribute("schema");
+    }
 
-	@Override
-	public int doStartTag() throws JspException {
-		this.init();
+    @Override
+    public int doStartTag() throws JspException {
+        this.init();
 
-		String schema = this.getSchema();
+        String schema = this.getSchema();
 
-		pageContext.getRequest().setAttribute("schema", schema);
+        pageContext.getRequest().setAttribute("schema", schema);
 
-		try {
-			this.pageContext.include("/jsp/taglib/layout/head/start.jsp");
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            this.pageContext.include("/jsp/taglib/layout/head/start.jsp");
+        } catch (ServletException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		return EVAL_BODY_INCLUDE;
-	}
+        return EVAL_BODY_INCLUDE;
+    }
 
-	@Override
-	public int doEndTag() throws JspException {
-		try {
-			this.pageContext.include("/jsp/taglib/layout/head/end.jsp");
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    @Override
+    public int doEndTag() throws JspException {
+        try {
+            this.pageContext.include("/jsp/taglib/layout/head/end.jsp");
+        } catch (ServletException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		return Tag.EVAL_PAGE;
-	}
+        return Tag.EVAL_PAGE;
+    }
 }

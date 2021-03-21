@@ -19,69 +19,69 @@
  ******************************************************************************/
 package biblivre.login;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateChangePassword(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
+    public void validateChangePassword(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
 
-		String currentPassword = request.getString("current_password");
-		String newPassword = request.getString("new_password");
-		String repeatPassword = request.getString("repeat_password");
+        String currentPassword = request.getString("current_password");
+        String newPassword = request.getString("new_password");
+        String repeatPassword = request.getString("repeat_password");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		if (StringUtils.isBlank(currentPassword)) {
-			ex.addError("current_password", "field.error.required");
-		}
+        if (StringUtils.isBlank(currentPassword)) {
+            ex.addError("current_password", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(newPassword)) {
-			ex.addError("new_password", "field.error.required");
-		}
+        if (StringUtils.isBlank(newPassword)) {
+            ex.addError("new_password", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(repeatPassword)) {
-			ex.addError("repeat_password", "field.error.required");
-		}
+        if (StringUtils.isBlank(repeatPassword)) {
+            ex.addError("repeat_password", "field.error.required");
+        }
 
-		if (newPassword.length() < 3) {
-			ex.addError("new_password", "field.error.min_length:3");
-		}
+        if (newPassword.length() < 3) {
+            ex.addError("new_password", "field.error.min_length:3");
+        }
 
-		if (!newPassword.equals(repeatPassword)) {
-			ex.addError("repeat_password", "login.error.password_not_matching");
-		}
+        if (!newPassword.equals(repeatPassword)) {
+            ex.addError("repeat_password", "login.error.password_not_matching");
+        }
 
-		if (newPassword.equals(currentPassword)) {
-			ex.addError("new_password", "login.error.same_password");
-		}
+        if (newPassword.equals(currentPassword)) {
+            ex.addError("new_password", "login.error.same_password");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
 
-		LoginBO lbo = LoginBO.getInstance(schema);
+        LoginBO lbo = LoginBO.getInstance(schema);
 
-		int loggedId = request.getLoggedUserId();
-		LoginDTO login = lbo.get(loggedId);
-		if (login == null) {
-			handler.setMessage(ActionResult.WARNING, "error.invalid_user");
-			return;
-		}
+        int loggedId = request.getLoggedUserId();
+        LoginDTO login = lbo.get(loggedId);
+        if (login == null) {
+            handler.setMessage(ActionResult.WARNING, "error.invalid_user");
+            return;
+        }
 
-		LoginDTO checkLogin = lbo.login(login.getLogin(), currentPassword);
-		if (checkLogin == null) {
-			ex.addError("current_password", "login.error.invalid_password");
-			handler.setMessage(ex);
-			return;
-		}
-	}
+        LoginDTO checkLogin = lbo.login(login.getLogin(), currentPassword);
+        if (checkLogin == null) {
+            ex.addError("current_password", "login.error.invalid_password");
+            handler.setMessage(ex);
+            return;
+        }
+    }
 }

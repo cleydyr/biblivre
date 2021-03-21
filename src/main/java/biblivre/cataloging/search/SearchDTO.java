@@ -19,117 +19,115 @@
  ******************************************************************************/
 package biblivre.cataloging.search;
 
-import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.DTOCollection;
 import biblivre.core.enums.SearchMode;
+import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SearchDTO extends DTOCollection<RecordDTO> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private RecordType recordType;
+    private RecordType recordType;
 
-	private SearchQueryDTO query;
+    private SearchQueryDTO query;
 
-	private transient Integer sort;
-	private transient Integer indexingGroup;
-	private transient Map<Integer, Integer> indexingGroupCount;
+    private transient Integer sort;
+    private transient Integer indexingGroup;
+    private transient Map<Integer, Integer> indexingGroupCount;
 
-	public SearchDTO(RecordType recordType) {
-		super();
+    public SearchDTO(RecordType recordType) {
+        super();
 
-		this.setRecordType(recordType);
-	}
+        this.setRecordType(recordType);
+    }
 
-	public SearchMode getSearchMode() {
-		if (this.getQuery() == null) {
-			return SearchMode.LIST_ALL;
-		}
+    public SearchMode getSearchMode() {
+        if (this.getQuery() == null) {
+            return SearchMode.LIST_ALL;
+        }
 
-		return this.getQuery().getSearchMode();
-	}
+        return this.getQuery().getSearchMode();
+    }
 
-	public RecordType getRecordType() {
-		return this.recordType;
-	}
+    public RecordType getRecordType() {
+        return this.recordType;
+    }
 
-	public void setRecordType(RecordType recordType) {
-		this.recordType = recordType;
-	}
+    public void setRecordType(RecordType recordType) {
+        this.recordType = recordType;
+    }
 
-	public SearchQueryDTO getQuery() {
-		return this.query;
-	}
+    public SearchQueryDTO getQuery() {
+        return this.query;
+    }
 
-	public void setQuery(SearchQueryDTO query) {
-		this.query = query;
-	}
+    public void setQuery(SearchQueryDTO query) {
+        this.query = query;
+    }
 
-	public Integer getIndexingGroup() {
-		if (this.indexingGroup == null) {
-			// This search is not over a datafield group.
-			// Using 0 to represent no filtering
-			return 0;
-		}
+    public Integer getIndexingGroup() {
+        if (this.indexingGroup == null) {
+            // This search is not over a datafield group.
+            // Using 0 to represent no filtering
+            return 0;
+        }
 
-		return this.indexingGroup;
-	}
+        return this.indexingGroup;
+    }
 
-	public void setIndexingGroup(Integer indexingGroup) {
-		this.indexingGroup = indexingGroup;
-	}
+    public void setIndexingGroup(Integer indexingGroup) {
+        this.indexingGroup = indexingGroup;
+    }
 
-	public Integer getSort() {
-		return this.sort;
-	}
+    public Integer getSort() {
+        return this.sort;
+    }
 
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 
-	public String getParameters() {
-		if (this.getQuery() == null) {
-			return "";
-		}
+    public String getParameters() {
+        if (this.getQuery() == null) {
+            return "";
+        }
 
-		return this.getQuery().getParameters();
-	}
+        return this.getQuery().getParameters();
+    }
 
-	public Map<Integer, Integer> getIndexingGroupCount() {
-		return this.indexingGroupCount;
-	}
+    public Map<Integer, Integer> getIndexingGroupCount() {
+        return this.indexingGroupCount;
+    }
 
-	public void setIndexingGroupCount(Map<Integer, Integer> indexingGroupCount) {
-		this.indexingGroupCount = indexingGroupCount;
-	}
+    public void setIndexingGroupCount(Map<Integer, Integer> indexingGroupCount) {
+        this.indexingGroupCount = indexingGroupCount;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("record_type", this.getRecordType());
+        try {
+            json.putOpt("record_type", this.getRecordType());
 
-			JSONArray groupCount = new JSONArray();
+            JSONArray groupCount = new JSONArray();
 
-			for (Integer key : this.getIndexingGroupCount().keySet()) {
-				JSONObject group = new JSONObject();
-				group.put("group_id", key);
-				group.put("result_count", this.getIndexingGroupCount().get(key));
+            for (Integer key : this.getIndexingGroupCount().keySet()) {
+                JSONObject group = new JSONObject();
+                group.put("group_id", key);
+                group.put("result_count", this.getIndexingGroupCount().get(key));
 
-				groupCount.put(group);
-			}
+                groupCount.put(group);
+            }
 
-			json.putOpt("indexing_group_count", groupCount);
-		} catch (JSONException e) {
-		}
+            json.putOpt("indexing_group_count", groupCount);
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

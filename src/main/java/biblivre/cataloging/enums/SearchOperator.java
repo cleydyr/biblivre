@@ -21,44 +21,43 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
-
 public enum SearchOperator {
-	AND(" AND "),
-	OR(" OR "),
-	AND_NOT(" AND NOT ");
+    AND(" AND "),
+    OR(" OR "),
+    AND_NOT(" AND NOT ");
 
-	private String operator;
+    private String operator;
 
-	private SearchOperator(String operator) {
-		this.operator = operator;
-	}
+    private SearchOperator(String operator) {
+        this.operator = operator;
+    }
 
-	public static SearchOperator fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static SearchOperator fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (SearchOperator searchOperator : SearchOperator.values()) {
-			if (str.equals(searchOperator.name().toLowerCase())) {
-				return searchOperator;
-			}
-		}
+        for (SearchOperator searchOperator : SearchOperator.values()) {
+            if (str.equals(searchOperator.name().toLowerCase())) {
+                return searchOperator;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 
-	public String getSqlOperator() {
-		return this.operator;
-	}
+    public String getSqlOperator() {
+        return this.operator;
+    }
 }

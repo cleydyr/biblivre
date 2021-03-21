@@ -19,48 +19,47 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.core.AbstractDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.core.AbstractDTO;
-
 public class BriefTabFieldDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String datafieldTag;
-	private String value;
+    private String datafieldTag;
+    private String value;
 
-	public BriefTabFieldDTO(String datafieldTag, String value) {
-		this.setDatafieldTag(datafieldTag);
-		this.setValue(value);
-	}
+    public BriefTabFieldDTO(String datafieldTag, String value) {
+        this.setDatafieldTag(datafieldTag);
+        this.setValue(value);
+    }
 
-	public String getDatafieldTag() {
-		return this.datafieldTag;
-	}
+    public String getDatafieldTag() {
+        return this.datafieldTag;
+    }
 
-	public void setDatafieldTag(String datafieldTag) {
-		this.datafieldTag = datafieldTag;
-	}
+    public void setDatafieldTag(String datafieldTag) {
+        this.datafieldTag = datafieldTag;
+    }
 
-	public String getValue() {
-		return this.value;
-	}
+    public String getValue() {
+        return this.value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = new JSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("datafield", this.getDatafieldTag());
-			json.putOpt("value", this.getValue());
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("datafield", this.getDatafieldTag());
+            json.putOpt("value", this.getValue());
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

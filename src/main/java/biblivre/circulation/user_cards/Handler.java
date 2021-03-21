@@ -19,12 +19,6 @@
  ******************************************************************************/
 package biblivre.circulation.user_cards;
 
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import org.json.JSONException;
-
 import biblivre.circulation.user.UserBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
@@ -32,55 +26,59 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.LabelPrintDTO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
+import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-	public void createPdf(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String printId = UUID.randomUUID().toString();
+    public void createPdf(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        String printId = UUID.randomUUID().toString();
 
-		LabelPrintDTO print = new LabelPrintDTO();
-		String idList = request.getString("id_list");
+        LabelPrintDTO print = new LabelPrintDTO();
+        String idList = request.getString("id_list");
 
-		String[] idArray = idList.split(",");
-		Set<Integer> ids = new TreeSet<Integer>();
-		try {
-			for (int i = 0; i < idArray.length; i++) {
-				ids.add(Integer.valueOf(idArray[i]));
-			}
-		} catch(Exception e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-		}
+        String[] idArray = idList.split(",");
+        Set<Integer> ids = new TreeSet<Integer>();
+        try {
+            for (int i = 0; i < idArray.length; i++) {
+                ids.add(Integer.valueOf(idArray[i]));
+            }
+        } catch (Exception e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+        }
 
-		print.setIds(ids);
-		print.setOffset(request.getInteger("offset"));
-		print.setWidth(request.getFloat("width"));
-		print.setHeight(request.getFloat("height"));
-		print.setColumns(request.getInteger("columns"));
-		print.setRows(request.getInteger("rows"));
+        print.setIds(ids);
+        print.setOffset(request.getInteger("offset"));
+        print.setWidth(request.getFloat("width"));
+        print.setHeight(request.getFloat("height"));
+        print.setColumns(request.getInteger("columns"));
+        print.setRows(request.getInteger("rows"));
 
-		request.setSessionAttribute(schema, printId, print);
+        request.setSessionAttribute(schema, printId, print);
 
-		try {
-			this.json.put("uuid", printId);
-		} catch(JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-		}
-	}
+        try {
+            this.json.put("uuid", printId);
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+        }
+    }
 
-	public void downloadPdf(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String printId = request.getString("id");
+    public void downloadPdf(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        String printId = request.getString("id");
 
-		LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
+        LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
 
-		UserBO ubo = UserBO.getInstance(schema);
+        UserBO ubo = UserBO.getInstance(schema);
 
-		final DiskFile exportFile = ubo.printUserCardsToPDF(dto, request.getTranslationsMap());
-		ubo.markAsPrinted(dto.getIds());
+        final DiskFile exportFile = ubo.printUserCardsToPDF(dto, request.getTranslationsMap());
+        ubo.markAsPrinted(dto.getIds());
 
-		this.setFile(exportFile);
+        this.setFile(exportFile);
 
-		this.setCallback(exportFile::delete);
-	}
+        this.setCallback(exportFile::delete);
+    }
 }

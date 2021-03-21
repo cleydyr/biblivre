@@ -19,24 +19,23 @@
  ******************************************************************************/
 package biblivre.acquisition.request;
 
-import java.util.List;
-
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
+import java.util.List;
 
 public class RequestBO extends AbstractBO {
-	private RequestDAO dao;
+    private RequestDAO dao;
 
-	public static RequestBO getInstance(String schema) {
-		RequestBO bo = AbstractBO.getInstance(RequestBO.class, schema);
+    public static RequestBO getInstance(String schema) {
+        RequestBO bo = AbstractBO.getInstance(RequestBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = RequestDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = RequestDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
     public RequestDTO get(Integer id) {
         return this.dao.get(id);
@@ -59,11 +58,10 @@ public class RequestBO extends AbstractBO {
     }
 
     public DTOCollection<RequestDTO> search(String value, int limit, int offset) {
-    	return this.dao.search(value, limit, offset);
+        return this.dao.search(value, limit, offset);
     }
 
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
-
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
 }

@@ -22,32 +22,33 @@ package biblivre.administration.backup;
 import org.apache.commons.lang3.StringUtils;
 
 public enum BackupScope {
-	SINGLE_SCHEMA, // general.multi_schema is false
-	MULTI_SCHEMA, // general.multi_schema is true and backup was made from public schema
-	SINGLE_SCHEMA_FROM_MULTI_SCHEMA; // general.multi_schema is true but backup was made from single schema
+    SINGLE_SCHEMA, // general.multi_schema is false
+    MULTI_SCHEMA, // general.multi_schema is true and backup was made from public schema
+    SINGLE_SCHEMA_FROM_MULTI_SCHEMA; // general.multi_schema is true but backup was made from single
+    // schema
 
-	public static BackupScope fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static BackupScope fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (BackupScope scope : BackupScope.values()) {
-			if (str.equals(scope.toString())) {
-				return scope;
-			}
-		}
+        for (BackupScope scope : BackupScope.values()) {
+            if (str.equals(scope.toString())) {
+                return scope;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

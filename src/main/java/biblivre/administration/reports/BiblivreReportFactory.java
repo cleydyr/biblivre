@@ -19,32 +19,46 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
-
 public class BiblivreReportFactory {
 
-	private BiblivreReportFactory(){}
+    private BiblivreReportFactory() {}
 
-	public static IBiblivreReport getBiblivreReport(ReportType type) {
-		switch (type) {
-			case SEARCHES_BY_DATE: return new SearchesByDateReport();
-			case LENDINGS_BY_DATE: return new LendingsByDateReport();
-			case ALL_USERS: return new AllUsersReport();
-			case DEWEY: return new DeweyReport();
-			case LATE_LENDINGS: return new LateReturnLendingsReport();
-			case AUTHOR_BIBLIOGRAPHY: return new BibliographyReport();
-			case HOLDING_CREATION_BY_DATE: return new HoldingCreationByDatetReport();
-			case ACQUISITION: return new RequestsByDateReport();
-			case SUMMARY: return new SummaryReport();
-			case USER: return new UserReport();
-			case RESERVATION: return new ReservationReport();
-			case ASSET_HOLDING: return new AssetHoldingReport();
-			case ASSET_HOLDING_FULL: return new AssetHoldingFullReport(false);
-			case TOPOGRAPHIC_FULL: return new AssetHoldingFullReport(true);
-			case ASSET_HOLDING_BY_DATE: return new AssetHoldingByDateReport();
-			case CUSTOM_COUNT: return new CustomCountReport();
-			default:
-				return null;
-		}
-	}
-
+    public static IBiblivreReport getBiblivreReport(ReportType type) {
+        switch (type) {
+            case SEARCHES_BY_DATE:
+                return new SearchesByDateReport();
+            case LENDINGS_BY_DATE:
+                return new LendingsByDateReport();
+            case ALL_USERS:
+                return new AllUsersReport();
+            case DEWEY:
+                return new DeweyReport();
+            case LATE_LENDINGS:
+                return new LateReturnLendingsReport();
+            case AUTHOR_BIBLIOGRAPHY:
+                return new BibliographyReport();
+            case HOLDING_CREATION_BY_DATE:
+                return new HoldingCreationByDatetReport();
+            case ACQUISITION:
+                return new RequestsByDateReport();
+            case SUMMARY:
+                return new SummaryReport();
+            case USER:
+                return new UserReport();
+            case RESERVATION:
+                return new ReservationReport();
+            case ASSET_HOLDING:
+                return new AssetHoldingReport();
+            case ASSET_HOLDING_FULL:
+                return new AssetHoldingFullReport(false);
+            case TOPOGRAPHIC_FULL:
+                return new AssetHoldingFullReport(true);
+            case ASSET_HOLDING_BY_DATE:
+                return new AssetHoldingByDateReport();
+            case CUSTOM_COUNT:
+                return new CustomCountReport();
+            default:
+                return null;
+        }
+    }
 }

@@ -25,38 +25,37 @@ import biblivre.core.AbstractDTO;
 
 public class ReservationInfoDTO extends AbstractDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private BiblioRecordDTO biblio;
-	private ReservationDTO reservation;
-	private UserDTO user;
+    private BiblioRecordDTO biblio;
+    private ReservationDTO reservation;
+    private UserDTO user;
 
-	public UserDTO getUser() {
-		return this.user;
-	}
+    public UserDTO getUser() {
+        return this.user;
+    }
 
-	public void setUser(UserDTO user) {
-		this.user = user;
-	}
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 
-	public ReservationDTO getReservation() {
-		return this.reservation;
-	}
+    public ReservationDTO getReservation() {
+        return this.reservation;
+    }
 
-	public void setReservation(ReservationDTO reservation) {
-		this.reservation = reservation;
-	}
+    public void setReservation(ReservationDTO reservation) {
+        this.reservation = reservation;
+    }
 
-	public BiblioRecordDTO getBiblio() {
-		return this.biblio;
-	}
+    public BiblioRecordDTO getBiblio() {
+        return this.biblio;
+    }
 
-	public void setBiblio(BiblioRecordDTO biblio) {
-		this.biblio = biblio;
-	}
+    public void setBiblio(BiblioRecordDTO biblio) {
+        this.biblio = biblio;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 }

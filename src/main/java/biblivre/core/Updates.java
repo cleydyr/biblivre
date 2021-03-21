@@ -19,11 +19,15 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationsDTO;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.TextUtils;
+import biblivre.update.UpdateService;
 import java.sql.Connection;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UUID;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -31,159 +35,149 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.configurations.Configurations;
-import biblivre.core.configurations.ConfigurationsDTO;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.TextUtils;
-import biblivre.update.UpdateService;
-
 public class Updates {
 
-	private static final Logger logger = LoggerFactory.getLogger(Updates.class);
+    private static final Logger logger = LoggerFactory.getLogger(Updates.class);
 
-	public static String getVersion() {
-		return Constants.BIBLIVRE_VERSION;
-	}
+    public static String getVersion() {
+        return Constants.BIBLIVRE_VERSION;
+    }
 
-	public static boolean globalUpdate() {
-		UpdatesDAO dao = UpdatesDAO.getInstance(Constants.GLOBAL_SCHEMA);
+    public static boolean globalUpdate() {
+        UpdatesDAO dao = UpdatesDAO.getInstance(Constants.GLOBAL_SCHEMA);
 
-		Connection con = null;
-		try {
-			Set<String> installedVersions = dao.getInstalledVersions();
+        Connection con = null;
+        try {
+            Set<String> installedVersions = dao.getInstalledVersions();
 
-			ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
+            ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
 
-			for (UpdateService updateService : serviceLoader) {
-				if (!installedVersions.contains(updateService.getVersion())) {
-					logger.info(
-						"Processing global update service {}.",
-						updateService.getVersion());
+            for (UpdateService updateService : serviceLoader) {
+                if (!installedVersions.contains(updateService.getVersion())) {
+                    logger.info("Processing global update service {}.", updateService.getVersion());
 
-					con = dao.beginUpdate();
+                    con = dao.beginUpdate();
 
-					updateService.doUpdate(con);
+                    updateService.doUpdate(con);
 
-					dao.commitUpdate(updateService.getVersion(), con);
+                    dao.commitUpdate(updateService.getVersion(), con);
 
-					updateService.afterUpdate();
-				}
-				else {
-					logger.info(
-						"Skipping global update service {}.",
-						updateService.getVersion());
-				}
-			}
+                    updateService.afterUpdate();
+                } else {
+                    logger.info("Skipping global update service {}.", updateService.getVersion());
+                }
+            }
 
-			return true;
-		} catch (Exception e) {
-			dao.rollbackUpdate(con);
-			e.printStackTrace();
-		}
+            return true;
+        } catch (Exception e) {
+            dao.rollbackUpdate(con);
+            e.printStackTrace();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static boolean schemaUpdate(String schema) {
-		UpdatesDAO dao = UpdatesDAO.getInstance(schema);
+    public static boolean schemaUpdate(String schema) {
+        UpdatesDAO dao = UpdatesDAO.getInstance(schema);
 
-		Connection con = null;
-		try {
-			if (!dao.checkTableExistance("versions")) {
-				dao.fixVersionsTable();
-			}
+        Connection con = null;
+        try {
+            if (!dao.checkTableExistance("versions")) {
+                dao.fixVersionsTable();
+            }
 
-			Set<String> installedVersions = dao.getInstalledVersions();
+            Set<String> installedVersions = dao.getInstalledVersions();
 
-			ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
+            ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
 
-			for (UpdateService updateService : serviceLoader) {
-				if (!installedVersions.contains(updateService.getVersion())) {
-					logger.info(
-						"Processing update service {} for schema {}.",
-						updateService.getVersion(), schema);
+            for (UpdateService updateService : serviceLoader) {
+                if (!installedVersions.contains(updateService.getVersion())) {
+                    logger.info(
+                            "Processing update service {} for schema {}.",
+                            updateService.getVersion(),
+                            schema);
 
-					con = dao.beginUpdate();
+                    con = dao.beginUpdate();
 
-					updateService.doUpdateScopedBySchema(con);
+                    updateService.doUpdateScopedBySchema(con);
 
-					dao.commitUpdate(updateService.getVersion(), con);
+                    dao.commitUpdate(updateService.getVersion(), con);
 
-					updateService.afterUpdate();
-				}
-				else {
-					logger.info(
-						"Skipping update service {} for schema {}.",
-						updateService.getVersion(), schema);
-				}
-			}
+                    updateService.afterUpdate();
+                } else {
+                    logger.info(
+                            "Skipping update service {} for schema {}.",
+                            updateService.getVersion(),
+                            schema);
+                }
+            }
 
-			return true;
-		} catch (Exception e) {
-			dao.rollbackUpdate(con);
-			e.printStackTrace();
-		}
+            return true;
+        } catch (Exception e) {
+            dao.rollbackUpdate(con);
+            e.printStackTrace();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static String getUID() {
-		String uid = Configurations.getString(Constants.GLOBAL_SCHEMA, Constants.CONFIG_UID);
+    public static String getUID() {
+        String uid = Configurations.getString(Constants.GLOBAL_SCHEMA, Constants.CONFIG_UID);
 
-		if (StringUtils.isBlank(uid)) {
-			uid = UUID.randomUUID().toString();
+        if (StringUtils.isBlank(uid)) {
+            uid = UUID.randomUUID().toString();
 
-			ConfigurationsDTO config = new ConfigurationsDTO();
-			config.setKey(Constants.CONFIG_UID);
-			config.setValue(uid);
-			config.setType("string");
-			config.setRequired(false);
+            ConfigurationsDTO config = new ConfigurationsDTO();
+            config.setKey(Constants.CONFIG_UID);
+            config.setValue(uid);
+            config.setType("string");
+            config.setRequired(false);
 
-			Configurations.save(Constants.GLOBAL_SCHEMA, config, 0);
-		}
+            Configurations.save(Constants.GLOBAL_SCHEMA, config, 0);
+        }
 
-		return uid;
-	}
+        return uid;
+    }
 
-	public static String checkUpdates() {
-		String uid = Updates.getUID();
-		String version = Updates.getVersion();
+    public static String checkUpdates() {
+        String uid = Updates.getUID();
+        String version = Updates.getVersion();
 
-		PostMethod updatePost = new PostMethod(Constants.UPDATE_URL);
-		updatePost.addParameter("uid", TextUtils.biblivreEncrypt(uid));
-		updatePost.addParameter("version", TextUtils.biblivreEncrypt(version));
+        PostMethod updatePost = new PostMethod(Constants.UPDATE_URL);
+        updatePost.addParameter("uid", TextUtils.biblivreEncrypt(uid));
+        updatePost.addParameter("version", TextUtils.biblivreEncrypt(version));
 
-		HttpClient client = new HttpClient();
-		client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-		try {
-			int status = client.executeMethod(updatePost);
+        HttpClient client = new HttpClient();
+        client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
+        try {
+            int status = client.executeMethod(updatePost);
 
-			if (status == HttpStatus.SC_OK) {
-				return updatePost.getResponseBodyAsString();
-			}
-			updatePost.releaseConnection();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            if (status == HttpStatus.SC_OK) {
+                return updatePost.getResponseBodyAsString();
+            }
+            updatePost.releaseConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		return "";
-	}
+        return "";
+    }
 
-	public static void fixPostgreSQL81() {
-		UpdatesDAO dao = UpdatesDAO.getInstance("public");
+    public static void fixPostgreSQL81() {
+        UpdatesDAO dao = UpdatesDAO.getInstance("public");
 
-		try {
-			if (!dao.checkFunctionExistance("array_agg")) {
-				String version = dao.getPostgreSQLVersion();
+        try {
+            if (!dao.checkFunctionExistance("array_agg")) {
+                String version = dao.getPostgreSQLVersion();
 
-				if (version.contains("8.1")) {
-					dao.create81ArrayAgg();
-				} else {
-					dao.createArrayAgg();
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
+                if (version.contains("8.1")) {
+                    dao.create81ArrayAgg();
+                } else {
+                    dao.createArrayAgg();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }

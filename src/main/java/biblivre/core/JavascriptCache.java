@@ -21,49 +21,52 @@ package biblivre.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
-
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 public class JavascriptCache {
 
-	private File cacheFile;
-	private IFCacheableJavascript parent;
+    private File cacheFile;
+    private IFCacheableJavascript parent;
 
-	public JavascriptCache(IFCacheableJavascript parent) {
-		this.parent = parent;
-	}
+    public JavascriptCache(IFCacheableJavascript parent) {
+        this.parent = parent;
+    }
 
-	private void createCacheFile() {
-		try {
-			this.cacheFile = File.createTempFile(this.parent.getCacheFileNamePrefix() + ".", this.parent.getCacheFileNameSuffix());
-			this.cacheFile.deleteOnExit();
+    private void createCacheFile() {
+        try {
+            this.cacheFile =
+                    File.createTempFile(
+                            this.parent.getCacheFileNamePrefix() + ".",
+                            this.parent.getCacheFileNameSuffix());
+            this.cacheFile.deleteOnExit();
 
-			BufferedWriter out = new BufferedWriter(new FileWriterWithEncoding(this.cacheFile, "UTF-8"));
-			out.write(this.parent.toJavascriptString());
-			out.close();
-		} catch (Exception e) {
-			this.cacheFile = null;
-		}
-	}
+            BufferedWriter out =
+                    new BufferedWriter(new FileWriterWithEncoding(this.cacheFile, "UTF-8"));
+            out.write(this.parent.toJavascriptString());
+            out.close();
+        } catch (Exception e) {
+            this.cacheFile = null;
+        }
+    }
 
-	private boolean validateCacheFile() {
-		if (this.cacheFile == null || !this.cacheFile.exists() || this.cacheFile.length() == 0) {
-			this.createCacheFile();
-		}
+    private boolean validateCacheFile() {
+        if (this.cacheFile == null || !this.cacheFile.exists() || this.cacheFile.length() == 0) {
+            this.createCacheFile();
+        }
 
-		return this.cacheFile != null;
-	}
+        return this.cacheFile != null;
+    }
 
-	public String getFileName() {
-		if (this.validateCacheFile()) {
-			return this.cacheFile.getName();
-		} else {
-			return this.parent.getCacheFileNamePrefix() + this.parent.getCacheFileNameSuffix();
-		}
-	}
+    public String getFileName() {
+        if (this.validateCacheFile()) {
+            return this.cacheFile.getName();
+        } else {
+            return this.parent.getCacheFileNamePrefix() + this.parent.getCacheFileNameSuffix();
+        }
+    }
 
-	public File getCacheFile() {
-		this.validateCacheFile();
-		return this.cacheFile;
-	}
+    public File getCacheFile() {
+        this.validateCacheFile();
+        return this.cacheFile;
+    }
 }

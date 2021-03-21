@@ -24,85 +24,90 @@ import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.function.Function;
-
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
-
 import tech.units.indriya.unit.Units;
 
 public class Constants {
 
-	public static final int ADMIN_LOGGED_USER_ID = 0;
-	public static final int DEFAULT_POSTGRESQL_PORT = 5432;
-	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-	public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
-	public static final Charset WINDOWS_CHARSET = Charset.forName("cp1252");
+    public static final int ADMIN_LOGGED_USER_ID = 0;
+    public static final int DEFAULT_POSTGRESQL_PORT = 5432;
+    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
+    public static final Charset WINDOWS_CHARSET = Charset.forName("cp1252");
 
-	public static final String BIBLIVRE = "Biblivre";
-	public static final String BIBLIVRE_VERSION = "5.0.5";
-	public static final String UPDATE_URL = "http://update.biblivre.org.br";
-	public static final String DOWNLOAD_URL = "http://update.biblivre.org.br";
+    public static final String BIBLIVRE = "Biblivre";
+    public static final String BIBLIVRE_VERSION = "5.0.5";
+    public static final String UPDATE_URL = "http://update.biblivre.org.br";
+    public static final String DOWNLOAD_URL = "http://update.biblivre.org.br";
 
-	public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	public static final DateFormat DEFAULT_DATE_FORMAT_TIMEZONE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    public static final DateFormat DEFAULT_DATE_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    public static final DateFormat DEFAULT_DATE_FORMAT_TIMEZONE =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-	public static final String LINE_BREAK = System.getProperty("line.separator");
-	public static final float MM_UNIT = 72.0f / 25.4f;
+    public static final String LINE_BREAK = System.getProperty("line.separator");
+    public static final float MM_UNIT = 72.0f / 25.4f;
 
-	// Configurations
-	public static final String CONFIG_DEFAULT_LANGUAGE = "general.default_language";
-	public static final String CONFIG_MULTI_SCHEMA = "general.multi_schema";
-	public static final String CONFIG_TITLE = "general.title";
-	public static final String CONFIG_SUBTITLE = "general.subtitle";
-	public static final String CONFIG_UID = "general.uid";
-	public static final String CONFIG_BUSINESS_DAYS = "general.business_days";
-	public static final String CONFIG_CURRENCY = "general.currency";
+    // Configurations
+    public static final String CONFIG_DEFAULT_LANGUAGE = "general.default_language";
+    public static final String CONFIG_MULTI_SCHEMA = "general.multi_schema";
+    public static final String CONFIG_TITLE = "general.title";
+    public static final String CONFIG_SUBTITLE = "general.subtitle";
+    public static final String CONFIG_UID = "general.uid";
+    public static final String CONFIG_BUSINESS_DAYS = "general.business_days";
+    public static final String CONFIG_CURRENCY = "general.currency";
 
-	public static final String CONFIG_NEW_LIBRARY = "setup.new_library";
+    public static final String CONFIG_NEW_LIBRARY = "setup.new_library";
 
-	public static final String CONFIG_ACCESSION_NUMBER_PREFIX = "cataloging.accession_number_prefix";
+    public static final String CONFIG_ACCESSION_NUMBER_PREFIX =
+            "cataloging.accession_number_prefix";
 
-	public static final String CONFIG_PGDUMP_PATH = "general.pg_dump_path";
-	public static final String CONFIG_PSQL_PATH = "general.psql_path";
-	public static final String CONFIG_BACKUP_PATH = "general.backup_path";
+    public static final String CONFIG_PGDUMP_PATH = "general.pg_dump_path";
+    public static final String CONFIG_PSQL_PATH = "general.psql_path";
+    public static final String CONFIG_BACKUP_PATH = "general.backup_path";
 
-	public static final String CONFIG_SEARCH_RESULTS_PER_PAGE = "search.results_per_page";
-	public static final String CONFIG_SEARCH_RESULT_LIMIT = "search.result_limit";
+    public static final String CONFIG_SEARCH_RESULTS_PER_PAGE = "search.results_per_page";
+    public static final String CONFIG_SEARCH_RESULT_LIMIT = "search.result_limit";
 
-	public static final String CONFIG_Z3950_RESULT_LIMIT = "search.distributed_search_limit";
-	public static final String CONFIG_Z3950_SERVER_ACTIVE = "administration.z3950.server.active";
+    public static final String CONFIG_Z3950_RESULT_LIMIT = "search.distributed_search_limit";
+    public static final String CONFIG_Z3950_SERVER_ACTIVE = "administration.z3950.server.active";
 
-	public static final String CONFIG_LENDING_PRINTER_TYPE = "circulation.lending_receipt.printer.type";
+    public static final String CONFIG_LENDING_PRINTER_TYPE =
+            "circulation.lending_receipt.printer.type";
 
-	// Translations
-	public static final String TRANSLATION_RECORD_TAB_FIELD_LABEL = "cataloging.tab.record.custom.field_label.";
-	public static final String TRANSLATION_INDEXING_GROUP = "cataloging.custom.indexing_group.";
-	public static final String TRANSLATION_USER_FIELD = "circulation.custom.user_field.";
-	public static final String TRANSLATION_FORMAT_DATE = "format.date";
-	public static final String TRANSLATION_FORMAT_DATETIME = "format.datetime";
+    // Translations
+    public static final String TRANSLATION_RECORD_TAB_FIELD_LABEL =
+            "cataloging.tab.record.custom.field_label.";
+    public static final String TRANSLATION_INDEXING_GROUP = "cataloging.custom.indexing_group.";
+    public static final String TRANSLATION_USER_FIELD = "circulation.custom.user_field.";
+    public static final String TRANSLATION_FORMAT_DATE = "format.date";
+    public static final String TRANSLATION_FORMAT_DATETIME = "format.datetime";
 
-	// Media server
-	public static final int DEFAULT_BUFFER_SIZE = 10240; // 10 KB
-	public static final long DEFAULT_EXPIRE_TIME = 9676800000L; // 16 weeks
-	public static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
+    // Media server
+    public static final int DEFAULT_BUFFER_SIZE = 10240; // 10 KB
+    public static final long DEFAULT_EXPIRE_TIME = 9676800000L; // 16 weeks
+    public static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
 
-	public static final String GLOBAL_SCHEMA = "global";
+    public static final String GLOBAL_SCHEMA = "global";
 
-	// The constants below should not be final
-	public static String SINGLE_SCHEMA = "single";
-	public static boolean REINDEXING = false;
+    // The constants below should not be final
+    public static String SINGLE_SCHEMA = "single";
+    public static boolean REINDEXING = false;
 
-	public static final Unit<Length> USER_UNIT = MetricPrefix.CENTI(Units.METRE).multiply(2.54).divide(72);
-	public static final Function<Quantity<Length>, Float> FROM_CM = q -> q.to(USER_UNIT).getValue().floatValue();
+    public static final Unit<Length> USER_UNIT =
+            MetricPrefix.CENTI(Units.METRE).multiply(2.54).divide(72);
+    public static final Function<Quantity<Length>, Float> FROM_CM =
+            q -> q.to(USER_UNIT).getValue().floatValue();
 
-	public static final String DATABASE_HOST_NAME = "DATABASE_HOST_NAME";
-	public static final String DATABASE_PORT = "DATABASE_PORT";
-	public static final String DATABASE_NAME = "PGDATABASE";
-	public static final String DATABASE_PASSWORD = "PGPASSWORD";
-	public static final String DATABASE_USERNAME = "PGUSER";
-	public static final String DEFAULT_DATABASE_NAME = "biblivre4";
-	public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
-	public static final String DEFAULT_DATABASE_USERNAME = "biblivre";
+    public static final String DATABASE_HOST_NAME = "DATABASE_HOST_NAME";
+    public static final String DATABASE_PORT = "DATABASE_PORT";
+    public static final String DATABASE_NAME = "PGDATABASE";
+    public static final String DATABASE_PASSWORD = "PGPASSWORD";
+    public static final String DATABASE_USERNAME = "PGUSER";
+    public static final String DEFAULT_DATABASE_NAME = "biblivre4";
+    public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
+    public static final String DEFAULT_DATABASE_USERNAME = "biblivre";
 }

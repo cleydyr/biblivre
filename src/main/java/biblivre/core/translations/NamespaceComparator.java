@@ -23,43 +23,42 @@ import java.util.Comparator;
 
 public class NamespaceComparator implements Comparator<String> {
 
-	@Override
-	public int compare(String o1, String o2) {
-		if (o1 == null) {
-			return 1;
-		}
+    @Override
+    public int compare(String o1, String o2) {
+        if (o1 == null) {
+            return 1;
+        }
 
-		if (o2 == null) {
-			return -1;
-		}
+        if (o2 == null) {
+            return -1;
+        }
 
-		String[] names1 = o1.split("\\.");
-		String[] names2 = o2.split("\\.");
+        String[] names1 = o1.split("\\.");
+        String[] names2 = o2.split("\\.");
 
-		if (names1.length == names2.length) {
-			return o1.compareTo(o2);
-		}
+        if (names1.length == names2.length) {
+            return o1.compareTo(o2);
+        }
 
-		for (int i = 0; i < names1.length; i++) {
-			if (i > names2.length - 1) {
-				return 1;
-			}
+        for (int i = 0; i < names1.length; i++) {
+            if (i > names2.length - 1) {
+                return 1;
+            }
 
-			int compares = names1[i].compareTo(names2[i]);
-			if (compares != 0) {
-				if (names1.length - 1 == i) {
-					return -1;
-				}
+            int compares = names1[i].compareTo(names2[i]);
+            if (compares != 0) {
+                if (names1.length - 1 == i) {
+                    return -1;
+                }
 
-				if (names2.length - 1 == i) {
-					return 1;
-				}
+                if (names2.length - 1 == i) {
+                    return 1;
+                }
 
-				return compares;
-			}
-		}
+                return compares;
+            }
+        }
 
-		return -1;
-	}
-
+        return -1;
+    }
 }

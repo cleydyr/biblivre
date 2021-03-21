@@ -22,19 +22,16 @@ package biblivre.core;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-/**
- * Application Lifecycle Listener implementation class BiblivreContextListener
- *
- */
+/** Application Lifecycle Listener implementation class BiblivreContextListener */
 public class BiblivreContextListener implements ServletContextListener {
 
-	@Override
-	public void contextInitialized(ServletContextEvent arg0) {
-		BiblivreInitializer.initialize();
-	}
+    @Override
+    public void contextInitialized(ServletContextEvent arg0) {
+        BiblivreInitializer.initialize();
+    }
 
-	@Override
-	public void contextDestroyed(ServletContextEvent arg0) {
-		BiblivreInitializer.destroy();
-	}
+    @Override
+    public void contextDestroyed(ServletContextEvent arg0) {
+        BiblivreInitializer.destroy();
+    }
 }

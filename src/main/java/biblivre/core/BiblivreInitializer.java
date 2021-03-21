@@ -23,36 +23,36 @@ import biblivre.z3950.server.Z3950ServerBO;
 
 public class BiblivreInitializer {
 
-	private static boolean initialized = false;
-	public static Z3950ServerBO Z3950server = null;
+    private static boolean initialized = false;
+    public static Z3950ServerBO Z3950server = null;
 
-	public synchronized static void initialize() {
-		if (!BiblivreInitializer.initialized) {
-			try {
-				Updates.fixPostgreSQL81();
-				Updates.globalUpdate();
+    public static synchronized void initialize() {
+        if (!BiblivreInitializer.initialized) {
+            try {
+                Updates.fixPostgreSQL81();
+                Updates.globalUpdate();
 
-				DigitalMediaMigrator.processMigration();
+                DigitalMediaMigrator.processMigration();
 
-				BiblivreInitializer.Z3950server = new Z3950ServerBO();
-				BiblivreInitializer.Z3950server.startServer();
+                BiblivreInitializer.Z3950server = new Z3950ServerBO();
+                BiblivreInitializer.Z3950server.startServer();
 
-				BiblivreInitializer.initialized = true;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+                BiblivreInitializer.initialized = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	public synchronized static void destroy() {
-		if (BiblivreInitializer.Z3950server != null) {
-			BiblivreInitializer.Z3950server.stopServer();
-		}
-	}
+    public static synchronized void destroy() {
+        if (BiblivreInitializer.Z3950server != null) {
+            BiblivreInitializer.Z3950server.stopServer();
+        }
+    }
 
-	public synchronized static void reloadZ3950Server() {
-		if (BiblivreInitializer.Z3950server != null) {
-			BiblivreInitializer.Z3950server.reloadServer();
-		}
-	}
+    public static synchronized void reloadZ3950Server() {
+        if (BiblivreInitializer.Z3950server != null) {
+            BiblivreInitializer.Z3950server.reloadServer();
+        }
+    }
 }

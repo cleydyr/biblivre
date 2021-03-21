@@ -19,93 +19,92 @@
  ******************************************************************************/
 package biblivre.administration.setup;
 
+import biblivre.core.AbstractDTO;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
-import biblivre.core.AbstractDTO;
-
 public class DataMigrationDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private volatile String dataSourceName;
+    private volatile String dataSourceName;
 
-	private volatile DataMigrationPhase currentPhase;
-	private volatile Integer index;
-	private volatile Integer total;
-	private volatile HashMap<DataMigrationPhase, Boolean> phases;
-	private volatile Set<DataMigrationPhase> completedPhases;
+    private volatile DataMigrationPhase currentPhase;
+    private volatile Integer index;
+    private volatile Integer total;
+    private volatile HashMap<DataMigrationPhase, Boolean> phases;
+    private volatile Set<DataMigrationPhase> completedPhases;
 
-	public DataMigrationDTO() {
-		this.phases = new HashMap<DataMigrationPhase, Boolean>();
-		this.completedPhases = new TreeSet<DataMigrationPhase>();
-	}
+    public DataMigrationDTO() {
+        this.phases = new HashMap<DataMigrationPhase, Boolean>();
+        this.completedPhases = new TreeSet<DataMigrationPhase>();
+    }
 
-	public String getDataSourceName() {
-		return this.dataSourceName;
-	}
+    public String getDataSourceName() {
+        return this.dataSourceName;
+    }
 
-	public void setDataSourceName(String dataSourceName) {
-		this.dataSourceName = dataSourceName;
-	}
+    public void setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+    }
 
-	public DataMigrationPhase getCurrentPhase() {
-		return this.currentPhase;
-	}
+    public DataMigrationPhase getCurrentPhase() {
+        return this.currentPhase;
+    }
 
-	public void setCurrentPhase(DataMigrationPhase currentPhase) {
-		this.currentPhase = currentPhase;
-	}
+    public void setCurrentPhase(DataMigrationPhase currentPhase) {
+        this.currentPhase = currentPhase;
+    }
 
-	public Integer getIndex() {
-		return this.index;
-	}
+    public Integer getIndex() {
+        return this.index;
+    }
 
-	public void setIndex(Integer index) {
-		this.index = index;
-	}
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
 
-	public Integer getTotal() {
-		return this.total;
-	}
+    public Integer getTotal() {
+        return this.total;
+    }
 
-	public void setTotal(Integer total) {
-		this.total = total;
-	}
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
 
-	public void enablePhase(String phase) {
-		this.enablePhase(DataMigrationPhase.fromString(phase));
-	}
+    public void enablePhase(String phase) {
+        this.enablePhase(DataMigrationPhase.fromString(phase));
+    }
 
-	public void enablePhase(DataMigrationPhase phase) {
-		if (phase != null) {
-			this.phases.put(phase, true);
-		}
-	}
+    public void enablePhase(DataMigrationPhase phase) {
+        if (phase != null) {
+            this.phases.put(phase, true);
+        }
+    }
 
-	public void disablePhase(String phase) {
-		this.disablePhase(DataMigrationPhase.fromString(phase));
-	}
+    public void disablePhase(String phase) {
+        this.disablePhase(DataMigrationPhase.fromString(phase));
+    }
 
-	public void disablePhase(DataMigrationPhase phase) {
-		if (phase != null) {
-			this.phases.put(phase, false);
-		}
-	}
+    public void disablePhase(DataMigrationPhase phase) {
+        if (phase != null) {
+            this.phases.put(phase, false);
+        }
+    }
 
-	public boolean isPhaseEnabled(DataMigrationPhase phase) {
-		if (!this.phases.containsKey(phase)) {
-			return false;
-		}
+    public boolean isPhaseEnabled(DataMigrationPhase phase) {
+        if (!this.phases.containsKey(phase)) {
+            return false;
+        }
 
-		return this.phases.get(phase);
-	}
+        return this.phases.get(phase);
+    }
 
-	public void completePhase(DataMigrationPhase phase) {
-		this.completedPhases.add(phase);
-	}
+    public void completePhase(DataMigrationPhase phase) {
+        this.completedPhases.add(phase);
+    }
 
-	public Set<DataMigrationPhase> getCompletedPhases() {
-		return this.completedPhases;
-	}
+    public Set<DataMigrationPhase> getCompletedPhases() {
+        return this.completedPhases;
+    }
 }

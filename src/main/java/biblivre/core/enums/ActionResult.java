@@ -20,14 +20,17 @@
 package biblivre.core.enums;
 
 public enum ActionResult {
-	NORMAL, SUCCESS, WARNING, ERROR;
+    NORMAL,
+    SUCCESS,
+    WARNING,
+    ERROR;
 
-	@Override
-	public String toString() {
-		return super.toString().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

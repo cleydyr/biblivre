@@ -19,57 +19,54 @@
  ******************************************************************************/
 package biblivre.administration.permissions;
 
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 import biblivre.login.LoginDTO;
+import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PermissionDTO extends AbstractDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private List<String> permissions;
     private LoginDTO login;
     private UserDTO user;
 
-	public LoginDTO getLogin() {
-		return this.login;
-	}
+    public LoginDTO getLogin() {
+        return this.login;
+    }
 
-	public void setLogin(LoginDTO login) {
-		this.login = login;
-	}
+    public void setLogin(LoginDTO login) {
+        this.login = login;
+    }
 
-	public List<String> getPermissions() {
-		return this.permissions;
-	}
+    public List<String> getPermissions() {
+        return this.permissions;
+    }
 
-	public void setPermissions(List<String> permissions) {
-		this.permissions = permissions;
-	}
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
+    }
 
-	public UserDTO getUser() {
-		return this.user;
-	}
+    public UserDTO getUser() {
+        return this.user;
+    }
 
-	public void setUser(UserDTO user) {
-		this.user = user;
-	}
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("id", (this.getUser() != null) ? this.getUser().getId() : 0);
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("id", (this.getUser() != null) ? this.getUser().getId() : 0);
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
-
+        return json;
+    }
 }

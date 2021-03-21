@@ -19,86 +19,84 @@
  ******************************************************************************/
 package biblivre.acquisition.quotation;
 
+import biblivre.core.AbstractDTO;
 import java.util.Date;
 import java.util.List;
 
-import biblivre.core.AbstractDTO;
-
 public class QuotationDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private int id;
-	private int supplierId;
-	private Date responseDate;
-	private Date expirationDate;
-	private int deliveryTime;
-	private String info;
+    private int id;
+    private int supplierId;
+    private Date responseDate;
+    private Date expirationDate;
+    private int deliveryTime;
+    private String info;
 
-	transient private List<RequestQuotationDTO> quotationsList;
-	transient private String supplierName;
+    private transient List<RequestQuotationDTO> quotationsList;
+    private transient String supplierName;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getSupplierId() {
-		return this.supplierId;
-	}
+    public int getSupplierId() {
+        return this.supplierId;
+    }
 
-	public void setSupplierId(int supplierId) {
-		this.supplierId = supplierId;
-	}
+    public void setSupplierId(int supplierId) {
+        this.supplierId = supplierId;
+    }
 
-	public Date getResponseDate() {
-		return this.responseDate;
-	}
+    public Date getResponseDate() {
+        return this.responseDate;
+    }
 
-	public void setResponseDate(Date responseDate) {
-		this.responseDate = responseDate;
-	}
+    public void setResponseDate(Date responseDate) {
+        this.responseDate = responseDate;
+    }
 
-	public Date getExpirationDate() {
-		return this.expirationDate;
-	}
+    public Date getExpirationDate() {
+        return this.expirationDate;
+    }
 
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
-	}
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 
-	public int getDeliveryTime() {
-		return this.deliveryTime;
-	}
+    public int getDeliveryTime() {
+        return this.deliveryTime;
+    }
 
-	public void setDeliveryTime(int deliveryTime) {
-		this.deliveryTime = deliveryTime;
-	}
+    public void setDeliveryTime(int deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
 
-	public String getInfo() {
-		return this.info;
-	}
+    public String getInfo() {
+        return this.info;
+    }
 
-	public void setInfo(String info) {
-		this.info = info;
-	}
+    public void setInfo(String info) {
+        this.info = info;
+    }
 
-	public List<RequestQuotationDTO> getQuotationsList() {
-		return this.quotationsList;
-	}
+    public List<RequestQuotationDTO> getQuotationsList() {
+        return this.quotationsList;
+    }
 
-	public void setQuotationsList(List<RequestQuotationDTO> quotationsList) {
-		this.quotationsList = quotationsList;
-	}
+    public void setQuotationsList(List<RequestQuotationDTO> quotationsList) {
+        this.quotationsList = quotationsList;
+    }
 
-	public String getSupplierName() {
-		return this.supplierName;
-	}
+    public String getSupplierName() {
+        return this.supplierName;
+    }
 
-	public void setSupplierName(String supplierName) {
-		this.supplierName = supplierName;
-	}
-
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
 }

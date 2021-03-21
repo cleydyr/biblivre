@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
+import biblivre.core.AbstractDAO;
+import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,53 +28,52 @@ import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
 
-import biblivre.core.AbstractDAO;
-import biblivre.core.exceptions.DAOException;
-
 public class LanguagesDAO extends AbstractDAO {
 
-	public static LanguagesDAO getInstance(String schema) {
-		return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class, schema);
-	}
+    public static LanguagesDAO getInstance(String schema) {
+        return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class, schema);
+    }
 
-	public Set<LanguageDTO> list() {
-		Set<LanguageDTO> set = new TreeSet<LanguageDTO>();
+    public Set<LanguageDTO> list() {
+        Set<LanguageDTO> set = new TreeSet<LanguageDTO>();
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
+        Connection con = null;
+        try {
+            con = this.getConnection();
+            StringBuilder sql = new StringBuilder();
 
-			sql.append("SELECT language, text as name FROM global.translations WHERE key = 'language_name' ");
+            sql.append(
+                    "SELECT language, text as name FROM global.translations WHERE key = 'language_name' ");
 
- 			if (!this.isGlobalSchema()) {
- 				sql.append("UNION ");
-				sql.append("SELECT language, text as name FROM translations WHERE key = 'language_name' ");
- 			}
+            if (!this.isGlobalSchema()) {
+                sql.append("UNION ");
+                sql.append(
+                        "SELECT language, text as name FROM translations WHERE key = 'language_name' ");
+            }
 
-			sql.append("ORDER BY name;");
+            sql.append("ORDER BY name;");
 
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(sql.toString());
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql.toString());
 
-			while (rs.next()) {
-				try {
-					set.add(this.populateDTO(rs));
-				} catch (Exception e) {
-					this.logger.error(e.getMessage(), e);
-				}
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+            while (rs.next()) {
+                try {
+                    set.add(this.populateDTO(rs));
+                } catch (Exception e) {
+                    this.logger.error(e.getMessage(), e);
+                }
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        } finally {
+            this.closeConnection(con);
+        }
 
-		return set;
-	}
+        return set;
+    }
 
     private LanguageDTO populateDTO(ResultSet rs) throws SQLException {
-    	LanguageDTO dto = new LanguageDTO();
+        LanguageDTO dto = new LanguageDTO();
 
         dto.setLanguage(rs.getString("language"));
         dto.setName(rs.getString("name"));

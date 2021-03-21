@@ -19,59 +19,60 @@
  ******************************************************************************/
 package biblivre.acquisition.supplier;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateSave(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		String trademark = request.getString("trademark");
-		String supplierName = request.getString("supplier_name");
-		String supplierNumber = request.getString("supplier_number");
+        String trademark = request.getString("trademark");
+        String supplierName = request.getString("supplier_name");
+        String supplierNumber = request.getString("supplier_number");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		if (StringUtils.isBlank(trademark)) {
-			ex.addError("trademark", "field.error.required");
-		}
+        if (StringUtils.isBlank(trademark)) {
+            ex.addError("trademark", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(supplierName)) {
-			ex.addError("supplier_name", "field.error.required");
-		}
+        if (StringUtils.isBlank(supplierName)) {
+            ex.addError("supplier_name", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(supplierNumber)) {
-			ex.addError("supplier_number", "field.error.required");
-		}
+        if (StringUtils.isBlank(supplierNumber)) {
+            ex.addError("supplier_number", "field.error.required");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
+    }
 
-	}
+    public void validateOpen(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("id");
+        if (id == 0) {
+            handler.setMessage(
+                    ActionResult.WARNING, "aquisition.supplier.error.supplier_not_found");
+            return;
+        }
+    }
 
-	public void validateOpen(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("id");
-		if (id == 0) {
-			handler.setMessage(ActionResult.WARNING, "aquisition.supplier.error.supplier_not_found");
-			return;
-		}
-	}
-
-	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("id");
-		if (id == 0) {
-			handler.setMessage(ActionResult.WARNING, "aquisition.supplier.error.supplier_not_found");
-			return;
-		}
-	}
-
-
+    public void validateDelete(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("id");
+        if (id == 0) {
+            handler.setMessage(
+                    ActionResult.WARNING, "aquisition.supplier.error.supplier_not_found");
+            return;
+        }
+    }
 }

@@ -19,111 +19,107 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
+import biblivre.core.StaticBO;
+import biblivre.core.utils.Constants;
 import java.util.HashMap;
 import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.StaticBO;
-import biblivre.core.utils.Constants;
-
 public class Languages extends StaticBO {
-	private static Logger logger = LoggerFactory.getLogger(Languages.class);
+    private static Logger logger = LoggerFactory.getLogger(Languages.class);
 
-	private static HashMap<String, Set<LanguageDTO>> languages;
+    private static HashMap<String, Set<LanguageDTO>> languages;
 
-	private Languages() {
-	}
+    private Languages() {}
 
-	static {
-		Languages.reset();
-	}
+    static {
+        Languages.reset();
+    }
 
-	public static void reset() {
-		Languages.languages = new HashMap<String, Set<LanguageDTO>>();
-	}
+    public static void reset() {
+        Languages.languages = new HashMap<String, Set<LanguageDTO>>();
+    }
 
-	public static void reset(String schema) {
-		if (schema.equals(Constants.GLOBAL_SCHEMA)) {
-			Languages.reset();
-		} else {
-			Languages.languages.remove(schema);
-		}
-	}
+    public static void reset(String schema) {
+        if (schema.equals(Constants.GLOBAL_SCHEMA)) {
+            Languages.reset();
+        } else {
+            Languages.languages.remove(schema);
+        }
+    }
 
-	public static Set<LanguageDTO> getLanguages(String schema) {
-		Set<LanguageDTO> set = Languages.languages.get(schema);
+    public static Set<LanguageDTO> getLanguages(String schema) {
+        Set<LanguageDTO> set = Languages.languages.get(schema);
 
-		if (set == null) {
-			set = Languages.loadLanguages(schema);
-		}
+        if (set == null) {
+            set = Languages.loadLanguages(schema);
+        }
 
-		return set;
-	}
+        return set;
+    }
 
-	public static boolean isLoaded(String schema, String language) {
-		if (StringUtils.isBlank(schema) || StringUtils.isBlank(language)) {
-			return false;
-		}
+    public static boolean isLoaded(String schema, String language) {
+        if (StringUtils.isBlank(schema) || StringUtils.isBlank(language)) {
+            return false;
+        }
 
-		Set<LanguageDTO> languages = Languages.getLanguages(schema);
+        Set<LanguageDTO> languages = Languages.getLanguages(schema);
 
-		if (languages == null) {
-			return false;
-		}
+        if (languages == null) {
+            return false;
+        }
 
-		for (LanguageDTO dto : languages) {
-			if (language.equals(dto.getLanguage())) {
-				return true;
-			}
-		}
+        for (LanguageDTO dto : languages) {
+            if (language.equals(dto.getLanguage())) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static boolean isNotLoaded(String schema, String language) {
-		return !Languages.isLoaded(schema, language);
-	}
+    public static boolean isNotLoaded(String schema, String language) {
+        return !Languages.isLoaded(schema, language);
+    }
 
-	public static String getDefaultLanguage(String schema) {
-		Set<LanguageDTO> languages = Languages.getLanguages(schema);
+    public static String getDefaultLanguage(String schema) {
+        Set<LanguageDTO> languages = Languages.getLanguages(schema);
 
-		for (LanguageDTO dto : languages) {
-			return dto.getLanguage();
-		}
+        for (LanguageDTO dto : languages) {
+            return dto.getLanguage();
+        }
 
-		return "";
-	}
+        return "";
+    }
 
-	public static LanguageDTO getLanguage(String schema, String language) {
-		Set<LanguageDTO> languages = Languages.getLanguages(schema);
+    public static LanguageDTO getLanguage(String schema, String language) {
+        Set<LanguageDTO> languages = Languages.getLanguages(schema);
 
-		for (LanguageDTO dto : languages) {
-			if (language.equals(dto.getLanguage())) {
-				return dto;
-			}
-		}
+        for (LanguageDTO dto : languages) {
+            if (language.equals(dto.getLanguage())) {
+                return dto;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
+    private static synchronized Set<LanguageDTO> loadLanguages(String schema) {
+        Set<LanguageDTO> set = Languages.languages.get(schema);
 
-	private static synchronized Set<LanguageDTO> loadLanguages(String schema) {
-		Set<LanguageDTO> set = Languages.languages.get(schema);
+        // Checking again for thread safety.
+        if (set != null) {
+            return set;
+        }
 
-		// Checking again for thread safety.
-		if (set != null) {
-			return set;
-		}
+        Languages.logger.debug("Loading languages from " + schema);
+        LanguagesDAO dao = LanguagesDAO.getInstance(schema);
 
-		Languages.logger.debug("Loading languages from " + schema);
-		LanguagesDAO dao = LanguagesDAO.getInstance(schema);
+        set = dao.list();
+        Languages.languages.put(schema, set);
 
-		set = dao.list();
-		Languages.languages.put(schema, set);
-
-		return set;
-	}
+        return set;
+    }
 }

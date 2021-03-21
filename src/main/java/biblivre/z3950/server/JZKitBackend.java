@@ -1,26 +1,20 @@
-
 /**
- *  Este arquivo é parte do Biblivre 5.
+ * Este arquivo é parte do Biblivre 5.
  *
- *  Biblivre 5 é um software livre; você pode redistribuí-lo e/ou
- *  modificá-lo dentro dos termos da Licença Pública Geral GNU como
- *  publicada pela Fundação do Software Livre (FSF); na versão 3 da
- *  Licença, ou (caso queira) qualquer versão posterior.
+ * <p>Biblivre 5 é um software livre; você pode redistribuí-lo e/ou modificá-lo dentro dos termos da
+ * Licença Pública Geral GNU como publicada pela Fundação do Software Livre (FSF); na versão 3 da
+ * Licença, ou (caso queira) qualquer versão posterior.
  *
- *  Este programa é distribuído na esperança de que possa ser  útil,
- *  mas SEM NENHUMA GARANTIA; nem mesmo a garantia implícita de
- *  MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
- *  Licença Pública Geral GNU para maiores detalhes.
+ * <p>Este programa é distribuído na esperança de que possa ser útil, mas SEM NENHUMA GARANTIA; nem
+ * mesmo a garantia implícita de MERCANTIBILIDADE OU ADEQUAÇÃO PARA UM FIM PARTICULAR. Veja a
+ * Licença Pública Geral GNU para maiores detalhes.
  *
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
- *  com este programa, Se não, veja em <http://www.gnu.org/licenses/>.
+ * <p>Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este programa, Se não,
+ * veja em <http://www.gnu.org/licenses/>.
  *
- *  @author Alberto Wagner <alberto@biblivre.org.br>
- *  @author Danniel Willian <danniel@biblivre.org.br>
- *
+ * @author Alberto Wagner <alberto@biblivre.org.br>
+ * @author Danniel Willian <danniel@biblivre.org.br>
  */
-
-
 package biblivre.z3950.server;
 
 import java.util.HashMap;
@@ -51,7 +45,8 @@ public class JZKitBackend implements Z3950NonBlockingBackend, ApplicationContext
     private ApplicationContext ctx = null;
     private transient SearchSession search_session = null;
     private Map<String, TransformingIRResultSet> result_sets = new HashMap<>();
-    private static final RecordFormatSpecification SPEC = new ArchetypeRecordFormatSpecification("F");
+    private static final RecordFormatSpecification SPEC =
+            new ArchetypeRecordFormatSpecification("F");
 
     public JZKitBackend() {}
 
@@ -73,7 +68,10 @@ public class JZKitBackend implements Z3950NonBlockingBackend, ApplicationContext
             } else {
                 result_sets.put("default", active_result_set);
             }
-            if (active_result_set.waitForCondition(new RSStatusMaskCondition(IRResultSetStatus.COMPLETE | IRResultSetStatus.FAILURE), 10000)) {
+            if (active_result_set.waitForCondition(
+                    new RSStatusMaskCondition(
+                            IRResultSetStatus.COMPLETE | IRResultSetStatus.FAILURE),
+                    10000)) {
                 bsr.result_count = active_result_set.getFragmentCount();
             } else {
                 // timeout...
@@ -92,17 +90,14 @@ public class JZKitBackend implements Z3950NonBlockingBackend, ApplicationContext
         bsr.assoc.notifySearchResult(bsr);
     }
 
-    /**
-     * Implementor must call assoc.notifyPresentResult(result);
-     */
+    /** Implementor must call assoc.notifyPresentResult(result); */
     @Override
     public void present(BackendPresentResult bpr) {
         try {
-            TransformingIRResultSet rs = (TransformingIRResultSet) result_sets.get(bpr.result_set_name);
+            TransformingIRResultSet rs =
+                    (TransformingIRResultSet) result_sets.get(bpr.result_set_name);
             if (rs != null) {
-                bpr.result_records = rs.getFragment(bpr.start,
-                        bpr.count,
-                        bpr.archetype);
+                bpr.result_records = rs.getFragment(bpr.start, bpr.count, bpr.archetype);
                 bpr.next_result_set_position = bpr.start + bpr.count;
             }
         } catch (org.jzkit.search.util.ResultSet.IRResultSetException irrse) {
@@ -111,14 +106,9 @@ public class JZKitBackend implements Z3950NonBlockingBackend, ApplicationContext
         bpr.assoc.notifyPresentResult(bpr);
     }
 
-
-
-    /**
-     * Implementor must call assoc.notifyDeleteResultSetResult(result);
-     */
+    /** Implementor must call assoc.notifyDeleteResultSetResult(result); */
     @Override
-    public void deleteResultSet(ZServerAssociation assoc,
-            String result_set_name, Object refid) {}
+    public void deleteResultSet(ZServerAssociation assoc, String result_set_name, Object refid) {}
 
     @Override
     public void setApplicationContext(ApplicationContext ctx) {
@@ -128,5 +118,4 @@ public class JZKitBackend implements Z3950NonBlockingBackend, ApplicationContext
     private synchronized void checkSearchSession() {
         search_session = (org.jzkit.search.impl.SearchSessionImpl) ctx.getBean("SearchService");
     }
-
 }

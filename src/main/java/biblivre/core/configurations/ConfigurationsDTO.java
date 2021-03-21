@@ -19,106 +19,104 @@
  ******************************************************************************/
 package biblivre.core.configurations;
 
-import java.io.File;
-
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.FileIOUtils;
+import java.io.File;
+import org.apache.commons.lang3.StringUtils;
 
 public class ConfigurationsDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String key;
-	private String value;
-	private String type;
-	private boolean required;
+    private String key;
+    private String value;
+    private String type;
+    private boolean required;
 
-	public ConfigurationsDTO() {
-		super();
-	}
+    public ConfigurationsDTO() {
+        super();
+    }
 
-	public ConfigurationsDTO(String key, String value) {
-		super();
+    public ConfigurationsDTO(String key, String value) {
+        super();
 
-		this.setKey(key);
-		this.setValue(value);
-	}
+        this.setKey(key);
+        this.setValue(value);
+    }
 
-	public String validate() {
-		String value = this.getValue();
-		String type = this.getType();
+    public String validate() {
+        String value = this.getValue();
+        String type = this.getType();
 
-		if (this.isRequired() && StringUtils.isBlank(value)) {
-			return "administration.configurations.error.value_is_required";
-		}
+        if (this.isRequired() && StringUtils.isBlank(value)) {
+            return "administration.configurations.error.value_is_required";
+        }
 
-		if (type.equals("integer") && !StringUtils.isNumeric(value)) {
-			return "administration.configurations.error.value_must_be_numeric";
-		}
+        if (type.equals("integer") && !StringUtils.isNumeric(value)) {
+            return "administration.configurations.error.value_must_be_numeric";
+        }
 
-		if (type.equals("float")) {
-			try {
-				//TODO Internacionalizar
-				this.setValue(String.valueOf(Float.valueOf(value)));
-			} catch (Exception e) {
-				return "administration.configurations.error.value_must_be_numeric";
-			}
-		}
+        if (type.equals("float")) {
+            try {
+                // TODO Internacionalizar
+                this.setValue(String.valueOf(Float.valueOf(value)));
+            } catch (Exception e) {
+                return "administration.configurations.error.value_must_be_numeric";
+            }
+        }
 
-		if (type.equals("boolean") && !(value.equals("true") || value.equals("false"))) {
-			return "administration.configurations.error.value_must_be_boolean";
-		}
+        if (type.equals("boolean") && !(value.equals("true") || value.equals("false"))) {
+            return "administration.configurations.error.value_must_be_boolean";
+        }
 
-		if (type.equals("file") && StringUtils.isNotBlank(value)) {
-			try {
-				File file = new File(value);
-				if (!file.exists()) {
-					return "administration.configurations.error.file_not_found";
-				}
-			} catch (Exception e) {
-				return "administration.configurations.error.file_not_found";
-			}
-		}
+        if (type.equals("file") && StringUtils.isNotBlank(value)) {
+            try {
+                File file = new File(value);
+                if (!file.exists()) {
+                    return "administration.configurations.error.file_not_found";
+                }
+            } catch (Exception e) {
+                return "administration.configurations.error.file_not_found";
+            }
+        }
 
-		if (type.equals("writable_path") && StringUtils.isNotBlank(value)) {
-			if (!FileIOUtils.isWritablePath(value)) {
-				return "administration.configurations.error.invalid_writable_path";
-			}
-		}
+        if (type.equals("writable_path") && StringUtils.isNotBlank(value)) {
+            if (!FileIOUtils.isWritablePath(value)) {
+                return "administration.configurations.error.invalid_writable_path";
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public String getKey() {
-		return this.key;
-	}
+    public String getKey() {
+        return this.key;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public String getValue() {
-		return StringUtils.defaultString(this.value);
-	}
+    public String getValue() {
+        return StringUtils.defaultString(this.value);
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public String getType() {
-		return StringUtils.defaultString(this.type, "string");
-	}
+    public String getType() {
+        return StringUtils.defaultString(this.type, "string");
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public boolean isRequired() {
-		return this.required;
-	}
+    public boolean isRequired() {
+        return this.required;
+    }
 
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
 }

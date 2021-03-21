@@ -19,11 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.authorities;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.marc4j.marc.Record;
-
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
@@ -33,115 +28,116 @@ import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
+import java.util.Map;
+import java.util.Set;
+import org.marc4j.marc.Record;
 
 public class AuthorityRecordBO extends RecordBO {
 
-	public static AuthorityRecordBO getInstance(String schema) {
-		AuthorityRecordBO bo = AbstractBO.getInstance(AuthorityRecordBO.class, schema);
+    public static AuthorityRecordBO getInstance(String schema) {
+        AuthorityRecordBO bo = AbstractBO.getInstance(AuthorityRecordBO.class, schema);
 
-		if (bo.rdao == null) {
-			bo.rdao = AuthorityRecordDAO.getInstance(schema);
-			bo.sdao = AuthoritySearchDAO.getInstance(schema);
-		}
+        if (bo.rdao == null) {
+            bo.rdao = AuthorityRecordDAO.getInstance(schema);
+            bo.sdao = AuthoritySearchDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
-	@Override
-	public void populateDetails(RecordDTO rdto, int mask) {
-		if (rdto == null) {
-			return;
-		}
+    @Override
+    public void populateDetails(RecordDTO rdto, int mask) {
+        if (rdto == null) {
+            return;
+        }
 
-		AuthorityRecordDTO dto = (AuthorityRecordDTO) rdto;
+        AuthorityRecordDTO dto = (AuthorityRecordDTO) rdto;
 
-		if ((mask & RecordBO.MARC_INFO) != 0) {
-			Record record = rdto.getRecord();
+        if ((mask & RecordBO.MARC_INFO) != 0) {
+            Record record = rdto.getRecord();
 
-			if (record == null && rdto.getIso2709() != null) {
-				record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
-			}
+            if (record == null && rdto.getIso2709() != null) {
+                record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
+            }
 
-			if (record != null) {
-				MarcDataReader marcDataReader = new MarcDataReader(record);
+            if (record != null) {
+                MarcDataReader marcDataReader = new MarcDataReader(record);
 
-				dto.setAuthorName(marcDataReader.getAuthorName(true));
-				dto.setAuthorOtherName(marcDataReader.getAuthorOtherName(true));
-			}
-		}
+                dto.setAuthorName(marcDataReader.getAuthorName(true));
+                dto.setAuthorOtherName(marcDataReader.getAuthorOtherName(true));
+            }
+        }
+    }
 
+    @Override
+    public boolean save(RecordDTO dto) {
+        Record record = dto.getRecord();
 
-	}
+        Integer id = this.rdao.getNextSerial(RecordType.AUTHORITIES + "_records_id_seq");
+        dto.setId(id);
 
-	@Override
-	public boolean save(RecordDTO dto) {
-		Record record = dto.getRecord();
+        MarcUtils.setCF001(record, id);
+        MarcUtils.setCF005(record);
+        MarcUtils.setCF008(record);
 
-		Integer id = this.rdao.getNextSerial(RecordType.AUTHORITIES + "_records_id_seq");
-		dto.setId(id);
+        String iso2709 = MarcUtils.recordToIso2709(record);
+        dto.setIso2709(iso2709);
 
-		MarcUtils.setCF001(record, id);
-		MarcUtils.setCF005(record);
-		MarcUtils.setCF008(record);
+        if (this.rdao.save(dto)) {
+            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
+            indexingBo.reindex(RecordType.AUTHORITIES, dto);
+            return true;
+        }
 
-		String iso2709 = MarcUtils.recordToIso2709(record);
-		dto.setIso2709(iso2709);
+        return false;
+    }
 
-		if (this.rdao.save(dto)) {
-			IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-			indexingBo.reindex(RecordType.AUTHORITIES, dto);
-			return true;
-		}
+    @Override
+    public boolean update(RecordDTO dto) {
+        Record record = dto.getRecord();
+        MarcUtils.setCF005(record);
 
-		return false;
-	}
+        String iso2709 = MarcUtils.recordToIso2709(record);
+        dto.setIso2709(iso2709);
 
-	@Override
-	public boolean update(RecordDTO dto) {
-		Record record = dto.getRecord();
-		MarcUtils.setCF005(record);
+        if (this.rdao.update(dto)) {
+            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
+            indexingBo.reindex(RecordType.AUTHORITIES, dto);
+            return true;
+        }
 
-		String iso2709 = MarcUtils.recordToIso2709(record);
-		dto.setIso2709(iso2709);
+        return false;
+    }
 
-		if (this.rdao.update(dto)) {
-			IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-			indexingBo.reindex(RecordType.AUTHORITIES, dto);
-			return true;
-		}
+    @Override
+    public boolean delete(RecordDTO dto) {
 
-		return false;
-	}
+        //		HoldingBO holdingBo = new HoldingBO();
+        //		LendingBO lendingBo = new LendingBO();
+        //		List<HoldingDTO> holdings = holdingBo.list(record);
+        //		for (HoldingDTO holding : holdings) {
+        //			if (lendingBo.isLent(holding) || lendingBo.wasLent(holding)) {
+        //				throw new RuntimeException("MESSAGE_DELETE_BIBLIO_ERROR");
+        //			}
+        //		}
 
-	@Override
-	public boolean delete(RecordDTO dto) {
+        if (this.rdao.delete(dto)) {
+            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
+            indexingBo.deleteIndexes(RecordType.AUTHORITIES, dto);
+            //			HoldingBO hbo = new HoldingBO();
+            //			hbo.delete(dto);
+        }
+        return true;
+    }
 
-//		HoldingBO holdingBo = new HoldingBO();
-//		LendingBO lendingBo = new LendingBO();
-//		List<HoldingDTO> holdings = holdingBo.list(record);
-//		for (HoldingDTO holding : holdings) {
-//			if (lendingBo.isLent(holding) || lendingBo.wasLent(holding)) {
-//				throw new RuntimeException("MESSAGE_DELETE_BIBLIO_ERROR");
-//			}
-//		}
+    @Override
+    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-		if (this.rdao.delete(dto)) {
-			IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-			indexingBo.deleteIndexes(RecordType.AUTHORITIES, dto);
-//			HoldingBO hbo = new HoldingBO();
-//			hbo.delete(dto);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-		return super.map(ids, RecordBO.MARC_INFO);
-	}
+    @Override
+    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
+        return super.map(ids, RecordBO.MARC_INFO);
+    }
 }

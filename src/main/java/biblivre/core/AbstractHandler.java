@@ -19,116 +19,117 @@
  ******************************************************************************/
 package biblivre.core;
 
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
-
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 public abstract class AbstractHandler {
 
-	protected JSONObject json;
-	protected String jspURL;
-	protected Message message;
-	protected BiblivreFile file;
-	protected int returnCode;
-	protected HttpCallback callback;
+    protected JSONObject json;
+    protected String jspURL;
+    protected Message message;
+    protected BiblivreFile file;
+    protected int returnCode;
+    protected HttpCallback callback;
 
-	public AbstractHandler() {
-		this.setJson(new JSONObject());
-		this.setJspURL("");
-		this.setMessage(new Message());
-		this.setFile(null);
-		this.setReturnCode(0);
-	}
+    public AbstractHandler() {
+        this.setJson(new JSONObject());
+        this.setJspURL("");
+        this.setMessage(new Message());
+        this.setFile(null);
+        this.setReturnCode(0);
+    }
 
-	public void setJson(JSONObject json) {
-		this.json = json;
-	}
+    public void setJson(JSONObject json) {
+        this.json = json;
+    }
 
-	public JSONObject getJson() {
-		return this.json;
-	}
+    public JSONObject getJson() {
+        return this.json;
+    }
 
-	public void setJspURL(String jspURL) {
-		this.jspURL = jspURL;
-	}
+    public void setJspURL(String jspURL) {
+        this.jspURL = jspURL;
+    }
 
-	public String getJspURL() {
-		return this.jspURL;
-	}
+    public String getJspURL() {
+        return this.jspURL;
+    }
 
-	public void setMessage(Message message) {
-		this.message = message;
-	}
+    public void setMessage(Message message) {
+        this.message = message;
+    }
 
-	public void setMessage(ActionResult level) {
-		this.message = new Message(level, "");
-	}
+    public void setMessage(ActionResult level) {
+        this.message = new Message(level, "");
+    }
 
-	public void setMessage(ActionResult level, String message) {
-		this.message = new Message(level, message);
-	}
+    public void setMessage(ActionResult level, String message) {
+        this.message = new Message(level, message);
+    }
 
-	public void setMessage(Throwable exception) {
-		this.message = new Message(exception);
-	}
+    public void setMessage(Throwable exception) {
+        this.message = new Message(exception);
+    }
 
-	public Message getMessage() {
-		return this.message;
-	}
+    public Message getMessage() {
+        return this.message;
+    }
 
-	public boolean hasErrors() {
-		Message message = this.getMessage();
-		boolean hasErrorMessage = StringUtils.isNotBlank(message.getText());
+    public boolean hasErrors() {
+        Message message = this.getMessage();
+        boolean hasErrorMessage = StringUtils.isNotBlank(message.getText());
 
-		if (!hasErrorMessage) {
-			return false;
-		}
+        if (!hasErrorMessage) {
+            return false;
+        }
 
-		ActionResult level = message.getLevel();
-		switch (level) {
-			case WARNING:
-			case ERROR:
-				return true;
-			default:
-				return false;
-		}
-	}
+        ActionResult level = message.getLevel();
+        switch (level) {
+            case WARNING:
+            case ERROR:
+                return true;
+            default:
+                return false;
+        }
+    }
 
-	public BiblivreFile getFile() {
-		return this.file;
-	}
+    public BiblivreFile getFile() {
+        return this.file;
+    }
 
-	public void setFile(BiblivreFile file) {
-		this.file = file;
-	}
+    public void setFile(BiblivreFile file) {
+        this.file = file;
+    }
 
-	public int getReturnCode() {
-		return this.returnCode;
-	}
+    public int getReturnCode() {
+        return this.returnCode;
+    }
 
-	public void setReturnCode(int returnCode) {
-		this.returnCode = returnCode;
-	}
+    public void setReturnCode(int returnCode) {
+        this.returnCode = returnCode;
+    }
 
-	public HttpCallback getCallback() {
-		return this.callback;
-	}
+    public HttpCallback getCallback() {
+        return this.callback;
+    }
 
-	public void setCallback(HttpCallback callback) {
-		this.callback = callback;
-	}
+    public void setCallback(HttpCallback callback) {
+        this.callback = callback;
+    }
 
-	protected void authorize(ExtendedRequest request, String module, String action) {
-		AuthorizationPoints authPoints = (AuthorizationPoints) request.getSessionAttribute(request.getSchema(), "logged_user_atps");
-		if (authPoints == null) {
-			authPoints = AuthorizationPoints.getNotLoggedInstance(request.getSchema());
-		}
+    protected void authorize(ExtendedRequest request, String module, String action) {
+        AuthorizationPoints authPoints =
+                (AuthorizationPoints)
+                        request.getSessionAttribute(request.getSchema(), "logged_user_atps");
+        if (authPoints == null) {
+            authPoints = AuthorizationPoints.getNotLoggedInstance(request.getSchema());
+        }
 
-		AuthorizationBO abo = AuthorizationBO.getInstance(request.getSchema());
-		abo.authorize(authPoints, module, action);
-	}
+        AuthorizationBO abo = AuthorizationBO.getInstance(request.getSchema());
+        abo.authorize(authPoints, module, action);
+    }
 }

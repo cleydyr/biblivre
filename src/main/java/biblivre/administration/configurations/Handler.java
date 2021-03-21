@@ -19,13 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.configurations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -35,61 +28,66 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Translations;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
 
-	public void save(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		int loggedUser = request.getLoggedUserId();
-		String language = request.getLanguage();
+    public void save(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        int loggedUser = request.getLoggedUserId();
+        String language = request.getLanguage();
 
-		String configurations = request.getString("configurations", "{}");
-		List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>();
+        String configurations = request.getString("configurations", "{}");
+        List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>();
 
-		try {
-			JSONObject json = new JSONObject(configurations);
+        try {
+            JSONObject json = new JSONObject(configurations);
 
-			Iterator<String> it = json.keys();
-			while (it.hasNext()) {
-				String key = it.next();
-				String value = json.getString(key);
+            Iterator<String> it = json.keys();
+            while (it.hasNext()) {
+                String key = it.next();
+                String value = json.getString(key);
 
-				if (key.equals("text.main.logged_in") || key.equals("text.main.logged_out")) {
-					Translations.addSingleTranslation(schema, language, key, value, loggedUser);
-				} else {
-					configs.add(new ConfigurationsDTO(key, value));
-				}
-			}
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
+                if (key.equals("text.main.logged_in") || key.equals("text.main.logged_out")) {
+                    Translations.addSingleTranslation(schema, language, key, value, loggedUser);
+                } else {
+                    configs.add(new ConfigurationsDTO(key, value));
+                }
+            }
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            return;
+        }
 
-		if (configs.size() == 0) {
-			return;
-		}
+        if (configs.size() == 0) {
+            return;
+        }
 
-		try {
-			configs = Configurations.validate(schema, configs);
-		} catch (ValidationException e) {
-			this.setMessage(e);
-			return;
-		}
+        try {
+            configs = Configurations.validate(schema, configs);
+        } catch (ValidationException e) {
+            this.setMessage(e);
+            return;
+        }
 
-		try {
-			boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
-			Configurations.save(schema, configs, loggedUser);
-			boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
+        try {
+            boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
+            Configurations.save(schema, configs, loggedUser);
+            boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
 
-			this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
-			this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
-		} catch (Exception e) {
-			this.setMessage(ActionResult.WARNING, "administration.configurations.error.save");
-			return;
-		}
-	}
+            this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
+            this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
+        } catch (Exception e) {
+            this.setMessage(ActionResult.WARNING, "administration.configurations.error.save");
+            return;
+        }
+    }
 
-	public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
-		request.getSession().removeAttribute(request.getSchema() + ".system_warning_new_version");
-	}
+    public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
+        request.getSession().removeAttribute(request.getSchema() + ".system_warning_new_version");
+    }
 }

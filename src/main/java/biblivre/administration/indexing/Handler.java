@@ -19,69 +19,74 @@
  ******************************************************************************/
 package biblivre.administration.indexing;
 
-import java.util.Date;
-
-import org.json.JSONException;
-
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
+import java.util.Date;
+import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-	public void reindex(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String strRecordType = request.getString("record_type", "biblio");
+    public void reindex(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        String strRecordType = request.getString("record_type", "biblio");
 
-		RecordType recordType = RecordType.fromString(strRecordType);
-		if (recordType == null) {
-			this.setMessage(ActionResult.WARNING, "administration.maintenance.reindex.error.invalid_record_type");
-			return;
-		}
+        RecordType recordType = RecordType.fromString(strRecordType);
+        if (recordType == null) {
+            this.setMessage(
+                    ActionResult.WARNING,
+                    "administration.maintenance.reindex.error.invalid_record_type");
+            return;
+        }
 
-		long start = 0;
-		long end = 0;
+        long start = 0;
+        long end = 0;
 
-		try {
-			IndexingBO bo = IndexingBO.getInstance(schema);
+        try {
+            IndexingBO bo = IndexingBO.getInstance(schema);
 
-			start = new Date().getTime();
-			bo.reindex(recordType);
-			end = new Date().getTime();
+            start = new Date().getTime();
+            bo.reindex(recordType);
+            end = new Date().getTime();
 
-			request.setSessionAttribute(schema, "system_warning_reindex", false);
-		} finally {
+            request.setSessionAttribute(schema, "system_warning_reindex", false);
+        } finally {
 
-		}
+        }
 
-		try {
-			this.json.put("success", true);
-			this.json.put("time", (end - start) / 1000.0);
-		} catch (JSONException e) {}
-	}
+        try {
+            this.json.put("success", true);
+            this.json.put("time", (end - start) / 1000.0);
+        } catch (JSONException e) {
+        }
+    }
 
-	public void progress(ExtendedRequest request, ExtendedResponse response) {
-		// Remember that this will only work if there is a sortable indexing_group for the recordType.
-		String schema = request.getSchema();
-		String strRecordType = request.getString("record_type", "biblio");
+    public void progress(ExtendedRequest request, ExtendedResponse response) {
+        // Remember that this will only work if there is a sortable indexing_group for the
+        // recordType.
+        String schema = request.getSchema();
+        String strRecordType = request.getString("record_type", "biblio");
 
-		RecordType recordType = RecordType.fromString(strRecordType);
-		if (recordType == null) {
-			this.setMessage(ActionResult.WARNING, "administration.maintenance.reindex.error.invalid_record_type");
-			return;
-		}
+        RecordType recordType = RecordType.fromString(strRecordType);
+        if (recordType == null) {
+            this.setMessage(
+                    ActionResult.WARNING,
+                    "administration.maintenance.reindex.error.invalid_record_type");
+            return;
+        }
 
-		IndexingBO bo = IndexingBO.getInstance(schema);
+        IndexingBO bo = IndexingBO.getInstance(schema);
 
-		int progress[] = bo.getReindexProgress(recordType);
+        int progress[] = bo.getReindexProgress(recordType);
 
-		try {
-			this.json.put("success", true);
-			this.json.put("current", progress[0]);
-			this.json.put("total", progress[1]);
-			this.json.put("complete", progress[0] == progress[1]);
-		} catch (JSONException e) {}
-	}
+        try {
+            this.json.put("success", true);
+            this.json.put("current", progress[0]);
+            this.json.put("total", progress[1]);
+            this.json.put("complete", progress[0] == progress[1]);
+        } catch (JSONException e) {
+        }
+    }
 }

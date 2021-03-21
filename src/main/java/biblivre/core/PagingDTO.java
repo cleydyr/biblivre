@@ -20,139 +20,138 @@
 package biblivre.core;
 
 import java.util.Date;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PagingDTO implements IFJson {
-	private int recordCount;
-	private int recordOffset;
-	private int recordsPerPage;
-	private int recordLimit;
+    private int recordCount;
+    private int recordOffset;
+    private int recordsPerPage;
+    private int recordLimit;
 
-	private transient double time;
-	private transient long startTime;
-	private transient long endTime;
+    private transient double time;
+    private transient long startTime;
+    private transient long endTime;
 
-	public PagingDTO() {
-		this.startTimer();
-	}
+    public PagingDTO() {
+        this.startTimer();
+    }
 
-	public PagingDTO(int recordCount, int recordsPerPage, int recordOffset) {
-		this.startTimer();
+    public PagingDTO(int recordCount, int recordsPerPage, int recordOffset) {
+        this.startTimer();
 
-		this.recordCount = recordCount;
-		this.recordsPerPage = recordsPerPage;
-		this.recordOffset = recordOffset;
-	}
+        this.recordCount = recordCount;
+        this.recordsPerPage = recordsPerPage;
+        this.recordOffset = recordOffset;
+    }
 
-	public int getRecordCount() {
-		return this.recordCount;
-	}
+    public int getRecordCount() {
+        return this.recordCount;
+    }
 
-	public void setRecordCount(int recordCount) {
-		this.recordCount = recordCount;
-	}
+    public void setRecordCount(int recordCount) {
+        this.recordCount = recordCount;
+    }
 
-	public int getRecordsPerPage() {
-		return this.recordsPerPage;
-	}
+    public int getRecordsPerPage() {
+        return this.recordsPerPage;
+    }
 
-	public void setRecordsPerPage(int recordsPerPage) {
-		this.recordsPerPage = recordsPerPage;
-	}
+    public void setRecordsPerPage(int recordsPerPage) {
+        this.recordsPerPage = recordsPerPage;
+    }
 
-	public void setRecordsPerPage(String recordsPerPage) {
-		try {
-			this.recordsPerPage = Integer.parseInt(recordsPerPage);
-		} catch (Exception e) {
-			this.recordsPerPage = 20;
-		}
-	}
+    public void setRecordsPerPage(String recordsPerPage) {
+        try {
+            this.recordsPerPage = Integer.parseInt(recordsPerPage);
+        } catch (Exception e) {
+            this.recordsPerPage = 20;
+        }
+    }
 
-	public int getRecordOffset() {
-		return this.recordOffset;
-	}
+    public int getRecordOffset() {
+        return this.recordOffset;
+    }
 
-	public void setRecordOffset(int recordOffset) {
-		this.recordOffset = recordOffset;
-	}
+    public void setRecordOffset(int recordOffset) {
+        this.recordOffset = recordOffset;
+    }
 
-	public int getRecordLimit() {
-		return this.recordLimit;
-	}
+    public int getRecordLimit() {
+        return this.recordLimit;
+    }
 
-	public void setRecordLimit(int recordLimit) {
-		this.recordLimit = recordLimit;
-	}
+    public void setRecordLimit(int recordLimit) {
+        this.recordLimit = recordLimit;
+    }
 
-	public int getPage() {
-		if (this.getRecordsPerPage() == 0) {
-			return 1;
-		}
+    public int getPage() {
+        if (this.getRecordsPerPage() == 0) {
+            return 1;
+        }
 
-		return (this.getRecordOffset() / this.getRecordsPerPage()) + 1;
-	}
+        return (this.getRecordOffset() / this.getRecordsPerPage()) + 1;
+    }
 
-	public void setPage(int page) {
-		this.recordOffset = (page - 1) * this.getRecordsPerPage();
-	}
+    public void setPage(int page) {
+        this.recordOffset = (page - 1) * this.getRecordsPerPage();
+    }
 
-	public int getPageCount() {
-		if (this.getRecordCount() == 0) {
-			return 0;
-		}
+    public int getPageCount() {
+        if (this.getRecordCount() == 0) {
+            return 0;
+        }
 
-		if (this.getRecordsPerPage() == 0) {
-			return 1;
-		}
+        if (this.getRecordsPerPage() == 0) {
+            return 1;
+        }
 
-		double count = this.getRecordCount();
+        double count = this.getRecordCount();
 
-		if (this.getRecordLimit() > 0 && this.getRecordLimit() < count) {
-			count = this.getRecordLimit();
-		}
+        if (this.getRecordLimit() > 0 && this.getRecordLimit() < count) {
+            count = this.getRecordLimit();
+        }
 
-		return (int) Math.ceil(count / this.getRecordsPerPage());
-	}
+        return (int) Math.ceil(count / this.getRecordsPerPage());
+    }
 
-	public double getTime() {
-		return this.time;
-	}
+    public double getTime() {
+        return this.time;
+    }
 
-	public void setTime(double time) {
-		this.time = time;
-	}
+    public void setTime(double time) {
+        this.time = time;
+    }
 
-	public void setTime(long start, long end) {
-		this.time = (end - start) / 1000.0;
-	}
+    public void setTime(long start, long end) {
+        this.time = (end - start) / 1000.0;
+    }
 
-	public void startTimer() {
-		this.startTime = new Date().getTime();
-		this.setTime(this.startTime, this.endTime);
-	}
+    public void startTimer() {
+        this.startTime = new Date().getTime();
+        this.setTime(this.startTime, this.endTime);
+    }
 
-	public void endTimer() {
-		this.endTime = new Date().getTime();
-		this.setTime(this.startTime, this.endTime);
-	}
+    public void endTimer() {
+        this.endTime = new Date().getTime();
+        this.setTime(this.startTime, this.endTime);
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = new JSONObject();
-		this.endTimer();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        this.endTimer();
 
-		try {
-			json.putOpt("page", this.getPage());
-			json.putOpt("page_count", this.getPageCount());
-			json.putOpt("record_count", this.getRecordCount());
-			json.putOpt("records_per_page", this.getRecordsPerPage());
-			json.putOpt("record_limit", this.getRecordLimit());
-			json.putOpt("time", this.getTime());
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("page", this.getPage());
+            json.putOpt("page_count", this.getPageCount());
+            json.putOpt("record_count", this.getRecordCount());
+            json.putOpt("records_per_page", this.getRecordsPerPage());
+            json.putOpt("record_limit", this.getRecordLimit());
+            json.putOpt("time", this.getTime());
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

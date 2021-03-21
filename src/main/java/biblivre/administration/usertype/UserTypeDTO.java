@@ -22,79 +22,78 @@ package biblivre.administration.usertype;
 import biblivre.core.AbstractDTO;
 
 public class UserTypeDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Integer id;
-	private String name;
-	private String description;
-	private Integer lendingLimit;
-	private Integer reservationLimit;
-	private Integer lendingTimeLimit;
-	private Integer reservationTimeLimit;
-	private Float fineValue;
+    private Integer id;
+    private String name;
+    private String description;
+    private Integer lendingLimit;
+    private Integer reservationLimit;
+    private Integer lendingTimeLimit;
+    private Integer reservationTimeLimit;
+    private Float fineValue;
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Integer getLendingLimit() {
-		return this.lendingLimit;
-	}
+    public Integer getLendingLimit() {
+        return this.lendingLimit;
+    }
 
-	public void setLendingLimit(Integer lendingLimit) {
-		this.lendingLimit = lendingLimit;
-	}
+    public void setLendingLimit(Integer lendingLimit) {
+        this.lendingLimit = lendingLimit;
+    }
 
-	public Integer getReservationLimit() {
-		return this.reservationLimit;
-	}
+    public Integer getReservationLimit() {
+        return this.reservationLimit;
+    }
 
-	public void setReservationLimit(Integer reservationLimit) {
-		this.reservationLimit = reservationLimit;
-	}
+    public void setReservationLimit(Integer reservationLimit) {
+        this.reservationLimit = reservationLimit;
+    }
 
-	public Integer getLendingTimeLimit() {
-		return this.lendingTimeLimit;
-	}
+    public Integer getLendingTimeLimit() {
+        return this.lendingTimeLimit;
+    }
 
-	public void setLendingTimeLimit(Integer lendingTimeLimit) {
-		this.lendingTimeLimit = lendingTimeLimit;
-	}
+    public void setLendingTimeLimit(Integer lendingTimeLimit) {
+        this.lendingTimeLimit = lendingTimeLimit;
+    }
 
-	public Integer getReservationTimeLimit() {
-		return this.reservationTimeLimit;
-	}
+    public Integer getReservationTimeLimit() {
+        return this.reservationTimeLimit;
+    }
 
-	public void setReservationTimeLimit(Integer reservationTimeLimit) {
-		this.reservationTimeLimit = reservationTimeLimit;
-	}
+    public void setReservationTimeLimit(Integer reservationTimeLimit) {
+        this.reservationTimeLimit = reservationTimeLimit;
+    }
 
-	public Float getFineValue() {
-		return this.fineValue;
-	}
+    public Float getFineValue() {
+        return this.fineValue;
+    }
 
-	public void setFineValue(Float fineValue) {
-		this.fineValue = fineValue;
-	}
-
+    public void setFineValue(Float fineValue) {
+        this.fineValue = fineValue;
+    }
 }

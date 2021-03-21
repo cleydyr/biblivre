@@ -23,15 +23,15 @@ import biblivre.core.enums.ActionResult;
 
 public class Dialog {
     public static void showNormal(ExtendedRequest request, String textKey) {
-    	Dialog.show(request, textKey, ActionResult.NORMAL);
+        Dialog.show(request, textKey, ActionResult.NORMAL);
     }
 
     public static void showWarning(ExtendedRequest request, String textKey) {
-    	Dialog.show(request, textKey, ActionResult.WARNING);
+        Dialog.show(request, textKey, ActionResult.WARNING);
     }
 
     public static void showError(ExtendedRequest request, String textKey) {
-    	Dialog.show(request, textKey, ActionResult.ERROR);
+        Dialog.show(request, textKey, ActionResult.ERROR);
     }
 
     public static void show(ExtendedRequest request, String textKey, ActionResult level) {

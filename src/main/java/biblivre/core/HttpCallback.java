@@ -7,9 +7,8 @@ import java.io.IOException;
  * após completadas.
  *
  * @author Cleydyr B. de Albuquerque
- *
  */
 @FunctionalInterface
 public interface HttpCallback {
-	public void success() throws IOException;
+    public void success() throws IOException;
 }

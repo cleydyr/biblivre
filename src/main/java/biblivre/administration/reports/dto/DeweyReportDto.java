@@ -32,5 +32,4 @@ public class DeweyReportDto extends BaseReportDto {
     public void setData(List<String[]> data) {
         this.data = data;
     }
-
 }

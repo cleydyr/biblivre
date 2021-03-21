@@ -19,14 +19,6 @@
  ******************************************************************************/
 package biblivre.digitalmedia;
 
-import java.nio.charset.Charset;
-import java.util.Base64;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -34,87 +26,93 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
+import java.nio.charset.Charset;
+import java.util.Base64;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-	public void download(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
+    public void download(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
 
-		String id = request.getString("id").replaceAll("_", "\\\\");
+        String id = request.getString("id").replaceAll("_", "\\\\");
 
-		String fileId = null;
-		String fileName = null;
+        String fileId = null;
+        String fileName = null;
 
-		BiblivreFile file = _tryFetchingDBFileWithWindowsEncoding(schema, id, fileId, fileName);
+        BiblivreFile file = _tryFetchingDBFileWithWindowsEncoding(schema, id, fileId, fileName);
 
-		if (file == null) {
-			file = _tryFetchingDBFileWithEncoding(
-					schema, id, fileId, fileName, Constants.DEFAULT_CHARSET);
-		}
+        if (file == null) {
+            file =
+                    _tryFetchingDBFileWithEncoding(
+                            schema, id, fileId, fileName, Constants.DEFAULT_CHARSET);
+        }
 
-		if (file == null) {
-			this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
+        if (file == null) {
+            this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
 
-		this.setFile(file);
+        this.setFile(file);
 
-		this.setCallback(file::close);
-	}
+        this.setCallback(file::close);
+    }
 
-	public void upload(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
+    public void upload(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
 
-		MemoryFile file = request.getFile("file");
+        MemoryFile file = request.getFile("file");
 
-		if (file == null) {
-			this.setMessage(ActionResult.WARNING, "digitalmedia.error.no_file_uploaded");
-			return;
-		}
+        if (file == null) {
+            this.setMessage(ActionResult.WARNING, "digitalmedia.error.no_file_uploaded");
+            return;
+        }
 
-		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
+        DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
 
-		Integer serial = bo.save(file);
+        Integer serial = bo.save(file);
 
-		String encodedId =
-			DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
+        String encodedId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
 
-		if (StringUtils.isNotBlank(encodedId)) {
-			try {
-				this.json.put("id", encodedId);
-			} catch (JSONException e) {}
-		} else {
-			this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
-		}
-	}
+        if (StringUtils.isNotBlank(encodedId)) {
+            try {
+                this.json.put("id", encodedId);
+            } catch (JSONException e) {
+            }
+        } else {
+            this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
+        }
+    }
 
-	private BiblivreFile _tryFetchingDBFileWithEncoding(
-			String schema, String id, String fileId, String fileName, Charset charset) {
-		try {
-			String decodedId = new String(Base64.getDecoder().decode(id), charset);
+    private BiblivreFile _tryFetchingDBFileWithEncoding(
+            String schema, String id, String fileId, String fileName, Charset charset) {
+        try {
+            String decodedId = new String(Base64.getDecoder().decode(id), charset);
 
-			String[] splitId = decodedId.split(":");
-			if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-				fileId = splitId[0];
-				fileName = splitId[1];
-			}
-		} catch (Exception e) {
-		}
+            String[] splitId = decodedId.split(":");
+            if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
+                fileId = splitId[0];
+                fileName = splitId[1];
+            }
+        } catch (Exception e) {
+        }
 
-		DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
+        DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
 
-		if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
-			this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
-			return null;
-		}
+        if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
+            this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
 
-		BiblivreFile file = bo.load(Integer.valueOf(fileId), fileName);
-		return file;
-	}
+        BiblivreFile file = bo.load(Integer.valueOf(fileId), fileName);
+        return file;
+    }
 
-	private BiblivreFile _tryFetchingDBFileWithWindowsEncoding(
-			String schema, String id, String fileId, String fileName) {
-		return _tryFetchingDBFileWithEncoding(
-				schema, id, fileId, fileName, Constants.WINDOWS_CHARSET);
-	}
+    private BiblivreFile _tryFetchingDBFileWithWindowsEncoding(
+            String schema, String id, String fileId, String fileName) {
+        return _tryFetchingDBFileWithEncoding(
+                schema, id, fileId, fileName, Constants.WINDOWS_CHARSET);
+    }
 }

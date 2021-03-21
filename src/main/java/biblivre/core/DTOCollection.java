@@ -20,58 +20,57 @@
 package biblivre.core;
 
 import java.util.LinkedList;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implements IFJson  {
-	private static final long serialVersionUID = 1L;
+public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implements IFJson {
+    private static final long serialVersionUID = 1L;
 
-	private Integer id;
+    private Integer id;
 
-	private PagingDTO paging;
+    private PagingDTO paging;
 
-	public PagingDTO getPaging() {
-		return this.paging;
-	}
+    public PagingDTO getPaging() {
+        return this.paging;
+    }
 
-	public void setPaging(PagingDTO paging) {
-		this.paging = paging;
-	}
+    public void setPaging(PagingDTO paging) {
+        this.paging = paging;
+    }
 
-	public int getRecordLimit() {
-		if (this.paging == null) {
-			return 0;
-		}
-		return this.paging.getRecordLimit();
-	}
+    public int getRecordLimit() {
+        if (this.paging == null) {
+            return 0;
+        }
+        return this.paging.getRecordLimit();
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = null;
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = null;
 
-		if (this.getPaging() != null) {
-			json = this.getPaging().toJSONObject();
-		} else {
-			json = new JSONObject();
-		}
+        if (this.getPaging() != null) {
+            json = this.getPaging().toJSONObject();
+        } else {
+            json = new JSONObject();
+        }
 
-		try {
-			json.putOpt("id", this.getId());
-			for (T dto : this) {
-				json.append("data", dto.toJSONObject());
-			}
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("id", this.getId());
+            for (T dto : this) {
+                json.append("data", dto.toJSONObject());
+            }
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

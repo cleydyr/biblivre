@@ -29,114 +29,115 @@ import java.util.TreeSet;
 
 public class UpdatesDAO extends AbstractDAO {
 
-	public static UpdatesDAO getInstance(String schema) {
-		return (UpdatesDAO) AbstractDAO.getInstance(UpdatesDAO.class, schema);
-	}
+    public static UpdatesDAO getInstance(String schema) {
+        return (UpdatesDAO) AbstractDAO.getInstance(UpdatesDAO.class, schema);
+    }
 
-	public Set<String> getInstalledVersions() throws SQLException {
-		Connection con = null;
+    public Set<String> getInstalledVersions() throws SQLException {
+        Connection con = null;
 
-		try {
-			con = this.getConnection();
+        try {
+            con = this.getConnection();
 
-			String sql = "SELECT installed_versions FROM versions;";
+            String sql = "SELECT installed_versions FROM versions;";
 
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(sql);
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
 
-			Set<String> set = new TreeSet<String>();
-			while (rs.next()) {
-				set.add(rs.getString("installed_versions"));
-			}
-			return set;
-		} finally {
-			this.closeConnection(con);
-		}
-	}
+            Set<String> set = new TreeSet<String>();
+            while (rs.next()) {
+                set.add(rs.getString("installed_versions"));
+            }
+            return set;
+        } finally {
+            this.closeConnection(con);
+        }
+    }
 
-	public Connection beginUpdate() throws SQLException {
-		Connection con = this.getConnection();
-		con.setAutoCommit(false);
+    public Connection beginUpdate() throws SQLException {
+        Connection con = this.getConnection();
+        con.setAutoCommit(false);
 
-		return con;
-	}
+        return con;
+    }
 
-	public void commitUpdate(String version, Connection con) throws SQLException {
-		this.commitUpdate(version, con, true);
-	}
+    public void commitUpdate(String version, Connection con) throws SQLException {
+        this.commitUpdate(version, con, true);
+    }
 
+    public void commitUpdate(String version, Connection con, boolean insert) throws SQLException {
+        try {
+            if (insert) {
+                try (PreparedStatement insertIntoVersions =
+                        con.prepareStatement(
+                                "INSERT INTO versions (installed_versions) VALUES (?);")) {
 
-	public void commitUpdate(String version, Connection con, boolean insert) throws SQLException {
-		try {
-			if (insert) {
-				try (PreparedStatement insertIntoVersions = con.prepareStatement(
-						"INSERT INTO versions (installed_versions) VALUES (?);")) {
+                    PreparedStatementUtil.setAllParameters(insertIntoVersions, version);
 
-					PreparedStatementUtil.setAllParameters(insertIntoVersions, version);
+                    insertIntoVersions.executeUpdate();
+                }
 
-					insertIntoVersions.executeUpdate();
-				}
+                this.commit(con);
+            }
+        } finally {
+            this.closeConnection(con);
+        }
+    }
 
-				this.commit(con);
-			}
-		}
-		finally {
-			this.closeConnection(con);
-		}
-	}
+    public void rollbackUpdate(Connection con) {
+        try {
+            this.rollback(con);
+        } finally {
+            this.closeConnection(con);
+        }
+    }
 
+    public void createArrayAgg() throws SQLException {
+        Connection con = null;
 
-	public void rollbackUpdate(Connection con) {
-		try {
-			this.rollback(con);
-		} finally {
-			this.closeConnection(con);
-		}
-	}
+        try {
+            con = this.getConnection();
 
-	public void createArrayAgg() throws SQLException {
-		Connection con = null;
+            String sql =
+                    "CREATE AGGREGATE public.array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND=’{}’);";
 
-		try {
-			con = this.getConnection();
+            Statement st = con.createStatement();
+            st.execute(sql);
+        } finally {
+            this.closeConnection(con);
+        }
+    }
 
-			String sql = "CREATE AGGREGATE public.array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND=’{}’);";
+    public void create81ArrayAgg() throws SQLException {
 
-			Statement st = con.createStatement();
-			st.execute(sql);
-		} finally {
-			this.closeConnection(con);
-		}
-	}
+        try (Connection con = this.getConnection();
+                Statement st = con.createStatement(); ) {
 
-	public void create81ArrayAgg() throws SQLException {
+            String sql =
+                    "CREATE AGGREGATE public.array_agg (SFUNC = array_append, BASETYPE = anyelement, STYPE = anyarray, INITCOND = '{}');";
 
-		try (Connection con = this.getConnection();
-				Statement st = con.createStatement(); ) {
+            st.execute(sql);
+        }
+    }
 
-			String sql = "CREATE AGGREGATE public.array_agg (SFUNC = array_append, BASETYPE = anyelement, STYPE = anyarray, INITCOND = '{}');";
+    public void fixVersionsTable() throws SQLException {
+        Connection con = null;
 
-			st.execute(sql);
-		}
-	}
+        try {
+            con = this.getConnection();
 
-	public void fixVersionsTable() throws SQLException {
-		Connection con = null;
+            String sql =
+                    "CREATE TABLE versions ("
+                            + "installed_versions character varying NOT NULL, CONSTRAINT \"PK_versions\" PRIMARY KEY (installed_versions))"
+                            + "WITH (OIDS=FALSE);";
 
-		try {
-			con = this.getConnection();
+            String sql2 = "ALTER TABLE backups OWNER TO biblivre;";
 
-			String sql = "CREATE TABLE versions (" +
-						 "installed_versions character varying NOT NULL, CONSTRAINT \"PK_versions\" PRIMARY KEY (installed_versions))" +
-						 "WITH (OIDS=FALSE);";
-
-			String sql2 = "ALTER TABLE backups OWNER TO biblivre;";
-
-			Statement st = con.createStatement();
-			st.execute(sql);
-			st.execute(sql2);
-		} finally {
-			this.closeConnection(con);
-		}
-	}
+            Statement st = con.createStatement();
+            st.execute(sql);
+            st.execute(sql2);
+        } finally {
+            this.closeConnection(con);
+        }
+    }
 }

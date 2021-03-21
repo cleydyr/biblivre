@@ -22,34 +22,33 @@ package biblivre.administration.accesscards;
 import biblivre.core.AbstractDTO;
 
 public class AccessCardDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private int id;
-	private String code;
-	private AccessCardStatus status;
+    private int id;
+    private String code;
+    private AccessCardStatus status;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getCode() {
-		return this.code;
-	}
+    public String getCode() {
+        return this.code;
+    }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public AccessCardStatus getStatus() {
-		return this.status;
-	}
+    public AccessCardStatus getStatus() {
+        return this.status;
+    }
 
-	public void setStatus(AccessCardStatus status) {
-		this.status = status;
-	}
-
+    public void setStatus(AccessCardStatus status) {
+        this.status = status;
+    }
 }

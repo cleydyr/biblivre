@@ -22,33 +22,33 @@ package biblivre.circulation.user;
 import org.apache.commons.lang3.StringUtils;
 
 public enum UserStatus {
-	ACTIVE,
-	PENDING_ISSUES,
-	INACTIVE,
-	BLOCKED;
+    ACTIVE,
+    PENDING_ISSUES,
+    INACTIVE,
+    BLOCKED;
 
-	public static UserStatus fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static UserStatus fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (UserStatus status : UserStatus.values()) {
-			if (str.equals(status.toString())) {
-				return status;
-			}
-		}
+        for (UserStatus status : UserStatus.values()) {
+            if (str.equals(status.toString())) {
+                return status;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

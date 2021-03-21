@@ -19,52 +19,50 @@
  ******************************************************************************/
 package biblivre.view.taglibs;
 
+import biblivre.core.translations.TranslationsMap;
+import biblivre.core.utils.Constants;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import biblivre.core.translations.TranslationsMap;
-import biblivre.core.utils.Constants;
-
 public class TranslationsDate extends SimpleTagSupport {
 
-	private Date date = new Date();
-	private Boolean time = false;
+    private Date date = new Date();
+    private Boolean time = false;
 
-	@Override
-	public void doTag() throws JspException {
-		final JspWriter out = getJspContext().getOut();
+    @Override
+    public void doTag() throws JspException {
+        final JspWriter out = getJspContext().getOut();
 
-		try {
-			ServletRequest request = ((PageContext) getJspContext()).getRequest();
-			TranslationsMap map = (TranslationsMap) request.getAttribute("translationsMap");
+        try {
+            ServletRequest request = ((PageContext) getJspContext()).getRequest();
+            TranslationsMap map = (TranslationsMap) request.getAttribute("translationsMap");
 
-			String pattern;
+            String pattern;
 
-			if (this.time) {
-				pattern = map.getText(Constants.TRANSLATION_FORMAT_DATETIME);
-			} else {
-				pattern = map.getText(Constants.TRANSLATION_FORMAT_DATE);
-			}
+            if (this.time) {
+                pattern = map.getText(Constants.TRANSLATION_FORMAT_DATETIME);
+            } else {
+                pattern = map.getText(Constants.TRANSLATION_FORMAT_DATE);
+            }
 
-			SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+            SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
-			out.print(formatter.format(this.date));
-		} catch (Exception e)  {
-			throw new JspException(e.getMessage());
-		}
-	}
+            out.print(formatter.format(this.date));
+        } catch (Exception e) {
+            throw new JspException(e.getMessage());
+        }
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	public void setTime(Boolean time) {
-		this.time = time;
-	}
+    public void setTime(Boolean time) {
+        this.time = time;
+    }
 }

@@ -22,7 +22,7 @@ package biblivre.cataloging.labels;
 import biblivre.core.AbstractDTO;
 
 public class LabelDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private int id;
     private Integer recordId;
@@ -34,75 +34,75 @@ public class LabelDTO extends AbstractDTO {
     private String locationC;
     private String locationD;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public Integer getRecordId() {
-		return this.recordId;
-	}
+    public Integer getRecordId() {
+        return this.recordId;
+    }
 
-	public void setRecordId(Integer recordId) {
-		this.recordId = recordId;
-	}
+    public void setRecordId(Integer recordId) {
+        this.recordId = recordId;
+    }
 
-	public String getAccessionNumber() {
-		return this.accessionNumber;
-	}
+    public String getAccessionNumber() {
+        return this.accessionNumber;
+    }
 
-	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = accessionNumber;
-	}
+    public void setAccessionNumber(String accessionNumber) {
+        this.accessionNumber = accessionNumber;
+    }
 
-	public String getAuthor() {
-		return this.author;
-	}
+    public String getAuthor() {
+        return this.author;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public String getTitle() {
+        return this.title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getLocationA() {
-		return this.locationA;
-	}
+    public String getLocationA() {
+        return this.locationA;
+    }
 
-	public void setLocationA(String locationA) {
-		this.locationA = locationA;
-	}
+    public void setLocationA(String locationA) {
+        this.locationA = locationA;
+    }
 
-	public String getLocationB() {
-		return this.locationB;
-	}
+    public String getLocationB() {
+        return this.locationB;
+    }
 
-	public void setLocationB(String locationB) {
-		this.locationB = locationB;
-	}
+    public void setLocationB(String locationB) {
+        this.locationB = locationB;
+    }
 
-	public String getLocationC() {
-		return this.locationC;
-	}
+    public String getLocationC() {
+        return this.locationC;
+    }
 
-	public void setLocationC(String locationC) {
-		this.locationC = locationC;
-	}
+    public void setLocationC(String locationC) {
+        this.locationC = locationC;
+    }
 
-	public String getLocationD() {
-		return this.locationD;
-	}
+    public String getLocationD() {
+        return this.locationD;
+    }
 
-	public void setLocationD(String locationD) {
-		this.locationD = locationD;
-	}
+    public void setLocationD(String locationD) {
+        this.locationD = locationD;
+    }
 }

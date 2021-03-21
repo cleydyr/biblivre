@@ -19,89 +19,86 @@
  ******************************************************************************/
 package biblivre.core.file;
 
+import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
 
-import biblivre.core.utils.Constants;
-
 public class MemoryFile extends BiblivreFile {
 
-	private FileItem fileItem;
-	private InputStream inputStream;
+    private FileItem fileItem;
+    private InputStream inputStream;
 
-	public MemoryFile() {
-	}
+    public MemoryFile() {}
 
-	public MemoryFile(FileItem item) {
-		this.fileItem = item;
+    public MemoryFile(FileItem item) {
+        this.fileItem = item;
 
-		this.setName(this.fileItem.getName());
-		this.setContentType(this.fileItem.getContentType());
-		this.setSize(this.fileItem.getSize());
-	}
+        this.setName(this.fileItem.getName());
+        this.setContentType(this.fileItem.getContentType());
+        this.setSize(this.fileItem.getSize());
+    }
 
-	public InputStream getNewInputStream() throws IOException {
-		if (this.fileItem == null) {
-			return this.inputStream;
-		}
+    public InputStream getNewInputStream() throws IOException {
+        if (this.fileItem == null) {
+            return this.inputStream;
+        }
 
-		IOUtils.closeQuietly(this.inputStream);
+        IOUtils.closeQuietly(this.inputStream);
 
-		this.inputStream = this.fileItem.getInputStream();
-		return this.inputStream;
-	}
+        this.inputStream = this.fileItem.getInputStream();
+        return this.inputStream;
+    }
 
-	public void setInputStream(InputStream is) {
-		this.inputStream = is;
-	}
+    public void setInputStream(InputStream is) {
+        this.inputStream = is;
+    }
 
-	public InputStream getInputStream() throws IOException {
-		if (this.inputStream == null) {
-			return this.getNewInputStream();
-		}
+    public InputStream getInputStream() throws IOException {
+        if (this.inputStream == null) {
+            return this.getNewInputStream();
+        }
 
-		return this.inputStream;
-	}
+        return this.inputStream;
+    }
 
-	@Override
-	public boolean exists() {
-		try {
-			InputStream inputStream = this.getNewInputStream();
-			IOUtils.closeQuietly(inputStream);
-			return inputStream != null;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    @Override
+    public boolean exists() {
+        try {
+            InputStream inputStream = this.getNewInputStream();
+            IOUtils.closeQuietly(inputStream);
+            return inputStream != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-	@Override
-	public void copy(OutputStream out, long start, long size) throws IOException {
-		InputStream input = this.getNewInputStream();
+    @Override
+    public void copy(OutputStream out, long start, long size) throws IOException {
+        InputStream input = this.getNewInputStream();
 
-		if (input == null) {
-			return;
-		}
+        if (input == null) {
+            return;
+        }
 
-		if (start != 0) {
-			throw new IOException("MemoryFile doesn't implements seek. Start parameter must be 0");
-		}
+        if (start != 0) {
+            throw new IOException("MemoryFile doesn't implements seek. Start parameter must be 0");
+        }
 
-		byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
-		int read;
+        byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
+        int read;
 
-		while ((read = input.read(buffer)) > 0) {
-			out.write(buffer, 0, read);
-		}
+        while ((read = input.read(buffer)) > 0) {
+            out.write(buffer, 0, read);
+        }
 
-		IOUtils.closeQuietly(input);
-	}
+        IOUtils.closeQuietly(input);
+    }
 
-	@Override
-	public void close() {
-		IOUtils.closeQuietly(this.inputStream);
-	}
+    @Override
+    public void close() {
+        IOUtils.closeQuietly(this.inputStream);
+    }
 }

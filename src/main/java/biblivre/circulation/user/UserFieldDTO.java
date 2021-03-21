@@ -22,66 +22,66 @@ package biblivre.circulation.user;
 import biblivre.core.AbstractDTO;
 
 public class UserFieldDTO extends AbstractDTO implements Comparable<UserFieldDTO> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String key;
-	private UserFieldType type;
-	private boolean required;
-	private int maxLength;
-	private int sortOrder;
+    private String key;
+    private UserFieldType type;
+    private boolean required;
+    private int maxLength;
+    private int sortOrder;
 
-	public String getKey() {
-		return this.key;
-	}
+    public String getKey() {
+        return this.key;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public int getSortOrder() {
-		return this.sortOrder;
-	}
+    public int getSortOrder() {
+        return this.sortOrder;
+    }
 
-	public void setSortOrder(int order) {
-		this.sortOrder = order;
-	}
+    public void setSortOrder(int order) {
+        this.sortOrder = order;
+    }
 
-	public UserFieldType getType() {
-		return this.type;
-	}
+    public UserFieldType getType() {
+        return this.type;
+    }
 
-	public void setType(UserFieldType type) {
-		this.type = type;
-	}
+    public void setType(UserFieldType type) {
+        this.type = type;
+    }
 
-	public boolean isRequired() {
-		return this.required;
-	}
+    public boolean isRequired() {
+        return this.required;
+    }
 
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
 
-	public int getMaxLength() {
-		return this.maxLength;
-	}
+    public int getMaxLength() {
+        return this.maxLength;
+    }
 
-	public void setMaxLength(int maxLength) {
-		this.maxLength = maxLength;
-	}
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
 
-	@Override
-	public int compareTo(UserFieldDTO other) {
-		if (other == null) {
-			return -1;
-		}
+    @Override
+    public int compareTo(UserFieldDTO other) {
+        if (other == null) {
+            return -1;
+        }
 
-		if (this.getSortOrder() != other.getSortOrder()) {
-			return other.getSortOrder() - this.getSortOrder();
-		} else	if (this.getKey() != null && other.getKey() != null) {
-			return this.getKey().compareTo(other.getKey());
-		}
+        if (this.getSortOrder() != other.getSortOrder()) {
+            return other.getSortOrder() - this.getSortOrder();
+        } else if (this.getKey() != null && other.getKey() != null) {
+            return this.getKey().compareTo(other.getKey());
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 }

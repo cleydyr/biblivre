@@ -19,47 +19,45 @@
  ******************************************************************************/
 package biblivre.administration.reports.dto;
 
-import java.util.List;
-
 import biblivre.circulation.user.UserDTO;
+import java.util.List;
 
 public class UserReportDto extends BaseReportDto {
 
-	private UserDTO user;
-	private List<String[]> lendings;
-	private List<String[]> lateLendings;
-	private List<String[]> returnedLendings;
+    private UserDTO user;
+    private List<String[]> lendings;
+    private List<String[]> lateLendings;
+    private List<String[]> returnedLendings;
 
-	public List<String[]> getLateLendings() {
-		return this.lateLendings;
-	}
+    public List<String[]> getLateLendings() {
+        return this.lateLendings;
+    }
 
-	public void setLateLendings(List<String[]> lateLendings) {
-		this.lateLendings = lateLendings;
-	}
+    public void setLateLendings(List<String[]> lateLendings) {
+        this.lateLendings = lateLendings;
+    }
 
-	public List<String[]> getLendings() {
-		return this.lendings;
-	}
+    public List<String[]> getLendings() {
+        return this.lendings;
+    }
 
-	public void setLendings(List<String[]> lendings) {
-		this.lendings = lendings;
-	}
+    public void setLendings(List<String[]> lendings) {
+        this.lendings = lendings;
+    }
 
-	public List<String[]> getReturnedLendings() {
-		return this.returnedLendings;
-	}
+    public List<String[]> getReturnedLendings() {
+        return this.returnedLendings;
+    }
 
-	public void setReturnedLendings(List<String[]> returnedLendings) {
-		this.returnedLendings = returnedLendings;
-	}
+    public void setReturnedLendings(List<String[]> returnedLendings) {
+        this.returnedLendings = returnedLendings;
+    }
 
-	public UserDTO getUser() {
-		return this.user;
-	}
+    public UserDTO getUser() {
+        return this.user;
+    }
 
-	public void setUser(UserDTO user) {
-		this.user = user;
-	}
-
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 }

@@ -19,144 +19,149 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
+import biblivre.core.IFCacheableJavascript;
+import biblivre.core.JavascriptCache;
+import biblivre.core.utils.Constants;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.IFCacheableJavascript;
-import biblivre.core.JavascriptCache;
-import biblivre.core.utils.Constants;
+public class TranslationsMap extends HashMap<String, TranslationDTO>
+        implements IFCacheableJavascript {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final long serialVersionUID = 1L;
 
-public class TranslationsMap extends HashMap<String, TranslationDTO> implements IFCacheableJavascript {
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private static final long serialVersionUID = 1L;
+    private String schema;
+    private String language;
+    private JavascriptCache cache;
 
-	private String schema;
-	private String language;
-	private JavascriptCache cache;
+    public TranslationsMap(String schema, String language) {
+        this(schema, language, 16);
+    }
 
-	public TranslationsMap(String schema, String language) {
-		this(schema, language, 16);
-	}
+    public TranslationsMap(String schema, String language, int initialSize) {
+        super(initialSize);
 
-	public TranslationsMap(String schema, String language, int initialSize) {
-		super(initialSize);
+        this.setSchema(schema);
+        this.setLanguage(language);
+    }
 
-		this.setSchema(schema);
-		this.setLanguage(language);
-	}
+    public String getText(Object key) {
+        if (StringUtils.isBlank(key.toString())) {
+            return "";
+        }
 
-	public String getText(Object key) {
-		if (StringUtils.isBlank(key.toString())) {
-			return "";
-		}
+        TranslationDTO dto = this.get(key);
+        String value = null;
 
-		TranslationDTO dto = this.get(key);
-		String value = null;
+        if (dto != null) {
+            value = dto.getText();
+        }
 
-		if (dto != null) {
-			value = dto.getText();
-		}
+        if (StringUtils.isEmpty(value)) {
+            if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
+                value = Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()).getText(key);
+            } else {
+                this.logger.warn(
+                        "Translation key not found: "
+                                + this.schema
+                                + "."
+                                + this.language
+                                + "."
+                                + key);
+                value = "__" + key + "__";
+            }
+        }
 
-		if (StringUtils.isEmpty(value)) {
-			if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-				value = Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()).getText(key);
-			} else {
-				this.logger.warn("Translation key not found: " + this.schema + "." + this.language + "." + key);
-				value = "__" + key + "__";
-			}
-		}
+        return value;
+    }
 
-		return value;
-	}
+    public String getHtml(Object key) {
+        String value = this.getText(key);
 
-	public String getHtml(Object key) {
-		String value = this.getText(key);
+        return StringEscapeUtils.escapeHtml4(value);
+    }
 
-		return StringEscapeUtils.escapeHtml4(value);
-	}
+    public String getSchema() {
+        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
+    }
 
-	public String getSchema() {
-		return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
-	}
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
+    public String getLanguage() {
+        return StringUtils.defaultString(this.language);
+    }
 
-	public String getLanguage() {
-		return StringUtils.defaultString(this.language);
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public HashMap<String, TranslationDTO> getAll() {
+        HashMap<String, TranslationDTO> translations = new HashMap<String, TranslationDTO>();
 
-	public HashMap<String, TranslationDTO> getAll() {
-		HashMap<String, TranslationDTO> translations = new HashMap<String, TranslationDTO>();
+        if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
+            translations.putAll(Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()));
+        }
 
-		if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-			translations.putAll(Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()));
-		}
+        for (Map.Entry<String, TranslationDTO> e : this.entrySet()) {
+            String key = e.getKey();
+            TranslationDTO dto = e.getValue();
 
-		for (Map.Entry<String, TranslationDTO> e : this.entrySet()) {
-			String key = e.getKey();
-			TranslationDTO dto = e.getValue();
+            if (!StringUtils.isEmpty(dto.getText()) || !translations.containsKey(key)) {
+                translations.put(key, dto);
+            }
+        }
 
-			if (!StringUtils.isEmpty(dto.getText()) || !translations.containsKey(key)) {
-				translations.put(key, dto);
-			}
-		}
+        return translations;
+    }
 
-		return translations;
-	}
+    @Override
+    public String toJavascriptString() {
+        return "Translations.translations = " + this.toString() + ";";
+    }
 
-	@Override
-	public String toJavascriptString() {
-		return "Translations.translations = " + this.toString() + ";";
-	}
+    @Override
+    public String getCacheFileNamePrefix() {
+        return this.getSchema() + "." + this.getLanguage();
+    }
 
-	@Override
-	public String getCacheFileNamePrefix() {
-		return this.getSchema() + "." + this.getLanguage();
-	}
+    @Override
+    public String getCacheFileNameSuffix() {
+        return ".i18n.js";
+    }
 
-	@Override
-	public String getCacheFileNameSuffix() {
-		return ".i18n.js";
-	}
+    @Override
+    public File getCacheFile() {
+        if (this.cache == null) {
+            this.cache = new JavascriptCache(this);
+        }
 
-	@Override
-	public File getCacheFile() {
-		if (this.cache == null) {
-			this.cache = new JavascriptCache(this);
-		}
+        return this.cache.getCacheFile();
+    }
 
-		return this.cache.getCacheFile();
-	}
+    @Override
+    public String getCacheFileName() {
+        if (this.cache == null) {
+            this.cache = new JavascriptCache(this);
+        }
 
-	@Override
-	public String getCacheFileName() {
-		if (this.cache == null) {
-			this.cache = new JavascriptCache(this);
-		}
+        return this.cache.getFileName();
+    }
 
-		return this.cache.getFileName();
-	}
+    @Override
+    public void invalidateCache() {
+        this.cache = null;
+    }
 
-	@Override
-	public void invalidateCache() {
-		this.cache = null;
-	}
-
-	@Override
-	public String toString() {
-		return new JSONObject(this.getAll()).toString();
-	}
+    @Override
+    public String toString() {
+        return new JSONObject(this.getAll()).toString();
+    }
 }

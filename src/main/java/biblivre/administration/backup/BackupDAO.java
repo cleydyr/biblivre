@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
+import biblivre.core.AbstractDAO;
+import biblivre.core.exceptions.DAOException;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,197 +31,196 @@ import java.sql.Types;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDAO;
-import biblivre.core.exceptions.DAOException;
-
 public class BackupDAO extends AbstractDAO {
-	public static BackupDAO getInstance(String schema) {
-		return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class, schema);
-	}
+    public static BackupDAO getInstance(String schema) {
+        return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class, schema);
+    }
 
-	public boolean save(BackupDTO dto) {
-		if (dto == null || dto.getType() == null) {
-			return false;
-		}
+    public boolean save(BackupDTO dto) {
+        if (dto == null || dto.getType() == null) {
+            return false;
+        }
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
+        Connection con = null;
+        try {
+            con = this.getConnection();
 
-			StringBuilder sql = new StringBuilder();
+            StringBuilder sql = new StringBuilder();
 
-			if (dto.getId() == null) {
-				dto.setId(this.getNextSerial("backups_id_seq"));
+            if (dto.getId() == null) {
+                dto.setId(this.getNextSerial("backups_id_seq"));
 
-				sql.append("INSERT INTO backups (id, path, schemas, type, scope, downloaded, steps, current_step) ");
-				sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+                sql.append(
+                        "INSERT INTO backups (id, path, schemas, type, scope, downloaded, steps, current_step) ");
+                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
 
-				PreparedStatement pst = con.prepareStatement(sql.toString());
+                PreparedStatement pst = con.prepareStatement(sql.toString());
 
-				pst.setInt(1, dto.getId());
+                pst.setInt(1, dto.getId());
 
-				if (dto.getBackup() != null) {
-					pst.setString(2, dto.getBackup().getAbsolutePath());
-				} else {
-					pst.setNull(2, Types.VARCHAR);
-				}
+                if (dto.getBackup() != null) {
+                    pst.setString(2, dto.getBackup().getAbsolutePath());
+                } else {
+                    pst.setNull(2, Types.VARCHAR);
+                }
 
-				pst.setString(3, dto.getSchemasString());
-				pst.setString(4, dto.getType().toString());
-				pst.setString(5, dto.getBackupScope().toString());
-				pst.setBoolean(6, dto.isDownloaded());
+                pst.setString(3, dto.getSchemasString());
+                pst.setString(4, dto.getType().toString());
+                pst.setString(5, dto.getBackupScope().toString());
+                pst.setBoolean(6, dto.isDownloaded());
 
-				if (dto.getSteps() != null) {
-					pst.setInt(7, dto.getSteps());
-				} else {
-					pst.setNull(7, Types.INTEGER);
-				}
+                if (dto.getSteps() != null) {
+                    pst.setInt(7, dto.getSteps());
+                } else {
+                    pst.setNull(7, Types.INTEGER);
+                }
 
-				if (dto.getCurrentStep() != null) {
-					pst.setInt(8, dto.getCurrentStep());
-				} else {
-					pst.setNull(8, Types.INTEGER);
-				}
+                if (dto.getCurrentStep() != null) {
+                    pst.setInt(8, dto.getCurrentStep());
+                } else {
+                    pst.setNull(8, Types.INTEGER);
+                }
 
-				return pst.executeUpdate() > 0;
+                return pst.executeUpdate() > 0;
 
-			} else {
-				sql.append("UPDATE backups SET path = ?, downloaded = ?, current_step = ? WHERE id = ?;");
+            } else {
+                sql.append(
+                        "UPDATE backups SET path = ?, downloaded = ?, current_step = ? WHERE id = ?;");
 
-				PreparedStatement pst = con.prepareStatement(sql.toString());
+                PreparedStatement pst = con.prepareStatement(sql.toString());
 
-				if (dto.getBackup() != null) {
-					pst.setString(1, dto.getBackup().getAbsolutePath());
-				} else {
-					pst.setNull(1, Types.VARCHAR);
-				}
+                if (dto.getBackup() != null) {
+                    pst.setString(1, dto.getBackup().getAbsolutePath());
+                } else {
+                    pst.setNull(1, Types.VARCHAR);
+                }
 
-				pst.setBoolean(2, dto.isDownloaded());
-				pst.setInt(3, dto.getCurrentStep());
-				pst.setInt(4, dto.getId());
+                pst.setBoolean(2, dto.isDownloaded());
+                pst.setInt(3, dto.getCurrentStep());
+                pst.setInt(4, dto.getId());
 
-				return pst.executeUpdate() > 0;
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
-	}
+                return pst.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        } finally {
+            this.closeConnection(con);
+        }
+    }
 
-	public BackupDTO get(Integer id) {
-		if (id == null) {
-			return null;
-		}
+    public BackupDTO get(Integer id) {
+        if (id == null) {
+            return null;
+        }
 
-		BackupDTO dto = null;
+        BackupDTO dto = null;
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT * FROM backups WHERE id = ?;");
+        Connection con = null;
+        try {
+            con = this.getConnection();
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT * FROM backups WHERE id = ?;");
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql.toString());
 
-			pst.setInt(1, id);
+            pst.setInt(1, id);
 
-			ResultSet rs = pst.executeQuery();
+            ResultSet rs = pst.executeQuery();
 
-			if (rs.next()) {
-				dto = this.populateDTO(rs);
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+            if (rs.next()) {
+                dto = this.populateDTO(rs);
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        } finally {
+            this.closeConnection(con);
+        }
 
-		return dto;
-	}
+        return dto;
+    }
 
-	public Set<String> listDatabaseSchemas() {
-		Set<String> set = new TreeSet<String>();
+    public Set<String> listDatabaseSchemas() {
+        Set<String> set = new TreeSet<String>();
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			String sql = "SELECT schema_name FROM information_schema.schemata WHERE schema_name <> 'information_schema' AND schema_name !~ E'^pg_';";
+        Connection con = null;
+        try {
+            con = this.getConnection();
+            String sql =
+                    "SELECT schema_name FROM information_schema.schemata WHERE schema_name <> 'information_schema' AND schema_name !~ E'^pg_';";
 
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(sql);
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
 
-			while (rs.next()) {
-				set.add(rs.getString("schema_name"));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+            while (rs.next()) {
+                set.add(rs.getString("schema_name"));
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        } finally {
+            this.closeConnection(con);
+        }
 
-		return set;
-	}
+        return set;
+    }
 
-	public LinkedList<BackupDTO> list() {
-		return this.list(0);
-	}
+    public LinkedList<BackupDTO> list() {
+        return this.list(0);
+    }
 
-	public LinkedList<BackupDTO> list(int limit) {
-		LinkedList<BackupDTO> list = new LinkedList<BackupDTO>();
+    public LinkedList<BackupDTO> list(int limit) {
+        LinkedList<BackupDTO> list = new LinkedList<BackupDTO>();
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			StringBuilder sql = new StringBuilder();
+        Connection con = null;
+        try {
+            con = this.getConnection();
+            StringBuilder sql = new StringBuilder();
 
-			sql.append("SELECT * FROM backups ORDER BY created DESC ");
+            sql.append("SELECT * FROM backups ORDER BY created DESC ");
 
-			if (limit > 0) {
-				sql.append("LIMIT ?");
-			}
+            if (limit > 0) {
+                sql.append("LIMIT ?");
+            }
 
-			PreparedStatement pst = con.prepareStatement(sql.toString());
-			if (limit > 0) {
-				pst.setInt(1, limit);
-			}
+            PreparedStatement pst = con.prepareStatement(sql.toString());
+            if (limit > 0) {
+                pst.setInt(1, limit);
+            }
 
-			ResultSet rs = pst.executeQuery();
+            ResultSet rs = pst.executeQuery();
 
-			while (rs.next()) {
-				list.add(this.populateDTO(rs));
-			}
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+            while (rs.next()) {
+                list.add(this.populateDTO(rs));
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        } finally {
+            this.closeConnection(con);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	private BackupDTO populateDTO(ResultSet rs) throws SQLException {
-		String schemas = rs.getString("schemas");
-		BackupType type = BackupType.fromString(rs.getString("type"));
-		BackupScope scope = BackupScope.fromString(rs.getString("scope"));
+    private BackupDTO populateDTO(ResultSet rs) throws SQLException {
+        String schemas = rs.getString("schemas");
+        BackupType type = BackupType.fromString(rs.getString("type"));
+        BackupScope scope = BackupScope.fromString(rs.getString("scope"));
 
-		BackupDTO dto = new BackupDTO(schemas, type, scope);
+        BackupDTO dto = new BackupDTO(schemas, type, scope);
 
-		dto.setId(rs.getInt("id"));
-		dto.setCreated(rs.getTimestamp("created"));
+        dto.setId(rs.getInt("id"));
+        dto.setCreated(rs.getTimestamp("created"));
 
-		String path = rs.getString("path");
-		if (StringUtils.isNotBlank(path)) {
-			dto.setBackup(new File(path));
-		}
+        String path = rs.getString("path");
+        if (StringUtils.isNotBlank(path)) {
+            dto.setBackup(new File(path));
+        }
 
-		dto.setDownloaded(rs.getBoolean("downloaded"));
-		dto.setSteps(rs.getInt("steps"));
-		dto.setCurrentStep(rs.getInt("current_step"));
+        dto.setDownloaded(rs.getBoolean("downloaded"));
+        dto.setSteps(rs.getInt("steps"));
+        dto.setCurrentStep(rs.getInt("current_step"));
 
-		return dto;
-	}
+        return dto;
+    }
 }

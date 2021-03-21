@@ -19,72 +19,71 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.core.AbstractDTO;
 import org.json.JSONObject;
 
-import biblivre.core.AbstractDTO;
+public class BriefTabFieldFormatDTO extends AbstractDTO
+        implements Comparable<BriefTabFieldFormatDTO> {
+    private static final long serialVersionUID = 1L;
 
-public class BriefTabFieldFormatDTO extends AbstractDTO implements Comparable<BriefTabFieldFormatDTO> {
-	private static final long serialVersionUID = 1L;
+    private String datafieldTag;
+    private String format;
+    private Integer sortOrder;
 
-	private String datafieldTag;
-	private String format;
-	private Integer sortOrder;
+    public BriefTabFieldFormatDTO() {}
 
-	public BriefTabFieldFormatDTO() {
-	}
+    public BriefTabFieldFormatDTO(JSONObject jsonObject) {
+        this.fromJSONObject(jsonObject);
+    }
 
-	public BriefTabFieldFormatDTO(JSONObject jsonObject) {
-		this.fromJSONObject(jsonObject);
-	}
+    public BriefTabFieldFormatDTO(String datafieldTag, String format) {
+        this.setDatafieldTag(datafieldTag);
+        this.setFormat(format);
+    }
 
-	public BriefTabFieldFormatDTO(String datafieldTag, String format) {
-		this.setDatafieldTag(datafieldTag);
-		this.setFormat(format);
-	}
+    public String getDatafieldTag() {
+        return this.datafieldTag;
+    }
 
-	public String getDatafieldTag() {
-		return this.datafieldTag;
-	}
+    public void setDatafieldTag(String datafieldTag) {
+        this.datafieldTag = datafieldTag;
+    }
 
-	public void setDatafieldTag(String datafieldTag) {
-		this.datafieldTag = datafieldTag;
-	}
+    public String getFormat() {
+        return this.format;
+    }
 
-	public String getFormat() {
-		return this.format;
-	}
+    public void setFormat(String format) {
+        this.format = format;
+    }
 
-	public void setFormat(String format) {
-		this.format = format;
-	}
+    public Integer getSortOrder() {
+        return this.sortOrder;
+    }
 
-	public Integer getSortOrder() {
-		return this.sortOrder;
-	}
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 
-	public void setSortOrder(Integer sortOrder) {
-		this.sortOrder = sortOrder;
-	}
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+        json.put("datafieldTag", this.getDatafieldTag());
 
-		json.put("datafieldTag", this.getDatafieldTag());
+        return json;
+    }
 
-		return json;
-	}
+    @Override
+    public int compareTo(BriefTabFieldFormatDTO other) {
+        if (other == null) {
+            return -1;
+        }
 
-	@Override
-	public int compareTo(BriefTabFieldFormatDTO other) {
-		if (other == null) {
-			return -1;
-		}
+        if (this.getSortOrder() != null && other.getSortOrder() != null) {
+            return this.getSortOrder().compareTo(other.getSortOrder());
+        }
 
-		if (this.getSortOrder() != null && other.getSortOrder() != null) {
-			return this.getSortOrder().compareTo(other.getSortOrder());
-		}
-
-		return 0;
-	}
+        return 0;
+    }
 }

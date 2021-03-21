@@ -23,14 +23,13 @@ import java.util.List;
 
 public class AssetHoldingFullDto extends BaseReportDto {
 
-	private List<String[]> data;
+    private List<String[]> data;
 
-	public List<String[]> getData() {
-		return this.data;
-	}
+    public List<String[]> getData() {
+        return this.data;
+    }
 
-	public void setData(List<String[]> data) {
-		this.data = data;
-	}
-
+    public void setData(List<String[]> data) {
+        this.data = data;
+    }
 }

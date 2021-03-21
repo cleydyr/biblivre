@@ -19,135 +19,133 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
+import biblivre.cataloging.enums.RecordDatabase;
 import java.util.Calendar;
 import java.util.Date;
 
-import biblivre.cataloging.enums.RecordDatabase;
-
 public class ReportsDTO {
 
-	private ReportType type;
-	private Date initialDate;
-	private Date finalDate;
-	private RecordDatabase database;
-	private String order;
-	private String userId;
-	private String authorName;
-	private String recordIds;
-	private String datafield;
-	private Integer digits;
-	private String marcField;
-	private String countOrder;
-	private Integer searchId;
+    private ReportType type;
+    private Date initialDate;
+    private Date finalDate;
+    private RecordDatabase database;
+    private String order;
+    private String userId;
+    private String authorName;
+    private String recordIds;
+    private String datafield;
+    private Integer digits;
+    private String marcField;
+    private String countOrder;
+    private Integer searchId;
 
-	public String getAuthorName() {
-		return this.authorName;
-	}
+    public String getAuthorName() {
+        return this.authorName;
+    }
 
-	public void setAuthorName(String authorName) {
-		this.authorName = authorName;
-	}
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
-	public String getUserId() {
-		return this.userId;
-	}
+    public String getUserId() {
+        return this.userId;
+    }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-	public RecordDatabase getDatabase() {
-		return this.database;
-	}
+    public RecordDatabase getDatabase() {
+        return this.database;
+    }
 
-	public void setDatabase(RecordDatabase database) {
-		this.database = database;
-	}
+    public void setDatabase(RecordDatabase database) {
+        this.database = database;
+    }
 
-	public Date getFinalDate() {
-		return this.finalDate;
-	}
+    public Date getFinalDate() {
+        return this.finalDate;
+    }
 
-	public void setFinalDate(Date finalDate) {
-		if (finalDate != null) {
-			Calendar c = Calendar.getInstance();
-			c.setTime(finalDate);
-			c.add(Calendar.DATE, 1);
-			finalDate = c.getTime();
-		}
-		this.finalDate = finalDate;
-	}
+    public void setFinalDate(Date finalDate) {
+        if (finalDate != null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(finalDate);
+            c.add(Calendar.DATE, 1);
+            finalDate = c.getTime();
+        }
+        this.finalDate = finalDate;
+    }
 
-	public Date getInitialDate() {
-		return this.initialDate;
-	}
+    public Date getInitialDate() {
+        return this.initialDate;
+    }
 
-	public void setInitialDate(Date initialDate) {
-		this.initialDate = initialDate;
-	}
+    public void setInitialDate(Date initialDate) {
+        this.initialDate = initialDate;
+    }
 
-	public String getOrder() {
-		return this.order;
-	}
+    public String getOrder() {
+        return this.order;
+    }
 
-	public void setOrder(String order) {
-		this.order = order;
-	}
+    public void setOrder(String order) {
+        this.order = order;
+    }
 
-	public ReportType getType() {
-		return this.type;
-	}
+    public ReportType getType() {
+        return this.type;
+    }
 
-	public void setType(ReportType type) {
-		this.type = type;
-	}
+    public void setType(ReportType type) {
+        this.type = type;
+    }
 
-	public String getRecordIds() {
-		return this.recordIds;
-	}
+    public String getRecordIds() {
+        return this.recordIds;
+    }
 
-	public void setRecordIds(String recordIds) {
-		this.recordIds = recordIds;
-	}
+    public void setRecordIds(String recordIds) {
+        this.recordIds = recordIds;
+    }
 
-	public String getDatafield() {
-		return this.datafield;
-	}
+    public String getDatafield() {
+        return this.datafield;
+    }
 
-	public void setDatafield(String datafield) {
-		this.datafield = datafield;
-	}
+    public void setDatafield(String datafield) {
+        this.datafield = datafield;
+    }
 
-	public Integer getDigits() {
-		return this.digits;
-	}
+    public Integer getDigits() {
+        return this.digits;
+    }
 
-	public void setDigits(Integer digits) {
-		this.digits = digits;
-	}
+    public void setDigits(Integer digits) {
+        this.digits = digits;
+    }
 
-	public String getMarcField() {
-		return this.marcField;
-	}
+    public String getMarcField() {
+        return this.marcField;
+    }
 
-	public void setMarcField(String marcField) {
-		this.marcField = marcField;
-	}
+    public void setMarcField(String marcField) {
+        this.marcField = marcField;
+    }
 
-	public String getCountOrder() {
-		return this.countOrder;
-	}
+    public String getCountOrder() {
+        return this.countOrder;
+    }
 
-	public void setCountOrder(String countOrder) {
-		this.countOrder = countOrder;
-	}
+    public void setCountOrder(String countOrder) {
+        this.countOrder = countOrder;
+    }
 
-	public Integer getSearchId() {
-		return this.searchId;
-	}
+    public Integer getSearchId() {
+        return this.searchId;
+    }
 
-	public void setSearchId(Integer searchId) {
-		this.searchId = searchId;
-	}
-
+    public void setSearchId(Integer searchId) {
+        this.searchId = searchId;
+    }
 }

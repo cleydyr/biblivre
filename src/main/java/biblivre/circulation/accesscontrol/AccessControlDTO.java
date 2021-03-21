@@ -19,78 +19,76 @@
  ******************************************************************************/
 package biblivre.circulation.accesscontrol;
 
-import java.util.Date;
-
 import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
+import java.util.Date;
 
 public class AccessControlDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Integer id;
-	private Integer accessCardId;
-	private Integer userId;
-	private Date arrivalTime;
-	private Date departureTime;
+    private Integer id;
+    private Integer accessCardId;
+    private Integer userId;
+    private Date arrivalTime;
+    private Date departureTime;
 
-	transient private UserDTO user;
-	transient private AccessCardDTO accessCard;
+    private transient UserDTO user;
+    private transient AccessCardDTO accessCard;
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Integer getAccessCardId() {
-		return this.accessCardId;
-	}
+    public Integer getAccessCardId() {
+        return this.accessCardId;
+    }
 
-	public void setAccessCardId(Integer accessCardId) {
-		this.accessCardId = accessCardId;
-	}
+    public void setAccessCardId(Integer accessCardId) {
+        this.accessCardId = accessCardId;
+    }
 
-	public Integer getUserId() {
-		return this.userId;
-	}
+    public Integer getUserId() {
+        return this.userId;
+    }
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public Date getArrivalTime() {
-		return this.arrivalTime;
-	}
+    public Date getArrivalTime() {
+        return this.arrivalTime;
+    }
 
-	public void setArrivalTime(Date arrivalTime) {
-		this.arrivalTime = arrivalTime;
-	}
+    public void setArrivalTime(Date arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
 
-	public Date getDepartureTime() {
-		return this.departureTime;
-	}
+    public Date getDepartureTime() {
+        return this.departureTime;
+    }
 
-	public void setDepartureTime(Date departureTime) {
-		this.departureTime = departureTime;
-	}
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
 
-	public UserDTO getUser() {
-		return this.user;
-	}
+    public UserDTO getUser() {
+        return this.user;
+    }
 
-	public void setUser(UserDTO user) {
-		this.user = user;
-	}
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 
-	public AccessCardDTO getAccessCard() {
-		return this.accessCard;
-	}
+    public AccessCardDTO getAccessCard() {
+        return this.accessCard;
+    }
 
-	public void setAccessCard(AccessCardDTO accessCard) {
-		this.accessCard = accessCard;
-	}
-
+    public void setAccessCard(AccessCardDTO accessCard) {
+        this.accessCard = accessCard;
+    }
 }

@@ -21,36 +21,33 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
-
 public enum ImportEncoding {
+    AUTO_DETECT,
+    UTF8,
+    MARC8;
 
-	AUTO_DETECT,
-	UTF8,
-	MARC8;
+    public static ImportEncoding fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
+        str = str.toLowerCase();
 
-	public static ImportEncoding fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+        for (ImportEncoding importEncoding : ImportEncoding.values()) {
+            if (str.equals(importEncoding.name().toLowerCase())) {
+                return importEncoding;
+            }
+        }
 
-		str = str.toLowerCase();
+        return null;
+    }
 
-		for (ImportEncoding importEncoding : ImportEncoding.values()) {
-			if (str.equals(importEncoding.name().toLowerCase())) {
-				return importEncoding;
-			}
-		}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
-
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

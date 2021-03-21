@@ -23,68 +23,67 @@ import java.util.List;
 
 public class HoldingCreationByDateReportDto extends BaseReportDto {
 
-	private String initialDate;
-	private String finalDate;
-	private String totalBiblioMain;
-	private String totalBiblioWork;
-	private String totalHoldingMain;
-	private String totalHoldingWork;
-	private List<String[]> data;
+    private String initialDate;
+    private String finalDate;
+    private String totalBiblioMain;
+    private String totalBiblioWork;
+    private String totalHoldingMain;
+    private String totalHoldingWork;
+    private List<String[]> data;
 
-	public List<String[]> getData() {
-		return this.data;
-	}
+    public List<String[]> getData() {
+        return this.data;
+    }
 
-	public void setData(List<String[]> data) {
-		this.data = data;
-	}
+    public void setData(List<String[]> data) {
+        this.data = data;
+    }
 
-	public String getFinalDate() {
-		return this.finalDate;
-	}
+    public String getFinalDate() {
+        return this.finalDate;
+    }
 
-	public void setFinalDate(String finalDate) {
-		this.finalDate = finalDate;
-	}
+    public void setFinalDate(String finalDate) {
+        this.finalDate = finalDate;
+    }
 
-	public String getInitialDate() {
-		return this.initialDate;
-	}
+    public String getInitialDate() {
+        return this.initialDate;
+    }
 
-	public void setInitialDate(String initialDate) {
-		this.initialDate = initialDate;
-	}
+    public void setInitialDate(String initialDate) {
+        this.initialDate = initialDate;
+    }
 
-	public String getTotalBiblioMain() {
-		return this.totalBiblioMain;
-	}
+    public String getTotalBiblioMain() {
+        return this.totalBiblioMain;
+    }
 
-	public void setTotalBiblioMain(String totalBiblioMain) {
-		this.totalBiblioMain = totalBiblioMain;
-	}
+    public void setTotalBiblioMain(String totalBiblioMain) {
+        this.totalBiblioMain = totalBiblioMain;
+    }
 
-	public String getTotalBiblioWork() {
-		return this.totalBiblioWork;
-	}
+    public String getTotalBiblioWork() {
+        return this.totalBiblioWork;
+    }
 
-	public void setTotalBiblioWork(String totalBiblioWork) {
-		this.totalBiblioWork = totalBiblioWork;
-	}
+    public void setTotalBiblioWork(String totalBiblioWork) {
+        this.totalBiblioWork = totalBiblioWork;
+    }
 
-	public String getTotalHoldingMain() {
-		return this.totalHoldingMain;
-	}
+    public String getTotalHoldingMain() {
+        return this.totalHoldingMain;
+    }
 
-	public void setTotalHoldingMain(String totalHoldingMain) {
-		this.totalHoldingMain = totalHoldingMain;
-	}
+    public void setTotalHoldingMain(String totalHoldingMain) {
+        this.totalHoldingMain = totalHoldingMain;
+    }
 
-	public String getTotalHoldingWork() {
-		return this.totalHoldingWork;
-	}
+    public String getTotalHoldingWork() {
+        return this.totalHoldingWork;
+    }
 
-	public void setTotalHoldingWork(String totalHoldingWork) {
-		this.totalHoldingWork = totalHoldingWork;
-	}
-
+    public void setTotalHoldingWork(String totalHoldingWork) {
+        this.totalHoldingWork = totalHoldingWork;
+    }
 }

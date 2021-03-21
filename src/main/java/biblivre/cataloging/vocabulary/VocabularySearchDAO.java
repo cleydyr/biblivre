@@ -25,13 +25,14 @@ import biblivre.core.AbstractDAO;
 
 public class VocabularySearchDAO extends SearchDAO {
 
-	public static VocabularySearchDAO getInstance(String schema) {
-		VocabularySearchDAO dao = (VocabularySearchDAO) AbstractDAO.getInstance(VocabularySearchDAO.class, schema);
+    public static VocabularySearchDAO getInstance(String schema) {
+        VocabularySearchDAO dao =
+                (VocabularySearchDAO) AbstractDAO.getInstance(VocabularySearchDAO.class, schema);
 
-		if (dao.recordType == null) {
-			dao.recordType = RecordType.VOCABULARY;
-		}
+        if (dao.recordType == null) {
+            dao.recordType = RecordType.VOCABULARY;
+        }
 
-		return dao;
-	}
+        return dao;
+    }
 }

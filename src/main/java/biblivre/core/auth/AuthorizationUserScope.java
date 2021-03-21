@@ -20,7 +20,7 @@
 package biblivre.core.auth;
 
 public enum AuthorizationUserScope {
-	EMPLOYEE,
-	READER,
-	ANY
+    EMPLOYEE,
+    READER,
+    ANY
 }

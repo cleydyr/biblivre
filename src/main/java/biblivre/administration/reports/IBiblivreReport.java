@@ -24,8 +24,9 @@ import biblivre.core.translations.TranslationsMap;
 
 public interface IBiblivreReport {
 
-	public DiskFile generateReport(ReportsDTO dto);
-	public void setI18n(TranslationsMap i18n);
-	public void setSchema(String schema);
+    public DiskFile generateReport(ReportsDTO dto);
 
+    public void setI18n(TranslationsMap i18n);
+
+    public void setSchema(String schema);
 }

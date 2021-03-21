@@ -19,9 +19,8 @@
  ******************************************************************************/
 package biblivre.core;
 
-
 public class AbstractValidator {
-	public boolean checkValidation(final AbstractHandler handler) {
-		return (handler == null) ? true : !handler.hasErrors();
-	}
+    public boolean checkValidation(final AbstractHandler handler) {
+        return (handler == null) ? true : !handler.hasErrors();
+    }
 }

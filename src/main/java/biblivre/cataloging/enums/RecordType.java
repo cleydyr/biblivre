@@ -21,35 +21,34 @@ package biblivre.cataloging.enums;
 
 import org.apache.commons.lang3.StringUtils;
 
-
 public enum RecordType {
-	BIBLIO,
-	AUTHORITIES,
-	VOCABULARY,
-	HOLDING;
+    BIBLIO,
+    AUTHORITIES,
+    VOCABULARY,
+    HOLDING;
 
-	public static RecordType fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static RecordType fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (RecordType recordType : RecordType.values()) {
-			if (str.equals(recordType.name().toLowerCase())) {
-				return recordType;
-			}
-		}
+        for (RecordType recordType : RecordType.values()) {
+            if (str.equals(recordType.name().toLowerCase())) {
+                return recordType;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

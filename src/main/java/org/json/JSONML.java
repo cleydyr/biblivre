@@ -26,11 +26,9 @@ SOFTWARE.
 
 import java.util.Iterator;
 
-
 /**
- * This provides static methods to convert an XML text into a JSONArray or
- * JSONObject, and to covert a JSONArray or JSONObject into an XML text using
- * the JsonML transform.
+ * This provides static methods to convert an XML text into a JSONArray or JSONObject, and to covert
+ * a JSONArray or JSONObject into an XML text using the JsonML transform.
  *
  * @author JSON.org
  * @version 2014-05-03
@@ -39,32 +37,30 @@ public class JSONML {
 
     /**
      * Parse XML values and store them in a JSONArray.
-     * @param x       The XMLTokener containing the source string.
+     *
+     * @param x The XMLTokener containing the source string.
      * @param arrayForm true if array form, false if object form.
-     * @param ja      The JSONArray that is containing the current tag or null
-     *     if we are at the outermost level.
+     * @param ja The JSONArray that is containing the current tag or null if we are at the outermost
+     *     level.
      * @return A JSONArray if the value is the outermost tag, otherwise null.
      * @throws JSONException
      */
-    private static Object parse(
-        XMLTokener x,
-        boolean    arrayForm,
-        JSONArray  ja
-    ) throws JSONException {
-        String     attribute;
-        char       c;
-        String     closeTag = null;
-        int        i;
-        JSONArray  newja = null;
+    private static Object parse(XMLTokener x, boolean arrayForm, JSONArray ja)
+            throws JSONException {
+        String attribute;
+        char c;
+        String closeTag = null;
+        int i;
+        JSONArray newja = null;
         JSONObject newjo = null;
-        Object     token;
-        String     tagName = null;
+        Object token;
+        String tagName = null;
 
-// Test for and skip past these forms:
-//      <!-- ... -->
-//      <![  ... ]]>
-//      <!   ...   >
-//      <?   ...  ?>
+        // Test for and skip past these forms:
+        //      <!-- ... -->
+        //      <![  ... ]]>
+        //      <!   ...   >
+        //      <?   ...  ?>
 
         while (true) {
             if (!x.more()) {
@@ -76,13 +72,12 @@ public class JSONML {
                 if (token instanceof Character) {
                     if (token == XML.SLASH) {
 
-// Close tag </
+                        // Close tag </
 
                         token = x.nextToken();
                         if (!(token instanceof String)) {
                             throw new JSONException(
-                                    "Expected a closing name instead of '" +
-                                    token + "'.");
+                                    "Expected a closing name instead of '" + token + "'.");
                         }
                         if (x.nextToken() != XML.GT) {
                             throw x.syntaxError("Misshaped close tag");
@@ -90,7 +85,7 @@ public class JSONML {
                         return token;
                     } else if (token == XML.BANG) {
 
-// <!
+                        // <!
 
                         c = x.next();
                         if (c == '-') {
@@ -123,20 +118,20 @@ public class JSONML {
                         }
                     } else if (token == XML.QUEST) {
 
-// <?
+                        // <?
 
                         x.skipPast("?>");
                     } else {
                         throw x.syntaxError("Misshaped tag");
                     }
 
-// Open tag <
+                    // Open tag <
 
                 } else {
                     if (!(token instanceof String)) {
                         throw x.syntaxError("Bad tagName '" + token + "'.");
                     }
-                    tagName = (String)token;
+                    tagName = (String) token;
                     newja = new JSONArray();
                     newjo = new JSONObject();
                     if (arrayForm) {
@@ -151,7 +146,7 @@ public class JSONML {
                         }
                     }
                     token = null;
-                    for (;;) {
+                    for (; ; ) {
                         if (token == null) {
                             token = x.nextToken();
                         }
@@ -162,10 +157,11 @@ public class JSONML {
                             break;
                         }
 
-// attribute = value
+                        // attribute = value
 
-                        attribute = (String)token;
-                        if (!arrayForm && ("tagName".equals(attribute) || "childNode".equals(attribute))) {
+                        attribute = (String) token;
+                        if (!arrayForm
+                                && ("tagName".equals(attribute) || "childNode".equals(attribute))) {
                             throw x.syntaxError("Reserved attribute.");
                         }
                         token = x.nextToken();
@@ -174,7 +170,7 @@ public class JSONML {
                             if (!(token instanceof String)) {
                                 throw x.syntaxError("Missing value");
                             }
-                            newjo.accumulate(attribute, XML.stringToValue((String)token));
+                            newjo.accumulate(attribute, XML.stringToValue((String) token));
                             token = null;
                         } else {
                             newjo.accumulate(attribute, "");
@@ -184,7 +180,7 @@ public class JSONML {
                         newja.put(newjo);
                     }
 
-// Empty tag <.../>
+                    // Empty tag <.../>
 
                     if (token == XML.SLASH) {
                         if (x.nextToken() != XML.GT) {
@@ -198,17 +194,17 @@ public class JSONML {
                             }
                         }
 
-// Content, between <...> and </...>
+                        // Content, between <...> and </...>
 
                     } else {
                         if (token != XML.GT) {
                             throw x.syntaxError("Misshaped tag");
                         }
-                        closeTag = (String)parse(x, arrayForm, newja);
+                        closeTag = (String) parse(x, arrayForm, newja);
                         if (closeTag != null) {
                             if (!closeTag.equals(tagName)) {
-                                throw x.syntaxError("Mismatched '" + tagName +
-                                        "' and '" + closeTag + "'");
+                                throw x.syntaxError(
+                                        "Mismatched '" + tagName + "' and '" + closeTag + "'");
                             }
                             tagName = null;
                             if (!arrayForm && newja.length() > 0) {
@@ -226,23 +222,20 @@ public class JSONML {
                 }
             } else {
                 if (ja != null) {
-                    ja.put(token instanceof String
-                        ? XML.stringToValue((String)token)
-                        : token);
+                    ja.put(token instanceof String ? XML.stringToValue((String) token) : token);
                 }
             }
         }
     }
 
-
     /**
-     * Convert a well-formed (but not necessarily valid) XML string into a
-     * JSONArray using the JsonML transform. Each XML tag is represented as
-     * a JSONArray in which the first element is the tag name. If the tag has
-     * attributes, then the second element will be JSONObject containing the
-     * name/value pairs. If the tag contains children, then strings and
-     * JSONArrays will represent the child tags.
-     * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
+     * Convert a well-formed (but not necessarily valid) XML string into a JSONArray using the
+     * JsonML transform. Each XML tag is represented as a JSONArray in which the first element is
+     * the tag name. If the tag has attributes, then the second element will be JSONObject
+     * containing the name/value pairs. If the tag contains children, then strings and JSONArrays
+     * will represent the child tags. Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are
+     * ignored.
+     *
      * @param string The source string.
      * @return A JSONArray containing the structured data from the XML string.
      * @throws JSONException
@@ -251,51 +244,48 @@ public class JSONML {
         return toJSONArray(new XMLTokener(string));
     }
 
-
     /**
-     * Convert a well-formed (but not necessarily valid) XML string into a
-     * JSONArray using the JsonML transform. Each XML tag is represented as
-     * a JSONArray in which the first element is the tag name. If the tag has
-     * attributes, then the second element will be JSONObject containing the
-     * name/value pairs. If the tag contains children, then strings and
-     * JSONArrays will represent the child content and tags.
-     * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
+     * Convert a well-formed (but not necessarily valid) XML string into a JSONArray using the
+     * JsonML transform. Each XML tag is represented as a JSONArray in which the first element is
+     * the tag name. If the tag has attributes, then the second element will be JSONObject
+     * containing the name/value pairs. If the tag contains children, then strings and JSONArrays
+     * will represent the child content and tags. Comments, prologs, DTDs, and <code>&lt;[ [ ]]>
+     * </code> are ignored.
+     *
      * @param x An XMLTokener.
      * @return A JSONArray containing the structured data from the XML string.
      * @throws JSONException
      */
     public static JSONArray toJSONArray(XMLTokener x) throws JSONException {
-        return (JSONArray)parse(x, true, null);
+        return (JSONArray) parse(x, true, null);
     }
 
-
     /**
-     * Convert a well-formed (but not necessarily valid) XML string into a
-     * JSONObject using the JsonML transform. Each XML tag is represented as
-     * a JSONObject with a "tagName" property. If the tag has attributes, then
-     * the attributes will be in the JSONObject as properties. If the tag
-     * contains children, the object will have a "childNodes" property which
-     * will be an array of strings and JsonML JSONObjects.
-
-     * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
+     * Convert a well-formed (but not necessarily valid) XML string into a JSONObject using the
+     * JsonML transform. Each XML tag is represented as a JSONObject with a "tagName" property. If
+     * the tag has attributes, then the attributes will be in the JSONObject as properties. If the
+     * tag contains children, the object will have a "childNodes" property which will be an array of
+     * strings and JsonML JSONObjects.
+     *
+     * <p>Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
+     *
      * @param x An XMLTokener of the XML source text.
      * @return A JSONObject containing the structured data from the XML string.
      * @throws JSONException
      */
     public static JSONObject toJSONObject(XMLTokener x) throws JSONException {
-           return (JSONObject)parse(x, false, null);
+        return (JSONObject) parse(x, false, null);
     }
 
-
     /**
-     * Convert a well-formed (but not necessarily valid) XML string into a
-     * JSONObject using the JsonML transform. Each XML tag is represented as
-     * a JSONObject with a "tagName" property. If the tag has attributes, then
-     * the attributes will be in the JSONObject as properties. If the tag
-     * contains children, the object will have a "childNodes" property which
-     * will be an array of strings and JsonML JSONObjects.
-
-     * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
+     * Convert a well-formed (but not necessarily valid) XML string into a JSONObject using the
+     * JsonML transform. Each XML tag is represented as a JSONObject with a "tagName" property. If
+     * the tag has attributes, then the attributes will be in the JSONObject as properties. If the
+     * tag contains children, the object will have a "childNodes" property which will be an array of
+     * strings and JsonML JSONObjects.
+     *
+     * <p>Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
+     *
      * @param string The XML source text.
      * @return A JSONObject containing the structured data from the XML string.
      * @throws JSONException
@@ -304,25 +294,25 @@ public class JSONML {
         return toJSONObject(new XMLTokener(string));
     }
 
-
     /**
      * Reverse the JSONML transformation, making an XML text from a JSONArray.
+     *
      * @param ja A JSONArray.
      * @return An XML string.
      * @throws JSONException
      */
     public static String toString(JSONArray ja) throws JSONException {
-        int                 i;
-        JSONObject          jo;
-        String              key;
-        Iterator<String>    keys;
-        int                 length;
-        Object              object;
-        StringBuilder        sb = new StringBuilder();
-        String              tagName;
-        String               value;
+        int i;
+        JSONObject jo;
+        String key;
+        Iterator<String> keys;
+        int length;
+        Object object;
+        StringBuilder sb = new StringBuilder();
+        String tagName;
+        String value;
 
-// Emit <tagName
+        // Emit <tagName
 
         tagName = ja.getString(0);
         XML.noSpace(tagName);
@@ -333,9 +323,9 @@ public class JSONML {
         object = ja.opt(1);
         if (object instanceof JSONObject) {
             i = 2;
-            jo = (JSONObject)object;
+            jo = (JSONObject) object;
 
-// Emit the attributes
+            // Emit the attributes
 
             keys = jo.keys();
             while (keys.hasNext()) {
@@ -355,7 +345,7 @@ public class JSONML {
             i = 1;
         }
 
-// Emit content in body
+        // Emit content in body
 
         length = ja.length();
         if (i >= length) {
@@ -370,9 +360,9 @@ public class JSONML {
                     if (object instanceof String) {
                         sb.append(XML.escape(object.toString()));
                     } else if (object instanceof JSONObject) {
-                        sb.append(toString((JSONObject)object));
+                        sb.append(toString((JSONObject) object));
                     } else if (object instanceof JSONArray) {
-                        sb.append(toString((JSONArray)object));
+                        sb.append(toString((JSONArray) object));
                     }
                 }
             } while (i < length);
@@ -385,26 +375,26 @@ public class JSONML {
     }
 
     /**
-     * Reverse the JSONML transformation, making an XML text from a JSONObject.
-     * The JSONObject must contain a "tagName" property. If it has children,
-     * then it must have a "childNodes" property containing an array of objects.
-     * The other properties are attributes with string values.
+     * Reverse the JSONML transformation, making an XML text from a JSONObject. The JSONObject must
+     * contain a "tagName" property. If it has children, then it must have a "childNodes" property
+     * containing an array of objects. The other properties are attributes with string values.
+     *
      * @param jo A JSONObject.
      * @return An XML string.
      * @throws JSONException
      */
     public static String toString(JSONObject jo) throws JSONException {
         StringBuilder sb = new StringBuilder();
-        int                 i;
-        JSONArray           ja;
-        String              key;
-        Iterator<String>    keys;
-        int                 length;
-        Object              object;
-        String              tagName;
-        String              value;
+        int i;
+        JSONArray ja;
+        String key;
+        Iterator<String> keys;
+        int length;
+        Object object;
+        String tagName;
+        String value;
 
-//Emit <tagName
+        // Emit <tagName
 
         tagName = jo.optString("tagName");
         if (tagName == null) {
@@ -415,7 +405,7 @@ public class JSONML {
         sb.append('<');
         sb.append(tagName);
 
-//Emit the attributes
+        // Emit the attributes
 
         keys = jo.keys();
         while (keys.hasNext()) {
@@ -434,7 +424,7 @@ public class JSONML {
             }
         }
 
-//Emit content in body
+        // Emit content in body
 
         ja = jo.optJSONArray("childNodes");
         if (ja == null) {
@@ -449,9 +439,9 @@ public class JSONML {
                     if (object instanceof String) {
                         sb.append(XML.escape(object.toString()));
                     } else if (object instanceof JSONObject) {
-                        sb.append(toString((JSONObject)object));
+                        sb.append(toString((JSONObject) object));
                     } else if (object instanceof JSONArray) {
-                        sb.append(toString((JSONArray)object));
+                        sb.append(toString((JSONArray) object));
                     } else {
                         sb.append(object.toString());
                     }
