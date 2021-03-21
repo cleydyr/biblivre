@@ -1,5 +1,4 @@
 <%@ page import="biblivre.cataloging.Fields" %>
-<%@ page import="biblivre.marc.MaterialType" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -187,5 +186,5 @@
 	<script>FormCustomization.formFields['authorities'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "vocabulary").getCacheFileName() %>"></script>
 	<script>FormCustomization.formFields['vocabulary'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	<script>FormCustomization.materialTypes = <%= MaterialType.toJavascriptArray()%>;</script>
+	<script>FormCustomization.materialTypes = ${materialTypes}</script>
 </layout:body>

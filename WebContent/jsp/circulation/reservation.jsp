@@ -1,7 +1,6 @@
 <%@page import="biblivre.administration.indexing.IndexingGroups"%>
 <%@page import="biblivre.cataloging.enums.RecordType"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
-<%@page import="biblivre.marc.MaterialType"%>
 <%@page import="biblivre.circulation.user.UserStatus"%>
 <%@page import="java.util.List"%>
 <%@page import="biblivre.administration.usertype.UserTypeBO"%>
@@ -220,7 +219,7 @@
 				<div class="buttons">
 					<label class="search_label"><i18n:text key="search.bibliographic.material_type" /></label>
 					<select name="material" class="combo combo_expand">
-						<c:forEach var="material" items="<%= MaterialType.searchableValues() %>" >
+						<c:forEach var="material" items="${searchableMaterialTypes}" >
 							<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 						</c:forEach>
 					</select>

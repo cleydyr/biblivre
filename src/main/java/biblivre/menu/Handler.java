@@ -32,6 +32,8 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.marc.MaterialType;
+import biblivre.marc.MaterialTypeUtil;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import java.io.IOException;
@@ -89,6 +91,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void searchBibliographic(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("bibliographicMaterialTypes", MaterialTypeUtil.bibliographicValues());
+
+        request.setAttribute("searchableMaterialTypes", MaterialTypeUtil.searchableValues());
+
         this.jspURL = "/jsp/search/bibliographic.jsp";
         return;
     }
@@ -104,6 +110,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("materialTypes", MaterialType.values());
+
         String schema = request.getSchema();
         Z3950BO bo = Z3950BO.getInstance(schema);
 
@@ -116,6 +124,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("bibliographicMaterialTypes", MaterialTypeUtil.bibliographicValues());
+
+        request.setAttribute("searchableMaterialTypes", MaterialTypeUtil.searchableValues());
+
         this.jspURL = "/jsp/cataloging/bibliographic.jsp";
         return;
     }
@@ -143,6 +155,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void catalogingLabels(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableMaterialTypes", MaterialTypeUtil.searchableValues());
+
         this.jspURL = "/jsp/cataloging/labels.jsp";
         return;
     }
@@ -283,6 +297,9 @@ public class Handler extends AbstractHandler {
 
     public void administrationFormCustomization(
             ExtendedRequest request, ExtendedResponse response) {
+
+        request.setAttribute("materialTypes", MaterialTypeUtil.toJavascriptArray());
+
         this.jspURL = "/jsp/administration/form_customization.jsp";
         return;
     }

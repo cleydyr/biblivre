@@ -1,4 +1,3 @@
-<%@ page import="biblivre.marc.MaterialType" %>
 <%@ page import="biblivre.cataloging.enums.RecordType" %>
 <%@ page import="biblivre.cataloging.Fields" %>
 <%@ page import="biblivre.administration.indexing.IndexingGroups" %>

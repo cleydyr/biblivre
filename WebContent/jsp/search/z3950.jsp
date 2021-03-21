@@ -1,4 +1,3 @@
-<%@ page import="biblivre.marc.MaterialType" %>
 <%@ page import="biblivre.cataloging.Fields" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
@@ -152,7 +151,7 @@
 								<div class="label"><i18n:text key="cataloging.bibliographic.material_type"/></div>
 								<div class="value">
 									<select name="material_type" onchange="CatalogingInput.toggleMaterialType(this.value);">
-										<c:forEach var="material" items="<%= MaterialType.values() %>" >
+										<c:forEach var="material" items="${materialTypes}" >
 											<c:if test="${material.searchable && material.string ne 'all'}">
 												<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 											</c:if>
@@ -171,7 +170,7 @@
 
 						<div class="value">
 							<select name="material_type" onchange="CatalogingInput.toggleMaterialType(this.value);">
-								<c:forEach var="material" items="<%= MaterialType.values() %>" >
+								<c:forEach var="material" items="${materialTypes}" >
 									<c:if test="${material.searchable && material.string ne 'all'}">
 										<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 									</c:if>

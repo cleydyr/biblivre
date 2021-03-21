@@ -1,5 +1,4 @@
 <%@page import="biblivre.cataloging.enums.HoldingAvailability"%>
-<%@ page import="biblivre.marc.MaterialType" %>
 <%@ page import="biblivre.cataloging.enums.RecordType" %>
 <%@ page import="biblivre.cataloging.Fields" %>
 <%@ page import="biblivre.administration.indexing.IndexingGroups" %>
@@ -186,7 +185,7 @@
 							<div class="label"><i18n:text key="cataloging.bibliographic.material_type"/></div>
 							<div class="value">
 								<select name="material_type" onchange="CatalogingInput.toggleMaterialType(this.value);">
-									<c:forEach var="material" items="<%= MaterialType.bibliographicValues() %>" >
+									<c:forEach var="material" items="${bibliographicMaterialTypes}" >
 										<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 									</c:forEach>
 								</select>
@@ -202,7 +201,7 @@
 							<div class="label"><i18n:text key="cataloging.bibliographic.material_type"/></div>
 							<div class="value">
 								<select name="material_type" onchange="CatalogingInput.toggleMaterialType(this.value);">
-									<c:forEach var="material" items="<%= MaterialType.bibliographicValues() %>" >
+									<c:forEach var="material" items="${bibliographicMaterialTypes}" >
 										<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 									</c:forEach>
 								</select>
@@ -335,7 +334,7 @@
 				<div class="buttons">
 					<label class="search_label"><i18n:text key="search.bibliographic.material_type" /></label>
 					<select name="material" class="combo combo_expand">
-						<c:forEach var="material" items="<%= MaterialType.searchableValues() %>" >
+						<c:forEach var="material" items="${searchableMaterialTypes}" >
 							<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 						</c:forEach>
 					</select>
@@ -378,7 +377,7 @@
 					<div class="fleft filter_material">
 						<label class="search_label"><i18n:text key="search.bibliographic.material_type" /></label>
 						<select name="material" class="combo combo_expand">
-							<c:forEach var="material" items="<%= MaterialType.searchableValues() %>" >
+							<c:forEach var="material" items="${searchableMaterialTypes}" >
 								<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 							</c:forEach>
 						</select>
