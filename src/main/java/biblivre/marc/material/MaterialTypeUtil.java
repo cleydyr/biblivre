@@ -1,32 +1,41 @@
-package biblivre.marc;
+package biblivre.marc.material;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.Record;
 
 public class MaterialTypeUtil {
-    private static final List<MaterialType> bibliographicMaterials;
-    private static final List<MaterialType> searchableMaterials;
+    private static final Collection<MaterialType> bibliographicMaterials;
+    private static final Collection<MaterialType> searchableMaterials;
     private static final String javascriptArray;
+    private static final Map<String, MaterialType> _materialTypeCacheByKey = new HashMap<>();
 
     static {
-        List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
-        List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
+        List<MaterialType> tempBibliographicMaterials = new ArrayList<MaterialType>();
+        List<MaterialType> tempSearchableMaterials = new ArrayList<MaterialType>();
 
         StringBuffer sb = new StringBuffer();
+
         sb.append("[");
 
         for (MaterialType material : MaterialType.values()) {
-            if (material.isSearchable()) {
-                tempSearchableMaterials.add(material);
-                if (!material.equals(MaterialType.ALL)) {
-                    tempBibliographicMaterials.add(material);
-                    sb.append("\'").append(material.toString()).append("\',");
-                }
+            _materialTypeCacheByKey.putIfAbsent(_getKey(material), material);
+
+            if (!material.isSearchable()) {
+                continue;
             }
+
+            tempSearchableMaterials.add(material);
+
+            tempBibliographicMaterials.add(material);
+
+            sb.append("\'").append(material.toString()).append("\',");
         }
 
         sb.append("]");
@@ -41,51 +50,44 @@ public class MaterialTypeUtil {
             return null;
         }
 
-        str = str.toLowerCase();
-
-        for (MaterialType type : MaterialType.values()) {
-            if (str.equals(type.name().toLowerCase())) {
-                return type;
-            }
-        }
-
-        return null;
-    }
-
-    public static MaterialType fromTypeAndImplDef(char typeOfRecord, char[] implDef1) {
-        String imp = String.valueOf(implDef1);
-
-        for (MaterialType type : MaterialType.values()) {
-            if (type.getTypeOfRecord() == typeOfRecord && type.getImplDefined1().equals(imp)) {
-                return type;
-            }
-        }
-
-        return MaterialType.BOOK;
+        return MaterialType.valueOf(str.toLowerCase());
     }
 
     public static MaterialType fromRecord(Record record) {
-        MaterialType mt = null;
-
-        if (record != null) {
-            Leader leader = record.getLeader();
-            mt =
-                    fromTypeAndImplDef(
-                            leader.getTypeOfRecord(), leader.getImplDefined1());
+        if (record == null) {
+            return null;
         }
 
-        return (mt != null && mt != MaterialType.ALL) ? mt : MaterialType.BOOK;
+        Leader leader = record.getLeader();
+
+        String key = _getKey(leader.getTypeOfRecord(), leader.getImplDefined1());
+
+        return _materialTypeCacheByKey.getOrDefault(key, MaterialType.BOOK);
     }
 
-    public static List<MaterialType> bibliographicValues() {
+    public static Collection<MaterialType> bibliographicValues() {
         return bibliographicMaterials;
     }
 
-    public static List<MaterialType> searchableValues() {
+    public static Collection<MaterialType> searchableValues() {
         return searchableMaterials;
     }
 
     public static String toJavascriptArray() {
         return javascriptArray;
+    }
+
+    private static String _getKey(char typeOfRecord, char[] implDef1) {
+        StringBuilder sb = new StringBuilder(3);
+
+        sb.append(typeOfRecord);
+        sb.append('#');
+        sb.append(implDef1);
+
+        return sb.toString();
+    }
+
+    private static String _getKey(MaterialType material) {
+        return _getKey(material.getTypeOfRecord(), material.getImplDefined1().toCharArray());
     }
 }
