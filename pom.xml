@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
-			<version>9.0.35</version>			<!--$NO-MVN-MAN-VER$ -->
+			<version>9.0.41</version>			<!--$NO-MVN-MAN-VER$ -->
 			<scope>provided</scope>
 		</dependency>
 
