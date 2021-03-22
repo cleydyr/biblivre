@@ -1,23 +1,34 @@
 package biblivre.digitalmedia.migrator;
 
+import biblivre.digitalmedia.migrator.exception.DigitalMediaStoreInstantiationException;
 import biblivre.digitalmedia.migrator.exception.DigitalMediaStoreNotFoundException;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DigitalMediaStoreMigratorService {
+    private static final Logger _logger =
+            LoggerFactory.getLogger(DigitalMediaStoreMigratorService.class);
+
     public static DigitalMediaStoreMigrator selectMigrator(String migratorId)
-            throws DigitalMediaStoreNotFoundException {
+            throws DigitalMediaStoreNotFoundException, DigitalMediaStoreInstantiationException {
 
         if (StringUtils.isBlank(migratorId)) {
             throw new IllegalArgumentException("id can't be blank");
         }
 
-        Iterable<DigitalMediaStoreMigrator> migrators = getMigrators();
+        try {
+            Iterable<DigitalMediaStoreMigrator> migrators = getMigrators();
 
-        for (DigitalMediaStoreMigrator migrator : migrators) {
-            if (migrator.getId().equals(migratorId)) {
-                return migrator;
+            for (DigitalMediaStoreMigrator migrator : migrators) {
+                if (migrator.getId().equals(migratorId)) {
+                    return migrator;
+                }
             }
+        } catch (ServiceConfigurationError sce) {
+            throw new DigitalMediaStoreInstantiationException(sce);
         }
 
         throw new DigitalMediaStoreNotFoundException(

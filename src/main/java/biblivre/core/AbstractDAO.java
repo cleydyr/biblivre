@@ -50,6 +50,8 @@ public abstract class AbstractDAO {
 
     private static Map<String, AbstractDAO> instances = new HashMap<>();
 
+    private static final Logger _logger = LoggerFactory.getLogger(AbstractDAO.class);
+
     protected AbstractDAO() {}
 
     public static <T extends AbstractDAO> T getInstance(
@@ -97,6 +99,7 @@ public abstract class AbstractDAO {
 
                 AbstractDAO.instances.put(key, instance);
             } catch (Exception ex) {
+                _logger.error(ex.getMessage(), ex);
             }
         }
 
