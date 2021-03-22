@@ -20,16 +20,18 @@
 package biblivre.core.exceptions;
 
 import java.sql.BatchUpdateException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DAOException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final long serialVersionUID = 1L;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DAOException(Exception cause) {
-    	super(cause instanceof BatchUpdateException ? ((BatchUpdateException)cause).getNextException() : cause);
-		this.logger.error(this.getCause().getMessage(), this.getCause());
+        super(
+                cause instanceof BatchUpdateException
+                        ? ((BatchUpdateException) cause).getNextException()
+                        : cause);
+        this.logger.error(this.getCause().getMessage(), this.getCause());
     }
 }

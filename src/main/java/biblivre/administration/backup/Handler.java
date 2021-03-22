@@ -19,15 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONException;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -36,133 +27,146 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-	public void prepare(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String schemas = request.getString("schemas");
-		String type = request.getString("type");
+    public void prepare(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        String schemas = request.getString("schemas");
+        String type = request.getString("type");
 
-		BackupType backupType = BackupType.fromString(type);
-		if (backupType == null) {
-			this.setMessage(ActionResult.ERROR, "administration.maintenance.backup.error.invalid_backup_type");
-			return;
-		}
+        BackupType backupType = BackupType.fromString(type);
+        if (backupType == null) {
+            this.setMessage(
+                    ActionResult.ERROR,
+                    "administration.maintenance.backup.error.invalid_backup_type");
+            return;
+        }
 
-		BackupBO bo = BackupBO.getInstance(schema);
-		BackupScope backupScope = bo.getBackupScope();
+        BackupBO bo = BackupBO.getInstance(schema);
+        BackupScope backupScope = bo.getBackupScope();
 
-		LinkedList<String> list = new LinkedList<String>();
-		list.add(Constants.GLOBAL_SCHEMA);
+        LinkedList<String> list = new LinkedList<String>();
+        list.add(Constants.GLOBAL_SCHEMA);
 
-		if (request.isGlobalSchema()) {
-			list.addAll(Arrays.asList(StringUtils.split(schemas, ",")));
+        if (request.isGlobalSchema()) {
+            list.addAll(Arrays.asList(StringUtils.split(schemas, ",")));
 
-			if (list.size() == 2) {
-				// Only one schema is being backuped. We can say that the backupScope is:
-				backupScope = BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;
-			}
-		} else {
-			list.add(schema);
-		}
+            if (list.size() == 2) {
+                // Only one schema is being backuped. We can say that the backupScope is:
+                backupScope = BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;
+            }
+        } else {
+            list.add(schema);
+        }
 
-		Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
 
-		for (String s : list) {
-			if (Schemas.isNotLoaded(s)) {
-				this.setMessage(ActionResult.ERROR, "administration.maintenance.backup.error.invalid_schema");
-				return;
-			}
+        for (String s : list) {
+            if (Schemas.isNotLoaded(s)) {
+                this.setMessage(
+                        ActionResult.ERROR,
+                        "administration.maintenance.backup.error.invalid_schema");
+                return;
+            }
 
-			String title = Configurations.getString(s, Constants.CONFIG_TITLE);
-			String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
-			map.put(s, Pair.of(title, subtitle));
-		}
+            String title = Configurations.getString(s, Constants.CONFIG_TITLE);
+            String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
+            map.put(s, Pair.of(title, subtitle));
+        }
 
-		BackupDTO dto = bo.prepare(map, backupType, backupScope);
+        BackupDTO dto = bo.prepare(map, backupType, backupScope);
 
-		try {
-			this.json.put("success", true);
-			this.json.put("id", dto.getId());
-		} catch (JSONException e) {}
-	}
+        try {
+            this.json.put("success", true);
+            this.json.put("id", dto.getId());
+        } catch (JSONException e) {
+        }
+    }
 
-	//http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=backup
-	public void backup(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Integer id = request.getInteger("id");
+    // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=backup
+    public void backup(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Integer id = request.getInteger("id");
 
-		BackupBO bo = BackupBO.getInstance(schema);
-		BackupDTO dto = bo.get(id);
+        BackupBO bo = BackupBO.getInstance(schema);
+        BackupDTO dto = bo.get(id);
 
-		if (dto == null) {
-			this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
-			return;
-		}
+        if (dto == null) {
+            this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
+            return;
+        }
 
-		bo.backup(dto);
-		request.setSessionAttribute(schema, "system_warning_backup", false);
-	}
+        bo.backup(dto);
+        request.setSessionAttribute(schema, "system_warning_backup", false);
+    }
 
-	// http://localhost:8080/Biblivre5/?controller=download&module=administration.backup&action=download&id=1
-	public void download(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Integer id = request.getInteger("id");
+    // http://localhost:8080/Biblivre5/?controller=download&module=administration.backup&action=download&id=1
+    public void download(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Integer id = request.getInteger("id");
 
-		final BackupBO bo = BackupBO.getInstance(schema);
-		final BackupDTO dto = bo.get(id);
+        final BackupBO bo = BackupBO.getInstance(schema);
+        final BackupDTO dto = bo.get(id);
 
-		if (dto == null) {
-			// TODO: Error
-			return;
-		}
+        if (dto == null) {
+            // TODO: Error
+            return;
+        }
 
-		DiskFile diskFile = new DiskFile(dto.getBackup(), "application/zip");
+        DiskFile diskFile = new DiskFile(dto.getBackup(), "application/zip");
 
-		this.setFile(diskFile);
+        this.setFile(diskFile);
 
-		this.setCallback(() -> finishDownload(bo, dto));
-	}
+        this.setCallback(() -> finishDownload(bo, dto));
+    }
 
+    public void progress(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Integer id = request.getInteger("id");
 
-	public void progress(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Integer id = request.getInteger("id");
+        final BackupBO bo = BackupBO.getInstance(schema);
+        final BackupDTO dto = bo.get(id);
 
-		final BackupBO bo = BackupBO.getInstance(schema);
-		final BackupDTO dto = bo.get(id);
+        if (dto == null) {
+            this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
+            return;
+        }
 
-		if (dto == null) {
-			this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
-			return;
-		}
+        try {
+            this.json.put("success", true);
+            this.json.put("current", dto.getCurrentStep());
+            this.json.put("total", dto.getSteps());
+            this.json.put("complete", dto.getCurrentStep() == dto.getSteps());
+        } catch (JSONException e) {
+        }
+    }
 
-		try {
-			this.json.put("success", true);
-			this.json.put("current", dto.getCurrentStep());
-			this.json.put("total", dto.getSteps());
-			this.json.put("complete", dto.getCurrentStep() == dto.getSteps());
-		} catch (JSONException e) {}
-	}
+    // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
+    public void list(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
 
-	// http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
-	public void list(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
+        BackupBO bo = BackupBO.getInstance(schema);
 
-		BackupBO bo = BackupBO.getInstance(schema);
+        try {
+            this.json.put("success", true);
 
-		try {
-			this.json.put("success", true);
+            for (BackupDTO dto : bo.list()) {
+                this.json.append("backups", dto.toJSONObject());
+            }
+        } catch (JSONException e) {
+        }
+    }
 
-			for (BackupDTO dto : bo.list()) {
-				this.json.append("backups", dto.toJSONObject());
-			}
-		} catch (JSONException e) {}
-	}
-
-	private void finishDownload(final BackupBO bo, final BackupDTO dto) {
-		dto.setDownloaded(true);
-		bo.save(dto);
-	}
+    private void finishDownload(final BackupBO bo, final BackupDTO dto) {
+        dto.setDownloaded(true);
+        bo.save(dto);
+    }
 }

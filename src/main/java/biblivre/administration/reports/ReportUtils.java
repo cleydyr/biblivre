@@ -55,5 +55,4 @@ public final class ReportUtils {
 
         return format.toString();
     }
-
 }

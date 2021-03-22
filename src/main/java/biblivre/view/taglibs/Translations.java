@@ -19,77 +19,75 @@
  ******************************************************************************/
 package biblivre.view.taglibs;
 
+import biblivre.core.translations.TranslationsMap;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
-
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.translations.TranslationsMap;
-
 public class Translations extends SimpleTagSupport {
 
-	private String key;
-	private String param1;
-	private String param2;
-	private String param3;
-	private boolean escapeHTML;
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    private String key;
+    private String param1;
+    private String param2;
+    private String param3;
+    private boolean escapeHTML;
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Override
-	public void doTag() throws JspException {
-		final JspWriter out = getJspContext().getOut();
+    @Override
+    public void doTag() throws JspException {
+        final JspWriter out = getJspContext().getOut();
 
-		try {
-			ServletRequest request = ((PageContext) getJspContext()).getRequest();
-			TranslationsMap map = (TranslationsMap) request.getAttribute("translationsMap");
+        try {
+            ServletRequest request = ((PageContext) getJspContext()).getRequest();
+            TranslationsMap map = (TranslationsMap) request.getAttribute("translationsMap");
 
-			String translation = map.getText(this.key);
+            String translation = map.getText(this.key);
 
-			if (this.param1 != null) {
-				translation = translation.replace("{0}", this.param1);
-			}
+            if (this.param1 != null) {
+                translation = translation.replace("{0}", this.param1);
+            }
 
-			if (this.param2 != null) {
-				translation = translation.replace("{1}", this.param2);
-			}
+            if (this.param2 != null) {
+                translation = translation.replace("{1}", this.param2);
+            }
 
-			if (this.param3 != null) {
-				translation = translation.replace("{2}", this.param3);
-			}
+            if (this.param3 != null) {
+                translation = translation.replace("{2}", this.param3);
+            }
 
-			if (this.escapeHTML) {
-				translation = StringEscapeUtils.escapeHtml4(translation);
-			}
+            if (this.escapeHTML) {
+                translation = StringEscapeUtils.escapeHtml4(translation);
+            }
 
-			out.print(translation);
-		} catch (Exception e)  {
-			this.logger.error(e.getMessage(), e);
-			throw new JspException(e.getMessage());
-		}
-	}
+            out.print(translation);
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+            throw new JspException(e.getMessage());
+        }
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public void setParam1(String param1) {
-		this.param1 = param1;
-	}
+    public void setParam1(String param1) {
+        this.param1 = param1;
+    }
 
-	public void setParam2(String param2) {
-		this.param2 = param2;
-	}
+    public void setParam2(String param2) {
+        this.param2 = param2;
+    }
 
-	public void setParam3(String param3) {
-		this.param3 = param3;
-	}
+    public void setParam3(String param3) {
+        this.param3 = param3;
+    }
 
-	public void setEscapeHTML(boolean escapeHTML) {
-		this.escapeHTML = escapeHTML;
-	}
+    public void setEscapeHTML(boolean escapeHTML) {
+        this.escapeHTML = escapeHTML;
+    }
 }

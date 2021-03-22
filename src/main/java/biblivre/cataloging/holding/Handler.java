@@ -19,10 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.marc4j.marc.Record;
-
 import biblivre.cataloging.CatalogingHandler;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
@@ -37,198 +33,204 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
+import org.marc4j.marc.Record;
 
 public class Handler extends CatalogingHandler {
 
-	public Handler() {
-		super(RecordType.HOLDING, MaterialType.HOLDINGS);
-	}
+    public Handler() {
+        super(RecordType.HOLDING, MaterialType.HOLDINGS);
+    }
 
-	@Override
-	protected RecordDTO createRecordDTO(ExtendedRequest request) {
-		return new HoldingDTO();
-	}
+    @Override
+    protected RecordDTO createRecordDTO(ExtendedRequest request) {
+        return new HoldingDTO();
+    }
 
-	@Override
-	public void search(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
-	}
+    @Override
+    public void search(ExtendedRequest request, ExtendedResponse response) {
+        try {
+            this.json.put("success", false);
+        } catch (JSONException e) {
+        }
+    }
 
-	@Override
-	public void paginate(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
-	}
+    @Override
+    public void paginate(ExtendedRequest request, ExtendedResponse response) {
+        try {
+            this.json.put("success", false);
+        } catch (JSONException e) {
+        }
+    }
 
-	@Override
-	public void itemCount(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
-	}
+    @Override
+    public void itemCount(ExtendedRequest request, ExtendedResponse response) {
+        try {
+            this.json.put("success", false);
+        } catch (JSONException e) {
+        }
+    }
 
-	@Override
-	public void moveRecords(ExtendedRequest request, ExtendedResponse response) {
-		try {
-			this.json.put("success", false);
-		} catch (JSONException e) {}
-	}
+    @Override
+    public void moveRecords(ExtendedRequest request, ExtendedResponse response) {
+        try {
+            this.json.put("success", false);
+        } catch (JSONException e) {
+        }
+    }
 
-	@Override
-	public void open(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Integer id = request.getInteger("id", null);
+    @Override
+    public void open(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Integer id = request.getInteger("id", null);
 
-		if (id == null) {
-			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-			return;
-		}
+        if (id == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
 
-		RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-		RecordDTO dto = bo.get(id);
+        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+        RecordDTO dto = bo.get(id);
 
-		if (dto == null) {
-			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-			return;
-		}
+        if (dto == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
 
-		Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
-		dto.setRecord(record);
+        Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
+        dto.setRecord(record);
 
-		// Marc tab
-		dto.setMarc(MarcUtils.recordToMarc(record));
+        // Marc tab
+        dto.setMarc(MarcUtils.recordToMarc(record));
 
-		// Form tab
-		dto.setJson(MarcUtils.recordToJson(record));
+        // Form tab
+        dto.setJson(MarcUtils.recordToJson(record));
 
-		MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
-		String holdingLocation = marcDataReader.getShelfLocation();
+        MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
+        String holdingLocation = marcDataReader.getShelfLocation();
 
-		if (StringUtils.isBlank(holdingLocation)) {
-			RecordBO parentBO = RecordBO.getInstance(schema, RecordType.BIBLIO);
-			RecordDTO parent = parentBO.get(((HoldingDTO) dto).getRecordId());
+        if (StringUtils.isBlank(holdingLocation)) {
+            RecordBO parentBO = RecordBO.getInstance(schema, RecordType.BIBLIO);
+            RecordDTO parent = parentBO.get(((HoldingDTO) dto).getRecordId());
 
-			marcDataReader = new MarcDataReader(MarcUtils.iso2709ToRecord(parent.getIso2709()));
-			holdingLocation = marcDataReader.getShelfLocation();
-		}
+            marcDataReader = new MarcDataReader(MarcUtils.iso2709ToRecord(parent.getIso2709()));
+            holdingLocation = marcDataReader.getShelfLocation();
+        }
 
-		((HoldingDTO) dto).setShelfLocation(holdingLocation);
+        ((HoldingDTO) dto).setShelfLocation(holdingLocation);
 
-		try {
-			this.json.put("data", dto.toJSONObject());
-		} catch (Exception e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-		}
-	}
+        try {
+            this.json.put("data", dto.toJSONObject());
+        } catch (Exception e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+        }
+    }
 
-	public void list(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		int recordId = request.getInteger("record_id");
+    public void list(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        int recordId = request.getInteger("record_id");
 
-		HoldingBO bo = HoldingBO.getInstance(schema);
-		DTOCollection<HoldingDTO> list = bo.list(recordId);
+        HoldingBO bo = HoldingBO.getInstance(schema);
+        DTOCollection<HoldingDTO> list = bo.list(recordId);
 
-		try {
-			this.json.put("list", list.toJSONObject());
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
-	}
+        try {
+            this.json.put("list", list.toJSONObject());
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            return;
+        }
+    }
 
-	@Override
-	public void delete(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Integer id = request.getInteger("id", null);
+    @Override
+    public void delete(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Integer id = request.getInteger("id", null);
 
-		if (id == null) {
-			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-			return;
-		}
+        if (id == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
 
-		RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-		RecordDTO dto = bo.get(id);
+        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+        RecordDTO dto = bo.get(id);
 
-		if (dto == null) {
-			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-			return;
-		}
+        if (dto == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
 
-		boolean success = bo.delete(dto);
+        boolean success = bo.delete(dto);
 
-		if (success) {
-			this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
-		} else {
-			this.setMessage(ActionResult.WARNING, "cataloging.record.error.delete");
-		}
+        if (success) {
+            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
+        } else {
+            this.setMessage(ActionResult.WARNING, "cataloging.record.error.delete");
+        }
+    }
 
-	}
+    @Override
+    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
+        if (dto == null || !(dto instanceof HoldingDTO)) {
+            throw new ValidationException("cataloging.error.invalid_data");
+        }
 
+        int recordId = request.getInteger("record_id");
+        HoldingAvailability availability =
+                request.getEnum(
+                        HoldingAvailability.class, "availability", HoldingAvailability.AVAILABLE);
 
-	@Override
-	protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
-		if (dto == null || !(dto instanceof HoldingDTO)) {
-			throw new ValidationException("cataloging.error.invalid_data");
-		}
+        HoldingDTO hdto = (HoldingDTO) dto;
+        hdto.setRecordId(recordId);
+        hdto.setAvailability(availability);
+    }
 
-		int recordId = request.getInteger("record_id");
-		HoldingAvailability availability = request.getEnum(HoldingAvailability.class, "availability", HoldingAvailability.AVAILABLE);
+    public void createAutomaticHolding(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Integer recordId = request.getInteger("record_id", null);
 
-		HoldingDTO hdto = (HoldingDTO)dto;
-		hdto.setRecordId(recordId);
-		hdto.setAvailability(availability);
-	}
+        if (recordId == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
 
-	public void createAutomaticHolding(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Integer recordId = request.getInteger("record_id", null);
+        RecordBO rbo = RecordBO.getInstance(schema, RecordType.BIBLIO);
+        RecordDTO rdto = rbo.get(recordId);
 
-		if (recordId == null) {
-			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-			return;
-		}
+        if (rdto == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
 
-		RecordBO rbo = RecordBO.getInstance(schema, RecordType.BIBLIO);
-		RecordDTO rdto = rbo.get(recordId);
-
-		if (rdto == null) {
-			this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-			return;
-		}
-
-		AutomaticHoldingDTO autoDto = this.createAutomaticHoldingDto(request);
-		autoDto.setBiblioRecordDto(rdto);
+        AutomaticHoldingDTO autoDto = this.createAutomaticHoldingDto(request);
+        autoDto.setBiblioRecordDto(rdto);
 
         HoldingBO hbo = HoldingBO.getInstance(schema);
 
         if (autoDto.getHoldingCount() <= 0) {
-        	this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
-        	return;
+            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
+            return;
         }
 
         if (hbo.createAutomaticHolding(autoDto)) {
-        	this.list(request, response);
+            this.list(request, response);
         } else {
-        	this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
+            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
         }
+    }
 
-	}
+    private AutomaticHoldingDTO createAutomaticHoldingDto(ExtendedRequest request) {
+        AutomaticHoldingDTO dto = new AutomaticHoldingDTO();
 
-	private AutomaticHoldingDTO createAutomaticHoldingDto(ExtendedRequest request) {
-		AutomaticHoldingDTO dto = new AutomaticHoldingDTO();
+        dto.setHoldingCount(request.getInteger("holding_count", 1));
+        dto.setIssueNumber(request.getInteger("holding_volume_number", 0));
+        dto.setNumberOfIssues(request.getInteger("holding_volume_count", 1));
+        dto.setLibraryName(request.getString("holding_library"));
+        dto.setAcquisitionType(request.getString("holding_acquisition_type"));
+        dto.setAcquisitionDate(request.getString("holding_acquisition_date"));
+        dto.setDatabase(request.getEnum(RecordDatabase.class, "database"));
+        dto.setCreatedBy(request.getLoggedUserId());
 
-		dto.setHoldingCount(request.getInteger("holding_count", 1));
-		dto.setIssueNumber(request.getInteger("holding_volume_number", 0));
-		dto.setNumberOfIssues(request.getInteger("holding_volume_count", 1));
-		dto.setLibraryName(request.getString("holding_library"));
-		dto.setAcquisitionType(request.getString("holding_acquisition_type"));
-		dto.setAcquisitionDate(request.getString("holding_acquisition_date"));
-		dto.setDatabase(request.getEnum(RecordDatabase.class, "database"));
-		dto.setCreatedBy(request.getLoggedUserId());
-
-		return dto;
-	}
+        return dto;
+    }
 }

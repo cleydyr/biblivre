@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.circulation.user;
 
+import biblivre.core.AbstractDAO;
+import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,52 +28,49 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import biblivre.core.AbstractDAO;
-import biblivre.core.exceptions.DAOException;
-
 public class UserFieldsDAO extends AbstractDAO {
 
-	public static UserFieldsDAO getInstance(String schema) {
-		return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class, schema);
-	}
+    public static UserFieldsDAO getInstance(String schema) {
+        return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class, schema);
+    }
 
-	public List<UserFieldDTO> listFields() {
-		List<UserFieldDTO> list = new ArrayList<UserFieldDTO>();
+    public List<UserFieldDTO> listFields() {
+        List<UserFieldDTO> list = new ArrayList<UserFieldDTO>();
 
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			String sqlDatafields = "SELECT * FROM users_fields ORDER BY \"sort_order\";";
+        Connection con = null;
+        try {
+            con = this.getConnection();
+            String sqlDatafields = "SELECT * FROM users_fields ORDER BY \"sort_order\";";
 
-			Statement pst = con.createStatement();
-			ResultSet rs = pst.executeQuery(sqlDatafields);
-			while (rs.next()) {
-				UserFieldDTO userField = this.populateUserFieldDTO(rs);
-				//BACALHAAAAAAU
-				if (userField.getKey().equalsIgnoreCase("birthday")) {
-					userField.setType(UserFieldType.DATE);
-				}
-				list.add(userField);
-			}
+            Statement pst = con.createStatement();
+            ResultSet rs = pst.executeQuery(sqlDatafields);
+            while (rs.next()) {
+                UserFieldDTO userField = this.populateUserFieldDTO(rs);
+                // BACALHAAAAAAU
+                if (userField.getKey().equalsIgnoreCase("birthday")) {
+                    userField.setType(UserFieldType.DATE);
+                }
+                list.add(userField);
+            }
 
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+        } catch (Exception e) {
+            throw new DAOException(e);
+        } finally {
+            this.closeConnection(con);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	private UserFieldDTO populateUserFieldDTO(ResultSet rs) throws SQLException {
-		UserFieldDTO dto = new UserFieldDTO();
+    private UserFieldDTO populateUserFieldDTO(ResultSet rs) throws SQLException {
+        UserFieldDTO dto = new UserFieldDTO();
 
-		dto.setKey(rs.getString("key"));
-		dto.setType(UserFieldType.fromString(rs.getString("type")));
-		dto.setRequired(rs.getBoolean("required"));
-		dto.setMaxLength(rs.getInt("max_length"));
-		dto.setSortOrder(rs.getInt("sort_order"));
+        dto.setKey(rs.getString("key"));
+        dto.setType(UserFieldType.fromString(rs.getString("type")));
+        dto.setRequired(rs.getBoolean("required"));
+        dto.setMaxLength(rs.getInt("max_length"));
+        dto.setSortOrder(rs.getInt("sort_order"));
 
-		return dto;
-	}
+        return dto;
+    }
 }

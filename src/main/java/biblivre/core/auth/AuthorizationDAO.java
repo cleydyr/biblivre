@@ -19,43 +19,42 @@
  ******************************************************************************/
 package biblivre.core.auth;
 
+import biblivre.core.AbstractDAO;
+import biblivre.core.exceptions.DAOException;
+import biblivre.login.LoginDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-import biblivre.core.AbstractDAO;
-import biblivre.core.exceptions.DAOException;
-import biblivre.login.LoginDTO;
-
 public class AuthorizationDAO extends AbstractDAO {
 
-	public static AuthorizationDAO getInstance(String schema) {
-		return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAO.class, schema);
-	}
+    public static AuthorizationDAO getInstance(String schema) {
+        return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAO.class, schema);
+    }
 
-	public HashMap<String, Boolean> getUserPermissions(LoginDTO user) {
-		Connection con = null;
-		HashMap<String, Boolean> hash = new HashMap<String, Boolean>();
+    public HashMap<String, Boolean> getUserPermissions(LoginDTO user) {
+        Connection con = null;
+        HashMap<String, Boolean> hash = new HashMap<String, Boolean>();
 
-		try {
-			con = this.getConnection();
-			String sql = "SELECT permission FROM permissions WHERE login_id = ?;";
+        try {
+            con = this.getConnection();
+            String sql = "SELECT permission FROM permissions WHERE login_id = ?;";
 
-			PreparedStatement pst = con.prepareStatement(sql);
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, user.getId());
 
-			ResultSet rs = pst.executeQuery();
+            ResultSet rs = pst.executeQuery();
 
-			while (rs.next()) {
+            while (rs.next()) {
                 hash.put(rs.getString("permission"), Boolean.TRUE);
             }
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-			this.closeConnection(con);
-		}
+        } catch (Exception e) {
+            throw new DAOException(e);
+        } finally {
+            this.closeConnection(con);
+        }
 
-		return hash;
-	}
+        return hash;
+    }
 }

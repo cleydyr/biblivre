@@ -19,274 +19,284 @@
  ******************************************************************************/
 package biblivre.core.configurations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import biblivre.core.StaticBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Configurations extends StaticBO {
 
-	private static Logger logger = LoggerFactory.getLogger(Translations.class);
-	// HashMap<Schema, HashMap<Key, Value>>
-	private static HashMap<String, HashMap<String, ConfigurationsDTO>> configurations;
-
-	private Configurations() {
-	}
-
-	static {
-		Configurations.reset();
-	}
-
-	public static void reset() {
-		Configurations.configurations = new HashMap<String, HashMap<String, ConfigurationsDTO>>();
-	}
-
-	public static String getString(String schema, String key) {
-		String value = Configurations.getValue(schema, key);
-
-		return value;
-	}
-
-	public static String getHtml(String schema, String key) {
-		String value = Configurations.getValue(schema, key);
-
-		return StringEscapeUtils.escapeHtml4(value);
-	}
-
-	public static int getInt(String schema, String key) {
-		return Configurations.getInt(schema, key, 0);
-	}
-
-	public static int getPositiveInt(String schema, String key, int def) {
-		int ret = Configurations.getInt(schema, key, def);
-		return ret > 0 ? ret : def;
-	}
-
-	public static int getInt(String schema, String key, int def) {
-		String value = Configurations.getValue(schema, key);
-
-		try {
-			return Integer.valueOf(value);
-		} catch (Exception e) {
-			Configurations.logger.warn("Configuration is not an integer: " + schema + "." + key + " = " + value);
-			return def;
-		}
-	}
-
-	public static float getFloat(String schema, String key) {
-		String value = Configurations.getValue(schema, key);
-
-		try {
-			return Float.valueOf(value.replace(',', '.'));
-		} catch (Exception e) {
-			Configurations.logger.warn("Configuration is not a float: " + schema + "." + key + " = " + value);
-			return 0.0f;
-		}
-	}
-
-	public static boolean getBoolean(String schema, String key) {
-		String value = Configurations.getValue(schema, key);
-
-		return value.equals("true");
-	}
-
-	public static List<Integer> getIntArray(String schema, String key, String def) {
-		String value = Configurations.getValue(schema, key);
-
-		if (StringUtils.isBlank(value)) {
-			value = def;
-		}
-
-		try {
-			return Configurations.stringToIntArray(value);
-		} catch (Exception e) {
-			return Configurations.stringToIntArray(def);
-		}
-	}
-
-	private static List<Integer> stringToIntArray(String string) {
-		String[] array = string.split(",");
-
-		List<Integer> list = new ArrayList<Integer>(array.length);
-
-		for (String val : array) {
-			list.add(Integer.valueOf(val));
-		}
-
-		return list;
-	}
-
-	public static List<ConfigurationsDTO> validate(String schema, List<ConfigurationsDTO> configs) throws ValidationException {
-		List<ConfigurationsDTO> validConfigs = new ArrayList<ConfigurationsDTO>(configs.size());
-		ValidationException e = new ValidationException("administration.configurations.error.invalid");
-		boolean errors = false;
-
-		for (ConfigurationsDTO config : configs) {
-			if (config.getKey().equals(Constants.CONFIG_MULTI_SCHEMA) && config.getValue().equals("false")) {
-
-				if (!schema.equals(Constants.GLOBAL_SCHEMA) && Schemas.isMultipleSchemasEnabled()) {
-					errors = true;
-					e.addError(config.getKey(), "multi_schema.configurations.error.disable_multi_schema_outside_global");
-					continue;
-				}
+    private static Logger logger = LoggerFactory.getLogger(Translations.class);
+    // HashMap<Schema, HashMap<Key, Value>>
+    private static HashMap<String, HashMap<String, ConfigurationsDTO>> configurations;
+
+    private Configurations() {}
+
+    static {
+        Configurations.reset();
+    }
+
+    public static void reset() {
+        Configurations.configurations = new HashMap<String, HashMap<String, ConfigurationsDTO>>();
+    }
+
+    public static String getString(String schema, String key) {
+        String value = Configurations.getValue(schema, key);
+
+        return value;
+    }
+
+    public static String getHtml(String schema, String key) {
+        String value = Configurations.getValue(schema, key);
+
+        return StringEscapeUtils.escapeHtml4(value);
+    }
+
+    public static int getInt(String schema, String key) {
+        return Configurations.getInt(schema, key, 0);
+    }
+
+    public static int getPositiveInt(String schema, String key, int def) {
+        int ret = Configurations.getInt(schema, key, def);
+        return ret > 0 ? ret : def;
+    }
+
+    public static int getInt(String schema, String key, int def) {
+        String value = Configurations.getValue(schema, key);
+
+        try {
+            return Integer.valueOf(value);
+        } catch (Exception e) {
+            Configurations.logger.warn(
+                    "Configuration is not an integer: " + schema + "." + key + " = " + value);
+            return def;
+        }
+    }
+
+    public static float getFloat(String schema, String key) {
+        String value = Configurations.getValue(schema, key);
+
+        try {
+            return Float.valueOf(value.replace(',', '.'));
+        } catch (Exception e) {
+            Configurations.logger.warn(
+                    "Configuration is not a float: " + schema + "." + key + " = " + value);
+            return 0.0f;
+        }
+    }
+
+    public static boolean getBoolean(String schema, String key) {
+        String value = Configurations.getValue(schema, key);
+
+        return value.equals("true");
+    }
+
+    public static List<Integer> getIntArray(String schema, String key, String def) {
+        String value = Configurations.getValue(schema, key);
+
+        if (StringUtils.isBlank(value)) {
+            value = def;
+        }
+
+        try {
+            return Configurations.stringToIntArray(value);
+        } catch (Exception e) {
+            return Configurations.stringToIntArray(def);
+        }
+    }
+
+    private static List<Integer> stringToIntArray(String string) {
+        String[] array = string.split(",");
+
+        List<Integer> list = new ArrayList<Integer>(array.length);
+
+        for (String val : array) {
+            list.add(Integer.valueOf(val));
+        }
+
+        return list;
+    }
+
+    public static List<ConfigurationsDTO> validate(String schema, List<ConfigurationsDTO> configs)
+            throws ValidationException {
+        List<ConfigurationsDTO> validConfigs = new ArrayList<ConfigurationsDTO>(configs.size());
+        ValidationException e =
+                new ValidationException("administration.configurations.error.invalid");
+        boolean errors = false;
+
+        for (ConfigurationsDTO config : configs) {
+            if (config.getKey().equals(Constants.CONFIG_MULTI_SCHEMA)
+                    && config.getValue().equals("false")) {
+
+                if (!schema.equals(Constants.GLOBAL_SCHEMA) && Schemas.isMultipleSchemasEnabled()) {
+                    errors = true;
+                    e.addError(
+                            config.getKey(),
+                            "multi_schema.configurations.error.disable_multi_schema_outside_global");
+                    continue;
+                }
+
+                if (Schemas.countEnabledSchemas() > 1) {
+                    errors = true;
+                    e.addError(
+                            config.getKey(),
+                            "multi_schema.configurations.error.disable_multi_schema_schema_count");
+                    continue;
+                }
+
+                validConfigs.add(config);
+            }
 
-				if (Schemas.countEnabledSchemas() > 1) {
-					errors = true;
-					e.addError(config.getKey(), "multi_schema.configurations.error.disable_multi_schema_schema_count");
-					continue;
-				}
+            ConfigurationsDTO currentConfig = Configurations.get(schema, config.getKey());
 
-				validConfigs.add(config);
-			}
+            if (currentConfig == null) {
+                config.setType("string");
+                config.setRequired(false);
+            } else if (currentConfig.getValue().equals(config.getValue())) {
+                continue;
+            } else {
+                config.setType(currentConfig.getType());
+                config.setRequired(currentConfig.isRequired());
+            }
 
-			ConfigurationsDTO currentConfig = Configurations.get(schema, config.getKey());
+            String validationError = config.validate();
+            if (validationError != null) {
+                errors = true;
+                e.addError(config.getKey(), validationError);
+            } else {
+                validConfigs.add(config);
+            }
+        }
 
-			if (currentConfig == null) {
-				config.setType("string");
-				config.setRequired(false);
-			} else if (currentConfig.getValue().equals(config.getValue())) {
-				continue;
-			} else {
-				config.setType(currentConfig.getType());
-				config.setRequired(currentConfig.isRequired());
-			}
+        if (errors) {
+            throw e;
+        }
 
-			String validationError = config.validate();
-			if (validationError != null) {
-				errors = true;
-				e.addError(config.getKey(), validationError);
-			} else {
-				validConfigs.add(config);
-			}
-		}
+        return validConfigs;
+    }
 
-		if (errors) {
-			throw e;
-		}
+    public static void save(String schema, List<ConfigurationsDTO> configs, int loggedUser) {
+        ConfigurationsDTO multiSchemaConfig = null;
 
-		return validConfigs;
-	}
+        for (Iterator<ConfigurationsDTO> it = configs.iterator(); it.hasNext(); ) {
+            ConfigurationsDTO configDto = it.next();
+            if (configDto.getKey().equals(Constants.CONFIG_MULTI_SCHEMA)) {
+                multiSchemaConfig = configDto;
+                it.remove();
+                break;
+            }
+        }
 
-	public static void save(String schema, List<ConfigurationsDTO> configs, int loggedUser) {
-		ConfigurationsDTO multiSchemaConfig = null;
+        if (multiSchemaConfig != null) {
+            ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance(Constants.GLOBAL_SCHEMA);
 
-		for (Iterator<ConfigurationsDTO> it = configs.iterator(); it.hasNext();) {
-			ConfigurationsDTO configDto = it.next();
-			if (configDto.getKey().equals(Constants.CONFIG_MULTI_SCHEMA)) {
-				multiSchemaConfig = configDto;
-				it.remove();
-				break;
-			}
-		}
+            List<ConfigurationsDTO> multiSchemaList = new ArrayList<ConfigurationsDTO>();
+            multiSchemaList.add(multiSchemaConfig);
+            globalDao.save(multiSchemaList, loggedUser);
 
-		if (multiSchemaConfig != null) {
-			ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance(Constants.GLOBAL_SCHEMA);
+            HashMap<String, ConfigurationsDTO> map = Configurations.getMap(Constants.GLOBAL_SCHEMA);
+            map.put(multiSchemaConfig.getKey(), multiSchemaConfig);
 
-			List<ConfigurationsDTO> multiSchemaList = new ArrayList<ConfigurationsDTO>();
-			multiSchemaList.add(multiSchemaConfig);
-			globalDao.save(multiSchemaList, loggedUser);
+            Schemas.reset();
+        }
 
-			HashMap<String, ConfigurationsDTO> map = Configurations.getMap(Constants.GLOBAL_SCHEMA);
-			map.put(multiSchemaConfig.getKey(), multiSchemaConfig);
+        ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
 
-			Schemas.reset();
-		}
+        if (dao.save(configs, loggedUser)) {
+            HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
 
-		ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
+            for (ConfigurationsDTO config : configs) {
+                map.put(config.getKey(), config);
+            }
+        }
+    }
 
-		if (dao.save(configs, loggedUser)) {
-			HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
+    public static void save(String schema, ConfigurationsDTO config, int loggedUser) {
+        List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>(1);
+        configs.add(config);
 
-			for (ConfigurationsDTO config : configs) {
-				map.put(config.getKey(), config);
-			}
-		}
-	}
+        Configurations.save(schema, configs, loggedUser);
+    }
 
-	public static void save(String schema, ConfigurationsDTO config, int loggedUser) {
-		List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>(1);
-		configs.add(config);
+    private static String getValue(String schema, String key) {
+        ConfigurationsDTO config = Configurations.get(schema, key);
 
-		Configurations.save(schema, configs, loggedUser);
-	}
+        String value = "";
 
-	private static String getValue(String schema, String key) {
-		ConfigurationsDTO config = Configurations.get(schema, key);
+        if (config != null) {
+            value = config.getValue();
+        }
 
-		String value = "";
+        return StringUtils.defaultString(value);
+    }
 
-		if (config != null) {
-			value = config.getValue();
-		}
+    public static void setMultipleSchemasEnabled(Integer loggedUser) {
 
-		return StringUtils.defaultString(value);
-	}
+        ConfigurationsDTO config =
+                Configurations.get(Constants.GLOBAL_SCHEMA, Constants.CONFIG_MULTI_SCHEMA);
 
-	public static void setMultipleSchemasEnabled(Integer loggedUser) {
+        config.setValue("true");
 
-		ConfigurationsDTO config = Configurations.get(Constants.GLOBAL_SCHEMA,  Constants.CONFIG_MULTI_SCHEMA);
+        Configurations.save(Constants.GLOBAL_SCHEMA, config, loggedUser);
 
-		config.setValue("true");
+        Configurations.reset();
+    }
 
-		Configurations.save(Constants.GLOBAL_SCHEMA, config, loggedUser);
+    private static ConfigurationsDTO get(String schema, String key) {
+        HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
 
-		Configurations.reset();
-	}
+        ConfigurationsDTO config = map.get(key);
 
-	private static ConfigurationsDTO get(String schema, String key) {
-		HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
+        if (config == null) {
+            return schema.equals(Constants.GLOBAL_SCHEMA)
+                    ? null
+                    : Configurations.get(Constants.GLOBAL_SCHEMA, key);
+        }
 
-		ConfigurationsDTO config = map.get(key);
+        return config;
+    }
 
-		if (config == null) {
-			return schema.equals(Constants.GLOBAL_SCHEMA) ? null : Configurations.get(Constants.GLOBAL_SCHEMA, key);
-		}
+    private static HashMap<String, ConfigurationsDTO> getMap(String schema) {
+        HashMap<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
 
-		return config;
-	}
+        if (map == null) {
+            map = Configurations.loadConfigurations(schema);
+        }
 
-	private static HashMap<String, ConfigurationsDTO> getMap(String schema) {
-		HashMap<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
+        return map;
+    }
 
-		if (map == null) {
-			map = Configurations.loadConfigurations(schema);
-		}
+    private static synchronized HashMap<String, ConfigurationsDTO> loadConfigurations(
+            String schema) {
+        HashMap<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
 
-		return map;
-	}
+        // Checking again for thread safety.
+        if (map != null) {
+            return map;
+        }
 
-	private static synchronized HashMap<String, ConfigurationsDTO> loadConfigurations(String schema) {
-		HashMap<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
+        Configurations.logger.debug("Loading configurations for " + schema);
 
-		// Checking again for thread safety.
-		if (map != null) {
-			return map;
-		}
+        ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
 
-		Configurations.logger.debug("Loading configurations for " + schema);
+        List<ConfigurationsDTO> configs = dao.list();
+        map = new HashMap<String, ConfigurationsDTO>(configs.size());
 
-		ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
+        for (ConfigurationsDTO config : configs) {
+            map.put(config.getKey(), config);
+        }
 
-		List<ConfigurationsDTO> configs = dao.list();
-		map = new HashMap<String, ConfigurationsDTO>(configs.size());
+        Configurations.configurations.put(schema, map);
 
-		for (ConfigurationsDTO config : configs) {
-			map.put(config.getKey(), config);
-		}
-
-		Configurations.configurations.put(schema, map);
-
-		return map;
-	}
+        return map;
+    }
 }

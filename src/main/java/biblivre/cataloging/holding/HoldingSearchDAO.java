@@ -25,13 +25,14 @@ import biblivre.core.AbstractDAO;
 
 public class HoldingSearchDAO extends SearchDAO {
 
-	public static HoldingSearchDAO getInstance(String schema) {
-		HoldingSearchDAO dao = (HoldingSearchDAO) AbstractDAO.getInstance(HoldingSearchDAO.class, schema);
+    public static HoldingSearchDAO getInstance(String schema) {
+        HoldingSearchDAO dao =
+                (HoldingSearchDAO) AbstractDAO.getInstance(HoldingSearchDAO.class, schema);
 
-		if (dao.recordType == null) {
-			dao.recordType = RecordType.HOLDING;
-		}
+        if (dao.recordType == null) {
+            dao.recordType = RecordType.HOLDING;
+        }
 
-		return dao;
-	}
+        return dao;
+    }
 }

@@ -19,8 +19,6 @@
  ******************************************************************************/
 package biblivre.circulation.accesscontrol;
 
-import java.util.List;
-
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.administration.accesscards.AccessCardStatus;
@@ -29,128 +27,132 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
+import java.util.List;
 
 public class AccessControlBO extends AbstractBO {
-	private AccessControlDAO dao;
+    private AccessControlDAO dao;
 
-	public static AccessControlBO getInstance(String schema) {
-		AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
+    public static AccessControlBO getInstance(String schema) {
+        AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = AccessControlDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = AccessControlDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
-	public AccessControlDTO populateDetails(AccessControlDTO dto) {
-		if (dto == null) {
-			return null;
-		}
+    public AccessControlDTO populateDetails(AccessControlDTO dto) {
+        if (dto == null) {
+            return null;
+        }
 
-		if (dto.getAccessCardId() != null) {
-			AccessCardBO cardBo = AccessCardBO.getInstance(this.getSchema());
-			dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
-		}
+        if (dto.getAccessCardId() != null) {
+            AccessCardBO cardBo = AccessCardBO.getInstance(this.getSchema());
+            dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
+        }
 
-		if (dto.getUserId() != null) {
-			UserBO userBo = UserBO.getInstance(this.getSchema());
-			dto.setUser(userBo.get(dto.getUserId()));
-		}
+        if (dto.getUserId() != null) {
+            UserBO userBo = UserBO.getInstance(this.getSchema());
+            dto.setUser(userBo.get(dto.getUserId()));
+        }
 
-		return dto;
-	}
+        return dto;
+    }
 
     public boolean lendCard(AccessControlDTO dto) {
 
-    	UserBO userBO = UserBO.getInstance(this.getSchema());
-		UserDTO udto = null;
-		try {
-			udto = userBO.get(dto.getUserId());
-		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
-		}
-		if (udto == null) {
-			throw new ValidationException("circulation.error.user_not_found");
-		}
+        UserBO userBO = UserBO.getInstance(this.getSchema());
+        UserDTO udto = null;
+        try {
+            udto = userBO.get(dto.getUserId());
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+        }
+        if (udto == null) {
+            throw new ValidationException("circulation.error.user_not_found");
+        }
 
-		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
-		AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
-		if (cardDto == null) {
-			throw new ValidationException("circulation.access_control.card_not_found");
-		} else if (!cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
-			throw new ValidationException("circulation.access_control.card_unavailable");
-		}
+        AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
+        AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+        if (cardDto == null) {
+            throw new ValidationException("circulation.access_control.card_not_found");
+        } else if (!cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
+            throw new ValidationException("circulation.access_control.card_unavailable");
+        }
 
-		AccessControlDTO existingAccess = this.getByCardId(dto.getAccessCardId());
-		if (existingAccess != null) {
-			throw new ValidationException("circulation.access_control.card_in_use");
-		}
-		existingAccess = this.getByUserId(dto.getUserId());
-		if (existingAccess != null) {
-			throw new ValidationException("circulation.access_control.user_has_card");
-		}
+        AccessControlDTO existingAccess = this.getByCardId(dto.getAccessCardId());
+        if (existingAccess != null) {
+            throw new ValidationException("circulation.access_control.card_in_use");
+        }
+        existingAccess = this.getByUserId(dto.getUserId());
+        if (existingAccess != null) {
+            throw new ValidationException("circulation.access_control.user_has_card");
+        }
 
-		try {
-			cardDto.setStatus(AccessCardStatus.IN_USE);
-			cardBO.update(cardDto);
-			return this.dao.save(dto);
-		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
-		}
+        try {
+            cardDto.setStatus(AccessCardStatus.IN_USE);
+            cardBO.update(cardDto);
+            return this.dao.save(dto);
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+        }
 
         return false;
     }
 
     public boolean returnCard(AccessControlDTO dto) {
 
-    	UserBO userBO = UserBO.getInstance(this.getSchema());
-		UserDTO udto = null;
-		try {
-			udto = userBO.get(dto.getUserId());
-		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
-		}
-		if (udto == null) {
-			throw new ValidationException("circulation.error.user_not_found");
-		}
+        UserBO userBO = UserBO.getInstance(this.getSchema());
+        UserDTO udto = null;
+        try {
+            udto = userBO.get(dto.getUserId());
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+        }
+        if (udto == null) {
+            throw new ValidationException("circulation.error.user_not_found");
+        }
 
-		AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
-		AccessControlDTO existingAccess = null;
+        AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
+        AccessControlDTO existingAccess = null;
 
-		if (dto.getAccessCardId() != 0) {
-			AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
-			if (cardDto == null) {
-				throw new ValidationException("circulation.access_control.card_not_found");
-			} else if (cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
-				throw new ValidationException("circulation.access_control.card_available");
-			}
+        if (dto.getAccessCardId() != 0) {
+            AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+            if (cardDto == null) {
+                throw new ValidationException("circulation.access_control.card_not_found");
+            } else if (cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
+                throw new ValidationException("circulation.access_control.card_available");
+            }
 
-			existingAccess = this.getByCardId(dto.getAccessCardId());
-			if (existingAccess == null) {
-				existingAccess = this.getByUserId(dto.getUserId());
-				if (existingAccess == null) {
-					throw new ValidationException("circulation.access_control.user_has_no_card");
-				}
-			}
-		}
+            existingAccess = this.getByCardId(dto.getAccessCardId());
+            if (existingAccess == null) {
+                existingAccess = this.getByUserId(dto.getUserId());
+                if (existingAccess == null) {
+                    throw new ValidationException("circulation.access_control.user_has_no_card");
+                }
+            }
+        }
 
-		try {
-			if (existingAccess != null) {
-				AccessCardDTO cardDto = cardBO.get(existingAccess.getAccessCardId());
-				//If the cardId was sent in the parameters, it means that the user has returned it.
-				//Else, it means that the user left the library without returning the card, so we have to block it.
-				cardDto.setStatus(dto.getAccessCardId() != 0 ? AccessCardStatus.AVAILABLE : AccessCardStatus.IN_USE_AND_BLOCKED);
-				cardBO.update(cardDto);
-				return this.dao.update(existingAccess);
-			}
-		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
-		}
+        try {
+            if (existingAccess != null) {
+                AccessCardDTO cardDto = cardBO.get(existingAccess.getAccessCardId());
+                // If the cardId was sent in the parameters, it means that the user has returned it.
+                // Else, it means that the user left the library without returning the card, so we
+                // have to block it.
+                cardDto.setStatus(
+                        dto.getAccessCardId() != 0
+                                ? AccessCardStatus.AVAILABLE
+                                : AccessCardStatus.IN_USE_AND_BLOCKED);
+                cardBO.update(cardDto);
+                return this.dao.update(existingAccess);
+            }
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+        }
 
         return false;
     }
-
 
     public boolean update(AccessControlDTO dto) {
         return this.dao.update(dto);
@@ -164,7 +166,7 @@ public class AccessControlBO extends AbstractBO {
         return this.dao.getByUserId(userId);
     }
 
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
 }

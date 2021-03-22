@@ -22,97 +22,96 @@ package biblivre.acquisition.request;
 import biblivre.core.AbstractDTO;
 
 public class RequestDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private int id;
-	private String requester;
-	private String author;
-	private String title;
-	private String subtitle;
-	private String editionNumber;
-	private String publisher;
-	private String info;
-	private RequestStatus status;
-	private Integer quantity;
+    private int id;
+    private String requester;
+    private String author;
+    private String title;
+    private String subtitle;
+    private String editionNumber;
+    private String publisher;
+    private String info;
+    private RequestStatus status;
+    private Integer quantity;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getRequester() {
-		return this.requester;
-	}
+    public String getRequester() {
+        return this.requester;
+    }
 
-	public void setRequester(String requester) {
-		this.requester = requester;
-	}
+    public void setRequester(String requester) {
+        this.requester = requester;
+    }
 
-	public String getAuthor() {
-		return this.author;
-	}
+    public String getAuthor() {
+        return this.author;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public String getTitle() {
+        return this.title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getSubtitle() {
-		return this.subtitle;
-	}
+    public String getSubtitle() {
+        return this.subtitle;
+    }
 
-	public void setSubtitle(String subtitle) {
-		this.subtitle = subtitle;
-	}
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
 
-	public String getEditionNumber() {
-		return this.editionNumber;
-	}
+    public String getEditionNumber() {
+        return this.editionNumber;
+    }
 
-	public void setEditionNumber(String editionNumber) {
-		this.editionNumber = editionNumber;
-	}
+    public void setEditionNumber(String editionNumber) {
+        this.editionNumber = editionNumber;
+    }
 
-	public String getPublisher() {
-		return this.publisher;
-	}
+    public String getPublisher() {
+        return this.publisher;
+    }
 
-	public void setPublisher(String publisher) {
-		this.publisher = publisher;
-	}
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
 
-	public String getInfo() {
-		return this.info;
-	}
+    public String getInfo() {
+        return this.info;
+    }
 
-	public void setInfo(String info) {
-		this.info = info;
-	}
+    public void setInfo(String info) {
+        this.info = info;
+    }
 
-	public RequestStatus getStatus() {
-		return this.status;
-	}
+    public RequestStatus getStatus() {
+        return this.status;
+    }
 
-	public void setStatus(RequestStatus status) {
-		this.status = status;
-	}
+    public void setStatus(RequestStatus status) {
+        this.status = status;
+    }
 
-	public Integer getQuantity() {
-		return this.quantity;
-	}
+    public Integer getQuantity() {
+        return this.quantity;
+    }
 
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
-
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

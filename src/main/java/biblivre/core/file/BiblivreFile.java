@@ -22,75 +22,74 @@ package biblivre.core.file;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class BiblivreFile implements Closeable {
 
-	private Integer id;
-	private String name;
-	private String contentType;
-	private long lastModified;
-	private long size;
+    private Integer id;
+    private String name;
+    private String contentType;
+    private long lastModified;
+    private long size;
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		if (StringUtils.isBlank(name)) {
-			this.name = null;
-			return;
-		}
+    public void setName(String name) {
+        if (StringUtils.isBlank(name)) {
+            this.name = null;
+            return;
+        }
 
-		if (StringUtils.contains(name, '\\')) {
-			name = StringUtils.substringAfterLast(name, "\\");
-		}
+        if (StringUtils.contains(name, '\\')) {
+            name = StringUtils.substringAfterLast(name, "\\");
+        }
 
-		if (StringUtils.contains(name, '/')) {
-			name = StringUtils.substringAfterLast(name, "/");
-		}
+        if (StringUtils.contains(name, '/')) {
+            name = StringUtils.substringAfterLast(name, "/");
+        }
 
-		this.name = name;
-	}
+        this.name = name;
+    }
 
-	public String getContentType() {
-		return StringUtils.defaultString(this.contentType, "application/octet-stream");
-	}
+    public String getContentType() {
+        return StringUtils.defaultString(this.contentType, "application/octet-stream");
+    }
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-	public long getLastModified() {
-		return this.lastModified != 0 ? this.lastModified : System.currentTimeMillis();
-	}
+    public long getLastModified() {
+        return this.lastModified != 0 ? this.lastModified : System.currentTimeMillis();
+    }
 
-	public void setLastModified(long lastModified) {
-		this.lastModified = lastModified;
-	}
+    public void setLastModified(long lastModified) {
+        this.lastModified = lastModified;
+    }
 
-	public long getSize() {
-		return this.size;
-	}
+    public long getSize() {
+        return this.size;
+    }
 
-	public void setSize(long size) {
-		this.size = size;
-	}
+    public void setSize(long size) {
+        this.size = size;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void copy(OutputStream out) throws IOException {
-		this.copy(out, 0, this.getSize());
-	}
+    public void copy(OutputStream out) throws IOException {
+        this.copy(out, 0, this.getSize());
+    }
 
-	public abstract boolean exists();
+    public abstract boolean exists();
 
-	public abstract void copy(OutputStream out, long start, long size) throws IOException;
+    public abstract void copy(OutputStream out, long start, long size) throws IOException;
 }

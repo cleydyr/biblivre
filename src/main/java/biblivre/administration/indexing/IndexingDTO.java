@@ -19,98 +19,96 @@
  ******************************************************************************/
 package biblivre.administration.indexing;
 
+import biblivre.core.AbstractDTO;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDTO;
-
 public class IndexingDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Integer recordId;
-	private Integer indexingGroupId;
-	private StringBuilder phrase;
-	private HashMap<Integer, HashSet<String>> words;
-	private int ignoreCharsCount;
+    private Integer recordId;
+    private Integer indexingGroupId;
+    private StringBuilder phrase;
+    private HashMap<Integer, HashSet<String>> words;
+    private int ignoreCharsCount;
 
-	public IndexingDTO() {
-		this.words = new HashMap<Integer, HashSet<String>>();
-		this.phrase = new StringBuilder();
-		this.ignoreCharsCount = 0;
-	}
+    public IndexingDTO() {
+        this.words = new HashMap<Integer, HashSet<String>>();
+        this.phrase = new StringBuilder();
+        this.ignoreCharsCount = 0;
+    }
 
-	public Integer getRecordId() {
-		return this.recordId;
-	}
+    public Integer getRecordId() {
+        return this.recordId;
+    }
 
-	public void setRecordId(Integer recordId) {
-		this.recordId = recordId;
-	}
+    public void setRecordId(Integer recordId) {
+        this.recordId = recordId;
+    }
 
-	public Integer getIndexingGroupId() {
-		return this.indexingGroupId;
-	}
+    public Integer getIndexingGroupId() {
+        return this.indexingGroupId;
+    }
 
-	public void setIndexingGroupId(Integer indexingGroupId) {
-		this.indexingGroupId = indexingGroupId;
-	}
+    public void setIndexingGroupId(Integer indexingGroupId) {
+        this.indexingGroupId = indexingGroupId;
+    }
 
-	public int getIgnoreCharsCount() {
-		return this.ignoreCharsCount;
-	}
+    public int getIgnoreCharsCount() {
+        return this.ignoreCharsCount;
+    }
 
-	public void setIgnoreCharsCount(int ignoreCharsCount) {
-		this.ignoreCharsCount = ignoreCharsCount;
-	}
+    public void setIgnoreCharsCount(int ignoreCharsCount) {
+        this.ignoreCharsCount = ignoreCharsCount;
+    }
 
-	public String getPhrase() {
-		String phrase = this.phrase.toString();
+    public String getPhrase() {
+        String phrase = this.phrase.toString();
 
-		if (StringUtils.isBlank(phrase)) {
-			return null;
-		}
+        if (StringUtils.isBlank(phrase)) {
+            return null;
+        }
 
-		return phrase.trim();
-	}
+        return phrase.trim();
+    }
 
-	public int getPhraseLength() {
-		return this.phrase.length();
-	}
+    public int getPhraseLength() {
+        return this.phrase.length();
+    }
 
-	public void appendToPhrase(String phrase) {
-		if (phrase == null) {
-			return;
-		}
+    public void appendToPhrase(String phrase) {
+        if (phrase == null) {
+            return;
+        }
 
-		this.phrase.append(" ").append(phrase.trim());
-	}
+        this.phrase.append(" ").append(phrase.trim());
+    }
 
-	public void addWord(String word, Integer datafieldId) {
-		if (StringUtils.isNotBlank(word)) {
-			if (!this.words.containsKey(datafieldId)) {
-				this.words.put(datafieldId, new HashSet<String>());
-			}
+    public void addWord(String word, Integer datafieldId) {
+        if (StringUtils.isNotBlank(word)) {
+            if (!this.words.containsKey(datafieldId)) {
+                this.words.put(datafieldId, new HashSet<String>());
+            }
 
-			this.words.get(datafieldId).add(word);
-		}
-	}
+            this.words.get(datafieldId).add(word);
+        }
+    }
 
-	public void addWords(String[] words, Integer datafieldId) {
-		if (!this.words.containsKey(datafieldId)) {
-			this.words.put(datafieldId, new HashSet<String>());
-		}
+    public void addWords(String[] words, Integer datafieldId) {
+        if (!this.words.containsKey(datafieldId)) {
+            this.words.put(datafieldId, new HashSet<String>());
+        }
 
-		Collections.addAll(this.words.get(datafieldId), words);
-	}
+        Collections.addAll(this.words.get(datafieldId), words);
+    }
 
-	public HashMap<Integer, HashSet<String>> getWords() {
-		return this.words;
-	}
+    public HashMap<Integer, HashSet<String>> getWords() {
+        return this.words;
+    }
 
-	public int getCount() {
-		return this.words.size();
-	}
+    public int getCount() {
+        return this.words.size();
+    }
 }

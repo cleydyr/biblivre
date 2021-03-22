@@ -19,65 +19,64 @@
  ******************************************************************************/
 package biblivre.cataloging.vocabulary;
 
+import biblivre.cataloging.RecordDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.cataloging.RecordDTO;
-
 public class VocabularyRecordDTO extends RecordDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	//transient fields
-	private transient String termTE;
-	private transient String termUP;
-	private transient String termTG;
-	private transient String termVTTA;
+    // transient fields
+    private transient String termTE;
+    private transient String termUP;
+    private transient String termTG;
+    private transient String termVTTA;
 
-	public String getTermTE() {
-		return this.termTE;
-	}
+    public String getTermTE() {
+        return this.termTE;
+    }
 
-	public void setTermTE(String termTE) {
-		this.termTE = termTE;
-	}
+    public void setTermTE(String termTE) {
+        this.termTE = termTE;
+    }
 
-	public String getTermUP() {
-		return this.termUP;
-	}
+    public String getTermUP() {
+        return this.termUP;
+    }
 
-	public void setTermUP(String termUP) {
-		this.termUP = termUP;
-	}
+    public void setTermUP(String termUP) {
+        this.termUP = termUP;
+    }
 
-	public String getTermTG() {
-		return this.termTG;
-	}
+    public String getTermTG() {
+        return this.termTG;
+    }
 
-	public void setTermTG(String termTG) {
-		this.termTG = termTG;
-	}
+    public void setTermTG(String termTG) {
+        this.termTG = termTG;
+    }
 
-	public String getTermVTTA() {
-		return this.termVTTA;
-	}
+    public String getTermVTTA() {
+        return this.termVTTA;
+    }
 
-	public void setTermVTTA(String termVTTA) {
-		this.termVTTA = termVTTA;
-	}
+    public void setTermVTTA(String termVTTA) {
+        this.termVTTA = termVTTA;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("material_type", this.getMaterialType());
-			json.putOpt("term_te", this.getTermTE());
-			json.putOpt("term_up", this.getTermUP());
-			json.putOpt("term_tg", this.getTermTG());
-			json.putOpt("term_vt_ta", this.getTermVTTA());
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("material_type", this.getMaterialType());
+            json.putOpt("term_te", this.getTermTE());
+            json.putOpt("term_up", this.getTermUP());
+            json.putOpt("term_tg", this.getTermTG());
+            json.putOpt("term_vt_ta", this.getTermVTTA());
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

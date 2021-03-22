@@ -19,43 +19,42 @@
  ******************************************************************************/
 package biblivre.core.auth;
 
-import java.util.HashMap;
-
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.AuthorizationException;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
+import java.util.HashMap;
 
 public class AuthorizationBO extends AbstractBO {
-	private AuthorizationDAO dao;
+    private AuthorizationDAO dao;
 
-	public static AuthorizationBO getInstance(String schema) {
-		AuthorizationBO bo = AbstractBO.getInstance(AuthorizationBO.class, schema);
+    public static AuthorizationBO getInstance(String schema) {
+        AuthorizationBO bo = AbstractBO.getInstance(AuthorizationBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = AuthorizationDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = AuthorizationDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
-	public void authorize(AuthorizationPoints atps, String module, String action) {
+    public void authorize(AuthorizationPoints atps, String module, String action) {
         if (atps == null) {
             atps = AuthorizationPoints.getNotLoggedInstance(this.getSchema());
         }
 
         if (!atps.isAllowed(module, action)) {
-        	throw new AuthorizationException();
+            throw new AuthorizationException();
         }
     }
 
     public AuthorizationPoints getUserAuthorizationPoints(LoginDTO user) {
-    	HashMap<String, Boolean> permissions = null;
+        HashMap<String, Boolean> permissions = null;
 
-    	// TODO: Fixme?
-		if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-			permissions = this.dao.getUserPermissions(user);
-		}
+        // TODO: Fixme?
+        if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
+            permissions = this.dao.getUserPermissions(user);
+        }
 
         return new AuthorizationPoints(this.getSchema(), true, user.isEmployee(), permissions);
     }

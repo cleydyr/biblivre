@@ -19,10 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.usertype;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserSearchDTO;
@@ -30,65 +26,68 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class UserTypeBO extends AbstractBO {
-	private UserTypeDAO dao;
+    private UserTypeDAO dao;
 
-	public static UserTypeBO getInstance(String schema) {
-		UserTypeBO bo = AbstractBO.getInstance(UserTypeBO.class, schema);
-		if (bo.dao == null) {
-			bo.dao = UserTypeDAO.getInstance(schema);
-		}
-		return bo;
-	}
+    public static UserTypeBO getInstance(String schema) {
+        UserTypeBO bo = AbstractBO.getInstance(UserTypeBO.class, schema);
+        if (bo.dao == null) {
+            bo.dao = UserTypeDAO.getInstance(schema);
+        }
+        return bo;
+    }
 
-	public UserTypeDTO get(int id) {
-		return this.dao.get(id);
-	}
+    public UserTypeDTO get(int id) {
+        return this.dao.get(id);
+    }
 
-	public List<UserTypeDTO> list() {
-		return this.dao.list();
-	}
+    public List<UserTypeDTO> list() {
+        return this.dao.list();
+    }
 
-	public Map<Integer, UserTypeDTO> map() {
-		List<UserTypeDTO> list = this.dao.list();
-		Map<Integer, UserTypeDTO> map = new TreeMap<Integer, UserTypeDTO>();
-		for (UserTypeDTO dto : list) {
-			map.put(dto.getId(), dto);
-		}
-		return map;
-	}
+    public Map<Integer, UserTypeDTO> map() {
+        List<UserTypeDTO> list = this.dao.list();
+        Map<Integer, UserTypeDTO> map = new TreeMap<Integer, UserTypeDTO>();
+        for (UserTypeDTO dto : list) {
+            map.put(dto.getId(), dto);
+        }
+        return map;
+    }
 
-	public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
-		return this.dao.search(value, limit, offset);
-	}
+    public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
+        return this.dao.search(value, limit, offset);
+    }
 
-	public boolean save(UserTypeDTO userTypeDTO) {
-		return this.dao.save(userTypeDTO);
-	}
+    public boolean save(UserTypeDTO userTypeDTO) {
+        return this.dao.save(userTypeDTO);
+    }
 
-	public boolean delete(int id) {
-		//Check if there's any user for this user_type
-		UserBO bo = UserBO.getInstance(this.getSchema());
-		UserSearchDTO dto = new UserSearchDTO();
-		dto.setType(id);
+    public boolean delete(int id) {
+        // Check if there's any user for this user_type
+        UserBO bo = UserBO.getInstance(this.getSchema());
+        UserSearchDTO dto = new UserSearchDTO();
+        dto.setType(id);
 
-		DTOCollection<UserDTO> userList = bo.search(dto, 1, 0);
-		boolean existingUser = userList.size() > 0;
+        DTOCollection<UserDTO> userList = bo.search(dto, 1, 0);
+        boolean existingUser = userList.size() > 0;
 
-		if (existingUser) {
-			throw new ValidationException("administration.user_type.error.type_has_users");
-		}
+        if (existingUser) {
+            throw new ValidationException("administration.user_type.error.type_has_users");
+        }
 
-		return this.dao.delete(id);
-	}
+        return this.dao.delete(id);
+    }
 
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
 
-//	public boolean updateUserType(UserTypeDTO userTypeDTO) {
-//		return dao.update(userTypeDTO);
-//	}
+    //	public boolean updateUserType(UserTypeDTO userTypeDTO) {
+    //		return dao.update(userTypeDTO);
+    //	}
 
 }

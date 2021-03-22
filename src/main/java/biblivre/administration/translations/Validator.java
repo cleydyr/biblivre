@@ -19,38 +19,37 @@
  ******************************************************************************/
 package biblivre.administration.translations;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateDump(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateDump(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		String language = request.getString("language");
+        String language = request.getString("language");
 
-		if (StringUtils.isBlank(language)) {
-			ValidationException ex = new ValidationException("error.form_invalid_values");
-			ex.addError("language", "administration.translations.error.invalid_language");
-			handler.setMessage(ex);
-		}
-	}
+        if (StringUtils.isBlank(language)) {
+            ValidationException ex = new ValidationException("error.form_invalid_values");
+            ex.addError("language", "administration.translations.error.invalid_language");
+            handler.setMessage(ex);
+        }
+    }
 
-	public void validateLoad(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateLoad(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		MemoryFile file = request.getFile("file");
+        MemoryFile file = request.getFile("file");
 
-		if (file == null || file.getSize() <= 0) {
-			ValidationException ex = new ValidationException("error.form_invalid_values");
-			ex.addError("file", "administration.translations.error.invalid_file");
-			handler.setMessage(ex);
-		}
-	}
-
-
+        if (file == null || file.getSize() <= 0) {
+            ValidationException ex = new ValidationException("error.form_invalid_values");
+            ex.addError("file", "administration.translations.error.invalid_file");
+            handler.setMessage(ex);
+        }
+    }
 }

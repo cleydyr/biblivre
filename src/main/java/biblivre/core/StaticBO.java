@@ -28,13 +28,13 @@ import biblivre.core.translations.Languages;
 import biblivre.core.translations.Translations;
 
 public abstract class StaticBO {
-	public static void resetCache() {
-		Configurations.reset();
-		Fields.reset();
-		IndexingGroups.reset();
-		Languages.reset();
-		Schemas.reset();
-		Translations.reset();
-		UserFields.reset();
-	}
+    public static void resetCache() {
+        Configurations.reset();
+        Fields.reset();
+        IndexingGroups.reset();
+        Languages.reset();
+        Schemas.reset();
+        Translations.reset();
+        UserFields.reset();
+    }
 }

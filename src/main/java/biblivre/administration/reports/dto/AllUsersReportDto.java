@@ -24,41 +24,40 @@ import java.util.Map;
 
 public class AllUsersReportDto extends BaseReportDto {
 
-	private String initialDate;
-	private String finalDate;
-	private Map<String, Integer> typesMap;
-	private Map<String, List<String>> data;
+    private String initialDate;
+    private String finalDate;
+    private Map<String, Integer> typesMap;
+    private Map<String, List<String>> data;
 
-	public String getFinalDate() {
-		return this.finalDate;
-	}
+    public String getFinalDate() {
+        return this.finalDate;
+    }
 
-	public void setFinalDate(String finalDate) {
-		this.finalDate = finalDate;
-	}
+    public void setFinalDate(String finalDate) {
+        this.finalDate = finalDate;
+    }
 
-	public String getInitialDate() {
-		return this.initialDate;
-	}
+    public String getInitialDate() {
+        return this.initialDate;
+    }
 
-	public void setInitialDate(String initialDate) {
-		this.initialDate = initialDate;
-	}
+    public void setInitialDate(String initialDate) {
+        this.initialDate = initialDate;
+    }
 
-	public Map<String, List<String>> getData() {
-		return this.data;
-	}
+    public Map<String, List<String>> getData() {
+        return this.data;
+    }
 
-	public void setData(Map<String, List<String>> data) {
-		this.data = data;
-	}
+    public void setData(Map<String, List<String>> data) {
+        this.data = data;
+    }
 
-	public Map<String, Integer> getTypesMap() {
-		return this.typesMap;
-	}
+    public Map<String, Integer> getTypesMap() {
+        return this.typesMap;
+    }
 
-	public void setTypesMap(Map<String, Integer> typesMap) {
-		this.typesMap = typesMap;
-	}
-
+    public void setTypesMap(Map<String, Integer> typesMap) {
+        this.typesMap = typesMap;
+    }
 }

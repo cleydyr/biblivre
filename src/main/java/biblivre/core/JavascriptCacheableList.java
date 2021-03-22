@@ -21,64 +21,64 @@ package biblivre.core;
 
 import java.io.File;
 import java.util.LinkedList;
-
 import org.json.JSONArray;
 
-public class JavascriptCacheableList<T extends IFJson> extends LinkedList<T> implements IFCacheableJavascript {
-	private static final long serialVersionUID = 1L;
+public class JavascriptCacheableList<T extends IFJson> extends LinkedList<T>
+        implements IFCacheableJavascript {
+    private static final long serialVersionUID = 1L;
 
-	private String variable;
-	private String prefix;
-	private String suffix;
-	private JavascriptCache cache;
+    private String variable;
+    private String prefix;
+    private String suffix;
+    private JavascriptCache cache;
 
-	public JavascriptCacheableList(String variable, String prefix, String suffix) {
-		this.variable = variable;
-		this.prefix = prefix;
-		this.suffix = suffix;
-	}
+    public JavascriptCacheableList(String variable, String prefix, String suffix) {
+        this.variable = variable;
+        this.prefix = prefix;
+        this.suffix = suffix;
+    }
 
-	@Override
-	public String getCacheFileNamePrefix() {
-		return this.prefix;
-	}
+    @Override
+    public String getCacheFileNamePrefix() {
+        return this.prefix;
+    }
 
-	@Override
-	public String getCacheFileNameSuffix() {
-		return this.suffix;
-	}
+    @Override
+    public String getCacheFileNameSuffix() {
+        return this.suffix;
+    }
 
-	@Override
-	public String toJavascriptString() {
-		JSONArray array = new JSONArray();
+    @Override
+    public String toJavascriptString() {
+        JSONArray array = new JSONArray();
 
-		for (T el : this) {
-			array.put(el.toJSONObject());
-		}
+        for (T el : this) {
+            array.put(el.toJSONObject());
+        }
 
-		return this.variable + " = " + array.toString() + ";";
-	}
+        return this.variable + " = " + array.toString() + ";";
+    }
 
-	@Override
-	public File getCacheFile() {
-		if (this.cache == null) {
-			this.cache = new JavascriptCache(this);
-		}
+    @Override
+    public File getCacheFile() {
+        if (this.cache == null) {
+            this.cache = new JavascriptCache(this);
+        }
 
-		return this.cache.getCacheFile();
-	}
+        return this.cache.getCacheFile();
+    }
 
-	@Override
-	public String getCacheFileName() {
-		if (this.cache == null) {
-			this.cache = new JavascriptCache(this);
-		}
+    @Override
+    public String getCacheFileName() {
+        if (this.cache == null) {
+            this.cache = new JavascriptCache(this);
+        }
 
-		return this.cache.getFileName();
-	}
+        return this.cache.getFileName();
+    }
 
-	@Override
-	public void invalidateCache() {
-		this.cache = null;
-	}
+    @Override
+    public void invalidateCache() {
+        this.cache = null;
+    }
 }

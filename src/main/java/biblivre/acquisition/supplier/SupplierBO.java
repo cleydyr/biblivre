@@ -19,24 +19,23 @@
  ******************************************************************************/
 package biblivre.acquisition.supplier;
 
-import java.util.List;
-
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
+import java.util.List;
 
 public class SupplierBO extends AbstractBO {
-	private SupplierDAO dao;
+    private SupplierDAO dao;
 
-	public static SupplierBO getInstance(String schema) {
-		SupplierBO bo = AbstractBO.getInstance(SupplierBO.class, schema);
+    public static SupplierBO getInstance(String schema) {
+        SupplierBO bo = AbstractBO.getInstance(SupplierBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = SupplierDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = SupplierDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
     public SupplierDTO get(Integer id) {
         return this.dao.get(id);
@@ -59,11 +58,10 @@ public class SupplierBO extends AbstractBO {
     }
 
     public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
-    	return this.dao.search(value, limit, offset);
+        return this.dao.search(value, limit, offset);
     }
 
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
-
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
 }

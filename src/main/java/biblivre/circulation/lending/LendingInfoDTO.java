@@ -19,72 +19,72 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LendingInfoDTO extends AbstractDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private BiblioRecordDTO biblio;
-	private HoldingDTO holding;
-	private UserDTO user;
-	private LendingDTO lending;
-	private LendingFineDTO lendingFine;
+    private BiblioRecordDTO biblio;
+    private HoldingDTO holding;
+    private UserDTO user;
+    private LendingDTO lending;
+    private LendingFineDTO lendingFine;
 
-	public LendingDTO getLending() {
-		return this.lending;
-	}
+    public LendingDTO getLending() {
+        return this.lending;
+    }
 
-	public void setLending(LendingDTO lending) {
-		this.lending = lending;
-	}
+    public void setLending(LendingDTO lending) {
+        this.lending = lending;
+    }
 
-	public LendingFineDTO getLendingFine() {
-		return this.lendingFine;
-	}
+    public LendingFineDTO getLendingFine() {
+        return this.lendingFine;
+    }
 
-	public void setLendingFine(LendingFineDTO lendingFine) {
-		this.lendingFine = lendingFine;
-	}
+    public void setLendingFine(LendingFineDTO lendingFine) {
+        this.lendingFine = lendingFine;
+    }
 
-	public UserDTO getUser() {
-		return this.user;
-	}
+    public UserDTO getUser() {
+        return this.user;
+    }
 
-	public void setUser(UserDTO user) {
-		this.user = user;
-	}
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
 
-	public HoldingDTO getHolding() {
-		return this.holding;
-	}
+    public HoldingDTO getHolding() {
+        return this.holding;
+    }
 
-	public void setHolding(HoldingDTO holding) {
-		this.holding = holding;
-	}
+    public void setHolding(HoldingDTO holding) {
+        this.holding = holding;
+    }
 
-	public BiblioRecordDTO getBiblio() {
-		return this.biblio;
-	}
+    public BiblioRecordDTO getBiblio() {
+        return this.biblio;
+    }
 
-	public void setBiblio(BiblioRecordDTO biblio) {
-		this.biblio = biblio;
-	}
+    public void setBiblio(BiblioRecordDTO biblio) {
+        this.biblio = biblio;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-		try {
-			json.put("id", this.getHolding().getId());
-		} catch (JSONException e) { }
+        try {
+            json.put("id", this.getHolding().getId());
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

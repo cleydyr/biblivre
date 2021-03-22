@@ -19,57 +19,54 @@
  ******************************************************************************/
 package biblivre.z3950;
 
+import biblivre.cataloging.bibliographic.BiblioRecordDTO;
+import biblivre.core.AbstractDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.cataloging.bibliographic.BiblioRecordDTO;
-import biblivre.core.AbstractDTO;
-
 public class Z3950RecordDTO extends AbstractDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private BiblioRecordDTO record;
-	private Z3950AddressDTO server;
-	private transient int autogenId;
+    private BiblioRecordDTO record;
+    private Z3950AddressDTO server;
+    private transient int autogenId;
 
-	public BiblioRecordDTO getRecord() {
-		return this.record;
-	}
+    public BiblioRecordDTO getRecord() {
+        return this.record;
+    }
 
-	public void setRecord(BiblioRecordDTO record) {
-		this.record = record;
-	}
+    public void setRecord(BiblioRecordDTO record) {
+        this.record = record;
+    }
 
-	public Z3950AddressDTO getServer() {
-		return this.server;
-	}
+    public Z3950AddressDTO getServer() {
+        return this.server;
+    }
 
-	public void setServer(Z3950AddressDTO server) {
-		this.server = server;
-	}
+    public void setServer(Z3950AddressDTO server) {
+        this.server = server;
+    }
 
-	public int getAutogenId() {
-		return this.autogenId;
-	}
+    public int getAutogenId() {
+        return this.autogenId;
+    }
 
-	public void setAutogenId(int autogenId) {
-		this.autogenId = autogenId;
-	}
+    public void setAutogenId(int autogenId) {
+        this.autogenId = autogenId;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = new JSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("record", this.getRecord().toJSONObject());
-			json.putOpt("server_name", this.getServer().getName());
-			json.putOpt("id", this.getAutogenId());
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("record", this.getRecord().toJSONObject());
+            json.putOpt("server_name", this.getServer().getName());
+            json.putOpt("id", this.getAutogenId());
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
-
-
+        return json;
+    }
 }

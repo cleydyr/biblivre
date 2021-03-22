@@ -22,86 +22,86 @@ package biblivre.marc;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-
 import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
 
 public class MarcFileReader implements MarcReader {
 
-	private static final Pattern LEADER_PATTERN = Pattern.compile("^(000|LDR|LEADER)\\s+", Pattern.CASE_INSENSITIVE);
+    private static final Pattern LEADER_PATTERN =
+            Pattern.compile("^(000|LDR|LEADER)\\s+", Pattern.CASE_INSENSITIVE);
 
-	private InputStream input;
-	private Scanner scanner;
-	private StringBuilder marc;
-	private boolean validStart;
+    private InputStream input;
+    private Scanner scanner;
+    private StringBuilder marc;
+    private boolean validStart;
 
-	public MarcFileReader(InputStream input, String encoding) {
-		this.input = input;
+    public MarcFileReader(InputStream input, String encoding) {
+        this.input = input;
         this.scanner = new Scanner(this.input, encoding);
         this.marc = null;
         this.validStart = false;
-	}
+    }
 
-	@Override
-	public boolean hasNext() {
-		if (this.marc != null) {
-			return true;
-		}
+    @Override
+    public boolean hasNext() {
+        if (this.marc != null) {
+            return true;
+        }
 
-		if (this.marc == null && this.validStart) {
-			return false;
-		}
+        if (this.marc == null && this.validStart) {
+            return false;
+        }
 
-		while (this.scanner.hasNextLine()) {
-			String line = this.scanner.nextLine().trim();
+        while (this.scanner.hasNextLine()) {
+            String line = this.scanner.nextLine().trim();
 
-			if (line.length() <= 3) {
-				continue;
-			}
+            if (line.length() <= 3) {
+                continue;
+            }
 
-			if (MarcFileReader.LEADER_PATTERN.matcher(line).find()) {
-				this.marc = new StringBuilder(line + "\n");
-				this.validStart = true;
-				return true;
-			}
-		}
+            if (MarcFileReader.LEADER_PATTERN.matcher(line).find()) {
+                this.marc = new StringBuilder(line + "\n");
+                this.validStart = true;
+                return true;
+            }
+        }
 
-		this.scanner.close();
-		return false;
-	}
+        this.scanner.close();
+        return false;
+    }
 
-	@Override
-	public Record next() {
-		Record record = null;
+    @Override
+    public Record next() {
+        Record record = null;
 
-		while (this.scanner.hasNextLine()) {
-			String line = this.scanner.nextLine().trim();
+        while (this.scanner.hasNextLine()) {
+            String line = this.scanner.nextLine().trim();
 
-			if (line.length() <= 3) {
-				continue;
-			}
+            if (line.length() <= 3) {
+                continue;
+            }
 
-			if (MarcFileReader.LEADER_PATTERN.matcher(line).find()) {
-				if (this.marc == null) {
-					this.marc = new StringBuilder(line + "\n");
-				} else {
-					record = MarcUtils.marcToRecord(this.marc.toString(), null, RecordStatus.NEW);
-					this.marc = new StringBuilder(line + "\n");
-					return record;
-				}
-			}
+            if (MarcFileReader.LEADER_PATTERN.matcher(line).find()) {
+                if (this.marc == null) {
+                    this.marc = new StringBuilder(line + "\n");
+                } else {
+                    record = MarcUtils.marcToRecord(this.marc.toString(), null, RecordStatus.NEW);
+                    this.marc = new StringBuilder(line + "\n");
+                    return record;
+                }
+            }
 
-			if (this.marc != null) {
-				this.marc.append(line).append("\n");
-			}
-		}
+            if (this.marc != null) {
+                this.marc.append(line).append("\n");
+            }
+        }
 
-		if (this.marc.length() > 0) {
-			record = MarcUtils.marcToRecord(this.marc.toString(), null, RecordStatus.NEW);
-			this.marc = null;
-		}
+        if (this.marc.length() > 0) {
+            record = MarcUtils.marcToRecord(this.marc.toString(), null, RecordStatus.NEW);
+            this.marc = null;
+        }
 
-		this.scanner.close();
-		return record;
-	}
+        this.scanner.close();
+        return record;
+    }
 }

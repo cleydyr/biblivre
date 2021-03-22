@@ -19,94 +19,93 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
-import java.util.Date;
-
 import biblivre.core.AbstractDTO;
+import java.util.Date;
 
 public class LendingDTO extends AbstractDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Integer id;
-	private Integer holdingId;
-	private Integer userId;
-	private Integer previousLendingId;
-	private Date expectedReturnDate;
-	private Date returnDate;
+    private Integer id;
+    private Integer holdingId;
+    private Integer userId;
+    private Integer previousLendingId;
+    private Date expectedReturnDate;
+    private Date returnDate;
 
-	private transient Float dailyFine;
-	private transient Integer daysLate;
-	private transient Float estimatedFine;
+    private transient Float dailyFine;
+    private transient Integer daysLate;
+    private transient Float estimatedFine;
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Integer getHoldingId() {
-		return this.holdingId;
-	}
+    public Integer getHoldingId() {
+        return this.holdingId;
+    }
 
-	public void setHoldingId(Integer holdingId) {
-		this.holdingId = holdingId;
-	}
+    public void setHoldingId(Integer holdingId) {
+        this.holdingId = holdingId;
+    }
 
-	public Integer getUserId() {
-		return this.userId;
-	}
+    public Integer getUserId() {
+        return this.userId;
+    }
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public Integer getPreviousLendingId() {
-		return this.previousLendingId;
-	}
+    public Integer getPreviousLendingId() {
+        return this.previousLendingId;
+    }
 
-	public void setPreviousLendingId(Integer previousLendingId) {
-		this.previousLendingId = previousLendingId;
-	}
+    public void setPreviousLendingId(Integer previousLendingId) {
+        this.previousLendingId = previousLendingId;
+    }
 
-	public Date getExpectedReturnDate() {
-		return this.expectedReturnDate;
-	}
+    public Date getExpectedReturnDate() {
+        return this.expectedReturnDate;
+    }
 
-	public void setExpectedReturnDate(Date expectedReturnDate) {
-		this.expectedReturnDate = expectedReturnDate;
-	}
+    public void setExpectedReturnDate(Date expectedReturnDate) {
+        this.expectedReturnDate = expectedReturnDate;
+    }
 
-	public Date getReturnDate() {
-		return this.returnDate;
-	}
+    public Date getReturnDate() {
+        return this.returnDate;
+    }
 
-	public void setReturnDate(Date returnDate) {
-		this.returnDate = returnDate;
-	}
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
+    }
 
-	public Float getEstimatedFine() {
-		return this.estimatedFine;
-	}
+    public Float getEstimatedFine() {
+        return this.estimatedFine;
+    }
 
-	public void setEstimatedFine(Float estimatedFine) {
-		this.estimatedFine = estimatedFine;
-	}
+    public void setEstimatedFine(Float estimatedFine) {
+        this.estimatedFine = estimatedFine;
+    }
 
-	public Float getDailyFine() {
-		return this.dailyFine;
-	}
+    public Float getDailyFine() {
+        return this.dailyFine;
+    }
 
-	public void setDailyFine(Float dailyFine) {
-		this.dailyFine = dailyFine;
-	}
+    public void setDailyFine(Float dailyFine) {
+        this.dailyFine = dailyFine;
+    }
 
-	public Integer getDaysLate() {
-		return this.daysLate;
-	}
+    public Integer getDaysLate() {
+        return this.daysLate;
+    }
 
-	public void setDaysLate(Integer daysLate) {
-		this.daysLate = daysLate;
-	}
+    public void setDaysLate(Integer daysLate) {
+        this.daysLate = daysLate;
+    }
 }

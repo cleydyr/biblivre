@@ -19,118 +19,124 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public class AccessCardBO extends AbstractBO {
-	private AccessCardDAO dao;
+    private AccessCardDAO dao;
 
-	public static AccessCardBO getInstance(String schema) {
-		AccessCardBO bo = AbstractBO.getInstance(AccessCardBO.class, schema);
+    public static AccessCardBO getInstance(String schema) {
+        AccessCardBO bo = AbstractBO.getInstance(AccessCardBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = AccessCardDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = AccessCardDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
-	public boolean save(AccessCardDTO dto) {
-		if (dto != null) {
-			AccessCardDTO existingCard = this.dao.get(dto.getCode());
-			if (existingCard != null) {
-				throw new ValidationException("administration.accesscards.error.existing_card");
-			}
-			return this.dao.save(dto);
-		}
+    public boolean save(AccessCardDTO dto) {
+        if (dto != null) {
+            AccessCardDTO existingCard = this.dao.get(dto.getCode());
+            if (existingCard != null) {
+                throw new ValidationException("administration.accesscards.error.existing_card");
+            }
+            return this.dao.save(dto);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public DTOCollection<AccessCardDTO> search(String code, AccessCardStatus status, int limit, int offset) {
-		return this.dao.search(code, status, limit, offset);
-	}
+    public DTOCollection<AccessCardDTO> search(
+            String code, AccessCardStatus status, int limit, int offset) {
+        return this.dao.search(code, status, limit, offset);
+    }
 
-	public AccessCardDTO get(int id) {
-		return this.dao.get(id);
-	}
+    public AccessCardDTO get(int id) {
+        return this.dao.get(id);
+    }
 
-	public AccessCardDTO get(String code) {
-		return this.dao.get(code);
-	}
+    public AccessCardDTO get(String code) {
+        return this.dao.get(code);
+    }
 
-	public LinkedList<AccessCardDTO> saveCardList(String prefix, String suffix, String startString, String endString, Integer loggedUserId, AccessCardStatus status) {
-		int start = Integer.parseInt(startString);
-		int end = Integer.parseInt(endString);
+    public LinkedList<AccessCardDTO> saveCardList(
+            String prefix,
+            String suffix,
+            String startString,
+            String endString,
+            Integer loggedUserId,
+            AccessCardStatus status) {
+        int start = Integer.parseInt(startString);
+        int end = Integer.parseInt(endString);
 
-		LinkedList<String> codeList = new LinkedList<String>();
-		int pad = startString.length();
-		for (int i = start; i <= end; i++) {
-			String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
-			codeList.add(prefix + number + suffix);
-		}
+        LinkedList<String> codeList = new LinkedList<String>();
+        int pad = startString.length();
+        for (int i = start; i <= end; i++) {
+            String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
+            codeList.add(prefix + number + suffix);
+        }
 
-		//Validate existing cards
-		List<AccessCardDTO> existingCards = this.dao.get(codeList, null);
-		List<String> existingCodes = new LinkedList<String>();
-		for (AccessCardDTO card : existingCards) {
-			existingCodes.add(card.getCode());
-		}
-		if (existingCodes.size() > 0) {
-			ValidationException ve = new ValidationException("administration.accesscards.error.existing_cards");
-			ve.addError("existing_cards", StringUtils.join(existingCodes, ", "));
-			throw ve;
-		}
+        // Validate existing cards
+        List<AccessCardDTO> existingCards = this.dao.get(codeList, null);
+        List<String> existingCodes = new LinkedList<String>();
+        for (AccessCardDTO card : existingCards) {
+            existingCodes.add(card.getCode());
+        }
+        if (existingCodes.size() > 0) {
+            ValidationException ve =
+                    new ValidationException("administration.accesscards.error.existing_cards");
+            ve.addError("existing_cards", StringUtils.join(existingCodes, ", "));
+            throw ve;
+        }
 
-		LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
-		for (String code : codeList) {
-			AccessCardDTO dto = new AccessCardDTO();
-			dto.setCode(code);
-			dto.setStatus(status);
-			dto.setCreatedBy(loggedUserId);
-			cardList.add(dto);
-		}
+        LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
+        for (String code : codeList) {
+            AccessCardDTO dto = new AccessCardDTO();
+            dto.setCode(code);
+            dto.setStatus(status);
+            dto.setCreatedBy(loggedUserId);
+            cardList.add(dto);
+        }
 
-		if (this.dao.save(cardList)) {
-			return cardList;
-		} else {
-			return null;
-		}
-	}
+        if (this.dao.save(cardList)) {
+            return cardList;
+        } else {
+            return null;
+        }
+    }
 
-	public boolean removeCard(AccessCardDTO dto) {
-		if (dto != null) {
-			AccessCardDTO card = this.get(dto.getId());
-			if (card == null) {
-				throw new ValidationException("administration.accesscards.error.card_not_found");
-			}
+    public boolean removeCard(AccessCardDTO dto) {
+        if (dto != null) {
+            AccessCardDTO card = this.get(dto.getId());
+            if (card == null) {
+                throw new ValidationException("administration.accesscards.error.card_not_found");
+            }
 
-			if (card.getStatus() == AccessCardStatus.CANCELLED) {
-				return this.delete(card.getId());
-			}
+            if (card.getStatus() == AccessCardStatus.CANCELLED) {
+                return this.delete(card.getId());
+            }
 
-			dto.setStatus(AccessCardStatus.CANCELLED);
-			return this.update(dto);
-		}
-		return false;
-	}
+            dto.setStatus(AccessCardStatus.CANCELLED);
+            return this.update(dto);
+        }
+        return false;
+    }
 
-	public boolean update(AccessCardDTO dto) {
-		return this.dao.update(dto);
-	}
+    public boolean update(AccessCardDTO dto) {
+        return this.dao.update(dto);
+    }
 
-	public boolean delete(int id) {
-		return this.dao.delete(id);
-	}
+    public boolean delete(int id) {
+        return this.dao.delete(id);
+    }
 
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
 }

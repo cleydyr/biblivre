@@ -19,9 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.z3950;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
@@ -31,90 +28,93 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
 
+    public void search(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        String searchParameters = request.getString("search_parameters");
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String searchParameters = request.getString("search_parameters");
+        String query = null;
 
-		String query = null;
+        try {
+            JSONObject json = new JSONObject(searchParameters);
+            query = json.optString("query");
+        } catch (JSONException je) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+            return;
+        }
 
-		try {
-			JSONObject json = new JSONObject(searchParameters);
-			query = json.optString("query");
-		} catch (JSONException je) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-			return;
-		}
+        Integer limit =
+                request.getInteger(
+                        "limit",
+                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+        Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-		Integer limit = request.getInteger("limit", Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-		Integer offset = (request.getInteger("page", 1) - 1) * limit;
+        Z3950BO bo = Z3950BO.getInstance(schema);
+        DTOCollection<Z3950AddressDTO> list = bo.search(query, limit, offset);
 
-		Z3950BO bo = Z3950BO.getInstance(schema);
-		DTOCollection<Z3950AddressDTO> list = bo.search(query, limit, offset);
+        if (list.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "administration.z3950.no_server_found");
+            return;
+        }
 
-		if (list.size() == 0) {
-			this.setMessage(ActionResult.WARNING, "administration.z3950.no_server_found");
-			return;
-		}
+        try {
+            this.json.put("search", list.toJSONObject());
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            return;
+        }
+    }
 
-		try {
-			this.json.put("search", list.toJSONObject());
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
-	}
+    public void paginate(ExtendedRequest request, ExtendedResponse response) {
+        this.search(request, response);
+    }
 
-	public void paginate(ExtendedRequest request, ExtendedResponse response) {
-		this.search(request, response);
-	}
+    public void save(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950AddressDTO dto = new Z3950AddressDTO();
+        Integer id = request.getInteger("id");
+        if (id != null && id != 0) {
+            dto.setId(id);
+        }
+        dto.setName(request.getString("name"));
+        dto.setUrl(request.getString("url"));
+        dto.setPort(request.getInteger("port"));
+        dto.setCollection(request.getString("collection"));
 
-	public void save(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Z3950BO bo = Z3950BO.getInstance(schema);
-		Z3950AddressDTO dto = new Z3950AddressDTO();
-		Integer id = request.getInteger("id");
-		if (id != null && id != 0) {
-			dto.setId(id);
-		}
-		dto.setName(request.getString("name"));
-		dto.setUrl(request.getString("url"));
-		dto.setPort(request.getInteger("port"));
-		dto.setCollection(request.getString("collection"));
+        if (bo.save(dto)) {
+            if (id == 0) {
+                this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.save");
+            } else {
+                this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.update");
+            }
+        } else {
+            this.setMessage(ActionResult.WARNING, "administration.z3950.error.save");
+        }
 
-		if (bo.save(dto)) {
-			if (id == 0) {
-				this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.save");
-			} else {
-				this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.update");
-			}
-		} else {
-			this.setMessage(ActionResult.WARNING, "administration.z3950.error.save");
-		}
+        try {
+            this.json.put("data", dto.toJSONObject());
+            this.json.put("full_data", true);
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            return;
+        }
+    }
 
-		try {
-			this.json.put("data", dto.toJSONObject());
-			this.json.put("full_data", true);
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
-	}
+    public void delete(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950AddressDTO dto = new Z3950AddressDTO();
+        dto.setId(request.getInteger("id"));
 
-	public void delete(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		Z3950BO bo = Z3950BO.getInstance(schema);
-		Z3950AddressDTO dto = new Z3950AddressDTO();
-		dto.setId(request.getInteger("id"));
-
-		if (bo.delete(dto)) {
-			this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.delete");
-		} else {
-			this.setMessage(ActionResult.ERROR, "administration.z3950.error.delete");
-		}
-	}
-
+        if (bo.delete(dto)) {
+            this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.delete");
+        } else {
+            this.setMessage(ActionResult.ERROR, "administration.z3950.error.delete");
+        }
+    }
 }

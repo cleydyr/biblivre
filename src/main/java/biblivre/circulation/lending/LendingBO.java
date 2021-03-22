@@ -19,22 +19,6 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
-
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.cataloging.RecordBO;
@@ -60,713 +44,769 @@ import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class LendingBO extends AbstractBO {
-	private LendingDAO dao;
-
-	public static LendingBO getInstance(String schema) {
-		LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
-
-		if (bo.dao == null) {
-			bo.dao = LendingDAO.getInstance(schema);
-		}
-
-		return bo;
-	}
-
-	public LendingDTO get(Integer lendingId) {
-		return this.dao.get(lendingId);
-	}
-
-	public boolean isLent(HoldingDTO holding) {
-		return this.getCurrentLending(holding) != null;
-	}
-
-	public boolean wasEverLent(HoldingDTO holding) {
-		List<LendingDTO> history = this.dao.listHistory(holding);
-		return history.size() > 0;
-	}
-
-	public LendingDTO getCurrentLending(HoldingDTO holding) {
-		return this.dao.getCurrentLending(holding);
-	}
-
-	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
-		return this.dao.getCurrentLendingMap(ids);
-	}
-
-
-	public void checkLending(HoldingDTO holding, UserDTO user) {
-
-		//User cannot be blocked
-		if (UserStatus.BLOCKED.equals(user.getStatus()) || UserStatus.INACTIVE.equals(user.getStatus())) {
-			throw new ValidationException("cataloging.lending.error.blocked_user");
-		}
-
-		//The material must be available
-		if (!HoldingAvailability.AVAILABLE.equals(holding.getAvailability())) {
-			throw new ValidationException("cataloging.lending.error.holding_unavailable");
-		}
-
-		//The material can't be already lent
-		if (this.isLent(holding)) {
-			throw new ValidationException("cataloging.lending.error.holding_is_lent");
-		}
-
-		//The lending limit (total number of materials that can be lent to a
-		//specific user) must be preserved
-		if (!this.checkUserLendLimit(user, false)) {
-			throw new ValidationException("cataloging.lending.error.limit_exceeded");
-		}
-
-	}
-
-	public void checkRenew(HoldingDTO holding, UserDTO user) {
-		//User cannot be blocked
-		if (UserStatus.BLOCKED.equals(user.getStatus()) || UserStatus.INACTIVE.equals(user.getStatus())) {
-			throw new ValidationException("cataloging.lending.error.blocked_user");
-		}
-
-		//The material must be available
-		if (!HoldingAvailability.AVAILABLE.equals(holding.getAvailability())) {
-			throw new ValidationException("cataloging.lending.error.holding_unavailable");
-		}
-
-		//The lending limit (total number of materials that can be lent to a
-		//specific user) must be preserved
-		if (!this.checkUserLendLimit(user, true)) {
-			throw new ValidationException("cataloging.lending.error.limit_exceeded");
-		}
-	}
-
-	public boolean checkUserLendLimit(UserDTO user, boolean renew) {
-		UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
-		UserTypeDTO type = userTypeBo.get(user.getType());
-		Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
-		Integer count = this.dao.getCurrentLendingsCount(user);
-
-		return renew ? (count <= lendingLimit) : (count < lendingLimit);
-	}
-
-	public Integer getCurrentLendingsCount(UserDTO user) {
-		return this.dao.getCurrentLendingsCount(user);
-	}
-
-	public boolean doLend(HoldingDTO holding, UserDTO user, int createdBy) {
-		this.checkLending(holding, user);
-
-		LendingDTO lending = new LendingDTO();
-		lending.setHoldingId(holding.getId());
-		lending.setUserId(user.getId());
-
-		UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
-		UserTypeDTO type = userTypeBo.get(user.getType());
-
-		Date today = new Date();
-		int days = (type != null) ? type.getLendingTimeLimit() : 7;
-		Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
-		lending.setExpectedReturnDate(expectedReturnDate);
-
-		if (this.dao.doLend(lending)) {
-			ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
-			rbo.delete(user.getId(), holding.getRecordId());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public boolean doReturn(LendingDTO lending, Float fineValue, boolean paid) {
-		this.dao.doReturn(lending.getId());
-
-		if (fineValue > 0) {
-			LendingFineBO fineBo = LendingFineBO.getInstance(this.getSchema());
-			fineBo.createFine(lending, fineValue, paid);
-		}
-
-		return true;
-	}
-
-	public boolean doRenew(LendingDTO lending) {
-		UserBO userBo = UserBO.getInstance(this.getSchema());
-		UserDTO userDto = userBo.get(lending.getUserId());
-		if (userDto == null) {
-			throw new ValidationException("cataloging.lending.error.user_not_found");
-		}
-
-		HoldingBO holdingBo = HoldingBO.getInstance(this.getSchema());
-		HoldingDTO holding = (HoldingDTO)holdingBo.get(lending.getHoldingId());
-		this.checkRenew(holding, userDto);
-
-		UserTypeBO userTypeBO = UserTypeBO.getInstance(this.getSchema());
-		UserTypeDTO type = userTypeBO.get(userDto.getType());
-
-		Date today = new Date();
-		int days = (type != null) ? type.getLendingTimeLimit() : 7;
-		Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
-		lending.setExpectedReturnDate(expectedReturnDate);
-
-		return this.dao.doRenew(lending.getId(), lending.getExpectedReturnDate(), lending.getCreatedBy());
-	}
-
-	public List<LendingDTO> listHistory(UserDTO user) {
-		List<LendingDTO> list = this.dao.listHistory(user);
-		DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
-		collection.addAll(list);
-		return collection;
-	}
-
-	public DTOCollection<LendingDTO> listLendings(UserDTO user) {
-		List<LendingDTO> list = this.dao.listLendings(user);
-		DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
-		collection.addAll(list);
-		return collection;
-	}
-
-	public List<LendingDTO> listUserLendings(UserDTO user) {
-		return this.dao.listLendings(user);
-	}
-
-
-	public DTOCollection<LendingInfoDTO> listLendings(int offset, int limit) {
-		List<LendingDTO> list = this.dao.listLendings(offset, limit);
-		return this.populateLendingInfo(list);
-	}
-
-	public Integer countHistory(UserDTO user) {
-		return this.dao.countHistory(user);
-	}
-
-	public Integer countLendings(UserDTO user) {
-		return this.dao.countLendings(user);
-	}
-
-	public DTOCollection<LendingInfoDTO> populateLendingInfoByHolding(DTOCollection<HoldingDTO> holdingList) {
-		String schema = this.getSchema();
-
-		Set<Integer> users = new HashSet<Integer>();
-		Set<Integer> records = new HashSet<Integer>();
-		Set<Integer> holdings = new HashSet<Integer>();
-
-		for (HoldingDTO holding : holdingList) {
-			holdings.add(holding.getId());
-
-			Integer recordId = holding.getRecordId();
-			if (recordId != null) {
-				records.add(recordId);
-			}
-		}
-
-		UserBO ubo = UserBO.getInstance(schema);
-		BiblioRecordBO bbo = BiblioRecordBO.getInstance(schema);
-
-		Map<Integer, LendingDTO> lendingsMap = this.getCurrentLendingMap(holdings);
-		for (Entry<Integer, LendingDTO> entry : lendingsMap.entrySet()) {
-			Integer userid = entry.getValue().getUserId();
-			if (userid != null) {
-				users.add(userid);
-			}
-		}
-
-		Map<Integer, RecordDTO> recordsMap = new HashMap<Integer, RecordDTO>();
-		if (!records.isEmpty()) {
-			recordsMap = bbo.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
-		}
-
-		Map<Integer, UserDTO> usersMap = new HashMap<Integer, UserDTO>();
-		if (!users.isEmpty()) {
-			usersMap = ubo.map(users);
-		}
-
-		// Join data
-		DTOCollection<LendingInfoDTO> collection = new DTOCollection<LendingInfoDTO>();
-		collection.setPaging(holdingList.getPaging());
-
-		LendingFineBO lfbo = LendingFineBO.getInstance(schema);
-
-		for (HoldingDTO holding : holdingList) {
-			LendingInfoDTO info = new LendingInfoDTO();
-
-			Integer holdingId = holding.getId();
-			Integer recordId = holding.getRecordId();
-
-			info.setHolding(holding);
-
-			if (recordId != null) {
-				info.setBiblio((BiblioRecordDTO)recordsMap.get(recordId));
-			}
-
-			LendingDTO lending = lendingsMap.get(holdingId);
-			if (lending != null) {
-				info.setLending(lending);
-
-				if (lending.getUserId() != null) {
-					UserDTO user = usersMap.get(lending.getUserId());
-					UserTypeBO utbo = UserTypeBO.getInstance(schema);
-					UserTypeDTO userType = utbo.get(user.getType());
-					user.setUsertypeName(userType.getName());
-					info.setUser(user);
-
-					Integer daysLate = lfbo.calculateLateDays(lending);
-					if (daysLate > 0) {
-						Float dailyFine = userType.getFineValue();
-						lending.setDaysLate(daysLate);
-						lending.setDailyFine(dailyFine);
-						lending.setEstimatedFine(dailyFine * daysLate);
-					}
-
-				}
-			}
-
-			collection.add(info);
-		}
-
-		return collection;
-	}
-
-
-	public DTOCollection<LendingInfoDTO> populateLendingInfo(List<LendingDTO> list) {
-		return this.populateLendingInfo(list, true);
-	}
-
-	public DTOCollection<LendingInfoDTO> populateLendingInfo(List<LendingDTO> list, boolean populateUser) {
-		String schema = this.getSchema();
-
-		DTOCollection<LendingInfoDTO> collection = new DTOCollection<LendingInfoDTO>();
-
-		Set<Integer> userIds = new HashSet<Integer>();
-		Set<Integer> holdingIds = new HashSet<Integer>();
-		Set<Integer> recordIds = new HashSet<Integer>();
-
-		for (LendingDTO lending : list) {
-			if (populateUser && lending.getUserId() != null) {
-				userIds.add(lending.getUserId());
-			}
-
-			if (lending.getHoldingId() != null) {
-				holdingIds.add(lending.getHoldingId());
-			}
-		}
-
-		UserBO userBo = UserBO.getInstance(schema);
-		HoldingBO holdingBo = HoldingBO.getInstance(schema);
-		BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
-
-		Map<Integer, UserDTO> users = new HashMap<Integer, UserDTO>();
-		if (!userIds.isEmpty()) {
-			users = userBo.map(userIds);
-		}
-
-		Map<Integer, RecordDTO> holdings = new HashMap<Integer, RecordDTO>();
-		if (!holdingIds.isEmpty()) {
-			holdings = holdingBo.map(holdingIds);
-		}
-
-		for (RecordDTO holding : holdings.values()) {
-			recordIds.add(((HoldingDTO)holding).getRecordId());
-		}
-
-		Map<Integer, RecordDTO> records = new HashMap<Integer, RecordDTO>();
-		if (!recordIds.isEmpty()) {
-			records = biblioBo.map(recordIds, RecordBO.MARC_INFO);
-		}
-
-		for (LendingDTO lending : list) {
-			UserDTO user = users.get(lending.getUserId());
-			HoldingDTO holding = (HoldingDTO)holdings.get(lending.getHoldingId());
-			BiblioRecordDTO record = (holding != null) ? (BiblioRecordDTO)records.get(holding.getRecordId()) : null;
-
-			LendingInfoDTO info = new LendingInfoDTO();
-			info.setLending(lending);
-			info.setUser(user);
-			info.setHolding(holding);
-			info.setBiblio(record);
-
-			collection.add(info);
-		}
-
-
-		return collection;
-	}
-
-	public Integer countLentHoldings(int recordId) {
-		return this.dao.countLentHoldings(recordId);
-	}
-
-	public LendingDTO getLatest(int holdingSerial, int userId) {
-		return this.dao.getLatest(holdingSerial, userId);
-	}
-
-	public Integer countLendings() {
-		return this.dao.countLendings();
-	}
-
-	public List<LendingDTO> listLendings(List<Integer> lendingsIds) {
-		List<LendingDTO> lendingList = new ArrayList<LendingDTO>();
-
-		for (Integer id : lendingsIds) {
-			lendingList.add(this.get(id));
-		}
-
-		return lendingList;
-	}
-
-	public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
-			throws TemplateException, IOException {
-		PrinterType printerType = PrinterType.fromString(Configurations.getString(this.getSchema(), Constants.CONFIG_LENDING_PRINTER_TYPE));
-		int columns = 24;
-
-		if (printerType != null) {
-			switch (printerType) {
-			case PRINTER_40_COLUMNS:
-				columns = 40;
-				break;
-			case PRINTER_80_COLUMNS:
-				columns = 80;
-				break;
-			case PRINTER_COMMON:
-				columns = 0;
-				break;
-			case PRINTER_24_COLUMNS:
-			default:
-				break;
-			}
-		}
-
-		if (columns == 0) {
-			return this.generateTableReceipt(lendingsIds, i18n);
-		} else {
-			return this.generateTxtReceipt(lendingsIds, i18n, columns);
-		}
-	}
-
-	private String generateTxtReceipt(List<Integer> lendingsIds, TranslationsMap i18n, int columns) {
-		DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
-
-		List<LendingDTO> lendings = this.listLendings(lendingsIds);
-		if (lendings == null || lendings.isEmpty()) {
-			return "";
-		}
-		List<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
-		if (lendingInfo == null || lendingInfo.isEmpty()) {
-			return "";
-		}
-
-		StringBuilder receipt = new StringBuilder();
-		receipt.append("<pre>\n");
-		receipt.append(StringUtils.repeat('*', columns)).append("\n");
-		receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
-
-		String libraryName = Configurations.getString(this.getSchema(), "general.title");
-
-		receipt.append("* ").append(StringUtils.center(libraryName, columns - 4)).append(" *\n");
-		receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
-		receipt.append(StringUtils.repeat('*', columns)).append("\n");
-		receipt.append(StringUtils.center(receiptDateFormat.format(new Date()), columns)).append("\n");
-		receipt.append("\n");
-
-		if (lendingInfo.size() > 0) {
-
-			UserDTO user = lendingInfo.get(0).getUser();
-
-			String nameLabel = i18n.getText("circulation.user_field.name");
-			String userName = StringEscapeUtils.escapeHtml4(user.getName());
-			String idLabel = i18n.getText("circulation.user_field.id");
-			String enrollment = user.getEnrollment();
-
-			receipt.append(nameLabel).append(":");
-			if (nameLabel.length() + userName.length() + 2 > columns) {
-				receipt.append("\n");
-				receipt.append("   ").append(StringUtils.abbreviate(userName, columns - 3)).append("\n");
-			} else {
-				receipt.append(" ").append(StringUtils.abbreviate(userName, columns - nameLabel.length() -3)).append("\n");
-			}
-
-			receipt.append(idLabel).append(":");
-			if (idLabel.length() + enrollment.length() + 2 > columns) {
-				receipt.append("\n");
-				receipt.append("   ").append(StringUtils.abbreviate(enrollment, columns - 3)).append("\n");
-			} else {
-				receipt.append(" ").append(StringUtils.abbreviate(enrollment, columns - idLabel.length() - 3)).append("\n");
-			}
-			receipt.append("\n");
-
-			List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
-			List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
-			List<LendingInfoDTO> currentReturns = new ArrayList<LendingInfoDTO>();
-
-			for (LendingInfoDTO info : lendingInfo) {
-				LendingDTO lendingDto = info.getLending();
-				if (lendingDto.getReturnDate() != null) {
-					currentReturns.add(info);
-					continue;
-				} else if (lendingDto.getPreviousLendingId() != null && lendingDto.getPreviousLendingId() > 0) {
-					currentRenews.add(info);
-					continue;
-				} else {
-					currentLendings.add(info);
-				}
-			}
-
-			String authorLabel = i18n.getText("circulation.lending.receipt.author");
-			String titleLabel = i18n.getText("circulation.lending.receipt.title");
-			String biblioLabel = i18n.getText("circulation.lending.receipt.holding_id");
-			String holdingLabel = i18n.getText("circulation.lending.receipt.accession_number");
-			String expectedDateLabel = i18n.getText("circulation.lending.receipt.expected_return_date");
-			String returnDateLabel = i18n.getText("circulation.lending.receipt.return_date");
-			String lendingDateLabel = i18n.getText("circulation.lending.receipt.lending_date");
-
-			DateFormat returnDateFormat =
-					new SimpleDateFormat(i18n.getText(Constants.TRANSLATION_FORMAT_DATE));
-
-			if (!currentLendings.isEmpty()) {
-
-				String header = "**" + i18n.getText("circulation.lending.receipt.lendings") + "**";
-				receipt.append(StringUtils.center(header, columns)).append("\n");
-				receipt.append("\n");
-
-				for (LendingInfoDTO info : currentLendings) {
-					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-					receipt.append(authorLabel).append(":\n");
-					String author = info.getBiblio().getAuthor();
-					author = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(author, columns - 3));
-					receipt.append("   ").append(author).append("\n");
-					receipt.append(titleLabel).append(":\n");
-					String title = info.getBiblio().getTitle();
-					title = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(title, columns - 3));
-					receipt.append("   ").append(title).append("\n");
-					receipt.append(biblioLabel).append(":\n");
-					receipt.append("   ").append(info.getHolding().getId()).append("\n");
-					receipt.append(holdingLabel).append(":\n");
-					String accessionNumber = info.getHolding().getAccessionNumber();
-					accessionNumber = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(accessionNumber, columns - 3));
-					receipt.append("   ").append(accessionNumber).append("\n");
-					receipt.append(lendingDateLabel).append(":\n");
-					Date lendingDate = info.getLending().getCreated();
-					receipt.append("   ").append(receiptDateFormat.format(lendingDate)).append("\n");
-					receipt.append(expectedDateLabel).append(":\n");
-					Date expectedReturnDate = info.getLending().getExpectedReturnDate();
-					receipt.append("   ").append(returnDateFormat.format(expectedReturnDate)).append("\n");
-					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-					receipt.append("\n");
-				}
-
-			}
-
-			if (!currentRenews.isEmpty()) {
-
-				String header = "**" + i18n.getText("circulation.lending.receipt.renews") + "**";
-				receipt.append(StringUtils.center(header, columns)).append("\n");
-				receipt.append("\n");
-
-				for (LendingInfoDTO info : currentRenews) {
-					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-					receipt.append(authorLabel).append(":\n");
-					String author = info.getBiblio().getAuthor();
-					author = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(author, columns - 3));
-					receipt.append("   ").append(author).append("\n");
-					receipt.append(titleLabel).append(":\n");
-					String title = info.getBiblio().getTitle();
-					title = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(title, columns - 3));
-					receipt.append("   ").append(title).append("\n");
-					receipt.append(biblioLabel).append(":\n");
-					receipt.append("   ").append(info.getHolding().getId()).append("\n");
-					receipt.append(holdingLabel).append(":\n");
-					String accessionNumber = info.getHolding().getAccessionNumber();
-					accessionNumber = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(accessionNumber, columns - 3));
-					receipt.append("   ").append(accessionNumber).append("\n");
-					receipt.append(lendingDateLabel).append(":\n");
-					Date lendingDate = info.getLending().getCreated();
-					receipt.append("   ").append(receiptDateFormat.format(lendingDate)).append("\n");
-					receipt.append(expectedDateLabel).append(":\n");
-					Date expectedReturnDate = info.getLending().getExpectedReturnDate();
-					receipt.append("   ").append(returnDateFormat.format(expectedReturnDate)).append("\n");
-					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-					receipt.append("\n");
-				}
-
-			}
-
-			if (!currentReturns.isEmpty()) {
-
-				String header = "**" + i18n.getText("circulation.lending.receipt.returns") + "**";
-				receipt.append(StringUtils.center(header, columns)).append("\n");
-				receipt.append("\n");
-
-				for (LendingInfoDTO info : currentReturns) {
-					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-					receipt.append(authorLabel).append(":\n");
-					String author = info.getBiblio().getAuthor();
-					author = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(author, columns - 3));
-					receipt.append("   ").append(author).append("\n");
-					receipt.append(titleLabel).append(":\n");
-					String title = info.getBiblio().getTitle();
-					title = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(title, columns - 3));
-					receipt.append("   ").append(title).append("\n");
-					receipt.append(biblioLabel).append(":\n");
-					receipt.append("   ").append(info.getHolding().getId()).append("\n");
-					receipt.append(holdingLabel).append(":\n");
-					String accessionNumber = info.getHolding().getAccessionNumber();
-					accessionNumber = StringEscapeUtils.escapeHtml4(StringUtils.abbreviate(accessionNumber, columns - 3));
-					receipt.append("   ").append(accessionNumber).append("\n");
-					receipt.append(lendingDateLabel).append(":\n");
-					Date lendingDate = info.getLending().getCreated();
-					receipt.append("   ").append(receiptDateFormat.format(lendingDate)).append("\n");
-					receipt.append(returnDateLabel).append(":\n");
-					Date returnDate = info.getLending().getReturnDate();
-					receipt.append("   ").append(receiptDateFormat.format(returnDate)).append("\n");
-					receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-					receipt.append("\n");
-				}
-
-			}
-		}
-		receipt.append("\n");
-		receipt.append(StringUtils.repeat('*', columns)).append("\n");
-		receipt.append("</pre>\n");
-
-		return receipt.toString();
-	}
-
-	private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
-			throws TemplateException, IOException {
-
-		Template template = null;
-
-		template = FreemarkerTemplateHelper.freemarkerConfiguration.getTemplate("receipt.ftl");
-
-		Map<String, Object> root = new HashMap<>();
-
-		String formatDateTime = i18n.getText(Constants.TRANSLATION_FORMAT_DATETIME);
-
-		DateFormat dateTimeFormat = new SimpleDateFormat(formatDateTime);
-
-		root.put("dateTimeFormat", formatDateTime);
-
-		String formatDate = i18n.getText(Constants.TRANSLATION_FORMAT_DATE);
-
-		root.put("dateFormat", formatDate);
-
-		List<LendingDTO> lendings = this.listLendings(lendingsIds);
-
-		if (lendings == null || lendings.isEmpty()) {
-			return "";
-		}
-
-		List<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
-
-		if (lendingInfo == null || lendingInfo.isEmpty()) {
-			return "";
-		}
-
-		root.put("lendingInfo", lendingInfo);
-
-		String libraryName = Configurations.getString(this.getSchema(), "general.title");
-		String now = dateTimeFormat.format(new Date());
-
-		root.put("libraryName", libraryName);
-		root.put("now", now);
-
-		if (lendingInfo.size() > 0) {
-
-			UserDTO user = lendingInfo.get(0).getUser();
-
-			root.put("user", user);
-
-			String nameLabel = i18n.getText("circulation.user_field.name");
-
-			root.put("nameLabel", nameLabel);
-
-			String userName = StringEscapeUtils.escapeHtml4(user.getName());
-
-			root.put("userName", userName);
-
-			String idLabel = i18n.getText("circulation.user_field.id");
-
-			root.put("idLabel", idLabel);
-
-			String enrollment = user.getEnrollment();
-
-			root.put("enrollment", enrollment);
-
-			List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
-			List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
-			List<LendingInfoDTO> currentReturns = new ArrayList<LendingInfoDTO>();
-
-			for (LendingInfoDTO info : lendingInfo) {
-				LendingDTO lendingDto = info.getLending();
-
-				if (lendingDto.getReturnDate() != null) {
-					currentReturns.add(info);
-					continue;
-				} else if (lendingDto.getPreviousLendingId() != null && lendingDto.getPreviousLendingId() > 0) {
-					currentRenews.add(info);
-					continue;
-				} else {
-					currentLendings.add(info);
-				}
-			}
-
-			String authorLabel = i18n.getText("circulation.lending.receipt.author");
-			String titleLabel = i18n.getText("circulation.lending.receipt.title");
-			String biblioLabel = i18n.getText("circulation.lending.receipt.holding_id");
-			String holdingLabel = i18n.getText("circulation.lending.receipt.accession_number");
-			String expectedDateLabel = i18n.getText("circulation.lending.receipt.expected_return_date");
-			String returnDateLabel = i18n.getText("circulation.lending.receipt.return_date");
-			String lendingDateLabel = i18n.getText("circulation.lending.receipt.lending_date");
-
-			root.put("currentLendings", currentLendings);
-			root.put("currentRenews", currentRenews);
-			root.put("currentReturns", currentReturns);
-
-			root.put("authorLabel", authorLabel);
-			root.put("titleLabel", titleLabel);
-			root.put("biblioLabel", biblioLabel);
-			root.put("holdingLabel", holdingLabel);
-			root.put("expectedDateLabel", expectedDateLabel);
-			root.put("returnDateLabel", returnDateLabel);
-			root.put("lendingDateLabel", lendingDateLabel);
-
-			if (!currentLendings.isEmpty()) {
-				String header = i18n.getText("circulation.lending.receipt.lendings");
-
-				root.put("header", header);
-			}
-
-			if (!currentRenews.isEmpty()) {
-				String header = i18n.getText("circulation.lending.receipt.renews");
-
-				root.put("renewsHeader", header);
-
-			}
-
-			if (!currentReturns.isEmpty()) {
-
-				String header = i18n.getText("circulation.lending.receipt.returns");
-
-				root.put("returnsHeader", header);
-			}
-		}
-
-		StringWriter writer = new StringWriter();
-
-		template.process(root, writer);
-
-		return writer.toString();
-	}
-
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
-
-
-//	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {
-//		List<LendingInfoDTO> result = new ArrayList<LendingInfoDTO>();
-//		List<LendingDTO> lendings = new LendingDAO().listByRecordSerial(recordSerial);
-//		for (LendingDTO lending : lendings) {
-//			result.add(new LendingInfoDTO(lending));
-//		}
-//		return result;
-//	}
+    private LendingDAO dao;
+
+    public static LendingBO getInstance(String schema) {
+        LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
+
+        if (bo.dao == null) {
+            bo.dao = LendingDAO.getInstance(schema);
+        }
+
+        return bo;
+    }
+
+    public LendingDTO get(Integer lendingId) {
+        return this.dao.get(lendingId);
+    }
+
+    public boolean isLent(HoldingDTO holding) {
+        return this.getCurrentLending(holding) != null;
+    }
+
+    public boolean wasEverLent(HoldingDTO holding) {
+        List<LendingDTO> history = this.dao.listHistory(holding);
+        return history.size() > 0;
+    }
+
+    public LendingDTO getCurrentLending(HoldingDTO holding) {
+        return this.dao.getCurrentLending(holding);
+    }
+
+    public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
+        return this.dao.getCurrentLendingMap(ids);
+    }
+
+    public void checkLending(HoldingDTO holding, UserDTO user) {
+
+        // User cannot be blocked
+        if (UserStatus.BLOCKED.equals(user.getStatus())
+                || UserStatus.INACTIVE.equals(user.getStatus())) {
+            throw new ValidationException("cataloging.lending.error.blocked_user");
+        }
+
+        // The material must be available
+        if (!HoldingAvailability.AVAILABLE.equals(holding.getAvailability())) {
+            throw new ValidationException("cataloging.lending.error.holding_unavailable");
+        }
+
+        // The material can't be already lent
+        if (this.isLent(holding)) {
+            throw new ValidationException("cataloging.lending.error.holding_is_lent");
+        }
+
+        // The lending limit (total number of materials that can be lent to a
+        // specific user) must be preserved
+        if (!this.checkUserLendLimit(user, false)) {
+            throw new ValidationException("cataloging.lending.error.limit_exceeded");
+        }
+    }
+
+    public void checkRenew(HoldingDTO holding, UserDTO user) {
+        // User cannot be blocked
+        if (UserStatus.BLOCKED.equals(user.getStatus())
+                || UserStatus.INACTIVE.equals(user.getStatus())) {
+            throw new ValidationException("cataloging.lending.error.blocked_user");
+        }
+
+        // The material must be available
+        if (!HoldingAvailability.AVAILABLE.equals(holding.getAvailability())) {
+            throw new ValidationException("cataloging.lending.error.holding_unavailable");
+        }
+
+        // The lending limit (total number of materials that can be lent to a
+        // specific user) must be preserved
+        if (!this.checkUserLendLimit(user, true)) {
+            throw new ValidationException("cataloging.lending.error.limit_exceeded");
+        }
+    }
+
+    public boolean checkUserLendLimit(UserDTO user, boolean renew) {
+        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeDTO type = userTypeBo.get(user.getType());
+        Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
+        Integer count = this.dao.getCurrentLendingsCount(user);
+
+        return renew ? (count <= lendingLimit) : (count < lendingLimit);
+    }
+
+    public Integer getCurrentLendingsCount(UserDTO user) {
+        return this.dao.getCurrentLendingsCount(user);
+    }
+
+    public boolean doLend(HoldingDTO holding, UserDTO user, int createdBy) {
+        this.checkLending(holding, user);
+
+        LendingDTO lending = new LendingDTO();
+        lending.setHoldingId(holding.getId());
+        lending.setUserId(user.getId());
+
+        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeDTO type = userTypeBo.get(user.getType());
+
+        Date today = new Date();
+        int days = (type != null) ? type.getLendingTimeLimit() : 7;
+        Date expectedReturnDate =
+                CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
+        lending.setExpectedReturnDate(expectedReturnDate);
+
+        if (this.dao.doLend(lending)) {
+            ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
+            rbo.delete(user.getId(), holding.getRecordId());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean doReturn(LendingDTO lending, Float fineValue, boolean paid) {
+        this.dao.doReturn(lending.getId());
+
+        if (fineValue > 0) {
+            LendingFineBO fineBo = LendingFineBO.getInstance(this.getSchema());
+            fineBo.createFine(lending, fineValue, paid);
+        }
+
+        return true;
+    }
+
+    public boolean doRenew(LendingDTO lending) {
+        UserBO userBo = UserBO.getInstance(this.getSchema());
+        UserDTO userDto = userBo.get(lending.getUserId());
+        if (userDto == null) {
+            throw new ValidationException("cataloging.lending.error.user_not_found");
+        }
+
+        HoldingBO holdingBo = HoldingBO.getInstance(this.getSchema());
+        HoldingDTO holding = (HoldingDTO) holdingBo.get(lending.getHoldingId());
+        this.checkRenew(holding, userDto);
+
+        UserTypeBO userTypeBO = UserTypeBO.getInstance(this.getSchema());
+        UserTypeDTO type = userTypeBO.get(userDto.getType());
+
+        Date today = new Date();
+        int days = (type != null) ? type.getLendingTimeLimit() : 7;
+        Date expectedReturnDate =
+                CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
+        lending.setExpectedReturnDate(expectedReturnDate);
+
+        return this.dao.doRenew(
+                lending.getId(), lending.getExpectedReturnDate(), lending.getCreatedBy());
+    }
+
+    public List<LendingDTO> listHistory(UserDTO user) {
+        List<LendingDTO> list = this.dao.listHistory(user);
+        DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
+        collection.addAll(list);
+        return collection;
+    }
+
+    public DTOCollection<LendingDTO> listLendings(UserDTO user) {
+        List<LendingDTO> list = this.dao.listLendings(user);
+        DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
+        collection.addAll(list);
+        return collection;
+    }
+
+    public List<LendingDTO> listUserLendings(UserDTO user) {
+        return this.dao.listLendings(user);
+    }
+
+    public DTOCollection<LendingInfoDTO> listLendings(int offset, int limit) {
+        List<LendingDTO> list = this.dao.listLendings(offset, limit);
+        return this.populateLendingInfo(list);
+    }
+
+    public Integer countHistory(UserDTO user) {
+        return this.dao.countHistory(user);
+    }
+
+    public Integer countLendings(UserDTO user) {
+        return this.dao.countLendings(user);
+    }
+
+    public DTOCollection<LendingInfoDTO> populateLendingInfoByHolding(
+            DTOCollection<HoldingDTO> holdingList) {
+        String schema = this.getSchema();
+
+        Set<Integer> users = new HashSet<Integer>();
+        Set<Integer> records = new HashSet<Integer>();
+        Set<Integer> holdings = new HashSet<Integer>();
+
+        for (HoldingDTO holding : holdingList) {
+            holdings.add(holding.getId());
+
+            Integer recordId = holding.getRecordId();
+            if (recordId != null) {
+                records.add(recordId);
+            }
+        }
+
+        UserBO ubo = UserBO.getInstance(schema);
+        BiblioRecordBO bbo = BiblioRecordBO.getInstance(schema);
+
+        Map<Integer, LendingDTO> lendingsMap = this.getCurrentLendingMap(holdings);
+        for (Entry<Integer, LendingDTO> entry : lendingsMap.entrySet()) {
+            Integer userid = entry.getValue().getUserId();
+            if (userid != null) {
+                users.add(userid);
+            }
+        }
+
+        Map<Integer, RecordDTO> recordsMap = new HashMap<Integer, RecordDTO>();
+        if (!records.isEmpty()) {
+            recordsMap = bbo.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
+        }
+
+        Map<Integer, UserDTO> usersMap = new HashMap<Integer, UserDTO>();
+        if (!users.isEmpty()) {
+            usersMap = ubo.map(users);
+        }
+
+        // Join data
+        DTOCollection<LendingInfoDTO> collection = new DTOCollection<LendingInfoDTO>();
+        collection.setPaging(holdingList.getPaging());
+
+        LendingFineBO lfbo = LendingFineBO.getInstance(schema);
+
+        for (HoldingDTO holding : holdingList) {
+            LendingInfoDTO info = new LendingInfoDTO();
+
+            Integer holdingId = holding.getId();
+            Integer recordId = holding.getRecordId();
+
+            info.setHolding(holding);
+
+            if (recordId != null) {
+                info.setBiblio((BiblioRecordDTO) recordsMap.get(recordId));
+            }
+
+            LendingDTO lending = lendingsMap.get(holdingId);
+            if (lending != null) {
+                info.setLending(lending);
+
+                if (lending.getUserId() != null) {
+                    UserDTO user = usersMap.get(lending.getUserId());
+                    UserTypeBO utbo = UserTypeBO.getInstance(schema);
+                    UserTypeDTO userType = utbo.get(user.getType());
+                    user.setUsertypeName(userType.getName());
+                    info.setUser(user);
+
+                    Integer daysLate = lfbo.calculateLateDays(lending);
+                    if (daysLate > 0) {
+                        Float dailyFine = userType.getFineValue();
+                        lending.setDaysLate(daysLate);
+                        lending.setDailyFine(dailyFine);
+                        lending.setEstimatedFine(dailyFine * daysLate);
+                    }
+                }
+            }
+
+            collection.add(info);
+        }
+
+        return collection;
+    }
+
+    public DTOCollection<LendingInfoDTO> populateLendingInfo(List<LendingDTO> list) {
+        return this.populateLendingInfo(list, true);
+    }
+
+    public DTOCollection<LendingInfoDTO> populateLendingInfo(
+            List<LendingDTO> list, boolean populateUser) {
+        String schema = this.getSchema();
+
+        DTOCollection<LendingInfoDTO> collection = new DTOCollection<LendingInfoDTO>();
+
+        Set<Integer> userIds = new HashSet<Integer>();
+        Set<Integer> holdingIds = new HashSet<Integer>();
+        Set<Integer> recordIds = new HashSet<Integer>();
+
+        for (LendingDTO lending : list) {
+            if (populateUser && lending.getUserId() != null) {
+                userIds.add(lending.getUserId());
+            }
+
+            if (lending.getHoldingId() != null) {
+                holdingIds.add(lending.getHoldingId());
+            }
+        }
+
+        UserBO userBo = UserBO.getInstance(schema);
+        HoldingBO holdingBo = HoldingBO.getInstance(schema);
+        BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
+
+        Map<Integer, UserDTO> users = new HashMap<Integer, UserDTO>();
+        if (!userIds.isEmpty()) {
+            users = userBo.map(userIds);
+        }
+
+        Map<Integer, RecordDTO> holdings = new HashMap<Integer, RecordDTO>();
+        if (!holdingIds.isEmpty()) {
+            holdings = holdingBo.map(holdingIds);
+        }
+
+        for (RecordDTO holding : holdings.values()) {
+            recordIds.add(((HoldingDTO) holding).getRecordId());
+        }
+
+        Map<Integer, RecordDTO> records = new HashMap<Integer, RecordDTO>();
+        if (!recordIds.isEmpty()) {
+            records = biblioBo.map(recordIds, RecordBO.MARC_INFO);
+        }
+
+        for (LendingDTO lending : list) {
+            UserDTO user = users.get(lending.getUserId());
+            HoldingDTO holding = (HoldingDTO) holdings.get(lending.getHoldingId());
+            BiblioRecordDTO record =
+                    (holding != null) ? (BiblioRecordDTO) records.get(holding.getRecordId()) : null;
+
+            LendingInfoDTO info = new LendingInfoDTO();
+            info.setLending(lending);
+            info.setUser(user);
+            info.setHolding(holding);
+            info.setBiblio(record);
+
+            collection.add(info);
+        }
+
+        return collection;
+    }
+
+    public Integer countLentHoldings(int recordId) {
+        return this.dao.countLentHoldings(recordId);
+    }
+
+    public LendingDTO getLatest(int holdingSerial, int userId) {
+        return this.dao.getLatest(holdingSerial, userId);
+    }
+
+    public Integer countLendings() {
+        return this.dao.countLendings();
+    }
+
+    public List<LendingDTO> listLendings(List<Integer> lendingsIds) {
+        List<LendingDTO> lendingList = new ArrayList<LendingDTO>();
+
+        for (Integer id : lendingsIds) {
+            lendingList.add(this.get(id));
+        }
+
+        return lendingList;
+    }
+
+    public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
+            throws TemplateException, IOException {
+        PrinterType printerType =
+                PrinterType.fromString(
+                        Configurations.getString(
+                                this.getSchema(), Constants.CONFIG_LENDING_PRINTER_TYPE));
+        int columns = 24;
+
+        if (printerType != null) {
+            switch (printerType) {
+                case PRINTER_40_COLUMNS:
+                    columns = 40;
+                    break;
+                case PRINTER_80_COLUMNS:
+                    columns = 80;
+                    break;
+                case PRINTER_COMMON:
+                    columns = 0;
+                    break;
+                case PRINTER_24_COLUMNS:
+                default:
+                    break;
+            }
+        }
+
+        if (columns == 0) {
+            return this.generateTableReceipt(lendingsIds, i18n);
+        } else {
+            return this.generateTxtReceipt(lendingsIds, i18n, columns);
+        }
+    }
+
+    private String generateTxtReceipt(
+            List<Integer> lendingsIds, TranslationsMap i18n, int columns) {
+        DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
+
+        List<LendingDTO> lendings = this.listLendings(lendingsIds);
+        if (lendings == null || lendings.isEmpty()) {
+            return "";
+        }
+        List<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+        if (lendingInfo == null || lendingInfo.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("<pre>\n");
+        receipt.append(StringUtils.repeat('*', columns)).append("\n");
+        receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
+
+        String libraryName = Configurations.getString(this.getSchema(), "general.title");
+
+        receipt.append("* ").append(StringUtils.center(libraryName, columns - 4)).append(" *\n");
+        receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
+        receipt.append(StringUtils.repeat('*', columns)).append("\n");
+        receipt.append(StringUtils.center(receiptDateFormat.format(new Date()), columns))
+                .append("\n");
+        receipt.append("\n");
+
+        if (lendingInfo.size() > 0) {
+
+            UserDTO user = lendingInfo.get(0).getUser();
+
+            String nameLabel = i18n.getText("circulation.user_field.name");
+            String userName = StringEscapeUtils.escapeHtml4(user.getName());
+            String idLabel = i18n.getText("circulation.user_field.id");
+            String enrollment = user.getEnrollment();
+
+            receipt.append(nameLabel).append(":");
+            if (nameLabel.length() + userName.length() + 2 > columns) {
+                receipt.append("\n");
+                receipt.append("   ")
+                        .append(StringUtils.abbreviate(userName, columns - 3))
+                        .append("\n");
+            } else {
+                receipt.append(" ")
+                        .append(StringUtils.abbreviate(userName, columns - nameLabel.length() - 3))
+                        .append("\n");
+            }
+
+            receipt.append(idLabel).append(":");
+            if (idLabel.length() + enrollment.length() + 2 > columns) {
+                receipt.append("\n");
+                receipt.append("   ")
+                        .append(StringUtils.abbreviate(enrollment, columns - 3))
+                        .append("\n");
+            } else {
+                receipt.append(" ")
+                        .append(StringUtils.abbreviate(enrollment, columns - idLabel.length() - 3))
+                        .append("\n");
+            }
+            receipt.append("\n");
+
+            List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
+            List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
+            List<LendingInfoDTO> currentReturns = new ArrayList<LendingInfoDTO>();
+
+            for (LendingInfoDTO info : lendingInfo) {
+                LendingDTO lendingDto = info.getLending();
+                if (lendingDto.getReturnDate() != null) {
+                    currentReturns.add(info);
+                    continue;
+                } else if (lendingDto.getPreviousLendingId() != null
+                        && lendingDto.getPreviousLendingId() > 0) {
+                    currentRenews.add(info);
+                    continue;
+                } else {
+                    currentLendings.add(info);
+                }
+            }
+
+            String authorLabel = i18n.getText("circulation.lending.receipt.author");
+            String titleLabel = i18n.getText("circulation.lending.receipt.title");
+            String biblioLabel = i18n.getText("circulation.lending.receipt.holding_id");
+            String holdingLabel = i18n.getText("circulation.lending.receipt.accession_number");
+            String expectedDateLabel =
+                    i18n.getText("circulation.lending.receipt.expected_return_date");
+            String returnDateLabel = i18n.getText("circulation.lending.receipt.return_date");
+            String lendingDateLabel = i18n.getText("circulation.lending.receipt.lending_date");
+
+            DateFormat returnDateFormat =
+                    new SimpleDateFormat(i18n.getText(Constants.TRANSLATION_FORMAT_DATE));
+
+            if (!currentLendings.isEmpty()) {
+
+                String header = "**" + i18n.getText("circulation.lending.receipt.lendings") + "**";
+                receipt.append(StringUtils.center(header, columns)).append("\n");
+                receipt.append("\n");
+
+                for (LendingInfoDTO info : currentLendings) {
+                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append(authorLabel).append(":\n");
+                    String author = info.getBiblio().getAuthor();
+                    author =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(author, columns - 3));
+                    receipt.append("   ").append(author).append("\n");
+                    receipt.append(titleLabel).append(":\n");
+                    String title = info.getBiblio().getTitle();
+                    title =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(title, columns - 3));
+                    receipt.append("   ").append(title).append("\n");
+                    receipt.append(biblioLabel).append(":\n");
+                    receipt.append("   ").append(info.getHolding().getId()).append("\n");
+                    receipt.append(holdingLabel).append(":\n");
+                    String accessionNumber = info.getHolding().getAccessionNumber();
+                    accessionNumber =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(accessionNumber, columns - 3));
+                    receipt.append("   ").append(accessionNumber).append("\n");
+                    receipt.append(lendingDateLabel).append(":\n");
+                    Date lendingDate = info.getLending().getCreated();
+                    receipt.append("   ")
+                            .append(receiptDateFormat.format(lendingDate))
+                            .append("\n");
+                    receipt.append(expectedDateLabel).append(":\n");
+                    Date expectedReturnDate = info.getLending().getExpectedReturnDate();
+                    receipt.append("   ")
+                            .append(returnDateFormat.format(expectedReturnDate))
+                            .append("\n");
+                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append("\n");
+                }
+            }
+
+            if (!currentRenews.isEmpty()) {
+
+                String header = "**" + i18n.getText("circulation.lending.receipt.renews") + "**";
+                receipt.append(StringUtils.center(header, columns)).append("\n");
+                receipt.append("\n");
+
+                for (LendingInfoDTO info : currentRenews) {
+                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append(authorLabel).append(":\n");
+                    String author = info.getBiblio().getAuthor();
+                    author =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(author, columns - 3));
+                    receipt.append("   ").append(author).append("\n");
+                    receipt.append(titleLabel).append(":\n");
+                    String title = info.getBiblio().getTitle();
+                    title =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(title, columns - 3));
+                    receipt.append("   ").append(title).append("\n");
+                    receipt.append(biblioLabel).append(":\n");
+                    receipt.append("   ").append(info.getHolding().getId()).append("\n");
+                    receipt.append(holdingLabel).append(":\n");
+                    String accessionNumber = info.getHolding().getAccessionNumber();
+                    accessionNumber =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(accessionNumber, columns - 3));
+                    receipt.append("   ").append(accessionNumber).append("\n");
+                    receipt.append(lendingDateLabel).append(":\n");
+                    Date lendingDate = info.getLending().getCreated();
+                    receipt.append("   ")
+                            .append(receiptDateFormat.format(lendingDate))
+                            .append("\n");
+                    receipt.append(expectedDateLabel).append(":\n");
+                    Date expectedReturnDate = info.getLending().getExpectedReturnDate();
+                    receipt.append("   ")
+                            .append(returnDateFormat.format(expectedReturnDate))
+                            .append("\n");
+                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append("\n");
+                }
+            }
+
+            if (!currentReturns.isEmpty()) {
+
+                String header = "**" + i18n.getText("circulation.lending.receipt.returns") + "**";
+                receipt.append(StringUtils.center(header, columns)).append("\n");
+                receipt.append("\n");
+
+                for (LendingInfoDTO info : currentReturns) {
+                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append(authorLabel).append(":\n");
+                    String author = info.getBiblio().getAuthor();
+                    author =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(author, columns - 3));
+                    receipt.append("   ").append(author).append("\n");
+                    receipt.append(titleLabel).append(":\n");
+                    String title = info.getBiblio().getTitle();
+                    title =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(title, columns - 3));
+                    receipt.append("   ").append(title).append("\n");
+                    receipt.append(biblioLabel).append(":\n");
+                    receipt.append("   ").append(info.getHolding().getId()).append("\n");
+                    receipt.append(holdingLabel).append(":\n");
+                    String accessionNumber = info.getHolding().getAccessionNumber();
+                    accessionNumber =
+                            StringEscapeUtils.escapeHtml4(
+                                    StringUtils.abbreviate(accessionNumber, columns - 3));
+                    receipt.append("   ").append(accessionNumber).append("\n");
+                    receipt.append(lendingDateLabel).append(":\n");
+                    Date lendingDate = info.getLending().getCreated();
+                    receipt.append("   ")
+                            .append(receiptDateFormat.format(lendingDate))
+                            .append("\n");
+                    receipt.append(returnDateLabel).append(":\n");
+                    Date returnDate = info.getLending().getReturnDate();
+                    receipt.append("   ").append(receiptDateFormat.format(returnDate)).append("\n");
+                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append("\n");
+                }
+            }
+        }
+        receipt.append("\n");
+        receipt.append(StringUtils.repeat('*', columns)).append("\n");
+        receipt.append("</pre>\n");
+
+        return receipt.toString();
+    }
+
+    private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
+            throws TemplateException, IOException {
+
+        Template template = null;
+
+        template = FreemarkerTemplateHelper.freemarkerConfiguration.getTemplate("receipt.ftl");
+
+        Map<String, Object> root = new HashMap<>();
+
+        String formatDateTime = i18n.getText(Constants.TRANSLATION_FORMAT_DATETIME);
+
+        DateFormat dateTimeFormat = new SimpleDateFormat(formatDateTime);
+
+        root.put("dateTimeFormat", formatDateTime);
+
+        String formatDate = i18n.getText(Constants.TRANSLATION_FORMAT_DATE);
+
+        root.put("dateFormat", formatDate);
+
+        List<LendingDTO> lendings = this.listLendings(lendingsIds);
+
+        if (lendings == null || lendings.isEmpty()) {
+            return "";
+        }
+
+        List<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+
+        if (lendingInfo == null || lendingInfo.isEmpty()) {
+            return "";
+        }
+
+        root.put("lendingInfo", lendingInfo);
+
+        String libraryName = Configurations.getString(this.getSchema(), "general.title");
+        String now = dateTimeFormat.format(new Date());
+
+        root.put("libraryName", libraryName);
+        root.put("now", now);
+
+        if (lendingInfo.size() > 0) {
+
+            UserDTO user = lendingInfo.get(0).getUser();
+
+            root.put("user", user);
+
+            String nameLabel = i18n.getText("circulation.user_field.name");
+
+            root.put("nameLabel", nameLabel);
+
+            String userName = StringEscapeUtils.escapeHtml4(user.getName());
+
+            root.put("userName", userName);
+
+            String idLabel = i18n.getText("circulation.user_field.id");
+
+            root.put("idLabel", idLabel);
+
+            String enrollment = user.getEnrollment();
+
+            root.put("enrollment", enrollment);
+
+            List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
+            List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
+            List<LendingInfoDTO> currentReturns = new ArrayList<LendingInfoDTO>();
+
+            for (LendingInfoDTO info : lendingInfo) {
+                LendingDTO lendingDto = info.getLending();
+
+                if (lendingDto.getReturnDate() != null) {
+                    currentReturns.add(info);
+                    continue;
+                } else if (lendingDto.getPreviousLendingId() != null
+                        && lendingDto.getPreviousLendingId() > 0) {
+                    currentRenews.add(info);
+                    continue;
+                } else {
+                    currentLendings.add(info);
+                }
+            }
+
+            String authorLabel = i18n.getText("circulation.lending.receipt.author");
+            String titleLabel = i18n.getText("circulation.lending.receipt.title");
+            String biblioLabel = i18n.getText("circulation.lending.receipt.holding_id");
+            String holdingLabel = i18n.getText("circulation.lending.receipt.accession_number");
+            String expectedDateLabel =
+                    i18n.getText("circulation.lending.receipt.expected_return_date");
+            String returnDateLabel = i18n.getText("circulation.lending.receipt.return_date");
+            String lendingDateLabel = i18n.getText("circulation.lending.receipt.lending_date");
+
+            root.put("currentLendings", currentLendings);
+            root.put("currentRenews", currentRenews);
+            root.put("currentReturns", currentReturns);
+
+            root.put("authorLabel", authorLabel);
+            root.put("titleLabel", titleLabel);
+            root.put("biblioLabel", biblioLabel);
+            root.put("holdingLabel", holdingLabel);
+            root.put("expectedDateLabel", expectedDateLabel);
+            root.put("returnDateLabel", returnDateLabel);
+            root.put("lendingDateLabel", lendingDateLabel);
+
+            if (!currentLendings.isEmpty()) {
+                String header = i18n.getText("circulation.lending.receipt.lendings");
+
+                root.put("header", header);
+            }
+
+            if (!currentRenews.isEmpty()) {
+                String header = i18n.getText("circulation.lending.receipt.renews");
+
+                root.put("renewsHeader", header);
+            }
+
+            if (!currentReturns.isEmpty()) {
+
+                String header = i18n.getText("circulation.lending.receipt.returns");
+
+                root.put("returnsHeader", header);
+            }
+        }
+
+        StringWriter writer = new StringWriter();
+
+        template.process(root, writer);
+
+        return writer.toString();
+    }
+
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
+
+    //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {
+    //		List<LendingInfoDTO> result = new ArrayList<LendingInfoDTO>();
+    //		List<LendingDTO> lendings = new LendingDAO().listByRecordSerial(recordSerial);
+    //		for (LendingDTO lending : lendings) {
+    //			result.add(new LendingInfoDTO(lending));
+    //		}
+    //		return result;
+    //	}
 
 }

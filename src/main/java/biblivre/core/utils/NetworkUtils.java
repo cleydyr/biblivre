@@ -24,43 +24,43 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class NetworkUtils {
-	public static boolean isLocalRequest(HttpServletRequest request) throws UnknownHostException {
-		InetAddress address = NetworkUtils.remoteIp(request);
+    public static boolean isLocalRequest(HttpServletRequest request) throws UnknownHostException {
+        InetAddress address = NetworkUtils.remoteIp(request);
 
-		if (address.isAnyLocalAddress() || address.isLoopbackAddress()) {
-	        return true;
-		}
+        if (address.isAnyLocalAddress() || address.isLoopbackAddress()) {
+            return true;
+        }
 
-	    try {
-	        return NetworkInterface.getByInetAddress(address) != null;
-	    } catch (SocketException e) {
-	        return false;
-	    }
-	}
+        try {
+            return NetworkInterface.getByInetAddress(address) != null;
+        } catch (SocketException e) {
+            return false;
+        }
+    }
 
-	private static InetAddress remoteIp(final HttpServletRequest request) throws UnknownHostException {
-		final Enumeration<?> headers = request.getHeaders("X-Forwarded-for");
+    private static InetAddress remoteIp(final HttpServletRequest request)
+            throws UnknownHostException {
+        final Enumeration<?> headers = request.getHeaders("X-Forwarded-for");
 
-		if (headers != null) {
-			while (headers.hasMoreElements()) {
-				String nextElement = (String) headers.nextElement();
-				final String[] ips = nextElement.split(",");
-				for (int i = 0; i < ips.length; i++) {
-					final String proxy = ips[i].trim();
-					if (!"unknown".equals(proxy) && !proxy.isEmpty()) {
-						try {
-							return InetAddress.getByName(proxy);
-						} catch (UnknownHostException e) {
-						}
-					}
-				}
-			}
-		}
+        if (headers != null) {
+            while (headers.hasMoreElements()) {
+                String nextElement = (String) headers.nextElement();
+                final String[] ips = nextElement.split(",");
+                for (int i = 0; i < ips.length; i++) {
+                    final String proxy = ips[i].trim();
+                    if (!"unknown".equals(proxy) && !proxy.isEmpty()) {
+                        try {
+                            return InetAddress.getByName(proxy);
+                        } catch (UnknownHostException e) {
+                        }
+                    }
+                }
+            }
+        }
 
-		return InetAddress.getByName(request.getRemoteAddr());
-	}
+        return InetAddress.getByName(request.getRemoteAddr());
+    }
 }

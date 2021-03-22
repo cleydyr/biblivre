@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
+import biblivre.core.ExtendedRequest;
+import biblivre.core.ExtendedResponse;
+import biblivre.core.utils.Constants;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -29,48 +32,41 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import biblivre.core.ExtendedRequest;
-import biblivre.core.ExtendedResponse;
-import biblivre.core.utils.Constants;
-
-/**
- * Servlet Filter implementation class StatusExposingServletResponse
- */
+/** Servlet Filter implementation class StatusExposingServletResponse */
 public class ExtendedRequestResponseFilter implements Filter {
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
-		request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-		response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+        request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+        response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
-		ExtendedRequest xRequest = null;
-		ExtendedResponse xResponse = null;
+        ExtendedRequest xRequest = null;
+        ExtendedResponse xResponse = null;
 
-		if (request instanceof ExtendedRequest) {
-			// Avoid rewrapping if forwarding
-			xRequest = (ExtendedRequest) request;
-		} else {
-			xRequest = new ExtendedRequest((HttpServletRequest) request);
-		}
+        if (request instanceof ExtendedRequest) {
+            // Avoid rewrapping if forwarding
+            xRequest = (ExtendedRequest) request;
+        } else {
+            xRequest = new ExtendedRequest((HttpServletRequest) request);
+        }
 
-		if (response instanceof ExtendedResponse) {
-			// Avoid rewrapping if forwarding
-			xResponse = (ExtendedResponse) response;
-		} else {
-			xResponse = new ExtendedResponse((HttpServletResponse) response);
-		}
+        if (response instanceof ExtendedResponse) {
+            // Avoid rewrapping if forwarding
+            xResponse = (ExtendedResponse) response;
+        } else {
+            xResponse = new ExtendedResponse((HttpServletResponse) response);
+        }
 
-		chain.doFilter(xRequest, xResponse);
-	}
+        chain.doFilter(xRequest, xResponse);
+    }
 
-	@Override
-	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public void init(FilterConfig fConfig) throws ServletException {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void destroy() {
-	}
+    @Override
+    public void destroy() {}
 }

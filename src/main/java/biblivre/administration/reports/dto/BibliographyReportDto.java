@@ -23,23 +23,22 @@ import java.util.List;
 
 public class BibliographyReportDto extends BaseReportDto {
 
-	private String authorName;
-	private List<String[]> data;
+    private String authorName;
+    private List<String[]> data;
 
-	public List<String[]> getData() {
-		return this.data;
-	}
+    public List<String[]> getData() {
+        return this.data;
+    }
 
-	public void setData(List<String[]> data) {
-		this.data = data;
-	}
+    public void setData(List<String[]> data) {
+        this.data = data;
+    }
 
-	public String getAuthorName() {
-		return this.authorName;
-	}
+    public String getAuthorName() {
+        return this.authorName;
+    }
 
-	public void setAuthorName(String authorName) {
-		this.authorName = authorName;
-	}
-
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 }

@@ -19,59 +19,57 @@
  ******************************************************************************/
 package biblivre.administration.z3950;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+    public void validateSave(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		String name = request.getString("name");
-		if (StringUtils.isBlank(name)) {
-			ex.addError("name", "field.error.required");
-		}
+        String name = request.getString("name");
+        if (StringUtils.isBlank(name)) {
+            ex.addError("name", "field.error.required");
+        }
 
-		String url = request.getString("url");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("url", "field.error.required");
-		}
+        String url = request.getString("url");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("url", "field.error.required");
+        }
 
-		String port = request.getString("port");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("port", "field.error.required");
-		} else if (!StringUtils.isNumeric(port)) {
-			ex.addError("port", "field.error.digits_only");
-		}
+        String port = request.getString("port");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("port", "field.error.required");
+        } else if (!StringUtils.isNumeric(port)) {
+            ex.addError("port", "field.error.digits_only");
+        }
 
-		String collection = request.getString("collection");
-		if (StringUtils.isBlank(collection)) {
-			ex.addError("collection", "field.error.required");
-		}
+        String collection = request.getString("collection");
+        if (StringUtils.isBlank(collection)) {
+            ex.addError("collection", "field.error.required");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-		}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+        }
+    }
 
-	}
+    public void validateDelete(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        Integer id = request.getInteger("id");
+        if (id == null || id == 0) {
+            ex.addError("id", "TODO: ADD ERROR MESSAGE");
+        }
 
-		Integer id = request.getInteger("id");
-		if (id == null || id == 0) {
-			ex.addError("id", "TODO: ADD ERROR MESSAGE");
-		}
-
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-		}
-	}
-
-
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+        }
+    }
 }

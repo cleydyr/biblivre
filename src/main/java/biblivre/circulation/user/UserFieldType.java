@@ -19,41 +19,40 @@
  ******************************************************************************/
 package biblivre.circulation.user;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
+public enum UserFieldType implements BiblivreEnum {
+    STRING,
+    TEXT,
+    NUMBER,
+    DATE,
+    DATETIME,
+    BOOLEAN,
+    LIST;
 
-public enum UserFieldType implements BiblivreEnum  {
-	STRING,
-	TEXT,
-	NUMBER,
-	DATE,
-	DATETIME,
-	BOOLEAN,
-	LIST;
+    public static UserFieldType fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-	public static UserFieldType fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+        str = str.toLowerCase();
 
-		str = str.toLowerCase();
+        for (UserFieldType type : UserFieldType.values()) {
+            if (str.equals(type.toString())) {
+                return type;
+            }
+        }
 
-		for (UserFieldType type : UserFieldType.values()) {
-			if (str.equals(type.toString())) {
-				return type;
-			}
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
-
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

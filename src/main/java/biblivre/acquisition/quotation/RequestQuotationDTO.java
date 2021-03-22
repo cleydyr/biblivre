@@ -22,60 +22,61 @@ package biblivre.acquisition.quotation;
 import biblivre.core.AbstractDTO;
 
 public class RequestQuotationDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private int requestId;
-	private int quotationId;
-	private int quantity;
-	private Float unitValue;
-	private int responseQuantity;
+    private int requestId;
+    private int quotationId;
+    private int quantity;
+    private Float unitValue;
+    private int responseQuantity;
 
-    transient private String title;
-    transient private String author;
+    private transient String title;
+    private transient String author;
 
-	public int getRequestId() {
-		return this.requestId;
-	}
+    public int getRequestId() {
+        return this.requestId;
+    }
 
-	public void setRequestId(int requestId) {
-		this.requestId = requestId;
-	}
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
+    }
 
-	public int getQuotationId() {
-		return this.quotationId;
-	}
+    public int getQuotationId() {
+        return this.quotationId;
+    }
 
-	public void setQuotationId(int quotationId) {
-		this.quotationId = quotationId;
-	}
+    public void setQuotationId(int quotationId) {
+        this.quotationId = quotationId;
+    }
 
-	public int getQuantity() {
-		return this.quantity;
-	}
+    public int getQuantity() {
+        return this.quantity;
+    }
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-	public Float getUnitValue() {
-		return this.unitValue;
-	}
+    public Float getUnitValue() {
+        return this.unitValue;
+    }
 
-	public void setUnitValue(Float unitValue) {
-		this.unitValue = unitValue;
-	}
+    public void setUnitValue(Float unitValue) {
+        this.unitValue = unitValue;
+    }
 
-	public int getResponseQuantity() {
-		return this.responseQuantity;
-	}
+    public int getResponseQuantity() {
+        return this.responseQuantity;
+    }
 
-	public void setResponseQuantity(int responseQuantity) {
-		this.responseQuantity = responseQuantity;
-	}
+    public void setResponseQuantity(int responseQuantity) {
+        this.responseQuantity = responseQuantity;
+    }
 
     public String getTitle() {
         return (this.title == null) ? "" : this.title.trim();
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -90,12 +91,12 @@ public class RequestQuotationDTO extends AbstractDTO {
 
     @Override
     public String toString() {
-		StringBuilder builder = new StringBuilder();
-    	builder.append(this.getQuantity());
-    	builder.append("x ");
-    	builder.append(this.getAuthor());
-    	builder.append(" - ");
-    	builder.append(this.getTitle());
-    	return builder.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.getQuantity());
+        builder.append("x ");
+        builder.append(this.getAuthor());
+        builder.append(" - ");
+        builder.append(this.getTitle());
+        return builder.toString();
     }
 }

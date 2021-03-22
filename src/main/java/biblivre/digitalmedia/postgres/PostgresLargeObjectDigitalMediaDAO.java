@@ -19,80 +19,77 @@
  ******************************************************************************/
 package biblivre.digitalmedia.postgres;
 
+import biblivre.core.exceptions.DAOException;
+import biblivre.core.file.BiblivreFile;
+import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.apache.commons.io.IOUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
-import biblivre.core.exceptions.DAOException;
-import biblivre.core.file.BiblivreFile;
-import biblivre.digitalmedia.DigitalMediaDAO;
-
 public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
 
-	@Override
-	public void persist(InputStream is, long oid, long size)
-		throws SQLException, IOException {
+    @Override
+    public void persist(InputStream is, long oid, long size) throws SQLException, IOException {
 
-		try (Connection con = this.getConnection()) {
+        try (Connection con = this.getConnection()) {
 
-			con.setAutoCommit(false);
+            con.setAutoCommit(false);
 
-			PGConnection pgcon = this.getPGConnection(con);
+            PGConnection pgcon = this.getPGConnection(con);
 
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+            LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
-			LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+            LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
 
-			IOUtils.copy(is, obj.getOutputStream());
+            IOUtils.copy(is, obj.getOutputStream());
 
-			obj.close();
+            obj.close();
 
-			this.commit(con);
-		}
-	}
+            this.commit(con);
+        }
+    }
 
-	@Override
-	protected void deleteBlob(long oid) {
-		try (Connection con = this.getConnection()) {
+    @Override
+    protected void deleteBlob(long oid) {
+        try (Connection con = this.getConnection()) {
 
-			con.setAutoCommit(false);
+            con.setAutoCommit(false);
 
-			PGConnection pgcon = this.getPGConnection(con);
+            PGConnection pgcon = this.getPGConnection(con);
 
-			LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+            LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
-			lobj.delete(oid);
+            lobj.delete(oid);
 
-			this.commit(con);
-		} catch (SQLException e) {
-			e.printStackTrace();
+            this.commit(con);
+        } catch (SQLException e) {
+            e.printStackTrace();
 
-			throw new DAOException(e);
-		}
-	}
+            throw new DAOException(e);
+        }
+    }
 
-	@Override
-	protected BiblivreFile getFile(long oid) throws Exception {
-		Connection con = this.getConnection();
+    @Override
+    protected BiblivreFile getFile(long oid) throws Exception {
+        Connection con = this.getConnection();
 
-		con.setAutoCommit(false);
+        con.setAutoCommit(false);
 
-		PGConnection pgcon = this.getPGConnection(con);
+        PGConnection pgcon = this.getPGConnection(con);
 
-		if (pgcon == null) {
-			throw new Exception("Invalid Delegating Connection");
-		}
+        if (pgcon == null) {
+            throw new Exception("Invalid Delegating Connection");
+        }
 
-		LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+        LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
-		LargeObject obj = lobj.open(oid);
+        LargeObject obj = lobj.open(oid);
 
-		return new DatabaseFile(con, obj);
-	}
+        return new DatabaseFile(con, obj);
+    }
 }

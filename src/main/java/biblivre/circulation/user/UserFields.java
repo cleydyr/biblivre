@@ -19,91 +19,90 @@
  ******************************************************************************/
 package biblivre.circulation.user;
 
+import biblivre.core.JavascriptCacheableList;
+import biblivre.core.StaticBO;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.JavascriptCacheableList;
-import biblivre.core.StaticBO;
-
 public class UserFields extends StaticBO {
 
-	private static Logger logger = LoggerFactory.getLogger(UserFields.class);
+    private static Logger logger = LoggerFactory.getLogger(UserFields.class);
 
-	private static HashMap<String, JavascriptCacheableList<UserFieldDTO>> fields;	 // FormTab
+    private static HashMap<String, JavascriptCacheableList<UserFieldDTO>> fields; // FormTab
 
-	private UserFields() {
-	}
+    private UserFields() {}
 
-	static {
-		UserFields.reset();
-	}
+    static {
+        UserFields.reset();
+    }
 
-	public static void reset() {
-		UserFields.fields = new HashMap<String, JavascriptCacheableList<UserFieldDTO>>();
-	}
+    public static void reset() {
+        UserFields.fields = new HashMap<String, JavascriptCacheableList<UserFieldDTO>>();
+    }
 
-	public static void reset(String schema) {
-		UserFields.fields.remove(schema);
-	}
+    public static void reset(String schema) {
+        UserFields.fields.remove(schema);
+    }
 
-	public static JavascriptCacheableList<UserFieldDTO> getFields(String schema) {
-		JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(schema);
+    public static JavascriptCacheableList<UserFieldDTO> getFields(String schema) {
+        JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(schema);
 
-		if (list == null) {
-			list = UserFields.loadFields(schema);
-		}
+        if (list == null) {
+            list = UserFields.loadFields(schema);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<UserFieldDTO> getSearchableFields(String schema) {
-		JavascriptCacheableList<UserFieldDTO> list = UserFields.getFields(schema);
+    public static List<UserFieldDTO> getSearchableFields(String schema) {
+        JavascriptCacheableList<UserFieldDTO> list = UserFields.getFields(schema);
 
-		List<UserFieldDTO> searcheableList = new LinkedList<UserFieldDTO>();
-		for (UserFieldDTO dto : list) {
+        List<UserFieldDTO> searcheableList = new LinkedList<UserFieldDTO>();
+        for (UserFieldDTO dto : list) {
 
-			switch (dto.getType()) {
-				case STRING:
-				case TEXT:
-				case NUMBER: searcheableList.add(dto); break;
-				case DATE:
-				case DATETIME:
-				case BOOLEAN:
-				case LIST:
-				default: break;
-			}
+            switch (dto.getType()) {
+                case STRING:
+                case TEXT:
+                case NUMBER:
+                    searcheableList.add(dto);
+                    break;
+                case DATE:
+                case DATETIME:
+                case BOOLEAN:
+                case LIST:
+                default:
+                    break;
+            }
+        }
 
-		}
+        return searcheableList;
+    }
 
-		return searcheableList;
-	}
+    private static synchronized JavascriptCacheableList<UserFieldDTO> loadFields(String schema) {
+        JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(schema);
 
+        // Checking again for thread safety.
+        if (list != null) {
+            return list;
+        }
 
-	private static synchronized JavascriptCacheableList<UserFieldDTO> loadFields(String schema) {
-		JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(schema);
+        if (UserFields.logger.isDebugEnabled()) {
+            UserFields.logger.debug("Loading user fields from " + schema + ".");
+        }
 
-		// Checking again for thread safety.
-		if (list != null) {
-			return list;
-		}
+        UserFieldsDAO dao = UserFieldsDAO.getInstance(schema);
 
-		if (UserFields.logger.isDebugEnabled()) {
-			UserFields.logger.debug("Loading user fields from " + schema + ".");
-		}
+        List<UserFieldDTO> fields = dao.listFields();
+        list =
+                new JavascriptCacheableList<UserFieldDTO>(
+                        "CirculationInput.userFields", schema + ".circulation", ".user_fields.js");
+        list.addAll(fields);
 
-		UserFieldsDAO dao = UserFieldsDAO.getInstance(schema);
+        UserFields.fields.put(schema, list);
 
-
-		List<UserFieldDTO> fields = dao.listFields();
-		list = new JavascriptCacheableList<UserFieldDTO>("CirculationInput.userFields", schema + ".circulation", ".user_fields.js");
-		list.addAll(fields);
-
-		UserFields.fields.put(schema, list);
-
-		return list;
-	}
+        return list;
+    }
 }

@@ -1,17 +1,5 @@
 package biblivre.administration.reports;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.Record;
-import org.marc4j.marc.Subfield;
-
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
 import biblivre.cataloging.RecordBO;
@@ -25,122 +13,135 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.Subfield;
 
 public class ReportsBO extends AbstractBO {
 
+    private ReportsDAO dao;
 
-	private ReportsDAO dao;
+    public static ReportsBO getInstance(String schema) {
+        ReportsBO bo = AbstractBO.getInstance(ReportsBO.class, schema);
 
-	public static ReportsBO getInstance(String schema) {
-		ReportsBO bo = AbstractBO.getInstance(ReportsBO.class, schema);
+        if (bo.dao == null) {
+            bo.dao = ReportsDAO.getInstance(schema);
+        }
 
-		if (bo.dao == null) {
-			bo.dao = ReportsDAO.getInstance(schema);
-		}
+        return bo;
+    }
 
-		return bo;
-	}
+    public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
+        ReportType type = dto.getType();
+        IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type);
+        report.setI18n(i18n);
+        report.setSchema(this.getSchema());
+        return report.generateReport(dto);
+    }
 
-	public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
-		ReportType type = dto.getType();
-		IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type);
-		report.setI18n(i18n);
-		report.setSchema(this.getSchema());
-		return report.generateReport(dto);
-	}
+    public TreeMap<String, Set<Integer>> searchAuthors(String author, RecordDatabase database) {
+        return this.dao.searchAuthors(author, database);
+    }
 
+    public CustomCountDto getCustomCountData(ReportsDTO reportsDto) {
+        CustomCountDto dto = new CustomCountDto();
 
-	public TreeMap<String, Set<Integer>> searchAuthors(String author, RecordDatabase database) {
-		return this.dao.searchAuthors(author, database);
-	}
+        Map<String, Integer> subfieldCounter = new HashMap<String, Integer>();
 
-	public CustomCountDto getCustomCountData(ReportsDTO reportsDto) {
-		CustomCountDto dto = new CustomCountDto();
+        int page = 0;
+        int limit = 100;
+        int offset = limit * page;
 
-		Map<String, Integer> subfieldCounter = new HashMap<String, Integer>();
+        String marcField = reportsDto.getMarcField();
+        String field = marcField.split("_")[0];
+        String subfield = marcField.split("_")[1];
 
-		int page = 0;
-		int limit = 100;
-		int offset = limit * page;
+        if (reportsDto.getSearchId() != null && reportsDto.getSearchId() != 0) {
 
-		String marcField = reportsDto.getMarcField();
-		String field = marcField.split("_")[0];
-		String subfield = marcField.split("_")[1];
+            RecordBO bo = RecordBO.getInstance(this.getSchema(), RecordType.BIBLIO);
 
-		if (reportsDto.getSearchId() != null && reportsDto.getSearchId() != 0) {
+            boolean hasMore = true;
+            while (hasMore) {
+                SearchDTO search = bo.getSearch(reportsDto.getSearchId());
+                search.setSort(
+                        IndexingGroups.getDefaultSortableGroupId(
+                                this.getSchema(), RecordType.BIBLIO));
+                search.setIndexingGroup(0);
+                search.getPaging().setRecordsPerPage(limit);
+                search.getPaging().setPage(++page);
+                bo.paginateSearch(search);
 
-			RecordBO bo = RecordBO.getInstance(this.getSchema(), RecordType.BIBLIO);
+                if (search == null || search.size() == 0) {
+                    hasMore = false;
+                } else {
+                    countSubfieldValue(search, subfieldCounter, field, subfield);
+                }
+            }
 
-			boolean hasMore = true;
-			while (hasMore) {
-				SearchDTO search = bo.getSearch(reportsDto.getSearchId());
-				search.setSort(IndexingGroups.getDefaultSortableGroupId(this.getSchema(), RecordType.BIBLIO));
-				search.setIndexingGroup(0);
-				search.getPaging().setRecordsPerPage(limit);
-				search.getPaging().setPage(++page);
-				bo.paginateSearch(search);
+        } else {
+            BiblioRecordDAO bdao = BiblioRecordDAO.getInstance(this.getSchema());
 
-				if (search == null || search.size() == 0) {
-					hasMore = false;
-				} else {
-					countSubfieldValue(search, subfieldCounter, field, subfield);
-				}
-			}
+            RecordDatabase database = reportsDto.getDatabase();
+            if (database == null) {
+                database = RecordDatabase.MAIN;
+            }
 
-		} else {
-			BiblioRecordDAO bdao = BiblioRecordDAO.getInstance(this.getSchema());
+            boolean hasMore = true;
+            while (hasMore) {
+                List<RecordDTO> records = bdao.list(offset, limit, database);
+                if (records == null || records.size() == 0) {
+                    hasMore = false;
+                } else {
+                    offset = limit * ++page;
+                    countSubfieldValue(records, subfieldCounter, field, subfield);
+                }
+            }
+        }
 
-			RecordDatabase database = reportsDto.getDatabase();
-			if (database == null) {
-				database = RecordDatabase.MAIN;
-			}
+        List<String[]> data = new ArrayList<String[]>();
 
-			boolean hasMore = true;
-			while (hasMore) {
-				List<RecordDTO> records = bdao.list(offset, limit, database);
-				if (records == null || records.size() == 0) {
-					hasMore = false;
-				} else {
-					offset = limit * ++page;
-					countSubfieldValue(records, subfieldCounter, field, subfield);
-				}
-			}
-		}
+        for (String key : subfieldCounter.keySet()) {
+            String[] valuePair = new String[2];
+            valuePair[0] = key;
+            valuePair[1] = String.valueOf(subfieldCounter.get(key));
+            data.add(valuePair);
+        }
 
-		List<String[]> data = new ArrayList<String[]>();
+        dto.setData(data);
 
-		for (String key : subfieldCounter.keySet()) {
-			String[] valuePair = new String[2];
-			valuePair[0] = key;
-			valuePair[1] = String.valueOf(subfieldCounter.get(key));
-			data.add(valuePair);
-		}
+        return dto;
+    }
 
-		dto.setData(data);
+    private void countSubfieldValue(
+            Collection<RecordDTO> records,
+            Map<String, Integer> subfieldCounter,
+            String field,
+            String subfield) {
 
-		return dto;
-	}
+        for (RecordDTO biblio : records) {
+            Record record = MarcUtils.iso2709ToRecord(biblio.getIso2709());
+            MarcDataReader reader = new MarcDataReader(record);
+            List<DataField> datafields = reader.getDataFields(field);
 
-	private void countSubfieldValue(Collection<RecordDTO> records, Map<String, Integer> subfieldCounter, String field, String subfield) {
+            for (DataField df : datafields) {
+                List<Subfield> subfields = df.getSubfields(subfield.charAt(0));
 
-		for (RecordDTO biblio : records) {
-			Record record = MarcUtils.iso2709ToRecord(biblio.getIso2709());
-			MarcDataReader reader = new MarcDataReader(record);
-			List<DataField> datafields = reader.getDataFields(field);
-
-			for (DataField df : datafields) {
-				List<Subfield> subfields = df.getSubfields(subfield.charAt(0));
-
-				for (Subfield sf : subfields) {
-					String value = sf.getData();
-					Integer count = subfieldCounter.get(value);
-					if (count == null) {
-						count = 0;
-					}
-					subfieldCounter.put(value, ++count);
-				}
-
-			}
-		}
-	}
+                for (Subfield sf : subfields) {
+                    String value = sf.getData();
+                    Integer count = subfieldCounter.get(value);
+                    if (count == null) {
+                        count = 0;
+                    }
+                    subfieldCounter.put(value, ++count);
+                }
+            }
+        }
+    }
 }

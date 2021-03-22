@@ -19,54 +19,55 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
+import biblivre.core.AbstractDTO;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.AbstractDTO;
-
 public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String language;
-	private String name;
+    private String language;
+    private String name;
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public String getLanguage() {
-		return StringUtils.defaultString(this.language);
-	}
+    public String getLanguage() {
+        return StringUtils.defaultString(this.language);
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return StringUtils.defaultString(this.name);
-	}
+    public String getName() {
+        return StringUtils.defaultString(this.name);
+    }
 
-	@Override
-	public String toString() {
-		return this.getName();
-	}
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-		if (other == null || !(other instanceof LanguageDTO)) {
-			return false;
-		}
+        if (other == null || !(other instanceof LanguageDTO)) {
+            return false;
+        }
 
-		LanguageDTO otherDto = (LanguageDTO) other;
+        LanguageDTO otherDto = (LanguageDTO) other;
 
-		return this.language == null ? otherDto.language == null : this.language.equals(otherDto.language);
-	}
+        return this.language == null
+                ? otherDto.language == null
+                : this.language.equals(otherDto.language);
+    }
 
-	@Override
-	public int compareTo(LanguageDTO other) {
-		return this.getLanguage().compareTo(other.getLanguage());
-	}
+    @Override
+    public int compareTo(LanguageDTO other) {
+        return this.getLanguage().compareTo(other.getLanguage());
+    }
 }

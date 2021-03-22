@@ -20,16 +20,16 @@
 package biblivre.marc;
 
 public enum RecordStatus {
-	NEW('n'),
-	CORRECTED('c');
+    NEW('n'),
+    CORRECTED('c');
 
-	private char code;
+    private char code;
 
-	private RecordStatus(char code) {
-		this.code = code;
-	}
+    private RecordStatus(char code) {
+        this.code = code;
+    }
 
-	public char getCode() {
-		return this.code;
-	}
+    public char getCode() {
+        return this.code;
+    }
 }

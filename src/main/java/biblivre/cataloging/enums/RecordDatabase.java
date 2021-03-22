@@ -19,39 +19,37 @@
  ******************************************************************************/
 package biblivre.cataloging.enums;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
-
 public enum RecordDatabase implements BiblivreEnum {
-	MAIN,
-	WORK,
-	PRIVATE,
-	TRASH;
+    MAIN,
+    WORK,
+    PRIVATE,
+    TRASH;
 
-	public static RecordDatabase fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static RecordDatabase fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (RecordDatabase database : RecordDatabase.values()) {
-			if (str.equals(database.name().toLowerCase())) {
-				return database;
-			}
-		}
+        for (RecordDatabase database : RecordDatabase.values()) {
+            if (str.equals(database.name().toLowerCase())) {
+                return database;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

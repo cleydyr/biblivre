@@ -19,54 +19,53 @@
  ******************************************************************************/
 package biblivre.cataloging.authorities;
 
+import biblivre.cataloging.RecordDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.cataloging.RecordDTO;
-
 public class AuthorityRecordDTO extends RecordDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String authorName;
-	private String authorOtherName;
-	private String authorType;
+    private String authorName;
+    private String authorOtherName;
+    private String authorType;
 
-	public String getAuthorName() {
-		return this.authorName;
-	}
+    public String getAuthorName() {
+        return this.authorName;
+    }
 
-	public void setAuthorName(String authorName) {
-		this.authorName = authorName;
-	}
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
-	public String getAuthorType() {
-		return this.authorType;
-	}
+    public String getAuthorType() {
+        return this.authorType;
+    }
 
-	public void setAuthorType(String authorType) {
-		this.authorType = authorType;
-	}
+    public void setAuthorType(String authorType) {
+        this.authorType = authorType;
+    }
 
-	public String getAuthorOtherName() {
-		return this.authorOtherName;
-	}
+    public String getAuthorOtherName() {
+        return this.authorOtherName;
+    }
 
-	public void setAuthorOtherName(String authorOtherName) {
-		this.authorOtherName = authorOtherName;
-	}
+    public void setAuthorOtherName(String authorOtherName) {
+        this.authorOtherName = authorOtherName;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("material_type", this.getMaterialType());
-			json.putOpt("name", this.getAuthorName());
-			json.putOpt("other_name", this.getAuthorOtherName());
-			json.putOpt("author_type", this.getAuthorType());
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("material_type", this.getMaterialType());
+            json.putOpt("name", this.getAuthorName());
+            json.putOpt("other_name", this.getAuthorOtherName());
+            json.putOpt("author_type", this.getAuthorType());
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

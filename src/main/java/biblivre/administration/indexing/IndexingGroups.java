@@ -19,186 +19,192 @@
  ******************************************************************************/
 package biblivre.administration.indexing;
 
+import biblivre.cataloging.enums.RecordType;
+import biblivre.core.PreparedStatementUtil;
+import biblivre.core.StaticBO;
+import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationsMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.cataloging.enums.RecordType;
-import biblivre.core.PreparedStatementUtil;
-import biblivre.core.StaticBO;
-import biblivre.core.translations.Translations;
-import biblivre.core.translations.TranslationsMap;
-
 public class IndexingGroups extends StaticBO {
-	private static Logger logger = LoggerFactory.getLogger(IndexingGroups.class);
+    private static Logger logger = LoggerFactory.getLogger(IndexingGroups.class);
 
-	private static HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>> groups;
+    private static HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>> groups;
 
-	private IndexingGroups() {
-	}
+    private IndexingGroups() {}
 
-	static {
-		IndexingGroups.reset();
-	}
+    static {
+        IndexingGroups.reset();
+    }
 
-	public static void reset() {
-		IndexingGroups.groups = new HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>>();
-	}
+    public static void reset() {
+        IndexingGroups.groups = new HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>>();
+    }
 
-	public static void reset(String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    public static void reset(String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		IndexingGroups.groups.remove(pair);
-	}
+        IndexingGroups.groups.remove(pair);
+    }
 
-	public static List<IndexingGroupDTO> getGroups(String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    public static List<IndexingGroupDTO> getGroups(String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
+        List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
 
-		if (list == null) {
-			list = IndexingGroups.loadGroups(schema, recordType);
-		}
+        if (list == null) {
+            list = IndexingGroups.loadGroups(schema, recordType);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static String getSearchableGroupsText(String schema, RecordType recordType, String language) {
-		List<String> list = new LinkedList<String>();
+    public static String getSearchableGroupsText(
+            String schema, RecordType recordType, String language) {
+        List<String> list = new LinkedList<String>();
 
-		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
 
-		TranslationsMap translations = Translations.get(schema, language);
+        TranslationsMap translations = Translations.get(schema, language);
 
-		for (IndexingGroupDTO group : groups) {
-			if (group.getId() == 0) {
-				continue;
-			}
+        for (IndexingGroupDTO group : groups) {
+            if (group.getId() == 0) {
+                continue;
+            }
 
-			list.add(translations.getText("cataloging." + (recordType == RecordType.BIBLIO ? "bibliographic" : recordType) + ".indexing_groups." + group.getTranslationKey()));
-		}
+            list.add(
+                    translations.getText(
+                            "cataloging."
+                                    + (recordType == RecordType.BIBLIO
+                                            ? "bibliographic"
+                                            : recordType)
+                                    + ".indexing_groups."
+                                    + group.getTranslationKey()));
+        }
 
-		return StringUtils.join(list, ", ");
-	}
+        return StringUtils.join(list, ", ");
+    }
 
-	public static Integer getDefaultSortableGroupId(String schema, RecordType recordType) {
-		List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
+    public static Integer getDefaultSortableGroupId(String schema, RecordType recordType) {
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
 
-		IndexingGroupDTO sort = null;
+        IndexingGroupDTO sort = null;
 
-		for (IndexingGroupDTO group : groups) {
-			if (group.isSortable()) {
-				if (group.isDefaultSort()) {
-					sort = group;
-					break;
-				}
+        for (IndexingGroupDTO group : groups) {
+            if (group.isSortable()) {
+                if (group.isDefaultSort()) {
+                    sort = group;
+                    break;
+                }
 
-				if (sort == null) {
-					sort = group;
-				}
-			}
-		}
+                if (sort == null) {
+                    sort = group;
+                }
+            }
+        }
 
-		return (sort != null) ? sort.getId() : 1;
-	}
+        return (sort != null) ? sort.getId() : 1;
+    }
 
-	public static void addIndexingGroup(
-			Connection con, RecordType recordType, String name, String datafields, boolean sortable)
-		throws SQLException {
+    public static void addIndexingGroup(
+            Connection con, RecordType recordType, String name, String datafields, boolean sortable)
+            throws SQLException {
 
-		_deleteFromIndexingGroupsByTranslationKey(recordType, name, con);
+        _deleteFromIndexingGroupsByTranslationKey(recordType, name, con);
 
-		_insertIntoIndexingGroups(recordType, name, datafields, sortable, con);
-	}
+        _insertIntoIndexingGroups(recordType, name, datafields, sortable, con);
+    }
 
-	public static void updateIndexingGroup(
-			Connection con, RecordType recordType, String name, String datafields)
-		throws SQLException {
+    public static void updateIndexingGroup(
+            Connection con, RecordType recordType, String name, String datafields)
+            throws SQLException {
 
-		StringBuilder sql =
-				new StringBuilder(3)
-					.append("UPDATE ")
-					.append(recordType)
-					.append("_indexing_groups SET datafields = ? WHERE translation_key = ?;");
+        StringBuilder sql =
+                new StringBuilder(3)
+                        .append("UPDATE ")
+                        .append(recordType)
+                        .append("_indexing_groups SET datafields = ? WHERE translation_key = ?;");
 
-		try (PreparedStatement pst = con.prepareStatement(sql.toString())) {
-			PreparedStatementUtil.setAllParameters(pst, datafields, name);
+        try (PreparedStatement pst = con.prepareStatement(sql.toString())) {
+            PreparedStatementUtil.setAllParameters(pst, datafields, name);
 
-			pst.execute();
-		}
-	}
+            pst.execute();
+        }
+    }
 
-	private static void _insertIntoIndexingGroups(
-			RecordType recordType, String name, String datafields, boolean sortable,
-			Connection con)
-		throws SQLException {
+    private static void _insertIntoIndexingGroups(
+            RecordType recordType, String name, String datafields, boolean sortable, Connection con)
+            throws SQLException {
 
-		StringBuilder sql =
-				new StringBuilder(3)
-					.append("INSERT INTO ")
-					.append(recordType)
-					.append("_indexing_groups (translation_key, datafields, sortable) "
-						+ "VALUES (?, ?, ?);");
+        StringBuilder sql =
+                new StringBuilder(3)
+                        .append("INSERT INTO ")
+                        .append(recordType)
+                        .append(
+                                "_indexing_groups (translation_key, datafields, sortable) "
+                                        + "VALUES (?, ?, ?);");
 
-		try (PreparedStatement insertIntoIndexingGroups = con.prepareStatement(sql.toString())) {
+        try (PreparedStatement insertIntoIndexingGroups = con.prepareStatement(sql.toString())) {
 
-			PreparedStatementUtil.setAllParameters(
-					insertIntoIndexingGroups, name, datafields, sortable);
+            PreparedStatementUtil.setAllParameters(
+                    insertIntoIndexingGroups, name, datafields, sortable);
 
-			insertIntoIndexingGroups.execute();
-		}
-	}
+            insertIntoIndexingGroups.execute();
+        }
+    }
 
-	private static void _deleteFromIndexingGroupsByTranslationKey(
-			RecordType recordType, String translationKey, Connection con)
-		throws SQLException {
+    private static void _deleteFromIndexingGroupsByTranslationKey(
+            RecordType recordType, String translationKey, Connection con) throws SQLException {
 
-		StringBuilder deleteFromIndexingGroupsByTranslationKeySQLTemplate =
-				new StringBuilder(3)
-					.append("DELETE FROM ")
-					.append(recordType)
-					.append("_indexing_groups WHERE translation_key = ?;");
+        StringBuilder deleteFromIndexingGroupsByTranslationKeySQLTemplate =
+                new StringBuilder(3)
+                        .append("DELETE FROM ")
+                        .append(recordType)
+                        .append("_indexing_groups WHERE translation_key = ?;");
 
-		try (PreparedStatement deleteFromIndexingGroupsByTranslationKey = con.prepareStatement(
-					deleteFromIndexingGroupsByTranslationKeySQLTemplate.toString())) {
+        try (PreparedStatement deleteFromIndexingGroupsByTranslationKey =
+                con.prepareStatement(
+                        deleteFromIndexingGroupsByTranslationKeySQLTemplate.toString())) {
 
-			PreparedStatementUtil.setAllParameters(
-					deleteFromIndexingGroupsByTranslationKey, translationKey);
+            PreparedStatementUtil.setAllParameters(
+                    deleteFromIndexingGroupsByTranslationKey, translationKey);
 
-			deleteFromIndexingGroupsByTranslationKey.execute();
-		}
-	}
+            deleteFromIndexingGroupsByTranslationKey.execute();
+        }
+    }
 
-	private static synchronized List<IndexingGroupDTO> loadGroups(
-			String schema, RecordType recordType) {
+    private static synchronized List<IndexingGroupDTO> loadGroups(
+            String schema, RecordType recordType) {
 
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
+        List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
 
-		// Checking again for thread safety.
-		if (list != null) {
-			return list;
-		}
+        // Checking again for thread safety.
+        if (list != null) {
+            return list;
+        }
 
-		if (IndexingGroups.logger.isDebugEnabled()) {
-			IndexingGroups.logger.debug("Loading indexing groups from " + schema + "." + recordType);
-		}
+        if (IndexingGroups.logger.isDebugEnabled()) {
+            IndexingGroups.logger.debug(
+                    "Loading indexing groups from " + schema + "." + recordType);
+        }
 
-		IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance(schema);
+        IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance(schema);
 
-		list = dao.list(recordType);
+        list = dao.list(recordType);
 
-		IndexingGroups.groups.put(pair, list);
+        IndexingGroups.groups.put(pair, list);
 
-		return list;
-	}
+        return list;
+    }
 }

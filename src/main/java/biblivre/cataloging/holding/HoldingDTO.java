@@ -19,17 +19,16 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.marc.MaterialType;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private Integer recordId;
     private String accessionNumber;
@@ -39,103 +38,104 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
     private Boolean labelPrinted;
 
     private transient String shelfLocation;
-	private transient BiblioRecordDTO biblioRecord;
+    private transient BiblioRecordDTO biblioRecord;
 
     @Override
     public MaterialType getMaterialType() {
-    	return MaterialType.HOLDINGS;
+        return MaterialType.HOLDINGS;
     }
 
-	public Integer getRecordId() {
-		return this.recordId;
-	}
+    public Integer getRecordId() {
+        return this.recordId;
+    }
 
-	public void setRecordId(Integer recordId) {
-		this.recordId = recordId;
-	}
+    public void setRecordId(Integer recordId) {
+        this.recordId = recordId;
+    }
 
-	public String getAccessionNumber() {
-		return this.accessionNumber;
-	}
+    public String getAccessionNumber() {
+        return this.accessionNumber;
+    }
 
-	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = accessionNumber;
-	}
+    public void setAccessionNumber(String accessionNumber) {
+        this.accessionNumber = accessionNumber;
+    }
 
-	public String getLocationD() {
-		return this.locationD;
-	}
+    public String getLocationD() {
+        return this.locationD;
+    }
 
-	public void setLocationD(String locationD) {
-		this.locationD = locationD;
-	}
+    public void setLocationD(String locationD) {
+        this.locationD = locationD;
+    }
 
-	public HoldingAvailability getAvailability() {
-		if (this.availability == null) {
-			return HoldingAvailability.AVAILABLE;
-		}
-		return this.availability;
-	}
+    public HoldingAvailability getAvailability() {
+        if (this.availability == null) {
+            return HoldingAvailability.AVAILABLE;
+        }
+        return this.availability;
+    }
 
-	public void setAvailability(HoldingAvailability availability) {
-		this.availability = availability;
-	}
+    public void setAvailability(HoldingAvailability availability) {
+        this.availability = availability;
+    }
 
-	public void setAvailability(String availability) {
-		this.availability = HoldingAvailability.fromString(availability);
-	}
+    public void setAvailability(String availability) {
+        this.availability = HoldingAvailability.fromString(availability);
+    }
 
-	public BiblioRecordDTO getBiblioRecord() {
-		return this.biblioRecord;
-	}
+    public BiblioRecordDTO getBiblioRecord() {
+        return this.biblioRecord;
+    }
 
-	public void setBiblioRecord(BiblioRecordDTO biblioRecord) {
-		this.biblioRecord = biblioRecord;
-	}
+    public void setBiblioRecord(BiblioRecordDTO biblioRecord) {
+        this.biblioRecord = biblioRecord;
+    }
 
-	public Boolean getLabelPrinted() {
-		return this.labelPrinted == null ? Boolean.FALSE : this.labelPrinted;
-	}
+    public Boolean getLabelPrinted() {
+        return this.labelPrinted == null ? Boolean.FALSE : this.labelPrinted;
+    }
 
-	public void setLabelPrinted(Boolean labelPrinted) {
-		this.labelPrinted = labelPrinted;
-	}
+    public void setLabelPrinted(Boolean labelPrinted) {
+        this.labelPrinted = labelPrinted;
+    }
 
-	public String getShelfLocation() {
-		return this.shelfLocation;
-	}
+    public String getShelfLocation() {
+        return this.shelfLocation;
+    }
 
-	public void setShelfLocation(String shelfLocation) {
-		this.shelfLocation = shelfLocation;
-	}
+    public void setShelfLocation(String shelfLocation) {
+        this.shelfLocation = shelfLocation;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("material_type", this.getMaterialType());
-			json.putOpt("record_id", this.getRecordId());
-			json.putOpt("accession_number", this.getAccessionNumber());
-			json.putOpt("location_d", this.getLocationD());
-			json.putOpt("shelf_location", this.getShelfLocation());
-			json.putOpt("availability", this.getAvailability().toString());
+        try {
+            json.putOpt("material_type", this.getMaterialType());
+            json.putOpt("record_id", this.getRecordId());
+            json.putOpt("accession_number", this.getAccessionNumber());
+            json.putOpt("location_d", this.getLocationD());
+            json.putOpt("shelf_location", this.getShelfLocation());
+            json.putOpt("availability", this.getAvailability().toString());
 
-			if (this.getBiblioRecord() != null) {
-				json.put("biblio", this.getBiblioRecord().toJSONObject());
-			}
-		} catch (JSONException e) {
-		}
+            if (this.getBiblioRecord() != null) {
+                json.put("biblio", this.getBiblioRecord().toJSONObject());
+            }
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 
-	@Override
-	public int compareTo(HoldingDTO o) {
+    @Override
+    public int compareTo(HoldingDTO o) {
         if (o == null) {
             return 0;
         }
 
-        return NaturalOrderComparator.NUMERICAL_ORDER.compare(this.getAccessionNumber(), o.getAccessionNumber());
-	}
+        return NaturalOrderComparator.NUMERICAL_ORDER.compare(
+                this.getAccessionNumber(), o.getAccessionNumber());
+    }
 }

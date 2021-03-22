@@ -19,11 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.configurations;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONObject;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -33,45 +28,53 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
 
-	public void save(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		int loggedUser = request.getLoggedUserId();
-		String language = request.getLanguage();
+    public void save(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        int loggedUser = request.getLoggedUserId();
+        String language = request.getLanguage();
 
-		String configurations = request.getString("configurations", Constants.JSON_EMPTY_OBJECT_STR);
-		final List<ConfigurationsDTO> configs = new ArrayList<>();
+        String configurations =
+                request.getString("configurations", Constants.JSON_EMPTY_OBJECT_STR);
+        final List<ConfigurationsDTO> configs = new ArrayList<>();
 
-		JSONObject json = new JSONObject(configurations);
+        JSONObject json = new JSONObject(configurations);
 
-		json.keys().forEachRemaining(key -> {
-			String value = json.get(key).toString();
+        json.keys()
+                .forEachRemaining(
+                        key -> {
+                            String value = json.get(key).toString();
 
-			if (key.equals("text.main.logged_in") || key.equals("text.main.logged_out")) {
-				Translations.addSingleTranslation(schema, language, key, value, loggedUser);
-			} else {
-				configs.add(new ConfigurationsDTO(key, value));
-			}
-		});
+                            if (key.equals("text.main.logged_in")
+                                    || key.equals("text.main.logged_out")) {
+                                Translations.addSingleTranslation(
+                                        schema, language, key, value, loggedUser);
+                            } else {
+                                configs.add(new ConfigurationsDTO(key, value));
+                            }
+                        });
 
-		if (configs.size() == 0) {
-			return;
-		}
+        if (configs.size() == 0) {
+            return;
+        }
 
-		boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
+        boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
 
-		Configurations.save(schema, Configurations.validate(schema, configs), loggedUser);
+        Configurations.save(schema, Configurations.validate(schema, configs), loggedUser);
 
-		boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
+        boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
 
-		this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
+        this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
 
-		this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
-	}
+        this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
+    }
 
-	public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
-		request.getSession().removeAttribute(request.getSchema() + ".system_warning_new_version");
-	}
+    public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
+        request.getSession().removeAttribute(request.getSchema() + ".system_warning_new_version");
+    }
 }

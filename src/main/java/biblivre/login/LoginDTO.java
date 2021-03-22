@@ -19,88 +19,86 @@
  ******************************************************************************/
 package biblivre.login;
 
+import biblivre.core.AbstractDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.core.AbstractDTO;
-
 public class LoginDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private int id;
-	private String login;
-	private String encPassword;
-	private boolean employee;
+    private int id;
+    private String login;
+    private String encPassword;
+    private boolean employee;
 
-	private transient String plainPassword;
-	private transient String name;
+    private transient String plainPassword;
+    private transient String name;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getFirstName() {
-		String name = StringUtils.defaultString(this.getName()).trim();
+    public String getFirstName() {
+        String name = StringUtils.defaultString(this.getName()).trim();
 
-		String[] split = name.split(" ");
-		return split[0];
-	}
+        String[] split = name.split(" ");
+        return split[0];
+    }
 
-	public String getLogin() {
-		return this.login;
-	}
+    public String getLogin() {
+        return this.login;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public String getEncPassword() {
-		return this.encPassword;
-	}
+    public String getEncPassword() {
+        return this.encPassword;
+    }
 
-	public void setEncPassword(String encPassword) {
-		this.encPassword = encPassword;
-	}
+    public void setEncPassword(String encPassword) {
+        this.encPassword = encPassword;
+    }
 
-	public String getPlainPassword() {
-		return this.plainPassword;
-	}
+    public String getPlainPassword() {
+        return this.plainPassword;
+    }
 
-	public void setPlainPassword(String plainPassword) {
-		this.plainPassword = plainPassword;
-	}
+    public void setPlainPassword(String plainPassword) {
+        this.plainPassword = plainPassword;
+    }
 
-	public boolean isEmployee() {
-		return this.employee;
-	}
+    public boolean isEmployee() {
+        return this.employee;
+    }
 
-	public void setEmployee(boolean employee) {
-		this.employee = employee;
-	}
+    public void setEmployee(boolean employee) {
+        this.employee = employee;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = super.toJSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
 
-		try {
-			json.putOpt("employee", (this.isEmployee()) ? "true" : "false");
-		} catch (JSONException e) {
-		}
+        try {
+            json.putOpt("employee", (this.isEmployee()) ? "true" : "false");
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
-
+        return json;
+    }
 }

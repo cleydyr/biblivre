@@ -19,41 +19,37 @@
  ******************************************************************************/
 package biblivre.cataloging.enums;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
-
 public enum ImportFormat implements BiblivreEnum {
+    AUTO_DETECT,
+    MARC,
+    XML,
+    ISO2709;
 
-	AUTO_DETECT,
-	MARC,
-	XML,
-	ISO2709;
+    public static ImportFormat fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-	public static ImportFormat fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+        str = str.toLowerCase();
 
-		str = str.toLowerCase();
+        for (ImportFormat importFormat : ImportFormat.values()) {
+            if (str.equals(importFormat.name().toLowerCase())) {
+                return importFormat;
+            }
+        }
 
-		for (ImportFormat importFormat : ImportFormat.values()) {
-			if (str.equals(importFormat.name().toLowerCase())) {
-				return importFormat;
-			}
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
-
-	public String getString() {
-		return this.toString();
-	}
-
+    public String getString() {
+        return this.toString();
+    }
 }

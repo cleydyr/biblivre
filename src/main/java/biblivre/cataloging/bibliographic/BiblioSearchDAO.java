@@ -25,13 +25,14 @@ import biblivre.core.AbstractDAO;
 
 public class BiblioSearchDAO extends SearchDAO {
 
-	public static BiblioSearchDAO getInstance(String schema) {
-		BiblioSearchDAO dao = (BiblioSearchDAO) AbstractDAO.getInstance(BiblioSearchDAO.class, schema);
+    public static BiblioSearchDAO getInstance(String schema) {
+        BiblioSearchDAO dao =
+                (BiblioSearchDAO) AbstractDAO.getInstance(BiblioSearchDAO.class, schema);
 
-		if (dao.recordType == null) {
-			dao.recordType = RecordType.BIBLIO;
-		}
+        if (dao.recordType == null) {
+            dao.recordType = RecordType.BIBLIO;
+        }
 
-		return dao;
-	}
+        return dao;
+    }
 }

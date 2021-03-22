@@ -19,17 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.marc4j.MarcPermissiveStreamReader;
-import org.marc4j.MarcReader;
-import org.marc4j.MarcXmlReader;
-import org.marc4j.marc.Record;
-
 import biblivre.cataloging.authorities.AuthorityRecordBO;
 import biblivre.cataloging.authorities.AuthorityRecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
@@ -47,202 +36,212 @@ import biblivre.marc.MarcFileReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950RecordDTO;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.marc4j.MarcPermissiveStreamReader;
+import org.marc4j.MarcReader;
+import org.marc4j.MarcXmlReader;
+import org.marc4j.marc.Record;
 
 public class ImportBO extends AbstractBO {
 
-	protected ImportDAO dao;
+    protected ImportDAO dao;
 
-	public static ImportBO getInstance(String schema) {
-		ImportBO bo = AbstractBO.getInstance(ImportBO.class, schema);
+    public static ImportBO getInstance(String schema) {
+        ImportBO bo = AbstractBO.getInstance(ImportBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = ImportDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = ImportDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
-	public ImportDTO loadFromFile(MemoryFile file, ImportFormat format, ImportEncoding enc) {
-		ImportDTO dto = null;
-		String encoding = null;
+    public ImportDTO loadFromFile(MemoryFile file, ImportFormat format, ImportEncoding enc) {
+        ImportDTO dto = null;
+        String encoding = null;
 
-		switch (enc) {
-			case AUTO_DETECT:
-				try (InputStream is = file.getNewInputStream()) {
-					encoding = TextUtils.detectCharset(is);
-				} catch (IOException e) {
-				}
-				break;
+        switch (enc) {
+            case AUTO_DETECT:
+                try (InputStream is = file.getNewInputStream()) {
+                    encoding = TextUtils.detectCharset(is);
+                } catch (IOException e) {
+                }
+                break;
 
-			case UTF8:
-				encoding = Constants.DEFAULT_CHARSET.name();
-				break;
+            case UTF8:
+                encoding = Constants.DEFAULT_CHARSET.name();
+                break;
 
-			case MARC8:
-				encoding = "ISO-8859-1";
-				break;
-		}
+            case MARC8:
+                encoding = "ISO-8859-1";
+                break;
+        }
 
-		if (encoding == null) {
-			encoding = Constants.DEFAULT_CHARSET.name();
-		}
+        if (encoding == null) {
+            encoding = Constants.DEFAULT_CHARSET.name();
+        }
 
-		String streamEncoding = (enc == ImportEncoding.AUTO_DETECT)  ? "BESTGUESS" : encoding;
+        String streamEncoding = (enc == ImportEncoding.AUTO_DETECT) ? "BESTGUESS" : encoding;
 
-		try (InputStream is = file.getNewInputStream()) {
-			switch (format) {
-				case AUTO_DETECT:
-					MarcReader reader = null;
-					List<ImportDTO> list = new ArrayList<ImportDTO>();
+        try (InputStream is = file.getNewInputStream()) {
+            switch (format) {
+                case AUTO_DETECT:
+                    MarcReader reader = null;
+                    List<ImportDTO> list = new ArrayList<ImportDTO>();
 
-					reader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
-					dto = this.readFromMarcReader(reader);
-					dto.setFormat(ImportFormat.ISO2709);
+                    reader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
+                    dto = this.readFromMarcReader(reader);
+                    dto.setFormat(ImportFormat.ISO2709);
 
-					if (dto.isPerfect()) {
-						break;
-					} else {
-						list.add(dto);
-					}
+                    if (dto.isPerfect()) {
+                        break;
+                    } else {
+                        list.add(dto);
+                    }
 
-					reader = new MarcXmlReader(is);
-					dto = this.readFromMarcReader(reader);
-					dto.setFormat(ImportFormat.XML);
+                    reader = new MarcXmlReader(is);
+                    dto = this.readFromMarcReader(reader);
+                    dto.setFormat(ImportFormat.XML);
 
-					if (dto.isPerfect()) {
-						break;
-					} else {
-						list.add(dto);
-					}
+                    if (dto.isPerfect()) {
+                        break;
+                    } else {
+                        list.add(dto);
+                    }
 
-					reader = new MarcFileReader(is, encoding);
-					dto = this.readFromMarcReader(reader);
-					dto.setFormat(ImportFormat.MARC);
+                    reader = new MarcFileReader(is, encoding);
+                    dto = this.readFromMarcReader(reader);
+                    dto.setFormat(ImportFormat.MARC);
 
-					if (dto.isPerfect()) {
-						break;
-					} else {
-						list.add(dto);
-					}
+                    if (dto.isPerfect()) {
+                        break;
+                    } else {
+                        list.add(dto);
+                    }
 
-					Collections.sort(list);
-					dto = list.get(0);
+                    Collections.sort(list);
+                    dto = list.get(0);
 
-					break;
+                    break;
 
-				case ISO2709:
-					MarcReader isoReader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
-					dto = this.readFromMarcReader(isoReader);
-					dto.setFormat(ImportFormat.ISO2709);
+                case ISO2709:
+                    MarcReader isoReader =
+                            new MarcPermissiveStreamReader(is, true, true, streamEncoding);
+                    dto = this.readFromMarcReader(isoReader);
+                    dto.setFormat(ImportFormat.ISO2709);
 
-					break;
+                    break;
 
-				case XML:
-					MarcReader xmlReader = new MarcXmlReader(is);
-					dto = this.readFromMarcReader(xmlReader);
-					dto.setFormat(ImportFormat.XML);
-					break;
+                case XML:
+                    MarcReader xmlReader = new MarcXmlReader(is);
+                    dto = this.readFromMarcReader(xmlReader);
+                    dto.setFormat(ImportFormat.XML);
+                    break;
 
-				case MARC:
-					MarcReader marcReader = new MarcFileReader(is, encoding);
-					dto = this.readFromMarcReader(marcReader);
-					dto.setFormat(ImportFormat.MARC);
-					break;
+                case MARC:
+                    MarcReader marcReader = new MarcFileReader(is, encoding);
+                    dto = this.readFromMarcReader(marcReader);
+                    dto.setFormat(ImportFormat.MARC);
+                    break;
 
-				default:
-					break;
-			}
-		} catch (Exception e) {
-			this.logger.debug("Error reading file", e);
-			throw new ValidationException(e.getMessage());
-		}
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            this.logger.debug("Error reading file", e);
+            throw new ValidationException(e.getMessage());
+        }
 
-		if (dto != null) {
-			dto.setEncoding(enc);
-		}
+        if (dto != null) {
+            dto.setEncoding(enc);
+        }
 
-		return dto;
-	}
+        return dto;
+    }
 
-	/**
-	 * @param reader
-	 * @return
-	 */
-	private ImportDTO readFromMarcReader(MarcReader reader) {
-		ImportDTO dto = new ImportDTO();
+    /**
+     * @param reader
+     * @return
+     */
+    private ImportDTO readFromMarcReader(MarcReader reader) {
+        ImportDTO dto = new ImportDTO();
 
-		while (reader.hasNext()) {
-			dto.incrementFound();
+        while (reader.hasNext()) {
+            dto.incrementFound();
 
-			try {
-				RecordDTO rdto = this.dtoFromRecord(reader.next());
+            try {
+                RecordDTO rdto = this.dtoFromRecord(reader.next());
 
-				if (rdto != null) {
-					dto.addRecord(rdto);
-					dto.incrementSuccess();
-				} else {
-					dto.incrementFailure();
-				}
-			} catch (Exception e) {
-				dto.incrementFailure();
-			}
-		}
+                if (rdto != null) {
+                    dto.addRecord(rdto);
+                    dto.incrementSuccess();
+                } else {
+                    dto.incrementFailure();
+                }
+            } catch (Exception e) {
+                dto.incrementFailure();
+            }
+        }
 
-		return dto;
-	}
+        return dto;
+    }
 
-	public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {
-		ImportDTO dto = new ImportDTO();
-		BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
-		for (Z3950RecordDTO z3950Dto : recordList) {
-			dto.incrementFound();
-			try {
-				BiblioRecordDTO brdto = z3950Dto.getRecord();
+    public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {
+        ImportDTO dto = new ImportDTO();
+        BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
+        for (Z3950RecordDTO z3950Dto : recordList) {
+            dto.incrementFound();
+            try {
+                BiblioRecordDTO brdto = z3950Dto.getRecord();
 
-				if (brdto != null) {
-					bbo.populateDetails(brdto, RecordBO.MARC_INFO);
-					brdto.setMarc(MarcUtils.recordToMarc(brdto.getRecord()));
+                if (brdto != null) {
+                    bbo.populateDetails(brdto, RecordBO.MARC_INFO);
+                    brdto.setMarc(MarcUtils.recordToMarc(brdto.getRecord()));
 
-					dto.addRecord(brdto);
-					dto.incrementSuccess();
-				}
-			} catch (Exception e) {
-				dto.incrementFailure();
-			}
-		}
+                    dto.addRecord(brdto);
+                    dto.incrementSuccess();
+                }
+            } catch (Exception e) {
+                dto.incrementFailure();
+            }
+        }
 
-		return dto;
-	}
+        return dto;
+    }
 
-	public RecordDTO dtoFromRecord(Record record) {
-		String schema = this.getSchema();
-		RecordDTO rdto = null;
-		RecordBO rbo = null;
+    public RecordDTO dtoFromRecord(Record record) {
+        String schema = this.getSchema();
+        RecordDTO rdto = null;
+        RecordBO rbo = null;
 
-		switch (MaterialType.fromRecord(record)) {
-			case HOLDINGS:
-				break;
-			case VOCABULARY:
-				rdto = new VocabularyRecordDTO();
-				rbo = VocabularyRecordBO.getInstance(schema);
-				break;
-			case AUTHORITIES:
-				rdto = new AuthorityRecordDTO();
-				rbo = AuthorityRecordBO.getInstance(schema);
-				break;
-			default:
-				rdto = new BiblioRecordDTO();
-				rbo = BiblioRecordBO.getInstance(schema);
-				break;
-		}
+        switch (MaterialType.fromRecord(record)) {
+            case HOLDINGS:
+                break;
+            case VOCABULARY:
+                rdto = new VocabularyRecordDTO();
+                rbo = VocabularyRecordBO.getInstance(schema);
+                break;
+            case AUTHORITIES:
+                rdto = new AuthorityRecordDTO();
+                rbo = AuthorityRecordBO.getInstance(schema);
+                break;
+            default:
+                rdto = new BiblioRecordDTO();
+                rbo = BiblioRecordBO.getInstance(schema);
+                break;
+        }
 
-		if (rdto != null && rbo != null) {
-			rdto.setRecord(record);
-			rbo.populateDetails(rdto, RecordBO.MARC_INFO);
+        if (rdto != null && rbo != null) {
+            rdto.setRecord(record);
+            rbo.populateDetails(rdto, RecordBO.MARC_INFO);
 
-			rdto.setMarc(MarcUtils.recordToMarc(record));
-		}
+            rdto.setMarc(MarcUtils.recordToMarc(record));
+        }
 
-		return rdto;
-	}
+        return rdto;
+    }
 }

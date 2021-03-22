@@ -25,13 +25,14 @@ import biblivre.core.AbstractDAO;
 
 public class AuthoritySearchDAO extends SearchDAO {
 
-	public static AuthoritySearchDAO getInstance(String schema) {
-		AuthoritySearchDAO dao = (AuthoritySearchDAO) AbstractDAO.getInstance(AuthoritySearchDAO.class, schema);
+    public static AuthoritySearchDAO getInstance(String schema) {
+        AuthoritySearchDAO dao =
+                (AuthoritySearchDAO) AbstractDAO.getInstance(AuthoritySearchDAO.class, schema);
 
-		if (dao.recordType == null) {
-			dao.recordType = RecordType.AUTHORITIES;
-		}
+        if (dao.recordType == null) {
+            dao.recordType = RecordType.AUTHORITIES;
+        }
 
-		return dao;
-	}
+        return dao;
+    }
 }

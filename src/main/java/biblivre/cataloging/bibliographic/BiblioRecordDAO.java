@@ -26,19 +26,19 @@ import biblivre.core.AbstractDAO;
 
 public class BiblioRecordDAO extends RecordDAO {
 
-	public static BiblioRecordDAO getInstance(String schema) {
-		BiblioRecordDAO dao = (BiblioRecordDAO) AbstractDAO.getInstance(BiblioRecordDAO.class, schema);
+    public static BiblioRecordDAO getInstance(String schema) {
+        BiblioRecordDAO dao =
+                (BiblioRecordDAO) AbstractDAO.getInstance(BiblioRecordDAO.class, schema);
 
-		if (dao.recordType == null) {
-			dao.recordType = RecordType.BIBLIO;
-		}
+        if (dao.recordType == null) {
+            dao.recordType = RecordType.BIBLIO;
+        }
 
-		return dao;
-	}
+        return dao;
+    }
 
-
-	@Override
-	protected RecordDTO createRecord() {
-		return new BiblioRecordDTO();
-	}
+    @Override
+    protected RecordDTO createRecord() {
+        return new BiblioRecordDTO();
+    }
 }

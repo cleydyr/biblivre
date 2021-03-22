@@ -23,32 +23,31 @@ import java.util.List;
 
 public class RequestsByDateReportDto extends BaseReportDto {
 
-	private String initialDate;
-	private String finalDate;
-	private List<String[]> data;
+    private String initialDate;
+    private String finalDate;
+    private List<String[]> data;
 
-	public List<String[]> getData() {
-		return this.data;
-	}
+    public List<String[]> getData() {
+        return this.data;
+    }
 
-	public void setData(List<String[]> data) {
-		this.data = data;
-	}
+    public void setData(List<String[]> data) {
+        this.data = data;
+    }
 
-	public String getFinalDate() {
-		return this.finalDate;
-	}
+    public String getFinalDate() {
+        return this.finalDate;
+    }
 
-	public void setFinalDate(String finalDate) {
-		this.finalDate = finalDate;
-	}
+    public void setFinalDate(String finalDate) {
+        this.finalDate = finalDate;
+    }
 
-	public String getInitialDate() {
-		return this.initialDate;
-	}
+    public String getInitialDate() {
+        return this.initialDate;
+    }
 
-	public void setInitialDate(String initialDate) {
-		this.initialDate = initialDate;
-	}
-
+    public void setInitialDate(String initialDate) {
+        this.initialDate = initialDate;
+    }
 }

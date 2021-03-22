@@ -19,39 +19,37 @@
  ******************************************************************************/
 package biblivre.core.enums;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
 public enum PrinterType implements BiblivreEnum {
+    PRINTER_24_COLUMNS,
+    PRINTER_40_COLUMNS,
+    PRINTER_80_COLUMNS,
+    PRINTER_COMMON;
 
-	PRINTER_24_COLUMNS,
-	PRINTER_40_COLUMNS,
-	PRINTER_80_COLUMNS,
-	PRINTER_COMMON;
+    public static PrinterType fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-	public static PrinterType fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+        str = str.toLowerCase();
 
-		str = str.toLowerCase();
+        for (PrinterType printerType : PrinterType.values()) {
+            if (str.equals(printerType.name().toLowerCase())) {
+                return printerType;
+            }
+        }
 
-		for (PrinterType printerType : PrinterType.values()) {
-			if (str.equals(printerType.name().toLowerCase())) {
-				return printerType;
-			}
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
-
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

@@ -19,8 +19,6 @@
  ******************************************************************************/
 package biblivre.acquisition.order;
 
-import java.util.List;
-
 import biblivre.acquisition.quotation.QuotationBO;
 import biblivre.acquisition.quotation.QuotationDTO;
 import biblivre.acquisition.quotation.RequestQuotationDTO;
@@ -31,80 +29,79 @@ import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
+import java.util.List;
 
 public class OrderBO extends AbstractBO {
-	private OrderDAO dao;
+    private OrderDAO dao;
 
-	public static OrderBO getInstance(String schema) {
-		OrderBO bo = AbstractBO.getInstance(OrderBO.class, schema);
+    public static OrderBO getInstance(String schema) {
+        OrderBO bo = AbstractBO.getInstance(OrderBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = OrderDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = OrderDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
-	public OrderDTO get(Integer id) {
-		OrderDTO dto = this.dao.get(id);
+    public OrderDTO get(Integer id) {
+        OrderDTO dto = this.dao.get(id);
 
-		QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
-		SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-		RequestBO rbo = RequestBO.getInstance(this.getSchema());
-		this.populateDTO(dto, qbo, sbo, rbo);
+        QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
+        SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
+        RequestBO rbo = RequestBO.getInstance(this.getSchema());
+        this.populateDTO(dto, qbo, sbo, rbo);
 
-		return dto;
-	}
+        return dto;
+    }
 
-	public Integer save(OrderDTO dto) {
-		return this.dao.save(dto);
-	}
+    public Integer save(OrderDTO dto) {
+        return this.dao.save(dto);
+    }
 
-	public boolean update(OrderDTO dto) {
-		return this.dao.update(dto);
-	}
+    public boolean update(OrderDTO dto) {
+        return this.dao.update(dto);
+    }
 
-	public boolean delete(OrderDTO dto) {
-		return this.dao.delete(dto);
-	}
+    public boolean delete(OrderDTO dto) {
+        return this.dao.delete(dto);
+    }
 
-	public DTOCollection<OrderDTO> list() {
-		return this.search(null, Integer.MAX_VALUE, 0);
-	}
+    public DTOCollection<OrderDTO> list() {
+        return this.search(null, Integer.MAX_VALUE, 0);
+    }
 
-	public DTOCollection<OrderDTO> search(String value, int limit, int offset) {
-		DTOCollection<OrderDTO> list = this.dao.search(value, limit, offset);
+    public DTOCollection<OrderDTO> search(String value, int limit, int offset) {
+        DTOCollection<OrderDTO> list = this.dao.search(value, limit, offset);
 
-		QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
-		SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-		RequestBO rbo = RequestBO.getInstance(this.getSchema());
-		for (OrderDTO dto : list) {
-			this.populateDTO(dto, qbo, sbo, rbo);
-		}
+        QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
+        SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
+        RequestBO rbo = RequestBO.getInstance(this.getSchema());
+        for (OrderDTO dto : list) {
+            this.populateDTO(dto, qbo, sbo, rbo);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	private void populateDTO(OrderDTO dto, QuotationBO qbo, SupplierBO sbo, RequestBO rbo) {
-		QuotationDTO qdto = qbo.get(dto.getQuotationId());
-		SupplierDTO sdto = sbo.get(qdto.getSupplierId());
+    private void populateDTO(OrderDTO dto, QuotationBO qbo, SupplierBO sbo, RequestBO rbo) {
+        QuotationDTO qdto = qbo.get(dto.getQuotationId());
+        SupplierDTO sdto = sbo.get(qdto.getSupplierId());
 
-		List<RequestQuotationDTO> rqList = qbo.listRequestQuotation(qdto.getId());
-		for (RequestQuotationDTO rqdto : rqList) {
-			RequestDTO request = rbo.get(rqdto.getRequestId());
-			rqdto.setAuthor(request.getAuthor());
-			rqdto.setTitle(request.getTitle());
-		}
+        List<RequestQuotationDTO> rqList = qbo.listRequestQuotation(qdto.getId());
+        for (RequestQuotationDTO rqdto : rqList) {
+            RequestDTO request = rbo.get(rqdto.getRequestId());
+            rqdto.setAuthor(request.getAuthor());
+            rqdto.setTitle(request.getTitle());
+        }
 
-		dto.setQuotationsList(rqList);
-		dto.setSupplierId(qdto.getSupplierId());
-		dto.setSupplierName(sdto.getTrademark());
-		dto.setDeliveryTime(qdto.getDeliveryTime());
+        dto.setQuotationsList(rqList);
+        dto.setSupplierId(qdto.getSupplierId());
+        dto.setSupplierName(sdto.getTrademark());
+        dto.setDeliveryTime(qdto.getDeliveryTime());
+    }
 
-	}
-
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
-
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
 }

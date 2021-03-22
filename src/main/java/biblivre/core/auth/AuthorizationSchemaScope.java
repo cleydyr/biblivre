@@ -20,7 +20,7 @@
 package biblivre.core.auth;
 
 public enum AuthorizationSchemaScope {
-	GLOBAL_SCHEMA,
-	SINGLE_SCHEMA,
-	ANY
+    GLOBAL_SCHEMA,
+    SINGLE_SCHEMA,
+    ANY
 }

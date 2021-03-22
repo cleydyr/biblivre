@@ -19,380 +19,389 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.cataloging.enums.AutocompleteType;
+import biblivre.cataloging.enums.RecordType;
+import biblivre.core.JavascriptCacheableList;
+import biblivre.core.PreparedStatementUtil;
+import biblivre.core.StaticBO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.cataloging.enums.AutocompleteType;
-import biblivre.cataloging.enums.RecordType;
-import biblivre.core.JavascriptCacheableList;
-import biblivre.core.PreparedStatementUtil;
-import biblivre.core.StaticBO;
-
 public class Fields extends StaticBO {
 
-	private static Logger logger = LoggerFactory.getLogger(Fields.class);
+    private static Logger logger = LoggerFactory.getLogger(Fields.class);
 
-	private static HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>
-		briefTabFieldFormats;
+    private static HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>
+            briefTabFieldFormats;
 
-	private static HashMap<Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>
-		formTabFields;
+    private static HashMap<Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>
+            formTabFields;
 
-	private static HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>
-		autocompleteSubfields;
+    private static HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>
+            autocompleteSubfields;
 
-	private Fields() {
-	}
+    private Fields() {}
 
-	static {
-		Fields.reset();
-	}
+    static {
+        Fields.reset();
+    }
 
-	public static void reset() {
-		Fields.briefTabFieldFormats =
-				new HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>();
+    public static void reset() {
+        Fields.briefTabFieldFormats =
+                new HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>();
 
-		Fields.formTabFields =
-				new HashMap<Pair<String, RecordType>,
-					JavascriptCacheableList<FormTabDatafieldDTO>>();
+        Fields.formTabFields =
+                new HashMap<
+                        Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>();
 
-		Fields.autocompleteSubfields =
-				new HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>();
-	}
+        Fields.autocompleteSubfields =
+                new HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>();
+    }
 
-	public static void reset(String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    public static void reset(String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		Fields.briefTabFieldFormats.remove(pair);
+        Fields.briefTabFieldFormats.remove(pair);
 
-		Fields.formTabFields.remove(pair);
+        Fields.formTabFields.remove(pair);
 
-		Fields.autocompleteSubfields.remove(pair);
-	}
+        Fields.autocompleteSubfields.remove(pair);
+    }
 
-	public static List<BriefTabFieldFormatDTO> getBriefFormats(
-			String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    public static List<BriefTabFieldFormatDTO> getBriefFormats(
+            String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
+        List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
 
-		if (list == null) {
-			list = Fields.loadBriefFormats(schema, recordType);
-		}
+        if (list == null) {
+            list = Fields.loadBriefFormats(schema, recordType);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static boolean insertBriefFormat(
-			String schema, RecordType recordType, BriefTabFieldFormatDTO dto, int loggedUser) {
+    public static boolean insertBriefFormat(
+            String schema, RecordType recordType, BriefTabFieldFormatDTO dto, int loggedUser) {
 
-		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
-		boolean result = dao.insertBriefFormat(dto, recordType, loggedUser);
+        boolean result = dao.insertBriefFormat(dto, recordType, loggedUser);
 
-		if (result) {
-			Pair<String, RecordType> pair = Pair.of(schema, recordType);
-			Fields.briefTabFieldFormats.remove(pair);
-		}
+        if (result) {
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
+            Fields.briefTabFieldFormats.remove(pair);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public static boolean updateBriefFormats(
-			String schema, RecordType recordType, List<BriefTabFieldFormatDTO> briefFormats,
-			int loggedUser) {
+    public static boolean updateBriefFormats(
+            String schema,
+            RecordType recordType,
+            List<BriefTabFieldFormatDTO> briefFormats,
+            int loggedUser) {
 
-		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
-		boolean result = dao.updateBriefFormats(briefFormats, recordType, loggedUser);
+        boolean result = dao.updateBriefFormats(briefFormats, recordType, loggedUser);
 
-		if (result) {
-			Pair<String, RecordType> pair = Pair.of(schema, recordType);
+        if (result) {
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-			Fields.briefTabFieldFormats.remove(pair);
-		}
+            Fields.briefTabFieldFormats.remove(pair);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public static boolean updateFormTabDatafield(
-			String schema, RecordType recordType,
-			HashMap<String, FormTabDatafieldDTO> formDatafields, int loggedUser) {
+    public static boolean updateFormTabDatafield(
+            String schema,
+            RecordType recordType,
+            HashMap<String, FormTabDatafieldDTO> formDatafields,
+            int loggedUser) {
 
-		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
-		boolean result = dao.updateFormTabDatafield(formDatafields, recordType, loggedUser);
+        boolean result = dao.updateFormTabDatafield(formDatafields, recordType, loggedUser);
 
-		if (result) {
-			Pair<String, RecordType> pair = Pair.of(schema, recordType);
+        if (result) {
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-			Fields.formTabFields.remove(pair);
-		}
+            Fields.formTabFields.remove(pair);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public static boolean deleteBriefFormat(
-			String schema, RecordType recordType, String datafield) {
+    public static boolean deleteBriefFormat(
+            String schema, RecordType recordType, String datafield) {
 
-		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
-		boolean result = dao.deleteBriefFormat(datafield, recordType);
+        boolean result = dao.deleteBriefFormat(datafield, recordType);
 
-		if (result) {
-			Pair<String, RecordType> pair = Pair.of(schema, recordType);
+        if (result) {
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-			Fields.briefTabFieldFormats.remove(pair);
-		}
+            Fields.briefTabFieldFormats.remove(pair);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public static boolean deleteFormTabDatafield(
-			String schema, RecordType recordType, String datafield) {
+    public static boolean deleteFormTabDatafield(
+            String schema, RecordType recordType, String datafield) {
 
-		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
-		boolean result = dao.deleteFormTabDatafield(datafield, recordType);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        boolean result = dao.deleteFormTabDatafield(datafield, recordType);
 
-		if (result) {
-			Pair<String, RecordType> pair = Pair.of(schema, recordType);
-			Fields.formTabFields.remove(pair);
-		}
+        if (result) {
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
+            Fields.formTabFields.remove(pair);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(
-			String schema, String type) {
-		RecordType recordType = RecordType.fromString(type);
+    public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(
+            String schema, String type) {
+        RecordType recordType = RecordType.fromString(type);
 
-		if (recordType == null) {
-			recordType = RecordType.BIBLIO;
-		}
+        if (recordType == null) {
+            recordType = RecordType.BIBLIO;
+        }
 
-		return Fields.getFormFields(schema, recordType);
-	}
+        return Fields.getFormFields(schema, recordType);
+    }
 
-	public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(
-			String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(
+            String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
+        JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
 
-		if (list == null) {
-			list = Fields.loadFormFields(schema, recordType);
-		}
+        if (list == null) {
+            list = Fields.loadFormFields(schema, recordType);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static List<FormTabSubfieldDTO> getAutocompleteSubFields(String schema, String type) {
-		RecordType recordType = RecordType.fromString(type);
+    public static List<FormTabSubfieldDTO> getAutocompleteSubFields(String schema, String type) {
+        RecordType recordType = RecordType.fromString(type);
 
-		if (recordType == null) {
-			recordType = RecordType.BIBLIO;
-		}
+        if (recordType == null) {
+            recordType = RecordType.BIBLIO;
+        }
 
-		return Fields.getAutocompleteSubFields(schema, recordType);
-	}
+        return Fields.getAutocompleteSubFields(schema, recordType);
+    }
 
-	public static List<FormTabSubfieldDTO> getAutocompleteSubFields(
-			String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    public static List<FormTabSubfieldDTO> getAutocompleteSubFields(
+            String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
+        List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
 
-		if (list == null) {
-			list = Fields.loadAutocompleteSubFields(schema, recordType);
-		}
+        if (list == null) {
+            list = Fields.loadAutocompleteSubFields(schema, recordType);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	public static void addBriefFormat(Connection con, RecordType recordType, String datafield,
-			String format, Integer sortOrder)
-		throws SQLException {
+    public static void addBriefFormat(
+            Connection con,
+            RecordType recordType,
+            String datafield,
+            String format,
+            Integer sortOrder)
+            throws SQLException {
 
-		_deleteFromBriefFormat(datafield, recordType, con);
+        _deleteFromBriefFormat(datafield, recordType, con);
 
-		_insertIntoBriefFormat(datafield, format, sortOrder, recordType, con);
-	}
+        _insertIntoBriefFormat(datafield, format, sortOrder, recordType, con);
+    }
 
-	public static void updateBriefFormat(
-			Connection con, RecordType recordType, String datafield, String format)
-		throws SQLException {
+    public static void updateBriefFormat(
+            Connection con, RecordType recordType, String datafield, String format)
+            throws SQLException {
 
-		StringBuilder sql =
-				new StringBuilder(3)
-					.append("UPDATE ")
-					.append(recordType)
-					.append("_brief_formats SET format = ? WHERE datafield = ?;");
+        StringBuilder sql =
+                new StringBuilder(3)
+                        .append("UPDATE ")
+                        .append(recordType)
+                        .append("_brief_formats SET format = ? WHERE datafield = ?;");
 
-		try (PreparedStatement pst = con.prepareStatement(sql.toString())) {
-			PreparedStatementUtil.setAllParameters(pst, format, datafield);
+        try (PreparedStatement pst = con.prepareStatement(sql.toString())) {
+            PreparedStatementUtil.setAllParameters(pst, format, datafield);
 
-			pst.execute();
-		}
+            pst.execute();
+        }
+    }
 
-	}
+    private static void _deleteFromBriefFormat(
+            String datafield, RecordType recordType, Connection con) throws SQLException {
 
-	private static void _deleteFromBriefFormat(
-			String datafield, RecordType recordType, Connection con)
-		throws SQLException {
+        StringBuilder deleteFromBriefFormatsSQLTemplate =
+                new StringBuilder(3)
+                        .append("DELETE FROM ")
+                        .append(recordType)
+                        .append("_brief_formats WHERE datafield = ?;");
 
-		StringBuilder deleteFromBriefFormatsSQLTemplate =
-				new StringBuilder(3)
-						.append("DELETE FROM ")
-						.append(recordType)
-						.append("_brief_formats WHERE datafield = ?;");
+        PreparedStatement deleteFromBriefFormat =
+                con.prepareStatement(deleteFromBriefFormatsSQLTemplate.toString());
 
-		PreparedStatement deleteFromBriefFormat = con.prepareStatement(
-				deleteFromBriefFormatsSQLTemplate.toString());
+        PreparedStatementUtil.setAllParameters(deleteFromBriefFormat, datafield);
 
-		PreparedStatementUtil.setAllParameters(deleteFromBriefFormat, datafield);
+        deleteFromBriefFormat.execute();
+    }
 
-		deleteFromBriefFormat.execute();
-	}
+    private static void _insertIntoBriefFormat(
+            String datafield,
+            String format,
+            Integer sortOrder,
+            RecordType recordType,
+            Connection con)
+            throws SQLException {
 
-	private static void _insertIntoBriefFormat(
-			String datafield, String format, Integer sortOrder, RecordType recordType,
-			Connection con)
-		throws SQLException {
+        StringBuilder insertIntoBriefFormatsSQLTemplate =
+                new StringBuilder(3)
+                        .append("INSERT INTO ")
+                        .append(recordType)
+                        .append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
 
-		StringBuilder insertIntoBriefFormatsSQLTemplate =
-				new StringBuilder(3)
-				.append("INSERT INTO ")
-				.append(recordType)
-				.append("_brief_formats (datafield, format, sort_order) VALUES (?, ?, ?);");
+        try (PreparedStatement insertIntoBriefFormat =
+                con.prepareStatement(insertIntoBriefFormatsSQLTemplate.toString())) {
 
-		try (PreparedStatement insertIntoBriefFormat = con.prepareStatement(
-					insertIntoBriefFormatsSQLTemplate.toString())) {
+            PreparedStatementUtil.setAllParameters(
+                    insertIntoBriefFormat, datafield, format, sortOrder);
 
-			PreparedStatementUtil.setAllParameters(
-					insertIntoBriefFormat, datafield, format, sortOrder);
+            insertIntoBriefFormat.execute();
+        }
+    }
 
-			insertIntoBriefFormat.execute();
-		}
-	}
-	private static synchronized List<BriefTabFieldFormatDTO> loadBriefFormats(
-			String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    private static synchronized List<BriefTabFieldFormatDTO> loadBriefFormats(
+            String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
+        List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
 
-		// Checking again for thread safety.
-		if (list != null) {
-			return list;
-		}
+        // Checking again for thread safety.
+        if (list != null) {
+            return list;
+        }
 
-		if (Fields.logger.isDebugEnabled()) {
-			Fields.logger.debug("Loading brief formats from " + schema + "." + recordType);
-		}
+        if (Fields.logger.isDebugEnabled()) {
+            Fields.logger.debug("Loading brief formats from " + schema + "." + recordType);
+        }
 
-		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
-		list = dao.listBriefFormats(recordType);
+        list = dao.listBriefFormats(recordType);
 
-		Fields.briefTabFieldFormats.put(pair, list);
+        Fields.briefTabFieldFormats.put(pair, list);
 
-		return list;
-	}
+        return list;
+    }
 
-	private static synchronized JavascriptCacheableList<FormTabDatafieldDTO> loadFormFields(
-			String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    private static synchronized JavascriptCacheableList<FormTabDatafieldDTO> loadFormFields(
+            String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
+        JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
 
-		// Checking again for thread safety.
-		if (list != null) {
-			return list;
-		}
+        // Checking again for thread safety.
+        if (list != null) {
+            return list;
+        }
 
-		if (Fields.logger.isDebugEnabled()) {
-			Fields.logger.debug("Loading form fields from " + schema + "." + recordType);
-		}
+        if (Fields.logger.isDebugEnabled()) {
+            Fields.logger.debug("Loading form fields from " + schema + "." + recordType);
+        }
 
-		TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
 
-		List<FormTabDatafieldDTO> fields = dao.listFields(recordType);
+        List<FormTabDatafieldDTO> fields = dao.listFields(recordType);
 
-		if (recordType == RecordType.HOLDING) {
-			list = new JavascriptCacheableList<FormTabDatafieldDTO>(
-					"CatalogingInput.holdingFields",
-					schema + ".cataloging." + recordType.toString(), ".form.js");
-		}
-		else {
-			list = new JavascriptCacheableList<FormTabDatafieldDTO>(
-					"CatalogingInput.formFields", schema + ".cataloging." + recordType.toString(),
-					".form.js");
-		}
+        if (recordType == RecordType.HOLDING) {
+            list =
+                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                            "CatalogingInput.holdingFields",
+                            schema + ".cataloging." + recordType.toString(),
+                            ".form.js");
+        } else {
+            list =
+                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                            "CatalogingInput.formFields",
+                            schema + ".cataloging." + recordType.toString(),
+                            ".form.js");
+        }
 
-		list.addAll(fields);
+        list.addAll(fields);
 
-		Fields.formTabFields.put(pair, list);
+        Fields.formTabFields.put(pair, list);
 
-		return list;
-	}
+        return list;
+    }
 
-	private static synchronized List<FormTabSubfieldDTO> loadAutocompleteSubFields(
-			String schema, RecordType recordType) {
-		Pair<String, RecordType> pair = Pair.of(schema, recordType);
+    private static synchronized List<FormTabSubfieldDTO> loadAutocompleteSubFields(
+            String schema, RecordType recordType) {
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
-		List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
+        List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
 
-		// Checking again for thread safety.
-		if (list != null) {
-			return list;
-		}
+        // Checking again for thread safety.
+        if (list != null) {
+            return list;
+        }
 
-		if (Fields.logger.isDebugEnabled()) {
-			Fields.logger.debug("Loading autocomplete subfields from " + schema + "." + recordType);
-		}
+        if (Fields.logger.isDebugEnabled()) {
+            Fields.logger.debug("Loading autocomplete subfields from " + schema + "." + recordType);
+        }
 
-		JavascriptCacheableList<FormTabDatafieldDTO> fields =
-				Fields.getFormFields(schema, recordType);
+        JavascriptCacheableList<FormTabDatafieldDTO> fields =
+                Fields.getFormFields(schema, recordType);
 
-		list = new LinkedList<FormTabSubfieldDTO>();
+        list = new LinkedList<FormTabSubfieldDTO>();
 
-		if (fields == null) {
-			return list;
-		}
+        if (fields == null) {
+            return list;
+        }
 
-		for (FormTabDatafieldDTO datafield : fields) {
-			for (FormTabSubfieldDTO subfield : datafield.getSubfields()) {
-				AutocompleteType type = subfield.getAutocompleteType();
+        for (FormTabDatafieldDTO datafield : fields) {
+            for (FormTabSubfieldDTO subfield : datafield.getSubfields()) {
+                AutocompleteType type = subfield.getAutocompleteType();
 
-				if ((type == AutocompleteType.PREVIOUS_VALUES) ||
-						(type == AutocompleteType.FIXED_TABLE_WITH_PREVIOUS_VALUES)) {
-					list.add(subfield);
-				} else if (recordType == RecordType.AUTHORITIES) {
-					if ("100,110,111".contains(datafield.getDatafield())) {
-						if (subfield.getSubfield().equals("a")) {
-							list.add(subfield);
-						}
-					}
-				} else if (recordType == RecordType.VOCABULARY) {
-					if ("150".contains(datafield.getDatafield())) {
-						if (subfield.getSubfield().equals("a")) {
-							list.add(subfield);
-						}
-					}
-				}
+                if ((type == AutocompleteType.PREVIOUS_VALUES)
+                        || (type == AutocompleteType.FIXED_TABLE_WITH_PREVIOUS_VALUES)) {
+                    list.add(subfield);
+                } else if (recordType == RecordType.AUTHORITIES) {
+                    if ("100,110,111".contains(datafield.getDatafield())) {
+                        if (subfield.getSubfield().equals("a")) {
+                            list.add(subfield);
+                        }
+                    }
+                } else if (recordType == RecordType.VOCABULARY) {
+                    if ("150".contains(datafield.getDatafield())) {
+                        if (subfield.getSubfield().equals("a")) {
+                            list.add(subfield);
+                        }
+                    }
+                }
+            }
+        }
 
-			}
-		}
+        Fields.autocompleteSubfields.put(pair, list);
 
-		Fields.autocompleteSubfields.put(pair, list);
-
-		return list;
-	}
+        return list;
+    }
 }

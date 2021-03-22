@@ -26,21 +26,19 @@ import biblivre.core.AbstractDAO;
 
 public class VocabularyRecordDAO extends RecordDAO {
 
-	public static VocabularyRecordDAO getInstance(String schema) {
-		VocabularyRecordDAO dao = (VocabularyRecordDAO) AbstractDAO.getInstance(VocabularyRecordDAO.class, schema);
+    public static VocabularyRecordDAO getInstance(String schema) {
+        VocabularyRecordDAO dao =
+                (VocabularyRecordDAO) AbstractDAO.getInstance(VocabularyRecordDAO.class, schema);
 
-		if (dao.recordType == null) {
-			dao.recordType = RecordType.VOCABULARY;
-		}
+        if (dao.recordType == null) {
+            dao.recordType = RecordType.VOCABULARY;
+        }
 
-		return dao;
-	}
+        return dao;
+    }
 
-
-	@Override
-	protected RecordDTO createRecord() {
-		return new VocabularyRecordDTO();
-	}
-
-
+    @Override
+    protected RecordDTO createRecord() {
+        return new VocabularyRecordDTO();
+    }
 }

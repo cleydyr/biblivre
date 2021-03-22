@@ -19,39 +19,38 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
 public enum AccessCardStatus implements BiblivreEnum {
-	AVAILABLE,
-	IN_USE,
-	BLOCKED,
-	IN_USE_AND_BLOCKED,
-	CANCELLED;
+    AVAILABLE,
+    IN_USE,
+    BLOCKED,
+    IN_USE_AND_BLOCKED,
+    CANCELLED;
 
-	public static AccessCardStatus fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static AccessCardStatus fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (AccessCardStatus type : AccessCardStatus.values()) {
-			if (str.equals(type.toString())) {
-				return type;
-			}
-		}
+        for (AccessCardStatus type : AccessCardStatus.values()) {
+            if (str.equals(type.toString())) {
+                return type;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

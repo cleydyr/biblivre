@@ -19,6 +19,4 @@
  ******************************************************************************/
 package biblivre.administration.reports.dto;
 
-public abstract class BaseReportDto {
-
-}
+public abstract class BaseReportDto {}

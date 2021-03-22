@@ -23,158 +23,155 @@ import static biblivre.core.utils.Constants.DEFAULT_DATE_FORMAT;
 import static biblivre.core.utils.Constants.DEFAULT_DATE_FORMAT_TIMEZONE;
 import static biblivre.core.utils.Constants.DEFAULT_DATE_PRINTER_TIMEZONE;
 
+import biblivre.core.AbstractDTO;
+import biblivre.core.utils.SchemaUtils;
 import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.core.AbstractDTO;
-import biblivre.core.utils.SchemaUtils;
-
 public class RestoreDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Map<String, Pair<String, String>> schemas;
-	private BackupType type;
-	private BackupScope backupScope;
-	private File backup;
-	private boolean valid;
-	private boolean purgeAll;
+    private Map<String, Pair<String, String>> schemas;
+    private BackupType type;
+    private BackupScope backupScope;
+    private File backup;
+    private boolean valid;
+    private boolean purgeAll;
 
-	private transient BackupScope restoreScope;
-	private transient Map<String, String> restoreSchemas;
+    private transient BackupScope restoreScope;
+    private transient Map<String, String> restoreSchemas;
 
-	public RestoreDTO() {
-	}
+    public RestoreDTO() {}
 
-	public RestoreDTO(BackupDTO dto) {
-		this.setSchemas(dto.getSchemas());
-		this.setType(dto.getType());
-		this.setBackupScope(dto.getBackupScope());
-		this.setCreated(dto.getCreated());
-		this.setBackup(dto.getBackup());
-	}
+    public RestoreDTO(BackupDTO dto) {
+        this.setSchemas(dto.getSchemas());
+        this.setType(dto.getType());
+        this.setBackupScope(dto.getBackupScope());
+        this.setCreated(dto.getCreated());
+        this.setBackup(dto.getBackup());
+    }
 
-	public RestoreDTO (JSONObject json) throws Exception {
-		this.setSchemas(json.get("schemas").toString());
-		this.setType(BackupType.fromString(json.getString("type")));
-		this.setBackupScope(BackupScope.fromString(json.getString("backup_scope")));
-		this.setValid(true);
+    public RestoreDTO(JSONObject json) throws Exception {
+        this.setSchemas(json.get("schemas").toString());
+        this.setType(BackupType.fromString(json.getString("type")));
+        this.setBackupScope(BackupScope.fromString(json.getString("backup_scope")));
+        this.setValid(true);
 
-		String created = json.getString("created");
+        String created = json.getString("created");
 
-		Date parsedDate = new Date(0);
+        Date parsedDate = new Date(0);
 
-		try {
-			if (created != null) {
-				parsedDate = DEFAULT_DATE_FORMAT_TIMEZONE.parse(created);
-			}
-		} catch (ParseException e) {
-			try {
-				this.setCreated(DEFAULT_DATE_FORMAT.parse(created));
-			} catch (ParseException e2) {
-				this.setValid(false);
-			}
-		}
-		this.setCreated(parsedDate);
-	}
+        try {
+            if (created != null) {
+                parsedDate = DEFAULT_DATE_FORMAT_TIMEZONE.parse(created);
+            }
+        } catch (ParseException e) {
+            try {
+                this.setCreated(DEFAULT_DATE_FORMAT.parse(created));
+            } catch (ParseException e2) {
+                this.setValid(false);
+            }
+        }
+        this.setCreated(parsedDate);
+    }
 
-	public Map<String, Pair<String, String>> getSchemas() {
-		return this.schemas;
-	}
+    public Map<String, Pair<String, String>> getSchemas() {
+        return this.schemas;
+    }
 
-	public void setSchemas(Map<String, Pair<String, String>> schemas) {
-		this.schemas = schemas;
-	}
+    public void setSchemas(Map<String, Pair<String, String>> schemas) {
+        this.schemas = schemas;
+    }
 
-	public void setSchemas(String schemas) {
-		this.schemas = SchemaUtils.buildSchemasMap(schemas);;
-	}
+    public void setSchemas(String schemas) {
+        this.schemas = SchemaUtils.buildSchemasMap(schemas);
+        ;
+    }
 
-	public BackupType getType() {
-		return this.type;
-	}
+    public BackupType getType() {
+        return this.type;
+    }
 
-	public void setType(BackupType type) {
-		this.type = type;
-	}
+    public void setType(BackupType type) {
+        this.type = type;
+    }
 
-	public BackupScope getBackupScope() {
-		return this.backupScope;
-	}
+    public BackupScope getBackupScope() {
+        return this.backupScope;
+    }
 
-	public void setBackupScope(BackupScope backupScope) {
-		this.backupScope = backupScope;
-	}
+    public void setBackupScope(BackupScope backupScope) {
+        this.backupScope = backupScope;
+    }
 
-	public BackupScope getRestoreScope() {
-		return this.restoreScope;
-	}
+    public BackupScope getRestoreScope() {
+        return this.restoreScope;
+    }
 
-	public void setRestoreScope(BackupScope restoreScope) {
-		this.restoreScope = restoreScope;
-	}
+    public void setRestoreScope(BackupScope restoreScope) {
+        this.restoreScope = restoreScope;
+    }
 
-	public File getBackup() {
-		return this.backup;
-	}
+    public File getBackup() {
+        return this.backup;
+    }
 
-	public void setBackup(File backup) {
-		this.backup = backup;
-	}
+    public void setBackup(File backup) {
+        this.backup = backup;
+    }
 
-	public boolean isValid() {
-		return this.valid;
-	}
+    public boolean isValid() {
+        return this.valid;
+    }
 
-	public void setValid(boolean valid) {
-		this.valid = valid;
-	}
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 
-	public boolean isPurgeAll() {
-		return this.purgeAll;
-	}
+    public boolean isPurgeAll() {
+        return this.purgeAll;
+    }
 
-	public void setPurgeAll(boolean purgeAll) {
-		this.purgeAll = purgeAll;
-	}
+    public void setPurgeAll(boolean purgeAll) {
+        this.purgeAll = purgeAll;
+    }
 
-	public Map<String, String> getRestoreSchemas() {
-		return this.restoreSchemas;
-	}
+    public Map<String, String> getRestoreSchemas() {
+        return this.restoreSchemas;
+    }
 
-	public void setRestoreSchemas(Map<String, String> restoreSchemas) {
-		this.restoreSchemas = restoreSchemas;
-	}
+    public void setRestoreSchemas(Map<String, String> restoreSchemas) {
+        this.restoreSchemas = restoreSchemas;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = new JSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("schemas", this.getSchemas());
-			json.putOpt("type", this.getType());
-			json.putOpt("backup_scope", this.getBackupScope());
+        try {
+            json.putOpt("schemas", this.getSchemas());
+            json.putOpt("type", this.getType());
+            json.putOpt("backup_scope", this.getBackupScope());
 
-			if (this.getCreated() != null) {
-				String formattedDate =
-					DEFAULT_DATE_PRINTER_TIMEZONE.format(this.getCreated());
+            if (this.getCreated() != null) {
+                String formattedDate = DEFAULT_DATE_PRINTER_TIMEZONE.format(this.getCreated());
 
-				json.putOpt("created", formattedDate);
-			}
+                json.putOpt("created", formattedDate);
+            }
 
-			if (this.getBackup() != null) {
-				json.putOpt("file", this.getBackup().getName());
-			}
+            if (this.getBackup() != null) {
+                json.putOpt("file", this.getBackup().getName());
+            }
 
-			json.putOpt("valid", this.isValid());
-		} catch (JSONException e) {
-		}
+            json.putOpt("valid", this.isValid());
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

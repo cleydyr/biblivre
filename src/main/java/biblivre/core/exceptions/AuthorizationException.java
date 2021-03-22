@@ -20,13 +20,13 @@
 package biblivre.core.exceptions;
 
 public class AuthorizationException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     public AuthorizationException() {
-    	super("error.no_permission");
+        super("error.no_permission");
     }
 
     public AuthorizationException(String s) {
-    	super(s);
+        super(s);
     }
 }

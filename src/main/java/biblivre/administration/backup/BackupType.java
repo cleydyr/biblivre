@@ -19,37 +19,36 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
 public enum BackupType implements BiblivreEnum {
-	FULL,
-	DIGITAL_MEDIA_ONLY,
-	EXCLUDE_DIGITAL_MEDIA;
+    FULL,
+    DIGITAL_MEDIA_ONLY,
+    EXCLUDE_DIGITAL_MEDIA;
 
-	public static BackupType fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static BackupType fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (BackupType type : BackupType.values()) {
-			if (str.equals(type.toString())) {
-				return type;
-			}
-		}
+        for (BackupType type : BackupType.values()) {
+            if (str.equals(type.toString())) {
+                return type;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

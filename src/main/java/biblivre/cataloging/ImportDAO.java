@@ -23,8 +23,7 @@ import biblivre.core.AbstractDAO;
 
 public class ImportDAO extends AbstractDAO {
 
-	public static ImportDAO getInstance(String schema) {
-		return (ImportDAO) AbstractDAO.getInstance(ImportDAO.class, schema);
-	}
-
+    public static ImportDAO getInstance(String schema) {
+        return (ImportDAO) AbstractDAO.getInstance(ImportDAO.class, schema);
+    }
 }

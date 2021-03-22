@@ -19,38 +19,36 @@
  ******************************************************************************/
 package biblivre.acquisition.request;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
 public enum RequestStatus implements BiblivreEnum {
+    PENDING,
+    CLOSED,
+    PENDING_AND_CLOSED;
 
-	PENDING,
-	CLOSED,
-	PENDING_AND_CLOSED;
+    public static RequestStatus fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-	public static RequestStatus fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+        str = str.toLowerCase();
 
-		str = str.toLowerCase();
+        for (RequestStatus status : RequestStatus.values()) {
+            if (str.equals(status.toString())) {
+                return status;
+            }
+        }
 
-		for (RequestStatus status : RequestStatus.values()) {
-			if (str.equals(status.toString())) {
-				return status;
-			}
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
-
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

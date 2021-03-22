@@ -19,41 +19,40 @@
  ******************************************************************************/
 package biblivre.cataloging.enums;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
 public enum AutocompleteType implements BiblivreEnum {
-	DISABLED,
-	PREVIOUS_VALUES,
-	FIXED_TABLE,
-	FIXED_TABLE_WITH_PREVIOUS_VALUES,
-	BIBLIO,
-	AUTHORITIES,
-	VOCABULARY;
+    DISABLED,
+    PREVIOUS_VALUES,
+    FIXED_TABLE,
+    FIXED_TABLE_WITH_PREVIOUS_VALUES,
+    BIBLIO,
+    AUTHORITIES,
+    VOCABULARY;
 
-	public static AutocompleteType fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return AutocompleteType.DISABLED;
-		}
+    public static AutocompleteType fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return AutocompleteType.DISABLED;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (AutocompleteType type : AutocompleteType.values()) {
-			if (str.equals(type.name().toLowerCase())) {
-				return type;
-			}
-		}
+        for (AutocompleteType type : AutocompleteType.values()) {
+            if (str.equals(type.name().toLowerCase())) {
+                return type;
+            }
+        }
 
-		return AutocompleteType.DISABLED;
-	}
+        return AutocompleteType.DISABLED;
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

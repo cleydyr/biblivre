@@ -19,99 +19,98 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.core.AbstractDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.core.AbstractDTO;
-
 public class AutocompleteDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Integer id;
-	private Integer recordId;
-	private String datafield;
-	private String subfield;
-	private String word;
-	private String phrase;
-	//private AuthorityRecordDTO authority;
-	//private VocabularyRecordDTO vocabulary;
+    private Integer id;
+    private Integer recordId;
+    private String datafield;
+    private String subfield;
+    private String word;
+    private String phrase;
+    // private AuthorityRecordDTO authority;
+    // private VocabularyRecordDTO vocabulary;
 
-	private transient RecordDTO record;
+    private transient RecordDTO record;
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Integer getRecordId() {
-		return this.recordId;
-	}
+    public Integer getRecordId() {
+        return this.recordId;
+    }
 
-	public void setRecordId(Integer recordId) {
-		this.recordId = recordId;
-	}
+    public void setRecordId(Integer recordId) {
+        this.recordId = recordId;
+    }
 
-	public String getDatafield() {
-		return this.datafield;
-	}
+    public String getDatafield() {
+        return this.datafield;
+    }
 
-	public void setDatafield(String datafield) {
-		this.datafield = datafield;
-	}
+    public void setDatafield(String datafield) {
+        this.datafield = datafield;
+    }
 
-	public String getSubfield() {
-		return this.subfield;
-	}
+    public String getSubfield() {
+        return this.subfield;
+    }
 
-	public void setSubfield(String subfield) {
-		this.subfield = subfield;
-	}
+    public void setSubfield(String subfield) {
+        this.subfield = subfield;
+    }
 
-	public String getWord() {
-		return this.word;
-	}
+    public String getWord() {
+        return this.word;
+    }
 
-	public void setWord(String word) {
-		this.word = word;
-	}
+    public void setWord(String word) {
+        this.word = word;
+    }
 
-	public String getPhrase() {
-		return this.phrase;
-	}
+    public String getPhrase() {
+        return this.phrase;
+    }
 
-	public void setPhrase(String phrase) {
-		this.phrase = phrase;
-	}
+    public void setPhrase(String phrase) {
+        this.phrase = phrase;
+    }
 
-	public RecordDTO getRecord() {
-		return this.record;
-	}
+    public RecordDTO getRecord() {
+        return this.record;
+    }
 
-	public void setRecord(RecordDTO record) {
-		this.record = record;
-	}
+    public void setRecord(RecordDTO record) {
+        this.record = record;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = new JSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("id", this.getId());
-			json.putOpt("record_id", this.getRecordId());
-			json.putOpt("datafield", this.getDatafield());
-			json.putOpt("subfield", this.getSubfield());
-			json.putOpt("word", this.getWord());
-			json.putOpt("phrase", this.getPhrase());
+        try {
+            json.putOpt("id", this.getId());
+            json.putOpt("record_id", this.getRecordId());
+            json.putOpt("datafield", this.getDatafield());
+            json.putOpt("subfield", this.getSubfield());
+            json.putOpt("word", this.getWord());
+            json.putOpt("phrase", this.getPhrase());
 
-			if (this.getRecord() != null) {
-				json.putOpt("record", this.getRecord().toJSONObject());
-			}
-		} catch (JSONException e) {
-		}
+            if (this.getRecord() != null) {
+                json.putOpt("record", this.getRecord().toJSONObject());
+            }
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

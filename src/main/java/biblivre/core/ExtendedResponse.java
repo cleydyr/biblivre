@@ -20,47 +20,46 @@
 package biblivre.core;
 
 import java.io.IOException;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 public class ExtendedResponse extends HttpServletResponseWrapper {
 
-	private int httpStatus = SC_OK;
+    private int httpStatus = SC_OK;
 
-	public ExtendedResponse(HttpServletResponse response) {
-		super(response);
-	}
+    public ExtendedResponse(HttpServletResponse response) {
+        super(response);
+    }
 
-	public void print(Object text) throws IOException {
-		this.getWriter().print(text);
-	}
+    public void print(Object text) throws IOException {
+        this.getWriter().print(text);
+    }
 
-	@Override
-	public void sendError(int sc) throws IOException {
-		super.sendError(sc);
-		this.httpStatus = sc;
-	}
+    @Override
+    public void sendError(int sc) throws IOException {
+        super.sendError(sc);
+        this.httpStatus = sc;
+    }
 
-	@Override
-	public void sendError(int sc, String msg) throws IOException {
-		super.sendError(sc, msg);
-		this.httpStatus = sc;
-	}
+    @Override
+    public void sendError(int sc, String msg) throws IOException {
+        super.sendError(sc, msg);
+        this.httpStatus = sc;
+    }
 
-	@Override
-	public void sendRedirect(String location) throws IOException {
-		this.httpStatus = SC_MOVED_TEMPORARILY;
-	    super.sendRedirect(location);
-	}
+    @Override
+    public void sendRedirect(String location) throws IOException {
+        this.httpStatus = SC_MOVED_TEMPORARILY;
+        super.sendRedirect(location);
+    }
 
     @Override
     public void setStatus(int sc) {
-    	super.setStatus(sc);
-    	this.httpStatus = sc;
+        super.setStatus(sc);
+        this.httpStatus = sc;
     }
 
-	public int getStatus() {
-		return this.httpStatus;
- 	}
+    public int getStatus() {
+        return this.httpStatus;
+    }
 }

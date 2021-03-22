@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
+import biblivre.core.configurations.Configurations;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -26,285 +27,272 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.configurations.Configurations;
-
 public class DatabaseUtils {
 
-	private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
-	public static File getPgDump(String schema) {
-		File pgdump = DatabaseUtils.getPgDumpFromConfiguration(schema);
+    public static File getPgDump(String schema) {
+        File pgdump = DatabaseUtils.getPgDumpFromConfiguration(schema);
 
-		if (pgdump == null) {
-			pgdump = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPgDumpFilename());
-		}
+        if (pgdump == null) {
+            pgdump = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPgDumpFilename());
+        }
 
-		return pgdump;
-	}
+        return pgdump;
+    }
 
-	public static File getPsql(String schema) {
-		File psql = DatabaseUtils.getPsqlFromConfiguration(schema);
+    public static File getPsql(String schema) {
+        File psql = DatabaseUtils.getPsqlFromConfiguration(schema);
 
-		if (psql == null) {
-			psql = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPsqlFilename());
-		}
+        if (psql == null) {
+            psql = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPsqlFilename());
+        }
 
-		return psql;
-	}
+        return psql;
+    }
 
-	public static File getPgDumpFromConfiguration(String schema) {
-		String pgdump = Configurations.getString(schema, Constants.CONFIG_PGDUMP_PATH);
+    public static File getPgDumpFromConfiguration(String schema) {
+        String pgdump = Configurations.getString(schema, Constants.CONFIG_PGDUMP_PATH);
 
-		if (StringUtils.isNotBlank(pgdump)) {
-			File file = new File(pgdump);
+        if (StringUtils.isNotBlank(pgdump)) {
+            File file = new File(pgdump);
 
-			if (file.isDirectory()) {
-				file = new File(file, DatabaseUtils.getPgDumpFilename());
-			}
+            if (file.isDirectory()) {
+                file = new File(file, DatabaseUtils.getPgDumpFilename());
+            }
 
-			return file.exists() ? file : null;
-		}
+            return file.exists() ? file : null;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public static File getPsqlFromConfiguration(String schema) {
-		String psql = Configurations.getString(schema, Constants.CONFIG_PSQL_PATH);
+    public static File getPsqlFromConfiguration(String schema) {
+        String psql = Configurations.getString(schema, Constants.CONFIG_PSQL_PATH);
 
-		if (StringUtils.isNotBlank(psql)) {
-			File file = new File(psql);
+        if (StringUtils.isNotBlank(psql)) {
+            File file = new File(psql);
 
-			if (file.isDirectory()) {
-				file = new File(file, DatabaseUtils.getPsqlFilename());
-			}
+            if (file.isDirectory()) {
+                file = new File(file, DatabaseUtils.getPsqlFilename());
+            }
 
-			return file.exists() ? file : null;
-		}
+            return file.exists() ? file : null;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public static String getDatabaseHostName() {
-		String databaseHostName = System.getenv(Constants.DATABASE_HOST_NAME);
+    public static String getDatabaseHostName() {
+        String databaseHostName = System.getenv(Constants.DATABASE_HOST_NAME);
 
-		if (databaseHostName != null) {
-			return databaseHostName;
-		}
+        if (databaseHostName != null) {
+            return databaseHostName;
+        }
 
-		return InetAddress.getLoopbackAddress().getHostName();
-	}
+        return InetAddress.getLoopbackAddress().getHostName();
+    }
 
-	public static String getDatabaseName() {
-		String databaseName = System.getenv(Constants.DATABASE_NAME);
+    public static String getDatabaseName() {
+        String databaseName = System.getenv(Constants.DATABASE_NAME);
 
-		if (databaseName != null) {
-			return databaseName;
-		}
+        if (databaseName != null) {
+            return databaseName;
+        }
 
-		return Constants.DEFAULT_DATABASE_NAME;
-	}
+        return Constants.DEFAULT_DATABASE_NAME;
+    }
 
-	public static String getDatabasePort() {
-		String databasePort = System.getenv(Constants.DATABASE_PORT);
+    public static String getDatabasePort() {
+        String databasePort = System.getenv(Constants.DATABASE_PORT);
 
-		if (databasePort != null) {
-			return databasePort;
-		}
+        if (databasePort != null) {
+            return databasePort;
+        }
 
-		return  String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT);
-	}
+        return String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT);
+    }
 
-	public static String getDatabasePassword() {
-		String databasePassword = System.getenv(Constants.DATABASE_PASSWORD);
+    public static String getDatabasePassword() {
+        String databasePassword = System.getenv(Constants.DATABASE_PASSWORD);
 
-		if (databasePassword != null) {
-			return databasePassword;
-		}
+        if (databasePassword != null) {
+            return databasePassword;
+        }
 
-		return Constants.DEFAULT_DATABASE_PASSWORD;
-	}
+        return Constants.DEFAULT_DATABASE_PASSWORD;
+    }
 
-	public static String getDatabaseUsername() {
-		String databaseUser = System.getenv(Constants.DATABASE_USERNAME);
+    public static String getDatabaseUsername() {
+        String databaseUser = System.getenv(Constants.DATABASE_USERNAME);
 
-		if (databaseUser != null) {
-			return databaseUser;
-		}
+        if (databaseUser != null) {
+            return databaseUser;
+        }
 
-		return Constants.DEFAULT_DATABASE_USERNAME;
-	}
+        return Constants.DEFAULT_DATABASE_USERNAME;
+    }
 
-	private static File getFromFilesystem(String fileName) {
-		String os = System.getProperty("os.name").toUpperCase();
+    private static File getFromFilesystem(String fileName) {
+        String os = System.getProperty("os.name").toUpperCase();
 
-		if (os.contains("WINDOWS")) {
-			return DatabaseUtils.getWindows(fileName);
-		} else if (os.contains("LINUX")) {
-			return DatabaseUtils.getLinux(fileName);
-		} else if (os.contains("MAC OS X")) {
-			return DatabaseUtils.getMacOs(fileName);
-		} else {
-			return null;
-		}
-	}
+        if (os.contains("WINDOWS")) {
+            return DatabaseUtils.getWindows(fileName);
+        } else if (os.contains("LINUX")) {
+            return DatabaseUtils.getLinux(fileName);
+        } else if (os.contains("MAC OS X")) {
+            return DatabaseUtils.getMacOs(fileName);
+        } else {
+            return null;
+        }
+    }
 
-	private static String getPgDumpFilename() {
-		String os = System.getProperty("os.name").toUpperCase();
+    private static String getPgDumpFilename() {
+        String os = System.getProperty("os.name").toUpperCase();
 
-		if (os.contains("WINDOWS")) {
-			return "pg_dump.exe";
-		} else {
-			return "pg_dump";
-		}
-	}
+        if (os.contains("WINDOWS")) {
+            return "pg_dump.exe";
+        } else {
+            return "pg_dump";
+        }
+    }
 
-	private static String getPsqlFilename() {
-		String os = System.getProperty("os.name").toUpperCase();
+    private static String getPsqlFilename() {
+        String os = System.getProperty("os.name").toUpperCase();
 
-		if (os.contains("WINDOWS")) {
-			return "psql.exe";
-		} else {
-			return "psql";
-		}
-	}
+        if (os.contains("WINDOWS")) {
+            return "psql.exe";
+        } else {
+            return "psql";
+        }
+    }
 
-	private static File getMacOs(String filename) {
-		String[] commands;
+    private static File getMacOs(String filename) {
+        String[] commands;
 
-		commands = new String[] {
-			"/bin/sh",
-			"-c",
-			"\"/bin/ps axwwww -o comm | grep -v grep | grep postgres$ | sed 's/postgres$//'\""
-		};
+        commands =
+                new String[] {
+                    "/bin/sh",
+                    "-c",
+                    "\"/bin/ps axwwww -o comm | grep -v grep | grep postgres$ | sed 's/postgres$//'\""
+                };
 
-		String path = DatabaseUtils.processPatternMatcher(commands, "(.*)", 1);
-		return new File(path, filename);
-	}
+        String path = DatabaseUtils.processPatternMatcher(commands, "(.*)", 1);
+        return new File(path, filename);
+    }
 
-	private static File getLinux(String filename) {
-		ProcessBuilder pb = whichCommand(filename);
+    private static File getLinux(String filename) {
+        ProcessBuilder pb = whichCommand(filename);
 
-		try (BufferedReader reader = new BufferedReader(
-					new InputStreamReader(pb.start().getInputStream()	))) {
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(pb.start().getInputStream()))) {
 
-			String line = reader.readLine();
+            String line = reader.readLine();
 
-			return new File(line);
-		} catch(Exception e) {
-			return null;
-		}
-	}
+            return new File(line);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-	private static ProcessBuilder whichCommand(String filename) {
-		String[] commands = new String[] {
-			"/bin/bash",
-			"-c",
-			"which " + filename
-		};
+    private static ProcessBuilder whichCommand(String filename) {
+        String[] commands = new String[] {"/bin/bash", "-c", "which " + filename};
 
-		ProcessBuilder pb = new ProcessBuilder(commands);
-		return pb;
-	}
+        ProcessBuilder pb = new ProcessBuilder(commands);
+        return pb;
+    }
 
-	private static File getWindows(String filename) {
-		String[] commands;
+    private static File getWindows(String filename) {
+        String[] commands;
 
-		//Step 1 - Detecting current PostgreSQL service name
-		commands = new String[] {
-			"tasklist",
-			"/nh",
-			"/svc",
-			"/fi",
-			"imagename eq pg_ctl.exe",
-			"/fo",
-			"csv"
-		};
+        // Step 1 - Detecting current PostgreSQL service name
+        commands =
+                new String[] {
+                    "tasklist", "/nh", "/svc", "/fi", "imagename eq pg_ctl.exe", "/fo", "csv"
+                };
 
-		String postgresServiceName = DatabaseUtils.processPatternMatcher(commands, "([^\"]+)\"$", 1);
-		if (postgresServiceName == null) {
-			return null;
-		}
+        String postgresServiceName =
+                DatabaseUtils.processPatternMatcher(commands, "([^\"]+)\"$", 1);
+        if (postgresServiceName == null) {
+            return null;
+        }
 
-		//Step 2 - Detect PostgreSQL Product Code
-		String postgresProductCode = null;
-		String[] regkeys = new String[] {
-			"HKLM\\SOFTWARE\\PostgreSQL\\Services\\" + postgresServiceName,
-			"HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Services\\" + postgresServiceName
-		};
-		for (String regkey : regkeys) {
-			postgresProductCode = getRegValue(regkey, "Product Code");
-			if (postgresProductCode != null) {
-				break;
-			}
-		}
-		if (postgresProductCode == null) {
-			return null;
-		}
+        // Step 2 - Detect PostgreSQL Product Code
+        String postgresProductCode = null;
+        String[] regkeys =
+                new String[] {
+                    "HKLM\\SOFTWARE\\PostgreSQL\\Services\\" + postgresServiceName,
+                    "HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Services\\" + postgresServiceName
+                };
+        for (String regkey : regkeys) {
+            postgresProductCode = getRegValue(regkey, "Product Code");
+            if (postgresProductCode != null) {
+                break;
+            }
+        }
+        if (postgresProductCode == null) {
+            return null;
+        }
 
-		//Step 3 - Detect PostgreSQL Base Directory
-		String postgresBaseDirectory = null;
-		regkeys = new String[] {
-			"HKLM\\SOFTWARE\\PostgreSQL\\Installations\\" + postgresProductCode,
-			"HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Installations\\" + postgresProductCode
-		};
-		for (String regkey : regkeys) {
-			postgresBaseDirectory = getRegValue(regkey, "Base Directory");
-			if (postgresBaseDirectory != null) {
-				break;
-			}
-		}
-		if (postgresBaseDirectory == null) {
-			return null;
-		}
+        // Step 3 - Detect PostgreSQL Base Directory
+        String postgresBaseDirectory = null;
+        regkeys =
+                new String[] {
+                    "HKLM\\SOFTWARE\\PostgreSQL\\Installations\\" + postgresProductCode,
+                    "HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Installations\\" + postgresProductCode
+                };
+        for (String regkey : regkeys) {
+            postgresBaseDirectory = getRegValue(regkey, "Base Directory");
+            if (postgresBaseDirectory != null) {
+                break;
+            }
+        }
+        if (postgresBaseDirectory == null) {
+            return null;
+        }
 
-		File file = new File(postgresBaseDirectory + File.separator + "bin", filename);
-		return file.exists() ? file : null;
-	}
+        File file = new File(postgresBaseDirectory + File.separator + "bin", filename);
+        return file.exists() ? file : null;
+    }
 
-	private static String getRegValue(String dir, String key) {
-		String[] commands = new String[] {
-			"reg",
-			"query",
-			dir,
-			"/V",
-			key
-		};
+    private static String getRegValue(String dir, String key) {
+        String[] commands = new String[] {"reg", "query", dir, "/V", key};
 
-		return DatabaseUtils.processPatternMatcher(commands, "REG_SZ\\s+(.+)$", 1);
-	}
+        return DatabaseUtils.processPatternMatcher(commands, "REG_SZ\\s+(.+)$", 1);
+    }
 
-	private static String processPatternMatcher(String[] commands, String regex, int group) {
-		return DatabaseUtils.processPatternMatcher(commands, regex, group, null);
-	}
+    private static String processPatternMatcher(String[] commands, String regex, int group) {
+        return DatabaseUtils.processPatternMatcher(commands, regex, group, null);
+    }
 
-	private static String processPatternMatcher(String[] commands, String regex, int group, String directory) {
-		ProcessBuilder pb = new ProcessBuilder(commands);
-		if (directory != null) {
-			pb.directory(new File(directory));
-		}
+    private static String processPatternMatcher(
+            String[] commands, String regex, int group, String directory) {
+        ProcessBuilder pb = new ProcessBuilder(commands);
+        if (directory != null) {
+            pb.directory(new File(directory));
+        }
 
-		pb.redirectErrorStream(true);
+        pb.redirectErrorStream(true);
 
-		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(pb.start().getInputStream()))) {
-			String line;
+        try (BufferedReader br =
+                new BufferedReader(new InputStreamReader(pb.start().getInputStream()))) {
+            String line;
 
-			Pattern pattern = Pattern.compile(regex);
-			while ((line = br.readLine()) != null) {
-				Matcher matcher = pattern.matcher(line);
-				if (matcher.find()) {
-					return matcher.group(1);
-				}
-			}
-		} catch (IOException e) {
-			DatabaseUtils.logger.error(e.getMessage(), e);
-		}
+            Pattern pattern = Pattern.compile(regex);
+            while ((line = br.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    return matcher.group(1);
+                }
+            }
+        } catch (IOException e) {
+            DatabaseUtils.logger.error(e.getMessage(), e);
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

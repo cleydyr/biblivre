@@ -6,18 +6,17 @@ import biblivre.digitalmedia.migrator.exception.DigitalMediaStoreNotFoundExcepti
 
 public class DigitalMediaMigrator {
 
-	public static void processMigration()
-		throws DigitalMediaStoreNotFoundException {
+    public static void processMigration() throws DigitalMediaStoreNotFoundException {
 
-		String migratorName = System.getenv("DIGITAL_MEDIA_MIGRATOR");
+        String migratorName = System.getenv("DIGITAL_MEDIA_MIGRATOR");
 
-		if (migratorName == null) {
-			return;
-		}
+        if (migratorName == null) {
+            return;
+        }
 
-		DigitalMediaStoreMigrator migrator =
-			DigitalMediaStoreMigratorService.selectMigrator(migratorName);
+        DigitalMediaStoreMigrator migrator =
+                DigitalMediaStoreMigratorService.selectMigrator(migratorName);
 
-		migrator.migrate();
-	}
+        migrator.migrate();
+    }
 }

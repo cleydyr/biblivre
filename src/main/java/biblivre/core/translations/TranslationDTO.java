@@ -19,70 +19,69 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
+import biblivre.core.AbstractDTO;
+import biblivre.core.utils.StringPool;
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONString;
 
-import biblivre.core.AbstractDTO;
-import biblivre.core.utils.StringPool;
-
 public class TranslationDTO extends AbstractDTO implements JSONString {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String language;
-	private String key;
-	private String text;
-	private boolean userEdited;
-	private boolean userCreated;
+    private String language;
+    private String key;
+    private String text;
+    private boolean userEdited;
+    private boolean userCreated;
 
-	public String getLanguage() {
-		return this.language;
-	}
+    public String getLanguage() {
+        return this.language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public String getKey() {
-		return this.key;
-	}
+    public String getKey() {
+        return this.key;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public String getText() {
-		return this.text;
-	}
+    public String getText() {
+        return this.text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	public boolean isUserEdited() {
-		return this.userEdited;
-	}
+    public boolean isUserEdited() {
+        return this.userEdited;
+    }
 
-	public void setUserEdited(boolean userEdited) {
-		this.userEdited = userEdited;
-	}
+    public void setUserEdited(boolean userEdited) {
+        this.userEdited = userEdited;
+    }
 
-	public boolean isUserCreated() {
-		return this.userCreated;
-	}
+    public boolean isUserCreated() {
+        return this.userCreated;
+    }
 
-	public void setUserCreated(boolean userCreated) {
-		this.userCreated = userCreated;
-	}
+    public void setUserCreated(boolean userCreated) {
+        this.userCreated = userCreated;
+    }
 
-	@Override
-	public String toString() {
-		return this.getText();
-	}
+    @Override
+    public String toString() {
+        return this.getText();
+    }
 
-	@Override
-	public String toJSONString() {
-		return StringPool.DOUBLE_QUOTE +
-				StringEscapeUtils.escapeEcmaScript(this.toString()) +
-				StringPool.DOUBLE_QUOTE;
-	}
+    @Override
+    public String toJSONString() {
+        return StringPool.DOUBLE_QUOTE
+                + StringEscapeUtils.escapeEcmaScript(this.toString())
+                + StringPool.DOUBLE_QUOTE;
+    }
 }

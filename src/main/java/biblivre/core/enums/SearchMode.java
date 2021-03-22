@@ -19,45 +19,42 @@
  ******************************************************************************/
 package biblivre.core.enums;
 
+import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
-import biblivre.core.utils.BiblivreEnum;
-
-
 public enum SearchMode implements BiblivreEnum {
-	LIST_ALL,
-	SIMPLE,
-	ADVANCED;
+    LIST_ALL,
+    SIMPLE,
+    ADVANCED;
 
-	public static SearchMode fromString(String str) {
-		if (StringUtils.isBlank(str)) {
-			return null;
-		}
+    public static SearchMode fromString(String str) {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
 
-		str = str.toLowerCase();
+        str = str.toLowerCase();
 
-		for (SearchMode type : SearchMode.values()) {
-			if (str.equals(type.name().toLowerCase())) {
-				return type;
-			}
-		}
+        for (SearchMode type : SearchMode.values()) {
+            if (str.equals(type.name().toLowerCase())) {
+                return type;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public static SearchMode fromString(String str, SearchMode def) {
-		SearchMode mode = SearchMode.fromString(str);
+    public static SearchMode fromString(String str, SearchMode def) {
+        SearchMode mode = SearchMode.fromString(str);
 
-		return (mode == null) ? def : mode;
-	}
+        return (mode == null) ? def : mode;
+    }
 
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toLowerCase();
-	}
-
-	public String getString() {
-		return this.toString();
-	}
+    public String getString() {
+        return this.toString();
+    }
 }

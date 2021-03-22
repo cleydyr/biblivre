@@ -19,10 +19,6 @@
  ******************************************************************************/
 package biblivre.multi_schema;
 
-import java.io.File;
-
-import org.json.JSONException;
-
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
@@ -33,94 +29,105 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
+import java.io.File;
+import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-	public void create(ExtendedRequest request, ExtendedResponse response) {
+    public void create(ExtendedRequest request, ExtendedResponse response) {
 
-		String titleParam = request.getString("title");
-		String subtitleParam = request.getString("subtitle");
-		String schemaParam = request.getString("schema");
+        String titleParam = request.getString("title");
+        String subtitleParam = request.getString("subtitle");
+        String schemaParam = request.getString("schema");
 
-		SchemaDTO dto = new SchemaDTO();
-		dto.setName(titleParam);
-		dto.setSchema(schemaParam);
-		dto.setCreatedBy(request.getLoggedUserId());
+        SchemaDTO dto = new SchemaDTO();
+        dto.setName(titleParam);
+        dto.setSchema(schemaParam);
+        dto.setCreatedBy(request.getLoggedUserId());
 
-		State.start();
-		State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
+        State.start();
+        State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
 
-		File template = new File(request.getSession().getServletContext().getRealPath("/"), "biblivre_template_4.0.0.sql");
+        File template =
+                new File(
+                        request.getSession().getServletContext().getRealPath("/"),
+                        "biblivre_template_4.0.0.sql");
 
-		boolean success = Schemas.createSchema(dto, template, true);
-		if (success) {
-			State.finish();
+        boolean success = Schemas.createSchema(dto, template, true);
+        if (success) {
+            State.finish();
 
-			Configurations.save(schemaParam, new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam), request.getLoggedUserId());
-			Configurations.save(schemaParam, new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam), request.getLoggedUserId());
-			this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
-		} else {
-			State.cancel();
+            Configurations.save(
+                    schemaParam,
+                    new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam),
+                    request.getLoggedUserId());
+            Configurations.save(
+                    schemaParam,
+                    new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
+                    request.getLoggedUserId());
+            this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
+        } else {
+            State.cancel();
 
-			this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
-		}
+            this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
+        }
 
-		try {
-			this.json.put("success", success);
+        try {
+            this.json.put("success", success);
 
-			if (success) {
-				this.json.put("data", dto.toJSONObject());
-				this.json.put("full_data", true);
-			} else {
-				this.json.put("log", true);
-			}
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
-	}
+            if (success) {
+                this.json.put("data", dto.toJSONObject());
+                this.json.put("full_data", true);
+            } else {
+                this.json.put("log", true);
+            }
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            return;
+        }
+    }
 
+    public void toggle(ExtendedRequest request, ExtendedResponse response) {
+        String schemaParam = request.getString("schema");
+        boolean disable = request.getBoolean("disable", false);
 
-	public void toggle(ExtendedRequest request, ExtendedResponse response) {
-		String schemaParam = request.getString("schema");
-		boolean disable = request.getBoolean("disable", false);
+        SchemaDTO dto = Schemas.getSchema(schemaParam);
 
-		SchemaDTO dto = Schemas.getSchema(schemaParam);
+        if (dto == null) {
+            this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.toggle");
+            return;
+        }
 
-		if (dto == null) {
-			this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.toggle");
-			return;
-		}
+        if (disable) {
+            if (Schemas.countEnabledSchemas() <= 1) {
+                this.setMessage(
+                        ActionResult.WARNING,
+                        "multi_schema.manage.error.cant_disable_last_library");
+                return;
+            }
+        }
 
-		if (disable) {
-			if (Schemas.countEnabledSchemas() <= 1) {
-				this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.cant_disable_last_library");
-				return;
-			}
-		}
+        boolean success = (disable) ? Schemas.disable(dto) : Schemas.enable(dto);
+        try {
+            this.json.put("success", success);
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            return;
+        }
+    }
 
-		boolean success = (disable) ? Schemas.disable(dto) : Schemas.enable(dto);
-		try {
-			this.json.put("success", success);
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
-	}
+    public void deleteSchema(ExtendedRequest request, ExtendedResponse response) {
 
-	public void deleteSchema(ExtendedRequest request, ExtendedResponse response) {
+        String schemaParam = request.getString("schema");
 
-		String schemaParam = request.getString("schema");
+        SchemaDTO dto = Schemas.getSchema(schemaParam);
+        boolean success = Schemas.deleteSchema(dto);
 
-		SchemaDTO dto = Schemas.getSchema(schemaParam);
-		boolean success = Schemas.deleteSchema(dto);
-
-		try {
-			this.json.put("success", success);
-		} catch (JSONException e) {
-			this.setMessage(ActionResult.WARNING, "error.invalid_json");
-			return;
-		}
-	}
-
+        try {
+            this.json.put("success", success);
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            return;
+        }
+    }
 }

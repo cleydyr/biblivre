@@ -19,14 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.authorities;
 
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import biblivre.administration.reports.ReportsBO;
 import biblivre.cataloging.CatalogingHandler;
 import biblivre.cataloging.RecordDTO;
@@ -36,82 +28,88 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.marc.MaterialType;
+import java.util.Set;
+import java.util.TreeMap;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Handler extends CatalogingHandler {
 
-	public Handler() {
-		super(RecordType.AUTHORITIES, MaterialType.AUTHORITIES);
-	}
+    public Handler() {
+        super(RecordType.AUTHORITIES, MaterialType.AUTHORITIES);
+    }
 
-	@Override
-	protected RecordDTO createRecordDTO(ExtendedRequest request) {
-		AuthorityRecordDTO dto = new AuthorityRecordDTO();
-		return dto;
-	}
+    @Override
+    protected RecordDTO createRecordDTO(ExtendedRequest request) {
+        AuthorityRecordDTO dto = new AuthorityRecordDTO();
+        return dto;
+    }
 
-	@Override
-	protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
-		((AuthorityRecordDTO)dto).setAuthorType(request.getString("author_type"));
-	}
+    @Override
+    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
+        ((AuthorityRecordDTO) dto).setAuthorType(request.getString("author_type"));
+    }
 
-	@Override
-	protected void afterConvert(ExtendedRequest request, RecordDTO dto) {
-		((AuthorityRecordDTO)dto).setAuthorType(request.getString("author_type"));
-	}
+    @Override
+    protected void afterConvert(ExtendedRequest request, RecordDTO dto) {
+        ((AuthorityRecordDTO) dto).setAuthorType(request.getString("author_type"));
+    }
 
-	public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
-		String schema = request.getSchema();
-		String searchParameters = request.getString("search_parameters");
-		String query = "";
-		RecordDatabase db = RecordDatabase.MAIN;
+    public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
+        String schema = request.getSchema();
+        String searchParameters = request.getString("search_parameters");
+        String query = "";
+        RecordDatabase db = RecordDatabase.MAIN;
 
-		try {
-			JSONObject json = new JSONObject(searchParameters);
-			db = RecordDatabase.fromString(json.optString("database"));
-			JSONArray searchTerms = json.optJSONArray("search_terms");
-			if (searchTerms != null) {
-				JSONObject searchTerm = searchTerms.optJSONObject(0);
-				query = searchTerm.optString("query");
-			}
-		} catch (Exception e) {
-			this.setMessage(ActionResult.WARNING, e.getMessage());
-			return;
-		}
+        try {
+            JSONObject json = new JSONObject(searchParameters);
+            db = RecordDatabase.fromString(json.optString("database"));
+            JSONArray searchTerms = json.optJSONArray("search_terms");
+            if (searchTerms != null) {
+                JSONObject searchTerm = searchTerms.optJSONObject(0);
+                query = searchTerm.optString("query");
+            }
+        } catch (Exception e) {
+            this.setMessage(ActionResult.WARNING, e.getMessage());
+            return;
+        }
 
-		ReportsBO bo = ReportsBO.getInstance(schema);
-		//Removed pagination (limit and offset) from method to fix a bug in the Reports/Report By Author functionality.
-		TreeMap<String, Set<Integer>> result = bo.searchAuthors(query, db);
+        ReportsBO bo = ReportsBO.getInstance(schema);
+        // Removed pagination (limit and offset) from method to fix a bug in the Reports/Report By
+        // Author functionality.
+        TreeMap<String, Set<Integer>> result = bo.searchAuthors(query, db);
 
-		if (result.size() == 0) {
-			this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
-			return;
-		}
+        if (result.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+            return;
+        }
 
-		try {
-			JSONArray data = new JSONArray();
-			int id = 1;
-			for (String key : result.keySet()) {
-				Set<Integer> ids = result.get(key);
-				JSONObject obj = new JSONObject();
-				obj.put("id", id++);
-				obj.put("author", key);
-				obj.put("count", ids.size());
-				obj.put("ids", StringUtils.join(ids, ","));
-				data.put(obj);
-			}
-			JSONObject searchResult = new JSONObject();
-			searchResult.put("data", data);
-			this.json.put("search", searchResult);
+        try {
+            JSONArray data = new JSONArray();
+            int id = 1;
+            for (String key : result.keySet()) {
+                Set<Integer> ids = result.get(key);
+                JSONObject obj = new JSONObject();
+                obj.put("id", id++);
+                obj.put("author", key);
+                obj.put("count", ids.size());
+                obj.put("ids", StringUtils.join(ids, ","));
+                data.put(obj);
+            }
+            JSONObject searchResult = new JSONObject();
+            searchResult.put("data", data);
+            this.json.put("search", searchResult);
 
-		} catch(JSONException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-//	@Override
-//	public void paginate(ExtendedRequest request, ExtendedResponse response) {
-//		this.search(request, response);
-//	}
-
+    //	@Override
+    //	public void paginate(ExtendedRequest request, ExtendedResponse response) {
+    //		this.search(request, response);
+    //	}
 
 }

@@ -19,138 +19,137 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
+import biblivre.core.AbstractDTO;
+import biblivre.core.utils.SchemaUtils;
 import java.io.File;
 import java.util.Map;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biblivre.core.AbstractDTO;
-import biblivre.core.utils.SchemaUtils;
-
 public class BackupDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Integer id;
-	private Map<String, Pair<String, String>> schemas;
-	private BackupType type;
-	private BackupScope backupScope;
-	private File backup;
+    private Integer id;
+    private Map<String, Pair<String, String>> schemas;
+    private BackupType type;
+    private BackupScope backupScope;
+    private File backup;
 
-	private Integer steps;
-	private Integer currentStep;
-	private boolean downloaded;
+    private Integer steps;
+    private Integer currentStep;
+    private boolean downloaded;
 
-	public BackupDTO(Map<String, Pair<String, String>> schemas, BackupType type, BackupScope backupScope) {
-		this.setSchemas(schemas);
-		this.setType(type);
-		this.setBackupScope(backupScope);
-	}
+    public BackupDTO(
+            Map<String, Pair<String, String>> schemas, BackupType type, BackupScope backupScope) {
+        this.setSchemas(schemas);
+        this.setType(type);
+        this.setBackupScope(backupScope);
+    }
 
-	public BackupDTO(String schemas, BackupType type, BackupScope backupScope) {
-		this.setSchemas(schemas);
-		this.setType(type);
-		this.setBackupScope(backupScope);
-	}
+    public BackupDTO(String schemas, BackupType type, BackupScope backupScope) {
+        this.setSchemas(schemas);
+        this.setType(type);
+        this.setBackupScope(backupScope);
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Map<String, Pair<String, String>> getSchemas() {
-		return this.schemas;
-	}
+    public Map<String, Pair<String, String>> getSchemas() {
+        return this.schemas;
+    }
 
-	public void setSchemas(Map<String, Pair<String, String>> schemas) {
-		this.schemas = schemas;
-	}
+    public void setSchemas(Map<String, Pair<String, String>> schemas) {
+        this.schemas = schemas;
+    }
 
-	public void setSchemas(String schemas) {
-		this.schemas = SchemaUtils.buildSchemasMap(schemas);
-	}
+    public void setSchemas(String schemas) {
+        this.schemas = SchemaUtils.buildSchemasMap(schemas);
+    }
 
-	public String getSchemasString() {
-		return new JSONObject(this.schemas).toString();
-	}
+    public String getSchemasString() {
+        return new JSONObject(this.schemas).toString();
+    }
 
-	public BackupType getType() {
-		return this.type;
-	}
+    public BackupType getType() {
+        return this.type;
+    }
 
-	public void setType(BackupType type) {
-		this.type = type;
-	}
+    public void setType(BackupType type) {
+        this.type = type;
+    }
 
-	public BackupScope getBackupScope() {
-		return this.backupScope;
-	}
+    public BackupScope getBackupScope() {
+        return this.backupScope;
+    }
 
-	public void setBackupScope(BackupScope backupScope) {
-		this.backupScope = backupScope;
-	}
+    public void setBackupScope(BackupScope backupScope) {
+        this.backupScope = backupScope;
+    }
 
-	public File getBackup() {
-		return this.backup;
-	}
+    public File getBackup() {
+        return this.backup;
+    }
 
-	public void setBackup(File backup) {
-		this.backup = backup;
-	}
+    public void setBackup(File backup) {
+        this.backup = backup;
+    }
 
-	public boolean isDownloaded() {
-		return this.downloaded;
-	}
+    public boolean isDownloaded() {
+        return this.downloaded;
+    }
 
-	public void setDownloaded(boolean downloaded) {
-		this.downloaded = downloaded;
-	}
+    public void setDownloaded(boolean downloaded) {
+        this.downloaded = downloaded;
+    }
 
-	public Integer getSteps() {
-		return this.steps;
-	}
+    public Integer getSteps() {
+        return this.steps;
+    }
 
-	public void setSteps(Integer steps) {
-		this.steps = steps;
-	}
+    public void setSteps(Integer steps) {
+        this.steps = steps;
+    }
 
-	public Integer getCurrentStep() {
-		return this.currentStep;
-	}
+    public Integer getCurrentStep() {
+        return this.currentStep;
+    }
 
-	public void setCurrentStep(Integer currentStep) {
-		this.currentStep = currentStep;
-	}
+    public void setCurrentStep(Integer currentStep) {
+        this.currentStep = currentStep;
+    }
 
-	public void increaseCurrentStep() {
-		this.currentStep++;
-	}
+    public void increaseCurrentStep() {
+        this.currentStep++;
+    }
 
-	@Override
-	public JSONObject toJSONObject() {
-		JSONObject json = new JSONObject();
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
 
-		try {
-			json.putOpt("id", this.getId());
-			json.putOpt("schemas", this.getSchemas());
-			json.putOpt("type", this.getType());
-			json.putOpt("backup_scope", this.getBackupScope());
-			json.putOpt("created", this.getCreated());
+        try {
+            json.putOpt("id", this.getId());
+            json.putOpt("schemas", this.getSchemas());
+            json.putOpt("type", this.getType());
+            json.putOpt("backup_scope", this.getBackupScope());
+            json.putOpt("created", this.getCreated());
 
-			json.putOpt("steps", this.getSteps());
-			json.putOpt("current_step", this.getCurrentStep());
+            json.putOpt("steps", this.getSteps());
+            json.putOpt("current_step", this.getCurrentStep());
 
-			json.putOpt("downloaded", this.isDownloaded());
+            json.putOpt("downloaded", this.isDownloaded());
 
-			boolean exists = (this.getBackup() != null && this.getBackup().exists());
-			json.putOpt("exists", exists);
-		} catch (JSONException e) {
-		}
+            boolean exists = (this.getBackup() != null && this.getBackup().exists());
+            json.putOpt("exists", exists);
+        } catch (JSONException e) {
+        }
 
-		return json;
-	}
+        return json;
+    }
 }

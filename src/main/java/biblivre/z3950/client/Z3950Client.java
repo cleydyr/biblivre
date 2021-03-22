@@ -19,12 +19,15 @@
  ******************************************************************************/
 package biblivre.z3950.client;
 
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.TextUtils;
+import biblivre.marc.MarcUtils;
+import biblivre.z3950.Z3950AddressDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.jzkit.search.provider.iface.IRQuery;
 import org.jzkit.search.provider.iface.Searchable;
@@ -40,144 +43,141 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.TextUtils;
-import biblivre.marc.MarcUtils;
-import biblivre.z3950.Z3950AddressDTO;
-
 public class Z3950Client {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-	private ApplicationContext z3950Context;
-	private Z3950ServiceFactory factory;
-	private static final String QUERY_PREFIX = "@attrset bib-1 @attr 1=";
-	private static final String CHARSET = Constants.DEFAULT_CHARSET.name();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private ApplicationContext z3950Context;
+    private Z3950ServiceFactory factory;
+    private static final String QUERY_PREFIX = "@attrset bib-1 @attr 1=";
+    private static final String CHARSET = Constants.DEFAULT_CHARSET.name();
 
-	public void setZ3950Context(ApplicationContext z3950Context) {
-		this.z3950Context = z3950Context;
-	}
+    public void setZ3950Context(ApplicationContext z3950Context) {
+        this.z3950Context = z3950Context;
+    }
 
-	public void setFactory(Z3950ServiceFactory factory) {
-		this.factory = factory;
-	}
+    public void setFactory(Z3950ServiceFactory factory) {
+        this.factory = factory;
+    }
 
-	public Z3950ServiceFactory getFactory() {
-		return this.factory;
-	}
+    public Z3950ServiceFactory getFactory() {
+        return this.factory;
+    }
 
-	public ApplicationContext getZ3950Context() {
-		return this.z3950Context;
-	}
+    public ApplicationContext getZ3950Context() {
+        return this.z3950Context;
+    }
 
-	@SuppressWarnings({ "rawtypes" })
-	public List<Record> search(Z3950AddressDTO address, Pair<String, String> search, int limit) {
-		_populateFactory(address);
+    @SuppressWarnings({"rawtypes"})
+    public List<Record> search(Z3950AddressDTO address, Pair<String, String> search, int limit) {
+        _populateFactory(address);
 
-		IRQuery query = _buildIRQuery(address, search);
+        IRQuery query = _buildIRQuery(address, search);
 
-		Searchable searchable = null;
+        Searchable searchable = null;
 
-		IRResultSet result = null;
+        IRResultSet result = null;
 
-		List<Record> listRecords = new ArrayList<Record>();
+        List<Record> listRecords = new ArrayList<Record>();
 
-		try {
-			searchable = this.factory.newSearchable();
+        try {
+            searchable = this.factory.newSearchable();
 
-			searchable.setApplicationContext(this.z3950Context);
+            searchable.setApplicationContext(this.z3950Context);
 
-			result = searchable.evaluate(query);
+            result = searchable.evaluate(query);
 
-			result.addObserver((observable, payload) -> logger.info(payload.toString()));
+            result.addObserver((observable, payload) -> logger.info(payload.toString()));
 
-			// Wait without timeout until result set is complete or failure
-			result.waitForStatus(IRResultSetStatus.COMPLETE | IRResultSetStatus.FAILURE, 0);
+            // Wait without timeout until result set is complete or failure
+            result.waitForStatus(IRResultSetStatus.COMPLETE | IRResultSetStatus.FAILURE, 0);
 
-			if (result.getStatus() == IRResultSetStatus.FAILURE) {
-				this.logger.error("IRResultSetStatus == FAILURE");
-			}
+            if (result.getStatus() == IRResultSetStatus.FAILURE) {
+                this.logger.error("IRResultSetStatus == FAILURE");
+            }
 
-			if (result.getFragmentCount() == 0) {
-				return Collections.emptyList();
-			}
+            if (result.getFragmentCount() == 0) {
+                return Collections.emptyList();
+            }
 
-			Enumeration e = new ReadAheadEnumeration(result, new ArchetypeRecordFormatSpecification("Default"));
+            Enumeration e =
+                    new ReadAheadEnumeration(
+                            result, new ArchetypeRecordFormatSpecification("Default"));
 
-			int errorRecords = 0;
+            int errorRecords = 0;
 
-			int validRecords = limit;
+            int validRecords = limit;
 
-			Record record = null;
+            Record record = null;
 
-			while (e.hasMoreElements() && validRecords > 0) {
-				iso2709 o = (iso2709) e.nextElement();
+            while (e.hasMoreElements() && validRecords > 0) {
+                iso2709 o = (iso2709) e.nextElement();
 
-				if (o == null) {
-					continue;
-				}
+                if (o == null) {
+                    continue;
+                }
 
-				record = MarcUtils.iso2709ToRecord((byte[]) o.getOriginalObject());
+                record = MarcUtils.iso2709ToRecord((byte[]) o.getOriginalObject());
 
-				if (record != null) {
-					listRecords.add(record);
-					validRecords--;
-				} else {
-					errorRecords++;
-				}
-			}
+                if (record != null) {
+                    listRecords.add(record);
+                    validRecords--;
+                } else {
+                    errorRecords++;
+                }
+            }
 
-			if (errorRecords > 0) {
-				this.logger.warn("Total number of records that failed the conversion: " + errorRecords);
-			}
+            if (errorRecords > 0) {
+                this.logger.warn(
+                        "Total number of records that failed the conversion: " + errorRecords);
+            }
 
-		} catch (Exception e) {
-			this.logger.error(e.getMessage(), e);
-		} finally {
-			if (result != null) {
-				result.close();
-			}
-			if (searchable != null) {
-				searchable.close();
-			}
-		}
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+        } finally {
+            if (result != null) {
+                result.close();
+            }
+            if (searchable != null) {
+                searchable.close();
+            }
+        }
 
-		return listRecords;
-	}
+        return listRecords;
+    }
 
-	@SuppressWarnings("unchecked")
-	private IRQuery _buildIRQuery(Z3950AddressDTO address, Pair<String, String> search) {
-		IRQuery query = new IRQuery();
+    @SuppressWarnings("unchecked")
+    private IRQuery _buildIRQuery(Z3950AddressDTO address, Pair<String, String> search) {
+        IRQuery query = new IRQuery();
 
-		query.collections = new Vector<String>();
-		query.collections.add(address.getCollection());
-		query.query = new PrefixString( _buildQuery(search));
+        query.collections = new Vector<String>();
+        query.collections.add(address.getCollection());
+        query.query = new PrefixString(_buildQuery(search));
 
-		return query;
-	}
+        return query;
+    }
 
-	@SuppressWarnings("unchecked")
-	private void _populateFactory(Z3950AddressDTO address) {
-		this.factory.setHost(address.getUrl());
-		this.factory.setPort(address.getPort());
-		this.factory.setCharsetEncoding(CHARSET);
-		this.factory.setApplicationContext(this.z3950Context);
-		this.factory.setDefaultRecordSyntax("usmarc");
-		this.factory.setDefaultElementSetName("F");
-		this.factory.setDoCharsetNeg(true);
-		this.factory.getRecordArchetypes().put("Default","usmarc::F");
-		this.factory.getRecordArchetypes().put("FullDisplay","usmarc::F");
-		this.factory.getRecordArchetypes().put("BriefDisplay","usmarc::B");
-	}
+    @SuppressWarnings("unchecked")
+    private void _populateFactory(Z3950AddressDTO address) {
+        this.factory.setHost(address.getUrl());
+        this.factory.setPort(address.getPort());
+        this.factory.setCharsetEncoding(CHARSET);
+        this.factory.setApplicationContext(this.z3950Context);
+        this.factory.setDefaultRecordSyntax("usmarc");
+        this.factory.setDefaultElementSetName("F");
+        this.factory.setDoCharsetNeg(true);
+        this.factory.getRecordArchetypes().put("Default", "usmarc::F");
+        this.factory.getRecordArchetypes().put("FullDisplay", "usmarc::F");
+        this.factory.getRecordArchetypes().put("BriefDisplay", "usmarc::B");
+    }
 
-	private String _buildQuery(Pair<String, String> search) {
-		StringBuilder sb = new StringBuilder(5);
+    private String _buildQuery(Pair<String, String> search) {
+        StringBuilder sb = new StringBuilder(5);
 
-		sb.append(QUERY_PREFIX)
-			.append(search.getLeft())
-			.append(" \"")
-			.append(TextUtils.removeDiacriticals(search.getRight()))
-			.append("\"");
+        sb.append(QUERY_PREFIX)
+                .append(search.getLeft())
+                .append(" \"")
+                .append(TextUtils.removeDiacriticals(search.getRight()))
+                .append("\"");
 
-		return sb.toString();
-	}
-
+        return sb.toString();
+    }
 }

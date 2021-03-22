@@ -19,102 +19,110 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateSave(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		String code = request.getString("code");
-		String prefix = request.getString("prefix");
-		String start = request.getString("start");
-		String end = request.getString("end");
-		String suffix = request.getString("suffix");
+        String code = request.getString("code");
+        String prefix = request.getString("prefix");
+        String start = request.getString("start");
+        String end = request.getString("end");
+        String suffix = request.getString("suffix");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		boolean single = StringUtils.isNotBlank(code);
-		boolean multiple = StringUtils.isNotBlank(start) || StringUtils.isNotBlank(end) || StringUtils.isNotBlank(prefix) || StringUtils.isNotBlank(suffix);
+        boolean single = StringUtils.isNotBlank(code);
+        boolean multiple =
+                StringUtils.isNotBlank(start)
+                        || StringUtils.isNotBlank(end)
+                        || StringUtils.isNotBlank(prefix)
+                        || StringUtils.isNotBlank(suffix);
 
-		if (!single && !multiple) {
-			ex.addError("code", "field.error.required");
-		}
+        if (!single && !multiple) {
+            ex.addError("code", "field.error.required");
+        }
 
-		if (multiple) {
-			boolean numeric = true;
+        if (multiple) {
+            boolean numeric = true;
 
-			if (StringUtils.isBlank(start)) {
-				ex.addError("start", "field.error.required");
-				numeric = false;
-			}
+            if (StringUtils.isBlank(start)) {
+                ex.addError("start", "field.error.required");
+                numeric = false;
+            }
 
-			if (StringUtils.isBlank(end)) {
-				ex.addError("end", "field.error.required");
-				numeric = false;
-			}
+            if (StringUtils.isBlank(end)) {
+                ex.addError("end", "field.error.required");
+                numeric = false;
+            }
 
-			if (numeric && !StringUtils.isNumeric(start)) {
-				ex.addError("start", "field.error.digits_only");
-				numeric = false;
-			}
+            if (numeric && !StringUtils.isNumeric(start)) {
+                ex.addError("start", "field.error.digits_only");
+                numeric = false;
+            }
 
-			if (numeric && !StringUtils.isNumeric(end)) {
-				ex.addError("end", "field.error.digits_only");
-				numeric = false;
-			}
+            if (numeric && !StringUtils.isNumeric(end)) {
+                ex.addError("end", "field.error.digits_only");
+                numeric = false;
+            }
 
-			if (numeric) {
+            if (numeric) {
 
-				Integer startInt = request.getInteger("start");
-				Integer endInt = request.getInteger("end");
+                Integer startInt = request.getInteger("start");
+                Integer endInt = request.getInteger("end");
 
-				if (startInt >= endInt) {
-					ex.addError("start", "administration.accesscards.error.start_less_than_or_equals_end");
-					ex.addError("end", "administration.accesscards.error.start_less_than_or_equals_end");
-				}
-			}
+                if (startInt >= endInt) {
+                    ex.addError(
+                            "start",
+                            "administration.accesscards.error.start_less_than_or_equals_end");
+                    ex.addError(
+                            "end",
+                            "administration.accesscards.error.start_less_than_or_equals_end");
+                }
+            }
+        }
 
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
+    }
 
-		}
+    public void validateDelete(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("id");
+        if (id == 0) {
+            handler.setMessage(
+                    ActionResult.WARNING, "administration.accesscards.error.card_not_found");
+            return;
+        }
+    }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
-	}
+    public void validateBlockCard(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("id");
+        if (id == 0) {
+            handler.setMessage(
+                    ActionResult.WARNING, "administration.accesscards.error.card_not_found");
+            return;
+        }
+    }
 
-
-
-	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("id");
-		if (id == 0) {
-			handler.setMessage(ActionResult.WARNING, "administration.accesscards.error.card_not_found");
-			return;
-		}
-	}
-
-	public void validateBlockCard(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("id");
-		if (id == 0) {
-			handler.setMessage(ActionResult.WARNING, "administration.accesscards.error.card_not_found");
-			return;
-		}
-	}
-
-	public void validateUnblockCard(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("id");
-		if (id == 0) {
-			handler.setMessage(ActionResult.WARNING, "administration.accesscards.error.card_not_found");
-			return;
-		}
-	}
-
-
+    public void validateUnblockCard(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("id");
+        if (id == 0) {
+            handler.setMessage(
+                    ActionResult.WARNING, "administration.accesscards.error.card_not_found");
+            return;
+        }
+    }
 }

@@ -21,71 +21,70 @@ package biblivre.core;
 
 import java.util.Set;
 
-
 public class LabelPrintDTO extends AbstractDTO {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Set<Integer> ids;
-	private int offset;
-	private float width;
-	private float height;
-	private int columns;
-	private int rows;
-	private String model;
+    private Set<Integer> ids;
+    private int offset;
+    private float width;
+    private float height;
+    private int columns;
+    private int rows;
+    private String model;
 
-	public Set<Integer> getIds() {
-		return this.ids;
-	}
+    public Set<Integer> getIds() {
+        return this.ids;
+    }
 
-	public void setIds(Set<Integer> ids) {
-		this.ids = ids;
-	}
+    public void setIds(Set<Integer> ids) {
+        this.ids = ids;
+    }
 
-	public int getOffset() {
-		return this.offset;
-	}
+    public int getOffset() {
+        return this.offset;
+    }
 
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 
-	public float getWidth() {
-		return this.width;
-	}
+    public float getWidth() {
+        return this.width;
+    }
 
-	public void setWidth(float width) {
-		this.width = width;
-	}
+    public void setWidth(float width) {
+        this.width = width;
+    }
 
-	public float getHeight() {
-		return this.height;
-	}
+    public float getHeight() {
+        return this.height;
+    }
 
-	public void setHeight(float height) {
-		this.height = height;
-	}
+    public void setHeight(float height) {
+        this.height = height;
+    }
 
-	public int getColumns() {
-		return this.columns;
-	}
+    public int getColumns() {
+        return this.columns;
+    }
 
-	public void setColumns(int columns) {
-		this.columns = columns;
-	}
+    public void setColumns(int columns) {
+        this.columns = columns;
+    }
 
-	public int getRows() {
-		return this.rows;
-	}
+    public int getRows() {
+        return this.rows;
+    }
 
-	public void setRows(int rows) {
-		this.rows = rows;
-	}
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
 
-	public String getModel() {
-		return model;
-	}
+    public String getModel() {
+        return model;
+    }
 
-	public void setModel(String model) {
-		this.model = model;
-	}
+    public void setModel(String model) {
+        this.model = model;
+    }
 }

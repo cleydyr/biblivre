@@ -19,82 +19,81 @@
  ******************************************************************************/
 package biblivre.administration.usertype;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+    public void validateSave(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		String name = request.getString("name");
-		if (StringUtils.isBlank(name)) {
-			ex.addError("name", "field.error.required");
-		}
+        String name = request.getString("name");
+        if (StringUtils.isBlank(name)) {
+            ex.addError("name", "field.error.required");
+        }
 
-		String url = request.getString("description");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("description", "field.error.required");
-		}
+        String url = request.getString("description");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("description", "field.error.required");
+        }
 
-		String lendingLimit = request.getString("lending_limit");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("lending_limit", "field.error.required");
-		} else if (!StringUtils.isNumeric(lendingLimit)) {
-			ex.addError("lending_limit", "field.error.digits_only");
-		}
+        String lendingLimit = request.getString("lending_limit");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("lending_limit", "field.error.required");
+        } else if (!StringUtils.isNumeric(lendingLimit)) {
+            ex.addError("lending_limit", "field.error.digits_only");
+        }
 
-		String reservationLimit = request.getString("reservation_limit");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("reservation_limit", "field.error.required");
-		} else if (!StringUtils.isNumeric(reservationLimit)) {
-			ex.addError("reservation_limit", "field.error.digits_only");
-		}
+        String reservationLimit = request.getString("reservation_limit");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("reservation_limit", "field.error.required");
+        } else if (!StringUtils.isNumeric(reservationLimit)) {
+            ex.addError("reservation_limit", "field.error.digits_only");
+        }
 
-		String lendingTimeLimit = request.getString("lending_time_limit");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("lending_time_limit", "field.error.required");
-		} else if (!StringUtils.isNumeric(lendingTimeLimit)) {
-			ex.addError("lending_time_limit", "field.error.digits_only");
-		}
+        String lendingTimeLimit = request.getString("lending_time_limit");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("lending_time_limit", "field.error.required");
+        } else if (!StringUtils.isNumeric(lendingTimeLimit)) {
+            ex.addError("lending_time_limit", "field.error.digits_only");
+        }
 
-		String reservationTimeLimit = request.getString("reservation_time_limit");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("reservation_time_limit", "field.error.required");
-		} else if (!StringUtils.isNumeric(reservationTimeLimit)) {
-			ex.addError("reservation_time_limit", "field.error.digits_only");
-		}
+        String reservationTimeLimit = request.getString("reservation_time_limit");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("reservation_time_limit", "field.error.required");
+        } else if (!StringUtils.isNumeric(reservationTimeLimit)) {
+            ex.addError("reservation_time_limit", "field.error.digits_only");
+        }
 
-		String fineValue = request.getString("fine_value");
-		if (StringUtils.isBlank(url)) {
-			ex.addError("fine_value", "field.error.required");
-		} else if (!NumberUtils.isCreatable(fineValue)) {
-			ex.addError("fine_value", "field.error.digits_only");
-		}
+        String fineValue = request.getString("fine_value");
+        if (StringUtils.isBlank(url)) {
+            ex.addError("fine_value", "field.error.required");
+        } else if (!NumberUtils.isCreatable(fineValue)) {
+            ex.addError("fine_value", "field.error.digits_only");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-		}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+        }
+    }
 
-	}
+    public void validateDelete(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        Integer id = request.getInteger("id");
+        if (id == null || id == 0) {
+            ex.addError("id", "TODO: ADD ERROR MESSAGE");
+        }
 
-		Integer id = request.getInteger("id");
-		if (id == null || id == 0) {
-			ex.addError("id", "TODO: ADD ERROR MESSAGE");
-		}
-
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-		}
-	}
-
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+        }
+    }
 }

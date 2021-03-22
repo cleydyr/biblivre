@@ -19,76 +19,75 @@
  ******************************************************************************/
 package biblivre.acquisition.request;
 
-import org.apache.commons.lang3.StringUtils;
-
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-	public void validateSave(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+    public void validateSave(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
-		String requester = request.getString("requester");
-		String author = request.getString("author");
-		String title = request.getString("title");
-		String edition = request.getString("edition");
-		String publisher = request.getString("publisher");
-		String quantity = request.getString("quantity");
+        String requester = request.getString("requester");
+        String author = request.getString("author");
+        String title = request.getString("title");
+        String edition = request.getString("edition");
+        String publisher = request.getString("publisher");
+        String quantity = request.getString("quantity");
 
-		ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException("error.form_invalid_values");
 
-		if (StringUtils.isBlank(requester)) {
-			ex.addError("requester", "field.error.required");
-		}
+        if (StringUtils.isBlank(requester)) {
+            ex.addError("requester", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(author)) {
-			ex.addError("author", "field.error.required");
-		}
+        if (StringUtils.isBlank(author)) {
+            ex.addError("author", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(title)) {
-			ex.addError("title", "field.error.required");
-		}
+        if (StringUtils.isBlank(title)) {
+            ex.addError("title", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(edition)) {
-			ex.addError("edition", "field.error.required");
-		}
+        if (StringUtils.isBlank(edition)) {
+            ex.addError("edition", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(publisher)) {
-			ex.addError("publisher", "field.error.required");
-		}
+        if (StringUtils.isBlank(publisher)) {
+            ex.addError("publisher", "field.error.required");
+        }
 
-		if (StringUtils.isBlank(quantity)) {
-			ex.addError("quantity", "field.error.required");
-		} else if (!StringUtils.isNumeric(quantity)) {
-			ex.addError("quantity", "field.error.digits_only");
-		}
+        if (StringUtils.isBlank(quantity)) {
+            ex.addError("quantity", "field.error.required");
+        } else if (!StringUtils.isNumeric(quantity)) {
+            ex.addError("quantity", "field.error.digits_only");
+        }
 
-		if (ex.hasErrors()) {
-			handler.setMessage(ex);
-			return;
-		}
+        if (ex.hasErrors()) {
+            handler.setMessage(ex);
+            return;
+        }
+    }
 
-	}
+    public void validateOpen(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("id");
+        if (id == 0) {
+            handler.setMessage(ActionResult.WARNING, "aquisition.request.error.request_not_found");
+            return;
+        }
+    }
 
-	public void validateOpen(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("id");
-		if (id == 0) {
-			handler.setMessage(ActionResult.WARNING, "aquisition.request.error.request_not_found");
-			return;
-		}
-	}
-
-	public void validateDelete(AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-		Integer id = request.getInteger("id");
-		if (id == 0) {
-			handler.setMessage(ActionResult.WARNING, "aquisition.request.error.request_not_found");
-			return;
-		}
-	}
-
-
+    public void validateDelete(
+            AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
+        Integer id = request.getInteger("id");
+        if (id == 0) {
+            handler.setMessage(ActionResult.WARNING, "aquisition.request.error.request_not_found");
+            return;
+        }
+    }
 }

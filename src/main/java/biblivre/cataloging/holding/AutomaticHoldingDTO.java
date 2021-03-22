@@ -25,7 +25,7 @@ import biblivre.core.AbstractDTO;
 
 public class AutomaticHoldingDTO extends AbstractDTO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private Integer holdingCount;
     private Integer issueNumber;
@@ -36,68 +36,67 @@ public class AutomaticHoldingDTO extends AbstractDTO {
     private RecordDTO biblioRecordDto;
     private RecordDatabase database;
 
-	public Integer getHoldingCount() {
-		return this.holdingCount;
-	}
+    public Integer getHoldingCount() {
+        return this.holdingCount;
+    }
 
-	public void setHoldingCount(Integer holdingCount) {
-		this.holdingCount = holdingCount;
-	}
+    public void setHoldingCount(Integer holdingCount) {
+        this.holdingCount = holdingCount;
+    }
 
-	public Integer getIssueNumber() {
-		return this.issueNumber;
-	}
+    public Integer getIssueNumber() {
+        return this.issueNumber;
+    }
 
-	public void setIssueNumber(Integer issueNumber) {
-		this.issueNumber = issueNumber;
-	}
+    public void setIssueNumber(Integer issueNumber) {
+        this.issueNumber = issueNumber;
+    }
 
-	public Integer getNumberOfIssues() {
-		return this.numberOfIssues;
-	}
+    public Integer getNumberOfIssues() {
+        return this.numberOfIssues;
+    }
 
-	public void setNumberOfIssues(Integer numberOfIssues) {
-		this.numberOfIssues = numberOfIssues;
-	}
+    public void setNumberOfIssues(Integer numberOfIssues) {
+        this.numberOfIssues = numberOfIssues;
+    }
 
-	public String getAcquisitionDate() {
-		return this.acquisitionDate;
-	}
+    public String getAcquisitionDate() {
+        return this.acquisitionDate;
+    }
 
-	public void setAcquisitionDate(String acquisitionDate) {
-		this.acquisitionDate = acquisitionDate;
-	}
+    public void setAcquisitionDate(String acquisitionDate) {
+        this.acquisitionDate = acquisitionDate;
+    }
 
-	public String getLibraryName() {
-		return this.libraryName;
-	}
+    public String getLibraryName() {
+        return this.libraryName;
+    }
 
-	public void setLibraryName(String libraryName) {
-		this.libraryName = libraryName;
-	}
+    public void setLibraryName(String libraryName) {
+        this.libraryName = libraryName;
+    }
 
-	public String getAcquisitionType() {
-		return this.acquisitionType;
-	}
+    public String getAcquisitionType() {
+        return this.acquisitionType;
+    }
 
-	public void setAcquisitionType(String acquisitionType) {
-		this.acquisitionType = acquisitionType;
-	}
+    public void setAcquisitionType(String acquisitionType) {
+        this.acquisitionType = acquisitionType;
+    }
 
-	public RecordDTO getBiblioRecordDto() {
-		return this.biblioRecordDto;
-	}
+    public RecordDTO getBiblioRecordDto() {
+        return this.biblioRecordDto;
+    }
 
-	public void setBiblioRecordDto(RecordDTO biblioRecordDto) {
-		this.biblioRecordDto = biblioRecordDto;
-	}
+    public void setBiblioRecordDto(RecordDTO biblioRecordDto) {
+        this.biblioRecordDto = biblioRecordDto;
+    }
 
-	public RecordDatabase getDatabase() {
-		return this.database;
-	}
+    public RecordDatabase getDatabase() {
+        return this.database;
+    }
 
-	public void setDatabase(RecordDatabase database) {
-		this.database = database;
-	}
-
+    public void setDatabase(RecordDatabase database) {
+        this.database = database;
+    }
 }

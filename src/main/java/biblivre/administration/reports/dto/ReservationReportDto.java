@@ -23,23 +23,22 @@ import java.util.List;
 
 public class ReservationReportDto extends BaseReportDto {
 
-	private List<String[]> biblioReservations;
-	private List<String[]> holdingReservations;
+    private List<String[]> biblioReservations;
+    private List<String[]> holdingReservations;
 
-	public List<String[]> getBiblioReservations() {
-		return this.biblioReservations;
-	}
+    public List<String[]> getBiblioReservations() {
+        return this.biblioReservations;
+    }
 
-	public void setBiblioReservations(List<String[]> biblioReservations) {
-		this.biblioReservations = biblioReservations;
-	}
+    public void setBiblioReservations(List<String[]> biblioReservations) {
+        this.biblioReservations = biblioReservations;
+    }
 
-	public List<String[]> getHoldingReservations() {
-		return this.holdingReservations;
-	}
+    public List<String[]> getHoldingReservations() {
+        return this.holdingReservations;
+    }
 
-	public void setHoldingReservations(List<String[]> holdingReservations) {
-		this.holdingReservations = holdingReservations;
-	}
-
+    public void setHoldingReservations(List<String[]> holdingReservations) {
+        this.holdingReservations = holdingReservations;
+    }
 }

@@ -20,12 +20,12 @@
 package biblivre.core.auth;
 
 public enum AuthorizationPointGroups {
-	MENU,
-	LOGIN,
-	CATALOGING,
-	CIRCULATION,
-	ACQUISITION,
-	ADMIN,
-	DIGITALMEDIA,
-	SEARCH;
+    MENU,
+    LOGIN,
+    CATALOGING,
+    CIRCULATION,
+    ACQUISITION,
+    ADMIN,
+    DIGITALMEDIA,
+    SEARCH;
 }

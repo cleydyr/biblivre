@@ -19,63 +19,61 @@
  ******************************************************************************/
 package biblivre.login;
 
-import java.util.List;
-
 import biblivre.administration.permissions.PermissionBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.TextUtils;
+import java.util.List;
 
 public class LoginBO extends AbstractBO {
-	private LoginDAO dao;
+    private LoginDAO dao;
 
-	public static LoginBO getInstance(String schema) {
-		LoginBO bo = AbstractBO.getInstance(LoginBO.class, schema);
+    public static LoginBO getInstance(String schema) {
+        LoginBO bo = AbstractBO.getInstance(LoginBO.class, schema);
 
-		if (bo.dao == null) {
-			bo.dao = LoginDAO.getInstance(schema);
-		}
+        if (bo.dao == null) {
+            bo.dao = LoginDAO.getInstance(schema);
+        }
 
-		return bo;
-	}
+        return bo;
+    }
 
-	public final LoginDTO login(String login, String password) {
-		String encodedPassword = TextUtils.encodePassword(password);
+    public final LoginDTO login(String login, String password) {
+        String encodedPassword = TextUtils.encodePassword(password);
 
-		return this.dao.login(login, encodedPassword);
-	}
+        return this.dao.login(login, encodedPassword);
+    }
 
-	public boolean update(LoginDTO login) {
-		return this.dao.update(login);
-	}
+    public boolean update(LoginDTO login) {
+        return this.dao.update(login);
+    }
 
-	public boolean delete(UserDTO user) {
-		String schema = this.getSchema();
-		PermissionBO pbo = PermissionBO.getInstance(schema);
+    public boolean delete(UserDTO user) {
+        String schema = this.getSchema();
+        PermissionBO pbo = PermissionBO.getInstance(schema);
 
-		pbo.delete(user);
-		return this.dao.delete(user);
-	}
+        pbo.delete(user);
+        return this.dao.delete(user);
+    }
 
-	public LoginDTO get(Integer loginId) {
-		return this.dao.get(loginId);
-	}
+    public LoginDTO get(Integer loginId) {
+        return this.dao.get(loginId);
+    }
 
-	public boolean loginExists(String login) {
-		return this.get(login) != null;
-	}
+    public boolean loginExists(String login) {
+        return this.get(login) != null;
+    }
 
-	public LoginDTO get(String login) {
-		return this.dao.getByLogin(login);
-	}
+    public LoginDTO get(String login) {
+        return this.dao.getByLogin(login);
+    }
 
-	public boolean save(LoginDTO dto, UserDTO udto) {
-		return this.dao.save(dto, udto);
-	}
+    public boolean save(LoginDTO dto, UserDTO udto) {
+        return this.dao.save(dto, udto);
+    }
 
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		return this.dao.saveFromBiblivre3(dtoList);
-	}
-
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return this.dao.saveFromBiblivre3(dtoList);
+    }
 }
