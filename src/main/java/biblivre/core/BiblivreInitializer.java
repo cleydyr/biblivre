@@ -20,8 +20,11 @@
 package biblivre.core;
 
 import biblivre.z3950.server.Z3950ServerBO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BiblivreInitializer {
+    private static final Logger _logger = LoggerFactory.getLogger(BiblivreInitializer.class);
 
     private static boolean initialized = false;
     public static Z3950ServerBO Z3950server = null;
@@ -39,7 +42,7 @@ public class BiblivreInitializer {
 
                 BiblivreInitializer.initialized = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                _logger.error(e.getMessage(), e);
             }
         }
     }
