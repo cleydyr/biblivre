@@ -22,6 +22,7 @@ package biblivre.marc.material;
 public enum MaterialType {
     BOOK('a', "m ", true),
     PAMPHLET('a', "m ", true),
+    LEGAL_STANCE('a', "m ", true),
     MANUSCRIPT('t', "m ", true),
     THESIS('a', "m ", true),
     PERIODIC('a', "s ", true),
