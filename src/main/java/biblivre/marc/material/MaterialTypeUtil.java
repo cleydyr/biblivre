@@ -50,7 +50,7 @@ public class MaterialTypeUtil {
             return null;
         }
 
-        return MaterialType.valueOf(str.toLowerCase());
+        return MaterialType.valueOf(str.toUpperCase());
     }
 
     public static MaterialType fromRecord(Record record) {
