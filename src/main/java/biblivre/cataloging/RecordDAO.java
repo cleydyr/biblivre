@@ -22,6 +22,7 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
+import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
@@ -29,6 +30,7 @@ import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.marc.MarcUtils;
+import biblivre.marc.material.MaterialType;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,6 +41,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -266,10 +269,16 @@ public abstract class RecordDAO extends AbstractDAO {
         boolean useMaterialType = false;
         boolean reservedOnly = false;
 
-        if (search != null && search.getQuery() != null) {
-            useDatabase = search.getQuery().getDatabase() != null;
-            useMaterialType = search.getQuery().getMaterialType().isPresent();
-            reservedOnly = search.getQuery().isReservedOnly();
+        SearchQueryDTO query = null;
+
+        if (search != null) {
+            query = search.getQuery();
+        }
+
+        if (query != null) {
+            useDatabase = query.getDatabase() != null;
+            useMaterialType = query.getMaterialType().isPresent();
+            reservedOnly = query.isReservedOnly();
         }
 
         try {
@@ -298,11 +307,11 @@ public abstract class RecordDAO extends AbstractDAO {
             int index = 1;
 
             if (useDatabase && search != null) {
-                pst.setString(index++, search.getQuery().getDatabase().toString());
+                pst.setString(index++, query.getDatabase().toString());
             }
 
             if (useMaterialType && search != null) {
-                pst.setString(index++, search.getQuery().getMaterialType().toString());
+                pst.setString(index++, query.getMaterialType().get().toString());
             }
 
             ResultSet rs = pst.executeQuery();
@@ -496,7 +505,8 @@ public abstract class RecordDAO extends AbstractDAO {
 
         boolean useSearchResult = (search.getSearchMode() != SearchMode.LIST_ALL);
         boolean useIndexingGroup = (search.getIndexingGroup() != 0);
-        boolean useMaterialType = (search.getQuery().getMaterialType().isPresent());
+        Optional<MaterialType> materialType = search.getQuery().getMaterialType();
+        boolean useMaterialType = (materialType.isPresent());
         boolean useLimit = (paging.getRecordLimit() > 0);
         boolean reservedOnly = search.getQuery().isReservedOnly();
 
@@ -568,7 +578,7 @@ public abstract class RecordDAO extends AbstractDAO {
                 pst.setString(index++, search.getQuery().getDatabase().toString());
 
                 if (useMaterialType) {
-                    pst.setString(index++, search.getQuery().getMaterialType().toString());
+                    pst.setString(index++, materialType.get().toString());
                 }
             }
 

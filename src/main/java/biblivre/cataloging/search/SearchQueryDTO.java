@@ -39,17 +39,21 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SearchQueryDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
 
     private SearchMode searchMode;
     private RecordDatabase database;
-    private Optional<MaterialType> materialType;
+    private Optional<MaterialType> materialType = Optional.empty();
     private List<SearchTermDTO> terms;
     private String parameters;
     private Boolean holdingSearch;
     private Boolean reservedOnly;
+
+    private static final Logger _logger = LoggerFactory.getLogger(SearchQueryDTO.class);
 
     public SearchQueryDTO(String jsonString) throws ValidationException {
         this.parameters = jsonString;
@@ -241,10 +245,15 @@ public class SearchQueryDTO extends AbstractDTO {
         try {
             json.putOpt("search_mode", this.getSearchMode());
             json.putOpt("database", this.getDatabase());
-            json.putOpt("material_type", this.getMaterialType());
+
+            if (this.getMaterialType().isPresent()) {
+                json.putOpt("material_type", this.getMaterialType().get().toString());
+            }
+
             json.putOpt("holding_search", this.isHoldingSearch());
             json.putOpt("terms", this.getTerms());
         } catch (JSONException e) {
+            _logger.error(e.getMessage(), e);
         }
 
         return json;
