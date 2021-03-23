@@ -10,15 +10,18 @@ import java.util.Map;
 
 public class Update implements UpdateService {
 
-    public void doUpdate(Connection connection) throws SQLException {
-        _addTranslations();
+    @Override
+    public void doUpdateScopedBySchema(Connection connection) throws SQLException {
         _updateBiblioFormDataFields(connection);
+        _addTranslations(connection.getSchema());
     }
 
     private void _updateBiblioFormDataFields(Connection connection) {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(
-                    "UPDATE single.biblio_form_datafields "
+                    "UPDATE "
+                            + connection.getSchema()
+                            + ".biblio_form_datafields "
                             + "set material_type = concat('legal_stance,', material_type) "
                             + "where material_type like '%thesis%' AND material_type NOT LIKE '%legal_stance%'");
 
@@ -27,7 +30,7 @@ public class Update implements UpdateService {
         }
     }
 
-    private void _addTranslations() throws SQLException {
+    private void _addTranslations(String schema) throws SQLException {
         for (Map.Entry<String, Map<String, String>> entry : _TRANSLATIONS.entrySet()) {
             for (Map.Entry<String, String> entry2 : entry.getValue().entrySet()) {
                 String key = entry.getKey();
@@ -36,7 +39,7 @@ public class Update implements UpdateService {
 
                 String translation = entry2.getValue();
 
-                Translations.addSingleTranslation(language, key, translation);
+                Translations.addSingleTranslation(schema, language, key, translation);
             }
         }
     }
