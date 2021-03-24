@@ -27,12 +27,12 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
@@ -79,7 +79,7 @@ public class Handler extends AbstractHandler {
 
             String title = Configurations.getString(s, Constants.CONFIG_TITLE);
             String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
-            map.put(s, new Pair<String, String>(title, subtitle));
+            map.put(s, Pair.of(title, subtitle));
         }
 
         BackupDTO dto = bo.prepare(map, backupType, backupScope);

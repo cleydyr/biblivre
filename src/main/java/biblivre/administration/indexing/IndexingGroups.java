@@ -24,7 +24,6 @@ import biblivre.core.PreparedStatementUtil;
 import biblivre.core.StaticBO;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
-import biblivre.core.utils.Pair;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -32,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,13 +51,13 @@ public class IndexingGroups extends StaticBO {
     }
 
     public static void reset(String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         IndexingGroups.groups.remove(pair);
     }
 
     public static List<IndexingGroupDTO> getGroups(String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
 
@@ -185,7 +185,7 @@ public class IndexingGroups extends StaticBO {
     private static synchronized List<IndexingGroupDTO> loadGroups(
             String schema, RecordType recordType) {
 
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
 

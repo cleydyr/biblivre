@@ -26,7 +26,6 @@ import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
-import biblivre.core.utils.Pair;
 import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
 import biblivre.core.utils.TextUtils;
@@ -50,6 +49,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BackupBO extends AbstractBO {
     private BackupDAO dao;
@@ -86,7 +86,7 @@ public class BackupBO extends AbstractBO {
 
             String title = Configurations.getString(s, Constants.CONFIG_TITLE);
             String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
-            map.put(s, new Pair<String, String>(title, subtitle));
+            map.put(s, Pair.of(title, subtitle));
         }
 
         BackupDTO dto = this.prepare(map, backupType, backupScope);

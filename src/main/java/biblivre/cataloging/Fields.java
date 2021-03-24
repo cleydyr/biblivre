@@ -24,13 +24,13 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.core.JavascriptCacheableList;
 import biblivre.core.PreparedStatementUtil;
 import biblivre.core.StaticBO;
-import biblivre.core.utils.Pair;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class Fields extends StaticBO {
     }
 
     public static void reset(String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         Fields.briefTabFieldFormats.remove(pair);
 
@@ -77,7 +77,7 @@ public class Fields extends StaticBO {
 
     public static List<BriefTabFieldFormatDTO> getBriefFormats(
             String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
 
@@ -96,7 +96,7 @@ public class Fields extends StaticBO {
         boolean result = dao.insertBriefFormat(dto, recordType, loggedUser);
 
         if (result) {
-            Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
             Fields.briefTabFieldFormats.remove(pair);
         }
 
@@ -114,7 +114,7 @@ public class Fields extends StaticBO {
         boolean result = dao.updateBriefFormats(briefFormats, recordType, loggedUser);
 
         if (result) {
-            Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
             Fields.briefTabFieldFormats.remove(pair);
         }
@@ -133,7 +133,7 @@ public class Fields extends StaticBO {
         boolean result = dao.updateFormTabDatafield(formDatafields, recordType, loggedUser);
 
         if (result) {
-            Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
             Fields.formTabFields.remove(pair);
         }
@@ -149,7 +149,7 @@ public class Fields extends StaticBO {
         boolean result = dao.deleteBriefFormat(datafield, recordType);
 
         if (result) {
-            Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
             Fields.briefTabFieldFormats.remove(pair);
         }
@@ -164,7 +164,7 @@ public class Fields extends StaticBO {
         boolean result = dao.deleteFormTabDatafield(datafield, recordType);
 
         if (result) {
-            Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+            Pair<String, RecordType> pair = Pair.of(schema, recordType);
             Fields.formTabFields.remove(pair);
         }
 
@@ -184,7 +184,7 @@ public class Fields extends StaticBO {
 
     public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(
             String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
 
@@ -207,7 +207,7 @@ public class Fields extends StaticBO {
 
     public static List<FormTabSubfieldDTO> getAutocompleteSubFields(
             String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
 
@@ -291,7 +291,7 @@ public class Fields extends StaticBO {
 
     private static synchronized List<BriefTabFieldFormatDTO> loadBriefFormats(
             String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
 
@@ -315,7 +315,7 @@ public class Fields extends StaticBO {
 
     private static synchronized JavascriptCacheableList<FormTabDatafieldDTO> loadFormFields(
             String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
 
@@ -355,7 +355,7 @@ public class Fields extends StaticBO {
 
     private static synchronized List<FormTabSubfieldDTO> loadAutocompleteSubFields(
             String schema, RecordType recordType) {
-        Pair<String, RecordType> pair = new Pair<String, RecordType>(schema, recordType);
+        Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
 
