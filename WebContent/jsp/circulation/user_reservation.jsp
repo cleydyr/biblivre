@@ -192,6 +192,7 @@
 				<div class="buttons">
 					<label class="search_label"><i18n:text key="search.bibliographic.material_type" /></label>
 					<select name="material" class="combo combo_expand">
+                        <option value="all"><i18n:text key="marc.material_type.all" /></option>
 						<c:forEach var="material" items="${searchableMaterialTypes}" >
 							<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 						</c:forEach>
