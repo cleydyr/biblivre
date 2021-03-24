@@ -9,12 +9,15 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MaterialTypeUtil {
     private static final Collection<MaterialType> bibliographicMaterials;
     private static final Collection<MaterialType> searchableMaterials;
     private static final String javascriptArray;
     private static final Map<String, MaterialType> _materialTypeCacheByKey = new HashMap<>();
+    private static final Logger _logger = LoggerFactory.getLogger(MaterialTypeUtil.class);
 
     static {
         List<MaterialType> tempBibliographicMaterials = new ArrayList<MaterialType>();
@@ -50,7 +53,13 @@ public class MaterialTypeUtil {
             return null;
         }
 
-        return MaterialType.valueOf(str.toUpperCase());
+        try {
+            return MaterialType.valueOf(str.toUpperCase());
+        } catch (Exception e) {
+            _logger.debug(e.getMessage(), e);
+
+            return null;
+        }
     }
 
     public static MaterialType fromRecord(Record record) {
