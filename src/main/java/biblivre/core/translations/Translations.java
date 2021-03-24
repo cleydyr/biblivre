@@ -22,7 +22,6 @@ package biblivre.core.translations;
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.Pair;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ import java.util.Locale;
 import java.util.Set;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -412,12 +412,12 @@ public class Translations extends StaticBO {
     }
 
     public static void reset(String schema, String language) {
-        Pair<String, String> pair = new Pair<String, String>(schema, language);
+        Pair<String, String> pair = Pair.of(schema, language);
         Translations.translations.remove(pair);
     }
 
     public static TranslationsMap get(String schema, String language) {
-        Pair<String, String> pair = new Pair<String, String>(schema, language);
+        Pair<String, String> pair = Pair.of(schema, language);
         TranslationsMap map = Translations.translations.get(pair);
 
         if (map == null) {
@@ -599,7 +599,7 @@ public class Translations extends StaticBO {
     }
 
     private static synchronized TranslationsMap loadLanguage(String schema, String language) {
-        Pair<String, String> pair = new Pair<String, String>(schema, language);
+        Pair<String, String> pair = Pair.of(schema, language);
         TranslationsMap map = Translations.translations.get(pair);
 
         // Checking again for thread safety.

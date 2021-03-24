@@ -21,10 +21,10 @@ package biblivre.core;
 
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
 import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Message {
     private ActionResult level;

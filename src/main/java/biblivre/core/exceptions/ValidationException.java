@@ -19,9 +19,9 @@
  ******************************************************************************/
 package biblivre.core.exceptions;
 
-import biblivre.core.utils.Pair;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class ValidationException extends RuntimeException {
             this.errorList = new ArrayList<Pair<String, String>>();
         }
 
-        this.errorList.add(new Pair<String, String>(key, value));
+        this.errorList.add(Pair.of(key, value));
     }
 
     public List<Pair<String, String>> getErrorList() {

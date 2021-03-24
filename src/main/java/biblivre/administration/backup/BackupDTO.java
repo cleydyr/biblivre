@@ -20,11 +20,11 @@
 package biblivre.administration.backup;
 
 import biblivre.core.AbstractDTO;
-import biblivre.core.utils.Pair;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,7 +80,10 @@ public class BackupDTO extends AbstractDTO {
 
             while (iterator.hasNext()) {
                 String key = iterator.next();
-                map.put(key, Pair.<String, String>fromJSONObject(json.getJSONObject(key)));
+
+                JSONObject jsonObject = json.getJSONObject(key);
+
+                map.put(key, Pair.of(jsonObject.getString("left"), jsonObject.getString("right")));
             }
 
         } catch (JSONException e) {

@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.z3950.client;
 
-import biblivre.core.utils.Pair;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcUtils;
 import biblivre.z3950.Z3950AddressDTO;
@@ -28,6 +27,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jzkit.search.provider.iface.IRQuery;
 import org.jzkit.search.provider.iface.Searchable;
 import org.jzkit.search.provider.z3950.Z3950ServiceFactory;
