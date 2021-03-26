@@ -113,4 +113,24 @@ public class AutocompleteDTO extends AbstractDTO {
 
         return json;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((recordId == null) ? 0 : recordId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        AutocompleteDTO other = (AutocompleteDTO) obj;
+        if (recordId == null) {
+            if (other.recordId != null) return false;
+        } else if (!recordId.equals(other.recordId)) return false;
+        return true;
+    }
 }
