@@ -531,54 +531,21 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
 				List<String> list = bo.phraseAutocomplete(datafield, subfield, query);
 				
-				try {
-					for (String term : list) {
-						this.json.append("data", term);
-					}
-				} catch (JSONException e) {
-					
+				for (String term : list) {
+					this.json.append("data", term);
 				}
 				
 				break;
 
 			}
 			case BIBLIO:
-			case AUTHORITIES:{
-				RecordBO bo = RecordBO.getInstance(schema, RecordType.fromString(type.toString()));
-
-				DTOCollection<AutocompleteDTO> list = bo.recordAutocomplete(datafield, subfield, query);
-				
-				try {
-					this.json.putOpt("data", list.toJSONObject());
-				} catch (JSONException e) {
-					
-				}
-				
-				break;
-			}
+			case AUTHORITIES:
+			case VOCABULARY:
+				DTOCollection<AutocompleteDTO> autocompletion =
+                        type.getAutocompletion(schema, query);
 			
-			case VOCABULARY: {
-				RecordBO bo = RecordBO.getInstance(schema, RecordType.fromString(type.toString()));
+				this.json.putOpt("data", autocompletion.toJSONObject());
 
-//				List<String> list = bo.phraseAutocomplete("150", "a", query);
-//				
-//				try {
-//					for (String term : list) {
-//						this.json.append("data", term);
-//					}
-//				} catch (JSONException e) {
-//					
-//				}	
-				
-				DTOCollection<AutocompleteDTO> list = bo.recordAutocomplete("150", "a", query);
-				
-				try {
-					this.json.putOpt("data", list.toJSONObject());
-				} catch (JSONException e) {
-					
-				}
-			}
-			
 			default:
 		}
 	}
