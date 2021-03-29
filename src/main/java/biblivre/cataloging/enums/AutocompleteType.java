@@ -19,6 +19,13 @@
  ******************************************************************************/
 package biblivre.cataloging.enums;
 
+import biblivre.cataloging.AutocompleteDTO;
+import biblivre.cataloging.Fields;
+import biblivre.cataloging.FormTabSubfieldDTO;
+import biblivre.cataloging.RecordBO;
+import biblivre.core.DTOCollection;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public enum AutocompleteType {
@@ -53,5 +60,32 @@ public enum AutocompleteType {
 
     public String getString() {
         return this.toString();
+    }
+
+    public DTOCollection<AutocompleteDTO> getAutocompletion(String schema, String query) {
+        RecordType recordType = RecordType.fromString(this.toString());
+
+        RecordBO bo = RecordBO.getInstance(schema, recordType);
+
+        Set<AutocompleteDTO> set = new HashSet<>();
+
+        for (FormTabSubfieldDTO formTabSubfield :
+                Fields.getAutocompleteSubFields(schema, recordType)) {
+
+            String datafield = formTabSubfield.getDatafield();
+
+            String subfield = formTabSubfield.getSubfield();
+
+            DTOCollection<AutocompleteDTO> additionalAutocompletions =
+                    bo.recordAutocomplete(datafield, subfield, query);
+
+            set.addAll(additionalAutocompletions);
+        }
+
+        DTOCollection<AutocompleteDTO> collection = new DTOCollection<AutocompleteDTO>();
+
+        collection.addAll(set);
+
+        return collection;
     }
 }
