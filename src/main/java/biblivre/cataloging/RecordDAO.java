@@ -737,7 +737,6 @@ public abstract class RecordDAO extends AbstractDAO {
         rdto.setId(rs.getInt("record_id"));
         rdto.setIso2709(rs.getBytes("iso2709"));
         rdto.setRecord(MarcUtils.iso2709ToRecord(rdto.getIso2709()));
-        rdto.setJson(MarcUtils.recordToJson(rdto.getRecord()));
 
         dto.setPhrase(rs.getString("phrase"));
         dto.setRecord(rdto);

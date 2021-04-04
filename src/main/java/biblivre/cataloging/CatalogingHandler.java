@@ -224,9 +224,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         dto.setFields(fields);
 
-        // Form tab
-        dto.setJson(MarcUtils.recordToJson(record));
-
         // Attachments
         dto.setAttachments(marcDataReader.getAttachments());
 
@@ -391,16 +388,17 @@ public abstract class CatalogingHandler extends AbstractHandler {
                                     new JSONObject(data), dto.getMaterialType(), status);
                     break;
             }
+
             if (record != null) {
-                MarcUtils.recordToIso2709(record);
+                dto.setRecord(record);
             }
+
             switch (to) {
                 case MARC:
                 case HOLDING_MARC:
                     break;
                 case FORM:
                 case HOLDING_FORM:
-                    dto.setJson(MarcUtils.recordToJson(record));
                     break;
                 case RECORD:
                     MarcDataReader marcDataReader = new MarcDataReader(record);

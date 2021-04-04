@@ -35,7 +35,6 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcDataReader;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.util.LinkedList;
 import java.util.List;
@@ -172,9 +171,6 @@ public class Handler extends AbstractHandler {
         List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
 
         recordDTO.setFields(fields);
-
-        // Form tab
-        recordDTO.setJson(MarcUtils.recordToJson(record));
 
         // Attachments
         recordDTO.setAttachments(marcDataReader.getAttachments());

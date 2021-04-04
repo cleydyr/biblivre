@@ -154,11 +154,11 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public JSONObject getJson() {
-        return this.json;
-    }
+        if (this.json == null) {
+            this.json = MarcUtils.recordToJson(this.record);
+        }
 
-    public void setJson(JSONObject json) {
-        this.json = json;
+        return this.json;
     }
 
     public String getHumanReadableMarc() {

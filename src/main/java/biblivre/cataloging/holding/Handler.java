@@ -35,7 +35,6 @@ import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
-import org.marc4j.marc.Record;
 
 public class Handler extends CatalogingHandler {
 
@@ -91,6 +90,7 @@ public class Handler extends CatalogingHandler {
         }
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+
         RecordDTO dto = bo.get(id);
 
         if (dto == null) {
@@ -98,13 +98,8 @@ public class Handler extends CatalogingHandler {
             return;
         }
 
-        Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
-        dto.setRecord(record);
-
-        // Form tab
-        dto.setJson(MarcUtils.recordToJson(record));
-
         MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
+
         String holdingLocation = marcDataReader.getShelfLocation();
 
         if (StringUtils.isBlank(holdingLocation)) {
