@@ -33,6 +33,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.LabelPrintDTO;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
@@ -183,17 +184,12 @@ public class HoldingBO extends RecordBO {
 
         Integer id = this.dao.getNextSerial("biblio_holdings_id_seq");
 
-        MarcUtils.setCF001(record, id);
-        MarcUtils.setCF004(record, hdto.getRecordId());
-        MarcUtils.setCF005(record);
+        hdto.setDateOfLastTransaction();
 
         // Availability and RecordId are already populated at this point.
         hdto.setId(id);
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
 
         boolean success = this.dao.save(dto);
 
@@ -229,15 +225,11 @@ public class HoldingBO extends RecordBO {
             throw new ValidationException("cataloging.holding.error.accession_number_unavailable");
         }
 
-        MarcUtils.setCF004(record, hdto.getRecordId());
-        MarcUtils.setCF005(record);
+        dto.setDateOfLastTransaction();
 
         // Id, Availability and RecordId are already populated at this point.
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
 
         return this.dao.update(dto);
     }
@@ -373,9 +365,7 @@ public class HoldingBO extends RecordBO {
         boolean success = true;
 
         RecordDTO biblioDto = autoDto.getBiblioRecordDto();
-        if (biblioDto.getRecord() == null) {
-            biblioDto.setRecord(MarcUtils.iso2709ToRecord(biblioDto.getIso2709()));
-        }
+
         MarcDataReader mdr = new MarcDataReader(biblioDto.getRecord());
 
         String biblioLocationA = mdr.getLocation();
@@ -417,17 +407,16 @@ public class HoldingBO extends RecordBO {
     }
 
     @Override
-    public Integer count(SearchDTO search) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
     public List<RecordDTO> listByLetter(char letter, int order) {
         throw new RuntimeException("error.invalid_method_call");
     }
 
     @Override
-    public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database) {
+    public boolean moveRecords(
+            Set<Integer> ids,
+            RecordDatabase recordDatabase,
+            int modifiedBy,
+            AuthorizationPoints authorizationPoints) {
         throw new RuntimeException("error.invalid_method_call");
     }
 

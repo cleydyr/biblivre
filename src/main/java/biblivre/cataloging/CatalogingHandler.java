@@ -30,24 +30,20 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.PagingDTO;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
-import biblivre.core.utils.Constants;
-import biblivre.marc.MarcDataReader;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
 
 public abstract class CatalogingHandler extends AbstractHandler {
@@ -60,9 +56,21 @@ public abstract class CatalogingHandler extends AbstractHandler {
         this.defaultMaterialType = defaultMaterialType;
     }
 
-    // http://localhost:8080/Biblivre5/default?controller=json&module=cataloging.bibliographic&action=search&search_parameters={search_type:%22simple%22,database:%22main%22,material_type:%22all%22,search_terms:[{query:%22machado%22}]}
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = this.searchHelper(request, response, this);
+        String searchParameters = request.getString("search_parameters");
+
+        SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
+
+        String schema = request.getSchema();
+
+        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+
+        SearchDTO search =
+                bo.search(searchQuery, this.recordType, request.getAuthorizationPoints());
+
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         if (CollectionUtils.isEmpty(search)) {
             return;
@@ -78,284 +86,170 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
     }
 
-    public SearchDTO searchHelper(
-            ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String schema = request.getSchema();
-        String searchParameters = request.getString("search_parameters");
+    public void paginate(ExtendedRequest request, ExtendedResponse response) {
+        SearchDTO search = HttpRequestSearchHelper.paginate(request, recordType);
 
-        SearchQueryDTO searchQuery;
+        if (search == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 
-        try {
-            searchQuery = new SearchQueryDTO(searchParameters);
-
-            if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
-                this.authorize(request, "cataloging.bibliographic", "private_database_access");
-            }
-        } catch (ValidationException e) {
-            handler.setMessage(ActionResult.WARNING, e.getMessage());
-            return null;
+            return;
         }
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+        RecordBO recordBO = RecordBO.getInstance(request.getSchema(), recordType);
 
-        SearchDTO search = new SearchDTO(this.recordType);
-
-        PagingDTO paging = new PagingDTO();
-
-        search.setPaging(paging);
-
-        paging.setRecordsPerPage(
-                Configurations.getPositiveInt(
-                        schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
-        paging.setRecordLimit(
-                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
-        paging.setPage(1);
-
-        search.setQuery(searchQuery);
-        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, this.recordType));
-
-        bo.search(search);
-
-        paging.endTimer();
+        recordBO.paginateSearch(search, request.getAuthorizationPoints());
 
         if (search.size() == 0) {
-            handler.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+            recordBO.search(search);
         }
 
-        return search;
-    }
-
-    // http://localhost:8080/Biblivre5/default?controller=json&module=cataloging.bibliographic&action=paginate&search_id=248&page=20&indexing_group=0
-    public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = this.paginateHelper(request, response, this);
-
-        List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), this.recordType);
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         if (CollectionUtils.isEmpty(search)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
             return;
         }
 
-        try {
-            this.json.put("search", search.toJSONObject());
+        this.json.put("search", search.toJSONObject());
 
-            for (IndexingGroupDTO group : groups) {
-                this.json.accumulate("indexing_groups", group.toJSONObject());
-            }
-        } catch (JSONException e) {
+        List<IndexingGroupDTO> groups =
+                IndexingGroups.getGroups(request.getSchema(), this.recordType);
+
+        for (IndexingGroupDTO group : groups) {
+            this.json.accumulate("indexing_groups", group.toJSONObject());
         }
-    }
-
-    public SearchDTO paginateHelper(
-            ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String schema = request.getSchema();
-        Integer searchId = request.getInteger("search_id", null);
-        Integer indexingGroup = request.getInteger("indexing_group", 0);
-        Integer sort =
-                request.getInteger(
-                        "sort", IndexingGroups.getDefaultSortableGroupId(schema, this.recordType));
-        Integer page = request.getInteger("page", 1);
-
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        SearchDTO search = bo.getSearch(searchId);
-
-        if (search == null) {
-            handler.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
-            return null;
-        }
-
-        if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
-
-        search.getPaging().setPage(page);
-        search.setSort(sort);
-        search.setIndexingGroup(indexingGroup);
-
-        bo.paginateSearch(search);
-
-        if (search.size() == 0) {
-            bo.search(search);
-        }
-
-        if (search.size() == 0) {
-            handler.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
-        }
-
-        return search;
     }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
+
         Integer id = request.getInteger("id", null);
 
         if (id == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
             return;
         }
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-        RecordDTO dto = bo.get(id);
+        RecordBO recordBO = RecordBO.getInstance(schema, recordType);
+
+        RecordDTO dto = recordBO.open(id, request.getAuthorizationPoints());
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
             return;
         }
 
-        if (dto.getRecordDatabase() == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
-
-        Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
-        MarcDataReader marcDataReader = new MarcDataReader(record);
-
-        bo.populateDetails(
-                dto,
-                RecordBO.MARC_INFO
-                        | RecordBO.HOLDING_INFO
-                        | RecordBO.HOLDING_LIST
-                        | RecordBO.LENDING_INFO);
-
-        // Record tab
-        List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, this.recordType);
-        List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
-
-        dto.setFields(fields);
-
-        // Marc tab
-        dto.setMarc(MarcUtils.recordToMarc(record));
-
-        // Form tab
-        dto.setJson(MarcUtils.recordToJson(record));
-
-        // Attachments
-        dto.setAttachments(marcDataReader.getAttachments());
-
-        try {
-            this.json.put("data", dto.toJSONObject());
-        } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        }
+        this.json.put("data", dto.toJSONObject());
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
+        RecordBO recordBO = RecordBO.getInstance(schema, this.recordType);
+
         Integer id = request.getInteger("id");
-        RecordConvertion from = request.getEnum(RecordConvertion.class, "from");
+
+        boolean isNew = id == 0;
+
+        RecordDTO recordDTO = isNew ? this.createRecordDTO(null) : recordBO.get(id);
+
+        if (recordDTO == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
+            return;
+        }
+
+        hydrateRecord(recordDTO, request);
+
+        int loggedUserId = request.getLoggedUserId();
+
+        boolean success =
+                recordBO.saveOrUpdate(recordDTO, loggedUserId, request.getAuthorizationPoints());
+
+        if (!success) {
+            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
+
+            return;
+        }
+
+        _setSuccessMessage(isNew);
+
+        this.json.put("data", recordDTO.toJSONObject());
+    }
+
+    private void hydrateRecord(RecordDTO recordDTO, ExtendedRequest request) {
         MaterialType materialType =
                 request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
-        RecordDatabase database = request.getEnum(RecordDatabase.class, "database");
-        String data = request.getString("data");
 
-        if (database == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
+        recordDTO.setMaterialType(materialType);
 
-        RecordStatus status = (id == 0) ? RecordStatus.NEW : RecordStatus.CORRECTED;
+        RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+        recordDTO.setRecordDatabase(recordDatabase);
 
-        RecordDTO dto = (id == 0) ? this.createRecordDTO(request) : bo.get(id);
+        RecordConvertion recordConvertion = request.getEnum(RecordConvertion.class, "from");
 
-        if (dto == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-            return;
-        }
+        String recordData = request.getString("data");
 
-        dto.setMaterialType(materialType);
-        dto.setRecordDatabase(database);
+        boolean isNew = request.getInteger("id") == 0;
 
-        try {
-            switch (from) {
-                case MARC:
-                case RECORD:
-                case HOLDING_MARC:
-                    dto.setRecord(MarcUtils.marcToRecord(data, materialType, status));
-                    break;
-                case FORM:
-                case HOLDING_FORM:
-                    dto.setRecord(
-                            MarcUtils.jsonToRecord(new JSONObject(data), materialType, status));
-                    break;
-            }
-        } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return;
-        }
+        RecordStatus recordStatus = RecordStatus.fromNewStatus(isNew);
 
-        this.beforeSave(request, dto);
+        MarcReader marcReader = recordConvertion.getReader(recordData, materialType, recordStatus);
 
-        boolean success = false;
+        recordDTO.setRecord(marcReader.next());
 
-        if (id == 0) {
-            dto.setCreatedBy(request.getLoggedUserId());
-            success = bo.save(dto);
+        recordDTO.setSchema(request.getSchema());
+    }
+
+    private void _setSuccessMessage(boolean isNew) {
+        if (isNew) {
+            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
         } else {
-            dto.setModifiedBy(request.getLoggedUserId());
-            success = bo.update(dto);
-        }
-
-        if (success) {
-            if (id == 0) {
-                this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
-            } else {
-                this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.update");
-            }
-
-            try {
-                this.json.put("data", dto.toJSONObject());
-            } catch (Exception e) {
-                this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            }
-        } else {
-            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
+            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.update");
         }
     }
 
-    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {}
-
-    protected void afterConvert(ExtendedRequest request, RecordDTO dto) {}
+    protected void hydrateRecordImpl(RecordDTO dto, ExtendedRequest request) {}
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id", null);
-        RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
 
         if (id == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
             return;
         }
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-        RecordDTO dto = bo.get(id);
+        String schema = request.getSchema();
+
+        RecordBO recordBO = RecordBO.getInstance(schema, this.recordType);
+
+        RecordDTO dto = recordBO.get(id);
+
+        RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
 
         if (dto == null || dto.getRecordDatabase() != recordDatabase) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
             return;
         }
 
         if (recordDatabase == null) {
             ValidationException ex = new ValidationException("cataloging.error.invalid_database");
+
             this.setMessage(ex);
+
             return;
         }
 
-        if (recordDatabase == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
+        int loggedUserId = request.getLoggedUserId();
 
-        dto.setModifiedBy(request.getLoggedUserId());
-        boolean success = false;
-        if (recordDatabase == RecordDatabase.TRASH) {
-            success = bo.delete(dto);
-        } else {
-            Set<Integer> ids = new TreeSet<Integer>();
-            ids.add(dto.getId());
-            success = bo.moveRecords(ids, request.getLoggedUserId(), RecordDatabase.TRASH);
-        }
+        boolean success = recordBO.delete(dto, loggedUserId, request.getAuthorizationPoints());
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
@@ -365,107 +259,66 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void convert(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         String data = request.getString("data");
+
         RecordConvertion from = request.getEnum(RecordConvertion.class, "from");
-        RecordConvertion to = request.getEnum(RecordConvertion.class, "to");
+
         MaterialType materialType =
                 request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
+
         Integer id = request.getInteger("id");
 
-        RecordStatus status = (id == 0) ? RecordStatus.NEW : RecordStatus.CORRECTED;
+        boolean isNew = id == 0;
 
         RecordDTO dto = this.createRecordDTO(request);
+
         dto.setMaterialType(materialType);
 
         Record record = null;
-        try {
-            switch (from) {
-                case MARC:
-                case RECORD:
-                case HOLDING_MARC:
-                    record = MarcUtils.marcToRecord(data, dto.getMaterialType(), status);
-                    break;
-                case FORM:
-                case HOLDING_FORM:
-                    record =
-                            MarcUtils.jsonToRecord(
-                                    new JSONObject(data), dto.getMaterialType(), status);
-                    break;
-            }
-            if (record != null) {
-                MarcUtils.recordToIso2709(record);
-            }
-            switch (to) {
-                case MARC:
-                case HOLDING_MARC:
-                    dto.setMarc(MarcUtils.recordToMarc(record));
-                    break;
-                case FORM:
-                case HOLDING_FORM:
-                    dto.setJson(MarcUtils.recordToJson(record));
-                    break;
-                case RECORD:
-                    MarcDataReader marcDataReader = new MarcDataReader(record);
-                    List<BriefTabFieldFormatDTO> formats =
-                            Fields.getBriefFormats(schema, this.recordType);
-                    List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
 
-                    dto.setFields(fields);
-                    dto.setAttachments(marcDataReader.getAttachments());
-                    dto.setMarc(MarcUtils.recordToMarc(record));
-                    break;
-            }
+        try {
+            MarcReader marcReader =
+                    from.getReader(data, materialType, RecordStatus.fromNewStatus(isNew));
+
+            record = marcReader.next();
+
+            dto.setRecord(record);
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
             return;
         }
 
-        this.afterConvert(request, dto);
-
-        try {
-            this.json.put("data", dto.toJSONObject());
-        } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        }
+        this.json.put("data", dto.toJSONObject());
     }
 
     public void itemCount(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
+
         RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
 
         if (recordDatabase == null) {
             ValidationException ex = new ValidationException("cataloging.error.invalid_database");
+
             this.setMessage(ex);
+
             return;
         }
 
-        if (recordDatabase == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
+        SearchQueryDTO query = new SearchQueryDTO(recordDatabase);
+
+        SearchDTO searchDTO = new SearchDTO(this.recordType);
+
+        searchDTO.setQuery(query);
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-        SearchQueryDTO query = new SearchQueryDTO(recordDatabase);
-        SearchDTO dto = new SearchDTO(this.recordType);
-        dto.setQuery(query);
 
-        int count = bo.count(dto);
+        int count = bo.count(searchDTO, request.getAuthorizationPoints());
 
-        try {
-            this.json.put("count", count);
-        } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        }
+        this.json.put("count", count);
     }
 
     public void moveRecords(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        String[] idList = request.getString("id_list").split(",");
         RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
-
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
         if (recordDatabase == null) {
             ValidationException ex = new ValidationException("cataloging.error.invalid_database");
@@ -473,16 +326,21 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        Set<Integer> ids = new TreeSet<Integer>();
-        for (int i = 0; i < idList.length; i++) {
-            ids.add(Integer.valueOf(idList[i]));
-        }
+        String[] idArray = request.getString("id_list").split(",");
 
-        if (recordDatabase == RecordDatabase.PRIVATE || bo.listContainsPrivateRecord(ids)) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
+        Set<Integer> ids =
+                Arrays.stream(idArray).map(id -> Integer.parseInt(id)).collect(Collectors.toSet());
 
-        if (bo.moveRecords(ids, request.getLoggedUserId(), recordDatabase)) {
+        int loggedUserId = request.getLoggedUserId();
+
+        String schema = request.getSchema();
+
+        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+
+        boolean success =
+                bo.moveRecords(ids, recordDatabase, loggedUserId, request.getAuthorizationPoints());
+
+        if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.move");
         } else {
             this.setMessage(ActionResult.WARNING, "cataloging.record.error.move");
@@ -491,36 +349,33 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
     public void exportRecords(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
+
         String exportId = UUID.randomUUID().toString();
+
         String idList = request.getString("id_list");
+
         request.setSessionAttribute(schema, exportId, idList);
 
-        try {
-            this.json.put("uuid", exportId);
-        } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        }
+        this.json.put("uuid", exportId);
     }
 
-    // http://localhost:8080/Biblivre5/?controller=download&module=cataloging.export&action=download_export&id={export_id}
     public void downloadExport(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
+
         String exportId = request.getString("id");
+
         String idList = (String) request.getSessionAttribute(schema, exportId);
 
         String[] idArray = idList.split(",");
-        Set<Integer> ids = new TreeSet<Integer>();
-        for (int i = 0; i < idArray.length; i++) {
-            ids.add(Integer.valueOf(idArray[i]));
-        }
+
+        Set<Integer> ids =
+                Arrays.stream(idArray).map(id -> Integer.parseInt(id)).collect(Collectors.toSet());
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
-        if (bo.listContainsPrivateRecord(ids)) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
-        final DiskFile exportFile = bo.createExportFile(ids);
+        final DiskFile exportFile = bo.createExportFile(ids, authorizationPoints);
 
         this.setFile(exportFile);
 
@@ -528,32 +383,39 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void autocomplete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         String query = request.getString("q");
-        String datafield = request.getString("datafield", "000");
-        String subfield = request.getString("subfield", "a");
-        AutocompleteType type =
-                request.getEnum(AutocompleteType.class, "type", AutocompleteType.DISABLED);
 
         if (StringUtils.isBlank(query)) {
             return;
         }
 
+        String schema = request.getSchema();
+
+        String datafield = request.getString("datafield", "000");
+
+        String subfield = request.getString("subfield", "a");
+
+        AutocompleteType type =
+                request.getEnum(AutocompleteType.class, "type", AutocompleteType.DISABLED);
+
         switch (type) {
             case FIXED_TABLE:
             case FIXED_TABLE_WITH_PREVIOUS_VALUES:
             case PREVIOUS_VALUES:
-                {
-                    RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+                AutocompleteType.GetSuggestionsParameters parameterObject =
+                        AutocompleteType.GetSuggestionsParameters.builder()
+                                .withSchema(schema)
+                                .withDatafield(datafield)
+                                .withSubfield(subfield)
+                                .withQuery(query)
+                                .withRecordType(recordType)
+                                .build();
 
-                    List<String> list = bo.phraseAutocomplete(datafield, subfield, query);
-
-                    for (String term : list) {
-                        this.json.append("data", term);
-                    }
-
-                    break;
+                for (String term : type.getSuggestions(parameterObject)) {
+                    this.json.append("data", term);
                 }
+
+                break;
             case BIBLIO:
             case AUTHORITIES:
             case VOCABULARY:
@@ -572,41 +434,44 @@ public abstract class CatalogingHandler extends AbstractHandler {
         String schema = request.getSchema();
 
         Integer recordId = request.getInteger("id");
+
         String uri = request.getString("uri");
+
         String description = request.getString("description");
+
         Integer userId = request.getLoggedUserId();
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-        RecordDTO dto = bo.addAttachment(recordId, uri, description, userId);
 
-        MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
-        dto.setAttachments(marcDataReader.getAttachments());
+        bo.addAttachment(recordId, uri, description, userId);
     }
 
     public void removeAttachment(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
         Integer recordId = request.getInteger("id");
+
         String uri = request.getString("uri");
+
         String description = request.getString("description");
+
         Integer userId = request.getLoggedUserId();
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+
         bo.removeAttachment(recordId, uri, description, userId);
     }
 
     public void listBriefFormats(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        // Record tab
         List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, this.recordType);
+
         DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<BriefTabFieldFormatDTO>();
+
         list.addAll(formats);
-        try {
-            this.json.put("data", list.toJSONObject());
-        } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        }
+
+        this.json.put("data", list.toJSONObject());
     }
 
     protected abstract RecordDTO createRecordDTO(ExtendedRequest request);

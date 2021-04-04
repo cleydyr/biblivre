@@ -34,7 +34,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
-import biblivre.marc.MarcUtils;
+import biblivre.marc.HumanReadableMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import biblivre.z3950.Z3950AddressDTO;
@@ -184,7 +184,11 @@ public class Handler extends AbstractHandler {
         IndexingBO ibo = IndexingBO.getInstance(schema);
         RecordDTO dto = null;
         try {
-            Record record = MarcUtils.marcToRecord(marc, null, RecordStatus.NEW);
+            HumanReadableMarcReader humanReadableMarcReader =
+                    new HumanReadableMarcReader(marc, RecordStatus.NEW);
+
+            Record record = humanReadableMarcReader.next();
+
             dto = bo.dtoFromRecord(record);
             BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
 
@@ -251,7 +255,10 @@ public class Handler extends AbstractHandler {
 
             Record record = null;
             try {
-                record = MarcUtils.marcToRecord(marc, null, RecordStatus.NEW);
+                HumanReadableMarcReader humanReadableMarcReader =
+                        new HumanReadableMarcReader(marc, RecordStatus.NEW);
+
+                record = humanReadableMarcReader.next();
             } catch (Exception e) {
                 failedIds.add(i);
                 this.setMessage(ActionResult.WARNING, "error.invalid_parameters");

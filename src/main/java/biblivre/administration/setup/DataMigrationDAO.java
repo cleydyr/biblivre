@@ -47,7 +47,6 @@ import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.MemoryFile;
-import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950AddressDTO;
@@ -160,8 +159,7 @@ public class DataMigrationDAO extends AbstractDAO {
                     continue;
                 }
 
-                dto.setId(rs.getInt("record_serial"));
-                dto.setIso2709(new String(rs.getBytes("record"), Constants.DEFAULT_CHARSET));
+                dto.setIso2709(rs.getBytes("record"));
                 dto.setCreatedBy(1);
 
                 // Fix for bib4 holding reports - no creation date
@@ -214,9 +212,8 @@ public class DataMigrationDAO extends AbstractDAO {
             while (rs.next()) {
                 HoldingDTO dto = new HoldingDTO();
 
-                dto.setId(rs.getInt("holding_serial"));
                 dto.setRecordId(rs.getInt("record_serial"));
-                dto.setIso2709(new String(rs.getBytes("record"), Constants.DEFAULT_CHARSET));
+                dto.setIso2709(rs.getBytes("record"));
                 // As this is a migration, we're setting the creator as 'admin'
                 dto.setCreatedBy(1);
                 // Fix for bib4 holding reports - no creation date

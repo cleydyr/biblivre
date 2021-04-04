@@ -35,9 +35,7 @@ import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
-import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -204,7 +202,7 @@ public class HoldingDAO extends AbstractDAO {
             PreparedStatement pst = con.prepareStatement(sql.toString());
             pst.setInt(1, holding.getId());
             pst.setInt(2, holding.getRecordId());
-            pst.setString(3, holding.getIso2709());
+            pst.setString(3, holding.getUTF8Iso2709());
             pst.setString(4, holding.getAvailability().toString());
             pst.setString(5, holding.getRecordDatabase().toString());
             pst.setString(6, holding.getMaterialType().toString());
@@ -236,7 +234,7 @@ public class HoldingDAO extends AbstractDAO {
                 HoldingDTO holding = (HoldingDTO) abstractDto;
                 pst.setInt(1, holding.getId());
                 pst.setInt(2, holding.getRecordId());
-                pst.setString(3, holding.getIso2709());
+                pst.setString(3, holding.getUTF8Iso2709());
                 pst.setString(4, holding.getAvailability().toString());
                 pst.setString(5, holding.getRecordDatabase().toString());
                 pst.setString(6, holding.getMaterialType().toString());
@@ -308,7 +306,7 @@ public class HoldingDAO extends AbstractDAO {
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
             pst.setInt(1, holding.getRecordId());
-            pst.setString(2, holding.getIso2709());
+            pst.setString(2, holding.getUTF8Iso2709());
             pst.setString(3, holding.getAvailability().toString());
             pst.setString(4, holding.getAccessionNumber());
             pst.setString(5, holding.getLocationD());
@@ -907,16 +905,14 @@ public class HoldingDAO extends AbstractDAO {
             throws SQLException, UnsupportedEncodingException {
         HoldingDTO dto = new HoldingDTO();
 
-        dto.setId(rs.getInt("id"));
-        dto.setIso2709(new String(rs.getBytes("iso2709"), Constants.DEFAULT_CHARSET));
-        dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
+        dto.setIso2709(rs.getBytes("iso2709"));
 
         if (this.hasColumn(rs, "biblio")) {
             BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
             BiblioRecordDTO bdto = new BiblioRecordDTO();
 
             bdto.setId(rs.getInt("record_id"));
-            bdto.setIso2709(new String(rs.getBytes("biblio"), Constants.DEFAULT_CHARSET));
+            bdto.setIso2709(rs.getBytes("biblio"));
 
             bbo.populateDetails(bdto, RecordBO.MARC_INFO);
 

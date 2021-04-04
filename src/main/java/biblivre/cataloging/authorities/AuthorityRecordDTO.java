@@ -20,10 +20,15 @@
 package biblivre.cataloging.authorities;
 
 import biblivre.cataloging.RecordDTO;
+import biblivre.marc.MarcDataReader;
+import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.marc4j.marc.Record;
 
 public class AuthorityRecordDTO extends RecordDTO {
+    private static final String[] AUTHOR_TYPE_TAGS = new String[] {"100", "110", "111"};
+
     private static final long serialVersionUID = 1L;
 
     private String authorName;
@@ -31,27 +36,37 @@ public class AuthorityRecordDTO extends RecordDTO {
     private String authorType;
 
     public String getAuthorName() {
+        if (this.authorName == null) {
+            MarcDataReader marcDataReader = new MarcDataReader(getRecord());
+
+            this.authorName = marcDataReader.getAuthorName(true);
+        }
+
         return this.authorName;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
-    }
-
     public String getAuthorType() {
+        if (this.authorType == null) {
+            Record record = getRecord();
+
+            this.authorType =
+                    Arrays.stream(AUTHOR_TYPE_TAGS)
+                            .filter(tag -> record.getVariableField(tag) != null)
+                            .findFirst()
+                            .orElse("100");
+        }
+
         return this.authorType;
     }
 
-    public void setAuthorType(String authorType) {
-        this.authorType = authorType;
-    }
-
     public String getAuthorOtherName() {
-        return this.authorOtherName;
-    }
+        if (this.authorOtherName == null) {
+            MarcDataReader marcDataReader = new MarcDataReader(getRecord());
 
-    public void setAuthorOtherName(String authorOtherName) {
-        this.authorOtherName = authorOtherName;
+            this.authorName = marcDataReader.getAuthorOtherName(true);
+        }
+
+        return this.authorOtherName;
     }
 
     @Override
@@ -67,5 +82,13 @@ public class AuthorityRecordDTO extends RecordDTO {
         }
 
         return json;
+    }
+
+    @Override
+    protected void nullifyDerivedFields() {
+        super.nullifyDerivedFields();
+
+        authorName = null;
+        authorOtherName = null;
     }
 }

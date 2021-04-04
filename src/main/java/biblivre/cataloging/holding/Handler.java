@@ -29,13 +29,11 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
-import org.marc4j.marc.Record;
 
 public class Handler extends CatalogingHandler {
 
@@ -91,6 +89,7 @@ public class Handler extends CatalogingHandler {
         }
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+
         RecordDTO dto = bo.get(id);
 
         if (dto == null) {
@@ -98,16 +97,8 @@ public class Handler extends CatalogingHandler {
             return;
         }
 
-        Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
-        dto.setRecord(record);
-
-        // Marc tab
-        dto.setMarc(MarcUtils.recordToMarc(record));
-
-        // Form tab
-        dto.setJson(MarcUtils.recordToJson(record));
-
         MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
+
         String holdingLocation = marcDataReader.getShelfLocation();
 
         if (StringUtils.isBlank(holdingLocation)) {
@@ -170,18 +161,16 @@ public class Handler extends CatalogingHandler {
     }
 
     @Override
-    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
-        if (dto == null || !(dto instanceof HoldingDTO)) {
-            throw new ValidationException("cataloging.error.invalid_data");
-        }
-
+    public void hydrateRecordImpl(RecordDTO dto, ExtendedRequest request) {
         int recordId = request.getInteger("record_id");
+
         HoldingAvailability availability =
-                request.getEnum(
-                        HoldingAvailability.class, "availability", HoldingAvailability.AVAILABLE);
+                request.getEnum(HoldingAvailability.class, "availability");
 
         HoldingDTO hdto = (HoldingDTO) dto;
+
         hdto.setRecordId(recordId);
+
         hdto.setAvailability(availability);
     }
 
