@@ -156,11 +156,11 @@ public class RecordDTO extends AbstractDTO {
             return null;
         }
 
-        _nullifyDerivedFields();
-
         RecordAttachmentDTO attachmentToRemove = this.attachments.remove(index);
 
         MarcUtils.removeAttachment(this.record, uri, name);
+
+        _nullifyDerivedFields();
 
         return attachmentToRemove;
     }
@@ -168,13 +168,14 @@ public class RecordDTO extends AbstractDTO {
     private int _getAttachmentIndex(String uri, String name) {
         int index = 0;
 
-        for (RecordAttachmentDTO attachment : this.attachments) {
+        for (RecordAttachmentDTO attachment : getAttachments()) {
             if (attachment.getUri().equals(uri) && attachment.getName().equals(name)) {
                 break;
             }
 
             index++;
         }
+
         return index;
     }
 
