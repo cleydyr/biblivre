@@ -44,7 +44,6 @@ import org.marc4j.marc.Leader;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
-import org.marc4j.marc.VariableField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -357,53 +356,6 @@ public class MarcUtils {
                 }
             }
         }
-    }
-
-    public static Record addAttachment(Record record, String uri, String description) {
-        MarcFactory factory = MarcFactory.newInstance();
-
-        DataField field = factory.newDataField(MarcConstants.ELECTRONIC_LOCATION, ' ', ' ');
-
-        Subfield subfieldD = factory.newSubfield('d', uri.replaceAll("[^\\/]*$", ""));
-        field.addSubfield(subfieldD);
-
-        Subfield subfieldF = factory.newSubfield('f', uri.replaceAll(".*\\/", ""));
-        field.addSubfield(subfieldF);
-
-        Subfield subfieldU = factory.newSubfield('u', uri);
-        field.addSubfield(subfieldU);
-
-        Subfield subfieldY = factory.newSubfield('y', description);
-        field.addSubfield(subfieldY);
-
-        record.addVariableField(field);
-        return record;
-    }
-
-    public static Record removeAttachment(Record record, String uri, String description) {
-        VariableField dataFieldToRemove = null;
-
-        MarcDataReader marcReader = new MarcDataReader(record);
-
-        for (DataField df : marcReader.getDataFields(MarcConstants.ELECTRONIC_LOCATION)) {
-            String sfName = marcReader.getFirstSubfieldData(df, 'y');
-            String sfUri = marcReader.getFirstSubfieldData(df, 'u');
-
-            if (StringUtils.isBlank(sfName)) {
-                sfName = sfUri;
-            }
-
-            if (description.equals(sfName) && uri.equals(sfUri)) {
-                dataFieldToRemove = df;
-                break;
-            }
-        }
-
-        if (dataFieldToRemove != null) {
-            record.removeVariableField(dataFieldToRemove);
-        }
-
-        return record;
     }
 
     public static Record setAccessionNumber(Record holding, String accessionNumber) {

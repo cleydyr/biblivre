@@ -28,13 +28,16 @@ import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.marc4j.MarcStreamWriter;
 import org.marc4j.MarcWriter;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
+import org.marc4j.marc.VariableField;
 
 public class RecordDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
@@ -150,7 +153,27 @@ public class RecordDTO extends AbstractDTO {
     public void addAttachment(String uri, String name) {
         _nullifyDerivedFields();
 
-        MarcUtils.addAttachment(this.record, uri, name);
+        MarcFactory factory = MarcFactory.newInstance();
+
+        DataField field = factory.newDataField(MarcConstants.ELECTRONIC_LOCATION, ' ', ' ');
+
+        Subfield pathSubfield = factory.newSubfield('d', uri.replaceAll("[^\\/]*$", ""));
+
+        field.addSubfield(pathSubfield);
+
+        Subfield eletronicNameSubfield = factory.newSubfield('f', uri.replaceAll(".*\\/", ""));
+
+        field.addSubfield(eletronicNameSubfield);
+
+        Subfield uriSubfield = factory.newSubfield('u', uri);
+
+        field.addSubfield(uriSubfield);
+
+        Subfield linkTextSubfield = factory.newSubfield('y', name);
+
+        field.addSubfield(linkTextSubfield);
+
+        this.record.addVariableField(field);
     }
 
     public RecordAttachmentDTO removeAttachment(String uri, String name) {
@@ -162,11 +185,44 @@ public class RecordDTO extends AbstractDTO {
 
         RecordAttachmentDTO attachmentToRemove = this.attachments.remove(index);
 
-        MarcUtils.removeAttachment(this.record, uri, name);
+        _removeEletronicResourceField(uri, name);
 
         _nullifyDerivedFields();
 
         return attachmentToRemove;
+    }
+
+    private void _removeEletronicResourceField(String uri, String name) {
+        for (VariableField variablefield :
+                this.record.getVariableFields(MarcConstants.ELECTRONIC_LOCATION)) {
+            DataField datafield = (DataField) variablefield;
+
+            for (Subfield subfield : datafield.getSubfields('y')) {
+                String itLinkText = subfield.getData();
+
+                if (StringUtils.isBlank(itLinkText)) {
+                    itLinkText = uri;
+                }
+
+                boolean found = false;
+
+                for (Subfield subfield2 : datafield.getSubfields('u')) {
+                    String itURI = subfield2.getData();
+
+                    if (itURI.equals(uri) && itLinkText.equals(name)) {
+                        record.removeVariableField(datafield);
+
+                        found = true;
+
+                        break;
+                    }
+                }
+
+                if (found) {
+                    break;
+                }
+            }
+        }
     }
 
     private int _getAttachmentIndex(String uri, String name) {
