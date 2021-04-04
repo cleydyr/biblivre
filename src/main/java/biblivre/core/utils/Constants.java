@@ -110,4 +110,6 @@ public class Constants {
     public static final String DEFAULT_DATABASE_NAME = "biblivre4";
     public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
     public static final String DEFAULT_DATABASE_USERNAME = "biblivre";
+
+    public static final char RECORD_SEPARATOR = 0x1e;
 }

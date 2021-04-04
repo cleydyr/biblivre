@@ -203,7 +203,7 @@ public class HoldingDAO extends AbstractDAO {
             PreparedStatement pst = con.prepareStatement(sql.toString());
             pst.setInt(1, holding.getId());
             pst.setInt(2, holding.getRecordId());
-            pst.setString(3, holding.getIso2709());
+            pst.setString(3, holding.getUTF8Iso2709());
             pst.setString(4, holding.getAvailability().toString());
             pst.setString(5, holding.getRecordDatabase().toString());
             pst.setString(6, holding.getMaterialType().toString());
@@ -235,7 +235,7 @@ public class HoldingDAO extends AbstractDAO {
                 HoldingDTO holding = (HoldingDTO) abstractDto;
                 pst.setInt(1, holding.getId());
                 pst.setInt(2, holding.getRecordId());
-                pst.setString(3, holding.getIso2709());
+                pst.setString(3, holding.getUTF8Iso2709());
                 pst.setString(4, holding.getAvailability().toString());
                 pst.setString(5, holding.getRecordDatabase().toString());
                 pst.setString(6, holding.getMaterialType().toString());
@@ -307,7 +307,7 @@ public class HoldingDAO extends AbstractDAO {
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
             pst.setInt(1, holding.getRecordId());
-            pst.setString(2, holding.getIso2709());
+            pst.setString(2, holding.getUTF8Iso2709());
             pst.setString(3, holding.getAvailability().toString());
             pst.setString(4, holding.getAccessionNumber());
             pst.setString(5, holding.getLocationD());
@@ -907,7 +907,7 @@ public class HoldingDAO extends AbstractDAO {
         HoldingDTO dto = new HoldingDTO();
 
         dto.setId(rs.getInt("id"));
-        dto.setIso2709(new String(rs.getBytes("iso2709"), "UTF-8"));
+        dto.setIso2709(rs.getBytes("iso2709"));
         dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
 
         if (this.hasColumn(rs, "biblio")) {
@@ -915,7 +915,7 @@ public class HoldingDAO extends AbstractDAO {
             BiblioRecordDTO bdto = new BiblioRecordDTO();
 
             bdto.setId(rs.getInt("record_id"));
-            bdto.setIso2709(new String(rs.getBytes("biblio"), "UTF-8"));
+            bdto.setIso2709(rs.getBytes("biblio"));
 
             bbo.populateDetails(bdto, RecordBO.MARC_INFO);
 

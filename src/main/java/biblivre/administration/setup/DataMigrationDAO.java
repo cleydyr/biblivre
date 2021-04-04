@@ -160,7 +160,7 @@ public class DataMigrationDAO extends AbstractDAO {
                 }
 
                 dto.setId(rs.getInt("record_serial"));
-                dto.setIso2709(new String(rs.getBytes("record"), "UTF-8"));
+                dto.setIso2709(rs.getBytes("record"));
                 dto.setCreatedBy(1);
 
                 // Fix for bib4 holding reports - no creation date
@@ -215,7 +215,7 @@ public class DataMigrationDAO extends AbstractDAO {
 
                 dto.setId(rs.getInt("holding_serial"));
                 dto.setRecordId(rs.getInt("record_serial"));
-                dto.setIso2709(new String(rs.getBytes("record"), "UTF-8"));
+                dto.setIso2709(rs.getBytes("record"));
                 // As this is a migration, we're setting the creator as 'admin'
                 dto.setCreatedBy(1);
                 // Fix for bib4 holding reports - no creation date

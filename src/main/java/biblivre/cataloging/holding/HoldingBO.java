@@ -191,9 +191,6 @@ public class HoldingBO extends RecordBO {
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
 
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
-
         boolean success = this.dao.save(dto);
 
         if (success) {
@@ -234,9 +231,6 @@ public class HoldingBO extends RecordBO {
         // Id, Availability and RecordId are already populated at this point.
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
 
         return this.dao.update(dto);
     }

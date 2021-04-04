@@ -21,6 +21,7 @@ package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.AbstractDTO;
+import biblivre.core.utils.Constants;
 import biblivre.marc.MaterialType;
 import java.util.List;
 import org.json.JSONException;
@@ -33,7 +34,7 @@ public class RecordDTO extends AbstractDTO {
     private Record record;
 
     private int id;
-    private String iso2709;
+    private byte[] iso2709;
     private MaterialType materialType;
     private RecordDatabase recordDatabase;
 
@@ -78,11 +79,15 @@ public class RecordDTO extends AbstractDTO {
         this.id = id;
     }
 
-    public String getIso2709() {
+    public String getUTF8Iso2709() {
+        return new String(this.iso2709, Constants.DEFAULT_CHARSET);
+    }
+
+    public byte[] getIso2709() {
         return this.iso2709;
     }
 
-    public void setIso2709(String iso2709) {
+    public void setIso2709(byte[] iso2709) {
         this.iso2709 = iso2709;
     }
 

@@ -155,9 +155,6 @@ public class BiblioRecordBO extends RecordBO {
         MarcUtils.setCF005(record);
         MarcUtils.setCF008(record);
 
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
-
         if (this.rdao.save(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.reindex(RecordType.BIBLIO, dto);
@@ -171,9 +168,6 @@ public class BiblioRecordBO extends RecordBO {
     public boolean update(RecordDTO dto) {
         Record record = dto.getRecord();
         MarcUtils.setCF005(record);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
 
         if (this.rdao.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());

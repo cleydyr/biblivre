@@ -42,7 +42,6 @@ import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.marc.MarcUtils;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +51,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.marc4j.MarcStreamWriter;
 import org.marc4j.marc.Record;
 
 public abstract class RecordBO extends AbstractBO {
@@ -142,18 +142,22 @@ public abstract class RecordBO extends AbstractBO {
 
     public DiskFile createExportFile(Set<Integer> ids) {
         Map<Integer, RecordDTO> records = this.map(ids);
+
         FileOutputStream out = null;
 
         try {
             File file = File.createTempFile("biblivre", ".mrc");
+
             out = new FileOutputStream(file);
-            OutputStreamWriter marcWriter = new OutputStreamWriter(out, "UTF-8");
+
+            MarcStreamWriter writer = new MarcStreamWriter(out);
+
             for (RecordDTO dto : records.values()) {
-                marcWriter.write(dto.getIso2709());
-                marcWriter.write(Constants.LINE_BREAK);
+                writer.write(dto.getRecord());
             }
-            marcWriter.flush();
-            marcWriter.close();
+
+            writer.close();
+
             return new DiskFile(file, "x-download");
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
