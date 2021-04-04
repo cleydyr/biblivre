@@ -487,8 +487,7 @@ public class MarcUtils {
         return record;
     }
 
-    public static Record removeAttachment(Record record, String uri, String description)
-            throws Exception {
+    public static Record removeAttachment(Record record, String uri, String description) {
         VariableField dataFieldToRemove = null;
 
         MarcDataReader marcReader = new MarcDataReader(record);

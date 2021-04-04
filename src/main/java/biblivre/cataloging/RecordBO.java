@@ -52,7 +52,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
-import org.marc4j.marc.Record;
 
 public abstract class RecordBO extends AbstractBO {
     protected RecordDAO rdao;
@@ -310,8 +309,8 @@ public abstract class RecordBO extends AbstractBO {
         dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
         // Remove datafield 856 from the Marc Record
         try {
-            Record record = MarcUtils.removeAttachment(dto.getRecord(), uri, description);
-            dto.setRecord(record);
+            dto.removeAttachment(uri, description);
+
             dto.setModifiedBy(userId);
 
             // Update the record in Biblivre DB

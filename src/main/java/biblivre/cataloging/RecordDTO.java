@@ -141,10 +141,39 @@ public class RecordDTO extends AbstractDTO {
         return this.attachments;
     }
 
-    public void addAttachment(String uri, String description) {
+    public void addAttachment(String uri, String name) {
         _nullifyDerivedFields();
 
-        MarcUtils.addAttachment(this.record, uri, description);
+        MarcUtils.addAttachment(this.record, uri, name);
+    }
+
+    public RecordAttachmentDTO removeAttachment(String uri, String name) {
+        int index = _getAttachmentIndex(uri, name);
+
+        if (index == this.attachments.size()) {
+            return null;
+        }
+
+        _nullifyDerivedFields();
+
+        RecordAttachmentDTO attachmentToRemove = this.attachments.remove(index);
+
+        MarcUtils.removeAttachment(this.record, uri, name);
+
+        return attachmentToRemove;
+    }
+
+    private int _getAttachmentIndex(String uri, String name) {
+        int index = 0;
+
+        for (RecordAttachmentDTO attachment : this.attachments) {
+            if (attachment.getUri().equals(uri) && attachment.getName().equals(name)) {
+                break;
+            }
+
+            index++;
+        }
+        return index;
     }
 
     public List<BriefTabFieldDTO> getFields() {
