@@ -401,8 +401,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        dto.setNew(isNew);
-
         this.afterConvert(request, dto);
 
         try {
