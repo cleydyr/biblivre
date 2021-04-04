@@ -36,11 +36,11 @@ public class RecordDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
 
     private Record record;
-
     private int id;
     private byte[] iso2709;
     private MaterialType materialType;
     private RecordDatabase recordDatabase;
+    private String schema;
 
     private transient List<RecordAttachmentDTO> attachments;
     private transient List<BriefTabFieldDTO> fields;
@@ -195,5 +195,13 @@ public class RecordDTO extends AbstractDTO {
         json.putOpt("marc", this.getHumanReadableMarc());
 
         return json;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 }
