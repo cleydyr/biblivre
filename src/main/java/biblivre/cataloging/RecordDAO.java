@@ -28,7 +28,6 @@ import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -736,7 +735,6 @@ public abstract class RecordDAO extends AbstractDAO {
 
         rdto.setId(rs.getInt("record_id"));
         rdto.setIso2709(rs.getBytes("iso2709"));
-        rdto.setRecord(MarcUtils.iso2709ToRecord(rdto.getIso2709()));
 
         dto.setPhrase(rs.getString("phrase"));
         dto.setRecord(rdto);

@@ -41,6 +41,7 @@ public class RecordDTO extends AbstractDTO {
     private MaterialType materialType;
     private RecordDatabase recordDatabase;
     private String schema;
+    private Boolean isNew;
 
     private transient List<RecordAttachmentDTO> attachments;
     private transient List<BriefTabFieldDTO> fields;
@@ -122,6 +123,7 @@ public class RecordDTO extends AbstractDTO {
     }
 
     private void _nullifyDerivedFields() {
+        this.isNew = null;
         this.id = -1;
         this.iso2709 = null;
         this.materialType = null;
@@ -234,5 +236,25 @@ public class RecordDTO extends AbstractDTO {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    public boolean isNew() {
+        if (isNew == null) {
+            this.isNew = this.record.getLeader().getRecordStatus() == 'n';
+        }
+
+        return isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        _nullifyDerivedFields();
+
+        this.isNew = isNew;
+
+        this.record.getLeader().setRecordStatus(getRecordStatusCode());
+    }
+
+    public char getRecordStatusCode() {
+        return isNew() ? 'n' : 'c';
     }
 }

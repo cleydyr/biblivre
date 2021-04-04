@@ -39,7 +39,6 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
-import biblivre.marc.MarcUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Base64;

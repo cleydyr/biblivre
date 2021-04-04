@@ -36,7 +36,6 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.login.LoginDTO;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -908,7 +907,6 @@ public class HoldingDAO extends AbstractDAO {
 
         dto.setId(rs.getInt("id"));
         dto.setIso2709(rs.getBytes("iso2709"));
-        dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
 
         if (this.hasColumn(rs, "biblio")) {
             BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());

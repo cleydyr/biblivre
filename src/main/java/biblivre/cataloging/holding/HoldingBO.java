@@ -364,9 +364,7 @@ public class HoldingBO extends RecordBO {
         boolean success = true;
 
         RecordDTO biblioDto = autoDto.getBiblioRecordDto();
-        if (biblioDto.getRecord() == null) {
-            biblioDto.setRecord(MarcUtils.iso2709ToRecord(biblioDto.getIso2709()));
-        }
+
         MarcDataReader mdr = new MarcDataReader(biblioDto.getRecord());
 
         String biblioLocationA = mdr.getLocation();
