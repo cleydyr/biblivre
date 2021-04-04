@@ -141,6 +141,12 @@ public class RecordDTO extends AbstractDTO {
         return this.attachments;
     }
 
+    public void addAttachment(String uri, String description) {
+        _nullifyDerivedFields();
+
+        MarcUtils.addAttachment(this.record, uri, description);
+    }
+
     public void setAttachments(List<RecordAttachmentDTO> attachments) {
         this.attachments = attachments;
     }

@@ -565,15 +565,16 @@ public abstract class CatalogingHandler extends AbstractHandler {
         String schema = request.getSchema();
 
         Integer recordId = request.getInteger("id");
+
         String uri = request.getString("uri");
+
         String description = request.getString("description");
+
         Integer userId = request.getLoggedUserId();
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-        RecordDTO dto = bo.addAttachment(recordId, uri, description, userId);
 
-        MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
-        dto.setAttachments(marcDataReader.getAttachments());
+        bo.addAttachment(recordId, uri, description, userId);
     }
 
     public void removeAttachment(ExtendedRequest request, ExtendedResponse response) {

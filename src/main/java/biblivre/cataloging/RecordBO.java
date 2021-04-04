@@ -294,20 +294,14 @@ public abstract class RecordBO extends AbstractBO {
         return listA;
     }
 
-    public RecordDTO addAttachment(
-            Integer recordId, String uri, String description, Integer userId) {
-        RecordDTO dto = this.get(recordId);
-        dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
+    public void addAttachment(int recordId, String uri, String description, Integer userId) {
+        RecordDTO recordDTO = get(recordId);
 
-        Record record = MarcUtils.addAttachment(dto.getRecord(), uri, description);
+        recordDTO.addAttachment(uri, description);
 
-        dto.setRecord(record);
-        dto.setModifiedBy(userId);
+        recordDTO.setModifiedBy(userId);
 
-        // Update the record in Biblivre DB
-        this.update(dto);
-
-        return dto;
+        update(recordDTO);
     }
 
     public RecordDTO removeAttachment(
