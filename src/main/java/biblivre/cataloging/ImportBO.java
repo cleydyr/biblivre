@@ -32,7 +32,6 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcFileReader;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950RecordDTO;
 import java.io.IOException;
@@ -199,9 +198,9 @@ public class ImportBO extends AbstractBO {
 
                 if (brdto != null) {
                     bbo.populateDetails(brdto, RecordBO.MARC_INFO);
-                    brdto.setHumanReadableMarc(MarcUtils.recordToMarc(brdto.getRecord()));
 
                     dto.addRecord(brdto);
+
                     dto.incrementSuccess();
                 }
             } catch (Exception e) {
@@ -237,8 +236,6 @@ public class ImportBO extends AbstractBO {
         if (rdto != null && rbo != null) {
             rdto.setRecord(record);
             rbo.populateDetails(rdto, RecordBO.MARC_INFO);
-
-            rdto.setHumanReadableMarc(MarcUtils.recordToMarc(record));
         }
 
         return rdto;

@@ -22,6 +22,7 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
+import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.io.ByteArrayOutputStream;
@@ -131,6 +132,12 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public List<RecordAttachmentDTO> getAttachments() {
+        if (this.attachments == null) {
+            MarcDataReader marcDataReader = new MarcDataReader(this.record);
+
+            this.attachments = marcDataReader.getAttachments();
+        }
+
         return this.attachments;
     }
 
@@ -155,11 +162,11 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public String getHumanReadableMarc() {
-        return this.humanReadableMarc;
-    }
+        if (this.humanReadableMarc == null) {
+            this.humanReadableMarc = MarcUtils.recordToMarc(this.record);
+        }
 
-    public void setHumanReadableMarc(String marc) {
-        this.humanReadableMarc = marc;
+        return this.humanReadableMarc;
     }
 
     public Record getRecord() {

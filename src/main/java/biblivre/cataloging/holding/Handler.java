@@ -101,9 +101,6 @@ public class Handler extends CatalogingHandler {
         Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
         dto.setRecord(record);
 
-        // Marc tab
-        dto.setHumanReadableMarc(MarcUtils.recordToMarc(record));
-
         // Form tab
         dto.setJson(MarcUtils.recordToJson(record));
 
