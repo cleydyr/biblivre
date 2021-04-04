@@ -19,10 +19,41 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.marc.HumanReadableMarcReader;
+import biblivre.marc.JsonMarcReader;
+import biblivre.marc.MaterialType;
+import biblivre.marc.RecordStatus;
+import java.lang.reflect.Constructor;
+import org.marc4j.MarcReader;
+
 public enum RecordConvertion {
-    FORM,
-    MARC,
-    RECORD,
-    HOLDING_MARC,
-    HOLDING_FORM
+    MARC(HumanReadableMarcReader.class),
+    RECORD(HumanReadableMarcReader.class),
+    HOLDING_MARC(HumanReadableMarcReader.class),
+
+    FORM(JsonMarcReader.class),
+    HOLDING_FORM(JsonMarcReader.class);
+
+    private Class<? extends MarcReader> readerClass;
+
+    RecordConvertion(Class<? extends MarcReader> readerClass) {
+        this.readerClass = readerClass;
+    }
+
+    public MarcReader getReader(String data, MaterialType materialType, RecordStatus recordStatus) {
+        Constructor<? extends MarcReader> constructor;
+
+        try {
+            constructor =
+                    this.readerClass.getConstructor(
+                            String.class, MaterialType.class, RecordStatus.class);
+
+            return constructor.newInstance(data, materialType, recordStatus);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

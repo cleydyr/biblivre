@@ -32,4 +32,12 @@ public enum RecordStatus {
     public char getCode() {
         return this.code;
     }
+
+    public boolean isNew() {
+        return this == NEW;
+    }
+
+    public static RecordStatus fromNewStatus(boolean isNew) {
+        return isNew ? NEW : CORRECTED;
+    }
 }

@@ -159,7 +159,6 @@ public class DataMigrationDAO extends AbstractDAO {
                     continue;
                 }
 
-                dto.setId(rs.getInt("record_serial"));
                 dto.setIso2709(rs.getBytes("record"));
                 dto.setCreatedBy(1);
 
@@ -213,7 +212,6 @@ public class DataMigrationDAO extends AbstractDAO {
             while (rs.next()) {
                 HoldingDTO dto = new HoldingDTO();
 
-                dto.setId(rs.getInt("holding_serial"));
                 dto.setRecordId(rs.getInt("record_serial"));
                 dto.setIso2709(rs.getBytes("record"));
                 // As this is a migration, we're setting the creator as 'admin'

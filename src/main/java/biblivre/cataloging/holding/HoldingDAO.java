@@ -905,7 +905,6 @@ public class HoldingDAO extends AbstractDAO {
             throws SQLException, UnsupportedEncodingException {
         HoldingDTO dto = new HoldingDTO();
 
-        dto.setId(rs.getInt("id"));
         dto.setIso2709(rs.getBytes("iso2709"));
 
         if (this.hasColumn(rs, "biblio")) {

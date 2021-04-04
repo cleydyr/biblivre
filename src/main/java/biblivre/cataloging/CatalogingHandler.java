@@ -47,7 +47,7 @@ import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
 
 public abstract class CatalogingHandler extends AbstractHandler {
@@ -245,11 +245,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
             this.authorize(request, "cataloging.bibliographic", "private_database_access");
         }
 
-        RecordStatus status = (id == 0) ? RecordStatus.NEW : RecordStatus.CORRECTED;
+        boolean isNew = id == 0;
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
-        RecordDTO dto = (id == 0) ? this.createRecordDTO(request) : bo.get(id);
+        RecordDTO dto = isNew ? this.createRecordDTO(request) : bo.get(id);
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
@@ -257,25 +257,19 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         dto.setMaterialType(materialType);
+
         dto.setRecordDatabase(database);
 
+        MarcReader marcReader = null;
+
         try {
-            switch (from) {
-                case MARC:
-                case RECORD:
-                case HOLDING_MARC:
-                    dto.setRecord(MarcUtils.marcToRecord(data, materialType, status));
-                    break;
-                case FORM:
-                case HOLDING_FORM:
-                    dto.setRecord(
-                            MarcUtils.jsonToRecord(new JSONObject(data), materialType, status));
-                    break;
-            }
+            marcReader = from.getReader(data, materialType, RecordStatus.fromNewStatus(isNew));
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
             return;
         }
+
+        dto.setRecord(marcReader.next());
 
         this.beforeSave(request, dto);
 
@@ -359,36 +353,31 @@ public abstract class CatalogingHandler extends AbstractHandler {
         String schema = request.getSchema();
 
         String data = request.getString("data");
+
         RecordConvertion from = request.getEnum(RecordConvertion.class, "from");
+
         RecordConvertion to = request.getEnum(RecordConvertion.class, "to");
+
         MaterialType materialType =
                 request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
+
         Integer id = request.getInteger("id");
 
-        RecordStatus status = (id == 0) ? RecordStatus.NEW : RecordStatus.CORRECTED;
+        boolean isNew = id == 0;
 
         RecordDTO dto = this.createRecordDTO(request);
+
         dto.setMaterialType(materialType);
 
         Record record = null;
-        try {
-            switch (from) {
-                case MARC:
-                case RECORD:
-                case HOLDING_MARC:
-                    record = MarcUtils.marcToRecord(data, dto.getMaterialType(), status);
-                    break;
-                case FORM:
-                case HOLDING_FORM:
-                    record =
-                            MarcUtils.jsonToRecord(
-                                    new JSONObject(data), dto.getMaterialType(), status);
-                    break;
-            }
 
-            if (record != null) {
-                dto.setRecord(record);
-            }
+        try {
+            MarcReader marcReader =
+                    from.getReader(data, materialType, RecordStatus.fromNewStatus(isNew));
+
+            record = marcReader.next();
+
+            dto.setRecord(record);
 
             switch (to) {
                 case MARC:
@@ -411,6 +400,8 @@ public abstract class CatalogingHandler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
             return;
         }
+
+        dto.setNew(isNew);
 
         this.afterConvert(request, dto);
 
