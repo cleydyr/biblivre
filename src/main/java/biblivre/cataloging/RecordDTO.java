@@ -71,12 +71,18 @@ public class RecordDTO extends AbstractDTO {
         this.recordDatabase = recordDatabase;
     }
 
-    public Integer getId() {
+    public int getId() {
+        if (this.id == -1) {
+            this.id = Integer.parseInt(this.record.getControlNumber());
+        }
+
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
+
+        this.record.getControlNumberField().setData(String.valueOf(id));
     }
 
     public String getUTF8Iso2709() {
@@ -96,6 +102,7 @@ public class RecordDTO extends AbstractDTO {
     }
 
     private void _nullifyDerivedFields() {
+        this.id = -1;
         this.iso2709 = null;
         this.materialType = null;
         this.json = null;
