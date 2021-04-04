@@ -58,7 +58,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
         this.defaultMaterialType = defaultMaterialType;
     }
 
-    // http://localhost:8080/Biblivre5/default?controller=json&module=cataloging.bibliographic&action=search&search_parameters={search_type:%22simple%22,database:%22main%22,material_type:%22all%22,search_terms:[{query:%22machado%22}]}
     public void search(ExtendedRequest request, ExtendedResponse response) {
         SearchDTO search = this.searchHelper(request, response, this);
 
