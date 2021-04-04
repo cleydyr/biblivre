@@ -305,18 +305,12 @@ public abstract class RecordBO extends AbstractBO {
     public RecordDTO removeAttachment(
             Integer recordId, String uri, String description, Integer userId) {
         RecordDTO dto = this.get(recordId);
-        dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
-        // Remove datafield 856 from the Marc Record
-        try {
-            dto.removeAttachment(uri, description);
 
-            dto.setModifiedBy(userId);
+        dto.removeAttachment(uri, description);
 
-            // Update the record in Biblivre DB
-            this.update(dto);
-        } catch (Exception e) {
-            throw new ValidationException(e.getMessage());
-        }
+        dto.setModifiedBy(userId);
+
+        this.update(dto);
 
         // Check if the file is in Biblivre's DB and try to delete it
         try {
