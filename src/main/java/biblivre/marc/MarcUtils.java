@@ -21,7 +21,6 @@ package biblivre.marc;
 
 import biblivre.core.utils.Constants;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -39,8 +38,6 @@ import org.json.JSONObject;
 import org.marc4j.MarcException;
 import org.marc4j.MarcPermissiveStreamReader;
 import org.marc4j.MarcReader;
-import org.marc4j.MarcStreamWriter;
-import org.marc4j.MarcWriter;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Leader;
@@ -57,21 +54,6 @@ public class MarcUtils {
     private static Format CF001_FORMAT = new DecimalFormat("0000000");
     private static Format CF008_FORMAT = new SimpleDateFormat("yyMMdd");
     private static Format COMPACT_ISO = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
-
-    public static String recordToIso2709(Record record) {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-        MarcWriter writer = new MarcStreamWriter(os, Constants.DEFAULT_CHARSET_NAME);
-        writer.write(record);
-        writer.close();
-
-        try {
-            return os.toString(Constants.DEFAULT_CHARSET_NAME);
-        } catch (UnsupportedEncodingException uee) {
-            MarcUtils.logger.error(uee.getMessage(), uee);
-            return os.toString();
-        }
-    }
 
     public static Record iso2709ToRecord(String iso2709) {
         Record record = null;
@@ -102,17 +84,6 @@ public class MarcUtils {
         }
 
         return record;
-    }
-
-    public static String marcToIso2709(
-            String marc, MaterialType materialType, RecordStatus status) {
-        Record record = MarcUtils.marcToRecord(marc, materialType, status);
-        return MarcUtils.recordToIso2709(record);
-    }
-
-    public static String iso2709ToMarc(String iso2709) {
-        Record record = MarcUtils.iso2709ToRecord(iso2709);
-        return MarcUtils.recordToMarc(record);
     }
 
     public static Record marcToRecord(String marc, MaterialType materialType, RecordStatus status) {
@@ -160,84 +131,6 @@ public class MarcUtils {
         MarcUtils.setControlFields(record, tags, values);
         MarcUtils.setDataFields(record, tags, values, splitter);
         return record;
-    }
-
-    public static String recordToMarc(Record record) {
-        if (record == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("000 ");
-        sb.append(record.getLeader().marshal());
-        sb.append('\n');
-
-        List<ControlField> controlFields = record.getControlFields();
-        for (ControlField field : controlFields) {
-            sb.append(field.toString());
-            sb.append('\n');
-        }
-
-        List<DataField> dataFields = record.getDataFields();
-        for (DataField field : dataFields) {
-            sb.append(field.getTag());
-            sb.append(' ');
-
-            char ind1 = field.getIndicator1();
-            char ind2 = field.getIndicator2();
-
-            sb.append(ind1 == ' ' ? '_' : ind1);
-            sb.append(ind2 == ' ' ? '_' : ind2);
-
-            List<Subfield> subfieldList = field.getSubfields();
-            for (Subfield subfield : subfieldList) {
-                sb.append(MarcConstants.DEFAULT_SPLITTER);
-                sb.append(subfield.getCode());
-                sb.append(subfield.getData());
-            }
-
-            sb.append('\n');
-        }
-
-        return sb.toString();
-    }
-
-    public static JSONObject recordToJson(Record record) {
-        JSONObject json = new JSONObject();
-
-        if (record == null) {
-            return json;
-        }
-
-        try {
-            json.putOpt("000", record.getLeader().marshal());
-
-            ArrayList<ControlField> controlFields =
-                    (ArrayList<ControlField>) record.getControlFields();
-
-            for (ControlField cf : controlFields) {
-                json.putOpt(cf.getTag(), cf.getData());
-            }
-
-            ArrayList<DataField> dataFields = (ArrayList<DataField>) record.getDataFields();
-            for (DataField df : dataFields) {
-                JSONObject datafieldJson = new JSONObject();
-
-                datafieldJson.putOpt("ind1", df.getIndicator1());
-                datafieldJson.putOpt("ind2", df.getIndicator2());
-
-                ArrayList<Subfield> subFields = (ArrayList<Subfield>) df.getSubfields();
-
-                for (Subfield sf : subFields) {
-                    datafieldJson.append(String.valueOf(sf.getCode()), sf.getData());
-                }
-
-                json.append(df.getTag(), datafieldJson);
-            }
-        } catch (JSONException je) {
-        }
-
-        return json;
     }
 
     public static Record jsonToRecord(
