@@ -22,6 +22,7 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
+import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.util.List;
 import org.json.JSONException;
@@ -88,8 +89,21 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public void setIso2709(byte[] iso2709) {
+        _nullifyDerivedFields();
+
+        this.record = MarcUtils.iso2709ToRecord(iso2709);
+
         this.iso2709 = iso2709;
     }
+
+	private void _nullifyDerivedFields() {
+		this.iso2709 = null;
+        this.materialType = null;
+        this.json = null;
+        this.attachments = null;
+        this.fields = null;
+        this.marc = null;
+	}
 
     public List<RecordAttachmentDTO> getAttachments() {
         return this.attachments;
