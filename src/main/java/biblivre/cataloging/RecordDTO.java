@@ -41,7 +41,7 @@ public class RecordDTO extends AbstractDTO {
     private transient List<RecordAttachmentDTO> attachments;
     private transient List<BriefTabFieldDTO> fields;
     private transient JSONObject json;
-    private transient String marc;
+    private transient String humanReadableMarc;
 
     public MaterialType getMaterialType() {
         if (this.materialType == null) {
@@ -101,7 +101,7 @@ public class RecordDTO extends AbstractDTO {
         this.json = null;
         this.attachments = null;
         this.fields = null;
-        this.marc = null;
+        this.humanReadableMarc = null;
     }
 
     public List<RecordAttachmentDTO> getAttachments() {
@@ -128,12 +128,12 @@ public class RecordDTO extends AbstractDTO {
         this.json = json;
     }
 
-    public String getMarc() {
-        return this.marc;
+    public String getHumanReadableMarc() {
+        return this.humanReadableMarc;
     }
 
-    public void setMarc(String marc) {
-        this.marc = marc;
+    public void setHumanReadableMarc(String marc) {
+        this.humanReadableMarc = marc;
     }
 
     public Record getRecord() {
@@ -159,7 +159,7 @@ public class RecordDTO extends AbstractDTO {
         json.putOpt("attachments", this.toJSONArray(this.getAttachments()));
         json.putOpt("fields", this.toJSONArray(this.getFields()));
         json.putOpt("json", this.getJson());
-        json.putOpt("marc", this.getMarc());
+        json.putOpt("marc", this.getHumanReadableMarc());
 
         return json;
     }

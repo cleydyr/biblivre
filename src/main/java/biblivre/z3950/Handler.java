@@ -174,7 +174,7 @@ public class Handler extends AbstractHandler {
         recordDTO.setFields(fields);
 
         // Marc tab
-        recordDTO.setMarc(MarcUtils.recordToMarc(record));
+        recordDTO.setHumanReadableMarc(MarcUtils.recordToMarc(record));
 
         // Form tab
         recordDTO.setJson(MarcUtils.recordToJson(record));

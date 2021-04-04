@@ -102,7 +102,7 @@ public class Handler extends CatalogingHandler {
         dto.setRecord(record);
 
         // Marc tab
-        dto.setMarc(MarcUtils.recordToMarc(record));
+        dto.setHumanReadableMarc(MarcUtils.recordToMarc(record));
 
         // Form tab
         dto.setJson(MarcUtils.recordToJson(record));

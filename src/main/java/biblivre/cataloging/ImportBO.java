@@ -199,7 +199,7 @@ public class ImportBO extends AbstractBO {
 
                 if (brdto != null) {
                     bbo.populateDetails(brdto, RecordBO.MARC_INFO);
-                    brdto.setMarc(MarcUtils.recordToMarc(brdto.getRecord()));
+                    brdto.setHumanReadableMarc(MarcUtils.recordToMarc(brdto.getRecord()));
 
                     dto.addRecord(brdto);
                     dto.incrementSuccess();
@@ -238,7 +238,7 @@ public class ImportBO extends AbstractBO {
             rdto.setRecord(record);
             rbo.populateDetails(rdto, RecordBO.MARC_INFO);
 
-            rdto.setMarc(MarcUtils.recordToMarc(record));
+            rdto.setHumanReadableMarc(MarcUtils.recordToMarc(record));
         }
 
         return rdto;
