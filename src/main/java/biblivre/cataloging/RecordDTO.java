@@ -30,9 +30,10 @@ import org.marc4j.marc.Record;
 public class RecordDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
-    private String iso2709;
     private Record record;
+
+    private int id;
+    private String iso2709;
     private MaterialType materialType;
     private RecordDatabase recordDatabase;
 
@@ -40,8 +41,6 @@ public class RecordDTO extends AbstractDTO {
     private transient List<BriefTabFieldDTO> fields;
     private transient JSONObject json;
     private transient String marc;
-    // TODO
-    // private transient Integer populatedMask;
 
     public MaterialType getMaterialType() {
         if (this.materialType == null) {
