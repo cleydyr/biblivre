@@ -21,10 +21,12 @@ package biblivre.circulation.reservation;
 
 import biblivre.administration.indexing.IndexingGroupDTO;
 import biblivre.administration.indexing.IndexingGroups;
+import biblivre.cataloging.HttpRequestSearchHelper;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
+import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserSearchDTO;
@@ -32,6 +34,7 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,11 +43,23 @@ import org.json.JSONException;
 public class Handler extends AbstractHandler {
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
+        String searchParameters = request.getString("search_parameters");
+
+        SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
+
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
+
         String schema = request.getSchema();
 
-        biblivre.cataloging.bibliographic.Handler catalogingHandler =
-                new biblivre.cataloging.bibliographic.Handler();
-        SearchDTO search = catalogingHandler.searchHelper(request, response, this);
+        RecordType recordType = RecordType.BIBLIO;
+
+        RecordBO bo = RecordBO.getInstance(schema, recordType);
+
+        SearchDTO search = bo.search(searchQuery, recordType, authorizationPoints);
+
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         if (CollectionUtils.isEmpty(search)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -54,8 +69,7 @@ public class Handler extends AbstractHandler {
         ReservationBO rbo = ReservationBO.getInstance(schema);
         rbo.populateReservationInfoByBiblio(search);
 
-        List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), RecordType.BIBLIO);
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(request.getSchema(), recordType);
 
         try {
             this.json.put("search", search.toJSONObject());
@@ -70,32 +84,35 @@ public class Handler extends AbstractHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
+        SearchDTO search = HttpRequestSearchHelper.paginate(request, RecordType.BIBLIO);
+
+        if (search == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+
+            return;
+        }
+
         String schema = request.getSchema();
 
-        biblivre.cataloging.bibliographic.Handler catalogingHandler =
-                new biblivre.cataloging.bibliographic.Handler();
-        SearchDTO search = catalogingHandler.paginateHelper(request, response, this);
+        RecordBO recordBO = RecordBO.getInstance(schema, RecordType.BIBLIO);
+
+        recordBO.paginateSearch(search, request.getAuthorizationPoints());
 
         if (CollectionUtils.isEmpty(search)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
             return;
         }
 
-        ReservationBO rbo = ReservationBO.getInstance(schema);
-        rbo.populateReservationInfoByBiblio(search);
+        ReservationBO reservationBO = ReservationBO.getInstance(schema);
 
-        List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), RecordType.BIBLIO);
+        reservationBO.populateReservationInfoByBiblio(search);
 
-        try {
-            this.json.put("search", search.toJSONObject());
+        this.json.put("search", search.toJSONObject());
 
-            for (IndexingGroupDTO group : groups) {
-                this.json.accumulate("indexing_groups", group.toJSONObject());
-            }
-        } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, RecordType.BIBLIO);
+
+        for (IndexingGroupDTO group : groups) {
+            this.json.accumulate("indexing_groups", group.toJSONObject());
         }
     }
 
@@ -188,9 +205,23 @@ public class Handler extends AbstractHandler {
 
     public void selfSearch(ExtendedRequest request, ExtendedResponse response) {
 
-        biblivre.cataloging.bibliographic.Handler catalogingHandler =
-                new biblivre.cataloging.bibliographic.Handler();
-        SearchDTO search = catalogingHandler.searchHelper(request, response, this);
+        String searchParameters = request.getString("search_parameters");
+
+        SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
+
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
+
+        String schema = request.getSchema();
+
+        RecordType recordType = RecordType.BIBLIO;
+
+        RecordBO bo = RecordBO.getInstance(schema, recordType);
+
+        SearchDTO search = bo.search(searchQuery, recordType, authorizationPoints);
+
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         if (CollectionUtils.isEmpty(search)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");

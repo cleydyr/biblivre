@@ -21,13 +21,8 @@ package biblivre.marc;
 
 import biblivre.core.utils.Constants;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -39,49 +34,21 @@ import org.json.JSONObject;
 import org.marc4j.MarcException;
 import org.marc4j.MarcPermissiveStreamReader;
 import org.marc4j.MarcReader;
-import org.marc4j.MarcStreamWriter;
-import org.marc4j.MarcWriter;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
-import org.marc4j.marc.VariableField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MarcUtils {
 
     private static Logger logger = LoggerFactory.getLogger(MarcUtils.class);
-    private static Format CF001_FORMAT = new DecimalFormat("0000000");
-    private static Format CF008_FORMAT = new SimpleDateFormat("yyMMdd");
-    private static Format COMPACT_ISO = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
-
-    public static String recordToIso2709(Record record) {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-        MarcWriter writer = new MarcStreamWriter(os, Constants.DEFAULT_CHARSET_NAME);
-        writer.write(record);
-        writer.close();
-
-        try {
-            return os.toString(Constants.DEFAULT_CHARSET_NAME);
-        } catch (UnsupportedEncodingException uee) {
-            MarcUtils.logger.error(uee.getMessage(), uee);
-            return os.toString();
-        }
-    }
 
     public static Record iso2709ToRecord(String iso2709) {
-        Record record = null;
-
-        try {
-            record = MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET_NAME));
-        } catch (UnsupportedEncodingException uee) {
-        }
-
-        return record;
+        return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));
     }
 
     public static Record iso2709ToRecord(byte[] iso2709) {
@@ -102,17 +69,6 @@ public class MarcUtils {
         }
 
         return record;
-    }
-
-    public static String marcToIso2709(
-            String marc, MaterialType materialType, RecordStatus status) {
-        Record record = MarcUtils.marcToRecord(marc, materialType, status);
-        return MarcUtils.recordToIso2709(record);
-    }
-
-    public static String iso2709ToMarc(String iso2709) {
-        Record record = MarcUtils.iso2709ToRecord(iso2709);
-        return MarcUtils.recordToMarc(record);
     }
 
     public static Record marcToRecord(String marc, MaterialType materialType, RecordStatus status) {
@@ -160,84 +116,6 @@ public class MarcUtils {
         MarcUtils.setControlFields(record, tags, values);
         MarcUtils.setDataFields(record, tags, values, splitter);
         return record;
-    }
-
-    public static String recordToMarc(Record record) {
-        if (record == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("000 ");
-        sb.append(record.getLeader().marshal());
-        sb.append('\n');
-
-        List<ControlField> controlFields = record.getControlFields();
-        for (ControlField field : controlFields) {
-            sb.append(field.toString());
-            sb.append('\n');
-        }
-
-        List<DataField> dataFields = record.getDataFields();
-        for (DataField field : dataFields) {
-            sb.append(field.getTag());
-            sb.append(' ');
-
-            char ind1 = field.getIndicator1();
-            char ind2 = field.getIndicator2();
-
-            sb.append(ind1 == ' ' ? '_' : ind1);
-            sb.append(ind2 == ' ' ? '_' : ind2);
-
-            List<Subfield> subfieldList = field.getSubfields();
-            for (Subfield subfield : subfieldList) {
-                sb.append(MarcConstants.DEFAULT_SPLITTER);
-                sb.append(subfield.getCode());
-                sb.append(subfield.getData());
-            }
-
-            sb.append('\n');
-        }
-
-        return sb.toString();
-    }
-
-    public static JSONObject recordToJson(Record record) {
-        JSONObject json = new JSONObject();
-
-        if (record == null) {
-            return json;
-        }
-
-        try {
-            json.putOpt("000", record.getLeader().marshal());
-
-            ArrayList<ControlField> controlFields =
-                    (ArrayList<ControlField>) record.getControlFields();
-
-            for (ControlField cf : controlFields) {
-                json.putOpt(cf.getTag(), cf.getData());
-            }
-
-            ArrayList<DataField> dataFields = (ArrayList<DataField>) record.getDataFields();
-            for (DataField df : dataFields) {
-                JSONObject datafieldJson = new JSONObject();
-
-                datafieldJson.putOpt("ind1", df.getIndicator1());
-                datafieldJson.putOpt("ind2", df.getIndicator2());
-
-                ArrayList<Subfield> subFields = (ArrayList<Subfield>) df.getSubfields();
-
-                for (Subfield sf : subFields) {
-                    datafieldJson.append(String.valueOf(sf.getCode()), sf.getData());
-                }
-
-                json.append(df.getTag(), datafieldJson);
-            }
-        } catch (JSONException je) {
-        }
-
-        return json;
     }
 
     public static Record jsonToRecord(
@@ -466,54 +344,6 @@ public class MarcUtils {
         }
     }
 
-    public static Record addAttachment(Record record, String uri, String description) {
-        MarcFactory factory = MarcFactory.newInstance();
-
-        DataField field = factory.newDataField(MarcConstants.ELECTRONIC_LOCATION, ' ', ' ');
-
-        Subfield subfieldD = factory.newSubfield('d', uri.replaceAll("[^\\/]*$", ""));
-        field.addSubfield(subfieldD);
-
-        Subfield subfieldF = factory.newSubfield('f', uri.replaceAll(".*\\/", ""));
-        field.addSubfield(subfieldF);
-
-        Subfield subfieldU = factory.newSubfield('u', uri);
-        field.addSubfield(subfieldU);
-
-        Subfield subfieldY = factory.newSubfield('y', description);
-        field.addSubfield(subfieldY);
-
-        record.addVariableField(field);
-        return record;
-    }
-
-    public static Record removeAttachment(Record record, String uri, String description)
-            throws Exception {
-        VariableField dataFieldToRemove = null;
-
-        MarcDataReader marcReader = new MarcDataReader(record);
-
-        for (DataField df : marcReader.getDataFields(MarcConstants.ELECTRONIC_LOCATION)) {
-            String sfName = marcReader.getFirstSubfieldData(df, 'y');
-            String sfUri = marcReader.getFirstSubfieldData(df, 'u');
-
-            if (StringUtils.isBlank(sfName)) {
-                sfName = sfUri;
-            }
-
-            if (description.equals(sfName) && uri.equals(sfUri)) {
-                dataFieldToRemove = df;
-                break;
-            }
-        }
-
-        if (dataFieldToRemove != null) {
-            record.removeVariableField(dataFieldToRemove);
-        }
-
-        return record;
-    }
-
     public static Record setAccessionNumber(Record holding, String accessionNumber) {
         MarcFactory factory = MarcFactory.newInstance();
 
@@ -531,62 +361,5 @@ public class MarcUtils {
 
         subfield.setData(accessionNumber);
         return holding;
-    }
-
-    public static Record setCF001(Record record, Integer controlNumber) {
-        MarcFactory factory = MarcFactory.newInstance();
-        ControlField field = factory.newControlField("001");
-        field.setData(MarcUtils.CF001_FORMAT.format(controlNumber));
-        record.addVariableField(field);
-        return record;
-    }
-
-    public static Record setCF004(Record holding, Integer recordId) {
-        MarcFactory factory = MarcFactory.newInstance();
-        ControlField field = (ControlField) holding.getVariableField("004");
-
-        if (field == null) {
-            field = factory.newControlField("004");
-            holding.addVariableField(field);
-        }
-
-        field.setData(recordId.toString());
-        return holding;
-    }
-
-    public static Record setCF005(Record record) {
-        return MarcUtils.setCF005(record, new Date());
-    }
-
-    public static Record setCF005(Record record, Date date) {
-        MarcFactory factory = MarcFactory.newInstance();
-        ControlField field = (ControlField) record.getVariableField("005");
-
-        if (field == null) {
-            field = factory.newControlField("005");
-            record.addVariableField(field);
-        }
-
-        field.setData(MarcUtils.COMPACT_ISO.format(date));
-        return record;
-    }
-
-    public static Record setCF008(Record record) {
-        MarcFactory factory = MarcFactory.newInstance();
-        ControlField field = (ControlField) record.getVariableField("008");
-        if (field == null) {
-            // Following the specs, this field should be constructed only
-            // if it doesn't already exist.  Otherwise, keep what has
-            // come with the freemarc string.
-            field = factory.newControlField("008");
-            StringBuilder data = new StringBuilder();
-            // From 01 to 06
-            data.append(CF008_FORMAT.format(new Date()));
-            // From 07 to 40
-            data.append("s||||     bl|||||||||||||||||por|u");
-            field.setData(data.toString());
-            record.addVariableField(field);
-        }
-        return record;
     }
 }

@@ -19,15 +19,23 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
+import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.marc.MaterialType;
+import java.util.Collections;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.MarcFactory;
+import org.marc4j.marc.Record;
 
 public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
+    private static final String CONTROL_NUMBER_FOR_RELATED_BIBLIOGRAPHIC_RECORD_TAG = "004";
+
     private static final long serialVersionUID = 1L;
 
     private Integer recordId;
@@ -49,8 +57,10 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
         return this.recordId;
     }
 
-    public void setRecordId(Integer recordId) {
+    public void setRecordId(int recordId) {
         this.recordId = recordId;
+
+        _setCF004(recordId);
     }
 
     public String getAccessionNumber() {
@@ -109,6 +119,11 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
     }
 
     @Override
+    public List<BriefTabFieldDTO> getFields() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
 
@@ -137,5 +152,26 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
 
         return NaturalOrderComparator.NUMERICAL_ORDER.compare(
                 this.getAccessionNumber(), o.getAccessionNumber());
+    }
+
+    private void _setCF004(int biblioRecordId) {
+        MarcFactory factory = MarcFactory.newInstance();
+
+        Record record = getRecord();
+
+        ControlField field =
+                (ControlField)
+                        record.getVariableField(
+                                CONTROL_NUMBER_FOR_RELATED_BIBLIOGRAPHIC_RECORD_TAG);
+
+        if (field == null) {
+            field = factory.newControlField(CONTROL_NUMBER_FOR_RELATED_BIBLIOGRAPHIC_RECORD_TAG);
+
+            record.addVariableField(field);
+        }
+
+        field.setData(String.valueOf(biblioRecordId));
+
+        nullifyDerivedFields();
     }
 }

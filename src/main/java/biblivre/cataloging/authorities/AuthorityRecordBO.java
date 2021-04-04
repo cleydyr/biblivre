@@ -26,11 +26,8 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.marc.MarcDataReader;
-import biblivre.marc.MarcUtils;
 import java.util.Map;
 import java.util.Set;
-import org.marc4j.marc.Record;
 
 public class AuthorityRecordBO extends RecordBO {
 
@@ -46,42 +43,15 @@ public class AuthorityRecordBO extends RecordBO {
     }
 
     @Override
-    public void populateDetails(RecordDTO rdto, int mask) {
-        if (rdto == null) {
-            return;
-        }
-
-        AuthorityRecordDTO dto = (AuthorityRecordDTO) rdto;
-
-        if ((mask & RecordBO.MARC_INFO) != 0) {
-            Record record = rdto.getRecord();
-
-            if (record == null && rdto.getIso2709() != null) {
-                record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
-            }
-
-            if (record != null) {
-                MarcDataReader marcDataReader = new MarcDataReader(record);
-
-                dto.setAuthorName(marcDataReader.getAuthorName(true));
-                dto.setAuthorOtherName(marcDataReader.getAuthorOtherName(true));
-            }
-        }
-    }
+    public void populateDetails(RecordDTO rdto, int mask) {}
 
     @Override
     public boolean save(RecordDTO dto) {
-        Record record = dto.getRecord();
-
         Integer id = this.rdao.getNextSerial(RecordType.AUTHORITIES + "_records_id_seq");
+
         dto.setId(id);
-
-        MarcUtils.setCF001(record, id);
-        MarcUtils.setCF005(record);
-        MarcUtils.setCF008(record);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
+        dto.setDateOfLastTransaction();
+        dto.setFixedLengthDataElements();
 
         if (this.rdao.save(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
@@ -94,11 +64,7 @@ public class AuthorityRecordBO extends RecordBO {
 
     @Override
     public boolean update(RecordDTO dto) {
-        Record record = dto.getRecord();
-        MarcUtils.setCF005(record);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
+        dto.setDateOfLastTransaction();
 
         if (this.rdao.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());

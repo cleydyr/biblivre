@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.schemas.Schemas;
@@ -388,5 +389,9 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
         return super.getParameter(name);
+    }
+
+    public AuthorizationPoints getAuthorizationPoints() {
+        return (AuthorizationPoints) getSessionAttribute(getSchema(), "logged_user_atps");
     }
 }

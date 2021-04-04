@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.authorities.AuthorityRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -27,11 +28,13 @@ import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
+import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
@@ -39,10 +42,8 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
-import biblivre.marc.MarcUtils;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +53,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.marc4j.marc.Record;
+import org.marc4j.MarcStreamWriter;
 
 public abstract class RecordBO extends AbstractBO {
     protected RecordDAO rdao;
@@ -90,6 +91,7 @@ public abstract class RecordBO extends AbstractBO {
 
     public RecordDTO get(int id) {
         Set<Integer> ids = new HashSet<>();
+
         ids.add(id);
 
         return this.map(ids).get(id);
@@ -132,28 +134,44 @@ public abstract class RecordBO extends AbstractBO {
         return this.rdao.update(dto);
     }
 
-    public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database) {
-        return this.rdao.moveRecords(ids, modifiedBy, database);
+    public boolean moveRecords(
+            Set<Integer> ids,
+            RecordDatabase recordDatabase,
+            int modifiedBy,
+            AuthorizationPoints authorizationPoints) {
+        if (recordDatabase == RecordDatabase.PRIVATE || listContainsPrivateRecord(ids)) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        return this.rdao.moveRecords(ids, modifiedBy, recordDatabase);
     }
 
     public boolean listContainsPrivateRecord(Set<Integer> ids) {
         return this.rdao.listContainsPrivateRecord(ids);
     }
 
-    public DiskFile createExportFile(Set<Integer> ids) {
+    public DiskFile createExportFile(Set<Integer> ids, AuthorizationPoints authorizationPoints) {
+        if (listContainsPrivateRecord(ids)) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
         Map<Integer, RecordDTO> records = this.map(ids);
+
         FileOutputStream out = null;
 
         try {
             File file = File.createTempFile("biblivre", ".mrc");
+
             out = new FileOutputStream(file);
-            OutputStreamWriter marcWriter = new OutputStreamWriter(out, "UTF-8");
+
+            MarcStreamWriter writer = new MarcStreamWriter(out);
+
             for (RecordDTO dto : records.values()) {
-                marcWriter.write(dto.getIso2709());
-                marcWriter.write(Constants.LINE_BREAK);
+                writer.write(dto.getRecord());
             }
-            marcWriter.flush();
-            marcWriter.close();
+
+            writer.close();
+
             return new DiskFile(file, "x-download");
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
@@ -172,7 +190,7 @@ public abstract class RecordBO extends AbstractBO {
         return this.count(null);
     }
 
-    public Integer count(SearchDTO search) {
+    private Integer count(SearchDTO search) {
         return this.rdao.count(search);
     }
 
@@ -207,6 +225,15 @@ public abstract class RecordBO extends AbstractBO {
         }
 
         return this.paginateSearch(search);
+    }
+
+    public boolean paginateSearch(SearchDTO search, AuthorizationPoints authorizationPoints) {
+        if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
+            this.authorize(
+                    "cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        return paginateSearch(search);
     }
 
     public boolean paginateSearch(SearchDTO search) {
@@ -290,37 +317,25 @@ public abstract class RecordBO extends AbstractBO {
         return listA;
     }
 
-    public RecordDTO addAttachment(
-            Integer recordId, String uri, String description, Integer userId) {
-        RecordDTO dto = this.get(recordId);
-        dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
+    public void addAttachment(int recordId, String uri, String description, Integer userId) {
+        RecordDTO recordDTO = get(recordId);
 
-        Record record = MarcUtils.addAttachment(dto.getRecord(), uri, description);
+        recordDTO.addAttachment(uri, description);
 
-        dto.setRecord(record);
-        dto.setModifiedBy(userId);
+        recordDTO.setModifiedBy(userId);
 
-        // Update the record in Biblivre DB
-        this.update(dto);
-
-        return dto;
+        update(recordDTO);
     }
 
     public RecordDTO removeAttachment(
             Integer recordId, String uri, String description, Integer userId) {
         RecordDTO dto = this.get(recordId);
-        dto.setRecord(MarcUtils.iso2709ToRecord(dto.getIso2709()));
-        // Remove datafield 856 from the Marc Record
-        try {
-            Record record = MarcUtils.removeAttachment(dto.getRecord(), uri, description);
-            dto.setRecord(record);
-            dto.setModifiedBy(userId);
 
-            // Update the record in Biblivre DB
-            this.update(dto);
-        } catch (Exception e) {
-            throw new ValidationException(e.getMessage());
-        }
+        dto.removeAttachment(uri, description);
+
+        dto.setModifiedBy(userId);
+
+        this.update(dto);
 
         // Check if the file is in Biblivre's DB and try to delete it
         try {
@@ -353,4 +368,117 @@ public abstract class RecordBO extends AbstractBO {
     public abstract void populateDetails(RecordDTO record, int mask);
 
     public abstract boolean isDeleatable(HoldingDTO holding) throws ValidationException;
+
+    public RecordDTO open(int id, AuthorizationPoints authorizationPoints) {
+        RecordDTO dto = get(id);
+
+        if (dto == null) {
+            return null;
+        }
+
+        if (dto.getRecordDatabase() == RecordDatabase.PRIVATE) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        populateDetails(
+                dto,
+                RecordBO.MARC_INFO
+                        | RecordBO.HOLDING_INFO
+                        | RecordBO.HOLDING_LIST
+                        | RecordBO.LENDING_INFO);
+        return dto;
+    }
+
+    public boolean saveOrUpdate(
+            RecordDTO recordDTO, int loggedUserId, AuthorizationPoints authorizationPoints) {
+        if (recordDTO.getRecordDatabase() == RecordDatabase.PRIVATE) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        boolean success = false;
+
+        if (recordDTO.isNew()) {
+            recordDTO.setCreatedBy(loggedUserId);
+
+            success = save(recordDTO);
+        } else {
+            recordDTO.setModifiedBy(loggedUserId);
+
+            success = update(recordDTO);
+        }
+
+        return success;
+    }
+
+    public SearchDTO search(
+            SearchQueryDTO searchQuery,
+            RecordType recordType,
+            AuthorizationPoints authorizationPoints) {
+        if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        SearchDTO search = new SearchDTO(recordType);
+
+        PagingDTO paging = _newConfiguredPagingInstance();
+
+        search.setPaging(paging);
+
+        search.setQuery(searchQuery);
+
+        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, recordType));
+
+        search(search);
+
+        paging.endTimer();
+
+        return search;
+    }
+
+    public boolean delete(
+            RecordDTO dto, int loggedUserId, AuthorizationPoints authorizationPoints) {
+        RecordDatabase recordDatabase = dto.getRecordDatabase();
+
+        if (recordDatabase == RecordDatabase.PRIVATE) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        dto.setModifiedBy(loggedUserId);
+
+        boolean success = false;
+
+        if (recordDatabase == RecordDatabase.TRASH) {
+            success = this.rdao.delete(dto);
+        } else {
+            Set<Integer> ids = new HashSet<Integer>();
+
+            ids.add(dto.getId());
+
+            success = this.rdao.moveRecords(ids, loggedUserId, RecordDatabase.TRASH);
+        }
+        return success;
+    }
+
+    private PagingDTO _newConfiguredPagingInstance() {
+        PagingDTO paging = new PagingDTO();
+
+        paging.setRecordsPerPage(
+                Configurations.getPositiveInt(
+                        schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+
+        paging.setRecordLimit(
+                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+
+        paging.setPage(1);
+
+        return paging;
+    }
+
+    public int count(SearchDTO searchDTO, AuthorizationPoints authorizationPoints) {
+        if (searchDTO.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        return count(searchDTO);
+    }
 }

@@ -122,8 +122,6 @@ public class BiblioRecordBO extends RecordBO {
                         StringUtils.isNotBlank(holdingLocation)
                                 ? holdingLocation
                                 : dto.getShelfLocation());
-
-                holding.setAttachments(marcDataReader.getAttachments());
             }
 
             dto.setHoldings(holdingsList);
@@ -146,17 +144,11 @@ public class BiblioRecordBO extends RecordBO {
 
     @Override
     public boolean save(RecordDTO dto) {
-        Record record = dto.getRecord();
-
         Integer id = this.rdao.getNextSerial(RecordType.BIBLIO + "_records_id_seq");
+
         dto.setId(id);
-
-        MarcUtils.setCF001(record, id);
-        MarcUtils.setCF005(record);
-        MarcUtils.setCF008(record);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
+        dto.setDateOfLastTransaction();
+        dto.setFixedLengthDataElements();
 
         if (this.rdao.save(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
@@ -169,11 +161,7 @@ public class BiblioRecordBO extends RecordBO {
 
     @Override
     public boolean update(RecordDTO dto) {
-        Record record = dto.getRecord();
-        MarcUtils.setCF005(record);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
+        dto.setDateOfLastTransaction();
 
         if (this.rdao.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());

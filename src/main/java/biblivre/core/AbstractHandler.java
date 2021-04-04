@@ -121,15 +121,14 @@ public abstract class AbstractHandler {
         this.callback = callback;
     }
 
-    protected void authorize(ExtendedRequest request, String module, String action) {
-        AuthorizationPoints authPoints =
-                (AuthorizationPoints)
-                        request.getSessionAttribute(request.getSchema(), "logged_user_atps");
-        if (authPoints == null) {
-            authPoints = AuthorizationPoints.getNotLoggedInstance(request.getSchema());
+    protected void authorize(
+            String module, String action, String schema, AuthorizationPoints authorizationPoints) {
+        if (authorizationPoints == null) {
+            authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
         }
 
-        AuthorizationBO abo = AuthorizationBO.getInstance(request.getSchema());
-        abo.authorize(authPoints, module, action);
+        AuthorizationBO abo = AuthorizationBO.getInstance(schema);
+
+        abo.authorize(authorizationPoints, module, action);
     }
 }

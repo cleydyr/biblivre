@@ -28,7 +28,6 @@ import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -60,7 +59,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
             pst.setInt(1, dto.getId());
-            pst.setString(2, dto.getIso2709());
+            pst.setString(2, dto.getUTF8Iso2709());
             pst.setString(3, dto.getMaterialType().toString());
             pst.setString(4, dto.getRecordDatabase().toString());
             pst.setInt(5, dto.getCreatedBy());
@@ -89,7 +88,7 @@ public abstract class RecordDAO extends AbstractDAO {
             for (AbstractDTO abstractDto : dtoList) {
                 RecordDTO dto = (RecordDTO) abstractDto;
                 pst.setInt(1, dto.getId());
-                pst.setString(2, dto.getIso2709());
+                pst.setString(2, dto.getUTF8Iso2709());
                 pst.setString(3, dto.getMaterialType().toString());
                 pst.setString(4, dto.getRecordDatabase().toString());
                 pst.setInt(5, dto.getCreatedBy());
@@ -127,7 +126,7 @@ public abstract class RecordDAO extends AbstractDAO {
             sql.append("WHERE id = ?;");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
-            pst.setString(1, dto.getIso2709());
+            pst.setString(1, dto.getUTF8Iso2709());
             pst.setString(2, dto.getMaterialType().toString());
             pst.setInt(3, dto.getModifiedBy());
             pst.setInt(4, dto.getId());
@@ -715,9 +714,8 @@ public abstract class RecordDAO extends AbstractDAO {
             throws SQLException, UnsupportedEncodingException {
         RecordDTO dto = this.createRecord();
 
-        dto.setId(rs.getInt("id"));
-        dto.setIso2709(new String(rs.getBytes("iso2709"), "UTF-8"));
-
+        dto.setSchema(getSchema());
+        dto.setIso2709(rs.getBytes("iso2709"));
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));
         dto.setModified(rs.getTimestamp("modified"));
@@ -734,10 +732,8 @@ public abstract class RecordDAO extends AbstractDAO {
 
         RecordDTO rdto = this.createRecord();
 
-        rdto.setId(rs.getInt("record_id"));
-        rdto.setIso2709(new String(rs.getBytes("iso2709"), "UTF-8"));
-        rdto.setRecord(MarcUtils.iso2709ToRecord(rdto.getIso2709()));
-        rdto.setJson(MarcUtils.recordToJson(rdto.getRecord()));
+        rdto.setSchema(getSchema());
+        rdto.setIso2709(rs.getBytes("iso2709"));
 
         dto.setPhrase(rs.getString("phrase"));
         dto.setRecord(rdto);

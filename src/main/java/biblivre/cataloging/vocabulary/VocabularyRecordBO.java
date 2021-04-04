@@ -72,17 +72,11 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean save(RecordDTO dto) {
-        Record record = dto.getRecord();
-
         Integer id = this.rdao.getNextSerial(RecordType.VOCABULARY + "_records_id_seq");
+
         dto.setId(id);
-
-        MarcUtils.setCF001(record, id);
-        MarcUtils.setCF005(record);
-        MarcUtils.setCF008(record);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
+        dto.setDateOfLastTransaction();
+        dto.setFixedLengthDataElements();
 
         if (this.rdao.save(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
@@ -95,11 +89,7 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean update(RecordDTO dto) {
-        Record record = dto.getRecord();
-        MarcUtils.setCF005(record);
-
-        String iso2709 = MarcUtils.recordToIso2709(record);
-        dto.setIso2709(iso2709);
+        dto.setDateOfLastTransaction();
 
         if (this.rdao.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
@@ -112,28 +102,16 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean delete(RecordDTO dto) {
-
-        //		HoldingBO holdingBo = new HoldingBO();
-        //		LendingBO lendingBo = new LendingBO();
-        //		List<HoldingDTO> holdings = holdingBo.list(record);
-        //		for (HoldingDTO holding : holdings) {
-        //			if (lendingBo.isLent(holding) || lendingBo.wasLent(holding)) {
-        //				throw new RuntimeException("MESSAGE_DELETE_BIBLIO_ERROR");
-        //			}
-        //		}
-
         if (this.rdao.delete(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.deleteIndexes(RecordType.VOCABULARY, dto);
-            //			HoldingBO hbo = new HoldingBO();
-            //			hbo.delete(dto);
         }
+
         return true;
     }
 
     @Override
     public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        // TODO Auto-generated method stub
         return false;
     }
 
