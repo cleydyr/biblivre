@@ -19,11 +19,14 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
+import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.marc.MaterialType;
+import java.util.Collections;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -106,6 +109,11 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
 
     public void setShelfLocation(String shelfLocation) {
         this.shelfLocation = shelfLocation;
+    }
+
+    @Override
+    public List<BriefTabFieldDTO> getFields() {
+        return Collections.emptyList();
     }
 
     @Override

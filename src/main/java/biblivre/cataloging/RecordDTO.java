@@ -20,7 +20,6 @@
 package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcConstants;
@@ -189,7 +188,7 @@ public class RecordDTO extends AbstractDTO {
             MarcDataReader marcDataReader = new MarcDataReader(record);
 
             List<BriefTabFieldFormatDTO> formats =
-                    Fields.getBriefFormats(schema, RecordType.BIBLIO);
+                    Fields.getBriefFormats(schema, materialType.getRecordType());
 
             this.fields = marcDataReader.getFieldList(formats);
         }
