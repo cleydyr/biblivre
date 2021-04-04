@@ -31,6 +31,7 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.PagingDTO;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
@@ -39,6 +40,7 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -78,22 +80,20 @@ public abstract class CatalogingHandler extends AbstractHandler {
     public SearchDTO searchHelper(
             ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
         String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
 
-        SearchQueryDTO searchQuery;
+        SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
 
-        try {
-            searchQuery = new SearchQueryDTO(searchParameters);
+        if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
+            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
 
-            if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
-                this.authorize(request, "cataloging.bibliographic", "private_database_access");
-            }
-        } catch (ValidationException e) {
-            handler.setMessage(ActionResult.WARNING, e.getMessage());
-            return null;
+            this.authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    schema,
+                    authorizationPoints);
         }
-
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
         SearchDTO search = new SearchDTO(this.recordType);
 
@@ -109,7 +109,10 @@ public abstract class CatalogingHandler extends AbstractHandler {
         paging.setPage(1);
 
         search.setQuery(searchQuery);
+
         search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, this.recordType));
+
+        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
         bo.search(search);
 
@@ -164,7 +167,13 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
+            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+
+            this.authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    schema,
+                    authorizationPoints);
         }
 
         search.getPaging().setPage(page);
@@ -189,107 +198,99 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         Integer id = request.getInteger("id", null);
 
+        AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+
         if (id == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
             return;
         }
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+        RecordBO recordBO = RecordBO.getInstance(schema, recordType);
 
-        RecordDTO dto = bo.get(id);
+        RecordDTO dto = recordBO.open(schema, id, authorizationPoints);
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
             return;
         }
 
-        if (dto.getRecordDatabase() == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
-
-        bo.populateDetails(
-                dto,
-                RecordBO.MARC_INFO
-                        | RecordBO.HOLDING_INFO
-                        | RecordBO.HOLDING_LIST
-                        | RecordBO.LENDING_INFO);
-        try {
-            this.json.put("data", dto.toJSONObject());
-        } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        }
+        this.json.put("data", dto.toJSONObject());
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
+
         String schema = request.getSchema();
 
-        Integer id = request.getInteger("id");
-        RecordConvertion from = request.getEnum(RecordConvertion.class, "from");
-        MaterialType materialType =
-                request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
-        RecordDatabase database = request.getEnum(RecordDatabase.class, "database");
-        String data = request.getString("data");
+        RecordBO recordBO = RecordBO.getInstance(schema, this.recordType);
 
-        if (database == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
-        }
+        Integer id = request.getInteger("id");
 
         boolean isNew = id == 0;
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+        RecordDTO recordDTO = isNew ? this.createRecordDTO(null) : recordBO.get(id);
 
-        RecordDTO dto = isNew ? this.createRecordDTO(request) : bo.get(id);
-
-        if (dto == null) {
+        if (recordDTO == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+
             return;
         }
 
-        dto.setMaterialType(materialType);
+        hydrateRecord(recordDTO, request);
 
-        dto.setRecordDatabase(database);
+        AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
 
-        MarcReader marcReader = null;
+        int loggedUserId = request.getLoggedUserId();
 
-        try {
-            marcReader = from.getReader(data, materialType, RecordStatus.fromNewStatus(isNew));
-        } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return;
-        }
+        boolean success = recordBO.saveOrUpdate(recordDTO, loggedUserId, authorizationPoints);
 
-        dto.setRecord(marcReader.next());
-
-        this.beforeSave(request, dto);
-
-        boolean success = false;
-
-        if (id == 0) {
-            dto.setCreatedBy(request.getLoggedUserId());
-            success = bo.save(dto);
-        } else {
-            dto.setModifiedBy(request.getLoggedUserId());
-            success = bo.update(dto);
-        }
-
-        if (success) {
-            if (id == 0) {
-                this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
-            } else {
-                this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.update");
-            }
-
-            try {
-                this.json.put("data", dto.toJSONObject());
-            } catch (Exception e) {
-                this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            }
-        } else {
+        if (!success) {
             this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
+
+            return;
+        }
+
+        _setSuccessMessage(isNew);
+
+        this.json.put("data", recordDTO.toJSONObject());
+    }
+
+    private void hydrateRecord(RecordDTO recordDTO, ExtendedRequest request) {
+        MaterialType materialType =
+                request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
+
+        recordDTO.setMaterialType(materialType);
+
+        RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
+
+        recordDTO.setRecordDatabase(recordDatabase);
+
+        RecordConvertion recordConvertion = request.getEnum(RecordConvertion.class, "from");
+
+        String recordData = request.getString("data");
+
+        boolean isNew = request.getInteger("id") == 0;
+
+        RecordStatus recordStatus = RecordStatus.fromNewStatus(isNew);
+
+        MarcReader marcReader = recordConvertion.getReader(recordData, materialType, recordStatus);
+
+        recordDTO.setRecord(marcReader.next());
+
+        this.hydrateRecordImpl(recordDTO, request.getParameterMap());
+    }
+
+    private void _setSuccessMessage(boolean isNew) {
+        if (isNew) {
+            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
+        } else {
+            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.update");
         }
     }
 
-    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {}
+    protected void hydrateRecordImpl(RecordDTO dto, Map<String, String> parameters) {}
+    ;
 
     protected void afterConvert(ExtendedRequest request, RecordDTO dto) {}
 
@@ -318,7 +319,13 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (recordDatabase == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
+            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+
+            this.authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    schema,
+                    authorizationPoints);
         }
 
         dto.setModifiedBy(request.getLoggedUserId());
@@ -388,7 +395,13 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (recordDatabase == RecordDatabase.PRIVATE) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
+            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+
+            this.authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    schema,
+                    authorizationPoints);
         }
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
@@ -425,7 +438,13 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (recordDatabase == RecordDatabase.PRIVATE || bo.listContainsPrivateRecord(ids)) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
+            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+
+            this.authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    request.getSchema(),
+                    authorizationPoints);
         }
 
         if (bo.moveRecords(ids, request.getLoggedUserId(), recordDatabase)) {
@@ -463,7 +482,13 @@ public abstract class CatalogingHandler extends AbstractHandler {
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
         if (bo.listContainsPrivateRecord(ids)) {
-            this.authorize(request, "cataloging.bibliographic", "private_database_access");
+            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+
+            this.authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    schema,
+                    authorizationPoints);
         }
 
         final DiskFile exportFile = bo.createExportFile(ids);
@@ -471,6 +496,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
         this.setFile(exportFile);
 
         this.setCallback(exportFile::delete);
+    }
+
+    private AuthorizationPoints _getAuthorizationPoints(ExtendedRequest request) {
+        return (AuthorizationPoints)
+                request.getSessionAttribute(request.getSchema(), "logged_user_atps");
     }
 
     public void autocomplete(ExtendedRequest request, ExtendedResponse response) {

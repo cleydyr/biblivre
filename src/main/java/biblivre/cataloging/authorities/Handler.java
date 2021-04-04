@@ -28,6 +28,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.marc.MaterialType;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
@@ -48,8 +49,10 @@ public class Handler extends CatalogingHandler {
     }
 
     @Override
-    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
-        ((AuthorityRecordDTO) dto).setAuthorType(request.getString("author_type"));
+    protected void hydrateRecordImpl(RecordDTO dto, Map<String, String> parameters) {
+        AuthorityRecordDTO authorityRecordDTO = (AuthorityRecordDTO) dto;
+
+        authorityRecordDTO.setAuthorType(parameters.get("author_type"));
     }
 
     @Override

@@ -29,10 +29,10 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
@@ -162,18 +162,16 @@ public class Handler extends CatalogingHandler {
     }
 
     @Override
-    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
-        if (dto == null || !(dto instanceof HoldingDTO)) {
-            throw new ValidationException("cataloging.error.invalid_data");
-        }
+    public void hydrateRecordImpl(RecordDTO dto, Map<String, String> parameters) {
+        int recordId = Integer.parseInt(parameters.get("record_id"));
 
-        int recordId = request.getInteger("record_id");
         HoldingAvailability availability =
-                request.getEnum(
-                        HoldingAvailability.class, "availability", HoldingAvailability.AVAILABLE);
+                HoldingAvailability.fromString(parameters.get("availability"));
 
         HoldingDTO hdto = (HoldingDTO) dto;
+
         hdto.setRecordId(recordId);
+
         hdto.setAvailability(availability);
     }
 

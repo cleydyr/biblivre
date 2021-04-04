@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.core.auth.AuthorizationBO;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.utils.Constants;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
@@ -67,5 +69,16 @@ public abstract class AbstractBO {
 
     public boolean isGlobalSchema() {
         return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
+    }
+
+    public static void authorize(
+            String module, String action, String schema, AuthorizationPoints authorizationPoints) {
+        if (authorizationPoints == null) {
+            authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
+        }
+
+        AuthorizationBO abo = AuthorizationBO.getInstance(schema);
+
+        abo.authorize(authorizationPoints, module, action);
     }
 }

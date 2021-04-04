@@ -32,6 +32,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
@@ -344,4 +345,53 @@ public abstract class RecordBO extends AbstractBO {
     public abstract void populateDetails(RecordDTO record, int mask);
 
     public abstract boolean isDeleatable(HoldingDTO holding) throws ValidationException;
+
+    public RecordDTO open(String schema, int id, AuthorizationPoints authorizationPoints) {
+        RecordDTO dto = get(id);
+
+        if (dto == null) {
+            return null;
+        }
+
+        if (dto.getRecordDatabase() == RecordDatabase.PRIVATE) {
+            authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    schema,
+                    authorizationPoints);
+        }
+
+        populateDetails(
+                dto,
+                RecordBO.MARC_INFO
+                        | RecordBO.HOLDING_INFO
+                        | RecordBO.HOLDING_LIST
+                        | RecordBO.LENDING_INFO);
+        return dto;
+    }
+
+    public boolean saveOrUpdate(
+            RecordDTO recordDTO, int loggedUserId, AuthorizationPoints authorizationPoints) {
+        if (recordDTO.getRecordDatabase() == RecordDatabase.PRIVATE) {
+            RecordBO.authorize(
+                    "cataloging.bibliographic",
+                    "private_database_access",
+                    schema,
+                    authorizationPoints);
+        }
+
+        boolean success = false;
+
+        if (recordDTO.isNew()) {
+            recordDTO.setCreatedBy(loggedUserId);
+
+            success = save(recordDTO);
+        } else {
+            recordDTO.setModifiedBy(loggedUserId);
+
+            success = update(recordDTO);
+        }
+
+        return success;
+    }
 }
