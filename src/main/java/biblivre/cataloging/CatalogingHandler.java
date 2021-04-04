@@ -224,9 +224,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         dto.setFields(fields);
 
-        // Attachments
-        dto.setAttachments(marcDataReader.getAttachments());
-
         try {
             this.json.put("data", dto.toJSONObject());
         } catch (Exception e) {
@@ -407,7 +404,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
                     List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
 
                     dto.setFields(fields);
-                    dto.setAttachments(marcDataReader.getAttachments());
+
                     break;
             }
         } catch (Exception e) {

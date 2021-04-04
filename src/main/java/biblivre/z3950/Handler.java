@@ -172,9 +172,6 @@ public class Handler extends AbstractHandler {
 
         recordDTO.setFields(fields);
 
-        // Attachments
-        recordDTO.setAttachments(marcDataReader.getAttachments());
-
         try {
             this.json.put("data", recordDTO.toJSONObject());
         } catch (Exception e) {

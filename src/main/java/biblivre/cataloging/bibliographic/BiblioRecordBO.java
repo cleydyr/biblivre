@@ -122,8 +122,6 @@ public class BiblioRecordBO extends RecordBO {
                         StringUtils.isNotBlank(holdingLocation)
                                 ? holdingLocation
                                 : dto.getShelfLocation());
-
-                holding.setAttachments(marcDataReader.getAttachments());
             }
 
             dto.setHoldings(holdingsList);
