@@ -19,9 +19,6 @@
  ******************************************************************************/
 package biblivre.z3950;
 
-import biblivre.cataloging.BriefTabFieldDTO;
-import biblivre.cataloging.BriefTabFieldFormatDTO;
-import biblivre.cataloging.Fields;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
@@ -34,7 +31,6 @@ import biblivre.core.PagingDTO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
-import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
 import java.util.LinkedList;
 import java.util.List;
@@ -160,17 +156,10 @@ public class Handler extends AbstractHandler {
 
         RecordDTO recordDTO = dto.getRecord();
         Record record = recordDTO.getRecord();
-        MarcDataReader marcDataReader = new MarcDataReader(record);
 
         bo.populateDetails(recordDTO, RecordBO.MARC_INFO);
         recordDTO.setId(index);
         recordDTO.setMaterialType(MaterialType.fromRecord(record));
-
-        // Record tab
-        List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, RecordType.BIBLIO);
-        List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
-
-        recordDTO.setFields(fields);
 
         try {
             this.json.put("data", recordDTO.toJSONObject());

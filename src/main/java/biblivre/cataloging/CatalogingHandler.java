@@ -36,8 +36,6 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
-import biblivre.marc.MarcDataReader;
-import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.util.List;
@@ -189,6 +187,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
+
         Integer id = request.getInteger("id", null);
 
         if (id == null) {
@@ -197,6 +196,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+
         RecordDTO dto = bo.get(id);
 
         if (dto == null) {
@@ -208,22 +208,12 @@ public abstract class CatalogingHandler extends AbstractHandler {
             this.authorize(request, "cataloging.bibliographic", "private_database_access");
         }
 
-        Record record = MarcUtils.iso2709ToRecord(dto.getIso2709());
-        MarcDataReader marcDataReader = new MarcDataReader(record);
-
         bo.populateDetails(
                 dto,
                 RecordBO.MARC_INFO
                         | RecordBO.HOLDING_INFO
                         | RecordBO.HOLDING_LIST
                         | RecordBO.LENDING_INFO);
-
-        // Record tab
-        List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, this.recordType);
-        List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
-
-        dto.setFields(fields);
-
         try {
             this.json.put("data", dto.toJSONObject());
         } catch (Exception e) {
@@ -350,13 +340,9 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void convert(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         String data = request.getString("data");
 
         RecordConvertion from = request.getEnum(RecordConvertion.class, "from");
-
-        RecordConvertion to = request.getEnum(RecordConvertion.class, "to");
 
         MaterialType materialType =
                 request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
@@ -378,24 +364,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
             record = marcReader.next();
 
             dto.setRecord(record);
-
-            switch (to) {
-                case MARC:
-                case HOLDING_MARC:
-                    break;
-                case FORM:
-                case HOLDING_FORM:
-                    break;
-                case RECORD:
-                    MarcDataReader marcDataReader = new MarcDataReader(record);
-                    List<BriefTabFieldFormatDTO> formats =
-                            Fields.getBriefFormats(schema, this.recordType);
-                    List<BriefTabFieldDTO> fields = marcDataReader.getFieldList(formats);
-
-                    dto.setFields(fields);
-
-                    break;
-            }
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
             return;

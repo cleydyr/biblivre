@@ -88,6 +88,7 @@ public abstract class RecordBO extends AbstractBO {
 
     public RecordDTO get(int id) {
         Set<Integer> ids = new HashSet<Integer>();
+
         ids.add(id);
 
         return this.map(ids).get(id);

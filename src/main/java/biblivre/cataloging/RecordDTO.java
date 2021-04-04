@@ -20,8 +20,10 @@
 package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
+import biblivre.marc.MarcConstants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
@@ -30,7 +32,10 @@ import java.util.List;
 import org.json.JSONObject;
 import org.marc4j.MarcStreamWriter;
 import org.marc4j.MarcWriter;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
+import org.marc4j.marc.Subfield;
 
 public class RecordDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
@@ -180,6 +185,15 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public List<BriefTabFieldDTO> getFields() {
+        if (this.fields == null) {
+            MarcDataReader marcDataReader = new MarcDataReader(record);
+
+            List<BriefTabFieldFormatDTO> formats =
+                    Fields.getBriefFormats(schema, RecordType.BIBLIO);
+
+            this.fields = marcDataReader.getFieldList(formats);
+        }
+
         return this.fields;
     }
 

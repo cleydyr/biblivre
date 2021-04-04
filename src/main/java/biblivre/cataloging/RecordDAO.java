@@ -714,8 +714,8 @@ public abstract class RecordDAO extends AbstractDAO {
             throws SQLException, UnsupportedEncodingException {
         RecordDTO dto = this.createRecord();
 
+        dto.setSchema(getSchema());
         dto.setIso2709(rs.getBytes("iso2709"));
-
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));
         dto.setModified(rs.getTimestamp("modified"));
@@ -732,6 +732,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
         RecordDTO rdto = this.createRecord();
 
+        rdto.setSchema(getSchema());
         rdto.setIso2709(rs.getBytes("iso2709"));
 
         dto.setPhrase(rs.getString("phrase"));
