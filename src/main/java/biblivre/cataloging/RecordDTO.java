@@ -203,70 +203,75 @@ public class RecordDTO extends AbstractDTO {
 
     public JSONObject getJson() {
         if (this.json == null) {
-            json = new JSONObject();
-
-            json.putOpt("000", record.getLeader().marshal());
-
-            for (ControlField controlfield : record.getControlFields()) {
-                json.putOpt(controlfield.getTag(), controlfield.getData());
-            }
-
-            for (DataField datafield : record.getDataFields()) {
-                JSONObject datafieldJson = new JSONObject();
-
-                datafieldJson.putOpt("ind1", datafield.getIndicator1());
-                datafieldJson.putOpt("ind2", datafield.getIndicator2());
-
-                for (Subfield subfield : datafield.getSubfields()) {
-                    datafieldJson.append(String.valueOf(subfield.getCode()), subfield.getData());
-                }
-
-                json.append(datafield.getTag(), datafieldJson);
-            }
+            _initJSON();
         }
 
         return this.json;
     }
 
+    private void _initJSON() {
+        json = new JSONObject();
+
+        json.putOpt("000", record.getLeader().marshal());
+
+        for (ControlField controlfield : record.getControlFields()) {
+            json.putOpt(controlfield.getTag(), controlfield.getData());
+        }
+
+        for (DataField datafield : record.getDataFields()) {
+            JSONObject datafieldJson = new JSONObject();
+
+            datafieldJson.putOpt("ind1", datafield.getIndicator1());
+            datafieldJson.putOpt("ind2", datafield.getIndicator2());
+
+            for (Subfield subfield : datafield.getSubfields()) {
+                datafieldJson.append(String.valueOf(subfield.getCode()), subfield.getData());
+            }
+
+            json.append(datafield.getTag(), datafieldJson);
+        }
+    }
+
     public String getHumanReadableMarc() {
         if (this.humanReadableMarc == null) {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("000 ");
-            sb.append(record.getLeader().marshal());
-            sb.append('\n');
-
-            List<ControlField> controlFields = record.getControlFields();
-            for (ControlField field : controlFields) {
-                sb.append(field.toString());
-                sb.append('\n');
-            }
-
-            List<DataField> dataFields = record.getDataFields();
-            for (DataField field : dataFields) {
-                sb.append(field.getTag());
-                sb.append(' ');
-
-                char ind1 = field.getIndicator1();
-                char ind2 = field.getIndicator2();
-
-                sb.append(ind1 == ' ' ? '_' : ind1);
-                sb.append(ind2 == ' ' ? '_' : ind2);
-
-                List<Subfield> subfieldList = field.getSubfields();
-                for (Subfield subfield : subfieldList) {
-                    sb.append(MarcConstants.DEFAULT_SPLITTER);
-                    sb.append(subfield.getCode());
-                    sb.append(subfield.getData());
-                }
-
-                sb.append('\n');
-            }
-
-            this.humanReadableMarc = sb.toString();
+            _initHumanReadableMarc();
         }
 
         return this.humanReadableMarc;
+    }
+
+    private void _initHumanReadableMarc() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("000 ");
+        sb.append(record.getLeader().marshal());
+        sb.append('\n');
+
+        for (ControlField field : record.getControlFields()) {
+            sb.append(field.toString());
+            sb.append('\n');
+        }
+
+        for (DataField field : record.getDataFields()) {
+            sb.append(field.getTag());
+            sb.append(' ');
+
+            char ind1 = field.getIndicator1();
+            char ind2 = field.getIndicator2();
+
+            sb.append(ind1 == ' ' ? '_' : ind1);
+            sb.append(ind2 == ' ' ? '_' : ind2);
+
+            for (Subfield subfield : field.getSubfields()) {
+                sb.append(MarcConstants.DEFAULT_SPLITTER);
+                sb.append(subfield.getCode());
+                sb.append(subfield.getData());
+            }
+
+            sb.append('\n');
+        }
+
+        this.humanReadableMarc = sb.toString();
     }
 
     public Record getRecord() {
