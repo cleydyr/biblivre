@@ -24,8 +24,11 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import org.json.JSONObject;
+import org.marc4j.MarcStreamWriter;
+import org.marc4j.MarcWriter;
 import org.marc4j.marc.Record;
 
 public class RecordDTO extends AbstractDTO {
@@ -90,7 +93,23 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public byte[] getIso2709() {
+        if (this.iso2709 == null) {
+            _initIso2709();
+        }
+
         return this.iso2709;
+    }
+
+    private void _initIso2709() {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        MarcWriter writer = new MarcStreamWriter(os, Constants.DEFAULT_CHARSET_NAME);
+
+        writer.write(record);
+
+        writer.close();
+
+        this.iso2709 = os.toByteArray();
     }
 
     public void setIso2709(byte[] iso2709) {
