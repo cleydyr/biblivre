@@ -86,7 +86,7 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public String getUTF8Iso2709() {
-        return new String(this.iso2709, Constants.DEFAULT_CHARSET);
+        return new String(getIso2709(), Constants.DEFAULT_CHARSET);
     }
 
     public byte[] getIso2709() {
