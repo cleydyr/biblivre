@@ -22,7 +22,6 @@ package biblivre.marc;
 import biblivre.core.utils.Constants;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,7 +49,6 @@ import org.slf4j.LoggerFactory;
 public class MarcUtils {
 
     private static Logger logger = LoggerFactory.getLogger(MarcUtils.class);
-    private static Format CF001_FORMAT = new DecimalFormat("0000000");
     private static Format CF008_FORMAT = new SimpleDateFormat("yyMMdd");
     private static Format COMPACT_ISO = new SimpleDateFormat("yyyyMMddHHmmss.SSS");
 
@@ -375,14 +373,6 @@ public class MarcUtils {
 
         subfield.setData(accessionNumber);
         return holding;
-    }
-
-    public static Record setCF001(Record record, Integer controlNumber) {
-        MarcFactory factory = MarcFactory.newInstance();
-        ControlField field = factory.newControlField("001");
-        field.setData(MarcUtils.CF001_FORMAT.format(controlNumber));
-        record.addVariableField(field);
-        return record;
     }
 
     public static Record setCF004(Record holding, Integer recordId) {

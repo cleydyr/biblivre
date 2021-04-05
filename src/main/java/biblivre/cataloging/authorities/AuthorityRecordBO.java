@@ -26,7 +26,6 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.Map;
 import java.util.Set;
@@ -46,34 +45,14 @@ public class AuthorityRecordBO extends RecordBO {
     }
 
     @Override
-    public void populateDetails(RecordDTO rdto, int mask) {
-        if (rdto == null) {
-            return;
-        }
-
-        AuthorityRecordDTO dto = (AuthorityRecordDTO) rdto;
-
-        if ((mask & RecordBO.MARC_INFO) != 0) {
-            Record record = rdto.getRecord();
-
-            if (record == null && rdto.getIso2709() != null) {
-                record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
-            }
-
-            if (record != null) {
-                MarcDataReader marcDataReader = new MarcDataReader(record);
-
-                dto.setAuthorName(marcDataReader.getAuthorName(true));
-                dto.setAuthorOtherName(marcDataReader.getAuthorOtherName(true));
-            }
-        }
-    }
+    public void populateDetails(RecordDTO rdto, int mask) {}
 
     @Override
     public boolean save(RecordDTO dto) {
         Record record = dto.getRecord();
 
         Integer id = this.rdao.getNextSerial(RecordType.AUTHORITIES + "_records_id_seq");
+
         dto.setId(id);
 
         MarcUtils.setCF001(record, id);

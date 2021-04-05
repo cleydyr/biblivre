@@ -27,6 +27,8 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -41,6 +43,8 @@ import org.marc4j.marc.VariableField;
 
 public class RecordDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
+
+    private static String CF001_FORMAT = "0000000";
 
     private Record record;
     private int id;
@@ -92,9 +96,19 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public void setId(int id) {
+        nullifyDerivedFields();
+
         this.id = id;
 
-        this.record.getControlNumberField().setData(String.valueOf(id));
+        MarcFactory factory = MarcFactory.newInstance();
+
+        ControlField field = factory.newControlField("001");
+
+        Format formatter = new DecimalFormat(CF001_FORMAT);
+
+        field.setData(formatter.format(id));
+
+        record.addVariableField(field);
     }
 
     public String getUTF8Iso2709() {
@@ -122,18 +136,17 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public void setIso2709(byte[] iso2709) {
-        _nullifyDerivedFields();
+        nullifyDerivedFields();
 
         this.record = MarcUtils.iso2709ToRecord(iso2709);
 
         this.iso2709 = iso2709;
     }
 
-    private void _nullifyDerivedFields() {
+    protected void nullifyDerivedFields() {
         this.isNew = null;
         this.id = -1;
         this.iso2709 = null;
-        this.materialType = null;
         this.json = null;
         this.attachments = null;
         this.fields = null;
@@ -151,7 +164,7 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public void addAttachment(String uri, String name) {
-        _nullifyDerivedFields();
+        nullifyDerivedFields();
 
         MarcFactory factory = MarcFactory.newInstance();
 
@@ -187,7 +200,7 @@ public class RecordDTO extends AbstractDTO {
 
         _removeEletronicResourceField(uri, name);
 
-        _nullifyDerivedFields();
+        nullifyDerivedFields();
 
         return attachmentToRemove;
     }
@@ -334,6 +347,8 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public void setRecord(Record record) {
+        nullifyDerivedFields();
+
         this.record = record;
     }
 
@@ -374,7 +389,7 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public void setNew(boolean isNew) {
-        _nullifyDerivedFields();
+        nullifyDerivedFields();
 
         this.isNew = isNew;
 
