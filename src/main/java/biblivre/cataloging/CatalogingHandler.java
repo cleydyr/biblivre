@@ -83,7 +83,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
 
-        AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
         String schema = request.getSchema();
 
@@ -133,7 +133,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
-            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+            AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
             this.authorize(
                     "cataloging.bibliographic",
@@ -164,7 +164,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         Integer id = request.getInteger("id", null);
 
-        AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
         if (id == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
@@ -205,7 +205,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         hydrateRecord(recordDTO, request);
 
-        AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
         int loggedUserId = request.getLoggedUserId();
 
@@ -287,7 +287,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (recordDatabase == RecordDatabase.PRIVATE) {
-            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+            AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
             this.authorize(
                     "cataloging.bibliographic",
@@ -363,7 +363,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (recordDatabase == RecordDatabase.PRIVATE) {
-            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+            AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
             this.authorize(
                     "cataloging.bibliographic",
@@ -406,7 +406,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         if (recordDatabase == RecordDatabase.PRIVATE || bo.listContainsPrivateRecord(ids)) {
-            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+            AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
             this.authorize(
                     "cataloging.bibliographic",
@@ -450,7 +450,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
         if (bo.listContainsPrivateRecord(ids)) {
-            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+            AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
             this.authorize(
                     "cataloging.bibliographic",
@@ -464,11 +464,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
         this.setFile(exportFile);
 
         this.setCallback(exportFile::delete);
-    }
-
-    private AuthorizationPoints _getAuthorizationPoints(ExtendedRequest request) {
-        return (AuthorizationPoints)
-                request.getSessionAttribute(request.getSchema(), "logged_user_atps");
     }
 
     public void autocomplete(ExtendedRequest request, ExtendedResponse response) {
