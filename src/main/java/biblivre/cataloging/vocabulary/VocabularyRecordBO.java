@@ -105,28 +105,16 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean delete(RecordDTO dto) {
-
-        //		HoldingBO holdingBo = new HoldingBO();
-        //		LendingBO lendingBo = new LendingBO();
-        //		List<HoldingDTO> holdings = holdingBo.list(record);
-        //		for (HoldingDTO holding : holdings) {
-        //			if (lendingBo.isLent(holding) || lendingBo.wasLent(holding)) {
-        //				throw new RuntimeException("MESSAGE_DELETE_BIBLIO_ERROR");
-        //			}
-        //		}
-
         if (this.rdao.delete(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.deleteIndexes(RecordType.VOCABULARY, dto);
-            //			HoldingBO hbo = new HoldingBO();
-            //			hbo.delete(dto);
         }
+
         return true;
     }
 
     @Override
     public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        // TODO Auto-generated method stub
         return false;
     }
 
