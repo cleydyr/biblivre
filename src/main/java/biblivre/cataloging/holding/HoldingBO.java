@@ -182,9 +182,9 @@ public class HoldingBO extends RecordBO {
 
         Integer id = this.dao.getNextSerial("biblio_holdings_id_seq");
 
-        MarcUtils.setCF001(record, id);
         MarcUtils.setCF004(record, hdto.getRecordId());
-        MarcUtils.setCF005(record);
+
+        hdto.setDateOfLastTransaction();
 
         // Availability and RecordId are already populated at this point.
         hdto.setId(id);
@@ -226,7 +226,8 @@ public class HoldingBO extends RecordBO {
         }
 
         MarcUtils.setCF004(record, hdto.getRecordId());
-        MarcUtils.setCF005(record);
+
+        dto.setDateOfLastTransaction();
 
         // Id, Availability and RecordId are already populated at this point.
         hdto.setAccessionNumber(accessionNumber);

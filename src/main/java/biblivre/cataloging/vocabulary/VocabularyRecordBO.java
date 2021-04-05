@@ -75,10 +75,10 @@ public class VocabularyRecordBO extends RecordBO {
         Record record = dto.getRecord();
 
         Integer id = this.rdao.getNextSerial(RecordType.VOCABULARY + "_records_id_seq");
-        dto.setId(id);
 
-        MarcUtils.setCF001(record, id);
-        MarcUtils.setCF005(record);
+        dto.setId(id);
+        dto.setDateOfLastTransaction();
+
         MarcUtils.setCF008(record);
 
         if (this.rdao.save(dto)) {
@@ -92,8 +92,7 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean update(RecordDTO dto) {
-        Record record = dto.getRecord();
-        MarcUtils.setCF005(record);
+        dto.setDateOfLastTransaction();
 
         if (this.rdao.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());

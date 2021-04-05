@@ -399,4 +399,8 @@ public class RecordDTO extends AbstractDTO {
     public char getRecordStatusCode() {
         return isNew() ? 'n' : 'c';
     }
+
+    public void setDateOfLastTransaction() {
+        MarcUtils.setCF005(record);
+    }
 }
