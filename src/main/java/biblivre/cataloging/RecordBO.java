@@ -215,6 +215,15 @@ public abstract class RecordBO extends AbstractBO {
         return this.paginateSearch(search);
     }
 
+    public boolean paginateSearch(SearchDTO search, AuthorizationPoints authorizationPoints) {
+        if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
+            this.authorize(
+                    "cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        return paginateSearch(search);
+    }
+
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
             HoldingBO hbo = (HoldingBO) RecordBO.getInstance(this.getSchema(), RecordType.HOLDING);

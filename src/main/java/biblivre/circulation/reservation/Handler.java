@@ -22,6 +22,7 @@ package biblivre.circulation.reservation;
 import biblivre.administration.indexing.IndexingGroupDTO;
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.WebSearchHelper;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
@@ -83,11 +84,19 @@ public class Handler extends AbstractHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
+        SearchDTO search = WebSearchHelper.paginate(request, RecordType.BIBLIO);
+
+        if (search == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+
+            return;
+        }
+
         String schema = request.getSchema();
 
-        biblivre.cataloging.bibliographic.Handler catalogingHandler =
-                new biblivre.cataloging.bibliographic.Handler();
-        SearchDTO search = catalogingHandler.paginateHelper(request, response, this);
+        RecordBO recordBO = RecordBO.getInstance(schema, RecordType.BIBLIO);
+
+        recordBO.paginateSearch(search, request.getAuthorizationPoints());
 
         if (CollectionUtils.isEmpty(search)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -97,8 +106,7 @@ public class Handler extends AbstractHandler {
         ReservationBO rbo = ReservationBO.getInstance(schema);
         rbo.populateReservationInfoByBiblio(search);
 
-        List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), RecordType.BIBLIO);
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, RecordType.BIBLIO);
 
         try {
             this.json.put("search", search.toJSONObject());

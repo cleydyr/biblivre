@@ -88,7 +88,25 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = this.paginateHelper(request, response, this);
+        SearchDTO search = WebSearchHelper.paginate(request, recordType);
+
+        if (search == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+
+            return;
+        }
+
+        RecordBO recordBO = RecordBO.getInstance(request.getSchema(), recordType);
+
+        recordBO.paginateSearch(search, request.getAuthorizationPoints());
+
+        if (search.size() == 0) {
+            recordBO.search(search);
+        }
+
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         List<IndexingGroupDTO> groups =
                 IndexingGroups.getGroups(request.getSchema(), this.recordType);
@@ -106,52 +124,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
             }
         } catch (JSONException e) {
         }
-    }
-
-    public SearchDTO paginateHelper(
-            ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String schema = request.getSchema();
-        Integer searchId = request.getInteger("search_id", null);
-        Integer indexingGroup = request.getInteger("indexing_group", 0);
-        Integer sort =
-                request.getInteger(
-                        "sort", IndexingGroups.getDefaultSortableGroupId(schema, this.recordType));
-        Integer page = request.getInteger("page", 1);
-
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        SearchDTO search = bo.getSearch(searchId);
-
-        if (search == null) {
-            handler.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
-            return null;
-        }
-
-        if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
-            AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
-
-            this.authorize(
-                    "cataloging.bibliographic",
-                    "private_database_access",
-                    schema,
-                    authorizationPoints);
-        }
-
-        search.getPaging().setPage(page);
-        search.setSort(sort);
-        search.setIndexingGroup(indexingGroup);
-
-        bo.paginateSearch(search);
-
-        if (search.size() == 0) {
-            bo.search(search);
-        }
-
-        if (search.size() == 0) {
-            handler.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
-        }
-
-        return search;
     }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
