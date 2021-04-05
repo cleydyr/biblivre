@@ -32,7 +32,6 @@ import biblivre.core.enums.ActionResult;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
@@ -162,11 +161,11 @@ public class Handler extends CatalogingHandler {
     }
 
     @Override
-    public void hydrateRecordImpl(RecordDTO dto, Map<String, String> parameters) {
-        int recordId = Integer.parseInt(parameters.get("record_id"));
+    public void hydrateRecordImpl(RecordDTO dto, ExtendedRequest request) {
+        int recordId = request.getInteger("record_id");
 
         HoldingAvailability availability =
-                HoldingAvailability.fromString(parameters.get("availability"));
+                request.getEnum(HoldingAvailability.class, "availability");
 
         HoldingDTO hdto = (HoldingDTO) dto;
 

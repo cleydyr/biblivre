@@ -40,7 +40,6 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -278,7 +277,9 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         recordDTO.setRecord(marcReader.next());
 
-        this.hydrateRecordImpl(recordDTO, request.getParameterMap());
+        recordDTO.setSchema(request.getSchema());
+
+        this.hydrateRecordImpl(recordDTO, request);
     }
 
     private void _setSuccessMessage(boolean isNew) {
@@ -289,7 +290,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
     }
 
-    protected void hydrateRecordImpl(RecordDTO dto, Map<String, String> parameters) {}
+    protected void hydrateRecordImpl(RecordDTO dto, ExtendedRequest request) {}
     ;
 
     protected void afterConvert(ExtendedRequest request, RecordDTO dto) {}
