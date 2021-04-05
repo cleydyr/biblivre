@@ -57,7 +57,17 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = this.searchHelper(request, response);
+        String searchParameters = request.getString("search_parameters");
+
+        SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
+
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
+
+        String schema = request.getSchema();
+
+        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
+
+        SearchDTO search = bo.search(searchQuery, this.recordType, authorizationPoints);
 
         if (search.size() == 0) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -75,21 +85,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
         for (IndexingGroupDTO group : groups) {
             this.json.accumulate("indexing_groups", group.toJSONObject());
         }
-    }
-
-    public SearchDTO searchHelper(ExtendedRequest request, ExtendedResponse response) {
-
-        String searchParameters = request.getString("search_parameters");
-
-        SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
-
-        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
-
-        String schema = request.getSchema();
-
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        return bo.search(searchQuery, recordType, authorizationPoints);
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
