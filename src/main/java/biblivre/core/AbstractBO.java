@@ -71,8 +71,7 @@ public abstract class AbstractBO {
         return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
     }
 
-    public static void authorize(
-            String module, String action, String schema, AuthorizationPoints authorizationPoints) {
+    public void authorize(String module, String action, AuthorizationPoints authorizationPoints) {
         if (authorizationPoints == null) {
             authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
         }

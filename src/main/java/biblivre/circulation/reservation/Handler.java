@@ -44,7 +44,12 @@ public class Handler extends AbstractHandler {
 
         biblivre.cataloging.bibliographic.Handler catalogingHandler =
                 new biblivre.cataloging.bibliographic.Handler();
-        SearchDTO search = catalogingHandler.searchHelper(request, response, this);
+
+        SearchDTO search = catalogingHandler.searchHelper(request, response);
+
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         if (CollectionUtils.isEmpty(search)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -190,7 +195,12 @@ public class Handler extends AbstractHandler {
 
         biblivre.cataloging.bibliographic.Handler catalogingHandler =
                 new biblivre.cataloging.bibliographic.Handler();
-        SearchDTO search = catalogingHandler.searchHelper(request, response, this);
+
+        SearchDTO search = catalogingHandler.searchHelper(request, response);
+
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         if (CollectionUtils.isEmpty(search)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");

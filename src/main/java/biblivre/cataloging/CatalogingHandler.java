@@ -30,13 +30,10 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.PagingDTO;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
-import biblivre.core.utils.Constants;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.util.List;
@@ -60,7 +57,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = this.searchHelper(request, response, this);
+        SearchDTO search = this.searchHelper(request, response);
+
+        if (search.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+        }
 
         if (CollectionUtils.isEmpty(search)) {
             return;
@@ -76,55 +77,21 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
     }
 
-    public SearchDTO searchHelper(
-            ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String schema = request.getSchema();
+    public SearchDTO searchHelper(ExtendedRequest request, ExtendedResponse response) {
 
         String searchParameters = request.getString("search_parameters");
 
         SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
 
-        if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
-            AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
+        AuthorizationPoints authorizationPoints = _getAuthorizationPoints(request);
 
-            this.authorize(
-                    "cataloging.bibliographic",
-                    "private_database_access",
-                    schema,
-                    authorizationPoints);
-        }
-
-        SearchDTO search = new SearchDTO(this.recordType);
-
-        PagingDTO paging = new PagingDTO();
-
-        search.setPaging(paging);
-
-        paging.setRecordsPerPage(
-                Configurations.getPositiveInt(
-                        schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
-        paging.setRecordLimit(
-                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
-        paging.setPage(1);
-
-        search.setQuery(searchQuery);
-
-        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, this.recordType));
+        String schema = request.getSchema();
 
         RecordBO bo = RecordBO.getInstance(schema, this.recordType);
 
-        bo.search(search);
-
-        paging.endTimer();
-
-        if (search.size() == 0) {
-            handler.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
-        }
-
-        return search;
+        return bo.search(searchQuery, recordType, authorizationPoints);
     }
 
-    // http://localhost:8080/Biblivre5/default?controller=json&module=cataloging.bibliographic&action=paginate&search_id=248&page=20&indexing_group=0
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
         SearchDTO search = this.paginateHelper(request, response, this);
 
@@ -207,7 +174,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         RecordBO recordBO = RecordBO.getInstance(schema, recordType);
 
-        RecordDTO dto = recordBO.open(schema, id, authorizationPoints);
+        RecordDTO dto = recordBO.open(id, authorizationPoints);
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");

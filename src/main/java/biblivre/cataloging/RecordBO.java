@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.authorities.AuthorityRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -27,6 +28,7 @@ import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
+import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
@@ -346,7 +348,7 @@ public abstract class RecordBO extends AbstractBO {
 
     public abstract boolean isDeleatable(HoldingDTO holding) throws ValidationException;
 
-    public RecordDTO open(String schema, int id, AuthorizationPoints authorizationPoints) {
+    public RecordDTO open(int id, AuthorizationPoints authorizationPoints) {
         RecordDTO dto = get(id);
 
         if (dto == null) {
@@ -354,11 +356,7 @@ public abstract class RecordBO extends AbstractBO {
         }
 
         if (dto.getRecordDatabase() == RecordDatabase.PRIVATE) {
-            authorize(
-                    "cataloging.bibliographic",
-                    "private_database_access",
-                    schema,
-                    authorizationPoints);
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
         populateDetails(
@@ -373,11 +371,7 @@ public abstract class RecordBO extends AbstractBO {
     public boolean saveOrUpdate(
             RecordDTO recordDTO, int loggedUserId, AuthorizationPoints authorizationPoints) {
         if (recordDTO.getRecordDatabase() == RecordDatabase.PRIVATE) {
-            RecordBO.authorize(
-                    "cataloging.bibliographic",
-                    "private_database_access",
-                    schema,
-                    authorizationPoints);
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
         boolean success = false;
@@ -393,5 +387,44 @@ public abstract class RecordBO extends AbstractBO {
         }
 
         return success;
+    }
+
+    public SearchDTO search(
+            SearchQueryDTO searchQuery,
+            RecordType recordType,
+            AuthorizationPoints authorizationPoints) {
+        if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
+            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
+        }
+
+        SearchDTO search = new SearchDTO(recordType);
+
+        PagingDTO paging = _newConfiguredPagingInstance();
+
+        search.setPaging(paging);
+
+        search.setQuery(searchQuery);
+
+        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, recordType));
+
+        search(search);
+
+        paging.endTimer();
+
+        return search;
+    }
+
+    private PagingDTO _newConfiguredPagingInstance() {
+        PagingDTO paging = new PagingDTO();
+
+        paging.setRecordsPerPage(
+                Configurations.getPositiveInt(
+                        schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+
+        paging.setRecordLimit(
+                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+
+        paging.setPage(1);
+        return paging;
     }
 }
