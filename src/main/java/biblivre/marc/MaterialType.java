@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.marc;
 
-import biblivre.core.utils.BiblivreEnum;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.core.utils.BiblivreEnum;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

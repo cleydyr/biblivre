@@ -122,5 +122,5 @@ public class Constants {
     public static final String DEFAULT_DATABASE_USERNAME = "biblivre";
 
     public static final char RECORD_SEPARATOR = 0x1e;
-	public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
+    public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
 }
