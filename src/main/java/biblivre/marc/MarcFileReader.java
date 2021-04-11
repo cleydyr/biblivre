@@ -59,7 +59,7 @@ public class MarcFileReader implements MarcReader {
                 continue;
             }
 
-            if (MarcFileReader.LEADER_PATTERN.matcher(line).find()) {
+            if (LEADER_PATTERN.matcher(line).find()) {
                 this.marc = new StringBuilder(line + "\n");
                 this.validStart = true;
                 return true;
@@ -81,7 +81,7 @@ public class MarcFileReader implements MarcReader {
                 continue;
             }
 
-            if (MarcFileReader.LEADER_PATTERN.matcher(line).find()) {
+            if (LEADER_PATTERN.matcher(line).find()) {
                 if (this.marc == null) {
                     this.marc = new StringBuilder(line + "\n");
                 } else {

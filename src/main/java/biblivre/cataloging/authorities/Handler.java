@@ -47,16 +47,6 @@ public class Handler extends CatalogingHandler {
         return dto;
     }
 
-    @Override
-    protected void beforeSave(ExtendedRequest request, RecordDTO dto) {
-        ((AuthorityRecordDTO) dto).setAuthorType(request.getString("author_type"));
-    }
-
-    @Override
-    protected void afterConvert(ExtendedRequest request, RecordDTO dto) {
-        ((AuthorityRecordDTO) dto).setAuthorType(request.getString("author_type"));
-    }
-
     public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");

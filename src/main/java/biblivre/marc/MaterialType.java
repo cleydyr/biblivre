@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.marc;
 
+import biblivre.cataloging.enums.RecordType;
 import biblivre.core.utils.BiblivreEnum;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -43,9 +44,9 @@ public enum MaterialType implements BiblivreEnum {
     MUSIC('j', "m ", true),
     NONMUSICAL_SOUND('i', "m ", true),
     OBJECT_3D('r', "m ", true),
-    AUTHORITIES('z', "  ", false),
-    VOCABULARY('w', "  ", false),
-    HOLDINGS('u', "  ", false);
+    AUTHORITIES('z', "  ", false, RecordType.AUTHORITIES),
+    VOCABULARY('w', "  ", false, RecordType.VOCABULARY),
+    HOLDINGS('u', "  ", false, RecordType.HOLDING);
 
     private static final List<MaterialType> bibliographicMaterials;
     private static final List<MaterialType> searchableMaterials;
@@ -78,11 +79,18 @@ public enum MaterialType implements BiblivreEnum {
     private char typeOfRecord;
     private String implDefined1;
     private boolean searchable;
+    private RecordType recordType;
 
     private MaterialType(char typeOfRecord, String implDef1, boolean searchable) {
+        this(typeOfRecord, implDef1, searchable, RecordType.BIBLIO);
+    }
+
+    MaterialType(
+            char typeOfRecord, String implDefined1, boolean searchable, RecordType recordType) {
         this.typeOfRecord = typeOfRecord;
-        this.implDefined1 = implDef1;
+        this.implDefined1 = implDefined1;
         this.searchable = searchable;
+        this.recordType = recordType;
     }
 
     public char getTypeOfRecord() {
@@ -157,5 +165,9 @@ public enum MaterialType implements BiblivreEnum {
 
     public String getString() {
         return this.toString();
+    }
+
+    public RecordType getRecordType() {
+        return recordType;
     }
 }

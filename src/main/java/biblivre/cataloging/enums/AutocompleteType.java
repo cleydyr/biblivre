@@ -26,6 +26,7 @@ import biblivre.cataloging.RecordBO;
 import biblivre.core.DTOCollection;
 import biblivre.core.utils.BiblivreEnum;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
@@ -63,6 +64,22 @@ public enum AutocompleteType implements BiblivreEnum {
         return this.toString();
     }
 
+    public List<String> getSuggestions(GetSuggestionsParameters parameterObject) {
+        String schema = parameterObject.getSchema();
+
+        RecordType recordType = parameterObject.getRecordType();
+
+        RecordBO bo = RecordBO.getInstance(schema, recordType);
+
+        String datafield = parameterObject.getDatafield();
+
+        String subfield = parameterObject.getSubfield();
+
+        String query = parameterObject.getQuery();
+
+        return bo.phraseAutocomplete(datafield, subfield, query);
+    }
+
     public DTOCollection<AutocompleteDTO> getAutocompletion(String schema, String query) {
         RecordType recordType = RecordType.fromString(this.toString());
 
@@ -88,5 +105,92 @@ public enum AutocompleteType implements BiblivreEnum {
         collection.addAll(set);
 
         return collection;
+    }
+
+    public static class GetSuggestionsParameters {
+        private String schema;
+        private String query;
+        private String datafield;
+        private String subfield;
+        private RecordType recordType;
+
+        private GetSuggestionsParameters(
+                String schema,
+                String query,
+                String datafield,
+                String subfield,
+                RecordType recordType) {
+            this.schema = schema;
+            this.query = query;
+            this.datafield = datafield;
+            this.subfield = subfield;
+            this.recordType = recordType;
+        }
+
+        public String getSchema() {
+            return schema;
+        }
+
+        public String getQuery() {
+            return query;
+        }
+
+        public String getDatafield() {
+            return datafield;
+        }
+
+        public String getSubfield() {
+            return subfield;
+        }
+
+        public RecordType getRecordType() {
+            return recordType;
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public static class Builder {
+            private String schema;
+            private String query;
+            private String datafield;
+            private String subfield;
+            private RecordType recordType;
+
+            public Builder withSchema(String schema) {
+                this.schema = schema;
+
+                return this;
+            }
+
+            public Builder withQuery(String query) {
+                this.query = query;
+
+                return this;
+            }
+
+            public Builder withDatafield(String datafield) {
+                this.datafield = datafield;
+
+                return this;
+            }
+
+            public Builder withSubfield(String subfield) {
+                this.subfield = subfield;
+
+                return this;
+            }
+
+            public Builder withRecordType(RecordType recordType) {
+                this.recordType = recordType;
+
+                return this;
+            }
+
+            public GetSuggestionsParameters build() {
+                return new GetSuggestionsParameters(schema, query, datafield, subfield, recordType);
+            }
+        }
     }
 }

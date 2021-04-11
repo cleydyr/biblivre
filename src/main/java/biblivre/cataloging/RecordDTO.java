@@ -20,28 +20,55 @@
 package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDTO;
+import biblivre.core.utils.Constants;
+import biblivre.marc.MarcConstants;
+import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
+import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import org.json.JSONException;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import org.marc4j.MarcStreamWriter;
+import org.marc4j.MarcWriter;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
+import org.marc4j.marc.Subfield;
+import org.marc4j.marc.VariableField;
 
 public class RecordDTO extends AbstractDTO {
+    private static final String _CF008_FORMAT = "yyMMdd";
+
+    private static final String DATE_OF_LAST_TRANSACTION_TAG = "005";
+
+    private static final int INVALID_ID = -1;
+
+    private static final String _COMPACT_ISO_FORMAT = "yyyyMMddHHmmss.SSS";
+
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
-    private String iso2709;
+    private static String CF001_FORMAT = "0000000";
+
     private Record record;
+    private int id;
+    private byte[] iso2709;
     private MaterialType materialType;
     private RecordDatabase recordDatabase;
+    private String schema;
+    private Boolean isNew;
 
     private transient List<RecordAttachmentDTO> attachments;
     private transient List<BriefTabFieldDTO> fields;
     private transient JSONObject json;
-    private transient String marc;
-    // TODO
-    // private transient Integer populatedMask;
+    private transient String humanReadableMarc;
 
     public MaterialType getMaterialType() {
         if (this.materialType == null) {
@@ -71,32 +98,187 @@ public class RecordDTO extends AbstractDTO {
         this.recordDatabase = recordDatabase;
     }
 
-    public Integer getId() {
+    public int getId() {
+        if (this.id == INVALID_ID) {
+            this.id = Integer.parseInt(this.record.getControlNumber());
+        }
+
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
+        nullifyDerivedFields();
+
         this.id = id;
+
+        MarcFactory factory = MarcFactory.newInstance();
+
+        ControlField field = factory.newControlField("001");
+
+        Format formatter = new DecimalFormat(CF001_FORMAT);
+
+        field.setData(formatter.format(id));
+
+        record.addVariableField(field);
+
+        nullifyDerivedFields();
     }
 
-    public String getIso2709() {
+    public String getUTF8Iso2709() {
+        return new String(getIso2709(), Constants.DEFAULT_CHARSET);
+    }
+
+    public byte[] getIso2709() {
+        if (this.iso2709 == null) {
+            _initIso2709();
+        }
+
         return this.iso2709;
     }
 
-    public void setIso2709(String iso2709) {
+    private void _initIso2709() {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        MarcWriter writer = new MarcStreamWriter(os, Constants.DEFAULT_CHARSET_NAME);
+
+        writer.write(record);
+
+        writer.close();
+
+        this.iso2709 = os.toByteArray();
+    }
+
+    public void setIso2709(byte[] iso2709) {
+        nullifyDerivedFields();
+
+        this.record = MarcUtils.iso2709ToRecord(iso2709);
+
         this.iso2709 = iso2709;
     }
 
+    protected void nullifyDerivedFields() {
+        this.isNew = null;
+        this.id = INVALID_ID;
+        this.iso2709 = null;
+        this.json = null;
+        this.attachments = null;
+        this.fields = null;
+        this.humanReadableMarc = null;
+    }
+
     public List<RecordAttachmentDTO> getAttachments() {
+        if (this.attachments == null) {
+            MarcDataReader marcDataReader = new MarcDataReader(this.record);
+
+            this.attachments = marcDataReader.getAttachments();
+        }
+
         return this.attachments;
     }
 
-    public void setAttachments(List<RecordAttachmentDTO> attachments) {
-        this.attachments = attachments;
+    public void addAttachment(String uri, String name) {
+        nullifyDerivedFields();
+
+        MarcFactory factory = MarcFactory.newInstance();
+
+        DataField field = factory.newDataField(MarcConstants.ELECTRONIC_LOCATION, ' ', ' ');
+
+        Subfield pathSubfield = factory.newSubfield('d', uri.replaceAll("[^\\/]*$", ""));
+
+        field.addSubfield(pathSubfield);
+
+        Subfield eletronicNameSubfield = factory.newSubfield('f', uri.replaceAll(".*\\/", ""));
+
+        field.addSubfield(eletronicNameSubfield);
+
+        Subfield uriSubfield = factory.newSubfield('u', uri);
+
+        field.addSubfield(uriSubfield);
+
+        Subfield linkTextSubfield = factory.newSubfield('y', name);
+
+        field.addSubfield(linkTextSubfield);
+
+        this.record.addVariableField(field);
+    }
+
+    public RecordAttachmentDTO removeAttachment(String uri, String name) {
+        int index = _getAttachmentIndex(uri, name);
+
+        if (index == this.attachments.size()) {
+            return null;
+        }
+
+        RecordAttachmentDTO attachmentToRemove = this.attachments.remove(index);
+
+        _removeEletronicResourceField(uri, name);
+
+        nullifyDerivedFields();
+
+        return attachmentToRemove;
+    }
+
+    private void _removeEletronicResourceField(String uri, String name) {
+        for (VariableField variablefield :
+                this.record.getVariableFields(MarcConstants.ELECTRONIC_LOCATION)) {
+            DataField datafield = (DataField) variablefield;
+
+            for (Subfield subfield : datafield.getSubfields('y')) {
+                String itLinkText = subfield.getData();
+
+                if (StringUtils.isBlank(itLinkText)) {
+                    itLinkText = uri;
+                }
+
+                boolean found = false;
+
+                for (Subfield subfield2 : datafield.getSubfields('u')) {
+                    String itURI = subfield2.getData();
+
+                    if (itURI.equals(uri) && itLinkText.equals(name)) {
+                        record.removeVariableField(datafield);
+
+                        found = true;
+
+                        break;
+                    }
+                }
+
+                if (found) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private int _getAttachmentIndex(String uri, String name) {
+        int index = 0;
+
+        for (RecordAttachmentDTO attachment : getAttachments()) {
+            if (attachment.getUri().equals(uri) && attachment.getName().equals(name)) {
+                break;
+            }
+
+            index++;
+        }
+
+        return index;
     }
 
     public List<BriefTabFieldDTO> getFields() {
+        if (this.fields == null) {
+            MarcDataReader marcDataReader = new MarcDataReader(record);
+
+            List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, getRecordType());
+
+            this.fields = marcDataReader.getFieldList(formats);
+        }
+
         return this.fields;
+    }
+
+    private RecordType getRecordType() {
+        return getMaterialType().getRecordType();
     }
 
     public void setFields(List<BriefTabFieldDTO> fields) {
@@ -104,19 +286,76 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public JSONObject getJson() {
+        if (this.json == null) {
+            _initJSON();
+        }
+
         return this.json;
     }
 
-    public void setJson(JSONObject json) {
-        this.json = json;
+    private void _initJSON() {
+        json = new JSONObject();
+
+        json.putOpt("000", record.getLeader().marshal());
+
+        for (ControlField controlfield : record.getControlFields()) {
+            json.putOpt(controlfield.getTag(), controlfield.getData());
+        }
+
+        for (DataField datafield : record.getDataFields()) {
+            JSONObject datafieldJson = new JSONObject();
+
+            datafieldJson.putOpt("ind1", datafield.getIndicator1());
+            datafieldJson.putOpt("ind2", datafield.getIndicator2());
+
+            for (Subfield subfield : datafield.getSubfields()) {
+                datafieldJson.append(String.valueOf(subfield.getCode()), subfield.getData());
+            }
+
+            json.append(datafield.getTag(), datafieldJson);
+        }
     }
 
-    public String getMarc() {
-        return this.marc;
+    public String getHumanReadableMarc() {
+        if (this.humanReadableMarc == null) {
+            _initHumanReadableMarc();
+        }
+
+        return this.humanReadableMarc;
     }
 
-    public void setMarc(String marc) {
-        this.marc = marc;
+    private void _initHumanReadableMarc() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("000 ");
+        sb.append(record.getLeader().marshal());
+        sb.append('\n');
+
+        for (ControlField field : record.getControlFields()) {
+            sb.append(field.toString());
+            sb.append('\n');
+        }
+
+        for (DataField field : record.getDataFields()) {
+            sb.append(field.getTag());
+            sb.append(' ');
+
+            char ind1 = field.getIndicator1();
+            char ind2 = field.getIndicator2();
+
+            sb.append(ind1 == ' ' ? '_' : ind1);
+            sb.append(ind2 == ' ' ? '_' : ind2);
+
+            for (Subfield subfield : field.getSubfields()) {
+                sb.append(MarcConstants.DEFAULT_SPLITTER);
+                sb.append(subfield.getCode());
+                sb.append(subfield.getData());
+            }
+
+            sb.append('\n');
+        }
+
+        this.humanReadableMarc = sb.toString();
     }
 
     public Record getRecord() {
@@ -124,6 +363,8 @@ public class RecordDTO extends AbstractDTO {
     }
 
     public void setRecord(Record record) {
+        nullifyDerivedFields();
+
         this.record = record;
     }
 
@@ -131,22 +372,94 @@ public class RecordDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            this.populateExtraData(json);
+        this.populateExtraData(json);
 
-            json.putOpt("id", this.getId());
-            json.putOpt("database", this.getRecordDatabase());
+        json.putOpt("id", this.getId());
+        json.putOpt("database", this.getRecordDatabase());
 
-            json.putOpt("created", this.getCreated());
-            json.putOpt("modified", this.getModified());
+        json.putOpt("created", this.getCreated());
+        json.putOpt("modified", this.getModified());
 
-            json.putOpt("attachments", this.toJSONArray(this.getAttachments()));
-            json.putOpt("fields", this.toJSONArray(this.getFields()));
-            json.putOpt("json", this.getJson());
-            json.putOpt("marc", this.getMarc());
-        } catch (JSONException e) {
-        }
+        json.putOpt("attachments", this.toJSONArray(this.getAttachments()));
+        json.putOpt("fields", this.toJSONArray(this.getFields()));
+        json.putOpt("json", this.getJson());
+        json.putOpt("marc", this.getHumanReadableMarc());
 
         return json;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public boolean isNew() {
+        if (isNew == null) {
+            this.isNew = this.record.getLeader().getRecordStatus() == 'n';
+        }
+
+        return isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        nullifyDerivedFields();
+
+        this.isNew = isNew;
+
+        this.record.getLeader().setRecordStatus(getRecordStatusCode());
+    }
+
+    public char getRecordStatusCode() {
+        return isNew() ? 'n' : 'c';
+    }
+
+    public void setDateOfLastTransaction() {
+        MarcFactory factory = MarcFactory.newInstance();
+
+        ControlField field = (ControlField) record.getVariableField(DATE_OF_LAST_TRANSACTION_TAG);
+
+        if (field == null) {
+            field = factory.newControlField(DATE_OF_LAST_TRANSACTION_TAG);
+
+            record.addVariableField(field);
+        }
+
+        Format compactISO = new SimpleDateFormat(_COMPACT_ISO_FORMAT);
+
+        field.setData(compactISO.format(new Date()));
+
+        nullifyDerivedFields();
+    }
+
+    public void setFixedLengthDataElements() {
+        Record record = getRecord();
+
+        MarcFactory factory = MarcFactory.newInstance();
+
+        ControlField field = (ControlField) record.getVariableField("008");
+
+        if (field == null) {
+            // Following the specs, this field should be constructed only
+            // if it doesn't already exist.  Otherwise, keep what has
+            // come with the freemarc string.
+            field = factory.newControlField("008");
+
+            StringBuilder data = new StringBuilder();
+            // From 01 to 06
+
+            Format cf008Format = new SimpleDateFormat(_CF008_FORMAT);
+
+            data.append(cf008Format.format(new Date()));
+            // From 07 to 40
+            data.append("s||||     bl|||||||||||||||||por|u");
+
+            field.setData(data.toString());
+
+            record.addVariableField(field);
+        }
+        nullifyDerivedFields();
     }
 }
