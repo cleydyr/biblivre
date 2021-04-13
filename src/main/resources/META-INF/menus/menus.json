@@ -18,7 +18,8 @@
                 "circulation_lending",
                 "circulation_reservation",
                 "circulation_access",
-                "circulation_user_cards"
+                "circulation_user_cards",
+                "circulation_user_reservation"
             ]
         },
         {
