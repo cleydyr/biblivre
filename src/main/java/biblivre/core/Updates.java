@@ -139,30 +139,6 @@ public class Updates {
         return uid;
     }
 
-    public static String checkUpdates() {
-        String uid = Updates.getUID();
-        String version = Updates.getVersion();
-
-        PostMethod updatePost = new PostMethod(Constants.UPDATE_URL);
-        updatePost.addParameter("uid", TextUtils.biblivreEncrypt(uid));
-        updatePost.addParameter("version", TextUtils.biblivreEncrypt(version));
-
-        HttpClient client = new HttpClient();
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-        try {
-            int status = client.executeMethod(updatePost);
-
-            if (status == HttpStatus.SC_OK) {
-                return updatePost.getResponseBodyAsString();
-            }
-            updatePost.releaseConnection();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "";
-    }
-
     public static void fixPostgreSQL81() {
         UpdatesDAO dao = UpdatesDAO.getInstance("public");
 
