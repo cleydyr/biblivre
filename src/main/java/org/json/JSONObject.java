@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -1541,6 +1541,6 @@ public class JSONObject {
     }
 
     public Iterator<String> sortedKeys() {
-        return new TreeSet<>(this.map.keySet()).iterator();
+        return new HashSet<>(this.map.keySet()).iterator();
     }
 }

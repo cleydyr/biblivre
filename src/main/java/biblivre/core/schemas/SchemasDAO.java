@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import org.postgresql.core.BaseConnection;
 
 public class SchemasDAO extends AbstractDAO {
@@ -37,7 +37,7 @@ public class SchemasDAO extends AbstractDAO {
     }
 
     public Set<SchemaDTO> list() {
-        Set<SchemaDTO> set = new TreeSet<>();
+        Set<SchemaDTO> set = new HashSet<>();
 
         Connection con = null;
         try {

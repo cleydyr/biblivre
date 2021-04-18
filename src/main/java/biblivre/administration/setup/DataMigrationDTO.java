@@ -22,7 +22,7 @@ package biblivre.administration.setup;
 import biblivre.core.AbstractDTO;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 public class DataMigrationDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class DataMigrationDTO extends AbstractDTO {
 
     public DataMigrationDTO() {
         this.phases = new HashMap<>();
-        this.completedPhases = new TreeSet<>();
+        this.completedPhases = new HashSet<>();
     }
 
     public String getDataSourceName() {

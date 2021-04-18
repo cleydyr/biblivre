@@ -42,7 +42,7 @@ import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -352,7 +352,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         if (recordDatabase == RecordDatabase.TRASH) {
             success = bo.delete(dto);
         } else {
-            Set<Integer> ids = new TreeSet<>();
+            Set<Integer> ids = new HashSet<>();
             ids.add(dto.getId());
             success = bo.moveRecords(ids, request.getLoggedUserId(), RecordDatabase.TRASH);
         }
@@ -473,7 +473,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        Set<Integer> ids = new TreeSet<>();
+        Set<Integer> ids = new HashSet<>();
         for (int i = 0; i < idList.length; i++) {
             ids.add(Integer.valueOf(idList[i]));
         }
@@ -509,7 +509,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         String idList = (String) request.getSessionAttribute(schema, exportId);
 
         String[] idArray = idList.split(",");
-        Set<Integer> ids = new TreeSet<>();
+        Set<Integer> ids = new HashSet<>();
         for (int i = 0; i < idArray.length; i++) {
             ids.add(Integer.valueOf(idArray[i]));
         }
