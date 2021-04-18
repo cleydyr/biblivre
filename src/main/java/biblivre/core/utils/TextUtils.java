@@ -112,14 +112,15 @@ public class TextUtils {
         String[] terms = TextUtils.prepareWords(phrase);
 
         Arrays.sort(
-                terms, (o1, o2) -> {
-                        if (o1.length() < o2.length()) {
-                            return 1;
-                        } else if (o1.length() > o2.length()) {
-                            return -1;
-                        }
-                        return o1.compareTo(o2);
-                    });
+                terms,
+                (o1, o2) -> {
+                    if (o1.length() < o2.length()) {
+                        return 1;
+                    } else if (o1.length() > o2.length()) {
+                        return -1;
+                    }
+                    return o1.compareTo(o2);
+                });
 
         List<String> newList = new ArrayList<>();
         for (int i = 0; i < terms.length; i++) {
