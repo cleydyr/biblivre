@@ -37,7 +37,7 @@ public class UserDTO extends AbstractDTO {
     private Integer loginId;
     private Boolean userCardPrinted;
 
-    private HashMap<String, String> fields;
+    private Map<String, String> fields;
 
     private transient Integer currentLendings;
     private transient String usertypeName;

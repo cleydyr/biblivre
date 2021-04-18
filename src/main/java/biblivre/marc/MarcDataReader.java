@@ -37,7 +37,7 @@ import org.marc4j.marc.Subfield;
 
 public class MarcDataReader {
     private Record record;
-    private HashMap<String, List<DataField>> cache;
+    private Map<String, List<DataField>> cache;
 
     public MarcDataReader(Record record) {
         this.record = record;
@@ -362,7 +362,7 @@ public class MarcDataReader {
         return sf != null ? sf.getData() : "";
     }
 
-    private HashMap<String, List<DataField>> readDataFieldMap() {
+    private Map<String, List<DataField>> readDataFieldMap() {
         HashMap<String, List<DataField>> hash = new HashMap<String, List<DataField>>();
         Record record = this.getRecord();
 
