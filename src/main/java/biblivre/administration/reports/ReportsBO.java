@@ -53,7 +53,7 @@ public class ReportsBO extends AbstractBO {
     public CustomCountDto getCustomCountData(ReportsDTO reportsDto) {
         CustomCountDto dto = new CustomCountDto();
 
-        Map<String, Integer> subfieldCounter = new HashMap<String, Integer>();
+        Map<String, Integer> subfieldCounter = new HashMap<>();
 
         int page = 0;
         int limit = 100;

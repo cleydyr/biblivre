@@ -123,7 +123,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        Map<Integer, RecordDTO> map = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> map = new HashMap<>();
 
         Connection con = null;
         try {
@@ -734,7 +734,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public Map<Integer, Integer> countSearchResults(SearchDTO search) {
-        Map<Integer, Integer> count = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> count = new HashMap<>();
         if (search == null) {
             return count;
         }

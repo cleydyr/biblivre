@@ -473,7 +473,7 @@ public class Translations extends StaticBO {
 
     public static boolean addSingleTranslation(
             String schema, String language, String key, String text, int loggedUser) {
-        HashMap<String, String> translation = new HashMap<String, String>();
+        HashMap<String, String> translation = new HashMap<>();
         translation.put(key, text);
 
         HashMap<String, HashMap<String, String>> translations =

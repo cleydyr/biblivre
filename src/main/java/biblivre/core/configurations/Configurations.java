@@ -289,7 +289,7 @@ public class Configurations extends StaticBO {
         ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
 
         List<ConfigurationsDTO> configs = dao.list();
-        map = new HashMap<String, ConfigurationsDTO>(configs.size());
+        map = new HashMap<>(configs.size());
 
         for (ConfigurationsDTO config : configs) {
             map.put(config.getKey(), config);

@@ -72,7 +72,7 @@ public class AuthorizationPoints implements Serializable {
         this.logged = logged;
 
         if (this.permissions == null) {
-            this.permissions = new HashMap<String, Boolean>();
+            this.permissions = new HashMap<>();
         }
 
         this.points = new HashMap<Pair<String, String>, Boolean>();

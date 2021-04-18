@@ -63,7 +63,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DataMigrationDAO extends AbstractDAO {
 
     private String userSchema;
-    private static final Map<String, String> userFieldsMap = new HashMap<String, String>();
+    private static final Map<String, String> userFieldsMap = new HashMap<>();
 
     static {
         userFieldsMap.put("email", "email");

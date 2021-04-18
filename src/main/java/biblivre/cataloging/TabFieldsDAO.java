@@ -195,7 +195,7 @@ public class TabFieldsDAO extends AbstractDAO {
 
     public List<FormTabDatafieldDTO> listFields(RecordType recordType) {
         List<FormTabDatafieldDTO> list = new ArrayList<>();
-        HashMap<String, FormTabDatafieldDTO> hash = new HashMap<String, FormTabDatafieldDTO>();
+        HashMap<String, FormTabDatafieldDTO> hash = new HashMap<>();
 
         Connection con = null;
         try {

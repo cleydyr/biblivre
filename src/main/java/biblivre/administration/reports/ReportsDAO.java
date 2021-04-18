@@ -582,7 +582,7 @@ public class ReportsDAO extends AbstractDAO {
 
     public AllUsersReportDto getAllUsersReportData() {
         AllUsersReportDto dto = new AllUsersReportDto();
-        dto.setTypesMap(new HashMap<String, Integer>());
+        dto.setTypesMap(new HashMap<>());
         dto.setData(new HashMap<String, List<String>>());
 
         Connection con = null;

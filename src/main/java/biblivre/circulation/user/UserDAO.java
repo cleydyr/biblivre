@@ -48,7 +48,7 @@ public class UserDAO extends AbstractDAO {
     }
 
     public Map<Integer, UserDTO> map(Set<Integer> ids) {
-        Map<Integer, UserDTO> map = new HashMap<Integer, UserDTO>();
+        Map<Integer, UserDTO> map = new HashMap<>();
 
         Connection con = null;
         try {

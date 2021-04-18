@@ -43,7 +43,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
     private Date modified;
     private int modifiedBy;
 
-    private transient Map<String, IFJson> _extraData = new HashMap<String, IFJson>();
+    private transient Map<String, IFJson> _extraData = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     @Override

@@ -269,12 +269,12 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        Map<Integer, RecordDTO> recordsMap = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> recordsMap = new HashMap<>();
         if (!records.isEmpty()) {
             recordsMap = bbo.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
         }
 
-        Map<Integer, UserDTO> usersMap = new HashMap<Integer, UserDTO>();
+        Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
             usersMap = ubo.map(users);
         }
@@ -352,12 +352,12 @@ public class LendingBO extends AbstractBO {
         HoldingBO holdingBo = HoldingBO.getInstance(schema);
         BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
 
-        Map<Integer, UserDTO> users = new HashMap<Integer, UserDTO>();
+        Map<Integer, UserDTO> users = new HashMap<>();
         if (!userIds.isEmpty()) {
             users = userBo.map(userIds);
         }
 
-        Map<Integer, RecordDTO> holdings = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> holdings = new HashMap<>();
         if (!holdingIds.isEmpty()) {
             holdings = holdingBo.map(holdingIds);
         }
@@ -366,7 +366,7 @@ public class LendingBO extends AbstractBO {
             recordIds.add(((HoldingDTO) holding).getRecordId());
         }
 
-        Map<Integer, RecordDTO> records = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> records = new HashMap<>();
         if (!recordIds.isEmpty()) {
             records = biblioBo.map(recordIds, RecordBO.MARC_INFO);
         }

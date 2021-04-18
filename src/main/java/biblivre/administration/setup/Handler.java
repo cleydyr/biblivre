@@ -214,7 +214,7 @@ public class Handler extends AbstractHandler {
     }
 
     private Map<String, String> breakString(String string) {
-        Map<String, String> ret = new HashMap<String, String>();
+        Map<String, String> ret = new HashMap<>();
 
         if (StringUtils.isBlank(string)) {
             return ret;
@@ -325,7 +325,7 @@ public class Handler extends AbstractHandler {
 
             State.writeLog(backupScope.toString() + " => " + restoreScope.toString());
 
-            Map<String, String> restoreSchemas = new HashMap<String, String>();
+            Map<String, String> restoreSchemas = new HashMap<>();
 
             if (restoreScope == BackupScope.SINGLE_SCHEMA) {
                 // Se o backup possui schema global e multi bibliotecas não está habilitado,

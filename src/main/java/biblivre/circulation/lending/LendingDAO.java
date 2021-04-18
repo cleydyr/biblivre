@@ -89,7 +89,7 @@ public class LendingDAO extends AbstractDAO {
     }
 
     public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
-        Map<Integer, LendingDTO> map = new LinkedHashMap<Integer, LendingDTO>();
+        Map<Integer, LendingDTO> map = new LinkedHashMap<>();
 
         Connection con = null;
         try {

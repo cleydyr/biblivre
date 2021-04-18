@@ -223,7 +223,7 @@ public class ReservationBO extends AbstractBO {
             }
         }
 
-        Map<Integer, UserDTO> usersMap = new HashMap<Integer, UserDTO>();
+        Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
             usersMap = ubo.map(users);
         }
