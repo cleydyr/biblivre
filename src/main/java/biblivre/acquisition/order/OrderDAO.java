@@ -178,7 +178,7 @@ public class OrderDAO extends AbstractDAO {
     }
 
     public ArrayList<OrderDTO> listBuyOrders(String status, int offset, int limit) {
-        ArrayList<OrderDTO> requestList = new ArrayList<OrderDTO>();
+        ArrayList<OrderDTO> requestList = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();
@@ -280,7 +280,7 @@ public class OrderDAO extends AbstractDAO {
     }
 
     public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
-        DTOCollection<OrderDTO> list = new DTOCollection<OrderDTO>();
+        DTOCollection<OrderDTO> list = new DTOCollection<>();
         Connection con = null;
         try {
             con = this.getConnection();

@@ -369,7 +369,7 @@ public class Handler extends AbstractHandler {
             }
 
             // Validando se schemas de origem existem no backup e se esquemas de destino são válidos
-            Set<String> uniqueCheck = new TreeSet<String>();
+            Set<String> uniqueCheck = new TreeSet<>();
             if (restoreSchemas.size() == 1 && restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
                 throw new ValidationException(
                         "administration.maintenance.backup.error.no_schema_selected");
@@ -454,7 +454,7 @@ public class Handler extends AbstractHandler {
         String origin = request.getString("origin", "biblivre3");
 
         String[] groups = request.getParameterValues("groups[]");
-        List<DataMigrationPhaseGroup> phaseGroups = new ArrayList<DataMigrationPhaseGroup>();
+        List<DataMigrationPhaseGroup> phaseGroups = new ArrayList<>();
 
         if (groups != null) {
             for (String group : groups) {
@@ -467,7 +467,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        List<DataMigrationPhase> selectedPhases = new ArrayList<DataMigrationPhase>();
+        List<DataMigrationPhase> selectedPhases = new ArrayList<>();
         for (DataMigrationPhaseGroup group : phaseGroups) {
             selectedPhases.addAll(group.getPhases());
         }

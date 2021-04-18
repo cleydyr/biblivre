@@ -49,7 +49,7 @@ public class Schemas extends StaticBO {
     protected static Logger logger = LoggerFactory.getLogger(Schemas.class);
 
     private static Set<SchemaDTO> schemas;
-    private static final List<String> schemaBlacklist = new ArrayList<String>();
+    private static final List<String> schemaBlacklist = new ArrayList<>();
     private static final String SCHEMA_VALIDATION_REGEX = "([a-zA-Z0-9_]+)";
 
     static {
@@ -149,7 +149,7 @@ public class Schemas extends StaticBO {
             Schemas.reload();
         }
 
-        Set<String> set = new TreeSet<String>();
+        Set<String> set = new TreeSet<>();
         for (SchemaDTO schema : Schemas.schemas) {
             if (!schema.isDisabled()) {
                 set.add(schema.getSchema());

@@ -334,13 +334,13 @@ public class Fields extends StaticBO {
 
         if (recordType == RecordType.HOLDING) {
             list =
-                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                    new JavascriptCacheableList<>(
                             "CatalogingInput.holdingFields",
                             schema + ".cataloging." + recordType.toString(),
                             ".form.js");
         } else {
             list =
-                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                    new JavascriptCacheableList<>(
                             "CatalogingInput.formFields",
                             schema + ".cataloging." + recordType.toString(),
                             ".form.js");
@@ -371,7 +371,7 @@ public class Fields extends StaticBO {
         JavascriptCacheableList<FormTabDatafieldDTO> fields =
                 Fields.getFormFields(schema, recordType);
 
-        list = new ArrayList<FormTabSubfieldDTO>();
+        list = new ArrayList<>();
 
         if (fields == null) {
             return list;

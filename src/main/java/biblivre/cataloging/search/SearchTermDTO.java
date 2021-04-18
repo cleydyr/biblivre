@@ -45,7 +45,7 @@ public class SearchTermDTO extends AbstractDTO {
 
     public boolean addTerm(String term) {
         if (this.terms == null) {
-            this.terms = new HashSet<String>();
+            this.terms = new HashSet<>();
         }
 
         return this.terms.add(term);
@@ -53,7 +53,7 @@ public class SearchTermDTO extends AbstractDTO {
 
     public boolean addTerms(Set<String> terms) {
         if (this.terms == null) {
-            this.terms = new HashSet<String>();
+            this.terms = new HashSet<>();
         }
 
         return this.terms.addAll(terms);

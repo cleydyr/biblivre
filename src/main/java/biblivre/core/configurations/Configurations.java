@@ -117,7 +117,7 @@ public class Configurations extends StaticBO {
     private static List<Integer> stringToIntArray(String string) {
         String[] array = string.split(",");
 
-        List<Integer> list = new ArrayList<Integer>(array.length);
+        List<Integer> list = new ArrayList<>(array.length);
 
         for (String val : array) {
             list.add(Integer.valueOf(val));
@@ -128,7 +128,7 @@ public class Configurations extends StaticBO {
 
     public static List<ConfigurationsDTO> validate(String schema, List<ConfigurationsDTO> configs)
             throws ValidationException {
-        List<ConfigurationsDTO> validConfigs = new ArrayList<ConfigurationsDTO>(configs.size());
+        List<ConfigurationsDTO> validConfigs = new ArrayList<>(configs.size());
         ValidationException e =
                 new ValidationException("administration.configurations.error.invalid");
         boolean errors = false;
@@ -199,7 +199,7 @@ public class Configurations extends StaticBO {
         if (multiSchemaConfig != null) {
             ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance(Constants.GLOBAL_SCHEMA);
 
-            List<ConfigurationsDTO> multiSchemaList = new ArrayList<ConfigurationsDTO>();
+            List<ConfigurationsDTO> multiSchemaList = new ArrayList<>();
             multiSchemaList.add(multiSchemaConfig);
             globalDao.save(multiSchemaList, loggedUser);
 
@@ -221,7 +221,7 @@ public class Configurations extends StaticBO {
     }
 
     public static void save(String schema, ConfigurationsDTO config, int loggedUser) {
-        List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>(1);
+        List<ConfigurationsDTO> configs = new ArrayList<>(1);
         configs.add(config);
 
         Configurations.save(schema, configs, loggedUser);

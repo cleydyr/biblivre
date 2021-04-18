@@ -26,7 +26,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -165,20 +164,16 @@ public class TextUtils {
         String[] terms = TextUtils.prepareWords(phrase);
 
         Arrays.sort(
-                terms,
-                new Comparator<String>() {
-                    @Override
-                    public int compare(String o1, String o2) {
+                terms, (o1, o2) -> {
                         if (o1.length() < o2.length()) {
                             return 1;
                         } else if (o1.length() > o2.length()) {
                             return -1;
                         }
                         return o1.compareTo(o2);
-                    }
-                });
+                    });
 
-        List<String> newList = new ArrayList<String>();
+        List<String> newList = new ArrayList<>();
         for (int i = 0; i < terms.length; i++) {
             String term = terms[i];
             if (term.length() > 2) {

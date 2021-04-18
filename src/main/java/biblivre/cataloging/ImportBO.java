@@ -90,7 +90,7 @@ public class ImportBO extends AbstractBO {
             switch (format) {
                 case AUTO_DETECT:
                     MarcReader reader = null;
-                    List<ImportDTO> list = new ArrayList<ImportDTO>();
+                    List<ImportDTO> list = new ArrayList<>();
 
                     reader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
                     dto = this.readFromMarcReader(reader);

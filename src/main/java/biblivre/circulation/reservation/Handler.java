@@ -127,7 +127,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<ReservationListDTO> list = new DTOCollection<ReservationListDTO>();
+        DTOCollection<ReservationListDTO> list = new DTOCollection<>();
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {
@@ -291,7 +291,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<ReservationListDTO> list = new DTOCollection<ReservationListDTO>();
+        DTOCollection<ReservationListDTO> list = new DTOCollection<>();
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {

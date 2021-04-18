@@ -68,7 +68,7 @@ public class BackupBO extends AbstractBO {
         BackupType backupType = BackupType.FULL;
         BackupScope backupScope = this.getBackupScope();
 
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
         if (this.isGlobalSchema()) {

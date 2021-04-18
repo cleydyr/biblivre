@@ -51,7 +51,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
     public SearchQueryDTO(String jsonString) throws ValidationException {
         this.parameters = jsonString;
-        this.terms = new ArrayList<SearchTermDTO>();
+        this.terms = new ArrayList<>();
 
         try {
             this.fromJson(jsonString);
@@ -115,7 +115,7 @@ public class SearchQueryDTO extends AbstractDTO {
             Pattern pattern = Pattern.compile("\\s*(\"[^\"]+\"|[^\\s\"]+)");
             Matcher matcher = pattern.matcher(sanitizedQuery);
 
-            Set<String> validTerms = new HashSet<String>();
+            Set<String> validTerms = new HashSet<>();
             while (matcher.find()) {
                 String group = matcher.group(1);
                 String[] terms;
@@ -222,7 +222,7 @@ public class SearchQueryDTO extends AbstractDTO {
 
     public Set<String> getSimpleTerms() {
         if (this.terms == null || this.terms.size() == 0) {
-            return new HashSet<String>();
+            return new HashSet<>();
         }
 
         return this.terms.get(0).getTerms();

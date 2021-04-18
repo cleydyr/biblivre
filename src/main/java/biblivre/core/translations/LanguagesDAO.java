@@ -35,7 +35,7 @@ public class LanguagesDAO extends AbstractDAO {
     }
 
     public Set<LanguageDTO> list() {
-        Set<LanguageDTO> set = new TreeSet<LanguageDTO>();
+        Set<LanguageDTO> set = new TreeSet<>();
 
         Connection con = null;
         try {

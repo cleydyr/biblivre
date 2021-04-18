@@ -63,7 +63,7 @@ public class Handler extends AbstractHandler {
         Z3950BO bo = Z3950BO.getInstance(schema);
 
         String[] serverIds = servers.split(",");
-        List<Integer> ids = new ArrayList<Integer>();
+        List<Integer> ids = new ArrayList<>();
         for (String serverId : serverIds) {
             try {
                 ids.add(Integer.parseInt(serverId.trim()));
@@ -174,7 +174,7 @@ public class Handler extends AbstractHandler {
                 Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20);
         Integer start = (page - 1) * recordsPerPage;
         PagingDTO paging = new PagingDTO(results.size(), recordsPerPage, start);
-        DTOCollection<Z3950RecordDTO> collection = new DTOCollection<Z3950RecordDTO>();
+        DTOCollection<Z3950RecordDTO> collection = new DTOCollection<>();
 
         List<Z3950RecordDTO> sublist =
                 results.subList(start, Math.min(start + recordsPerPage, results.size()));

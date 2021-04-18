@@ -277,7 +277,7 @@ public class QuotationDAO extends AbstractDAO {
     }
 
     public List<RequestQuotationDTO> listRequestQuotation(int quotationId) {
-        List<RequestQuotationDTO> list = new ArrayList<RequestQuotationDTO>();
+        List<RequestQuotationDTO> list = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();
@@ -323,7 +323,7 @@ public class QuotationDAO extends AbstractDAO {
     }
 
     public DTOCollection<QuotationDTO> search(String value, int limit, int offset) {
-        DTOCollection<QuotationDTO> list = new DTOCollection<QuotationDTO>();
+        DTOCollection<QuotationDTO> list = new DTOCollection<>();
 
         Connection con = null;
         try {
@@ -387,7 +387,7 @@ public class QuotationDAO extends AbstractDAO {
     }
 
     public DTOCollection<QuotationDTO> list(Integer supplierId) {
-        DTOCollection<QuotationDTO> list = new DTOCollection<QuotationDTO>();
+        DTOCollection<QuotationDTO> list = new DTOCollection<>();
 
         Connection con = null;
         try {

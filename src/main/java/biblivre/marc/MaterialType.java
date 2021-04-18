@@ -53,8 +53,8 @@ public enum MaterialType implements BiblivreEnum {
     private static final String javascriptArray;
 
     static {
-        List<MaterialType> tempBibliographicMaterials = new ArrayList<MaterialType>();
-        List<MaterialType> tempSearchableMaterials = new ArrayList<MaterialType>();
+        List<MaterialType> tempBibliographicMaterials = new ArrayList<>();
+        List<MaterialType> tempSearchableMaterials = new ArrayList<>();
 
         StringBuffer sb = new StringBuffer();
         sb.append("[");

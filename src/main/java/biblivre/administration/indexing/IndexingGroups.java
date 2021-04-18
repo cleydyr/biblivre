@@ -70,7 +70,7 @@ public class IndexingGroups extends StaticBO {
 
     public static String getSearchableGroupsText(
             String schema, RecordType recordType, String language) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
 

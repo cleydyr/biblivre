@@ -248,7 +248,7 @@ public class SupplierDAO extends AbstractDAO {
     }
 
     public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
-        DTOCollection<SupplierDTO> list = new DTOCollection<SupplierDTO>();
+        DTOCollection<SupplierDTO> list = new DTOCollection<>();
 
         Connection con = null;
         try {

@@ -76,7 +76,7 @@ public class Z3950Client {
 
         IRResultSet result = null;
 
-        List<Record> listRecords = new ArrayList<Record>();
+        List<Record> listRecords = new ArrayList<>();
 
         try {
             searchable = this.factory.newSearchable();
@@ -148,7 +148,7 @@ public class Z3950Client {
     private IRQuery _buildIRQuery(Z3950AddressDTO address, Pair<String, String> search) {
         IRQuery query = new IRQuery();
 
-        query.collections = new Vector<String>();
+        query.collections = new Vector<>();
         query.collections.add(address.getCollection());
         query.query = new PrefixString(_buildQuery(search));
 

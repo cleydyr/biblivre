@@ -68,9 +68,9 @@ public class IndexingBO extends AbstractBO {
             List<FormTabSubfieldDTO> autocompleteSubfields =
                     Fields.getAutocompleteSubFields(this.getSchema(), recordType);
 
-            List<IndexingDTO> indexes = new ArrayList<IndexingDTO>();
-            List<IndexingDTO> sortIndexes = new ArrayList<IndexingDTO>();
-            List<AutocompleteDTO> autocompleteIndexes = new ArrayList<AutocompleteDTO>();
+            List<IndexingDTO> indexes = new ArrayList<>();
+            List<IndexingDTO> sortIndexes = new ArrayList<>();
+            List<AutocompleteDTO> autocompleteIndexes = new ArrayList<>();
 
             this.populateIndexes(dto, indexingGroups, indexes, sortIndexes);
             this.populateAutocompleteIndexes(dto, autocompleteSubfields, autocompleteIndexes);
@@ -113,9 +113,9 @@ public class IndexingBO extends AbstractBO {
 
                     List<RecordDTO> records = rbo.list(offset, limit);
 
-                    List<IndexingDTO> indexes = new ArrayList<IndexingDTO>();
-                    List<IndexingDTO> sortIndexes = new ArrayList<IndexingDTO>();
-                    List<AutocompleteDTO> autocompleteIndexes = new ArrayList<AutocompleteDTO>();
+                    List<IndexingDTO> indexes = new ArrayList<>();
+                    List<IndexingDTO> sortIndexes = new ArrayList<>();
+                    List<AutocompleteDTO> autocompleteIndexes = new ArrayList<>();
 
                     for (RecordDTO dto : records) {
                         this.populateIndexes(dto, indexingGroups, indexes, sortIndexes);
@@ -352,7 +352,7 @@ public class IndexingBO extends AbstractBO {
     }
 
     public List<String> searchExactTerm(RecordType recordType, int indexingGroupId, String term) {
-        List<String> terms = new ArrayList<String>();
+        List<String> terms = new ArrayList<>();
         terms.add(term);
         return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
     }

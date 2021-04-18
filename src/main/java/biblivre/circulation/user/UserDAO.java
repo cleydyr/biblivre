@@ -85,7 +85,7 @@ public class UserDAO extends AbstractDAO {
     }
 
     public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
-        DTOCollection<UserDTO> list = new DTOCollection<UserDTO>();
+        DTOCollection<UserDTO> list = new DTOCollection<>();
         String query = dto.getQuery();
 
         if (StringUtils.isNotBlank(query)) {

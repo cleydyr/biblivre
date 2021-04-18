@@ -189,7 +189,7 @@ public abstract class DigitalMediaDAO extends AbstractDAO {
 
     public List<DigitalMediaDTO> list() {
         Connection con = null;
-        List<DigitalMediaDTO> list = new ArrayList<DigitalMediaDTO>();
+        List<DigitalMediaDTO> list = new ArrayList<>();
         try {
             con = this.getConnection();
             Statement st = con.createStatement();

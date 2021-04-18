@@ -73,7 +73,7 @@ public class Handler extends AbstractHandler {
         try {
             String idList = request.getString("id_list");
             String[] idArray = idList.split(",");
-            Set<Integer> ids = new TreeSet<Integer>();
+            Set<Integer> ids = new TreeSet<>();
             for (int i = 0; i < idArray.length; i++) {
                 ids.add(Integer.valueOf(idArray[i]));
             }

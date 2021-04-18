@@ -121,7 +121,7 @@ public class LendingDAO extends AbstractDAO {
     }
 
     public List<LendingDTO> listHistory(HoldingDTO holding) {
-        List<LendingDTO> list = new ArrayList<LendingDTO>();
+        List<LendingDTO> list = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();
@@ -154,7 +154,7 @@ public class LendingDAO extends AbstractDAO {
     }
 
     private List<LendingDTO> list(UserDTO user, boolean history) {
-        List<LendingDTO> list = new ArrayList<LendingDTO>();
+        List<LendingDTO> list = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();
@@ -221,7 +221,7 @@ public class LendingDAO extends AbstractDAO {
     }
 
     public List<LendingDTO> listByRecordId(int recordId) {
-        List<LendingDTO> list = new ArrayList<LendingDTO>();
+        List<LendingDTO> list = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();
@@ -249,7 +249,7 @@ public class LendingDAO extends AbstractDAO {
     }
 
     public List<LendingDTO> listLendings(int offset, int limit) {
-        List<LendingDTO> list = new ArrayList<LendingDTO>();
+        List<LendingDTO> list = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();

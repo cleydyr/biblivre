@@ -142,7 +142,7 @@ public class BackupDAO extends AbstractDAO {
     }
 
     public Set<String> listDatabaseSchemas() {
-        Set<String> set = new TreeSet<String>();
+        Set<String> set = new TreeSet<>();
 
         Connection con = null;
         try {
@@ -170,7 +170,7 @@ public class BackupDAO extends AbstractDAO {
     }
 
     public ArrayList<BackupDTO> list(int limit) {
-        ArrayList<BackupDTO> list = new ArrayList<BackupDTO>();
+        ArrayList<BackupDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

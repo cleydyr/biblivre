@@ -60,7 +60,7 @@ public class UserFields extends StaticBO {
     public static List<UserFieldDTO> getSearchableFields(String schema) {
         JavascriptCacheableList<UserFieldDTO> list = UserFields.getFields(schema);
 
-        List<UserFieldDTO> searcheableList = new ArrayList<UserFieldDTO>();
+        List<UserFieldDTO> searcheableList = new ArrayList<>();
         for (UserFieldDTO dto : list) {
 
             switch (dto.getType()) {
@@ -97,7 +97,7 @@ public class UserFields extends StaticBO {
 
         List<UserFieldDTO> fields = dao.listFields();
         list =
-                new JavascriptCacheableList<UserFieldDTO>(
+                new JavascriptCacheableList<>(
                         "CirculationInput.userFields", schema + ".circulation", ".user_fields.js");
         list.addAll(fields);
 

@@ -89,7 +89,7 @@ public class IndexingDTO extends AbstractDTO {
     public void addWord(String word, Integer datafieldId) {
         if (StringUtils.isNotBlank(word)) {
             if (!this.words.containsKey(datafieldId)) {
-                this.words.put(datafieldId, new HashSet<String>());
+                this.words.put(datafieldId, new HashSet<>());
             }
 
             this.words.get(datafieldId).add(word);
@@ -98,7 +98,7 @@ public class IndexingDTO extends AbstractDTO {
 
     public void addWords(String[] words, Integer datafieldId) {
         if (!this.words.containsKey(datafieldId)) {
-            this.words.put(datafieldId, new HashSet<String>());
+            this.words.put(datafieldId, new HashSet<>());
         }
 
         Collections.addAll(this.words.get(datafieldId), words);

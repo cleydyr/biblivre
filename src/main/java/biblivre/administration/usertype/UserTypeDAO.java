@@ -66,7 +66,7 @@ public class UserTypeDAO extends AbstractDAO {
     }
 
     public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
-        DTOCollection<UserTypeDTO> list = new DTOCollection<UserTypeDTO>();
+        DTOCollection<UserTypeDTO> list = new DTOCollection<>();
 
         if (value != null) {
             value = TextUtils.removeDiacriticals(value);
@@ -132,7 +132,7 @@ public class UserTypeDAO extends AbstractDAO {
     }
 
     public List<UserTypeDTO> list() {
-        List<UserTypeDTO> list = new ArrayList<UserTypeDTO>();
+        List<UserTypeDTO> list = new ArrayList<>();
 
         Connection con = null;
 

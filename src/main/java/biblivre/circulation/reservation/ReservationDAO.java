@@ -72,7 +72,7 @@ public class ReservationDAO extends AbstractDAO {
     }
 
     public List<ReservationDTO> list(UserDTO user, RecordDTO record) {
-        List<ReservationDTO> list = new ArrayList<ReservationDTO>();
+        List<ReservationDTO> list = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();
@@ -334,7 +334,7 @@ public class ReservationDAO extends AbstractDAO {
                 Integer recordId = rs.getInt("record_id");
                 List<ReservationDTO> reservations = map.get(recordId);
                 if (reservations == null) {
-                    reservations = new ArrayList<ReservationDTO>();
+                    reservations = new ArrayList<>();
                     map.put(recordId, reservations);
                 }
                 reservations.add(this.populateDTO(rs));

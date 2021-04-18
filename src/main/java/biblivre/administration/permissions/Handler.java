@@ -47,7 +47,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<PermissionDTO> list = new DTOCollection<PermissionDTO>();
+        DTOCollection<PermissionDTO> list = new DTOCollection<>();
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {

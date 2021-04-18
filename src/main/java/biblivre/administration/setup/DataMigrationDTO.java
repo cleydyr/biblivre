@@ -37,7 +37,7 @@ public class DataMigrationDTO extends AbstractDTO {
 
     public DataMigrationDTO() {
         this.phases = new HashMap<DataMigrationPhase, Boolean>();
-        this.completedPhases = new TreeSet<DataMigrationPhase>();
+        this.completedPhases = new TreeSet<>();
     }
 
     public String getDataSourceName() {

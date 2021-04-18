@@ -103,7 +103,7 @@ public class IndexingGroupDTO extends AbstractDTO {
                     String[] line = field.trim().split("_");
 
                     String datafield = line[0];
-                    List<Character> subfields = new ArrayList<Character>(line.length - 1);
+                    List<Character> subfields = new ArrayList<>(line.length - 1);
 
                     for (int i = 1; i < line.length; i++) {
                         subfields.add(line[i].charAt(0));

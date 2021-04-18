@@ -135,7 +135,7 @@ public class BiblioRecordBO extends RecordBO {
                 Collections.sort(holdingsList);
             }
 
-            List<LendingDTO> lendings = new ArrayList<LendingDTO>();
+            List<LendingDTO> lendings = new ArrayList<>();
             for (HoldingDTO holding : holdingsList) {
                 lendings.add(lbo.getCurrentLending(holding));
             }

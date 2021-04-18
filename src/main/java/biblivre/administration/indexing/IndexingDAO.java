@@ -327,7 +327,7 @@ public class IndexingDAO extends AbstractDAO {
 
     public List<String> searchExactTerms(
             RecordType recordType, int indexingGroupId, List<String> terms) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         Connection con = null;
         try {

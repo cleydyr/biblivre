@@ -52,7 +52,7 @@ public class MarcDataReader {
     }
 
     public List<BriefTabFieldDTO> getFieldList(List<BriefTabFieldFormatDTO> dataFieldFormats) {
-        List<BriefTabFieldDTO> list = new ArrayList<BriefTabFieldDTO>();
+        List<BriefTabFieldDTO> list = new ArrayList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -78,7 +78,7 @@ public class MarcDataReader {
 
     public String getFieldValue(
             boolean listAll, String separator, BriefTabFieldFormatDTO... dataFieldFormats) {
-        List<String> formattedFields = new ArrayList<String>();
+        List<String> formattedFields = new ArrayList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -102,7 +102,7 @@ public class MarcDataReader {
 
     public List<RecordAttachmentDTO> getAttachments() {
         List<DataField> fields = this.getDataFields(MarcConstants.ELECTRONIC_LOCATION);
-        List<RecordAttachmentDTO> attachments = new ArrayList<RecordAttachmentDTO>();
+        List<RecordAttachmentDTO> attachments = new ArrayList<>();
 
         String file = null;
         String name = null;
@@ -318,7 +318,7 @@ public class MarcDataReader {
         Record record = this.getRecord();
 
         if (record == null || StringUtils.isBlank(tag)) {
-            return new ArrayList<DataField>();
+            return new ArrayList<>();
         }
 
         List<DataField> list = this.getCache().get(tag);
@@ -327,7 +327,7 @@ public class MarcDataReader {
             return list;
         }
 
-        return new ArrayList<DataField>();
+        return new ArrayList<>();
     }
 
     public Subfield getFirstSubfield(String tag, char subfield) {
@@ -380,7 +380,7 @@ public class MarcDataReader {
             fieldList = hash.get(tag);
 
             if (fieldList == null) {
-                fieldList = new ArrayList<DataField>();
+                fieldList = new ArrayList<>();
                 hash.put(tag, fieldList);
             }
 

@@ -356,7 +356,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> list(int offset, int limit, RecordDatabase database) {
-        List<RecordDTO> list = new ArrayList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -401,7 +401,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> listByLetter(char letter, int order) {
-        List<RecordDTO> list = new ArrayList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -482,7 +482,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> getSearchResults(SearchDTO search) {
-        List<RecordDTO> list = new ArrayList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<>();
 
         if (search == null) {
             return list;
@@ -597,7 +597,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
     public List<String> phraseAutocomplete(
             String datafield, String subfield, String[] terms, int limit, boolean startsWith) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         if (terms == null || terms.length == 0) {
             return list;
@@ -651,7 +651,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
     public DTOCollection<AutocompleteDTO> recordAutocomplete(
             String datafield, String subfield, String[] terms, int limit, boolean startsWith) {
-        DTOCollection<AutocompleteDTO> list = new DTOCollection<AutocompleteDTO>();
+        DTOCollection<AutocompleteDTO> list = new DTOCollection<>();
 
         if (terms == null || terms.length == 0) {
             return list;

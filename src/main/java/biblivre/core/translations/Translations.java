@@ -47,7 +47,7 @@ public class Translations extends StaticBO {
     // HashMap<Pair<Schema, Language>, TranslationsMap>
     private static HashMap<Pair<String, String>, TranslationsMap> translations;
     private static Set<String> availableJavascriptLocales =
-            new HashSet<String>(
+            new HashSet<>(
                     Arrays.asList(
                             new String[] {
                                 "af-ZA",
@@ -533,7 +533,7 @@ public class Translations extends StaticBO {
         Translations.reset(schema, language);
 
         Map<String, TranslationDTO> translations = Translations.get(schema, language).getAll();
-        List<String> list = new ArrayList<String>(translations.keySet());
+        List<String> list = new ArrayList<>(translations.keySet());
 
         Collections.sort(list, new NamespaceComparator());
 

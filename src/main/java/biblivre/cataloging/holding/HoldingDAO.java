@@ -155,7 +155,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> list(int offset, int limit) {
-        List<RecordDTO> list = new ArrayList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -431,7 +431,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public DTOCollection<HoldingDTO> list(int recordId) {
-        DTOCollection<HoldingDTO> list = new DTOCollection<HoldingDTO>();
+        DTOCollection<HoldingDTO> list = new DTOCollection<>();
 
         Connection con = null;
         try {
@@ -459,7 +459,7 @@ public class HoldingDAO extends AbstractDAO {
 
     public DTOCollection<HoldingDTO> search(
             String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
-        DTOCollection<HoldingDTO> list = new DTOCollection<HoldingDTO>();
+        DTOCollection<HoldingDTO> list = new DTOCollection<>();
         Connection con = null;
         try {
             boolean searchId = StringUtils.isNumeric(query);
@@ -788,7 +788,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> getSearchResults(SearchDTO search) {
-        List<RecordDTO> list = new ArrayList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<>();
 
         if (search == null) {
             return list;

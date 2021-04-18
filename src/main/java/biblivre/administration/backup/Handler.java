@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
         BackupBO bo = BackupBO.getInstance(schema);
         BackupScope backupScope = bo.getBackupScope();
 
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
         if (request.isGlobalSchema()) {
