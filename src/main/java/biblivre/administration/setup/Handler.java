@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -369,7 +369,7 @@ public class Handler extends AbstractHandler {
             }
 
             // Validando se schemas de origem existem no backup e se esquemas de destino são válidos
-            Set<String> uniqueCheck = new TreeSet<>();
+            Set<String> uniqueCheck = new HashSet<>();
             if (restoreSchemas.size() == 1 && restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
                 throw new ValidationException(
                         "administration.maintenance.backup.error.no_schema_selected");

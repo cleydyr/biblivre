@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
         String idList = request.getString("id_list");
 
         String[] idArray = idList.split(",");
-        Set<Integer> ids = new TreeSet<>();
+        Set<Integer> ids = new HashSet<>();
         try {
             for (int i = 0; i < idArray.length; i++) {
                 ids.add(Integer.valueOf(idArray[i]));

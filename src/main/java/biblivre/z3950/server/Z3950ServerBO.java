@@ -5,7 +5,7 @@ import biblivre.core.schemas.SchemasDAO;
 import biblivre.core.utils.Constants;
 import biblivre.z3950.client.config.Z3950Config;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import org.jzkit.ServiceDirectory.CollectionDescriptionDBO;
 import org.jzkit.ServiceDirectory.CollectionInstanceDBO;
 import org.jzkit.configuration.provider.xml.XMLImpl;
@@ -82,7 +82,7 @@ public class Z3950ServerBO {
         XMLImpl config = (XMLImpl) _getContext().getBean("JZKitConfig");
 
         if (loadedSchemas == null) {
-            loadedSchemas = new TreeSet<>();
+            loadedSchemas = new HashSet<>();
         }
 
         SchemasDAO schemasDao = SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA);

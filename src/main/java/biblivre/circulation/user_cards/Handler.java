@@ -27,7 +27,7 @@ import biblivre.core.LabelPrintDTO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.UUID;
 import org.json.JSONException;
 
@@ -73,7 +73,7 @@ public class Handler extends AbstractHandler {
         try {
             String idList = request.getString("id_list");
             String[] idArray = idList.split(",");
-            Set<Integer> ids = new TreeSet<>();
+            Set<Integer> ids = new HashSet<>();
             for (int i = 0; i < idArray.length; i++) {
                 ids.add(Integer.valueOf(idArray[i]));
             }

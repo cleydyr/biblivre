@@ -38,7 +38,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -149,7 +149,7 @@ public class Schemas extends StaticBO {
             Schemas.reload();
         }
 
-        Set<String> set = new TreeSet<>();
+        Set<String> set = new HashSet<>();
         for (SchemaDTO schema : Schemas.schemas) {
             if (!schema.isDisabled()) {
                 set.add(schema.getSchema());

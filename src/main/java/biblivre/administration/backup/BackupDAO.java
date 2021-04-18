@@ -30,7 +30,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import org.apache.commons.lang3.StringUtils;
 
 public class BackupDAO extends AbstractDAO {
@@ -142,7 +142,7 @@ public class BackupDAO extends AbstractDAO {
     }
 
     public Set<String> listDatabaseSchemas() {
-        Set<String> set = new TreeSet<>();
+        Set<String> set = new HashSet<>();
 
         Connection con = null;
         try {
