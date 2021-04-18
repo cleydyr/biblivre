@@ -411,7 +411,7 @@ public class Translations extends StaticBO {
     }
 
     public static void reset() {
-        Translations.translations = new HashMap<Pair<String, String>, TranslationsMap>();
+        Translations.translations = new HashMap<>();
     }
 
     public static void reset(String schema, String language) {
@@ -437,13 +437,13 @@ public class Translations extends StaticBO {
             HashMap<String, String> removeTranslation,
             int loggedUser) {
         HashMap<String, HashMap<String, String>> translations =
-                new HashMap<String, HashMap<String, String>>();
+                new HashMap<>();
         translations.put(language, translation);
 
         HashMap<String, HashMap<String, String>> removeTranslations = null;
 
         if (removeTranslation != null) {
-            removeTranslations = new HashMap<String, HashMap<String, String>>();
+            removeTranslations = new HashMap<>();
             removeTranslations.put(language, removeTranslation);
         }
 
@@ -477,7 +477,7 @@ public class Translations extends StaticBO {
         translation.put(key, text);
 
         HashMap<String, HashMap<String, String>> translations =
-                new HashMap<String, HashMap<String, String>>();
+                new HashMap<>();
         translations.put(language, translation);
 
         boolean success = TranslationsDAO.getInstance(schema).save(translations, loggedUser);

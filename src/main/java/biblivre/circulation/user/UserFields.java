@@ -40,7 +40,7 @@ public class UserFields extends StaticBO {
     }
 
     public static void reset() {
-        UserFields.fields = new HashMap<String, JavascriptCacheableList<UserFieldDTO>>();
+        UserFields.fields = new HashMap<>();
     }
 
     public static void reset(String schema) {

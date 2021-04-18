@@ -55,14 +55,14 @@ public class Fields extends StaticBO {
 
     public static void reset() {
         Fields.briefTabFieldFormats =
-                new HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>();
+                new HashMap<>();
 
         Fields.formTabFields =
                 new HashMap<
                         Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>();
 
         Fields.autocompleteSubfields =
-                new HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>();
+                new HashMap<>();
     }
 
     public static void reset(String schema, RecordType recordType) {

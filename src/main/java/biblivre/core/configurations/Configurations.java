@@ -46,7 +46,7 @@ public class Configurations extends StaticBO {
     }
 
     public static void reset() {
-        Configurations.configurations = new HashMap<String, HashMap<String, ConfigurationsDTO>>();
+        Configurations.configurations = new HashMap<>();
     }
 
     public static String getString(String schema, String key) {

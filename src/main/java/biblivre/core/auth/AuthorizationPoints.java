@@ -75,7 +75,7 @@ public class AuthorizationPoints implements Serializable {
             this.permissions = new HashMap<>();
         }
 
-        this.points = new HashMap<Pair<String, String>, Boolean>();
+        this.points = new HashMap<>();
 
         this.addAuthPoint("login", "login", AuthorizationPointTypes.LOGIN);
         this.addAuthPoint("login", "logout", AuthorizationPointTypes.LOGIN);

@@ -8,7 +8,7 @@ import org.json.JSONObject;
 public class SchemaUtils {
     public static Map<String, Pair<String, String>> buildSchemasMap(String schemasJson) {
 
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         JSONObject json = new JSONObject(schemasJson);
 

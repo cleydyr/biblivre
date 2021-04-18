@@ -311,7 +311,7 @@ public class ReservationDAO extends AbstractDAO {
     }
 
     public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
-        Map<Integer, List<ReservationDTO>> map = new LinkedHashMap<Integer, List<ReservationDTO>>();
+        Map<Integer, List<ReservationDTO>> map = new LinkedHashMap<>();
 
         Connection con = null;
         try {

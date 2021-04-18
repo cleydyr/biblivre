@@ -77,7 +77,7 @@ public class BackupBO extends AbstractBO {
             list.add(this.getSchema());
         }
 
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         for (String s : list) {
             if (Schemas.isNotLoaded(s)) {

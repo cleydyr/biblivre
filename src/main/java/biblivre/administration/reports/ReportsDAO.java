@@ -583,7 +583,7 @@ public class ReportsDAO extends AbstractDAO {
     public AllUsersReportDto getAllUsersReportData() {
         AllUsersReportDto dto = new AllUsersReportDto();
         dto.setTypesMap(new HashMap<>());
-        dto.setData(new HashMap<String, List<String>>());
+        dto.setData(new HashMap<>());
 
         Connection con = null;
         Connection con2 = null;
@@ -677,7 +677,7 @@ public class ReportsDAO extends AbstractDAO {
     }
 
     public TreeMap<String, Set<Integer>> searchAuthors(String authorName, RecordDatabase database) {
-        TreeMap<String, Set<Integer>> results = new TreeMap<String, Set<Integer>>();
+        TreeMap<String, Set<Integer>> results = new TreeMap<>();
 
         String[] terms = authorName.split(" ");
         Connection con = null;

@@ -47,7 +47,7 @@ public class IndexingGroups extends StaticBO {
     }
 
     public static void reset() {
-        IndexingGroups.groups = new HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>>();
+        IndexingGroups.groups = new HashMap<>();
     }
 
     public static void reset(String schema, RecordType recordType) {

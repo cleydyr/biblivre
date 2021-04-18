@@ -240,7 +240,7 @@ public class Handler extends AbstractHandler {
             }
 
             HashMap<String, HashMap<String, String>> newTranslations =
-                    new HashMap<String, HashMap<String, String>>();
+                    new HashMap<>();
 
             jsonTranslations
                     .keys()
