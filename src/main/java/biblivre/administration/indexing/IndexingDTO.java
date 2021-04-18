@@ -23,6 +23,8 @@ import biblivre.core.AbstractDTO;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class IndexingDTO extends AbstractDTO {
@@ -31,7 +33,7 @@ public class IndexingDTO extends AbstractDTO {
     private Integer recordId;
     private Integer indexingGroupId;
     private StringBuilder phrase;
-    private HashMap<Integer, HashSet<String>> words;
+    private Map<Integer, Set<String>> words;
     private int ignoreCharsCount;
 
     public IndexingDTO() {
@@ -104,7 +106,7 @@ public class IndexingDTO extends AbstractDTO {
         Collections.addAll(this.words.get(datafieldId), words);
     }
 
-    public HashMap<Integer, HashSet<String>> getWords() {
+    public Map<Integer, Set<String>> getWords() {
         return this.words;
     }
 

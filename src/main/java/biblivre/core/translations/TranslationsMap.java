@@ -103,8 +103,8 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         this.language = language;
     }
 
-    public HashMap<String, TranslationDTO> getAll() {
-        HashMap<String, TranslationDTO> translations = new HashMap<>();
+    public Map<String, TranslationDTO> getAll() {
+        Map<String, TranslationDTO> translations = new HashMap<>();
 
         if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
             translations.putAll(Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()));

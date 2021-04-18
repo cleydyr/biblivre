@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -526,7 +527,7 @@ public class Translations extends StaticBO {
 
     public static DiskFile createDumpFile(String schema, String language) {
         Translations.reset(schema, language);
-        HashMap<String, TranslationDTO> translations = Translations.get(schema, language).getAll();
+        Map<String, TranslationDTO> translations = Translations.get(schema, language).getAll();
 
         List<String> list = new ArrayList<>(translations.keySet());
         Collections.sort(list, new NamespaceComparator());

@@ -195,18 +195,18 @@ public class BackupBO extends AbstractBO {
         return this.dao.get(id);
     }
 
-    public LinkedList<BackupDTO> list() {
+    public List<BackupDTO> list() {
         return this.dao.list();
     }
 
     public BackupDTO getLastBackup() {
-        LinkedList<BackupDTO> list = this.dao.list(1);
+        List<BackupDTO> list = this.dao.list(1);
 
         if (list.size() == 0) {
             return null;
         }
 
-        return list.getFirst();
+        return list.get(0);
     }
 
     public boolean save(BackupDTO dto) {

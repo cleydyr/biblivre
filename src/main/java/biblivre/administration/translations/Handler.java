@@ -30,6 +30,7 @@ import biblivre.core.translations.TranslationDTO;
 import biblivre.core.translations.Translations;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -199,7 +200,7 @@ public class Handler extends AbstractHandler {
         Languages.reset(schema);
         Set<LanguageDTO> languages = Languages.getLanguages(schema);
 
-        HashMap<String, HashMap<String, TranslationDTO>> translations = new HashMap<>();
+        Map<String, Map<String, TranslationDTO>> translations = new HashMap<>();
 
         for (LanguageDTO languageDTO : languages) {
             String language = languageDTO.getLanguage();

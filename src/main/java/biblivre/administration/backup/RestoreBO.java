@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -73,8 +74,8 @@ public class RestoreBO extends AbstractBO {
         return bo;
     }
 
-    public LinkedList<RestoreDTO> list() {
-        LinkedList<RestoreDTO> list = new LinkedList<>();
+    public List<RestoreDTO> list() {
+        List<RestoreDTO> list = new LinkedList<>();
 
         BackupBO backupBO = BackupBO.getInstance(this.getSchema());
 

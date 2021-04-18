@@ -43,7 +43,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -105,7 +104,7 @@ public class Handler extends AbstractHandler {
 
         RestoreBO bo = RestoreBO.getInstance(schema);
 
-        LinkedList<RestoreDTO> list = bo.list();
+        List<RestoreDTO> list = bo.list();
 
         try {
             this.json.put("success", true);

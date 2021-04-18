@@ -65,7 +65,7 @@ public class AccessCardBO extends AbstractBO {
         return this.dao.get(code);
     }
 
-    public LinkedList<AccessCardDTO> saveCardList(
+    public List<AccessCardDTO> saveCardList(
             String prefix,
             String suffix,
             String startString,

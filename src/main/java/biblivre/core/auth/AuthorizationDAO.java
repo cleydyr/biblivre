@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AuthorizationDAO extends AbstractDAO {
 
@@ -33,9 +34,9 @@ public class AuthorizationDAO extends AbstractDAO {
         return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAO.class, schema);
     }
 
-    public HashMap<String, Boolean> getUserPermissions(LoginDTO user) {
+    public Map<String, Boolean> getUserPermissions(LoginDTO user) {
         Connection con = null;
-        HashMap<String, Boolean> hash = new HashMap<>();
+        Map<String, Boolean> hash = new HashMap<>();
 
         try {
             con = this.getConnection();
