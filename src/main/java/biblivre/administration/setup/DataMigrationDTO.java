@@ -21,8 +21,8 @@ package biblivre.administration.setup;
 
 import biblivre.core.AbstractDTO;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 public class DataMigrationDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
