@@ -92,58 +92,6 @@ public class TextUtils {
         return new String(Base64.getDecoder().decode(StringUtils.reverse(input)));
     }
 
-    public static String biblivreEncrypt(String input) {
-        return input;
-
-        /*
-        if (StringUtils.isBlank(input)) {
-        	return "";
-        }
-
-        byte[] plaintext = input.getBytes();
-
-        try {
-        	Cipher cipher = Cipher.getInstance("AES");
-        	Key key = new SecretKeySpec(Constants.CRYPT_KEY, "AES");
-
-        	cipher.init(Cipher.ENCRYPT_MODE, key);
-        	byte[] ciphertext = cipher.doFinal(plaintext);
-
-        	return Base64.encodeBase64String(ciphertext);
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-
-        return "";
-        */
-    }
-
-    public static String biblivreDecrypt(String input) {
-        return input;
-
-        /*
-        if (StringUtils.isBlank(input)) {
-        	return "";
-        }
-
-        byte[] ciphertext = Base64.decodeBase64(input);
-
-        try {
-        	Cipher cipher = Cipher.getInstance("AES");
-        	Key key = new SecretKeySpec(Constants.CRYPT_KEY, "AES");
-
-        	cipher.init(Cipher.DECRYPT_MODE, key);
-        	byte[] plaintext = cipher.doFinal(ciphertext);
-
-        	return new String(plaintext);
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-
-        return "";
-        */
-    }
-
     public static String preparePhrase(String input) {
         return TextUtils.removeDiacriticals(TextUtils.removeDoubleSpaces(input)).toLowerCase();
     }
