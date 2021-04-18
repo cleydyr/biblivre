@@ -129,7 +129,7 @@ public class MarcUtils {
             scanner = new Scanner(unescaped);
         }
 
-        List<String> text = new ArrayList<String>();
+        List<String> text = new ArrayList<>();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
 

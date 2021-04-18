@@ -42,7 +42,7 @@ public class Handler extends AbstractHandler {
         String language = request.getLanguage();
 
         String configurations = request.getString("configurations", "{}");
-        List<ConfigurationsDTO> configs = new ArrayList<ConfigurationsDTO>();
+        List<ConfigurationsDTO> configs = new ArrayList<>();
 
         try {
             JSONObject json = new JSONObject(configurations);

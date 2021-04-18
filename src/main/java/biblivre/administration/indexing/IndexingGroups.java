@@ -27,8 +27,8 @@ import biblivre.core.translations.TranslationsMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,7 +47,7 @@ public class IndexingGroups extends StaticBO {
     }
 
     public static void reset() {
-        IndexingGroups.groups = new HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>>();
+        IndexingGroups.groups = new HashMap<>();
     }
 
     public static void reset(String schema, RecordType recordType) {
@@ -70,7 +70,7 @@ public class IndexingGroups extends StaticBO {
 
     public static String getSearchableGroupsText(
             String schema, RecordType recordType, String language) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new ArrayList<>();
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
 

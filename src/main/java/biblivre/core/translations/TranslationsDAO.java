@@ -43,7 +43,7 @@ public class TranslationsDAO extends AbstractDAO {
     }
 
     public List<TranslationDTO> list(String language) {
-        List<TranslationDTO> list = new ArrayList<TranslationDTO>();
+        List<TranslationDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

@@ -71,7 +71,7 @@ public class BackupDTO extends AbstractDTO {
     }
 
     public void setSchemas(String schemas) {
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         try {
             JSONObject json = new JSONObject(schemas);

@@ -26,7 +26,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -93,58 +92,6 @@ public class TextUtils {
         return new String(Base64.getDecoder().decode(StringUtils.reverse(input)));
     }
 
-    public static String biblivreEncrypt(String input) {
-        return input;
-
-        /*
-        if (StringUtils.isBlank(input)) {
-        	return "";
-        }
-
-        byte[] plaintext = input.getBytes();
-
-        try {
-        	Cipher cipher = Cipher.getInstance("AES");
-        	Key key = new SecretKeySpec(Constants.CRYPT_KEY, "AES");
-
-        	cipher.init(Cipher.ENCRYPT_MODE, key);
-        	byte[] ciphertext = cipher.doFinal(plaintext);
-
-        	return Base64.encodeBase64String(ciphertext);
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-
-        return "";
-        */
-    }
-
-    public static String biblivreDecrypt(String input) {
-        return input;
-
-        /*
-        if (StringUtils.isBlank(input)) {
-        	return "";
-        }
-
-        byte[] ciphertext = Base64.decodeBase64(input);
-
-        try {
-        	Cipher cipher = Cipher.getInstance("AES");
-        	Key key = new SecretKeySpec(Constants.CRYPT_KEY, "AES");
-
-        	cipher.init(Cipher.DECRYPT_MODE, key);
-        	byte[] plaintext = cipher.doFinal(ciphertext);
-
-        	return new String(plaintext);
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-
-        return "";
-        */
-    }
-
     public static String preparePhrase(String input) {
         return TextUtils.removeDiacriticals(TextUtils.removeDoubleSpaces(input)).toLowerCase();
     }
@@ -166,19 +113,16 @@ public class TextUtils {
 
         Arrays.sort(
                 terms,
-                new Comparator<String>() {
-                    @Override
-                    public int compare(String o1, String o2) {
-                        if (o1.length() < o2.length()) {
-                            return 1;
-                        } else if (o1.length() > o2.length()) {
-                            return -1;
-                        }
-                        return o1.compareTo(o2);
+                (o1, o2) -> {
+                    if (o1.length() < o2.length()) {
+                        return 1;
+                    } else if (o1.length() > o2.length()) {
+                        return -1;
                     }
+                    return o1.compareTo(o2);
                 });
 
-        List<String> newList = new ArrayList<String>();
+        List<String> newList = new ArrayList<>();
         for (int i = 0; i < terms.length; i++) {
             String term = terms[i];
             if (term.length() > 2) {

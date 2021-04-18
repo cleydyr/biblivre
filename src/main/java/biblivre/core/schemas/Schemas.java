@@ -36,9 +36,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class Schemas extends StaticBO {
     protected static Logger logger = LoggerFactory.getLogger(Schemas.class);
 
     private static Set<SchemaDTO> schemas;
-    private static final List<String> schemaBlacklist = new ArrayList<String>();
+    private static final List<String> schemaBlacklist = new ArrayList<>();
     private static final String SCHEMA_VALIDATION_REGEX = "([a-zA-Z0-9_]+)";
 
     static {
@@ -149,7 +149,7 @@ public class Schemas extends StaticBO {
             Schemas.reload();
         }
 
-        Set<String> set = new TreeSet<String>();
+        Set<String> set = new HashSet<>();
         for (SchemaDTO schema : Schemas.schemas) {
             if (!schema.isDisabled()) {
                 set.add(schema.getSchema());

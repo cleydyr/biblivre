@@ -36,7 +36,7 @@ public class IndexingGroupsDAO extends AbstractDAO {
     }
 
     public List<IndexingGroupDTO> list(RecordType recordType) {
-        List<IndexingGroupDTO> list = new ArrayList<IndexingGroupDTO>();
+        List<IndexingGroupDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

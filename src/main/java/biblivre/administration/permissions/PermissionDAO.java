@@ -59,7 +59,7 @@ public class PermissionDAO extends AbstractDAO {
 
     public List<String> getByLoginId(Integer loginid) {
         Connection con = null;
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         try {
             con = this.getConnection();
             String sql = "SELECT login_id, permission FROM permissions WHERE login_id = ?;";

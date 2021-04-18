@@ -81,7 +81,7 @@ public class UserBO extends AbstractBO {
     }
 
     public UserDTO get(int id) {
-        Set<Integer> ids = new HashSet<Integer>();
+        Set<Integer> ids = new HashSet<>();
         ids.add(id);
 
         return this.map(ids).get(id);

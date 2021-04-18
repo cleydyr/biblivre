@@ -85,7 +85,7 @@ public class RestoreDTO extends AbstractDTO implements Comparable<RestoreDTO> {
     }
 
     public void setSchemas(String schemas) {
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         try {
             JSONObject json = new JSONObject(schemas);

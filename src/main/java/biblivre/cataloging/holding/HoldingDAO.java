@@ -47,7 +47,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -125,7 +124,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        Map<Integer, RecordDTO> map = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> map = new HashMap<>();
 
         Connection con = null;
         try {
@@ -157,7 +156,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> list(int offset, int limit) {
-        List<RecordDTO> list = new ArrayList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -433,7 +432,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public DTOCollection<HoldingDTO> list(int recordId) {
-        DTOCollection<HoldingDTO> list = new DTOCollection<HoldingDTO>();
+        DTOCollection<HoldingDTO> list = new DTOCollection<>();
 
         Connection con = null;
         try {
@@ -461,7 +460,7 @@ public class HoldingDAO extends AbstractDAO {
 
     public DTOCollection<HoldingDTO> search(
             String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
-        DTOCollection<HoldingDTO> list = new DTOCollection<HoldingDTO>();
+        DTOCollection<HoldingDTO> list = new DTOCollection<>();
         Connection con = null;
         try {
             boolean searchId = StringUtils.isNumeric(query);
@@ -736,7 +735,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public Map<Integer, Integer> countSearchResults(SearchDTO search) {
-        Map<Integer, Integer> count = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> count = new HashMap<>();
         if (search == null) {
             return count;
         }
@@ -790,7 +789,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> getSearchResults(SearchDTO search) {
-        List<RecordDTO> list = new LinkedList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<>();
 
         if (search == null) {
             return list;

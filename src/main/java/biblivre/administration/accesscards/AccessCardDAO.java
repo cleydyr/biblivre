@@ -29,7 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,7 +40,7 @@ public class AccessCardDAO extends AbstractDAO {
     }
 
     public AccessCardDTO get(String code) {
-        List<String> codes = new LinkedList<String>();
+        List<String> codes = new ArrayList<>();
         codes.add(code);
 
         List<AccessCardDTO> list = this.get(codes, null);
@@ -52,7 +52,7 @@ public class AccessCardDAO extends AbstractDAO {
     }
 
     public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
-        List<AccessCardDTO> list = new LinkedList<AccessCardDTO>();
+        List<AccessCardDTO> list = new ArrayList<>();
 
         boolean hasCodes = (codes != null && codes.size() > 0);
         boolean hasStatus = (status != null && status.size() > 0);
@@ -124,7 +124,7 @@ public class AccessCardDAO extends AbstractDAO {
 
     public DTOCollection<AccessCardDTO> search(
             String code, AccessCardStatus status, int limit, int offset) {
-        DTOCollection<AccessCardDTO> list = new DTOCollection<AccessCardDTO>();
+        DTOCollection<AccessCardDTO> list = new DTOCollection<>();
         Connection con = null;
         try {
             con = this.getConnection();
@@ -219,7 +219,7 @@ public class AccessCardDAO extends AbstractDAO {
         }
     }
 
-    public boolean save(LinkedList<AccessCardDTO> cardList) {
+    public boolean save(ArrayList<AccessCardDTO> cardList) {
         Connection con = null;
         try {
             con = this.getConnection();

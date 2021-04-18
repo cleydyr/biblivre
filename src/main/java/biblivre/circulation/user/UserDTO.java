@@ -21,6 +21,7 @@ package biblivre.circulation.user;
 
 import biblivre.core.AbstractDTO;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,13 +37,13 @@ public class UserDTO extends AbstractDTO {
     private Integer loginId;
     private Boolean userCardPrinted;
 
-    private HashMap<String, String> fields;
+    private Map<String, String> fields;
 
     private transient Integer currentLendings;
     private transient String usertypeName;
 
     public UserDTO() {
-        this.fields = new HashMap<String, String>();
+        this.fields = new HashMap<>();
     }
 
     public int getId() {
@@ -101,7 +102,7 @@ public class UserDTO extends AbstractDTO {
         this.name = name;
     }
 
-    public HashMap<String, String> getFields() {
+    public Map<String, String> getFields() {
         return this.fields;
     }
 

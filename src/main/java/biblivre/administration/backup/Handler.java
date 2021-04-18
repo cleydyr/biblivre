@@ -27,9 +27,9 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
         BackupBO bo = BackupBO.getInstance(schema);
         BackupScope backupScope = bo.getBackupScope();
 
-        LinkedList<String> list = new LinkedList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
         if (request.isGlobalSchema()) {
@@ -67,7 +67,7 @@ public class Handler extends AbstractHandler {
             list.add(schema);
         }
 
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         for (String s : list) {
             if (Schemas.isNotLoaded(s)) {

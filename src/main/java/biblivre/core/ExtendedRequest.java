@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -50,8 +51,8 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private String language;
     private boolean mustRedirectToSchema;
     private boolean multiPart;
-    private HashMap<String, String> multiPartParameters;
-    private HashMap<String, MemoryFile> multiPartFiles;
+    private Map<String, String> multiPartParameters;
+    private Map<String, MemoryFile> multiPartFiles;
 
     public ExtendedRequest(HttpServletRequest request) {
         super(request);
@@ -269,8 +270,8 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         this.multiPart = ServletFileUpload.isMultipartContent(this);
 
         if (this.multiPart) {
-            this.multiPartParameters = new HashMap<String, String>();
-            this.multiPartFiles = new HashMap<String, MemoryFile>();
+            this.multiPartParameters = new HashMap<>();
+            this.multiPartFiles = new HashMap<>();
 
             try {
                 FileItemFactory factory = new DiskFileItemFactory();

@@ -83,12 +83,12 @@ public class CalendarUtils {
     }
 
     //	public static void loadHolidays() {
-    //		Set<LocalDate> holidays = new HashSet<LocalDate>();
+    //		Set<LocalDate> holidays = new HashSet<>();
     // List holidays from database and add them to the holidays Set
     //		holidays.add(new LocalDate("2006-08-28"));
     // create a Holiday Calendar with the holidays Set
     //		HolidayCalendar<LocalDate> calendar =
-    //				new DefaultHolidayCalendar<LocalDate>(
+    //				new DefaultHolidayCalendar<>(
     //						holidays,
     //						new LocalDate("2006-01-01"),
     //						new LocalDate("2006-12-31"));

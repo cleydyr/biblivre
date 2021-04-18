@@ -36,7 +36,7 @@ public class BibliographyReport extends BaseBiblivreReport {
     protected BaseReportDto getReportData(ReportsDTO dto) {
         String ids = dto.getRecordIds();
         String[] idArray = ids.split(",");
-        List<Integer> idList = new ArrayList<Integer>();
+        List<Integer> idList = new ArrayList<>();
         for (int i = 0; i < idArray.length; i++) {
             try {
                 idList.add(Integer.valueOf(idArray[i].trim()));

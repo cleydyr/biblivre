@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.marc;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Leader;
@@ -51,8 +51,8 @@ public enum MaterialType {
     private static final String javascriptArray;
 
     static {
-        List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
-        List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
+        List<MaterialType> tempBibliographicMaterials = new ArrayList<>();
+        List<MaterialType> tempSearchableMaterials = new ArrayList<>();
 
         StringBuffer sb = new StringBuffer();
         sb.append("[");

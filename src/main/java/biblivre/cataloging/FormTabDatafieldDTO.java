@@ -20,7 +20,7 @@
 package biblivre.cataloging;
 
 import biblivre.core.AbstractDTO;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -42,7 +42,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 
     public FormTabDatafieldDTO(JSONObject jsonObject) {
         this.fromJSONObject(jsonObject);
-        this.subfields = new LinkedList<FormTabSubfieldDTO>();
+        this.subfields = new ArrayList<>();
 
         if (jsonObject.has("subfields")) {
             JSONArray array = jsonObject.getJSONArray("subfields");
@@ -55,7 +55,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
     }
 
     public FormTabDatafieldDTO() {
-        this.subfields = new LinkedList<FormTabSubfieldDTO>();
+        this.subfields = new ArrayList<>();
     }
 
     public String getDatafield() {

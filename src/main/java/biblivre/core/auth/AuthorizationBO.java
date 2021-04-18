@@ -23,7 +23,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.AuthorizationException;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
-import java.util.HashMap;
+import java.util.Map;
 
 public class AuthorizationBO extends AbstractBO {
     private AuthorizationDAO dao;
@@ -49,7 +49,7 @@ public class AuthorizationBO extends AbstractBO {
     }
 
     public AuthorizationPoints getUserAuthorizationPoints(LoginDTO user) {
-        HashMap<String, Boolean> permissions = null;
+        Map<String, Boolean> permissions = null;
 
         // TODO: Fixme?
         if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {

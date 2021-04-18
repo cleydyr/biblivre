@@ -36,10 +36,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -73,8 +74,8 @@ public class RestoreBO extends AbstractBO {
         return bo;
     }
 
-    public LinkedList<RestoreDTO> list() {
-        LinkedList<RestoreDTO> list = new LinkedList<RestoreDTO>();
+    public List<RestoreDTO> list() {
+        List<RestoreDTO> list = new ArrayList<>();
 
         BackupBO backupBO = BackupBO.getInstance(this.getSchema());
 
@@ -229,10 +230,10 @@ public class RestoreBO extends AbstractBO {
         long date = new Date().getTime();
         Set<String> databaseSchemas = this.dao.listDatabaseSchemas();
 
-        Map<String, String> deleteSchemas = new HashMap<String, String>();
-        Map<String, String> preRenameSchemas = new HashMap<String, String>();
-        Map<String, String> postRenameSchemas = new HashMap<String, String>();
-        Map<String, String> restoreRenamedSchemas = new HashMap<String, String>();
+        Map<String, String> deleteSchemas = new HashMap<>();
+        Map<String, String> preRenameSchemas = new HashMap<>();
+        Map<String, String> postRenameSchemas = new HashMap<>();
+        Map<String, String> restoreRenamedSchemas = new HashMap<>();
 
         // Para cada schema sendo restaurado
         for (String originalSchemaName : restoreSchemas.keySet()) {
@@ -841,7 +842,7 @@ public class RestoreBO extends AbstractBO {
         // restore a digital_media backup. To prevent oid conflicts, we will create
         // a new oid, replacing the old one.
 
-        HashMap<String, Long> oidMap = new HashMap<String, Long>();
+        HashMap<String, Long> oidMap = new HashMap<>();
         Pattern loCreatePattern = Pattern.compile("lo_create\\('(.*?)'\\)");
         Pattern loOpenPattern = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
 
