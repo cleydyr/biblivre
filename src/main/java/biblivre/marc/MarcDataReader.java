@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.ControlField;
@@ -47,7 +48,7 @@ public class MarcDataReader {
         return this.record;
     }
 
-    public HashMap<String, List<DataField>> getCache() {
+    public Map<String, List<DataField>> getCache() {
         return this.cache;
     }
 

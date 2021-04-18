@@ -21,6 +21,7 @@ package biblivre.circulation.user;
 
 import biblivre.core.AbstractDTO;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,7 +102,7 @@ public class UserDTO extends AbstractDTO {
         this.name = name;
     }
 
-    public HashMap<String, String> getFields() {
+    public Map<String, String> getFields() {
         return this.fields;
     }
 
