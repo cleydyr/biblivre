@@ -22,6 +22,7 @@ package biblivre.core.auth;
 import biblivre.core.utils.Constants;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class AuthorizationPoints implements Serializable {
@@ -30,8 +31,8 @@ public class AuthorizationPoints implements Serializable {
     private static AuthorizationPoints notLoggedMultiSchemaInstance;
     private static AuthorizationPoints notLoggedSingleSchemaInstance;
 
-    private HashMap<Pair<String, String>, Boolean> points;
-    private HashMap<String, Boolean> permissions;
+    private Map<Pair<String, String>, Boolean> points;
+    private Map<String, Boolean> permissions;
     private boolean admin;
     private boolean logged;
 
@@ -63,7 +64,7 @@ public class AuthorizationPoints implements Serializable {
      * @param permissions
      */
     public AuthorizationPoints(
-            String schema, boolean logged, boolean employee, HashMap<String, Boolean> permissions) {
+            String schema, boolean logged, boolean employee, Map<String, Boolean> permissions) {
         this.schema = schema;
         this.admin = false;
         this.employee = employee;
