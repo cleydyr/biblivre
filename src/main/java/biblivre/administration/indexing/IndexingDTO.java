@@ -23,6 +23,8 @@ import biblivre.core.AbstractDTO;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class IndexingDTO extends AbstractDTO {
@@ -31,11 +33,11 @@ public class IndexingDTO extends AbstractDTO {
     private Integer recordId;
     private Integer indexingGroupId;
     private StringBuilder phrase;
-    private HashMap<Integer, HashSet<String>> words;
+    private Map<Integer, Set<String>> words;
     private int ignoreCharsCount;
 
     public IndexingDTO() {
-        this.words = new HashMap<Integer, HashSet<String>>();
+        this.words = new HashMap<>();
         this.phrase = new StringBuilder();
         this.ignoreCharsCount = 0;
     }
@@ -89,7 +91,7 @@ public class IndexingDTO extends AbstractDTO {
     public void addWord(String word, Integer datafieldId) {
         if (StringUtils.isNotBlank(word)) {
             if (!this.words.containsKey(datafieldId)) {
-                this.words.put(datafieldId, new HashSet<String>());
+                this.words.put(datafieldId, new HashSet<>());
             }
 
             this.words.get(datafieldId).add(word);
@@ -98,13 +100,13 @@ public class IndexingDTO extends AbstractDTO {
 
     public void addWords(String[] words, Integer datafieldId) {
         if (!this.words.containsKey(datafieldId)) {
-            this.words.put(datafieldId, new HashSet<String>());
+            this.words.put(datafieldId, new HashSet<>());
         }
 
         Collections.addAll(this.words.get(datafieldId), words);
     }
 
-    public HashMap<Integer, HashSet<String>> getWords() {
+    public Map<Integer, Set<String>> getWords() {
         return this.words;
     }
 

@@ -27,7 +27,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.utils.Constants;
 import biblivre.z3950.client.Z3950Client;
 import biblivre.z3950.client.config.Z3950Config;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,7 +52,7 @@ public class Z3950BO extends AbstractBO {
 
     public List<Z3950RecordDTO> search(List<Z3950AddressDTO> servers, Pair<String, String> search) {
         Z3950Client z3950Client = this.getContext().getBean(Z3950Client.class);
-        List<Z3950RecordDTO> dtoList = new LinkedList<Z3950RecordDTO>();
+        List<Z3950RecordDTO> dtoList = new ArrayList<>();
         int limit =
                 Configurations.getInt(this.getSchema(), Constants.CONFIG_Z3950_RESULT_LIMIT, 100);
 
@@ -87,7 +87,7 @@ public class Z3950BO extends AbstractBO {
     }
 
     public DTOCollection<Z3950AddressDTO> listServers() {
-        DTOCollection<Z3950AddressDTO> servers = new DTOCollection<Z3950AddressDTO>();
+        DTOCollection<Z3950AddressDTO> servers = new DTOCollection<>();
 
         servers.addAll(this.dao.listAll());
         return servers;
@@ -110,7 +110,7 @@ public class Z3950BO extends AbstractBO {
     }
 
     public Z3950AddressDTO findById(int id) {
-        List<Integer> ids = new LinkedList<Integer>();
+        List<Integer> ids = new ArrayList<>();
         ids.add(id);
 
         List<Z3950AddressDTO> list = this.dao.list(ids);

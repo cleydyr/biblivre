@@ -42,7 +42,7 @@ public class ValidationException extends RuntimeException {
 
     public void addError(String key, String value) {
         if (this.errorList == null) {
-            this.errorList = new ArrayList<Pair<String, String>>();
+            this.errorList = new ArrayList<>();
         }
 
         this.errorList.add(Pair.of(key, value));

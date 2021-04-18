@@ -51,7 +51,7 @@ public class UserTypeBO extends AbstractBO {
 
     public Map<Integer, UserTypeDTO> map() {
         List<UserTypeDTO> list = this.dao.list();
-        Map<Integer, UserTypeDTO> map = new TreeMap<Integer, UserTypeDTO>();
+        Map<Integer, UserTypeDTO> map = new TreeMap<>();
         for (UserTypeDTO dto : list) {
             map.put(dto.getId(), dto);
         }

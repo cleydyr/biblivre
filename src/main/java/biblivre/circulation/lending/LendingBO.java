@@ -212,14 +212,14 @@ public class LendingBO extends AbstractBO {
 
     public List<LendingDTO> listHistory(UserDTO user) {
         List<LendingDTO> list = this.dao.listHistory(user);
-        DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
+        DTOCollection<LendingDTO> collection = new DTOCollection<>();
         collection.addAll(list);
         return collection;
     }
 
     public DTOCollection<LendingDTO> listLendings(UserDTO user) {
         List<LendingDTO> list = this.dao.listLendings(user);
-        DTOCollection<LendingDTO> collection = new DTOCollection<LendingDTO>();
+        DTOCollection<LendingDTO> collection = new DTOCollection<>();
         collection.addAll(list);
         return collection;
     }
@@ -245,9 +245,9 @@ public class LendingBO extends AbstractBO {
             DTOCollection<HoldingDTO> holdingList) {
         String schema = this.getSchema();
 
-        Set<Integer> users = new HashSet<Integer>();
-        Set<Integer> records = new HashSet<Integer>();
-        Set<Integer> holdings = new HashSet<Integer>();
+        Set<Integer> users = new HashSet<>();
+        Set<Integer> records = new HashSet<>();
+        Set<Integer> holdings = new HashSet<>();
 
         for (HoldingDTO holding : holdingList) {
             holdings.add(holding.getId());
@@ -269,18 +269,18 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        Map<Integer, RecordDTO> recordsMap = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> recordsMap = new HashMap<>();
         if (!records.isEmpty()) {
             recordsMap = bbo.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
         }
 
-        Map<Integer, UserDTO> usersMap = new HashMap<Integer, UserDTO>();
+        Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
             usersMap = ubo.map(users);
         }
 
         // Join data
-        DTOCollection<LendingInfoDTO> collection = new DTOCollection<LendingInfoDTO>();
+        DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
         collection.setPaging(holdingList.getPaging());
 
         LendingFineBO lfbo = LendingFineBO.getInstance(schema);
@@ -332,11 +332,11 @@ public class LendingBO extends AbstractBO {
             List<LendingDTO> list, boolean populateUser) {
         String schema = this.getSchema();
 
-        DTOCollection<LendingInfoDTO> collection = new DTOCollection<LendingInfoDTO>();
+        DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
 
-        Set<Integer> userIds = new HashSet<Integer>();
-        Set<Integer> holdingIds = new HashSet<Integer>();
-        Set<Integer> recordIds = new HashSet<Integer>();
+        Set<Integer> userIds = new HashSet<>();
+        Set<Integer> holdingIds = new HashSet<>();
+        Set<Integer> recordIds = new HashSet<>();
 
         for (LendingDTO lending : list) {
             if (populateUser && lending.getUserId() != null) {
@@ -352,12 +352,12 @@ public class LendingBO extends AbstractBO {
         HoldingBO holdingBo = HoldingBO.getInstance(schema);
         BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
 
-        Map<Integer, UserDTO> users = new HashMap<Integer, UserDTO>();
+        Map<Integer, UserDTO> users = new HashMap<>();
         if (!userIds.isEmpty()) {
             users = userBo.map(userIds);
         }
 
-        Map<Integer, RecordDTO> holdings = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> holdings = new HashMap<>();
         if (!holdingIds.isEmpty()) {
             holdings = holdingBo.map(holdingIds);
         }
@@ -366,7 +366,7 @@ public class LendingBO extends AbstractBO {
             recordIds.add(((HoldingDTO) holding).getRecordId());
         }
 
-        Map<Integer, RecordDTO> records = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> records = new HashMap<>();
         if (!recordIds.isEmpty()) {
             records = biblioBo.map(recordIds, RecordBO.MARC_INFO);
         }
@@ -402,7 +402,7 @@ public class LendingBO extends AbstractBO {
     }
 
     public List<LendingDTO> listLendings(List<Integer> lendingsIds) {
-        List<LendingDTO> lendingList = new ArrayList<LendingDTO>();
+        List<LendingDTO> lendingList = new ArrayList<>();
 
         for (Integer id : lendingsIds) {
             lendingList.add(this.get(id));
@@ -504,9 +504,9 @@ public class LendingBO extends AbstractBO {
             }
             receipt.append("\n");
 
-            List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
-            List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
-            List<LendingInfoDTO> currentReturns = new ArrayList<LendingInfoDTO>();
+            List<LendingInfoDTO> currentLendings = new ArrayList<>();
+            List<LendingInfoDTO> currentRenews = new ArrayList<>();
+            List<LendingInfoDTO> currentReturns = new ArrayList<>();
 
             for (LendingInfoDTO info : lendingInfo) {
                 LendingDTO lendingDto = info.getLending();
@@ -729,9 +729,9 @@ public class LendingBO extends AbstractBO {
 
             root.put("enrollment", enrollment);
 
-            List<LendingInfoDTO> currentLendings = new ArrayList<LendingInfoDTO>();
-            List<LendingInfoDTO> currentRenews = new ArrayList<LendingInfoDTO>();
-            List<LendingInfoDTO> currentReturns = new ArrayList<LendingInfoDTO>();
+            List<LendingInfoDTO> currentLendings = new ArrayList<>();
+            List<LendingInfoDTO> currentRenews = new ArrayList<>();
+            List<LendingInfoDTO> currentReturns = new ArrayList<>();
 
             for (LendingInfoDTO info : lendingInfo) {
                 LendingDTO lendingDto = info.getLending();
@@ -801,7 +801,7 @@ public class LendingBO extends AbstractBO {
     }
 
     //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {
-    //		List<LendingInfoDTO> result = new ArrayList<LendingInfoDTO>();
+    //		List<LendingInfoDTO> result = new ArrayList<>();
     //		List<LendingDTO> lendings = new LendingDAO().listByRecordSerial(recordSerial);
     //		for (LendingDTO lending : lendings) {
     //			result.add(new LendingInfoDTO(lending));

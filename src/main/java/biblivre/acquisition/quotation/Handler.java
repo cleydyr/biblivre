@@ -177,7 +177,7 @@ public class Handler extends AbstractHandler {
         String searchParameters = request.getString("quotation_list");
 
         JSONArray quotationList = new JSONArray(searchParameters);
-        List<RequestQuotationDTO> quotations = new ArrayList<RequestQuotationDTO>();
+        List<RequestQuotationDTO> quotations = new ArrayList<>();
         for (int i = 0, imax = quotationList.length(); i < imax; i++) {
             JSONObject searchTerm = quotationList.optJSONObject(i);
 

@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -79,7 +78,7 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<Integer> listReservedRecordIds(UserDTO user) {
-        List<Integer> reservedRecords = new ArrayList<Integer>();
+        List<Integer> reservedRecords = new ArrayList<>();
         List<ReservationDTO> list = this.dao.list(user, null);
 
         for (ReservationDTO dto : list) {
@@ -106,7 +105,7 @@ public class ReservationBO extends AbstractBO {
 
     public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
         List<ReservationDTO> list = this.dao.list(user, null);
-        List<ReservationInfoDTO> result = new LinkedList<ReservationInfoDTO>();
+        List<ReservationInfoDTO> result = new ArrayList<>();
         BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
 
         for (ReservationDTO dto : list) {
@@ -125,7 +124,7 @@ public class ReservationBO extends AbstractBO {
 
     public List<ReservationInfoDTO> list() {
         List<ReservationDTO> list = this.dao.list();
-        List<ReservationInfoDTO> result = new LinkedList<ReservationInfoDTO>();
+        List<ReservationInfoDTO> result = new ArrayList<>();
 
         BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
         UserBO ubo = UserBO.getInstance(this.getSchema());
@@ -205,8 +204,8 @@ public class ReservationBO extends AbstractBO {
     public SearchDTO populateReservationInfoByBiblio(SearchDTO search) {
         String schema = this.getSchema();
 
-        Set<Integer> users = new HashSet<Integer>();
-        Set<Integer> records = new HashSet<Integer>();
+        Set<Integer> users = new HashSet<>();
+        Set<Integer> records = new HashSet<>();
 
         for (RecordDTO record : search) {
             records.add(record.getId());
@@ -224,7 +223,7 @@ public class ReservationBO extends AbstractBO {
             }
         }
 
-        Map<Integer, UserDTO> usersMap = new HashMap<Integer, UserDTO>();
+        Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
             usersMap = ubo.map(users);
         }
@@ -237,7 +236,7 @@ public class ReservationBO extends AbstractBO {
                 continue;
             }
 
-            DTOCollection<ReservationInfoDTO> infoList = new DTOCollection<ReservationInfoDTO>();
+            DTOCollection<ReservationInfoDTO> infoList = new DTOCollection<>();
             for (ReservationDTO reservation : reservations) {
                 ReservationInfoDTO info = new ReservationInfoDTO();
 

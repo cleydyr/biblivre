@@ -152,7 +152,7 @@ public class LendingFineDAO extends AbstractDAO {
     }
 
     public List<LendingFineDTO> list(UserDTO user, boolean pendingOnly) {
-        List<LendingFineDTO> list = new ArrayList<LendingFineDTO>();
+        List<LendingFineDTO> list = new ArrayList<>();
         Connection con = null;
         try {
             con = this.getConnection();

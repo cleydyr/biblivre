@@ -24,8 +24,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class UpdatesDAO extends AbstractDAO {
 
@@ -44,7 +44,7 @@ public class UpdatesDAO extends AbstractDAO {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
-            Set<String> set = new TreeSet<String>();
+            Set<String> set = new HashSet<>();
             while (rs.next()) {
                 set.add(rs.getString("installed_versions"));
             }

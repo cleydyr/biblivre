@@ -29,10 +29,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class IndexingDAO extends AbstractDAO {
@@ -108,9 +108,9 @@ public class IndexingDAO extends AbstractDAO {
                 final int recordId = index.getRecordId();
                 final int groupId = index.getIndexingGroupId();
 
-                HashMap<Integer, HashSet<String>> wordsGroups = index.getWords();
+                Map<Integer, Set<String>> wordsGroups = index.getWords();
                 for (Integer key : wordsGroups.keySet()) {
-                    HashSet<String> words = wordsGroups.get(key);
+                    Set<String> words = wordsGroups.get(key);
 
                     for (String word : words) {
                         pst.setInt(1, recordId);
@@ -327,7 +327,7 @@ public class IndexingDAO extends AbstractDAO {
 
     public List<String> searchExactTerms(
             RecordType recordType, int indexingGroupId, List<String> terms) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new ArrayList<>();
 
         Connection con = null;
         try {

@@ -582,8 +582,8 @@ public class ReportsDAO extends AbstractDAO {
 
     public AllUsersReportDto getAllUsersReportData() {
         AllUsersReportDto dto = new AllUsersReportDto();
-        dto.setTypesMap(new HashMap<String, Integer>());
-        dto.setData(new HashMap<String, List<String>>());
+        dto.setTypesMap(new HashMap<>());
+        dto.setData(new HashMap<>());
 
         Connection con = null;
         Connection con2 = null;
@@ -611,7 +611,7 @@ public class ReportsDAO extends AbstractDAO {
                 secondSql.append("ORDER BY name; ");
 
                 ResultSet rs2 = con.createStatement().executeQuery(secondSql.toString());
-                List<String> dataList = new ArrayList<String>();
+                List<String> dataList = new ArrayList<>();
                 while (rs2.next()) {
                     dataList.add(
                             rs2.getString("name")
@@ -677,7 +677,7 @@ public class ReportsDAO extends AbstractDAO {
     }
 
     public TreeMap<String, Set<Integer>> searchAuthors(String authorName, RecordDatabase database) {
-        TreeMap<String, Set<Integer>> results = new TreeMap<String, Set<Integer>>();
+        TreeMap<String, Set<Integer>> results = new TreeMap<>();
 
         String[] terms = authorName.split(" ");
         Connection con = null;
@@ -717,7 +717,7 @@ public class ReportsDAO extends AbstractDAO {
                         Set<Integer> ids = results.get(name);
                         ids.add(id);
                     } else {
-                        Set<Integer> ids = new HashSet<Integer>();
+                        Set<Integer> ids = new HashSet<>();
                         ids.add(id);
                         results.put(name, ids);
                     }

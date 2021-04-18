@@ -25,8 +25,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class LanguagesDAO extends AbstractDAO {
 
@@ -35,7 +35,7 @@ public class LanguagesDAO extends AbstractDAO {
     }
 
     public Set<LanguageDTO> list() {
-        Set<LanguageDTO> set = new TreeSet<LanguageDTO>();
+        Set<LanguageDTO> set = new HashSet<>();
 
         Connection con = null;
         try {

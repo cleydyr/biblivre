@@ -47,7 +47,7 @@ public class Translations extends StaticBO {
     // HashMap<Pair<Schema, Language>, TranslationsMap>
     private static HashMap<Pair<String, String>, TranslationsMap> translations;
     private static Set<String> availableJavascriptLocales =
-            new HashSet<String>(
+            new HashSet<>(
                     Arrays.asList(
                             new String[] {
                                 "af-ZA",
@@ -411,7 +411,7 @@ public class Translations extends StaticBO {
     }
 
     public static void reset() {
-        Translations.translations = new HashMap<Pair<String, String>, TranslationsMap>();
+        Translations.translations = new HashMap<>();
     }
 
     public static void reset(String schema, String language) {
@@ -437,13 +437,13 @@ public class Translations extends StaticBO {
             HashMap<String, String> removeTranslation,
             int loggedUser) {
         HashMap<String, HashMap<String, String>> translations =
-                new HashMap<String, HashMap<String, String>>();
+                new HashMap<>();
         translations.put(language, translation);
 
         HashMap<String, HashMap<String, String>> removeTranslations = null;
 
         if (removeTranslation != null) {
-            removeTranslations = new HashMap<String, HashMap<String, String>>();
+            removeTranslations = new HashMap<>();
             removeTranslations.put(language, removeTranslation);
         }
 
@@ -473,11 +473,11 @@ public class Translations extends StaticBO {
 
     public static boolean addSingleTranslation(
             String schema, String language, String key, String text, int loggedUser) {
-        HashMap<String, String> translation = new HashMap<String, String>();
+        HashMap<String, String> translation = new HashMap<>();
         translation.put(key, text);
 
         HashMap<String, HashMap<String, String>> translations =
-                new HashMap<String, HashMap<String, String>>();
+                new HashMap<>();
         translations.put(language, translation);
 
         boolean success = TranslationsDAO.getInstance(schema).save(translations, loggedUser);
@@ -533,7 +533,7 @@ public class Translations extends StaticBO {
         Translations.reset(schema, language);
 
         Map<String, TranslationDTO> translations = Translations.get(schema, language).getAll();
-        List<String> list = new ArrayList<String>(translations.keySet());
+        List<String> list = new ArrayList<>(translations.keySet());
 
         Collections.sort(list, new NamespaceComparator());
 

@@ -35,7 +35,7 @@ public class UserFieldsDAO extends AbstractDAO {
     }
 
     public List<UserFieldDTO> listFields() {
-        List<UserFieldDTO> list = new ArrayList<UserFieldDTO>();
+        List<UserFieldDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

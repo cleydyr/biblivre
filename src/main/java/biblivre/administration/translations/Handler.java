@@ -87,8 +87,8 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         int loggedUser = request.getLoggedUserId();
         boolean loadUserCreated = StringUtils.isNotBlank(request.getString("user_created"));
-        HashMap<String, String> addTranslation = new HashMap<String, String>();
-        HashMap<String, String> removeTranslation = new HashMap<String, String>();
+        HashMap<String, String> addTranslation = new HashMap<>();
+        HashMap<String, String> removeTranslation = new HashMap<>();
         char type = '\0';
         String key = null;
         String value = null;
@@ -240,7 +240,7 @@ public class Handler extends AbstractHandler {
             }
 
             HashMap<String, HashMap<String, String>> newTranslations =
-                    new HashMap<String, HashMap<String, String>>();
+                    new HashMap<>();
 
             jsonTranslations
                     .keys()
@@ -250,8 +250,7 @@ public class Handler extends AbstractHandler {
                                         jsonTranslations.optJSONObject(language);
 
                                 if (jsonTranslation != null) {
-                                    HashMap<String, String> newTranslation =
-                                            new HashMap<String, String>();
+                                    HashMap<String, String> newTranslation = new HashMap<>();
 
                                     jsonTranslation
                                             .keys()
@@ -293,12 +292,11 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            HashMap<String, String> newTranslation = new HashMap<String, String>();
+            HashMap<String, String> newTranslation = new HashMap<>();
 
             json.keys().forEachRemaining(key -> newTranslation.put(key, json.optString(key)));
 
-            Translations.save(
-                    schema, language, newTranslation, new HashMap<String, String>(), loggedUser);
+            Translations.save(schema, language, newTranslation, new HashMap<>(), loggedUser);
 
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
 

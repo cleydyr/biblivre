@@ -39,10 +39,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
@@ -68,7 +68,7 @@ public class BackupBO extends AbstractBO {
         BackupType backupType = BackupType.FULL;
         BackupScope backupScope = this.getBackupScope();
 
-        LinkedList<String> list = new LinkedList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
         if (this.isGlobalSchema()) {
@@ -77,7 +77,7 @@ public class BackupBO extends AbstractBO {
             list.add(this.getSchema());
         }
 
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         for (String s : list) {
             if (Schemas.isNotLoaded(s)) {
@@ -195,18 +195,18 @@ public class BackupBO extends AbstractBO {
         return this.dao.get(id);
     }
 
-    public LinkedList<BackupDTO> list() {
+    public List<BackupDTO> list() {
         return this.dao.list();
     }
 
     public BackupDTO getLastBackup() {
-        LinkedList<BackupDTO> list = this.dao.list(1);
+        List<BackupDTO> list = this.dao.list(1);
 
         if (list.size() == 0) {
             return null;
         }
 
-        return list.getFirst();
+        return list.get(0);
     }
 
     public boolean save(BackupDTO dto) {

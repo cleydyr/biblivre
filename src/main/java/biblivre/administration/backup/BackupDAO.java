@@ -28,9 +28,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import org.apache.commons.lang3.StringUtils;
 
 public class BackupDAO extends AbstractDAO {
@@ -142,7 +143,7 @@ public class BackupDAO extends AbstractDAO {
     }
 
     public Set<String> listDatabaseSchemas() {
-        Set<String> set = new TreeSet<String>();
+        Set<String> set = new HashSet<>();
 
         Connection con = null;
         try {
@@ -165,12 +166,12 @@ public class BackupDAO extends AbstractDAO {
         return set;
     }
 
-    public LinkedList<BackupDTO> list() {
+    public List<BackupDTO> list() {
         return this.list(0);
     }
 
-    public LinkedList<BackupDTO> list(int limit) {
-        LinkedList<BackupDTO> list = new LinkedList<BackupDTO>();
+    public List<BackupDTO> list(int limit) {
+        ArrayList<BackupDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

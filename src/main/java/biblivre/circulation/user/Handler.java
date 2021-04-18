@@ -244,7 +244,7 @@ public class Handler extends AbstractHandler {
             reservationList.setId(user.getId());
             reservationList.setReservationInfoList(infos);
 
-            DTOCollection<ReservationListDTO> list = new DTOCollection<ReservationListDTO>();
+            DTOCollection<ReservationListDTO> list = new DTOCollection<>();
             list.add(reservationList);
             data = list;
         } else if (tab.equals("fines")) {
@@ -252,7 +252,7 @@ public class Handler extends AbstractHandler {
 
             List<LendingFineDTO> fines = lfbo.listLendingFines(user);
 
-            DTOCollection<LendingFineDTO> list = new DTOCollection<LendingFineDTO>();
+            DTOCollection<LendingFineDTO> list = new DTOCollection<>();
             list.addAll(fines);
             data = list;
         } else {

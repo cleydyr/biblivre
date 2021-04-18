@@ -111,8 +111,8 @@ public abstract class SearchDAO extends AbstractDAO {
         SearchQueryDTO query = search.getQuery();
 
         Set<String> terms = search.getQuery().getSimpleTerms();
-        List<String> sqlTerms = new ArrayList<String>(terms.size());
-        List<String> sqlOperators = new ArrayList<String>(terms.size());
+        List<String> sqlTerms = new ArrayList<>(terms.size());
+        List<String> sqlOperators = new ArrayList<>(terms.size());
         List<String[]> exactTerms = new ArrayList<String[]>();
 
         for (String term : terms) {

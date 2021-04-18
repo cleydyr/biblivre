@@ -36,7 +36,7 @@ public class ConfigurationsDAO extends AbstractDAO {
     }
 
     public List<ConfigurationsDTO> list() {
-        List<ConfigurationsDTO> list = new ArrayList<ConfigurationsDTO>();
+        List<ConfigurationsDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

@@ -32,7 +32,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -68,9 +68,9 @@ public class IndexingBO extends AbstractBO {
             List<FormTabSubfieldDTO> autocompleteSubfields =
                     Fields.getAutocompleteSubFields(this.getSchema(), recordType);
 
-            List<IndexingDTO> indexes = new LinkedList<IndexingDTO>();
-            List<IndexingDTO> sortIndexes = new LinkedList<IndexingDTO>();
-            List<AutocompleteDTO> autocompleteIndexes = new LinkedList<AutocompleteDTO>();
+            List<IndexingDTO> indexes = new ArrayList<>();
+            List<IndexingDTO> sortIndexes = new ArrayList<>();
+            List<AutocompleteDTO> autocompleteIndexes = new ArrayList<>();
 
             this.populateIndexes(dto, indexingGroups, indexes, sortIndexes);
             this.populateAutocompleteIndexes(dto, autocompleteSubfields, autocompleteIndexes);
@@ -113,9 +113,9 @@ public class IndexingBO extends AbstractBO {
 
                     List<RecordDTO> records = rbo.list(offset, limit);
 
-                    List<IndexingDTO> indexes = new LinkedList<IndexingDTO>();
-                    List<IndexingDTO> sortIndexes = new LinkedList<IndexingDTO>();
-                    List<AutocompleteDTO> autocompleteIndexes = new LinkedList<AutocompleteDTO>();
+                    List<IndexingDTO> indexes = new ArrayList<>();
+                    List<IndexingDTO> sortIndexes = new ArrayList<>();
+                    List<AutocompleteDTO> autocompleteIndexes = new ArrayList<>();
 
                     for (RecordDTO dto : records) {
                         this.populateIndexes(dto, indexingGroups, indexes, sortIndexes);
@@ -352,7 +352,7 @@ public class IndexingBO extends AbstractBO {
     }
 
     public List<String> searchExactTerm(RecordType recordType, int indexingGroupId, String term) {
-        List<String> terms = new LinkedList<String>();
+        List<String> terms = new ArrayList<>();
         terms.add(term);
         return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
     }

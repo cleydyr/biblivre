@@ -27,8 +27,8 @@ import biblivre.core.StaticBO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -55,14 +55,14 @@ public class Fields extends StaticBO {
 
     public static void reset() {
         Fields.briefTabFieldFormats =
-                new HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>();
+                new HashMap<>();
 
         Fields.formTabFields =
                 new HashMap<
                         Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>();
 
         Fields.autocompleteSubfields =
-                new HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>();
+                new HashMap<>();
     }
 
     public static void reset(String schema, RecordType recordType) {
@@ -334,13 +334,13 @@ public class Fields extends StaticBO {
 
         if (recordType == RecordType.HOLDING) {
             list =
-                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                    new JavascriptCacheableList<>(
                             "CatalogingInput.holdingFields",
                             schema + ".cataloging." + recordType.toString(),
                             ".form.js");
         } else {
             list =
-                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                    new JavascriptCacheableList<>(
                             "CatalogingInput.formFields",
                             schema + ".cataloging." + recordType.toString(),
                             ".form.js");
@@ -371,7 +371,7 @@ public class Fields extends StaticBO {
         JavascriptCacheableList<FormTabDatafieldDTO> fields =
                 Fields.getFormFields(schema, recordType);
 
-        list = new LinkedList<FormTabSubfieldDTO>();
+        list = new ArrayList<>();
 
         if (fields == null) {
             return list;

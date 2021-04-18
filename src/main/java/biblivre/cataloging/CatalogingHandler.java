@@ -467,7 +467,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, this.recordType);
 
-        DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<BriefTabFieldFormatDTO>();
+        DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<>();
 
         list.addAll(formats);
 

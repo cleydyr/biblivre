@@ -40,8 +40,8 @@ import biblivre.marc.RecordStatus;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import biblivre.z3950.Z3950RecordDTO;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
@@ -66,9 +66,9 @@ public class Handler extends AbstractHandler {
         ImportDTO list = bo.loadFromFile(file, format, encoding);
 
         if (list != null) {
-            List<String> isbnList = new LinkedList<String>();
-            List<String> issnList = new LinkedList<String>();
-            List<String> isrcList = new LinkedList<String>();
+            List<String> isbnList = new ArrayList<>();
+            List<String> issnList = new ArrayList<>();
+            List<String> isrcList = new ArrayList<>();
 
             for (RecordDTO dto : list.getRecordList()) {
                 if (dto instanceof BiblioRecordDTO) {
@@ -121,7 +121,7 @@ public class Handler extends AbstractHandler {
         Z3950BO bo = Z3950BO.getInstance(schema);
         Z3950AddressDTO server = bo.findById(id);
 
-        List<Z3950AddressDTO> serverList = new LinkedList<Z3950AddressDTO>();
+        List<Z3950AddressDTO> serverList = new ArrayList<>();
         serverList.add(server);
         Pair<String, String> search = Pair.of(attribute, value);
 
@@ -131,9 +131,9 @@ public class Handler extends AbstractHandler {
         ImportDTO list = importBo.readFromZ3950Results(recordList);
 
         if (list != null) {
-            List<String> isbnList = new LinkedList<String>();
-            List<String> issnList = new LinkedList<String>();
-            List<String> isrcList = new LinkedList<String>();
+            List<String> isbnList = new ArrayList<>();
+            List<String> issnList = new ArrayList<>();
+            List<String> isrcList = new ArrayList<>();
 
             for (RecordDTO dto : list.getRecordList()) {
                 if (dto instanceof BiblioRecordDTO) {
@@ -224,8 +224,8 @@ public class Handler extends AbstractHandler {
                 request.getInteger(
                         "end",
                         Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-        Set<Integer> successIds = new HashSet<Integer>();
-        Set<Integer> failedIds = new HashSet<Integer>();
+        Set<Integer> successIds = new HashSet<>();
+        Set<Integer> failedIds = new HashSet<>();
 
         for (int i = start; i <= end; i++) {
             String marc = request.getString("marc_" + i);

@@ -21,8 +21,8 @@ package biblivre.administration.setup;
 
 import biblivre.core.AbstractDTO;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class DataMigrationDTO extends AbstractDTO {
     private static final long serialVersionUID = 1L;
@@ -36,8 +36,8 @@ public class DataMigrationDTO extends AbstractDTO {
     private volatile Set<DataMigrationPhase> completedPhases;
 
     public DataMigrationDTO() {
-        this.phases = new HashMap<DataMigrationPhase, Boolean>();
-        this.completedPhases = new TreeSet<DataMigrationPhase>();
+        this.phases = new HashMap<>();
+        this.completedPhases = new HashSet<>();
     }
 
     public String getDataSourceName() {

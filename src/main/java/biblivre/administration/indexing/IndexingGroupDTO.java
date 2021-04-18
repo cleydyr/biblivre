@@ -95,7 +95,7 @@ public class IndexingGroupDTO extends AbstractDTO {
     public List<Pair<String, List<Character>>> getDatafieldsArray() {
         if (this._array == null) {
             List<Pair<String, List<Character>>> list =
-                    new ArrayList<Pair<String, List<Character>>>();
+                    new ArrayList<>();
 
             if (this.datafields != null) {
                 String[] fields = this.datafields.split(",");
@@ -103,7 +103,7 @@ public class IndexingGroupDTO extends AbstractDTO {
                     String[] line = field.trim().split("_");
 
                     String datafield = line[0];
-                    List<Character> subfields = new ArrayList<Character>(line.length - 1);
+                    List<Character> subfields = new ArrayList<>(line.length - 1);
 
                     for (int i = 1; i < line.length; i++) {
                         subfields.add(line[i].charAt(0));

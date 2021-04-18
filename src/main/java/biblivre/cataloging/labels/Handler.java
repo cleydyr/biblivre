@@ -33,11 +33,11 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
         String idList = request.getString("id_list");
 
         String[] idArray = idList.split(",");
-        Set<Integer> ids = new TreeSet<Integer>();
+        Set<Integer> ids = new HashSet<>();
         try {
             for (int i = 0; i < idArray.length; i++) {
                 ids.add(Integer.valueOf(idArray[i]));
@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
 
         BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
 
-        List<LabelDTO> labels = new LinkedList<LabelDTO>();
+        List<LabelDTO> labels = new ArrayList<>();
         for (RecordDTO rdto : hdto.values()) {
             HoldingDTO holding = (HoldingDTO) rdto;
 

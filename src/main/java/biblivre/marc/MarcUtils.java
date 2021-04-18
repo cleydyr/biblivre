@@ -80,7 +80,7 @@ public class MarcUtils {
 
         scanner = new Scanner(is, Constants.DEFAULT_CHARSET.name());
 
-        List<String> text = new ArrayList<String>();
+        List<String> text = new ArrayList<>();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
 

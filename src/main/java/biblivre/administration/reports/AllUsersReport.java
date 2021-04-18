@@ -118,7 +118,7 @@ public class AllUsersReport extends BaseBiblivreReport {
 
     private final ArrayList<PdfPTable> createListTable(Map<String, List<String>> data) {
         try {
-            ArrayList<PdfPTable> tabelas = new ArrayList<PdfPTable>();
+            ArrayList<PdfPTable> tabelas = new ArrayList<>();
             PdfPTable table = null;
             PdfPCell cell;
             for (String description : data.keySet()) {

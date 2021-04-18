@@ -23,10 +23,11 @@ import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.BriefTabFieldFormatDTO;
 import biblivre.cataloging.RecordAttachmentDTO;
 import biblivre.core.utils.TextUtils;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.ControlField;
@@ -36,7 +37,7 @@ import org.marc4j.marc.Subfield;
 
 public class MarcDataReader {
     private Record record;
-    private HashMap<String, List<DataField>> cache;
+    private Map<String, List<DataField>> cache;
 
     public MarcDataReader(Record record) {
         this.record = record;
@@ -47,12 +48,12 @@ public class MarcDataReader {
         return this.record;
     }
 
-    public HashMap<String, List<DataField>> getCache() {
+    public Map<String, List<DataField>> getCache() {
         return this.cache;
     }
 
     public List<BriefTabFieldDTO> getFieldList(List<BriefTabFieldFormatDTO> dataFieldFormats) {
-        List<BriefTabFieldDTO> list = new LinkedList<BriefTabFieldDTO>();
+        List<BriefTabFieldDTO> list = new ArrayList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -78,7 +79,7 @@ public class MarcDataReader {
 
     public String getFieldValue(
             boolean listAll, String separator, BriefTabFieldFormatDTO... dataFieldFormats) {
-        List<String> formattedFields = new LinkedList<String>();
+        List<String> formattedFields = new ArrayList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -102,7 +103,7 @@ public class MarcDataReader {
 
     public List<RecordAttachmentDTO> getAttachments() {
         List<DataField> fields = this.getDataFields(MarcConstants.ELECTRONIC_LOCATION);
-        List<RecordAttachmentDTO> attachments = new LinkedList<RecordAttachmentDTO>();
+        List<RecordAttachmentDTO> attachments = new ArrayList<>();
 
         String file = null;
         String name = null;
@@ -318,7 +319,7 @@ public class MarcDataReader {
         Record record = this.getRecord();
 
         if (record == null || StringUtils.isBlank(tag)) {
-            return new LinkedList<DataField>();
+            return new ArrayList<>();
         }
 
         List<DataField> list = this.getCache().get(tag);
@@ -327,7 +328,7 @@ public class MarcDataReader {
             return list;
         }
 
-        return new LinkedList<DataField>();
+        return new ArrayList<>();
     }
 
     public Subfield getFirstSubfield(String tag, char subfield) {
@@ -361,8 +362,8 @@ public class MarcDataReader {
         return sf != null ? sf.getData() : "";
     }
 
-    private HashMap<String, List<DataField>> readDataFieldMap() {
-        HashMap<String, List<DataField>> hash = new HashMap<String, List<DataField>>();
+    private Map<String, List<DataField>> readDataFieldMap() {
+        HashMap<String, List<DataField>> hash = new HashMap<>();
         Record record = this.getRecord();
 
         if (record == null) {
@@ -380,7 +381,7 @@ public class MarcDataReader {
             fieldList = hash.get(tag);
 
             if (fieldList == null) {
-                fieldList = new LinkedList<DataField>();
+                fieldList = new ArrayList<>();
                 hash.put(tag, fieldList);
             }
 
