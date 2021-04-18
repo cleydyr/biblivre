@@ -37,7 +37,7 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -68,7 +68,7 @@ public class Handler extends AbstractHandler {
         Z3950BO bo = Z3950BO.getInstance(schema);
 
         String[] serverIds = servers.split(",");
-        List<Integer> ids = new LinkedList<>();
+        List<Integer> ids = new ArrayList<>();
         for (String serverId : serverIds) {
             try {
                 ids.add(Integer.parseInt(serverId.trim()));

@@ -41,7 +41,6 @@ import biblivre.core.utils.Constants;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
@@ -134,7 +133,7 @@ public class Handler extends AbstractHandler {
             lendings.addAll(lbo.listHistory(user));
         }
 
-        List<LendingInfoDTO> infos = new LinkedList<>();
+        List<LendingInfoDTO> infos = new ArrayList<>();
 
         for (LendingDTO lending : lendings) {
             HoldingDTO holding = (HoldingDTO) hbo.get(lending.getHoldingId(), RecordBO.MARC_INFO);

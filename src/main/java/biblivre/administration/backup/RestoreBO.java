@@ -36,10 +36,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -75,7 +75,7 @@ public class RestoreBO extends AbstractBO {
     }
 
     public List<RestoreDTO> list() {
-        List<RestoreDTO> list = new LinkedList<>();
+        List<RestoreDTO> list = new ArrayList<>();
 
         BackupBO backupBO = BackupBO.getInstance(this.getSchema());
 

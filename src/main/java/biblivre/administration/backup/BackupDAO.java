@@ -28,7 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -171,7 +171,7 @@ public class BackupDAO extends AbstractDAO {
     }
 
     public List<BackupDTO> list(int limit) {
-        LinkedList<BackupDTO> list = new LinkedList<>();
+        ArrayList<BackupDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

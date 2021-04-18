@@ -47,7 +47,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -790,7 +789,7 @@ public class HoldingDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> getSearchResults(SearchDTO search) {
-        List<RecordDTO> list = new LinkedList<>();
+        List<RecordDTO> list = new ArrayList<>();
 
         if (search == null) {
             return list;

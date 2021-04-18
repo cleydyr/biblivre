@@ -54,8 +54,8 @@ import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -118,7 +118,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> listCatalogingRecords(RecordType recordType, int limit, int offset) {
-        List<RecordDTO> list = new LinkedList<>();
+        List<RecordDTO> list = new ArrayList<>();
 
         String tableName = "cataloging_" + recordType.toString();
 
@@ -191,7 +191,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<HoldingDTO> listCatalogingHoldings(int limit, int offset) {
-        List<HoldingDTO> list = new LinkedList<>();
+        List<HoldingDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -247,7 +247,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<MemoryFile> listDigitalMedia(int limit, int offset) {
-        List<MemoryFile> list = new LinkedList<>();
+        List<MemoryFile> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -286,7 +286,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<AccessCardDTO> listAccessCards(int limit, int offset) {
-        List<AccessCardDTO> list = new LinkedList<>();
+        List<AccessCardDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -324,7 +324,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<LoginDTO> listLogins(int limit, int offset) {
-        List<LoginDTO> list = new LinkedList<>();
+        List<LoginDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -363,7 +363,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<Z3950AddressDTO> listZ3950Servers(int limit, int offset) {
-        List<Z3950AddressDTO> list = new LinkedList<>();
+        List<Z3950AddressDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -403,7 +403,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<AccessControlDTO> listAccessControl(int limit, int offset) {
-        List<AccessControlDTO> list = new LinkedList<>();
+        List<AccessControlDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -444,7 +444,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<AccessControlDTO> listAccessControlHistory(int limit, int offset) {
-        List<AccessControlDTO> list = new LinkedList<>();
+        List<AccessControlDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -485,7 +485,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<LendingDTO> listLendings(int limit, int offset) {
-        List<LendingDTO> list = new LinkedList<>();
+        List<LendingDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -530,7 +530,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<LendingFineDTO> listLendingFines(int limit, int offset) {
-        List<LendingFineDTO> list = new LinkedList<>();
+        List<LendingFineDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -568,7 +568,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<SupplierDTO> listAquisitionSupplier(int limit, int offset) {
-        List<SupplierDTO> list = new LinkedList<>();
+        List<SupplierDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -628,7 +628,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<RequestDTO> listAquisitionRequisition(int limit, int offset) {
-        List<RequestDTO> list = new LinkedList<>();
+        List<RequestDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -676,7 +676,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<QuotationDTO> listAquisitionQuotation(int limit, int offset) {
-        List<QuotationDTO> list = new LinkedList<>();
+        List<QuotationDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -717,7 +717,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<RequestQuotationDTO> listAquisitionItemQuotation(int limit, int offset) {
-        List<RequestQuotationDTO> list = new LinkedList<>();
+        List<RequestQuotationDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -756,7 +756,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<OrderDTO> listAquisitionOrder(int limit, int offset) {
-        List<OrderDTO> list = new LinkedList<>();
+        List<OrderDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -802,7 +802,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<ReservationDTO> listReservations(int limit, int offset) {
-        List<ReservationDTO> list = new LinkedList<>();
+        List<ReservationDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -841,7 +841,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<UserDTO> listUsers(int limit, int offset) {
-        List<UserDTO> list = new LinkedList<>();
+        List<UserDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
@@ -894,7 +894,7 @@ public class DataMigrationDAO extends AbstractDAO {
     }
 
     public List<UserTypeDTO> listUsersTypes(int limit, int offset) {
-        List<UserTypeDTO> list = new LinkedList<>();
+        List<UserTypeDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

@@ -20,10 +20,10 @@
 package biblivre.core;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import org.json.JSONArray;
 
-public class JavascriptCacheableList<T extends IFJson> extends LinkedList<T>
+public class JavascriptCacheableList<T extends IFJson> extends ArrayList<T>
         implements IFCacheableJavascript {
     private static final long serialVersionUID = 1L;
 

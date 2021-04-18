@@ -21,8 +21,8 @@ package biblivre.circulation.user;
 
 import biblivre.core.JavascriptCacheableList;
 import biblivre.core.StaticBO;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class UserFields extends StaticBO {
     public static List<UserFieldDTO> getSearchableFields(String schema) {
         JavascriptCacheableList<UserFieldDTO> list = UserFields.getFields(schema);
 
-        List<UserFieldDTO> searcheableList = new LinkedList<>();
+        List<UserFieldDTO> searcheableList = new ArrayList<>();
         for (UserFieldDTO dto : list) {
 
             switch (dto.getType()) {

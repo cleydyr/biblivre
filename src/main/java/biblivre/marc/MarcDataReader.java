@@ -23,9 +23,9 @@ import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.BriefTabFieldFormatDTO;
 import biblivre.cataloging.RecordAttachmentDTO;
 import biblivre.core.utils.TextUtils;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -53,7 +53,7 @@ public class MarcDataReader {
     }
 
     public List<BriefTabFieldDTO> getFieldList(List<BriefTabFieldFormatDTO> dataFieldFormats) {
-        List<BriefTabFieldDTO> list = new LinkedList<>();
+        List<BriefTabFieldDTO> list = new ArrayList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -79,7 +79,7 @@ public class MarcDataReader {
 
     public String getFieldValue(
             boolean listAll, String separator, BriefTabFieldFormatDTO... dataFieldFormats) {
-        List<String> formattedFields = new LinkedList<>();
+        List<String> formattedFields = new ArrayList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -103,7 +103,7 @@ public class MarcDataReader {
 
     public List<RecordAttachmentDTO> getAttachments() {
         List<DataField> fields = this.getDataFields(MarcConstants.ELECTRONIC_LOCATION);
-        List<RecordAttachmentDTO> attachments = new LinkedList<>();
+        List<RecordAttachmentDTO> attachments = new ArrayList<>();
 
         String file = null;
         String name = null;
@@ -319,7 +319,7 @@ public class MarcDataReader {
         Record record = this.getRecord();
 
         if (record == null || StringUtils.isBlank(tag)) {
-            return new LinkedList<>();
+            return new ArrayList<>();
         }
 
         List<DataField> list = this.getCache().get(tag);
@@ -328,7 +328,7 @@ public class MarcDataReader {
             return list;
         }
 
-        return new LinkedList<>();
+        return new ArrayList<>();
     }
 
     public Subfield getFirstSubfield(String tag, char subfield) {
@@ -381,7 +381,7 @@ public class MarcDataReader {
             fieldList = hash.get(tag);
 
             if (fieldList == null) {
-                fieldList = new LinkedList<>();
+                fieldList = new ArrayList<>();
                 hash.put(tag, fieldList);
             }
 

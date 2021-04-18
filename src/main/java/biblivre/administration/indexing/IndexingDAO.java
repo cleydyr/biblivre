@@ -29,7 +29,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -327,7 +327,7 @@ public class IndexingDAO extends AbstractDAO {
 
     public List<String> searchExactTerms(
             RecordType recordType, int indexingGroupId, List<String> terms) {
-        List<String> list = new LinkedList<>();
+        List<String> list = new ArrayList<>();
 
         Connection con = null;
         try {

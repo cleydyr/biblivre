@@ -32,8 +32,8 @@ import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -137,7 +137,7 @@ public class BiblioRecordBO extends RecordBO {
                 Collections.sort(holdingsList);
             }
 
-            List<LendingDTO> lendings = new LinkedList<>();
+            List<LendingDTO> lendings = new ArrayList<>();
             for (HoldingDTO holding : holdingsList) {
                 lendings.add(lbo.getCurrentLending(holding));
             }

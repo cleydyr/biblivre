@@ -32,7 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
@@ -114,7 +114,7 @@ public class Z3950DAO extends AbstractDAO {
     }
 
     public List<Z3950AddressDTO> list(List<Integer> ids) {
-        List<Z3950AddressDTO> list = new LinkedList<>();
+        List<Z3950AddressDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {

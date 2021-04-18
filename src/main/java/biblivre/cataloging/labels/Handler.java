@@ -33,7 +33,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
 
         BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
 
-        List<LabelDTO> labels = new LinkedList<>();
+        List<LabelDTO> labels = new ArrayList<>();
         for (RecordDTO rdto : hdto.values()) {
             HoldingDTO holding = (HoldingDTO) rdto;
 
