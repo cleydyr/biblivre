@@ -30,6 +30,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
@@ -165,11 +166,11 @@ public class BackupDAO extends AbstractDAO {
         return set;
     }
 
-    public ArrayList<BackupDTO> list() {
+    public List<BackupDTO> list() {
         return this.list(0);
     }
 
-    public ArrayList<BackupDTO> list(int limit) {
+    public List<BackupDTO> list(int limit) {
         ArrayList<BackupDTO> list = new ArrayList<>();
 
         Connection con = null;

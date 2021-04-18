@@ -195,7 +195,7 @@ public class BackupBO extends AbstractBO {
         return this.dao.get(id);
     }
 
-    public ArrayList<BackupDTO> list() {
+    public List<BackupDTO> list() {
         return this.dao.list();
     }
 

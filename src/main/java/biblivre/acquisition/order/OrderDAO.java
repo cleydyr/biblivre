@@ -177,7 +177,7 @@ public class OrderDAO extends AbstractDAO {
         return true;
     }
 
-    public ArrayList<OrderDTO> listBuyOrders(String status, int offset, int limit) {
+    public List<OrderDTO> listBuyOrders(String status, int offset, int limit) {
         ArrayList<OrderDTO> requestList = new ArrayList<>();
         Connection con = null;
         try {

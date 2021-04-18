@@ -27,6 +27,8 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,7 +120,7 @@ public class Handler extends AbstractHandler {
             returnDto = this.createCard(request, code, status);
             success = bo.save(returnDto);
         } else {
-            ArrayList<AccessCardDTO> list =
+            List<AccessCardDTO> list =
                     bo.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
             if (list != null) {
                 returnDto = list.get(0);
