@@ -352,7 +352,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         if (recordDatabase == RecordDatabase.TRASH) {
             success = bo.delete(dto);
         } else {
-            Set<Integer> ids = new TreeSet<Integer>();
+            Set<Integer> ids = new TreeSet<>();
             ids.add(dto.getId());
             success = bo.moveRecords(ids, request.getLoggedUserId(), RecordDatabase.TRASH);
         }
@@ -473,7 +473,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        Set<Integer> ids = new TreeSet<Integer>();
+        Set<Integer> ids = new TreeSet<>();
         for (int i = 0; i < idList.length; i++) {
             ids.add(Integer.valueOf(idList[i]));
         }
@@ -509,7 +509,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         String idList = (String) request.getSessionAttribute(schema, exportId);
 
         String[] idArray = idList.split(",");
-        Set<Integer> ids = new TreeSet<Integer>();
+        Set<Integer> ids = new TreeSet<>();
         for (int i = 0; i < idArray.length; i++) {
             ids.add(Integer.valueOf(idArray[i]));
         }
@@ -600,7 +600,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         // Record tab
         List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, this.recordType);
-        DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<BriefTabFieldFormatDTO>();
+        DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<>();
         list.addAll(formats);
         try {
             this.json.put("data", list.toJSONObject());

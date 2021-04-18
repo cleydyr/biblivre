@@ -75,7 +75,7 @@ public class AccessCardBO extends AbstractBO {
         int start = Integer.parseInt(startString);
         int end = Integer.parseInt(endString);
 
-        LinkedList<String> codeList = new LinkedList<String>();
+        LinkedList<String> codeList = new LinkedList<>();
         int pad = startString.length();
         for (int i = start; i <= end; i++) {
             String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
@@ -84,7 +84,7 @@ public class AccessCardBO extends AbstractBO {
 
         // Validate existing cards
         List<AccessCardDTO> existingCards = this.dao.get(codeList, null);
-        List<String> existingCodes = new LinkedList<String>();
+        List<String> existingCodes = new LinkedList<>();
         for (AccessCardDTO card : existingCards) {
             existingCodes.add(card.getCode());
         }
@@ -95,7 +95,7 @@ public class AccessCardBO extends AbstractBO {
             throw ve;
         }
 
-        LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
+        LinkedList<AccessCardDTO> cardList = new LinkedList<>();
         for (String code : codeList) {
             AccessCardDTO dto = new AccessCardDTO();
             dto.setCode(code);

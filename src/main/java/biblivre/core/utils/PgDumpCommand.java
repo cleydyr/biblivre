@@ -73,7 +73,7 @@ public class PgDumpCommand {
     }
 
     public List<String> getCommands() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         result.add(getExecutable().getAbsolutePath());
 

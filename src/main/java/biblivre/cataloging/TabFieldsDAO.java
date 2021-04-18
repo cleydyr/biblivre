@@ -39,7 +39,7 @@ public class TabFieldsDAO extends AbstractDAO {
     }
 
     public List<BriefTabFieldFormatDTO> listBriefFormats(RecordType recordType) {
-        List<BriefTabFieldFormatDTO> list = new LinkedList<BriefTabFieldFormatDTO>();
+        List<BriefTabFieldFormatDTO> list = new LinkedList<>();
 
         Connection con = null;
         try {
@@ -194,8 +194,8 @@ public class TabFieldsDAO extends AbstractDAO {
     }
 
     public List<FormTabDatafieldDTO> listFields(RecordType recordType) {
-        List<FormTabDatafieldDTO> list = new LinkedList<FormTabDatafieldDTO>();
-        HashMap<String, FormTabDatafieldDTO> hash = new HashMap<String, FormTabDatafieldDTO>();
+        List<FormTabDatafieldDTO> list = new LinkedList<>();
+        HashMap<String, FormTabDatafieldDTO> hash = new HashMap<>();
 
         Connection con = null;
         try {

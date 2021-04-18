@@ -56,8 +56,8 @@ public class DataMigrationBO extends AbstractBO {
     private DataMigrationPhase currentPhase;
     private Integer currentCount;
 
-    private Map<Integer, Integer> lendingMap = new HashMap<Integer, Integer>();
-    private Map<Integer, Integer> lendingHistoryMap = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> lendingMap = new HashMap<>();
+    private Map<Integer, Integer> lendingHistoryMap = new HashMap<>();
     private String userSchema;
 
     @Override

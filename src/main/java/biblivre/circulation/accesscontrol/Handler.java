@@ -43,7 +43,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
+        DTOCollection<AccessControlDTO> list = new DTOCollection<>();
         list.setPaging(userList.getPaging());
 
         AccessControlBO bo = AccessControlBO.getInstance(schema);
@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<AccessControlDTO> list = new DTOCollection<AccessControlDTO>();
+        DTOCollection<AccessControlDTO> list = new DTOCollection<>();
         list.setPaging(cardList.getPaging());
 
         AccessControlBO bo = AccessControlBO.getInstance(schema);

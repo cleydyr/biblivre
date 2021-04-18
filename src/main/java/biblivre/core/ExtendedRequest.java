@@ -269,8 +269,8 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         this.multiPart = ServletFileUpload.isMultipartContent(this);
 
         if (this.multiPart) {
-            this.multiPartParameters = new HashMap<String, String>();
-            this.multiPartFiles = new HashMap<String, MemoryFile>();
+            this.multiPartParameters = new HashMap<>();
+            this.multiPartFiles = new HashMap<>();
 
             try {
                 FileItemFactory factory = new DiskFileItemFactory();

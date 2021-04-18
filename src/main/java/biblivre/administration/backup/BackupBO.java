@@ -68,7 +68,7 @@ public class BackupBO extends AbstractBO {
         BackupType backupType = BackupType.FULL;
         BackupScope backupScope = this.getBackupScope();
 
-        LinkedList<String> list = new LinkedList<String>();
+        LinkedList<String> list = new LinkedList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
         if (this.isGlobalSchema()) {
@@ -77,7 +77,7 @@ public class BackupBO extends AbstractBO {
             list.add(this.getSchema());
         }
 
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         for (String s : list) {
             if (Schemas.isNotLoaded(s)) {

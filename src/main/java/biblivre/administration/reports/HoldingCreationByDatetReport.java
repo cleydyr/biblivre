@@ -47,7 +47,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
     protected void generateReportBody(Document document, BaseReportDto reportData)
             throws Exception {
         HoldingCreationByDateReportDto dto = (HoldingCreationByDateReportDto) reportData;
-        userTotal = new HashMap<String, Integer>();
+        userTotal = new HashMap<>();
         Paragraph p1 =
                 new Paragraph(
                         this.getText("administration.reports.title.holdings_creation_by_date"));

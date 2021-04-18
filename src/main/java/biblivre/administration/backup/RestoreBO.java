@@ -74,7 +74,7 @@ public class RestoreBO extends AbstractBO {
     }
 
     public LinkedList<RestoreDTO> list() {
-        LinkedList<RestoreDTO> list = new LinkedList<RestoreDTO>();
+        LinkedList<RestoreDTO> list = new LinkedList<>();
 
         BackupBO backupBO = BackupBO.getInstance(this.getSchema());
 
@@ -229,10 +229,10 @@ public class RestoreBO extends AbstractBO {
         long date = new Date().getTime();
         Set<String> databaseSchemas = this.dao.listDatabaseSchemas();
 
-        Map<String, String> deleteSchemas = new HashMap<String, String>();
-        Map<String, String> preRenameSchemas = new HashMap<String, String>();
-        Map<String, String> postRenameSchemas = new HashMap<String, String>();
-        Map<String, String> restoreRenamedSchemas = new HashMap<String, String>();
+        Map<String, String> deleteSchemas = new HashMap<>();
+        Map<String, String> preRenameSchemas = new HashMap<>();
+        Map<String, String> postRenameSchemas = new HashMap<>();
+        Map<String, String> restoreRenamedSchemas = new HashMap<>();
 
         // Para cada schema sendo restaurado
         for (String originalSchemaName : restoreSchemas.keySet()) {
@@ -841,7 +841,7 @@ public class RestoreBO extends AbstractBO {
         // restore a digital_media backup. To prevent oid conflicts, we will create
         // a new oid, replacing the old one.
 
-        HashMap<String, Long> oidMap = new HashMap<String, Long>();
+        HashMap<String, Long> oidMap = new HashMap<>();
         Pattern loCreatePattern = Pattern.compile("lo_create\\('(.*?)'\\)");
         Pattern loOpenPattern = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
 

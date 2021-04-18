@@ -82,7 +82,7 @@ public enum AutocompleteType {
             set.addAll(additionalAutocompletions);
         }
 
-        DTOCollection<AutocompleteDTO> collection = new DTOCollection<AutocompleteDTO>();
+        DTOCollection<AutocompleteDTO> collection = new DTOCollection<>();
 
         collection.addAll(set);
 

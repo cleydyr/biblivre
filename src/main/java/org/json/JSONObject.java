@@ -140,7 +140,7 @@ public class JSONObject {
 
     /** Construct an empty JSONObject. */
     public JSONObject() {
-        this.map = new HashMap<String, Object>();
+        this.map = new HashMap<>();
     }
 
     /**
@@ -221,7 +221,7 @@ public class JSONObject {
      * @throws JSONException
      */
     public <T> JSONObject(Map<String, T> map) {
-        this.map = new HashMap<String, Object>();
+        this.map = new HashMap<>();
         if (map != null) {
             Iterator<Entry<String, T>> i = map.entrySet().iterator();
             while (i.hasNext()) {
@@ -1541,6 +1541,6 @@ public class JSONObject {
     }
 
     public Iterator<String> sortedKeys() {
-        return new TreeSet<String>(this.map.keySet()).iterator();
+        return new TreeSet<>(this.map.keySet()).iterator();
     }
 }

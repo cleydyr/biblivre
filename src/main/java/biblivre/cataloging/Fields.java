@@ -54,15 +54,13 @@ public class Fields extends StaticBO {
     }
 
     public static void reset() {
-        Fields.briefTabFieldFormats =
-                new HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>();
+        Fields.briefTabFieldFormats = new HashMap<>();
 
         Fields.formTabFields =
                 new HashMap<
                         Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>();
 
-        Fields.autocompleteSubfields =
-                new HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>();
+        Fields.autocompleteSubfields = new HashMap<>();
     }
 
     public static void reset(String schema, RecordType recordType) {
@@ -334,13 +332,13 @@ public class Fields extends StaticBO {
 
         if (recordType == RecordType.HOLDING) {
             list =
-                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                    new JavascriptCacheableList<>(
                             "CatalogingInput.holdingFields",
                             schema + ".cataloging." + recordType.toString(),
                             ".form.js");
         } else {
             list =
-                    new JavascriptCacheableList<FormTabDatafieldDTO>(
+                    new JavascriptCacheableList<>(
                             "CatalogingInput.formFields",
                             schema + ".cataloging." + recordType.toString(),
                             ".form.js");
@@ -371,7 +369,7 @@ public class Fields extends StaticBO {
         JavascriptCacheableList<FormTabDatafieldDTO> fields =
                 Fields.getFormFields(schema, recordType);
 
-        list = new LinkedList<FormTabSubfieldDTO>();
+        list = new LinkedList<>();
 
         if (fields == null) {
             return list;

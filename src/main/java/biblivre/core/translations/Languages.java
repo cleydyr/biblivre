@@ -39,7 +39,7 @@ public class Languages extends StaticBO {
     }
 
     public static void reset() {
-        Languages.languages = new HashMap<String, Set<LanguageDTO>>();
+        Languages.languages = new HashMap<>();
     }
 
     public static void reset(String schema) {

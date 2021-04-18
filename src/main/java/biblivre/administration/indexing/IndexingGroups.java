@@ -47,7 +47,7 @@ public class IndexingGroups extends StaticBO {
     }
 
     public static void reset() {
-        IndexingGroups.groups = new HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>>();
+        IndexingGroups.groups = new HashMap<>();
     }
 
     public static void reset(String schema, RecordType recordType) {
@@ -70,7 +70,7 @@ public class IndexingGroups extends StaticBO {
 
     public static String getSearchableGroupsText(
             String schema, RecordType recordType, String language) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new LinkedList<>();
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
 

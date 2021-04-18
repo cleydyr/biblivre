@@ -44,7 +44,7 @@ public class UpdatesDAO extends AbstractDAO {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
-            Set<String> set = new TreeSet<String>();
+            Set<String> set = new TreeSet<>();
             while (rs.next()) {
                 set.add(rs.getString("installed_versions"));
             }

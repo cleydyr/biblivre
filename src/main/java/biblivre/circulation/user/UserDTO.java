@@ -42,7 +42,7 @@ public class UserDTO extends AbstractDTO {
     private transient String usertypeName;
 
     public UserDTO() {
-        this.fields = new HashMap<String, String>();
+        this.fields = new HashMap<>();
     }
 
     public int getId() {

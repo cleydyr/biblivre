@@ -42,7 +42,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
 
     public FormTabDatafieldDTO(JSONObject jsonObject) {
         this.fromJSONObject(jsonObject);
-        this.subfields = new LinkedList<FormTabSubfieldDTO>();
+        this.subfields = new LinkedList<>();
 
         if (jsonObject.has("subfields")) {
             JSONArray array = jsonObject.getJSONArray("subfields");
@@ -55,7 +55,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
     }
 
     public FormTabDatafieldDTO() {
-        this.subfields = new LinkedList<FormTabSubfieldDTO>();
+        this.subfields = new LinkedList<>();
     }
 
     public String getDatafield() {

@@ -43,7 +43,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<LendingListDTO> list = new DTOCollection<LendingListDTO>();
+        DTOCollection<LendingListDTO> list = new DTOCollection<>();
         list.setPaging(userList.getPaging());
 
         try {

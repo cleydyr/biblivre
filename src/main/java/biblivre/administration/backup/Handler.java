@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
         BackupBO bo = BackupBO.getInstance(schema);
         BackupScope backupScope = bo.getBackupScope();
 
-        LinkedList<String> list = new LinkedList<String>();
+        LinkedList<String> list = new LinkedList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
         if (request.isGlobalSchema()) {
@@ -67,7 +67,7 @@ public class Handler extends AbstractHandler {
             list.add(schema);
         }
 
-        Map<String, Pair<String, String>> map = new HashMap<String, Pair<String, String>>();
+        Map<String, Pair<String, String>> map = new HashMap<>();
 
         for (String s : list) {
             if (Schemas.isNotLoaded(s)) {

@@ -136,7 +136,7 @@ public class RequestDAO extends AbstractDAO {
     }
 
     public DTOCollection<RequestDTO> search(String value, int limit, int offset) {
-        DTOCollection<RequestDTO> list = new DTOCollection<RequestDTO>();
+        DTOCollection<RequestDTO> list = new DTOCollection<>();
 
         Connection con = null;
         try {

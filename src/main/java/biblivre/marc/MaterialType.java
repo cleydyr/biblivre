@@ -51,8 +51,8 @@ public enum MaterialType {
     private static final String javascriptArray;
 
     static {
-        List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
-        List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
+        List<MaterialType> tempBibliographicMaterials = new LinkedList<>();
+        List<MaterialType> tempSearchableMaterials = new LinkedList<>();
 
         StringBuffer sb = new StringBuffer();
         sb.append("[");

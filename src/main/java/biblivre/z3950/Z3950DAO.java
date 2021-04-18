@@ -47,7 +47,7 @@ public class Z3950DAO extends AbstractDAO {
     }
 
     public DTOCollection<Z3950AddressDTO> search(String value, int limit, int offset) {
-        DTOCollection<Z3950AddressDTO> list = new DTOCollection<Z3950AddressDTO>();
+        DTOCollection<Z3950AddressDTO> list = new DTOCollection<>();
 
         if (value != null) {
             value = TextUtils.removeDiacriticals(value);
@@ -114,7 +114,7 @@ public class Z3950DAO extends AbstractDAO {
     }
 
     public List<Z3950AddressDTO> list(List<Integer> ids) {
-        List<Z3950AddressDTO> list = new LinkedList<Z3950AddressDTO>();
+        List<Z3950AddressDTO> list = new LinkedList<>();
 
         Connection con = null;
         try {

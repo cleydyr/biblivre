@@ -83,8 +83,8 @@ public class Handler extends AbstractHandler {
         int loggedUser = request.getLoggedUserId();
         boolean loadUserCreated = StringUtils.isNotBlank(request.getString("user_created"));
 
-        HashMap<String, String> addTranslation = new HashMap<String, String>();
-        HashMap<String, String> removeTranslation = new HashMap<String, String>();
+        HashMap<String, String> addTranslation = new HashMap<>();
+        HashMap<String, String> removeTranslation = new HashMap<>();
         char type = '\0';
         String key = null;
         String value = null;
@@ -199,8 +199,7 @@ public class Handler extends AbstractHandler {
         Languages.reset(schema);
         Set<LanguageDTO> languages = Languages.getLanguages(schema);
 
-        HashMap<String, HashMap<String, TranslationDTO>> translations =
-                new HashMap<String, HashMap<String, TranslationDTO>>();
+        HashMap<String, HashMap<String, TranslationDTO>> translations = new HashMap<>();
 
         for (LanguageDTO languageDTO : languages) {
             String language = languageDTO.getLanguage();
@@ -231,8 +230,7 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            HashMap<String, HashMap<String, String>> newTranslations =
-                    new HashMap<String, HashMap<String, String>>();
+            HashMap<String, HashMap<String, String>> newTranslations = new HashMap<>();
 
             Iterator<String> it = jsonTranslations.keys();
             while (it.hasNext()) {
@@ -243,7 +241,7 @@ public class Handler extends AbstractHandler {
                     continue;
                 }
 
-                HashMap<String, String> newTranslation = new HashMap<String, String>();
+                HashMap<String, String> newTranslation = new HashMap<>();
 
                 Iterator<String> tit = jsonTranslation.keys();
                 while (tit.hasNext()) {
@@ -286,7 +284,7 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            HashMap<String, String> newTranslation = new HashMap<String, String>();
+            HashMap<String, String> newTranslation = new HashMap<>();
 
             Iterator<String> tit = json.keys();
             while (tit.hasNext()) {
@@ -298,8 +296,7 @@ public class Handler extends AbstractHandler {
                 }
             }
 
-            Translations.save(
-                    schema, language, newTranslation, new HashMap<String, String>(), loggedUser);
+            Translations.save(schema, language, newTranslation, new HashMap<>(), loggedUser);
 
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
 

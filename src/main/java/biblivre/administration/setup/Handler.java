@@ -211,7 +211,7 @@ public class Handler extends AbstractHandler {
     }
 
     private Map<String, String> breakString(String string) {
-        Map<String, String> ret = new HashMap<String, String>();
+        Map<String, String> ret = new HashMap<>();
 
         if (StringUtils.isBlank(string)) {
             return ret;
@@ -322,7 +322,7 @@ public class Handler extends AbstractHandler {
 
             State.writeLog(backupScope.toString() + " => " + restoreScope.toString());
 
-            Map<String, String> restoreSchemas = new HashMap<String, String>();
+            Map<String, String> restoreSchemas = new HashMap<>();
 
             if (restoreScope == BackupScope.SINGLE_SCHEMA) {
                 // Se o backup possui schema global e multi bibliotecas não está habilitado,
@@ -366,7 +366,7 @@ public class Handler extends AbstractHandler {
             }
 
             // Validando se schemas de origem existem no backup e se esquemas de destino são válidos
-            Set<String> uniqueCheck = new TreeSet<String>();
+            Set<String> uniqueCheck = new TreeSet<>();
             if (restoreSchemas.size() == 1 && restoreSchemas.containsKey(Constants.GLOBAL_SCHEMA)) {
                 throw new ValidationException(
                         "administration.maintenance.backup.error.no_schema_selected");
@@ -451,7 +451,7 @@ public class Handler extends AbstractHandler {
         String origin = request.getString("origin", "biblivre3");
 
         String[] groups = request.getParameterValues("groups[]");
-        List<DataMigrationPhaseGroup> phaseGroups = new ArrayList<DataMigrationPhaseGroup>();
+        List<DataMigrationPhaseGroup> phaseGroups = new ArrayList<>();
 
         if (groups != null) {
             for (String group : groups) {
@@ -464,7 +464,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        List<DataMigrationPhase> selectedPhases = new ArrayList<DataMigrationPhase>();
+        List<DataMigrationPhase> selectedPhases = new ArrayList<>();
         for (DataMigrationPhaseGroup group : phaseGroups) {
             selectedPhases.addAll(group.getPhases());
         }

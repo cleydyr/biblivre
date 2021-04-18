@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
         String idList = request.getString("id_list");
 
         String[] idArray = idList.split(",");
-        Set<Integer> ids = new TreeSet<Integer>();
+        Set<Integer> ids = new TreeSet<>();
         try {
             for (int i = 0; i < idArray.length; i++) {
                 ids.add(Integer.valueOf(idArray[i]));
@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
 
         BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
 
-        List<LabelDTO> labels = new LinkedList<LabelDTO>();
+        List<LabelDTO> labels = new LinkedList<>();
         for (RecordDTO rdto : hdto.values()) {
             HoldingDTO holding = (HoldingDTO) rdto;
 

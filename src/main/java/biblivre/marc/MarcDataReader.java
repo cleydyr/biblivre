@@ -52,7 +52,7 @@ public class MarcDataReader {
     }
 
     public List<BriefTabFieldDTO> getFieldList(List<BriefTabFieldFormatDTO> dataFieldFormats) {
-        List<BriefTabFieldDTO> list = new LinkedList<BriefTabFieldDTO>();
+        List<BriefTabFieldDTO> list = new LinkedList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -78,7 +78,7 @@ public class MarcDataReader {
 
     public String getFieldValue(
             boolean listAll, String separator, BriefTabFieldFormatDTO... dataFieldFormats) {
-        List<String> formattedFields = new LinkedList<String>();
+        List<String> formattedFields = new LinkedList<>();
 
         for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
             String tag = dto.getDatafieldTag();
@@ -102,7 +102,7 @@ public class MarcDataReader {
 
     public List<RecordAttachmentDTO> getAttachments() {
         List<DataField> fields = this.getDataFields(MarcConstants.ELECTRONIC_LOCATION);
-        List<RecordAttachmentDTO> attachments = new LinkedList<RecordAttachmentDTO>();
+        List<RecordAttachmentDTO> attachments = new LinkedList<>();
 
         String file = null;
         String name = null;
@@ -318,7 +318,7 @@ public class MarcDataReader {
         Record record = this.getRecord();
 
         if (record == null || StringUtils.isBlank(tag)) {
-            return new LinkedList<DataField>();
+            return new LinkedList<>();
         }
 
         List<DataField> list = this.getCache().get(tag);
@@ -327,7 +327,7 @@ public class MarcDataReader {
             return list;
         }
 
-        return new LinkedList<DataField>();
+        return new LinkedList<>();
     }
 
     public Subfield getFirstSubfield(String tag, char subfield) {
@@ -362,7 +362,7 @@ public class MarcDataReader {
     }
 
     private HashMap<String, List<DataField>> readDataFieldMap() {
-        HashMap<String, List<DataField>> hash = new HashMap<String, List<DataField>>();
+        HashMap<String, List<DataField>> hash = new HashMap<>();
         Record record = this.getRecord();
 
         if (record == null) {
@@ -380,7 +380,7 @@ public class MarcDataReader {
             fieldList = hash.get(tag);
 
             if (fieldList == null) {
-                fieldList = new LinkedList<DataField>();
+                fieldList = new LinkedList<>();
                 hash.put(tag, fieldList);
             }
 

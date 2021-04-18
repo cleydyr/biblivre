@@ -32,7 +32,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
     private static final long serialVersionUID = 1L;
 
     /** */
-    private List<RecordDTO> recordList = new LinkedList<RecordDTO>();
+    private List<RecordDTO> recordList = new LinkedList<>();
 
     private List<String> foundISBN;
     private List<String> foundISSN;

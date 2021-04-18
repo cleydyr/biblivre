@@ -46,7 +46,7 @@ public class Handler extends AbstractHandler {
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
 
         String briefFormats = request.getString("formats", "{}");
-        List<BriefTabFieldFormatDTO> list = new ArrayList<BriefTabFieldFormatDTO>();
+        List<BriefTabFieldFormatDTO> list = new ArrayList<>();
 
         try {
             JSONArray json = new JSONArray(briefFormats);
@@ -150,8 +150,8 @@ public class Handler extends AbstractHandler {
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
 
         String fields = request.getString("fields", "{}");
-        HashMap<String, FormTabDatafieldDTO> map = new HashMap<String, FormTabDatafieldDTO>();
-        HashMap<String, String> translations = new HashMap<String, String>();
+        HashMap<String, FormTabDatafieldDTO> map = new HashMap<>();
+        HashMap<String, String> translations = new HashMap<>();
 
         try {
             JSONObject json = new JSONObject(fields);

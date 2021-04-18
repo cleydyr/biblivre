@@ -321,7 +321,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        Map<Integer, RecordDTO> map = new HashMap<Integer, RecordDTO>();
+        Map<Integer, RecordDTO> map = new HashMap<>();
 
         Connection con = null;
         try {
@@ -357,7 +357,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> list(int offset, int limit, RecordDatabase database) {
-        List<RecordDTO> list = new LinkedList<RecordDTO>();
+        List<RecordDTO> list = new LinkedList<>();
 
         Connection con = null;
         try {
@@ -402,7 +402,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> listByLetter(char letter, int order) {
-        List<RecordDTO> list = new LinkedList<RecordDTO>();
+        List<RecordDTO> list = new LinkedList<>();
 
         Connection con = null;
         try {
@@ -441,7 +441,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public Map<Integer, Integer> countSearchResults(SearchDTO search) {
-        Map<Integer, Integer> count = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> count = new HashMap<>();
         if (search == null) {
             return count;
         }
@@ -483,7 +483,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> getSearchResults(SearchDTO search) {
-        List<RecordDTO> list = new LinkedList<RecordDTO>();
+        List<RecordDTO> list = new LinkedList<>();
 
         if (search == null) {
             return list;
@@ -598,7 +598,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
     public List<String> phraseAutocomplete(
             String datafield, String subfield, String[] terms, int limit, boolean startsWith) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new LinkedList<>();
 
         if (terms == null || terms.length == 0) {
             return list;
@@ -652,7 +652,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
     public DTOCollection<AutocompleteDTO> recordAutocomplete(
             String datafield, String subfield, String[] terms, int limit, boolean startsWith) {
-        DTOCollection<AutocompleteDTO> list = new DTOCollection<AutocompleteDTO>();
+        DTOCollection<AutocompleteDTO> list = new DTOCollection<>();
 
         if (terms == null || terms.length == 0) {
             return list;

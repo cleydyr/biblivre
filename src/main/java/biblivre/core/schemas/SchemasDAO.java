@@ -37,7 +37,7 @@ public class SchemasDAO extends AbstractDAO {
     }
 
     public Set<SchemaDTO> list() {
-        Set<SchemaDTO> set = new TreeSet<SchemaDTO>();
+        Set<SchemaDTO> set = new TreeSet<>();
 
         Connection con = null;
         try {

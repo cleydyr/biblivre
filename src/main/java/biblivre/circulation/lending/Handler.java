@@ -103,7 +103,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<LendingListDTO> list = new DTOCollection<LendingListDTO>();
+        DTOCollection<LendingListDTO> list = new DTOCollection<>();
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {
@@ -134,7 +134,7 @@ public class Handler extends AbstractHandler {
             lendings.addAll(lbo.listHistory(user));
         }
 
-        List<LendingInfoDTO> infos = new LinkedList<LendingInfoDTO>();
+        List<LendingInfoDTO> infos = new LinkedList<>();
 
         for (LendingDTO lending : lendings) {
             HoldingDTO holding = (HoldingDTO) hbo.get(lending.getHoldingId(), RecordBO.MARC_INFO);
@@ -300,7 +300,7 @@ public class Handler extends AbstractHandler {
                         Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = request.getInteger("offset", 0);
 
-        DTOCollection<LendingInfoDTO> list = new DTOCollection<LendingInfoDTO>();
+        DTOCollection<LendingInfoDTO> list = new DTOCollection<>();
 
         DTOCollection<LendingInfoDTO> lendingInfoList = bo.listLendings(offset, limit);
 
@@ -327,7 +327,7 @@ public class Handler extends AbstractHandler {
         String idList = request.getString("id_list");
 
         String[] idArray = idList.split(",");
-        List<Integer> ids = new ArrayList<Integer>();
+        List<Integer> ids = new ArrayList<>();
         try {
             for (int i = 0; i < idArray.length; i++) {
                 ids.add(Integer.valueOf(idArray[i]));

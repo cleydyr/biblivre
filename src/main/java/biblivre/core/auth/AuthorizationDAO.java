@@ -35,7 +35,7 @@ public class AuthorizationDAO extends AbstractDAO {
 
     public HashMap<String, Boolean> getUserPermissions(LoginDTO user) {
         Connection con = null;
-        HashMap<String, Boolean> hash = new HashMap<String, Boolean>();
+        HashMap<String, Boolean> hash = new HashMap<>();
 
         try {
             con = this.getConnection();

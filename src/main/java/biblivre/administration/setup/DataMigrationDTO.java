@@ -36,8 +36,8 @@ public class DataMigrationDTO extends AbstractDTO {
     private volatile Set<DataMigrationPhase> completedPhases;
 
     public DataMigrationDTO() {
-        this.phases = new HashMap<DataMigrationPhase, Boolean>();
-        this.completedPhases = new TreeSet<DataMigrationPhase>();
+        this.phases = new HashMap<>();
+        this.completedPhases = new TreeSet<>();
     }
 
     public String getDataSourceName() {
