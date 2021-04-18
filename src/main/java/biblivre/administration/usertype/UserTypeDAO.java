@@ -32,7 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
@@ -132,7 +132,7 @@ public class UserTypeDAO extends AbstractDAO {
     }
 
     public List<UserTypeDTO> list() {
-        List<UserTypeDTO> list = new LinkedList<UserTypeDTO>();
+        List<UserTypeDTO> list = new ArrayList<UserTypeDTO>();
 
         Connection con = null;
 

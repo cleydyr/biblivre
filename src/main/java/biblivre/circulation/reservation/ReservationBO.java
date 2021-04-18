@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -106,7 +105,7 @@ public class ReservationBO extends AbstractBO {
 
     public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
         List<ReservationDTO> list = this.dao.list(user, null);
-        List<ReservationInfoDTO> result = new LinkedList<ReservationInfoDTO>();
+        List<ReservationInfoDTO> result = new ArrayList<ReservationInfoDTO>();
         BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
 
         for (ReservationDTO dto : list) {
@@ -125,7 +124,7 @@ public class ReservationBO extends AbstractBO {
 
     public List<ReservationInfoDTO> list() {
         List<ReservationDTO> list = this.dao.list();
-        List<ReservationInfoDTO> result = new LinkedList<ReservationInfoDTO>();
+        List<ReservationInfoDTO> result = new ArrayList<ReservationInfoDTO>();
 
         BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
         UserBO ubo = UserBO.getInstance(this.getSchema());

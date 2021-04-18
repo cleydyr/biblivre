@@ -32,7 +32,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MaterialType;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -63,7 +63,7 @@ public class Handler extends AbstractHandler {
         Z3950BO bo = Z3950BO.getInstance(schema);
 
         String[] serverIds = servers.split(",");
-        List<Integer> ids = new LinkedList<Integer>();
+        List<Integer> ids = new ArrayList<Integer>();
         for (String serverId : serverIds) {
             try {
                 ids.add(Integer.parseInt(serverId.trim()));

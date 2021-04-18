@@ -21,8 +21,8 @@ package biblivre.marc;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.utils.BiblivreEnum;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Leader;
@@ -53,8 +53,8 @@ public enum MaterialType implements BiblivreEnum {
     private static final String javascriptArray;
 
     static {
-        List<MaterialType> tempBibliographicMaterials = new LinkedList<MaterialType>();
-        List<MaterialType> tempSearchableMaterials = new LinkedList<MaterialType>();
+        List<MaterialType> tempBibliographicMaterials = new ArrayList<MaterialType>();
+        List<MaterialType> tempSearchableMaterials = new ArrayList<MaterialType>();
 
         StringBuffer sb = new StringBuffer();
         sb.append("[");

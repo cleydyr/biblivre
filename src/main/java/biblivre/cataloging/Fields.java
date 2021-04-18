@@ -27,8 +27,8 @@ import biblivre.core.StaticBO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -371,7 +371,7 @@ public class Fields extends StaticBO {
         JavascriptCacheableList<FormTabDatafieldDTO> fields =
                 Fields.getFormFields(schema, recordType);
 
-        list = new LinkedList<FormTabSubfieldDTO>();
+        list = new ArrayList<FormTabSubfieldDTO>();
 
         if (fields == null) {
             return list;

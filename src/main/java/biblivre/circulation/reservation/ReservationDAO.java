@@ -34,7 +34,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -335,7 +334,7 @@ public class ReservationDAO extends AbstractDAO {
                 Integer recordId = rs.getInt("record_id");
                 List<ReservationDTO> reservations = map.get(recordId);
                 if (reservations == null) {
-                    reservations = new LinkedList<ReservationDTO>();
+                    reservations = new ArrayList<ReservationDTO>();
                     map.put(recordId, reservations);
                 }
                 reservations.add(this.populateDTO(rs));

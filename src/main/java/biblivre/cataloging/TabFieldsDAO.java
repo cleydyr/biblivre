@@ -27,8 +27,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -39,7 +39,7 @@ public class TabFieldsDAO extends AbstractDAO {
     }
 
     public List<BriefTabFieldFormatDTO> listBriefFormats(RecordType recordType) {
-        List<BriefTabFieldFormatDTO> list = new LinkedList<BriefTabFieldFormatDTO>();
+        List<BriefTabFieldFormatDTO> list = new ArrayList<BriefTabFieldFormatDTO>();
 
         Connection con = null;
         try {
@@ -194,7 +194,7 @@ public class TabFieldsDAO extends AbstractDAO {
     }
 
     public List<FormTabDatafieldDTO> listFields(RecordType recordType) {
-        List<FormTabDatafieldDTO> list = new LinkedList<FormTabDatafieldDTO>();
+        List<FormTabDatafieldDTO> list = new ArrayList<FormTabDatafieldDTO>();
         HashMap<String, FormTabDatafieldDTO> hash = new HashMap<String, FormTabDatafieldDTO>();
 
         Connection con = null;

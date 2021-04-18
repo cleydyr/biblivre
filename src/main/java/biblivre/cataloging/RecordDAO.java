@@ -35,8 +35,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -356,7 +356,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> list(int offset, int limit, RecordDatabase database) {
-        List<RecordDTO> list = new LinkedList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<RecordDTO>();
 
         Connection con = null;
         try {
@@ -401,7 +401,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> listByLetter(char letter, int order) {
-        List<RecordDTO> list = new LinkedList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<RecordDTO>();
 
         Connection con = null;
         try {
@@ -482,7 +482,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<RecordDTO> getSearchResults(SearchDTO search) {
-        List<RecordDTO> list = new LinkedList<RecordDTO>();
+        List<RecordDTO> list = new ArrayList<RecordDTO>();
 
         if (search == null) {
             return list;
@@ -597,7 +597,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
     public List<String> phraseAutocomplete(
             String datafield, String subfield, String[] terms, int limit, boolean startsWith) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new ArrayList<String>();
 
         if (terms == null || terms.length == 0) {
             return list;

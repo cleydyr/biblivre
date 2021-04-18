@@ -26,7 +26,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,7 +118,7 @@ public class Handler extends AbstractHandler {
             returnDto = this.createCard(request, code, status);
             success = bo.save(returnDto);
         } else {
-            LinkedList<AccessCardDTO> list =
+            ArrayList<AccessCardDTO> list =
                     bo.saveCardList(prefix, suffix, start, end, request.getLoggedUserId(), status);
             if (list != null) {
                 returnDto = list.get(0);

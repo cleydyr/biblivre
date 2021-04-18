@@ -23,7 +23,7 @@ import biblivre.cataloging.enums.ImportEncoding;
 import biblivre.cataloging.enums.ImportFormat;
 import biblivre.core.AbstractDTO;
 import biblivre.core.IFJson;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +32,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
     private static final long serialVersionUID = 1L;
 
     /** */
-    private List<RecordDTO> recordList = new LinkedList<RecordDTO>();
+    private List<RecordDTO> recordList = new ArrayList<RecordDTO>();
 
     private List<String> foundISBN;
     private List<String> foundISSN;

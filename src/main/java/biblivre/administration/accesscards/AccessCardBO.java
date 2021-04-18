@@ -23,7 +23,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,7 +65,7 @@ public class AccessCardBO extends AbstractBO {
         return this.dao.get(code);
     }
 
-    public LinkedList<AccessCardDTO> saveCardList(
+    public ArrayList<AccessCardDTO> saveCardList(
             String prefix,
             String suffix,
             String startString,
@@ -75,7 +75,7 @@ public class AccessCardBO extends AbstractBO {
         int start = Integer.parseInt(startString);
         int end = Integer.parseInt(endString);
 
-        LinkedList<String> codeList = new LinkedList<String>();
+        ArrayList<String> codeList = new ArrayList<String>();
         int pad = startString.length();
         for (int i = start; i <= end; i++) {
             String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
@@ -84,7 +84,7 @@ public class AccessCardBO extends AbstractBO {
 
         // Validate existing cards
         List<AccessCardDTO> existingCards = this.dao.get(codeList, null);
-        List<String> existingCodes = new LinkedList<String>();
+        List<String> existingCodes = new ArrayList<String>();
         for (AccessCardDTO card : existingCards) {
             existingCodes.add(card.getCode());
         }
@@ -95,7 +95,7 @@ public class AccessCardBO extends AbstractBO {
             throw ve;
         }
 
-        LinkedList<AccessCardDTO> cardList = new LinkedList<AccessCardDTO>();
+        ArrayList<AccessCardDTO> cardList = new ArrayList<AccessCardDTO>();
         for (String code : codeList) {
             AccessCardDTO dto = new AccessCardDTO();
             dto.setCode(code);

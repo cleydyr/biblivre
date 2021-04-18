@@ -29,9 +29,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
@@ -327,7 +327,7 @@ public class IndexingDAO extends AbstractDAO {
 
     public List<String> searchExactTerms(
             RecordType recordType, int indexingGroupId, List<String> terms) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new ArrayList<String>();
 
         Connection con = null;
         try {

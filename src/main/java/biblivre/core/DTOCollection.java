@@ -19,11 +19,11 @@
  ******************************************************************************/
 package biblivre.core;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class DTOCollection<T extends AbstractDTO> extends LinkedList<T> implements IFJson {
+public class DTOCollection<T extends AbstractDTO> extends ArrayList<T> implements IFJson {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
