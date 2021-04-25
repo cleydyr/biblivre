@@ -22,9 +22,9 @@ package biblivre.core;
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.utils.Constants;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,14 +32,13 @@ public abstract class AbstractBO {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected String schema;
 
-    private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances =
-            new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();
+    private static Map<String, AbstractBO> instances = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
     protected static <T extends AbstractBO> T getInstance(Class<T> cls, String schema) {
-        Pair<Class<? extends AbstractBO>, String> pair = Pair.of(cls, schema);
+        String key = cls.getName() + '#' + schema;
 
-        T instance = (T) AbstractBO.instances.get(pair);
+        T instance = (T) AbstractBO.instances.get(key);
 
         if (instance == null) {
             if (!AbstractBO.class.isAssignableFrom(cls)) {
@@ -51,7 +50,7 @@ public abstract class AbstractBO {
                 instance = cls.newInstance();
                 instance.setSchema(schema);
 
-                AbstractBO.instances.put(pair, instance);
+                AbstractBO.instances.put(key, instance);
             } catch (Exception ex) {
             }
         }
