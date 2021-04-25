@@ -450,7 +450,7 @@ public abstract class RecordBO extends AbstractBO {
         if (recordDatabase == RecordDatabase.TRASH) {
             success = this.rdao.delete(dto);
         } else {
-            Set<Integer> ids = new HashSet<Integer>();
+            Set<Integer> ids = new HashSet<>();
 
             ids.add(dto.getId());
 

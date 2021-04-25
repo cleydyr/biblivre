@@ -63,7 +63,7 @@ public class UserReport extends BaseBiblivreReport {
         List<LendingDTO> history = lbo.listHistory(user);
 
         List<LendingInfoDTO> historyInfo = lbo.populateLendingInfo(history);
-        List<String[]> returnedLendings = new ArrayList<String[]>();
+        List<String[]> returnedLendings = new ArrayList<>();
         for (LendingInfoDTO lidto : historyInfo) {
             String[] data = new String[3];
             data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
@@ -73,8 +73,8 @@ public class UserReport extends BaseBiblivreReport {
         }
         urdto.setReturnedLendings(returnedLendings);
 
-        List<String[]> currentLendings = new ArrayList<String[]>();
-        List<String[]> lateLendings = new ArrayList<String[]>();
+        List<String[]> currentLendings = new ArrayList<>();
+        List<String[]> lateLendings = new ArrayList<>();
 
         List<LendingDTO> currentLendingsList = lbo.listUserLendings(user);
         List<LendingInfoDTO> currentLendingsInfo = lbo.populateLendingInfo(currentLendingsList);

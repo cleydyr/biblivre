@@ -81,7 +81,7 @@ public class ReportsDAO extends AbstractDAO {
             pst.setString(1, database.toString());
 
             final ResultSet rs = pst.executeQuery();
-            List<String[]> dataList = new ArrayList<String[]>();
+            List<String[]> dataList = new ArrayList<>();
             while (rs.next()) {
                 Record record = MarcUtils.iso2709ToRecord(rs.getBytes("iso2709"));
                 MarcDataReader dataReader = new MarcDataReader(record);
@@ -132,7 +132,7 @@ public class ReportsDAO extends AbstractDAO {
             pst.setString(1, db.toString());
 
             final ResultSet rs = pst.executeQuery();
-            Map<String, Integer[]> acc = new HashMap<String, Integer[]>();
+            Map<String, Integer[]> acc = new HashMap<>();
 
             while (rs.next()) {
                 Record record = MarcUtils.iso2709ToRecord(rs.getString("iso2709"));
@@ -160,7 +160,7 @@ public class ReportsDAO extends AbstractDAO {
                 }
             }
 
-            List<String[]> data = new ArrayList<String[]>();
+            List<String[]> data = new ArrayList<>();
             dto.setData(data);
             for (String key : acc.keySet()) {
                 String[] arrayData = new String[3];
@@ -193,7 +193,7 @@ public class ReportsDAO extends AbstractDAO {
             pst.setFetchSize(100);
 
             final ResultSet rs = pst.executeQuery();
-            List<String[]> dataList = new ArrayList<String[]>();
+            List<String[]> dataList = new ArrayList<>();
             while (rs.next()) {
                 Record record = MarcUtils.iso2709ToRecord(rs.getBytes("iso2709"));
                 MarcDataReader dataReader = new MarcDataReader(record);
@@ -230,7 +230,7 @@ public class ReportsDAO extends AbstractDAO {
             pst.setFetchSize(100);
 
             final ResultSet rs = pst.executeQuery();
-            List<String[]> dataList = new ArrayList<String[]>();
+            List<String[]> dataList = new ArrayList<>();
             while (rs.next()) {
                 Record record = MarcUtils.iso2709ToRecord(rs.getBytes("iso2709"));
                 MarcDataReader dataReader = new MarcDataReader(record);
@@ -277,7 +277,7 @@ public class ReportsDAO extends AbstractDAO {
             pst.setFetchSize(100);
 
             final ResultSet rs = pst.executeQuery();
-            List<String[]> dataList = new ArrayList<String[]>();
+            List<String[]> dataList = new ArrayList<>();
             while (rs.next()) {
                 Record record = MarcUtils.iso2709ToRecord(rs.getBytes(3));
 
@@ -329,7 +329,7 @@ public class ReportsDAO extends AbstractDAO {
             st.setString(1, initialDate);
             st.setString(2, finalDate);
             ResultSet rs = st.executeQuery();
-            List<String[]> data = new ArrayList<String[]>();
+            List<String[]> data = new ArrayList<>();
             while (rs.next()) {
                 String[] arrayData = new String[4];
                 arrayData[0] = rs.getString(1); // data
@@ -475,7 +475,7 @@ public class ReportsDAO extends AbstractDAO {
             st.setString(1, initialDate);
             st.setString(2, finalDate);
             rs = st.executeQuery();
-            List<String[]> data = new ArrayList<String[]>();
+            List<String[]> data = new ArrayList<>();
 
             BiblioRecordBO biblioBO = BiblioRecordBO.getInstance(this.getSchema());
 
@@ -518,7 +518,7 @@ public class ReportsDAO extends AbstractDAO {
             st.setString(1, dd_MM_yyyy.format(new Date()));
 
             final ResultSet rs = st.executeQuery();
-            List<String[]> data = new ArrayList<String[]>();
+            List<String[]> data = new ArrayList<>();
 
             while (rs.next()) {
                 String[] lending = new String[4];
@@ -560,7 +560,7 @@ public class ReportsDAO extends AbstractDAO {
             final ResultSet rs = st.executeQuery();
             dto.setInitialDate(initialDate);
             dto.setFinalDate(finalDate);
-            List<String[]> data = new ArrayList<String[]>();
+            List<String[]> data = new ArrayList<>();
             dto.setData(data);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             while (rs.next()) {
@@ -654,7 +654,7 @@ public class ReportsDAO extends AbstractDAO {
             st.setString(1, initialDate);
             st.setString(2, finalDate);
             final ResultSet rs = st.executeQuery();
-            List<String[]> dataList = new ArrayList<String[]>();
+            List<String[]> dataList = new ArrayList<>();
             dto.setData(dataList);
             while (rs.next()) {
                 String[] data = new String[6];
@@ -749,7 +749,7 @@ public class ReportsDAO extends AbstractDAO {
             }
 
             ResultSet rs = st.executeQuery();
-            List<String[]> data = new ArrayList<String[]>();
+            List<String[]> data = new ArrayList<>();
             while (rs.next()) {
                 String iso2709 = new String(rs.getBytes("iso2709"), "UTF-8");
                 Record record = MarcUtils.iso2709ToRecord(iso2709);
@@ -789,7 +789,7 @@ public class ReportsDAO extends AbstractDAO {
 
             ResultSet rs = st.executeQuery(sql.toString());
 
-            List<String[]> biblioReservations = new ArrayList<String[]>();
+            List<String[]> biblioReservations = new ArrayList<>();
             while (rs.next()) {
                 String[] reservation = new String[5];
                 reservation[0] = rs.getString("name");

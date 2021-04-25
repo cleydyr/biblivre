@@ -105,7 +105,7 @@ public class ReportsBO extends AbstractBO {
             }
         }
 
-        List<String[]> data = new ArrayList<String[]>();
+        List<String[]> data = new ArrayList<>();
 
         for (String key : subfieldCounter.keySet()) {
             String[] valuePair = new String[2];
