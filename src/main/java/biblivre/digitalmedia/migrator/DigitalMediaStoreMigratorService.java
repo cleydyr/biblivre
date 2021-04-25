@@ -5,13 +5,8 @@ import biblivre.digitalmedia.migrator.exception.DigitalMediaStoreNotFoundExcepti
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DigitalMediaStoreMigratorService {
-    private static final Logger _logger =
-            LoggerFactory.getLogger(DigitalMediaStoreMigratorService.class);
-
     public static DigitalMediaStoreMigrator selectMigrator(String migratorId)
             throws DigitalMediaStoreNotFoundException, DigitalMediaStoreInstantiationException {
 
