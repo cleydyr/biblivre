@@ -49,32 +49,37 @@ The following variables are used in Biblivre and can be set on the .env file:
 1. Apache Tomcat
 1. PostgreSQL
 1. Git
+1. Docker (optional, for running the tests)
 
 #### Building and running
 
-1. Install dependencies
+1. Install dependencies:
 ```
-apt install openjdk-11-jdk maven tomcat9 postgresql git
+apt install openjdk-11-jdk maven tomcat9 postgresql git docker.io
 ```
 
-2. Clone the Git repository
+2. Clone the Git repository:
 ```
 git clone https://github.com/cleydyr/biblivre
 cd biblivre
 ```
 
-3. Create the PostgreSQL database
+3. Create the PostgreSQL database:
 ```
 sudo -u postgres psql < sql/createdatabase.sql
 sudo -u postgres psql biblivre4 < biblivre4.sql
 ```
 
-4. Build the .war package
+4. Build the .war package (note that Docker is required for the tests):
 ```
 mvn clean package
 ```
+Alternatively, to skip the tests:
+```
+mvn clean package -DskipTests
+```
 
-5. Install the .war package on Tomcat
+5. Install the .war package on Tomcat:
 ```
 cp target/Biblivre6.war /var/lib/tomcat9/webapps
 ```
