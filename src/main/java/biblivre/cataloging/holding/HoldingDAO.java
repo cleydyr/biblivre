@@ -910,8 +910,9 @@ public class HoldingDAO extends AbstractDAO {
             BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
             BiblioRecordDTO bdto = new BiblioRecordDTO();
 
-            bdto.setId(rs.getInt("record_id"));
+            bdto.setSchema(getSchema());
             bdto.setIso2709(rs.getBytes("biblio"));
+            bdto.setId(rs.getInt("record_id"));
 
             bbo.populateDetails(bdto, RecordBO.MARC_INFO);
 
