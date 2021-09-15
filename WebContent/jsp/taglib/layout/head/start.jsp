@@ -33,7 +33,7 @@
 				<script type="text/javascript" src="static/scripts/${requestScope.translationsMap.getCacheFileName()}"></script>
 
 				<c:set var="translateError" value="false" />
-				<c:if test="${pageContext.getResponse().getStatus() == 404}">
+				<c:if test="${response.getStatus() == 404}">
 					<c:set var="message" value="error.file_not_found" />
 					<c:set var="messageLevel" value="error" />
 					<c:set var="messageLevel" value="true" />
