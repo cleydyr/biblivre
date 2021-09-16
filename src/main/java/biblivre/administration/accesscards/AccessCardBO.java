@@ -30,7 +30,12 @@ import org.apache.commons.lang3.StringUtils;
 public class AccessCardBO extends AbstractBO {
     private AccessCardDAO accessCardDAO;
 
-    public static AccessCardBO getInstance(String schema) {
+    public AccessCardBO(AccessCardDAO accessCardDAO) {
+		super();
+		this.accessCardDAO = accessCardDAO;
+	}
+
+	public static AccessCardBO getInstance(String schema) {
         AccessCardBO bo = AbstractBO.getInstance(AccessCardBO.class, schema);
 
         if (bo.accessCardDAO == null) {
