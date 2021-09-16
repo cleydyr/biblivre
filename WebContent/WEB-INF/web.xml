@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-  <display-name>Biblivre 5</display-name>
+<web-app
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID"
+	version="3.1">
+
   <servlet>
     <servlet-name>SchemaServlet</servlet-name>
     <servlet-class>biblivre.core.controllers.SchemaServlet</servlet-class>
@@ -42,6 +48,15 @@
   <listener>
     <listener-class>biblivre.core.BiblivreContextListener</listener-class>
   </listener>
+
+<context-param>
+  <param-name>contextConfigLocation</param-name>
+  <param-value>classpath:/applicationContext.xml</param-value>
+</context-param>
+
+<listener>
+  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
 
   <jsp-config>
     <jsp-property-group>
