@@ -59,6 +59,8 @@ public class DataMigrationBO extends AbstractBO {
     private Map<Integer, Integer> lendingMap = new HashMap<>();
     private Map<Integer, Integer> lendingHistoryMap = new HashMap<>();
     private String userSchema;
+    private AccessControlBO accessControlBO;
+    private AccessCardBO accessCardBO;
 
     @Override
     public String getSchema() {
@@ -288,7 +290,7 @@ public class DataMigrationBO extends AbstractBO {
                 return holdingsBo.saveFromBiblivre3(dtoList);
 
             case ACCESS_CARDS:
-                return AccessCardBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return accessCardBO.saveFromBiblivre3(dtoList);
 
             case LOGINS:
                 return LoginBO.getInstance(schema).saveFromBiblivre3(dtoList);
@@ -318,10 +320,10 @@ public class DataMigrationBO extends AbstractBO {
                 return Z3950BO.getInstance(schema).saveFromBiblivre3(dtoList);
 
             case ACCESS_CONTROL:
-                return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return accessControlBO.saveFromBiblivre3(dtoList);
 
             case ACCESS_CONTROL_HISTORY:
-                return AccessControlBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return accessControlBO.saveFromBiblivre3(dtoList);
 
             case LENDINGS:
                 return LendingBO.getInstance(schema).saveFromBiblivre3(dtoList);

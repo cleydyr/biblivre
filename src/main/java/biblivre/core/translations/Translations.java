@@ -436,8 +436,7 @@ public class Translations extends StaticBO {
             HashMap<String, String> translation,
             HashMap<String, String> removeTranslation,
             int loggedUser) {
-        HashMap<String, HashMap<String, String>> translations =
-                new HashMap<>();
+        HashMap<String, HashMap<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
         HashMap<String, HashMap<String, String>> removeTranslations = null;
@@ -476,8 +475,7 @@ public class Translations extends StaticBO {
         HashMap<String, String> translation = new HashMap<>();
         translation.put(key, text);
 
-        HashMap<String, HashMap<String, String>> translations =
-                new HashMap<>();
+        HashMap<String, HashMap<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
         boolean success = TranslationsDAO.getInstance(schema).save(translations, loggedUser);

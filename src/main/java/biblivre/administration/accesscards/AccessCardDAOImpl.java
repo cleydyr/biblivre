@@ -40,7 +40,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public AccessCardDTO get(String code) {
+    public AccessCardDTO get(String code) {
         List<String> codes = new ArrayList<>();
         codes.add(code);
 
@@ -53,7 +53,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
+    public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
         List<AccessCardDTO> list = new ArrayList<>();
 
         boolean hasCodes = (codes != null && codes.size() > 0);
@@ -105,7 +105,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public AccessCardDTO get(int id) {
+    public AccessCardDTO get(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -126,7 +126,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public DTOCollection<AccessCardDTO> search(
+    public DTOCollection<AccessCardDTO> search(
             String code, AccessCardStatus status, int limit, int offset) {
         DTOCollection<AccessCardDTO> list = new DTOCollection<>();
         Connection con = null;
@@ -196,7 +196,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public boolean save(AccessCardDTO dto) {
+    public boolean save(AccessCardDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -225,7 +225,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public boolean save(ArrayList<AccessCardDTO> cardList) {
+    public boolean save(ArrayList<AccessCardDTO> cardList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -260,7 +260,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -291,7 +291,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public boolean update(AccessCardDTO dto) {
+    public boolean update(AccessCardDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -312,7 +312,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     }
 
     @Override
-	public boolean delete(int id) {
+    public boolean delete(int id) {
         Connection con = null;
         try {
             con = this.getConnection();

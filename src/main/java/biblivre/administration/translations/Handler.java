@@ -239,8 +239,7 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            HashMap<String, HashMap<String, String>> newTranslations =
-                    new HashMap<>();
+            HashMap<String, HashMap<String, String>> newTranslations = new HashMap<>();
 
             jsonTranslations
                     .keys()

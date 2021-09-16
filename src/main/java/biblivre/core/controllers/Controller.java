@@ -34,10 +34,14 @@ import biblivre.core.utils.TextUtils;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public abstract class Controller {
 
@@ -108,10 +112,36 @@ public abstract class Controller {
         }
 
         try {
-            this.handlerClass = Class.forName("biblivre." + module + ".Handler");
-            this.handler = (AbstractHandler) this.handlerClass.newInstance();
+            String handlerClassName = "biblivre." + module + ".Handler";
 
-            Class<?> validatorClass = Class.forName("biblivre." + module + ".Validator");
+            ServletContext servletContext = xRequest.getServletContext();
+
+            WebApplicationContext applicationContext =
+                    WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+
+            this.handlerClass = Class.forName(handlerClassName);
+
+            try {
+                Object bean = applicationContext.getBean(this.handlerClass);
+                this.handler = (AbstractHandler) bean;
+            } catch (NoSuchBeanDefinitionException nsbde) {
+                this.handler = (AbstractHandler) this.handlerClass.newInstance();
+            }
+
+            String validatorClassName = "biblivre." + module + ".Validator";
+
+            Class<?> validatorClass = Class.forName(validatorClassName);
+
+            AbstractValidator validator = null;
+
+            try {
+                Object bean = applicationContext.getBean(validatorClass);
+
+                validator = (AbstractValidator) bean;
+            } catch (NoSuchBeanDefinitionException nsbde) {
+                validator = (AbstractValidator) validatorClass.newInstance();
+            }
+
             String validationMethodName = "validate_" + action;
             Method validationMethod =
                     validatorClass.getDeclaredMethod(
@@ -120,7 +150,6 @@ public abstract class Controller {
                             ExtendedRequest.class,
                             ExtendedResponse.class);
 
-            AbstractValidator validator = (AbstractValidator) validatorClass.newInstance();
             validationMethod.invoke(validator, this.handler, this.xRequest, this.xResponse);
             if (!validator.checkValidation(this.handler)) {
                 this.doReturn();

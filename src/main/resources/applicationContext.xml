@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="userValidator" name="userValidator" class="biblivre.circulation.user.Validator" >
+    	<constructor-arg index="0" ref="accessControlBO" />
+    </bean>
+
+    <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" >
+    	<constructor-arg index="0" ref="accessCardBO" />
+    	<constructor-arg index="1" ref="accessControlBO" />
+    </bean>
+    
+    <bean id="accesscardsHandler" name="accesscardsHandler" class="biblivre.administration.accesscards.Handler" >
+    	<constructor-arg index="0" ref="accessCardBO" />
+    </bean>
+
+    <bean id="accessControlBO" name="accessControlBO" class="biblivre.circulation.accesscontrol.AccessControlBO" >
+    	<constructor-arg index="0" ref="accessControlDAO" />
+    	<constructor-arg index="1" ref="accessCardBO" />
+    </bean>
+
+	<bean id="accessCardBO" name="accessCardBO" class="biblivre.administration.accesscards.AccessCardBO" >
+    	<constructor-arg index="0" ref="accessCardDAO" />
+    </bean>
+
+	<bean id="accessControlDAO"
+		class="biblivre.circulation.accesscontrol.AccessControlDAOImpl"
+	 	factory-method="getInstance" >
+	 	<constructor-arg value="single" />
+	</bean>
+
+	<bean id="accessCardDAO"
+		class="biblivre.administration.accesscards.AccessCardDAOImpl"
+	 	factory-method="getInstance" >
+	 	<constructor-arg value="single" />
+	</bean>
+</beans>

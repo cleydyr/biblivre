@@ -36,6 +36,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 public class Validator extends AbstractValidator {
 
+    private AccessControlBO accessControlBO;
+
+    public Validator(AccessControlBO accessControlBO) {
+        super();
+        this.accessControlBO = accessControlBO;
+    }
+
     public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
         DateFormat dateFormat = new SimpleDateFormat(request.getLocalizedText("format.date"));
@@ -148,7 +155,7 @@ public class Validator extends AbstractValidator {
             return;
         }
 
-        if (AccessControlBO.getInstance(schema).getByUserId(user.getId()) != null) {
+        if (accessControlBO.getByUserId(user.getId()) != null) {
             handler.setMessage(
                     ActionResult.WARNING, "circulation.error.delete.user_has_accesscard");
             return;

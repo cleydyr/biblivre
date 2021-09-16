@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
-import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
@@ -27,22 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
-public class AccessCardBO extends AbstractBO {
+public class AccessCardBO {
     private AccessCardDAO accessCardDAO;
 
     public AccessCardBO(AccessCardDAO accessCardDAO) {
-		super();
-		this.accessCardDAO = accessCardDAO;
-	}
-
-	public static AccessCardBO getInstance(String schema) {
-        AccessCardBO bo = AbstractBO.getInstance(AccessCardBO.class, schema);
-
-        if (bo.accessCardDAO == null) {
-            bo.accessCardDAO = AccessCardDAOImpl.getInstance(schema);
-        }
-
-        return bo;
+        super();
+        this.accessCardDAO = accessCardDAO;
     }
 
     public boolean save(AccessCardDTO dto) {
