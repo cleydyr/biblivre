@@ -33,13 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
-public class AccessCardDAOImpl extends AbstractDAO {
+public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
 
-    public static AccessCardDAOImpl getInstance(String schema) {
-        return (AccessCardDAOImpl) AbstractDAO.getInstance(AccessCardDAOImpl.class, schema);
+    public static AccessCardDAO getInstance(String schema) {
+        return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAOImpl.class, schema);
     }
 
-    public AccessCardDTO get(String code) {
+    @Override
+	public AccessCardDTO get(String code) {
         List<String> codes = new ArrayList<>();
         codes.add(code);
 
@@ -51,7 +52,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         return list.get(0);
     }
 
-    public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
+    @Override
+	public List<AccessCardDTO> get(List<String> codes, List<AccessCardStatus> status) {
         List<AccessCardDTO> list = new ArrayList<>();
 
         boolean hasCodes = (codes != null && codes.size() > 0);
@@ -102,7 +104,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         return list;
     }
 
-    public AccessCardDTO get(int id) {
+    @Override
+	public AccessCardDTO get(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -122,7 +125,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         return null;
     }
 
-    public DTOCollection<AccessCardDTO> search(
+    @Override
+	public DTOCollection<AccessCardDTO> search(
             String code, AccessCardStatus status, int limit, int offset) {
         DTOCollection<AccessCardDTO> list = new DTOCollection<>();
         Connection con = null;
@@ -191,7 +195,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         return list;
     }
 
-    public boolean save(AccessCardDTO dto) {
+    @Override
+	public boolean save(AccessCardDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -219,7 +224,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         }
     }
 
-    public boolean save(ArrayList<AccessCardDTO> cardList) {
+    @Override
+	public boolean save(ArrayList<AccessCardDTO> cardList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -253,7 +259,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         return true;
     }
 
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    @Override
+	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -283,7 +290,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         return true;
     }
 
-    public boolean update(AccessCardDTO dto) {
+    @Override
+	public boolean update(AccessCardDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -303,7 +311,8 @@ public class AccessCardDAOImpl extends AbstractDAO {
         }
     }
 
-    public boolean delete(int id) {
+    @Override
+	public boolean delete(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
