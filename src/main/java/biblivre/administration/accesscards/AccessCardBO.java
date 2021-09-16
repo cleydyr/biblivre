@@ -28,13 +28,13 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class AccessCardBO extends AbstractBO {
-    private AccessCardDAO dao;
+    private AccessCardDAOImpl dao;
 
     public static AccessCardBO getInstance(String schema) {
         AccessCardBO bo = AbstractBO.getInstance(AccessCardBO.class, schema);
 
         if (bo.dao == null) {
-            bo.dao = AccessCardDAO.getInstance(schema);
+            bo.dao = AccessCardDAOImpl.getInstance(schema);
         }
 
         return bo;

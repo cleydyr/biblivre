@@ -33,10 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
-public class AccessCardDAO extends AbstractDAO {
+public class AccessCardDAOImpl extends AbstractDAO {
 
-    public static AccessCardDAO getInstance(String schema) {
-        return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAO.class, schema);
+    public static AccessCardDAOImpl getInstance(String schema) {
+        return (AccessCardDAOImpl) AbstractDAO.getInstance(AccessCardDAOImpl.class, schema);
     }
 
     public AccessCardDTO get(String code) {
