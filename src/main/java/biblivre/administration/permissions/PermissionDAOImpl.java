@@ -28,13 +28,14 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PermissionDAOImpl extends AbstractDAO {
+public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
 
-    public static PermissionDAOImpl getInstance(String schema) {
-        return (PermissionDAOImpl) AbstractDAO.getInstance(PermissionDAOImpl.class, schema);
+    public static PermissionDAO getInstance(String schema) {
+        return (PermissionDAO) AbstractDAO.getInstance(PermissionDAOImpl.class, schema);
     }
 
-    public boolean delete(UserDTO user) {
+    @Override
+	public boolean delete(UserDTO user) {
         Connection con = null;
 
         try {
@@ -57,7 +58,8 @@ public class PermissionDAOImpl extends AbstractDAO {
         }
     }
 
-    public List<String> getByLoginId(Integer loginid) {
+    @Override
+	public List<String> getByLoginId(Integer loginid) {
         Connection con = null;
         List<String> list = new ArrayList<>();
         try {
@@ -79,7 +81,8 @@ public class PermissionDAOImpl extends AbstractDAO {
         return list;
     }
 
-    public boolean save(int loginid, String permission) {
+    @Override
+	public boolean save(int loginid, String permission) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -96,7 +99,8 @@ public class PermissionDAOImpl extends AbstractDAO {
         }
     }
 
-    public boolean save(int loginId, List<String> permissions) {
+    @Override
+	public boolean save(int loginId, List<String> permissions) {
         Connection con = null;
         try {
             con = this.getConnection();

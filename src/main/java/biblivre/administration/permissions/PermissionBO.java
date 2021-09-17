@@ -24,7 +24,7 @@ import biblivre.core.AbstractBO;
 import java.util.List;
 
 public class PermissionBO extends AbstractBO {
-    private PermissionDAOImpl dao;
+    private PermissionDAO dao;
 
     public static PermissionBO getInstance(String schema) {
         PermissionBO bo = AbstractBO.getInstance(PermissionBO.class, schema);
