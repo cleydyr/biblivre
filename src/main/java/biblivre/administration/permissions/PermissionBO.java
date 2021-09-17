@@ -24,13 +24,13 @@ import biblivre.core.AbstractBO;
 import java.util.List;
 
 public class PermissionBO extends AbstractBO {
-    private PermissionDAO dao;
+    private PermissionDAOImpl dao;
 
     public static PermissionBO getInstance(String schema) {
         PermissionBO bo = AbstractBO.getInstance(PermissionBO.class, schema);
 
         if (bo.dao == null) {
-            bo.dao = PermissionDAO.getInstance(schema);
+            bo.dao = PermissionDAOImpl.getInstance(schema);
         }
 
         return bo;

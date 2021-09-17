@@ -28,10 +28,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PermissionDAO extends AbstractDAO {
+public class PermissionDAOImpl extends AbstractDAO {
 
-    public static PermissionDAO getInstance(String schema) {
-        return (PermissionDAO) AbstractDAO.getInstance(PermissionDAO.class, schema);
+    public static PermissionDAOImpl getInstance(String schema) {
+        return (PermissionDAOImpl) AbstractDAO.getInstance(PermissionDAOImpl.class, schema);
     }
 
     public boolean delete(UserDTO user) {
