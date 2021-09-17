@@ -47,14 +47,8 @@ import org.marc4j.marc.Record;
 
 public class ImportBO extends AbstractBO {
 
-    protected ImportDAO dao;
-
     public static ImportBO getInstance(String schema) {
         ImportBO bo = AbstractBO.getInstance(ImportBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = ImportDAO.getInstance(schema);
-        }
 
         return bo;
     }
