@@ -24,32 +24,32 @@ import biblivre.core.AbstractBO;
 import java.util.List;
 
 public class PermissionBO extends AbstractBO {
-    private PermissionDAO dao;
+    private PermissionDAO permissionDAO;
 
     public static PermissionBO getInstance(String schema) {
         PermissionBO bo = AbstractBO.getInstance(PermissionBO.class, schema);
 
-        if (bo.dao == null) {
-            bo.dao = PermissionDAOImpl.getInstance(schema);
+        if (bo.permissionDAO == null) {
+            bo.permissionDAO = PermissionDAOImpl.getInstance(schema);
         }
 
         return bo;
     }
 
     public boolean delete(UserDTO user) {
-        return this.dao.delete(user);
+        return this.permissionDAO.delete(user);
     }
 
     public boolean save(Integer loginId, List<String> permissions) {
         UserDTO dto = new UserDTO();
         dto.setLoginId(loginId);
         if (this.delete(dto)) {
-            return this.dao.save(loginId, permissions);
+            return this.permissionDAO.save(loginId, permissions);
         }
         return false;
     }
 
     public List<String> getByLoginId(Integer loginid) {
-        return this.dao.getByLoginId(loginid);
+        return this.permissionDAO.getByLoginId(loginid);
     }
 }
