@@ -17,6 +17,10 @@
     	<constructor-arg index="0" ref="accessCardBO" />
     </bean>
 
+    <bean id="permissionsHandler" name="permissionsHandler" class="biblivre.administration.permissions.Handler" >
+        <constructor-arg index="0" ref="permissionBO" />
+    </bean>
+
     <bean id="accessControlBO" name="accessControlBO" class="biblivre.circulation.accesscontrol.AccessControlBO" >
     	<constructor-arg index="0" ref="accessControlDAO" />
     	<constructor-arg index="1" ref="accessCardBO" />
@@ -24,6 +28,10 @@
 
 	<bean id="accessCardBO" name="accessCardBO" class="biblivre.administration.accesscards.AccessCardBO" >
     	<constructor-arg index="0" ref="accessCardDAO" />
+    </bean>
+
+    <bean id="permissionBO" name="permissionBO" class="biblivre.administration.permissions.PermissionBO" >
+        <constructor-arg index="0" ref="permissionDAO" />
     </bean>
 
 	<bean id="accessControlDAO"
@@ -37,4 +45,10 @@
 	 	factory-method="getInstance" >
 	 	<constructor-arg value="single" />
 	</bean>
+
+    <bean id="permissionDAO"
+        class="biblivre.administration.permissions.PermissionDAOImpl"
+        factory-method="getInstance" >
+        <constructor-arg value="single" />
+    </bean>
 </beans>

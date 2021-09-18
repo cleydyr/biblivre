@@ -29,7 +29,15 @@ import java.util.List;
 public class LoginBO extends AbstractBO {
     private LoginDAO dao;
 
-    public static LoginBO getInstance(String schema) {
+    private PermissionBO permissionBO;
+
+    public LoginBO(LoginDAO dao, PermissionBO permissionBO) {
+		super();
+		this.dao = dao;
+		this.permissionBO = permissionBO;
+	}
+
+	public static LoginBO getInstance(String schema) {
         LoginBO bo = AbstractBO.getInstance(LoginBO.class, schema);
 
         if (bo.dao == null) {
@@ -50,10 +58,7 @@ public class LoginBO extends AbstractBO {
     }
 
     public boolean delete(UserDTO user) {
-        String schema = this.getSchema();
-        PermissionBO pbo = PermissionBO.getInstance(schema);
-
-        pbo.delete(user);
+        permissionBO.delete(user);
         return this.dao.delete(user);
     }
 

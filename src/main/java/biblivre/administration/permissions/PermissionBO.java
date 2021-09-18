@@ -20,23 +20,17 @@
 package biblivre.administration.permissions;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractBO;
 import java.util.List;
 
-public class PermissionBO extends AbstractBO {
+public class PermissionBO {
     private PermissionDAO permissionDAO;
 
-    public static PermissionBO getInstance(String schema) {
-        PermissionBO bo = AbstractBO.getInstance(PermissionBO.class, schema);
+    public PermissionBO(PermissionDAO permissionDAO) {
+		super();
+		this.permissionDAO = permissionDAO;
+	}
 
-        if (bo.permissionDAO == null) {
-            bo.permissionDAO = PermissionDAOImpl.getInstance(schema);
-        }
-
-        return bo;
-    }
-
-    public boolean delete(UserDTO user) {
+	public boolean delete(UserDTO user) {
         return this.permissionDAO.delete(user);
     }
 
