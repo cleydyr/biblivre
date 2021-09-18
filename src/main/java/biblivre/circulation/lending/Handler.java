@@ -48,7 +48,9 @@ import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
 
-    public void search(ExtendedRequest request, ExtendedResponse response) {
+    private UserBO userBO;
+
+	public void search(ExtendedRequest request, ExtendedResponse response) {
 
         String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
@@ -94,7 +96,7 @@ public class Handler extends AbstractHandler {
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -176,8 +178,7 @@ public class Handler extends AbstractHandler {
         HoldingBO holdingBo = HoldingBO.getInstance(schema);
         HoldingDTO holding = (HoldingDTO) holdingBo.get(holdingId, RecordBO.MARC_INFO);
 
-        UserBO userBo = UserBO.getInstance(schema);
-        UserDTO user = userBo.get(userId);
+        UserDTO user = userBO.get(userId);
 
         LendingBO lendingBo = LendingBO.getInstance(schema);
         boolean success = lendingBo.doLend(holding, user, request.getLoggedUserId());
@@ -229,8 +230,7 @@ public class Handler extends AbstractHandler {
             BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
             BiblioRecordDTO biblio =
                     (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
-            UserBO userBo = UserBO.getInstance(schema);
-            UserDTO user = userBo.get(userId);
+            UserDTO user = userBO.get(userId);
 
             LendingDTO newLending = lendingBo.getCurrentLending(holding);
 

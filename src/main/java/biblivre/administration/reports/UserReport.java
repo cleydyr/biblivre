@@ -47,14 +47,14 @@ import java.util.List;
 public class UserReport extends BaseBiblivreReport {
 
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
+	private UserBO userBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
         UserReportDto urdto = new UserReportDto();
-        UserBO ubo = UserBO.getInstance(this.getSchema());
         Integer userId = Integer.valueOf(dto.getUserId());
 
-        UserDTO user = ubo.get(userId);
+        UserDTO user = userBO.get(userId);
         urdto.setUser(user);
 
         LendingBO lbo = LendingBO.getInstance(this.getSchema());

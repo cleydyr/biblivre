@@ -41,7 +41,14 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-    public void ping(ExtendedRequest request, ExtendedResponse response) {
+    private UserBO userBO;
+
+	public Handler(UserBO userBO) {
+		super();
+		this.userBO = userBO;
+	}
+
+	public void ping(ExtendedRequest request, ExtendedResponse response) {
         try {
             this.json.put("success", true);
         } catch (JSONException e) {
@@ -167,7 +174,7 @@ public class Handler extends AbstractHandler {
         if (loggedUser == null || loggedUser == 0) {
             this.jspURL = "/jsp/index.jsp";
         } else {
-            UserDTO user = UserBO.getInstance(request.getSchema()).getUserByLoginId(loggedUser);
+            UserDTO user = userBO.getUserByLoginId(loggedUser);
             if (user != null) {
                 request.setAttribute("RESERVATION_USER_ID", user.getId());
             } else {

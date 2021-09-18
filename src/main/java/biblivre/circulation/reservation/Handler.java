@@ -42,7 +42,14 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-    public void search(ExtendedRequest request, ExtendedResponse response) {
+    private UserBO userBO;
+
+	public Handler(UserBO userBO) {
+		super();
+		this.userBO = userBO;
+	}
+
+	public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
 
         SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
@@ -119,7 +126,7 @@ public class Handler extends AbstractHandler {
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -161,8 +168,7 @@ public class Handler extends AbstractHandler {
         RecordBO rbo = RecordBO.getInstance(schema, RecordType.BIBLIO);
         BiblioRecordDTO record = (BiblioRecordDTO) rbo.get(recordId, RecordBO.MARC_INFO);
 
-        UserBO userBo = UserBO.getInstance(schema);
-        UserDTO user = userBo.get(userId);
+        UserDTO user = userBO.get(userId);
 
         ReservationBO reservationBo = ReservationBO.getInstance(schema);
         int reservationId = reservationBo.reserve(record, user, request.getLoggedUserId());
@@ -248,8 +254,7 @@ public class Handler extends AbstractHandler {
         try {
             int userId = request.getInteger("user_id");
             int loggedUser = request.getLoggedUserId();
-            int dbUserId =
-                    UserBO.getInstance(request.getSchema()).getUserByLoginId(loggedUser).getId();
+            int dbUserId = userBO.getUserByLoginId(loggedUser).getId();
 
             if (userId != dbUserId) {
                 this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
@@ -272,7 +277,7 @@ public class Handler extends AbstractHandler {
         try {
             int userId = Integer.valueOf(searchDto.getQuery());
             int loggedUser = request.getLoggedUserId();
-            int dbUserId = UserBO.getInstance(schema).getUserByLoginId(loggedUser).getId();
+            int dbUserId = userBO.getUserByLoginId(loggedUser).getId();
 
             if (userId != dbUserId) {
                 this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
@@ -283,7 +288,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

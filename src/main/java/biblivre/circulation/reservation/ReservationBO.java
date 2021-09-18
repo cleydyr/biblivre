@@ -46,8 +46,15 @@ import java.util.Set;
 public class ReservationBO extends AbstractBO {
 
     private ReservationDAO dao;
+	private UserBO userBO;
 
-    public static ReservationBO getInstance(String schema) {
+    public ReservationBO(ReservationDAO dao, UserBO userBO) {
+		super();
+		this.dao = dao;
+		this.userBO = userBO;
+	}
+
+	public static ReservationBO getInstance(String schema) {
         ReservationBO bo = AbstractBO.getInstance(ReservationBO.class, schema);
 
         if (bo.dao == null) {
@@ -127,7 +134,6 @@ public class ReservationBO extends AbstractBO {
         List<ReservationInfoDTO> result = new ArrayList<>();
 
         BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
-        UserBO ubo = UserBO.getInstance(this.getSchema());
 
         for (ReservationDTO dto : list) {
             ReservationInfoDTO info = new ReservationInfoDTO();
@@ -140,7 +146,7 @@ public class ReservationBO extends AbstractBO {
             dto.setAuthor(record.getAuthor());
             info.setReservation(dto);
 
-            UserDTO user = ubo.get(dto.getUserId());
+            UserDTO user = userBO.get(dto.getUserId());
             info.setUser(user);
         }
 
@@ -202,16 +208,12 @@ public class ReservationBO extends AbstractBO {
     }
 
     public SearchDTO populateReservationInfoByBiblio(SearchDTO search) {
-        String schema = this.getSchema();
-
         Set<Integer> users = new HashSet<>();
         Set<Integer> records = new HashSet<>();
 
         for (RecordDTO record : search) {
             records.add(record.getId());
         }
-
-        UserBO ubo = UserBO.getInstance(schema);
 
         Map<Integer, List<ReservationDTO>> reservationsMap = this.getReservationsMap(records);
         for (Entry<Integer, List<ReservationDTO>> entry : reservationsMap.entrySet()) {
@@ -225,7 +227,7 @@ public class ReservationBO extends AbstractBO {
 
         Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
-            usersMap = ubo.map(users);
+            usersMap = userBO.map(users);
         }
 
         // Join data

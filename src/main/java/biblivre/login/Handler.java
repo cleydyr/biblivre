@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -50,7 +51,14 @@ import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
 
-    public void login(ExtendedRequest request, ExtendedResponse response) {
+    private LoginBO loginBO;
+
+	public Handler(LoginBO loginBO) {
+		super();
+		this.loginBO = loginBO;
+	}
+
+	public void login(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
         String username = request.getString("username");
@@ -62,8 +70,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        LoginBO loginBo = LoginBO.getInstance(schema);
-        LoginDTO user = loginBo.login(username, password);
+        LoginDTO user = loginBO.login(username, password);
 
         if (user != null) {
             AuthorizationBO authBo = AuthorizationBO.getInstance(schema);
@@ -110,13 +117,11 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         int loggedId = request.getLoggedUserId();
 
-        LoginBO lbo = LoginBO.getInstance(schema);
-
         String newPassword = request.getString("new_password");
-        LoginDTO login = lbo.get(loggedId);
+        LoginDTO login = loginBO.get(loggedId);
         login.setModifiedBy(loggedId);
         login.setEncPassword(TextUtils.encodePassword(newPassword));
-        lbo.update(login);
+        loginBO.update(login);
 
         boolean warningPassword =
                 newPassword.equals("abracadabra") && login.getLogin().equals("admin");

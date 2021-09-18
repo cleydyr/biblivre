@@ -4,9 +4,17 @@
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!-- Validators -->
+
 	<bean id="userValidator" name="userValidator" class="biblivre.circulation.user.Validator" >
     	<constructor-arg index="0" ref="accessControlBO" />
     </bean>
+
+    <bean id="permissionValidator" name="permissionValidator" class="biblivre.administration.permissions.Validator" >
+        <constructor-arg index="0" ref="loginBO" />
+    </bean>
+
+    <!-- Handlers -->
 
     <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" >
     	<constructor-arg index="0" ref="accessCardBO" />
@@ -17,9 +25,16 @@
     	<constructor-arg index="0" ref="accessCardBO" />
     </bean>
 
-    <bean id="permissionsHandler" name="permissionsHandler" class="biblivre.administration.permissions.Handler" >
-        <constructor-arg index="0" ref="permissionBO" />
+    <bean id="loginHandler" name="loginHandler" class="biblivre.login.Handler" >
+        <constructor-arg index="0" ref="loginBO" />
     </bean>
+
+    <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" >
+        <constructor-arg index="0" ref="accessCardBO" />
+        <constructor-arg index="1" ref="accessControlBO" />
+    </bean>
+
+    <!-- BOs -->
 
     <bean id="accessControlBO" name="accessControlBO" class="biblivre.circulation.accesscontrol.AccessControlBO" >
     	<constructor-arg index="0" ref="accessControlDAO" />
@@ -33,6 +48,13 @@
     <bean id="permissionBO" name="permissionBO" class="biblivre.administration.permissions.PermissionBO" >
         <constructor-arg index="0" ref="permissionDAO" />
     </bean>
+
+    <bean id="loginBO" name="loginBO" class="biblivre.login.LoginBO" >
+        <constructor-arg index="0" ref="loginDAO" />
+        <constructor-arg index="1" ref="permissionBO" />
+    </bean>
+
+    <!-- DAOs -->
 
 	<bean id="accessControlDAO"
 		class="biblivre.circulation.accesscontrol.AccessControlDAOImpl"
@@ -48,6 +70,12 @@
 
     <bean id="permissionDAO"
         class="biblivre.administration.permissions.PermissionDAOImpl"
+        factory-method="getInstance" >
+        <constructor-arg value="single" />
+    </bean>
+
+    <bean id="loginDAO"
+        class="biblivre.login.LoginDAOImpl"
         factory-method="getInstance" >
         <constructor-arg value="single" />
     </bean>

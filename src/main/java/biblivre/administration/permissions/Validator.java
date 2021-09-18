@@ -32,16 +32,22 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-    public void validateSave(
+    private LoginBO loginBO;
+	private UserBO userBO;
+
+	public Validator(LoginBO loginBO, UserBO userBO) {
+		super();
+		this.loginBO = loginBO;
+		this.userBO = userBO;
+	}
+
+	public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
-        UserBO ubo = UserBO.getInstance(schema);
-
         int userId = request.getInteger("user_id");
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
 
         String login = request.getString("new_login");
         String password = request.getString("new_password");
@@ -50,9 +56,7 @@ public class Validator extends AbstractValidator {
         Integer loginId = udto.getLoginId();
         boolean newLogin = (loginId == null || loginId == 0);
 
-        LoginBO lbo = LoginBO.getInstance(schema);
-
-        if (newLogin && lbo.loginExists(login)) {
+        if (newLogin && loginBO.loginExists(login)) {
             ex.addError("new_login", "login.error.login_already_exists");
         }
 

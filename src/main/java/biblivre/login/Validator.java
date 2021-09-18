@@ -29,9 +29,15 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
 
-    public void validateChangePassword(
+    private LoginBO loginBO;
+
+	public Validator(LoginBO loginBO) {
+		super();
+		this.loginBO = loginBO;
+	}
+
+	public void validateChangePassword(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String currentPassword = request.getString("current_password");
         String newPassword = request.getString("new_password");
@@ -68,16 +74,14 @@ public class Validator extends AbstractValidator {
             return;
         }
 
-        LoginBO lbo = LoginBO.getInstance(schema);
-
         int loggedId = request.getLoggedUserId();
-        LoginDTO login = lbo.get(loggedId);
+        LoginDTO login = loginBO.get(loggedId);
         if (login == null) {
             handler.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
         }
 
-        LoginDTO checkLogin = lbo.login(login.getLogin(), currentPassword);
+        LoginDTO checkLogin = loginBO.login(login.getLogin(), currentPassword);
         if (checkLogin == null) {
             ex.addError("current_password", "login.error.invalid_password");
             handler.setMessage(ex);

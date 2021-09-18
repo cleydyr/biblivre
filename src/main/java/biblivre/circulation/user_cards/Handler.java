@@ -33,7 +33,14 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-    public void createPdf(ExtendedRequest request, ExtendedResponse response) {
+    private UserBO userBO;
+
+	public Handler(UserBO userBO) {
+		super();
+		this.userBO = userBO;
+	}
+
+	public void createPdf(ExtendedRequest request, ExtendedResponse response) {
         LabelPrintDTO print = getLabelPrintDTO(request);
 
         if (print == null) {
@@ -57,10 +64,9 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         String printId = request.getString("id");
         LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
-        UserBO ubo = UserBO.getInstance(schema);
-        final DiskFile exportFile = ubo.printUserCardsToPDF(dto, request.getTranslationsMap());
+        final DiskFile exportFile = userBO.printUserCardsToPDF(dto, request.getTranslationsMap());
 
-        ubo.markAsPrinted(dto.getIds());
+        userBO.markAsPrinted(dto.getIds());
 
         this.setFile(exportFile);
 

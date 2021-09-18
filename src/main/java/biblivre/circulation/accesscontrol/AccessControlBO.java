@@ -32,6 +32,7 @@ import java.util.List;
 public class AccessControlBO extends AbstractBO {
     private AccessControlDAO accessControlDAO;
     private AccessCardBO accessCardBO;
+	private UserBO userBO;
 
     public AccessControlBO(AccessControlDAO dao, AccessCardBO accessCardBO) {
         super();
@@ -49,8 +50,7 @@ public class AccessControlBO extends AbstractBO {
         }
 
         if (dto.getUserId() != null) {
-            UserBO userBo = UserBO.getInstance(this.getSchema());
-            dto.setUser(userBo.get(dto.getUserId()));
+            dto.setUser(userBO.get(dto.getUserId()));
         }
 
         return dto;
@@ -58,7 +58,6 @@ public class AccessControlBO extends AbstractBO {
 
     public boolean lendCard(AccessControlDTO dto) {
 
-        UserBO userBO = UserBO.getInstance(this.getSchema());
         UserDTO udto = null;
         try {
             udto = userBO.get(dto.getUserId());
@@ -98,7 +97,6 @@ public class AccessControlBO extends AbstractBO {
 
     public boolean returnCard(AccessControlDTO dto) {
 
-        UserBO userBO = UserBO.getInstance(this.getSchema());
         UserDTO udto = null;
         try {
             udto = userBO.get(dto.getUserId());

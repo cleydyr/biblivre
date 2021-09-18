@@ -35,15 +35,17 @@ public class Handler extends AbstractHandler {
 
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
+	private UserBO userBO;
 
-    public Handler(AccessCardBO accessCardBO, AccessControlBO accessControlBO) {
+    public Handler(AccessCardBO accessCardBO, AccessControlBO accessControlBO, UserBO userBO) {
         super();
         this.accessCardBO = accessCardBO;
         this.accessControlBO = accessControlBO;
+        this.userBO = userBO;
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null) {
@@ -83,8 +85,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         biblivre.administration.accesscards.Handler cardHandler =
                 new biblivre.administration.accesscards.Handler(accessCardBO);
         DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
@@ -95,8 +95,6 @@ public class Handler extends AbstractHandler {
 
         DTOCollection<AccessControlDTO> list = new DTOCollection<>();
         list.setPaging(cardList.getPaging());
-
-        UserBO ubo = UserBO.getInstance(schema);
 
         for (AccessCardDTO card : cardList) {
             AccessControlDTO dto = accessControlBO.getByCardId(card.getId());
@@ -109,7 +107,7 @@ public class Handler extends AbstractHandler {
             dto.setAccessCard(card);
 
             if (dto.getUserId() != null) {
-                dto.setUser(ubo.get(dto.getUserId()));
+                dto.setUser(userBO.get(dto.getUserId()));
             }
 
             list.add(dto);

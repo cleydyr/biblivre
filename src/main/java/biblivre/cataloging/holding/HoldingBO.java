@@ -39,7 +39,6 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.ParagraphAlignmentUtil;
-import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -74,8 +73,18 @@ import org.marc4j.marc.Subfield;
 public class HoldingBO extends RecordBO {
 
     private HoldingDAO dao;
+	private LoginDTO loginBO;
+	private UserBO userBO;
 
-    public static HoldingBO getInstance(String schema) {
+	
+    public HoldingBO(HoldingDAO dao, LoginDTO loginBO, UserBO userBO) {
+		super();
+		this.dao = dao;
+		this.loginBO = loginBO;
+		this.userBO = userBO;
+	}
+
+	public static HoldingBO getInstance(String schema) {
         HoldingBO bo = AbstractBO.getInstance(HoldingBO.class, schema);
 
         if (bo.dao == null) {
@@ -196,10 +205,8 @@ public class HoldingBO extends RecordBO {
         if (success) {
             // UPDATE holding_creation_counter
             try {
-                UserDTO udto =
-                        UserBO.getInstance(this.getSchema()).getUserByLoginId(dto.getCreatedBy());
-                LoginDTO ldto = LoginBO.getInstance(this.getSchema()).get(dto.getCreatedBy());
-                this.dao.updateHoldingCreationCounter(udto, ldto);
+                UserDTO udto = userBO.getUserByLoginId(dto.getCreatedBy());
+                this.dao.updateHoldingCreationCounter(udto, loginBO);
             } catch (Exception e) {
                 this.logger.error(e.getMessage(), e);
             }

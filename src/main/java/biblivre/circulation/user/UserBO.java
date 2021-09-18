@@ -51,20 +51,15 @@ import org.apache.commons.io.IOUtils;
 
 public class UserBO extends AbstractBO {
 
-    private UserDAO dao;
+    private UserDAO userDAO;
 
-    public static UserBO getInstance(String schema) {
-        UserBO bo = AbstractBO.getInstance(UserBO.class, schema);
+    public UserBO(UserDAO userDAO) {
+		super();
+		this.userDAO = userDAO;
+	}
 
-        if (bo.dao == null) {
-            bo.dao = UserDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
-
-    public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
-        DTOCollection<UserDTO> list = this.dao.search(dto, limit, offset);
+	public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
+        DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
 
         UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
         Map<Integer, UserTypeDTO> map = utbo.map();
@@ -88,7 +83,7 @@ public class UserBO extends AbstractBO {
     }
 
     public Map<Integer, UserDTO> map(Set<Integer> ids) {
-        Map<Integer, UserDTO> map = this.dao.map(ids);
+        Map<Integer, UserDTO> map = this.userDAO.map(ids);
 
         UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
         Map<Integer, UserTypeDTO> typeMap = utbo.map();
@@ -101,7 +96,7 @@ public class UserBO extends AbstractBO {
     }
 
     public UserDTO getUserByLoginId(Integer loginId) {
-        Integer userId = this.dao.getUserIdByLoginId(loginId);
+        Integer userId = this.userDAO.getUserIdByLoginId(loginId);
         if (userId == null) {
             return null;
         }
@@ -109,15 +104,15 @@ public class UserBO extends AbstractBO {
     }
 
     public boolean save(UserDTO user) {
-        return this.dao.save(user);
+        return this.userDAO.save(user);
     }
 
     public boolean updateUserStatus(Integer userId, UserStatus status) {
-        return this.dao.updateUserStatus(userId, status);
+        return this.userDAO.updateUserStatus(userId, status);
     }
 
     public boolean delete(UserDTO user) {
-        return this.dao.delete(user);
+        return this.userDAO.delete(user);
     }
 
     public DiskFile printUserCardsToPDF(LabelPrintDTO dto, TranslationsMap i18n) {
@@ -234,10 +229,10 @@ public class UserBO extends AbstractBO {
     }
 
     public void markAsPrinted(Set<Integer> ids) {
-        this.dao.markAsPrinted(ids);
+        this.userDAO.markAsPrinted(ids);
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.userDAO.saveFromBiblivre3(dtoList);
     }
 }

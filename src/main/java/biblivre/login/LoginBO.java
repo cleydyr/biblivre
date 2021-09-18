@@ -37,16 +37,6 @@ public class LoginBO extends AbstractBO {
 		this.permissionBO = permissionBO;
 	}
 
-	public static LoginBO getInstance(String schema) {
-        LoginBO bo = AbstractBO.getInstance(LoginBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = LoginDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
-
     public final LoginDTO login(String login, String password) {
         String encodedPassword = TextUtils.encodePassword(password);
 

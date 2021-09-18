@@ -36,16 +36,20 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 	private PermissionBO permissionBO;
+	private LoginBO loginBO;
+	private UserBO userBO;
 
-    public Handler(PermissionBO permissionBO) {
+    public Handler(PermissionBO permissionBO, LoginBO loginBO, UserBO userBO) {
 		super();
 		this.permissionBO = permissionBO;
+		this.loginBO = loginBO;
+		this.userBO = userBO;
 	}
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -68,17 +72,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int userId = request.getInteger("user_id");
         if (userId == 0) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
-        LoginBO lbo = LoginBO.getInstance(schema);
-
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
         if (udto == null) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
@@ -90,7 +90,7 @@ public class Handler extends AbstractHandler {
         dto.setUser(udto);
 
         if (loginId > 0) {
-            dto.setLogin(lbo.get(loginId));
+            dto.setLogin(loginBO.get(loginId));
             List<String> list = permissionBO.getByLoginId(loginId);
             if (list != null) {
                 dto.setPermissions(list);
@@ -112,8 +112,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
 
         if (udto == null) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
@@ -127,8 +126,6 @@ public class Handler extends AbstractHandler {
         Integer loginId = udto.getLoginId();
         boolean newLogin = (loginId == null || loginId == 0);
 
-        LoginBO lbo = LoginBO.getInstance(schema);
-
         LoginDTO ldto = new LoginDTO();
         ldto.setLogin(login);
         ldto.setEmployee(employee);
@@ -141,11 +138,11 @@ public class Handler extends AbstractHandler {
 
         if (newLogin) {
             ldto.setCreatedBy(request.getLoggedUserId());
-            result = lbo.save(ldto, udto);
+            result = loginBO.save(ldto, udto);
         } else {
             ldto.setId(udto.getLoginId());
             ldto.setModifiedBy(request.getLoggedUserId());
-            result = lbo.update(ldto);
+            result = loginBO.update(ldto);
         }
 
         String[] permissions = request.getParameterValues("permissions[]");
@@ -182,15 +179,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int userId = request.getInteger("user_id");
         if (userId == 0) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
 
         if (udto == null) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
@@ -199,9 +194,8 @@ public class Handler extends AbstractHandler {
 
         // WE DELETE THE LOGIN RECORD, AND THE PERMISSIONS WILL ALSO BE DELETED
         // BY THE LOGIN_BO
-        LoginBO lbo = LoginBO.getInstance(schema);
 
-        if (lbo.delete(udto)) {
+        if (loginBO.delete(udto)) {
             this.setMessage(ActionResult.SUCCESS, "administration.permission.success.delete");
         } else {
             this.setMessage(ActionResult.WARNING, "administration.permission.error.delete");
@@ -209,8 +203,6 @@ public class Handler extends AbstractHandler {
     }
 
     private PermissionDTO populatePermission(String schema, UserDTO user) {
-        LoginBO lbo = LoginBO.getInstance(schema);
-
         PermissionDTO dto = new PermissionDTO();
         dto.setUser(user);
 
@@ -218,7 +210,7 @@ public class Handler extends AbstractHandler {
             return dto;
         }
 
-        LoginDTO ldto = lbo.get(user.getLoginId());
+        LoginDTO ldto = loginBO.get(user.getLoginId());
 
         if (ldto == null) {
             return dto;

@@ -44,12 +44,17 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-    public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+    private UserBO userBO;
+
+	public Handler(UserBO userBO) {
+		super();
+		this.userBO = userBO;
+	}
+
+	public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         if (user == null) {
             this.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
@@ -97,9 +102,7 @@ public class Handler extends AbstractHandler {
             offset = limit * (page - 1);
         }
 
-        UserBO bo = UserBO.getInstance(schema);
-
-        DTOCollection<UserDTO> list = bo.search(searchDto, limit, offset);
+        DTOCollection<UserDTO> list = userBO.search(searchDto, limit, offset);
 
         if (list.size() == 0) {
             handler.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
@@ -112,11 +115,10 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
         UserDTO user = null;
 
         if (id != 0) {
-            user = bo.get(id);
+            user = userBO.get(id);
             if (user == null) {
                 this.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
                 return;
@@ -177,7 +179,7 @@ public class Handler extends AbstractHandler {
         } catch (Exception e) {
         }
 
-        if (bo.save(user)) {
+        if (userBO.save(user)) {
             if (id == 0) {
                 this.setMessage(ActionResult.SUCCESS, "circulation.users.success.save");
             } else {
@@ -197,15 +199,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         String act = (user.getStatus() == UserStatus.INACTIVE) ? "delete" : "disable";
 
-        boolean success = bo.delete(user);
+        boolean success = userBO.delete(user);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.users.success." + act);
@@ -219,8 +219,7 @@ public class Handler extends AbstractHandler {
         Integer id = request.getInteger("id");
         String tab = request.getString("tab");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         if (user == null) {
             this.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
@@ -269,11 +268,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void block(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer userId = request.getInteger("user_id");
 
-        UserBO userBo = UserBO.getInstance(schema);
-        boolean success = userBo.updateUserStatus(userId, UserStatus.BLOCKED);
+        boolean success = userBO.updateUserStatus(userId, UserStatus.BLOCKED);
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.users.success.block");
         } else {
@@ -282,11 +279,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void unblock(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer userId = request.getInteger("user_id");
 
-        UserBO userBo = UserBO.getInstance(schema);
-        boolean success = userBo.updateUserStatus(userId, UserStatus.ACTIVE);
+        boolean success = userBO.updateUserStatus(userId, UserStatus.ACTIVE);
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.users.success.unblock");
         } else {

@@ -61,8 +61,15 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class LendingBO extends AbstractBO {
     private LendingDAO dao;
+	private UserBO userBO;
 
-    public static LendingBO getInstance(String schema) {
+    public LendingBO(LendingDAO dao, UserBO userBO) {
+		super();
+		this.dao = dao;
+		this.userBO = userBO;
+	}
+
+	public static LendingBO getInstance(String schema) {
         LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
 
         if (bo.dao == null) {
@@ -187,8 +194,7 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean doRenew(LendingDTO lending) {
-        UserBO userBo = UserBO.getInstance(this.getSchema());
-        UserDTO userDto = userBo.get(lending.getUserId());
+        UserDTO userDto = userBO.get(lending.getUserId());
         if (userDto == null) {
             throw new ValidationException("cataloging.lending.error.user_not_found");
         }
@@ -258,7 +264,6 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
         BiblioRecordBO bbo = BiblioRecordBO.getInstance(schema);
 
         Map<Integer, LendingDTO> lendingsMap = this.getCurrentLendingMap(holdings);
@@ -276,7 +281,7 @@ public class LendingBO extends AbstractBO {
 
         Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
-            usersMap = ubo.map(users);
+            usersMap = userBO.map(users);
         }
 
         // Join data
@@ -348,13 +353,12 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        UserBO userBo = UserBO.getInstance(schema);
         HoldingBO holdingBo = HoldingBO.getInstance(schema);
         BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
 
         Map<Integer, UserDTO> users = new HashMap<>();
         if (!userIds.isEmpty()) {
-            users = userBo.map(userIds);
+            users = userBO.map(userIds);
         }
 
         Map<Integer, RecordDTO> holdings = new HashMap<>();

@@ -37,13 +37,15 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class Validator extends AbstractValidator {
 
     private AccessControlBO accessControlBO;
+	private UserBO userBO;
 
-    public Validator(AccessControlBO accessControlBO) {
-        super();
-        this.accessControlBO = accessControlBO;
-    }
+    public Validator(AccessControlBO accessControlBO, UserBO userBO) {
+		super();
+		this.accessControlBO = accessControlBO;
+		this.userBO = userBO;
+	}
 
-    public void validateSave(
+	public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
         DateFormat dateFormat = new SimpleDateFormat(request.getLocalizedText("format.date"));
         DateFormat dateTimeFormat =
@@ -142,8 +144,7 @@ public class Validator extends AbstractValidator {
         String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         if (user == null) {
             handler.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");

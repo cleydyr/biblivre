@@ -32,8 +32,15 @@ import java.util.TreeMap;
 
 public class UserTypeBO extends AbstractBO {
     private UserTypeDAO dao;
+	private UserBO userBO;
 
-    public static UserTypeBO getInstance(String schema) {
+    public UserTypeBO(UserTypeDAO dao, UserBO userBO) {
+		super();
+		this.dao = dao;
+		this.userBO = userBO;
+	}
+
+	public static UserTypeBO getInstance(String schema) {
         UserTypeBO bo = AbstractBO.getInstance(UserTypeBO.class, schema);
         if (bo.dao == null) {
             bo.dao = UserTypeDAO.getInstance(schema);
@@ -68,11 +75,10 @@ public class UserTypeBO extends AbstractBO {
 
     public boolean delete(int id) {
         // Check if there's any user for this user_type
-        UserBO bo = UserBO.getInstance(this.getSchema());
         UserSearchDTO dto = new UserSearchDTO();
         dto.setType(id);
 
-        DTOCollection<UserDTO> userList = bo.search(dto, 1, 0);
+        DTOCollection<UserDTO> userList = userBO.search(dto, 1, 0);
         boolean existingUser = userList.size() > 0;
 
         if (existingUser) {
