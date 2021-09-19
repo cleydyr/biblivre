@@ -75,30 +75,30 @@ import org.marc4j.marc.Subfield;
 
 public class HoldingBO extends RecordBO {
 
-    private HoldingDAO dao;
+    private HoldingDAO holdingDAO;
     private UserBO userBO;
     private LoginBO loginBO;
 
     public HoldingBO(
-            HoldingDAO dao,
+    		HoldingDAO holdingDAO,
             LoginBO loginBO,
             UserBO userBO,
             RecordDAO recordDAO,
             SearchDAO seachDAO) {
         super(recordDAO, seachDAO);
-        this.dao = dao;
+        this.holdingDAO = holdingDAO;
         this.loginBO = loginBO;
         this.userBO = userBO;
     }
 
     @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return this.dao.map(ids);
+        return this.holdingDAO.map(ids);
     }
 
     @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
-        Map<Integer, RecordDTO> map = this.dao.map(ids);
+        Map<Integer, RecordDTO> map = this.holdingDAO.map(ids);
 
         for (RecordDTO dto : map.values()) {
             this.populateDetails(dto, mask);
@@ -109,7 +109,7 @@ public class HoldingBO extends RecordBO {
 
     @Override
     public List<RecordDTO> list(int offset, int limit) {
-        return this.dao.list(offset, limit);
+        return this.holdingDAO.list(offset, limit);
     }
 
     @Override
@@ -118,15 +118,15 @@ public class HoldingBO extends RecordBO {
     }
 
     public Integer count(int recordId) {
-        return this.dao.count(recordId, false);
+        return this.holdingDAO.count(recordId, false);
     }
 
     public Integer countAvailableHoldings(int recordId) {
-        return this.dao.count(recordId, true);
+        return this.holdingDAO.count(recordId, true);
     }
 
     public void markAsPrinted(Set<Integer> ids) {
-        this.dao.markAsPrinted(ids);
+        this.holdingDAO.markAsPrinted(ids);
     }
 
     public String getNextAccessionNumber() {
@@ -136,11 +136,11 @@ public class HoldingBO extends RecordBO {
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
         String accessionPrefix = prefix + "." + year + ".";
-        return accessionPrefix + this.dao.getNextAccessionNumber(accessionPrefix);
+        return accessionPrefix + this.holdingDAO.getNextAccessionNumber(accessionPrefix);
     }
 
     public boolean isAccessionNumberAvailable(String accessionNumber, int holdingSerial) {
-        return this.dao.isAccessionNumberAvailable(accessionNumber, holdingSerial);
+        return this.holdingDAO.isAccessionNumberAvailable(accessionNumber, holdingSerial);
     }
 
     public boolean isAccessionNumberAvailable(String accessionNumber) {
@@ -148,17 +148,17 @@ public class HoldingBO extends RecordBO {
     }
 
     public DTOCollection<HoldingDTO> list(int recordId) {
-        return this.dao.list(recordId);
+        return this.holdingDAO.list(recordId);
     }
 
     public HoldingDTO getByAccessionNumber(String accessionNumber) {
-        return this.dao.getByAccessionNumber(accessionNumber);
+        return this.holdingDAO.getByAccessionNumber(accessionNumber);
     }
 
     public DTOCollection<HoldingDTO> search(
             String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
         DTOCollection<HoldingDTO> searchResults =
-                this.dao.search(query, database, lentOnly, offset, limit);
+                this.holdingDAO.search(query, database, lentOnly, offset, limit);
         for (HoldingDTO holding : searchResults) {
             MarcDataReader reader = new MarcDataReader(holding.getRecord());
             holding.setShelfLocation(reader.getShelfLocation());
@@ -168,7 +168,7 @@ public class HoldingBO extends RecordBO {
 
     @Override
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.holdingDAO.saveFromBiblivre3(dtoList);
     }
 
     @Override
@@ -188,23 +188,20 @@ public class HoldingBO extends RecordBO {
             throw new ValidationException("cataloging.holding.error.accession_number_unavailable");
         }
 
-        Integer id = this.dao.getNextSerial("biblio_holdings_id_seq");
-
         hdto.setDateOfLastTransaction();
 
         // Availability and RecordId are already populated at this point.
-        hdto.setId(id);
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
 
-        boolean success = this.dao.save(dto);
+        boolean success = this.holdingDAO.save(dto);
 
         if (success) {
             // UPDATE holding_creation_counter
             try {
                 UserDTO udto = userBO.getUserByLoginId(dto.getCreatedBy());
                 LoginDTO login = loginBO.get(dto.getCreatedBy());
-                this.dao.updateHoldingCreationCounter(udto, login);
+                this.holdingDAO.updateHoldingCreationCounter(udto, login);
             } catch (Exception e) {
                 this.logger.error(e.getMessage(), e);
             }
@@ -236,7 +233,7 @@ public class HoldingBO extends RecordBO {
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
 
-        return this.dao.update(dto);
+        return this.holdingDAO.update(dto);
     }
 
     @Override
@@ -251,7 +248,7 @@ public class HoldingBO extends RecordBO {
         //				throw new RuntimeException("MESSAGE_DELETE_BIBLIO_ERROR");
         //			}
         //		}
-        return this.dao.delete(dto);
+        return this.holdingDAO.delete(dto);
     }
 
     // If a holding was ever lent, the user shouldn't delete it. The correct way
@@ -280,14 +277,14 @@ public class HoldingBO extends RecordBO {
     }
 
     public boolean paginateHoldingSearch(SearchDTO search) {
-        Map<Integer, Integer> groupCount = this.dao.countSearchResults(search);
+        Map<Integer, Integer> groupCount = this.holdingDAO.countSearchResults(search);
         Integer count = groupCount.get(search.getIndexingGroup());
 
         if (count == null || count == 0) {
             return false;
         }
 
-        List<RecordDTO> list = this.dao.getSearchResults(search);
+        List<RecordDTO> list = this.holdingDAO.getSearchResults(search);
 
         search.getPaging().setRecordCount(count);
         search.setIndexingGroupCount(groupCount);

@@ -43,7 +43,11 @@ import java.util.Set;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class RecordDAOImpl extends AbstractDAO implements RecordDAO {
+public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
+    public static RecordDAOImpl getInstance(String schema) {
+        return AbstractDAO.getInstance(RecordDAOImpl.class, schema);
+    }
+
     @Override
     public boolean save(RecordDTO dto) {
         Integer id = getNextSerial(dto.getRecordType() + "_records_id_seq");
@@ -749,7 +753,7 @@ public abstract class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
     protected RecordDTO populateDTO(ResultSet rs)
             throws SQLException, UnsupportedEncodingException {
-        RecordDTO dto = this.createRecord();
+        RecordDTO dto = new RecordDTO();
 
         dto.setSchema(getSchema());
         dto.setIso2709(rs.getBytes("iso2709"));
@@ -767,7 +771,7 @@ public abstract class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             throws SQLException, UnsupportedEncodingException {
         AutocompleteDTO dto = new AutocompleteDTO();
 
-        RecordDTO rdto = this.createRecord();
+        RecordDTO rdto = new RecordDTO();
 
         rdto.setSchema(getSchema());
         rdto.setIso2709(rs.getBytes("iso2709"));
@@ -778,6 +782,4 @@ public abstract class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
         return dto;
     }
-
-    protected abstract RecordDTO createRecord();
 }

@@ -28,7 +28,6 @@ import java.util.List;
 
 public class LoginBO extends AbstractBO {
     private LoginDAO dao;
-
     private PermissionBO permissionBO;
 
     public LoginBO(LoginDAO dao, PermissionBO permissionBO) {

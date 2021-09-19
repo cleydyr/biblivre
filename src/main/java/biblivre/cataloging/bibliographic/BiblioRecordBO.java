@@ -48,35 +48,35 @@ public class BiblioRecordBO extends PaginableRecordBO {
     }
 
     @Override
-    public void populateDetails(RecordDTO rdto, int mask) {
-        if (rdto == null) {
+    public void populateDetails(RecordDTO recordDTO, int mask) {
+        if (recordDTO == null) {
             return;
         }
 
-        BiblioRecordDTO dto = (BiblioRecordDTO) rdto;
+        BiblioRecordDTO biblioRecordDTO = (BiblioRecordDTO) recordDTO;
 
         if ((mask & RecordBO.MARC_INFO) != 0) {
-            Record record = rdto.getRecord();
+            Record record = recordDTO.getRecord();
 
-            if (record == null && rdto.getIso2709() != null) {
-                record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
+            if (record == null && recordDTO.getIso2709() != null) {
+                record = MarcUtils.iso2709ToRecord(recordDTO.getIso2709());
             }
 
             if (record != null) {
                 MarcDataReader marcDataReader = new MarcDataReader(record);
 
-                dto.setAuthor(marcDataReader.getAuthor(true));
-                dto.setTitle(marcDataReader.getTitle(false));
-                dto.setIsbn(marcDataReader.getIsbn());
-                dto.setIssn(marcDataReader.getIssn());
-                dto.setIsrc(marcDataReader.getIsrc());
-                dto.setPublicationYear(marcDataReader.getPublicationYear());
-                dto.setShelfLocation(marcDataReader.getShelfLocation());
-                dto.setSubject(marcDataReader.getSubject(true));
+                biblioRecordDTO.setAuthor(marcDataReader.getAuthor(true));
+                biblioRecordDTO.setTitle(marcDataReader.getTitle(false));
+                biblioRecordDTO.setIsbn(marcDataReader.getIsbn());
+                biblioRecordDTO.setIssn(marcDataReader.getIssn());
+                biblioRecordDTO.setIsrc(marcDataReader.getIsrc());
+                biblioRecordDTO.setPublicationYear(marcDataReader.getPublicationYear());
+                biblioRecordDTO.setShelfLocation(marcDataReader.getShelfLocation());
+                biblioRecordDTO.setSubject(marcDataReader.getSubject(true));
             }
         }
 
-        Integer recordId = dto.getId();
+        Integer recordId = biblioRecordDTO.getId();
 
         if (recordId == null || recordId <= 0) {
             return;
@@ -93,13 +93,13 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
             if (availableHoldings > 0) {
                 lentCount = lbo.countLentHoldings(recordId);
-                reservedCount = rbo.countReserved(dto);
+                reservedCount = rbo.countReserved(biblioRecordDTO);
             }
 
-            dto.setHoldingsCount(totalHoldings);
-            dto.setHoldingsAvailable(availableHoldings - lentCount);
-            dto.setHoldingsLent(lentCount);
-            dto.setHoldingsReserved(reservedCount);
+            biblioRecordDTO.setHoldingsCount(totalHoldings);
+            biblioRecordDTO.setHoldingsAvailable(availableHoldings - lentCount);
+            biblioRecordDTO.setHoldingsLent(lentCount);
+            biblioRecordDTO.setHoldingsReserved(reservedCount);
         }
 
         if ((mask & RecordBO.HOLDING_LIST) != 0) {
@@ -114,14 +114,14 @@ public class BiblioRecordBO extends PaginableRecordBO {
                 holding.setShelfLocation(
                         StringUtils.isNotBlank(holdingLocation)
                                 ? holdingLocation
-                                : dto.getShelfLocation());
+                                : biblioRecordDTO.getShelfLocation());
             }
 
-            dto.setHoldings(holdingsList);
+            biblioRecordDTO.setHoldings(holdingsList);
         }
 
         if ((mask & RecordBO.LENDING_INFO) != 0) {
-            List<HoldingDTO> holdingsList = dto.getHoldings();
+            List<HoldingDTO> holdingsList = biblioRecordDTO.getHoldings();
 
             if (holdingsList == null) {
                 holdingsList = holdingBO.list(recordId);

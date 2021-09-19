@@ -8,10 +8,12 @@
 
 	<bean id="userValidator" name="userValidator" class="biblivre.circulation.user.Validator" scope="prototype">
     	<constructor-arg index="0" ref="accessControlBO" />
+    	<constructor-arg index="1" ref="userBO" />
     </bean>
 
     <bean id="permissionValidator" name="permissionValidator" class="biblivre.administration.permissions.Validator" scope="prototype">
         <constructor-arg index="0" ref="loginBO" />
+        <constructor-arg index="1" ref="userBO" />
     </bean>
 
     <bean id="loginValidator" name="loginValidator" class="biblivre.login.Validator">
@@ -115,18 +117,20 @@
         <constructor-arg index="0" ref="userBO" />
     </bean>
 
-    <bean id="userHandler" name="userHandler" class="biblivre.circulation.user_cards.Handler" scope="prototype" >
+    <bean id="userCardHandler" name="userCardHandler" class="biblivre.circulation.user_cards.Handler" scope="prototype" >
         <constructor-arg index="0" ref="userBO" />
     </bean>
 
     <bean id="z3950Handler" name="z3950andler" class="biblivre.z3950.Handler" scope="prototype" >
         <constructor-arg index="0" ref="biblioRecordBO" />
     </bean>
+
     <!-- BOs -->
 
     <bean id="accessControlBO" name="accessControlBO" class="biblivre.circulation.accesscontrol.AccessControlBO" >
     	<constructor-arg index="0" ref="accessControlDAO" />
     	<constructor-arg index="1" ref="accessCardBO" />
+    	<constructor-arg index="2" ref="userBO" />
     </bean>
 
 	<bean id="accessCardBO" name="accessCardBO" class="biblivre.administration.accesscards.AccessCardBO" >
@@ -163,7 +167,7 @@
         <constructor-arg index="3" ref="requestBO" />
     </bean>
 
-	<bean id="userBO" name="userBO" class="biblivre.cataloging.bibliographic.BiblioRecordBO" >
+	<bean id="userBO" name="userBO" class="biblivre.circulation.user.UserBO" >
         <constructor-arg index="0" ref="userDAO" />
     </bean>
 
@@ -186,9 +190,11 @@
     </bean>
 
     <bean id="holdingBO" name="holdingBO" class="biblivre.cataloging.holding.HoldingBO" >
-        <constructor-arg index="0" ref="recordDAO" />
-        <constructor-arg index="1" ref="searchDAO" />
-        <constructor-arg index="2" ref="holdingBO" />
+    	<constructor-arg index="0" ref="holdingDAO" />
+    	<constructor-arg index="1" ref="loginBO" />
+    	<constructor-arg index="2" ref="userBO" />
+        <constructor-arg index="3" ref="recordDAO" />
+        <constructor-arg index="4" ref="searchDAO" />
     </bean>
 
     <!-- DAOs -->
@@ -243,6 +249,24 @@
 
 	<bean id="userDAO"
 		class="biblivre.circulation.user.UserDAOImpl"
+		factory-method="getInstance" >
+		<constructor-arg value="single" />
+	</bean>
+
+	<bean id="recordDAO"
+		class="biblivre.cataloging.RecordDAOImpl"
+		factory-method="getInstance" >
+		<constructor-arg value="single" />
+	</bean>
+
+	<bean id="searchDAO"
+		class="biblivre.cataloging.search.SearchDAOImpl"
+		factory-method="getInstance" >
+		<constructor-arg value="single" />
+	</bean>
+
+	<bean id="holdingDAO"
+		class="biblivre.cataloging.holding.HoldingDAOImpl"
 		factory-method="getInstance" >
 		<constructor-arg value="single" />
 	</bean>
