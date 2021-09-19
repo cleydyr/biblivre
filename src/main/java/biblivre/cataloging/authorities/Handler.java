@@ -20,7 +20,7 @@
 package biblivre.cataloging.authorities;
 
 import biblivre.administration.reports.ReportsBO;
-import biblivre.cataloging.CatalogingHandler;
+import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.ExtendedRequest;
@@ -34,7 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Handler extends CatalogingHandler {
+public class Handler extends PaginableCatalogingHandler {
 
     public Handler(AuthorityRecordBO authorityRecordBO) {
         super(authorityRecordBO, MaterialType.AUTHORITIES);

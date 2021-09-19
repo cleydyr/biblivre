@@ -19,12 +19,12 @@
  ******************************************************************************/
 package biblivre.cataloging.bibliographic;
 
-import biblivre.cataloging.CatalogingHandler;
+import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 
-public class Handler extends CatalogingHandler {
+public class Handler extends PaginableCatalogingHandler {
 
     public Handler(BiblioRecordBO biblioRecordBO) {
         super(biblioRecordBO, MaterialType.BOOK);

@@ -21,11 +21,11 @@ package biblivre.cataloging;
 
 import biblivre.administration.indexing.IndexingGroupDTO;
 import biblivre.administration.indexing.IndexingGroups;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
-import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -45,14 +45,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
 
-public abstract class CatalogingHandler extends AbstractHandler {
+public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
-    protected RecordBO recordBO;
+    protected PaginableRecordBO paginableRecordBO;
     protected MaterialType defaultMaterialType;
 
-    protected CatalogingHandler(RecordBO recordBO, MaterialType defaultMaterialType) {
-        this.recordBO = recordBO;
-        this.defaultMaterialType = defaultMaterialType;
+    protected PaginableCatalogingHandler(
+            PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
+        super(paginableRecordBO, defaultMaterialType);
+        this.paginableRecordBO = paginableRecordBO;
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
@@ -60,7 +61,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
 
-        SearchDTO search = recordBO.search(searchQuery, request.getAuthorizationPoints());
+        SearchDTO search = paginableRecordBO.search(searchQuery, request.getAuthorizationPoints());
 
         if (search.size() == 0) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -71,7 +72,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), recordBO.getRecordType());
+                IndexingGroups.getGroups(request.getSchema(), paginableRecordBO.getRecordType());
 
         this.json.put("search", search.toJSONObject());
 
@@ -81,7 +82,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = HttpRequestSearchHelper.paginate(request, recordBO);
+        SearchDTO search = HttpRequestSearchHelper.paginate(request, paginableRecordBO);
 
         if (search == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -89,10 +90,10 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        recordBO.paginateSearch(search, request.getAuthorizationPoints());
+        paginableRecordBO.paginateSearch(search, request.getAuthorizationPoints());
 
         if (search.size() == 0) {
-            recordBO.search(search);
+            paginableRecordBO.search(search);
         }
 
         if (search.size() == 0) {
@@ -107,134 +108,10 @@ public abstract class CatalogingHandler extends AbstractHandler {
         this.json.put("search", search.toJSONObject());
 
         List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), recordBO.getRecordType());
+                IndexingGroups.getGroups(request.getSchema(), paginableRecordBO.getRecordType());
 
         for (IndexingGroupDTO group : groups) {
             this.json.accumulate("indexing_groups", group.toJSONObject());
-        }
-    }
-
-    public void open(ExtendedRequest request, ExtendedResponse response) {
-        Integer id = request.getInteger("id", null);
-
-        if (id == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-
-            return;
-        }
-
-        RecordDTO dto = recordBO.open(id, request.getAuthorizationPoints());
-
-        if (dto == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-
-            return;
-        }
-
-        this.json.put("data", dto.toJSONObject());
-    }
-
-    public void save(ExtendedRequest request, ExtendedResponse response) {
-        Integer id = request.getInteger("id");
-
-        boolean isNew = id == 0;
-
-        RecordDTO recordDTO = isNew ? this.createRecordDTO(null) : recordBO.get(id);
-
-        if (recordDTO == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-
-            return;
-        }
-
-        hydrateRecord(recordDTO, request);
-
-        int loggedUserId = request.getLoggedUserId();
-
-        boolean success =
-                recordBO.saveOrUpdate(recordDTO, loggedUserId, request.getAuthorizationPoints());
-
-        if (!success) {
-            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
-
-            return;
-        }
-
-        _setSuccessMessage(isNew);
-
-        this.json.put("data", recordDTO.toJSONObject());
-    }
-
-    private void hydrateRecord(RecordDTO recordDTO, ExtendedRequest request) {
-        MaterialType materialType =
-                request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
-
-        recordDTO.setMaterialType(materialType);
-
-        RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
-
-        recordDTO.setRecordDatabase(recordDatabase);
-
-        RecordConvertion recordConvertion = request.getEnum(RecordConvertion.class, "from");
-
-        String recordData = request.getString("data");
-
-        boolean isNew = request.getInteger("id") == 0;
-
-        RecordStatus recordStatus = RecordStatus.fromNewStatus(isNew);
-
-        MarcReader marcReader = recordConvertion.getReader(recordData, materialType, recordStatus);
-
-        recordDTO.setRecord(marcReader.next());
-
-        recordDTO.setSchema(request.getSchema());
-    }
-
-    private void _setSuccessMessage(boolean isNew) {
-        if (isNew) {
-            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
-        } else {
-            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.update");
-        }
-    }
-
-    protected void hydrateRecordImpl(RecordDTO dto, ExtendedRequest request) {}
-
-    public void delete(ExtendedRequest request, ExtendedResponse response) {
-        Integer id = request.getInteger("id", null);
-
-        if (id == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-
-            return;
-        }
-
-        RecordDTO dto = recordBO.get(id);
-
-        RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
-
-        if (dto == null || dto.getRecordDatabase() != recordDatabase) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-
-            return;
-        }
-
-        if (recordDatabase == null) {
-            ValidationException ex = new ValidationException("cataloging.error.invalid_database");
-
-            this.setMessage(ex);
-
-            return;
-        }
-
-        int loggedUserId = request.getLoggedUserId();
-
-        boolean success = recordBO.delete(dto, loggedUserId, request.getAuthorizationPoints());
-
-        if (success) {
-            this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
-        } else {
-            this.setMessage(ActionResult.WARNING, "cataloging.record.error.delete");
         }
     }
 
@@ -284,11 +161,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         SearchQueryDTO query = new SearchQueryDTO(recordDatabase);
 
-        SearchDTO searchDTO = new SearchDTO(recordBO.getRecordType());
+        SearchDTO searchDTO = new SearchDTO(paginableRecordBO.getRecordType());
 
         searchDTO.setQuery(query);
 
-        int count = recordBO.count(searchDTO, request.getAuthorizationPoints());
+        int count = paginableRecordBO.count(searchDTO, request.getAuthorizationPoints());
 
         this.json.put("count", count);
     }
@@ -310,7 +187,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         int loggedUserId = request.getLoggedUserId();
 
         boolean success =
-                recordBO.moveRecords(
+                paginableRecordBO.moveRecords(
                         ids, recordDatabase, loggedUserId, request.getAuthorizationPoints());
 
         if (success) {
@@ -346,7 +223,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
-        final DiskFile exportFile = recordBO.createExportFile(ids, authorizationPoints);
+        final DiskFile exportFile = paginableRecordBO.createExportFile(ids, authorizationPoints);
 
         this.setFile(exportFile);
 
@@ -379,7 +256,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
                                 .withDatafield(datafield)
                                 .withSubfield(subfield)
                                 .withQuery(query)
-                                .withRecordBO(recordBO)
+                                .withRecordBO(paginableRecordBO)
                                 .build();
 
                 for (String term : type.getSuggestions(parameterObject)) {
@@ -391,7 +268,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
             case AUTHORITIES:
             case VOCABULARY:
                 DTOCollection<AutocompleteDTO> autocompletion =
-                        type.getAutocompletion(recordBO, schema, query);
+                        type.getAutocompletion(paginableRecordBO, schema, query);
 
                 this.json.putOpt("data", autocompletion.toJSONObject());
 
@@ -410,7 +287,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         Integer userId = request.getLoggedUserId();
 
-        recordBO.addAttachment(recordId, uri, description, userId);
+        paginableRecordBO.addAttachment(recordId, uri, description, userId);
     }
 
     public void removeAttachment(ExtendedRequest request, ExtendedResponse response) {
@@ -422,14 +299,14 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         Integer userId = request.getLoggedUserId();
 
-        recordBO.removeAttachment(recordId, uri, description, userId);
+        paginableRecordBO.removeAttachment(recordId, uri, description, userId);
     }
 
     public void listBriefFormats(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
         List<BriefTabFieldFormatDTO> formats =
-                Fields.getBriefFormats(schema, recordBO.getRecordType());
+                Fields.getBriefFormats(schema, paginableRecordBO.getRecordType());
 
         DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<>();
 
@@ -437,6 +314,4 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         this.json.put("data", list.toJSONObject());
     }
-
-    protected abstract RecordDTO createRecordDTO(ExtendedRequest request);
 }

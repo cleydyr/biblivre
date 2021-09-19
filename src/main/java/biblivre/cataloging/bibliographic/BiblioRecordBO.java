@@ -21,10 +21,12 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
+import biblivre.cataloging.search.SearchDAO;
 import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
@@ -39,13 +41,10 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
 
-public class BiblioRecordBO extends RecordBO {
+public class BiblioRecordBO extends PaginableRecordBO {
 
-    private HoldingBO holdingBO;
-
-    public BiblioRecordBO(HoldingBO holdingBO) {
-        super();
-        this.holdingBO = holdingBO;
+    public BiblioRecordBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO) {
+        super(recordDAO, searchDAO, holdingBO);
     }
 
     @Override
@@ -141,7 +140,7 @@ public class BiblioRecordBO extends RecordBO {
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 
-        if (this.rdao.save(dto)) {
+        if (this.recordDAO.save(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.reindex(RecordType.BIBLIO, dto);
             return true;
@@ -154,7 +153,7 @@ public class BiblioRecordBO extends RecordBO {
     public boolean update(RecordDTO dto) {
         dto.setDateOfLastTransaction();
 
-        if (this.rdao.update(dto)) {
+        if (this.recordDAO.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.reindex(RecordType.BIBLIO, dto);
             return true;
@@ -175,7 +174,7 @@ public class BiblioRecordBO extends RecordBO {
         //			}
         //		}
 
-        if (this.rdao.delete(dto)) {
+        if (this.recordDAO.delete(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.deleteIndexes(RecordType.BIBLIO, dto);
             //			HoldingBO hbo = new HoldingBO();

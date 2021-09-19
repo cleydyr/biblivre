@@ -50,38 +50,6 @@ public class Handler extends CatalogingHandler {
     }
 
     @Override
-    public void search(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
-    public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
-    public void itemCount(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
-    public void moveRecords(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id", null);
 
@@ -155,20 +123,6 @@ public class Handler extends CatalogingHandler {
         }
     }
 
-    @Override
-    public void hydrateRecordImpl(RecordDTO dto, ExtendedRequest request) {
-        int recordId = request.getInteger("record_id");
-
-        HoldingAvailability availability =
-                request.getEnum(HoldingAvailability.class, "availability");
-
-        HoldingDTO hdto = (HoldingDTO) dto;
-
-        hdto.setRecordId(recordId);
-
-        hdto.setAvailability(availability);
-    }
-
     public void createAutomaticHolding(ExtendedRequest request, ExtendedResponse response) {
         Integer recordId = request.getInteger("record_id", null);
 
@@ -197,6 +151,19 @@ public class Handler extends CatalogingHandler {
         } else {
             this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
         }
+    }
+
+    protected void doHydrateRecord(RecordDTO dto, ExtendedRequest request) {
+        int recordId = request.getInteger("record_id");
+
+        HoldingAvailability availability =
+                request.getEnum(HoldingAvailability.class, "availability");
+
+        HoldingDTO hdto = (HoldingDTO) dto;
+
+        hdto.setRecordId(recordId);
+
+        hdto.setAvailability(availability);
     }
 
     private AutomaticHoldingDTO createAutomaticHoldingDto(ExtendedRequest request) {

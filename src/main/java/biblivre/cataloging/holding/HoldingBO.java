@@ -20,11 +20,13 @@
 package biblivre.cataloging.holding;
 
 import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.labels.LabelDTO;
+import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.user.UserBO;
@@ -39,6 +41,7 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.ParagraphAlignmentUtil;
+import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -73,11 +76,16 @@ import org.marc4j.marc.Subfield;
 public class HoldingBO extends RecordBO {
 
     private HoldingDAO dao;
-    private LoginDTO loginBO;
     private UserBO userBO;
+    private LoginBO loginBO;
 
-    public HoldingBO(HoldingDAO dao, LoginDTO loginBO, UserBO userBO) {
-        super();
+    public HoldingBO(
+            HoldingDAO dao,
+            LoginBO loginBO,
+            UserBO userBO,
+            RecordDAO recordDAO,
+            SearchDAO seachDAO) {
+        super(recordDAO, seachDAO);
         this.dao = dao;
         this.loginBO = loginBO;
         this.userBO = userBO;
@@ -195,7 +203,8 @@ public class HoldingBO extends RecordBO {
             // UPDATE holding_creation_counter
             try {
                 UserDTO udto = userBO.getUserByLoginId(dto.getCreatedBy());
-                this.dao.updateHoldingCreationCounter(udto, loginBO);
+                LoginDTO login = loginBO.get(dto.getCreatedBy());
+                this.dao.updateHoldingCreationCounter(udto, login);
             } catch (Exception e) {
                 this.logger.error(e.getMessage(), e);
             }
@@ -413,16 +422,6 @@ public class HoldingBO extends RecordBO {
             RecordDatabase recordDatabase,
             int modifiedBy,
             AuthorizationPoints authorizationPoints) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public boolean search(SearchDTO search) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public boolean paginateSearch(SearchDTO search) {
         throw new RuntimeException("error.invalid_method_call");
     }
 

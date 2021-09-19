@@ -21,9 +21,13 @@ package biblivre.cataloging.vocabulary;
 
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
+import biblivre.cataloging.search.SearchDAO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -31,7 +35,11 @@ import java.util.Map;
 import java.util.Set;
 import org.marc4j.marc.Record;
 
-public class VocabularyRecordBO extends RecordBO {
+public class VocabularyRecordBO extends PaginableRecordBO {
+
+    public VocabularyRecordBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO) {
+        super(recordDAO, searchDAO, holdingBO);
+    }
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {
@@ -63,7 +71,7 @@ public class VocabularyRecordBO extends RecordBO {
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 
-        if (this.rdao.save(dto)) {
+        if (this.recordDAO.save(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.reindex(RecordType.VOCABULARY, dto);
             return true;
@@ -76,7 +84,7 @@ public class VocabularyRecordBO extends RecordBO {
     public boolean update(RecordDTO dto) {
         dto.setDateOfLastTransaction();
 
-        if (this.rdao.update(dto)) {
+        if (this.recordDAO.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.reindex(RecordType.VOCABULARY, dto);
             return true;
@@ -87,7 +95,7 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean delete(RecordDTO dto) {
-        if (this.rdao.delete(dto)) {
+        if (this.recordDAO.delete(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.deleteIndexes(RecordType.VOCABULARY, dto);
         }

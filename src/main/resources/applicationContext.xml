@@ -42,6 +42,7 @@
         <constructor-arg index="0" ref="userBO" />
         <constructor-arg index="1" ref="supplierBO" />
         <constructor-arg index="2" ref="requestBO" />
+        <constructor-arg index="3" ref="biblioRecordBO" />
     </bean>
 
 	<bean id="requestHandler" name="requestHandler" class="biblivre.acquisition.request.Handler" scope="prototype" >
@@ -56,6 +57,71 @@
         <constructor-arg index="0" ref="supplierBO" />
     </bean>
 
+    <bean id="permissionHandler" name="permissionHandler" class="biblivre.administration.permissions.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="permissionBO" />
+        <constructor-arg index="1" ref="loginBO" />
+        <constructor-arg index="2" ref="userBO" />
+    </bean>
+
+    <bean id="reportHandler" name="reportHandler" class="biblivre.administration.reports.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="userBO" />
+    </bean>
+
+    <bean id="authorityHandler" name="authorityHandler" class="biblivre.cataloging.authorities.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="authorityBO" />
+    </bean>
+
+    <bean id="bibliographicHandler" name="bibliographicHandler" class="biblivre.cataloging.bibliographic.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="biblioRecordBO" />
+    </bean>
+
+    <bean id="vocabularyHandler" name="vocabularyHandler" class="biblivre.cataloging.vocabulary.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="vocabularyRecordBO" />
+    </bean>
+
+    <bean id="holdingHandler" name="holdingHandler" class="biblivre.cataloging.holding.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="biblioRecordBO" />
+        <constructor-arg index="1" ref="holdingBO" />
+    </bean>
+
+    <bean id="catalogingLabelHandler" name="catalogingLabelHandler" class="biblivre.cataloging.labels.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="holdingBO" />
+        <constructor-arg index="1" ref="biblioRecordBO" />
+    </bean>
+
+    <bean id="catalogingHandler" name="catalogingHandler" class="biblivre.cataloging.Handler" scope="prototype" >
+        <constructor-arg index="0" >
+			<map>
+				<entry key="BIBLIO" value="biblioRecordBO"/>
+				<entry key="HOLDING" value="holdingBO"/>
+				<entry key="AUTHORITIES" value="authorityRecordBO"/>
+				<entry key="VOCABULARY" value="vocabularyRecordBO"/>
+			</map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="lendingHandler" name="lendingHandler" class="biblivre.circulation.lending.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="userBO" />
+        <constructor-arg index="1" ref="biblioRecordBO" />
+        <constructor-arg index="2" ref="holdingBO" />
+    </bean>
+
+    <bean id="reservationHandler" name="reservationHandler" class="biblivre.circulation.reservation.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="userBO" />
+        <constructor-arg index="1" ref="biblioRecordBO" />
+    </bean>
+
+    <bean id="userHandler" name="userHandler" class="biblivre.circulation.user.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="userBO" />
+    </bean>
+
+    <bean id="userHandler" name="userHandler" class="biblivre.circulation.user_cards.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="userBO" />
+    </bean>
+
+    <bean id="z3950Handler" name="z3950andler" class="biblivre.z3950.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="biblioRecordBO" />
+    </bean>
     <!-- BOs -->
 
     <bean id="accessControlBO" name="accessControlBO" class="biblivre.circulation.accesscontrol.AccessControlBO" >
@@ -97,8 +163,32 @@
         <constructor-arg index="3" ref="requestBO" />
     </bean>
 
-	<bean id="userBO" name="userBO" class="biblivre.circulation.user.UserBO" >
+	<bean id="userBO" name="userBO" class="biblivre.cataloging.bibliographic.BiblioRecordBO" >
         <constructor-arg index="0" ref="userDAO" />
+    </bean>
+
+    <bean id="biblioRecordBO" name="biblioRecordBO" class="biblivre.cataloging.bibliographic.BiblioRecordBO" >
+        <constructor-arg index="0" ref="recordDAO" />
+        <constructor-arg index="1" ref="searchDAO" />
+        <constructor-arg index="2" ref="holdingBO" />
+    </bean>
+
+    <bean id="vocabularyRecordBO" name="vocabularyRecordBO" class="biblivre.cataloging.vocabulary.VocabularyRecordBO" >
+        <constructor-arg index="0" ref="recordDAO" />
+        <constructor-arg index="1" ref="searchDAO" />
+        <constructor-arg index="2" ref="holdingBO" />
+    </bean>
+
+    <bean id="authorityRecordBO" name="authorityRecordBO" class="biblivre.cataloging.authorities.AuthorityRecordBO" >
+        <constructor-arg index="0" ref="recordDAO" />
+        <constructor-arg index="1" ref="searchDAO" />
+        <constructor-arg index="2" ref="holdingBO" />
+    </bean>
+
+    <bean id="holdingBO" name="holdingBO" class="biblivre.cataloging.holding.HoldingBO" >
+        <constructor-arg index="0" ref="recordDAO" />
+        <constructor-arg index="1" ref="searchDAO" />
+        <constructor-arg index="2" ref="holdingBO" />
     </bean>
 
     <!-- DAOs -->

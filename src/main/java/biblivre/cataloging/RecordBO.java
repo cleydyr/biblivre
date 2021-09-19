@@ -19,21 +19,17 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
-import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
-import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
@@ -53,9 +49,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
 
 public abstract class RecordBO extends AbstractBO {
-    protected RecordDAO rdao;
-    protected SearchDAO sdao;
-    private HoldingBO holdingBO;
+    public RecordBO(RecordDAO recordDAO, SearchDAO searchDAO) {
+        super();
+        this.recordDAO = recordDAO;
+        this.seachDAO = searchDAO;
+    }
+
+    protected RecordDAO recordDAO;
+    protected SearchDAO seachDAO;
 
     public static final int FULL = 1 << 0;
     public static final int MARC_INFO = 1 << 1;
@@ -83,11 +84,11 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return this.rdao.map(ids, getRecordType());
+        return this.recordDAO.map(ids, getRecordType());
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
-        Map<Integer, RecordDTO> map = this.rdao.map(ids, getRecordType());
+        Map<Integer, RecordDTO> map = this.recordDAO.map(ids, getRecordType());
 
         for (RecordDTO dto : map.values()) {
             this.populateDetails(dto, mask);
@@ -97,20 +98,20 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public List<RecordDTO> list(int offset, int limit) {
-        return this.rdao.list(offset, limit, getRecordType());
+        return this.recordDAO.list(offset, limit, getRecordType());
     }
 
     public List<RecordDTO> listByLetter(char letter, int order) {
         return this.populateDetails(
-                this.rdao.listByLetter(letter, order, getRecordType()), RecordBO.MARC_INFO);
+                this.recordDAO.listByLetter(letter, order, getRecordType()), RecordBO.MARC_INFO);
     }
 
     public boolean save(RecordDTO dto) {
-        return this.rdao.save(dto);
+        return this.recordDAO.save(dto);
     }
 
     public boolean update(RecordDTO dto) {
-        return this.rdao.update(dto);
+        return this.recordDAO.update(dto);
     }
 
     public boolean moveRecords(
@@ -122,11 +123,11 @@ public abstract class RecordBO extends AbstractBO {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        return this.rdao.moveRecords(ids, modifiedBy, recordDatabase, getRecordType());
+        return this.recordDAO.moveRecords(ids, modifiedBy, recordDatabase, getRecordType());
     }
 
     public boolean listContainsPrivateRecord(Set<Integer> ids) {
-        return this.rdao.listContainsPrivateRecord(ids, getRecordType());
+        return this.recordDAO.listContainsPrivateRecord(ids, getRecordType());
     }
 
     public DiskFile createExportFile(Set<Integer> ids, AuthorizationPoints authorizationPoints) {
@@ -162,7 +163,7 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public boolean delete(RecordDTO dto) {
-        return this.rdao.delete(dto);
+        return this.recordDAO.delete(dto);
     }
 
     public Integer count() {
@@ -170,78 +171,11 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     private Integer count(SearchDTO search) {
-        return this.rdao.count(search);
-    }
-
-    public boolean search(SearchDTO search) {
-        SearchMode searchMode = search.getSearchMode();
-
-        boolean isNewSearch = (search.getId() == null);
-
-        if (isNewSearch) {
-            if (!this.sdao.createSearch(search)) {
-                return false;
-            }
-        }
-
-        switch (searchMode) {
-            case SIMPLE:
-                if (!this.sdao.populateSimpleSearch(search, !isNewSearch)) {
-                    return false;
-                }
-
-                break;
-
-            case ADVANCED:
-                if (!this.sdao.populateAdvancedSearch(search, !isNewSearch)) {
-                    return false;
-                }
-
-                break;
-
-            case LIST_ALL:
-                break;
-        }
-
-        return this.paginateSearch(search);
-    }
-
-    public boolean paginateSearch(SearchDTO search, AuthorizationPoints authorizationPoints) {
-        if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
-            this.authorize(
-                    "cataloging.bibliographic", "private_database_access", authorizationPoints);
-        }
-
-        return paginateSearch(search);
-    }
-
-    public boolean paginateSearch(SearchDTO search) {
-        if (search.getQuery().isHoldingSearch()) {
-            return holdingBO.paginateHoldingSearch(search);
-        }
-
-        Map<Integer, Integer> groupCount = this.rdao.countSearchResults(search);
-        Integer count = groupCount.get(search.getIndexingGroup());
-
-        if (count == null || count == 0) {
-            return false;
-        }
-
-        List<RecordDTO> list = this.rdao.getSearchResults(search);
-
-        search.getPaging().setRecordCount(count);
-        search.setIndexingGroupCount(groupCount);
-
-        for (RecordDTO rdto : list) {
-            this.populateDetails(rdto, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
-            search.add(rdto);
-        }
-
-        return true;
+        return this.recordDAO.count(search);
     }
 
     public SearchDTO getSearch(Integer searchId) {
-        SearchDTO search = this.sdao.getSearch(searchId, getRecordType());
+        SearchDTO search = this.seachDAO.getSearch(searchId, getRecordType());
 
         if (search != null) {
             if (search.getPaging() == null) {
@@ -272,10 +206,10 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         List<String> listA =
-                this.rdao.phraseAutocomplete(
+                this.recordDAO.phraseAutocomplete(
                         datafield, subfield, searchTerms, 10, true, getRecordType());
         List<String> listB =
-                this.rdao.phraseAutocomplete(
+                this.recordDAO.phraseAutocomplete(
                         datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
@@ -288,10 +222,10 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         DTOCollection<AutocompleteDTO> listA =
-                this.rdao.recordAutocomplete(
+                this.recordDAO.recordAutocomplete(
                         datafield, subfield, searchTerms, 10, true, getRecordType());
         DTOCollection<AutocompleteDTO> listB =
-                this.rdao.recordAutocomplete(
+                this.recordDAO.recordAutocomplete(
                         datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
@@ -344,7 +278,7 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.rdao.saveFromBiblivre3(dtoList);
+        return this.recordDAO.saveFromBiblivre3(dtoList);
     }
 
     public abstract void populateDetails(RecordDTO record, int mask);
@@ -394,28 +328,6 @@ public abstract class RecordBO extends AbstractBO {
         return success;
     }
 
-    public SearchDTO search(SearchQueryDTO searchQuery, AuthorizationPoints authorizationPoints) {
-        if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
-            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
-        }
-
-        SearchDTO search = new SearchDTO(getRecordType());
-
-        PagingDTO paging = _newConfiguredPagingInstance();
-
-        search.setPaging(paging);
-
-        search.setQuery(searchQuery);
-
-        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, getRecordType()));
-
-        search(search);
-
-        paging.endTimer();
-
-        return search;
-    }
-
     public boolean delete(
             RecordDTO dto, int loggedUserId, AuthorizationPoints authorizationPoints) {
         RecordDatabase recordDatabase = dto.getRecordDatabase();
@@ -429,31 +341,17 @@ public abstract class RecordBO extends AbstractBO {
         boolean success = false;
 
         if (recordDatabase == RecordDatabase.TRASH) {
-            success = this.rdao.delete(dto);
+            success = this.recordDAO.delete(dto);
         } else {
             Set<Integer> ids = new HashSet<>();
 
             ids.add(dto.getId());
 
             success =
-                    this.rdao.moveRecords(ids, loggedUserId, RecordDatabase.TRASH, getRecordType());
+                    this.recordDAO.moveRecords(
+                            ids, loggedUserId, RecordDatabase.TRASH, getRecordType());
         }
         return success;
-    }
-
-    private PagingDTO _newConfiguredPagingInstance() {
-        PagingDTO paging = new PagingDTO();
-
-        paging.setRecordsPerPage(
-                Configurations.getPositiveInt(
-                        schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
-
-        paging.setRecordLimit(
-                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
-
-        paging.setPage(1);
-
-        return paging;
     }
 
     public int count(SearchDTO searchDTO, AuthorizationPoints authorizationPoints) {

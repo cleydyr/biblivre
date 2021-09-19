@@ -21,14 +21,22 @@ package biblivre.cataloging.authorities;
 
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
+import biblivre.cataloging.search.SearchDAO;
 import biblivre.core.exceptions.ValidationException;
 import java.util.Map;
 import java.util.Set;
 
-public class AuthorityRecordBO extends RecordBO {
+public class AuthorityRecordBO extends PaginableRecordBO {
+
+    public AuthorityRecordBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO) {
+        super(recordDAO, searchDAO, holdingBO);
+    }
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {}
@@ -38,7 +46,7 @@ public class AuthorityRecordBO extends RecordBO {
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 
-        if (this.rdao.save(dto)) {
+        if (this.recordDAO.save(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.reindex(RecordType.AUTHORITIES, dto);
             return true;
@@ -51,7 +59,7 @@ public class AuthorityRecordBO extends RecordBO {
     public boolean update(RecordDTO dto) {
         dto.setDateOfLastTransaction();
 
-        if (this.rdao.update(dto)) {
+        if (this.recordDAO.update(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.reindex(RecordType.AUTHORITIES, dto);
             return true;
@@ -72,7 +80,7 @@ public class AuthorityRecordBO extends RecordBO {
         //			}
         //		}
 
-        if (this.rdao.delete(dto)) {
+        if (this.recordDAO.delete(dto)) {
             IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
             indexingBo.deleteIndexes(RecordType.AUTHORITIES, dto);
             //			HoldingBO hbo = new HoldingBO();
