@@ -122,7 +122,7 @@ public class Handler extends AbstractHandler {
 
     public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950BO bo = Z3950BO.getInstance();
 
         List<Z3950AddressDTO> servers = bo.listAll();
 
@@ -149,7 +149,7 @@ public class Handler extends AbstractHandler {
 
     public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950BO bo = Z3950BO.getInstance();
 
         List<Z3950AddressDTO> servers = bo.listAll();
 

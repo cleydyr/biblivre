@@ -248,10 +248,10 @@
 		class="biblivre.administration.indexing.IndexingBO">
 		<constructor-arg index="0">
 			<map>
-				<entry key="BIBLIO" value="biblioRecordBO" />
-				<entry key="HOLDING" value="holdingBO" />
-				<entry key="AUTHORITIES" value="authorityRecordBO" />
-				<entry key="VOCABULARY" value="vocabularyRecordBO" />
+<!-- 				<entry key="BIBLIO" value="biblioRecordBO" /> -->
+<!-- 				<entry key="HOLDING" value="holdingBO" /> -->
+<!-- 				<entry key="AUTHORITIES" value="authorityRecordBO" /> -->
+<!-- 				<entry key="VOCABULARY" value="vocabularyRecordBO" /> -->
 			</map>
 		</constructor-arg>
 		<constructor-arg index="1" ref="indexingDAO" />
@@ -262,75 +262,62 @@
 	<bean id="accessControlDAO"
 		class="biblivre.circulation.accesscontrol.AccessControlDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="accessCardDAO"
 		class="biblivre.administration.accesscards.AccessCardDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="permissionDAO"
 		class="biblivre.administration.permissions.PermissionDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="loginDAO" class="biblivre.login.LoginDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="orderDAO"
 		class="biblivre.acquisition.order.OrderDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="requestDAO"
 		class="biblivre.acquisition.request.RequestDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="quotationDAO"
 		class="biblivre.acquisition.quotation.QuotationDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="supplierDAO"
 		class="biblivre.acquisition.supplier.SupplierDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="userDAO" class="biblivre.circulation.user.UserDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="recordDAO" class="biblivre.cataloging.RecordDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="searchDAO"
 		class="biblivre.cataloging.search.SearchDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="holdingDAO"
 		class="biblivre.cataloging.holding.HoldingDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 
 	<bean id="indexingDAO"
 		class="biblivre.administration.indexing.IndexingDAOImpl"
 		factory-method="getInstance">
-		<constructor-arg value="single" />
 	</bean>
 </beans>

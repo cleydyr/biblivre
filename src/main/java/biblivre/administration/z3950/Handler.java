@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
                         Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950BO bo = Z3950BO.getInstance();
         DTOCollection<Z3950AddressDTO> list = bo.search(query, limit, offset);
 
         if (list.size() == 0) {
@@ -75,7 +75,7 @@ public class Handler extends AbstractHandler {
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950BO bo = Z3950BO.getInstance();
         Z3950AddressDTO dto = new Z3950AddressDTO();
         Integer id = request.getInteger("id");
         if (id != null && id != 0) {
@@ -107,7 +107,7 @@ public class Handler extends AbstractHandler {
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950BO bo = Z3950BO.getInstance();
         Z3950AddressDTO dto = new Z3950AddressDTO();
         dto.setId(request.getInteger("id"));
 

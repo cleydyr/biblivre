@@ -50,7 +50,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        BackupBO bo = BackupBO.getInstance(schema);
+        BackupBO bo = BackupBO.getInstance();
         BackupScope backupScope = bo.getBackupScope();
 
         ArrayList<String> list = new ArrayList<>();
@@ -96,7 +96,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        BackupBO bo = BackupBO.getInstance(schema);
+        BackupBO bo = BackupBO.getInstance();
         BackupDTO dto = bo.get(id);
 
         if (dto == null) {
@@ -113,7 +113,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        final BackupBO bo = BackupBO.getInstance(schema);
+        final BackupBO bo = BackupBO.getInstance();
         final BackupDTO dto = bo.get(id);
 
         if (dto == null) {
@@ -132,7 +132,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        final BackupBO bo = BackupBO.getInstance(schema);
+        final BackupBO bo = BackupBO.getInstance();
         final BackupDTO dto = bo.get(id);
 
         if (dto == null) {
@@ -153,7 +153,7 @@ public class Handler extends AbstractHandler {
     public void list(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        BackupBO bo = BackupBO.getInstance(schema);
+        BackupBO bo = BackupBO.getInstance();
 
         try {
             this.json.put("success", true);

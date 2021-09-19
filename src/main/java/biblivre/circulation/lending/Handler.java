@@ -88,7 +88,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        LendingBO lbo = LendingBO.getInstance(schema);
+        LendingBO lbo = LendingBO.getInstance();
         DTOCollection<LendingInfoDTO> lendingInfo = lbo.populateLendingInfoByHolding(holdingList);
 
         try {
@@ -126,9 +126,9 @@ public class Handler extends AbstractHandler {
     }
 
     private LendingListDTO populateLendingList(String schema, UserDTO user, boolean history) {
-        LendingBO lbo = LendingBO.getInstance(schema);
-        LendingFineBO lfbo = LendingFineBO.getInstance(schema);
-        ReservationBO rsvBo = ReservationBO.getInstance(schema);
+        LendingBO lbo = LendingBO.getInstance();
+        LendingFineBO lfbo = LendingFineBO.getInstance();
+        ReservationBO rsvBo = ReservationBO.getInstance();
 
         LendingListDTO lendingList = new LendingListDTO();
 
@@ -160,7 +160,7 @@ public class Handler extends AbstractHandler {
             // CHECK FOR LENDING FINES
             Integer daysLate = lfbo.calculateLateDays(lending);
             if (daysLate > 0) {
-                UserTypeBO utbo = UserTypeBO.getInstance(schema);
+                UserTypeBO utbo = UserTypeBO.getInstance();
                 UserTypeDTO userType = utbo.get(user.getType());
                 Float dailyFine = userType.getFineValue();
 
@@ -185,7 +185,7 @@ public class Handler extends AbstractHandler {
 
         UserDTO user = userBO.get(userId);
 
-        LendingBO lendingBo = LendingBO.getInstance(schema);
+        LendingBO lendingBo = LendingBO.getInstance();
         boolean success = lendingBo.doLend(holding, user, request.getLoggedUserId());
 
         if (success) {
@@ -217,7 +217,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Integer lendingId = request.getInteger("id");
 
-        LendingBO lendingBo = LendingBO.getInstance(schema);
+        LendingBO lendingBo = LendingBO.getInstance();
         LendingDTO lending = lendingBo.get(lendingId);
 
         Integer holdingId = lending.getHoldingId();
@@ -261,7 +261,7 @@ public class Handler extends AbstractHandler {
         Float fineValue = request.getFloat("fine");
         boolean paid = request.getBoolean("paid");
 
-        LendingBO lendingBo = LendingBO.getInstance(schema);
+        LendingBO lendingBo = LendingBO.getInstance();
         LendingDTO lending = lendingBo.get(lendingId);
         boolean success = lendingBo.doReturn(lending, fineValue, paid);
 
@@ -277,7 +277,7 @@ public class Handler extends AbstractHandler {
         Integer fineId = request.getInteger("fine_id");
         Boolean exempt = request.getBoolean("exempt", false);
 
-        LendingFineBO lendingFineBo = LendingFineBO.getInstance(schema);
+        LendingFineBO lendingFineBo = LendingFineBO.getInstance();
         LendingFineDTO dto = lendingFineBo.getById(Integer.valueOf(fineId));
         if (exempt) {
             dto.setValue(0f);
@@ -293,7 +293,7 @@ public class Handler extends AbstractHandler {
 
     public void listAll(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        LendingBO bo = LendingBO.getInstance(schema);
+        LendingBO bo = LendingBO.getInstance();
 
         Integer limit =
                 request.getInteger(
@@ -337,7 +337,7 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
         }
 
-        LendingBO bo = LendingBO.getInstance(schema);
+        LendingBO bo = LendingBO.getInstance();
 
         try {
             String receipt = bo.generateReceipt(ids, request.getTranslationsMap());

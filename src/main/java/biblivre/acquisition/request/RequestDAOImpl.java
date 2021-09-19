@@ -32,8 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 
-    public static RequestDAO getInstance(String schema) {
-        return (RequestDAO) AbstractDAO.getInstance(RequestDAOImpl.class, schema);
+    public static RequestDAO getInstance() {
+        return (RequestDAO) AbstractDAO.getInstance(RequestDAOImpl.class);
     }
 
     @Override

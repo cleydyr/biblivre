@@ -28,11 +28,11 @@ import java.util.Map;
 public class AuthorizationBO extends AbstractBO {
     private AuthorizationDAO dao;
 
-    public static AuthorizationBO getInstance(String schema) {
-        AuthorizationBO bo = AbstractBO.getInstance(AuthorizationBO.class, schema);
+    public static AuthorizationBO  getInstance() {
+        AuthorizationBO bo = AbstractBO.getInstance(AuthorizationBO.class);
 
         if (bo.dao == null) {
-            bo.dao = AuthorizationDAO.getInstance(schema);
+            bo.dao = AuthorizationDAO.getInstance();
         }
 
         return bo;

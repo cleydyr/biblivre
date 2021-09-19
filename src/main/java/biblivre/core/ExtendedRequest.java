@@ -330,7 +330,8 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
             controller = this.getString("controller");
         }
 
-        this.setSchema(schema);
+        SchemaThreadLocal.setSchema(schema);
+
         this.setController(controller);
     }
 

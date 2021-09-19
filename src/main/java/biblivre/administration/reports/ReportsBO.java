@@ -30,11 +30,11 @@ public class ReportsBO extends AbstractBO {
     private RecordDAO recordDAO;
     private BiblioRecordBO biblioRecordBO;
 
-    public static ReportsBO getInstance(String schema) {
-        ReportsBO bo = AbstractBO.getInstance(ReportsBO.class, schema);
+    public static ReportsBO  getInstance() {
+        ReportsBO bo = AbstractBO.getInstance(ReportsBO.class);
 
         if (bo.dao == null) {
-            bo.dao = ReportsDAO.getInstance(schema);
+            bo.dao = ReportsDAO.getInstance();
         }
 
         return bo;

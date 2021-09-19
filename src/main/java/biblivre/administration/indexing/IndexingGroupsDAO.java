@@ -31,8 +31,8 @@ import java.util.List;
 
 public class IndexingGroupsDAO extends AbstractDAO {
 
-    public static IndexingGroupsDAO getInstance(String schema) {
-        return (IndexingGroupsDAO) AbstractDAO.getInstance(IndexingGroupsDAO.class, schema);
+    public static IndexingGroupsDAO getInstance() {
+        return (IndexingGroupsDAO) AbstractDAO.getInstance(IndexingGroupsDAO.class);
     }
 
     public List<IndexingGroupDTO> list(RecordType recordType) {

@@ -56,7 +56,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
         } else {
             this.index = 0; // marc field
         }
-        return ReportsBO.getInstance(this.getSchema()).getCustomCountData(dto);
+        return ReportsBO.getInstance().getCustomCountData(dto);
     }
 
     @Override

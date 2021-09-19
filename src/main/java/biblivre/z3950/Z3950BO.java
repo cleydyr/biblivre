@@ -40,11 +40,11 @@ public class Z3950BO extends AbstractBO {
     private static ApplicationContext context;
     private Z3950DAO dao;
 
-    public static Z3950BO getInstance(String schema) {
-        Z3950BO bo = AbstractBO.getInstance(Z3950BO.class, schema);
+    public static Z3950BO  getInstance() {
+        Z3950BO bo = AbstractBO.getInstance(Z3950BO.class);
 
         if (bo.dao == null) {
-            bo.dao = Z3950DAO.getInstance(schema);
+            bo.dao = Z3950DAO.getInstance();
         }
 
         return bo;

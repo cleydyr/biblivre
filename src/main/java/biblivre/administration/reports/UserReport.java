@@ -57,8 +57,8 @@ public class UserReport extends BaseBiblivreReport {
         UserDTO user = userBO.get(userId);
         urdto.setUser(user);
 
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
-        LendingFineBO lfbo = LendingFineBO.getInstance(this.getSchema());
+        LendingBO lbo = LendingBO.getInstance();
+        LendingFineBO lfbo = LendingFineBO.getInstance();
 
         List<LendingDTO> history = lbo.listHistory(user);
 
@@ -261,7 +261,7 @@ public class UserReport extends BaseBiblivreReport {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO utbo = UserTypeBO.getInstance();
         UserTypeDTO usdto = utbo.get(user.getType());
         cell = new PdfPCell(new Paragraph(this.getNormalChunk(usdto.getDescription())));
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);

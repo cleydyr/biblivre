@@ -70,7 +70,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
+        DigitalMediaBO bo = DigitalMediaBO.getInstance();
 
         Integer serial = bo.save(file);
 
@@ -99,7 +99,7 @@ public class Handler extends AbstractHandler {
         } catch (Exception e) {
         }
 
-        DigitalMediaBO bo = DigitalMediaBO.getInstance(schema);
+        DigitalMediaBO bo = DigitalMediaBO.getInstance();
 
         if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
             this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);

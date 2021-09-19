@@ -74,7 +74,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        ReservationBO rbo = ReservationBO.getInstance(schema);
+        ReservationBO rbo = ReservationBO.getInstance();
         rbo.populateReservationInfoByBiblio(search);
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(request.getSchema(), recordType);
@@ -109,7 +109,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        ReservationBO reservationBO = ReservationBO.getInstance(schema);
+        ReservationBO reservationBO = ReservationBO.getInstance();
 
         reservationBO.populateReservationInfoByBiblio(search);
 
@@ -149,7 +149,7 @@ public class Handler extends AbstractHandler {
     }
 
     private ReservationListDTO populateReservationList(String schema, UserDTO user) {
-        ReservationBO resBo = ReservationBO.getInstance(schema);
+        ReservationBO resBo = ReservationBO.getInstance();
 
         List<ReservationInfoDTO> infos = resBo.listReservationInfo(user);
 
@@ -169,7 +169,7 @@ public class Handler extends AbstractHandler {
 
         UserDTO user = userBO.get(userId);
 
-        ReservationBO reservationBo = ReservationBO.getInstance(schema);
+        ReservationBO reservationBo = ReservationBO.getInstance();
         int reservationId = reservationBo.reserve(record, user, request.getLoggedUserId());
 
         if (reservationId > 0) {
@@ -198,7 +198,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         int reserveId = request.getInteger("id");
 
-        ReservationBO reservationBo = ReservationBO.getInstance(schema);
+        ReservationBO reservationBo = ReservationBO.getInstance();
         boolean success = reservationBo.delete(reserveId);
 
         if (success) {
@@ -309,7 +309,7 @@ public class Handler extends AbstractHandler {
         int reservationId = request.getInteger("id");
         int loggedUser = request.getLoggedUserId();
 
-        ReservationBO reservationBo = ReservationBO.getInstance(schema);
+        ReservationBO reservationBo = ReservationBO.getInstance();
         ReservationDTO reservationDto = reservationBo.get(reservationId);
 
         if (reservationDto == null) {

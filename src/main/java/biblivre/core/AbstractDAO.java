@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.administration.setup.DataMigrationDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -43,7 +44,6 @@ public abstract class AbstractDAO {
     private static Map<String, DataSource> dataSourceMap = new HashMap<>();
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    private String schema;
     private String dataSourceName;
 
     private DataSourceProvider dataSourceProvider;
@@ -55,31 +55,32 @@ public abstract class AbstractDAO {
     protected AbstractDAO() {}
 
     public static <T extends AbstractDAO> T getInstance(
-            DataSourceProvider dataSourceProvider, Class<T> cls, String schema) {
+            DataSourceProvider dataSourceProvider, Class<T> cls) {
 
         return AbstractDAO.getInstance(
-                dataSourceProvider, cls, schema, Constants.DEFAULT_DATABASE_NAME);
+                dataSourceProvider, cls, Constants.DEFAULT_DATABASE_NAME);
     }
 
-    public static <T extends AbstractDAO> T getInstance(Class<T> cls, String schema) {
+    public static <T extends AbstractDAO> T getInstance(Class<T> cls) {
 
-        return AbstractDAO.getInstance(cls, schema, DatabaseUtils.getDatabaseName());
+        return AbstractDAO.getInstance(cls, DatabaseUtils.getDatabaseName());
     }
 
     public static <T extends AbstractDAO> T getInstance(
-            Class<T> cls, String schema, String dataSourceName) {
+            Class<T> cls, String dataSourceName) {
 
         DataSourceProvider dataSourceProvider = new HikariDataSourceProvider();
 
-        return getInstance(dataSourceProvider, cls, schema, dataSourceName);
+        return getInstance(dataSourceProvider, cls, dataSourceName);
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends AbstractDAO> T getInstance(
             DataSourceProvider dataSourceProvider,
             Class<T> cls,
-            String schema,
             String dataSourceName) {
+
+    	String schema = SchemaThreadLocal.get();
 
         String key = cls.getName() + "#" + schema + ":" + dataSourceName;
 
@@ -93,7 +94,6 @@ public abstract class AbstractDAO {
 
             try {
                 instance = cls.newInstance();
-                instance.setSchema(schema);
                 instance.setDataSourceName(dataSourceName);
                 instance.dataSourceProvider = dataSourceProvider;
 
@@ -121,14 +121,6 @@ public abstract class AbstractDAO {
         }
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getSchema() {
-        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
-    }
-
     public String getDataSourceName() {
         return this.dataSourceName;
     }
@@ -145,10 +137,6 @@ public abstract class AbstractDAO {
         AbstractDAO.dataSourceMap = dataSourceMap;
     }
 
-    public boolean isGlobalSchema() {
-        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-    }
-
     protected final Connection getConnection() throws SQLException {
         Connection con = this.getDataSource().getConnection();
 
@@ -160,10 +148,8 @@ public abstract class AbstractDAO {
         System.out.println("DriverMajorVersion: " + dbmd.getDriverMajorVersion());
         */
 
-        if (this.getSchema() != null) {
-            con.createStatement()
-                    .execute("SET search_path = '" + this.getSchema() + "', public, pg_catalog;");
-        }
+        con.createStatement()
+                .execute("SET search_path = '" + SchemaThreadLocal.get() + "', public, pg_catalog;");
 
         return con;
     }
@@ -303,7 +289,7 @@ public abstract class AbstractDAO {
                     "SELECT count(*) as count FROM information_schema.columns WHERE table_schema = ? and table_name = ? and column_name = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, this.getSchema());
+            pst.setString(1, SchemaThreadLocal.get());
             pst.setString(2, tableName);
             pst.setString(3, columnName);
 
@@ -324,7 +310,7 @@ public abstract class AbstractDAO {
                     "SELECT count(*) as count FROM information_schema.tables WHERE table_schema = ? and table_name = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, this.getSchema());
+            pst.setString(1, SchemaThreadLocal.get());
             pst.setString(2, tableName);
 
             ResultSet rs = pst.executeQuery();
@@ -419,4 +405,9 @@ public abstract class AbstractDAO {
         pgcon = (PGConnection) m.invoke(o);
         return pgcon;
     }
+
+	public static DataMigrationDAO getInstance(Class<DataMigrationDAO> class1, String string, String datasource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

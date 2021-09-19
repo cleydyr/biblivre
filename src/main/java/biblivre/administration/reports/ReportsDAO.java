@@ -67,8 +67,8 @@ public class ReportsDAO extends AbstractDAO {
 
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
-    public static ReportsDAO getInstance(String schema) {
-        return (ReportsDAO) AbstractDAO.getInstance(ReportsDAO.class, schema);
+    public static ReportsDAO getInstance() {
+        return (ReportsDAO) AbstractDAO.getInstance(ReportsDAO.class);
     }
 
     private BiblioRecordBO biblioRecordBO;

@@ -22,6 +22,7 @@ package biblivre.administration.backup;
 import biblivre.administration.backup.exception.RestoreException;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -88,22 +89,22 @@ public class RestoreBO extends AbstractBO {
     private BackupDAO dao;
     private DigitalMediaDAO digitalMediaDAO;
 
-    public static RestoreBO getInstance(String schema) {
-        RestoreBO bo = AbstractBO.getInstance(RestoreBO.class, schema);
+    public static RestoreBO  getInstance() {
+        RestoreBO bo = AbstractBO.getInstance(RestoreBO.class);
 
         if (bo.dao == null) {
-            bo.dao = BackupDAO.getInstance(schema);
+            bo.dao = BackupDAO.getInstance();
         }
 
         if (bo.digitalMediaDAO == null) {
-            bo.digitalMediaDAO = DigitalMediaDAO.getInstance(schema);
+            bo.digitalMediaDAO = DigitalMediaDAO.getInstance();
         }
 
         return bo;
     }
 
     public List<RestoreDTO> list() {
-        BackupBO backupBO = BackupBO.getInstance(this.getSchema());
+        BackupBO backupBO = BackupBO.getInstance();
 
         File path = backupBO.getBackupDestination();
 
@@ -168,7 +169,7 @@ public class RestoreBO extends AbstractBO {
     }
 
     public RestoreDTO getRestoreDTO(String filename) {
-        BackupBO backupBO = BackupBO.getInstance(this.getSchema());
+        BackupBO backupBO = BackupBO.getInstance();
 
         File path = backupBO.getBackupDestination();
 
@@ -561,7 +562,9 @@ public class RestoreBO extends AbstractBO {
             return;
         }
 
-        DigitalMediaDAO dao = DigitalMediaDAO.getInstance(Constants.GLOBAL_SCHEMA);
+        SchemaThreadLocal.setSchema(Constants.GLOBAL_SCHEMA);
+
+        DigitalMediaDAO dao = DigitalMediaDAO.getInstance();
 
         for (File file : path.listFiles()) {
             Matcher fileMatcher = _FILE.matcher(file.getName());
@@ -576,6 +579,8 @@ public class RestoreBO extends AbstractBO {
                 _writeLine(bw, newLine);
             }
         }
+
+        SchemaThreadLocal.remove();
     }
 
     private String _buildUpdateDigitalMediaQuery(String mediaId, long oid) {

@@ -93,8 +93,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         recordDTO.setRecord(marcReader.next());
 
-        recordDTO.setSchema(request.getSchema());
-
         doHydrateRecord(recordDTO, request);
     }
 

@@ -57,8 +57,8 @@ public class ImportBO extends AbstractBO {
         this.authorityRecordBO = authorityRecordBO;
     }
 
-    public static ImportBO getInstance(String schema) {
-        ImportBO bo = AbstractBO.getInstance(ImportBO.class, schema);
+    public static ImportBO  getInstance() {
+        ImportBO bo = AbstractBO.getInstance(ImportBO.class);
 
         return bo;
     }

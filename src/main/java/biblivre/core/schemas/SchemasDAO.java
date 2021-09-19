@@ -32,8 +32,8 @@ import org.postgresql.core.BaseConnection;
 
 public class SchemasDAO extends AbstractDAO {
 
-    public static SchemasDAO getInstance(String schema) {
-        return (SchemasDAO) AbstractDAO.getInstance(SchemasDAO.class, schema);
+    public static SchemasDAO  getInstance() {
+        return (SchemasDAO) AbstractDAO.getInstance(SchemasDAO.class);
     }
 
     public Set<SchemaDTO> list() {

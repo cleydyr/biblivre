@@ -55,8 +55,8 @@ import org.marc4j.marc.Record;
 
 public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
 
-    public static HoldingDAOImpl getInstance(String schema) {
-        return AbstractDAO.getInstance(HoldingDAOImpl.class, schema);
+    public static HoldingDAOImpl getInstance() {
+        return AbstractDAO.getInstance(HoldingDAOImpl.class);
     }
 
     @Override
@@ -925,7 +925,6 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
         if (this.hasColumn(rs, "biblio")) {
             BiblioRecordDTO biblioRecordDTO = new BiblioRecordDTO();
 
-            biblioRecordDTO.setSchema(getSchema());
             biblioRecordDTO.setIso2709(rs.getBytes("biblio"));
             biblioRecordDTO.setId(rs.getInt("record_id"));
 

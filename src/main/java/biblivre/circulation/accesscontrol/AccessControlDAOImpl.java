@@ -29,8 +29,8 @@ import java.util.List;
 
 public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDAO {
 
-    public static AccessControlDAO getInstance(String schema) {
-        return (AccessControlDAO) AbstractDAO.getInstance(AccessControlDAOImpl.class, schema);
+    public static AccessControlDAO  getInstance() {
+        return (AccessControlDAO) AbstractDAO.getInstance(AccessControlDAOImpl.class);
     }
 
     @Override

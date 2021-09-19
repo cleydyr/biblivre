@@ -51,7 +51,7 @@ public class Handler extends AbstractHandler {
                         Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        UserTypeBO bo = UserTypeBO.getInstance(schema);
+        UserTypeBO bo = UserTypeBO.getInstance();
         DTOCollection<UserTypeDTO> list = bo.search(query, limit, offset);
 
         if (list == null || list.isEmpty()) {
@@ -76,7 +76,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Integer id = request.getInteger("id", 0);
 
-        UserTypeBO bo = UserTypeBO.getInstance(schema);
+        UserTypeBO bo = UserTypeBO.getInstance();
         UserTypeDTO dto = null;
 
         if (id != 0) {
@@ -122,7 +122,7 @@ public class Handler extends AbstractHandler {
     public void delete(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
         Integer id = request.getInteger("id");
-        UserTypeBO bo = UserTypeBO.getInstance(schema);
+        UserTypeBO bo = UserTypeBO.getInstance();
 
         if (bo.delete(id)) {
             this.setMessage(ActionResult.SUCCESS, "administration.user_type.success.delete");

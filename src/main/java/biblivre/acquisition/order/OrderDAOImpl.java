@@ -34,8 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
 
-    public static OrderDAO getInstance(String schema) {
-        return (OrderDAO) AbstractDAO.getInstance(OrderDAOImpl.class, schema);
+    public static OrderDAO getInstance() {
+        return (OrderDAO) AbstractDAO.getInstance(OrderDAOImpl.class);
     }
 
     @Override

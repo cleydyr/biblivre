@@ -25,6 +25,7 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import java.sql.Connection;
@@ -41,8 +42,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ReservationDAO extends AbstractDAO {
 
-    public static ReservationDAO getInstance(String schema) {
-        return (ReservationDAO) AbstractDAO.getInstance(ReservationDAO.class, schema);
+    public static ReservationDAO  getInstance() {
+        return (ReservationDAO) AbstractDAO.getInstance(ReservationDAO.class);
     }
 
     public ReservationDTO get(Integer id) {
@@ -97,7 +98,7 @@ public class ReservationDAO extends AbstractDAO {
             int index = 1;
             pst.setInt(
                     index++,
-                    IndexingGroups.getDefaultSortableGroupId(this.getSchema(), RecordType.BIBLIO));
+                    IndexingGroups.getDefaultSortableGroupId(SchemaThreadLocal.get(), RecordType.BIBLIO));
 
             if (user != null) {
                 pst.setInt(index++, user.getId());

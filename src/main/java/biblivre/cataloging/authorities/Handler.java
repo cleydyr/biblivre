@@ -65,7 +65,7 @@ public class Handler extends PaginableCatalogingHandler {
             return;
         }
 
-        ReportsBO bo = ReportsBO.getInstance(schema);
+        ReportsBO bo = ReportsBO.getInstance();
         // Removed pagination (limit and offset) from method to fix a bug in the Reports/Report By
         // Author functionality.
         TreeMap<String, Set<Integer>> result = bo.searchAuthors(query, db);

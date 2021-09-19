@@ -30,8 +30,8 @@ import java.util.Map;
 
 public class AuthorizationDAO extends AbstractDAO {
 
-    public static AuthorizationDAO getInstance(String schema) {
-        return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAO.class, schema);
+    public static AuthorizationDAO  getInstance() {
+        return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAO.class);
     }
 
     public Map<String, Boolean> getUserPermissions(LoginDTO user) {

@@ -34,7 +34,7 @@ public class ReservationReport extends BaseBiblivreReport {
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAO.getInstance(this.getSchema()).getReservationReportData();
+        return ReportsDAO.getInstance().getReservationReportData();
     }
 
     @Override

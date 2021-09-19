@@ -127,7 +127,7 @@ public class AbstractHandler {
             authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
         }
 
-        AuthorizationBO abo = AuthorizationBO.getInstance(schema);
+        AuthorizationBO abo = AuthorizationBO.getInstance();
 
         abo.authorize(authorizationPoints, module, action);
     }

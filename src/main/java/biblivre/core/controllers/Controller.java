@@ -101,7 +101,7 @@ public abstract class Controller {
                     authPoints = AuthorizationPoints.getNotLoggedInstance(schema);
                 }
 
-                AuthorizationBO abo = AuthorizationBO.getInstance(schema);
+                AuthorizationBO abo = AuthorizationBO.getInstance();
                 abo.authorize(authPoints, module, action);
             }
         } catch (AuthorizationException e) {

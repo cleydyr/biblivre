@@ -30,8 +30,8 @@ import java.util.List;
 
 public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
 
-    public static PermissionDAO getInstance(String schema) {
-        return (PermissionDAO) AbstractDAO.getInstance(PermissionDAOImpl.class, schema);
+    public static PermissionDAO getInstance() {
+        return (PermissionDAO) AbstractDAO.getInstance(PermissionDAOImpl.class);
     }
 
     @Override

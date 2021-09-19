@@ -71,7 +71,7 @@ public class Handler extends AbstractHandler {
         ImportEncoding encoding =
                 request.getEnum(ImportEncoding.class, "encoding", ImportEncoding.AUTO_DETECT);
 
-        ImportBO bo = ImportBO.getInstance(schema);
+        ImportBO bo = ImportBO.getInstance();
 
         ImportDTO list = bo.loadFromFile(file, format, encoding);
 
@@ -126,7 +126,7 @@ public class Handler extends AbstractHandler {
         String attribute = request.getString("search_attribute");
         String value = request.getString("search_query");
 
-        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950BO bo = Z3950BO.getInstance();
         Z3950AddressDTO server = bo.findById(id);
 
         List<Z3950AddressDTO> serverList = new ArrayList<>();
@@ -135,7 +135,7 @@ public class Handler extends AbstractHandler {
 
         List<Z3950RecordDTO> recordList = bo.search(serverList, search);
 
-        ImportBO importBo = ImportBO.getInstance(schema);
+        ImportBO importBo = ImportBO.getInstance();
         ImportDTO list = importBo.readFromZ3950Results(recordList);
 
         if (list != null) {
@@ -186,7 +186,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         String marc = request.getString("marc");
 
-        ImportBO bo = ImportBO.getInstance(schema);
+        ImportBO bo = ImportBO.getInstance();
         RecordDTO dto = null;
         try {
             HumanReadableMarcReader humanReadableMarcReader =

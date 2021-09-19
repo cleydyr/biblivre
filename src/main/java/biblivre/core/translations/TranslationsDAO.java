@@ -34,8 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class TranslationsDAO extends AbstractDAO {
 
-    public static TranslationsDAO getInstance(String schema) {
-        return (TranslationsDAO) AbstractDAO.getInstance(TranslationsDAO.class, schema);
+    public static TranslationsDAO  getInstance() {
+        return (TranslationsDAO) AbstractDAO.getInstance(TranslationsDAO.class);
     }
 
     public List<TranslationDTO> list() {

@@ -66,7 +66,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        Z3950BO bo = Z3950BO.getInstance(schema);
+        Z3950BO bo = Z3950BO.getInstance();
 
         String[] serverIds = servers.split(",");
         List<Integer> ids = new ArrayList<>();

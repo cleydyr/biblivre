@@ -85,8 +85,8 @@ public class BiblioRecordBO extends PaginableRecordBO {
             return;
         }
 
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
-        ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
+        LendingBO lbo = LendingBO.getInstance();
+        ReservationBO rbo = ReservationBO.getInstance();
 
         if ((mask & RecordBO.HOLDING_INFO) != 0) {
             int totalHoldings = holdingBO.count(recordId);

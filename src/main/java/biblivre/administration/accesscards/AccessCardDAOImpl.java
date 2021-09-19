@@ -35,8 +35,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
 
-    public static AccessCardDAO getInstance(String schema) {
-        return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAOImpl.class, schema);
+    public static AccessCardDAO getInstance() {
+        return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAOImpl.class);
     }
 
     @Override

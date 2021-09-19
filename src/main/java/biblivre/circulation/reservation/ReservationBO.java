@@ -56,11 +56,11 @@ public class ReservationBO extends AbstractBO {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
 
-    public static ReservationBO getInstance(String schema) {
-        ReservationBO bo = AbstractBO.getInstance(ReservationBO.class, schema);
+    public static ReservationBO  getInstance() {
+        ReservationBO bo = AbstractBO.getInstance(ReservationBO.class);
 
         if (bo.dao == null) {
-            bo.dao = ReservationDAO.getInstance(schema);
+            bo.dao = ReservationDAO.getInstance();
         }
 
         return bo;
@@ -175,7 +175,7 @@ public class ReservationBO extends AbstractBO {
     }
 
     public boolean checkUserReservationLimit(UserDTO user) {
-        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO userTypeBo = UserTypeBO.getInstance();
         UserTypeDTO type = userTypeBo.get(user.getType());
 
         Integer limit = (type != null) ? type.getReservationLimit() : 1;
@@ -191,7 +191,7 @@ public class ReservationBO extends AbstractBO {
         reservation.setRecordId(record.getId());
         reservation.setUserId(user.getId());
 
-        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO userTypeBo = UserTypeBO.getInstance();
         UserTypeDTO type = userTypeBo.get(user.getType());
 
         Date today = new Date();

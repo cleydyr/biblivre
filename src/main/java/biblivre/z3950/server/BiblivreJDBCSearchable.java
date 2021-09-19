@@ -17,6 +17,7 @@
  */
 package biblivre.z3950.server;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.schemas.Schemas;
@@ -115,7 +116,9 @@ public class BiblivreJDBCSearchable extends JDBCSearchable {
                 return result;
             }
 
-            Z3950ServerDAO dao = Z3950ServerDAO.getInstance(collection);
+            SchemaThreadLocal.setSchema(collection);
+
+            Z3950ServerDAO dao = Z3950ServerDAO.getInstance();
 
             Collection<String> results = dao.search(term, indexingGroupId, 0, 200);
 
@@ -136,6 +139,7 @@ public class BiblivreJDBCSearchable extends JDBCSearchable {
             result.setStatus(8);
         } finally {
             logger.info("evaluate complete");
+            SchemaThreadLocal.remove();
         }
 
         return result;

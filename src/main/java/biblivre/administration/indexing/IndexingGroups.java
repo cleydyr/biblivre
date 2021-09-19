@@ -199,7 +199,7 @@ public class IndexingGroups extends StaticBO {
                     "Loading indexing groups from " + schema + "." + recordType);
         }
 
-        IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance(schema);
+        IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance();
 
         list = dao.list(recordType);
 

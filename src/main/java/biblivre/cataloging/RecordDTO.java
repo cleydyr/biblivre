@@ -388,14 +388,6 @@ public class RecordDTO extends AbstractDTO {
         return json;
     }
 
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
     public boolean isNew() {
         if (isNew == null) {
             this.isNew = this.record.getLeader().getRecordStatus() == 'n';

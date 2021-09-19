@@ -256,7 +256,7 @@ public class HoldingBO extends RecordBO {
     // he must use the force delete function.
     @Override
     public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
+        LendingBO lbo = LendingBO.getInstance();
 
         if (lbo.isLent(holding) || lbo.wasEverLent(holding)) {
             throw new ValidationException(

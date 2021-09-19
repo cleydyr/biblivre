@@ -23,6 +23,7 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
@@ -38,8 +39,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Z3950DAO extends AbstractDAO {
 
-    public static Z3950DAO getInstance(String schema) {
-        return (Z3950DAO) AbstractDAO.getInstance(Z3950DAO.class, schema);
+    public static Z3950DAO  getInstance() {
+        return (Z3950DAO) AbstractDAO.getInstance(Z3950DAO.class);
     }
 
     public List<Z3950AddressDTO> listAll() {
@@ -56,7 +57,7 @@ public class Z3950DAO extends AbstractDAO {
         if (limit == 0) {
             limit =
                     Configurations.getInt(
-                            this.getSchema(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
+                            SchemaThreadLocal.get(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
         }
 
         Connection con = null;

@@ -36,7 +36,7 @@ public class AllUsersReport extends BaseBiblivreReport {
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        ReportsDAO dao = ReportsDAO.getInstance(this.getSchema());
+        ReportsDAO dao = ReportsDAO.getInstance();
         return dao.getAllUsersReportData();
     }
 

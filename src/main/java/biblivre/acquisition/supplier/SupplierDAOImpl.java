@@ -32,8 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
 
-    public static SupplierDAO getInstance(String schema) {
-        return (SupplierDAO) AbstractDAO.getInstance(SupplierDAOImpl.class, schema);
+    public static SupplierDAO getInstance() {
+        return (SupplierDAO) AbstractDAO.getInstance(SupplierDAOImpl.class);
     }
 
     @Override

@@ -30,8 +30,8 @@ import java.util.List;
 
 public class UserFieldsDAO extends AbstractDAO {
 
-    public static UserFieldsDAO getInstance(String schema) {
-        return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class, schema);
+    public static UserFieldsDAO  getInstance() {
+        return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class);
     }
 
     public List<UserFieldDTO> listFields() {

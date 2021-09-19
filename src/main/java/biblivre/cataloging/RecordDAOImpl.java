@@ -44,8 +44,8 @@ import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
-    public static RecordDAOImpl getInstance(String schema) {
-        return AbstractDAO.getInstance(RecordDAOImpl.class, schema);
+    public static RecordDAOImpl  getInstance() {
+        return AbstractDAO.getInstance(RecordDAOImpl.class);
     }
 
     @Override
@@ -755,7 +755,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             throws SQLException, UnsupportedEncodingException {
         RecordDTO dto = new RecordDTO();
 
-        dto.setSchema(getSchema());
         dto.setIso2709(rs.getBytes("iso2709"));
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));
@@ -773,7 +772,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
         RecordDTO rdto = new RecordDTO();
 
-        rdto.setSchema(getSchema());
         rdto.setIso2709(rs.getBytes("iso2709"));
 
         dto.setPhrase(rs.getString("phrase"));

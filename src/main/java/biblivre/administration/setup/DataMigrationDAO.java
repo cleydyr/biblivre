@@ -45,6 +45,7 @@ import biblivre.circulation.user.UserFieldDTO;
 import biblivre.circulation.user.UserFields;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDAO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.MemoryFile;
 import biblivre.login.LoginDTO;

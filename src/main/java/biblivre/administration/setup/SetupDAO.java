@@ -25,8 +25,8 @@ import java.sql.Connection;
 
 public class SetupDAO extends AbstractDAO {
 
-    public static SetupDAO getInstance(String schema) {
-        return (SetupDAO) AbstractDAO.getInstance(SetupDAO.class, schema);
+    public static SetupDAO getInstance() {
+        return (SetupDAO) AbstractDAO.getInstance(SetupDAO.class);
     }
 
     public final void fixSequence(DataMigrationPhase migrationPhase) {

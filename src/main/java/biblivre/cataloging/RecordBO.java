@@ -268,7 +268,7 @@ public abstract class RecordBO extends AbstractBO {
                 }
 
                 // Try to remove the file from Biblivre DB
-                DigitalMediaBO dmbo = DigitalMediaBO.getInstance(this.getSchema());
+                DigitalMediaBO dmbo = DigitalMediaBO.getInstance();
                 dmbo.delete(Integer.valueOf(fileId), fileName);
             }
         } catch (Exception e) {

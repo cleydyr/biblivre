@@ -23,6 +23,7 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
@@ -37,8 +38,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class UserTypeDAO extends AbstractDAO {
-    public static UserTypeDAO getInstance(String schema) {
-        return (UserTypeDAO) AbstractDAO.getInstance(UserTypeDAO.class, schema);
+    public static UserTypeDAO getInstance() {
+        return (UserTypeDAO) AbstractDAO.getInstance(UserTypeDAO.class);
     }
 
     public UserTypeDTO get(int id) {
@@ -75,7 +76,7 @@ public class UserTypeDAO extends AbstractDAO {
         if (limit == 0) {
             limit =
                     Configurations.getInt(
-                            this.getSchema(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
+                            SchemaThreadLocal.get(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
         }
 
         Connection con = null;

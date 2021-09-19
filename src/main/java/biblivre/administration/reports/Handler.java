@@ -63,7 +63,7 @@ public class Handler extends AbstractHandler {
 
     public void generate(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        ReportsBO bo = ReportsBO.getInstance(schema);
+        ReportsBO bo = ReportsBO.getInstance();
 
         ReportsDTO dto = null;
         try {

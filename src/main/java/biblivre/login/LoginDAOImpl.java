@@ -22,6 +22,7 @@ package biblivre.login;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import java.sql.Connection;
@@ -33,8 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
 
-    public static LoginDAO getInstance(String schema) {
-        return (LoginDAO) AbstractDAO.getInstance(LoginDAOImpl.class, schema);
+    public static LoginDAO  getInstance() {
+        return (LoginDAO) AbstractDAO.getInstance(LoginDAOImpl.class);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
 
-            if (this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
+            if (SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
                 sql.append("SELECT id, login, employee, login as name FROM logins ");
                 sql.append("WHERE login = ? and password = ?;");
             } else {

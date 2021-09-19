@@ -47,7 +47,7 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAO.getInstance(this.getSchema()).getAssetHoldingFullReportData();
+        return ReportsDAO.getInstance().getAssetHoldingFullReportData();
     }
 
     @Override

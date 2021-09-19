@@ -40,7 +40,9 @@ public class Updates {
     }
 
     public static boolean globalUpdate() {
-        UpdatesDAO dao = UpdatesDAO.getInstance(Constants.GLOBAL_SCHEMA);
+    	SchemaThreadLocal.setSchema(Constants.GLOBAL_SCHEMA);
+
+        UpdatesDAO dao = UpdatesDAO.getInstance();
 
         Connection con = null;
         try {
@@ -69,12 +71,15 @@ public class Updates {
             dao.rollbackUpdate(con);
             e.printStackTrace();
         }
+        finally {
+        	SchemaThreadLocal.remove();
+        }
 
         return false;
     }
 
     public static boolean schemaUpdate(String schema) {
-        UpdatesDAO dao = UpdatesDAO.getInstance(schema);
+        UpdatesDAO dao = UpdatesDAO.getInstance();
 
         Connection con = null;
         try {
@@ -136,7 +141,9 @@ public class Updates {
     }
 
     public static void fixPostgreSQL81() {
-        UpdatesDAO dao = UpdatesDAO.getInstance("public");
+    	SchemaThreadLocal.setSchema("public");
+
+        UpdatesDAO dao = UpdatesDAO.getInstance();
 
         try {
             if (!dao.checkFunctionExistance("array_agg")) {
@@ -150,6 +157,9 @@ public class Updates {
             }
         } catch (Exception e) {
             System.out.println(e);
+        }
+        finally {
+        	SchemaThreadLocal.remove();
         }
     }
 }

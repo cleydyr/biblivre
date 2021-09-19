@@ -152,7 +152,7 @@ public class Handler extends AbstractHandler {
                 file.setInputStream(new ByteArrayInputStream(arr));
                 file.setSize(arr.length);
 
-                DigitalMediaBO digitalMediaBO = DigitalMediaBO.getInstance(schema);
+                DigitalMediaBO digitalMediaBO = DigitalMediaBO.getInstance();
 
                 Integer serial = digitalMediaBO.save(file);
 
@@ -170,7 +170,7 @@ public class Handler extends AbstractHandler {
                         if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
                             // Try to remove the file from Biblivre DB
 
-                            DigitalMediaBO dmbo = DigitalMediaBO.getInstance(schema);
+                            DigitalMediaBO dmbo = DigitalMediaBO.getInstance();
                             dmbo.delete(Integer.valueOf(splitId[0]), splitId[1]);
                         }
                     }
@@ -229,13 +229,13 @@ public class Handler extends AbstractHandler {
         DTOCollection<?> data = null;
 
         if (tab.equals("lendings")) {
-            LendingBO lbo = LendingBO.getInstance(schema);
+            LendingBO lbo = LendingBO.getInstance();
             DTOCollection<LendingInfoDTO> list =
                     lbo.populateLendingInfo(lbo.listLendings(user), false);
             list.addAll(lbo.populateLendingInfo(lbo.listHistory(user), false));
             data = list;
         } else if (tab.equals("reservations")) {
-            ReservationBO rbo = ReservationBO.getInstance(schema);
+            ReservationBO rbo = ReservationBO.getInstance();
 
             List<ReservationInfoDTO> infos = rbo.listReservationInfo(user);
             ReservationListDTO reservationList = new ReservationListDTO();
@@ -247,7 +247,7 @@ public class Handler extends AbstractHandler {
             list.add(reservationList);
             data = list;
         } else if (tab.equals("fines")) {
-            LendingFineBO lfbo = LendingFineBO.getInstance(schema);
+            LendingFineBO lfbo = LendingFineBO.getInstance();
 
             List<LendingFineDTO> fines = lfbo.listLendingFines(user);
 

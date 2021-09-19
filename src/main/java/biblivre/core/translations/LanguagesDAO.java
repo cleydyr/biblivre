@@ -20,6 +20,7 @@
 package biblivre.core.translations;
 
 import biblivre.core.AbstractDAO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -27,11 +28,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
+import biblivre.core.utils.Constants;
 
 public class LanguagesDAO extends AbstractDAO {
 
-    public static LanguagesDAO getInstance(String schema) {
-        return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class, schema);
+    public static LanguagesDAO  getInstance() {
+        return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class);
     }
 
     public Set<LanguageDTO> list() {
@@ -45,7 +47,7 @@ public class LanguagesDAO extends AbstractDAO {
             sql.append(
                     "SELECT language, text as name FROM global.translations WHERE key = 'language_name' ");
 
-            if (!this.isGlobalSchema()) {
+            if (!SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
                 sql.append("UNION ");
                 sql.append(
                         "SELECT language, text as name FROM translations WHERE key = 'language_name' ");

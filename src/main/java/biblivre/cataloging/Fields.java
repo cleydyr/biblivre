@@ -89,7 +89,7 @@ public class Fields extends StaticBO {
     public static boolean insertBriefFormat(
             String schema, RecordType recordType, BriefTabFieldFormatDTO dto, int loggedUser) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance();
 
         boolean result = dao.insertBriefFormat(dto, recordType, loggedUser);
 
@@ -107,7 +107,7 @@ public class Fields extends StaticBO {
             List<BriefTabFieldFormatDTO> briefFormats,
             int loggedUser) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance();
 
         boolean result = dao.updateBriefFormats(briefFormats, recordType, loggedUser);
 
@@ -126,7 +126,7 @@ public class Fields extends StaticBO {
             HashMap<String, FormTabDatafieldDTO> formDatafields,
             int loggedUser) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance();
 
         boolean result = dao.updateFormTabDatafield(formDatafields, recordType, loggedUser);
 
@@ -142,7 +142,7 @@ public class Fields extends StaticBO {
     public static boolean deleteBriefFormat(
             String schema, RecordType recordType, String datafield) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance();
 
         boolean result = dao.deleteBriefFormat(datafield, recordType);
 
@@ -158,7 +158,7 @@ public class Fields extends StaticBO {
     public static boolean deleteFormTabDatafield(
             String schema, RecordType recordType, String datafield) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance();
         boolean result = dao.deleteFormTabDatafield(datafield, recordType);
 
         if (result) {
@@ -302,7 +302,7 @@ public class Fields extends StaticBO {
             Fields.logger.debug("Loading brief formats from " + schema + "." + recordType);
         }
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance();
 
         list = dao.listBriefFormats(recordType);
 
@@ -326,7 +326,7 @@ public class Fields extends StaticBO {
             Fields.logger.debug("Loading form fields from " + schema + "." + recordType);
         }
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAO.getInstance();
 
         List<FormTabDatafieldDTO> fields = dao.listFields(recordType);
 

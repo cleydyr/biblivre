@@ -34,8 +34,8 @@ import java.util.Map.Entry;
 
 public class TabFieldsDAO extends AbstractDAO {
 
-    public static TabFieldsDAO getInstance(String schema) {
-        return (TabFieldsDAO) AbstractDAO.getInstance(TabFieldsDAO.class, schema);
+    public static TabFieldsDAO  getInstance() {
+        return (TabFieldsDAO) AbstractDAO.getInstance(TabFieldsDAO.class);
     }
 
     public List<BriefTabFieldFormatDTO> listBriefFormats(RecordType recordType) {

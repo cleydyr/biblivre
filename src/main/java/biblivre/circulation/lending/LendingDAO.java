@@ -40,8 +40,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class LendingDAO extends AbstractDAO {
 
-    public static LendingDAO getInstance(String schema) {
-        return (LendingDAO) AbstractDAO.getInstance(LendingDAO.class, schema);
+    public static LendingDAO  getInstance() {
+        return (LendingDAO) AbstractDAO.getInstance(LendingDAO.class);
     }
 
     public LendingDTO get(Integer id) {

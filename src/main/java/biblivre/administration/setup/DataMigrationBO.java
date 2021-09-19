@@ -83,7 +83,7 @@ public class DataMigrationBO extends AbstractBO {
 
     public static DataMigrationBO getInstance(String schema, String datasource) {
         DataMigrationBO bo =
-                AbstractBO.getInstance(DataMigrationBO.class, schema + ":" + datasource);
+                AbstractBO.getInstance(DataMigrationBO.class);
 
         bo.userSchema = schema;
 
@@ -92,7 +92,7 @@ public class DataMigrationBO extends AbstractBO {
         }
 
         if (bo.setupDao == null) {
-            bo.setupDao = SetupDAO.getInstance(schema);
+            bo.setupDao = SetupDAO.getInstance();
         }
 
         return bo;
@@ -306,7 +306,7 @@ public class DataMigrationBO extends AbstractBO {
                 return loginBO.saveFromBiblivre3(dtoList);
 
             case USER_TYPES:
-                return UserTypeBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return UserTypeBO.getInstance().saveFromBiblivre3(dtoList);
 
             case USERS:
                 return userBO.saveFromBiblivre3(dtoList);
@@ -327,7 +327,7 @@ public class DataMigrationBO extends AbstractBO {
                 return orderBO.saveFromBiblivre3(dtoList);
 
             case Z3950_SERVERS:
-                return Z3950BO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return Z3950BO.getInstance().saveFromBiblivre3(dtoList);
 
             case ACCESS_CONTROL:
                 return accessControlBO.saveFromBiblivre3(dtoList);
@@ -336,13 +336,13 @@ public class DataMigrationBO extends AbstractBO {
                 return accessControlBO.saveFromBiblivre3(dtoList);
 
             case LENDINGS:
-                return LendingBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return LendingBO.getInstance().saveFromBiblivre3(dtoList);
 
             case LENDING_FINE:
-                return LendingFineBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return LendingFineBO.getInstance().saveFromBiblivre3(dtoList);
 
             case RESERVATIONS:
-                return ReservationBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return ReservationBO.getInstance().saveFromBiblivre3(dtoList);
 
             case DIGITAL_MEDIA:
             default:
@@ -355,7 +355,7 @@ public class DataMigrationBO extends AbstractBO {
     }
 
     private boolean saveDigitalMedia(List<MemoryFile> dtoList) {
-        DigitalMediaBO bo = DigitalMediaBO.getInstance(this.getSchema());
+        DigitalMediaBO bo = DigitalMediaBO.getInstance();
         for (MemoryFile file : dtoList) {
             bo.save(file);
         }

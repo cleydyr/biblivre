@@ -74,11 +74,11 @@ public class LendingBO extends AbstractBO {
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
 
-    public static LendingBO getInstance(String schema) {
-        LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
+    public static LendingBO  getInstance() {
+        LendingBO bo = AbstractBO.getInstance(LendingBO.class);
 
         if (bo.dao == null) {
-            bo.dao = LendingDAO.getInstance(schema);
+            bo.dao = LendingDAO.getInstance();
         }
 
         return bo;
@@ -150,7 +150,7 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean checkUserLendLimit(UserDTO user, boolean renew) {
-        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO userTypeBo = UserTypeBO.getInstance();
         UserTypeDTO type = userTypeBo.get(user.getType());
         Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
         Integer count = this.dao.getCurrentLendingsCount(user);
@@ -169,7 +169,7 @@ public class LendingBO extends AbstractBO {
         lending.setHoldingId(holding.getId());
         lending.setUserId(user.getId());
 
-        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO userTypeBo = UserTypeBO.getInstance();
         UserTypeDTO type = userTypeBo.get(user.getType());
 
         Date today = new Date();
@@ -179,7 +179,7 @@ public class LendingBO extends AbstractBO {
         lending.setExpectedReturnDate(expectedReturnDate);
 
         if (this.dao.doLend(lending)) {
-            ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
+            ReservationBO rbo = ReservationBO.getInstance();
             rbo.delete(user.getId(), holding.getRecordId());
             return true;
         } else {
@@ -191,7 +191,7 @@ public class LendingBO extends AbstractBO {
         this.dao.doReturn(lending.getId());
 
         if (fineValue > 0) {
-            LendingFineBO fineBo = LendingFineBO.getInstance(this.getSchema());
+            LendingFineBO fineBo = LendingFineBO.getInstance();
             fineBo.createFine(lending, fineValue, paid);
         }
 
@@ -207,7 +207,7 @@ public class LendingBO extends AbstractBO {
         HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         this.checkRenew(holding, userDto);
 
-        UserTypeBO userTypeBO = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO userTypeBO = UserTypeBO.getInstance();
         UserTypeDTO type = userTypeBO.get(userDto.getType());
 
         Date today = new Date();
@@ -290,7 +290,7 @@ public class LendingBO extends AbstractBO {
         DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
         collection.setPaging(holdingList.getPaging());
 
-        LendingFineBO lfbo = LendingFineBO.getInstance(schema);
+        LendingFineBO lfbo = LendingFineBO.getInstance();
 
         for (HoldingDTO holding : holdingList) {
             LendingInfoDTO info = new LendingInfoDTO();
@@ -310,7 +310,7 @@ public class LendingBO extends AbstractBO {
 
                 if (lending.getUserId() != null) {
                     UserDTO user = usersMap.get(lending.getUserId());
-                    UserTypeBO utbo = UserTypeBO.getInstance(schema);
+                    UserTypeBO utbo = UserTypeBO.getInstance();
                     UserTypeDTO userType = utbo.get(user.getType());
                     user.setUsertypeName(userType.getName());
                     info.setUser(user);

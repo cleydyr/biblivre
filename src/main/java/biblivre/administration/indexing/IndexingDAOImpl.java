@@ -36,8 +36,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
-    public static IndexingDAO getInstance(String schema) {
-        return (IndexingDAO) AbstractDAO.getInstance(IndexingDAOImpl.class, schema);
+    public static IndexingDAO getInstance() {
+        return (IndexingDAO) AbstractDAO.getInstance(IndexingDAOImpl.class);
     }
 
     @Override

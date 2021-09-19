@@ -43,7 +43,7 @@ public class BibliographyReport extends BaseBiblivreReport {
             } catch (Exception e) {
             }
         }
-        return ReportsDAO.getInstance(this.getSchema())
+        return ReportsDAO.getInstance()
                 .getBibliographyReportData(dto.getAuthorName(), idList.toArray(new Integer[] {}));
     }
 

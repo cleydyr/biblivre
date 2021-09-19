@@ -54,11 +54,11 @@ import org.apache.commons.lang3.tuple.Pair;
 public class BackupBO extends AbstractBO {
     private BackupDAO dao;
 
-    public static BackupBO getInstance(String schema) {
-        BackupBO bo = AbstractBO.getInstance(BackupBO.class, schema);
+    public static BackupBO  getInstance() {
+        BackupBO bo = AbstractBO.getInstance(BackupBO.class);
 
         if (bo.dao == null) {
-            bo.dao = BackupDAO.getInstance(schema);
+            bo.dao = BackupDAO.getInstance();
         }
 
         return bo;
@@ -266,7 +266,7 @@ public class BackupBO extends AbstractBO {
 
     private boolean exportDigitalMedia(String schema, File path) {
         OutputStream writer = null;
-        DigitalMediaDAO dao = DigitalMediaDAO.getInstance(schema);
+        DigitalMediaDAO dao = DigitalMediaDAO.getInstance();
         List<DigitalMediaDTO> list = dao.list();
 
         try {

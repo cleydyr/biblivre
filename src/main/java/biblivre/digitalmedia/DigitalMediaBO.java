@@ -26,11 +26,11 @@ import biblivre.core.file.MemoryFile;
 public class DigitalMediaBO extends AbstractBO {
     protected DigitalMediaDAO dao;
 
-    public static DigitalMediaBO getInstance(String schema) {
-        DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class, schema);
+    public static DigitalMediaBO  getInstance() {
+        DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class);
 
         if (bo.dao == null) {
-            bo.dao = DigitalMediaDAO.getInstance(schema);
+            bo.dao = DigitalMediaDAO.getInstance();
         }
 
         return bo;

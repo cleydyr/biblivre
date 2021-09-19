@@ -55,7 +55,7 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
             default:
                 this.index = 6; // dewey
         }
-        return ReportsDAO.getInstance(this.getSchema()).getSummaryReportData(dto.getDatabase());
+        return ReportsDAO.getInstance().getSummaryReportData(dto.getDatabase());
     }
 
     @Override

@@ -27,6 +27,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.IFCacheableJavascript;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
@@ -91,7 +92,9 @@ public final class SchemaServlet extends HttpServlet {
             try {
                 // TODO: Completar com mais mensagens.
                 // Checking Database
-                if (!SchemasDAO.getInstance("public").testDatabaseConnection()) {
+            	SchemaThreadLocal.setSchema("public");
+
+                if (!SchemasDAO.getInstance().testDatabaseConnection()) {
                     json.put("success", false);
                     json.put("status_message", "Falha no acesso ao Banco de Dados");
                 } else {
@@ -99,6 +102,9 @@ public final class SchemaServlet extends HttpServlet {
                     json.put("status_message", "Disponível");
                 }
             } catch (JSONException e) {
+            }
+            finally {
+            	SchemaThreadLocal.remove();
             }
 
             out.write(json.toString());

@@ -61,7 +61,7 @@ public class UserBO extends AbstractBO {
     public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
         DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
 
-        UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO utbo = UserTypeBO.getInstance();
         Map<Integer, UserTypeDTO> map = utbo.map();
 
         for (UserDTO udto : list) {
@@ -85,7 +85,7 @@ public class UserBO extends AbstractBO {
     public Map<Integer, UserDTO> map(Set<Integer> ids) {
         Map<Integer, UserDTO> map = this.userDAO.map(ids);
 
-        UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO utbo = UserTypeBO.getInstance();
         Map<Integer, UserTypeDTO> typeMap = utbo.map();
 
         for (UserDTO user : map.values()) {
@@ -145,7 +145,7 @@ public class UserBO extends AbstractBO {
                 table.addCell(cell);
             }
             Map<Integer, UserDTO> userMap = this.map(dto.getIds());
-            UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
+            UserTypeBO utbo = UserTypeBO.getInstance();
             for (UserDTO user : userMap.values()) {
                 String userId = String.valueOf(user.getId());
                 PdfContentByte cb = writer.getDirectContent();

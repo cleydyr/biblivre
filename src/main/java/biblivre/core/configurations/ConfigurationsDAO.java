@@ -31,8 +31,8 @@ import java.util.List;
 
 public class ConfigurationsDAO extends AbstractDAO {
 
-    public static ConfigurationsDAO getInstance(String schema) {
-        return (ConfigurationsDAO) AbstractDAO.getInstance(ConfigurationsDAO.class, schema);
+    public static ConfigurationsDAO  getInstance() {
+        return (ConfigurationsDAO) AbstractDAO.getInstance(ConfigurationsDAO.class);
     }
 
     public List<ConfigurationsDTO> list() {

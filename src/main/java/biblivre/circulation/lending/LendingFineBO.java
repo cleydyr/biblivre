@@ -46,11 +46,11 @@ public class LendingFineBO extends AbstractBO {
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
 
-    public static LendingFineBO getInstance(String schema) {
-        LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class, schema);
+    public static LendingFineBO  getInstance() {
+        LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class);
 
         if (bo.dao == null) {
-            bo.dao = LendingFineDAO.getInstance(schema);
+            bo.dao = LendingFineDAO.getInstance();
         }
 
         return bo;
@@ -82,7 +82,7 @@ public class LendingFineBO extends AbstractBO {
     private void populateFineInfo(LendingFineDTO fine) {
         Integer lendingId = fine.getLendingId();
 
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
+        LendingBO lbo = LendingBO.getInstance();
         LendingDTO lending = lbo.get(lendingId);
         HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         BiblioRecordDTO biblio =
@@ -113,7 +113,7 @@ public class LendingFineBO extends AbstractBO {
         if (daysLate == null || daysLate <= 0) {
             return 0.0f;
         }
-        UserTypeBO utBo = UserTypeBO.getInstance(this.getSchema());
+        UserTypeBO utBo = UserTypeBO.getInstance();
         UserTypeDTO userType = utBo.get(user.getType());
         Float fineValue = userType.getFineValue();
         return daysLate * fineValue;

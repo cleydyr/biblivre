@@ -34,8 +34,8 @@ import java.util.List;
 
 public class LendingFineDAO extends AbstractDAO {
 
-    public static LendingFineDAO getInstance(String schema) {
-        return (LendingFineDAO) AbstractDAO.getInstance(LendingFineDAO.class, schema);
+    public static LendingFineDAO  getInstance() {
+        return (LendingFineDAO) AbstractDAO.getInstance(LendingFineDAO.class);
     }
 
     public boolean insert(LendingFineDTO fine) {

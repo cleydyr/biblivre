@@ -73,7 +73,7 @@ public class Handler extends AbstractHandler {
         LoginDTO user = loginBO.login(username, password);
 
         if (user != null) {
-            AuthorizationBO authBo = AuthorizationBO.getInstance(schema);
+            AuthorizationBO authBo = AuthorizationBO.getInstance();
             AuthorizationPoints atps = authBo.getUserAuthorizationPoints(user);
 
             _setAdmin(schema, user, atps);
@@ -182,7 +182,7 @@ public class Handler extends AbstractHandler {
         if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_BACKUP)) {
             boolean warningBackup = false;
 
-            BackupBO bbo = BackupBO.getInstance(schema);
+            BackupBO bbo = BackupBO.getInstance();
             BackupDTO lastBackup = bbo.getLastBackup();
 
             if (lastBackup == null) {

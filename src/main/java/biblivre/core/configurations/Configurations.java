@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.configurations;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.schemas.Schemas;
@@ -197,7 +198,9 @@ public class Configurations extends StaticBO {
         }
 
         if (multiSchemaConfig != null) {
-            ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance(Constants.GLOBAL_SCHEMA);
+        	SchemaThreadLocal.setSchema(Constants.GLOBAL_SCHEMA);
+
+            ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance();
 
             List<ConfigurationsDTO> multiSchemaList = new ArrayList<>();
             multiSchemaList.add(multiSchemaConfig);
@@ -207,9 +210,11 @@ public class Configurations extends StaticBO {
             map.put(multiSchemaConfig.getKey(), multiSchemaConfig);
 
             Schemas.reset();
+
+            SchemaThreadLocal.remove();
         }
 
-        ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
+        ConfigurationsDAO dao = ConfigurationsDAO.getInstance();
 
         if (dao.save(configs, loggedUser)) {
             HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
@@ -218,6 +223,7 @@ public class Configurations extends StaticBO {
                 map.put(config.getKey(), config);
             }
         }
+
     }
 
     public static void save(String schema, ConfigurationsDTO config, int loggedUser) {
@@ -286,7 +292,7 @@ public class Configurations extends StaticBO {
 
         Configurations.logger.debug("Loading configurations for " + schema);
 
-        ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
+        ConfigurationsDAO dao = ConfigurationsDAO.getInstance();
 
         List<ConfigurationsDTO> configs = dao.list();
         map = new HashMap<>(configs.size());

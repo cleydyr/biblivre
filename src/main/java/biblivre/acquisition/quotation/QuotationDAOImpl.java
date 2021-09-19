@@ -33,8 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
 
-    public static QuotationDAO getInstance(String schema) {
-        return (QuotationDAO) AbstractDAO.getInstance(QuotationDAOImpl.class, schema);
+    public static QuotationDAO getInstance() {
+        return (QuotationDAO) AbstractDAO.getInstance(QuotationDAOImpl.class);
     }
 
     @Override

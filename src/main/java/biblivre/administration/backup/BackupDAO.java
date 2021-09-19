@@ -35,8 +35,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class BackupDAO extends AbstractDAO {
-    public static BackupDAO getInstance(String schema) {
-        return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class, schema);
+    public static BackupDAO getInstance() {
+        return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class);
     }
 
     public boolean save(BackupDTO dto) {

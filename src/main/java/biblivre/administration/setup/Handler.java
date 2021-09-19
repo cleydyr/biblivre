@@ -103,7 +103,7 @@ public class Handler extends AbstractHandler {
     public void listRestores(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        RestoreBO bo = RestoreBO.getInstance(schema);
+        RestoreBO bo = RestoreBO.getInstance();
 
         List<RestoreDTO> list = bo.list();
 
@@ -121,7 +121,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Boolean mediaUpload = request.getBoolean("media_upload", false);
 
-        BackupBO bo = BackupBO.getInstance(schema);
+        BackupBO bo = BackupBO.getInstance();
         MemoryFile file = request.getFile(mediaUpload ? "biblivre4backupmedia" : "biblivre4backup");
 
         String extension = file.getName().endsWith("b4bz") ? "b4bz" : "b5bz";
@@ -136,7 +136,7 @@ public class Handler extends AbstractHandler {
         try (OutputStream os = new FileOutputStream(backup)) {
             file.copy(os);
 
-            RestoreBO rbo = RestoreBO.getInstance(schema);
+            RestoreBO rbo = RestoreBO.getInstance();
             dto = rbo.getRestoreDTO(backup.getName());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -173,7 +173,7 @@ public class Handler extends AbstractHandler {
 
             os.close();
 
-            RestoreBO bo = RestoreBO.getInstance(schema);
+            RestoreBO bo = RestoreBO.getInstance();
 
             success = bo.restoreBiblivre3(gzip);
 
@@ -245,7 +245,7 @@ public class Handler extends AbstractHandler {
         Boolean skip = request.getBoolean("skip", false);
 
         try {
-            RestoreBO bo = RestoreBO.getInstance(schema);
+            RestoreBO bo = RestoreBO.getInstance();
 
             switch (dto.getType()) {
                 case FULL:
@@ -310,10 +310,10 @@ public class Handler extends AbstractHandler {
             State.writeLog(
                     request.getLocalizedText("administration.setup.biblivre4restore.log_header"));
 
-            BackupBO bbo = BackupBO.getInstance(schema);
+            BackupBO bbo = BackupBO.getInstance();
             BackupScope restoreScope = bbo.getBackupScope();
 
-            RestoreBO bo = RestoreBO.getInstance(schema);
+            RestoreBO bo = RestoreBO.getInstance();
             RestoreDTO dto = bo.getRestoreDTO(filename);
 
             if (!this.checkForPartialBackup(dto, request, response)) {

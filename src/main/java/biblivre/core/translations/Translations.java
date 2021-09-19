@@ -20,6 +20,7 @@
 package biblivre.core.translations;
 
 import biblivre.core.FreemarkerTemplateHelper;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
@@ -454,7 +455,7 @@ public class Translations extends StaticBO {
             HashMap<String, HashMap<String, String>> translations,
             HashMap<String, HashMap<String, String>> removeTranslations,
             int loggedUser) {
-        TranslationsDAO.getInstance(schema).save(translations, removeTranslations, loggedUser);
+        TranslationsDAO.getInstance().save(translations, removeTranslations, loggedUser);
 
         for (String language : translations.keySet()) {
             Translations.reset(schema, language);
@@ -478,7 +479,7 @@ public class Translations extends StaticBO {
         HashMap<String, HashMap<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
-        boolean success = TranslationsDAO.getInstance(schema).save(translations, loggedUser);
+        boolean success = TranslationsDAO.getInstance().save(translations, loggedUser);
 
         Translations.reset(schema, language);
 
@@ -572,7 +573,9 @@ public class Translations extends StaticBO {
             Translations.logger.debug("Loading language " + schema + "." + language);
         }
 
-        TranslationsDAO dao = TranslationsDAO.getInstance(schema);
+        SchemaThreadLocal.setSchema(Constants.GLOBAL_SCHEMA);
+
+        TranslationsDAO dao = TranslationsDAO.getInstance();
 
         if (StringUtils.isNotBlank(language)) {
             List<TranslationDTO> list = dao.list(language);
@@ -586,6 +589,8 @@ public class Translations extends StaticBO {
         } else {
             map = new TranslationsMap(schema, language, 1);
         }
+
+        SchemaThreadLocal.remove();
 
         return map;
     }

@@ -71,7 +71,7 @@ public class Validator extends AbstractValidator {
         }
 
         Integer type = request.getInteger("type");
-        if (UserTypeBO.getInstance(schema).get(type) == null) {
+        if (UserTypeBO.getInstance().get(type) == null) {
             ex.addError("type", "field.error.required");
         }
 
@@ -151,7 +151,7 @@ public class Validator extends AbstractValidator {
             return;
         }
 
-        if (LendingBO.getInstance(schema).getCurrentLendingsCount(user) > 0) {
+        if (LendingBO.getInstance().getCurrentLendingsCount(user) > 0) {
             handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_lendings");
             return;
         }
