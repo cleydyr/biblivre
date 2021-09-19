@@ -6,22 +6,22 @@
 
     <!-- Validators -->
 
-	<bean id="userValidator" name="userValidator" class="biblivre.circulation.user.Validator" >
+	<bean id="userValidator" name="userValidator" class="biblivre.circulation.user.Validator" scope="prototype">
     	<constructor-arg index="0" ref="accessControlBO" />
     </bean>
 
-    <bean id="permissionValidator" name="permissionValidator" class="biblivre.administration.permissions.Validator" >
+    <bean id="permissionValidator" name="permissionValidator" class="biblivre.administration.permissions.Validator" scope="prototype">
         <constructor-arg index="0" ref="loginBO" />
     </bean>
 
     <!-- Handlers -->
 
-    <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" >
+    <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" scope="prototype">
     	<constructor-arg index="0" ref="accessCardBO" />
     	<constructor-arg index="1" ref="accessControlBO" />
     </bean>
     
-    <bean id="accesscardsHandler" name="accesscardsHandler" class="biblivre.administration.accesscards.Handler" >
+    <bean id="accesscardsHandler" name="accesscardsHandler" class="biblivre.administration.accesscards.Handler" scope="prototype">
     	<constructor-arg index="0" ref="accessCardBO" />
     </bean>
 
@@ -29,9 +29,32 @@
         <constructor-arg index="0" ref="loginBO" />
     </bean>
 
-    <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" >
+    <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" scope="prototype">
         <constructor-arg index="0" ref="accessCardBO" />
         <constructor-arg index="1" ref="accessControlBO" />
+        <constructor-arg index="2" ref="userBO" />
+    </bean>
+
+    <bean id="quotationHandler" name="quotationHandler" class="biblivre.acquisition.quotation.Handler" scope="prototype">
+        <constructor-arg index="0" ref="quotationBO" />
+    </bean>
+
+	<bean id="menuHandler" name="menuHandler" class="biblivre.menu.Handler" scope="prototype">
+        <constructor-arg index="0" ref="userBO" />
+        <constructor-arg index="1" ref="supplierBO" />
+        <constructor-arg index="2" ref="requestBO" />
+    </bean>
+
+	<bean id="requestHandler" name="requestHandler" class="biblivre.acquisition.request.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="requestBO" />
+    </bean>
+
+	<bean id="orderHandler" name="orderHandler" class="biblivre.acquisition.order.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="orderBO" />
+    </bean>
+
+	<bean id="supplierHandler" name="supplierHandler" class="biblivre.acquisition.supplier.Handler" scope="prototype" >
+        <constructor-arg index="0" ref="supplierBO" />
     </bean>
 
     <!-- BOs -->
@@ -52,6 +75,27 @@
     <bean id="loginBO" name="loginBO" class="biblivre.login.LoginBO" >
         <constructor-arg index="0" ref="loginDAO" />
         <constructor-arg index="1" ref="permissionBO" />
+    </bean>
+
+	<bean id="supplierBO" name="supplierBO" class="biblivre.acquisition.supplier.SupplierBO" >
+        <constructor-arg index="0" ref="supplierDAO" />
+    </bean>
+	
+	<bean id="requestBO" name="requestBO" class="biblivre.acquisition.request.RequestBO" >
+        <constructor-arg index="0" ref="requestDAO" />
+    </bean>
+
+	<bean id="quotationBO" name="quotationBO" class="biblivre.acquisition.quotation.QuotationBO" >
+        <constructor-arg index="0" ref="quotationDAO" />
+        <constructor-arg index="2" ref="supplierBO" />
+        <constructor-arg index="3" ref="requestBO" />
+    </bean>
+
+	<bean id="orderBO" name="orderBO" class="biblivre.acquisition.order.OrderBO" >
+        <constructor-arg index="0" ref="orderDAO" />
+        <constructor-arg index="1" ref="quotationBO" />
+        <constructor-arg index="2" ref="supplierBO" />
+        <constructor-arg index="3" ref="requestBO" />
     </bean>
 
     <!-- DAOs -->
@@ -79,4 +123,28 @@
         factory-method="getInstance" >
         <constructor-arg value="single" />
     </bean>
+
+	<bean id="orderDAO"
+		class="biblivre.acquisition.order.OrderDAOImpl"
+	 	factory-method="getInstance" >
+	 	<constructor-arg value="single" />
+	</bean>
+	
+	<bean id="requestDAO"
+		class="biblivre.acquisition.request.RequestDAOImpl"
+	 	factory-method="getInstance" >
+	 	<constructor-arg value="single" />
+	</bean>
+	
+	<bean id="quotationDAO"
+		class="biblivre.acquisition.quotation.QuotationDAOImpl"
+	 	factory-method="getInstance" >
+	 	<constructor-arg value="single" />
+	</bean>
+	
+	<bean id="supplierDAO"
+		class="biblivre.acquisition.supplier.SupplierDAOImpl"
+	 	factory-method="getInstance" >
+	 	<constructor-arg value="single" />
+	</bean>
 </beans>
