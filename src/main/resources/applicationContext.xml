@@ -82,8 +82,8 @@
 
 	<bean id="quotationBO" name="quotationBO" class="biblivre.acquisition.quotation.QuotationBO" >
         <constructor-arg index="0" ref="quotationDAO" />
-        <constructor-arg index="2" ref="supplierBO" />
-        <constructor-arg index="3" ref="requestBO" />
+        <constructor-arg index="1" ref="supplierBO" />
+        <constructor-arg index="2" ref="requestBO" />
     </bean>
 
 	<bean id="orderBO" name="orderBO" class="biblivre.acquisition.order.OrderBO" >
