@@ -30,24 +30,20 @@ import java.util.List;
 
 public class QuotationBO extends AbstractBO {
     private QuotationDAO dao;
-
-    public static QuotationBO getInstance(String schema) {
-        QuotationBO bo = AbstractBO.getInstance(QuotationBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = QuotationDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+	private SupplierBO supplierBO;
+	private RequestBO requestBO;
+ 
+    public QuotationBO(QuotationDAO dao, SupplierBO supplierBO, RequestBO requestBO) {
+		super();
+		this.dao = dao;
+		this.supplierBO = supplierBO;
+		this.requestBO = requestBO;
+	}
 
     public QuotationDTO get(Integer id) {
         QuotationDTO dto = this.dao.get(id);
 
-        RequestBO rbo = RequestBO.getInstance(this.getSchema());
-        SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-
-        this.populateDTO(dto, rbo, sbo);
+        this.populateDTO(dto, requestBO, supplierBO);
 
         return dto;
     }
@@ -71,11 +67,8 @@ public class QuotationBO extends AbstractBO {
     public DTOCollection<QuotationDTO> search(String value, int limit, int offset) {
         DTOCollection<QuotationDTO> list = this.dao.search(value, limit, offset);
 
-        RequestBO rbo = RequestBO.getInstance(this.getSchema());
-        SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-
         for (QuotationDTO quotation : list) {
-            this.populateDTO(quotation, rbo, sbo);
+            this.populateDTO(quotation, requestBO, supplierBO);
         }
         return list;
     }
@@ -83,11 +76,8 @@ public class QuotationBO extends AbstractBO {
     public DTOCollection<QuotationDTO> list(Integer supplierId) {
         DTOCollection<QuotationDTO> list = this.dao.list(supplierId);
 
-        RequestBO rbo = RequestBO.getInstance(this.getSchema());
-        SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-
         for (QuotationDTO quotation : list) {
-            this.populateDTO(quotation, rbo, sbo);
+            this.populateDTO(quotation, requestBO, supplierBO);
         }
         return list;
     }

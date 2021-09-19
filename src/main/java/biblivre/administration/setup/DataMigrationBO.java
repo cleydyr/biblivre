@@ -64,6 +64,10 @@ public class DataMigrationBO extends AbstractBO {
     private AccessCardBO accessCardBO;
 	private LoginBO loginBO;
 	private UserBO userBO;
+	private QuotationBO quotationBO;
+	private OrderBO orderBO;
+	private SupplierBO supplierBO;
+	private RequestBO requestBO;
 
     @Override
     public String getSchema() {
@@ -305,19 +309,19 @@ public class DataMigrationBO extends AbstractBO {
                 return userBO.saveFromBiblivre3(dtoList);
 
             case ACQUISITION_SUPPLIER:
-                return SupplierBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return supplierBO.saveFromBiblivre3(dtoList);
 
             case ACQUISITION_REQUISITION:
-                return RequestBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return requestBO.saveFromBiblivre3(dtoList);
 
             case ACQUISITION_QUOTATION:
-                return QuotationBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return quotationBO.saveFromBiblivre3(dtoList);
 
             case ACQUISITION_ITEM_QUOTATION:
-                return QuotationBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return quotationBO.saveFromBiblivre3(dtoList);
 
             case ACQUISITION_ORDER:
-                return OrderBO.getInstance(schema).saveFromBiblivre3(dtoList);
+                return orderBO.saveFromBiblivre3(dtoList);
 
             case Z3950_SERVERS:
                 return Z3950BO.getInstance(schema).saveFromBiblivre3(dtoList);

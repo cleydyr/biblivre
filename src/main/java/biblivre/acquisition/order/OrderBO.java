@@ -32,39 +32,38 @@ import biblivre.core.DTOCollection;
 import java.util.List;
 
 public class OrderBO extends AbstractBO {
-    private OrderDAO dao;
+    private OrderDAO orderDAO;
+	private QuotationBO quotationBO;
+	private SupplierBO supplierBO;
+	private RequestBO requestBO;
 
-    public static OrderBO getInstance(String schema) {
-        OrderBO bo = AbstractBO.getInstance(OrderBO.class, schema);
+	public OrderBO(OrderDAO orderDAO, QuotationBO quotationBO, SupplierBO supplierBO, RequestBO requestBO) {
+		super();
+		this.orderDAO = orderDAO;
+		this.quotationBO = quotationBO;
+		this.supplierBO = supplierBO;
+		this.requestBO = requestBO;
+	}
 
-        if (bo.dao == null) {
-            bo.dao = OrderDAO.getInstance(schema);
-        }
+	public OrderDTO get(Integer id) {
+        OrderDTO dto = this.orderDAO.get(id);
 
-        return bo;
-    }
-
-    public OrderDTO get(Integer id) {
-        OrderDTO dto = this.dao.get(id);
-
-        QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
-        SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-        RequestBO rbo = RequestBO.getInstance(this.getSchema());
-        this.populateDTO(dto, qbo, sbo, rbo);
+        this.populateDTO(dto);
 
         return dto;
     }
 
-    public Integer save(OrderDTO dto) {
-        return this.dao.save(dto);
+
+	public Integer save(OrderDTO dto) {
+        return this.orderDAO.save(dto);
     }
 
     public boolean update(OrderDTO dto) {
-        return this.dao.update(dto);
+        return this.orderDAO.update(dto);
     }
 
     public boolean delete(OrderDTO dto) {
-        return this.dao.delete(dto);
+        return this.orderDAO.delete(dto);
     }
 
     public DTOCollection<OrderDTO> list() {
@@ -72,25 +71,22 @@ public class OrderBO extends AbstractBO {
     }
 
     public DTOCollection<OrderDTO> search(String value, int limit, int offset) {
-        DTOCollection<OrderDTO> list = this.dao.search(value, limit, offset);
+        DTOCollection<OrderDTO> list = this.orderDAO.search(value, limit, offset);
 
-        QuotationBO qbo = QuotationBO.getInstance(this.getSchema());
-        SupplierBO sbo = SupplierBO.getInstance(this.getSchema());
-        RequestBO rbo = RequestBO.getInstance(this.getSchema());
         for (OrderDTO dto : list) {
-            this.populateDTO(dto, qbo, sbo, rbo);
+            this.populateDTO(dto);
         }
 
         return list;
     }
 
-    private void populateDTO(OrderDTO dto, QuotationBO qbo, SupplierBO sbo, RequestBO rbo) {
-        QuotationDTO qdto = qbo.get(dto.getQuotationId());
-        SupplierDTO sdto = sbo.get(qdto.getSupplierId());
+    private void populateDTO(OrderDTO dto) {
+        QuotationDTO qdto = quotationBO.get(dto.getQuotationId());
+        SupplierDTO sdto = supplierBO.get(qdto.getSupplierId());
 
-        List<RequestQuotationDTO> rqList = qbo.listRequestQuotation(qdto.getId());
+        List<RequestQuotationDTO> rqList = quotationBO.listRequestQuotation(qdto.getId());
         for (RequestQuotationDTO rqdto : rqList) {
-            RequestDTO request = rbo.get(rqdto.getRequestId());
+            RequestDTO request = requestBO.get(rqdto.getRequestId());
             rqdto.setAuthor(request.getAuthor());
             rqdto.setTitle(request.getTitle());
         }
@@ -102,6 +98,6 @@ public class OrderBO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.orderDAO.saveFromBiblivre3(dtoList);
     }
 }

@@ -42,10 +42,14 @@ import org.json.JSONException;
 public class Handler extends AbstractHandler {
 
     private UserBO userBO;
+	private SupplierBO supplierBO;
+	private RequestBO requestBO;
 
-	public Handler(UserBO userBO) {
+	public Handler(UserBO userBO, SupplierBO supplierBO, RequestBO requestBO) {
 		super();
 		this.userBO = userBO;
+		this.supplierBO = supplierBO;
+		this.requestBO = requestBO;
 	}
 
 	public void ping(ExtendedRequest request, ExtendedResponse response) {
@@ -207,14 +211,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        SupplierBO bo = SupplierBO.getInstance(schema);
-        List<SupplierDTO> suppliers = bo.list();
+        List<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
-        RequestBO rbo = RequestBO.getInstance(schema);
-        List<RequestDTO> requests = rbo.list();
+        List<RequestDTO> requests = requestBO.list();
         request.setAttribute("requests", requests);
 
         this.jspURL = "/jsp/acquisition/quotations.jsp";
@@ -222,10 +222,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        SupplierBO bo = SupplierBO.getInstance(schema);
-        List<SupplierDTO> suppliers = bo.list();
+        List<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
         this.jspURL = "/jsp/acquisition/orders.jsp";
