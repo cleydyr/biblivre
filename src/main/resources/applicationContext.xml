@@ -16,11 +16,6 @@
 
     <!-- Handlers -->
 
-    <bean id="accesscontrolHandler" name="accesscontrolHandler" class="biblivre.circulation.accesscontrol.Handler" scope="prototype">
-    	<constructor-arg index="0" ref="accessCardBO" />
-    	<constructor-arg index="1" ref="accessControlBO" />
-    </bean>
-    
     <bean id="accesscardsHandler" name="accesscardsHandler" class="biblivre.administration.accesscards.Handler" scope="prototype">
     	<constructor-arg index="0" ref="accessCardBO" />
     </bean>
