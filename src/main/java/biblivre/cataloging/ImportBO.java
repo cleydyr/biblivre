@@ -47,11 +47,25 @@ import org.marc4j.marc.Record;
 
 public class ImportBO extends AbstractBO {
 
+    public ImportBO(
+            BiblioRecordBO biblioRecordBO,
+            VocabularyRecordBO vocabularyBO,
+            AuthorityRecordBO authorityRecordBO) {
+        super();
+        this.biblioRecordBO = biblioRecordBO;
+        this.vocabularyBO = vocabularyBO;
+        this.authorityRecordBO = authorityRecordBO;
+    }
+
     public static ImportBO getInstance(String schema) {
         ImportBO bo = AbstractBO.getInstance(ImportBO.class, schema);
 
         return bo;
     }
+
+    private BiblioRecordBO biblioRecordBO;
+    private VocabularyRecordBO vocabularyBO;
+    private AuthorityRecordBO authorityRecordBO;
 
     public ImportDTO loadFromFile(MemoryFile file, ImportFormat format, ImportEncoding enc) {
         ImportDTO dto = null;
@@ -185,14 +199,13 @@ public class ImportBO extends AbstractBO {
 
     public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {
         ImportDTO dto = new ImportDTO();
-        BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
         for (Z3950RecordDTO z3950Dto : recordList) {
             dto.incrementFound();
             try {
                 BiblioRecordDTO brdto = z3950Dto.getRecord();
 
                 if (brdto != null) {
-                    bbo.populateDetails(brdto, RecordBO.MARC_INFO);
+                    biblioRecordBO.populateDetails(brdto, RecordBO.MARC_INFO);
 
                     dto.addRecord(brdto);
 
@@ -207,7 +220,6 @@ public class ImportBO extends AbstractBO {
     }
 
     public RecordDTO dtoFromRecord(Record record) {
-        String schema = this.getSchema();
         RecordDTO rdto = null;
         RecordBO rbo = null;
 
@@ -216,15 +228,15 @@ public class ImportBO extends AbstractBO {
                 break;
             case VOCABULARY:
                 rdto = new VocabularyRecordDTO();
-                rbo = VocabularyRecordBO.getInstance(schema);
+                rbo = vocabularyBO;
                 break;
             case AUTHORITIES:
                 rdto = new AuthorityRecordDTO();
-                rbo = AuthorityRecordBO.getInstance(schema);
+                rbo = authorityRecordBO;
                 break;
             default:
                 rdto = new BiblioRecordDTO();
-                rbo = BiblioRecordBO.getInstance(schema);
+                rbo = biblioRecordBO;
                 break;
         }
 

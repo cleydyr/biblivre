@@ -21,14 +21,13 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.cataloging.CatalogingHandler;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 
 public class Handler extends CatalogingHandler {
 
-    public Handler() {
-        super(RecordType.BIBLIO, MaterialType.BOOK);
+    public Handler(BiblioRecordBO biblioRecordBO) {
+        super(biblioRecordBO, MaterialType.BOOK);
     }
 
     @Override

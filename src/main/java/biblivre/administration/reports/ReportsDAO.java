@@ -60,11 +60,18 @@ import org.marc4j.marc.Record;
 
 public class ReportsDAO extends AbstractDAO {
 
+    public ReportsDAO(BiblioRecordBO biblioRecordBO) {
+        super();
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
     public static ReportsDAO getInstance(String schema) {
         return (ReportsDAO) AbstractDAO.getInstance(ReportsDAO.class, schema);
     }
+
+    private BiblioRecordBO biblioRecordBO;
 
     public SummaryReportDto getSummaryReportData(RecordDatabase database) {
         SummaryReportDto dto = new SummaryReportDto();
@@ -478,12 +485,10 @@ public class ReportsDAO extends AbstractDAO {
             rs = st.executeQuery();
             List<String[]> data = new ArrayList<String[]>();
 
-            BiblioRecordBO biblioBO = BiblioRecordBO.getInstance(this.getSchema());
-
             while (rs.next()) {
                 Integer biblioId = rs.getInt(1);
                 Integer count = rs.getInt(2);
-                RecordDTO recordDto = biblioBO.get(biblioId);
+                RecordDTO recordDto = biblioRecordBO.get(biblioId);
                 Record record = MarcUtils.iso2709ToRecord(recordDto.getIso2709());
                 MarcDataReader dataReader = new MarcDataReader(record);
                 String[] arrayData = new String[3];

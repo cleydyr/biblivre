@@ -45,14 +45,16 @@ import java.util.Set;
 
 public class ReservationBO extends AbstractBO {
 
-    private ReservationDAO dao;
-    private UserBO userBO;
-
-    public ReservationBO(ReservationDAO dao, UserBO userBO) {
+    public ReservationBO(ReservationDAO dao, UserBO userBO, BiblioRecordBO biblioRecordBO) {
         super();
         this.dao = dao;
         this.userBO = userBO;
+        this.biblioRecordBO = biblioRecordBO;
     }
+
+    private ReservationDAO dao;
+    private UserBO userBO;
+    private BiblioRecordBO biblioRecordBO;
 
     public static ReservationBO getInstance(String schema) {
         ReservationBO bo = AbstractBO.getInstance(ReservationBO.class, schema);
@@ -97,11 +99,10 @@ public class ReservationBO extends AbstractBO {
 
     public List<ReservationDTO> list(UserDTO user) {
         List<ReservationDTO> list = this.dao.list(user, null);
-        BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
 
         for (ReservationDTO dto : list) {
             BiblioRecordDTO record =
-                    (BiblioRecordDTO) bo.get(dto.getRecordId(), RecordBO.MARC_INFO);
+                    (BiblioRecordDTO) biblioRecordBO.get(dto.getRecordId(), RecordBO.MARC_INFO);
 
             dto.setTitle(record.getTitle());
             dto.setAuthor(record.getAuthor());
@@ -113,14 +114,13 @@ public class ReservationBO extends AbstractBO {
     public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
         List<ReservationDTO> list = this.dao.list(user, null);
         List<ReservationInfoDTO> result = new ArrayList<>();
-        BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
 
         for (ReservationDTO dto : list) {
             ReservationInfoDTO info = new ReservationInfoDTO();
             info.setReservation(dto);
 
             BiblioRecordDTO record =
-                    (BiblioRecordDTO) bo.get(dto.getRecordId(), RecordBO.MARC_INFO);
+                    (BiblioRecordDTO) biblioRecordBO.get(dto.getRecordId(), RecordBO.MARC_INFO);
             info.setBiblio(record);
 
             result.add(info);
@@ -133,13 +133,11 @@ public class ReservationBO extends AbstractBO {
         List<ReservationDTO> list = this.dao.list();
         List<ReservationInfoDTO> result = new ArrayList<>();
 
-        BiblioRecordBO bo = BiblioRecordBO.getInstance(this.getSchema());
-
         for (ReservationDTO dto : list) {
             ReservationInfoDTO info = new ReservationInfoDTO();
 
             BiblioRecordDTO record =
-                    (BiblioRecordDTO) bo.get(dto.getRecordId(), RecordBO.MARC_INFO);
+                    (BiblioRecordDTO) biblioRecordBO.get(dto.getRecordId(), RecordBO.MARC_INFO);
             info.setBiblio(record);
 
             dto.setTitle(record.getTitle());

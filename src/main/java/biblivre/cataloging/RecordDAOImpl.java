@@ -43,8 +43,13 @@ import java.util.Set;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class RecordDAO extends AbstractDAO {
+public abstract class RecordDAOImpl extends AbstractDAO implements RecordDAO {
+    @Override
     public boolean save(RecordDTO dto) {
+        Integer id = getNextSerial(dto.getRecordType() + "_records_id_seq");
+
+        dto.setId(id);
+
         Connection con = null;
 
         try {
@@ -71,6 +76,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         if (dtoList.isEmpty()) {
             return true;
@@ -118,6 +124,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public boolean update(RecordDTO dto) {
         Connection con = null;
 
@@ -144,6 +151,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public boolean listContainsPrivateRecord(Set<Integer> ids, RecordType recordType) {
         Connection con = null;
 
@@ -178,6 +186,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public boolean moveRecords(
             Set<Integer> ids, int modifiedBy, RecordDatabase database, RecordType recordType) {
         Connection con = null;
@@ -240,6 +249,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public boolean delete(RecordDTO dto) {
         Connection con = null;
 
@@ -262,6 +272,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public Integer count(SearchDTO search) {
         Connection con = null;
 
@@ -322,6 +333,7 @@ public abstract class RecordDAO extends AbstractDAO {
         return 0;
     }
 
+    @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids, RecordType recordType) {
         Map<Integer, RecordDTO> map = new HashMap<>();
 
@@ -354,10 +366,12 @@ public abstract class RecordDAO extends AbstractDAO {
         return map;
     }
 
+    @Override
     public List<RecordDTO> list(int offset, int limit, RecordType recordType) {
         return this.list(offset, limit, null, recordType);
     }
 
+    @Override
     public List<RecordDTO> list(
             int offset, int limit, RecordDatabase database, RecordType recordType) {
         List<RecordDTO> list = new ArrayList<>();
@@ -404,6 +418,7 @@ public abstract class RecordDAO extends AbstractDAO {
         return list;
     }
 
+    @Override
     public List<RecordDTO> listByLetter(char letter, int order, RecordType recordType) {
         List<RecordDTO> list = new ArrayList<>();
 
@@ -443,6 +458,7 @@ public abstract class RecordDAO extends AbstractDAO {
         return list;
     }
 
+    @Override
     public Map<Integer, Integer> countSearchResults(SearchDTO search) {
         Map<Integer, Integer> count = new HashMap<>();
         if (search == null) {
@@ -486,6 +502,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public List<RecordDTO> getSearchResults(SearchDTO search) {
         List<RecordDTO> list = new ArrayList<>();
 
@@ -603,6 +620,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public List<String> phraseAutocomplete(
             String datafield,
             String subfield,
@@ -662,6 +680,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public DTOCollection<AutocompleteDTO> recordAutocomplete(
             String datafield,
             String subfield,

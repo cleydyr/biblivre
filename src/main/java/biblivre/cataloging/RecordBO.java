@@ -20,8 +20,6 @@
 package biblivre.cataloging;
 
 import biblivre.administration.indexing.IndexingGroups;
-import biblivre.cataloging.authorities.AuthorityRecordBO;
-import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingBO;
@@ -29,7 +27,6 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
-import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
@@ -58,6 +55,7 @@ import org.marc4j.MarcStreamWriter;
 public abstract class RecordBO extends AbstractBO {
     protected RecordDAO rdao;
     protected SearchDAO sdao;
+    private HoldingBO holdingBO;
 
     public static final int FULL = 1 << 0;
     public static final int MARC_INFO = 1 << 1;
@@ -68,26 +66,6 @@ public abstract class RecordBO extends AbstractBO {
     public static final int ATTACHMENTS_LIST = 1 << 6;
 
     public static final Pattern ID_PATTERN = Pattern.compile("id=(.*?)(&|$)");
-
-    /** Class Factory */
-    public static RecordBO getInstance(String schema, RecordType recordType) {
-        if (recordType == null) {
-            return null;
-        }
-
-        switch (recordType) {
-            case BIBLIO:
-                return BiblioRecordBO.getInstance(schema);
-            case HOLDING:
-                return HoldingBO.getInstance(schema);
-            case AUTHORITIES:
-                return AuthorityRecordBO.getInstance(schema);
-            case VOCABULARY:
-                return VocabularyRecordBO.getInstance(schema);
-            default:
-                return null;
-        }
-    }
 
     public RecordDTO get(int id) {
         Set<Integer> ids = new HashSet<>();
@@ -239,8 +217,7 @@ public abstract class RecordBO extends AbstractBO {
 
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
-            HoldingBO hbo = (HoldingBO) RecordBO.getInstance(this.getSchema(), RecordType.HOLDING);
-            return hbo.paginateHoldingSearch(search);
+            return holdingBO.paginateHoldingSearch(search);
         }
 
         Map<Integer, Integer> groupCount = this.rdao.countSearchResults(search);
@@ -264,7 +241,7 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public SearchDTO getSearch(Integer searchId) {
-        SearchDTO search = this.sdao.getSearch(searchId);
+        SearchDTO search = this.sdao.getSearch(searchId, getRecordType());
 
         if (search != null) {
             if (search.getPaging() == null) {
@@ -417,15 +394,12 @@ public abstract class RecordBO extends AbstractBO {
         return success;
     }
 
-    public SearchDTO search(
-            SearchQueryDTO searchQuery,
-            RecordType recordType,
-            AuthorizationPoints authorizationPoints) {
+    public SearchDTO search(SearchQueryDTO searchQuery, AuthorizationPoints authorizationPoints) {
         if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        SearchDTO search = new SearchDTO(recordType);
+        SearchDTO search = new SearchDTO(getRecordType());
 
         PagingDTO paging = _newConfiguredPagingInstance();
 
@@ -433,7 +407,7 @@ public abstract class RecordBO extends AbstractBO {
 
         search.setQuery(searchQuery);
 
-        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, recordType));
+        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, getRecordType()));
 
         search(search);
 

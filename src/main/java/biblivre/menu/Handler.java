@@ -24,8 +24,8 @@ import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.administration.indexing.IndexingGroups;
-import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -41,16 +41,22 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-    private UserBO userBO;
-    private SupplierBO supplierBO;
-    private RequestBO requestBO;
-
-    public Handler(UserBO userBO, SupplierBO supplierBO, RequestBO requestBO) {
+    public Handler(
+            UserBO userBO,
+            SupplierBO supplierBO,
+            RequestBO requestBO,
+            BiblioRecordBO biblioRecordBO) {
         super();
         this.userBO = userBO;
         this.supplierBO = supplierBO;
         this.requestBO = requestBO;
+        this.biblioRecordBO = biblioRecordBO;
     }
+
+    private UserBO userBO;
+    private SupplierBO supplierBO;
+    private RequestBO requestBO;
+    private BiblioRecordBO biblioRecordBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {
         try {
@@ -70,18 +76,18 @@ public class Handler extends AbstractHandler {
 
     public void listBibliographic(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        RecordType type = RecordType.BIBLIO;
 
         String letter = request.getString("letter");
         Integer order =
-                request.getInteger("order", IndexingGroups.getDefaultSortableGroupId(schema, type));
+                request.getInteger(
+                        "order",
+                        IndexingGroups.getDefaultSortableGroupId(schema, RecordType.BIBLIO));
 
         if (StringUtils.isBlank(letter)) {
             letter = "a";
         }
 
-        RecordBO rbo = RecordBO.getInstance(schema, type);
-        List<RecordDTO> records = rbo.listByLetter(letter.charAt(0), order);
+        List<RecordDTO> records = biblioRecordBO.listByLetter(letter.charAt(0), order);
 
         request.setAttribute("records", records);
 

@@ -41,8 +41,10 @@ import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import biblivre.z3950.Z3950RecordDTO;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -50,6 +52,13 @@ import org.json.JSONException;
 import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
+
+    public Handler(Map<RecordType, RecordBO> recordBOs) {
+        super();
+        this.recordBOs = recordBOs;
+    }
+
+    Map<RecordType, RecordBO> recordBOs = new HashMap<>();
 
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
@@ -235,7 +244,7 @@ public class Handler extends AbstractHandler {
                 continue;
             }
 
-            RecordBO bo = RecordBO.getInstance(schema, recordType);
+            RecordBO bo = recordBOs.get(recordType);
 
             RecordDTO dto = null;
 

@@ -24,16 +24,16 @@ import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabSubfieldDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.authorities.AuthorityRecordBO;
-import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,6 +42,14 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public class IndexingBO extends AbstractBO {
+    public IndexingBO(Map<RecordType, RecordBO> recordBOs, IndexingDAO dao) {
+        super();
+        this.recordBOs = recordBOs;
+        this.dao = dao;
+    }
+
+    Map<RecordType, RecordBO> recordBOs = new HashMap<>();
+
     private IndexingDAO dao;
 
     private String[] nonfillingCharactersInIndicator1 = new String[] {"130", "630", "730", "740"};
@@ -100,7 +108,7 @@ public class IndexingBO extends AbstractBO {
                 List<FormTabSubfieldDTO> autocompleteSubfields =
                         Fields.getAutocompleteSubFields(schema, recordType);
 
-                RecordBO rbo = RecordBO.getInstance(schema, recordType);
+                RecordBO rbo = recordBOs.get(recordType);
 
                 int recordCount = rbo.count();
                 int limit = 30;
@@ -316,7 +324,7 @@ public class IndexingBO extends AbstractBO {
     public int[] getReindexProgress(RecordType recordType) {
         int progress[] = new int[2];
 
-        RecordBO rbo = RecordBO.getInstance(this.getSchema(), recordType);
+        RecordBO rbo = recordBOs.get(recordType);
 
         progress[0] = this.countIndexed(recordType);
         progress[1] = rbo.count();
@@ -325,22 +333,13 @@ public class IndexingBO extends AbstractBO {
     }
 
     public boolean isIndexOutdated() {
-        String schema = this.getSchema();
+        Stream<RecordBO> stream = recordBOs.values().stream();
 
-        boolean biblio =
-                !this.dao
-                        .countIndexed(RecordType.BIBLIO)
-                        .equals(BiblioRecordBO.getInstance(schema).count());
-        boolean authorities =
-                !this.dao
-                        .countIndexed(RecordType.AUTHORITIES)
-                        .equals(AuthorityRecordBO.getInstance(schema).count());
-        boolean vocabulary =
-                !this.dao
-                        .countIndexed(RecordType.VOCABULARY)
-                        .equals(VocabularyRecordBO.getInstance(schema).count());
+        return stream.anyMatch(this::_hasOutdatedIndexCount);
+    }
 
-        return biblio || authorities || vocabulary;
+    private boolean _hasOutdatedIndexCount(RecordBO recordBO) {
+        return this.dao.countIndexed(recordBO.getRecordType()).equals(recordBO.count());
     }
 
     private void clearIndexes(RecordType recordType) {

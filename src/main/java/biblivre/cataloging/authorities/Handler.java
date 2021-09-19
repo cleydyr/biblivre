@@ -23,7 +23,6 @@ import biblivre.administration.reports.ReportsBO;
 import biblivre.cataloging.CatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
@@ -37,8 +36,8 @@ import org.json.JSONObject;
 
 public class Handler extends CatalogingHandler {
 
-    public Handler() {
-        super(RecordType.AUTHORITIES, MaterialType.AUTHORITIES);
+    public Handler(AuthorityRecordBO authorityRecordBO) {
+        super(authorityRecordBO, MaterialType.AUTHORITIES);
     }
 
     @Override

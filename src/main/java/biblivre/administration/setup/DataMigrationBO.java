@@ -25,8 +25,11 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.usertype.UserTypeBO;
-import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.authorities.AuthorityRecordBO;
+import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.holding.HoldingBO;
+import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.circulation.accesscontrol.AccessControlBO;
 import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.lending.LendingDTO;
@@ -68,6 +71,10 @@ public class DataMigrationBO extends AbstractBO {
     private OrderBO orderBO;
     private SupplierBO supplierBO;
     private RequestBO requestBO;
+    private BiblioRecordBO biblioRecordBO;
+    private AuthorityRecordBO authoritiyRecordBO;
+    private VocabularyRecordBO vocabularyRecordBO;
+    private HoldingBO holdingsBO;
 
     @Override
     public String getSchema() {
@@ -281,20 +288,16 @@ public class DataMigrationBO extends AbstractBO {
 
         switch (phase) {
             case CATALOGING_BIBLIOGRAPHIC:
-                RecordBO biblioBo = RecordBO.getInstance(schema, RecordType.BIBLIO);
-                return biblioBo.saveFromBiblivre3(dtoList);
+                return biblioRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_AUTHORITIES:
-                RecordBO authoritiesBo = RecordBO.getInstance(schema, RecordType.AUTHORITIES);
-                return authoritiesBo.saveFromBiblivre3(dtoList);
+                return authoritiyRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_VOCABULARY:
-                RecordBO vocabularyBo = RecordBO.getInstance(schema, RecordType.VOCABULARY);
-                return vocabularyBo.saveFromBiblivre3(dtoList);
+                return vocabularyRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_HOLDINGS:
-                RecordBO holdingsBo = RecordBO.getInstance(schema, RecordType.HOLDING);
-                return holdingsBo.saveFromBiblivre3(dtoList);
+                return holdingsBO.saveFromBiblivre3(dtoList);
 
             case ACCESS_CARDS:
                 return accessCardBO.saveFromBiblivre3(dtoList);

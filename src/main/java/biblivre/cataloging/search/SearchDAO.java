@@ -37,10 +37,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 public abstract class SearchDAO extends AbstractDAO {
-    protected RecordType recordType;
-
-    public SearchDTO getSearch(Integer searchId) {
-        SearchDTO search = new SearchDTO(this.recordType);
+    public SearchDTO getSearch(Integer searchId, RecordType recordType) {
+        SearchDTO search = new SearchDTO(recordType);
 
         if (searchId == null) {
             return search;
@@ -51,7 +49,7 @@ public abstract class SearchDAO extends AbstractDAO {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
 
-            sql.append("SELECT * FROM ").append(this.recordType).append("_searches ");
+            sql.append("SELECT * FROM ").append(recordType).append("_searches ");
             sql.append("WHERE id = ?;");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
@@ -84,12 +82,14 @@ public abstract class SearchDAO extends AbstractDAO {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
 
-            sql.append("INSERT INTO ").append(this.recordType).append("_searches ");
+            RecordType recordType = search.getRecordType();
+
+            sql.append("INSERT INTO ").append(recordType).append("_searches ");
             sql.append("(id, parameters) VALUES (?, ?);");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
 
-            Integer id = this.getNextSerial(this.recordType + "_searches_id_seq");
+            Integer id = this.getNextSerial(recordType + "_searches_id_seq");
             if (id == null || id == 0) {
                 return false;
             }
@@ -148,7 +148,10 @@ public abstract class SearchDAO extends AbstractDAO {
                 con.setAutoCommit(false);
 
                 StringBuilder deleteSql = new StringBuilder();
-                deleteSql.append("DELETE FROM ").append(this.recordType).append("_search_results ");
+                deleteSql
+                        .append("DELETE FROM ")
+                        .append(search.getRecordType())
+                        .append("_search_results ");
                 deleteSql.append("WHERE search_id = ?;");
 
                 PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
@@ -216,7 +219,10 @@ public abstract class SearchDAO extends AbstractDAO {
                 con.setAutoCommit(false);
 
                 StringBuilder deleteSql = new StringBuilder();
-                deleteSql.append("DELETE FROM ").append(this.recordType).append("_search_results ");
+                deleteSql
+                        .append("DELETE FROM ")
+                        .append(search.getRecordType())
+                        .append("_search_results ");
                 deleteSql.append("WHERE search_id = ?;");
 
                 PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
@@ -318,7 +324,9 @@ public abstract class SearchDAO extends AbstractDAO {
         StringBuilder sql = new StringBuilder();
         int cteCount = 0;
 
-        sql.append("INSERT INTO ").append(this.recordType).append("_search_results ");
+        RecordType recordType = search.getRecordType();
+
+        sql.append("INSERT INTO ").append(recordType).append("_search_results ");
         sql.append("(search_id, indexing_group_id, record_id) ");
 
         sql.append("WITH ");
@@ -330,7 +338,7 @@ public abstract class SearchDAO extends AbstractDAO {
             sql.append("Query_").append(cteCount).append(" AS ( ");
             if (operator.equals("~")) {
                 sql.append("SELECT indexing_group_id, record_id FROM ")
-                        .append(this.recordType)
+                        .append(recordType)
                         .append("_idx_sort WHERE phrase ")
                         .append(operator)
                         .append(" ? ");
@@ -340,14 +348,14 @@ public abstract class SearchDAO extends AbstractDAO {
                 sql.append(
                         StringUtils.repeat(
                                 "SELECT record_id FROM "
-                                        + this.recordType
+                                        + recordType
                                         + "_idx_fields WHERE word = ? ",
                                 " INTERSECT ",
                                 eTerms.length));
                 sql.append(") ");
             } else {
                 sql.append("SELECT indexing_group_id, record_id FROM ")
-                        .append(this.recordType)
+                        .append(recordType)
                         .append("_idx_fields WHERE word ")
                         .append(operator)
                         .append(" ? ");
@@ -384,7 +392,7 @@ public abstract class SearchDAO extends AbstractDAO {
         }
         sql.append(") ");
 
-        sql.append(") A INNER JOIN ").append(this.recordType).append("_records R ");
+        sql.append(") A INNER JOIN ").append(recordType).append("_records R ");
         sql.append("ON R.id = A.record_id ");
         sql.append("WHERE R.database = ? ");
 
@@ -410,13 +418,15 @@ public abstract class SearchDAO extends AbstractDAO {
 
         StringBuilder sql = new StringBuilder();
 
-        sql.append("INSERT INTO ").append(this.recordType).append("_search_results ");
+        RecordType recordType = search.getRecordType();
+
+        sql.append("INSERT INTO ").append(recordType).append("_search_results ");
         sql.append("(search_id, indexing_group_id, record_id) ");
 
         sql.append("SELECT DISTINCT ")
                 .append(search.getId())
                 .append(", 0 as indexing_group_id, R.id ");
-        sql.append("FROM ").append(this.recordType).append("_records R ");
+        sql.append("FROM ").append(recordType).append("_records R ");
         sql.append("WHERE R.database = ? ");
 
         if (query.getMaterialType() != MaterialType.ALL) {
@@ -433,7 +443,7 @@ public abstract class SearchDAO extends AbstractDAO {
             }
 
             sql.append("(");
-            sql.append(this.createAdvancedFilterClause(searchTerm));
+            sql.append(this.createAdvancedFilterClause(searchTerm, search.getRecordType()));
             sql.append(")");
         }
 
@@ -442,7 +452,7 @@ public abstract class SearchDAO extends AbstractDAO {
         return sql.toString();
     }
 
-    private String createAdvancedFilterClause(SearchTermDTO searchTerm) {
+    private String createAdvancedFilterClause(SearchTermDTO searchTerm, RecordType recordType) {
         StringBuilder clause = new StringBuilder();
         String field = searchTerm.getField();
         Set<String> terms = searchTerm.getTerms();
@@ -455,7 +465,7 @@ public abstract class SearchDAO extends AbstractDAO {
                 clause.append(
                         StringUtils.repeat(
                                 "SELECT record_id, datafield FROM "
-                                        + this.recordType
+                                        + recordType
                                         + "_idx_fields WHERE word = ? ",
                                 " INTERSECT ",
                                 terms.size()));
@@ -463,7 +473,7 @@ public abstract class SearchDAO extends AbstractDAO {
                 clause.append(
                         StringUtils.repeat(
                                 "SELECT record_id, datafield FROM "
-                                        + this.recordType
+                                        + recordType
                                         + "_idx_fields WHERE word = ? AND indexing_group_id = ? ",
                                 " INTERSECT ",
                                 terms.size()));

@@ -60,14 +60,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class LendingBO extends AbstractBO {
-    private LendingDAO dao;
-    private UserBO userBO;
-
-    public LendingBO(LendingDAO dao, UserBO userBO) {
+    public LendingBO(
+            LendingDAO dao, UserBO userBO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
         super();
         this.dao = dao;
         this.userBO = userBO;
+        this.holdingBO = holdingBO;
+        this.biblioRecordBO = biblioRecordBO;
     }
+
+    private LendingDAO dao;
+    private UserBO userBO;
+    private HoldingBO holdingBO;
+    private BiblioRecordBO biblioRecordBO;
 
     public static LendingBO getInstance(String schema) {
         LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
@@ -199,8 +204,7 @@ public class LendingBO extends AbstractBO {
             throw new ValidationException("cataloging.lending.error.user_not_found");
         }
 
-        HoldingBO holdingBo = HoldingBO.getInstance(this.getSchema());
-        HoldingDTO holding = (HoldingDTO) holdingBo.get(lending.getHoldingId());
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         this.checkRenew(holding, userDto);
 
         UserTypeBO userTypeBO = UserTypeBO.getInstance(this.getSchema());
@@ -264,8 +268,6 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        BiblioRecordBO bbo = BiblioRecordBO.getInstance(schema);
-
         Map<Integer, LendingDTO> lendingsMap = this.getCurrentLendingMap(holdings);
         for (Entry<Integer, LendingDTO> entry : lendingsMap.entrySet()) {
             Integer userid = entry.getValue().getUserId();
@@ -276,7 +278,7 @@ public class LendingBO extends AbstractBO {
 
         Map<Integer, RecordDTO> recordsMap = new HashMap<>();
         if (!records.isEmpty()) {
-            recordsMap = bbo.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
+            recordsMap = biblioRecordBO.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
         }
 
         Map<Integer, UserDTO> usersMap = new HashMap<>();
@@ -335,7 +337,6 @@ public class LendingBO extends AbstractBO {
 
     public DTOCollection<LendingInfoDTO> populateLendingInfo(
             List<LendingDTO> list, boolean populateUser) {
-        String schema = this.getSchema();
 
         DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
 
@@ -353,9 +354,6 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        HoldingBO holdingBo = HoldingBO.getInstance(schema);
-        BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
-
         Map<Integer, UserDTO> users = new HashMap<>();
         if (!userIds.isEmpty()) {
             users = userBO.map(userIds);
@@ -363,7 +361,7 @@ public class LendingBO extends AbstractBO {
 
         Map<Integer, RecordDTO> holdings = new HashMap<>();
         if (!holdingIds.isEmpty()) {
-            holdings = holdingBo.map(holdingIds);
+            holdings = holdingBO.map(holdingIds);
         }
 
         for (RecordDTO holding : holdings.values()) {
@@ -372,7 +370,7 @@ public class LendingBO extends AbstractBO {
 
         Map<Integer, RecordDTO> records = new HashMap<>();
         if (!recordIds.isEmpty()) {
-            records = biblioBo.map(recordIds, RecordBO.MARC_INFO);
+            records = biblioRecordBO.map(recordIds, RecordBO.MARC_INFO);
         }
 
         for (LendingDTO lending : list) {

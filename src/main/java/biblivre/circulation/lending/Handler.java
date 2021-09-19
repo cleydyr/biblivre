@@ -47,8 +47,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-
     private UserBO userBO;
+    private BiblioRecordBO biblioRecordBO;
+    private HoldingBO holdingBO;
+
+    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, HoldingBO holdingBO) {
+        super();
+        this.userBO = userBO;
+        this.biblioRecordBO = biblioRecordBO;
+        this.holdingBO = holdingBO;
+    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -66,8 +74,6 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        HoldingBO hbo = HoldingBO.getInstance(schema);
-
         Integer limit =
                 request.getInteger(
                         "limit",
@@ -75,7 +81,7 @@ public class Handler extends AbstractHandler {
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<HoldingDTO> holdingList =
-                hbo.search(query, RecordDatabase.MAIN, lentOnly, offset, limit);
+                holdingBO.search(query, RecordDatabase.MAIN, lentOnly, offset, limit);
 
         if (CollectionUtils.isEmpty(holdingList)) {
             this.setMessage(ActionResult.WARNING, "circulation.lending.no_holding_found");
@@ -121,8 +127,6 @@ public class Handler extends AbstractHandler {
 
     private LendingListDTO populateLendingList(String schema, UserDTO user, boolean history) {
         LendingBO lbo = LendingBO.getInstance(schema);
-        HoldingBO hbo = HoldingBO.getInstance(schema);
-        BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
         LendingFineBO lfbo = LendingFineBO.getInstance(schema);
         ReservationBO rsvBo = ReservationBO.getInstance(schema);
 
@@ -139,10 +143,11 @@ public class Handler extends AbstractHandler {
         List<LendingInfoDTO> infos = new ArrayList<>();
 
         for (LendingDTO lending : lendings) {
-            HoldingDTO holding = (HoldingDTO) hbo.get(lending.getHoldingId(), RecordBO.MARC_INFO);
+            HoldingDTO holding =
+                    (HoldingDTO) holdingBO.get(lending.getHoldingId(), RecordBO.MARC_INFO);
 
             BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
+                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
 
             LendingInfoDTO info = new LendingInfoDTO();
 
@@ -176,8 +181,7 @@ public class Handler extends AbstractHandler {
         Integer holdingId = request.getInteger("holding_id");
         Integer userId = request.getInteger("user_id");
 
-        HoldingBO holdingBo = HoldingBO.getInstance(schema);
-        HoldingDTO holding = (HoldingDTO) holdingBo.get(holdingId, RecordBO.MARC_INFO);
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(holdingId, RecordBO.MARC_INFO);
 
         UserDTO user = userBO.get(userId);
 
@@ -187,9 +191,8 @@ public class Handler extends AbstractHandler {
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.lend_success");
 
-            BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
             BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
+                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
             LendingDTO lending = lendingBo.getCurrentLending(holding);
             LendingInfoDTO info = new LendingInfoDTO();
             info.setLending(lending);
@@ -226,11 +229,9 @@ public class Handler extends AbstractHandler {
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.renew_success");
 
-            HoldingBO holdingBo = HoldingBO.getInstance(schema);
-            HoldingDTO holding = (HoldingDTO) holdingBo.get(holdingId, RecordBO.MARC_INFO);
-            BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
+            HoldingDTO holding = (HoldingDTO) holdingBO.get(holdingId, RecordBO.MARC_INFO);
             BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
+                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
             UserDTO user = userBO.get(userId);
 
             LendingDTO newLending = lendingBo.getCurrentLending(holding);

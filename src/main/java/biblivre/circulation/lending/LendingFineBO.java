@@ -35,7 +35,16 @@ import java.util.List;
 
 public class LendingFineBO extends AbstractBO {
 
+    public LendingFineBO(LendingFineDAO dao, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
+        super();
+        this.dao = dao;
+        this.holdingBO = holdingBO;
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
     private LendingFineDAO dao;
+    private HoldingBO holdingBO;
+    private BiblioRecordBO biblioRecordBO;
 
     public static LendingFineBO getInstance(String schema) {
         LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class, schema);
@@ -74,13 +83,10 @@ public class LendingFineBO extends AbstractBO {
         Integer lendingId = fine.getLendingId();
 
         LendingBO lbo = LendingBO.getInstance(this.getSchema());
-        HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
-        BiblioRecordBO rbo = BiblioRecordBO.getInstance(this.getSchema());
-
         LendingDTO lending = lbo.get(lendingId);
-        HoldingDTO holding = (HoldingDTO) hbo.get(lending.getHoldingId());
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         BiblioRecordDTO biblio =
-                (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
+                (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
 
         fine.setAuthor(biblio.getAuthor());
         fine.setTitle(biblio.getTitle());

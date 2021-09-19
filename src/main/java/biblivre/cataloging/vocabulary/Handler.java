@@ -21,14 +21,13 @@ package biblivre.cataloging.vocabulary;
 
 import biblivre.cataloging.CatalogingHandler;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 
 public class Handler extends CatalogingHandler {
 
-    public Handler() {
-        super(RecordType.VOCABULARY, MaterialType.VOCABULARY);
+    public Handler(VocabularyRecordBO vocabularyRecordBO) {
+        super(vocabularyRecordBO, MaterialType.VOCABULARY);
     }
 
     @Override

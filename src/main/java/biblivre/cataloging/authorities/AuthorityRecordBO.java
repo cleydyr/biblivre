@@ -24,32 +24,17 @@ import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import java.util.Map;
 import java.util.Set;
 
 public class AuthorityRecordBO extends RecordBO {
 
-    public static AuthorityRecordBO getInstance(String schema) {
-        AuthorityRecordBO bo = AbstractBO.getInstance(AuthorityRecordBO.class, schema);
-
-        if (bo.rdao == null) {
-            bo.rdao = AuthorityRecordDAO.getInstance(schema);
-            bo.sdao = AuthoritySearchDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
-
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {}
 
     @Override
     public boolean save(RecordDTO dto) {
-        Integer id = this.rdao.getNextSerial(RecordType.AUTHORITIES + "_records_id_seq");
-
-        dto.setId(id);
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 

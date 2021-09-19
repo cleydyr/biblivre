@@ -2,9 +2,9 @@ package biblivre.administration.reports;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
-import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
@@ -28,6 +28,7 @@ public class ReportsBO extends AbstractBO {
 
     private ReportsDAO dao;
     private RecordDAO recordDAO;
+    private BiblioRecordBO biblioRecordBO;
 
     public static ReportsBO getInstance(String schema) {
         ReportsBO bo = AbstractBO.getInstance(ReportsBO.class, schema);
@@ -66,18 +67,16 @@ public class ReportsBO extends AbstractBO {
 
         if (reportsDto.getSearchId() != null && reportsDto.getSearchId() != 0) {
 
-            RecordBO bo = RecordBO.getInstance(this.getSchema(), RecordType.BIBLIO);
-
             boolean hasMore = true;
             while (hasMore) {
-                SearchDTO search = bo.getSearch(reportsDto.getSearchId());
+                SearchDTO search = biblioRecordBO.getSearch(reportsDto.getSearchId());
                 search.setSort(
                         IndexingGroups.getDefaultSortableGroupId(
                                 this.getSchema(), RecordType.BIBLIO));
                 search.setIndexingGroup(0);
                 search.getPaging().setRecordsPerPage(limit);
                 search.getPaging().setPage(++page);
-                bo.paginateSearch(search);
+                biblioRecordBO.paginateSearch(search);
 
                 if (search == null || search.size() == 0) {
                     hasMore = false;

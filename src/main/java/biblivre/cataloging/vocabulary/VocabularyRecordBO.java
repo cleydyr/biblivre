@@ -24,7 +24,6 @@ import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -33,17 +32,6 @@ import java.util.Set;
 import org.marc4j.marc.Record;
 
 public class VocabularyRecordBO extends RecordBO {
-
-    public static VocabularyRecordBO getInstance(String schema) {
-        VocabularyRecordBO bo = AbstractBO.getInstance(VocabularyRecordBO.class, schema);
-
-        if (bo.rdao == null) {
-            bo.rdao = VocabularyRecordDAO.getInstance(schema);
-            bo.sdao = VocabularySearchDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {
@@ -72,9 +60,6 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean save(RecordDTO dto) {
-        Integer id = this.rdao.getNextSerial(RecordType.VOCABULARY + "_records_id_seq");
-
-        dto.setId(id);
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 

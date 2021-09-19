@@ -28,7 +28,6 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
-import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -42,15 +41,11 @@ import org.marc4j.marc.Record;
 
 public class BiblioRecordBO extends RecordBO {
 
-    public static BiblioRecordBO getInstance(String schema) {
-        BiblioRecordBO bo = AbstractBO.getInstance(BiblioRecordBO.class, schema);
+    private HoldingBO holdingBO;
 
-        if (bo.rdao == null) {
-            bo.rdao = BiblioRecordDAO.getInstance(schema);
-            bo.sdao = BiblioSearchDAO.getInstance(schema);
-        }
-
-        return bo;
+    public BiblioRecordBO(HoldingBO holdingBO) {
+        super();
+        this.holdingBO = holdingBO;
     }
 
     @Override
@@ -88,13 +83,12 @@ public class BiblioRecordBO extends RecordBO {
             return;
         }
 
-        HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
         LendingBO lbo = LendingBO.getInstance(this.getSchema());
         ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
 
         if ((mask & RecordBO.HOLDING_INFO) != 0) {
-            int totalHoldings = hbo.count(recordId);
-            int availableHoldings = hbo.countAvailableHoldings(recordId);
+            int totalHoldings = holdingBO.count(recordId);
+            int availableHoldings = holdingBO.countAvailableHoldings(recordId);
             int lentCount = 0;
             int reservedCount = 0;
 
@@ -110,7 +104,7 @@ public class BiblioRecordBO extends RecordBO {
         }
 
         if ((mask & RecordBO.HOLDING_LIST) != 0) {
-            List<HoldingDTO> holdingsList = hbo.list(recordId);
+            List<HoldingDTO> holdingsList = holdingBO.list(recordId);
 
             Collections.sort(holdingsList);
 
@@ -131,7 +125,7 @@ public class BiblioRecordBO extends RecordBO {
             List<HoldingDTO> holdingsList = dto.getHoldings();
 
             if (holdingsList == null) {
-                holdingsList = hbo.list(recordId);
+                holdingsList = holdingBO.list(recordId);
                 Collections.sort(holdingsList);
             }
 
@@ -144,9 +138,6 @@ public class BiblioRecordBO extends RecordBO {
 
     @Override
     public boolean save(RecordDTO dto) {
-        Integer id = this.rdao.getNextSerial(RecordType.BIBLIO + "_records_id_seq");
-
-        dto.setId(id);
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 

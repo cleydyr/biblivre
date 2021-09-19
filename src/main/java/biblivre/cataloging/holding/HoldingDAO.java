@@ -54,12 +54,12 @@ import org.apache.commons.lang3.time.DateUtils;
 
 public class HoldingDAO extends AbstractDAO {
 
-    public static HoldingDAO getInstance(String schema) {
-
-        HoldingDAO dao = (HoldingDAO) AbstractDAO.getInstance(HoldingDAO.class, schema);
-
-        return dao;
+    public HoldingDAO(BiblioRecordBO biblioRecordBO) {
+        super();
+        this.biblioRecordBO = biblioRecordBO;
     }
+
+    private BiblioRecordBO biblioRecordBO;
 
     public Integer count(int recordId, boolean availableOnly) {
         Connection con = null;
@@ -907,14 +907,13 @@ public class HoldingDAO extends AbstractDAO {
         dto.setIso2709(rs.getBytes("iso2709"));
 
         if (this.hasColumn(rs, "biblio")) {
-            BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
             BiblioRecordDTO bdto = new BiblioRecordDTO();
 
             bdto.setSchema(getSchema());
             bdto.setIso2709(rs.getBytes("biblio"));
             bdto.setId(rs.getInt("record_id"));
 
-            bbo.populateDetails(bdto, RecordBO.MARC_INFO);
+            biblioRecordBO.populateDetails(bdto, RecordBO.MARC_INFO);
 
             dto.setBiblioRecord(bdto);
         }

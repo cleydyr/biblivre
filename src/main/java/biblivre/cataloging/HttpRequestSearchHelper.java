@@ -1,17 +1,12 @@
 package biblivre.cataloging;
 
 import biblivre.administration.indexing.IndexingGroups;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.ExtendedRequest;
 
 public class HttpRequestSearchHelper {
-    public static SearchDTO paginate(ExtendedRequest request, RecordType recordType) {
-        String schema = request.getSchema();
-
+    public static SearchDTO paginate(ExtendedRequest request, RecordBO recordBO) {
         Integer searchId = request.getInteger("search_id", null);
-
-        RecordBO recordBO = RecordBO.getInstance(schema, recordType);
 
         SearchDTO search = recordBO.getSearch(searchId);
 
@@ -20,7 +15,8 @@ public class HttpRequestSearchHelper {
         }
 
         Integer defaultSortableGroupId =
-                IndexingGroups.getDefaultSortableGroupId(request.getSchema(), recordType);
+                IndexingGroups.getDefaultSortableGroupId(
+                        request.getSchema(), recordBO.getRecordType());
 
         Integer sort = request.getInteger("sort", defaultSortableGroupId);
 

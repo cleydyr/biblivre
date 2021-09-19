@@ -44,6 +44,14 @@ import org.json.JSONException;
 import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
+    private BiblioRecordBO biblioRecordBO;
+    private HoldingBO holdingBO;
+
+    public Handler(BiblioRecordBO biblioRecordBO, HoldingBO holdingBO) {
+        super();
+        this.biblioRecordBO = biblioRecordBO;
+        this.holdingBO = holdingBO;
+    }
 
     public void createPdf(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
@@ -84,10 +92,7 @@ public class Handler extends AbstractHandler {
         String printId = request.getString("id");
         LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
 
-        HoldingBO hbo = HoldingBO.getInstance(schema);
-        Map<Integer, RecordDTO> hdto = hbo.map(dto.getIds(), RecordBO.MARC_INFO);
-
-        BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
+        Map<Integer, RecordDTO> hdto = holdingBO.map(dto.getIds(), RecordBO.MARC_INFO);
 
         List<LabelDTO> labels = new ArrayList<>();
         for (RecordDTO rdto : hdto.values()) {
@@ -98,7 +103,7 @@ public class Handler extends AbstractHandler {
             label.setId(rdto.getId());
             label.setAccessionNumber(holding.getAccessionNumber());
 
-            BiblioRecordDTO biblio = (BiblioRecordDTO) biblioBo.get(holding.getRecordId());
+            BiblioRecordDTO biblio = (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId());
             Record biblioRecord = MarcUtils.iso2709ToRecord(biblio.getIso2709());
             MarcDataReader dataReader = new MarcDataReader(biblioRecord);
 
@@ -115,8 +120,8 @@ public class Handler extends AbstractHandler {
             labels.add(label);
         }
 
-        final DiskFile exportFile = hbo.printLabelsToPDF(labels, dto);
-        hbo.markAsPrinted(dto.getIds());
+        final DiskFile exportFile = holdingBO.printLabelsToPDF(labels, dto);
+        holdingBO.markAsPrinted(dto.getIds());
 
         this.setFile(exportFile);
 

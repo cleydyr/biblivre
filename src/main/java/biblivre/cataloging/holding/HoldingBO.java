@@ -29,7 +29,6 @@ import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.ITextPimacoTagSheetAdapter;
@@ -82,16 +81,6 @@ public class HoldingBO extends RecordBO {
         this.dao = dao;
         this.loginBO = loginBO;
         this.userBO = userBO;
-    }
-
-    public static HoldingBO getInstance(String schema) {
-        HoldingBO bo = AbstractBO.getInstance(HoldingBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = HoldingDAO.getInstance(schema);
-        }
-
-        return bo;
     }
 
     @Override

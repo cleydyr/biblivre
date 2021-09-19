@@ -23,7 +23,6 @@ import biblivre.administration.indexing.IndexingGroupDTO;
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.AbstractHandler;
@@ -48,11 +47,11 @@ import org.marc4j.marc.Record;
 
 public abstract class CatalogingHandler extends AbstractHandler {
 
-    protected RecordType recordType;
+    protected RecordBO recordBO;
     protected MaterialType defaultMaterialType;
 
-    protected CatalogingHandler(RecordType recordType, MaterialType defaultMaterialType) {
-        this.recordType = recordType;
+    protected CatalogingHandler(RecordBO recordBO, MaterialType defaultMaterialType) {
+        this.recordBO = recordBO;
         this.defaultMaterialType = defaultMaterialType;
     }
 
@@ -61,12 +60,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
 
-        String schema = request.getSchema();
-
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        SearchDTO search =
-                bo.search(searchQuery, this.recordType, request.getAuthorizationPoints());
+        SearchDTO search = recordBO.search(searchQuery, request.getAuthorizationPoints());
 
         if (search.size() == 0) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -77,7 +71,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
 
         List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), this.recordType);
+                IndexingGroups.getGroups(request.getSchema(), recordBO.getRecordType());
 
         this.json.put("search", search.toJSONObject());
 
@@ -87,15 +81,13 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = HttpRequestSearchHelper.paginate(request, recordType);
+        SearchDTO search = HttpRequestSearchHelper.paginate(request, recordBO);
 
         if (search == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
 
             return;
         }
-
-        RecordBO recordBO = RecordBO.getInstance(request.getSchema(), recordType);
 
         recordBO.paginateSearch(search, request.getAuthorizationPoints());
 
@@ -115,7 +107,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         this.json.put("search", search.toJSONObject());
 
         List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), this.recordType);
+                IndexingGroups.getGroups(request.getSchema(), recordBO.getRecordType());
 
         for (IndexingGroupDTO group : groups) {
             this.json.accumulate("indexing_groups", group.toJSONObject());
@@ -123,8 +115,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer id = request.getInteger("id", null);
 
         if (id == null) {
@@ -132,8 +122,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
             return;
         }
-
-        RecordBO recordBO = RecordBO.getInstance(schema, recordType);
 
         RecordDTO dto = recordBO.open(id, request.getAuthorizationPoints());
 
@@ -147,10 +135,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        RecordBO recordBO = RecordBO.getInstance(schema, this.recordType);
-
         Integer id = request.getInteger("id");
 
         boolean isNew = id == 0;
@@ -225,10 +209,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        String schema = request.getSchema();
-
-        RecordBO recordBO = RecordBO.getInstance(schema, this.recordType);
-
         RecordDTO dto = recordBO.get(id);
 
         RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
@@ -292,8 +272,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void itemCount(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         RecordDatabase recordDatabase = request.getEnum(RecordDatabase.class, "database");
 
         if (recordDatabase == null) {
@@ -306,13 +284,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         SearchQueryDTO query = new SearchQueryDTO(recordDatabase);
 
-        SearchDTO searchDTO = new SearchDTO(this.recordType);
+        SearchDTO searchDTO = new SearchDTO(recordBO.getRecordType());
 
         searchDTO.setQuery(query);
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        int count = bo.count(searchDTO, request.getAuthorizationPoints());
+        int count = recordBO.count(searchDTO, request.getAuthorizationPoints());
 
         this.json.put("count", count);
     }
@@ -333,12 +309,9 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         int loggedUserId = request.getLoggedUserId();
 
-        String schema = request.getSchema();
-
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
         boolean success =
-                bo.moveRecords(ids, recordDatabase, loggedUserId, request.getAuthorizationPoints());
+                recordBO.moveRecords(
+                        ids, recordDatabase, loggedUserId, request.getAuthorizationPoints());
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.move");
@@ -371,11 +344,9 @@ public abstract class CatalogingHandler extends AbstractHandler {
         Set<Integer> ids =
                 Arrays.stream(idArray).map(id -> Integer.parseInt(id)).collect(Collectors.toSet());
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
         AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
-        final DiskFile exportFile = bo.createExportFile(ids, authorizationPoints);
+        final DiskFile exportFile = recordBO.createExportFile(ids, authorizationPoints);
 
         this.setFile(exportFile);
 
@@ -408,7 +379,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
                                 .withDatafield(datafield)
                                 .withSubfield(subfield)
                                 .withQuery(query)
-                                .withRecordType(recordType)
+                                .withRecordBO(recordBO)
                                 .build();
 
                 for (String term : type.getSuggestions(parameterObject)) {
@@ -420,7 +391,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
             case AUTHORITIES:
             case VOCABULARY:
                 DTOCollection<AutocompleteDTO> autocompletion =
-                        type.getAutocompletion(schema, query);
+                        type.getAutocompletion(recordBO, schema, query);
 
                 this.json.putOpt("data", autocompletion.toJSONObject());
 
@@ -431,8 +402,6 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     public void addAttachment(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer recordId = request.getInteger("id");
 
         String uri = request.getString("uri");
@@ -441,14 +410,10 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         Integer userId = request.getLoggedUserId();
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        bo.addAttachment(recordId, uri, description, userId);
+        recordBO.addAttachment(recordId, uri, description, userId);
     }
 
     public void removeAttachment(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer recordId = request.getInteger("id");
 
         String uri = request.getString("uri");
@@ -457,15 +422,14 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         Integer userId = request.getLoggedUserId();
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        bo.removeAttachment(recordId, uri, description, userId);
+        recordBO.removeAttachment(recordId, uri, description, userId);
     }
 
     public void listBriefFormats(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, this.recordType);
+        List<BriefTabFieldFormatDTO> formats =
+                Fields.getBriefFormats(schema, recordBO.getRecordType());
 
         DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<>();
 
