@@ -224,7 +224,7 @@
 		<constructor-arg index="0" ref="recordDAO" />
 		<constructor-arg index="1" ref="searchDAO" />
 		<constructor-arg index="2" ref="holdingBO" />
-		<constructor-arg index="2" ref="indexingBO" />
+		<constructor-arg index="3" ref="indexingBO" />
 	</bean>
 
 	<bean id="authorityRecordBO" name="authorityRecordBO"
