@@ -49,12 +49,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-
     private LoginBO loginBO;
+    private IndexingBO indexingBO;
 
-    public Handler(LoginBO loginBO) {
+    public Handler(LoginBO loginBO, IndexingBO indexingBO) {
         super();
         this.loginBO = loginBO;
+        this.indexingBO = indexingBO;
     }
 
     public void login(ExtendedRequest request, ExtendedResponse response) {
@@ -202,7 +203,7 @@ public class Handler extends AbstractHandler {
             ExtendedRequest request, String schema, AuthorizationPoints atps) {
 
         if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_INDEXING)) {
-            boolean warningReindex = IndexingBO.getInstance(schema).isIndexOutdated();
+            boolean warningReindex = indexingBO.isIndexOutdated();
             request.setSessionAttribute(schema, "system_warning_reindex", warningReindex);
         }
     }

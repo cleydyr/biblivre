@@ -59,16 +59,6 @@ public class IndexingBO extends AbstractBO {
     private volatile boolean reindexingAuthoritiesBase = false;
     private volatile boolean reindexingVocabularyBase = false;
 
-    public static IndexingBO getInstance(String schema) {
-        IndexingBO bo = AbstractBO.getInstance(IndexingBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = IndexingDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
-
     public void reindex(RecordType recordType, RecordDTO dto) {
         synchronized (this) {
             List<IndexingGroupDTO> indexingGroups =

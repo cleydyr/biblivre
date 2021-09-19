@@ -55,12 +55,12 @@ import org.marc4j.marc.Record;
 
 public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
 
-	public static HoldingDAOImpl getInstance(String schema) {
+    public static HoldingDAOImpl getInstance(String schema) {
         return AbstractDAO.getInstance(HoldingDAOImpl.class, schema);
     }
 
     @Override
-	public Integer count(int recordId, boolean availableOnly) {
+    public Integer count(int recordId, boolean availableOnly) {
         Connection con = null;
 
         try {
@@ -99,7 +99,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public HoldingDTO getByAccessionNumber(String accessionNumber) {
+    public HoldingDTO getByAccessionNumber(String accessionNumber) {
         HoldingDTO dto = null;
         Connection con = null;
         try {
@@ -123,7 +123,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public Map<Integer, RecordDTO> map(Set<Integer> ids) {
+    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         Map<Integer, RecordDTO> map = new HashMap<>();
 
         Connection con = null;
@@ -156,7 +156,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public List<RecordDTO> list(int offset, int limit) {
+    public List<RecordDTO> list(int offset, int limit) {
         List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -188,7 +188,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public boolean save(RecordDTO dto) {
+    public boolean save(RecordDTO dto) {
         Connection con = null;
         HoldingDTO holding = (HoldingDTO) dto;
 
@@ -222,7 +222,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -269,7 +269,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public boolean updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto) {
+    public boolean updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -297,7 +297,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public boolean update(RecordDTO dto) {
+    public boolean update(RecordDTO dto) {
         Connection con = null;
         HoldingDTO holding = (HoldingDTO) dto;
 
@@ -329,7 +329,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public void markAsPrinted(Set<Integer> ids) {
+    public void markAsPrinted(Set<Integer> ids) {
         Connection con = null;
 
         try {
@@ -356,7 +356,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public boolean delete(RecordDTO dto) {
+    public boolean delete(RecordDTO dto) {
         Connection con = null;
 
         try {
@@ -378,7 +378,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public final int getNextAccessionNumber(String accessionPrefix) {
+    public final int getNextAccessionNumber(String accessionPrefix) {
         Connection con = null;
 
         try {
@@ -407,7 +407,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public boolean isAccessionNumberAvailable(String accessionNumber, int holdingId) {
+    public boolean isAccessionNumberAvailable(String accessionNumber, int holdingId) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -442,7 +442,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public DTOCollection<HoldingDTO> list(int recordId) {
+    public DTOCollection<HoldingDTO> list(int recordId) {
         DTOCollection<HoldingDTO> list = new DTOCollection<>();
 
         Connection con = null;
@@ -470,7 +470,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public DTOCollection<HoldingDTO> search(
+    public DTOCollection<HoldingDTO> search(
             String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
         DTOCollection<HoldingDTO> list = new DTOCollection<>();
         Connection con = null;
@@ -691,7 +691,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public Integer count(SearchDTO search) {
+    public Integer count(SearchDTO search) {
         Connection con = null;
 
         boolean useDatabase = false;
@@ -748,7 +748,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public Map<Integer, Integer> countSearchResults(SearchDTO search) {
+    public Map<Integer, Integer> countSearchResults(SearchDTO search) {
         Map<Integer, Integer> count = new HashMap<>();
         if (search == null) {
             return count;
@@ -803,7 +803,7 @@ public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
     }
 
     @Override
-	public List<RecordDTO> getSearchResults(SearchDTO search) {
+    public List<RecordDTO> getSearchResults(SearchDTO search) {
         List<RecordDTO> list = new ArrayList<>();
 
         if (search == null) {

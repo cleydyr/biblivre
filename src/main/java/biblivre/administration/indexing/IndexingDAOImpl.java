@@ -35,11 +35,12 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
-public class IndexingDAO extends AbstractDAO {
+public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
     public static IndexingDAO getInstance(String schema) {
-        return (IndexingDAO) AbstractDAO.getInstance(IndexingDAO.class, schema);
+        return (IndexingDAO) AbstractDAO.getInstance(IndexingDAOImpl.class, schema);
     }
 
+    @Override
     public Integer countIndexed(RecordType recordType) {
         Connection con = null;
         try {
@@ -62,6 +63,7 @@ public class IndexingDAO extends AbstractDAO {
         return 0;
     }
 
+    @Override
     public void clearIndexes(RecordType recordType) {
         Connection con = null;
         try {
@@ -83,8 +85,10 @@ public class IndexingDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public void startIndexing() {}
 
+    @Override
     public void insertIndexes(RecordType recordType, List<IndexingDTO> indexes) {
         int total = 0;
         for (IndexingDTO index : indexes) {
@@ -130,6 +134,7 @@ public class IndexingDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public void insertSortIndexes(RecordType recordType, List<IndexingDTO> sortIndexes) {
         int total = sortIndexes.size();
 
@@ -163,6 +168,7 @@ public class IndexingDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public void insertAutocompleteIndexes(
             RecordType recordType, List<AutocompleteDTO> autocompleteIndexes) {
         if (autocompleteIndexes.size() == 0) {
@@ -212,6 +218,7 @@ public class IndexingDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public void reindexAutocompleteFixedTable(
             RecordType recordType, String datafield, String subfield, List<String> phrases) {
         boolean batched = false;
@@ -266,6 +273,7 @@ public class IndexingDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public boolean deleteIndexes(RecordType recordType, RecordDTO dto) {
         Connection con = null;
 
@@ -307,6 +315,7 @@ public class IndexingDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public void reindexDatabase(RecordType recordType) {
         Connection con = null;
         try {
@@ -325,6 +334,7 @@ public class IndexingDAO extends AbstractDAO {
         }
     }
 
+    @Override
     public List<String> searchExactTerms(
             RecordType recordType, int indexingGroupId, List<String> terms) {
         List<String> list = new ArrayList<>();

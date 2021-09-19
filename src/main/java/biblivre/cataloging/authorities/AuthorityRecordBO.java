@@ -34,8 +34,12 @@ import java.util.Set;
 
 public class AuthorityRecordBO extends PaginableRecordBO {
 
-    public AuthorityRecordBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO) {
+    private IndexingBO indexingBO;
+
+    public AuthorityRecordBO(
+            RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO, IndexingBO indexingBO) {
         super(recordDAO, searchDAO, holdingBO);
+        this.indexingBO = indexingBO;
     }
 
     @Override
@@ -47,8 +51,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.AUTHORITIES, dto);
+            indexingBO.reindex(RecordType.AUTHORITIES, dto);
             return true;
         }
 
@@ -60,8 +63,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.AUTHORITIES, dto);
+            indexingBO.reindex(RecordType.AUTHORITIES, dto);
             return true;
         }
 
@@ -81,8 +83,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         //		}
 
         if (this.recordDAO.delete(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.deleteIndexes(RecordType.AUTHORITIES, dto);
+            indexingBO.deleteIndexes(RecordType.AUTHORITIES, dto);
             //			HoldingBO hbo = new HoldingBO();
             //			hbo.delete(dto);
         }

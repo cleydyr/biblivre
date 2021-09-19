@@ -42,7 +42,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
     }
 
     @Override
-	public SearchDTO getSearch(Integer searchId, RecordType recordType) {
+    public SearchDTO getSearch(Integer searchId, RecordType recordType) {
         SearchDTO search = new SearchDTO(recordType);
 
         if (searchId == null) {
@@ -78,7 +78,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
     }
 
     @Override
-	public boolean createSearch(SearchDTO search) {
+    public boolean createSearch(SearchDTO search) {
         if (search == null) {
             return false;
         }
@@ -114,7 +114,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
     }
 
     @Override
-	public boolean populateSimpleSearch(SearchDTO search, boolean deleteOldResults) {
+    public boolean populateSimpleSearch(SearchDTO search, boolean deleteOldResults) {
         SearchQueryDTO query = search.getQuery();
 
         Set<String> terms = search.getQuery().getSimpleTerms();
@@ -211,7 +211,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
     }
 
     @Override
-	public boolean populateAdvancedSearch(SearchDTO search, boolean deleteOld) {
+    public boolean populateAdvancedSearch(SearchDTO search, boolean deleteOld) {
         SearchQueryDTO query = search.getQuery();
         String sql = this.createAdvancedSelectClause(search);
 

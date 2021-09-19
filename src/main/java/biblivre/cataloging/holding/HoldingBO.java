@@ -80,7 +80,7 @@ public class HoldingBO extends RecordBO {
     private LoginBO loginBO;
 
     public HoldingBO(
-    		HoldingDAO holdingDAO,
+            HoldingDAO holdingDAO,
             LoginBO loginBO,
             UserBO userBO,
             RecordDAO recordDAO,

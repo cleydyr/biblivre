@@ -29,6 +29,13 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
+    public Handler(IndexingBO indexingBO) {
+        super();
+        this.indexingBO = indexingBO;
+    }
+
+    private IndexingBO indexingBO;
+
     public void reindex(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
         String strRecordType = request.getString("record_type", "biblio");
@@ -45,10 +52,8 @@ public class Handler extends AbstractHandler {
         long end = 0;
 
         try {
-            IndexingBO bo = IndexingBO.getInstance(schema);
-
             start = new Date().getTime();
-            bo.reindex(recordType);
+            indexingBO.reindex(recordType);
             end = new Date().getTime();
 
             request.setSessionAttribute(schema, "system_warning_reindex", false);
@@ -77,9 +82,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        IndexingBO bo = IndexingBO.getInstance(schema);
-
-        int progress[] = bo.getReindexProgress(recordType);
+        int progress[] = indexingBO.getReindexProgress(recordType);
 
         try {
             this.json.put("success", true);

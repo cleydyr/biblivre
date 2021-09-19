@@ -43,7 +43,10 @@ import org.marc4j.marc.Record;
 
 public class BiblioRecordBO extends PaginableRecordBO {
 
-    public BiblioRecordBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO) {
+    private IndexingBO indexingBO;
+
+    public BiblioRecordBO(
+            RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO, IndexingBO indexingBO) {
         super(recordDAO, searchDAO, holdingBO);
     }
 
@@ -141,8 +144,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.BIBLIO, dto);
+            indexingBO.reindex(RecordType.BIBLIO, dto);
             return true;
         }
 
@@ -154,8 +156,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.BIBLIO, dto);
+            indexingBO.reindex(RecordType.BIBLIO, dto);
             return true;
         }
 
@@ -175,8 +176,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
         //		}
 
         if (this.recordDAO.delete(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.deleteIndexes(RecordType.BIBLIO, dto);
+            indexingBO.deleteIndexes(RecordType.BIBLIO, dto);
             //			HoldingBO hbo = new HoldingBO();
             //			hbo.delete(dto);
         }

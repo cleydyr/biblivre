@@ -30,15 +30,16 @@ import biblivre.core.exceptions.ValidationException;
 import java.util.List;
 
 public class AccessControlBO extends AbstractBO {
-	private AccessControlDAO accessControlDAO;
+    private AccessControlDAO accessControlDAO;
     private AccessCardBO accessCardBO;
     private UserBO userBO;
 
-    public AccessControlBO(AccessControlDAO accessControlDAO, AccessCardBO accessCardBO, UserBO userBO) {
-    	super();
-    	this.accessControlDAO = accessControlDAO;
-    	this.accessCardBO = accessCardBO;
-    	this.userBO = userBO;
+    public AccessControlBO(
+            AccessControlDAO accessControlDAO, AccessCardBO accessCardBO, UserBO userBO) {
+        super();
+        this.accessControlDAO = accessControlDAO;
+        this.accessCardBO = accessCardBO;
+        this.userBO = userBO;
     }
 
     public AccessControlDTO populateDetails(AccessControlDTO dto) {

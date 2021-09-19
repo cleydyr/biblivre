@@ -37,7 +37,10 @@ import org.marc4j.marc.Record;
 
 public class VocabularyRecordBO extends PaginableRecordBO {
 
-    public VocabularyRecordBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO) {
+    private IndexingBO indexingBO;
+
+    public VocabularyRecordBO(
+            RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO, IndexingBO indexingBO) {
         super(recordDAO, searchDAO, holdingBO);
     }
 
@@ -72,8 +75,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.VOCABULARY, dto);
+            indexingBO.reindex(RecordType.VOCABULARY, dto);
             return true;
         }
 
@@ -85,8 +87,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.VOCABULARY, dto);
+            indexingBO.reindex(RecordType.VOCABULARY, dto);
             return true;
         }
 
@@ -96,8 +97,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
     @Override
     public boolean delete(RecordDTO dto) {
         if (this.recordDAO.delete(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.deleteIndexes(RecordType.VOCABULARY, dto);
+            indexingBO.deleteIndexes(RecordType.VOCABULARY, dto);
         }
 
         return true;

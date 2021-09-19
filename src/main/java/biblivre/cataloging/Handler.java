@@ -52,13 +52,14 @@ import org.json.JSONException;
 import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
+    private Map<RecordType, RecordBO> recordBOs = new HashMap<>();
+    private IndexingBO indexingBO;
 
-    public Handler(Map<RecordType, RecordBO> recordBOs) {
+    public Handler(Map<RecordType, RecordBO> recordBOs, IndexingBO indexingBO) {
         super();
         this.recordBOs = recordBOs;
+        this.indexingBO = indexingBO;
     }
-
-    Map<RecordType, RecordBO> recordBOs = new HashMap<>();
 
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
@@ -94,18 +95,16 @@ public class Handler extends AbstractHandler {
                 // TODO: Completar para autoridades e vocabulário
             }
 
-            IndexingBO ibo = IndexingBO.getInstance(schema);
-
             if (isbnList.size() > 0) {
-                list.setFoundISBN(ibo.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
+                list.setFoundISBN(indexingBO.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
             }
 
             if (issnList.size() > 0) {
-                list.setFoundISSN(ibo.searchExactTerms(RecordType.BIBLIO, 6, issnList));
+                list.setFoundISSN(indexingBO.searchExactTerms(RecordType.BIBLIO, 6, issnList));
             }
 
             if (isrcList.size() > 0) {
-                list.setFoundISRC(ibo.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
+                list.setFoundISRC(indexingBO.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
             }
         }
 
@@ -158,18 +157,16 @@ public class Handler extends AbstractHandler {
                 }
             }
 
-            IndexingBO ibo = IndexingBO.getInstance(schema);
-
             if (isbnList.size() > 0) {
-                list.setFoundISBN(ibo.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
+                list.setFoundISBN(indexingBO.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
             }
 
             if (issnList.size() > 0) {
-                list.setFoundISSN(ibo.searchExactTerms(RecordType.BIBLIO, 6, issnList));
+                list.setFoundISSN(indexingBO.searchExactTerms(RecordType.BIBLIO, 6, issnList));
             }
 
             if (isrcList.size() > 0) {
-                list.setFoundISRC(ibo.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
+                list.setFoundISRC(indexingBO.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
             }
         }
 
@@ -190,7 +187,6 @@ public class Handler extends AbstractHandler {
         String marc = request.getString("marc");
 
         ImportBO bo = ImportBO.getInstance(schema);
-        IndexingBO ibo = IndexingBO.getInstance(schema);
         RecordDTO dto = null;
         try {
             HumanReadableMarcReader humanReadableMarcReader =
@@ -202,13 +198,16 @@ public class Handler extends AbstractHandler {
             BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
 
             if (StringUtils.isNotBlank(rdto.getIsbn())) {
-                List<String> search = ibo.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
+                List<String> search =
+                        indexingBO.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
                 this.json.putOpt("isbn", !search.isEmpty());
             } else if (StringUtils.isNotBlank(rdto.getIssn())) {
-                List<String> search = ibo.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
+                List<String> search =
+                        indexingBO.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
                 this.json.putOpt("issn", !search.isEmpty());
             } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-                List<String> search = ibo.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
+                List<String> search =
+                        indexingBO.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
                 this.json.putOpt("isrc", !search.isEmpty());
             }
 
