@@ -33,16 +33,17 @@ import biblivre.core.utils.TextUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private UserBO userBO;
+    private UserBO userBO;
 
     public Handler(UserBO userBO) {
-		super();
-		this.userBO = userBO;
-	}
+        super();
+        this.userBO = userBO;
+    }
 
-	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
+    public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
+        biblivre.circulation.user.Handler userHandler =
+                new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

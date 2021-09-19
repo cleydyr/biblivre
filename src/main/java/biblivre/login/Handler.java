@@ -41,7 +41,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -53,12 +52,12 @@ public class Handler extends AbstractHandler {
 
     private LoginBO loginBO;
 
-	public Handler(LoginBO loginBO) {
-		super();
-		this.loginBO = loginBO;
-	}
+    public Handler(LoginBO loginBO) {
+        super();
+        this.loginBO = loginBO;
+    }
 
-	public void login(ExtendedRequest request, ExtendedResponse response) {
+    public void login(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
         String username = request.getString("username");

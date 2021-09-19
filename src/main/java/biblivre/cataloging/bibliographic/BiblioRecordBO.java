@@ -204,8 +204,8 @@ public class BiblioRecordBO extends RecordBO {
         return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.LENDING_INFO);
     }
 
-	@Override
-	public RecordType getRecordType() {
-		return RecordType.BIBLIO;
-	}
+    @Override
+    public RecordType getRecordType() {
+        return RecordType.BIBLIO;
+    }
 }

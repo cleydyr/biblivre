@@ -35,7 +35,7 @@ public class Handler extends AbstractHandler {
 
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
-	private UserBO userBO;
+    private UserBO userBO;
 
     public Handler(AccessCardBO accessCardBO, AccessControlBO accessControlBO, UserBO userBO) {
         super();
@@ -45,7 +45,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
+        biblivre.circulation.user.Handler userHandler =
+                new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null) {

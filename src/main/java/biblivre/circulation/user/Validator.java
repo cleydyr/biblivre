@@ -37,15 +37,15 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class Validator extends AbstractValidator {
 
     private AccessControlBO accessControlBO;
-	private UserBO userBO;
+    private UserBO userBO;
 
     public Validator(AccessControlBO accessControlBO, UserBO userBO) {
-		super();
-		this.accessControlBO = accessControlBO;
-		this.userBO = userBO;
-	}
+        super();
+        this.accessControlBO = accessControlBO;
+        this.userBO = userBO;
+    }
 
-	public void validateSave(
+    public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
         DateFormat dateFormat = new SimpleDateFormat(request.getLocalizedText("format.date"));
         DateFormat dateTimeFormat =

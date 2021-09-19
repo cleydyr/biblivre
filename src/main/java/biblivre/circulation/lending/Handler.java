@@ -50,7 +50,7 @@ public class Handler extends AbstractHandler {
 
     private UserBO userBO;
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
+    public void search(ExtendedRequest request, ExtendedResponse response) {
 
         String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
@@ -96,7 +96,8 @@ public class Handler extends AbstractHandler {
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
+        biblivre.circulation.user.Handler userHandler =
+                new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

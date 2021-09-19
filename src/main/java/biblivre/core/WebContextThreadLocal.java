@@ -1,5 +1,3 @@
 package biblivre.core;
 
-public class WebContextThreadLocal extends ThreadLocal<RequestContext>{
-
-}
+public class WebContextThreadLocal extends ThreadLocal<RequestContext> {}

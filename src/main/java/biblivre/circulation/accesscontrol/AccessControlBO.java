@@ -32,7 +32,7 @@ import java.util.List;
 public class AccessControlBO extends AbstractBO {
     private AccessControlDAO accessControlDAO;
     private AccessCardBO accessCardBO;
-	private UserBO userBO;
+    private UserBO userBO;
 
     public AccessControlBO(AccessControlDAO dao, AccessCardBO accessCardBO) {
         super();

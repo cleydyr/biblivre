@@ -37,7 +37,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
     }
 
     @Override
-	public boolean save(RequestDTO dto) {
+    public boolean save(RequestDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -72,7 +72,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -114,7 +114,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
     }
 
     @Override
-	public RequestDTO get(int id) {
+    public RequestDTO get(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -139,7 +139,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
     }
 
     @Override
-	public DTOCollection<RequestDTO> search(String value, int limit, int offset) {
+    public DTOCollection<RequestDTO> search(String value, int limit, int offset) {
         DTOCollection<RequestDTO> list = new DTOCollection<>();
 
         Connection con = null;
@@ -201,7 +201,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
     }
 
     @Override
-	public boolean update(RequestDTO dto) {
+    public boolean update(RequestDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -234,7 +234,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
     }
 
     @Override
-	public boolean updateRequestStatus(int orderId, RequestStatus status) {
+    public boolean updateRequestStatus(int orderId, RequestStatus status) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -265,7 +265,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
     }
 
     @Override
-	public boolean delete(RequestDTO dto) {
+    public boolean delete(RequestDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();

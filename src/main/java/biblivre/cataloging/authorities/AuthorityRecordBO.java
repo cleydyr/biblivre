@@ -107,8 +107,8 @@ public class AuthorityRecordBO extends RecordBO {
         return super.map(ids, RecordBO.MARC_INFO);
     }
 
-	@Override
-	public RecordType getRecordType() {
-		return RecordType.AUTHORITIES;
-	}
+    @Override
+    public RecordType getRecordType() {
+        return RecordType.AUTHORITIES;
+    }
 }

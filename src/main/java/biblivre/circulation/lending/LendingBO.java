@@ -61,15 +61,15 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class LendingBO extends AbstractBO {
     private LendingDAO dao;
-	private UserBO userBO;
+    private UserBO userBO;
 
     public LendingBO(LendingDAO dao, UserBO userBO) {
-		super();
-		this.dao = dao;
-		this.userBO = userBO;
-	}
+        super();
+        this.dao = dao;
+        this.userBO = userBO;
+    }
 
-	public static LendingBO getInstance(String schema) {
+    public static LendingBO getInstance(String schema) {
         LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
 
         if (bo.dao == null) {

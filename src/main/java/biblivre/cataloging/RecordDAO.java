@@ -44,7 +44,7 @@ import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class RecordDAO extends AbstractDAO {
-	public boolean save(RecordDTO dto) {
+    public boolean save(RecordDTO dto) {
         Connection con = null;
 
         try {
@@ -72,9 +72,9 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-		if (dtoList.isEmpty()) {
-			return true;
-		}
+        if (dtoList.isEmpty()) {
+            return true;
+        }
 
         Connection con = null;
 
@@ -152,9 +152,7 @@ public abstract class RecordDAO extends AbstractDAO {
             con.setAutoCommit(false);
 
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT count(*) as total FROM ")
-                    .append(recordType)
-                    .append("_records ");
+            sql.append("SELECT count(*) as total FROM ").append(recordType).append("_records ");
             sql.append("WHERE database = ? AND id IN (");
             sql.append(StringUtils.repeat("?", ", ", ids.size()));
             sql.append(");");
@@ -180,7 +178,8 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
-    public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database, RecordType recordType) {
+    public boolean moveRecords(
+            Set<Integer> ids, int modifiedBy, RecordDatabase database, RecordType recordType) {
         Connection con = null;
 
         try {
@@ -359,7 +358,8 @@ public abstract class RecordDAO extends AbstractDAO {
         return this.list(offset, limit, null, recordType);
     }
 
-    public List<RecordDTO> list(int offset, int limit, RecordDatabase database, RecordType recordType) {
+    public List<RecordDTO> list(
+            int offset, int limit, RecordDatabase database, RecordType recordType) {
         List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -461,7 +461,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
             sql.append("SELECT 0 as indexing_group_id, COUNT(DISTINCT record_id) as total FROM ");
             RecordType recordType = search.getRecordType();
-			sql.append(recordType).append("_search_results ");
+            sql.append(recordType).append("_search_results ");
             sql.append("WHERE search_id = ? ");
             sql.append("UNION ");
             sql.append("SELECT indexing_group_id, COUNT(DISTINCT record_id) as total FROM ");
@@ -514,9 +514,9 @@ public abstract class RecordDAO extends AbstractDAO {
 
             RecordType recordType = search.getRecordType();
 
-			if (useSearchResult) {
+            if (useSearchResult) {
 
-				sql.append(recordType).append("_records R ");
+                sql.append(recordType).append("_records R ");
                 sql.append("INNER JOIN ( ");
                 sql.append("SELECT DISTINCT record_id FROM ")
                         .append(recordType)
@@ -604,7 +604,12 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<String> phraseAutocomplete(
-            String datafield, String subfield, String[] terms, int limit, boolean startsWith, RecordType recordType) {
+            String datafield,
+            String subfield,
+            String[] terms,
+            int limit,
+            boolean startsWith,
+            RecordType recordType) {
         List<String> list = new ArrayList<>();
 
         if (terms == null || terms.length == 0) {
@@ -658,7 +663,12 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public DTOCollection<AutocompleteDTO> recordAutocomplete(
-            String datafield, String subfield, String[] terms, int limit, boolean startsWith, RecordType recordType) {
+            String datafield,
+            String subfield,
+            String[] terms,
+            int limit,
+            boolean startsWith,
+            RecordType recordType) {
         DTOCollection<AutocompleteDTO> list = new DTOCollection<>();
 
         if (terms == null || terms.length == 0) {

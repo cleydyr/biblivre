@@ -33,19 +33,23 @@ import java.util.List;
 
 public class OrderBO extends AbstractBO {
     private OrderDAO orderDAO;
-	private QuotationBO quotationBO;
-	private SupplierBO supplierBO;
-	private RequestBO requestBO;
+    private QuotationBO quotationBO;
+    private SupplierBO supplierBO;
+    private RequestBO requestBO;
 
-	public OrderBO(OrderDAO orderDAO, QuotationBO quotationBO, SupplierBO supplierBO, RequestBO requestBO) {
-		super();
-		this.orderDAO = orderDAO;
-		this.quotationBO = quotationBO;
-		this.supplierBO = supplierBO;
-		this.requestBO = requestBO;
-	}
+    public OrderBO(
+            OrderDAO orderDAO,
+            QuotationBO quotationBO,
+            SupplierBO supplierBO,
+            RequestBO requestBO) {
+        super();
+        this.orderDAO = orderDAO;
+        this.quotationBO = quotationBO;
+        this.supplierBO = supplierBO;
+        this.requestBO = requestBO;
+    }
 
-	public OrderDTO get(Integer id) {
+    public OrderDTO get(Integer id) {
         OrderDTO dto = this.orderDAO.get(id);
 
         this.populateDTO(dto);
@@ -53,8 +57,7 @@ public class OrderBO extends AbstractBO {
         return dto;
     }
 
-
-	public Integer save(OrderDTO dto) {
+    public Integer save(OrderDTO dto) {
         return this.orderDAO.save(dto);
     }
 

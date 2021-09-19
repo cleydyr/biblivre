@@ -38,7 +38,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     }
 
     @Override
-	public LoginDTO get(Integer loginId) {
+    public LoginDTO get(Integer loginId) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -63,7 +63,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     }
 
     @Override
-	public LoginDTO login(String login, String password) {
+    public LoginDTO login(String login, String password) {
         LoginDTO dto = null;
         Connection con = null;
 
@@ -100,7 +100,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     }
 
     @Override
-	public boolean update(LoginDTO login) {
+    public boolean update(LoginDTO login) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -131,7 +131,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     }
 
     @Override
-	public LoginDTO getByLogin(String loginName) {
+    public LoginDTO getByLogin(String loginName) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -157,7 +157,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     }
 
     @Override
-	public boolean delete(UserDTO userDTO) {
+    public boolean delete(UserDTO userDTO) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -197,7 +197,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     }
 
     @Override
-	public synchronized boolean save(LoginDTO dto, UserDTO udto) {
+    public synchronized boolean save(LoginDTO dto, UserDTO udto) {
         Connection con = null;
         int loginId = 0;
         try {
@@ -241,7 +241,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();

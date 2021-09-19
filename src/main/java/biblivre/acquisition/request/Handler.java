@@ -33,12 +33,12 @@ public class Handler extends AbstractHandler {
 
     private RequestBO requestBO;
 
-	public Handler(RequestBO requestBO) {
-		super();
-		this.requestBO = requestBO;
-	}
+    public Handler(RequestBO requestBO) {
+        super();
+        this.requestBO = requestBO;
+    }
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
+    public void search(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
 

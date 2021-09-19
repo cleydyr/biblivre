@@ -26,11 +26,11 @@ public class PermissionBO {
     private PermissionDAO permissionDAO;
 
     public PermissionBO(PermissionDAO permissionDAO) {
-		super();
-		this.permissionDAO = permissionDAO;
-	}
+        super();
+        this.permissionDAO = permissionDAO;
+    }
 
-	public boolean delete(UserDTO user) {
+    public boolean delete(UserDTO user) {
         return this.permissionDAO.delete(user);
     }
 

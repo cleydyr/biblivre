@@ -74,18 +74,17 @@ import org.marc4j.marc.Subfield;
 public class HoldingBO extends RecordBO {
 
     private HoldingDAO dao;
-	private LoginDTO loginBO;
-	private UserBO userBO;
+    private LoginDTO loginBO;
+    private UserBO userBO;
 
-	
     public HoldingBO(HoldingDAO dao, LoginDTO loginBO, UserBO userBO) {
-		super();
-		this.dao = dao;
-		this.loginBO = loginBO;
-		this.userBO = userBO;
-	}
+        super();
+        this.dao = dao;
+        this.loginBO = loginBO;
+        this.userBO = userBO;
+    }
 
-	public static HoldingBO getInstance(String schema) {
+    public static HoldingBO getInstance(String schema) {
         HoldingBO bo = AbstractBO.getInstance(HoldingBO.class, schema);
 
         if (bo.dao == null) {
@@ -564,8 +563,8 @@ public class HoldingBO extends RecordBO {
         return dto;
     }
 
-	@Override
-	public RecordType getRecordType() {
-		return RecordType.HOLDING;
-	}
+    @Override
+    public RecordType getRecordType() {
+        return RecordType.HOLDING;
+    }
 }

@@ -35,12 +35,12 @@ public class Handler extends AbstractHandler {
 
     private UserBO userBO;
 
-	public Handler(UserBO userBO) {
-		super();
-		this.userBO = userBO;
-	}
+    public Handler(UserBO userBO) {
+        super();
+        this.userBO = userBO;
+    }
 
-	public void createPdf(ExtendedRequest request, ExtendedResponse response) {
+    public void createPdf(ExtendedRequest request, ExtendedResponse response) {
         LabelPrintDTO print = getLabelPrintDTO(request);
 
         if (print == null) {

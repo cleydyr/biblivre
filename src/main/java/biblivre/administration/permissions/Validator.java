@@ -33,15 +33,15 @@ import org.apache.commons.lang3.StringUtils;
 public class Validator extends AbstractValidator {
 
     private LoginBO loginBO;
-	private UserBO userBO;
+    private UserBO userBO;
 
-	public Validator(LoginBO loginBO, UserBO userBO) {
-		super();
-		this.loginBO = loginBO;
-		this.userBO = userBO;
-	}
+    public Validator(LoginBO loginBO, UserBO userBO) {
+        super();
+        this.loginBO = loginBO;
+        this.userBO = userBO;
+    }
 
-	public void validateSave(
+    public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
         ValidationException ex = new ValidationException("error.form_invalid_values");

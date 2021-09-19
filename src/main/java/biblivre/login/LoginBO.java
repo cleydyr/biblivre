@@ -32,10 +32,10 @@ public class LoginBO extends AbstractBO {
     private PermissionBO permissionBO;
 
     public LoginBO(LoginDAO dao, PermissionBO permissionBO) {
-		super();
-		this.dao = dao;
-		this.permissionBO = permissionBO;
-	}
+        super();
+        this.dao = dao;
+        this.permissionBO = permissionBO;
+    }
 
     public final LoginDTO login(String login, String password) {
         String encodedPassword = TextUtils.encodePassword(password);

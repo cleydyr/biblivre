@@ -32,15 +32,15 @@ import java.util.TreeMap;
 
 public class UserTypeBO extends AbstractBO {
     private UserTypeDAO dao;
-	private UserBO userBO;
+    private UserBO userBO;
 
     public UserTypeBO(UserTypeDAO dao, UserBO userBO) {
-		super();
-		this.dao = dao;
-		this.userBO = userBO;
-	}
+        super();
+        this.dao = dao;
+        this.userBO = userBO;
+    }
 
-	public static UserTypeBO getInstance(String schema) {
+    public static UserTypeBO getInstance(String schema) {
         UserTypeBO bo = AbstractBO.getInstance(UserTypeBO.class, schema);
         if (bo.dao == null) {
             bo.dao = UserTypeDAO.getInstance(schema);

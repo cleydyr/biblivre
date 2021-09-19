@@ -47,7 +47,7 @@ import java.util.List;
 public class UserReport extends BaseBiblivreReport {
 
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
-	private UserBO userBO;
+    private UserBO userBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {

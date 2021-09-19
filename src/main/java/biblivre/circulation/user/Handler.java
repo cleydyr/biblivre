@@ -46,12 +46,12 @@ public class Handler extends AbstractHandler {
 
     private UserBO userBO;
 
-	public Handler(UserBO userBO) {
-		super();
-		this.userBO = userBO;
-	}
+    public Handler(UserBO userBO) {
+        super();
+        this.userBO = userBO;
+    }
 
-	public void open(ExtendedRequest request, ExtendedResponse response) {
+    public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
 
         UserDTO user = userBO.get(id);

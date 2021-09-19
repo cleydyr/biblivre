@@ -34,11 +34,11 @@ public class Handler extends AbstractHandler {
     private SupplierBO supplierBO;
 
     public Handler(SupplierBO supplierBO) {
-		super();
-		this.supplierBO = supplierBO;
-	}
+        super();
+        this.supplierBO = supplierBO;
+    }
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
+    public void search(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
 
@@ -72,7 +72,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void paginate(ExtendedRequest request, ExtendedResponse response) {
+    public void paginate(ExtendedRequest request, ExtendedResponse response) {
         this.search(request, response);
     }
 

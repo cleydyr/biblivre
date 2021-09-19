@@ -35,7 +35,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
     }
 
     @Override
-	public boolean delete(UserDTO user) {
+    public boolean delete(UserDTO user) {
         Connection con = null;
 
         try {
@@ -59,7 +59,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
     }
 
     @Override
-	public List<String> getByLoginId(Integer loginid) {
+    public List<String> getByLoginId(Integer loginid) {
         Connection con = null;
         List<String> list = new ArrayList<>();
         try {
@@ -82,7 +82,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
     }
 
     @Override
-	public boolean save(int loginid, String permission) {
+    public boolean save(int loginid, String permission) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -100,7 +100,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
     }
 
     @Override
-	public boolean save(int loginId, List<String> permissions) {
+    public boolean save(int loginId, List<String> permissions) {
         Connection con = null;
         try {
             con = this.getConnection();

@@ -28,11 +28,11 @@ public class SupplierBO extends AbstractBO {
     private SupplierDAO supplierDAO;
 
     public SupplierBO(SupplierDAO dao) {
-		super();
-		this.supplierDAO = dao;
-	}
+        super();
+        this.supplierDAO = dao;
+    }
 
-	public SupplierDTO get(Integer id) {
+    public SupplierDTO get(Integer id) {
         return this.supplierDAO.get(id);
     }
 

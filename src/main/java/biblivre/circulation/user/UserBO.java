@@ -54,11 +54,11 @@ public class UserBO extends AbstractBO {
     private UserDAO userDAO;
 
     public UserBO(UserDAO userDAO) {
-		super();
-		this.userDAO = userDAO;
-	}
+        super();
+        this.userDAO = userDAO;
+    }
 
-	public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
+    public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
         DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
 
         UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());

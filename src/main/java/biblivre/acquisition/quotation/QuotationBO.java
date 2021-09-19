@@ -30,15 +30,15 @@ import java.util.List;
 
 public class QuotationBO extends AbstractBO {
     private QuotationDAO dao;
-	private SupplierBO supplierBO;
-	private RequestBO requestBO;
- 
+    private SupplierBO supplierBO;
+    private RequestBO requestBO;
+
     public QuotationBO(QuotationDAO dao, SupplierBO supplierBO, RequestBO requestBO) {
-		super();
-		this.dao = dao;
-		this.supplierBO = supplierBO;
-		this.requestBO = requestBO;
-	}
+        super();
+        this.dao = dao;
+        this.supplierBO = supplierBO;
+        this.requestBO = requestBO;
+    }
 
     public QuotationDTO get(Integer id) {
         QuotationDTO dto = this.dao.get(id);

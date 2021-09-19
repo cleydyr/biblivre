@@ -46,15 +46,15 @@ import java.util.Set;
 public class ReservationBO extends AbstractBO {
 
     private ReservationDAO dao;
-	private UserBO userBO;
+    private UserBO userBO;
 
     public ReservationBO(ReservationDAO dao, UserBO userBO) {
-		super();
-		this.dao = dao;
-		this.userBO = userBO;
-	}
+        super();
+        this.dao = dao;
+        this.userBO = userBO;
+    }
 
-	public static ReservationBO getInstance(String schema) {
+    public static ReservationBO getInstance(String schema) {
         ReservationBO bo = AbstractBO.getInstance(ReservationBO.class, schema);
 
         if (bo.dao == null) {

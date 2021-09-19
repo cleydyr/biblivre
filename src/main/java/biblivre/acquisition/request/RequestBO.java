@@ -28,11 +28,11 @@ public class RequestBO extends AbstractBO {
     private RequestDAO requestDAO;
 
     public RequestBO(RequestDAO requestDAO) {
-		super();
-		this.requestDAO = requestDAO;
-	}
+        super();
+        this.requestDAO = requestDAO;
+    }
 
-	public RequestDTO get(Integer id) {
+    public RequestDTO get(Integer id) {
         return this.requestDAO.get(id);
     }
 

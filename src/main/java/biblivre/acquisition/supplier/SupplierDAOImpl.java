@@ -37,7 +37,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     }
 
     @Override
-	public boolean save(SupplierDTO dto) {
+    public boolean save(SupplierDTO dto) {
 
         Connection con = null;
         try {
@@ -92,7 +92,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -152,7 +152,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     }
 
     @Override
-	public boolean update(SupplierDTO dto) {
+    public boolean update(SupplierDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -206,7 +206,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     }
 
     @Override
-	public boolean delete(SupplierDTO dto) {
+    public boolean delete(SupplierDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -228,7 +228,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     }
 
     @Override
-	public SupplierDTO get(int id) {
+    public SupplierDTO get(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -253,7 +253,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     }
 
     @Override
-	public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
+    public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
         DTOCollection<SupplierDTO> list = new DTOCollection<>();
 
         Connection con = null;

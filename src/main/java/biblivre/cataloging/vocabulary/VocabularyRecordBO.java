@@ -120,8 +120,8 @@ public class VocabularyRecordBO extends RecordBO {
         return super.map(ids, RecordBO.MARC_INFO);
     }
 
-	@Override
-	public RecordType getRecordType() {
-		return RecordType.VOCABULARY;
-	}
+    @Override
+    public RecordType getRecordType() {
+        return RecordType.VOCABULARY;
+    }
 }

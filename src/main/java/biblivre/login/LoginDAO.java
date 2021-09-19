@@ -1,24 +1,22 @@
 package biblivre.login;
 
-import java.util.List;
-
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
+import java.util.List;
 
 public interface LoginDAO {
 
-	LoginDTO get(Integer loginId);
+    LoginDTO get(Integer loginId);
 
-	LoginDTO login(String login, String password);
+    LoginDTO login(String login, String password);
 
-	boolean update(LoginDTO login);
+    boolean update(LoginDTO login);
 
-	LoginDTO getByLogin(String loginName);
+    LoginDTO getByLogin(String loginName);
 
-	boolean delete(UserDTO userDTO);
+    boolean delete(UserDTO userDTO);
 
-	boolean save(LoginDTO dto, UserDTO udto);
+    boolean save(LoginDTO dto, UserDTO udto);
 
-	boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
-
+    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 }

@@ -31,12 +31,12 @@ public class Validator extends AbstractValidator {
 
     private LoginBO loginBO;
 
-	public Validator(LoginBO loginBO) {
-		super();
-		this.loginBO = loginBO;
-	}
+    public Validator(LoginBO loginBO) {
+        super();
+        this.loginBO = loginBO;
+    }
 
-	public void validateChangePassword(
+    public void validateChangePassword(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
 
         String currentPassword = request.getString("current_password");

@@ -35,21 +35,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private PermissionBO permissionBO;
-	private LoginBO loginBO;
-	private UserBO userBO;
+    private PermissionBO permissionBO;
+    private LoginBO loginBO;
+    private UserBO userBO;
 
     public Handler(PermissionBO permissionBO, LoginBO loginBO, UserBO userBO) {
-		super();
-		this.permissionBO = permissionBO;
-		this.loginBO = loginBO;
-		this.userBO = userBO;
-	}
+        super();
+        this.permissionBO = permissionBO;
+        this.loginBO = loginBO;
+        this.userBO = userBO;
+    }
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
+    public void search(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler(userBO);
+        biblivre.circulation.user.Handler userHandler =
+                new biblivre.circulation.user.Handler(userBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

@@ -123,7 +123,8 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public List<RecordDTO> listByLetter(char letter, int order) {
-        return this.populateDetails(this.rdao.listByLetter(letter, order, getRecordType()), RecordBO.MARC_INFO);
+        return this.populateDetails(
+                this.rdao.listByLetter(letter, order, getRecordType()), RecordBO.MARC_INFO);
     }
 
     public boolean save(RecordDTO dto) {
@@ -294,9 +295,11 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         List<String> listA =
-                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 10, true, getRecordType());
+                this.rdao.phraseAutocomplete(
+                        datafield, subfield, searchTerms, 10, true, getRecordType());
         List<String> listB =
-                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 5, false, getRecordType());
+                this.rdao.phraseAutocomplete(
+                        datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
 
@@ -308,9 +311,11 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         DTOCollection<AutocompleteDTO> listA =
-                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 10, true, getRecordType());
+                this.rdao.recordAutocomplete(
+                        datafield, subfield, searchTerms, 10, true, getRecordType());
         DTOCollection<AutocompleteDTO> listB =
-                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 5, false, getRecordType());
+                this.rdao.recordAutocomplete(
+                        datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
 
@@ -456,7 +461,8 @@ public abstract class RecordBO extends AbstractBO {
 
             ids.add(dto.getId());
 
-            success = this.rdao.moveRecords(ids, loggedUserId, RecordDatabase.TRASH, getRecordType());
+            success =
+                    this.rdao.moveRecords(ids, loggedUserId, RecordDatabase.TRASH, getRecordType());
         }
         return success;
     }

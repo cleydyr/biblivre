@@ -48,7 +48,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public Map<Integer, UserDTO> map(Set<Integer> ids) {
+    public Map<Integer, UserDTO> map(Set<Integer> ids) {
         Map<Integer, UserDTO> map = new HashMap<>();
 
         Connection con = null;
@@ -86,7 +86,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
+    public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
         DTOCollection<UserDTO> list = new DTOCollection<>();
         String query = dto.getQuery();
 
@@ -286,7 +286,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public boolean save(UserDTO user) {
+    public boolean save(UserDTO user) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -352,7 +352,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -405,7 +405,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public boolean delete(UserDTO user) {
+    public boolean delete(UserDTO user) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -484,7 +484,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public void markAsPrinted(Set<Integer> ids) {
+    public void markAsPrinted(Set<Integer> ids) {
         Connection con = null;
 
         try {
@@ -511,7 +511,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public boolean updateUserStatus(Integer userId, UserStatus status) {
+    public boolean updateUserStatus(Integer userId, UserStatus status) {
         Connection con = null;
 
         try {
@@ -535,7 +535,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-	public Integer getUserIdByLoginId(Integer loginId) {
+    public Integer getUserIdByLoginId(Integer loginId) {
 
         if (loginId == null) return null;
 

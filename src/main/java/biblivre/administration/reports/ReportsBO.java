@@ -94,7 +94,8 @@ public class ReportsBO extends AbstractBO {
 
             boolean hasMore = true;
             while (hasMore) {
-                List<RecordDTO> records = recordDAO.list(offset, limit, database, RecordType.BIBLIO);
+                List<RecordDTO> records =
+                        recordDAO.list(offset, limit, database, RecordType.BIBLIO);
                 if (records == null || records.size() == 0) {
                     hasMore = false;
                 } else {

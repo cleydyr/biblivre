@@ -62,12 +62,12 @@ public class DataMigrationBO extends AbstractBO {
 
     private AccessControlBO accessControlBO;
     private AccessCardBO accessCardBO;
-	private LoginBO loginBO;
-	private UserBO userBO;
-	private QuotationBO quotationBO;
-	private OrderBO orderBO;
-	private SupplierBO supplierBO;
-	private RequestBO requestBO;
+    private LoginBO loginBO;
+    private UserBO userBO;
+    private QuotationBO quotationBO;
+    private OrderBO orderBO;
+    private SupplierBO supplierBO;
+    private RequestBO requestBO;
 
     @Override
     public String getSchema() {

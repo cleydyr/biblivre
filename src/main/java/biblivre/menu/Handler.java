@@ -42,17 +42,17 @@ import org.json.JSONException;
 public class Handler extends AbstractHandler {
 
     private UserBO userBO;
-	private SupplierBO supplierBO;
-	private RequestBO requestBO;
+    private SupplierBO supplierBO;
+    private RequestBO requestBO;
 
-	public Handler(UserBO userBO, SupplierBO supplierBO, RequestBO requestBO) {
-		super();
-		this.userBO = userBO;
-		this.supplierBO = supplierBO;
-		this.requestBO = requestBO;
-	}
+    public Handler(UserBO userBO, SupplierBO supplierBO, RequestBO requestBO) {
+        super();
+        this.userBO = userBO;
+        this.supplierBO = supplierBO;
+        this.requestBO = requestBO;
+    }
 
-	public void ping(ExtendedRequest request, ExtendedResponse response) {
+    public void ping(ExtendedRequest request, ExtendedResponse response) {
         try {
             this.json.put("success", true);
         } catch (JSONException e) {

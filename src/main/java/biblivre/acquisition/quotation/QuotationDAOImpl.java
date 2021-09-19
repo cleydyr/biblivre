@@ -38,7 +38,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public Integer save(QuotationDTO dto) {
+    public Integer save(QuotationDTO dto) {
 
         Connection con = null;
         try {
@@ -97,7 +97,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         if (dtoList == null || dtoList.isEmpty()) {
             return true;
         }
@@ -192,7 +192,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public boolean update(QuotationDTO dto) {
+    public boolean update(QuotationDTO dto) {
 
         Connection con = null;
         try {
@@ -256,7 +256,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public QuotationDTO get(int id) {
+    public QuotationDTO get(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -281,7 +281,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public List<RequestQuotationDTO> listRequestQuotation(int quotationId) {
+    public List<RequestQuotationDTO> listRequestQuotation(int quotationId) {
         List<RequestQuotationDTO> list = new ArrayList<>();
         Connection con = null;
         try {
@@ -307,7 +307,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public boolean delete(QuotationDTO dto) {
+    public boolean delete(QuotationDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -329,7 +329,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public DTOCollection<QuotationDTO> search(String value, int limit, int offset) {
+    public DTOCollection<QuotationDTO> search(String value, int limit, int offset) {
         DTOCollection<QuotationDTO> list = new DTOCollection<>();
 
         Connection con = null;
@@ -394,7 +394,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     @Override
-	public DTOCollection<QuotationDTO> list(Integer supplierId) {
+    public DTOCollection<QuotationDTO> list(Integer supplierId) {
         DTOCollection<QuotationDTO> list = new DTOCollection<>();
 
         Connection con = null;
