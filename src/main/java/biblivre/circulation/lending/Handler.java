@@ -50,12 +50,14 @@ public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
     private HoldingBO holdingBO;
+	private LendingBO lendingBO;
 
-    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, HoldingBO holdingBO) {
+    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, HoldingBO holdingBO, LendingBO lendingBO) {
         super();
         this.userBO = userBO;
         this.biblioRecordBO = biblioRecordBO;
         this.holdingBO = holdingBO;
+        this.lendingBO = lendingBO;
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
@@ -88,8 +90,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        LendingBO lbo = LendingBO.getInstance();
-        DTOCollection<LendingInfoDTO> lendingInfo = lbo.populateLendingInfoByHolding(holdingList);
+        DTOCollection<LendingInfoDTO> lendingInfo = lendingBO.populateLendingInfoByHolding(holdingList);
 
         try {
             this.json.put("search", lendingInfo.toJSONObject());
@@ -103,7 +104,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -126,7 +127,6 @@ public class Handler extends AbstractHandler {
     }
 
     private LendingListDTO populateLendingList(String schema, UserDTO user, boolean history) {
-        LendingBO lbo = LendingBO.getInstance();
         LendingFineBO lfbo = LendingFineBO.getInstance();
         ReservationBO rsvBo = ReservationBO.getInstance();
 
@@ -135,9 +135,9 @@ public class Handler extends AbstractHandler {
         lendingList.setUser(user);
         lendingList.setId(user.getId());
 
-        List<LendingDTO> lendings = lbo.listUserLendings(user);
+        List<LendingDTO> lendings = lendingBO.listUserLendings(user);
         if (history) {
-            lendings.addAll(lbo.listHistory(user));
+            lendings.addAll(lendingBO.listHistory(user));
         }
 
         List<LendingInfoDTO> infos = new ArrayList<>();
@@ -185,15 +185,14 @@ public class Handler extends AbstractHandler {
 
         UserDTO user = userBO.get(userId);
 
-        LendingBO lendingBo = LendingBO.getInstance();
-        boolean success = lendingBo.doLend(holding, user, request.getLoggedUserId());
+        boolean success = lendingBO.doLend(holding, user, request.getLoggedUserId());
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.lend_success");
 
             BiblioRecordDTO biblio =
                     (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
-            LendingDTO lending = lendingBo.getCurrentLending(holding);
+            LendingDTO lending = lendingBO.getCurrentLending(holding);
             LendingInfoDTO info = new LendingInfoDTO();
             info.setLending(lending);
             info.setHolding(holding);
@@ -217,14 +216,13 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
         Integer lendingId = request.getInteger("id");
 
-        LendingBO lendingBo = LendingBO.getInstance();
-        LendingDTO lending = lendingBo.get(lendingId);
+        LendingDTO lending = lendingBO.get(lendingId);
 
         Integer holdingId = lending.getHoldingId();
         Integer userId = lending.getUserId();
 
         lending.setCreatedBy(request.getLoggedUserId());
-        boolean success = lendingBo.doRenew(lending);
+        boolean success = lendingBO.doRenew(lending);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.renew_success");
@@ -234,7 +232,7 @@ public class Handler extends AbstractHandler {
                     (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
             UserDTO user = userBO.get(userId);
 
-            LendingDTO newLending = lendingBo.getCurrentLending(holding);
+            LendingDTO newLending = lendingBO.getCurrentLending(holding);
 
             LendingInfoDTO info = new LendingInfoDTO();
             info.setLending(newLending);
@@ -256,14 +254,12 @@ public class Handler extends AbstractHandler {
     }
 
     public void returnLending(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer lendingId = request.getInteger("id");
         Float fineValue = request.getFloat("fine");
         boolean paid = request.getBoolean("paid");
 
-        LendingBO lendingBo = LendingBO.getInstance();
-        LendingDTO lending = lendingBo.get(lendingId);
-        boolean success = lendingBo.doReturn(lending, fineValue, paid);
+        LendingDTO lending = lendingBO.get(lendingId);
+        boolean success = lendingBO.doReturn(lending, fineValue, paid);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.return_success");
@@ -293,7 +289,6 @@ public class Handler extends AbstractHandler {
 
     public void listAll(ExtendedRequest request, ExtendedResponse response) {
         String schema = request.getSchema();
-        LendingBO bo = LendingBO.getInstance();
 
         Integer limit =
                 request.getInteger(
@@ -303,11 +298,11 @@ public class Handler extends AbstractHandler {
 
         DTOCollection<LendingInfoDTO> list = new DTOCollection<>();
 
-        DTOCollection<LendingInfoDTO> lendingInfoList = bo.listLendings(offset, limit);
+        DTOCollection<LendingInfoDTO> lendingInfoList = lendingBO.listLendings(offset, limit);
 
         list.addAll(lendingInfoList);
 
-        PagingDTO paging = new PagingDTO(bo.countLendings(), limit, offset);
+        PagingDTO paging = new PagingDTO(lendingBO.countLendings(), limit, offset);
         list.setPaging(paging);
 
         if (list.size() == 0) {
@@ -337,10 +332,8 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
         }
 
-        LendingBO bo = LendingBO.getInstance();
-
         try {
-            String receipt = bo.generateReceipt(ids, request.getTranslationsMap());
+            String receipt = lendingBO.generateReceipt(ids, request.getTranslationsMap());
 
             this.json.put("receipt", receipt);
         } catch (JSONException e) {

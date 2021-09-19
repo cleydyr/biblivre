@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
+import biblivre.cataloging.RecordDAO;
+import biblivre.cataloging.RecordDAOImpl;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
@@ -53,7 +55,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.marc4j.marc.Record;
 
-public class HoldingDAOImpl extends AbstractDAO implements HoldingDAO {
+public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     public static HoldingDAOImpl getInstance() {
         return AbstractDAO.getInstance(HoldingDAOImpl.class);

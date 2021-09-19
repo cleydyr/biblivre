@@ -144,7 +144,7 @@ public final class SchemaServlet extends HttpServlet {
         String action = xRequest.getString("action");
 
         AuthorizationPoints notLoggedAtps =
-                AuthorizationPoints.getNotLoggedInstance(xRequest.getSchema());
+                AuthorizationPoints.getNotLoggedInstance();
         xRequest.setAttribute("notLoggedAtps", notLoggedAtps);
 
         // If there is an action but there isn't any controller or module, it's

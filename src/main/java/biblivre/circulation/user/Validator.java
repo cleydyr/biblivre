@@ -38,6 +38,7 @@ public class Validator extends AbstractValidator {
 
     private AccessControlBO accessControlBO;
     private UserBO userBO;
+	private LendingBO lendingBO;
 
     public Validator(AccessControlBO accessControlBO, UserBO userBO) {
         super();
@@ -151,7 +152,7 @@ public class Validator extends AbstractValidator {
             return;
         }
 
-        if (LendingBO.getInstance().getCurrentLendingsCount(user) > 0) {
+        if (lendingBO.getCurrentLendingsCount(user) > 0) {
             handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_lendings");
             return;
         }

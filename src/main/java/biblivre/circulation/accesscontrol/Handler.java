@@ -21,6 +21,7 @@ package biblivre.circulation.accesscontrol;
 
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
+import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -32,21 +33,22 @@ import java.util.Date;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+	private AccessCardBO accessCardBO;
+	private AccessControlBO accessControlBO;
+	private UserBO userBO;
+	private LendingBO lendingBO;
 
-    private AccessCardBO accessCardBO;
-    private AccessControlBO accessControlBO;
-    private UserBO userBO;
-
-    public Handler(AccessCardBO accessCardBO, AccessControlBO accessControlBO, UserBO userBO) {
-        super();
-        this.accessCardBO = accessCardBO;
-        this.accessControlBO = accessControlBO;
-        this.userBO = userBO;
-    }
+    public Handler(AccessCardBO accessCardBO, AccessControlBO accessControlBO, UserBO userBO, LendingBO lendingBO) {
+		super();
+		this.accessCardBO = accessCardBO;
+		this.accessControlBO = accessControlBO;
+		this.userBO = userBO;
+		this.lendingBO = lendingBO;
+	}
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null) {

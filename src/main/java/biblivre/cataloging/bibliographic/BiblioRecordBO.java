@@ -44,10 +44,13 @@ import org.marc4j.marc.Record;
 public class BiblioRecordBO extends PaginableRecordBO {
 
     private IndexingBO indexingBO;
+	private LendingBO lendingBO;
 
     public BiblioRecordBO(
-            RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO, IndexingBO indexingBO) {
+            RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO, IndexingBO indexingBO, LendingBO lendingBO) {
         super(recordDAO, searchDAO, holdingBO);
+        this.indexingBO = indexingBO;
+        this.lendingBO = lendingBO;
     }
 
     @Override
@@ -85,7 +88,6 @@ public class BiblioRecordBO extends PaginableRecordBO {
             return;
         }
 
-        LendingBO lbo = LendingBO.getInstance();
         ReservationBO rbo = ReservationBO.getInstance();
 
         if ((mask & RecordBO.HOLDING_INFO) != 0) {
@@ -95,7 +97,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
             int reservedCount = 0;
 
             if (availableHoldings > 0) {
-                lentCount = lbo.countLentHoldings(recordId);
+                lentCount = lendingBO.countLentHoldings(recordId);
                 reservedCount = rbo.countReserved(biblioRecordDTO);
             }
 
@@ -133,7 +135,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
             List<LendingDTO> lendings = new ArrayList<>();
             for (HoldingDTO holding : holdingsList) {
-                lendings.add(lbo.getCurrentLending(holding));
+                lendings.add(lendingBO.getCurrentLending(holding));
             }
         }
     }
@@ -181,12 +183,6 @@ public class BiblioRecordBO extends PaginableRecordBO {
             //			hbo.delete(dto);
         }
         return true;
-    }
-
-    @Override
-    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        // TODO Auto-generated method stub
-        return false;
     }
 
     @Override

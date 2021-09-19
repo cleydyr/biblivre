@@ -24,6 +24,7 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
@@ -66,7 +67,7 @@ public abstract class Controller {
         this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
         try {
-            schema = this.xRequest.getSchema();
+        	schema = SchemaThreadLocal.get();
             module =
                     this.xRequest.getString(
                             "module", (String) this.xRequest.getAttribute("module"));
@@ -98,7 +99,7 @@ public abstract class Controller {
                         (AuthorizationPoints)
                                 this.xRequest.getSessionAttribute(schema, "logged_user_atps");
                 if (authPoints == null) {
-                    authPoints = AuthorizationPoints.getNotLoggedInstance(schema);
+                    authPoints = AuthorizationPoints.getNotLoggedInstance();
                 }
 
                 AuthorizationBO abo = AuthorizationBO.getInstance();

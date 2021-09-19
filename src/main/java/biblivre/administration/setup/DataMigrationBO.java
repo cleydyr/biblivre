@@ -61,7 +61,6 @@ public class DataMigrationBO extends AbstractBO {
 
     private Map<Integer, Integer> lendingMap = new HashMap<>();
     private Map<Integer, Integer> lendingHistoryMap = new HashMap<>();
-    private String userSchema;
 
     private AccessControlBO accessControlBO;
     private AccessCardBO accessCardBO;
@@ -75,17 +74,11 @@ public class DataMigrationBO extends AbstractBO {
     private AuthorityRecordBO authoritiyRecordBO;
     private VocabularyRecordBO vocabularyRecordBO;
     private HoldingBO holdingsBO;
-
-    @Override
-    public String getSchema() {
-        return this.userSchema;
-    }
+	private LendingBO lendingBO;
 
     public static DataMigrationBO getInstance(String schema, String datasource) {
         DataMigrationBO bo =
                 AbstractBO.getInstance(DataMigrationBO.class);
-
-        bo.userSchema = schema;
 
         if (bo.dao == null) {
             bo.dao = DataMigrationDAO.getInstance(schema, datasource);
@@ -284,8 +277,6 @@ public class DataMigrationBO extends AbstractBO {
     }
 
     private boolean saveDTOs(DataMigrationPhase phase, List<? extends AbstractDTO> dtoList) {
-        String schema = this.getSchema();
-
         switch (phase) {
             case CATALOGING_BIBLIOGRAPHIC:
                 return biblioRecordBO.saveFromBiblivre3(dtoList);
@@ -336,7 +327,7 @@ public class DataMigrationBO extends AbstractBO {
                 return accessControlBO.saveFromBiblivre3(dtoList);
 
             case LENDINGS:
-                return LendingBO.getInstance().saveFromBiblivre3(dtoList);
+                return lendingBO.saveFromBiblivre3(dtoList);
 
             case LENDING_FINE:
                 return LendingFineBO.getInstance().saveFromBiblivre3(dtoList);

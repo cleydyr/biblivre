@@ -43,13 +43,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+	private UserBO userBO;
+	private LendingBO lendingBO;
 
-    private UserBO userBO;
-
-    public Handler(UserBO userBO) {
-        super();
-        this.userBO = userBO;
-    }
+    public Handler(UserBO userBO, LendingBO lendingBO) {
+		super();
+		this.userBO = userBO;
+		this.lendingBO = lendingBO;
+	}
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -215,7 +216,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void loadTabData(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
         String tab = request.getString("tab");
 
@@ -229,10 +229,9 @@ public class Handler extends AbstractHandler {
         DTOCollection<?> data = null;
 
         if (tab.equals("lendings")) {
-            LendingBO lbo = LendingBO.getInstance();
             DTOCollection<LendingInfoDTO> list =
-                    lbo.populateLendingInfo(lbo.listLendings(user), false);
-            list.addAll(lbo.populateLendingInfo(lbo.listHistory(user), false));
+                    lendingBO.populateLendingInfo(lendingBO.listLendings(user), false);
+            list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
             data = list;
         } else if (tab.equals("reservations")) {
             ReservationBO rbo = ReservationBO.getInstance();

@@ -91,12 +91,6 @@ public class AuthorityRecordBO extends PaginableRecordBO {
     }
 
     @Override
-    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         return super.map(ids, RecordBO.MARC_INFO);
     }

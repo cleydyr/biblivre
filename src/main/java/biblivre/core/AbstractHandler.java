@@ -122,9 +122,9 @@ public class AbstractHandler {
     }
 
     protected void authorize(
-            String module, String action, String schema, AuthorizationPoints authorizationPoints) {
+            String module, String action, AuthorizationPoints authorizationPoints) {
         if (authorizationPoints == null) {
-            authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
+            authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
         }
 
         AuthorizationBO abo = AuthorizationBO.getInstance();

@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.auth;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -39,7 +40,9 @@ public class AuthorizationPoints implements Serializable {
     private boolean employee;
     private String schema;
 
-    public static AuthorizationPoints getNotLoggedInstance(String schema) {
+    public static AuthorizationPoints getNotLoggedInstance() {
+    	String schema = SchemaThreadLocal.get();
+
         if (schema.equals(Constants.GLOBAL_SCHEMA)) {
             if (AuthorizationPoints.notLoggedMultiSchemaInstance == null) {
                 AuthorizationPoints.notLoggedMultiSchemaInstance =

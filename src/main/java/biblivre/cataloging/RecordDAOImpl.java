@@ -358,7 +358,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                RecordDTO dto = this.populateDTO(rs);
+                RecordDTO dto = this.populateDTO(rs, recordType.getRecordClass());
                 map.put(dto.getId(), dto);
             }
         } catch (Exception e) {
@@ -408,7 +408,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
             while (rs.next()) {
                 try {
-                    list.add(this.populateDTO(rs));
+                    list.add(this.populateDTO(rs, recordType.getRecordClass()));
                 } catch (Exception e) {
                     this.logger.error(e.getMessage(), e);
                 }
@@ -448,7 +448,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
             while (rs.next()) {
                 try {
-                    list.add(this.populateDTO(rs));
+                    list.add(this.populateDTO(rs, recordType.getRecordClass()));
                 } catch (Exception e) {
                     this.logger.error(e.getMessage(), e);
                 }
@@ -613,7 +613,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                list.add(this.populateDTO(rs));
+                list.add(this.populateDTO(rs, recordType.getRecordClass()));
             }
 
             return list;
@@ -751,9 +751,9 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         }
     }
 
-    protected RecordDTO populateDTO(ResultSet rs)
-            throws SQLException, UnsupportedEncodingException {
-        RecordDTO dto = new RecordDTO();
+    protected RecordDTO populateDTO(ResultSet rs, Class<? extends RecordDTO> recordClass)
+            throws SQLException, UnsupportedEncodingException, InstantiationException, IllegalAccessException {
+        RecordDTO dto = recordClass.newInstance();
 
         dto.setIso2709(rs.getBytes("iso2709"));
         dto.setCreated(rs.getTimestamp("created"));

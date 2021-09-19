@@ -21,18 +21,14 @@ package biblivre.core;
 
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.utils.Constants;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBO {
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    protected String schema;
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractBO.class);
 
     private static Map<Class<? extends AbstractBO>, AbstractBO> instances = new HashMap<>();
 
@@ -51,27 +47,16 @@ public abstract class AbstractBO {
 
                 AbstractBO.instances.put(cls, instance);
             } catch (Exception ex) {
+            	logger.error(ex.getMessage(), ex);
             }
         }
 
         return instance;
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getSchema() {
-        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
-    }
-
-    public boolean isGlobalSchema() {
-        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-    }
-
     public void authorize(String module, String action, AuthorizationPoints authorizationPoints) {
         if (authorizationPoints == null) {
-            authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
+			authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
         }
 
         AuthorizationBO abo = AuthorizationBO.getInstance();

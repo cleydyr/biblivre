@@ -9,6 +9,7 @@
 <%@page import="biblivre.core.translations.Languages"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -29,7 +30,7 @@
 	<% String value; %>
 	<% String key; %>
 	<% boolean active; %>
-	<% String schema = (String) request.getAttribute("schema"); %>
+	<% String schema = SchemaThreadLocal.get(); %>
 	<div class="biblivre_form">
 		<fieldset>
 			<%
@@ -334,7 +335,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BACKUP_PATH;
-				value = BackupBO.getInstance(schema).getBackupPath();
+				value = BackupBO.getInstance().getBackupPath();
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 

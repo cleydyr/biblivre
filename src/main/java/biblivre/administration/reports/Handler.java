@@ -20,6 +20,7 @@
 package biblivre.administration.reports;
 
 import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.lending.LendingListDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -33,17 +34,19 @@ import biblivre.core.utils.TextUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-    private UserBO userBO;
-
-    public Handler(UserBO userBO) {
-        super();
-        this.userBO = userBO;
-    }
+	private UserBO userBO;
+	private LendingBO lendingBO;
+	
+	public Handler(UserBO userBO, LendingBO lendingBO) {
+		super();
+		this.userBO = userBO;
+		this.lendingBO = lendingBO;
+	}
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

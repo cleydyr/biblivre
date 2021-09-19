@@ -28,6 +28,7 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
+import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserSearchDTO;
@@ -42,15 +43,16 @@ import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+	private UserBO userBO;
+	private BiblioRecordBO biblioRecordBO;
+	private LendingBO lendingBO;
 
-    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO) {
-        super();
-        this.userBO = userBO;
-        this.biblioRecordBO = biblioRecordBO;
-    }
-
-    private UserBO userBO;
-    private BiblioRecordBO biblioRecordBO;
+    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO) {
+		super();
+		this.userBO = userBO;
+		this.biblioRecordBO = biblioRecordBO;
+		this.lendingBO = lendingBO;
+	}
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -126,7 +128,7 @@ public class Handler extends AbstractHandler {
         String schema = request.getSchema();
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -282,7 +284,7 @@ public class Handler extends AbstractHandler {
         }
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

@@ -42,6 +42,7 @@
 		<constructor-arg index="0" ref="accessCardBO" />
 		<constructor-arg index="1" ref="accessControlBO" />
 		<constructor-arg index="2" ref="userBO" />
+		<constructor-arg index="3" ref="lendingBO" />
 	</bean>
 
 	<bean id="quotationHandler" name="quotationHandler"
@@ -77,11 +78,13 @@
 		<constructor-arg index="0" ref="permissionBO" />
 		<constructor-arg index="1" ref="loginBO" />
 		<constructor-arg index="2" ref="userBO" />
+		<constructor-arg index="3" ref="lendingBO" />
 	</bean>
 
 	<bean id="reportHandler" name="reportHandler"
 		class="biblivre.administration.reports.Handler" scope="prototype">
 		<constructor-arg index="0" ref="userBO" />
+		<constructor-arg index="1" ref="lendingBO" />
 	</bean>
 
 	<bean id="authorityHandler" name="authorityHandler"
@@ -135,11 +138,13 @@
 		class="biblivre.circulation.reservation.Handler" scope="prototype">
 		<constructor-arg index="0" ref="userBO" />
 		<constructor-arg index="1" ref="biblioRecordBO" />
+		<constructor-arg index="2" ref="lendingBO" />
 	</bean>
 
 	<bean id="userHandler" name="userHandler"
 		class="biblivre.circulation.user.Handler" scope="prototype">
 		<constructor-arg index="0" ref="userBO" />
+		<constructor-arg index="1" ref="lendingBO" />
 	</bean>
 
 	<bean id="userCardHandler" name="userCardHandler"
@@ -217,6 +222,7 @@
 		<constructor-arg index="1" ref="searchDAO" />
 		<constructor-arg index="2" ref="holdingBO" />
 		<constructor-arg index="3" ref="indexingBO" />
+		<constructor-arg index="4" ref="lendingBO" />
 	</bean>
 
 	<bean id="vocabularyRecordBO" name="vocabularyRecordBO"
@@ -235,13 +241,13 @@
 		<constructor-arg index="3" ref="indexingBO" />
 	</bean>
 
+<!-- public HoldingBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingDAO holdingDAO, UserBO userBO, LoginBO loginBO) { -->
 	<bean id="holdingBO" name="holdingBO"
 		class="biblivre.cataloging.holding.HoldingBO">
 		<constructor-arg index="0" ref="holdingDAO" />
 		<constructor-arg index="1" ref="loginBO" />
 		<constructor-arg index="2" ref="userBO" />
-		<constructor-arg index="3" ref="recordDAO" />
-		<constructor-arg index="4" ref="searchDAO" />
+		<constructor-arg index="3" ref="searchDAO" />
 	</bean>
 
 	<bean id="indexingBO" name="indexingBO"
@@ -255,6 +261,16 @@
 			</map>
 		</constructor-arg>
 		<constructor-arg index="1" ref="indexingDAO" />
+	</bean>
+
+	<bean id="lendingBO" name="lendingBO"
+		class="biblivre.circulation.lending.LendingBO"
+		lazy-init="true">
+		<constructor-arg index="0" ref="lendingDAO" />
+		<constructor-arg index="1" ref="userBO" />
+		<constructor-arg index="2" ref="holdingBO" />
+		<constructor-arg index="3" ref="biblioRecordBO" />
+		<constructor-arg index="4" ref="lendingBO" />
 	</bean>
 
 	<!-- DAOs -->
@@ -318,6 +334,11 @@
 
 	<bean id="indexingDAO"
 		class="biblivre.administration.indexing.IndexingDAOImpl"
+		factory-method="getInstance">
+	</bean>
+
+	<bean id="lendingDAO"
+		class="biblivre.circulation.lending.LendingDAOImpl"
 		factory-method="getInstance">
 	</bean>
 </beans>

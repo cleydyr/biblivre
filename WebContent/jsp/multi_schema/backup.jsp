@@ -4,6 +4,7 @@
 <%@page import="org.json.JSONObject"%>
 <%@page import="biblivre.administration.backup.BackupBO"%>
 <%@page import="biblivre.core.schemas.Schemas"%>
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -114,7 +115,21 @@
 			<div class="restore">
 				<div class="found_backups">
 					<p><strong><i18n:text key="administration.setup.biblivre4restore.title_found_backups" /></strong></p>
-					<p><i18n:text key="multi_schema.select_restore.description_found_backups" param1="<%= BackupBO.getInstance(\"global\").getBackupPath() %>" /></p>
+					<%
+						String previousSchema = SchemaThreadLocal.get();
+
+						SchemaThreadLocal.remove();
+
+						SchemaThreadLocal.setSchema("global");
+					%>
+
+					<p><i18n:text key="multi_schema.select_restore.description_found_backups" param1="<%= BackupBO.getInstance().getBackupPath() %>" /></p>
+					
+					<%
+						SchemaThreadLocal.remove();
+
+						SchemaThreadLocal.setSchema(previousSchema);
+					%>
 
 					<div id="found_backups_list" class="found_backups_list"></div>
 					<textarea id="found_backups_list_template" class="template"><!--

@@ -19,16 +19,27 @@
  ******************************************************************************/
 package biblivre.cataloging.enums;
 
+import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.authorities.AuthorityRecordDTO;
+import biblivre.cataloging.bibliographic.BiblioRecordDTO;
+import biblivre.cataloging.holding.HoldingDTO;
+import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
 public enum RecordType implements BiblivreEnum {
-    BIBLIO,
-    AUTHORITIES,
-    VOCABULARY,
-    HOLDING;
+    BIBLIO(BiblioRecordDTO.class),
+    AUTHORITIES(AuthorityRecordDTO.class),
+    VOCABULARY(VocabularyRecordDTO.class),
+    HOLDING(HoldingDTO.class);
 
-    public static RecordType fromString(String str) {
+    private Class<? extends RecordDTO> recordClass;
+
+	RecordType(Class<? extends RecordDTO> recordClass) {
+		this.recordClass = recordClass;
+	}
+
+	public static RecordType fromString(String str) {
         if (StringUtils.isBlank(str)) {
             return null;
         }
@@ -52,4 +63,8 @@ public enum RecordType implements BiblivreEnum {
     public String getString() {
         return this.toString();
     }
+
+	public Class<? extends RecordDTO> getRecordClass() {
+		return recordClass;
+	}
 }

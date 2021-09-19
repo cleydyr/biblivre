@@ -59,7 +59,7 @@
 </layout:head>
 
 <%
-	List<UserTypeDTO> userTypes = UserTypeBO.getInstance((String) request.getAttribute("schema")).list();
+	List<UserTypeDTO> userTypes = UserTypeBO.getInstance().list();
 %>
 
 <layout:body>

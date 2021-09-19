@@ -34,17 +34,18 @@ import java.util.Date;
 import java.util.List;
 
 public class LendingFineBO extends AbstractBO {
+	private LendingFineDAO dao;
+	private HoldingBO holdingBO;
+	private BiblioRecordBO biblioRecordBO;
+	private LendingBO lendingBO;
 
-    public LendingFineBO(LendingFineDAO dao, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
-        super();
-        this.dao = dao;
-        this.holdingBO = holdingBO;
-        this.biblioRecordBO = biblioRecordBO;
-    }
-
-    private LendingFineDAO dao;
-    private HoldingBO holdingBO;
-    private BiblioRecordBO biblioRecordBO;
+    public LendingFineBO(LendingFineDAO dao, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO) {
+		super();
+		this.dao = dao;
+		this.holdingBO = holdingBO;
+		this.biblioRecordBO = biblioRecordBO;
+		this.lendingBO = lendingBO;
+	}
 
     public static LendingFineBO  getInstance() {
         LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class);
@@ -82,8 +83,7 @@ public class LendingFineBO extends AbstractBO {
     private void populateFineInfo(LendingFineDTO fine) {
         Integer lendingId = fine.getLendingId();
 
-        LendingBO lbo = LendingBO.getInstance();
-        LendingDTO lending = lbo.get(lendingId);
+        LendingDTO lending = lendingBO.get(lendingId);
         HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         BiblioRecordDTO biblio =
                 (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);

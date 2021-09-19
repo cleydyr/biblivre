@@ -1,5 +1,6 @@
 package biblivre.cataloging.holding;
 
+import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.search.SearchDTO;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface HoldingDAO {
+public interface HoldingDAO extends RecordDAO {
 
     Integer count(int recordId, boolean availableOnly);
 

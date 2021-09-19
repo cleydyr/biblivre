@@ -23,6 +23,7 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.utils.Constants;
 import biblivre.z3950.client.Z3950Client;
@@ -53,8 +54,9 @@ public class Z3950BO extends AbstractBO {
     public List<Z3950RecordDTO> search(List<Z3950AddressDTO> servers, Pair<String, String> search) {
         Z3950Client z3950Client = this.getContext().getBean(Z3950Client.class);
         List<Z3950RecordDTO> dtoList = new ArrayList<>();
+        String schema = SchemaThreadLocal.get();
         int limit =
-                Configurations.getInt(this.getSchema(), Constants.CONFIG_Z3950_RESULT_LIMIT, 100);
+                Configurations.getInt(schema, Constants.CONFIG_Z3950_RESULT_LIMIT, 100);
 
         for (Z3950AddressDTO searchServer : servers) {
             try {

@@ -26,6 +26,7 @@ import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -60,11 +61,13 @@ public class IndexingBO extends AbstractBO {
     private volatile boolean reindexingVocabularyBase = false;
 
     public void reindex(RecordType recordType, RecordDTO dto) {
+    	String schema = SchemaThreadLocal.get();
+
         synchronized (this) {
             List<IndexingGroupDTO> indexingGroups =
-                    IndexingGroups.getGroups(this.getSchema(), recordType);
+                    IndexingGroups.getGroups(schema, recordType);
             List<FormTabSubfieldDTO> autocompleteSubfields =
-                    Fields.getAutocompleteSubFields(this.getSchema(), recordType);
+                    Fields.getAutocompleteSubFields(schema, recordType);
 
             List<IndexingDTO> indexes = new ArrayList<>();
             List<IndexingDTO> sortIndexes = new ArrayList<>();
@@ -81,7 +84,7 @@ public class IndexingBO extends AbstractBO {
     }
 
     public void reindex(RecordType recordType) {
-        String schema = this.getSchema();
+    	String schema = SchemaThreadLocal.get();
 
         if (this.getLockState(recordType)) {
             return;

@@ -348,7 +348,8 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private void loadLanguage() {
         HttpSession session = this.getSession();
 
-        String schema = this.getSchema();
+        String schema = SchemaThreadLocal.get();
+
         String language = this.getString("i18n");
 
         if (Languages.isNotLoaded(schema, language)) {

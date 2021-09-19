@@ -20,6 +20,7 @@
 package biblivre.administration.backup;
 
 import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.schemas.Schemas;
@@ -71,10 +72,12 @@ public class BackupBO extends AbstractBO {
         ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
-        if (this.isGlobalSchema()) {
+        String schema = SchemaThreadLocal.get();
+
+        if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             list.addAll(Schemas.getEnabledSchemasList());
         } else {
-            list.add(this.getSchema());
+            list.add(schema);
         }
 
         Map<String, Pair<String, String>> map = new HashMap<>();
@@ -94,7 +97,9 @@ public class BackupBO extends AbstractBO {
     }
 
     public BackupScope getBackupScope() {
-        if (this.isGlobalSchema()) {
+    	String schema = SchemaThreadLocal.get();
+
+        if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             return BackupScope.MULTI_SCHEMA;
         } else if (Schemas.isMultipleSchemasEnabled()) {
             return BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;
@@ -148,7 +153,9 @@ public class BackupBO extends AbstractBO {
     }
 
     public void createBackup(BackupDTO dto) throws IOException {
-        File pgdump = DatabaseUtils.getPgDump(this.getSchema());
+    	String schema_ = SchemaThreadLocal.get();
+
+        File pgdump = DatabaseUtils.getPgDump(schema_);
 
         if (pgdump == null) {
             return;
@@ -242,7 +249,9 @@ public class BackupBO extends AbstractBO {
     }
 
     public String getBackupPath() {
-        String path = Configurations.getString(this.getSchema(), Constants.CONFIG_BACKUP_PATH);
+    	String schema = SchemaThreadLocal.get();
+
+        String path = Configurations.getString(schema, Constants.CONFIG_BACKUP_PATH);
 
         if (StringUtils.isBlank(path) || FileIOUtils.doesNotExists(path)) {
             File home = new File(System.getProperty("user.home"));
@@ -341,8 +350,8 @@ public class BackupBO extends AbstractBO {
             String excludeTablePattern,
             String includeTablePattern) {
 
-        File pgdump = DatabaseUtils.getPgDump(this.getSchema());
-        ;
+        File pgdump = DatabaseUtils.getPgDump(schema);
+
         InetSocketAddress defaultAddress =
                 new InetSocketAddress(
                         DatabaseUtils.getDatabaseHostName(),

@@ -9,6 +9,7 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.marc.MarcDataReader;
@@ -44,7 +45,10 @@ public class ReportsBO extends AbstractBO {
         ReportType type = dto.getType();
         IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type);
         report.setI18n(i18n);
-        report.setSchema(this.getSchema());
+
+        String schema = SchemaThreadLocal.get();
+
+        report.setSchema(schema);
         return report.generateReport(dto);
     }
 
@@ -70,9 +74,12 @@ public class ReportsBO extends AbstractBO {
             boolean hasMore = true;
             while (hasMore) {
                 SearchDTO search = biblioRecordBO.getSearch(reportsDto.getSearchId());
+
+                String schema = SchemaThreadLocal.get();
+
                 search.setSort(
                         IndexingGroups.getDefaultSortableGroupId(
-                                this.getSchema(), RecordType.BIBLIO));
+                                schema, RecordType.BIBLIO));
                 search.setIndexingGroup(0);
                 search.getPaging().setRecordsPerPage(limit);
                 search.getPaging().setPage(++page);

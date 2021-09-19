@@ -52,7 +52,7 @@
 </layout:head>
 
 <%
-	List<UserTypeDTO> userTypes = UserTypeBO.getInstance((String) request.getAttribute("schema")).list();
+	List<UserTypeDTO> userTypes = UserTypeBO.getInstance().list();
 %>
 <c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
 

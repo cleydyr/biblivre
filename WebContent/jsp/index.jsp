@@ -3,6 +3,7 @@
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
 <%@page import="biblivre.core.schemas.Schemas"%>
 <%@page import="biblivre.core.ExtendedRequest"%>
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page import="biblivre.login.LoginDTO "%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
@@ -18,7 +19,7 @@
 	<%
 	ExtendedRequest req = (ExtendedRequest) request;
 
-	if (!req.isGlobalSchema()) {
+	if (!SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
 	%>
 		<div class="picture">
 			<img src="static/images/main_picture_1.jpg"/>

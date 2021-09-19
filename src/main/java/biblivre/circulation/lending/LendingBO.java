@@ -36,6 +36,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.FreemarkerTemplateHelper;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.PrinterType;
 import biblivre.core.exceptions.ValidationException;
@@ -73,16 +74,6 @@ public class LendingBO extends AbstractBO {
     private UserBO userBO;
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
-
-    public static LendingBO  getInstance() {
-        LendingBO bo = AbstractBO.getInstance(LendingBO.class);
-
-        if (bo.dao == null) {
-            bo.dao = LendingDAO.getInstance();
-        }
-
-        return bo;
-    }
 
     public LendingDTO get(Integer lendingId) {
         return this.dao.get(lendingId);
@@ -174,8 +165,11 @@ public class LendingBO extends AbstractBO {
 
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
+
+        String schema = SchemaThreadLocal.get();
+
         Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
+                CalendarUtils.calculateExpectedReturnDate(schema, today, days);
         lending.setExpectedReturnDate(expectedReturnDate);
 
         if (this.dao.doLend(lending)) {
@@ -212,8 +206,11 @@ public class LendingBO extends AbstractBO {
 
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
+
+        String schema = SchemaThreadLocal.get();
+
         Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
+                CalendarUtils.calculateExpectedReturnDate(schema, today, days);
         lending.setExpectedReturnDate(expectedReturnDate);
 
         return this.dao.doRenew(
@@ -253,8 +250,6 @@ public class LendingBO extends AbstractBO {
 
     public DTOCollection<LendingInfoDTO> populateLendingInfoByHolding(
             DTOCollection<HoldingDTO> holdingList) {
-        String schema = this.getSchema();
-
         Set<Integer> users = new HashSet<>();
         Set<Integer> records = new HashSet<>();
         Set<Integer> holdings = new HashSet<>();
@@ -415,10 +410,12 @@ public class LendingBO extends AbstractBO {
 
     public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
             throws TemplateException, IOException {
+    	String schema = SchemaThreadLocal.get();
+
         PrinterType printerType =
                 PrinterType.fromString(
                         Configurations.getString(
-                                this.getSchema(), Constants.CONFIG_LENDING_PRINTER_TYPE));
+                                schema, Constants.CONFIG_LENDING_PRINTER_TYPE));
         int columns = 24;
 
         if (printerType != null) {
@@ -463,7 +460,9 @@ public class LendingBO extends AbstractBO {
         receipt.append(StringUtils.repeat('*', columns)).append("\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
 
-        String libraryName = Configurations.getString(this.getSchema(), "general.title");
+        String schema = SchemaThreadLocal.get();
+
+        String libraryName = Configurations.getString(schema, "general.title");
 
         receipt.append("* ").append(StringUtils.center(libraryName, columns - 4)).append(" *\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
@@ -703,7 +702,9 @@ public class LendingBO extends AbstractBO {
 
         root.put("lendingInfo", lendingInfo);
 
-        String libraryName = Configurations.getString(this.getSchema(), "general.title");
+        String schema = SchemaThreadLocal.get();
+
+        String libraryName = Configurations.getString(schema, "general.title");
         String now = dateTimeFormat.format(new Date());
 
         root.put("libraryName", libraryName);

@@ -19,34 +19,24 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
-import biblivre.cataloging.RecordBO;
-import biblivre.cataloging.RecordDAO;
-import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.enums.HoldingAvailability;
-import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.labels.LabelDTO;
-import biblivre.cataloging.search.SearchDAO;
-import biblivre.cataloging.search.SearchDTO;
-import biblivre.circulation.lending.LendingBO;
-import biblivre.circulation.user.UserBO;
-import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDTO;
-import biblivre.core.DTOCollection;
-import biblivre.core.ITextPimacoTagSheetAdapter;
-import biblivre.core.LabelPrintDTO;
-import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
-import biblivre.core.exceptions.ValidationException;
-import biblivre.core.file.DiskFile;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.ParagraphAlignmentUtil;
-import biblivre.login.LoginBO;
-import biblivre.login.LoginDTO;
-import biblivre.marc.MarcDataReader;
-import biblivre.marc.MarcUtils;
-import biblivre.marc.MaterialType;
-import biblivre.marc.RecordStatus;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.Subfield;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -59,44 +49,52 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.MarcFactory;
-import org.marc4j.marc.Record;
-import org.marc4j.marc.Subfield;
+
+import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.enums.HoldingAvailability;
+import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.labels.LabelDTO;
+import biblivre.cataloging.search.SearchDAO;
+import biblivre.cataloging.search.SearchDTO;
+import biblivre.circulation.user.UserBO;
+import biblivre.circulation.user.UserDTO;
+import biblivre.core.AbstractDTO;
+import biblivre.core.DTOCollection;
+import biblivre.core.ITextPimacoTagSheetAdapter;
+import biblivre.core.LabelPrintDTO;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.auth.AuthorizationPoints;
+import biblivre.core.configurations.Configurations;
+import biblivre.core.exceptions.ValidationException;
+import biblivre.core.file.DiskFile;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.ParagraphAlignmentUtil;
+import biblivre.login.LoginBO;
+import biblivre.login.LoginDTO;
+import biblivre.marc.MarcDataReader;
+import biblivre.marc.MarcUtils;
+import biblivre.marc.MaterialType;
+import biblivre.marc.RecordStatus;
 
 public class HoldingBO extends RecordBO {
+	private HoldingDAO holdingDAO;
+	private UserBO userBO;
+	private LoginBO loginBO;
+	private static Logger logger = LoggerFactory.getLogger(HoldingBO.class);
 
-    private HoldingDAO holdingDAO;
-    private UserBO userBO;
-    private LoginBO loginBO;
+    public HoldingBO(HoldingDAO holdingDAO, LoginBO loginBO, UserBO userBO, SearchDAO searchDAO) {
+    	super(holdingDAO, searchDAO);
+		this.holdingDAO = holdingDAO;
+		this.userBO = userBO;
+		this.loginBO = loginBO;
+	}
 
-    public HoldingBO(
-            HoldingDAO holdingDAO,
-            LoginBO loginBO,
-            UserBO userBO,
-            RecordDAO recordDAO,
-            SearchDAO seachDAO) {
-        super(recordDAO, seachDAO);
-        this.holdingDAO = holdingDAO;
-        this.loginBO = loginBO;
-        this.userBO = userBO;
-    }
-
-    @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         return this.holdingDAO.map(ids);
     }
 
-    @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
         Map<Integer, RecordDTO> map = this.holdingDAO.map(ids);
 
@@ -107,12 +105,10 @@ public class HoldingBO extends RecordBO {
         return map;
     }
 
-    @Override
     public List<RecordDTO> list(int offset, int limit) {
         return this.holdingDAO.list(offset, limit);
     }
 
-    @Override
     public Integer count() {
         return this.count(0);
     }
@@ -130,9 +126,11 @@ public class HoldingBO extends RecordBO {
     }
 
     public String getNextAccessionNumber() {
+    	String schema = SchemaThreadLocal.get();
+
         String prefix =
                 Configurations.getString(
-                        this.getSchema(), Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
+                		schema, Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
         String accessionPrefix = prefix + "." + year + ".";
@@ -166,12 +164,25 @@ public class HoldingBO extends RecordBO {
         return searchResults;
     }
 
-    @Override
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.holdingDAO.saveFromBiblivre3(dtoList);
     }
 
-    @Override
+    public RecordDTO get(int id) {
+        Set<Integer> ids = new HashSet<>();
+
+        ids.add(id);
+
+        return this.map(ids).get(id);
+    }
+
+    public RecordDTO get(int id, int mask) {
+        Set<Integer> ids = new HashSet<>();
+        ids.add(id);
+
+        return this.map(ids, mask).get(id);
+    }
+
     public boolean save(RecordDTO dto) {
         HoldingDTO hdto = (HoldingDTO) dto;
         Record record = hdto.getRecord();
@@ -210,7 +221,6 @@ public class HoldingBO extends RecordBO {
         return success;
     }
 
-    @Override
     public boolean update(RecordDTO dto) {
         HoldingDTO hdto = (HoldingDTO) dto;
         Record record = hdto.getRecord();
@@ -236,7 +246,6 @@ public class HoldingBO extends RecordBO {
         return this.holdingDAO.update(dto);
     }
 
-    @Override
     public boolean delete(RecordDTO dto) {
 
         // TODO AVISAR O USER, SE O USER CONFIRMAR DELEÇÃO, DELETE CASCADE
@@ -251,22 +260,6 @@ public class HoldingBO extends RecordBO {
         return this.holdingDAO.delete(dto);
     }
 
-    // If a holding was ever lent, the user shouldn't delete it. The correct way
-    // is setting it's availability to false. If the user wants to delete it anyway,
-    // he must use the force delete function.
-    @Override
-    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        LendingBO lbo = LendingBO.getInstance();
-
-        if (lbo.isLent(holding) || lbo.wasEverLent(holding)) {
-            throw new ValidationException(
-                    "cataloging.holding.error.shouldnt_delete_because_holding_is_or_was_lent");
-        }
-
-        return true;
-    }
-
-    @Override
     public void populateDetails(RecordDTO rdto, int mask) {
 
         if ((mask & RecordBO.MARC_INFO) != 0) {
@@ -311,9 +304,8 @@ public class HoldingBO extends RecordBO {
                             adapter.getHorizontalMargin(),
                             adapter.getVerticalMargin(),
                             adapter.getVerticalMargin());
-            int horizontalAlignment =
-                    ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(
-                            schema, () -> Element.ALIGN_CENTER);
+			int horizontalAlignment =
+                    ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(() -> Element.ALIGN_CENTER);
             File file = File.createTempFile("biblivre_label_", ".pdf");
             fos = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fos);
@@ -406,25 +398,6 @@ public class HoldingBO extends RecordBO {
         }
 
         return success;
-    }
-
-    @Override
-    public List<RecordDTO> listByLetter(char letter, int order) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public boolean moveRecords(
-            Set<Integer> ids,
-            RecordDatabase recordDatabase,
-            int modifiedBy,
-            AuthorizationPoints authorizationPoints) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public SearchDTO getSearch(Integer searchId) {
-        throw new RuntimeException("error.invalid_method_call");
     }
 
     private void _skipOffset(
@@ -548,7 +521,6 @@ public class HoldingBO extends RecordBO {
         return dto;
     }
 
-    @Override
     public RecordType getRecordType() {
         return RecordType.HOLDING;
     }
