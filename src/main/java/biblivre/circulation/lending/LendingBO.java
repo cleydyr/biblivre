@@ -32,7 +32,6 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
-import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.FreemarkerTemplateHelper;
@@ -60,23 +59,21 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
-public class LendingBO extends AbstractBO {
+public class LendingBO extends LendingBO2 {
     public LendingBO(
-            LendingDAO dao, UserBO userBO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
-        super();
-        this.dao = dao;
+            LendingDAO lendingDAO, UserBO userBO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
+        super(lendingDAO);
         this.userBO = userBO;
         this.holdingBO = holdingBO;
         this.biblioRecordBO = biblioRecordBO;
     }
 
-    private LendingDAO dao;
     private UserBO userBO;
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
 
     public LendingDTO get(Integer lendingId) {
-        return this.dao.get(lendingId);
+        return this.lendingDAO.get(lendingId);
     }
 
     public boolean isLent(HoldingDTO holding) {
@@ -84,16 +81,12 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean wasEverLent(HoldingDTO holding) {
-        List<LendingDTO> history = this.dao.listHistory(holding);
+        List<LendingDTO> history = this.lendingDAO.listHistory(holding);
         return history.size() > 0;
     }
 
-    public LendingDTO getCurrentLending(HoldingDTO holding) {
-        return this.dao.getCurrentLending(holding);
-    }
-
     public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
-        return this.dao.getCurrentLendingMap(ids);
+        return this.lendingDAO.getCurrentLendingMap(ids);
     }
 
     public void checkLending(HoldingDTO holding, UserDTO user) {
@@ -144,13 +137,13 @@ public class LendingBO extends AbstractBO {
         UserTypeBO userTypeBo = UserTypeBO.getInstance();
         UserTypeDTO type = userTypeBo.get(user.getType());
         Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
-        Integer count = this.dao.getCurrentLendingsCount(user);
+        Integer count = this.lendingDAO.getCurrentLendingsCount(user);
 
         return renew ? (count <= lendingLimit) : (count < lendingLimit);
     }
 
     public Integer getCurrentLendingsCount(UserDTO user) {
-        return this.dao.getCurrentLendingsCount(user);
+        return this.lendingDAO.getCurrentLendingsCount(user);
     }
 
     public boolean doLend(HoldingDTO holding, UserDTO user, int createdBy) {
@@ -172,7 +165,7 @@ public class LendingBO extends AbstractBO {
                 CalendarUtils.calculateExpectedReturnDate(schema, today, days);
         lending.setExpectedReturnDate(expectedReturnDate);
 
-        if (this.dao.doLend(lending)) {
+        if (this.lendingDAO.doLend(lending)) {
             ReservationBO rbo = ReservationBO.getInstance();
             rbo.delete(user.getId(), holding.getRecordId());
             return true;
@@ -182,7 +175,7 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean doReturn(LendingDTO lending, Float fineValue, boolean paid) {
-        this.dao.doReturn(lending.getId());
+        this.lendingDAO.doReturn(lending.getId());
 
         if (fineValue > 0) {
             LendingFineBO fineBo = LendingFineBO.getInstance();
@@ -213,39 +206,39 @@ public class LendingBO extends AbstractBO {
                 CalendarUtils.calculateExpectedReturnDate(schema, today, days);
         lending.setExpectedReturnDate(expectedReturnDate);
 
-        return this.dao.doRenew(
+        return this.lendingDAO.doRenew(
                 lending.getId(), lending.getExpectedReturnDate(), lending.getCreatedBy());
     }
 
     public List<LendingDTO> listHistory(UserDTO user) {
-        List<LendingDTO> list = this.dao.listHistory(user);
+        List<LendingDTO> list = this.lendingDAO.listHistory(user);
         DTOCollection<LendingDTO> collection = new DTOCollection<>();
         collection.addAll(list);
         return collection;
     }
 
     public DTOCollection<LendingDTO> listLendings(UserDTO user) {
-        List<LendingDTO> list = this.dao.listLendings(user);
+        List<LendingDTO> list = this.lendingDAO.listLendings(user);
         DTOCollection<LendingDTO> collection = new DTOCollection<>();
         collection.addAll(list);
         return collection;
     }
 
     public List<LendingDTO> listUserLendings(UserDTO user) {
-        return this.dao.listLendings(user);
+        return this.lendingDAO.listLendings(user);
     }
 
     public DTOCollection<LendingInfoDTO> listLendings(int offset, int limit) {
-        List<LendingDTO> list = this.dao.listLendings(offset, limit);
+        List<LendingDTO> list = this.lendingDAO.listLendings(offset, limit);
         return this.populateLendingInfo(list);
     }
 
     public Integer countHistory(UserDTO user) {
-        return this.dao.countHistory(user);
+        return this.lendingDAO.countHistory(user);
     }
 
     public Integer countLendings(UserDTO user) {
-        return this.dao.countLendings(user);
+        return this.lendingDAO.countLendings(user);
     }
 
     public DTOCollection<LendingInfoDTO> populateLendingInfoByHolding(
@@ -386,16 +379,12 @@ public class LendingBO extends AbstractBO {
         return collection;
     }
 
-    public Integer countLentHoldings(int recordId) {
-        return this.dao.countLentHoldings(recordId);
-    }
-
     public LendingDTO getLatest(int holdingSerial, int userId) {
-        return this.dao.getLatest(holdingSerial, userId);
+        return this.lendingDAO.getLatest(holdingSerial, userId);
     }
 
     public Integer countLendings() {
-        return this.dao.countLendings();
+        return this.lendingDAO.countLendings();
     }
 
     public List<LendingDTO> listLendings(List<Integer> lendingsIds) {
@@ -800,7 +789,7 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.lendingDAO.saveFromBiblivre3(dtoList);
     }
 
     //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {

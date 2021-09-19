@@ -222,7 +222,7 @@
 		<constructor-arg index="1" ref="searchDAO" />
 		<constructor-arg index="2" ref="holdingBO" />
 		<constructor-arg index="3" ref="indexingBO" />
-		<constructor-arg index="4" ref="lendingBO" />
+		<constructor-arg index="4" ref="lendingBO2" />
 	</bean>
 
 	<bean id="vocabularyRecordBO" name="vocabularyRecordBO"
@@ -264,13 +264,16 @@
 	</bean>
 
 	<bean id="lendingBO" name="lendingBO"
-		class="biblivre.circulation.lending.LendingBO"
-		lazy-init="true">
+		class="biblivre.circulation.lending.LendingBO" >
 		<constructor-arg index="0" ref="lendingDAO" />
 		<constructor-arg index="1" ref="userBO" />
 		<constructor-arg index="2" ref="holdingBO" />
 		<constructor-arg index="3" ref="biblioRecordBO" />
-		<constructor-arg index="4" ref="lendingBO" />
+	</bean>
+
+	<bean id="lendingBO2" name="lendingBO2"
+		class="biblivre.circulation.lending.LendingBO2" >
+		<constructor-arg index="0" ref="lendingDAO" />
 	</bean>
 
 	<!-- DAOs -->
