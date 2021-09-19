@@ -23,6 +23,7 @@ import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.labels.LabelDTO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.lending.LendingBO;
@@ -562,4 +563,9 @@ public class HoldingBO extends RecordBO {
 
         return dto;
     }
+
+	@Override
+	public RecordType getRecordType() {
+		return RecordType.HOLDING;
+	}
 }

@@ -105,11 +105,11 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return this.rdao.map(ids);
+        return this.rdao.map(ids, getRecordType());
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
-        Map<Integer, RecordDTO> map = this.rdao.map(ids);
+        Map<Integer, RecordDTO> map = this.rdao.map(ids, getRecordType());
 
         for (RecordDTO dto : map.values()) {
             this.populateDetails(dto, mask);
@@ -119,11 +119,11 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public List<RecordDTO> list(int offset, int limit) {
-        return this.rdao.list(offset, limit);
+        return this.rdao.list(offset, limit, getRecordType());
     }
 
     public List<RecordDTO> listByLetter(char letter, int order) {
-        return this.populateDetails(this.rdao.listByLetter(letter, order), RecordBO.MARC_INFO);
+        return this.populateDetails(this.rdao.listByLetter(letter, order, getRecordType()), RecordBO.MARC_INFO);
     }
 
     public boolean save(RecordDTO dto) {
@@ -143,11 +143,11 @@ public abstract class RecordBO extends AbstractBO {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        return this.rdao.moveRecords(ids, modifiedBy, recordDatabase);
+        return this.rdao.moveRecords(ids, modifiedBy, recordDatabase, getRecordType());
     }
 
     public boolean listContainsPrivateRecord(Set<Integer> ids) {
-        return this.rdao.listContainsPrivateRecord(ids);
+        return this.rdao.listContainsPrivateRecord(ids, getRecordType());
     }
 
     public DiskFile createExportFile(Set<Integer> ids, AuthorizationPoints authorizationPoints) {
@@ -294,9 +294,9 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         List<String> listA =
-                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 10, true);
+                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 10, true, getRecordType());
         List<String> listB =
-                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 5, false);
+                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
 
@@ -308,9 +308,9 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         DTOCollection<AutocompleteDTO> listA =
-                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 10, true);
+                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 10, true, getRecordType());
         DTOCollection<AutocompleteDTO> listB =
-                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 5, false);
+                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
 
@@ -368,6 +368,8 @@ public abstract class RecordBO extends AbstractBO {
     public abstract void populateDetails(RecordDTO record, int mask);
 
     public abstract boolean isDeleatable(HoldingDTO holding) throws ValidationException;
+
+    public abstract RecordType getRecordType();
 
     public RecordDTO open(int id, AuthorizationPoints authorizationPoints) {
         RecordDTO dto = get(id);
@@ -454,7 +456,7 @@ public abstract class RecordBO extends AbstractBO {
 
             ids.add(dto.getId());
 
-            success = this.rdao.moveRecords(ids, loggedUserId, RecordDatabase.TRASH);
+            success = this.rdao.moveRecords(ids, loggedUserId, RecordDatabase.TRASH, getRecordType());
         }
         return success;
     }

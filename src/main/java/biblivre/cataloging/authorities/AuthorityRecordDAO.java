@@ -21,20 +21,12 @@ package biblivre.cataloging.authorities;
 
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
 
 public class AuthorityRecordDAO extends RecordDAO {
 
     public static AuthorityRecordDAO getInstance(String schema) {
-        AuthorityRecordDAO dao =
-                (AuthorityRecordDAO) AbstractDAO.getInstance(AuthorityRecordDAO.class, schema);
-
-        if (dao.recordType == null) {
-            dao.recordType = RecordType.AUTHORITIES;
-        }
-
-        return dao;
+        return AbstractDAO.getInstance(AuthorityRecordDAO.class, schema);
     }
 
     @Override

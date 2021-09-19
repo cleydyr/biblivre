@@ -44,16 +44,14 @@ import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class RecordDAO extends AbstractDAO {
-    protected RecordType recordType;
-
-    public boolean save(RecordDTO dto) {
+	public boolean save(RecordDTO dto) {
         Connection con = null;
 
         try {
             con = this.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO ").append(this.recordType).append("_records ");
+            sql.append("INSERT INTO ").append(dto.getRecordType()).append("_records ");
             sql.append("(id, iso2709, material, database, created_by) ");
             sql.append("VALUES (?, ?, ?, ?, ?); ");
 
@@ -74,13 +72,19 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+		if (dtoList.isEmpty()) {
+			return true;
+		}
+
         Connection con = null;
+
+        RecordType recordType = ((RecordDTO) dtoList.get(0)).getRecordType();
 
         try {
             con = this.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO ").append(this.recordType).append("_records ");
+            sql.append("INSERT INTO ").append(recordType).append("_records ");
             sql.append("(id, iso2709, material, database, created_by, created, modified) ");
             sql.append("VALUES (?, ?, ?, ?, ?, ?, ?); ");
 
@@ -121,7 +125,7 @@ public abstract class RecordDAO extends AbstractDAO {
             con = this.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE ").append(this.recordType).append("_records ");
+            sql.append("UPDATE ").append(dto.getRecordType()).append("_records ");
             sql.append("SET iso2709 = ?, material = ?, modified = now(), modified_by = ? ");
             sql.append("WHERE id = ?;");
 
@@ -140,7 +144,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
-    public boolean listContainsPrivateRecord(Set<Integer> ids) {
+    public boolean listContainsPrivateRecord(Set<Integer> ids, RecordType recordType) {
         Connection con = null;
 
         try {
@@ -149,7 +153,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT count(*) as total FROM ")
-                    .append(this.recordType)
+                    .append(recordType)
                     .append("_records ");
             sql.append("WHERE database = ? AND id IN (");
             sql.append(StringUtils.repeat("?", ", ", ids.size()));
@@ -176,7 +180,7 @@ public abstract class RecordDAO extends AbstractDAO {
         }
     }
 
-    public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database) {
+    public boolean moveRecords(Set<Integer> ids, int modifiedBy, RecordDatabase database, RecordType recordType) {
         Connection con = null;
 
         try {
@@ -184,7 +188,7 @@ public abstract class RecordDAO extends AbstractDAO {
             con.setAutoCommit(false);
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE ").append(this.recordType).append("_records ");
+            sql.append("UPDATE ").append(recordType).append("_records ");
             sql.append("SET database = ?, modified = now(), modified_by = ? ");
             sql.append("WHERE id IN (");
             sql.append(StringUtils.repeat("?", ", ", ids.size()));
@@ -202,7 +206,7 @@ public abstract class RecordDAO extends AbstractDAO {
             pst.executeUpdate();
 
             //			StringBuilder sqlSearch = new StringBuilder();
-            //			sqlSearch.append("DELETE FROM ").append(this.recordType).append("_search_results
+            //			sqlSearch.append("DELETE FROM ").append(recordType).append("_search_results
             // ");
             //			sqlSearch.append("WHERE record_id IN (");
             //			sqlSearch.append(StringUtils.repeat("?", ", ", ids.length));
@@ -216,7 +220,7 @@ public abstract class RecordDAO extends AbstractDAO {
             //
             //			pstSearch.executeUpdate();
 
-            if (this.recordType == RecordType.BIBLIO) {
+            if (recordType == RecordType.BIBLIO) {
                 StringBuilder sqlHolding = new StringBuilder();
 
                 sqlHolding.append("UPDATE biblio_holdings SET database = B.database ");
@@ -244,7 +248,7 @@ public abstract class RecordDAO extends AbstractDAO {
             con = this.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM ").append(this.recordType).append("_records ");
+            sql.append("DELETE FROM ").append(dto.getRecordType()).append("_records ");
             sql.append("WHERE id = ?;");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
@@ -277,7 +281,7 @@ public abstract class RecordDAO extends AbstractDAO {
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT count(*) as total FROM ")
-                    .append(this.recordType)
+                    .append(search.getRecordType())
                     .append("_records WHERE 1 = 1 ");
 
             if (useDatabase) {
@@ -319,14 +323,14 @@ public abstract class RecordDAO extends AbstractDAO {
         return 0;
     }
 
-    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
+    public Map<Integer, RecordDTO> map(Set<Integer> ids, RecordType recordType) {
         Map<Integer, RecordDTO> map = new HashMap<>();
 
         Connection con = null;
         try {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM ").append(this.recordType).append("_records ");
+            sql.append("SELECT * FROM ").append(recordType).append("_records ");
             sql.append("WHERE id in (");
             sql.append(StringUtils.repeat("?", ", ", ids.size()));
             sql.append(");");
@@ -351,18 +355,18 @@ public abstract class RecordDAO extends AbstractDAO {
         return map;
     }
 
-    public List<RecordDTO> list(int offset, int limit) {
-        return this.list(offset, limit, null);
+    public List<RecordDTO> list(int offset, int limit, RecordType recordType) {
+        return this.list(offset, limit, null, recordType);
     }
 
-    public List<RecordDTO> list(int offset, int limit, RecordDatabase database) {
+    public List<RecordDTO> list(int offset, int limit, RecordDatabase database, RecordType recordType) {
         List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM ").append(this.recordType).append("_records ");
+            sql.append("SELECT * FROM ").append(recordType).append("_records ");
 
             if (database != null) {
                 sql.append("WHERE database = ? ");
@@ -400,15 +404,15 @@ public abstract class RecordDAO extends AbstractDAO {
         return list;
     }
 
-    public List<RecordDTO> listByLetter(char letter, int order) {
+    public List<RecordDTO> listByLetter(char letter, int order, RecordType recordType) {
         List<RecordDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM ").append(this.recordType).append("_records R ");
-            sql.append("LEFT JOIN ").append(this.recordType).append("_idx_sort S ");
+            sql.append("SELECT * FROM ").append(recordType).append("_records R ");
+            sql.append("LEFT JOIN ").append(recordType).append("_idx_sort S ");
             sql.append("ON S.record_id = R.id AND S.indexing_group_id = ? ");
             sql.append("WHERE S.phrase ~ ? ORDER BY S.phrase NULLS LAST, R.id ASC;");
 
@@ -456,11 +460,12 @@ public abstract class RecordDAO extends AbstractDAO {
             StringBuilder sql = new StringBuilder();
 
             sql.append("SELECT 0 as indexing_group_id, COUNT(DISTINCT record_id) as total FROM ");
-            sql.append(this.recordType).append("_search_results ");
+            RecordType recordType = search.getRecordType();
+			sql.append(recordType).append("_search_results ");
             sql.append("WHERE search_id = ? ");
             sql.append("UNION ");
             sql.append("SELECT indexing_group_id, COUNT(DISTINCT record_id) as total FROM ");
-            sql.append(this.recordType).append("_search_results ");
+            sql.append(recordType).append("_search_results ");
             sql.append("WHERE search_id = ? and indexing_group_id <> 0 GROUP BY indexing_group_id");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
@@ -507,11 +512,14 @@ public abstract class RecordDAO extends AbstractDAO {
 
             sql.append("SELECT R.*, trim(substr(S.phrase, ignore_chars_count + 1)) as sort FROM ");
 
-            if (useSearchResult) {
-                sql.append(this.recordType).append("_records R ");
+            RecordType recordType = search.getRecordType();
+
+			if (useSearchResult) {
+
+				sql.append(recordType).append("_records R ");
                 sql.append("INNER JOIN ( ");
                 sql.append("SELECT DISTINCT record_id FROM ")
-                        .append(this.recordType)
+                        .append(recordType)
                         .append("_search_results ");
                 sql.append("WHERE search_id = ? ");
 
@@ -528,7 +536,7 @@ public abstract class RecordDAO extends AbstractDAO {
                 sql.append(") SR ON SR.record_id = R.id ");
             } else {
                 sql.append("(");
-                sql.append("SELECT * FROM ").append(this.recordType).append("_records ");
+                sql.append("SELECT * FROM ").append(recordType).append("_records ");
                 sql.append("WHERE database = ? ");
 
                 if (useMaterialType) {
@@ -549,7 +557,7 @@ public abstract class RecordDAO extends AbstractDAO {
                 sql.append(") R ");
             }
 
-            sql.append("LEFT JOIN ").append(this.recordType).append("_idx_sort S ");
+            sql.append("LEFT JOIN ").append(recordType).append("_idx_sort S ");
             sql.append("ON S.record_id = R.id AND S.indexing_group_id = ? ");
 
             sql.append("ORDER BY sort NULLS LAST, R.id ASC OFFSET ? LIMIT ?;");
@@ -596,7 +604,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public List<String> phraseAutocomplete(
-            String datafield, String subfield, String[] terms, int limit, boolean startsWith) {
+            String datafield, String subfield, String[] terms, int limit, boolean startsWith, RecordType recordType) {
         List<String> list = new ArrayList<>();
 
         if (terms == null || terms.length == 0) {
@@ -608,7 +616,7 @@ public abstract class RecordDAO extends AbstractDAO {
             con = this.getConnection();
             StringBuilder sql = new StringBuilder();
 
-            sql.append("SELECT phrase FROM ").append(this.recordType).append("_idx_autocomplete ");
+            sql.append("SELECT phrase FROM ").append(recordType).append("_idx_autocomplete ");
             sql.append("WHERE datafield = ? and subfield = ? and word like ? ");
 
             if (startsWith) {
@@ -650,7 +658,7 @@ public abstract class RecordDAO extends AbstractDAO {
     }
 
     public DTOCollection<AutocompleteDTO> recordAutocomplete(
-            String datafield, String subfield, String[] terms, int limit, boolean startsWith) {
+            String datafield, String subfield, String[] terms, int limit, boolean startsWith, RecordType recordType) {
         DTOCollection<AutocompleteDTO> list = new DTOCollection<>();
 
         if (terms == null || terms.length == 0) {
@@ -663,7 +671,7 @@ public abstract class RecordDAO extends AbstractDAO {
             StringBuilder sql = new StringBuilder();
 
             sql.append("SELECT record_id, phrase FROM ")
-                    .append(this.recordType)
+                    .append(recordType)
                     .append("_idx_autocomplete ");
             sql.append("WHERE datafield = ? and subfield = ? and word like ? ");
 
@@ -679,7 +687,7 @@ public abstract class RecordDAO extends AbstractDAO {
             completeSQL.append(" ) A ");
             completeSQL
                     .append("INNER JOIN ")
-                    .append(this.recordType)
+                    .append(recordType)
                     .append("_records R ON A.record_id = R.id ");
             completeSQL.append("ORDER BY A.phrase ASC LIMIT ?");
 

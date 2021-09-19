@@ -21,20 +21,12 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
 
 public class BiblioRecordDAO extends RecordDAO {
 
     public static BiblioRecordDAO getInstance(String schema) {
-        BiblioRecordDAO dao =
-                (BiblioRecordDAO) AbstractDAO.getInstance(BiblioRecordDAO.class, schema);
-
-        if (dao.recordType == null) {
-            dao.recordType = RecordType.BIBLIO;
-        }
-
-        return dao;
+        return AbstractDAO.getInstance(BiblioRecordDAO.class, schema);
     }
 
     @Override

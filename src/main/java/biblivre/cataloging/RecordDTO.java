@@ -277,7 +277,7 @@ public class RecordDTO extends AbstractDTO {
         return this.fields;
     }
 
-    private RecordType getRecordType() {
+    public RecordType getRecordType() {
         return getMaterialType().getRecordType();
     }
 

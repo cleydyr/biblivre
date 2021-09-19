@@ -203,4 +203,9 @@ public class BiblioRecordBO extends RecordBO {
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.LENDING_INFO);
     }
+
+	@Override
+	public RecordType getRecordType() {
+		return RecordType.BIBLIO;
+	}
 }

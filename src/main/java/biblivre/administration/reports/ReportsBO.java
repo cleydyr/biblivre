@@ -3,8 +3,8 @@ package biblivre.administration.reports;
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
 import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.bibliographic.BiblioRecordDAO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
@@ -27,6 +27,7 @@ import org.marc4j.marc.Subfield;
 public class ReportsBO extends AbstractBO {
 
     private ReportsDAO dao;
+    private RecordDAO recordDAO;
 
     public static ReportsBO getInstance(String schema) {
         ReportsBO bo = AbstractBO.getInstance(ReportsBO.class, schema);
@@ -86,8 +87,6 @@ public class ReportsBO extends AbstractBO {
             }
 
         } else {
-            BiblioRecordDAO bdao = BiblioRecordDAO.getInstance(this.getSchema());
-
             RecordDatabase database = reportsDto.getDatabase();
             if (database == null) {
                 database = RecordDatabase.MAIN;
@@ -95,7 +94,7 @@ public class ReportsBO extends AbstractBO {
 
             boolean hasMore = true;
             while (hasMore) {
-                List<RecordDTO> records = bdao.list(offset, limit, database);
+                List<RecordDTO> records = recordDAO.list(offset, limit, database, RecordType.BIBLIO);
                 if (records == null || records.size() == 0) {
                     hasMore = false;
                 } else {

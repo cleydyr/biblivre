@@ -119,4 +119,9 @@ public class VocabularyRecordBO extends RecordBO {
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         return super.map(ids, RecordBO.MARC_INFO);
     }
+
+	@Override
+	public RecordType getRecordType() {
+		return RecordType.VOCABULARY;
+	}
 }
