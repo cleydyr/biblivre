@@ -97,6 +97,10 @@
         <constructor-arg index="3" ref="requestBO" />
     </bean>
 
+	<bean id="userBO" name="userBO" class="biblivre.circulation.user.UserBO" >
+        <constructor-arg index="0" ref="userDAO" />
+    </bean>
+
     <!-- DAOs -->
 
 	<bean id="accessControlDAO"
@@ -145,5 +149,11 @@
 		class="biblivre.acquisition.supplier.SupplierDAOImpl"
 	 	factory-method="getInstance" >
 	 	<constructor-arg value="single" />
+	</bean>
+
+	<bean id="userDAO"
+		class="biblivre.circulation.user.UserDAOImpl"
+		factory-method="getInstance" >
+		<constructor-arg value="single" />
 	</bean>
 </beans>
