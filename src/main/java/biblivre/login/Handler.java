@@ -230,7 +230,7 @@ public class Handler extends AbstractHandler {
                                     });
                         });
 
-        request.setScopedSessionAttribute("modules", allowedModules);
+        request.setSessionAttribute("modules", allowedModules);
     }
 
     private static Map<Integer, JSONObject> _getPrioritizedMenus(JSONObject json) {
