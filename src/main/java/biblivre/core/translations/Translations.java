@@ -604,7 +604,7 @@ public class Translations extends StaticBO {
                         translationsMap = new TranslationsMap(schema, language, 1);
                     }
 
-                    return map;
+                    return translationsMap;
                 });
     }
 }

@@ -42,7 +42,7 @@
 
 		<div class="selection_box submit_on_enter">
 			<div class="title"><input type="radio" name="source" id="source_search"/> <label for="source_search"><i18n:text key="cataloging.import.source_search_title" /></label></div>
-			<div class="subtitle"><i18n:text key="cataloging.import.source_search_subtitle" param1="<%= String.valueOf(Configurations.getInt((String) request.getAttribute(\"schema\"), Constants.CONFIG_Z3950_RESULT_LIMIT, 100))%>"/></div>
+			<div class="subtitle"><i18n:text key="cataloging.import.source_search_subtitle" param1="<%= String.valueOf(Configurations.getInt(Constants.CONFIG_Z3950_RESULT_LIMIT, 100))%>"/></div>
 			<div class="body">
 				<div class="search_input_div">
 					<label class="search_label"><i18n:text key="search.common.containing_text" /></label>

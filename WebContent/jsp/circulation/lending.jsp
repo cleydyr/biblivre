@@ -129,8 +129,8 @@
 									<div class="ncspacer"></div>
 
 									<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.info.lending.daysLate || 0) }</span><br/>
-									<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
-									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
+									<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
+									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
 								{#/if}
 							</div>
 							<div class="lending_buttons">
@@ -162,7 +162,7 @@
 					<label class="search_label"><i18n:text key="search.user.field" /></label>
 					<select name="field" class="combo">
 						<option value=""><i18n:text key="search.user.name_or_id" /></option>
-						<c:forEach var="field" items="<%= UserFields.getSearchableFields((String) request.getAttribute(\"schema\")) %>" >
+						<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
 							<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 						</c:forEach>
 					</select>
@@ -339,8 +339,8 @@
 											<div class="ncspacer"></div>
 
 											<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.record.lending.daysLate || 0) }</span><br/>
-											<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.dailyFine || 0, 'n2') }<br/>
-											<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.estimatedFine || 0, 'n2') }</span><br/>
+											<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.dailyFine || 0, 'n2') }<br/>
+											<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.estimatedFine || 0, 'n2') }</span><br/>
 										{#/if}
 									</div>
 								{#/if}
@@ -365,8 +365,8 @@
 			<div class="description">
 				<p><i18n:text key="circulation.lending.fine_popup.description" /></p>
 				<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="days_late"></span><br/>
-				<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> <span class="daily_fine"></span><br/>
-				<label><i18n:text key="circulation.lending.fine_value" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> <input type="text" name="fine_value" /><br/>
+				<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> <span class="daily_fine"></span><br/>
+				<label><i18n:text key="circulation.lending.fine_value" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> <input type="text" name="fine_value" /><br/>
 			</div>
 
 			<div class="buttons">

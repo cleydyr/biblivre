@@ -23,7 +23,7 @@
 				<div>
 					<div class="label"></div>
 					<div class="value">
-						<c:forEach var="language" items="<%= Languages.getLanguages(schema) %>">
+						<c:forEach var="language" items="<%= Languages.getLanguages() %>">
 							<a href="javascript:void(0);" onclick="Translation.dump('${language.language}');">${language.name}</a><br/>
 						</c:forEach>
 					</div>

@@ -181,11 +181,11 @@
 	</div><script type="text/javascript" src="static/scripts/biblivre.administration.form_customization.js"></script>
 
 	<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
 	<script>FormCustomization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "authorities").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("authorities").getCacheFileName() %>"></script>
 	<script>FormCustomization.formFields['authorities'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "vocabulary").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("vocabulary").getCacheFileName() %>"></script>
 	<script>FormCustomization.formFields['vocabulary'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
 	<script>FormCustomization.materialTypes = <%= MaterialType.toJavascriptArray()%>;</script>
 </layout:body>

@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
+import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
@@ -46,6 +47,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SchemaServlet extends HttpServlet {
 
@@ -65,63 +68,66 @@ public final class SchemaServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        BiblivreInitializer.initialize();
-        ExtendedRequest xRequest = ((ExtendedRequest) request);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BiblivreInitializer.initialize();
+            ExtendedRequest xRequest = ((ExtendedRequest) request);
 
-        if (xRequest.mustRedirectToSchema()) {
-            String query = xRequest.getQueryString();
+            if (xRequest.mustRedirectToSchema()) {
+                String query = xRequest.getQueryString();
 
-            if (StringUtils.isNotBlank(query)) {
-                query = "?" + query;
-            } else {
-                query = "";
+                if (StringUtils.isNotBlank(query)) {
+                    query = "?" + query;
+                } else {
+                    query = "";
+                }
+
+                ((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
+                return;
             }
 
-            ((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
-            return;
-        }
+            String controller = xRequest.getController();
 
-        String controller = xRequest.getController();
+            if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
+                Writer out = response.getWriter();
+                JSONObject json = new JSONObject();
 
-        if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
-            Writer out = response.getWriter();
-            JSONObject json = new JSONObject();
+                SchemaThreadLocal.withSchema(
+                        "public",
+                        () -> {
+                            try {
+                                // TODO: Completar com mais mensagens.
+                                // Checking Database
+                                SchemaThreadLocal.setSchema("public");
 
-            SchemaThreadLocal.withSchema(
-                    "public",
-                    () -> {
-                        try {
-                            // TODO: Completar com mais mensagens.
-                            // Checking Database
-                            SchemaThreadLocal.setSchema("public");
-
-                            if (!SchemasDAO.getInstance().testDatabaseConnection()) {
-                                json.put("success", false);
-                                json.put("status_message", "Falha no acesso ao Banco de Dados");
-                            } else {
-                                json.put("success", true);
-                                json.put("status_message", "Disponível");
+                                if (!SchemasDAO.getInstance().testDatabaseConnection()) {
+                                    json.put("success", false);
+                                    json.put("status_message", "Falha no acesso ao Banco de Dados");
+                                } else {
+                                    json.put("success", true);
+                                    json.put("status_message", "Disponível");
+                                }
+                            } catch (JSONException e) {
                             }
-                        } catch (JSONException e) {
-                        }
 
-                        return null;
-                    });
+                            return null;
+                        });
 
-            out.write(json.toString());
+                out.write(json.toString());
 
-            return;
-        }
+                return;
+            }
 
-        String path = request.getServletPath();
-        boolean isStatic = path.contains("static/") || path.contains("extra/");
+            String path = request.getServletPath();
+            boolean isStatic = path.contains("static/") || path.contains("extra/");
 
-        if (isStatic) {
-            this.processStaticRequest(request, response);
-        } else {
-            this.processDynamicRequest(request, response);
+            if (isStatic) {
+                this.processStaticRequest(request, response);
+            } else {
+                this.processDynamicRequest(request, response);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -271,4 +277,6 @@ public final class SchemaServlet extends HttpServlet {
         FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
                 getServletContext(), "/freemarker");
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 }
