@@ -10,7 +10,6 @@ import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.PagingDTO;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.SearchMode;
@@ -64,9 +63,7 @@ public abstract class PaginableRecordBO extends RecordBO {
 
         search.setQuery(searchQuery);
 
-        String schema = SchemaThreadLocal.get();
-
-		search.setSort(IndexingGroups.getDefaultSortableGroupId(schema , getRecordType()));
+        search.setSort(IndexingGroups.getDefaultSortableGroupId(getRecordType()));
 
         search(search);
 
@@ -120,14 +117,11 @@ public abstract class PaginableRecordBO extends RecordBO {
     private PagingDTO _newConfiguredPagingInstance() {
         PagingDTO paging = new PagingDTO();
 
-        String schema = SchemaThreadLocal.get();
-
         paging.setRecordsPerPage(
-                Configurations.getPositiveInt(
-                        schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+                Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
 
         paging.setRecordLimit(
-                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+                Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
 
         paging.setPage(1);
 

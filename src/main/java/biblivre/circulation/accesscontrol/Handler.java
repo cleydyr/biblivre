@@ -33,18 +33,22 @@ import java.util.Date;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private AccessCardBO accessCardBO;
-	private AccessControlBO accessControlBO;
-	private UserBO userBO;
-	private LendingBO lendingBO;
+    private AccessCardBO accessCardBO;
+    private AccessControlBO accessControlBO;
+    private UserBO userBO;
+    private LendingBO lendingBO;
 
-    public Handler(AccessCardBO accessCardBO, AccessControlBO accessControlBO, UserBO userBO, LendingBO lendingBO) {
-		super();
-		this.accessCardBO = accessCardBO;
-		this.accessControlBO = accessControlBO;
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-	}
+    public Handler(
+            AccessCardBO accessCardBO,
+            AccessControlBO accessControlBO,
+            UserBO userBO,
+            LendingBO lendingBO) {
+        super();
+        this.accessCardBO = accessCardBO;
+        this.accessControlBO = accessControlBO;
+        this.userBO = userBO;
+        this.lendingBO = lendingBO;
+    }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
         biblivre.circulation.user.Handler userHandler =

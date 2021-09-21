@@ -23,6 +23,7 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
+import biblivre.administration.backup.BackupBO;
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
@@ -32,6 +33,8 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.utils.Constants;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import java.io.IOException;
@@ -75,13 +78,11 @@ public class Handler extends AbstractHandler {
     }
 
     public void listBibliographic(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String letter = request.getString("letter");
         Integer order =
                 request.getInteger(
-                        "order",
-                        IndexingGroups.getDefaultSortableGroupId(schema, RecordType.BIBLIO));
+                        "order", IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         if (StringUtils.isBlank(letter)) {
             letter = "a";
@@ -121,7 +122,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Z3950BO bo = Z3950BO.getInstance();
 
         List<Z3950AddressDTO> servers = bo.listAll();
@@ -148,7 +149,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Z3950BO bo = Z3950BO.getInstance();
 
         List<Z3950AddressDTO> servers = bo.listAll();
@@ -303,7 +303,17 @@ public class Handler extends AbstractHandler {
     }
 
     public void multiSchemaBackup(ExtendedRequest request, ExtendedResponse response) {
+        String backupPath =
+                SchemaThreadLocal.withSchema(
+                        Constants.GLOBAL_SCHEMA,
+                        () -> {
+                            return BackupBO.getInstance().getBackupPath();
+                        });
+
+        request.setAttribute("backupPath", backupPath);
+
         this.jspURL = "/jsp/multi_schema/backup.jsp";
+
         return;
     }
 

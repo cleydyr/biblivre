@@ -49,9 +49,8 @@ public class Handler extends AbstractHandler {
         }
 
         String printId = UUID.randomUUID().toString();
-        String schema = request.getSchema();
 
-        request.setSessionAttribute(schema, printId, print);
+        request.setScopedSessionAttribute(printId, print);
 
         try {
             this.json.put("uuid", printId);
@@ -61,9 +60,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void downloadPdf(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String printId = request.getString("id");
-        LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
+        LabelPrintDTO dto = (LabelPrintDTO) request.getScopedSessionAttribute(printId);
         final DiskFile exportFile = userBO.printUserCardsToPDF(dto, request.getTranslationsMap());
 
         userBO.markAsPrinted(dto.getIds());

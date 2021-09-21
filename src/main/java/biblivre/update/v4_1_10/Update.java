@@ -3,6 +3,7 @@ package biblivre.update.v4_1_10;
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.translations.Translations;
 import biblivre.update.UpdateService;
 import java.sql.Connection;
@@ -45,9 +46,15 @@ public class Update implements UpdateService {
                 "title",
                 "245_a_b,243_a_f,240_a,730_a,740_a_n_p,830_a_v,250_a,130_a");
 
-        IndexingGroups.reset(connection.getSchema(), RecordType.BIBLIO);
+        SchemaThreadLocal.withSchema(
+                connection.getSchema(),
+                () -> {
+                    IndexingGroups.reset(RecordType.BIBLIO);
 
-        Fields.reset(connection.getSchema(), RecordType.BIBLIO);
+                    Fields.reset(RecordType.BIBLIO);
+
+                    return null;
+                });
     }
 
     private void _addIndexingGroups(Connection connection) throws SQLException {

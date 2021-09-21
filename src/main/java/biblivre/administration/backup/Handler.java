@@ -22,6 +22,7 @@ package biblivre.administration.backup;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
@@ -38,7 +39,6 @@ import org.json.JSONException;
 public class Handler extends AbstractHandler {
 
     public void prepare(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         String schemas = request.getString("schemas");
         String type = request.getString("type");
 
@@ -53,10 +53,12 @@ public class Handler extends AbstractHandler {
         BackupBO bo = BackupBO.getInstance();
         BackupScope backupScope = bo.getBackupScope();
 
+        String schema = SchemaThreadLocal.get();
+
         ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
-        if (request.isGlobalSchema()) {
+        if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             list.addAll(Arrays.asList(StringUtils.split(schemas, ",")));
 
             if (list.size() == 2) {
@@ -77,8 +79,8 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            String title = Configurations.getString(s, Constants.CONFIG_TITLE);
-            String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
+            String title = Configurations.getString(Constants.CONFIG_TITLE);
+            String subtitle = Configurations.getString(Constants.CONFIG_SUBTITLE);
             map.put(s, Pair.of(title, subtitle));
         }
 
@@ -93,7 +95,6 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=backup
     public void backup(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
         BackupBO bo = BackupBO.getInstance();
@@ -105,12 +106,11 @@ public class Handler extends AbstractHandler {
         }
 
         bo.backup(dto);
-        request.setSessionAttribute(schema, "system_warning_backup", false);
+        request.setScopedSessionAttribute("system_warning_backup", false);
     }
 
     // http://localhost:8080/Biblivre5/?controller=download&module=administration.backup&action=download&id=1
     public void download(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
         final BackupBO bo = BackupBO.getInstance();
@@ -129,7 +129,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void progress(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
         final BackupBO bo = BackupBO.getInstance();
@@ -151,8 +150,6 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         BackupBO bo = BackupBO.getInstance();
 
         try {

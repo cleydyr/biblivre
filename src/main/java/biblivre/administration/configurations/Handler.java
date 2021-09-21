@@ -35,7 +35,6 @@ import org.json.JSONObject;
 public class Handler extends AbstractHandler {
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int loggedUser = request.getLoggedUserId();
         String language = request.getLanguage();
 
@@ -52,8 +51,7 @@ public class Handler extends AbstractHandler {
 
                             if (key.equals("text.main.logged_in")
                                     || key.equals("text.main.logged_out")) {
-                                Translations.addSingleTranslation(
-                                        schema, language, key, value, loggedUser);
+                                Translations.addSingleTranslation(language, key, value, loggedUser);
                             } else {
                                 configs.add(new ConfigurationsDTO(key, value));
                             }
@@ -65,7 +63,7 @@ public class Handler extends AbstractHandler {
 
         boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
 
-        Configurations.save(schema, Configurations.validate(schema, configs), loggedUser);
+        Configurations.save(Configurations.validate(configs), loggedUser);
 
         boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
 
@@ -75,6 +73,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
-        request.getSession().removeAttribute(request.getSchema() + ".system_warning_new_version");
+        request.getSession().removeAttribute(".system_warning_new_version");
     }
 }

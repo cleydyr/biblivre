@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class AuthorizationDAO extends AbstractDAO {
 
-    public static AuthorizationDAO  getInstance() {
+    public static AuthorizationDAO getInstance() {
         return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAO.class);
     }
 

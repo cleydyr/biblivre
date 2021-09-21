@@ -41,7 +41,7 @@ public class AuthorizationPoints implements Serializable {
     private String schema;
 
     public static AuthorizationPoints getNotLoggedInstance() {
-    	String schema = SchemaThreadLocal.get();
+        String schema = SchemaThreadLocal.get();
 
         if (schema.equals(Constants.GLOBAL_SCHEMA)) {
             if (AuthorizationPoints.notLoggedMultiSchemaInstance == null) {

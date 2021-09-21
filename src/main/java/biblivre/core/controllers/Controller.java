@@ -24,7 +24,6 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
@@ -59,7 +58,6 @@ public abstract class Controller {
     }
 
     protected void processRequest() throws ServletException, IOException {
-        String schema = null;
         String module = null;
         String action = null;
 
@@ -67,7 +65,6 @@ public abstract class Controller {
         this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
         try {
-        	schema = SchemaThreadLocal.get();
             module =
                     this.xRequest.getString(
                             "module", (String) this.xRequest.getAttribute("module"));
@@ -91,13 +88,13 @@ public abstract class Controller {
                             || (module.equals("menu") && action.equals("setup")));
 
             if (isSetup
-                    && (Configurations.getBoolean(schema, Constants.CONFIG_NEW_LIBRARY)
+                    && (Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY)
                             || action.equals("progress"))) {
                 // authorize
             } else {
                 AuthorizationPoints authPoints =
                         (AuthorizationPoints)
-                                this.xRequest.getSessionAttribute(schema, "logged_user_atps");
+                                this.xRequest.getScopedSessionAttribute("logged_user_atps");
                 if (authPoints == null) {
                     authPoints = AuthorizationPoints.getNotLoggedInstance();
                 }

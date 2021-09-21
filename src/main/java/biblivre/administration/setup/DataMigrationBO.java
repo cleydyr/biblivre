@@ -74,11 +74,10 @@ public class DataMigrationBO extends AbstractBO {
     private AuthorityRecordBO authoritiyRecordBO;
     private VocabularyRecordBO vocabularyRecordBO;
     private HoldingBO holdingsBO;
-	private LendingBO lendingBO;
+    private LendingBO lendingBO;
 
     public static DataMigrationBO getInstance(String schema, String datasource) {
-        DataMigrationBO bo =
-                AbstractBO.getInstance(DataMigrationBO.class);
+        DataMigrationBO bo = AbstractBO.getInstance(DataMigrationBO.class);
 
         if (bo.dao == null) {
             bo.dao = DataMigrationDAO.getInstance(schema, datasource);

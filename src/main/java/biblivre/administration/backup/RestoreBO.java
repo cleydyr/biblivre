@@ -89,7 +89,7 @@ public class RestoreBO extends AbstractBO {
     private BackupDAO dao;
     private DigitalMediaDAO digitalMediaDAO;
 
-    public static RestoreBO  getInstance() {
+    public static RestoreBO getInstance() {
         RestoreBO bo = AbstractBO.getInstance(RestoreBO.class);
 
         if (bo.dao == null) {
@@ -562,25 +562,27 @@ public class RestoreBO extends AbstractBO {
             return;
         }
 
-        SchemaThreadLocal.setSchema(Constants.GLOBAL_SCHEMA);
+        SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    DigitalMediaDAO dao = DigitalMediaDAO.getInstance();
 
-        DigitalMediaDAO dao = DigitalMediaDAO.getInstance();
+                    for (File file : path.listFiles()) {
+                        Matcher fileMatcher = _FILE.matcher(file.getName());
 
-        for (File file : path.listFiles()) {
-            Matcher fileMatcher = _FILE.matcher(file.getName());
+                        if (fileMatcher.find()) {
+                            String mediaId = fileMatcher.group(1);
 
-            if (fileMatcher.find()) {
-                String mediaId = fileMatcher.group(1);
+                            long oid = dao.importFile(file);
 
-                long oid = dao.importFile(file);
+                            String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
 
-                String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
+                            _writeLine(bw, newLine);
+                        }
+                    }
 
-                _writeLine(bw, newLine);
-            }
-        }
-
-        SchemaThreadLocal.remove();
+                    return null;
+                });
     }
 
     private String _buildUpdateDigitalMediaQuery(String mediaId, long oid) {
@@ -729,7 +731,7 @@ public class RestoreBO extends AbstractBO {
     }
 
     private ProcessBuilder _createProcessBuilder(boolean transactional) {
-    	String schema = SchemaThreadLocal.get();
+        String schema = SchemaThreadLocal.get();
 
         File psql = DatabaseUtils.getPsql(schema);
 

@@ -32,6 +32,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldDTO;
 import biblivre.circulation.user.UserFields;
 import biblivre.core.JavascriptCacheableList;
+import biblivre.core.SchemaThreadLocal;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -48,7 +49,7 @@ public class UserReport extends BaseBiblivreReport {
 
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
     private UserBO userBO;
-	private LendingBO lendingBO;
+    private LendingBO lendingBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -77,7 +78,8 @@ public class UserReport extends BaseBiblivreReport {
         List<String[]> lateLendings = new ArrayList<String[]>();
 
         List<LendingDTO> currentLendingsList = lendingBO.listUserLendings(user);
-        List<LendingInfoDTO> currentLendingsInfo = lendingBO.populateLendingInfo(currentLendingsList);
+        List<LendingInfoDTO> currentLendingsInfo =
+                lendingBO.populateLendingInfo(currentLendingsList);
         for (LendingInfoDTO lidto : currentLendingsInfo) {
             String[] data = new String[3];
             data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
@@ -295,7 +297,9 @@ public class UserReport extends BaseBiblivreReport {
         PdfPTable table = new PdfPTable(4);
         table.setWidthPercentage(100f);
         PdfPCell cell;
-        JavascriptCacheableList<UserFieldDTO> fields = UserFields.getFields(this.getSchema());
+
+        JavascriptCacheableList<UserFieldDTO> fields =
+                SchemaThreadLocal.withSchema(getSchema(), UserFields::getFields);
 
         for (UserFieldDTO field : fields) {
             String fieldKey = field.getKey();

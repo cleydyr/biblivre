@@ -51,11 +51,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BackupBO extends AbstractBO {
     private BackupDAO dao;
 
-    public static BackupBO  getInstance() {
+    public static BackupBO getInstance() {
         BackupBO bo = AbstractBO.getInstance(BackupBO.class);
 
         if (bo.dao == null) {
@@ -87,8 +89,8 @@ public class BackupBO extends AbstractBO {
                 continue;
             }
 
-            String title = Configurations.getString(s, Constants.CONFIG_TITLE);
-            String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
+            String title = Configurations.getString(Constants.CONFIG_TITLE);
+            String subtitle = Configurations.getString(Constants.CONFIG_SUBTITLE);
             map.put(s, Pair.of(title, subtitle));
         }
 
@@ -97,7 +99,7 @@ public class BackupBO extends AbstractBO {
     }
 
     public BackupScope getBackupScope() {
-    	String schema = SchemaThreadLocal.get();
+        String schema = SchemaThreadLocal.get();
 
         if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             return BackupScope.MULTI_SCHEMA;
@@ -153,7 +155,7 @@ public class BackupBO extends AbstractBO {
     }
 
     public void createBackup(BackupDTO dto) throws IOException {
-    	String schema_ = SchemaThreadLocal.get();
+        String schema_ = SchemaThreadLocal.get();
 
         File pgdump = DatabaseUtils.getPgDump(schema_);
 
@@ -249,9 +251,7 @@ public class BackupBO extends AbstractBO {
     }
 
     public String getBackupPath() {
-    	String schema = SchemaThreadLocal.get();
-
-        String path = Configurations.getString(schema, Constants.CONFIG_BACKUP_PATH);
+        String path = Configurations.getString(Constants.CONFIG_BACKUP_PATH);
 
         if (StringUtils.isBlank(path) || FileIOUtils.doesNotExists(path)) {
             File home = new File(System.getProperty("user.home"));
@@ -318,8 +318,8 @@ public class BackupBO extends AbstractBO {
             while ((line = br.readLine()) != null) {
                 // There was a system.out.println here for the 'line' var,
                 // with a FIX_ME tag.  So I changed it to logger.debug().
-                if (this.logger.isDebugEnabled()) {
-                    this.logger.debug(line);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(line);
                 }
             }
 
@@ -327,9 +327,9 @@ public class BackupBO extends AbstractBO {
 
             return p.exitValue() == 0;
         } catch (IOException e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(br);
         }
@@ -431,4 +431,6 @@ public class BackupBO extends AbstractBO {
         this.exportDigitalMedia(schema, schemaBackup);
         this.save(dto);
     }
+
+    protected static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 }

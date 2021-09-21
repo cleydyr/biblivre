@@ -43,14 +43,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private UserBO userBO;
-	private LendingBO lendingBO;
+    private UserBO userBO;
+    private LendingBO lendingBO;
 
     public Handler(UserBO userBO, LendingBO lendingBO) {
-		super();
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-	}
+        super();
+        this.userBO = userBO;
+        this.lendingBO = lendingBO;
+    }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -87,15 +87,14 @@ public class Handler extends AbstractHandler {
 
     public DTOCollection<UserDTO> searchHelper(
             ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
 
         UserSearchDTO searchDto = new UserSearchDTO(searchParameters);
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = request.getInteger("offset", 0);
 
         Integer page = request.getInteger("page", 1);
@@ -113,7 +112,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer id = request.getInteger("id");
 
         UserDTO user = null;
@@ -135,7 +134,7 @@ public class Handler extends AbstractHandler {
 
         user.setCreatedBy(request.getLoggedUserId());
 
-        List<UserFieldDTO> userFields = UserFields.getFields(schema);
+        List<UserFieldDTO> userFields = UserFields.getFields();
         for (UserFieldDTO userField : userFields) {
             String key = userField.getKey();
             if (request.hasParameter(key)) {

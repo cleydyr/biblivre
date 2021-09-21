@@ -37,7 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
-    public static SearchDAOImpl  getInstance() {
+    public static SearchDAOImpl getInstance() {
         return AbstractDAO.getInstance(SearchDAOImpl.class);
     }
 

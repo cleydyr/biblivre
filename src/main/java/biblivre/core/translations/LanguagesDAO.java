@@ -22,17 +22,17 @@ package biblivre.core.translations;
 import biblivre.core.AbstractDAO;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.Constants;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
-import biblivre.core.utils.Constants;
 
 public class LanguagesDAO extends AbstractDAO {
 
-    public static LanguagesDAO  getInstance() {
+    public static LanguagesDAO getInstance() {
         return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class);
     }
 

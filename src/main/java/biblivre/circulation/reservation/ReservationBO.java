@@ -32,7 +32,6 @@ import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.CalendarUtils;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class ReservationBO extends AbstractBO {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
 
-    public static ReservationBO  getInstance() {
+    public static ReservationBO getInstance() {
         ReservationBO bo = AbstractBO.getInstance(ReservationBO.class);
 
         if (bo.dao == null) {
@@ -197,8 +196,7 @@ public class ReservationBO extends AbstractBO {
 
         Date today = new Date();
         int days = (type != null) ? type.getReservationTimeLimit() : 7;
-        String schema = SchemaThreadLocal.get();
-        Date expires = CalendarUtils.calculateExpectedReturnDate(schema, today, days);
+        Date expires = CalendarUtils.calculateExpectedReturnDate(today, days);
 
         reservation.setExpires(expires);
 

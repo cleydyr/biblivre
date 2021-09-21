@@ -40,7 +40,7 @@ public class UserTypeBO extends AbstractBO {
         this.userBO = userBO;
     }
 
-    public static UserTypeBO  getInstance() {
+    public static UserTypeBO getInstance() {
         UserTypeBO bo = AbstractBO.getInstance(UserTypeBO.class);
         if (bo.dao == null) {
             bo.dao = UserTypeDAO.getInstance();

@@ -52,7 +52,6 @@ public class Handler extends AbstractHandler {
 
     public DTOCollection<AccessCardDTO> searchHelper(
             ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
 
         String query = null;
@@ -68,8 +67,7 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<AccessCardDTO> list = accessCardBO.search(query, status, limit, offset);

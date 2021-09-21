@@ -56,8 +56,7 @@ public abstract class AbstractDAO {
     public static <T extends AbstractDAO> T getInstance(
             DataSourceProvider dataSourceProvider, Class<T> cls) {
 
-        return AbstractDAO.getInstance(
-                dataSourceProvider, cls, Constants.DEFAULT_DATABASE_NAME);
+        return AbstractDAO.getInstance(dataSourceProvider, cls, Constants.DEFAULT_DATABASE_NAME);
     }
 
     public static <T extends AbstractDAO> T getInstance(Class<T> cls) {
@@ -65,8 +64,7 @@ public abstract class AbstractDAO {
         return AbstractDAO.getInstance(cls, DatabaseUtils.getDatabaseName());
     }
 
-    public static <T extends AbstractDAO> T getInstance(
-            Class<T> cls, String dataSourceName) {
+    public static <T extends AbstractDAO> T getInstance(Class<T> cls, String dataSourceName) {
 
         DataSourceProvider dataSourceProvider = new HikariDataSourceProvider();
 
@@ -75,11 +73,9 @@ public abstract class AbstractDAO {
 
     @SuppressWarnings("unchecked")
     public static <T extends AbstractDAO> T getInstance(
-            DataSourceProvider dataSourceProvider,
-            Class<T> cls,
-            String dataSourceName) {
+            DataSourceProvider dataSourceProvider, Class<T> cls, String dataSourceName) {
 
-    	String schema = SchemaThreadLocal.get();
+        String schema = SchemaThreadLocal.get();
 
         String key = cls.getName() + "#" + schema + ":" + dataSourceName;
 
@@ -148,7 +144,8 @@ public abstract class AbstractDAO {
         */
 
         con.createStatement()
-                .execute("SET search_path = '" + SchemaThreadLocal.get() + "', public, pg_catalog;");
+                .execute(
+                        "SET search_path = '" + SchemaThreadLocal.get() + "', public, pg_catalog;");
 
         return con;
     }
@@ -405,8 +402,9 @@ public abstract class AbstractDAO {
         return pgcon;
     }
 
-	public static DataMigrationDAO getInstance(Class<DataMigrationDAO> class1, String string, String datasource) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public static DataMigrationDAO getInstance(
+            Class<DataMigrationDAO> class1, String string, String datasource) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

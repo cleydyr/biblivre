@@ -19,15 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.bibliographic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.marc4j.marc.Record;
-
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDAO;
@@ -41,14 +32,25 @@ import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.marc4j.marc.Record;
 
 public class BiblioRecordBO extends PaginableRecordBO {
 
     private IndexingBO indexingBO;
-	private LendingBO2 lendingBO;
+    private LendingBO2 lendingBO;
 
     public BiblioRecordBO(
-            RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO, IndexingBO indexingBO, LendingBO2 lendingBO) {
+            RecordDAO recordDAO,
+            SearchDAO searchDAO,
+            HoldingBO holdingBO,
+            IndexingBO indexingBO,
+            LendingBO2 lendingBO) {
         super(recordDAO, searchDAO, holdingBO);
         this.indexingBO = indexingBO;
         this.lendingBO = lendingBO;

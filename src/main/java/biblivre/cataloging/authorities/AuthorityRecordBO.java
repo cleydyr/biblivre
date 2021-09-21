@@ -26,9 +26,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingBO;
-import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.search.SearchDAO;
-import biblivre.core.exceptions.ValidationException;
 import java.util.Map;
 import java.util.Set;
 

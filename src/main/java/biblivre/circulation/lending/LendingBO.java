@@ -35,7 +35,6 @@ import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.FreemarkerTemplateHelper;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.PrinterType;
 import biblivre.core.exceptions.ValidationException;
@@ -61,7 +60,10 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class LendingBO extends LendingBO2 {
     public LendingBO(
-            LendingDAO lendingDAO, UserBO userBO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
+            LendingDAO lendingDAO,
+            UserBO userBO,
+            HoldingBO holdingBO,
+            BiblioRecordBO biblioRecordBO) {
         super(lendingDAO);
         this.userBO = userBO;
         this.holdingBO = holdingBO;
@@ -159,10 +161,7 @@ public class LendingBO extends LendingBO2 {
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
 
-        String schema = SchemaThreadLocal.get();
-
-        Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(schema, today, days);
+        Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(today, days);
         lending.setExpectedReturnDate(expectedReturnDate);
 
         if (this.lendingDAO.doLend(lending)) {
@@ -200,10 +199,8 @@ public class LendingBO extends LendingBO2 {
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
 
-        String schema = SchemaThreadLocal.get();
+        Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(today, days);
 
-        Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(schema, today, days);
         lending.setExpectedReturnDate(expectedReturnDate);
 
         return this.lendingDAO.doRenew(
@@ -399,12 +396,9 @@ public class LendingBO extends LendingBO2 {
 
     public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
             throws TemplateException, IOException {
-    	String schema = SchemaThreadLocal.get();
-
         PrinterType printerType =
                 PrinterType.fromString(
-                        Configurations.getString(
-                                schema, Constants.CONFIG_LENDING_PRINTER_TYPE));
+                        Configurations.getString(Constants.CONFIG_LENDING_PRINTER_TYPE));
         int columns = 24;
 
         if (printerType != null) {
@@ -449,9 +443,7 @@ public class LendingBO extends LendingBO2 {
         receipt.append(StringUtils.repeat('*', columns)).append("\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
 
-        String schema = SchemaThreadLocal.get();
-
-        String libraryName = Configurations.getString(schema, "general.title");
+        String libraryName = Configurations.getString("general.title");
 
         receipt.append("* ").append(StringUtils.center(libraryName, columns - 4)).append(" *\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
@@ -691,9 +683,7 @@ public class LendingBO extends LendingBO2 {
 
         root.put("lendingInfo", lendingInfo);
 
-        String schema = SchemaThreadLocal.get();
-
-        String libraryName = Configurations.getString(schema, "general.title");
+        String libraryName = Configurations.getString("general.title");
         String now = dateTimeFormat.format(new Date());
 
         root.put("libraryName", libraryName);

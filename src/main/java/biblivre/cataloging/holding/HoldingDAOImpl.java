@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
-import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDAOImpl;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;

@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import biblivre.AbstractContainerDatabaseTest;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -18,6 +20,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
 
     private static final String DEFAULT_SCHEMA = "single";
+
+    @BeforeAll
+    void setDefaultSchema() {
+        SchemaThreadLocal.setSchema(DEFAULT_SCHEMA);
+    }
 
     @Test
     void testGetPgDump() {
@@ -147,12 +154,12 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
     private void _resetConfiguration(String config) {
         ConfigurationsDTO nullConfiguration = new ConfigurationsDTO(config, null);
 
-        Configurations.save(DEFAULT_SCHEMA, nullConfiguration, 1);
+        Configurations.save(nullConfiguration, 1);
     }
 
     private void _saveSingleConfiguration(String config, String value) {
         ConfigurationsDTO configuration = new ConfigurationsDTO(config, value);
 
-        Configurations.save(DEFAULT_SCHEMA, configuration, 1);
+        Configurations.save(configuration, 1);
     }
 }

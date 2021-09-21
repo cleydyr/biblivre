@@ -34,7 +34,7 @@ import java.util.List;
 
 public class LendingFineDAO extends AbstractDAO {
 
-    public static LendingFineDAO  getInstance() {
+    public static LendingFineDAO getInstance() {
         return (LendingFineDAO) AbstractDAO.getInstance(LendingFineDAO.class);
     }
 

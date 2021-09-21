@@ -30,7 +30,7 @@ import java.util.List;
 
 public class UserFieldsDAO extends AbstractDAO {
 
-    public static UserFieldsDAO  getInstance() {
+    public static UserFieldsDAO getInstance() {
         return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class);
     }
 

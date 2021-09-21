@@ -54,7 +54,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void createPdf(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String printId = UUID.randomUUID().toString();
 
         LabelPrintDTO print = new LabelPrintDTO();
@@ -78,7 +78,7 @@ public class Handler extends AbstractHandler {
         print.setRows(request.getInteger("rows"));
         print.setModel(request.getString("model"));
 
-        request.setSessionAttribute(schema, printId, print);
+        request.setScopedSessionAttribute(printId, print);
 
         try {
             this.json.put("uuid", printId);
@@ -88,9 +88,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void downloadPdf(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String printId = request.getString("id");
-        LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
+        LabelPrintDTO dto = (LabelPrintDTO) request.getScopedSessionAttribute(printId);
 
         Map<Integer, RecordDTO> hdto = holdingBO.map(dto.getIds(), RecordBO.MARC_INFO);
 

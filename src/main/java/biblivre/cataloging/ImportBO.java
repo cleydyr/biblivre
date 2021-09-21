@@ -44,6 +44,8 @@ import org.marc4j.MarcPermissiveStreamReader;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcXmlReader;
 import org.marc4j.marc.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportBO extends AbstractBO {
 
@@ -57,7 +59,7 @@ public class ImportBO extends AbstractBO {
         this.authorityRecordBO = authorityRecordBO;
     }
 
-    public static ImportBO  getInstance() {
+    public static ImportBO getInstance() {
         ImportBO bo = AbstractBO.getInstance(ImportBO.class);
 
         return bo;
@@ -159,7 +161,7 @@ public class ImportBO extends AbstractBO {
                     break;
             }
         } catch (Exception e) {
-            this.logger.debug("Error reading file", e);
+            logger.debug("Error reading file", e);
             throw new ValidationException(e.getMessage());
         }
 
@@ -247,4 +249,6 @@ public class ImportBO extends AbstractBO {
 
         return rdto;
     }
+
+    protected static final Logger logger = LoggerFactory.getLogger(ImportBO.class);
 }

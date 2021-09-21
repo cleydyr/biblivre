@@ -31,7 +31,7 @@ import java.util.List;
 
 public class ConfigurationsDAO extends AbstractDAO {
 
-    public static ConfigurationsDAO  getInstance() {
+    public static ConfigurationsDAO getInstance() {
         return (ConfigurationsDAO) AbstractDAO.getInstance(ConfigurationsDAO.class);
     }
 

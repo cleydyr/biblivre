@@ -12,7 +12,7 @@ import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 
 public class Z3950ServerDAO extends AbstractDAO {
-    public static Z3950ServerDAO  getInstance() {
+    public static Z3950ServerDAO getInstance() {
         return (Z3950ServerDAO) AbstractDAO.getInstance(Z3950ServerDAO.class);
     }
 

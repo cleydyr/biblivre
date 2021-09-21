@@ -29,7 +29,7 @@ import java.util.Map;
 public class AuthorizationBO extends AbstractBO {
     private AuthorizationDAO dao;
 
-    public static AuthorizationBO  getInstance() {
+    public static AuthorizationBO getInstance() {
         AuthorizationBO bo = AbstractBO.getInstance(AuthorizationBO.class);
 
         if (bo.dao == null) {

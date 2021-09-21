@@ -19,6 +19,20 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.search.SearchDAO;
+import biblivre.cataloging.search.SearchDTO;
+import biblivre.core.AbstractBO;
+import biblivre.core.AbstractDTO;
+import biblivre.core.DTOCollection;
+import biblivre.core.PagingDTO;
+import biblivre.core.auth.AuthorizationPoints;
+import biblivre.core.configurations.Configurations;
+import biblivre.core.file.DiskFile;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.TextUtils;
+import biblivre.digitalmedia.DigitalMediaBO;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Base64;
@@ -28,32 +42,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.search.SearchDAO;
-import biblivre.cataloging.search.SearchDTO;
-import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
-import biblivre.core.DTOCollection;
-import biblivre.core.PagingDTO;
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
-import biblivre.core.file.DiskFile;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.TextUtils;
-import biblivre.digitalmedia.DigitalMediaBO;
-
 public abstract class RecordBO extends AbstractBO {
-	private static Logger logger = LoggerFactory.getLogger(RecordBO.class);
-
     public RecordBO(RecordDAO recordDAO, SearchDAO searchDAO) {
         super();
         this.recordDAO = recordDAO;
@@ -159,7 +154,7 @@ public abstract class RecordBO extends AbstractBO {
 
             return new DiskFile(file, "x-download");
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(out);
         }
@@ -189,15 +184,11 @@ public abstract class RecordBO extends AbstractBO {
 
             PagingDTO paging = search.getPaging();
 
-            String schema = SchemaThreadLocal.get();
-
             paging.setRecordsPerPage(
-                    Configurations.getPositiveInt(
-                            schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
 
             paging.setRecordLimit(
-                    Configurations.getPositiveInt(
-                            schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
         }
 
         return search;
@@ -368,4 +359,6 @@ public abstract class RecordBO extends AbstractBO {
 
         return count(searchDTO);
     }
+
+    protected static final Logger logger = LoggerFactory.getLogger(RecordBO.class);
 }

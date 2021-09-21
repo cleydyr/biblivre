@@ -23,7 +23,6 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
@@ -44,7 +43,7 @@ import org.apache.commons.lang3.time.DateUtils;
 
 public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
-    public static UserDAO  getInstance() {
+    public static UserDAO getInstance() {
         return (UserDAO) AbstractDAO.getInstance(UserDAOImpl.class);
     }
 
@@ -96,9 +95,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
 
         if (limit == 0) {
-            limit =
-                    Configurations.getInt(
-                            SchemaThreadLocal.get(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
+            limit = Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
         }
 
         Connection con = null;

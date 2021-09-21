@@ -23,7 +23,6 @@ import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,7 @@ public abstract class AbstractBO {
 
                 AbstractBO.instances.put(cls, instance);
             } catch (Exception ex) {
-            	logger.error(ex.getMessage(), ex);
+                logger.error(ex.getMessage(), ex);
             }
         }
 
@@ -56,7 +55,7 @@ public abstract class AbstractBO {
 
     public void authorize(String module, String action, AuthorizationPoints authorizationPoints) {
         if (authorizationPoints == null) {
-			authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
+            authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
         }
 
         AuthorizationBO abo = AuthorizationBO.getInstance();

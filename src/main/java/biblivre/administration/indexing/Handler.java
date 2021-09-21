@@ -37,7 +37,7 @@ public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
 
     public void reindex(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String strRecordType = request.getString("record_type", "biblio");
 
         RecordType recordType = RecordType.fromString(strRecordType);
@@ -56,7 +56,7 @@ public class Handler extends AbstractHandler {
             indexingBO.reindex(recordType);
             end = new Date().getTime();
 
-            request.setSessionAttribute(schema, "system_warning_reindex", false);
+            request.setScopedSessionAttribute("system_warning_reindex", false);
         } finally {
 
         }
@@ -71,7 +71,7 @@ public class Handler extends AbstractHandler {
     public void progress(ExtendedRequest request, ExtendedResponse response) {
         // Remember that this will only work if there is a sortable indexing_group for the
         // recordType.
-        String schema = request.getSchema();
+
         String strRecordType = request.getString("record_type", "biblio");
 
         RecordType recordType = RecordType.fromString(strRecordType);

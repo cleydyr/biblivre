@@ -34,7 +34,7 @@ import org.json.JSONObject;
 public class Handler extends AbstractHandler {
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
 
         String query = null;
@@ -49,8 +49,7 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
         Z3950BO bo = Z3950BO.getInstance();
@@ -74,7 +73,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Z3950BO bo = Z3950BO.getInstance();
         Z3950AddressDTO dto = new Z3950AddressDTO();
         Integer id = request.getInteger("id");
@@ -106,7 +105,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Z3950BO bo = Z3950BO.getInstance();
         Z3950AddressDTO dto = new Z3950AddressDTO();
         dto.setId(request.getInteger("id"));

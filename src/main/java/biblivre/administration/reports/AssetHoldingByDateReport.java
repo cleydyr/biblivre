@@ -35,8 +35,7 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
     protected BaseReportDto getReportData(ReportsDTO dto) {
         String initialDate = this.dateFormat.format(dto.getInitialDate());
         String finalDate = this.dateFormat.format(dto.getFinalDate());
-        return ReportsDAO.getInstance()
-                .getAssetHoldingByDateReportData(initialDate, finalDate);
+        return ReportsDAO.getInstance().getAssetHoldingByDateReportData(initialDate, finalDate);
     }
 
     @Override

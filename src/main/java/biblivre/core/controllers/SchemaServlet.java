@@ -89,23 +89,26 @@ public final class SchemaServlet extends HttpServlet {
             Writer out = response.getWriter();
             JSONObject json = new JSONObject();
 
-            try {
-                // TODO: Completar com mais mensagens.
-                // Checking Database
-            	SchemaThreadLocal.setSchema("public");
+            SchemaThreadLocal.withSchema(
+                    "public",
+                    () -> {
+                        try {
+                            // TODO: Completar com mais mensagens.
+                            // Checking Database
+                            SchemaThreadLocal.setSchema("public");
 
-                if (!SchemasDAO.getInstance().testDatabaseConnection()) {
-                    json.put("success", false);
-                    json.put("status_message", "Falha no acesso ao Banco de Dados");
-                } else {
-                    json.put("success", true);
-                    json.put("status_message", "Disponível");
-                }
-            } catch (JSONException e) {
-            }
-            finally {
-            	SchemaThreadLocal.remove();
-            }
+                            if (!SchemasDAO.getInstance().testDatabaseConnection()) {
+                                json.put("success", false);
+                                json.put("status_message", "Falha no acesso ao Banco de Dados");
+                            } else {
+                                json.put("success", true);
+                                json.put("status_message", "Disponível");
+                            }
+                        } catch (JSONException e) {
+                        }
+
+                        return null;
+                    });
 
             out.write(json.toString());
 
@@ -143,8 +146,7 @@ public final class SchemaServlet extends HttpServlet {
         String module = xRequest.getString("module");
         String action = xRequest.getString("action");
 
-        AuthorizationPoints notLoggedAtps =
-                AuthorizationPoints.getNotLoggedInstance();
+        AuthorizationPoints notLoggedAtps = AuthorizationPoints.getNotLoggedInstance();
         xRequest.setAttribute("notLoggedAtps", notLoggedAtps);
 
         // If there is an action but there isn't any controller or module, it's
@@ -156,8 +158,7 @@ public final class SchemaServlet extends HttpServlet {
             controller = "jsp";
         } else if (StringUtils.isBlank(controller)
                 && (xRequest.getBoolean("force_setup")
-                        || Configurations.getBoolean(
-                                xRequest.getSchema(), Constants.CONFIG_NEW_LIBRARY))) {
+                        || Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY))) {
             xRequest.setAttribute("module", "menu");
             xRequest.setAttribute("action", "setup");
             controller = "jsp";
@@ -226,14 +227,16 @@ public final class SchemaServlet extends HttpServlet {
             String[] params = StringUtils.split(filename, ".");
 
             String schema = params[0];
+
             IFCacheableJavascript javascript = null;
 
             if (realPath.endsWith(".i18n.js")) {
-                javascript = Translations.get(schema, params[1]);
+                javascript = Translations.get(params[1]);
             } else if (realPath.endsWith(".user_fields.js")) {
-                javascript = UserFields.getFields(schema);
+                javascript = SchemaThreadLocal.withSchema(schema, UserFields::getFields);
             } else {
-                javascript = Fields.getFormFields(schema, params[2]);
+                javascript =
+                        SchemaThreadLocal.withSchema(schema, () -> Fields.getFormFields(params[2]));
             }
 
             File cacheFile = javascript.getCacheFile();

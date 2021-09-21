@@ -40,12 +40,12 @@ import org.apache.commons.lang3.StringUtils;
 
 public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
-    public static LendingDAO  getInstance() {
+    public static LendingDAO getInstance() {
         return (LendingDAO) AbstractDAO.getInstance(LendingDAOImpl.class);
     }
 
     @Override
-	public LendingDTO get(Integer id) {
+    public LendingDTO get(Integer id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -65,7 +65,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public LendingDTO getCurrentLending(HoldingDTO holding) {
+    public LendingDTO getCurrentLending(HoldingDTO holding) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -91,7 +91,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
+    public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
         Map<Integer, LendingDTO> map = new LinkedHashMap<>();
 
         Connection con = null;
@@ -124,7 +124,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public List<LendingDTO> listHistory(HoldingDTO holding) {
+    public List<LendingDTO> listHistory(HoldingDTO holding) {
         List<LendingDTO> list = new ArrayList<>();
         Connection con = null;
         try {
@@ -150,12 +150,12 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public List<LendingDTO> listLendings(UserDTO user) {
+    public List<LendingDTO> listLendings(UserDTO user) {
         return this.list(user, false);
     }
 
     @Override
-	public List<LendingDTO> listHistory(UserDTO user) {
+    public List<LendingDTO> listHistory(UserDTO user) {
         return this.list(user, true);
     }
 
@@ -190,12 +190,12 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public Integer countLendings(UserDTO user) {
+    public Integer countLendings(UserDTO user) {
         return this.count(user, false);
     }
 
     @Override
-	public Integer countHistory(UserDTO user) {
+    public Integer countHistory(UserDTO user) {
         return this.count(user, true);
     }
 
@@ -229,7 +229,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public List<LendingDTO> listByRecordId(int recordId) {
+    public List<LendingDTO> listByRecordId(int recordId) {
         List<LendingDTO> list = new ArrayList<>();
         Connection con = null;
         try {
@@ -258,7 +258,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public List<LendingDTO> listLendings(int offset, int limit) {
+    public List<LendingDTO> listLendings(int offset, int limit) {
         List<LendingDTO> list = new ArrayList<>();
         Connection con = null;
         try {
@@ -288,7 +288,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public Integer countLendings() {
+    public Integer countLendings() {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -314,7 +314,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public Integer getCurrentLendingsCount(UserDTO user) {
+    public Integer getCurrentLendingsCount(UserDTO user) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -341,12 +341,12 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public boolean doLend(LendingDTO lending) {
+    public boolean doLend(LendingDTO lending) {
         return this.doLend(lending, null);
     }
 
     @Override
-	public boolean doLend(LendingDTO lending, Connection con) {
+    public boolean doLend(LendingDTO lending, Connection con) {
         boolean externalCall = (con == null);
         try {
             if (externalCall) {
@@ -379,7 +379,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -433,12 +433,12 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public boolean doReturn(int lendingId) {
+    public boolean doReturn(int lendingId) {
         return this.doReturn(lendingId, null);
     }
 
     @Override
-	public boolean doReturn(int lendingId, Connection con) {
+    public boolean doReturn(int lendingId, Connection con) {
         boolean externalCall = (con == null);
         try {
             if (externalCall) {
@@ -464,7 +464,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy) {
+    public boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -490,7 +490,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public Integer countLentHoldings(int recordId) {
+    public Integer countLentHoldings(int recordId) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -518,7 +518,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-	public LendingDTO getLatest(int holdingSerial, int userId) {
+    public LendingDTO getLatest(int holdingSerial, int userId) {
         LendingDTO dto = null;
         Connection con = null;
         try {

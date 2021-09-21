@@ -35,6 +35,7 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.PagingDTO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
@@ -50,9 +51,13 @@ public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
     private HoldingBO holdingBO;
-	private LendingBO lendingBO;
+    private LendingBO lendingBO;
 
-    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, HoldingBO holdingBO, LendingBO lendingBO) {
+    public Handler(
+            UserBO userBO,
+            BiblioRecordBO biblioRecordBO,
+            HoldingBO holdingBO,
+            LendingBO lendingBO) {
         super();
         this.userBO = userBO;
         this.biblioRecordBO = biblioRecordBO;
@@ -62,7 +67,6 @@ public class Handler extends AbstractHandler {
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
-        String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
         String query = null;
         Boolean lentOnly = false;
@@ -78,8 +82,7 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<HoldingDTO> holdingList =
@@ -90,7 +93,8 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<LendingInfoDTO> lendingInfo = lendingBO.populateLendingInfoByHolding(holdingList);
+        DTOCollection<LendingInfoDTO> lendingInfo =
+                lendingBO.populateLendingInfoByHolding(holdingList);
 
         try {
             this.json.put("search", lendingInfo.toJSONObject());
@@ -101,7 +105,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        String schema = SchemaThreadLocal.get();
 
         biblivre.circulation.user.Handler userHandler =
                 new biblivre.circulation.user.Handler(userBO, lendingBO);
@@ -177,7 +181,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void lend(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer holdingId = request.getInteger("holding_id");
         Integer userId = request.getInteger("user_id");
 
@@ -213,7 +217,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void renewLending(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer lendingId = request.getInteger("id");
 
         LendingDTO lending = lendingBO.get(lendingId);
@@ -269,7 +273,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void payFine(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer fineId = request.getInteger("fine_id");
         Boolean exempt = request.getBoolean("exempt", false);
 
@@ -288,12 +292,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void listAll(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = request.getInteger("offset", 0);
 
         DTOCollection<LendingInfoDTO> list = new DTOCollection<>();
@@ -319,7 +321,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void printReceipt(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String idList = request.getString("id_list");
 
         String[] idArray = idList.split(",");

@@ -35,11 +35,11 @@ public enum RecordType implements BiblivreEnum {
 
     private Class<? extends RecordDTO> recordClass;
 
-	RecordType(Class<? extends RecordDTO> recordClass) {
-		this.recordClass = recordClass;
-	}
+    RecordType(Class<? extends RecordDTO> recordClass) {
+        this.recordClass = recordClass;
+    }
 
-	public static RecordType fromString(String str) {
+    public static RecordType fromString(String str) {
         if (StringUtils.isBlank(str)) {
             return null;
         }
@@ -64,7 +64,7 @@ public enum RecordType implements BiblivreEnum {
         return this.toString();
     }
 
-	public Class<? extends RecordDTO> getRecordClass() {
-		return recordClass;
-	}
+    public Class<? extends RecordDTO> getRecordClass() {
+        return recordClass;
+    }
 }

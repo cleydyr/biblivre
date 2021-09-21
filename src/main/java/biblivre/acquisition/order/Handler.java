@@ -42,7 +42,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
 
         String query = null;
@@ -57,8 +56,7 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<OrderDTO> list = orderBO.search(query, limit, offset);

@@ -43,16 +43,16 @@ import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private UserBO userBO;
-	private BiblioRecordBO biblioRecordBO;
-	private LendingBO lendingBO;
+    private UserBO userBO;
+    private BiblioRecordBO biblioRecordBO;
+    private LendingBO lendingBO;
 
     public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO) {
-		super();
-		this.userBO = userBO;
-		this.biblioRecordBO = biblioRecordBO;
-		this.lendingBO = lendingBO;
-	}
+        super();
+        this.userBO = userBO;
+        this.biblioRecordBO = biblioRecordBO;
+        this.lendingBO = lendingBO;
+    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -60,8 +60,6 @@ public class Handler extends AbstractHandler {
         SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
 
         AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
-
-        String schema = request.getSchema();
 
         RecordType recordType = RecordType.BIBLIO;
 
@@ -79,7 +77,7 @@ public class Handler extends AbstractHandler {
         ReservationBO rbo = ReservationBO.getInstance();
         rbo.populateReservationInfoByBiblio(search);
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(request.getSchema(), recordType);
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(recordType);
 
         try {
             this.json.put("search", search.toJSONObject());
@@ -102,8 +100,6 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        String schema = request.getSchema();
-
         biblioRecordBO.paginateSearch(search, request.getAuthorizationPoints());
 
         if (CollectionUtils.isEmpty(search)) {
@@ -117,7 +113,7 @@ public class Handler extends AbstractHandler {
 
         this.json.put("search", search.toJSONObject());
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, RecordType.BIBLIO);
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(RecordType.BIBLIO);
 
         for (IndexingGroupDTO group : groups) {
             this.json.accumulate("indexing_groups", group.toJSONObject());
@@ -125,7 +121,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         biblivre.circulation.user.Handler userHandler =
                 new biblivre.circulation.user.Handler(userBO, lendingBO);
@@ -140,7 +135,7 @@ public class Handler extends AbstractHandler {
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {
-            list.add(this.populateReservationList(schema, user));
+            list.add(this.populateReservationList(user));
         }
 
         try {
@@ -150,7 +145,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private ReservationListDTO populateReservationList(String schema, UserDTO user) {
+    private ReservationListDTO populateReservationList(UserDTO user) {
         ReservationBO resBo = ReservationBO.getInstance();
 
         List<ReservationInfoDTO> infos = resBo.listReservationInfo(user);
@@ -163,7 +158,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void reserve(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int recordId = request.getInteger("record_id");
         int userId = request.getInteger("user_id");
 
@@ -197,7 +192,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int reserveId = request.getInteger("id");
 
         ReservationBO reservationBo = ReservationBO.getInstance();
@@ -229,8 +224,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), RecordType.BIBLIO);
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(RecordType.BIBLIO);
 
         try {
             this.json.put("search", search.toJSONObject());
@@ -264,7 +258,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void selfOpen(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String searchParameters = request.getString("search_parameters");
         UserSearchDTO searchDto = new UserSearchDTO(searchParameters);
@@ -296,7 +289,7 @@ public class Handler extends AbstractHandler {
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {
-            list.add(this.populateReservationList(schema, user));
+            list.add(this.populateReservationList(user));
         }
 
         try {
@@ -307,7 +300,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void selfDelete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int reservationId = request.getInteger("id");
         int loggedUser = request.getLoggedUserId();
 

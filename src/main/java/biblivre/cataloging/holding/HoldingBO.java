@@ -19,37 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.holding;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.MarcFactory;
-import org.marc4j.marc.Record;
-import org.marc4j.marc.Subfield;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Image;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.Barcode39;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
-
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
@@ -64,8 +33,6 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.LabelPrintDTO;
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
@@ -77,19 +44,46 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.Barcode39;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.Subfield;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HoldingBO extends RecordBO {
-	private HoldingDAO holdingDAO;
-	private UserBO userBO;
-	private LoginBO loginBO;
-	private static Logger logger = LoggerFactory.getLogger(HoldingBO.class);
+    private HoldingDAO holdingDAO;
+    private UserBO userBO;
+    private LoginBO loginBO;
 
     public HoldingBO(HoldingDAO holdingDAO, LoginBO loginBO, UserBO userBO, SearchDAO searchDAO) {
-    	super(holdingDAO, searchDAO);
-		this.holdingDAO = holdingDAO;
-		this.userBO = userBO;
-		this.loginBO = loginBO;
-	}
+        super(holdingDAO, searchDAO);
+        this.holdingDAO = holdingDAO;
+        this.userBO = userBO;
+        this.loginBO = loginBO;
+    }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         return this.holdingDAO.map(ids);
@@ -126,11 +120,7 @@ public class HoldingBO extends RecordBO {
     }
 
     public String getNextAccessionNumber() {
-    	String schema = SchemaThreadLocal.get();
-
-        String prefix =
-                Configurations.getString(
-                		schema, Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
+        String prefix = Configurations.getString(Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
         String accessionPrefix = prefix + "." + year + ".";
@@ -214,7 +204,7 @@ public class HoldingBO extends RecordBO {
                 LoginDTO login = loginBO.get(dto.getCreatedBy());
                 this.holdingDAO.updateHoldingCreationCounter(udto, login);
             } catch (Exception e) {
-                this.logger.error(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -304,8 +294,9 @@ public class HoldingBO extends RecordBO {
                             adapter.getHorizontalMargin(),
                             adapter.getVerticalMargin(),
                             adapter.getVerticalMargin());
-			int horizontalAlignment =
-                    ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(() -> Element.ALIGN_CENTER);
+            int horizontalAlignment =
+                    ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(
+                            () -> Element.ALIGN_CENTER);
             File file = File.createTempFile("biblivre_label_", ".pdf");
             fos = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fos);
@@ -334,7 +325,7 @@ public class HoldingBO extends RecordBO {
 
             return new DiskFile(file, "application/pdf");
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(fos);
         }
@@ -524,4 +515,6 @@ public class HoldingBO extends RecordBO {
     public RecordType getRecordType() {
         return RecordType.HOLDING;
     }
+
+    protected static final Logger logger = LoggerFactory.getLogger(HoldingBO.class);
 }

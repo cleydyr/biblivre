@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserBO extends AbstractBO {
 
@@ -205,7 +207,7 @@ public class UserBO extends AbstractBO {
 
             return new DiskFile(file, "application/pdf");
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(fos);
         }
@@ -235,4 +237,6 @@ public class UserBO extends AbstractBO {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.userDAO.saveFromBiblivre3(dtoList);
     }
+
+    protected static final Logger logger = LoggerFactory.getLogger(UserBO.class);
 }

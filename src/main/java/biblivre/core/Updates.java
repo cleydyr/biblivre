@@ -40,42 +40,46 @@ public class Updates {
     }
 
     public static boolean globalUpdate() {
-    	SchemaThreadLocal.setSchema(Constants.GLOBAL_SCHEMA);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    UpdatesDAO dao = UpdatesDAO.getInstance();
 
-        UpdatesDAO dao = UpdatesDAO.getInstance();
+                    Connection con = null;
+                    try {
+                        Set<String> installedVersions = dao.getInstalledVersions();
 
-        Connection con = null;
-        try {
-            Set<String> installedVersions = dao.getInstalledVersions();
+                        ServiceLoader<UpdateService> serviceLoader =
+                                ServiceLoader.load(UpdateService.class);
 
-            ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
+                        for (UpdateService updateService : serviceLoader) {
+                            if (!installedVersions.contains(updateService.getVersion())) {
+                                logger.info(
+                                        "Processing global update service {}.",
+                                        updateService.getVersion());
 
-            for (UpdateService updateService : serviceLoader) {
-                if (!installedVersions.contains(updateService.getVersion())) {
-                    logger.info("Processing global update service {}.", updateService.getVersion());
+                                con = dao.beginUpdate();
 
-                    con = dao.beginUpdate();
+                                updateService.doUpdate(con);
 
-                    updateService.doUpdate(con);
+                                dao.commitUpdate(updateService.getVersion(), con);
 
-                    dao.commitUpdate(updateService.getVersion(), con);
+                                updateService.afterUpdate();
+                            } else {
+                                logger.info(
+                                        "Skipping global update service {}.",
+                                        updateService.getVersion());
+                            }
+                        }
 
-                    updateService.afterUpdate();
-                } else {
-                    logger.info("Skipping global update service {}.", updateService.getVersion());
-                }
-            }
+                        return true;
+                    } catch (Exception e) {
+                        dao.rollbackUpdate(con);
+                        e.printStackTrace();
+                    }
 
-            return true;
-        } catch (Exception e) {
-            dao.rollbackUpdate(con);
-            e.printStackTrace();
-        }
-        finally {
-        	SchemaThreadLocal.remove();
-        }
-
-        return false;
+                    return false;
+                });
     }
 
     public static boolean schemaUpdate(String schema) {
@@ -123,43 +127,48 @@ public class Updates {
     }
 
     public static String getUID() {
-        String uid = Configurations.getString(Constants.GLOBAL_SCHEMA, Constants.CONFIG_UID);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    String uid = Configurations.getString(Constants.CONFIG_UID);
 
-        if (StringUtils.isBlank(uid)) {
-            uid = UUID.randomUUID().toString();
+                    if (StringUtils.isBlank(uid)) {
+                        uid = UUID.randomUUID().toString();
 
-            ConfigurationsDTO config = new ConfigurationsDTO();
-            config.setKey(Constants.CONFIG_UID);
-            config.setValue(uid);
-            config.setType("string");
-            config.setRequired(false);
+                        ConfigurationsDTO config = new ConfigurationsDTO();
+                        config.setKey(Constants.CONFIG_UID);
+                        config.setValue(uid);
+                        config.setType("string");
+                        config.setRequired(false);
 
-            Configurations.save(Constants.GLOBAL_SCHEMA, config, 0);
-        }
+                        Configurations.save(config, 0);
+                    }
 
-        return uid;
+                    return uid;
+                });
     }
 
     public static void fixPostgreSQL81() {
-    	SchemaThreadLocal.setSchema("public");
+        SchemaThreadLocal.withSchema(
+                "public",
+                () -> {
+                    UpdatesDAO dao = UpdatesDAO.getInstance();
 
-        UpdatesDAO dao = UpdatesDAO.getInstance();
+                    try {
+                        if (!dao.checkFunctionExistance("array_agg")) {
+                            String version = dao.getPostgreSQLVersion();
 
-        try {
-            if (!dao.checkFunctionExistance("array_agg")) {
-                String version = dao.getPostgreSQLVersion();
+                            if (version.contains("8.1")) {
+                                dao.create81ArrayAgg();
+                            } else {
+                                dao.createArrayAgg();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                if (version.contains("8.1")) {
-                    dao.create81ArrayAgg();
-                } else {
-                    dao.createArrayAgg();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        finally {
-        	SchemaThreadLocal.remove();
-        }
+                    return null;
+                });
     }
 }

@@ -76,14 +76,12 @@ public enum AutocompleteType implements BiblivreEnum {
         return recordBO.phraseAutocomplete(datafield, subfield, query);
     }
 
-    public DTOCollection<AutocompleteDTO> getAutocompletion(
-            RecordBO recordBO, String schema, String query) {
+    public DTOCollection<AutocompleteDTO> getAutocompletion(RecordBO recordBO, String query) {
         RecordType recordType = RecordType.fromString(this.toString());
 
         Set<AutocompleteDTO> set = new HashSet<>();
 
-        for (FormTabSubfieldDTO formTabSubfield :
-                Fields.getAutocompleteSubFields(schema, recordType)) {
+        for (FormTabSubfieldDTO formTabSubfield : Fields.getAutocompleteSubFields(recordType)) {
 
             String datafield = formTabSubfield.getDatafield();
 
@@ -148,12 +146,6 @@ public enum AutocompleteType implements BiblivreEnum {
             private String datafield;
             private String subfield;
             private RecordBO recordBO;
-
-            public Builder withSchema(String schema) {
-                this.schema = schema;
-
-                return this;
-            }
 
             public Builder withQuery(String query) {
                 this.query = query;

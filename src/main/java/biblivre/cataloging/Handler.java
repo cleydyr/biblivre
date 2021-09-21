@@ -62,7 +62,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         MemoryFile file = request.getFile("file");
 
@@ -121,7 +120,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void importSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer id = request.getInteger("search_server");
         String attribute = request.getString("search_attribute");
         String value = request.getString("search_query");
@@ -183,7 +182,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void parseMarc(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String marc = request.getString("marc");
 
         ImportBO bo = ImportBO.getInstance();
@@ -225,13 +224,11 @@ public class Handler extends AbstractHandler {
     }
 
     public void saveImport(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         int start = request.getInteger("start", 1);
         int end =
                 request.getInteger(
-                        "end",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "end", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Set<Integer> successIds = new HashSet<>();
         Set<Integer> failedIds = new HashSet<>();
 

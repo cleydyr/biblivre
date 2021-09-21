@@ -28,6 +28,8 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AccessControlBO extends AbstractBO {
     private AccessControlDAO accessControlDAO;
@@ -64,7 +66,7 @@ public class AccessControlBO extends AbstractBO {
         try {
             udto = userBO.get(dto.getUserId());
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         if (udto == null) {
             throw new ValidationException("circulation.error.user_not_found");
@@ -91,7 +93,7 @@ public class AccessControlBO extends AbstractBO {
             accessCardBO.update(cardDto);
             return this.accessControlDAO.save(dto);
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
 
         return false;
@@ -103,7 +105,7 @@ public class AccessControlBO extends AbstractBO {
         try {
             udto = userBO.get(dto.getUserId());
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         if (udto == null) {
             throw new ValidationException("circulation.error.user_not_found");
@@ -142,7 +144,7 @@ public class AccessControlBO extends AbstractBO {
                 return this.accessControlDAO.update(existingAccess);
             }
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
 
         return false;
@@ -163,4 +165,6 @@ public class AccessControlBO extends AbstractBO {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.accessControlDAO.saveFromBiblivre3(dtoList);
     }
+
+    protected static final Logger logger = LoggerFactory.getLogger(AccessControlBO.class);
 }

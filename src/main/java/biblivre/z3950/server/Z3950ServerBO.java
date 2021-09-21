@@ -86,38 +86,40 @@ public class Z3950ServerBO {
             loadedSchemas = new HashSet<>();
         }
 
-        SchemaThreadLocal.setSchema(Constants.GLOBAL_SCHEMA);
+        SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    SchemasDAO schemasDao = SchemasDAO.getInstance();
 
-        SchemasDAO schemasDao = SchemasDAO.getInstance();
+                    Set<SchemaDTO> schemas = schemasDao.list();
 
-        Set<SchemaDTO> schemas = schemasDao.list();
+                    for (SchemaDTO schema : schemas) {
+                        String name = schema.getSchema();
+                        if ((!loadedSchemas.contains(name)) && (!schema.isDisabled())) {
+                            loadedSchemas.add(name);
 
-        for (SchemaDTO schema : schemas) {
-            String name = schema.getSchema();
-            if ((!loadedSchemas.contains(name)) && (!schema.isDisabled())) {
-                loadedSchemas.add(name);
+                            CollectionDescriptionDBO desc = new CollectionDescriptionDBO();
+                            desc.setCode(name);
+                            desc.setCollectionName(name);
 
-                CollectionDescriptionDBO desc = new CollectionDescriptionDBO();
-                desc.setCode(name);
-                desc.setCollectionName(name);
+                            config.registerCollectionDescription(desc);
 
-                config.registerCollectionDescription(desc);
+                            CollectionInstanceDBO instance = new CollectionInstanceDBO();
+                            instance.setCode(name);
+                            instance.setLocalId(name);
+                            instance.setProfile("bath");
 
-                CollectionInstanceDBO instance = new CollectionInstanceDBO();
-                instance.setCode(name);
-                instance.setLocalId(name);
-                instance.setProfile("bath");
+                            config.registerCollectionInstance(instance);
+                            try {
+                                config.addCollection(name, "default", instance);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
 
-                config.registerCollectionInstance(instance);
-                try {
-                    config.addCollection(name, "default", instance);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        SchemaThreadLocal.remove();
+                    return null;
+                });
     }
 
     private Z3950Listener _buildZ390Listener() {

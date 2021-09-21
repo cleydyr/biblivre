@@ -34,20 +34,24 @@ import java.util.Date;
 import java.util.List;
 
 public class LendingFineBO extends AbstractBO {
-	private LendingFineDAO dao;
-	private HoldingBO holdingBO;
-	private BiblioRecordBO biblioRecordBO;
-	private LendingBO lendingBO;
+    private LendingFineDAO dao;
+    private HoldingBO holdingBO;
+    private BiblioRecordBO biblioRecordBO;
+    private LendingBO lendingBO;
 
-    public LendingFineBO(LendingFineDAO dao, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO) {
-		super();
-		this.dao = dao;
-		this.holdingBO = holdingBO;
-		this.biblioRecordBO = biblioRecordBO;
-		this.lendingBO = lendingBO;
-	}
+    public LendingFineBO(
+            LendingFineDAO dao,
+            HoldingBO holdingBO,
+            BiblioRecordBO biblioRecordBO,
+            LendingBO lendingBO) {
+        super();
+        this.dao = dao;
+        this.holdingBO = holdingBO;
+        this.biblioRecordBO = biblioRecordBO;
+        this.lendingBO = lendingBO;
+    }
 
-    public static LendingFineBO  getInstance() {
+    public static LendingFineBO getInstance() {
         LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class);
 
         if (bo.dao == null) {

@@ -47,7 +47,7 @@ public class Handler extends PaginableCatalogingHandler {
     }
 
     public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
         String query = "";
         RecordDatabase db = RecordDatabase.MAIN;

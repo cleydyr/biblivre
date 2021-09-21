@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 
 public class TabFieldsDAO extends AbstractDAO {
 
-    public static TabFieldsDAO  getInstance() {
+    public static TabFieldsDAO getInstance() {
         return (TabFieldsDAO) AbstractDAO.getInstance(TabFieldsDAO.class);
     }
 

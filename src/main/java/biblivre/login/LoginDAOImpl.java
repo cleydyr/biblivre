@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
 
-    public static LoginDAO  getInstance() {
+    public static LoginDAO getInstance() {
         return (LoginDAO) AbstractDAO.getInstance(LoginDAOImpl.class);
     }
 

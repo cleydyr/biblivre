@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDAO {
 
-    public static AccessControlDAO  getInstance() {
+    public static AccessControlDAO getInstance() {
         return (AccessControlDAO) AbstractDAO.getInstance(AccessControlDAOImpl.class);
     }
 

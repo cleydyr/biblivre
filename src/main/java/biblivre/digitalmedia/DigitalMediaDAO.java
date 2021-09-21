@@ -19,7 +19,7 @@ import org.postgresql.largeobject.LargeObjectManager;
 
 public abstract class DigitalMediaDAO extends AbstractDAO {
 
-    public static DigitalMediaDAO  getInstance() {
+    public static DigitalMediaDAO getInstance() {
         return (DigitalMediaDAO) DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
     }
 

@@ -44,7 +44,7 @@ import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
-    public static RecordDAOImpl  getInstance() {
+    public static RecordDAOImpl getInstance() {
         return AbstractDAO.getInstance(RecordDAOImpl.class);
     }
 
@@ -752,7 +752,8 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
     }
 
     protected RecordDTO populateDTO(ResultSet rs, Class<? extends RecordDTO> recordClass)
-            throws SQLException, UnsupportedEncodingException, InstantiationException, IllegalAccessException {
+            throws SQLException, UnsupportedEncodingException, InstantiationException,
+                    IllegalAccessException {
         RecordDTO dto = recordClass.newInstance();
 
         dto.setIso2709(rs.getBytes("iso2709"));

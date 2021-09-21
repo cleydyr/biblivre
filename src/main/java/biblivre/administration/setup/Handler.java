@@ -27,6 +27,7 @@ import biblivre.administration.backup.RestoreDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
@@ -61,15 +62,14 @@ public class Handler extends AbstractHandler {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
-        boolean isNewLibrary = Configurations.getBoolean(schema, Constants.CONFIG_NEW_LIBRARY);
+        boolean isNewLibrary = Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY);
         boolean success = true;
 
         if (!isNewLibrary) {
             SchemaDTO dto = new SchemaDTO();
             dto.setName(Constants.BIBLIVRE);
-            dto.setSchema(schema);
+            dto.setSchema(SchemaThreadLocal.get());
             dto.setCreatedBy(request.getLoggedUserId());
 
             State.start();
@@ -90,7 +90,7 @@ public class Handler extends AbstractHandler {
 
         if (success) {
             ConfigurationsDTO dto = new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-            Configurations.save(schema, dto, 0);
+            Configurations.save(dto, 0);
         }
 
         try {
@@ -101,7 +101,6 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list_restores
     public void listRestores(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         RestoreBO bo = RestoreBO.getInstance();
 
@@ -118,7 +117,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void uploadBiblivre4(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Boolean mediaUpload = request.getBoolean("media_upload", false);
 
         BackupBO bo = BackupBO.getInstance();
@@ -154,7 +153,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void uploadBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         boolean success = false;
 
@@ -239,7 +237,6 @@ public class Handler extends AbstractHandler {
 
     private boolean checkForPartialBackup(
             RestoreDTO dto, ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String mediaFileBackup = request.getString("mediaFileBackup");
         Boolean skip = request.getBoolean("skip", false);
@@ -297,7 +294,8 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=restore&filename=Biblivre Backup 2012-09-15 22h56m22s Full.b5bz
     public void restore(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        String schema = SchemaThreadLocal.get();
+
         String filename = request.getString("filename");
         String mediaFileBackup = request.getString("mediaFileBackup");
         String selectedBackupSchema = request.getString("selected_schema");
@@ -416,7 +414,7 @@ public class Handler extends AbstractHandler {
             if (success) {
                 ConfigurationsDTO cdto =
                         new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(schema, cdto, 0);
+                Configurations.save(cdto, 0);
 
                 State.finish();
 
@@ -450,7 +448,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void importBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        String schema = SchemaThreadLocal.get();
         String origin = request.getString("origin", "biblivre3");
 
         String[] groups = request.getParameterValues("groups[]");
@@ -484,7 +482,7 @@ public class Handler extends AbstractHandler {
             if (success) {
                 ConfigurationsDTO cdto =
                         new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(schema, cdto, 0);
+                Configurations.save(cdto, 0);
 
                 StaticBO.resetCache();
 

@@ -49,7 +49,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
 
         String servers = null;
@@ -91,17 +91,17 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        Integer searchId = (Integer) request.getSessionAttribute(schema, "z3950_search.last_id");
+        Integer searchId = (Integer) request.getScopedSessionAttribute("z3950_search.last_id");
         if (searchId == null) {
             searchId = 1;
         } else {
             searchId++;
         }
 
-        request.setSessionAttribute(schema, "z3950_search." + searchId, results);
-        request.setSessionAttribute(schema, "z3950_search.last_id", searchId);
+        request.setScopedSessionAttribute("z3950_search." + searchId, results);
+        request.setScopedSessionAttribute("z3950_search.last_id", searchId);
 
-        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, 1);
+        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, 1);
         collection.setId(searchId);
 
         try {
@@ -112,7 +112,6 @@ public class Handler extends AbstractHandler {
 
     @SuppressWarnings("unchecked")
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String searchId = request.getString("search_id");
         if (StringUtils.isBlank(searchId)) {
@@ -123,12 +122,12 @@ public class Handler extends AbstractHandler {
 
         String uuid = "z3950_search." + searchId;
         List<Z3950RecordDTO> results =
-                (List<Z3950RecordDTO>) request.getSessionAttribute(schema, uuid);
+                (List<Z3950RecordDTO>) request.getScopedSessionAttribute(uuid);
         if (results == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
             return;
         }
-        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, page);
+        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, page);
         try {
             this.json.putOpt("search", collection.toJSONObject());
         } catch (JSONException e) {
@@ -137,7 +136,7 @@ public class Handler extends AbstractHandler {
 
     @SuppressWarnings("unchecked")
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer index = request.getInteger("id");
         String searchId = request.getString("search_id");
         if (StringUtils.isBlank(searchId)) {
@@ -146,7 +145,7 @@ public class Handler extends AbstractHandler {
         }
         String uuid = "z3950_search." + searchId;
         List<Z3950RecordDTO> results =
-                (List<Z3950RecordDTO>) request.getSessionAttribute(schema, uuid);
+                (List<Z3950RecordDTO>) request.getScopedSessionAttribute(uuid);
         if (results == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
             return;
@@ -172,10 +171,9 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private DTOCollection<Z3950RecordDTO> paginateResults(
-            String schema, List<Z3950RecordDTO> results, int page) {
+    private DTOCollection<Z3950RecordDTO> paginateResults(List<Z3950RecordDTO> results, int page) {
         Integer recordsPerPage =
-                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20);
+                Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20);
         Integer start = (page - 1) * recordsPerPage;
         PagingDTO paging = new PagingDTO(results.size(), recordsPerPage, start);
         DTOCollection<Z3950RecordDTO> collection = new DTOCollection<>();

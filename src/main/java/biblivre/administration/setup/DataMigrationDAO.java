@@ -871,7 +871,9 @@ public class DataMigrationDAO extends AbstractDAO {
                 dto.setPhotoId(rs.getString("photo_id"));
                 dto.setStatus(this.convertUserStatus(rs.getString("status")));
 
-                List<UserFieldDTO> userFields = UserFields.getFields(this.userSchema);
+                List<UserFieldDTO> userFields =
+                        SchemaThreadLocal.withSchema(userSchema, UserFields::getFields);
+
                 for (UserFieldDTO userField : userFields) {
                     String key = userField.getKey();
                     String columnName = this.getUserFieldColumnName(key);

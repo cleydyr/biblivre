@@ -47,7 +47,6 @@ import org.apache.commons.lang3.StringUtils;
 public class ExtendedRequest extends HttpServletRequestWrapper {
     private TranslationsMap translationsMap;
 
-    private String schema;
     private String controller;
     private String language;
     private boolean mustRedirectToSchema;
@@ -90,19 +89,19 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         this.getRequestDispatcher(url).forward(this, response);
     }
 
-    public void setSessionAttribute(String key, Object obj) {
-        this.getSession().setAttribute(key, obj);
-    }
+    public void setScopedSessionAttribute(String key, Object obj) {
+        String schema = SchemaThreadLocal.get();
 
-    public void setSessionAttribute(String schema, String key, Object obj) {
-        this.setSessionAttribute(schema + "." + key, obj);
+        this.getSession().setAttribute(schema + "." + key, obj);
     }
 
     public Object getSessionAttribute(String key) {
         return this.getSession().getAttribute(key);
     }
 
-    public Object getSessionAttribute(String schema, String key) {
+    public Object getScopedSessionAttribute(String key) {
+        String schema = SchemaThreadLocal.get();
+
         return this.getSessionAttribute(schema + "." + key);
     }
 
@@ -199,16 +198,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         return this.multiPart ? this.multiPartParameters.get(key) : super.getParameter(key);
     }
 
-    // Getters and setters
-    public void setSchema(String schema) {
-        this.schema = schema;
-        this.setAttribute("schema", schema);
-    }
-
-    public String getSchema() {
-        return StringUtils.defaultIfBlank(this.schema, Constants.GLOBAL_SCHEMA);
-    }
-
     public void setController(String controller) {
         this.controller = controller;
     }
@@ -253,12 +242,8 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         return this.multiPart;
     }
 
-    public boolean isGlobalSchema() {
-        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-    }
-
     public int getLoggedUserId() {
-        Object user = this.getSessionAttribute(this.getSchema(), "logged_user");
+        Object user = this.getScopedSessionAttribute("logged_user");
 
         if (user != null && user instanceof LoginDTO) {
             return ((LoginDTO) user).getId();
@@ -348,41 +333,41 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private void loadLanguage() {
         HttpSession session = this.getSession();
 
-        String schema = SchemaThreadLocal.get();
-
         String language = this.getString("i18n");
 
-        if (Languages.isNotLoaded(schema, language)) {
+        String schema = SchemaThreadLocal.get();
+
+        if (Languages.isNotLoaded(language)) {
             language = (String) session.getAttribute(schema + ".language");
         }
 
-        if (Languages.isNotLoaded(schema, language)) {
+        if (Languages.isNotLoaded(language)) {
             language = (String) session.getAttribute("global.language");
         }
 
-        if (Languages.isNotLoaded(schema, language)) {
+        if (Languages.isNotLoaded(language)) {
             language = this.getLocale().toString().replaceAll("[_]", "-");
         }
 
-        if (Languages.isNotLoaded(schema, language)) {
-            language = Configurations.getString(schema, Constants.CONFIG_DEFAULT_LANGUAGE);
+        if (Languages.isNotLoaded(language)) {
+            language = Configurations.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
         }
 
-        if (Languages.isNotLoaded(schema, language)) {
+        if (Languages.isNotLoaded(language)) {
             language = "pt-BR";
         }
 
-        if (Languages.isNotLoaded(schema, language)) {
-            language = Languages.getDefaultLanguage(schema);
+        if (Languages.isNotLoaded(language)) {
+            language = Languages.getDefaultLanguage();
         }
 
-        this.setSessionAttribute(schema, "language", language);
+        this.setScopedSessionAttribute("language", language);
 
         this.setLanguage(language);
     }
 
     private void loadTranslationsMap() {
-        this.setTranslationsMap(Translations.get(this.schema, this.language));
+        this.setTranslationsMap(Translations.get(this.language));
     }
 
     @Deprecated
@@ -392,6 +377,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     public AuthorizationPoints getAuthorizationPoints() {
-        return (AuthorizationPoints) getSessionAttribute(getSchema(), "logged_user_atps");
+        return (AuthorizationPoints) getScopedSessionAttribute("logged_user_atps");
     }
 }

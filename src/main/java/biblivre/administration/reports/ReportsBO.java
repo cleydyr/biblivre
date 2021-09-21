@@ -31,7 +31,7 @@ public class ReportsBO extends AbstractBO {
     private RecordDAO recordDAO;
     private BiblioRecordBO biblioRecordBO;
 
-    public static ReportsBO  getInstance() {
+    public static ReportsBO getInstance() {
         ReportsBO bo = AbstractBO.getInstance(ReportsBO.class);
 
         if (bo.dao == null) {
@@ -75,11 +75,7 @@ public class ReportsBO extends AbstractBO {
             while (hasMore) {
                 SearchDTO search = biblioRecordBO.getSearch(reportsDto.getSearchId());
 
-                String schema = SchemaThreadLocal.get();
-
-                search.setSort(
-                        IndexingGroups.getDefaultSortableGroupId(
-                                schema, RecordType.BIBLIO));
+                search.setSort(IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
                 search.setIndexingGroup(0);
                 search.getPaging().setRecordsPerPage(limit);
                 search.getPaging().setPage(++page);

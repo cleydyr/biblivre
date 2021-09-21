@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.utils.Constants;
 import java.util.HashMap;
@@ -35,22 +36,26 @@ public class Languages extends StaticBO {
     private Languages() {}
 
     static {
-        Languages.reset();
+        Languages.resetAll();
     }
 
-    public static void reset() {
+    public static void resetAll() {
         Languages.languages = new HashMap<>();
     }
 
-    public static void reset(String schema) {
+    public static void reset() {
+        String schema = SchemaThreadLocal.get();
+
         if (schema.equals(Constants.GLOBAL_SCHEMA)) {
-            Languages.reset();
+            Languages.resetAll();
         } else {
             Languages.languages.remove(schema);
         }
     }
 
-    public static Set<LanguageDTO> getLanguages(String schema) {
+    public static Set<LanguageDTO> getLanguages() {
+        String schema = SchemaThreadLocal.get();
+
         Set<LanguageDTO> set = Languages.languages.get(schema);
 
         if (set == null) {
@@ -60,12 +65,12 @@ public class Languages extends StaticBO {
         return set;
     }
 
-    public static boolean isLoaded(String schema, String language) {
-        if (StringUtils.isBlank(schema) || StringUtils.isBlank(language)) {
+    public static boolean isLoaded(String language) {
+        if (StringUtils.isBlank(language)) {
             return false;
         }
 
-        Set<LanguageDTO> languages = Languages.getLanguages(schema);
+        Set<LanguageDTO> languages = Languages.getLanguages();
 
         if (languages == null) {
             return false;
@@ -80,12 +85,12 @@ public class Languages extends StaticBO {
         return false;
     }
 
-    public static boolean isNotLoaded(String schema, String language) {
-        return !Languages.isLoaded(schema, language);
+    public static boolean isNotLoaded(String language) {
+        return !Languages.isLoaded(language);
     }
 
-    public static String getDefaultLanguage(String schema) {
-        Set<LanguageDTO> languages = Languages.getLanguages(schema);
+    public static String getDefaultLanguage() {
+        Set<LanguageDTO> languages = Languages.getLanguages();
 
         for (LanguageDTO dto : languages) {
             return dto.getLanguage();
@@ -94,8 +99,8 @@ public class Languages extends StaticBO {
         return "";
     }
 
-    public static LanguageDTO getLanguage(String schema, String language) {
-        Set<LanguageDTO> languages = Languages.getLanguages(schema);
+    public static LanguageDTO getLanguage(String language) {
+        Set<LanguageDTO> languages = Languages.getLanguages();
 
         for (LanguageDTO dto : languages) {
             if (language.equals(dto.getLanguage())) {

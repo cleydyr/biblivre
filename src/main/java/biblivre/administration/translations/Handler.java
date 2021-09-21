@@ -51,9 +51,8 @@ public class Handler extends AbstractHandler {
         }
 
         String dumpId = UUID.randomUUID().toString();
-        String schema = request.getSchema();
 
-        request.setSessionAttribute(schema, dumpId, language);
+        request.setScopedSessionAttribute(dumpId, language);
 
         try {
             this.json.put("uuid", dumpId);
@@ -65,8 +64,7 @@ public class Handler extends AbstractHandler {
     public void downloadDump(ExtendedRequest request, ExtendedResponse response) {
 
         String dumpId = request.getString("id");
-        String schema = request.getSchema();
-        String language = (String) request.getSessionAttribute(schema, dumpId);
+        String language = (String) request.getScopedSessionAttribute(dumpId);
 
         if (StringUtils.isBlank(language)) {
             this.setMessage(
@@ -74,7 +72,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        final DiskFile exportFile = Translations.createDumpFile(schema, language);
+        final DiskFile exportFile = Translations.createDumpFile(language);
 
         exportFile.setName("biblivre_translations_" + System.currentTimeMillis() + "_" + ".txt");
 
@@ -84,7 +82,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void load(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int loggedUser = request.getLoggedUserId();
         boolean loadUserCreated = StringUtils.isNotBlank(request.getString("user_created"));
         HashMap<String, String> addTranslation = new HashMap<>();
@@ -184,8 +181,7 @@ public class Handler extends AbstractHandler {
 
         try {
             boolean success =
-                    Translations.save(
-                            schema, language, addTranslation, removeTranslation, loggedUser);
+                    Translations.save(language, addTranslation, removeTranslation, loggedUser);
             if (success) {
                 this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
             } else {
@@ -198,20 +194,18 @@ public class Handler extends AbstractHandler {
     }
 
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        Languages.reset();
 
-        Languages.reset(schema);
-
-        Set<LanguageDTO> languages = Languages.getLanguages(schema);
+        Set<LanguageDTO> languages = Languages.getLanguages();
         Map<String, Map<String, String>> translations = new HashMap<>();
 
         languages.forEach(
                 languageDTO -> {
                     String language = languageDTO.getLanguage();
 
-                    Translations.reset(schema, language);
+                    Translations.reset(language);
 
-                    TranslationsMap translationsMap = Translations.get(schema, language);
+                    TranslationsMap translationsMap = Translations.get(language);
                     Map<String, String> translation = translationsMap.getAllValues();
 
                     translations.put(language, translation);
@@ -226,7 +220,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int loggedUser = request.getLoggedUserId();
         String strJson = request.getString("json");
 
@@ -264,7 +257,7 @@ public class Handler extends AbstractHandler {
                                 }
                             });
 
-            Translations.save(schema, newTranslations, null, loggedUser);
+            Translations.save(newTranslations, null, loggedUser);
 
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
         } catch (JSONException e) {
@@ -277,7 +270,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void saveLanguageTranslations(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int loggedUser = request.getLoggedUserId();
         String strJson = request.getString("translations");
 
@@ -295,7 +287,7 @@ public class Handler extends AbstractHandler {
 
             json.keys().forEachRemaining(key -> newTranslation.put(key, json.optString(key)));
 
-            Translations.save(schema, language, newTranslation, new HashMap<>(), loggedUser);
+            Translations.save(language, newTranslation, new HashMap<>(), loggedUser);
 
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
 

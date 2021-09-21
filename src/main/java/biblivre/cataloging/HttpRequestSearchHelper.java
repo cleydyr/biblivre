@@ -15,8 +15,7 @@ public class HttpRequestSearchHelper {
         }
 
         Integer defaultSortableGroupId =
-                IndexingGroups.getDefaultSortableGroupId(
-                        request.getSchema(), recordBO.getRecordType());
+                IndexingGroups.getDefaultSortableGroupId(recordBO.getRecordType());
 
         Integer sort = request.getInteger("sort", defaultSortableGroupId);
 

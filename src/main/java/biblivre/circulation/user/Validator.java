@@ -38,7 +38,7 @@ public class Validator extends AbstractValidator {
 
     private AccessControlBO accessControlBO;
     private UserBO userBO;
-	private LendingBO lendingBO;
+    private LendingBO lendingBO;
 
     public Validator(AccessControlBO accessControlBO, UserBO userBO) {
         super();
@@ -54,8 +54,7 @@ public class Validator extends AbstractValidator {
 
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
-        String schema = request.getSchema();
-        List<UserFieldDTO> userFields = UserFields.getFields(schema);
+        List<UserFieldDTO> userFields = UserFields.getFields();
 
         UserStatus status = request.getEnum(UserStatus.class, "status");
         if (status == null) {
@@ -142,7 +141,7 @@ public class Validator extends AbstractValidator {
 
     public void validateDelete(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer id = request.getInteger("id");
 
         UserDTO user = userBO.get(id);

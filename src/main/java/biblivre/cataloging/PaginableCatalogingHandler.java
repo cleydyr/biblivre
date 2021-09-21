@@ -71,8 +71,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), paginableRecordBO.getRecordType());
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
 
         this.json.put("search", search.toJSONObject());
 
@@ -107,8 +106,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         this.json.put("search", search.toJSONObject());
 
-        List<IndexingGroupDTO> groups =
-                IndexingGroups.getGroups(request.getSchema(), paginableRecordBO.getRecordType());
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
 
         for (IndexingGroupDTO group : groups) {
             this.json.accumulate("indexing_groups", group.toJSONObject());
@@ -198,23 +196,21 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void exportRecords(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String exportId = UUID.randomUUID().toString();
 
         String idList = request.getString("id_list");
 
-        request.setSessionAttribute(schema, exportId, idList);
+        request.setScopedSessionAttribute(exportId, idList);
 
         this.json.put("uuid", exportId);
     }
 
     public void downloadExport(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String exportId = request.getString("id");
 
-        String idList = (String) request.getSessionAttribute(schema, exportId);
+        String idList = (String) request.getScopedSessionAttribute(exportId);
 
         String[] idArray = idList.split(",");
 
@@ -237,8 +233,6 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        String schema = request.getSchema();
-
         String datafield = request.getString("datafield", "000");
 
         String subfield = request.getString("subfield", "a");
@@ -252,7 +246,6 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             case PREVIOUS_VALUES:
                 AutocompleteType.GetSuggestionsParameters parameterObject =
                         AutocompleteType.GetSuggestionsParameters.builder()
-                                .withSchema(schema)
                                 .withDatafield(datafield)
                                 .withSubfield(subfield)
                                 .withQuery(query)
@@ -268,7 +261,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             case AUTHORITIES:
             case VOCABULARY:
                 DTOCollection<AutocompleteDTO> autocompletion =
-                        type.getAutocompletion(paginableRecordBO, schema, query);
+                        type.getAutocompletion(paginableRecordBO, query);
 
                 this.json.putOpt("data", autocompletion.toJSONObject());
 
@@ -303,10 +296,9 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void listBriefFormats(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         List<BriefTabFieldFormatDTO> formats =
-                Fields.getBriefFormats(schema, paginableRecordBO.getRecordType());
+                Fields.getBriefFormats(paginableRecordBO.getRecordType());
 
         DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<>();
 

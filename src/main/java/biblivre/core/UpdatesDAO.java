@@ -29,7 +29,7 @@ import java.util.Set;
 
 public class UpdatesDAO extends AbstractDAO {
 
-    public static UpdatesDAO  getInstance() {
+    public static UpdatesDAO getInstance() {
         return (UpdatesDAO) AbstractDAO.getInstance(UpdatesDAO.class);
     }
 

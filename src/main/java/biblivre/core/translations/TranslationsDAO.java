@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class TranslationsDAO extends AbstractDAO {
 
-    public static TranslationsDAO  getInstance() {
+    public static TranslationsDAO getInstance() {
         return (TranslationsDAO) AbstractDAO.getInstance(TranslationsDAO.class);
     }
 

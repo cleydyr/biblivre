@@ -36,22 +36,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private PermissionBO permissionBO;
-	private LoginBO loginBO;
-	private UserBO userBO;
-	private LendingBO lendingBO;
+    private PermissionBO permissionBO;
+    private LoginBO loginBO;
+    private UserBO userBO;
+    private LendingBO lendingBO;
 
     public Handler(PermissionBO permissionBO, LoginBO loginBO, UserBO userBO, LendingBO lendingBO) {
-		super();
-		this.permissionBO = permissionBO;
-		this.loginBO = loginBO;
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-	}
+        super();
+        this.permissionBO = permissionBO;
+        this.loginBO = loginBO;
+        this.userBO = userBO;
+        this.lendingBO = lendingBO;
+    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         biblivre.circulation.user.Handler userHandler =
                 new biblivre.circulation.user.Handler(userBO, lendingBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
@@ -65,7 +63,7 @@ public class Handler extends AbstractHandler {
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {
-            list.add(this.populatePermission(schema, user));
+            list.add(this.populatePermission(user));
         }
 
         try {
@@ -109,7 +107,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int userId = request.getInteger("user_id");
         if (userId == 0) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
@@ -171,7 +169,7 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "administration.permission.error.create_login");
         }
 
-        PermissionDTO dto = this.populatePermission(schema, udto);
+        PermissionDTO dto = this.populatePermission(udto);
 
         try {
             this.json.put("data", dto.toJSONObject());
@@ -206,7 +204,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private PermissionDTO populatePermission(String schema, UserDTO user) {
+    private PermissionDTO populatePermission(UserDTO user) {
         PermissionDTO dto = new PermissionDTO();
         dto.setUser(user);
 

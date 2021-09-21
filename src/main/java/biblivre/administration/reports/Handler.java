@@ -34,14 +34,14 @@ import biblivre.core.utils.TextUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private UserBO userBO;
-	private LendingBO lendingBO;
-	
-	public Handler(UserBO userBO, LendingBO lendingBO) {
-		super();
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-	}
+    private UserBO userBO;
+    private LendingBO lendingBO;
+
+    public Handler(UserBO userBO, LendingBO lendingBO) {
+        super();
+        this.userBO = userBO;
+        this.lendingBO = lendingBO;
+    }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 
@@ -65,7 +65,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void generate(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         ReportsBO bo = ReportsBO.getInstance();
 
         ReportsDTO dto = null;
@@ -79,7 +79,7 @@ public class Handler extends AbstractHandler {
         DiskFile report = bo.generateReport(dto, request.getTranslationsMap());
 
         if (report != null) {
-            request.setSessionAttribute(schema, report.getName(), report);
+            request.setScopedSessionAttribute(report.getName(), report);
             this.setMessage(ActionResult.SUCCESS, "administration.reports.success.generate");
         } else {
             this.setMessage(ActionResult.WARNING, "administration.reports.error.generate");
@@ -96,10 +96,10 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=download&module=cataloging.export&action=download_report&file_name={export_id}
     public void downloadReport(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String report_name = request.getString("file_name");
 
-        final DiskFile report = (DiskFile) request.getSessionAttribute(schema, report_name);
+        final DiskFile report = (DiskFile) request.getScopedSessionAttribute(report_name);
 
         this.setFile(report);
 
