@@ -22,15 +22,24 @@ package biblivre.core;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.springframework.web.context.WebApplicationContext;
+
+import biblivre.core.auth.AuthorizationBO;
+import biblivre.spring.SpringUtils;
+
 /** Application Lifecycle Listener implementation class BiblivreContextListener */
 public class BiblivreContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
         BiblivreInitializer.initialize();
+
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(arg0);
+
+        AuthorizationThreadLocal.setAuthorizationBO(applicationContext.getBean(AuthorizationBO.class));
     }
 
-    @Override
+	@Override
     public void contextDestroyed(ServletContextEvent arg0) {
         BiblivreInitializer.destroy();
     }
