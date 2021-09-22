@@ -350,6 +350,12 @@
 		<property name="authorizationDAO" ref="authorizationDAO" />
 	</bean>
 
+	<bean id="backupBO" name="backupBO"
+		class="biblivre.administration.backup.BackupBO" >
+		<property name="backupDAO" ref="backupDAO" />
+		<property name="digitalMediaBO" ref="digitalMediaBO" />
+	</bean>
+
 	<!-- DAOs -->
 
 	<bean id="accessControlDAO"
