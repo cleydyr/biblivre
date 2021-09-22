@@ -25,6 +25,7 @@ import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.indexing.IndexingGroups;
+import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -35,8 +36,11 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.DatabaseUtils;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +53,7 @@ public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
 	private Z3950BO z3950BO;
 	private BackupBO backupBO;
+	private UserTypeBO userTypeBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {
         try {
@@ -149,6 +154,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
+    	request.setAttribute("userTypes", userTypeBO.list());
         this.jspURL = "/jsp/circulation/user.jsp";
         return;
     }
@@ -235,6 +241,14 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
+    	request.setAttribute("backupPath", backupBO.getBackupPath());
+
+    	File pgDump = DatabaseUtils.getPgDump(SchemaThreadLocal.get());
+
+		String dumpAbsolutePath = (pgDump == null) ? null : pgDump.getAbsolutePath();
+
+    	request.setAttribute("dumpAbsolutePath", dumpAbsolutePath);
+
         this.jspURL = "/jsp/administration/configurations.jsp";
         return;
     }

@@ -435,7 +435,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BACKUP_PATH;
-				value = BackupBO.getInstance().getBackupPath();
+				value = (String) request.getAttribute("backupPath");
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 
@@ -466,8 +466,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_PGDUMP_PATH;
-				File pgDump = DatabaseUtils.getPgDump(schema);
-				value = (pgDump == null) ? null : pgDump.getAbsolutePath();
+				value = (String) request.getAttribute("dumpAbsolutePath");
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>

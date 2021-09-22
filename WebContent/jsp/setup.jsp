@@ -34,26 +34,6 @@
 			</fieldset>
 		<% } %>
 
-		<% if (DataMigrationBO.getInstance(schema, "biblivre3").isBiblivre3Available()) { %>
-		<fieldset id="biblivre3import">
-			<legend><i18n:text key="administration.setup.biblivre3import" /></legend>
-			<div class="description"><i18n:text key="administration.setup.biblivre3import.description" /></div>
-			<div class="spacer"></div>
-			<div class="fields">
-				<%
-					TranslationsMap translations = (TranslationsMap) request.getAttribute("translationsMap");
-					for (DataMigrationPhaseGroup phase : DataMigrationPhaseGroup.values()) {
-						out.println("<div><input type=\"checkbox\" value=\"" + phase + "\" name=\"phases\" id=\"phase_" + phase + "\" / checked=\"checked\">&#160;<label for=\"phase_" + phase + "\">" + translations.getText("administration.migration.groups." + phase.toString()) + "</label></div>");
-					}
-				%>
-			</div>
-			<div class="spacer"></div>
-			<div class="buttons">
-				<a class="main_button arrow_right" onclick="Administration.setup.biblivre3Import();"><i18n:text key="administration.setup.biblivre3import.button" /></a>
-			</div>
-		</fieldset>
-		<% } %>
-
 		<fieldset>
 			<legend><i18n:text key="administration.setup.clean_install" /></legend>
 			<div class="description"><i18n:text key="administration.setup.clean_install.description" /></div>

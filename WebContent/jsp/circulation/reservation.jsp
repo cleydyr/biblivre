@@ -46,10 +46,6 @@
 	</script>
 </layout:head>
 
-<%
-	List<UserTypeDTO> userTypes = UserTypeBO.getInstance().list();
-%>
-
 <layout:body>
 	<c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
 	<div class="page_help"><i18n:text key="circulation.reservation.page_help" /></div>

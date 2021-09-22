@@ -47,10 +47,6 @@
 	</script>
 </layout:head>
 
-<%
-	List<UserTypeDTO> userTypes = UserTypeBO.getInstance().list();
-%>
-
 <layout:body>
 	<div class="page_help"><i18n:text key="circulation.access_control.page_help" /></div>
 

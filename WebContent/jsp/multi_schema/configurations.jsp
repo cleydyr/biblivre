@@ -335,7 +335,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BACKUP_PATH;
-				value = BackupBO.getInstance().getBackupPath();
+				value = (String) request.getAttribute("backupPath");
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 
