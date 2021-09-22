@@ -17,8 +17,9 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.circulation.user;
+package biblivre.administration.indexing;
 
+import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
@@ -28,31 +29,30 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserFieldsDAO extends AbstractDAO {
+public class IndexingGroupsDAOImpl extends AbstractDAO implements IndexingGroupsDAO {
 
-    public static UserFieldsDAO getInstance() {
-        return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAO.class);
+    public static IndexingGroupsDAOImpl getInstance() {
+        return (IndexingGroupsDAOImpl) AbstractDAO.getInstance(IndexingGroupsDAOImpl.class);
     }
 
-    public List<UserFieldDTO> listFields() {
-        List<UserFieldDTO> list = new ArrayList<>();
+    public List<IndexingGroupDTO> list(RecordType recordType) {
+        List<IndexingGroupDTO> list = new ArrayList<>();
 
         Connection con = null;
         try {
             con = this.getConnection();
-            String sqlDatafields = "SELECT * FROM users_fields ORDER BY \"sort_order\";";
+            String sql = "SELECT * FROM " + recordType + "_indexing_groups ORDER BY id;";
 
-            Statement pst = con.createStatement();
-            ResultSet rs = pst.executeQuery(sqlDatafields);
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
             while (rs.next()) {
-                UserFieldDTO userField = this.populateUserFieldDTO(rs);
-                // BACALHAAAAAAU
-                if (userField.getKey().equalsIgnoreCase("birthday")) {
-                    userField.setType(UserFieldType.DATE);
+                try {
+                    list.add(this.populateDTO(rs));
+                } catch (Exception e) {
+                    this.logger.error(e.getMessage(), e);
                 }
-                list.add(userField);
             }
-
         } catch (Exception e) {
             throw new DAOException(e);
         } finally {
@@ -62,14 +62,19 @@ public class UserFieldsDAO extends AbstractDAO {
         return list;
     }
 
-    private UserFieldDTO populateUserFieldDTO(ResultSet rs) throws SQLException {
-        UserFieldDTO dto = new UserFieldDTO();
+    private IndexingGroupDTO populateDTO(ResultSet rs) throws SQLException {
+        IndexingGroupDTO dto = new IndexingGroupDTO();
 
-        dto.setKey(rs.getString("key"));
-        dto.setType(UserFieldType.fromString(rs.getString("type")));
-        dto.setRequired(rs.getBoolean("required"));
-        dto.setMaxLength(rs.getInt("max_length"));
-        dto.setSortOrder(rs.getInt("sort_order"));
+        dto.setId(rs.getInt("id"));
+        dto.setTranslationKey(rs.getString("translation_key"));
+        dto.setDatafields(rs.getString("datafields"));
+        dto.setSortable(rs.getBoolean("sortable"));
+        dto.setDefaultSort(rs.getBoolean("default_sort"));
+
+        dto.setCreated(rs.getTimestamp("created"));
+        dto.setCreatedBy(rs.getInt("created_by"));
+        dto.setModified(rs.getTimestamp("modified"));
+        dto.setModifiedBy(rs.getInt("modified_by"));
 
         return dto;
     }

@@ -35,7 +35,9 @@ import biblivre.core.utils.TextUtils;
 import biblivre.spring.SpringUtils;
 
 public class Handler extends AbstractHandler {
-    public void userSearch(ExtendedRequest request, ExtendedResponse response) {
+    private ReportsBO reportsBO;
+
+	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
     	WebApplicationContext applicationContext =
                 SpringUtils.getWebApplicationContext(request);
 
@@ -60,10 +62,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void generate(ExtendedRequest request, ExtendedResponse response) {
-
-        ReportsBO bo = ReportsBO.getInstance();
-
         ReportsDTO dto = null;
+
         try {
             dto = this.populateDto(request);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DiskFile report = bo.generateReport(dto, request.getTranslationsMap());
+        DiskFile report = reportsBO.generateReport(dto, request.getTranslationsMap());
 
         if (report != null) {
             request.setScopedSessionAttribute(report.getName(), report);
@@ -126,4 +126,8 @@ public class Handler extends AbstractHandler {
 
         return dto;
     }
+
+	public void setReportsBO(ReportsBO reportsBO) {
+		this.reportsBO = reportsBO;
+	}
 }

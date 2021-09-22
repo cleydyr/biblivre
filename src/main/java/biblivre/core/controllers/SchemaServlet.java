@@ -32,7 +32,7 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
-import biblivre.core.schemas.SchemasDAO;
+import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
@@ -100,7 +100,7 @@ public final class SchemaServlet extends HttpServlet {
                                 // Checking Database
                                 SchemaThreadLocal.setSchema("public");
 
-                                if (!SchemasDAO.getInstance().testDatabaseConnection()) {
+                                if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
                                     json.put("success", false);
                                     json.put("status_message", "Falha no acesso ao Banco de Dados");
                                 } else {

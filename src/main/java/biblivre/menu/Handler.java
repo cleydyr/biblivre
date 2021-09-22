@@ -43,23 +43,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-
-    public Handler(
-            UserBO userBO,
-            SupplierBO supplierBO,
-            RequestBO requestBO,
-            BiblioRecordBO biblioRecordBO) {
-        super();
-        this.userBO = userBO;
-        this.supplierBO = supplierBO;
-        this.requestBO = requestBO;
-        this.biblioRecordBO = biblioRecordBO;
-    }
-
     private UserBO userBO;
     private SupplierBO supplierBO;
     private RequestBO requestBO;
     private BiblioRecordBO biblioRecordBO;
+	private Z3950BO z3950BO;
+	private BackupBO backupBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {
         try {
@@ -122,10 +111,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
-
-        Z3950BO bo = Z3950BO.getInstance();
-
-        List<Z3950AddressDTO> servers = bo.listAll();
+        List<Z3950AddressDTO> servers = z3950BO.listAll();
 
         request.setAttribute("servers", servers);
 
@@ -149,9 +135,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
-        Z3950BO bo = Z3950BO.getInstance();
-
-        List<Z3950AddressDTO> servers = bo.listAll();
+        List<Z3950AddressDTO> servers = z3950BO.listAll();
 
         request.setAttribute("servers", servers);
 
@@ -307,7 +291,7 @@ public class Handler extends AbstractHandler {
                 SchemaThreadLocal.withSchema(
                         Constants.GLOBAL_SCHEMA,
                         () -> {
-                            return BackupBO.getInstance().getBackupPath();
+                            return backupBO.getBackupPath();
                         });
 
         request.setAttribute("backupPath", backupPath);
@@ -336,4 +320,28 @@ public class Handler extends AbstractHandler {
         this.jspURL = "/jsp/setup.jsp";
         return;
     }
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
+
+	public void setSupplierBO(SupplierBO supplierBO) {
+		this.supplierBO = supplierBO;
+	}
+
+	public void setRequestBO(RequestBO requestBO) {
+		this.requestBO = requestBO;
+	}
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setZ3950BO(Z3950BO z3950bo) {
+		z3950BO = z3950bo;
+	}
+
+	public void setBackupBO(BackupBO backupBO) {
+		this.backupBO = backupBO;
+	}
 }

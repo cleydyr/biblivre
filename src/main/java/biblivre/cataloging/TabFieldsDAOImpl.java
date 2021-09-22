@@ -32,13 +32,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class TabFieldsDAO extends AbstractDAO {
+public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
 
     public static TabFieldsDAO getInstance() {
-        return (TabFieldsDAO) AbstractDAO.getInstance(TabFieldsDAO.class);
+        return (TabFieldsDAO) AbstractDAO.getInstance(TabFieldsDAOImpl.class);
     }
 
-    public List<BriefTabFieldFormatDTO> listBriefFormats(RecordType recordType) {
+    @Override
+	public List<BriefTabFieldFormatDTO> listBriefFormats(RecordType recordType) {
         List<BriefTabFieldFormatDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -68,7 +69,8 @@ public class TabFieldsDAO extends AbstractDAO {
         return list;
     }
 
-    public boolean insertBriefFormat(
+    @Override
+	public boolean insertBriefFormat(
             BriefTabFieldFormatDTO dto, RecordType recordType, int loggedUser) {
 
         Connection con = null;
@@ -96,7 +98,8 @@ public class TabFieldsDAO extends AbstractDAO {
         return true;
     }
 
-    public boolean updateBriefFormats(
+    @Override
+	public boolean updateBriefFormats(
             List<BriefTabFieldFormatDTO> briefFormats, RecordType recordType, int loggedUser) {
 
         Connection con = null;
@@ -133,7 +136,8 @@ public class TabFieldsDAO extends AbstractDAO {
         return true;
     }
 
-    public boolean deleteBriefFormat(String datafield, RecordType recordType) {
+    @Override
+	public boolean deleteBriefFormat(String datafield, RecordType recordType) {
 
         Connection con = null;
         try {
@@ -157,7 +161,8 @@ public class TabFieldsDAO extends AbstractDAO {
         return true;
     }
 
-    public boolean deleteFormTabDatafield(String datafield, RecordType recordType) {
+    @Override
+	public boolean deleteFormTabDatafield(String datafield, RecordType recordType) {
 
         Connection con = null;
         try {
@@ -193,7 +198,8 @@ public class TabFieldsDAO extends AbstractDAO {
         return true;
     }
 
-    public List<FormTabDatafieldDTO> listFields(RecordType recordType) {
+    @Override
+	public List<FormTabDatafieldDTO> listFields(RecordType recordType) {
         List<FormTabDatafieldDTO> list = new ArrayList<>();
         HashMap<String, FormTabDatafieldDTO> hash = new HashMap<>();
 
@@ -285,7 +291,8 @@ public class TabFieldsDAO extends AbstractDAO {
         return dto;
     }
 
-    public boolean updateFormTabDatafield(
+    @Override
+	public boolean updateFormTabDatafield(
             HashMap<String, FormTabDatafieldDTO> formDatafields,
             RecordType recordType,
             int loggedUser) {

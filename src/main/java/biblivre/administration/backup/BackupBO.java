@@ -31,6 +31,7 @@ import biblivre.core.utils.PgDumpCommand;
 import biblivre.core.utils.PgDumpCommand.Format;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.DigitalMediaDAOFactory;
 import biblivre.digitalmedia.DigitalMediaDTO;
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,6 +47,8 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
@@ -56,16 +59,6 @@ import org.slf4j.LoggerFactory;
 
 public class BackupBO extends AbstractBO {
     private BackupDAO backupDAO;
-
-    public static BackupBO getInstance() {
-        BackupBO bo = AbstractBO.getInstance(BackupBO.class);
-
-        if (bo.backupDAO == null) {
-            bo.backupDAO = BackupDAO.getInstance();
-        }
-
-        return bo;
-    }
 
     public void simpleBackup() {
         BackupType backupType = BackupType.FULL;
@@ -275,7 +268,7 @@ public class BackupBO extends AbstractBO {
 
     private boolean exportDigitalMedia(String schema, File path) {
         OutputStream writer = null;
-        DigitalMediaDAO dao = DigitalMediaDAO.getInstance();
+        DigitalMediaDAO dao = (DigitalMediaDAO) DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
         List<DigitalMediaDTO> list = dao.list();
 
         try {
@@ -433,4 +426,8 @@ public class BackupBO extends AbstractBO {
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
+
+	public Set<String> listDatabaseSchemas() {
+		return backupDAO.listDatabaseSchemas();
+	}
 }

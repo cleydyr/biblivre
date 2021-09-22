@@ -20,6 +20,7 @@
 package biblivre.core;
 
 import biblivre.administration.setup.DataMigrationDAO;
+import biblivre.administration.setup.DataMigrationDAOImpl;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -403,7 +404,7 @@ public abstract class AbstractDAO {
     }
 
     public static DataMigrationDAO getInstance(
-            Class<DataMigrationDAO> class1, String string, String datasource) {
+            Class<DataMigrationDAOImpl> class1, String string, String datasource) {
         // TODO Auto-generated method stub
         return null;
     }

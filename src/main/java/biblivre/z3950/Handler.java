@@ -41,6 +41,7 @@ import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
+	private Z3950BO z3950BO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -60,8 +61,6 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        Z3950BO bo = Z3950BO.getInstance();
-
         String[] serverIds = servers.split(",");
         List<Integer> ids = new ArrayList<>();
         for (String serverId : serverIds) {
@@ -76,9 +75,9 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        List<Z3950AddressDTO> serverList = bo.list(ids);
+        List<Z3950AddressDTO> serverList = z3950BO.list(ids);
         Pair<String, String> search = Pair.of(attribute, query);
-        List<Z3950RecordDTO> results = bo.search(serverList, search);
+        List<Z3950RecordDTO> results = z3950BO.search(serverList, search);
 
         if (results.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -189,5 +188,9 @@ public class Handler extends AbstractHandler {
 
 	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
 		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setZ3950BO(Z3950BO z3950bo) {
+		z3950BO = z3950bo;
 	}
 }

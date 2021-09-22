@@ -4,7 +4,7 @@ import biblivre.core.utils.Constants;
 import java.util.function.Supplier;
 
 public class SchemaThreadLocal {
-    private static final ThreadLocal<String> threadLocal = new ThreadLocal<String>();
+    private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
     public static void setSchema(String schema) {
         threadLocal.set(schema);

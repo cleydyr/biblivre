@@ -94,7 +94,7 @@ public class UserFields extends StaticBO {
             UserFields.logger.debug("Loading user fields from " + SchemaThreadLocal.get() + ".");
         }
 
-        UserFieldsDAO dao = UserFieldsDAO.getInstance();
+        UserFieldsDAO dao = UserFieldsDAOImpl.getInstance();
 
         List<UserFieldDTO> fields = dao.listFields();
         list =

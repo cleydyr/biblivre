@@ -34,12 +34,13 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
-public class BackupDAO extends AbstractDAO {
+public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     public static BackupDAO getInstance() {
-        return (BackupDAO) AbstractDAO.getInstance(BackupDAO.class);
+        return (BackupDAO) AbstractDAO.getInstance(BackupDAOImpl.class);
     }
 
-    public boolean save(BackupDTO dto) {
+    @Override
+	public boolean save(BackupDTO dto) {
         if (dto == null || dto.getType() == null) {
             return false;
         }
@@ -111,7 +112,8 @@ public class BackupDAO extends AbstractDAO {
         }
     }
 
-    public BackupDTO get(Integer id) {
+    @Override
+	public BackupDTO get(Integer id) {
         if (id == null) {
             return null;
         }
@@ -142,7 +144,8 @@ public class BackupDAO extends AbstractDAO {
         return dto;
     }
 
-    public Set<String> listDatabaseSchemas() {
+    @Override
+	public Set<String> listDatabaseSchemas() {
         Set<String> set = new HashSet<>();
 
         Connection con = null;
@@ -166,11 +169,13 @@ public class BackupDAO extends AbstractDAO {
         return set;
     }
 
-    public List<BackupDTO> list() {
+    @Override
+	public List<BackupDTO> list() {
         return this.list(0);
     }
 
-    public List<BackupDTO> list(int limit) {
+    @Override
+	public List<BackupDTO> list(int limit) {
         ArrayList<BackupDTO> list = new ArrayList<>();
 
         Connection con = null;

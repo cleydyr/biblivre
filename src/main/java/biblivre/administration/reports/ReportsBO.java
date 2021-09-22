@@ -30,16 +30,6 @@ public class ReportsBO extends AbstractBO {
     private RecordDAO recordDAO;
     private BiblioRecordBO biblioRecordBO;
 
-    public static ReportsBO getInstance() {
-        ReportsBO bo = AbstractBO.getInstance(ReportsBO.class);
-
-        if (bo.reportsDAO == null) {
-            bo.reportsDAO = ReportsDAO.getInstance();
-        }
-
-        return bo;
-    }
-
     public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
         ReportType type = dto.getType();
         IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type);

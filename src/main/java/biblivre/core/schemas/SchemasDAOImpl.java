@@ -30,13 +30,14 @@ import java.util.HashSet;
 import java.util.Set;
 import org.postgresql.core.BaseConnection;
 
-public class SchemasDAO extends AbstractDAO {
+public class SchemasDAOImpl extends AbstractDAO implements SchemasDAO {
 
-    public static SchemasDAO getInstance() {
-        return (SchemasDAO) AbstractDAO.getInstance(SchemasDAO.class);
+    public static SchemasDAOImpl getInstance() {
+        return (SchemasDAOImpl) AbstractDAO.getInstance(SchemasDAOImpl.class);
     }
 
-    public Set<SchemaDTO> list() {
+    @Override
+	public Set<SchemaDTO> list() {
         Set<SchemaDTO> set = new HashSet<>();
 
         Connection con = null;
@@ -63,7 +64,8 @@ public class SchemasDAO extends AbstractDAO {
         return set;
     }
 
-    public boolean insert(SchemaDTO dto) {
+    @Override
+	public boolean insert(SchemaDTO dto) {
         Connection con = null;
 
         try {
@@ -84,7 +86,8 @@ public class SchemasDAO extends AbstractDAO {
         }
     }
 
-    public boolean delete(SchemaDTO dto) {
+    @Override
+	public boolean delete(SchemaDTO dto) {
         Connection con = null;
 
         try {
@@ -120,7 +123,8 @@ public class SchemasDAO extends AbstractDAO {
         }
     }
 
-    public boolean save(SchemaDTO dto) {
+    @Override
+	public boolean save(SchemaDTO dto) {
         Connection con = null;
 
         try {
@@ -142,7 +146,8 @@ public class SchemasDAO extends AbstractDAO {
         }
     }
 
-    public boolean exists(String schema) {
+    @Override
+	public boolean exists(String schema) {
         Connection con = null;
         try {
             con = this.getConnection();

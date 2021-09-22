@@ -459,7 +459,7 @@ public class Translations extends StaticBO {
             HashMap<String, HashMap<String, String>> translations,
             HashMap<String, HashMap<String, String>> removeTranslations,
             int loggedUser) {
-        TranslationsDAO.getInstance().save(translations, removeTranslations, loggedUser);
+        TranslationsDAOImpl.getInstance().save(translations, removeTranslations, loggedUser);
 
         for (String language : translations.keySet()) {
             Translations.reset(language);
@@ -487,7 +487,7 @@ public class Translations extends StaticBO {
         HashMap<String, HashMap<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
-        boolean success = TranslationsDAO.getInstance().save(translations, loggedUser);
+        boolean success = TranslationsDAOImpl.getInstance().save(translations, loggedUser);
 
         Translations.reset(language);
 
@@ -589,7 +589,7 @@ public class Translations extends StaticBO {
                 () -> {
                     TranslationsMap translationsMap = null;
 
-                    TranslationsDAO dao = TranslationsDAO.getInstance();
+                    TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
 
                     if (StringUtils.isNotBlank(language)) {
                         List<TranslationDTO> list = dao.list(language);

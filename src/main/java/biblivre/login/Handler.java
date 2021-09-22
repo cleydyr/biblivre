@@ -52,6 +52,8 @@ import org.json.JSONObject;
 public class Handler extends AbstractHandler {
     private LoginBO loginBO;
     private IndexingBO indexingBO;
+	private AuthorizationBO authorizationBO;
+	private BackupBO backupBO;
 
     public Handler(LoginBO loginBO, IndexingBO indexingBO) {
         super();
@@ -73,8 +75,7 @@ public class Handler extends AbstractHandler {
         LoginDTO user = loginBO.login(username, password);
 
         if (user != null) {
-            AuthorizationBO authBo = AuthorizationBO.getInstance();
-            AuthorizationPoints atps = authBo.getUserAuthorizationPoints(user);
+            AuthorizationPoints atps = authorizationBO.getUserAuthorizationPoints(user);
 
             _setAdmin(user, atps);
 
@@ -177,8 +178,7 @@ public class Handler extends AbstractHandler {
         if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_BACKUP)) {
             boolean warningBackup = false;
 
-            BackupBO bbo = BackupBO.getInstance();
-            BackupDTO lastBackup = bbo.getLastBackup();
+            BackupDTO lastBackup = backupBO.getLastBackup();
 
             if (lastBackup == null) {
                 // bbo.simpleBackup();
@@ -259,4 +259,20 @@ public class Handler extends AbstractHandler {
                                         .getResource("/META-INF/menus/menus.json")
                                         .toURI())));
     }
+
+	public void setLoginBO(LoginBO loginBO) {
+		this.loginBO = loginBO;
+	}
+
+	public void setIndexingBO(IndexingBO indexingBO) {
+		this.indexingBO = indexingBO;
+	}
+
+	public void setAuthorizationBO(AuthorizationBO authorizationBO) {
+		this.authorizationBO = authorizationBO;
+	}
+
+	public void setBackupBO(BackupBO backupBO) {
+		this.backupBO = backupBO;
+	}
 }

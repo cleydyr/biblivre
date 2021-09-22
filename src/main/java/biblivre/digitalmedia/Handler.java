@@ -34,7 +34,9 @@ import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
-    public void download(ExtendedRequest request, ExtendedResponse response) {
+    private DigitalMediaBO digitalMediaBO;
+
+	public void download(ExtendedRequest request, ExtendedResponse response) {
 
         String id = request.getString("id").replaceAll("_", "\\\\");
 
@@ -66,9 +68,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DigitalMediaBO bo = DigitalMediaBO.getInstance();
-
-        Integer serial = bo.save(file);
+        Integer serial = digitalMediaBO.save(file);
 
         String encodedId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
 
@@ -95,14 +95,12 @@ public class Handler extends AbstractHandler {
         } catch (Exception e) {
         }
 
-        DigitalMediaBO bo = DigitalMediaBO.getInstance();
-
         if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
             this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
-        BiblivreFile file = bo.load(Integer.valueOf(fileId), fileName);
+        BiblivreFile file = digitalMediaBO.load(Integer.valueOf(fileId), fileName);
         return file;
     }
 

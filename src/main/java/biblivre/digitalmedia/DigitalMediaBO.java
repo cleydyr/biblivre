@@ -26,16 +26,6 @@ import biblivre.core.file.MemoryFile;
 public class DigitalMediaBO extends AbstractBO {
     protected DigitalMediaDAO digitalMediaDAO;
 
-    public static DigitalMediaBO getInstance() {
-        DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class);
-
-        if (bo.digitalMediaDAO == null) {
-            bo.digitalMediaDAO = DigitalMediaDAO.getInstance();
-        }
-
-        return bo;
-    }
-
     public Integer save(MemoryFile file) {
         return this.digitalMediaDAO.save(file);
     }

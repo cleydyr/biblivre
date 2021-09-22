@@ -2,7 +2,7 @@ package biblivre.z3950.server;
 
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.schemas.SchemaDTO;
-import biblivre.core.schemas.SchemasDAO;
+import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.utils.Constants;
 import biblivre.z3950.client.config.Z3950Config;
 import java.util.HashSet;
@@ -89,7 +89,7 @@ public class Z3950ServerBO {
         SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    SchemasDAO schemasDao = SchemasDAO.getInstance();
+                    SchemasDAOImpl schemasDao = SchemasDAOImpl.getInstance();
 
                     Set<SchemaDTO> schemas = schemasDao.list();
 

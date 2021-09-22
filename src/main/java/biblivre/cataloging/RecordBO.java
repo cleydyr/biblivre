@@ -52,6 +52,7 @@ public abstract class RecordBO extends AbstractBO {
 
     protected RecordDAO recordDAO;
     protected SearchDAO seachDAO;
+	private DigitalMediaBO digitalMediaBO;
 
     public static final int FULL = 1 << 0;
     public static final int MARC_INFO = 1 << 1;
@@ -263,8 +264,7 @@ public abstract class RecordBO extends AbstractBO {
                 }
 
                 // Try to remove the file from Biblivre DB
-                DigitalMediaBO dmbo = DigitalMediaBO.getInstance();
-                dmbo.delete(Integer.valueOf(fileId), fileName);
+                digitalMediaBO.delete(Integer.valueOf(fileId), fileName);
             }
         } catch (Exception e) {
         }
@@ -363,5 +363,9 @@ public abstract class RecordBO extends AbstractBO {
 
 	public void setSeachDAO(SearchDAO seachDAO) {
 		this.seachDAO = seachDAO;
+	}
+
+	public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+		this.digitalMediaBO = digitalMediaBO;
 	}
 }

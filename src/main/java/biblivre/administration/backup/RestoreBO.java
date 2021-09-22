@@ -29,6 +29,8 @@ import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.DigitalMediaDAOFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -86,26 +88,10 @@ public class RestoreBO extends AbstractBO {
 
     private static final Logger logger = LoggerFactory.getLogger(RestoreBO.class);
 
-    private BackupDAO backupDAO;
     private DigitalMediaDAO digitalMediaDAO;
-
-    public static RestoreBO getInstance() {
-        RestoreBO bo = AbstractBO.getInstance(RestoreBO.class);
-
-        if (bo.backupDAO == null) {
-            bo.backupDAO = BackupDAO.getInstance();
-        }
-
-        if (bo.digitalMediaDAO == null) {
-            bo.digitalMediaDAO = DigitalMediaDAO.getInstance();
-        }
-
-        return bo;
-    }
+	private BackupBO backupBO;
 
     public List<RestoreDTO> list() {
-        BackupBO backupBO = BackupBO.getInstance();
-
         File path = backupBO.getBackupDestination();
 
         if (path == null) {
@@ -169,8 +155,6 @@ public class RestoreBO extends AbstractBO {
     }
 
     public RestoreDTO getRestoreDTO(String filename) {
-        BackupBO backupBO = BackupBO.getInstance();
-
         File path = backupBO.getBackupDestination();
 
         if (path == null) {
@@ -225,7 +209,7 @@ public class RestoreBO extends AbstractBO {
 
         _validateRestoreSchemas(restoreSchemas);
 
-        RestoreContextHelper context = new RestoreContextHelper(dto, backupDAO.listDatabaseSchemas());
+        RestoreContextHelper context = new RestoreContextHelper(dto, backupBO.listDatabaseSchemas());
 
         String globalSchema = Constants.GLOBAL_SCHEMA;
 
@@ -565,7 +549,7 @@ public class RestoreBO extends AbstractBO {
         SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    DigitalMediaDAO dao = DigitalMediaDAO.getInstance();
+                    DigitalMediaDAO dao = (DigitalMediaDAO) DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
 
                     for (File file : path.listFiles()) {
                         Matcher fileMatcher = _FILE.matcher(file.getName());

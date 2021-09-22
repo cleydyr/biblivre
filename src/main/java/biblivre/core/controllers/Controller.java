@@ -22,6 +22,7 @@ package biblivre.core.controllers;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
+import biblivre.core.AuthorizationThreadLocal;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationBO;
@@ -99,8 +100,9 @@ public abstract class Controller {
                     authPoints = AuthorizationPoints.getNotLoggedInstance();
                 }
 
-                AuthorizationBO abo = AuthorizationBO.getInstance();
-                abo.authorize(authPoints, module, action);
+                AuthorizationBO authorizationBO = AuthorizationThreadLocal.get();
+
+                authorizationBO.authorize(authPoints, module, action);
             }
         } catch (AuthorizationException e) {
             // Exception thrown in abo.authorize

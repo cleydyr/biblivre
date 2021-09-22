@@ -37,6 +37,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
     private String marcField;
     private String datafield;
     private String subfield;
+	private ReportsBO reportsBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -56,7 +57,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
         } else {
             this.index = 0; // marc field
         }
-        return ReportsBO.getInstance().getCustomCountData(dto);
+        return reportsBO.getCustomCountData(dto);
     }
 
     @Override
@@ -166,4 +167,8 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
                 return o1[this.index].compareTo(o2[this.index]);
         }
     }
+
+	public void setReportsBO(ReportsBO reportsBO) {
+		this.reportsBO = reportsBO;
+	}
 }

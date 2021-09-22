@@ -30,13 +30,14 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LanguagesDAO extends AbstractDAO {
+public class LanguagesDAOImpl extends AbstractDAO implements LanguagesDAO {
 
     public static LanguagesDAO getInstance() {
-        return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAO.class);
+        return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAOImpl.class);
     }
 
-    public Set<LanguageDTO> list() {
+    @Override
+	public Set<LanguageDTO> list() {
         Set<LanguageDTO> set = new HashSet<>();
 
         Connection con = null;

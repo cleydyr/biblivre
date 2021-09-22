@@ -17,43 +17,47 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.administration.setup;
+package biblivre.core.auth;
 
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
+import biblivre.login.LoginDTO;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SetupDAO extends AbstractDAO {
+public class AuthorizationDAOImpl extends AbstractDAO implements AuthorizationDAO {
 
-    public static SetupDAO getInstance() {
-        return (SetupDAO) AbstractDAO.getInstance(SetupDAO.class);
+    public static AuthorizationDAO getInstance() {
+        return (AuthorizationDAO) AbstractDAO.getInstance(AuthorizationDAOImpl.class);
     }
 
-    public final void fixSequence(DataMigrationPhase migrationPhase) {
-        if (migrationPhase == null || migrationPhase.getBiblivre4IdColumnName() == null) {
-            return;
-        }
-
-        this.fixSequence(
-                migrationPhase.getBiblivre4SequenceName(),
-                migrationPhase.getBiblivre4TableName(),
-                migrationPhase.getBiblivre4IdColumnName());
-    }
-
-    public final void deleteAll(DataMigrationPhase phase) {
+    @Override
+	public Map<String, Boolean> getUserPermissions(LoginDTO user) {
         Connection con = null;
+
+        Map<String, Boolean> hash = new HashMap<>();
 
         try {
             con = this.getConnection();
+            String sql = "SELECT permission FROM permissions WHERE login_id = ?;";
 
-            StringBuilder sqlDelete = new StringBuilder();
-            sqlDelete.append("DELETE FROM ").append(phase.getBiblivre4TableName()).append(";");
-            con.prepareStatement(sqlDelete.toString()).executeUpdate();
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, user.getId());
 
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                hash.put(rs.getString("permission"), Boolean.TRUE);
+            }
         } catch (Exception e) {
             throw new DAOException(e);
         } finally {
             this.closeConnection(con);
         }
+
+        return hash;
     }
 }

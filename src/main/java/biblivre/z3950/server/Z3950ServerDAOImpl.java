@@ -11,12 +11,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 
-public class Z3950ServerDAO extends AbstractDAO {
-    public static Z3950ServerDAO getInstance() {
-        return (Z3950ServerDAO) AbstractDAO.getInstance(Z3950ServerDAO.class);
+public class Z3950ServerDAOImpl extends AbstractDAO implements Z3950DAO {
+    public static Z3950ServerDAOImpl getInstance() {
+        return (Z3950ServerDAOImpl) AbstractDAO.getInstance(Z3950ServerDAOImpl.class);
     }
 
-    public Collection<String> search(String value, Integer indexGroupId, int offset, int limit) {
+    @Override
+	public Collection<String> search(String value, Integer indexGroupId, int offset, int limit) {
         String[] terms = TextUtils.prepareWords(TextUtils.preparePhrase(value));
         StringBuilder sql = _buildSql(terms);
 

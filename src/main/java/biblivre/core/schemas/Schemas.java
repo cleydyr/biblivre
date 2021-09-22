@@ -84,7 +84,7 @@ public class Schemas extends StaticBO {
         SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    SchemasDAO dao = SchemasDAO.getInstance();
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
                     Set<SchemaDTO> schemas = dao.list();
 
@@ -214,7 +214,7 @@ public class Schemas extends StaticBO {
         return SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    SchemasDAO dao = SchemasDAO.getInstance();
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
                     dto.setDisabled(true);
 
@@ -226,7 +226,7 @@ public class Schemas extends StaticBO {
         return SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    SchemasDAO dao = SchemasDAO.getInstance();
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
                     dto.setDisabled(false);
 
@@ -242,7 +242,7 @@ public class Schemas extends StaticBO {
         return SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    SchemasDAO dao = SchemasDAO.getInstance();
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
                     StaticBO.resetCache();
 
@@ -254,7 +254,7 @@ public class Schemas extends StaticBO {
         return SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    SchemasDAO schemasDAO = SchemasDAO.getInstance();
+                    SchemasDAOImpl schemasDAO = SchemasDAOImpl.getInstance();
 
                     return schemasDAO.exists(schema);
                 });

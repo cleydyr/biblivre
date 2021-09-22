@@ -120,7 +120,7 @@ public class Languages extends StaticBO {
         }
 
         Languages.logger.debug("Loading languages from " + schema);
-        LanguagesDAO dao = LanguagesDAO.getInstance();
+        LanguagesDAO dao = LanguagesDAOImpl.getInstance();
 
         set = dao.list();
         Languages.languages.put(schema, set);

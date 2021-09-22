@@ -209,7 +209,7 @@ public class Configurations extends StaticBO {
             SchemaThreadLocal.withSchema(
                     Constants.GLOBAL_SCHEMA,
                     () -> {
-                        ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance();
+                        ConfigurationsDAOImpl globalDao = ConfigurationsDAOImpl.getInstance();
 
                         List<ConfigurationsDTO> multiSchemaList = new ArrayList<>();
 
@@ -227,7 +227,7 @@ public class Configurations extends StaticBO {
                     });
         }
 
-        ConfigurationsDAO dao = ConfigurationsDAO.getInstance();
+        ConfigurationsDAO dao = ConfigurationsDAOImpl.getInstance();
 
         if (dao.save(configs, loggedUser)) {
             HashMap<String, ConfigurationsDTO> map = Configurations.getMap();
@@ -318,7 +318,7 @@ public class Configurations extends StaticBO {
 
         Configurations.logger.debug("Loading configurations for " + schema);
 
-        ConfigurationsDAO dao = ConfigurationsDAO.getInstance();
+        ConfigurationsDAO dao = ConfigurationsDAOImpl.getInstance();
 
         List<ConfigurationsDTO> configs = dao.list();
 

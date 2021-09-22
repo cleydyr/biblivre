@@ -19,10 +19,6 @@ import org.postgresql.largeobject.LargeObjectManager;
 
 public abstract class DigitalMediaDAO extends AbstractDAO {
 
-    public static DigitalMediaDAO getInstance() {
-        return (DigitalMediaDAO) DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
-    }
-
     protected abstract BiblivreFile getFile(long oid) throws Exception;
 
     protected abstract void persist(InputStream is, long oid, long size) throws Exception;

@@ -36,17 +36,19 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
-public class Z3950DAO extends AbstractDAO {
+public class Z3950DAOImpl extends AbstractDAO implements Z3950DAO {
 
     public static Z3950DAO getInstance() {
-        return (Z3950DAO) AbstractDAO.getInstance(Z3950DAO.class);
+        return (Z3950DAO) AbstractDAO.getInstance(Z3950DAOImpl.class);
     }
 
-    public List<Z3950AddressDTO> listAll() {
+    @Override
+	public List<Z3950AddressDTO> listAll() {
         return this.list(null);
     }
 
-    public DTOCollection<Z3950AddressDTO> search(String value, int limit, int offset) {
+    @Override
+	public DTOCollection<Z3950AddressDTO> search(String value, int limit, int offset) {
         DTOCollection<Z3950AddressDTO> list = new DTOCollection<>();
 
         if (value != null) {
@@ -111,7 +113,8 @@ public class Z3950DAO extends AbstractDAO {
         return list;
     }
 
-    public List<Z3950AddressDTO> list(List<Integer> ids) {
+    @Override
+	public List<Z3950AddressDTO> list(List<Integer> ids) {
         List<Z3950AddressDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -152,7 +155,8 @@ public class Z3950DAO extends AbstractDAO {
         return list;
     }
 
-    public boolean insert(Z3950AddressDTO dto) {
+    @Override
+	public boolean insert(Z3950AddressDTO dto) {
         Connection con = null;
 
         try {
@@ -184,7 +188,8 @@ public class Z3950DAO extends AbstractDAO {
         }
     }
 
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    @Override
+	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -214,7 +219,8 @@ public class Z3950DAO extends AbstractDAO {
         return true;
     }
 
-    public boolean update(Z3950AddressDTO dto) {
+    @Override
+	public boolean update(Z3950AddressDTO dto) {
         Connection con = null;
 
         try {
@@ -239,7 +245,8 @@ public class Z3950DAO extends AbstractDAO {
         }
     }
 
-    public boolean delete(Z3950AddressDTO dto) {
+    @Override
+	public boolean delete(Z3950AddressDTO dto) {
         Connection con = null;
 
         try {

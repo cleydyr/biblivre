@@ -121,7 +121,7 @@ public class BiblivreJDBCSearchable extends JDBCSearchable {
             SchemaThreadLocal.withSchema(
                     collection,
                     () -> {
-                        Z3950ServerDAO dao = Z3950ServerDAO.getInstance();
+                        Z3950ServerDAOImpl dao = Z3950ServerDAOImpl.getInstance();
 
                         Collection<String> results = dao.search(term, indexingGroupId, 0, 200);
 

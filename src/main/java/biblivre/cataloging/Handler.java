@@ -54,6 +54,8 @@ import org.marc4j.marc.Record;
 public class Handler extends AbstractHandler {
     private Map<RecordType, RecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
+	private ImportBO importBO;
+	private Z3950BO z3950BO;
 
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
 
@@ -64,9 +66,7 @@ public class Handler extends AbstractHandler {
         ImportEncoding encoding =
                 request.getEnum(ImportEncoding.class, "encoding", ImportEncoding.AUTO_DETECT);
 
-        ImportBO bo = ImportBO.getInstance();
-
-        ImportDTO list = bo.loadFromFile(file, format, encoding);
+        ImportDTO list = importBO.loadFromFile(file, format, encoding);
 
         if (list != null) {
             List<String> isbnList = new ArrayList<>();
@@ -119,17 +119,15 @@ public class Handler extends AbstractHandler {
         String attribute = request.getString("search_attribute");
         String value = request.getString("search_query");
 
-        Z3950BO bo = Z3950BO.getInstance();
-        Z3950AddressDTO server = bo.findById(id);
+        Z3950AddressDTO server = z3950BO.findById(id);
 
         List<Z3950AddressDTO> serverList = new ArrayList<>();
         serverList.add(server);
         Pair<String, String> search = Pair.of(attribute, value);
 
-        List<Z3950RecordDTO> recordList = bo.search(serverList, search);
+        List<Z3950RecordDTO> recordList = z3950BO.search(serverList, search);
 
-        ImportBO importBo = ImportBO.getInstance();
-        ImportDTO list = importBo.readFromZ3950Results(recordList);
+        ImportDTO list = importBO.readFromZ3950Results(recordList);
 
         if (list != null) {
             List<String> isbnList = new ArrayList<>();
@@ -176,10 +174,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void parseMarc(ExtendedRequest request, ExtendedResponse response) {
-
         String marc = request.getString("marc");
 
-        ImportBO bo = ImportBO.getInstance();
         RecordDTO dto = null;
         try {
             HumanReadableMarcReader humanReadableMarcReader =
@@ -187,7 +183,7 @@ public class Handler extends AbstractHandler {
 
             Record record = humanReadableMarcReader.next();
 
-            dto = bo.dtoFromRecord(record);
+            dto = importBO.dtoFromRecord(record);
             BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
 
             if (StringUtils.isNotBlank(rdto.getIsbn())) {
@@ -304,5 +300,9 @@ public class Handler extends AbstractHandler {
 
 	public void setIndexingBO(IndexingBO indexingBO) {
 		this.indexingBO = indexingBO;
+	}
+
+	public void setImportBO(ImportBO importBO) {
+		this.importBO = importBO;
 	}
 }

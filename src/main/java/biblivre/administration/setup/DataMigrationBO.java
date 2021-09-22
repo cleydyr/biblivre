@@ -51,7 +51,7 @@ import java.util.Map;
 
 public class DataMigrationBO extends AbstractBO {
 
-    private DataMigrationDAO dataMigrationDAO;
+    private DataMigrationDAOImpl dataMigrationDAO;
     private SetupDAO setupDAO;
     private final Integer limit = 50;
 
@@ -78,26 +78,17 @@ public class DataMigrationBO extends AbstractBO {
 	private UserTypeBO userTypeBO;
 	private LendingFineBO lendingFineBO;
 	private ReservationBO reservationBO;
-
-    public static DataMigrationBO getInstance(String schema, String datasource) {
-        DataMigrationBO bo = AbstractBO.getInstance(DataMigrationBO.class);
-
-        if (bo.dataMigrationDAO == null) {
-            bo.dataMigrationDAO = DataMigrationDAO.getInstance(schema, datasource);
-        }
-
-        if (bo.setupDAO == null) {
-            bo.setupDAO = SetupDAO.getInstance();
-        }
-
-        return bo;
-    }
+	private Z3950BO z3950BO;
+	private DigitalMediaBO digitalMediaBO;
 
     public boolean isBiblivre3Available() {
         return this.dataMigrationDAO.testDatabaseConnection();
     }
 
-    public boolean migrate(List<DataMigrationPhase> selectedPhases) {
+    public boolean migrate(String schema, String datasource, List<DataMigrationPhase> selectedPhases) {
+    	dataMigrationDAO.setDataSourceName(datasource);
+    	dataMigrationDAO.setUserSchema(schema);
+
         synchronized (this) {
             this.migratingDatabase = true;
 
@@ -320,7 +311,7 @@ public class DataMigrationBO extends AbstractBO {
                 return orderBO.saveFromBiblivre3(dtoList);
 
             case Z3950_SERVERS:
-                return Z3950BO.getInstance().saveFromBiblivre3(dtoList);
+                return z3950BO.saveFromBiblivre3(dtoList);
 
             case ACCESS_CONTROL:
                 return accessControlBO.saveFromBiblivre3(dtoList);
@@ -348,9 +339,8 @@ public class DataMigrationBO extends AbstractBO {
     }
 
     private boolean saveDigitalMedia(List<MemoryFile> dtoList) {
-        DigitalMediaBO bo = DigitalMediaBO.getInstance();
         for (MemoryFile file : dtoList) {
-            bo.save(file);
+            digitalMediaBO.save(file);
         }
         return true;
     }
@@ -382,7 +372,7 @@ public class DataMigrationBO extends AbstractBO {
         this.currentCount = currentCount;
     }
 
-	public void setDao(DataMigrationDAO dataMigrationDAO) {
+	public void setDao(DataMigrationDAOImpl dataMigrationDAO) {
 		this.dataMigrationDAO = dataMigrationDAO;
 	}
 

@@ -58,8 +58,8 @@ public abstract class AbstractBO {
             authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
         }
 
-        AuthorizationBO abo = AuthorizationBO.getInstance();
+        AuthorizationBO authorizationBO = AuthorizationThreadLocal.get();
 
-        abo.authorize(authorizationPoints, module, action);
+        authorizationBO.authorize(authorizationPoints, module, action);
     }
 }

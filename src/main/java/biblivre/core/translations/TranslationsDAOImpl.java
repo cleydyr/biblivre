@@ -32,17 +32,19 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
-public class TranslationsDAO extends AbstractDAO {
+public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO {
 
-    public static TranslationsDAO getInstance() {
-        return (TranslationsDAO) AbstractDAO.getInstance(TranslationsDAO.class);
+    public static TranslationsDAOImpl getInstance() {
+        return (TranslationsDAOImpl) AbstractDAO.getInstance(TranslationsDAOImpl.class);
     }
 
-    public List<TranslationDTO> list() {
+    @Override
+	public List<TranslationDTO> list() {
         return this.list(null);
     }
 
-    public List<TranslationDTO> list(String language) {
+    @Override
+	public List<TranslationDTO> list(String language) {
         List<TranslationDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -90,11 +92,13 @@ public class TranslationsDAO extends AbstractDAO {
         return list;
     }
 
-    public boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser) {
+    @Override
+	public boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser) {
         return this.save(translations, null, loggedUser);
     }
 
-    public boolean save(
+    @Override
+	public boolean save(
             HashMap<String, HashMap<String, String>> translations,
             HashMap<String, HashMap<String, String>> removeTranslations,
             int loggedUser) {

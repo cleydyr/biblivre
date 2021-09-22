@@ -47,6 +47,7 @@ public class Handler extends AbstractHandler {
     private LendingBO lendingBO;
 	private LendingFineBO lendingFineBO;
 	private ReservationBO reservationBO;
+	private DigitalMediaBO digitalMediaBO;
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -148,8 +149,6 @@ public class Handler extends AbstractHandler {
                 file.setInputStream(new ByteArrayInputStream(arr));
                 file.setSize(arr.length);
 
-                DigitalMediaBO digitalMediaBO = DigitalMediaBO.getInstance();
-
                 Integer serial = digitalMediaBO.save(file);
 
                 String photoId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
@@ -166,8 +165,7 @@ public class Handler extends AbstractHandler {
                         if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
                             // Try to remove the file from Biblivre DB
 
-                            DigitalMediaBO dmbo = DigitalMediaBO.getInstance();
-                            dmbo.delete(Integer.valueOf(splitId[0]), splitId[1]);
+                            digitalMediaBO.delete(Integer.valueOf(splitId[0]), splitId[1]);
                         }
                     }
                 }
@@ -293,5 +291,9 @@ public class Handler extends AbstractHandler {
 
 	public void setReservationBO(ReservationBO reservationBO) {
 		this.reservationBO = reservationBO;
+	}
+
+	public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+		this.digitalMediaBO = digitalMediaBO;
 	}
 }

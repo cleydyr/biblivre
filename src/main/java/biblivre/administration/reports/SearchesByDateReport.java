@@ -34,7 +34,7 @@ public class SearchesByDateReport extends BaseBiblivreReport {
     protected BaseReportDto getReportData(ReportsDTO dto) {
         String initialDate = this.dateFormat.format(dto.getInitialDate());
         String finalDate = this.dateFormat.format(dto.getFinalDate());
-        return ReportsDAO.getInstance().getSearchesByDateReportData(initialDate, finalDate);
+        return ReportsDAOImpl.getInstance().getSearchesByDateReportData(initialDate, finalDate);
     }
 
     @Override

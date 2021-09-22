@@ -37,8 +37,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+    private BackupBO backupBO;
 
-    public void prepare(ExtendedRequest request, ExtendedResponse response) {
+	public void prepare(ExtendedRequest request, ExtendedResponse response) {
         String schemas = request.getString("schemas");
         String type = request.getString("type");
 
@@ -50,8 +51,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        BackupBO bo = BackupBO.getInstance();
-        BackupScope backupScope = bo.getBackupScope();
+        BackupScope backupScope = backupBO.getBackupScope();
 
         String schema = SchemaThreadLocal.get();
 
@@ -84,7 +84,7 @@ public class Handler extends AbstractHandler {
             map.put(s, Pair.of(title, subtitle));
         }
 
-        BackupDTO dto = bo.prepare(map, backupType, backupScope);
+        BackupDTO dto = backupBO.prepare(map, backupType, backupScope);
 
         try {
             this.json.put("success", true);
@@ -97,15 +97,14 @@ public class Handler extends AbstractHandler {
     public void backup(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
 
-        BackupBO bo = BackupBO.getInstance();
-        BackupDTO dto = bo.get(id);
+        BackupDTO dto = backupBO.get(id);
 
         if (dto == null) {
             this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
             return;
         }
 
-        bo.backup(dto);
+        backupBO.backup(dto);
         request.setScopedSessionAttribute("system_warning_backup", false);
     }
 
@@ -113,8 +112,7 @@ public class Handler extends AbstractHandler {
     public void download(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
 
-        final BackupBO bo = BackupBO.getInstance();
-        final BackupDTO dto = bo.get(id);
+        final BackupDTO dto = backupBO.get(id);
 
         if (dto == null) {
             // TODO: Error
@@ -125,14 +123,13 @@ public class Handler extends AbstractHandler {
 
         this.setFile(diskFile);
 
-        this.setCallback(() -> finishDownload(bo, dto));
+        this.setCallback(() -> finishDownload(backupBO, dto));
     }
 
     public void progress(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
 
-        final BackupBO bo = BackupBO.getInstance();
-        final BackupDTO dto = bo.get(id);
+        final BackupDTO dto = backupBO.get(id);
 
         if (dto == null) {
             this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
@@ -150,12 +147,10 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        BackupBO bo = BackupBO.getInstance();
-
         try {
             this.json.put("success", true);
 
-            for (BackupDTO dto : bo.list()) {
+            for (BackupDTO dto : backupBO.list()) {
                 this.json.append("backups", dto.toJSONObject());
             }
         } catch (JSONException e) {
@@ -166,4 +161,8 @@ public class Handler extends AbstractHandler {
         dto.setDownloaded(true);
         bo.save(dto);
     }
+
+	public void setBackupBO(BackupBO backupBO) {
+		this.backupBO = backupBO;
+	}
 }

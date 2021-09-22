@@ -35,8 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends PaginableCatalogingHandler {
+    private ReportsBO reportsBO;
 
-    public Handler(AuthorityRecordBO authorityRecordBO) {
+	public Handler(AuthorityRecordBO authorityRecordBO) {
         setDefaultMaterialType(MaterialType.AUTHORITIES);
     }
 
@@ -65,10 +66,9 @@ public class Handler extends PaginableCatalogingHandler {
             return;
         }
 
-        ReportsBO bo = ReportsBO.getInstance();
         // Removed pagination (limit and offset) from method to fix a bug in the Reports/Report By
         // Author functionality.
-        TreeMap<String, Set<Integer>> result = bo.searchAuthors(query, db);
+        TreeMap<String, Set<Integer>> result = reportsBO.searchAuthors(query, db);
 
         if (result.size() == 0) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -95,6 +95,10 @@ public class Handler extends PaginableCatalogingHandler {
             e.printStackTrace();
         }
     }
+
+	public void setReportsBO(ReportsBO reportsBO) {
+		this.reportsBO = reportsBO;
+	}
 
     //	@Override
     //	public void paginate(ExtendedRequest request, ExtendedResponse response) {

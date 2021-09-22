@@ -29,16 +29,6 @@ import java.util.Map;
 public class AuthorizationBO extends AbstractBO {
     private AuthorizationDAO authorizationDAO;
 
-    public static AuthorizationBO getInstance() {
-        AuthorizationBO bo = AbstractBO.getInstance(AuthorizationBO.class);
-
-        if (bo.authorizationDAO == null) {
-            bo.authorizationDAO = AuthorizationDAO.getInstance();
-        }
-
-        return bo;
-    }
-
     public void authorize(AuthorizationPoints atps, String module, String action) {
         if (atps == null) {
             atps = AuthorizationPoints.getNotLoggedInstance();

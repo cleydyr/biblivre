@@ -42,16 +42,6 @@ public class Z3950BO extends AbstractBO {
     private static ApplicationContext context;
     private Z3950DAO z3950DAO;
 
-    public static Z3950BO getInstance() {
-        Z3950BO bo = AbstractBO.getInstance(Z3950BO.class);
-
-        if (bo.z3950DAO == null) {
-            bo.z3950DAO = Z3950DAO.getInstance();
-        }
-
-        return bo;
-    }
-
     public List<Z3950RecordDTO> search(List<Z3950AddressDTO> servers, Pair<String, String> search) {
         Z3950Client z3950Client = this.getContext().getBean(Z3950Client.class);
         List<Z3950RecordDTO> dtoList = new ArrayList<>();

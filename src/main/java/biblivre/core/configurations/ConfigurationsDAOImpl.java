@@ -29,13 +29,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigurationsDAO extends AbstractDAO {
+public class ConfigurationsDAOImpl extends AbstractDAO implements ConfigurationsDAO {
 
-    public static ConfigurationsDAO getInstance() {
-        return (ConfigurationsDAO) AbstractDAO.getInstance(ConfigurationsDAO.class);
+    public static ConfigurationsDAOImpl getInstance() {
+        return (ConfigurationsDAOImpl) AbstractDAO.getInstance(ConfigurationsDAOImpl.class);
     }
 
-    public List<ConfigurationsDTO> list() {
+    @Override
+	public List<ConfigurationsDTO> list() {
         List<ConfigurationsDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -62,7 +63,8 @@ public class ConfigurationsDAO extends AbstractDAO {
         return list;
     }
 
-    public boolean save(List<ConfigurationsDTO> configs, int loggedUser) {
+    @Override
+	public boolean save(List<ConfigurationsDTO> configs, int loggedUser) {
         Connection con = null;
         try {
             con = this.getConnection();

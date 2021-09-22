@@ -38,7 +38,7 @@ public class DeweyReport extends BaseBiblivreReport implements Comparator<String
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAO.getInstance()
+        return ReportsDAOImpl.getInstance()
                 .getDeweyReportData(dto.getDatabase(), dto.getDatafield(), dto.getDigits());
     }
 

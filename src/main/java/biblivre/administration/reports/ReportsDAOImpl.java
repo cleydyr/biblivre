@@ -45,7 +45,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,22 +57,15 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
 
-public class ReportsDAO extends AbstractDAO {
-
-    public ReportsDAO(BiblioRecordBO biblioRecordBO) {
-        super();
-        this.biblioRecordBO = biblioRecordBO;
-    }
-
-    public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
-
+public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
     public static ReportsDAO getInstance() {
-        return (ReportsDAO) AbstractDAO.getInstance(ReportsDAO.class);
+        return (ReportsDAO) AbstractDAO.getInstance(ReportsDAOImpl.class);
     }
 
     private BiblioRecordBO biblioRecordBO;
 
-    public SummaryReportDto getSummaryReportData(RecordDatabase database) {
+    @Override
+	public SummaryReportDto getSummaryReportData(RecordDatabase database) {
         SummaryReportDto dto = new SummaryReportDto();
         Connection con = null;
         try {
@@ -124,7 +116,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public DeweyReportDto getDeweyReportData(RecordDatabase db, String datafield, int digits) {
+    @Override
+	public DeweyReportDto getDeweyReportData(RecordDatabase db, String datafield, int digits) {
         Connection con = null;
         DeweyReportDto dto = new DeweyReportDto();
         try {
@@ -186,7 +179,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public AssetHoldingDto getAssetHoldingReportData() {
+    @Override
+	public AssetHoldingDto getAssetHoldingReportData() {
         AssetHoldingDto dto = new AssetHoldingDto();
         Connection con = null;
         try {
@@ -223,7 +217,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public AssetHoldingDto getAssetHoldingFullReportData() {
+    @Override
+	public AssetHoldingDto getAssetHoldingFullReportData() {
         AssetHoldingDto dto = new AssetHoldingDto();
         Connection con = null;
         try {
@@ -264,7 +259,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public AssetHoldingByDateDto getAssetHoldingByDateReportData(
+    @Override
+	public AssetHoldingByDateDto getAssetHoldingByDateReportData(
             String initialDate, String finalDate) {
         AssetHoldingByDateDto dto = new AssetHoldingByDateDto();
         Connection con = null;
@@ -313,7 +309,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public HoldingCreationByDateReportDto getHoldingCreationByDateReportData(
+    @Override
+	public HoldingCreationByDateReportDto getHoldingCreationByDateReportData(
             String initialDate, String finalDate) {
         HoldingCreationByDateReportDto dto = new HoldingCreationByDateReportDto();
         dto.setInitialDate(initialDate);
@@ -411,7 +408,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public LendingsByDateReportDto getLendingsByDateReportData(
+    @Override
+	public LendingsByDateReportDto getLendingsByDateReportData(
             String initialDate, String finalDate) {
         Connection con = null;
         PreparedStatement st = null;
@@ -506,7 +504,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public LateLendingsDto getLateReturnLendingsReportData() {
+    @Override
+	public LateLendingsDto getLateReturnLendingsReportData() {
         LateLendingsDto dto = new LateLendingsDto();
         Connection con = null;
         try {
@@ -548,7 +547,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public SearchesByDateReportDto getSearchesByDateReportData(
+    @Override
+	public SearchesByDateReportDto getSearchesByDateReportData(
             String initialDate, String finalDate) {
         Connection con = null;
         SearchesByDateReportDto dto = new SearchesByDateReportDto();
@@ -585,7 +585,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public AllUsersReportDto getAllUsersReportData() {
+    @Override
+	public AllUsersReportDto getAllUsersReportData() {
         AllUsersReportDto dto = new AllUsersReportDto();
         dto.setTypesMap(new HashMap<>());
         dto.setData(new HashMap<>());
@@ -640,7 +641,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public RequestsByDateReportDto getRequestsByDateReportData(
+    @Override
+	public RequestsByDateReportDto getRequestsByDateReportData(
             String initialDate, String finalDate) {
         RequestsByDateReportDto dto = new RequestsByDateReportDto();
         dto.setInitialDate(initialDate);
@@ -681,7 +683,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public TreeMap<String, Set<Integer>> searchAuthors(String authorName, RecordDatabase database) {
+    @Override
+	public TreeMap<String, Set<Integer>> searchAuthors(String authorName, RecordDatabase database) {
         TreeMap<String, Set<Integer>> results = new TreeMap<>();
 
         String[] terms = authorName.split(" ");
@@ -736,7 +739,8 @@ public class ReportsDAO extends AbstractDAO {
         return results;
     }
 
-    public BibliographyReportDto getBibliographyReportData(
+    @Override
+	public BibliographyReportDto getBibliographyReportData(
             String authorName, Integer[] recordIdArray) {
         BibliographyReportDto dto = new BibliographyReportDto();
         dto.setAuthorName(authorName);
@@ -778,7 +782,8 @@ public class ReportsDAO extends AbstractDAO {
         return dto;
     }
 
-    public ReservationReportDto getReservationReportData() {
+    @Override
+	public ReservationReportDto getReservationReportData() {
         ReservationReportDto dto = new ReservationReportDto();
         Connection con = null;
         try {
@@ -818,4 +823,9 @@ public class ReportsDAO extends AbstractDAO {
         }
         return dto;
     }
+
+	@Override
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
 }

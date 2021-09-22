@@ -48,12 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ImportBO extends AbstractBO {
-    public static ImportBO getInstance() {
-        ImportBO bo = AbstractBO.getInstance(ImportBO.class);
-
-        return bo;
-    }
-
     private BiblioRecordBO biblioRecordBO;
     private VocabularyRecordBO vocabularyBO;
     private AuthorityRecordBO authorityRecordBO;
