@@ -130,4 +130,12 @@ public class Z3950BO extends AbstractBO {
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(Z3950BO.class);
+
+	public static void setContext(ApplicationContext context) {
+		Z3950BO.context = context;
+	}
+
+	public void setZ3950DAO(Z3950DAO z3950dao) {
+		z3950DAO = z3950dao;
+	}
 }
