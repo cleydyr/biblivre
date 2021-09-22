@@ -301,6 +301,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
 	public void setPaginableRecordBO(PaginableRecordBO paginableRecordBO) {
 		this.paginableRecordBO = paginableRecordBO;
+		super.setRecordBO(paginableRecordBO);
 	}
 
 	public void setDefaultMaterialType(MaterialType defaultMaterialType) {

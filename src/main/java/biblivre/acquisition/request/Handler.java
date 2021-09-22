@@ -30,7 +30,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-
     private RequestBO requestBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {

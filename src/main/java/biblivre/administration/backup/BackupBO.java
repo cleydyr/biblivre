@@ -19,20 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
-import biblivre.core.AbstractBO;
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.Configurations;
-import biblivre.core.file.BiblivreFile;
-import biblivre.core.schemas.Schemas;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.DatabaseUtils;
-import biblivre.core.utils.FileIOUtils;
-import biblivre.core.utils.PgDumpCommand;
-import biblivre.core.utils.PgDumpCommand.Format;
-import biblivre.core.utils.TextUtils;
-import biblivre.digitalmedia.DigitalMediaDAO;
-import biblivre.digitalmedia.DigitalMediaDAOFactory;
-import biblivre.digitalmedia.DigitalMediaDTO;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,8 +43,23 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.configurations.Configurations;
+import biblivre.core.file.BiblivreFile;
+import biblivre.core.schemas.Schemas;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.DatabaseUtils;
+import biblivre.core.utils.FileIOUtils;
+import biblivre.core.utils.PgDumpCommand;
+import biblivre.core.utils.PgDumpCommand.Format;
+import biblivre.core.utils.TextUtils;
+import biblivre.digitalmedia.DigitalMediaBO;
+import biblivre.digitalmedia.DigitalMediaDTO;
+
 public class BackupBO extends AbstractBO {
     private BackupDAO backupDAO;
+	private DigitalMediaBO digitalMediaBO;
 
     public void simpleBackup() {
         BackupType backupType = BackupType.FULL;
@@ -268,12 +269,11 @@ public class BackupBO extends AbstractBO {
 
     private boolean exportDigitalMedia(String schema, File path) {
         OutputStream writer = null;
-        DigitalMediaDAO dao = (DigitalMediaDAO) DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
-        List<DigitalMediaDTO> list = dao.list();
+        List<DigitalMediaDTO> list = digitalMediaBO.list();
 
         try {
             for (DigitalMediaDTO dto : list) {
-                BiblivreFile file = dao.load(dto.getId(), dto.getName());
+                BiblivreFile file = digitalMediaBO.load(dto.getId(), dto.getName());
                 File destination =
                         new File(
                                 path,

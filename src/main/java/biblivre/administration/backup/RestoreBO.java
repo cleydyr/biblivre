@@ -28,6 +28,8 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.StringPool;
+import biblivre.digitalmedia.BaseDigitalMediaDAO;
+import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
 
@@ -90,6 +92,7 @@ public class RestoreBO extends AbstractBO {
 
     private DigitalMediaDAO digitalMediaDAO;
 	private BackupBO backupBO;
+	private DigitalMediaBO digitalMediaBO;
 
     public List<RestoreDTO> list() {
         File path = backupBO.getBackupDestination();
@@ -549,15 +552,13 @@ public class RestoreBO extends AbstractBO {
         SchemaThreadLocal.withSchema(
                 Constants.GLOBAL_SCHEMA,
                 () -> {
-                    DigitalMediaDAO dao = (DigitalMediaDAO) DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
-
                     for (File file : path.listFiles()) {
                         Matcher fileMatcher = _FILE.matcher(file.getName());
 
                         if (fileMatcher.find()) {
                             String mediaId = fileMatcher.group(1);
 
-                            long oid = dao.importFile(file);
+                            long oid = digitalMediaBO.importFile(file);
 
                             String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
 

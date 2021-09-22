@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.digitalmedia;
 
+import java.io.File;
+import java.util.List;
+
 import biblivre.core.AbstractBO;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
@@ -37,4 +40,12 @@ public class DigitalMediaBO extends AbstractBO {
     public boolean delete(Integer fileId, String fileName) {
         return this.digitalMediaDAO.delete(fileId);
     }
+
+    public List<DigitalMediaDTO> list() {
+    	return this.digitalMediaDAO.list();
+    }
+
+	public long importFile(File file) {
+		return this.digitalMediaDAO.importFile(file);
+	}
 }

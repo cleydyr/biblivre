@@ -34,7 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-
     private QuotationBO quotationBO;
 
     public void setQuotationBO(QuotationBO quotationBO) {
