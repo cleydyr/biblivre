@@ -22,7 +22,6 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDTO;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
 import biblivre.marc.MarcConstants;
 import biblivre.marc.MarcDataReader;
@@ -63,7 +62,6 @@ public class RecordDTO extends AbstractDTO {
     private byte[] iso2709;
     private MaterialType materialType;
     private RecordDatabase recordDatabase;
-    private String schema;
     private Boolean isNew;
 
     private transient List<RecordAttachmentDTO> attachments;
@@ -270,12 +268,7 @@ public class RecordDTO extends AbstractDTO {
         if (this.fields == null) {
             MarcDataReader marcDataReader = new MarcDataReader(record);
 
-            List<BriefTabFieldFormatDTO> formats =
-                    SchemaThreadLocal.withSchema(
-                            schema,
-                            () -> {
-                                return Fields.getBriefFormats(getRecordType());
-                            });
+            List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(getRecordType());
 
             this.fields = marcDataReader.getFieldList(formats);
         }

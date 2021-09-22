@@ -98,7 +98,7 @@
 
 	<bean id="authorityHandler" name="authorityHandler"
 		class="biblivre.cataloging.authorities.Handler" scope="prototype">
-		<property name="paginableRecordBO" ref="authorityBO" />
+		<property name="paginableRecordBO" ref="authorityRecordBO" />
 	</bean>
 
 	<bean id="bibliographicHandler" name="bibliographicHandler"
@@ -177,6 +177,11 @@
 	<bean id="userTypeHandler" name="userTypeHandler"
 		class="biblivre.administration.usertype.Handler" scope="prototype">
 		<property name="userTypeBO" ref="userTypeBO" />
+	</bean>
+
+	<bean id="digitalMediaHandler" name="digitalMediaHandler"
+		class="biblivre.digitalmedia.Handler" scope="prototype">
+		<property name="digitalMediaBO" ref="digitalMediaBO" />
 	</bean>
 
 	<!-- BOs -->

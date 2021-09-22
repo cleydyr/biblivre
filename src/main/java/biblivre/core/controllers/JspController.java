@@ -62,11 +62,7 @@ public class JspController extends Controller {
 
     @Override
     protected void doError(String error, Throwable e) throws ServletException, IOException {
-        if (e != null && this.log.isDebugEnabled()) {
-            this.log.error(error, e);
-        } else {
-            this.log.error(error);
-        }
+        this.log.error(error, e);
 
         Message message = new Message(ActionResult.ERROR, error, e);
         this.dispatch("/jsp/error.jsp", message);

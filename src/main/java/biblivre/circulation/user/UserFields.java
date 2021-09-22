@@ -59,7 +59,7 @@ public class UserFields extends StaticBO {
     }
 
     public static List<UserFieldDTO> getSearchableFields() {
-        JavascriptCacheableList<UserFieldDTO> list = _getScoped();
+        JavascriptCacheableList<UserFieldDTO> list = getFields();
 
         List<UserFieldDTO> searcheableList = new ArrayList<>();
         for (UserFieldDTO dto : list) {

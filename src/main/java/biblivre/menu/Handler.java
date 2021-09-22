@@ -358,7 +358,7 @@ public class Handler extends AbstractHandler {
         this.backupBO = backupBO;
     }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 }

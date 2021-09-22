@@ -108,4 +108,8 @@ public class Handler extends AbstractHandler {
             String id, String fileId, String fileName) {
         return _tryFetchingDBFileWithEncoding(id, fileId, fileName, Constants.WINDOWS_CHARSET);
     }
+
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
+    }
 }
