@@ -279,14 +279,14 @@
 
 	<bean id="indexingBO" name="indexingBO"
 		class="biblivre.administration.indexing.IndexingBO">
-		<constructor-arg index="0">
+		<property name="recordBOs">
 			<map>
 <!-- 				<entry key="BIBLIO" value="biblioRecordBO" /> -->
 <!-- 				<entry key="HOLDING" value="holdingBO" /> -->
 <!-- 				<entry key="AUTHORITIES" value="authorityRecordBO" /> -->
 <!-- 				<entry key="VOCABULARY" value="vocabularyRecordBO" /> -->
 			</map>
-		</constructor-arg>
+		</property>
 		<property name="indexingDAO" ref="indexingDAO" />
 	</bean>
 
