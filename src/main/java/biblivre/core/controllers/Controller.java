@@ -22,7 +22,6 @@ package biblivre.core.controllers;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
-import biblivre.core.AuthorizationThreadLocal;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationBO;
@@ -65,6 +64,9 @@ public abstract class Controller {
         this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
         this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
+        WebApplicationContext applicationContext =
+                SpringUtils.getWebApplicationContext(xRequest);
+
         try {
             module =
                     this.xRequest.getString(
@@ -100,7 +102,7 @@ public abstract class Controller {
                     authPoints = AuthorizationPoints.getNotLoggedInstance();
                 }
 
-                AuthorizationBO authorizationBO = AuthorizationThreadLocal.get();
+                AuthorizationBO authorizationBO = applicationContext.getBean(AuthorizationBO.class);
 
                 authorizationBO.authorize(authPoints, module, action);
             }
@@ -112,9 +114,6 @@ public abstract class Controller {
 
         try {
             String handlerClassName = "biblivre." + module + ".Handler";
-
-            WebApplicationContext applicationContext =
-                    SpringUtils.getWebApplicationContext(xRequest);
 
             this.handlerClass = Class.forName(handlerClassName);
 

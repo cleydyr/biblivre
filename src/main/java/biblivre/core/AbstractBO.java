@@ -21,45 +21,19 @@ package biblivre.core;
 
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
-import java.util.HashMap;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBO {
-    protected static final Logger logger = LoggerFactory.getLogger(AbstractBO.class);
-
-    private static Map<Class<? extends AbstractBO>, AbstractBO> instances = new HashMap<>();
-
-    @SuppressWarnings("unchecked")
-    protected static <T extends AbstractBO> T getInstance(Class<T> cls) {
-        T instance = (T) AbstractBO.instances.get(cls);
-
-        if (instance == null) {
-            if (!AbstractBO.class.isAssignableFrom(cls)) {
-                throw new IllegalArgumentException(
-                        "BO: getInstance: Class " + cls.getName() + " is not a subclass of BO.");
-            }
-
-            try {
-                instance = cls.newInstance();
-
-                AbstractBO.instances.put(cls, instance);
-            } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
-            }
-        }
-
-        return instance;
-    }
+    private AuthorizationBO authorizationBO;
 
     public void authorize(String module, String action, AuthorizationPoints authorizationPoints) {
         if (authorizationPoints == null) {
             authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
         }
 
-        AuthorizationBO authorizationBO = AuthorizationThreadLocal.get();
-
         authorizationBO.authorize(authorizationPoints, module, action);
     }
+
+	public void setAuthorizationBO(AuthorizationBO authorizationBO) {
+		this.authorizationBO = authorizationBO;
+	}
 }

@@ -243,6 +243,7 @@
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 		<property name="indexingBO" ref="indexingBO" />
 		<property name="reservationBO" ref="reservationBO" />
+		<property name="authorizationBO" ref="authorizationBO" />
 	</bean>
 
 	<bean id="vocabularyRecordBO" name="vocabularyRecordBO"
@@ -252,6 +253,7 @@
 		<property name="searchDAO" ref="searchDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 		<property name="indexingBO" ref="indexingBO" />
+		<property name="authorizationBO" ref="authorizationBO" />
 	</bean>
 
 	<bean id="authorityRecordBO" name="authorityRecordBO"
@@ -261,6 +263,7 @@
 		<property name="searchDAO" ref="searchDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 		<property name="indexingBO" ref="indexingBO" />
+		<property name="authorizationBO" ref="authorizationBO" />
 	</bean>
 
 	<bean id="holdingBO" name="holdingBO"
@@ -268,6 +271,7 @@
 		<property name="holdingDAO" ref="holdingDAO" />
 		<property name="loginBO" ref="loginBO" />
 		<property name="userBO" ref="userBO" />
+		<property name="authorizationBO" ref="authorizationBO" />
 	</bean>
 
 	<bean id="indexingBO" name="indexingBO"

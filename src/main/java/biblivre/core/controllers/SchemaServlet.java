@@ -23,14 +23,12 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
-import biblivre.core.AuthorizationThreadLocal;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
@@ -280,12 +278,6 @@ public final class SchemaServlet extends HttpServlet {
     public void init() throws ServletException {
         FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
                 getServletContext(), "/freemarker");
-
-        WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-
-        AuthorizationBO authorizationBO = applicationContext.getBean(AuthorizationBO.class);
-
-        AuthorizationThreadLocal.setAuthorizationBO(authorizationBO);
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
