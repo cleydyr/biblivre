@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public abstract class RecordBO extends AbstractBO {
 
     protected RecordDAO recordDAO;
-    protected SearchDAO seachDAO;
+    protected SearchDAO searchDAO;
 	private DigitalMediaBO digitalMediaBO;
 
     public static final int FULL = 1 << 0;
@@ -171,7 +171,7 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public SearchDTO getSearch(Integer searchId) {
-        SearchDTO search = this.seachDAO.getSearch(searchId, getRecordType());
+        SearchDTO search = this.searchDAO.getSearch(searchId, getRecordType());
 
         if (search != null) {
             if (search.getPaging() == null) {
@@ -361,8 +361,8 @@ public abstract class RecordBO extends AbstractBO {
 		this.recordDAO = recordDAO;
 	}
 
-	public void setSeachDAO(SearchDAO seachDAO) {
-		this.seachDAO = seachDAO;
+	public void setSearchDAO(SearchDAO seachDAO) {
+		this.searchDAO = seachDAO;
 	}
 
 	public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {

@@ -80,21 +80,21 @@ public abstract class PaginableRecordBO extends RecordBO {
         boolean isNewSearch = (search.getId() == null);
 
         if (isNewSearch) {
-            if (!this.seachDAO.createSearch(search)) {
+            if (!this.searchDAO.createSearch(search)) {
                 return false;
             }
         }
 
         switch (searchMode) {
             case SIMPLE:
-                if (!this.seachDAO.populateSimpleSearch(search, !isNewSearch)) {
+                if (!this.searchDAO.populateSimpleSearch(search, !isNewSearch)) {
                     return false;
                 }
 
                 break;
 
             case ADVANCED:
-                if (!this.seachDAO.populateAdvancedSearch(search, !isNewSearch)) {
+                if (!this.searchDAO.populateAdvancedSearch(search, !isNewSearch)) {
                     return false;
                 }
 
