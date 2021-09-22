@@ -45,50 +45,42 @@ import java.util.Set;
 
 public class ReservationBO extends AbstractBO {
 
-    public ReservationBO(ReservationDAO dao, UserBO userBO, BiblioRecordBO biblioRecordBO) {
-        super();
-        this.dao = dao;
-        this.userBO = userBO;
-        this.biblioRecordBO = biblioRecordBO;
-    }
+    public ReservationBO(ReservationDAO dao, UserBO userBO, BiblioRecordBO biblioRecordBO, UserTypeBO userTypeBO) {
+		super();
+		this.reservationDAO = dao;
+		this.userBO = userBO;
+		this.biblioRecordBO = biblioRecordBO;
+		this.userTypeBO = userTypeBO;
+	}
 
-    private ReservationDAO dao;
+    private ReservationDAO reservationDAO;
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
-
-    public static ReservationBO getInstance() {
-        ReservationBO bo = AbstractBO.getInstance(ReservationBO.class);
-
-        if (bo.dao == null) {
-            bo.dao = ReservationDAO.getInstance();
-        }
-
-        return bo;
-    }
+	private UserTypeBO userTypeBO;
 
     public boolean deleteExpired() {
-        return this.dao.deleteExpired();
+        return this.reservationDAO.deleteExpired();
     }
 
     public ReservationDTO get(Integer id) {
-        return this.dao.get(id);
+        return this.reservationDAO.get(id);
     }
 
     public List<ReservationDTO> get(RecordDTO record) {
-        return this.dao.list(null, record);
+        return this.reservationDAO.list(null, record);
     }
 
     public int countReserved(RecordDTO record) {
-        return this.dao.count(null, record);
+        return this.reservationDAO.count(null, record);
     }
 
     public int countReserved(UserDTO user) {
-        return this.dao.count(user, null);
+        return this.reservationDAO.count(user, null);
     }
 
     public List<Integer> listReservedRecordIds(UserDTO user) {
         List<Integer> reservedRecords = new ArrayList<>();
-        List<ReservationDTO> list = this.dao.list(user, null);
+        List<ReservationDTO> list = this.reservationDAO.list(user, null);
 
         for (ReservationDTO dto : list) {
             reservedRecords.add(dto.getRecordId());
@@ -98,7 +90,7 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationDTO> list(UserDTO user) {
-        List<ReservationDTO> list = this.dao.list(user, null);
+        List<ReservationDTO> list = this.reservationDAO.list(user, null);
 
         for (ReservationDTO dto : list) {
             BiblioRecordDTO record =
@@ -112,7 +104,7 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
-        List<ReservationDTO> list = this.dao.list(user, null);
+        List<ReservationDTO> list = this.reservationDAO.list(user, null);
         List<ReservationInfoDTO> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
@@ -130,7 +122,7 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationInfoDTO> list() {
-        List<ReservationDTO> list = this.dao.list();
+        List<ReservationDTO> list = this.reservationDAO.list();
         List<ReservationInfoDTO> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
@@ -152,11 +144,11 @@ public class ReservationBO extends AbstractBO {
     }
 
     public boolean delete(Integer id) {
-        return this.dao.delete(id);
+        return this.reservationDAO.delete(id);
     }
 
     public boolean delete(Integer userId, Integer recordId) {
-        return this.dao.delete(userId, recordId);
+        return this.reservationDAO.delete(userId, recordId);
     }
 
     public void checkReservation(RecordDTO record, UserDTO user) {
@@ -175,11 +167,10 @@ public class ReservationBO extends AbstractBO {
     }
 
     public boolean checkUserReservationLimit(UserDTO user) {
-        UserTypeBO userTypeBo = UserTypeBO.getInstance();
-        UserTypeDTO type = userTypeBo.get(user.getType());
+        UserTypeDTO type = userTypeBO.get(user.getType());
 
         Integer limit = (type != null) ? type.getReservationLimit() : 1;
-        Integer count = this.dao.count(user, null);
+        Integer count = this.reservationDAO.count(user, null);
 
         return count < limit;
     }
@@ -191,8 +182,7 @@ public class ReservationBO extends AbstractBO {
         reservation.setRecordId(record.getId());
         reservation.setUserId(user.getId());
 
-        UserTypeBO userTypeBo = UserTypeBO.getInstance();
-        UserTypeDTO type = userTypeBo.get(user.getType());
+        UserTypeDTO type = userTypeBO.get(user.getType());
 
         Date today = new Date();
         int days = (type != null) ? type.getReservationTimeLimit() : 7;
@@ -200,7 +190,7 @@ public class ReservationBO extends AbstractBO {
 
         reservation.setExpires(expires);
 
-        int reservationId = this.dao.insert(reservation);
+        int reservationId = this.reservationDAO.insert(reservation);
 
         return reservationId;
     }
@@ -254,10 +244,10 @@ public class ReservationBO extends AbstractBO {
     }
 
     public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
-        return this.dao.getReservationsMap(recordIds);
+        return this.reservationDAO.getReservationsMap(recordIds);
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.reservationDAO.saveFromBiblivre3(dtoList);
     }
 }

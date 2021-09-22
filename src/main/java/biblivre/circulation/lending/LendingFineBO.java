@@ -34,47 +34,36 @@ import java.util.Date;
 import java.util.List;
 
 public class LendingFineBO extends AbstractBO {
-    private LendingFineDAO dao;
-    private HoldingBO holdingBO;
-    private BiblioRecordBO biblioRecordBO;
-    private LendingBO lendingBO;
+	private LendingFineDAO lendingFineDAO;
+	private HoldingBO holdingBO;
+	private BiblioRecordBO biblioRecordBO;
+	private LendingBO lendingBO;
+	private UserTypeBO userTypeBO;
 
-    public LendingFineBO(
-            LendingFineDAO dao,
-            HoldingBO holdingBO,
-            BiblioRecordBO biblioRecordBO,
-            LendingBO lendingBO) {
-        super();
-        this.dao = dao;
-        this.holdingBO = holdingBO;
-        this.biblioRecordBO = biblioRecordBO;
-        this.lendingBO = lendingBO;
-    }
-
-    public static LendingFineBO getInstance() {
-        LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class);
-
-        if (bo.dao == null) {
-            bo.dao = LendingFineDAO.getInstance();
-        }
-
-        return bo;
-    }
+    public LendingFineBO(LendingFineDAO lendingFineDAO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO,
+			UserTypeBO userTypeBO) {
+		super();
+		this.lendingFineDAO = lendingFineDAO;
+		this.holdingBO = holdingBO;
+		this.biblioRecordBO = biblioRecordBO;
+		this.lendingBO = lendingBO;
+		this.userTypeBO = userTypeBO;
+	}
 
     public LendingFineDTO getById(Integer fineId) {
-        return this.dao.get(fineId);
+        return this.lendingFineDAO.get(fineId);
     }
 
     public LendingFineDTO getByHistoryId(Integer lendingId) {
-        return this.dao.getByLendingId(lendingId);
+        return this.lendingFineDAO.getByLendingId(lendingId);
     }
 
     public List<LendingFineDTO> listLendingFines(UserDTO user) {
-        return this.populateFineInfo(this.dao.list(user, false));
+        return this.populateFineInfo(this.lendingFineDAO.list(user, false));
     }
 
     public List<LendingFineDTO> listLendingFines(UserDTO user, boolean pendingOnly) {
-        return this.populateFineInfo(this.dao.list(user, pendingOnly));
+        return this.populateFineInfo(this.lendingFineDAO.list(user, pendingOnly));
     }
 
     private List<LendingFineDTO> populateFineInfo(List<LendingFineDTO> fines) {
@@ -97,7 +86,7 @@ public class LendingFineBO extends AbstractBO {
     }
 
     public boolean update(LendingFineDTO fine) {
-        return this.dao.update(fine);
+        return this.lendingFineDAO.update(fine);
     }
 
     public LendingFineDTO createFine(LendingDTO lending, Float value, boolean paid) {
@@ -109,7 +98,7 @@ public class LendingFineBO extends AbstractBO {
             fine.setPayment(new Date());
         }
         fine.setCreatedBy(lending.getCreatedBy());
-        this.dao.insert(fine);
+        this.lendingFineDAO.insert(fine);
         return fine;
     }
 
@@ -117,8 +106,7 @@ public class LendingFineBO extends AbstractBO {
         if (daysLate == null || daysLate <= 0) {
             return 0.0f;
         }
-        UserTypeBO utBo = UserTypeBO.getInstance();
-        UserTypeDTO userType = utBo.get(user.getType());
+        UserTypeDTO userType = userTypeBO.get(user.getType());
         Float fineValue = userType.getFineValue();
         return daysLate * fineValue;
     }
@@ -133,6 +121,6 @@ public class LendingFineBO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.lendingFineDAO.saveFromBiblivre3(dtoList);
     }
 }

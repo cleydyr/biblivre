@@ -20,6 +20,7 @@
 package biblivre.administration.permissions;
 
 import biblivre.circulation.lending.LendingBO;
+import biblivre.circulation.lending.LendingFineBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -36,22 +37,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-    private PermissionBO permissionBO;
+    public Handler(PermissionBO permissionBO, LoginBO loginBO, UserBO userBO, LendingBO lendingBO,
+			LendingFineBO lendingFineBO) {
+		super();
+		this.permissionBO = permissionBO;
+		this.loginBO = loginBO;
+		this.userBO = userBO;
+		this.lendingBO = lendingBO;
+		this.lendingFineBO = lendingFineBO;
+	}
+
+	private PermissionBO permissionBO;
     private LoginBO loginBO;
     private UserBO userBO;
     private LendingBO lendingBO;
-
-    public Handler(PermissionBO permissionBO, LoginBO loginBO, UserBO userBO, LendingBO lendingBO) {
-        super();
-        this.permissionBO = permissionBO;
-        this.loginBO = loginBO;
-        this.userBO = userBO;
-        this.lendingBO = lendingBO;
-    }
+	private LendingFineBO lendingFineBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO, lendingBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO, lendingFineBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

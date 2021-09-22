@@ -43,14 +43,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-    private UserBO userBO;
-    private LendingBO lendingBO;
+    public Handler(UserBO userBO, LendingBO lendingBO, LendingFineBO lendingFineBO) {
+		super();
+		this.userBO = userBO;
+		this.lendingBO = lendingBO;
+		this.lendingFineBO = lendingFineBO;
+	}
 
-    public Handler(UserBO userBO, LendingBO lendingBO) {
-        super();
-        this.userBO = userBO;
-        this.lendingBO = lendingBO;
-    }
+	private UserBO userBO;
+    private LendingBO lendingBO;
+	private LendingFineBO lendingFineBO;
+	private ReservationBO reservationBO;
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -233,9 +236,7 @@ public class Handler extends AbstractHandler {
             list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
             data = list;
         } else if (tab.equals("reservations")) {
-            ReservationBO rbo = ReservationBO.getInstance();
-
-            List<ReservationInfoDTO> infos = rbo.listReservationInfo(user);
+            List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
             ReservationListDTO reservationList = new ReservationListDTO();
             reservationList.setUser(user);
             reservationList.setId(user.getId());
@@ -245,9 +246,7 @@ public class Handler extends AbstractHandler {
             list.add(reservationList);
             data = list;
         } else if (tab.equals("fines")) {
-            LendingFineBO lfbo = LendingFineBO.getInstance();
-
-            List<LendingFineDTO> fines = lfbo.listLendingFines(user);
+            List<LendingFineDTO> fines = lendingFineBO.listLendingFines(user);
 
             DTOCollection<LendingFineDTO> list = new DTOCollection<>();
             list.addAll(fines);

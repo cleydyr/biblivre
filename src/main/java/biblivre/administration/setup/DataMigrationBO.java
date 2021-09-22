@@ -25,6 +25,7 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.usertype.UserTypeBO;
+import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.cataloging.authorities.AuthorityRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -75,6 +76,9 @@ public class DataMigrationBO extends AbstractBO {
     private VocabularyRecordBO vocabularyRecordBO;
     private HoldingBO holdingsBO;
     private LendingBO lendingBO;
+	private UserTypeDAO userTypeBO;
+	private LendingFineBO lendingFineBO;
+	private ReservationBO reservationBO;
 
     public static DataMigrationBO getInstance(String schema, String datasource) {
         DataMigrationBO bo = AbstractBO.getInstance(DataMigrationBO.class);
@@ -296,7 +300,7 @@ public class DataMigrationBO extends AbstractBO {
                 return loginBO.saveFromBiblivre3(dtoList);
 
             case USER_TYPES:
-                return UserTypeBO.getInstance().saveFromBiblivre3(dtoList);
+                return userTypeBO.saveFromBiblivre3(dtoList);
 
             case USERS:
                 return userBO.saveFromBiblivre3(dtoList);
@@ -329,10 +333,10 @@ public class DataMigrationBO extends AbstractBO {
                 return lendingBO.saveFromBiblivre3(dtoList);
 
             case LENDING_FINE:
-                return LendingFineBO.getInstance().saveFromBiblivre3(dtoList);
+                return lendingFineBO.saveFromBiblivre3(dtoList);
 
             case RESERVATIONS:
-                return ReservationBO.getInstance().saveFromBiblivre3(dtoList);
+                return reservationBO.saveFromBiblivre3(dtoList);
 
             case DIGITAL_MEDIA:
             default:

@@ -50,6 +50,8 @@ public class UserReport extends BaseBiblivreReport {
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
     private UserBO userBO;
     private LendingBO lendingBO;
+	private LendingFineBO lendingFineBO;
+	private UserTypeBO userTypeBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -58,8 +60,6 @@ public class UserReport extends BaseBiblivreReport {
 
         UserDTO user = userBO.get(userId);
         urdto.setUser(user);
-
-        LendingFineBO lfbo = LendingFineBO.getInstance();
 
         List<LendingDTO> history = lendingBO.listHistory(user);
 
@@ -85,7 +85,7 @@ public class UserReport extends BaseBiblivreReport {
             data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
             data[1] = lidto.getBiblio().getTitle();
             data[2] = lidto.getBiblio().getAuthor();
-            if (lfbo.isLateReturn(lidto.getLending())) {
+            if (lendingFineBO.isLateReturn(lidto.getLending())) {
                 lateLendings.add(data);
             } else {
                 currentLendings.add(data);
@@ -263,8 +263,7 @@ public class UserReport extends BaseBiblivreReport {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        UserTypeBO utbo = UserTypeBO.getInstance();
-        UserTypeDTO usdto = utbo.get(user.getType());
+        UserTypeDTO usdto = userTypeBO.get(user.getType());
         cell = new PdfPCell(new Paragraph(this.getNormalChunk(usdto.getDescription())));
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);

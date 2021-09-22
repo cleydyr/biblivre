@@ -29,6 +29,7 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.circulation.lending.LendingBO;
+import biblivre.circulation.lending.LendingFineBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserSearchDTO;
@@ -43,16 +44,19 @@ import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-    private UserBO userBO;
+    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO, LendingFineBO lendingFineBO) {
+		super();
+		this.userBO = userBO;
+		this.biblioRecordBO = biblioRecordBO;
+		this.lendingBO = lendingBO;
+		this.lendingFineBO = lendingFineBO;
+	}
+
+	private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
     private LendingBO lendingBO;
-
-    public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO) {
-        super();
-        this.userBO = userBO;
-        this.biblioRecordBO = biblioRecordBO;
-        this.lendingBO = lendingBO;
-    }
+	private LendingFineBO lendingFineBO;
+	private ReservationBO reservationBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -74,8 +78,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        ReservationBO rbo = ReservationBO.getInstance();
-        rbo.populateReservationInfoByBiblio(search);
+        reservationBO.populateReservationInfoByBiblio(search);
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(recordType);
 
@@ -107,8 +110,6 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        ReservationBO reservationBO = ReservationBO.getInstance();
-
         reservationBO.populateReservationInfoByBiblio(search);
 
         this.json.put("search", search.toJSONObject());
@@ -123,7 +124,7 @@ public class Handler extends AbstractHandler {
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO, lendingBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO, lendingFineBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -146,9 +147,7 @@ public class Handler extends AbstractHandler {
     }
 
     private ReservationListDTO populateReservationList(UserDTO user) {
-        ReservationBO resBo = ReservationBO.getInstance();
-
-        List<ReservationInfoDTO> infos = resBo.listReservationInfo(user);
+        List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
 
         ReservationListDTO reservationList = new ReservationListDTO();
         reservationList.setUser(user);
@@ -158,7 +157,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void reserve(ExtendedRequest request, ExtendedResponse response) {
-
         int recordId = request.getInteger("record_id");
         int userId = request.getInteger("user_id");
 
@@ -166,13 +164,12 @@ public class Handler extends AbstractHandler {
 
         UserDTO user = userBO.get(userId);
 
-        ReservationBO reservationBo = ReservationBO.getInstance();
-        int reservationId = reservationBo.reserve(record, user, request.getLoggedUserId());
+        int reservationId = reservationBO.reserve(record, user, request.getLoggedUserId());
 
         if (reservationId > 0) {
             this.setMessage(ActionResult.SUCCESS, "circulation.reservation.reserve_success");
 
-            ReservationDTO reservation = reservationBo.get(reservationId);
+            ReservationDTO reservation = reservationBO.get(reservationId);
             ReservationInfoDTO info = new ReservationInfoDTO();
             info.setReservation(reservation);
             info.setBiblio(record);
@@ -192,11 +189,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-
         int reserveId = request.getInteger("id");
 
-        ReservationBO reservationBo = ReservationBO.getInstance();
-        boolean success = reservationBo.delete(reserveId);
+        boolean success = reservationBO.delete(reserveId);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.reservation.delete_success");
@@ -277,7 +272,7 @@ public class Handler extends AbstractHandler {
         }
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO, lendingBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO, lendingFineBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -300,12 +295,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void selfDelete(ExtendedRequest request, ExtendedResponse response) {
-
         int reservationId = request.getInteger("id");
         int loggedUser = request.getLoggedUserId();
 
-        ReservationBO reservationBo = ReservationBO.getInstance();
-        ReservationDTO reservationDto = reservationBo.get(reservationId);
+        ReservationDTO reservationDto = reservationBO.get(reservationId);
 
         if (reservationDto == null) {
             this.setMessage(ActionResult.WARNING, "circulation.reservation.delete_failure");

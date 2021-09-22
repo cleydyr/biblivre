@@ -44,6 +44,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
     private IndexingBO indexingBO;
     private LendingBO2 lendingBO;
+	private ReservationBO reservationBO;
 
     public BiblioRecordBO(
             RecordDAO recordDAO,
@@ -91,8 +92,6 @@ public class BiblioRecordBO extends PaginableRecordBO {
             return;
         }
 
-        ReservationBO rbo = ReservationBO.getInstance();
-
         if ((mask & RecordBO.HOLDING_INFO) != 0) {
             int totalHoldings = holdingBO.count(recordId);
             int availableHoldings = holdingBO.countAvailableHoldings(recordId);
@@ -101,7 +100,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
             if (availableHoldings > 0) {
                 lentCount = lendingBO.countLentHoldings(recordId);
-                reservedCount = rbo.countReserved(biblioRecordDTO);
+                reservedCount = reservationBO.countReserved(biblioRecordDTO);
             }
 
             biblioRecordDTO.setHoldingsCount(totalHoldings);

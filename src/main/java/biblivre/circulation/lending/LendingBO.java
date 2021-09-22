@@ -59,20 +59,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class LendingBO extends LendingBO2 {
-    public LendingBO(
-            LendingDAO lendingDAO,
-            UserBO userBO,
-            HoldingBO holdingBO,
-            BiblioRecordBO biblioRecordBO) {
-        super(lendingDAO);
-        this.userBO = userBO;
-        this.holdingBO = holdingBO;
-        this.biblioRecordBO = biblioRecordBO;
-    }
+	public LendingBO(LendingDAO lendingDAO, UserBO userBO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO,
+			UserTypeBO userTypeBO, LendingFineBO lendingFineBO) {
+		super(lendingDAO);
+		this.userBO = userBO;
+		this.holdingBO = holdingBO;
+		this.biblioRecordBO = biblioRecordBO;
+		this.userTypeBO = userTypeBO;
+		this.lendingFineBO = lendingFineBO;
+	}
 
-    private UserBO userBO;
-    private HoldingBO holdingBO;
-    private BiblioRecordBO biblioRecordBO;
+	private UserBO userBO;
+	private HoldingBO holdingBO;
+	private BiblioRecordBO biblioRecordBO;
+	private UserTypeBO userTypeBO;
+	private LendingFineBO lendingFineBO;
+	private ReservationBO reservationBO;
 
     public LendingDTO get(Integer lendingId) {
         return this.lendingDAO.get(lendingId);
@@ -136,8 +138,7 @@ public class LendingBO extends LendingBO2 {
     }
 
     public boolean checkUserLendLimit(UserDTO user, boolean renew) {
-        UserTypeBO userTypeBo = UserTypeBO.getInstance();
-        UserTypeDTO type = userTypeBo.get(user.getType());
+        UserTypeDTO type = userTypeBO.get(user.getType());
         Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
         Integer count = this.lendingDAO.getCurrentLendingsCount(user);
 
@@ -155,8 +156,7 @@ public class LendingBO extends LendingBO2 {
         lending.setHoldingId(holding.getId());
         lending.setUserId(user.getId());
 
-        UserTypeBO userTypeBo = UserTypeBO.getInstance();
-        UserTypeDTO type = userTypeBo.get(user.getType());
+        UserTypeDTO type = userTypeBO.get(user.getType());
 
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
@@ -165,8 +165,7 @@ public class LendingBO extends LendingBO2 {
         lending.setExpectedReturnDate(expectedReturnDate);
 
         if (this.lendingDAO.doLend(lending)) {
-            ReservationBO rbo = ReservationBO.getInstance();
-            rbo.delete(user.getId(), holding.getRecordId());
+            reservationBO.delete(user.getId(), holding.getRecordId());
             return true;
         } else {
             return false;
@@ -177,8 +176,7 @@ public class LendingBO extends LendingBO2 {
         this.lendingDAO.doReturn(lending.getId());
 
         if (fineValue > 0) {
-            LendingFineBO fineBo = LendingFineBO.getInstance();
-            fineBo.createFine(lending, fineValue, paid);
+            lendingFineBO.createFine(lending, fineValue, paid);
         }
 
         return true;
@@ -193,7 +191,6 @@ public class LendingBO extends LendingBO2 {
         HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         this.checkRenew(holding, userDto);
 
-        UserTypeBO userTypeBO = UserTypeBO.getInstance();
         UserTypeDTO type = userTypeBO.get(userDto.getType());
 
         Date today = new Date();
@@ -275,8 +272,6 @@ public class LendingBO extends LendingBO2 {
         DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
         collection.setPaging(holdingList.getPaging());
 
-        LendingFineBO lfbo = LendingFineBO.getInstance();
-
         for (HoldingDTO holding : holdingList) {
             LendingInfoDTO info = new LendingInfoDTO();
 
@@ -295,12 +290,11 @@ public class LendingBO extends LendingBO2 {
 
                 if (lending.getUserId() != null) {
                     UserDTO user = usersMap.get(lending.getUserId());
-                    UserTypeBO utbo = UserTypeBO.getInstance();
-                    UserTypeDTO userType = utbo.get(user.getType());
+                    UserTypeDTO userType = userTypeBO.get(user.getType());
                     user.setUsertypeName(userType.getName());
                     info.setUser(user);
 
-                    Integer daysLate = lfbo.calculateLateDays(lending);
+                    Integer daysLate = lendingFineBO.calculateLateDays(lending);
                     if (daysLate > 0) {
                         Float dailyFine = userType.getFineValue();
                         lending.setDaysLate(daysLate);

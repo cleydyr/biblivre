@@ -48,22 +48,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-    private UserBO userBO;
-    private BiblioRecordBO biblioRecordBO;
-    private HoldingBO holdingBO;
-    private LendingBO lendingBO;
+	public Handler(UserBO userBO, BiblioRecordBO biblioRecordBO, HoldingBO holdingBO, LendingBO lendingBO,
+			UserTypeBO userTypeBO, LendingFineBO lendingFineBO) {
+		super();
+		this.userBO = userBO;
+		this.biblioRecordBO = biblioRecordBO;
+		this.holdingBO = holdingBO;
+		this.lendingBO = lendingBO;
+		this.userTypeBO = userTypeBO;
+		this.lendingFineBO = lendingFineBO;
+	}
 
-    public Handler(
-            UserBO userBO,
-            BiblioRecordBO biblioRecordBO,
-            HoldingBO holdingBO,
-            LendingBO lendingBO) {
-        super();
-        this.userBO = userBO;
-        this.biblioRecordBO = biblioRecordBO;
-        this.holdingBO = holdingBO;
-        this.lendingBO = lendingBO;
-    }
+	private UserBO userBO;
+	private BiblioRecordBO biblioRecordBO;
+	private HoldingBO holdingBO;
+	private LendingBO lendingBO;
+	private UserTypeBO userTypeBO;
+	private LendingFineBO lendingFineBO;
+	private ReservationBO reservationBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -108,7 +110,7 @@ public class Handler extends AbstractHandler {
         String schema = SchemaThreadLocal.get();
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO, lendingBO);
+                new biblivre.circulation.user.Handler(userBO, lendingBO, lendingFineBO);
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -131,9 +133,6 @@ public class Handler extends AbstractHandler {
     }
 
     private LendingListDTO populateLendingList(String schema, UserDTO user, boolean history) {
-        LendingFineBO lfbo = LendingFineBO.getInstance();
-        ReservationBO rsvBo = ReservationBO.getInstance();
-
         LendingListDTO lendingList = new LendingListDTO();
 
         lendingList.setUser(user);
@@ -162,10 +161,9 @@ public class Handler extends AbstractHandler {
             infos.add(info);
 
             // CHECK FOR LENDING FINES
-            Integer daysLate = lfbo.calculateLateDays(lending);
+            Integer daysLate = lendingFineBO.calculateLateDays(lending);
             if (daysLate > 0) {
-                UserTypeBO utbo = UserTypeBO.getInstance();
-                UserTypeDTO userType = utbo.get(user.getType());
+                UserTypeDTO userType = userTypeBO.get(user.getType());
                 Float dailyFine = userType.getFineValue();
 
                 lending.setDaysLate(daysLate);
@@ -175,7 +173,7 @@ public class Handler extends AbstractHandler {
         }
         lendingList.setLendingInfo(infos);
 
-        lendingList.setReservedRecords(rsvBo.listReservedRecordIds(user));
+        lendingList.setReservedRecords(reservationBO.listReservedRecordIds(user));
 
         return lendingList;
     }
@@ -277,13 +275,12 @@ public class Handler extends AbstractHandler {
         Integer fineId = request.getInteger("fine_id");
         Boolean exempt = request.getBoolean("exempt", false);
 
-        LendingFineBO lendingFineBo = LendingFineBO.getInstance();
-        LendingFineDTO dto = lendingFineBo.getById(Integer.valueOf(fineId));
+        LendingFineDTO dto = lendingFineBO.getById(Integer.valueOf(fineId));
         if (exempt) {
             dto.setValue(0f);
         }
 
-        boolean success = lendingFineBo.update(dto);
+        boolean success = lendingFineBO.update(dto);
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.fine.success_pay_fine");
         } else {

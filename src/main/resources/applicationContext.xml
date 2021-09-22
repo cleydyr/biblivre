@@ -43,6 +43,7 @@
 		<constructor-arg index="1" ref="accessControlBO" />
 		<constructor-arg index="2" ref="userBO" />
 		<constructor-arg index="3" ref="lendingBO" />
+		<constructor-arg index="4" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="quotationHandler" name="quotationHandler"
@@ -79,12 +80,14 @@
 		<constructor-arg index="1" ref="loginBO" />
 		<constructor-arg index="2" ref="userBO" />
 		<constructor-arg index="3" ref="lendingBO" />
+		<constructor-arg index="4" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="reportHandler" name="reportHandler"
 		class="biblivre.administration.reports.Handler" scope="prototype">
 		<constructor-arg index="0" ref="userBO" />
 		<constructor-arg index="1" ref="lendingBO" />
+		<constructor-arg index="2" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="authorityHandler" name="authorityHandler"
@@ -132,6 +135,9 @@
 		<constructor-arg index="0" ref="userBO" />
 		<constructor-arg index="1" ref="biblioRecordBO" />
 		<constructor-arg index="2" ref="holdingBO" />
+		<constructor-arg index="3" ref="lendingBO" />
+		<constructor-arg index="4" ref="userTypeBO" />
+		<constructor-arg index="5" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="reservationHandler" name="reservationHandler"
@@ -145,6 +151,7 @@
 		class="biblivre.circulation.user.Handler" scope="prototype">
 		<constructor-arg index="0" ref="userBO" />
 		<constructor-arg index="1" ref="lendingBO" />
+		<constructor-arg index="2" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="userCardHandler" name="userCardHandler"
@@ -160,6 +167,11 @@
 	<bean id="indexingHandler" name="indexingHandler"
 		class="biblivre.administration.indexing.Handler" scope="prototype">
 		<constructor-arg index="0" ref="indexingBO" />
+	</bean>
+
+	<bean id="userTypeHandler" name="userTypeHandler"
+		class="biblivre.administration.usertype.Handler" scope="prototype">
+		<constructor-arg index="0" ref="userTypeBO" />
 	</bean>
 
 	<!-- BOs -->
@@ -241,7 +253,6 @@
 		<constructor-arg index="3" ref="indexingBO" />
 	</bean>
 
-<!-- public HoldingBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingDAO holdingDAO, UserBO userBO, LoginBO loginBO) { -->
 	<bean id="holdingBO" name="holdingBO"
 		class="biblivre.cataloging.holding.HoldingBO">
 		<constructor-arg index="0" ref="holdingDAO" />
@@ -269,11 +280,36 @@
 		<constructor-arg index="1" ref="userBO" />
 		<constructor-arg index="2" ref="holdingBO" />
 		<constructor-arg index="3" ref="biblioRecordBO" />
+		<constructor-arg index="4" ref="userTypeBO" />
+		<constructor-arg index="5" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="lendingBO2" name="lendingBO2"
 		class="biblivre.circulation.lending.LendingBO2" >
 		<constructor-arg index="0" ref="lendingDAO" />
+	</bean>
+
+	<bean id="userTypeBO" name="userTypeBO"
+		class="biblivre.administration.usertype.UserTypeBO" >
+		<constructor-arg index="0" ref="userTypeDAO" />
+		<constructor-arg index="1" ref="userBO" />
+	</bean>
+
+	<bean id="lendingFineBO" name="lendingFineBO"
+		class="biblivre.circulation.lending.LendingFineBO" >
+		<constructor-arg index="0" ref="lendingFineDAO" />
+		<constructor-arg index="1" ref="holdingBO" />
+		<constructor-arg index="2" ref="biblioRecordBO" />
+		<constructor-arg index="3" ref="lendingBO" />
+		<constructor-arg index="4" ref="userTypeBO" />
+	</bean>
+
+	<bean id="reservationBO" name="reservationBO"
+		class="biblivre.circulation.reservation.ReservationBO" >
+		<constructor-arg index="0" ref="reservationDAO" />
+		<constructor-arg index="1" ref="userBO" />
+		<constructor-arg index="2" ref="biblioRecordBO" />
+		<constructor-arg index="3" ref="userTypeBO" />
 	</bean>
 
 	<!-- DAOs -->
@@ -342,6 +378,21 @@
 
 	<bean id="lendingDAO"
 		class="biblivre.circulation.lending.LendingDAOImpl"
+		factory-method="getInstance">
+	</bean>
+
+	<bean id="userTypeDAO"
+		class="biblivre.administration.usertype.UserTypeDAOImpl"
+		factory-method="getInstance">
+	</bean>
+
+	<bean id="lendingFineDAO"
+		class="biblivre.circulation.lending.LendingFineDAOImpl"
+		factory-method="getInstance">
+	</bean>
+
+	<bean id="reservationDAO"
+		class="biblivre.circulation.reservation.ReservationDAOImpl"
 		factory-method="getInstance">
 	</bean>
 </beans>

@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 public class UserBO extends AbstractBO {
 
     private UserDAO userDAO;
+	private UserTypeBO userTypeBO;
 
     public UserBO(UserDAO userDAO) {
         super();
@@ -63,8 +64,7 @@ public class UserBO extends AbstractBO {
     public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
         DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
 
-        UserTypeBO utbo = UserTypeBO.getInstance();
-        Map<Integer, UserTypeDTO> map = utbo.map();
+        Map<Integer, UserTypeDTO> map = userTypeBO.map();
 
         for (UserDTO udto : list) {
             UserTypeDTO utdto = map.get(udto.getType());
@@ -87,8 +87,7 @@ public class UserBO extends AbstractBO {
     public Map<Integer, UserDTO> map(Set<Integer> ids) {
         Map<Integer, UserDTO> map = this.userDAO.map(ids);
 
-        UserTypeBO utbo = UserTypeBO.getInstance();
-        Map<Integer, UserTypeDTO> typeMap = utbo.map();
+        Map<Integer, UserTypeDTO> typeMap = userTypeBO.map();
 
         for (UserDTO user : map.values()) {
             user.setUsertypeName(typeMap.get(user.getType()).getName());
@@ -147,7 +146,6 @@ public class UserBO extends AbstractBO {
                 table.addCell(cell);
             }
             Map<Integer, UserDTO> userMap = this.map(dto.getIds());
-            UserTypeBO utbo = UserTypeBO.getInstance();
             for (UserDTO user : userMap.values()) {
                 String userId = String.valueOf(user.getId());
                 PdfContentByte cb = writer.getDirectContent();
@@ -171,7 +169,7 @@ public class UserBO extends AbstractBO {
                                         + ": "
                                         + user.getEnrollment()
                                         + "\n");
-                UserTypeDTO usdto = utbo.get(user.getType());
+                UserTypeDTO usdto = userTypeBO.get(user.getType());
                 Phrase p4 =
                         new Phrase(
                                 this.getText(i18n, "circulation.user_field.short_type")

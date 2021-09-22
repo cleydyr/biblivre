@@ -31,7 +31,14 @@ import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
 
-    public void search(ExtendedRequest request, ExtendedResponse response) {
+    public Handler(UserTypeBO userTypeBO) {
+		super();
+		this.userTypeBO = userTypeBO;
+	}
+
+	private UserTypeBO userTypeBO;
+
+	public void search(ExtendedRequest request, ExtendedResponse response) {
 
         String searchParameters = request.getString("search_parameters");
 
@@ -50,8 +57,7 @@ public class Handler extends AbstractHandler {
                         "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        UserTypeBO bo = UserTypeBO.getInstance();
-        DTOCollection<UserTypeDTO> list = bo.search(query, limit, offset);
+        DTOCollection<UserTypeDTO> list = userTypeBO.search(query, limit, offset);
 
         if (list == null || list.isEmpty()) {
             this.setMessage(
@@ -75,11 +81,10 @@ public class Handler extends AbstractHandler {
 
         Integer id = request.getInteger("id", 0);
 
-        UserTypeBO bo = UserTypeBO.getInstance();
         UserTypeDTO dto = null;
 
         if (id != 0) {
-            dto = bo.get(id);
+            dto = userTypeBO.get(id);
             if (dto == null) {
                 this.setMessage(
                         ActionResult.WARNING, "administration.user_type.error.no_user_type_found");
@@ -99,7 +104,7 @@ public class Handler extends AbstractHandler {
         dto.setReservationTimeLimit(request.getInteger("reservation_time_limit"));
         dto.setFineValue(request.getFloat("fine_value"));
 
-        if (bo.save(dto)) {
+        if (userTypeBO.save(dto)) {
             if (id == 0) {
                 this.setMessage(ActionResult.SUCCESS, "administration.user_type.success.save");
             } else {
@@ -119,11 +124,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-
         Integer id = request.getInteger("id");
-        UserTypeBO bo = UserTypeBO.getInstance();
 
-        if (bo.delete(id)) {
+        if (userTypeBO.delete(id)) {
             this.setMessage(ActionResult.SUCCESS, "administration.user_type.success.delete");
         } else {
             this.setMessage(ActionResult.WARNING, "administration.user_type.error.delete");

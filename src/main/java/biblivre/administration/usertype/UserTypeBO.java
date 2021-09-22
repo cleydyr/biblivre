@@ -31,33 +31,25 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class UserTypeBO extends AbstractBO {
-    private UserTypeDAO dao;
+    private UserTypeDAO userTypeDAO;
     private UserBO userBO;
 
     public UserTypeBO(UserTypeDAO dao, UserBO userBO) {
         super();
-        this.dao = dao;
+        this.userTypeDAO = dao;
         this.userBO = userBO;
     }
 
-    public static UserTypeBO getInstance() {
-        UserTypeBO bo = AbstractBO.getInstance(UserTypeBO.class);
-        if (bo.dao == null) {
-            bo.dao = UserTypeDAO.getInstance();
-        }
-        return bo;
-    }
-
     public UserTypeDTO get(int id) {
-        return this.dao.get(id);
+        return this.userTypeDAO.get(id);
     }
 
     public List<UserTypeDTO> list() {
-        return this.dao.list();
+        return this.userTypeDAO.list();
     }
 
     public Map<Integer, UserTypeDTO> map() {
-        List<UserTypeDTO> list = this.dao.list();
+        List<UserTypeDTO> list = this.userTypeDAO.list();
         Map<Integer, UserTypeDTO> map = new TreeMap<>();
         for (UserTypeDTO dto : list) {
             map.put(dto.getId(), dto);
@@ -66,11 +58,11 @@ public class UserTypeBO extends AbstractBO {
     }
 
     public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
-        return this.dao.search(value, limit, offset);
+        return this.userTypeDAO.search(value, limit, offset);
     }
 
     public boolean save(UserTypeDTO userTypeDTO) {
-        return this.dao.save(userTypeDTO);
+        return this.userTypeDAO.save(userTypeDTO);
     }
 
     public boolean delete(int id) {
@@ -85,11 +77,11 @@ public class UserTypeBO extends AbstractBO {
             throw new ValidationException("administration.user_type.error.type_has_users");
         }
 
-        return this.dao.delete(id);
+        return this.userTypeDAO.delete(id);
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.userTypeDAO.saveFromBiblivre3(dtoList);
     }
 
     //	public boolean updateUserType(UserTypeDTO userTypeDTO) {

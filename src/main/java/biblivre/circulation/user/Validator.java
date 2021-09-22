@@ -39,6 +39,7 @@ public class Validator extends AbstractValidator {
     private AccessControlBO accessControlBO;
     private UserBO userBO;
     private LendingBO lendingBO;
+	private UserTypeBO userTypeBO;
 
     public Validator(AccessControlBO accessControlBO, UserBO userBO) {
         super();
@@ -71,7 +72,7 @@ public class Validator extends AbstractValidator {
         }
 
         Integer type = request.getInteger("type");
-        if (UserTypeBO.getInstance().get(type) == null) {
+        if (userTypeBO.get(type) == null) {
             ex.addError("type", "field.error.required");
         }
 
