@@ -242,6 +242,7 @@
 		<property name="searchDAO" ref="searchDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 		<property name="indexingBO" ref="indexingBO" />
+		<property name="lendingBO" ref="lendingBO2" />
 		<property name="reservationBO" ref="reservationBO" />
 		<property name="authorizationBO" ref="authorizationBO" />
 	</bean>
