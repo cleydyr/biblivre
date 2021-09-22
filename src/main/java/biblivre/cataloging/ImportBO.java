@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 
 public class ImportBO extends AbstractBO {
     private BiblioRecordBO biblioRecordBO;
-    private VocabularyRecordBO vocabularyBO;
+    private VocabularyRecordBO vocabularyRecordBO;
     private AuthorityRecordBO authorityRecordBO;
 
     public ImportDTO loadFromFile(MemoryFile file, ImportFormat format, ImportEncoding enc) {
@@ -213,7 +213,7 @@ public class ImportBO extends AbstractBO {
                 break;
             case VOCABULARY:
                 rdto = new VocabularyRecordDTO();
-                rbo = vocabularyBO;
+                rbo = vocabularyRecordBO;
                 break;
             case AUTHORITIES:
                 rdto = new AuthorityRecordDTO();
@@ -239,8 +239,8 @@ public class ImportBO extends AbstractBO {
 		this.biblioRecordBO = biblioRecordBO;
 	}
 
-	public void setVocabularyBO(VocabularyRecordBO vocabularyBO) {
-		this.vocabularyBO = vocabularyBO;
+	public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
+		this.vocabularyRecordBO = vocabularyRecordBO;
 	}
 
 	public void setAuthorityRecordBO(AuthorityRecordBO authorityRecordBO) {
