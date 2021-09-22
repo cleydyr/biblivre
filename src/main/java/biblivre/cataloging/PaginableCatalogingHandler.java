@@ -46,15 +46,7 @@ import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
-
     protected PaginableRecordBO paginableRecordBO;
-    protected MaterialType defaultMaterialType;
-
-    protected PaginableCatalogingHandler(
-            PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
-        super(paginableRecordBO, defaultMaterialType);
-        this.paginableRecordBO = paginableRecordBO;
-    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -306,4 +298,12 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         this.json.put("data", list.toJSONObject());
     }
+
+	public void setPaginableRecordBO(PaginableRecordBO paginableRecordBO) {
+		this.paginableRecordBO = paginableRecordBO;
+	}
+
+	public void setDefaultMaterialType(MaterialType defaultMaterialType) {
+		this.defaultMaterialType = defaultMaterialType;
+	}
 }

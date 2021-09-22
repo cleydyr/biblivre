@@ -27,11 +27,6 @@ import java.util.List;
 public class SupplierBO extends AbstractBO {
     private SupplierDAO supplierDAO;
 
-    public SupplierBO(SupplierDAO dao) {
-        super();
-        this.supplierDAO = dao;
-    }
-
     public SupplierDTO get(Integer id) {
         return this.supplierDAO.get(id);
     }
@@ -59,4 +54,8 @@ public class SupplierBO extends AbstractBO {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.supplierDAO.saveFromBiblivre3(dtoList);
     }
+
+	public void setSupplierDAO(SupplierDAO supplierDAO) {
+		this.supplierDAO = supplierDAO;
+	}
 }

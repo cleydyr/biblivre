@@ -21,12 +21,9 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
-import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.cataloging.search.SearchDAO;
 import biblivre.circulation.lending.LendingBO2;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
@@ -45,17 +42,6 @@ public class BiblioRecordBO extends PaginableRecordBO {
     private IndexingBO indexingBO;
     private LendingBO2 lendingBO;
 	private ReservationBO reservationBO;
-
-    public BiblioRecordBO(
-            RecordDAO recordDAO,
-            SearchDAO searchDAO,
-            HoldingBO holdingBO,
-            IndexingBO indexingBO,
-            LendingBO2 lendingBO) {
-        super(recordDAO, searchDAO, holdingBO);
-        this.indexingBO = indexingBO;
-        this.lendingBO = lendingBO;
-    }
 
     @Override
     public void populateDetails(RecordDTO recordDTO, int mask) {
@@ -196,4 +182,16 @@ public class BiblioRecordBO extends PaginableRecordBO {
     public RecordType getRecordType() {
         return RecordType.BIBLIO;
     }
+
+	public void setIndexingBO(IndexingBO indexingBO) {
+		this.indexingBO = indexingBO;
+	}
+
+	public void setLendingBO(LendingBO2 lendingBO) {
+		this.lendingBO = lendingBO;
+	}
+
+	public void setReservationBO(ReservationBO reservationBO) {
+		this.reservationBO = reservationBO;
+	}
 }

@@ -29,11 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 public class AccessCardBO {
     private AccessCardDAO accessCardDAO;
 
-    public AccessCardBO(AccessCardDAO accessCardDAO) {
-        super();
-        this.accessCardDAO = accessCardDAO;
-    }
-
     public boolean save(AccessCardDTO dto) {
         if (dto != null) {
             AccessCardDTO existingCard = this.accessCardDAO.get(dto.getCode());
@@ -133,4 +128,8 @@ public class AccessCardBO {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.accessCardDAO.saveFromBiblivre3(dtoList);
     }
+
+	public void setAccessCardDAO(AccessCardDAO accessCardDAO) {
+		this.accessCardDAO = accessCardDAO;
+	}
 }

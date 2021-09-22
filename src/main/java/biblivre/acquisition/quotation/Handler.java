@@ -37,12 +37,11 @@ public class Handler extends AbstractHandler {
 
     private QuotationBO quotationBO;
 
-    public Handler(QuotationBO quotationBO) {
-        super();
-        this.quotationBO = quotationBO;
-    }
+    public void setQuotationBO(QuotationBO quotationBO) {
+		this.quotationBO = quotationBO;
+	}
 
-    public void search(ExtendedRequest request, ExtendedResponse response) {
+	public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
 
         String query = null;

@@ -21,8 +21,6 @@ package biblivre.circulation.accesscontrol;
 
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
-import biblivre.circulation.lending.LendingBO;
-import biblivre.circulation.lending.LendingFineBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -30,29 +28,24 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
+import biblivre.spring.SpringUtils;
+
 import java.util.Date;
 import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
-    public Handler(AccessCardBO accessCardBO, AccessControlBO accessControlBO, UserBO userBO, LendingBO lendingBO,
-			LendingFineBO lendingFineBO) {
-		super();
-		this.accessCardBO = accessCardBO;
-		this.accessControlBO = accessControlBO;
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-		this.lendingFineBO = lendingFineBO;
-	}
-
 	private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
     private UserBO userBO;
-    private LendingBO lendingBO;
-	private LendingFineBO lendingFineBO;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
+    	WebApplicationContext applicationContext =
+                SpringUtils.getWebApplicationContext(request);
+
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO, lendingBO, lendingFineBO);
+        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null) {
@@ -92,8 +85,12 @@ public class Handler extends AbstractHandler {
     }
 
     public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-        biblivre.administration.accesscards.Handler cardHandler =
-                new biblivre.administration.accesscards.Handler(accessCardBO);
+    	WebApplicationContext applicationContext =
+                SpringUtils.getWebApplicationContext(request);
+
+    	biblivre.administration.accesscards.Handler cardHandler =
+    			applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
+
         DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
 
         if (cardList == null) {
@@ -184,4 +181,16 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "circulation.accesscards.return.error");
         }
     }
+
+	public void setAccessCardBO(AccessCardBO accessCardBO) {
+		this.accessCardBO = accessCardBO;
+	}
+
+	public void setAccessControlBO(AccessControlBO accessControlBO) {
+		this.accessControlBO = accessControlBO;
+	}
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
 }

@@ -25,7 +25,6 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.usertype.UserTypeBO;
-import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.cataloging.authorities.AuthorityRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
@@ -76,7 +75,7 @@ public class DataMigrationBO extends AbstractBO {
     private VocabularyRecordBO vocabularyRecordBO;
     private HoldingBO holdingsBO;
     private LendingBO lendingBO;
-	private UserTypeDAO userTypeBO;
+	private UserTypeBO userTypeBO;
 	private LendingFineBO lendingFineBO;
 	private ReservationBO reservationBO;
 
@@ -382,4 +381,76 @@ public class DataMigrationBO extends AbstractBO {
     public void setCurrentCount(Integer currentCount) {
         this.currentCount = currentCount;
     }
+
+	public void setDao(DataMigrationDAO dao) {
+		this.dao = dao;
+	}
+
+	public void setSetupDao(SetupDAO setupDao) {
+		this.setupDao = setupDao;
+	}
+
+	public void setAccessControlBO(AccessControlBO accessControlBO) {
+		this.accessControlBO = accessControlBO;
+	}
+
+	public void setAccessCardBO(AccessCardBO accessCardBO) {
+		this.accessCardBO = accessCardBO;
+	}
+
+	public void setLoginBO(LoginBO loginBO) {
+		this.loginBO = loginBO;
+	}
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
+
+	public void setQuotationBO(QuotationBO quotationBO) {
+		this.quotationBO = quotationBO;
+	}
+
+	public void setOrderBO(OrderBO orderBO) {
+		this.orderBO = orderBO;
+	}
+
+	public void setSupplierBO(SupplierBO supplierBO) {
+		this.supplierBO = supplierBO;
+	}
+
+	public void setRequestBO(RequestBO requestBO) {
+		this.requestBO = requestBO;
+	}
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setAuthoritiyRecordBO(AuthorityRecordBO authoritiyRecordBO) {
+		this.authoritiyRecordBO = authoritiyRecordBO;
+	}
+
+	public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
+		this.vocabularyRecordBO = vocabularyRecordBO;
+	}
+
+	public void setHoldingsBO(HoldingBO holdingsBO) {
+		this.holdingsBO = holdingsBO;
+	}
+
+	public void setLendingBO(LendingBO lendingBO) {
+		this.lendingBO = lendingBO;
+	}
+
+	public void setUserTypeBO(UserTypeBO userTypeBO) {
+		this.userTypeBO = userTypeBO;
+	}
+
+	public void setLendingFineBO(LendingFineBO lendingFineBO) {
+		this.lendingFineBO = lendingFineBO;
+	}
+
+	public void setReservationBO(ReservationBO reservationBO) {
+		this.reservationBO = reservationBO;
+	}
 }

@@ -35,17 +35,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class Validator extends AbstractValidator {
-
     private AccessControlBO accessControlBO;
     private UserBO userBO;
     private LendingBO lendingBO;
 	private UserTypeBO userTypeBO;
-
-    public Validator(AccessControlBO accessControlBO, UserBO userBO) {
-        super();
-        this.accessControlBO = accessControlBO;
-        this.userBO = userBO;
-    }
 
     public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -172,4 +165,20 @@ public class Validator extends AbstractValidator {
             return;
         }
     }
+
+	public void setAccessControlBO(AccessControlBO accessControlBO) {
+		this.accessControlBO = accessControlBO;
+	}
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
+
+	public void setLendingBO(LendingBO lendingBO) {
+		this.lendingBO = lendingBO;
+	}
+
+	public void setUserTypeBO(UserTypeBO userTypeBO) {
+		this.userTypeBO = userTypeBO;
+	}
 }

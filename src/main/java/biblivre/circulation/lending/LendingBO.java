@@ -59,16 +59,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class LendingBO extends LendingBO2 {
-	public LendingBO(LendingDAO lendingDAO, UserBO userBO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO,
-			UserTypeBO userTypeBO, LendingFineBO lendingFineBO) {
-		super(lendingDAO);
-		this.userBO = userBO;
-		this.holdingBO = holdingBO;
-		this.biblioRecordBO = biblioRecordBO;
-		this.userTypeBO = userTypeBO;
-		this.lendingFineBO = lendingFineBO;
-	}
-
 	private UserBO userBO;
 	private HoldingBO holdingBO;
 	private BiblioRecordBO biblioRecordBO;
@@ -775,6 +765,30 @@ public class LendingBO extends LendingBO2 {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.lendingDAO.saveFromBiblivre3(dtoList);
     }
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
+
+	public void setHoldingBO(HoldingBO holdingBO) {
+		this.holdingBO = holdingBO;
+	}
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setUserTypeBO(UserTypeBO userTypeBO) {
+		this.userTypeBO = userTypeBO;
+	}
+
+	public void setLendingFineBO(LendingFineBO lendingFineBO) {
+		this.lendingFineBO = lendingFineBO;
+	}
+
+	public void setReservationBO(ReservationBO reservationBO) {
+		this.reservationBO = reservationBO;
+	}
 
     //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {
     //		List<LendingInfoDTO> result = new ArrayList<>();

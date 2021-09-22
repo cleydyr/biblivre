@@ -48,17 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ImportBO extends AbstractBO {
-
-    public ImportBO(
-            BiblioRecordBO biblioRecordBO,
-            VocabularyRecordBO vocabularyBO,
-            AuthorityRecordBO authorityRecordBO) {
-        super();
-        this.biblioRecordBO = biblioRecordBO;
-        this.vocabularyBO = vocabularyBO;
-        this.authorityRecordBO = authorityRecordBO;
-    }
-
     public static ImportBO getInstance() {
         ImportBO bo = AbstractBO.getInstance(ImportBO.class);
 
@@ -251,4 +240,16 @@ public class ImportBO extends AbstractBO {
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(ImportBO.class);
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setVocabularyBO(VocabularyRecordBO vocabularyBO) {
+		this.vocabularyBO = vocabularyBO;
+	}
+
+	public void setAuthorityRecordBO(AuthorityRecordBO authorityRecordBO) {
+		this.authorityRecordBO = authorityRecordBO;
+	}
 }

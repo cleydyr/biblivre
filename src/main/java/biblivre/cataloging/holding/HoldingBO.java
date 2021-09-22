@@ -25,7 +25,6 @@ import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.labels.LabelDTO;
-import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -77,13 +76,6 @@ public class HoldingBO extends RecordBO {
     private HoldingDAO holdingDAO;
     private UserBO userBO;
     private LoginBO loginBO;
-
-    public HoldingBO(HoldingDAO holdingDAO, LoginBO loginBO, UserBO userBO, SearchDAO searchDAO) {
-        super(holdingDAO, searchDAO);
-        this.holdingDAO = holdingDAO;
-        this.userBO = userBO;
-        this.loginBO = loginBO;
-    }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         return this.holdingDAO.map(ids);
@@ -517,4 +509,16 @@ public class HoldingBO extends RecordBO {
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(HoldingBO.class);
+
+	public void setHoldingDAO(HoldingDAO holdingDAO) {
+		this.holdingDAO = holdingDAO;
+	}
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
+
+	public void setLoginBO(LoginBO loginBO) {
+		this.loginBO = loginBO;
+	}
 }

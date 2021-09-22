@@ -55,12 +55,6 @@ public class Handler extends AbstractHandler {
     private Map<RecordType, RecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
 
-    public Handler(Map<RecordType, RecordBO> recordBOs, IndexingBO indexingBO) {
-        super();
-        this.recordBOs = recordBOs;
-        this.indexingBO = indexingBO;
-    }
-
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
 
         MemoryFile file = request.getFile("file");
@@ -303,4 +297,12 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
     }
+
+	public void setRecordBOs(Map<RecordType, RecordBO> recordBOs) {
+		this.recordBOs = recordBOs;
+	}
+
+	public void setIndexingBO(IndexingBO indexingBO) {
+		this.indexingBO = indexingBO;
+	}
 }

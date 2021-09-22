@@ -32,13 +32,7 @@ import java.util.UUID;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-
     private UserBO userBO;
-
-    public Handler(UserBO userBO) {
-        super();
-        this.userBO = userBO;
-    }
 
     public void createPdf(ExtendedRequest request, ExtendedResponse response) {
         LabelPrintDTO print = getLabelPrintDTO(request);
@@ -94,4 +88,8 @@ public class Handler extends AbstractHandler {
             return null;
         }
     }
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
 }

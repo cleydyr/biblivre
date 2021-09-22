@@ -27,11 +27,6 @@ import java.util.List;
 public class RequestBO extends AbstractBO {
     private RequestDAO requestDAO;
 
-    public RequestBO(RequestDAO requestDAO) {
-        super();
-        this.requestDAO = requestDAO;
-    }
-
     public RequestDTO get(Integer id) {
         return this.requestDAO.get(id);
     }
@@ -59,4 +54,8 @@ public class RequestBO extends AbstractBO {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.requestDAO.saveFromBiblivre3(dtoList);
     }
+
+	public void setRequestDAO(RequestDAO requestDAO) {
+		this.requestDAO = requestDAO;
+	}
 }

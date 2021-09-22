@@ -32,13 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-
     private AccessCardBO accessCardBO;
-
-    public Handler(AccessCardBO accessCardBO) {
-        super();
-        this.accessCardBO = accessCardBO;
-    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         DTOCollection<AccessCardDTO> list = this.searchHelper(request, response, this);
@@ -196,4 +190,8 @@ public class Handler extends AbstractHandler {
         dto.setCreatedBy(request.getLoggedUserId());
         return dto;
     }
+
+	public void setAccessCardBO(AccessCardBO accessCardBO) {
+		this.accessCardBO = accessCardBO;
+	}
 }

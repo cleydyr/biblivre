@@ -6,10 +6,6 @@ import biblivre.core.AbstractBO;
 public class LendingBO2 extends AbstractBO {
     protected LendingDAO lendingDAO;
 
-    public LendingBO2(LendingDAO lendingDAO) {
-        this.lendingDAO = lendingDAO;
-    }
-
     public LendingDTO getCurrentLending(HoldingDTO holding) {
         return this.lendingDAO.getCurrentLending(holding);
     }
@@ -17,4 +13,8 @@ public class LendingBO2 extends AbstractBO {
     public Integer countLentHoldings(int recordId) {
         return this.lendingDAO.countLentHoldings(recordId);
     }
+
+	public void setLendingDAO(LendingDAO lendingDAO) {
+		this.lendingDAO = lendingDAO;
+	}
 }

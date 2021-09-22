@@ -30,12 +30,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-
-    public Handler(UserTypeBO userTypeBO) {
-		super();
-		this.userTypeBO = userTypeBO;
-	}
-
 	private UserTypeBO userTypeBO;
 
 	public void search(ExtendedRequest request, ExtendedResponse response) {
@@ -132,4 +126,8 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "administration.user_type.error.delete");
         }
     }
+
+	public void setUserTypeBO(UserTypeBO userTypeBO) {
+		this.userTypeBO = userTypeBO;
+	}
 }

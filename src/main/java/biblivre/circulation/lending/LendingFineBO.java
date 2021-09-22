@@ -40,16 +40,6 @@ public class LendingFineBO extends AbstractBO {
 	private LendingBO lendingBO;
 	private UserTypeBO userTypeBO;
 
-    public LendingFineBO(LendingFineDAO lendingFineDAO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO, LendingBO lendingBO,
-			UserTypeBO userTypeBO) {
-		super();
-		this.lendingFineDAO = lendingFineDAO;
-		this.holdingBO = holdingBO;
-		this.biblioRecordBO = biblioRecordBO;
-		this.lendingBO = lendingBO;
-		this.userTypeBO = userTypeBO;
-	}
-
     public LendingFineDTO getById(Integer fineId) {
         return this.lendingFineDAO.get(fineId);
     }
@@ -123,4 +113,24 @@ public class LendingFineBO extends AbstractBO {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.lendingFineDAO.saveFromBiblivre3(dtoList);
     }
+
+	public void setLendingFineDAO(LendingFineDAO lendingFineDAO) {
+		this.lendingFineDAO = lendingFineDAO;
+	}
+
+	public void setHoldingBO(HoldingBO holdingBO) {
+		this.holdingBO = holdingBO;
+	}
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setLendingBO(LendingBO lendingBO) {
+		this.lendingBO = lendingBO;
+	}
+
+	public void setUserTypeBO(UserTypeBO userTypeBO) {
+		this.userTypeBO = userTypeBO;
+	}
 }

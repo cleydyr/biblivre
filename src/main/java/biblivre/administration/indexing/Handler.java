@@ -28,12 +28,6 @@ import java.util.Date;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-
-    public Handler(IndexingBO indexingBO) {
-        super();
-        this.indexingBO = indexingBO;
-    }
-
     private IndexingBO indexingBO;
 
     public void reindex(ExtendedRequest request, ExtendedResponse response) {
@@ -92,4 +86,8 @@ public class Handler extends AbstractHandler {
         } catch (JSONException e) {
         }
     }
+
+	public void setIndexingBO(IndexingBO indexingBO) {
+		this.indexingBO = indexingBO;
+	}
 }

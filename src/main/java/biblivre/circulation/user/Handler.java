@@ -43,13 +43,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-    public Handler(UserBO userBO, LendingBO lendingBO, LendingFineBO lendingFineBO) {
-		super();
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-		this.lendingFineBO = lendingFineBO;
-	}
-
 	private UserBO userBO;
     private LendingBO lendingBO;
 	private LendingFineBO lendingFineBO;
@@ -285,4 +278,20 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "circulation.users.failure.unblock");
         }
     }
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
+
+	public void setLendingBO(LendingBO lendingBO) {
+		this.lendingBO = lendingBO;
+	}
+
+	public void setLendingFineBO(LendingFineBO lendingFineBO) {
+		this.lendingFineBO = lendingFineBO;
+	}
+
+	public void setReservationBO(ReservationBO reservationBO) {
+		this.reservationBO = reservationBO;
+	}
 }

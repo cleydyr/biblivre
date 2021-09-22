@@ -25,11 +25,6 @@ import java.util.List;
 public class PermissionBO {
     private PermissionDAO permissionDAO;
 
-    public PermissionBO(PermissionDAO permissionDAO) {
-        super();
-        this.permissionDAO = permissionDAO;
-    }
-
     public boolean delete(UserDTO user) {
         return this.permissionDAO.delete(user);
     }
@@ -46,4 +41,8 @@ public class PermissionBO {
     public List<String> getByLoginId(Integer loginid) {
         return this.permissionDAO.getByLoginId(loginid);
     }
+
+	public void setPermissionDAO(PermissionDAO permissionDAO) {
+		this.permissionDAO = permissionDAO;
+	}
 }

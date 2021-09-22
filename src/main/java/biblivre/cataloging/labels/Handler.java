@@ -47,12 +47,6 @@ public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private HoldingBO holdingBO;
 
-    public Handler(BiblioRecordBO biblioRecordBO, HoldingBO holdingBO) {
-        super();
-        this.biblioRecordBO = biblioRecordBO;
-        this.holdingBO = holdingBO;
-    }
-
     public void createPdf(ExtendedRequest request, ExtendedResponse response) {
 
         String printId = UUID.randomUUID().toString();
@@ -132,4 +126,12 @@ public class Handler extends AbstractHandler {
         // TODO Implementar e Melhorar
         // TODO RENAME RECORD_FILE_TXT => printText
     }
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setHoldingBO(HoldingBO holdingBO) {
+		this.holdingBO = holdingBO;
+	}
 }

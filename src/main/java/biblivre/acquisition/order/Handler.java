@@ -36,11 +36,6 @@ public class Handler extends AbstractHandler {
 
     private OrderBO orderBO;
 
-    public Handler(OrderBO orderBO) {
-        super();
-        this.orderBO = orderBO;
-    }
-
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
 
@@ -73,7 +68,11 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    public void paginate(ExtendedRequest request, ExtendedResponse response) {
+	public void setOrderBO(OrderBO orderBO) {
+		this.orderBO = orderBO;
+	}
+
+	public void paginate(ExtendedRequest request, ExtendedResponse response) {
         this.search(request, response);
     }
 

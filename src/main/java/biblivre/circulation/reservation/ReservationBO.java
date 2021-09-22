@@ -44,15 +44,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class ReservationBO extends AbstractBO {
-
-    public ReservationBO(ReservationDAO dao, UserBO userBO, BiblioRecordBO biblioRecordBO, UserTypeBO userTypeBO) {
-		super();
-		this.reservationDAO = dao;
-		this.userBO = userBO;
-		this.biblioRecordBO = biblioRecordBO;
-		this.userTypeBO = userTypeBO;
-	}
-
     private ReservationDAO reservationDAO;
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
@@ -250,4 +241,20 @@ public class ReservationBO extends AbstractBO {
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.reservationDAO.saveFromBiblivre3(dtoList);
     }
+
+	public void setReservationDAO(ReservationDAO reservationDAO) {
+		this.reservationDAO = reservationDAO;
+	}
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
+
+	public void setUserTypeBO(UserTypeBO userTypeBO) {
+		this.userTypeBO = userTypeBO;
+	}
 }

@@ -33,11 +33,6 @@ public class Handler extends AbstractHandler {
 
     private RequestBO requestBO;
 
-    public Handler(RequestBO requestBO) {
-        super();
-        this.requestBO = requestBO;
-    }
-
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
 
@@ -147,4 +142,8 @@ public class Handler extends AbstractHandler {
         dto.setQuantity(request.getInteger("quantity"));
         return dto;
     }
+
+	public void setRequestBO(RequestBO requestBO) {
+		this.requestBO = requestBO;
+	}
 }

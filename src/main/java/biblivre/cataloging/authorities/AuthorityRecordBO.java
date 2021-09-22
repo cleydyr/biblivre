@@ -21,24 +21,14 @@ package biblivre.cataloging.authorities;
 
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
-import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.holding.HoldingBO;
-import biblivre.cataloging.search.SearchDAO;
 import java.util.Map;
 import java.util.Set;
 
 public class AuthorityRecordBO extends PaginableRecordBO {
-
     private IndexingBO indexingBO;
-
-    public AuthorityRecordBO(
-            RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO, IndexingBO indexingBO) {
-        super(recordDAO, searchDAO, holdingBO);
-        this.indexingBO = indexingBO;
-    }
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {}
@@ -97,4 +87,8 @@ public class AuthorityRecordBO extends PaginableRecordBO {
     public RecordType getRecordType() {
         return RecordType.AUTHORITIES;
     }
+
+	public void setIndexingBO(IndexingBO indexingBO) {
+		this.indexingBO = indexingBO;
+	}
 }

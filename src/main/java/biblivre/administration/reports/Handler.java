@@ -19,11 +19,11 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
+import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
+
 import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.circulation.lending.LendingBO;
-import biblivre.circulation.lending.LendingFineBO;
 import biblivre.circulation.lending.LendingListDTO;
-import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
@@ -32,24 +32,16 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
-import org.json.JSONException;
+import biblivre.spring.SpringUtils;
 
 public class Handler extends AbstractHandler {
-    public Handler(UserBO userBO, LendingBO lendingBO, LendingFineBO lendingFineBO) {
-		super();
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-		this.lendingFineBO = lendingFineBO;
-	}
-
-	private UserBO userBO;
-    private LendingBO lendingBO;
-	private LendingFineBO lendingFineBO;
-
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
+    	WebApplicationContext applicationContext =
+                SpringUtils.getWebApplicationContext(request);
 
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO, lendingBO, lendingFineBO);
+        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {

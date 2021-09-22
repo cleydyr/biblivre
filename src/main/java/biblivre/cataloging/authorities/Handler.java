@@ -37,7 +37,7 @@ import org.json.JSONObject;
 public class Handler extends PaginableCatalogingHandler {
 
     public Handler(AuthorityRecordBO authorityRecordBO) {
-        super(authorityRecordBO, MaterialType.AUTHORITIES);
+        setDefaultMaterialType(MaterialType.AUTHORITIES);
     }
 
     @Override

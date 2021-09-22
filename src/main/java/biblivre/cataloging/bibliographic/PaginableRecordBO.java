@@ -2,11 +2,9 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.RecordBO;
-import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.holding.HoldingBO;
-import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.PagingDTO;
@@ -19,11 +17,6 @@ import java.util.Map;
 
 public abstract class PaginableRecordBO extends RecordBO {
     protected HoldingBO holdingBO;
-
-    public PaginableRecordBO(RecordDAO recordDAO, SearchDAO searchDAO, HoldingBO holdingBO) {
-        super(recordDAO, searchDAO);
-        this.holdingBO = holdingBO;
-    }
 
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
@@ -127,4 +120,8 @@ public abstract class PaginableRecordBO extends RecordBO {
 
         return paging;
     }
+
+	public void setHoldingBO(HoldingBO holdingBO) {
+		this.holdingBO = holdingBO;
+	}
 }

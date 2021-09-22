@@ -49,11 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class RecordBO extends AbstractBO {
-    public RecordBO(RecordDAO recordDAO, SearchDAO searchDAO) {
-        super();
-        this.recordDAO = recordDAO;
-        this.seachDAO = searchDAO;
-    }
 
     protected RecordDAO recordDAO;
     protected SearchDAO seachDAO;
@@ -361,4 +356,12 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(RecordBO.class);
+
+	public void setRecordDAO(RecordDAO recordDAO) {
+		this.recordDAO = recordDAO;
+	}
+
+	public void setSeachDAO(SearchDAO seachDAO) {
+		this.seachDAO = seachDAO;
+	}
 }

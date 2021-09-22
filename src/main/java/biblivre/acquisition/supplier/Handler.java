@@ -30,13 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-
     private SupplierBO supplierBO;
-
-    public Handler(SupplierBO supplierBO) {
-        super();
-        this.supplierBO = supplierBO;
-    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -160,4 +154,8 @@ public class Handler extends AbstractHandler {
         dto.setEmail(request.getString("email"));
         return dto;
     }
+
+	public void setSupplierBO(SupplierBO supplierBO) {
+		this.supplierBO = supplierBO;
+	}
 }

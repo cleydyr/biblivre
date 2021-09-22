@@ -19,6 +19,11 @@
  ******************************************************************************/
 package biblivre.circulation.accesscontrol;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.administration.accesscards.AccessCardStatus;
@@ -27,22 +32,11 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AccessControlBO extends AbstractBO {
     private AccessControlDAO accessControlDAO;
     private AccessCardBO accessCardBO;
     private UserBO userBO;
-
-    public AccessControlBO(
-            AccessControlDAO accessControlDAO, AccessCardBO accessCardBO, UserBO userBO) {
-        super();
-        this.accessControlDAO = accessControlDAO;
-        this.accessCardBO = accessCardBO;
-        this.userBO = userBO;
-    }
 
     public AccessControlDTO populateDetails(AccessControlDTO dto) {
         if (dto == null) {
@@ -167,4 +161,16 @@ public class AccessControlBO extends AbstractBO {
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(AccessControlBO.class);
+
+	public void setAccessControlDAO(AccessControlDAO accessControlDAO) {
+		this.accessControlDAO = accessControlDAO;
+	}
+
+	public void setAccessCardBO(AccessCardBO accessCardBO) {
+		this.accessCardBO = accessCardBO;
+	}
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
 }

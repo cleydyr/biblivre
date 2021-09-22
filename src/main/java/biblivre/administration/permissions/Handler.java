@@ -19,8 +19,13 @@
  ******************************************************************************/
 package biblivre.administration.permissions;
 
-import biblivre.circulation.lending.LendingBO;
-import biblivre.circulation.lending.LendingFineBO;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
+
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -31,31 +36,20 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.TextUtils;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
-import java.util.Arrays;
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
+import biblivre.spring.SpringUtils;
 
 public class Handler extends AbstractHandler {
-    public Handler(PermissionBO permissionBO, LoginBO loginBO, UserBO userBO, LendingBO lendingBO,
-			LendingFineBO lendingFineBO) {
-		super();
-		this.permissionBO = permissionBO;
-		this.loginBO = loginBO;
-		this.userBO = userBO;
-		this.lendingBO = lendingBO;
-		this.lendingFineBO = lendingFineBO;
-	}
-
 	private PermissionBO permissionBO;
     private LoginBO loginBO;
     private UserBO userBO;
-    private LendingBO lendingBO;
-	private LendingFineBO lendingFineBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
+    	WebApplicationContext applicationContext =
+                SpringUtils.getWebApplicationContext(request);
+
         biblivre.circulation.user.Handler userHandler =
-                new biblivre.circulation.user.Handler(userBO, lendingBO, lendingFineBO);
+        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -234,4 +228,16 @@ public class Handler extends AbstractHandler {
 
         return dto;
     }
+
+	public void setPermissionBO(PermissionBO permissionBO) {
+		this.permissionBO = permissionBO;
+	}
+
+	public void setLoginBO(LoginBO loginBO) {
+		this.loginBO = loginBO;
+	}
+
+	public void setUserBO(UserBO userBO) {
+		this.userBO = userBO;
+	}
 }

@@ -42,15 +42,9 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public class IndexingBO extends AbstractBO {
-    public IndexingBO(Map<RecordType, RecordBO> recordBOs, IndexingDAO dao) {
-        super();
-        this.recordBOs = recordBOs;
-        this.dao = dao;
-    }
-
     Map<RecordType, RecordBO> recordBOs = new HashMap<>();
 
-    private IndexingDAO dao;
+    private IndexingDAO indexingDAO;
 
     private String[] nonfillingCharactersInIndicator1 = new String[] {"130", "630", "730", "740"};
     private String[] nonfillingCharactersInIndicator2 = new String[] {"240", "243", "245", "830"};
@@ -73,9 +67,9 @@ public class IndexingBO extends AbstractBO {
             this.populateAutocompleteIndexes(dto, autocompleteSubfields, autocompleteIndexes);
 
             this.deleteIndexes(recordType, dto);
-            this.dao.insertIndexes(recordType, indexes);
-            this.dao.insertSortIndexes(recordType, sortIndexes);
-            this.dao.insertAutocompleteIndexes(recordType, autocompleteIndexes);
+            this.indexingDAO.insertIndexes(recordType, indexes);
+            this.indexingDAO.insertSortIndexes(recordType, sortIndexes);
+            this.indexingDAO.insertAutocompleteIndexes(recordType, autocompleteIndexes);
         }
     }
 
@@ -117,12 +111,12 @@ public class IndexingBO extends AbstractBO {
                                 dto, autocompleteSubfields, autocompleteIndexes);
                     }
 
-                    this.dao.insertIndexes(recordType, indexes);
-                    this.dao.insertSortIndexes(recordType, sortIndexes);
-                    this.dao.insertAutocompleteIndexes(recordType, autocompleteIndexes);
+                    this.indexingDAO.insertIndexes(recordType, indexes);
+                    this.indexingDAO.insertSortIndexes(recordType, sortIndexes);
+                    this.indexingDAO.insertAutocompleteIndexes(recordType, autocompleteIndexes);
                 }
 
-                this.dao.reindexDatabase(recordType);
+                this.indexingDAO.reindexDatabase(recordType);
             } finally {
                 this.toggleLockState(recordType, false);
             }
@@ -131,7 +125,7 @@ public class IndexingBO extends AbstractBO {
 
     public void reindexAutocompleteFixedTable(
             RecordType recordType, String datafield, String subfield, List<String> phrases) {
-        this.dao.reindexAutocompleteFixedTable(recordType, datafield, subfield, phrases);
+        this.indexingDAO.reindexAutocompleteFixedTable(recordType, datafield, subfield, phrases);
     }
 
     private void populateIndexes(
@@ -304,7 +298,7 @@ public class IndexingBO extends AbstractBO {
     }
 
     public int countIndexed(RecordType recordType) {
-        return this.dao.countIndexed(recordType);
+        return this.indexingDAO.countIndexed(recordType);
     }
 
     public int[] getReindexProgress(RecordType recordType) {
@@ -325,25 +319,33 @@ public class IndexingBO extends AbstractBO {
     }
 
     private boolean _hasOutdatedIndexCount(RecordBO recordBO) {
-        return this.dao.countIndexed(recordBO.getRecordType()).equals(recordBO.count());
+        return this.indexingDAO.countIndexed(recordBO.getRecordType()).equals(recordBO.count());
     }
 
     private void clearIndexes(RecordType recordType) {
-        this.dao.clearIndexes(recordType);
+        this.indexingDAO.clearIndexes(recordType);
     }
 
     public boolean deleteIndexes(RecordType recordType, RecordDTO dto) {
-        return this.dao.deleteIndexes(recordType, dto);
+        return this.indexingDAO.deleteIndexes(recordType, dto);
     }
 
     public List<String> searchExactTerm(RecordType recordType, int indexingGroupId, String term) {
         List<String> terms = new ArrayList<>();
         terms.add(term);
-        return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
+        return this.indexingDAO.searchExactTerms(recordType, indexingGroupId, terms);
     }
 
     public List<String> searchExactTerms(
             RecordType recordType, int indexingGroupId, List<String> terms) {
-        return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
+        return this.indexingDAO.searchExactTerms(recordType, indexingGroupId, terms);
     }
+
+	public void setRecordBOs(Map<RecordType, RecordBO> recordBOs) {
+		this.recordBOs = recordBOs;
+	}
+
+	public void setIndexingDAO(IndexingDAO indexingDAO) {
+		this.indexingDAO = indexingDAO;
+	}
 }

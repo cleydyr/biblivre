@@ -40,13 +40,7 @@ import org.json.JSONObject;
 import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
-
     private BiblioRecordBO biblioRecordBO;
-
-    public Handler(BiblioRecordBO biblioRecordBO) {
-        super();
-        this.biblioRecordBO = biblioRecordBO;
-    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -192,4 +186,8 @@ public class Handler extends AbstractHandler {
         collection.setPaging(paging);
         return collection;
     }
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
 }

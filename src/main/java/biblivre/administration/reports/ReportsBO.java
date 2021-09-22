@@ -26,16 +26,15 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public class ReportsBO extends AbstractBO {
-
-    private ReportsDAO dao;
+    private ReportsDAO reportsDAO;
     private RecordDAO recordDAO;
     private BiblioRecordBO biblioRecordBO;
 
     public static ReportsBO getInstance() {
         ReportsBO bo = AbstractBO.getInstance(ReportsBO.class);
 
-        if (bo.dao == null) {
-            bo.dao = ReportsDAO.getInstance();
+        if (bo.reportsDAO == null) {
+            bo.reportsDAO = ReportsDAO.getInstance();
         }
 
         return bo;
@@ -53,7 +52,7 @@ public class ReportsBO extends AbstractBO {
     }
 
     public TreeMap<String, Set<Integer>> searchAuthors(String author, RecordDatabase database) {
-        return this.dao.searchAuthors(author, database);
+        return this.reportsDAO.searchAuthors(author, database);
     }
 
     public CustomCountDto getCustomCountData(ReportsDTO reportsDto) {
@@ -146,4 +145,16 @@ public class ReportsBO extends AbstractBO {
             }
         }
     }
+
+	public void setReportsDAO(ReportsDAO reportsDAO) {
+		this.reportsDAO = reportsDAO;
+	}
+
+	public void setRecordDAO(RecordDAO recordDAO) {
+		this.recordDAO = recordDAO;
+	}
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
 }

@@ -8,113 +8,113 @@
 
 	<bean id="userValidator" name="userValidator"
 		class="biblivre.circulation.user.Validator" scope="prototype">
-		<constructor-arg index="0" ref="accessControlBO" />
-		<constructor-arg index="1" ref="userBO" />
+		<property name="accessControlBO" ref="accessControlBO" />
+		<property name="userBO" ref="userBO" />
 	</bean>
 
 	<bean id="permissionValidator" name="permissionValidator"
 		class="biblivre.administration.permissions.Validator"
 		scope="prototype">
-		<constructor-arg index="0" ref="loginBO" />
-		<constructor-arg index="1" ref="userBO" />
+		<property name="loginBO" ref="loginBO" />
+		<property name="userBO" ref="userBO" />
 	</bean>
 
 	<bean id="loginValidator" name="loginValidator"
 		class="biblivre.login.Validator">
-		<constructor-arg index="0" ref="loginBO" />
+		<property name="loginBO" ref="loginBO" />
 	</bean>
 
 	<!-- Handlers -->
 
 	<bean id="accesscardsHandler" name="accesscardsHandler"
 		class="biblivre.administration.accesscards.Handler" scope="prototype">
-		<constructor-arg index="0" ref="accessCardBO" />
+		<property name="accessCardBO" ref="accessCardBO" />
 	</bean>
 
 	<bean id="loginHandler" name="loginHandler"
 		class="biblivre.login.Handler">
-		<constructor-arg index="0" ref="loginBO" />
-		<constructor-arg index="1" ref="indexingBO" />
+		<property name="loginBO" ref="loginBO" />
+		<property name="indexingBO" ref="indexingBO" />
 	</bean>
 
 	<bean id="accesscontrolHandler" name="accesscontrolHandler"
 		class="biblivre.circulation.accesscontrol.Handler" scope="prototype">
-		<constructor-arg index="0" ref="accessCardBO" />
-		<constructor-arg index="1" ref="accessControlBO" />
-		<constructor-arg index="2" ref="userBO" />
-		<constructor-arg index="3" ref="lendingBO" />
-		<constructor-arg index="4" ref="lendingFineBO" />
+		<property name="accessCardBO" ref="accessCardBO" />
+		<property name="accessControlBO" ref="accessControlBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="lendingBO" ref="lendingBO" />
+		<property name="lendingFineBO" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="quotationHandler" name="quotationHandler"
 		class="biblivre.acquisition.quotation.Handler" scope="prototype">
-		<constructor-arg index="0" ref="quotationBO" />
+		<property name="quotationBO" ref="quotationBO" />
 	</bean>
 
 	<bean id="menuHandler" name="menuHandler"
 		class="biblivre.menu.Handler" scope="prototype">
-		<constructor-arg index="0" ref="userBO" />
-		<constructor-arg index="1" ref="supplierBO" />
-		<constructor-arg index="2" ref="requestBO" />
-		<constructor-arg index="3" ref="biblioRecordBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="supplierBO" ref="supplierBO" />
+		<property name="requestBO" ref="requestBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
 	</bean>
 
 	<bean id="requestHandler" name="requestHandler"
 		class="biblivre.acquisition.request.Handler" scope="prototype">
-		<constructor-arg index="0" ref="requestBO" />
+		<property name="orderBO" ref="requestBO" />
 	</bean>
 
 	<bean id="orderHandler" name="orderHandler"
 		class="biblivre.acquisition.order.Handler" scope="prototype">
-		<constructor-arg index="0" ref="orderBO" />
+		<property name="orderBO" ref="orderBO" />
 	</bean>
 
 	<bean id="supplierHandler" name="supplierHandler"
 		class="biblivre.acquisition.supplier.Handler" scope="prototype">
-		<constructor-arg index="0" ref="supplierBO" />
+		<property name="supplierBO" ref="supplierBO" />
 	</bean>
 
 	<bean id="permissionHandler" name="permissionHandler"
 		class="biblivre.administration.permissions.Handler" scope="prototype">
-		<constructor-arg index="0" ref="permissionBO" />
-		<constructor-arg index="1" ref="loginBO" />
-		<constructor-arg index="2" ref="userBO" />
-		<constructor-arg index="3" ref="lendingBO" />
-		<constructor-arg index="4" ref="lendingFineBO" />
+		<property name="permissionBO" ref="permissionBO" />
+		<property name="loginBO" ref="loginBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="lendingBO" ref="lendingBO" />
+		<property name="lendingFineBO" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="reportHandler" name="reportHandler"
 		class="biblivre.administration.reports.Handler" scope="prototype">
-		<constructor-arg index="0" ref="userBO" />
-		<constructor-arg index="1" ref="lendingBO" />
-		<constructor-arg index="2" ref="lendingFineBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="lendingBO" ref="lendingBO" />
+		<property name="lendingFineBO" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="authorityHandler" name="authorityHandler"
 		class="biblivre.cataloging.authorities.Handler" scope="prototype">
-		<constructor-arg index="0" ref="authorityBO" />
+		<property name="authorityBO" ref="authorityBO" />
 	</bean>
 
 	<bean id="bibliographicHandler" name="bibliographicHandler"
 		class="biblivre.cataloging.bibliographic.Handler" scope="prototype">
-		<constructor-arg index="0" ref="biblioRecordBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
 	</bean>
 
 	<bean id="vocabularyHandler" name="vocabularyHandler"
 		class="biblivre.cataloging.vocabulary.Handler" scope="prototype">
-		<constructor-arg index="0" ref="vocabularyRecordBO" />
+		<property name="vocabularyRecordBO" ref="vocabularyRecordBO" />
 	</bean>
 
 	<bean id="holdingHandler" name="holdingHandler"
 		class="biblivre.cataloging.holding.Handler" scope="prototype">
-		<constructor-arg index="0" ref="biblioRecordBO" />
-		<constructor-arg index="1" ref="holdingBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+		<property name="holdingBO" ref="holdingBO" />
 	</bean>
 
 	<bean id="catalogingLabelHandler" name="catalogingLabelHandler"
 		class="biblivre.cataloging.labels.Handler" scope="prototype">
-		<constructor-arg index="0" ref="holdingBO" />
-		<constructor-arg index="1" ref="biblioRecordBO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
 	</bean>
 
 	<bean id="catalogingHandler" name="catalogingHandler"
@@ -127,138 +127,139 @@
 				<entry key="VOCABULARY" value="vocabularyRecordBO" />
 			</map>
 		</constructor-arg>
-		<constructor-arg index="1" ref="indexingBO" />
+		<property name="indexingBO" ref="indexingBO" />
 	</bean>
 
 	<bean id="lendingHandler" name="lendingHandler"
 		class="biblivre.circulation.lending.Handler" scope="prototype">
-		<constructor-arg index="0" ref="userBO" />
-		<constructor-arg index="1" ref="biblioRecordBO" />
-		<constructor-arg index="2" ref="holdingBO" />
-		<constructor-arg index="3" ref="lendingBO" />
-		<constructor-arg index="4" ref="userTypeBO" />
-		<constructor-arg index="5" ref="lendingFineBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="lendingBO" ref="lendingBO" />
+		<property name="userTypeBO" ref="userTypeBO" />
+		<property name="lendingFineBO" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="reservationHandler" name="reservationHandler"
 		class="biblivre.circulation.reservation.Handler" scope="prototype">
-		<constructor-arg index="0" ref="userBO" />
-		<constructor-arg index="1" ref="biblioRecordBO" />
-		<constructor-arg index="2" ref="lendingBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+		<property name="lendingBO" ref="lendingBO" />
 	</bean>
 
 	<bean id="userHandler" name="userHandler"
 		class="biblivre.circulation.user.Handler" scope="prototype">
-		<constructor-arg index="0" ref="userBO" />
-		<constructor-arg index="1" ref="lendingBO" />
-		<constructor-arg index="2" ref="lendingFineBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="lendingBO" ref="lendingBO" />
+		<property name="lendingFineBO" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="userCardHandler" name="userCardHandler"
 		class="biblivre.circulation.user_cards.Handler" scope="prototype">
-		<constructor-arg index="0" ref="userBO" />
+		<property name="userBO" ref="userBO" />
 	</bean>
 
 	<bean id="z3950Handler" name="z3950Handler"
 		class="biblivre.z3950.Handler" scope="prototype">
-		<constructor-arg index="0" ref="biblioRecordBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
 	</bean>
 
 	<bean id="indexingHandler" name="indexingHandler"
 		class="biblivre.administration.indexing.Handler" scope="prototype">
-		<constructor-arg index="0" ref="indexingBO" />
+		<property name="indexingBO" ref="indexingBO" />
 	</bean>
 
 	<bean id="userTypeHandler" name="userTypeHandler"
 		class="biblivre.administration.usertype.Handler" scope="prototype">
-		<constructor-arg index="0" ref="userTypeBO" />
+		<property name="userTypeBO" ref="userTypeBO" />
 	</bean>
 
 	<!-- BOs -->
 
 	<bean id="accessControlBO" name="accessControlBO"
 		class="biblivre.circulation.accesscontrol.AccessControlBO">
-		<constructor-arg index="0" ref="accessControlDAO" />
-		<constructor-arg index="1" ref="accessCardBO" />
-		<constructor-arg index="2" ref="userBO" />
+		<property name="accessControlDAO" ref="accessControlDAO" />
+		<property name="accessCardBO" ref="accessCardBO" />
+		<property name="userBO" ref="userBO" />
 	</bean>
 
 	<bean id="accessCardBO" name="accessCardBO"
 		class="biblivre.administration.accesscards.AccessCardBO">
-		<constructor-arg index="0" ref="accessCardDAO" />
+		<property name="accessCardDAO" ref="accessCardDAO" />
 	</bean>
 
 	<bean id="permissionBO" name="permissionBO"
 		class="biblivre.administration.permissions.PermissionBO">
-		<constructor-arg index="0" ref="permissionDAO" />
+		<property name="permissionDAO" ref="permissionDAO" />
 	</bean>
 
 	<bean id="loginBO" name="loginBO" class="biblivre.login.LoginBO">
-		<constructor-arg index="0" ref="loginDAO" />
-		<constructor-arg index="1" ref="permissionBO" />
+		<property name="loginDAO" ref="loginDAO" />
+		<property name="permissionBO" ref="permissionBO" />
 	</bean>
 
 	<bean id="supplierBO" name="supplierBO"
 		class="biblivre.acquisition.supplier.SupplierBO">
-		<constructor-arg index="0" ref="supplierDAO" />
+		<property name="supplierDAO" ref="supplierDAO" />
 	</bean>
 
 	<bean id="requestBO" name="requestBO"
 		class="biblivre.acquisition.request.RequestBO">
-		<constructor-arg index="0" ref="requestDAO" />
+		
+		<property name="requestDAO" ref="requestDAO" />
 	</bean>
 
 	<bean id="quotationBO" name="quotationBO"
 		class="biblivre.acquisition.quotation.QuotationBO">
-		<constructor-arg index="0" ref="quotationDAO" />
-		<constructor-arg index="1" ref="supplierBO" />
-		<constructor-arg index="2" ref="requestBO" />
+		<property name="quotationDAO" ref="quotationDAO" />
+		<property name="supplierBO" ref="supplierBO" />
+		<property name="requestBO" ref="requestBO" />
 	</bean>
 
 	<bean id="orderBO" name="orderBO"
 		class="biblivre.acquisition.order.OrderBO">
-		<constructor-arg index="0" ref="orderDAO" />
-		<constructor-arg index="1" ref="quotationBO" />
-		<constructor-arg index="2" ref="supplierBO" />
-		<constructor-arg index="3" ref="requestBO" />
+		<property name="orderDAO" ref="orderDAO" />
+		<property name="quotationBO" ref="quotationBO" />
+		<property name="supplierBO" ref="supplierBO" />
+		<property name="requestBO" ref="requestBO" />
 	</bean>
 
 	<bean id="userBO" name="userBO"
 		class="biblivre.circulation.user.UserBO">
-		<constructor-arg index="0" ref="userDAO" />
+		<property name="userDAO" ref="userDAO" />
 	</bean>
 
 	<bean id="biblioRecordBO" name="biblioRecordBO"
 		class="biblivre.cataloging.bibliographic.BiblioRecordBO">
-		<constructor-arg index="0" ref="recordDAO" />
-		<constructor-arg index="1" ref="searchDAO" />
-		<constructor-arg index="2" ref="holdingBO" />
-		<constructor-arg index="3" ref="indexingBO" />
+		<property name="recordDAO" ref="recordDAO" />
+		<property name="searchDAO" ref="searchDAO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="indexingBO" ref="indexingBO" />
 		<constructor-arg index="4" ref="lendingBO2" />
 	</bean>
 
 	<bean id="vocabularyRecordBO" name="vocabularyRecordBO"
 		class="biblivre.cataloging.vocabulary.VocabularyRecordBO">
-		<constructor-arg index="0" ref="recordDAO" />
-		<constructor-arg index="1" ref="searchDAO" />
-		<constructor-arg index="2" ref="holdingBO" />
-		<constructor-arg index="3" ref="indexingBO" />
+		<property name="recordDAO" ref="recordDAO" />
+		<property name="searchDAO" ref="searchDAO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="indexingBO" ref="indexingBO" />
 	</bean>
 
 	<bean id="authorityRecordBO" name="authorityRecordBO"
 		class="biblivre.cataloging.authorities.AuthorityRecordBO">
-		<constructor-arg index="0" ref="recordDAO" />
-		<constructor-arg index="1" ref="searchDAO" />
-		<constructor-arg index="2" ref="holdingBO" />
-		<constructor-arg index="3" ref="indexingBO" />
+		<property name="recordDAO" ref="recordDAO" />
+		<property name="searchDAO" ref="searchDAO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="indexingBO" ref="indexingBO" />
 	</bean>
 
 	<bean id="holdingBO" name="holdingBO"
 		class="biblivre.cataloging.holding.HoldingBO">
-		<constructor-arg index="0" ref="holdingDAO" />
-		<constructor-arg index="1" ref="loginBO" />
-		<constructor-arg index="2" ref="userBO" />
-		<constructor-arg index="3" ref="searchDAO" />
+		<property name="holdingDAO" ref="holdingDAO" />
+		<property name="loginBO" ref="loginBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="searchDAO" ref="searchDAO" />
 	</bean>
 
 	<bean id="indexingBO" name="indexingBO"
@@ -271,45 +272,45 @@
 <!-- 				<entry key="VOCABULARY" value="vocabularyRecordBO" /> -->
 			</map>
 		</constructor-arg>
-		<constructor-arg index="1" ref="indexingDAO" />
+		<property name="indexingDAO" ref="indexingDAO" />
 	</bean>
 
 	<bean id="lendingBO" name="lendingBO"
 		class="biblivre.circulation.lending.LendingBO" >
-		<constructor-arg index="0" ref="lendingDAO" />
-		<constructor-arg index="1" ref="userBO" />
-		<constructor-arg index="2" ref="holdingBO" />
-		<constructor-arg index="3" ref="biblioRecordBO" />
-		<constructor-arg index="4" ref="userTypeBO" />
-		<constructor-arg index="5" ref="lendingFineBO" />
+		<property name="lendingDAO" ref="lendingDAO" />
+		<property name="userBO" ref="userBO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+		<property name="userTypeBO" ref="userTypeBO" />
+		<property name="lendingFineBO" ref="lendingFineBO" />
 	</bean>
 
 	<bean id="lendingBO2" name="lendingBO2"
 		class="biblivre.circulation.lending.LendingBO2" >
-		<constructor-arg index="0" ref="lendingDAO" />
+		<property name="lendingDAO" ref="lendingDAO" />
 	</bean>
 
 	<bean id="userTypeBO" name="userTypeBO"
 		class="biblivre.administration.usertype.UserTypeBO" >
-		<constructor-arg index="0" ref="userTypeDAO" />
-		<constructor-arg index="1" ref="userBO" />
+		<property name="userTypeDAO" ref="userTypeDAO" />
+		<property name="userBO" ref="userBO" />
 	</bean>
 
 	<bean id="lendingFineBO" name="lendingFineBO"
 		class="biblivre.circulation.lending.LendingFineBO" >
-		<constructor-arg index="0" ref="lendingFineDAO" />
-		<constructor-arg index="1" ref="holdingBO" />
-		<constructor-arg index="2" ref="biblioRecordBO" />
-		<constructor-arg index="3" ref="lendingBO" />
-		<constructor-arg index="4" ref="userTypeBO" />
+		<property name="lendingFineDAO" ref="lendingFineDAO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+		<property name="lendingBO" ref="lendingBO" />
+		<property name="userTypeBO" ref="userTypeBO" />
 	</bean>
 
 	<bean id="reservationBO" name="reservationBO"
 		class="biblivre.circulation.reservation.ReservationBO" >
-		<constructor-arg index="0" ref="reservationDAO" />
-		<constructor-arg index="1" ref="userBO" />
-		<constructor-arg index="2" ref="biblioRecordBO" />
-		<constructor-arg index="3" ref="userTypeBO" />
+		<property name="reservationDAO" ref="reservationDAO" />
+		<property name="userBO" ref="userBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+		<property name="userTypeBO" ref="userTypeBO" />
 	</bean>
 
 	<!-- DAOs -->

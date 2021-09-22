@@ -31,18 +31,17 @@ import biblivre.core.enums.ActionResult;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends CatalogingHandler {
-
-    public Handler(HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
-        super(holdingBO, MaterialType.HOLDINGS);
-        this.biblioRecordBO = biblioRecordBO;
-    }
-
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
+
+    public Handler() {
+		setDefaultMaterialType(MaterialType.HOLDINGS);
+	}
 
     @Override
     protected RecordDTO createRecordDTO(ExtendedRequest request) {
@@ -180,4 +179,13 @@ public class Handler extends CatalogingHandler {
 
         return dto;
     }
+
+	public void setHoldingBO(HoldingBO holdingBO) {
+		super.setRecordBO(holdingBO);
+		this.holdingBO = holdingBO;
+	}
+
+	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+		this.biblioRecordBO = biblioRecordBO;
+	}
 }
