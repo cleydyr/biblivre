@@ -55,12 +55,6 @@ public class Handler extends AbstractHandler {
 	private AuthorizationBO authorizationBO;
 	private BackupBO backupBO;
 
-    public Handler(LoginBO loginBO, IndexingBO indexingBO) {
-        super();
-        this.loginBO = loginBO;
-        this.indexingBO = indexingBO;
-    }
-
     public void login(ExtendedRequest request, ExtendedResponse response) {
 
         String username = request.getString("username");
