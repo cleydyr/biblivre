@@ -67,11 +67,11 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setOrderBO(OrderBO orderBO) {
-		this.orderBO = orderBO;
-	}
+    public void setOrderBO(OrderBO orderBO) {
+        this.orderBO = orderBO;
+    }
 
-	public void paginate(ExtendedRequest request, ExtendedResponse response) {
+    public void paginate(ExtendedRequest request, ExtendedResponse response) {
         this.search(request, response);
     }
 

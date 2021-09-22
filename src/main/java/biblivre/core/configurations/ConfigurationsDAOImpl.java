@@ -36,7 +36,7 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
     }
 
     @Override
-	public List<ConfigurationsDTO> list() {
+    public List<ConfigurationsDTO> list() {
         List<ConfigurationsDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -64,7 +64,7 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
     }
 
     @Override
-	public boolean save(List<ConfigurationsDTO> configs, int loggedUser) {
+    public boolean save(List<ConfigurationsDTO> configs, int loggedUser) {
         Connection con = null;
         try {
             con = this.getConnection();

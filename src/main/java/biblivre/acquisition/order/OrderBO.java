@@ -38,22 +38,22 @@ public class OrderBO extends AbstractBO {
     private RequestBO requestBO;
 
     public void setOrderDAO(OrderDAO orderDAO) {
-		this.orderDAO = orderDAO;
-	}
+        this.orderDAO = orderDAO;
+    }
 
-	public void setQuotationBO(QuotationBO quotationBO) {
-		this.quotationBO = quotationBO;
-	}
+    public void setQuotationBO(QuotationBO quotationBO) {
+        this.quotationBO = quotationBO;
+    }
 
-	public void setSupplierBO(SupplierBO supplierBO) {
-		this.supplierBO = supplierBO;
-	}
+    public void setSupplierBO(SupplierBO supplierBO) {
+        this.supplierBO = supplierBO;
+    }
 
-	public void setRequestBO(RequestBO requestBO) {
-		this.requestBO = requestBO;
-	}
+    public void setRequestBO(RequestBO requestBO) {
+        this.requestBO = requestBO;
+    }
 
-	public OrderDTO get(Integer id) {
+    public OrderDTO get(Integer id) {
         OrderDTO dto = this.orderDAO.get(id);
 
         this.populateDTO(dto);

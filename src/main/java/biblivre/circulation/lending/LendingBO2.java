@@ -14,7 +14,7 @@ public class LendingBO2 extends AbstractBO {
         return this.lendingDAO.countLentHoldings(recordId);
     }
 
-	public void setLendingDAO(LendingDAO lendingDAO) {
-		this.lendingDAO = lendingDAO;
-	}
+    public void setLendingDAO(LendingDAO lendingDAO) {
+        this.lendingDAO = lendingDAO;
+    }
 }

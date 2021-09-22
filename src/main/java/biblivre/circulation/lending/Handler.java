@@ -19,15 +19,6 @@
  ******************************************************************************/
 package biblivre.circulation.lending;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.web.context.WebApplicationContext;
-
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.cataloging.RecordBO;
@@ -49,15 +40,22 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.spring.SpringUtils;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
-	private UserBO userBO;
-	private BiblioRecordBO biblioRecordBO;
-	private HoldingBO holdingBO;
-	private LendingBO lendingBO;
-	private UserTypeBO userTypeBO;
-	private LendingFineBO lendingFineBO;
-	private ReservationBO reservationBO;
+    private UserBO userBO;
+    private BiblioRecordBO biblioRecordBO;
+    private HoldingBO holdingBO;
+    private LendingBO lendingBO;
+    private UserTypeBO userTypeBO;
+    private LendingFineBO lendingFineBO;
+    private ReservationBO reservationBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -99,11 +97,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-    	WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(request);
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
         biblivre.circulation.user.Handler userHandler =
-        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
 
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -340,31 +337,31 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setHoldingBO(HoldingBO holdingBO) {
-		this.holdingBO = holdingBO;
-	}
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
+    }
 
-	public void setLendingBO(LendingBO lendingBO) {
-		this.lendingBO = lendingBO;
-	}
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 
-	public void setLendingFineBO(LendingFineBO lendingFineBO) {
-		this.lendingFineBO = lendingFineBO;
-	}
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
 
-	public void setReservationBO(ReservationBO reservationBO) {
-		this.reservationBO = reservationBO;
-	}
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
+    }
 }

@@ -46,7 +46,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public ReservationDTO get(Integer id) {
+    public ReservationDTO get(Integer id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -69,12 +69,12 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public List<ReservationDTO> list() {
+    public List<ReservationDTO> list() {
         return this.list(null, null);
     }
 
     @Override
-	public List<ReservationDTO> list(UserDTO user, RecordDTO record) {
+    public List<ReservationDTO> list(UserDTO user, RecordDTO record) {
         List<ReservationDTO> list = new ArrayList<>();
         Connection con = null;
         try {
@@ -122,12 +122,12 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public int count() {
+    public int count() {
         return this.count(null, null);
     }
 
     @Override
-	public int count(UserDTO user, RecordDTO record) {
+    public int count(UserDTO user, RecordDTO record) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -171,7 +171,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public boolean deleteExpired() {
+    public boolean deleteExpired() {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -189,7 +189,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public boolean delete(Integer id) {
+    public boolean delete(Integer id) {
         if (id == null) {
             return false;
         }
@@ -212,7 +212,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public boolean delete(Integer userId, Integer recordId) {
+    public boolean delete(Integer userId, Integer recordId) {
         if (userId == null || recordId == null) {
             return false;
         }
@@ -241,7 +241,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public int insert(ReservationDTO dto) {
+    public int insert(ReservationDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -273,7 +273,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -319,7 +319,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-	public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
+    public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
         Map<Integer, List<ReservationDTO>> map = new LinkedHashMap<>();
 
         Connection con = null;

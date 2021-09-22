@@ -89,7 +89,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 }

@@ -19,12 +19,11 @@
  ******************************************************************************/
 package biblivre.digitalmedia;
 
-import java.io.File;
-import java.util.List;
-
 import biblivre.core.AbstractBO;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
+import java.io.File;
+import java.util.List;
 
 public class DigitalMediaBO extends AbstractBO {
     protected DigitalMediaDAO digitalMediaDAO;
@@ -42,14 +41,14 @@ public class DigitalMediaBO extends AbstractBO {
     }
 
     public List<DigitalMediaDTO> list() {
-    	return this.digitalMediaDAO.list();
+        return this.digitalMediaDAO.list();
     }
 
-	public long importFile(File file) {
-		return this.digitalMediaDAO.importFile(file);
-	}
+    public long importFile(File file) {
+        return this.digitalMediaDAO.importFile(file);
+    }
 
-	public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
-		this.digitalMediaDAO = digitalMediaDAO;
-	}
+    public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
+        this.digitalMediaDAO = digitalMediaDAO;
+    }
 }

@@ -39,7 +39,7 @@ import org.json.JSONException;
 public class Handler extends AbstractHandler {
     private BackupBO backupBO;
 
-	public void prepare(ExtendedRequest request, ExtendedResponse response) {
+    public void prepare(ExtendedRequest request, ExtendedResponse response) {
         String schemas = request.getString("schemas");
         String type = request.getString("type");
 
@@ -162,7 +162,7 @@ public class Handler extends AbstractHandler {
         bo.save(dto);
     }
 
-	public void setBackupBO(BackupBO backupBO) {
-		this.backupBO = backupBO;
-	}
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
+    }
 }

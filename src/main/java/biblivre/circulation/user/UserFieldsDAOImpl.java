@@ -35,7 +35,7 @@ public class UserFieldsDAOImpl extends AbstractDAO implements UserFieldsDAO {
     }
 
     @Override
-	public List<UserFieldDTO> listFields() {
+    public List<UserFieldDTO> listFields() {
         List<UserFieldDTO> list = new ArrayList<>();
 
         Connection con = null;

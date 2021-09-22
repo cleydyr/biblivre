@@ -33,7 +33,7 @@ public abstract class AbstractBO {
         authorizationBO.authorize(authorizationPoints, module, action);
     }
 
-	public void setAuthorizationBO(AuthorizationBO authorizationBO) {
-		this.authorizationBO = authorizationBO;
-	}
+    public void setAuthorizationBO(AuthorizationBO authorizationBO) {
+        this.authorizationBO = authorizationBO;
+    }
 }

@@ -64,8 +64,7 @@ public abstract class Controller {
         this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
         this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
-        WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(xRequest);
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(xRequest);
 
         try {
             module =

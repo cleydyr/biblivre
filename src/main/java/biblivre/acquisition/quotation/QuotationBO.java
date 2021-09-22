@@ -34,18 +34,18 @@ public class QuotationBO extends AbstractBO {
     private RequestBO requestBO;
 
     public void setQuotationDAO(QuotationDAO quotationDAO) {
-		this.quotationDAO = quotationDAO;
-	}
+        this.quotationDAO = quotationDAO;
+    }
 
-	public void setSupplierBO(SupplierBO supplierBO) {
-		this.supplierBO = supplierBO;
-	}
+    public void setSupplierBO(SupplierBO supplierBO) {
+        this.supplierBO = supplierBO;
+    }
 
-	public void setRequestBO(RequestBO requestBO) {
-		this.requestBO = requestBO;
-	}
+    public void setRequestBO(RequestBO requestBO) {
+        this.requestBO = requestBO;
+    }
 
-	public QuotationDTO get(Integer id) {
+    public QuotationDTO get(Integer id) {
         QuotationDTO dto = this.quotationDAO.get(id);
 
         this.populateDTO(dto, requestBO, supplierBO);

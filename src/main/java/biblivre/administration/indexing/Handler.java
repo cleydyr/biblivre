@@ -87,7 +87,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setIndexingBO(IndexingBO indexingBO) {
-		this.indexingBO = indexingBO;
-	}
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
 }

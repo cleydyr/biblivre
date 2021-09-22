@@ -30,7 +30,7 @@ public class SetupDAOImpl extends AbstractDAO implements SetupDAO {
     }
 
     @Override
-	public final void fixSequence(DataMigrationPhase migrationPhase) {
+    public final void fixSequence(DataMigrationPhase migrationPhase) {
         if (migrationPhase == null || migrationPhase.getBiblivre4IdColumnName() == null) {
             return;
         }
@@ -42,7 +42,7 @@ public class SetupDAOImpl extends AbstractDAO implements SetupDAO {
     }
 
     @Override
-	public final void deleteAll(DataMigrationPhase phase) {
+    public final void deleteAll(DataMigrationPhase phase) {
         Connection con = null;
 
         try {

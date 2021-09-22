@@ -2,8 +2,7 @@ package biblivre.administration.setup;
 
 public interface SetupDAO {
 
-	void fixSequence(DataMigrationPhase migrationPhase);
+    void fixSequence(DataMigrationPhase migrationPhase);
 
-	void deleteAll(DataMigrationPhase phase);
-
+    void deleteAll(DataMigrationPhase phase);
 }

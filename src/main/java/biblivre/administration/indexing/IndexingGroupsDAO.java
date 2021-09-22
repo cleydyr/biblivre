@@ -1,9 +1,8 @@
 package biblivre.administration.indexing;
 
+import biblivre.cataloging.enums.RecordType;
 import java.util.List;
 
-import biblivre.cataloging.enums.RecordType;
-
 public interface IndexingGroupsDAO {
-	public List<IndexingGroupDTO> list(RecordType recordType);
+    public List<IndexingGroupDTO> list(RecordType recordType);
 }

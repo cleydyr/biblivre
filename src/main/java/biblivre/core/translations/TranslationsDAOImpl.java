@@ -39,12 +39,12 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
     }
 
     @Override
-	public List<TranslationDTO> list() {
+    public List<TranslationDTO> list() {
         return this.list(null);
     }
 
     @Override
-	public List<TranslationDTO> list(String language) {
+    public List<TranslationDTO> list(String language) {
         List<TranslationDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -93,12 +93,12 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
     }
 
     @Override
-	public boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser) {
+    public boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser) {
         return this.save(translations, null, loggedUser);
     }
 
     @Override
-	public boolean save(
+    public boolean save(
             HashMap<String, HashMap<String, String>> translations,
             HashMap<String, HashMap<String, String>> removeTranslations,
             int loggedUser) {

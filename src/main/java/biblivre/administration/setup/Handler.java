@@ -58,9 +58,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Handler extends AbstractHandler {
-	private RestoreBO restoreBO;
-	private BackupBO backupBO;
-	private DataMigrationBO dataMigrationBO;
+    private RestoreBO restoreBO;
+    private BackupBO backupBO;
+    private DataMigrationBO dataMigrationBO;
 
     public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
 
@@ -507,13 +507,13 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setRestoreBO(RestoreBO restoreBO) {
-		this.restoreBO = restoreBO;
-	}
+    public void setRestoreBO(RestoreBO restoreBO) {
+        this.restoreBO = restoreBO;
+    }
 
-	private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
-	public void setBackupBO(BackupBO backupBO) {
-		this.backupBO = backupBO;
-	}
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
+    }
 }

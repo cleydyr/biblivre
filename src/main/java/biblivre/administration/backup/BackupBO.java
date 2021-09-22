@@ -19,6 +19,19 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
+import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.configurations.Configurations;
+import biblivre.core.file.BiblivreFile;
+import biblivre.core.schemas.Schemas;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.DatabaseUtils;
+import biblivre.core.utils.FileIOUtils;
+import biblivre.core.utils.PgDumpCommand;
+import biblivre.core.utils.PgDumpCommand.Format;
+import biblivre.core.utils.TextUtils;
+import biblivre.digitalmedia.DigitalMediaBO;
+import biblivre.digitalmedia.DigitalMediaDTO;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
@@ -43,23 +55,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import biblivre.core.AbstractBO;
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.Configurations;
-import biblivre.core.file.BiblivreFile;
-import biblivre.core.schemas.Schemas;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.DatabaseUtils;
-import biblivre.core.utils.FileIOUtils;
-import biblivre.core.utils.PgDumpCommand;
-import biblivre.core.utils.PgDumpCommand.Format;
-import biblivre.core.utils.TextUtils;
-import biblivre.digitalmedia.DigitalMediaBO;
-import biblivre.digitalmedia.DigitalMediaDTO;
-
 public class BackupBO extends AbstractBO {
     private BackupDAO backupDAO;
-	private DigitalMediaBO digitalMediaBO;
+    private DigitalMediaBO digitalMediaBO;
 
     public void simpleBackup() {
         BackupType backupType = BackupType.FULL;
@@ -427,15 +425,15 @@ public class BackupBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 
-	public Set<String> listDatabaseSchemas() {
-		return backupDAO.listDatabaseSchemas();
-	}
+    public Set<String> listDatabaseSchemas() {
+        return backupDAO.listDatabaseSchemas();
+    }
 
-	public void setBackupDAO(BackupDAO backupDAO) {
-		this.backupDAO = backupDAO;
-	}
+    public void setBackupDAO(BackupDAO backupDAO) {
+        this.backupDAO = backupDAO;
+    }
 
-	public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
-		this.digitalMediaBO = digitalMediaBO;
-	}
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
+    }
 }

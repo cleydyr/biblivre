@@ -17,7 +17,7 @@ public class Z3950ServerDAOImpl extends AbstractDAO implements Z3950DAO {
     }
 
     @Override
-	public Collection<String> search(String value, Integer indexGroupId, int offset, int limit) {
+    public Collection<String> search(String value, Integer indexGroupId, int offset, int limit) {
         String[] terms = TextUtils.prepareWords(TextUtils.preparePhrase(value));
         StringBuilder sql = _buildSql(terms);
 

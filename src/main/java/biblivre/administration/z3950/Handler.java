@@ -34,7 +34,7 @@ import org.json.JSONObject;
 public class Handler extends AbstractHandler {
     private Z3950BO z3950BO;
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
+    public void search(ExtendedRequest request, ExtendedResponse response) {
 
         String searchParameters = request.getString("search_parameters");
 
@@ -113,7 +113,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setZ3950BO(Z3950BO z3950bo) {
-		z3950BO = z3950bo;
-	}
+    public void setZ3950BO(Z3950BO z3950bo) {
+        z3950BO = z3950bo;
+    }
 }

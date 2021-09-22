@@ -19,6 +19,17 @@
  ******************************************************************************/
 package biblivre.administration.backup;
 
+import biblivre.administration.backup.exception.RestoreException;
+import biblivre.administration.setup.State;
+import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.exceptions.ValidationException;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.DatabaseUtils;
+import biblivre.core.utils.FileIOUtils;
+import biblivre.core.utils.StringPool;
+import biblivre.digitalmedia.DigitalMediaBO;
+import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,7 +48,6 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -46,18 +56,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import biblivre.administration.backup.exception.RestoreException;
-import biblivre.administration.setup.State;
-import biblivre.core.AbstractBO;
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.exceptions.ValidationException;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.DatabaseUtils;
-import biblivre.core.utils.FileIOUtils;
-import biblivre.core.utils.StringPool;
-import biblivre.digitalmedia.DigitalMediaBO;
-import biblivre.digitalmedia.DigitalMediaDAO;
 
 public class RestoreBO extends AbstractBO {
     private static final String _DROP_SCHEMA_TPL = "DROP SCHEMA \"%s\" CASCADE;";
@@ -90,8 +88,8 @@ public class RestoreBO extends AbstractBO {
     private static final Logger logger = LoggerFactory.getLogger(RestoreBO.class);
 
     private DigitalMediaDAO digitalMediaDAO;
-	private BackupBO backupBO;
-	private DigitalMediaBO digitalMediaBO;
+    private BackupBO backupBO;
+    private DigitalMediaBO digitalMediaBO;
 
     public List<RestoreDTO> list() {
         File path = backupBO.getBackupDestination();
@@ -211,7 +209,8 @@ public class RestoreBO extends AbstractBO {
 
         _validateRestoreSchemas(restoreSchemas);
 
-        RestoreContextHelper context = new RestoreContextHelper(dto, backupBO.listDatabaseSchemas());
+        RestoreContextHelper context =
+                new RestoreContextHelper(dto, backupBO.listDatabaseSchemas());
 
         String globalSchema = Constants.GLOBAL_SCHEMA;
 

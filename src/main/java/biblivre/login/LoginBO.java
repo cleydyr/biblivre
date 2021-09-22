@@ -65,11 +65,11 @@ public class LoginBO extends AbstractBO {
         return this.loginDAO.saveFromBiblivre3(dtoList);
     }
 
-	public void setLoginDAO(LoginDAO loginDAO) {
-		this.loginDAO = loginDAO;
-	}
+    public void setLoginDAO(LoginDAO loginDAO) {
+        this.loginDAO = loginDAO;
+    }
 
-	public void setPermissionBO(PermissionBO permissionBO) {
-		this.permissionBO = permissionBO;
-	}
+    public void setPermissionBO(PermissionBO permissionBO) {
+        this.permissionBO = permissionBO;
+    }
 }

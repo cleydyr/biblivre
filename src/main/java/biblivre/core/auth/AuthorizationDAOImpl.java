@@ -35,7 +35,7 @@ public class AuthorizationDAOImpl extends AbstractDAO implements AuthorizationDA
     }
 
     @Override
-	public Map<String, Boolean> getUserPermissions(LoginDTO user) {
+    public Map<String, Boolean> getUserPermissions(LoginDTO user) {
         Connection con = null;
 
         Map<String, Boolean> hash = new HashMap<>();

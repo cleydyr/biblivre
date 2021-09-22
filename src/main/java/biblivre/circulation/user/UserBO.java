@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 public class UserBO extends AbstractBO {
     private UserDAO userDAO;
-	private UserTypeBO userTypeBO;
+    private UserTypeBO userTypeBO;
 
     public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
         DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
@@ -232,11 +232,11 @@ public class UserBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(UserBO.class);
 
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 }

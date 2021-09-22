@@ -52,7 +52,7 @@ public abstract class RecordBO extends AbstractBO {
 
     protected RecordDAO recordDAO;
     protected SearchDAO searchDAO;
-	private DigitalMediaBO digitalMediaBO;
+    private DigitalMediaBO digitalMediaBO;
 
     public static final int FULL = 1 << 0;
     public static final int MARC_INFO = 1 << 1;
@@ -163,7 +163,7 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public Integer count() {
-    	SearchDTO search = new SearchDTO(getRecordType());
+        SearchDTO search = new SearchDTO(getRecordType());
 
         return this.count(search);
     }
@@ -359,15 +359,15 @@ public abstract class RecordBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(RecordBO.class);
 
-	public void setRecordDAO(RecordDAO recordDAO) {
-		this.recordDAO = recordDAO;
-	}
+    public void setRecordDAO(RecordDAO recordDAO) {
+        this.recordDAO = recordDAO;
+    }
 
-	public void setSearchDAO(SearchDAO seachDAO) {
-		this.searchDAO = seachDAO;
-	}
+    public void setSearchDAO(SearchDAO seachDAO) {
+        this.searchDAO = seachDAO;
+    }
 
-	public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
-		this.digitalMediaBO = digitalMediaBO;
-	}
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
+    }
 }

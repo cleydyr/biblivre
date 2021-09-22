@@ -121,7 +121,7 @@ public abstract class PaginableRecordBO extends RecordBO {
         return paging;
     }
 
-	public void setHoldingBO(HoldingBO holdingBO) {
-		this.holdingBO = holdingBO;
-	}
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
+    }
 }

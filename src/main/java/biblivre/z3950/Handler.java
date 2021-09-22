@@ -41,7 +41,7 @@ import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
-	private Z3950BO z3950BO;
+    private Z3950BO z3950BO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -186,11 +186,11 @@ public class Handler extends AbstractHandler {
         return collection;
     }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setZ3950BO(Z3950BO z3950bo) {
-		z3950BO = z3950bo;
-	}
+    public void setZ3950BO(Z3950BO z3950bo) {
+        z3950BO = z3950bo;
+    }
 }

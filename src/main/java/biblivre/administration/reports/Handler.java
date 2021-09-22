@@ -19,9 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
-import org.json.JSONException;
-import org.springframework.web.context.WebApplicationContext;
-
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.lending.LendingListDTO;
 import biblivre.circulation.user.UserDTO;
@@ -33,16 +30,17 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.spring.SpringUtils;
+import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
     private ReportsBO reportsBO;
 
-	public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-    	WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(request);
+    public void userSearch(ExtendedRequest request, ExtendedResponse response) {
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
         biblivre.circulation.user.Handler userHandler =
-        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
 
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -127,7 +125,7 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
-	public void setReportsBO(ReportsBO reportsBO) {
-		this.reportsBO = reportsBO;
-	}
+    public void setReportsBO(ReportsBO reportsBO) {
+        this.reportsBO = reportsBO;
+    }
 }

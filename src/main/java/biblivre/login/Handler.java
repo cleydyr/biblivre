@@ -52,8 +52,8 @@ import org.json.JSONObject;
 public class Handler extends AbstractHandler {
     private LoginBO loginBO;
     private IndexingBO indexingBO;
-	private AuthorizationBO authorizationBO;
-	private BackupBO backupBO;
+    private AuthorizationBO authorizationBO;
+    private BackupBO backupBO;
 
     public void login(ExtendedRequest request, ExtendedResponse response) {
 
@@ -254,19 +254,19 @@ public class Handler extends AbstractHandler {
                                         .toURI())));
     }
 
-	public void setLoginBO(LoginBO loginBO) {
-		this.loginBO = loginBO;
-	}
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
 
-	public void setIndexingBO(IndexingBO indexingBO) {
-		this.indexingBO = indexingBO;
-	}
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
 
-	public void setAuthorizationBO(AuthorizationBO authorizationBO) {
-		this.authorizationBO = authorizationBO;
-	}
+    public void setAuthorizationBO(AuthorizationBO authorizationBO) {
+        this.authorizationBO = authorizationBO;
+    }
 
-	public void setBackupBO(BackupBO backupBO) {
-		this.backupBO = backupBO;
-	}
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
+    }
 }

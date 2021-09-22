@@ -19,13 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.permissions;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.springframework.web.context.WebApplicationContext;
-
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -37,18 +30,22 @@ import biblivre.core.utils.TextUtils;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 import biblivre.spring.SpringUtils;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
-	private PermissionBO permissionBO;
+    private PermissionBO permissionBO;
     private LoginBO loginBO;
     private UserBO userBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-    	WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(request);
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
         biblivre.circulation.user.Handler userHandler =
-        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
 
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -229,15 +226,15 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
-	public void setPermissionBO(PermissionBO permissionBO) {
-		this.permissionBO = permissionBO;
-	}
+    public void setPermissionBO(PermissionBO permissionBO) {
+        this.permissionBO = permissionBO;
+    }
 
-	public void setLoginBO(LoginBO loginBO) {
-		this.loginBO = loginBO;
-	}
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 }

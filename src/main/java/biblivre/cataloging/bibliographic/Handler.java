@@ -25,9 +25,9 @@ import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 
 public class Handler extends PaginableCatalogingHandler {
-	public Handler() {
-		setDefaultMaterialType(MaterialType.BOOK);
-	}
+    public Handler() {
+        setDefaultMaterialType(MaterialType.BOOK);
+    }
 
     @Override
     protected RecordDTO createRecordDTO(ExtendedRequest request) {

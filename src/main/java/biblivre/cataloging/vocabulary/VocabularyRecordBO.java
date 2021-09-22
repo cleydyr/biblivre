@@ -19,11 +19,6 @@
  ******************************************************************************/
 package biblivre.cataloging.vocabulary;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.marc4j.marc.Record;
-
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
@@ -31,6 +26,9 @@ import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
+import java.util.Map;
+import java.util.Set;
+import org.marc4j.marc.Record;
 
 public class VocabularyRecordBO extends PaginableRecordBO {
     private IndexingBO indexingBO;
@@ -104,7 +102,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         return RecordType.VOCABULARY;
     }
 
-	public void setIndexingBO(IndexingBO indexingBO) {
-		this.indexingBO = indexingBO;
-	}
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
 }

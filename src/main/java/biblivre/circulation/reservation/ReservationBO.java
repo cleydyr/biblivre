@@ -47,7 +47,7 @@ public class ReservationBO extends AbstractBO {
     private ReservationDAO reservationDAO;
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
-	private UserTypeBO userTypeBO;
+    private UserTypeBO userTypeBO;
 
     public boolean deleteExpired() {
         return this.reservationDAO.deleteExpired();
@@ -242,19 +242,19 @@ public class ReservationBO extends AbstractBO {
         return this.reservationDAO.saveFromBiblivre3(dtoList);
     }
 
-	public void setReservationDAO(ReservationDAO reservationDAO) {
-		this.reservationDAO = reservationDAO;
-	}
+    public void setReservationDAO(ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 }

@@ -41,7 +41,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
     private IndexingBO indexingBO;
     private LendingBO2 lendingBO;
-	private ReservationBO reservationBO;
+    private ReservationBO reservationBO;
 
     @Override
     public void populateDetails(RecordDTO recordDTO, int mask) {
@@ -183,15 +183,15 @@ public class BiblioRecordBO extends PaginableRecordBO {
         return RecordType.BIBLIO;
     }
 
-	public void setIndexingBO(IndexingBO indexingBO) {
-		this.indexingBO = indexingBO;
-	}
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
 
-	public void setLendingBO(LendingBO2 lendingBO) {
-		this.lendingBO = lendingBO;
-	}
+    public void setLendingBO(LendingBO2 lendingBO) {
+        this.lendingBO = lendingBO;
+    }
 
-	public void setReservationBO(ReservationBO reservationBO) {
-		this.reservationBO = reservationBO;
-	}
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
+    }
 }

@@ -30,9 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
-	private UserTypeBO userTypeBO;
+    private UserTypeBO userTypeBO;
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
+    public void search(ExtendedRequest request, ExtendedResponse response) {
 
         String searchParameters = request.getString("search_parameters");
 
@@ -127,7 +127,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 }

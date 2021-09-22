@@ -43,12 +43,12 @@ public class Z3950DAOImpl extends AbstractDAO implements Z3950DAO {
     }
 
     @Override
-	public List<Z3950AddressDTO> listAll() {
+    public List<Z3950AddressDTO> listAll() {
         return this.list(null);
     }
 
     @Override
-	public DTOCollection<Z3950AddressDTO> search(String value, int limit, int offset) {
+    public DTOCollection<Z3950AddressDTO> search(String value, int limit, int offset) {
         DTOCollection<Z3950AddressDTO> list = new DTOCollection<>();
 
         if (value != null) {
@@ -114,7 +114,7 @@ public class Z3950DAOImpl extends AbstractDAO implements Z3950DAO {
     }
 
     @Override
-	public List<Z3950AddressDTO> list(List<Integer> ids) {
+    public List<Z3950AddressDTO> list(List<Integer> ids) {
         List<Z3950AddressDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -156,7 +156,7 @@ public class Z3950DAOImpl extends AbstractDAO implements Z3950DAO {
     }
 
     @Override
-	public boolean insert(Z3950AddressDTO dto) {
+    public boolean insert(Z3950AddressDTO dto) {
         Connection con = null;
 
         try {
@@ -189,7 +189,7 @@ public class Z3950DAOImpl extends AbstractDAO implements Z3950DAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -220,7 +220,7 @@ public class Z3950DAOImpl extends AbstractDAO implements Z3950DAO {
     }
 
     @Override
-	public boolean update(Z3950AddressDTO dto) {
+    public boolean update(Z3950AddressDTO dto) {
         Connection con = null;
 
         try {
@@ -246,7 +246,7 @@ public class Z3950DAOImpl extends AbstractDAO implements Z3950DAO {
     }
 
     @Override
-	public boolean delete(Z3950AddressDTO dto) {
+    public boolean delete(Z3950AddressDTO dto) {
         Connection con = null;
 
         try {

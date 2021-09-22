@@ -38,16 +38,15 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.spring.SpringUtils;
-
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
-	private UserBO userBO;
+    private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
-	private ReservationBO reservationBO;
+    private ReservationBO reservationBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -113,11 +112,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-    	WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(request);
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
         biblivre.circulation.user.Handler userHandler =
-        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
 
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -265,11 +263,10 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(request);
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
         biblivre.circulation.user.Handler userHandler =
-        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
 
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -313,15 +310,15 @@ public class Handler extends AbstractHandler {
         this.delete(request, response);
     }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setReservationBO(ReservationBO reservationBO) {
-		this.reservationBO = reservationBO;
-	}
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
+    }
 }

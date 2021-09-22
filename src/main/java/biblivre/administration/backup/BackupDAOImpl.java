@@ -40,7 +40,7 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     }
 
     @Override
-	public boolean save(BackupDTO dto) {
+    public boolean save(BackupDTO dto) {
         if (dto == null || dto.getType() == null) {
             return false;
         }
@@ -113,7 +113,7 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     }
 
     @Override
-	public BackupDTO get(Integer id) {
+    public BackupDTO get(Integer id) {
         if (id == null) {
             return null;
         }
@@ -145,7 +145,7 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     }
 
     @Override
-	public Set<String> listDatabaseSchemas() {
+    public Set<String> listDatabaseSchemas() {
         Set<String> set = new HashSet<>();
 
         Connection con = null;
@@ -170,12 +170,12 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     }
 
     @Override
-	public List<BackupDTO> list() {
+    public List<BackupDTO> list() {
         return this.list(0);
     }
 
     @Override
-	public List<BackupDTO> list(int limit) {
+    public List<BackupDTO> list(int limit) {
         ArrayList<BackupDTO> list = new ArrayList<>();
 
         Connection con = null;

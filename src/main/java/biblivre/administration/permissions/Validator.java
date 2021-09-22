@@ -83,11 +83,11 @@ public class Validator extends AbstractValidator {
         }
     }
 
-	public void setLoginBO(LoginBO loginBO) {
-		this.loginBO = loginBO;
-	}
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 }

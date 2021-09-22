@@ -93,7 +93,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public int countCatalogingRecords(RecordType recordType) {
+    public int countCatalogingRecords(RecordType recordType) {
         String tableName = "cataloging_" + recordType.toString();
         int total = 0;
         Connection con = null;
@@ -118,7 +118,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<RecordDTO> listCatalogingRecords(RecordType recordType, int limit, int offset) {
+    public List<RecordDTO> listCatalogingRecords(RecordType recordType, int limit, int offset) {
         List<RecordDTO> list = new ArrayList<>();
 
         String tableName = "cataloging_" + recordType.toString();
@@ -191,7 +191,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<HoldingDTO> listCatalogingHoldings(int limit, int offset) {
+    public List<HoldingDTO> listCatalogingHoldings(int limit, int offset) {
         List<HoldingDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -247,7 +247,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<MemoryFile> listDigitalMedia(int limit, int offset) {
+    public List<MemoryFile> listDigitalMedia(int limit, int offset) {
         List<MemoryFile> list = new ArrayList<>();
 
         Connection con = null;
@@ -287,7 +287,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<AccessCardDTO> listAccessCards(int limit, int offset) {
+    public List<AccessCardDTO> listAccessCards(int limit, int offset) {
         List<AccessCardDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -326,7 +326,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<LoginDTO> listLogins(int limit, int offset) {
+    public List<LoginDTO> listLogins(int limit, int offset) {
         List<LoginDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -366,7 +366,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<Z3950AddressDTO> listZ3950Servers(int limit, int offset) {
+    public List<Z3950AddressDTO> listZ3950Servers(int limit, int offset) {
         List<Z3950AddressDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -407,7 +407,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<AccessControlDTO> listAccessControl(int limit, int offset) {
+    public List<AccessControlDTO> listAccessControl(int limit, int offset) {
         List<AccessControlDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -449,7 +449,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<AccessControlDTO> listAccessControlHistory(int limit, int offset) {
+    public List<AccessControlDTO> listAccessControlHistory(int limit, int offset) {
         List<AccessControlDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -491,7 +491,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<LendingDTO> listLendings(int limit, int offset) {
+    public List<LendingDTO> listLendings(int limit, int offset) {
         List<LendingDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -537,7 +537,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<LendingFineDTO> listLendingFines(int limit, int offset) {
+    public List<LendingFineDTO> listLendingFines(int limit, int offset) {
         List<LendingFineDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -576,7 +576,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<SupplierDTO> listAquisitionSupplier(int limit, int offset) {
+    public List<SupplierDTO> listAquisitionSupplier(int limit, int offset) {
         List<SupplierDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -637,7 +637,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<RequestDTO> listAquisitionRequisition(int limit, int offset) {
+    public List<RequestDTO> listAquisitionRequisition(int limit, int offset) {
         List<RequestDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -686,7 +686,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<QuotationDTO> listAquisitionQuotation(int limit, int offset) {
+    public List<QuotationDTO> listAquisitionQuotation(int limit, int offset) {
         List<QuotationDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -728,7 +728,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<RequestQuotationDTO> listAquisitionItemQuotation(int limit, int offset) {
+    public List<RequestQuotationDTO> listAquisitionItemQuotation(int limit, int offset) {
         List<RequestQuotationDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -768,7 +768,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<OrderDTO> listAquisitionOrder(int limit, int offset) {
+    public List<OrderDTO> listAquisitionOrder(int limit, int offset) {
         List<OrderDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -815,7 +815,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<ReservationDTO> listReservations(int limit, int offset) {
+    public List<ReservationDTO> listReservations(int limit, int offset) {
         List<ReservationDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -855,7 +855,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<UserDTO> listUsers(int limit, int offset) {
+    public List<UserDTO> listUsers(int limit, int offset) {
         List<UserDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -911,7 +911,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
 
     @Override
-	public List<UserTypeDTO> listUsersTypes(int limit, int offset) {
+    public List<UserTypeDTO> listUsersTypes(int limit, int offset) {
         List<UserTypeDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -1058,8 +1058,8 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
         return userFieldsMap.get(biblivre4UserFieldKey);
     }
 
-	@Override
-	public void setUserSchema(String userSchema) {
-		this.userSchema = userSchema;
-	}
+    @Override
+    public void setUserSchema(String userSchema) {
+        this.userSchema = userSchema;
+    }
 }

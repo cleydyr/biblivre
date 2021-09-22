@@ -127,11 +127,11 @@ public class Handler extends AbstractHandler {
         // TODO RENAME RECORD_FILE_TXT => printText
     }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setHoldingBO(HoldingBO holdingBO) {
-		this.holdingBO = holdingBO;
-	}
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
+    }
 }

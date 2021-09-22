@@ -5,14 +5,13 @@ import java.util.Set;
 
 public interface BackupDAO {
 
-	boolean save(BackupDTO dto);
+    boolean save(BackupDTO dto);
 
-	BackupDTO get(Integer id);
+    BackupDTO get(Integer id);
 
-	Set<String> listDatabaseSchemas();
+    Set<String> listDatabaseSchemas();
 
-	List<BackupDTO> list();
+    List<BackupDTO> list();
 
-	List<BackupDTO> list(int limit);
-
+    List<BackupDTO> list(int limit);
 }

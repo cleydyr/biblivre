@@ -54,8 +54,8 @@ import org.marc4j.marc.Record;
 public class Handler extends AbstractHandler {
     private Map<String, RecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
-	private ImportBO importBO;
-	private Z3950BO z3950BO;
+    private ImportBO importBO;
+    private Z3950BO z3950BO;
 
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
 
@@ -294,15 +294,15 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setRecordBOs(Map<String, RecordBO> recordBOs) {
-		this.recordBOs = recordBOs;
-	}
+    public void setRecordBOs(Map<String, RecordBO> recordBOs) {
+        this.recordBOs = recordBOs;
+    }
 
-	public void setIndexingBO(IndexingBO indexingBO) {
-		this.indexingBO = indexingBO;
-	}
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
 
-	public void setImportBO(ImportBO importBO) {
-		this.importBO = importBO;
-	}
+    public void setImportBO(ImportBO importBO) {
+        this.importBO = importBO;
+    }
 }

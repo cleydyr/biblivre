@@ -299,12 +299,12 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         this.json.put("data", list.toJSONObject());
     }
 
-	public void setPaginableRecordBO(PaginableRecordBO paginableRecordBO) {
-		this.paginableRecordBO = paginableRecordBO;
-		super.setRecordBO(paginableRecordBO);
-	}
+    public void setPaginableRecordBO(PaginableRecordBO paginableRecordBO) {
+        this.paginableRecordBO = paginableRecordBO;
+        super.setRecordBO(paginableRecordBO);
+    }
 
-	public void setDefaultMaterialType(MaterialType defaultMaterialType) {
-		this.defaultMaterialType = defaultMaterialType;
-	}
+    public void setDefaultMaterialType(MaterialType defaultMaterialType) {
+        this.defaultMaterialType = defaultMaterialType;
+    }
 }

@@ -1,35 +1,33 @@
 package biblivre.circulation.reservation;
 
+import biblivre.cataloging.RecordDTO;
+import biblivre.circulation.user.UserDTO;
+import biblivre.core.AbstractDTO;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import biblivre.cataloging.RecordDTO;
-import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDTO;
-
 public interface ReservationDAO {
 
-	ReservationDTO get(Integer id);
+    ReservationDTO get(Integer id);
 
-	List<ReservationDTO> list();
+    List<ReservationDTO> list();
 
-	List<ReservationDTO> list(UserDTO user, RecordDTO record);
+    List<ReservationDTO> list(UserDTO user, RecordDTO record);
 
-	int count();
+    int count();
 
-	int count(UserDTO user, RecordDTO record);
+    int count(UserDTO user, RecordDTO record);
 
-	boolean deleteExpired();
+    boolean deleteExpired();
 
-	boolean delete(Integer id);
+    boolean delete(Integer id);
 
-	boolean delete(Integer userId, Integer recordId);
+    boolean delete(Integer userId, Integer recordId);
 
-	int insert(ReservationDTO dto);
+    int insert(ReservationDTO dto);
 
-	boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
+    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
-	Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds);
-
+    Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds);
 }

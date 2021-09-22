@@ -51,7 +51,7 @@ public class AuthorizationBO extends AbstractBO {
         return new AuthorizationPoints(schema, true, user.isEmployee(), permissions);
     }
 
-	public void setAuthorizationDAO(AuthorizationDAO authorizationDAO) {
-		this.authorizationDAO = authorizationDAO;
-	}
+    public void setAuthorizationDAO(AuthorizationDAO authorizationDAO) {
+        this.authorizationDAO = authorizationDAO;
+    }
 }

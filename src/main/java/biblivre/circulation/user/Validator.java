@@ -38,7 +38,7 @@ public class Validator extends AbstractValidator {
     private AccessControlBO accessControlBO;
     private UserBO userBO;
     private LendingBO lendingBO;
-	private UserTypeBO userTypeBO;
+    private UserTypeBO userTypeBO;
 
     public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -166,19 +166,19 @@ public class Validator extends AbstractValidator {
         }
     }
 
-	public void setAccessControlBO(AccessControlBO accessControlBO) {
-		this.accessControlBO = accessControlBO;
-	}
+    public void setAccessControlBO(AccessControlBO accessControlBO) {
+        this.accessControlBO = accessControlBO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setLendingBO(LendingBO lendingBO) {
-		this.lendingBO = lendingBO;
-	}
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 }

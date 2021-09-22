@@ -510,15 +510,15 @@ public class HoldingBO extends RecordBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(HoldingBO.class);
 
-	public void setHoldingDAO(HoldingDAO holdingDAO) {
-		this.holdingDAO = holdingDAO;
-	}
+    public void setHoldingDAO(HoldingDAO holdingDAO) {
+        this.holdingDAO = holdingDAO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setLoginBO(LoginBO loginBO) {
-		this.loginBO = loginBO;
-	}
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
 }

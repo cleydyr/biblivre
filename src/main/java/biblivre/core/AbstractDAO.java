@@ -19,6 +19,9 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.core.exceptions.DAOException;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.DatabaseUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,16 +33,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.sql.DataSource;
-
 import org.postgresql.PGConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import biblivre.core.exceptions.DAOException;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.DatabaseUtils;
 
 public abstract class AbstractDAO {
     private static Map<String, DataSource> dataSourceMap = new HashMap<>();

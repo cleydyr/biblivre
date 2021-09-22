@@ -42,7 +42,7 @@ public class PermissionBO {
         return this.permissionDAO.getByLoginId(loginid);
     }
 
-	public void setPermissionDAO(PermissionDAO permissionDAO) {
-		this.permissionDAO = permissionDAO;
-	}
+    public void setPermissionDAO(PermissionDAO permissionDAO) {
+        this.permissionDAO = permissionDAO;
+    }
 }

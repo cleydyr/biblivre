@@ -28,7 +28,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
     }
 
     @Override
-	public final Integer save(MemoryFile file) {
+    public final Integer save(MemoryFile file) {
         try (InputStream is = file.getNewInputStream()) {
             Integer serial = file.getId();
             if (serial == null) {
@@ -65,7 +65,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
     }
 
     @Override
-	public long createOID() {
+    public long createOID() {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -88,7 +88,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
     }
 
     @Override
-	public final long importFile(File file) {
+    public final long importFile(File file) {
         Connection con = null;
 
         try (InputStream is = new FileInputStream(file)) {
@@ -106,7 +106,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
     }
 
     @Override
-	public final BiblivreFile load(int id, String name) {
+    public final BiblivreFile load(int id, String name) {
         BiblivreFile file = null;
 
         try (Connection con = this.getConnection()) {
@@ -142,7 +142,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
     }
 
     @Override
-	public boolean delete(int id) {
+    public boolean delete(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -189,7 +189,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
     protected abstract void deleteBlob(long blob);
 
     @Override
-	public List<DigitalMediaDTO> list() {
+    public List<DigitalMediaDTO> list() {
         Connection con = null;
         List<DigitalMediaDTO> list = new ArrayList<>();
         try {

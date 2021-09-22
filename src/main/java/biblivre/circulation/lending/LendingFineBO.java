@@ -34,11 +34,11 @@ import java.util.Date;
 import java.util.List;
 
 public class LendingFineBO extends AbstractBO {
-	private LendingFineDAO lendingFineDAO;
-	private HoldingBO holdingBO;
-	private BiblioRecordBO biblioRecordBO;
-	private LendingBO lendingBO;
-	private UserTypeBO userTypeBO;
+    private LendingFineDAO lendingFineDAO;
+    private HoldingBO holdingBO;
+    private BiblioRecordBO biblioRecordBO;
+    private LendingBO lendingBO;
+    private UserTypeBO userTypeBO;
 
     public LendingFineDTO getById(Integer fineId) {
         return this.lendingFineDAO.get(fineId);
@@ -114,23 +114,23 @@ public class LendingFineBO extends AbstractBO {
         return this.lendingFineDAO.saveFromBiblivre3(dtoList);
     }
 
-	public void setLendingFineDAO(LendingFineDAO lendingFineDAO) {
-		this.lendingFineDAO = lendingFineDAO;
-	}
+    public void setLendingFineDAO(LendingFineDAO lendingFineDAO) {
+        this.lendingFineDAO = lendingFineDAO;
+    }
 
-	public void setHoldingBO(HoldingBO holdingBO) {
-		this.holdingBO = holdingBO;
-	}
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
+    }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setLendingBO(LendingBO lendingBO) {
-		this.lendingBO = lendingBO;
-	}
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 }

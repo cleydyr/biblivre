@@ -235,15 +235,15 @@ public class ImportBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(ImportBO.class);
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
-		this.vocabularyRecordBO = vocabularyRecordBO;
-	}
+    public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
+        this.vocabularyRecordBO = vocabularyRecordBO;
+    }
 
-	public void setAuthorityRecordBO(AuthorityRecordBO authorityRecordBO) {
-		this.authorityRecordBO = authorityRecordBO;
-	}
+    public void setAuthorityRecordBO(AuthorityRecordBO authorityRecordBO) {
+        this.authorityRecordBO = authorityRecordBO;
+    }
 }

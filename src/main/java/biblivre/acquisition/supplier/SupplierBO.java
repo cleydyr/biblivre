@@ -55,7 +55,7 @@ public class SupplierBO extends AbstractBO {
         return this.supplierDAO.saveFromBiblivre3(dtoList);
     }
 
-	public void setSupplierDAO(SupplierDAO supplierDAO) {
-		this.supplierDAO = supplierDAO;
-	}
+    public void setSupplierDAO(SupplierDAO supplierDAO) {
+        this.supplierDAO = supplierDAO;
+    }
 }

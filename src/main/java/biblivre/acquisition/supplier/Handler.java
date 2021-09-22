@@ -155,7 +155,7 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
-	public void setSupplierBO(SupplierBO supplierBO) {
-		this.supplierBO = supplierBO;
-	}
+    public void setSupplierBO(SupplierBO supplierBO) {
+        this.supplierBO = supplierBO;
+    }
 }

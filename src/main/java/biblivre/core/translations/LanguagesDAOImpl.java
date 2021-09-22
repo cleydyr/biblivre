@@ -37,7 +37,7 @@ public class LanguagesDAOImpl extends AbstractDAO implements LanguagesDAO {
     }
 
     @Override
-	public Set<LanguageDTO> list() {
+    public Set<LanguageDTO> list() {
         Set<LanguageDTO> set = new HashSet<>();
 
         Connection con = null;

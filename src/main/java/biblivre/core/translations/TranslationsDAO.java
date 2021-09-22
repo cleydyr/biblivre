@@ -5,13 +5,14 @@ import java.util.List;
 
 public interface TranslationsDAO {
 
-	List<TranslationDTO> list();
+    List<TranslationDTO> list();
 
-	List<TranslationDTO> list(String language);
+    List<TranslationDTO> list(String language);
 
-	boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser);
+    boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser);
 
-	boolean save(HashMap<String, HashMap<String, String>> translations,
-			HashMap<String, HashMap<String, String>> removeTranslations, int loggedUser);
-
+    boolean save(
+            HashMap<String, HashMap<String, String>> translations,
+            HashMap<String, HashMap<String, String>> removeTranslations,
+            int loggedUser);
 }

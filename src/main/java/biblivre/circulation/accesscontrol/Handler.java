@@ -29,22 +29,20 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.spring.SpringUtils;
-
 import java.util.Date;
 import org.json.JSONException;
 import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
-	private AccessCardBO accessCardBO;
+    private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
     private UserBO userBO;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-    	WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(request);
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
         biblivre.circulation.user.Handler userHandler =
-        		applicationContext.getBean(biblivre.circulation.user.Handler.class);
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
 
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
@@ -85,11 +83,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-    	WebApplicationContext applicationContext =
-                SpringUtils.getWebApplicationContext(request);
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
-    	biblivre.administration.accesscards.Handler cardHandler =
-    			applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
+        biblivre.administration.accesscards.Handler cardHandler =
+                applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
 
         DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
 
@@ -182,15 +179,15 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setAccessCardBO(AccessCardBO accessCardBO) {
-		this.accessCardBO = accessCardBO;
-	}
+    public void setAccessCardBO(AccessCardBO accessCardBO) {
+        this.accessCardBO = accessCardBO;
+    }
 
-	public void setAccessControlBO(AccessControlBO accessControlBO) {
-		this.accessControlBO = accessControlBO;
-	}
+    public void setAccessControlBO(AccessControlBO accessControlBO) {
+        this.accessControlBO = accessControlBO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 }

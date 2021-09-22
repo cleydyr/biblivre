@@ -4,14 +4,13 @@ import java.util.Set;
 
 public interface SchemasDAO {
 
-	Set<SchemaDTO> list();
+    Set<SchemaDTO> list();
 
-	boolean insert(SchemaDTO dto);
+    boolean insert(SchemaDTO dto);
 
-	boolean delete(SchemaDTO dto);
+    boolean delete(SchemaDTO dto);
 
-	boolean save(SchemaDTO dto);
+    boolean save(SchemaDTO dto);
 
-	boolean exists(String schema);
-
+    boolean exists(String schema);
 }

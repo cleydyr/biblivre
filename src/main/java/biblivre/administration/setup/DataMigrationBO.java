@@ -75,19 +75,20 @@ public class DataMigrationBO extends AbstractBO {
     private VocabularyRecordBO vocabularyRecordBO;
     private HoldingBO holdingsBO;
     private LendingBO lendingBO;
-	private UserTypeBO userTypeBO;
-	private LendingFineBO lendingFineBO;
-	private ReservationBO reservationBO;
-	private Z3950BO z3950BO;
-	private DigitalMediaBO digitalMediaBO;
+    private UserTypeBO userTypeBO;
+    private LendingFineBO lendingFineBO;
+    private ReservationBO reservationBO;
+    private Z3950BO z3950BO;
+    private DigitalMediaBO digitalMediaBO;
 
     public boolean isBiblivre3Available() {
         return this.dataMigrationDAO.testDatabaseConnection();
     }
 
-    public boolean migrate(String schema, String datasource, List<DataMigrationPhase> selectedPhases) {
-    	dataMigrationDAO.setDataSourceName(datasource);
-    	dataMigrationDAO.setUserSchema(schema);
+    public boolean migrate(
+            String schema, String datasource, List<DataMigrationPhase> selectedPhases) {
+        dataMigrationDAO.setDataSourceName(datasource);
+        dataMigrationDAO.setUserSchema(schema);
 
         synchronized (this) {
             this.migratingDatabase = true;
@@ -182,16 +183,19 @@ public class DataMigrationBO extends AbstractBO {
     private List<? extends AbstractDTO> listDTOs(DataMigrationPhase phase, int limit, int offset) {
         switch (phase) {
             case CATALOGING_BIBLIOGRAPHIC:
-                return this.dataMigrationDAO.listCatalogingRecords(RecordType.BIBLIO, limit, offset);
+                return this.dataMigrationDAO.listCatalogingRecords(
+                        RecordType.BIBLIO, limit, offset);
 
             case CATALOGING_HOLDINGS:
                 return this.dataMigrationDAO.listCatalogingHoldings(limit, offset);
 
             case CATALOGING_AUTHORITIES:
-                return this.dataMigrationDAO.listCatalogingRecords(RecordType.AUTHORITIES, limit, offset);
+                return this.dataMigrationDAO.listCatalogingRecords(
+                        RecordType.AUTHORITIES, limit, offset);
 
             case CATALOGING_VOCABULARY:
-                return this.dataMigrationDAO.listCatalogingRecords(RecordType.VOCABULARY, limit, offset);
+                return this.dataMigrationDAO.listCatalogingRecords(
+                        RecordType.VOCABULARY, limit, offset);
 
             case ACCESS_CARDS:
                 return this.dataMigrationDAO.listAccessCards(limit, offset);
@@ -251,7 +255,8 @@ public class DataMigrationBO extends AbstractBO {
 
             case LENDING_FINE:
                 {
-                    List<LendingFineDTO> list = this.dataMigrationDAO.listLendingFines(limit, offset);
+                    List<LendingFineDTO> list =
+                            this.dataMigrationDAO.listLendingFines(limit, offset);
 
                     for (LendingFineDTO dto : list) {
                         dto.setLendingId(this.lendingHistoryMap.get(dto.getLendingId()));
@@ -372,75 +377,75 @@ public class DataMigrationBO extends AbstractBO {
         this.currentCount = currentCount;
     }
 
-	public void setDao(DataMigrationDAOImpl dataMigrationDAO) {
-		this.dataMigrationDAO = dataMigrationDAO;
-	}
+    public void setDao(DataMigrationDAOImpl dataMigrationDAO) {
+        this.dataMigrationDAO = dataMigrationDAO;
+    }
 
-	public void setSetupDao(SetupDAO setupDao) {
-		this.setupDAO = setupDao;
-	}
+    public void setSetupDao(SetupDAO setupDao) {
+        this.setupDAO = setupDao;
+    }
 
-	public void setAccessControlBO(AccessControlBO accessControlBO) {
-		this.accessControlBO = accessControlBO;
-	}
+    public void setAccessControlBO(AccessControlBO accessControlBO) {
+        this.accessControlBO = accessControlBO;
+    }
 
-	public void setAccessCardBO(AccessCardBO accessCardBO) {
-		this.accessCardBO = accessCardBO;
-	}
+    public void setAccessCardBO(AccessCardBO accessCardBO) {
+        this.accessCardBO = accessCardBO;
+    }
 
-	public void setLoginBO(LoginBO loginBO) {
-		this.loginBO = loginBO;
-	}
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setQuotationBO(QuotationBO quotationBO) {
-		this.quotationBO = quotationBO;
-	}
+    public void setQuotationBO(QuotationBO quotationBO) {
+        this.quotationBO = quotationBO;
+    }
 
-	public void setOrderBO(OrderBO orderBO) {
-		this.orderBO = orderBO;
-	}
+    public void setOrderBO(OrderBO orderBO) {
+        this.orderBO = orderBO;
+    }
 
-	public void setSupplierBO(SupplierBO supplierBO) {
-		this.supplierBO = supplierBO;
-	}
+    public void setSupplierBO(SupplierBO supplierBO) {
+        this.supplierBO = supplierBO;
+    }
 
-	public void setRequestBO(RequestBO requestBO) {
-		this.requestBO = requestBO;
-	}
+    public void setRequestBO(RequestBO requestBO) {
+        this.requestBO = requestBO;
+    }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setAuthoritiyRecordBO(AuthorityRecordBO authoritiyRecordBO) {
-		this.authoritiyRecordBO = authoritiyRecordBO;
-	}
+    public void setAuthoritiyRecordBO(AuthorityRecordBO authoritiyRecordBO) {
+        this.authoritiyRecordBO = authoritiyRecordBO;
+    }
 
-	public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
-		this.vocabularyRecordBO = vocabularyRecordBO;
-	}
+    public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
+        this.vocabularyRecordBO = vocabularyRecordBO;
+    }
 
-	public void setHoldingsBO(HoldingBO holdingsBO) {
-		this.holdingsBO = holdingsBO;
-	}
+    public void setHoldingsBO(HoldingBO holdingsBO) {
+        this.holdingsBO = holdingsBO;
+    }
 
-	public void setLendingBO(LendingBO lendingBO) {
-		this.lendingBO = lendingBO;
-	}
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 
-	public void setLendingFineBO(LendingFineBO lendingFineBO) {
-		this.lendingFineBO = lendingFineBO;
-	}
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
 
-	public void setReservationBO(ReservationBO reservationBO) {
-		this.reservationBO = reservationBO;
-	}
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
+    }
 }

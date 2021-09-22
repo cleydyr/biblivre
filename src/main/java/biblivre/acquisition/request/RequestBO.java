@@ -55,7 +55,7 @@ public class RequestBO extends AbstractBO {
         return this.requestDAO.saveFromBiblivre3(dtoList);
     }
 
-	public void setRequestDAO(RequestDAO requestDAO) {
-		this.requestDAO = requestDAO;
-	}
+    public void setRequestDAO(RequestDAO requestDAO) {
+        this.requestDAO = requestDAO;
+    }
 }

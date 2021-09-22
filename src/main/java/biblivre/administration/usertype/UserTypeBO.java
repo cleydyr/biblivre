@@ -78,13 +78,13 @@ public class UserTypeBO extends AbstractBO {
         return this.userTypeDAO.saveFromBiblivre3(dtoList);
     }
 
-	public void setUserTypeDAO(UserTypeDAO userTypeDAO) {
-		this.userTypeDAO = userTypeDAO;
-	}
+    public void setUserTypeDAO(UserTypeDAO userTypeDAO) {
+        this.userTypeDAO = userTypeDAO;
+    }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
     //	public boolean updateUserType(UserTypeDTO userTypeDTO) {
     //		return dao.update(userTypeDTO);

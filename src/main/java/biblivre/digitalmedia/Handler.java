@@ -36,7 +36,7 @@ public class Handler extends AbstractHandler {
 
     private DigitalMediaBO digitalMediaBO;
 
-	public void download(ExtendedRequest request, ExtendedResponse response) {
+    public void download(ExtendedRequest request, ExtendedResponse response) {
 
         String id = request.getString("id").replaceAll("_", "\\\\");
 

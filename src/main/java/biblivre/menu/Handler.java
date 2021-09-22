@@ -39,7 +39,6 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -51,9 +50,9 @@ public class Handler extends AbstractHandler {
     private SupplierBO supplierBO;
     private RequestBO requestBO;
     private BiblioRecordBO biblioRecordBO;
-	private Z3950BO z3950BO;
-	private BackupBO backupBO;
-	private UserTypeBO userTypeBO;
+    private Z3950BO z3950BO;
+    private BackupBO backupBO;
+    private UserTypeBO userTypeBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {
         try {
@@ -154,7 +153,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
-    	request.setAttribute("userTypes", userTypeBO.list());
+        request.setAttribute("userTypes", userTypeBO.list());
         this.jspURL = "/jsp/circulation/user.jsp";
         return;
     }
@@ -241,13 +240,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
-    	request.setAttribute("backupPath", backupBO.getBackupPath());
+        request.setAttribute("backupPath", backupBO.getBackupPath());
 
-    	File pgDump = DatabaseUtils.getPgDump(SchemaThreadLocal.get());
+        File pgDump = DatabaseUtils.getPgDump(SchemaThreadLocal.get());
 
-		String dumpAbsolutePath = (pgDump == null) ? null : pgDump.getAbsolutePath();
+        String dumpAbsolutePath = (pgDump == null) ? null : pgDump.getAbsolutePath();
 
-    	request.setAttribute("dumpAbsolutePath", dumpAbsolutePath);
+        request.setAttribute("dumpAbsolutePath", dumpAbsolutePath);
 
         this.jspURL = "/jsp/administration/configurations.jsp";
         return;
@@ -335,27 +334,27 @@ public class Handler extends AbstractHandler {
         return;
     }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setSupplierBO(SupplierBO supplierBO) {
-		this.supplierBO = supplierBO;
-	}
+    public void setSupplierBO(SupplierBO supplierBO) {
+        this.supplierBO = supplierBO;
+    }
 
-	public void setRequestBO(RequestBO requestBO) {
-		this.requestBO = requestBO;
-	}
+    public void setRequestBO(RequestBO requestBO) {
+        this.requestBO = requestBO;
+    }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 
-	public void setZ3950BO(Z3950BO z3950bo) {
-		z3950BO = z3950bo;
-	}
+    public void setZ3950BO(Z3950BO z3950bo) {
+        z3950BO = z3950bo;
+    }
 
-	public void setBackupBO(BackupBO backupBO) {
-		this.backupBO = backupBO;
-	}
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
+    }
 }

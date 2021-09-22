@@ -46,11 +46,11 @@ import java.util.Date;
 import java.util.List;
 
 public class UserReport extends BaseBiblivreReport {
-	public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
+    public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
     private UserBO userBO;
     private LendingBO lendingBO;
-	private LendingFineBO lendingFineBO;
-	private UserTypeBO userTypeBO;
+    private LendingFineBO lendingFineBO;
+    private UserTypeBO userTypeBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -321,19 +321,19 @@ public class UserReport extends BaseBiblivreReport {
         return table;
     }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setLendingBO(LendingBO lendingBO) {
-		this.lendingBO = lendingBO;
-	}
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
 
-	public void setLendingFineBO(LendingFineBO lendingFineBO) {
-		this.lendingFineBO = lendingFineBO;
-	}
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
 
-	public void setUserTypeBO(UserTypeBO userTypeBO) {
-		this.userTypeBO = userTypeBO;
-	}
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
 }

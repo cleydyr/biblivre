@@ -136,15 +136,15 @@ public class ReportsBO extends AbstractBO {
         }
     }
 
-	public void setReportsDAO(ReportsDAO reportsDAO) {
-		this.reportsDAO = reportsDAO;
-	}
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
+    }
 
-	public void setRecordDAO(RecordDAO recordDAO) {
-		this.recordDAO = recordDAO;
-	}
+    public void setRecordDAO(RecordDAO recordDAO) {
+        this.recordDAO = recordDAO;
+    }
 
-	public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-		this.biblioRecordBO = biblioRecordBO;
-	}
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
 }

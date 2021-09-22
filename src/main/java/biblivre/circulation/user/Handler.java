@@ -43,11 +43,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
-	private UserBO userBO;
+    private UserBO userBO;
     private LendingBO lendingBO;
-	private LendingFineBO lendingFineBO;
-	private ReservationBO reservationBO;
-	private DigitalMediaBO digitalMediaBO;
+    private LendingFineBO lendingFineBO;
+    private ReservationBO reservationBO;
+    private DigitalMediaBO digitalMediaBO;
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -277,23 +277,23 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setUserBO(UserBO userBO) {
-		this.userBO = userBO;
-	}
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
 
-	public void setLendingBO(LendingBO lendingBO) {
-		this.lendingBO = lendingBO;
-	}
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
 
-	public void setLendingFineBO(LendingFineBO lendingFineBO) {
-		this.lendingFineBO = lendingFineBO;
-	}
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
 
-	public void setReservationBO(ReservationBO reservationBO) {
-		this.reservationBO = reservationBO;
-	}
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
+    }
 
-	public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
-		this.digitalMediaBO = digitalMediaBO;
-	}
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
+    }
 }

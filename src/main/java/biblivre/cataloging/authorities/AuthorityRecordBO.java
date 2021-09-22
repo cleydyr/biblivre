@@ -88,7 +88,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         return RecordType.AUTHORITIES;
     }
 
-	public void setIndexingBO(IndexingBO indexingBO) {
-		this.indexingBO = indexingBO;
-	}
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
 }

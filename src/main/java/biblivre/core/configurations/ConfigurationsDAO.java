@@ -4,8 +4,7 @@ import java.util.List;
 
 public interface ConfigurationsDAO {
 
-	List<ConfigurationsDTO> list();
+    List<ConfigurationsDTO> list();
 
-	boolean save(List<ConfigurationsDTO> configs, int loggedUser);
-
+    boolean save(List<ConfigurationsDTO> configs, int loggedUser);
 }

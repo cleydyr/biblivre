@@ -129,7 +129,7 @@ public class AccessCardBO {
         return this.accessCardDAO.saveFromBiblivre3(dtoList);
     }
 
-	public void setAccessCardDAO(AccessCardDAO accessCardDAO) {
-		this.accessCardDAO = accessCardDAO;
-	}
+    public void setAccessCardDAO(AccessCardDAO accessCardDAO) {
+        this.accessCardDAO = accessCardDAO;
+    }
 }

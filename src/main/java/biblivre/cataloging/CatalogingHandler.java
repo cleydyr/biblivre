@@ -140,11 +140,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
         }
     }
 
-	public void setRecordBO(RecordBO recordBO) {
-		this.recordBO = recordBO;
-	}
+    public void setRecordBO(RecordBO recordBO) {
+        this.recordBO = recordBO;
+    }
 
-	public void setDefaultMaterialType(MaterialType defaultMaterialType) {
-		this.defaultMaterialType = defaultMaterialType;
-	}
+    public void setDefaultMaterialType(MaterialType defaultMaterialType) {
+        this.defaultMaterialType = defaultMaterialType;
+    }
 }

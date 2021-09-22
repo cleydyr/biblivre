@@ -42,7 +42,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     }
 
     @Override
-	public UserTypeDTO get(int id) {
+    public UserTypeDTO get(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -67,7 +67,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     }
 
     @Override
-	public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
+    public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {
         DTOCollection<UserTypeDTO> list = new DTOCollection<>();
 
         if (value != null) {
@@ -132,7 +132,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     }
 
     @Override
-	public List<UserTypeDTO> list() {
+    public List<UserTypeDTO> list() {
         List<UserTypeDTO> list = new ArrayList<>();
 
         Connection con = null;
@@ -158,7 +158,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     }
 
     @Override
-	public boolean save(UserTypeDTO dto) {
+    public boolean save(UserTypeDTO dto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -214,7 +214,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -251,7 +251,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     }
 
     @Override
-	public boolean delete(int id) {
+    public boolean delete(int id) {
         Connection con = null;
         try {
             con = this.getConnection();

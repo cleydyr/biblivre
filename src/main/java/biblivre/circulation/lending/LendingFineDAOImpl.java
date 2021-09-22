@@ -39,7 +39,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
-	public boolean insert(LendingFineDTO fine) {
+    public boolean insert(LendingFineDTO fine) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -70,7 +70,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
-	public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -108,7 +108,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
-	public LendingFineDTO get(Integer lendingFineId) {
+    public LendingFineDTO get(Integer lendingFineId) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -132,7 +132,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
-	public LendingFineDTO getByLendingId(Integer lendingId) {
+    public LendingFineDTO getByLendingId(Integer lendingId) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -156,7 +156,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
-	public List<LendingFineDTO> list(UserDTO user, boolean pendingOnly) {
+    public List<LendingFineDTO> list(UserDTO user, boolean pendingOnly) {
         List<LendingFineDTO> list = new ArrayList<>();
         Connection con = null;
         try {
@@ -186,7 +186,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
-	public boolean update(LendingFineDTO fine) {
+    public boolean update(LendingFineDTO fine) {
         Connection con = null;
         try {
             con = this.getConnection();

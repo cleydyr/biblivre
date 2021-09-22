@@ -37,7 +37,7 @@ import org.json.JSONObject;
 public class Handler extends PaginableCatalogingHandler {
     private ReportsBO reportsBO;
 
-	public Handler(AuthorityRecordBO authorityRecordBO) {
+    public Handler(AuthorityRecordBO authorityRecordBO) {
         setDefaultMaterialType(MaterialType.AUTHORITIES);
     }
 
@@ -96,9 +96,9 @@ public class Handler extends PaginableCatalogingHandler {
         }
     }
 
-	public void setReportsBO(ReportsBO reportsBO) {
-		this.reportsBO = reportsBO;
-	}
+    public void setReportsBO(ReportsBO reportsBO) {
+        this.reportsBO = reportsBO;
+    }
 
     //	@Override
     //	public void paginate(ExtendedRequest request, ExtendedResponse response) {

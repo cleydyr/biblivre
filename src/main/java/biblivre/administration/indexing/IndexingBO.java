@@ -341,11 +341,11 @@ public class IndexingBO extends AbstractBO {
         return this.indexingDAO.searchExactTerms(recordType, indexingGroupId, terms);
     }
 
-	public void setRecordBOs(Map<String, RecordBO> recordBOs) {
-		this.recordBOs = recordBOs;
-	}
+    public void setRecordBOs(Map<String, RecordBO> recordBOs) {
+        this.recordBOs = recordBOs;
+    }
 
-	public void setIndexingDAO(IndexingDAO indexingDAO) {
-		this.indexingDAO = indexingDAO;
-	}
+    public void setIndexingDAO(IndexingDAO indexingDAO) {
+        this.indexingDAO = indexingDAO;
+    }
 }
