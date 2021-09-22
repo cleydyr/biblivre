@@ -430,4 +430,12 @@ public class BackupBO extends AbstractBO {
 	public Set<String> listDatabaseSchemas() {
 		return backupDAO.listDatabaseSchemas();
 	}
+
+	public void setBackupDAO(BackupDAO backupDAO) {
+		this.backupDAO = backupDAO;
+	}
+
+	public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+		this.digitalMediaBO = digitalMediaBO;
+	}
 }
