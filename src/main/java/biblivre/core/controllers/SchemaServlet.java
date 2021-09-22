@@ -23,12 +23,14 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
+import biblivre.core.AuthorizationThreadLocal;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
@@ -49,6 +51,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public final class SchemaServlet extends HttpServlet {
 
@@ -276,6 +280,12 @@ public final class SchemaServlet extends HttpServlet {
     public void init() throws ServletException {
         FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
                 getServletContext(), "/freemarker");
+
+        WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+
+        AuthorizationBO authorizationBO = applicationContext.getBean(AuthorizationBO.class);
+
+        AuthorizationThreadLocal.setAuthorizationBO(authorizationBO);
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);

@@ -163,7 +163,9 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public Integer count() {
-        return this.count(null);
+    	SearchDTO search = new SearchDTO(getRecordType());
+
+        return this.count(search);
     }
 
     private Integer count(SearchDTO search) {

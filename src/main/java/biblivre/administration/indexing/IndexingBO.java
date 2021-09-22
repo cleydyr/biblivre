@@ -42,7 +42,7 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public class IndexingBO extends AbstractBO {
-    Map<RecordType, RecordBO> recordBOs = new HashMap<>();
+    Map<String, RecordBO> recordBOs = new HashMap<>();
 
     private IndexingDAO indexingDAO;
 
@@ -88,7 +88,7 @@ public class IndexingBO extends AbstractBO {
                 List<FormTabSubfieldDTO> autocompleteSubfields =
                         Fields.getAutocompleteSubFields(recordType);
 
-                RecordBO rbo = recordBOs.get(recordType);
+                RecordBO rbo = recordBOs.get(recordType.name());
 
                 int recordCount = rbo.count();
                 int limit = 30;
@@ -304,7 +304,7 @@ public class IndexingBO extends AbstractBO {
     public int[] getReindexProgress(RecordType recordType) {
         int progress[] = new int[2];
 
-        RecordBO rbo = recordBOs.get(recordType);
+        RecordBO rbo = recordBOs.get(recordType.name());
 
         progress[0] = this.countIndexed(recordType);
         progress[1] = rbo.count();
@@ -341,7 +341,7 @@ public class IndexingBO extends AbstractBO {
         return this.indexingDAO.searchExactTerms(recordType, indexingGroupId, terms);
     }
 
-	public void setRecordBOs(Map<RecordType, RecordBO> recordBOs) {
+	public void setRecordBOs(Map<String, RecordBO> recordBOs) {
 		this.recordBOs = recordBOs;
 	}
 

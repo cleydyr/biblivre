@@ -125,14 +125,7 @@
 
 	<bean id="catalogingHandler" name="catalogingHandler"
 		class="biblivre.cataloging.Handler" scope="prototype">
-		<constructor-arg index="0">
-			<map>
-				<entry key="BIBLIO" value="biblioRecordBO" />
-				<entry key="HOLDING" value="holdingBO" />
-				<entry key="AUTHORITIES" value="authorityRecordBO" />
-				<entry key="VOCABULARY" value="vocabularyRecordBO" />
-			</map>
-		</constructor-arg>
+		<property name="recordBOs"  ref="recordBOs" />
 		<property name="indexingBO" ref="indexingBO" />
 		<property name="z3950BO" ref="z3950BO" />
 		<property name="importBO" ref="importBO" />
@@ -279,14 +272,7 @@
 
 	<bean id="indexingBO" name="indexingBO"
 		class="biblivre.administration.indexing.IndexingBO">
-		<property name="recordBOs">
-			<map>
-<!-- 				<entry key="BIBLIO" value="biblioRecordBO" /> -->
-<!-- 				<entry key="HOLDING" value="holdingBO" /> -->
-<!-- 				<entry key="AUTHORITIES" value="authorityRecordBO" /> -->
-<!-- 				<entry key="VOCABULARY" value="vocabularyRecordBO" /> -->
-			</map>
-		</property>
+		<property name="recordBOs" ref="recordBOs" />
 		<property name="indexingDAO" ref="indexingDAO" />
 	</bean>
 
@@ -454,4 +440,18 @@
 	<bean id="authorizationDAO"
 		class="biblivre.core.auth.AuthorizationDAOImpl"
 		factory-method="getInstance" />
+
+	<bean class="org.springframework.beans.factory.config.MapFactoryBean" id="recordBOs">
+		<property name="targetMapClass">
+			<value>java.util.HashMap</value>
+		</property>
+		<property name="sourceMap">
+			<map>
+				<entry key="BIBLIO" value-ref="biblioRecordBO" />
+				<entry key="HOLDING" value-ref="holdingBO" />
+				<entry key="AUTHORITIES" value-ref="authorityRecordBO" />
+				<entry key="VOCABULARY" value-ref="vocabularyRecordBO" />
+			</map>
+		</property>
+	</bean>
 </beans>

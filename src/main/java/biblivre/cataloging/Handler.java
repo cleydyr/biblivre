@@ -52,7 +52,7 @@ import org.json.JSONException;
 import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
-    private Map<RecordType, RecordBO> recordBOs = new HashMap<>();
+    private Map<String, RecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
 	private ImportBO importBO;
 	private Z3950BO z3950BO;
@@ -230,7 +230,7 @@ public class Handler extends AbstractHandler {
                 continue;
             }
 
-            RecordBO bo = recordBOs.get(recordType);
+            RecordBO bo = recordBOs.get(recordType.name());
 
             RecordDTO dto = null;
 
@@ -294,7 +294,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-	public void setRecordBOs(Map<RecordType, RecordBO> recordBOs) {
+	public void setRecordBOs(Map<String, RecordBO> recordBOs) {
 		this.recordBOs = recordBOs;
 	}
 

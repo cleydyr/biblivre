@@ -33,10 +33,6 @@ public class BiblivreContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
         BiblivreInitializer.initialize();
-
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(arg0);
-
-        AuthorizationThreadLocal.setAuthorizationBO(applicationContext.getBean(AuthorizationBO.class));
     }
 
 	@Override

@@ -29,7 +29,7 @@ public class Z3950LocalServer {
 
     public void startServer() {
         if (!isActive()) {
-            this.listener.start();
+            //this.listener.start();
 
             setActive(true);
         }
