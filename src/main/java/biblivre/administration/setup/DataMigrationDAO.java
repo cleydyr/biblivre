@@ -87,11 +87,11 @@ public class DataMigrationDAO extends AbstractDAO {
     ;
 
     public static DataMigrationDAO getInstance(String userSchema, String datasource) {
-        DataMigrationDAO dao =
+        DataMigrationDAO dataMigrationDAO =
                 (DataMigrationDAO)
                         AbstractDAO.getInstance(DataMigrationDAO.class, "public", datasource);
-        dao.userSchema = userSchema;
-        return dao;
+        dataMigrationDAO.userSchema = userSchema;
+        return dataMigrationDAO;
     }
 
     public int countCatalogingRecords(RecordType recordType) {

@@ -27,13 +27,13 @@ import biblivre.login.LoginDTO;
 import java.util.Map;
 
 public class AuthorizationBO extends AbstractBO {
-    private AuthorizationDAO dao;
+    private AuthorizationDAO authorizationDAO;
 
     public static AuthorizationBO getInstance() {
         AuthorizationBO bo = AbstractBO.getInstance(AuthorizationBO.class);
 
-        if (bo.dao == null) {
-            bo.dao = AuthorizationDAO.getInstance();
+        if (bo.authorizationDAO == null) {
+            bo.authorizationDAO = AuthorizationDAO.getInstance();
         }
 
         return bo;
@@ -55,7 +55,7 @@ public class AuthorizationBO extends AbstractBO {
 
         // TODO: Fixme?
         if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
-            permissions = this.dao.getUserPermissions(user);
+            permissions = this.authorizationDAO.getUserPermissions(user);
         }
 
         return new AuthorizationPoints(schema, true, user.isEmployee(), permissions);

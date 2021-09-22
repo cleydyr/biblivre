@@ -28,6 +28,8 @@ public class DigitalMediaStoreMigratorService {
                 }
             }
         } catch (ServiceConfigurationError sce) {
+        	_logger.error("error while trying to find migrator with id " + migratorId);
+
             throw new DigitalMediaStoreInstantiationException(sce);
         }
 

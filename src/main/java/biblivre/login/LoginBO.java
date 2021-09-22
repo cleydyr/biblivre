@@ -27,32 +27,26 @@ import biblivre.core.utils.TextUtils;
 import java.util.List;
 
 public class LoginBO extends AbstractBO {
-    private LoginDAO dao;
+    private LoginDAO loginDAO;
     private PermissionBO permissionBO;
-
-    public LoginBO(LoginDAO dao, PermissionBO permissionBO) {
-        super();
-        this.dao = dao;
-        this.permissionBO = permissionBO;
-    }
 
     public final LoginDTO login(String login, String password) {
         String encodedPassword = TextUtils.encodePassword(password);
 
-        return this.dao.login(login, encodedPassword);
+        return this.loginDAO.login(login, encodedPassword);
     }
 
     public boolean update(LoginDTO login) {
-        return this.dao.update(login);
+        return this.loginDAO.update(login);
     }
 
     public boolean delete(UserDTO user) {
         permissionBO.delete(user);
-        return this.dao.delete(user);
+        return this.loginDAO.delete(user);
     }
 
     public LoginDTO get(Integer loginId) {
-        return this.dao.get(loginId);
+        return this.loginDAO.get(loginId);
     }
 
     public boolean loginExists(String login) {
@@ -60,14 +54,22 @@ public class LoginBO extends AbstractBO {
     }
 
     public LoginDTO get(String login) {
-        return this.dao.getByLogin(login);
+        return this.loginDAO.getByLogin(login);
     }
 
     public boolean save(LoginDTO dto, UserDTO udto) {
-        return this.dao.save(dto, udto);
+        return this.loginDAO.save(dto, udto);
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.loginDAO.saveFromBiblivre3(dtoList);
     }
+
+	public void setLoginDAO(LoginDAO loginDAO) {
+		this.loginDAO = loginDAO;
+	}
+
+	public void setPermissionBO(PermissionBO permissionBO) {
+		this.permissionBO = permissionBO;
+	}
 }

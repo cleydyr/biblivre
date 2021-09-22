@@ -24,27 +24,27 @@ import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 
 public class DigitalMediaBO extends AbstractBO {
-    protected DigitalMediaDAO dao;
+    protected DigitalMediaDAO digitalMediaDAO;
 
     public static DigitalMediaBO getInstance() {
         DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class);
 
-        if (bo.dao == null) {
-            bo.dao = DigitalMediaDAO.getInstance();
+        if (bo.digitalMediaDAO == null) {
+            bo.digitalMediaDAO = DigitalMediaDAO.getInstance();
         }
 
         return bo;
     }
 
     public Integer save(MemoryFile file) {
-        return this.dao.save(file);
+        return this.digitalMediaDAO.save(file);
     }
 
     public BiblivreFile load(int id, String name) {
-        return this.dao.load(id, name);
+        return this.digitalMediaDAO.load(id, name);
     }
 
     public boolean delete(Integer fileId, String fileName) {
-        return this.dao.delete(fileId);
+        return this.digitalMediaDAO.delete(fileId);
     }
 }

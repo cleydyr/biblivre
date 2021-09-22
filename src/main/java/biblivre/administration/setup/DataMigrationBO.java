@@ -51,8 +51,8 @@ import java.util.Map;
 
 public class DataMigrationBO extends AbstractBO {
 
-    private DataMigrationDAO dao;
-    private SetupDAO setupDao;
+    private DataMigrationDAO dataMigrationDAO;
+    private SetupDAO setupDAO;
     private final Integer limit = 50;
 
     private boolean migratingDatabase = false;
@@ -82,19 +82,19 @@ public class DataMigrationBO extends AbstractBO {
     public static DataMigrationBO getInstance(String schema, String datasource) {
         DataMigrationBO bo = AbstractBO.getInstance(DataMigrationBO.class);
 
-        if (bo.dao == null) {
-            bo.dao = DataMigrationDAO.getInstance(schema, datasource);
+        if (bo.dataMigrationDAO == null) {
+            bo.dataMigrationDAO = DataMigrationDAO.getInstance(schema, datasource);
         }
 
-        if (bo.setupDao == null) {
-            bo.setupDao = SetupDAO.getInstance();
+        if (bo.setupDAO == null) {
+            bo.setupDAO = SetupDAO.getInstance();
         }
 
         return bo;
     }
 
     public boolean isBiblivre3Available() {
-        return this.dao.testDatabaseConnection();
+        return this.dataMigrationDAO.testDatabaseConnection();
     }
 
     public boolean migrate(List<DataMigrationPhase> selectedPhases) {
@@ -134,7 +134,7 @@ public class DataMigrationBO extends AbstractBO {
                         } else {
                             if (firstPass) {
                                 if (!phase.equals(DataMigrationPhase.ACCESS_CONTROL_HISTORY)) {
-                                    this.setupDao.deleteAll(phase);
+                                    this.setupDAO.deleteAll(phase);
                                 }
                                 firstPass = false;
                             }
@@ -152,7 +152,7 @@ public class DataMigrationBO extends AbstractBO {
                         }
                     }
                 }
-                this.setupDao.fixSequence(this.currentPhase);
+                this.setupDAO.fixSequence(this.currentPhase);
                 State.incrementCurrentStep();
             }
 
@@ -171,7 +171,7 @@ public class DataMigrationBO extends AbstractBO {
                         hasMore = false;
                     } else {
                         if (firstPass) {
-                            this.setupDao.deleteAll(DataMigrationPhase.DIGITAL_MEDIA);
+                            this.setupDAO.deleteAll(DataMigrationPhase.DIGITAL_MEDIA);
                             firstPass = false;
                         }
 
@@ -180,7 +180,7 @@ public class DataMigrationBO extends AbstractBO {
                         this.saveDigitalMedia(dtoList);
                     }
                 }
-                this.setupDao.fixSequence(this.currentPhase);
+                this.setupDAO.fixSequence(this.currentPhase);
                 State.incrementCurrentStep();
             }
 
@@ -191,56 +191,56 @@ public class DataMigrationBO extends AbstractBO {
     private List<? extends AbstractDTO> listDTOs(DataMigrationPhase phase, int limit, int offset) {
         switch (phase) {
             case CATALOGING_BIBLIOGRAPHIC:
-                return this.dao.listCatalogingRecords(RecordType.BIBLIO, limit, offset);
+                return this.dataMigrationDAO.listCatalogingRecords(RecordType.BIBLIO, limit, offset);
 
             case CATALOGING_HOLDINGS:
-                return this.dao.listCatalogingHoldings(limit, offset);
+                return this.dataMigrationDAO.listCatalogingHoldings(limit, offset);
 
             case CATALOGING_AUTHORITIES:
-                return this.dao.listCatalogingRecords(RecordType.AUTHORITIES, limit, offset);
+                return this.dataMigrationDAO.listCatalogingRecords(RecordType.AUTHORITIES, limit, offset);
 
             case CATALOGING_VOCABULARY:
-                return this.dao.listCatalogingRecords(RecordType.VOCABULARY, limit, offset);
+                return this.dataMigrationDAO.listCatalogingRecords(RecordType.VOCABULARY, limit, offset);
 
             case ACCESS_CARDS:
-                return this.dao.listAccessCards(limit, offset);
+                return this.dataMigrationDAO.listAccessCards(limit, offset);
 
             case LOGINS:
-                return this.dao.listLogins(limit, offset);
+                return this.dataMigrationDAO.listLogins(limit, offset);
 
             case USER_TYPES:
-                return this.dao.listUsersTypes(limit, offset);
+                return this.dataMigrationDAO.listUsersTypes(limit, offset);
 
             case USERS:
-                return this.dao.listUsers(limit, offset);
+                return this.dataMigrationDAO.listUsers(limit, offset);
 
             case ACQUISITION_SUPPLIER:
-                return this.dao.listAquisitionSupplier(limit, offset);
+                return this.dataMigrationDAO.listAquisitionSupplier(limit, offset);
 
             case ACQUISITION_REQUISITION:
-                return this.dao.listAquisitionRequisition(limit, offset);
+                return this.dataMigrationDAO.listAquisitionRequisition(limit, offset);
 
             case ACQUISITION_QUOTATION:
-                return this.dao.listAquisitionQuotation(limit, offset);
+                return this.dataMigrationDAO.listAquisitionQuotation(limit, offset);
 
             case ACQUISITION_ITEM_QUOTATION:
-                return this.dao.listAquisitionItemQuotation(limit, offset);
+                return this.dataMigrationDAO.listAquisitionItemQuotation(limit, offset);
 
             case ACQUISITION_ORDER:
-                return this.dao.listAquisitionOrder(limit, offset);
+                return this.dataMigrationDAO.listAquisitionOrder(limit, offset);
 
             case Z3950_SERVERS:
-                return this.dao.listZ3950Servers(limit, offset);
+                return this.dataMigrationDAO.listZ3950Servers(limit, offset);
 
             case ACCESS_CONTROL:
-                return this.dao.listAccessControl(limit, offset);
+                return this.dataMigrationDAO.listAccessControl(limit, offset);
 
             case ACCESS_CONTROL_HISTORY:
-                return this.dao.listAccessControlHistory(limit, offset);
+                return this.dataMigrationDAO.listAccessControlHistory(limit, offset);
 
             case LENDINGS:
                 {
-                    List<LendingDTO> list = this.dao.listLendings(limit, offset);
+                    List<LendingDTO> list = this.dataMigrationDAO.listLendings(limit, offset);
 
                     int i = offset + 1;
                     for (LendingDTO dto : list) {
@@ -260,7 +260,7 @@ public class DataMigrationBO extends AbstractBO {
 
             case LENDING_FINE:
                 {
-                    List<LendingFineDTO> list = this.dao.listLendingFines(limit, offset);
+                    List<LendingFineDTO> list = this.dataMigrationDAO.listLendingFines(limit, offset);
 
                     for (LendingFineDTO dto : list) {
                         dto.setLendingId(this.lendingHistoryMap.get(dto.getLendingId()));
@@ -270,7 +270,7 @@ public class DataMigrationBO extends AbstractBO {
                 }
 
             case RESERVATIONS:
-                return this.dao.listReservations(limit, offset);
+                return this.dataMigrationDAO.listReservations(limit, offset);
 
             case DIGITAL_MEDIA:
             default:
@@ -344,7 +344,7 @@ public class DataMigrationBO extends AbstractBO {
     }
 
     private List<MemoryFile> listDigitalMedia(int limit, int offset) {
-        return this.dao.listDigitalMedia(limit, offset);
+        return this.dataMigrationDAO.listDigitalMedia(limit, offset);
     }
 
     private boolean saveDigitalMedia(List<MemoryFile> dtoList) {
@@ -382,12 +382,12 @@ public class DataMigrationBO extends AbstractBO {
         this.currentCount = currentCount;
     }
 
-	public void setDao(DataMigrationDAO dao) {
-		this.dao = dao;
+	public void setDao(DataMigrationDAO dataMigrationDAO) {
+		this.dataMigrationDAO = dataMigrationDAO;
 	}
 
 	public void setSetupDao(SetupDAO setupDao) {
-		this.setupDao = setupDao;
+		this.setupDAO = setupDao;
 	}
 
 	public void setAccessControlBO(AccessControlBO accessControlBO) {

@@ -55,13 +55,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BackupBO extends AbstractBO {
-    private BackupDAO dao;
+    private BackupDAO backupDAO;
 
     public static BackupBO getInstance() {
         BackupBO bo = AbstractBO.getInstance(BackupBO.class);
 
-        if (bo.dao == null) {
-            bo.dao = BackupDAO.getInstance();
+        if (bo.backupDAO == null) {
+            bo.backupDAO = BackupDAO.getInstance();
         }
 
         return bo;
@@ -201,15 +201,15 @@ public class BackupBO extends AbstractBO {
     }
 
     public BackupDTO get(Integer id) {
-        return this.dao.get(id);
+        return this.backupDAO.get(id);
     }
 
     public List<BackupDTO> list() {
-        return this.dao.list();
+        return this.backupDAO.list();
     }
 
     public BackupDTO getLastBackup() {
-        List<BackupDTO> list = this.dao.list(1);
+        List<BackupDTO> list = this.backupDAO.list(1);
 
         if (list.size() == 0) {
             return null;
@@ -219,7 +219,7 @@ public class BackupBO extends AbstractBO {
     }
 
     public boolean save(BackupDTO dto) {
-        return this.dao.save(dto);
+        return this.backupDAO.save(dto);
     }
 
     public boolean move(BackupDTO dto) {

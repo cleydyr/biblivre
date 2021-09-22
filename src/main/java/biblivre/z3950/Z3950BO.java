@@ -40,13 +40,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Z3950BO extends AbstractBO {
 
     private static ApplicationContext context;
-    private Z3950DAO dao;
+    private Z3950DAO z3950DAO;
 
     public static Z3950BO getInstance() {
         Z3950BO bo = AbstractBO.getInstance(Z3950BO.class);
 
-        if (bo.dao == null) {
-            bo.dao = Z3950DAO.getInstance();
+        if (bo.z3950DAO == null) {
+            bo.z3950DAO = Z3950DAO.getInstance();
         }
 
         return bo;
@@ -80,17 +80,17 @@ public class Z3950BO extends AbstractBO {
     }
 
     public DTOCollection<Z3950AddressDTO> search(String value, int limit, int offset) {
-        return this.dao.search(value, limit, offset);
+        return this.z3950DAO.search(value, limit, offset);
     }
 
     public List<Z3950AddressDTO> listAll() {
-        return this.dao.listAll();
+        return this.z3950DAO.listAll();
     }
 
     public DTOCollection<Z3950AddressDTO> listServers() {
         DTOCollection<Z3950AddressDTO> servers = new DTOCollection<>();
 
-        servers.addAll(this.dao.listAll());
+        servers.addAll(this.z3950DAO.listAll());
         return servers;
     }
 
@@ -100,27 +100,27 @@ public class Z3950BO extends AbstractBO {
         }
 
         if (dto.getId() == 0) {
-            return this.dao.insert(dto);
+            return this.z3950DAO.insert(dto);
         } else {
-            return this.dao.update(dto);
+            return this.z3950DAO.update(dto);
         }
     }
 
     public boolean delete(Z3950AddressDTO dto) {
-        return this.dao.delete(dto);
+        return this.z3950DAO.delete(dto);
     }
 
     public Z3950AddressDTO findById(int id) {
         List<Integer> ids = new ArrayList<>();
         ids.add(id);
 
-        List<Z3950AddressDTO> list = this.dao.list(ids);
+        List<Z3950AddressDTO> list = this.z3950DAO.list(ids);
 
         return (list.size() > 0) ? list.get(0) : null;
     }
 
     public List<Z3950AddressDTO> list(List<Integer> ids) {
-        return this.dao.list(ids);
+        return this.z3950DAO.list(ids);
     }
 
     private ApplicationContext getContext() {
@@ -136,7 +136,7 @@ public class Z3950BO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.z3950DAO.saveFromBiblivre3(dtoList);
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(Z3950BO.class);

@@ -86,14 +86,14 @@ public class RestoreBO extends AbstractBO {
 
     private static final Logger logger = LoggerFactory.getLogger(RestoreBO.class);
 
-    private BackupDAO dao;
+    private BackupDAO backupDAO;
     private DigitalMediaDAO digitalMediaDAO;
 
     public static RestoreBO getInstance() {
         RestoreBO bo = AbstractBO.getInstance(RestoreBO.class);
 
-        if (bo.dao == null) {
-            bo.dao = BackupDAO.getInstance();
+        if (bo.backupDAO == null) {
+            bo.backupDAO = BackupDAO.getInstance();
         }
 
         if (bo.digitalMediaDAO == null) {
@@ -225,7 +225,7 @@ public class RestoreBO extends AbstractBO {
 
         _validateRestoreSchemas(restoreSchemas);
 
-        RestoreContextHelper context = new RestoreContextHelper(dto, dao.listDatabaseSchemas());
+        RestoreContextHelper context = new RestoreContextHelper(dto, backupDAO.listDatabaseSchemas());
 
         String globalSchema = Constants.GLOBAL_SCHEMA;
 
