@@ -330,7 +330,7 @@
 
 	<bean id="digitalMediaBO" name="digitalMediaBO"
 		class="biblivre.digitalmedia.DigitalMediaBO" >
-		<property name="reservationDAO" ref="digitalMediaDAO" />
+		<property name="digitalMediaDAO" ref="digitalMediaDAO" />
 	</bean>
 
 	<bean id="importBO" name="importBO"
