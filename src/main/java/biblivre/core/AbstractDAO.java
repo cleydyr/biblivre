@@ -402,10 +402,4 @@ public abstract class AbstractDAO {
         pgcon = (PGConnection) m.invoke(o);
         return pgcon;
     }
-
-    public static DataMigrationDAO getInstance(
-            Class<DataMigrationDAOImpl> class1, String string, String datasource) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }
