@@ -48,4 +48,8 @@ public class DigitalMediaBO extends AbstractBO {
 	public long importFile(File file) {
 		return this.digitalMediaDAO.importFile(file);
 	}
+
+	public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
+		this.digitalMediaDAO = digitalMediaDAO;
+	}
 }
