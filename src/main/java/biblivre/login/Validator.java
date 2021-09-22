@@ -28,13 +28,7 @@ import biblivre.core.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
-
     private LoginBO loginBO;
-
-    public Validator(LoginBO loginBO) {
-        super();
-        this.loginBO = loginBO;
-    }
 
     public void validateChangePassword(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -88,4 +82,8 @@ public class Validator extends AbstractValidator {
             return;
         }
     }
+
+	public void setLoginBO(LoginBO loginBO) {
+		this.loginBO = loginBO;
+	}
 }

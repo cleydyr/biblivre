@@ -425,10 +425,6 @@
 		class="biblivre.administration.indexing.IndexingGroupsDAOImpl"
 		factory-method="getInstance" />
 
-	<bean id="permissionDAO"
-		class="biblivre.administration.permissions.PermissionDAOImpl"
-		factory-method="getInstance" />
-
 	<bean id="reportsDAO"
 		class="biblivre.administration.reports.ReportsDAOImpl"
 		factory-method="getInstance" />
