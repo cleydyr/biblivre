@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -21,7 +21,7 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
 
     private static final String DEFAULT_SCHEMA = "single";
 
-    @BeforeAll
+    @BeforeEach
     void setDefaultSchema() {
         SchemaThreadLocal.setSchema(DEFAULT_SCHEMA);
     }
