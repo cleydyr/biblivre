@@ -226,26 +226,26 @@ public abstract class Controller {
     }
 
     private Method _getMethodFromHandler(String action) throws NoSuchMethodException {
-		Method method = null;
+        Method method = null;
 
-		Class<? extends AbstractHandler> lookupClass = this.handlerClass;
+        Class<? extends AbstractHandler> lookupClass = this.handlerClass;
 
-		while (method == null & !lookupClass.equals(AbstractHandler.class)) {
-			try {
-		        method =
-		                lookupClass.getDeclaredMethod(
-		                        TextUtils.camelCase(action),
-		                        ExtendedRequest.class,
-		                        ExtendedResponse.class);
-		    } catch (NoSuchMethodException e) {
-		        lookupClass = (Class<? extends AbstractHandler>) lookupClass.getSuperclass();
-		    }
-		}
-
-		if (method == null) {
-        	throw new NoSuchMethodException(action);
+        while (method == null & !lookupClass.equals(AbstractHandler.class)) {
+            try {
+                method =
+                        lookupClass.getDeclaredMethod(
+                                TextUtils.camelCase(action),
+                                ExtendedRequest.class,
+                                ExtendedResponse.class);
+            } catch (NoSuchMethodException e) {
+                lookupClass = (Class<? extends AbstractHandler>) lookupClass.getSuperclass();
+            }
         }
 
-		return method;
-	}
+        if (method == null) {
+            throw new NoSuchMethodException(action);
+        }
+
+        return method;
+    }
 }
