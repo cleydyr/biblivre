@@ -22,29 +22,33 @@ package biblivre.digitalmedia;
 import biblivre.core.AbstractBO;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
+import java.io.File;
+import java.util.List;
 
 public class DigitalMediaBO extends AbstractBO {
-    protected DigitalMediaDAO dao;
-
-    public static DigitalMediaBO getInstance(String schema) {
-        DigitalMediaBO bo = AbstractBO.getInstance(DigitalMediaBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = DigitalMediaDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    protected DigitalMediaDAO digitalMediaDAO;
 
     public Integer save(MemoryFile file) {
-        return this.dao.save(file);
+        return this.digitalMediaDAO.save(file);
     }
 
     public BiblivreFile load(int id, String name) {
-        return this.dao.load(id, name);
+        return this.digitalMediaDAO.load(id, name);
     }
 
     public boolean delete(Integer fileId, String fileName) {
-        return this.dao.delete(fileId);
+        return this.digitalMediaDAO.delete(fileId);
+    }
+
+    public List<DigitalMediaDTO> list() {
+        return this.digitalMediaDAO.list();
+    }
+
+    public long importFile(File file) {
+        return this.digitalMediaDAO.importFile(file);
+    }
+
+    public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
+        this.digitalMediaDAO = digitalMediaDAO;
     }
 }

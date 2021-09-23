@@ -23,6 +23,7 @@ import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.JavascriptCacheableList;
 import biblivre.core.PreparedStatementUtil;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -50,22 +51,22 @@ public class Fields extends StaticBO {
     private Fields() {}
 
     static {
-        Fields.reset();
+        Fields.resetAll();
     }
 
-    public static void reset() {
-        Fields.briefTabFieldFormats =
-                new HashMap<>();
+    public static void resetAll() {
+        Fields.briefTabFieldFormats = new HashMap<>();
 
         Fields.formTabFields =
                 new HashMap<
                         Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>();
 
-        Fields.autocompleteSubfields =
-                new HashMap<>();
+        Fields.autocompleteSubfields = new HashMap<>();
     }
 
-    public static void reset(String schema, RecordType recordType) {
+    public static void reset(RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         Fields.briefTabFieldFormats.remove(pair);
@@ -75,25 +76,28 @@ public class Fields extends StaticBO {
         Fields.autocompleteSubfields.remove(pair);
     }
 
-    public static List<BriefTabFieldFormatDTO> getBriefFormats(
-            String schema, RecordType recordType) {
+    public static List<BriefTabFieldFormatDTO> getBriefFormats(RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
 
         if (list == null) {
-            list = Fields.loadBriefFormats(schema, recordType);
+            list = Fields.loadBriefFormats(recordType);
         }
 
         return list;
     }
 
     public static boolean insertBriefFormat(
-            String schema, RecordType recordType, BriefTabFieldFormatDTO dto, int loggedUser) {
+            RecordType recordType, BriefTabFieldFormatDTO dto, int loggedUser) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();
 
         boolean result = dao.insertBriefFormat(dto, recordType, loggedUser);
+
+        String schema = SchemaThreadLocal.get();
 
         if (result) {
             Pair<String, RecordType> pair = Pair.of(schema, recordType);
@@ -104,16 +108,15 @@ public class Fields extends StaticBO {
     }
 
     public static boolean updateBriefFormats(
-            String schema,
-            RecordType recordType,
-            List<BriefTabFieldFormatDTO> briefFormats,
-            int loggedUser) {
+            RecordType recordType, List<BriefTabFieldFormatDTO> briefFormats, int loggedUser) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();
 
         boolean result = dao.updateBriefFormats(briefFormats, recordType, loggedUser);
 
         if (result) {
+            String schema = SchemaThreadLocal.get();
+
             Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
             Fields.briefTabFieldFormats.remove(pair);
@@ -123,16 +126,17 @@ public class Fields extends StaticBO {
     }
 
     public static boolean updateFormTabDatafield(
-            String schema,
             RecordType recordType,
             HashMap<String, FormTabDatafieldDTO> formDatafields,
             int loggedUser) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();
 
         boolean result = dao.updateFormTabDatafield(formDatafields, recordType, loggedUser);
 
         if (result) {
+            String schema = SchemaThreadLocal.get();
+
             Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
             Fields.formTabFields.remove(pair);
@@ -141,14 +145,15 @@ public class Fields extends StaticBO {
         return result;
     }
 
-    public static boolean deleteBriefFormat(
-            String schema, RecordType recordType, String datafield) {
+    public static boolean deleteBriefFormat(RecordType recordType, String datafield) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();
 
         boolean result = dao.deleteBriefFormat(datafield, recordType);
 
         if (result) {
+            String schema = SchemaThreadLocal.get();
+
             Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
             Fields.briefTabFieldFormats.remove(pair);
@@ -157,13 +162,13 @@ public class Fields extends StaticBO {
         return result;
     }
 
-    public static boolean deleteFormTabDatafield(
-            String schema, RecordType recordType, String datafield) {
+    public static boolean deleteFormTabDatafield(RecordType recordType, String datafield) {
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();
         boolean result = dao.deleteFormTabDatafield(datafield, recordType);
 
         if (result) {
+            String schema = SchemaThreadLocal.get();
             Pair<String, RecordType> pair = Pair.of(schema, recordType);
             Fields.formTabFields.remove(pair);
         }
@@ -171,48 +176,50 @@ public class Fields extends StaticBO {
         return result;
     }
 
-    public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(
-            String schema, String type) {
+    public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(String type) {
         RecordType recordType = RecordType.fromString(type);
 
         if (recordType == null) {
             recordType = RecordType.BIBLIO;
         }
 
-        return Fields.getFormFields(schema, recordType);
+        return Fields.getFormFields(recordType);
     }
 
     public static JavascriptCacheableList<FormTabDatafieldDTO> getFormFields(
-            String schema, RecordType recordType) {
+            RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
 
         if (list == null) {
-            list = Fields.loadFormFields(schema, recordType);
+            list = Fields.loadFormFields(recordType);
         }
 
         return list;
     }
 
-    public static List<FormTabSubfieldDTO> getAutocompleteSubFields(String schema, String type) {
+    public static List<FormTabSubfieldDTO> getAutocompleteSubFields(String type) {
         RecordType recordType = RecordType.fromString(type);
 
         if (recordType == null) {
             recordType = RecordType.BIBLIO;
         }
 
-        return Fields.getAutocompleteSubFields(schema, recordType);
+        return Fields.getAutocompleteSubFields(recordType);
     }
 
-    public static List<FormTabSubfieldDTO> getAutocompleteSubFields(
-            String schema, RecordType recordType) {
+    public static List<FormTabSubfieldDTO> getAutocompleteSubFields(RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
 
         if (list == null) {
-            list = Fields.loadAutocompleteSubFields(schema, recordType);
+            list = Fields.loadAutocompleteSubFields(recordType);
         }
 
         return list;
@@ -290,7 +297,9 @@ public class Fields extends StaticBO {
     }
 
     private static synchronized List<BriefTabFieldFormatDTO> loadBriefFormats(
-            String schema, RecordType recordType) {
+            RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<BriefTabFieldFormatDTO> list = Fields.briefTabFieldFormats.get(pair);
@@ -304,7 +313,7 @@ public class Fields extends StaticBO {
             Fields.logger.debug("Loading brief formats from " + schema + "." + recordType);
         }
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();
 
         list = dao.listBriefFormats(recordType);
 
@@ -314,7 +323,9 @@ public class Fields extends StaticBO {
     }
 
     private static synchronized JavascriptCacheableList<FormTabDatafieldDTO> loadFormFields(
-            String schema, RecordType recordType) {
+            RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         JavascriptCacheableList<FormTabDatafieldDTO> list = Fields.formTabFields.get(pair);
@@ -328,7 +339,7 @@ public class Fields extends StaticBO {
             Fields.logger.debug("Loading form fields from " + schema + "." + recordType);
         }
 
-        TabFieldsDAO dao = TabFieldsDAO.getInstance(schema);
+        TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();
 
         List<FormTabDatafieldDTO> fields = dao.listFields(recordType);
 
@@ -354,7 +365,9 @@ public class Fields extends StaticBO {
     }
 
     private static synchronized List<FormTabSubfieldDTO> loadAutocompleteSubFields(
-            String schema, RecordType recordType) {
+            RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<FormTabSubfieldDTO> list = Fields.autocompleteSubfields.get(pair);
@@ -368,8 +381,7 @@ public class Fields extends StaticBO {
             Fields.logger.debug("Loading autocomplete subfields from " + schema + "." + recordType);
         }
 
-        JavascriptCacheableList<FormTabDatafieldDTO> fields =
-                Fields.getFormFields(schema, recordType);
+        JavascriptCacheableList<FormTabDatafieldDTO> fields = Fields.getFormFields(recordType);
 
         list = new ArrayList<>();
 

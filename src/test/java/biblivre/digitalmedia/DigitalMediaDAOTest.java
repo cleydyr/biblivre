@@ -22,7 +22,7 @@ import org.testcontainers.shaded.com.google.common.io.Files;
 
 @Testcontainers
 public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
-    private DigitalMediaDAO dao = getInstance(PostgresLargeObjectDigitalMediaDAO.class);
+    private BaseDigitalMediaDAO dao = getInstance(PostgresLargeObjectDigitalMediaDAO.class);
 
     @BeforeEach
     public void deleteAll() {

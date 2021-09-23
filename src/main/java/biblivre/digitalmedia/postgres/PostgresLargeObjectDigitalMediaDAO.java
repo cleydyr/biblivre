@@ -21,7 +21,7 @@ package biblivre.digitalmedia.postgres;
 
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.BiblivreFile;
-import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.BaseDigitalMediaDAO;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -31,7 +31,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 
-public class PostgresLargeObjectDigitalMediaDAO extends DigitalMediaDAO {
+public class PostgresLargeObjectDigitalMediaDAO extends BaseDigitalMediaDAO {
 
     @Override
     public void persist(InputStream is, long oid, long size) throws SQLException, IOException {

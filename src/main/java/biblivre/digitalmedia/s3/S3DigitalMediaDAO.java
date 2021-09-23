@@ -1,7 +1,7 @@
 package biblivre.digitalmedia.s3;
 
 import biblivre.core.file.BiblivreFile;
-import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.BaseDigitalMediaDAO;
 import java.io.InputStream;
 import java.util.Collections;
 import org.apache.commons.io.FileUtils;
@@ -16,7 +16,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-public class S3DigitalMediaDAO extends DigitalMediaDAO {
+public class S3DigitalMediaDAO extends BaseDigitalMediaDAO {
     private final S3Client s3;
     private final String bucketName;
 

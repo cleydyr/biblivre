@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.view.taglibs;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.translations.Languages;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
@@ -35,7 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 public class LayoutBody extends TagSupport {
     private static final long serialVersionUID = 1L;
 
-    private String schema;
     private TranslationsMap translationsMap;
     private boolean multiPart;
     private boolean banner;
@@ -89,12 +89,11 @@ public class LayoutBody extends TagSupport {
     }
 
     private String getSchema() {
-        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
+        return SchemaThreadLocal.get();
     }
 
     private void init() {
         HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
-        this.schema = (String) request.getAttribute("schema");
         this.translationsMap = (TranslationsMap) request.getAttribute("translationsMap");
     }
 
@@ -102,15 +101,15 @@ public class LayoutBody extends TagSupport {
     public int doStartTag() throws JspException {
         this.init();
 
-        doJSPForward(schema, translationsMap);
+        doJSPForward();
 
         return EVAL_BODY_INCLUDE;
     }
 
-    private void doJSPForward(String schema, TranslationsMap translationsMap) throws JspException {
+    private void doJSPForward() throws JspException {
         ServletRequest request = pageContext.getRequest();
 
-        request.setAttribute("schema", schema);
+        request.setAttribute("schema", getSchema());
         request.setAttribute("translationsMap", translationsMap);
         request.setAttribute("isMultiPart", this.isMultiPart());
         request.setAttribute("isLogged", this.isLogged());
@@ -118,13 +117,13 @@ public class LayoutBody extends TagSupport {
         request.setAttribute("isBanner", this.isBanner());
         request.setAttribute("isSchemaSelection", this.isSchemaSelection());
         request.setAttribute("isEmployee", this.isEmployee());
-        request.setAttribute("languages", Languages.getLanguages(schema));
+        request.setAttribute("languages", Languages.getLanguages());
 
         String updateWarning =
                 (String)
                         this.pageContext
                                 .getSession()
-                                .getAttribute(this.getSchema() + ".system_warning_new_version");
+                                .getAttribute(getSchema() + ".system_warning_new_version");
 
         if (StringUtils.isNotBlank(updateWarning)) {
 

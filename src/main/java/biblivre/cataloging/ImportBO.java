@@ -44,20 +44,13 @@ import org.marc4j.MarcPermissiveStreamReader;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcXmlReader;
 import org.marc4j.marc.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportBO extends AbstractBO {
-
-    protected ImportDAO dao;
-
-    public static ImportBO getInstance(String schema) {
-        ImportBO bo = AbstractBO.getInstance(ImportBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = ImportDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private BiblioRecordBO biblioRecordBO;
+    private VocabularyRecordBO vocabularyRecordBO;
+    private AuthorityRecordBO authorityRecordBO;
 
     public ImportDTO loadFromFile(MemoryFile file, ImportFormat format, ImportEncoding enc) {
         ImportDTO dto = null;
@@ -151,7 +144,7 @@ public class ImportBO extends AbstractBO {
                     break;
             }
         } catch (Exception e) {
-            this.logger.debug("Error reading file", e);
+            logger.debug("Error reading file", e);
             throw new ValidationException(e.getMessage());
         }
 
@@ -191,14 +184,13 @@ public class ImportBO extends AbstractBO {
 
     public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {
         ImportDTO dto = new ImportDTO();
-        BiblioRecordBO bbo = BiblioRecordBO.getInstance(this.getSchema());
         for (Z3950RecordDTO z3950Dto : recordList) {
             dto.incrementFound();
             try {
                 BiblioRecordDTO brdto = z3950Dto.getRecord();
 
                 if (brdto != null) {
-                    bbo.populateDetails(brdto, RecordBO.MARC_INFO);
+                    biblioRecordBO.populateDetails(brdto, RecordBO.MARC_INFO);
 
                     dto.addRecord(brdto);
 
@@ -213,7 +205,6 @@ public class ImportBO extends AbstractBO {
     }
 
     public RecordDTO dtoFromRecord(Record record) {
-        String schema = this.getSchema();
         RecordDTO rdto = null;
         RecordBO rbo = null;
 
@@ -222,15 +213,15 @@ public class ImportBO extends AbstractBO {
                 break;
             case VOCABULARY:
                 rdto = new VocabularyRecordDTO();
-                rbo = VocabularyRecordBO.getInstance(schema);
+                rbo = vocabularyRecordBO;
                 break;
             case AUTHORITIES:
                 rdto = new AuthorityRecordDTO();
-                rbo = AuthorityRecordBO.getInstance(schema);
+                rbo = authorityRecordBO;
                 break;
             default:
                 rdto = new BiblioRecordDTO();
-                rbo = BiblioRecordBO.getInstance(schema);
+                rbo = biblioRecordBO;
                 break;
         }
 
@@ -240,5 +231,19 @@ public class ImportBO extends AbstractBO {
         }
 
         return rdto;
+    }
+
+    protected static final Logger logger = LoggerFactory.getLogger(ImportBO.class);
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
+    public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
+        this.vocabularyRecordBO = vocabularyRecordBO;
+    }
+
+    public void setAuthorityRecordBO(AuthorityRecordBO authorityRecordBO) {
+        this.authorityRecordBO = authorityRecordBO;
     }
 }

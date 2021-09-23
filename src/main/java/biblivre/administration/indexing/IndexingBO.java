@@ -24,16 +24,16 @@ import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabSubfieldDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.authorities.AuthorityRecordBO;
-import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,7 +42,9 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public class IndexingBO extends AbstractBO {
-    private IndexingDAO dao;
+    Map<String, RecordBO> recordBOs = new HashMap<>();
+
+    private IndexingDAO indexingDAO;
 
     private String[] nonfillingCharactersInIndicator1 = new String[] {"130", "630", "730", "740"};
     private String[] nonfillingCharactersInIndicator2 = new String[] {"240", "243", "245", "830"};
@@ -51,22 +53,11 @@ public class IndexingBO extends AbstractBO {
     private volatile boolean reindexingAuthoritiesBase = false;
     private volatile boolean reindexingVocabularyBase = false;
 
-    public static IndexingBO getInstance(String schema) {
-        IndexingBO bo = AbstractBO.getInstance(IndexingBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = IndexingDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
-
     public void reindex(RecordType recordType, RecordDTO dto) {
         synchronized (this) {
-            List<IndexingGroupDTO> indexingGroups =
-                    IndexingGroups.getGroups(this.getSchema(), recordType);
+            List<IndexingGroupDTO> indexingGroups = IndexingGroups.getGroups(recordType);
             List<FormTabSubfieldDTO> autocompleteSubfields =
-                    Fields.getAutocompleteSubFields(this.getSchema(), recordType);
+                    Fields.getAutocompleteSubFields(recordType);
 
             List<IndexingDTO> indexes = new ArrayList<>();
             List<IndexingDTO> sortIndexes = new ArrayList<>();
@@ -76,15 +67,13 @@ public class IndexingBO extends AbstractBO {
             this.populateAutocompleteIndexes(dto, autocompleteSubfields, autocompleteIndexes);
 
             this.deleteIndexes(recordType, dto);
-            this.dao.insertIndexes(recordType, indexes);
-            this.dao.insertSortIndexes(recordType, sortIndexes);
-            this.dao.insertAutocompleteIndexes(recordType, autocompleteIndexes);
+            this.indexingDAO.insertIndexes(recordType, indexes);
+            this.indexingDAO.insertSortIndexes(recordType, sortIndexes);
+            this.indexingDAO.insertAutocompleteIndexes(recordType, autocompleteIndexes);
         }
     }
 
     public void reindex(RecordType recordType) {
-        String schema = this.getSchema();
-
         if (this.getLockState(recordType)) {
             return;
         }
@@ -95,12 +84,11 @@ public class IndexingBO extends AbstractBO {
             try {
                 this.clearIndexes(recordType);
 
-                List<IndexingGroupDTO> indexingGroups =
-                        IndexingGroups.getGroups(schema, recordType);
+                List<IndexingGroupDTO> indexingGroups = IndexingGroups.getGroups(recordType);
                 List<FormTabSubfieldDTO> autocompleteSubfields =
-                        Fields.getAutocompleteSubFields(schema, recordType);
+                        Fields.getAutocompleteSubFields(recordType);
 
-                RecordBO rbo = RecordBO.getInstance(schema, recordType);
+                RecordBO rbo = recordBOs.get(recordType.name());
 
                 int recordCount = rbo.count();
                 int limit = 30;
@@ -123,12 +111,12 @@ public class IndexingBO extends AbstractBO {
                                 dto, autocompleteSubfields, autocompleteIndexes);
                     }
 
-                    this.dao.insertIndexes(recordType, indexes);
-                    this.dao.insertSortIndexes(recordType, sortIndexes);
-                    this.dao.insertAutocompleteIndexes(recordType, autocompleteIndexes);
+                    this.indexingDAO.insertIndexes(recordType, indexes);
+                    this.indexingDAO.insertSortIndexes(recordType, sortIndexes);
+                    this.indexingDAO.insertAutocompleteIndexes(recordType, autocompleteIndexes);
                 }
 
-                this.dao.reindexDatabase(recordType);
+                this.indexingDAO.reindexDatabase(recordType);
             } finally {
                 this.toggleLockState(recordType, false);
             }
@@ -137,7 +125,7 @@ public class IndexingBO extends AbstractBO {
 
     public void reindexAutocompleteFixedTable(
             RecordType recordType, String datafield, String subfield, List<String> phrases) {
-        this.dao.reindexAutocompleteFixedTable(recordType, datafield, subfield, phrases);
+        this.indexingDAO.reindexAutocompleteFixedTable(recordType, datafield, subfield, phrases);
     }
 
     private void populateIndexes(
@@ -310,13 +298,13 @@ public class IndexingBO extends AbstractBO {
     }
 
     public int countIndexed(RecordType recordType) {
-        return this.dao.countIndexed(recordType);
+        return this.indexingDAO.countIndexed(recordType);
     }
 
     public int[] getReindexProgress(RecordType recordType) {
         int progress[] = new int[2];
 
-        RecordBO rbo = RecordBO.getInstance(this.getSchema(), recordType);
+        RecordBO rbo = recordBOs.get(recordType.name());
 
         progress[0] = this.countIndexed(recordType);
         progress[1] = rbo.count();
@@ -325,40 +313,39 @@ public class IndexingBO extends AbstractBO {
     }
 
     public boolean isIndexOutdated() {
-        String schema = this.getSchema();
+        Stream<RecordBO> stream = recordBOs.values().stream();
 
-        boolean biblio =
-                !this.dao
-                        .countIndexed(RecordType.BIBLIO)
-                        .equals(BiblioRecordBO.getInstance(schema).count());
-        boolean authorities =
-                !this.dao
-                        .countIndexed(RecordType.AUTHORITIES)
-                        .equals(AuthorityRecordBO.getInstance(schema).count());
-        boolean vocabulary =
-                !this.dao
-                        .countIndexed(RecordType.VOCABULARY)
-                        .equals(VocabularyRecordBO.getInstance(schema).count());
+        return stream.anyMatch(this::_hasOutdatedIndexCount);
+    }
 
-        return biblio || authorities || vocabulary;
+    private boolean _hasOutdatedIndexCount(RecordBO recordBO) {
+        return this.indexingDAO.countIndexed(recordBO.getRecordType()).equals(recordBO.count());
     }
 
     private void clearIndexes(RecordType recordType) {
-        this.dao.clearIndexes(recordType);
+        this.indexingDAO.clearIndexes(recordType);
     }
 
     public boolean deleteIndexes(RecordType recordType, RecordDTO dto) {
-        return this.dao.deleteIndexes(recordType, dto);
+        return this.indexingDAO.deleteIndexes(recordType, dto);
     }
 
     public List<String> searchExactTerm(RecordType recordType, int indexingGroupId, String term) {
         List<String> terms = new ArrayList<>();
         terms.add(term);
-        return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
+        return this.indexingDAO.searchExactTerms(recordType, indexingGroupId, terms);
     }
 
     public List<String> searchExactTerms(
             RecordType recordType, int indexingGroupId, List<String> terms) {
-        return this.dao.searchExactTerms(recordType, indexingGroupId, terms);
+        return this.indexingDAO.searchExactTerms(recordType, indexingGroupId, terms);
+    }
+
+    public void setRecordBOs(Map<String, RecordBO> recordBOs) {
+        this.recordBOs = recordBOs;
+    }
+
+    public void setIndexingDAO(IndexingDAO indexingDAO) {
+        this.indexingDAO = indexingDAO;
     }
 }

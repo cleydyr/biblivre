@@ -25,6 +25,7 @@ import biblivre.administration.indexing.IndexingBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPointTypes;
 import biblivre.core.auth.AuthorizationPoints;
@@ -49,9 +50,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
+    private LoginBO loginBO;
+    private IndexingBO indexingBO;
+    private AuthorizationBO authorizationBO;
+    private BackupBO backupBO;
 
     public void login(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String username = request.getString("username");
         String password = request.getString("password");
@@ -62,18 +66,16 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        LoginBO loginBo = LoginBO.getInstance(schema);
-        LoginDTO user = loginBo.login(username, password);
+        LoginDTO user = loginBO.login(username, password);
 
         if (user != null) {
-            AuthorizationBO authBo = AuthorizationBO.getInstance(schema);
-            AuthorizationPoints atps = authBo.getUserAuthorizationPoints(user);
+            AuthorizationPoints atps = authorizationBO.getUserAuthorizationPoints(user);
 
-            _setAdmin(schema, user, atps);
+            _setAdmin(user, atps);
 
-            _performChecks(request, schema, password, user, atps);
+            _performChecks(request, password, user, atps);
 
-            _populateSessionAttributes(request, schema, user, atps);
+            _populateSessionAttributes(request, user, atps);
 
             this.message.setText(ActionResult.NORMAL, "login.welcome");
             this.jspURL = "/jsp/index.jsp";
@@ -86,20 +88,21 @@ public class Handler extends AbstractHandler {
     }
 
     public void logout(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String language = request.getLanguage();
         HttpSession session = request.getSession();
 
         Enumeration<String> attributes = session.getAttributeNames();
+
         while (attributes.hasMoreElements()) {
             String attribute = attributes.nextElement();
 
-            if (attribute != null && attribute.startsWith(schema + ".")) {
+            if (attribute != null && attribute.startsWith(SchemaThreadLocal.get() + ".")) {
                 session.removeAttribute(attribute);
             }
         }
 
-        session.setAttribute(schema + ".language", language);
+        request.setScopedSessionAttribute("language", language);
 
         this.message.setText(ActionResult.NORMAL, "login.goodbye");
         this.jspURL = "/jsp/index.jsp";
@@ -107,20 +110,18 @@ public class Handler extends AbstractHandler {
     }
 
     public void changePassword(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int loggedId = request.getLoggedUserId();
 
-        LoginBO lbo = LoginBO.getInstance(schema);
-
         String newPassword = request.getString("new_password");
-        LoginDTO login = lbo.get(loggedId);
+        LoginDTO login = loginBO.get(loggedId);
         login.setModifiedBy(loggedId);
         login.setEncPassword(TextUtils.encodePassword(newPassword));
-        lbo.update(login);
+        loginBO.update(login);
 
         boolean warningPassword =
                 newPassword.equals("abracadabra") && login.getLogin().equals("admin");
-        request.setSessionAttribute(schema, "system_warning_password", warningPassword);
+        request.setScopedSessionAttribute("system_warning_password", warningPassword);
 
         this.message.setText(ActionResult.SUCCESS, "login.password.success");
         this.jspURL = "/jsp/administration/password.jsp";
@@ -128,28 +129,24 @@ public class Handler extends AbstractHandler {
     }
 
     private void _performChecks(
-            ExtendedRequest request,
-            String schema,
-            String password,
-            LoginDTO user,
-            AuthorizationPoints atps) {
+            ExtendedRequest request, String password, LoginDTO user, AuthorizationPoints atps) {
 
         if (atps.isAdmin()) {
-            _checkDefaultPassword(request, schema, password);
+            _checkDefaultPassword(request, password);
         }
 
-        if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
-            _checkLastBackup(request, schema, atps);
+        if (!SchemaThreadLocal.isGlobalSchema()) {
+            _checkLastBackup(request, atps);
 
-            _checkOutdatedIndexes(request, schema, atps);
+            _checkOutdatedIndexes(request, atps);
         }
     }
 
     private void _populateSessionAttributes(
-            ExtendedRequest request, String schema, LoginDTO user, AuthorizationPoints atps) {
+            ExtendedRequest request, LoginDTO user, AuthorizationPoints atps) {
 
-        request.setSessionAttribute(schema, "logged_user", user);
-        request.setSessionAttribute(schema, "logged_user_atps", atps);
+        request.setScopedSessionAttribute("logged_user", user);
+        request.setScopedSessionAttribute("logged_user_atps", atps);
 
         try {
             _populateMenus(request, atps);
@@ -158,27 +155,24 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private void _setAdmin(String schema, LoginDTO user, AuthorizationPoints atps) {
+    private void _setAdmin(LoginDTO user, AuthorizationPoints atps) {
 
-        if ((user.getId() == 1) || schema.equals(Constants.GLOBAL_SCHEMA)) {
+        if ((user.getId() == 1) || SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
             atps.setAdmin(true);
         }
     }
 
-    private void _checkDefaultPassword(ExtendedRequest request, String schema, String password) {
-
+    private void _checkDefaultPassword(ExtendedRequest request, String password) {
         boolean warningPassword = password.toLowerCase().equals("abracadabra");
-        request.setSessionAttribute(schema, "system_warning_password", warningPassword);
+        request.setScopedSessionAttribute("system_warning_password", warningPassword);
     }
 
-    private void _checkLastBackup(
-            ExtendedRequest request, String schema, AuthorizationPoints atps) {
+    private void _checkLastBackup(ExtendedRequest request, AuthorizationPoints atps) {
 
         if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_BACKUP)) {
             boolean warningBackup = false;
 
-            BackupBO bbo = BackupBO.getInstance(schema);
-            BackupDTO lastBackup = bbo.getLastBackup();
+            BackupDTO lastBackup = backupBO.getLastBackup();
 
             if (lastBackup == null) {
                 // bbo.simpleBackup();
@@ -190,16 +184,14 @@ public class Handler extends AbstractHandler {
                 warningBackup = (diff >= 3);
             }
 
-            request.setSessionAttribute(schema, "system_warning_backup", warningBackup);
+            request.setScopedSessionAttribute("system_warning_backup", warningBackup);
         }
     }
 
-    private void _checkOutdatedIndexes(
-            ExtendedRequest request, String schema, AuthorizationPoints atps) {
-
+    private void _checkOutdatedIndexes(ExtendedRequest request, AuthorizationPoints atps) {
         if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_INDEXING)) {
-            boolean warningReindex = IndexingBO.getInstance(schema).isIndexOutdated();
-            request.setSessionAttribute(schema, "system_warning_reindex", warningReindex);
+            boolean warningReindex = indexingBO.isIndexOutdated();
+            request.setScopedSessionAttribute("system_warning_reindex", warningReindex);
         }
     }
 
@@ -260,5 +252,21 @@ public class Handler extends AbstractHandler {
                                         .getContextClassLoader()
                                         .getResource("/META-INF/menus/menus.json")
                                         .toURI())));
+    }
+
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
+
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
+
+    public void setAuthorizationBO(AuthorizationBO authorizationBO) {
+        this.authorizationBO = authorizationBO;
+    }
+
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
     }
 }

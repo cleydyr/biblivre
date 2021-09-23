@@ -41,8 +41,10 @@ import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import biblivre.z3950.Z3950RecordDTO;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -50,9 +52,12 @@ import org.json.JSONException;
 import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
+    private Map<String, RecordBO> recordBOs = new HashMap<>();
+    private IndexingBO indexingBO;
+    private ImportBO importBO;
+    private Z3950BO z3950BO;
 
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         MemoryFile file = request.getFile("file");
 
@@ -61,9 +66,7 @@ public class Handler extends AbstractHandler {
         ImportEncoding encoding =
                 request.getEnum(ImportEncoding.class, "encoding", ImportEncoding.AUTO_DETECT);
 
-        ImportBO bo = ImportBO.getInstance(schema);
-
-        ImportDTO list = bo.loadFromFile(file, format, encoding);
+        ImportDTO list = importBO.loadFromFile(file, format, encoding);
 
         if (list != null) {
             List<String> isbnList = new ArrayList<>();
@@ -85,18 +88,16 @@ public class Handler extends AbstractHandler {
                 // TODO: Completar para autoridades e vocabulário
             }
 
-            IndexingBO ibo = IndexingBO.getInstance(schema);
-
             if (isbnList.size() > 0) {
-                list.setFoundISBN(ibo.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
+                list.setFoundISBN(indexingBO.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
             }
 
             if (issnList.size() > 0) {
-                list.setFoundISSN(ibo.searchExactTerms(RecordType.BIBLIO, 6, issnList));
+                list.setFoundISSN(indexingBO.searchExactTerms(RecordType.BIBLIO, 6, issnList));
             }
 
             if (isrcList.size() > 0) {
-                list.setFoundISRC(ibo.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
+                list.setFoundISRC(indexingBO.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
             }
         }
 
@@ -113,22 +114,20 @@ public class Handler extends AbstractHandler {
     }
 
     public void importSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer id = request.getInteger("search_server");
         String attribute = request.getString("search_attribute");
         String value = request.getString("search_query");
 
-        Z3950BO bo = Z3950BO.getInstance(schema);
-        Z3950AddressDTO server = bo.findById(id);
+        Z3950AddressDTO server = z3950BO.findById(id);
 
         List<Z3950AddressDTO> serverList = new ArrayList<>();
         serverList.add(server);
         Pair<String, String> search = Pair.of(attribute, value);
 
-        List<Z3950RecordDTO> recordList = bo.search(serverList, search);
+        List<Z3950RecordDTO> recordList = z3950BO.search(serverList, search);
 
-        ImportBO importBo = ImportBO.getInstance(schema);
-        ImportDTO list = importBo.readFromZ3950Results(recordList);
+        ImportDTO list = importBO.readFromZ3950Results(recordList);
 
         if (list != null) {
             List<String> isbnList = new ArrayList<>();
@@ -149,18 +148,16 @@ public class Handler extends AbstractHandler {
                 }
             }
 
-            IndexingBO ibo = IndexingBO.getInstance(schema);
-
             if (isbnList.size() > 0) {
-                list.setFoundISBN(ibo.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
+                list.setFoundISBN(indexingBO.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
             }
 
             if (issnList.size() > 0) {
-                list.setFoundISSN(ibo.searchExactTerms(RecordType.BIBLIO, 6, issnList));
+                list.setFoundISSN(indexingBO.searchExactTerms(RecordType.BIBLIO, 6, issnList));
             }
 
             if (isrcList.size() > 0) {
-                list.setFoundISRC(ibo.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
+                list.setFoundISRC(indexingBO.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
             }
         }
 
@@ -177,11 +174,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void parseMarc(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         String marc = request.getString("marc");
 
-        ImportBO bo = ImportBO.getInstance(schema);
-        IndexingBO ibo = IndexingBO.getInstance(schema);
         RecordDTO dto = null;
         try {
             HumanReadableMarcReader humanReadableMarcReader =
@@ -189,17 +183,20 @@ public class Handler extends AbstractHandler {
 
             Record record = humanReadableMarcReader.next();
 
-            dto = bo.dtoFromRecord(record);
+            dto = importBO.dtoFromRecord(record);
             BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
 
             if (StringUtils.isNotBlank(rdto.getIsbn())) {
-                List<String> search = ibo.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
+                List<String> search =
+                        indexingBO.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
                 this.json.putOpt("isbn", !search.isEmpty());
             } else if (StringUtils.isNotBlank(rdto.getIssn())) {
-                List<String> search = ibo.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
+                List<String> search =
+                        indexingBO.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
                 this.json.putOpt("issn", !search.isEmpty());
             } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-                List<String> search = ibo.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
+                List<String> search =
+                        indexingBO.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
                 this.json.putOpt("isrc", !search.isEmpty());
             }
 
@@ -217,13 +214,11 @@ public class Handler extends AbstractHandler {
     }
 
     public void saveImport(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         int start = request.getInteger("start", 1);
         int end =
                 request.getInteger(
-                        "end",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "end", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Set<Integer> successIds = new HashSet<>();
         Set<Integer> failedIds = new HashSet<>();
 
@@ -235,7 +230,7 @@ public class Handler extends AbstractHandler {
                 continue;
             }
 
-            RecordBO bo = RecordBO.getInstance(schema, recordType);
+            RecordBO bo = recordBOs.get(recordType.name());
 
             RecordDTO dto = null;
 
@@ -297,5 +292,17 @@ public class Handler extends AbstractHandler {
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
+    }
+
+    public void setRecordBOs(Map<String, RecordBO> recordBOs) {
+        this.recordBOs = recordBOs;
+    }
+
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
+
+    public void setImportBO(ImportBO importBO) {
+        this.importBO = importBO;
     }
 }

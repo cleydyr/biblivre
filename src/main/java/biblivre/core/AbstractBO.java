@@ -21,62 +21,19 @@ package biblivre.core;
 
 import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.utils.Constants;
-import java.util.HashMap;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBO {
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    protected String schema;
-
-    private static HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO> instances =
-            new HashMap<Pair<Class<? extends AbstractBO>, String>, AbstractBO>();
-
-    @SuppressWarnings("unchecked")
-    protected static <T extends AbstractBO> T getInstance(Class<T> cls, String schema) {
-        Pair<Class<? extends AbstractBO>, String> pair = Pair.of(cls, schema);
-        T instance = (T) AbstractBO.instances.get(pair);
-
-        if (instance == null) {
-            if (!AbstractBO.class.isAssignableFrom(cls)) {
-                throw new IllegalArgumentException(
-                        "BO: getInstance: Class " + cls.getName() + " is not a subclass of BO.");
-            }
-
-            try {
-                instance = cls.newInstance();
-                instance.setSchema(schema);
-
-                AbstractBO.instances.put(pair, instance);
-            } catch (Exception ex) {
-            }
-        }
-
-        return instance;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getSchema() {
-        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
-    }
-
-    public boolean isGlobalSchema() {
-        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-    }
+    private AuthorizationBO authorizationBO;
 
     public void authorize(String module, String action, AuthorizationPoints authorizationPoints) {
         if (authorizationPoints == null) {
-            authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
+            authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
         }
 
-        AuthorizationBO abo = AuthorizationBO.getInstance(schema);
+        authorizationBO.authorize(authorizationPoints, module, action);
+    }
 
-        abo.authorize(authorizationPoints, module, action);
+    public void setAuthorizationBO(AuthorizationBO authorizationBO) {
+        this.authorizationBO = authorizationBO;
     }
 }

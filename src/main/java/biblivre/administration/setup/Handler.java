@@ -27,6 +27,7 @@ import biblivre.administration.backup.RestoreDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
@@ -57,19 +58,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Handler extends AbstractHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+    private RestoreBO restoreBO;
+    private BackupBO backupBO;
+    private DataMigrationBO dataMigrationBO;
 
     public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
-        boolean isNewLibrary = Configurations.getBoolean(schema, Constants.CONFIG_NEW_LIBRARY);
+        boolean isNewLibrary = Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY);
         boolean success = true;
 
         if (!isNewLibrary) {
             SchemaDTO dto = new SchemaDTO();
             dto.setName(Constants.BIBLIVRE);
-            dto.setSchema(schema);
+            dto.setSchema(SchemaThreadLocal.get());
             dto.setCreatedBy(request.getLoggedUserId());
 
             State.start();
@@ -90,7 +91,7 @@ public class Handler extends AbstractHandler {
 
         if (success) {
             ConfigurationsDTO dto = new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-            Configurations.save(schema, dto, 0);
+            Configurations.save(dto, 0);
         }
 
         try {
@@ -101,11 +102,7 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list_restores
     public void listRestores(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        RestoreBO bo = RestoreBO.getInstance(schema);
-
-        List<RestoreDTO> list = bo.list();
+        List<RestoreDTO> list = restoreBO.list();
 
         try {
             this.json.put("success", true);
@@ -118,15 +115,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void uploadBiblivre4(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Boolean mediaUpload = request.getBoolean("media_upload", false);
 
-        BackupBO bo = BackupBO.getInstance(schema);
         MemoryFile file = request.getFile(mediaUpload ? "biblivre4backupmedia" : "biblivre4backup");
 
         String extension = file.getName().endsWith("b4bz") ? "b4bz" : "b5bz";
 
-        File path = bo.getBackupDestination();
+        File path = backupBO.getBackupDestination();
         String uuid = UUID.randomUUID().toString() + "." + extension;
         File backup = new File(path, uuid);
 
@@ -136,8 +131,7 @@ public class Handler extends AbstractHandler {
         try (OutputStream os = new FileOutputStream(backup)) {
             file.copy(os);
 
-            RestoreBO rbo = RestoreBO.getInstance(schema);
-            dto = rbo.getRestoreDTO(backup.getName());
+            dto = restoreBO.getRestoreDTO(backup.getName());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             success = false;
@@ -154,7 +148,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void uploadBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         boolean success = false;
 
@@ -173,9 +166,7 @@ public class Handler extends AbstractHandler {
 
             os.close();
 
-            RestoreBO bo = RestoreBO.getInstance(schema);
-
-            success = bo.restoreBiblivre3(gzip);
+            success = restoreBO.restoreBiblivre3(gzip);
 
             FileUtils.deleteQuietly(gzip);
 
@@ -239,14 +230,11 @@ public class Handler extends AbstractHandler {
 
     private boolean checkForPartialBackup(
             RestoreDTO dto, ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String mediaFileBackup = request.getString("mediaFileBackup");
         Boolean skip = request.getBoolean("skip", false);
 
         try {
-            RestoreBO bo = RestoreBO.getInstance(schema);
-
             switch (dto.getType()) {
                 case FULL:
                     {
@@ -270,7 +258,7 @@ public class Handler extends AbstractHandler {
                         }
 
                         if (StringUtils.isNotBlank(mediaFileBackup)) {
-                            RestoreDTO partialDto = bo.getRestoreDTO(mediaFileBackup);
+                            RestoreDTO partialDto = restoreBO.getRestoreDTO(mediaFileBackup);
 
                             if (partialDto.getType() == BackupType.DIGITAL_MEDIA_ONLY) {
                                 return true;
@@ -297,7 +285,8 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=restore&filename=Biblivre Backup 2012-09-15 22h56m22s Full.b5bz
     public void restore(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        String schema = SchemaThreadLocal.get();
+
         String filename = request.getString("filename");
         String mediaFileBackup = request.getString("mediaFileBackup");
         String selectedBackupSchema = request.getString("selected_schema");
@@ -310,11 +299,9 @@ public class Handler extends AbstractHandler {
             State.writeLog(
                     request.getLocalizedText("administration.setup.biblivre4restore.log_header"));
 
-            BackupBO bbo = BackupBO.getInstance(schema);
-            BackupScope restoreScope = bbo.getBackupScope();
+            BackupScope restoreScope = backupBO.getBackupScope();
 
-            RestoreBO bo = RestoreBO.getInstance(schema);
-            RestoreDTO dto = bo.getRestoreDTO(filename);
+            RestoreDTO dto = restoreBO.getRestoreDTO(filename);
 
             if (!this.checkForPartialBackup(dto, request, response)) {
                 State.cancel();
@@ -408,15 +395,15 @@ public class Handler extends AbstractHandler {
             RestoreDTO partialDTO = null;
 
             if (StringUtils.isNotBlank(mediaFileBackup)) {
-                partialDTO = bo.getRestoreDTO(mediaFileBackup);
+                partialDTO = restoreBO.getRestoreDTO(mediaFileBackup);
             }
 
-            success = bo.restore(dto, partialDTO);
+            success = restoreBO.restore(dto, partialDTO);
 
             if (success) {
                 ConfigurationsDTO cdto =
                         new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(schema, cdto, 0);
+                Configurations.save(cdto, 0);
 
                 State.finish();
 
@@ -450,7 +437,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void importBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        String schema = SchemaThreadLocal.get();
+
         String origin = request.getString("origin", "biblivre3");
 
         String[] groups = request.getParameterValues("groups[]");
@@ -479,12 +467,12 @@ public class Handler extends AbstractHandler {
             State.writeLog(
                     request.getLocalizedText("administration.setup.biblivre3import.log_header"));
 
-            success = DataMigrationBO.getInstance(schema, origin).migrate(selectedPhases);
+            success = dataMigrationBO.migrate(schema, origin, selectedPhases);
 
             if (success) {
                 ConfigurationsDTO cdto =
                         new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(schema, cdto, 0);
+                Configurations.save(cdto, 0);
 
                 StaticBO.resetCache();
 
@@ -517,5 +505,15 @@ public class Handler extends AbstractHandler {
             this.json.put("complete", !State.LOCKED.get());
         } catch (JSONException e) {
         }
+    }
+
+    public void setRestoreBO(RestoreBO restoreBO) {
+        this.restoreBO = restoreBO;
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
     }
 }

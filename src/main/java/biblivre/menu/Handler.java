@@ -23,23 +23,36 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
+import biblivre.administration.backup.BackupBO;
 import biblivre.administration.indexing.IndexingGroups;
-import biblivre.cataloging.RecordBO;
+import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.utils.Constants;
+import biblivre.core.utils.DatabaseUtils;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+    private UserBO userBO;
+    private SupplierBO supplierBO;
+    private RequestBO requestBO;
+    private BiblioRecordBO biblioRecordBO;
+    private Z3950BO z3950BO;
+    private BackupBO backupBO;
+    private UserTypeBO userTypeBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {
         try {
@@ -58,19 +71,17 @@ public class Handler extends AbstractHandler {
     }
 
     public void listBibliographic(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        RecordType type = RecordType.BIBLIO;
 
         String letter = request.getString("letter");
         Integer order =
-                request.getInteger("order", IndexingGroups.getDefaultSortableGroupId(schema, type));
+                request.getInteger(
+                        "order", IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         if (StringUtils.isBlank(letter)) {
             letter = "a";
         }
 
-        RecordBO rbo = RecordBO.getInstance(schema, type);
-        List<RecordDTO> records = rbo.listByLetter(letter.charAt(0), order);
+        List<RecordDTO> records = biblioRecordBO.listByLetter(letter.charAt(0), order);
 
         request.setAttribute("records", records);
 
@@ -104,10 +115,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
-
-        List<Z3950AddressDTO> servers = bo.listAll();
+        List<Z3950AddressDTO> servers = z3950BO.listAll();
 
         request.setAttribute("servers", servers);
 
@@ -131,10 +139,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
-
-        List<Z3950AddressDTO> servers = bo.listAll();
+        List<Z3950AddressDTO> servers = z3950BO.listAll();
 
         request.setAttribute("servers", servers);
 
@@ -148,6 +153,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("userTypes", userTypeBO.list());
         this.jspURL = "/jsp/circulation/user.jsp";
         return;
     }
@@ -167,7 +173,7 @@ public class Handler extends AbstractHandler {
         if (loggedUser == null || loggedUser == 0) {
             this.jspURL = "/jsp/index.jsp";
         } else {
-            UserDTO user = UserBO.getInstance(request.getSchema()).getUserByLoginId(loggedUser);
+            UserDTO user = userBO.getUserByLoginId(loggedUser);
             if (user != null) {
                 request.setAttribute("RESERVATION_USER_ID", user.getId());
             } else {
@@ -200,14 +206,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        SupplierBO bo = SupplierBO.getInstance(schema);
-        List<SupplierDTO> suppliers = bo.list();
+        List<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
-        RequestBO rbo = RequestBO.getInstance(schema);
-        List<RequestDTO> requests = rbo.list();
+        List<RequestDTO> requests = requestBO.list();
         request.setAttribute("requests", requests);
 
         this.jspURL = "/jsp/acquisition/quotations.jsp";
@@ -215,10 +217,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        SupplierBO bo = SupplierBO.getInstance(schema);
-        List<SupplierDTO> suppliers = bo.list();
+        List<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
         this.jspURL = "/jsp/acquisition/orders.jsp";
@@ -241,6 +240,14 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("backupPath", backupBO.getBackupPath());
+
+        File pgDump = DatabaseUtils.getPgDump(SchemaThreadLocal.get());
+
+        String dumpAbsolutePath = (pgDump == null) ? null : pgDump.getAbsolutePath();
+
+        request.setAttribute("dumpAbsolutePath", dumpAbsolutePath);
+
         this.jspURL = "/jsp/administration/configurations.jsp";
         return;
     }
@@ -293,7 +300,17 @@ public class Handler extends AbstractHandler {
     }
 
     public void multiSchemaBackup(ExtendedRequest request, ExtendedResponse response) {
+        String backupPath =
+                SchemaThreadLocal.withSchema(
+                        Constants.GLOBAL_SCHEMA,
+                        () -> {
+                            return backupBO.getBackupPath();
+                        });
+
+        request.setAttribute("backupPath", backupPath);
+
         this.jspURL = "/jsp/multi_schema/backup.jsp";
+
         return;
     }
 
@@ -315,5 +332,33 @@ public class Handler extends AbstractHandler {
     public void setup(ExtendedRequest request, ExtendedResponse response) {
         this.jspURL = "/jsp/setup.jsp";
         return;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
+
+    public void setSupplierBO(SupplierBO supplierBO) {
+        this.supplierBO = supplierBO;
+    }
+
+    public void setRequestBO(RequestBO requestBO) {
+        this.requestBO = requestBO;
+    }
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
+    public void setZ3950BO(Z3950BO z3950bo) {
+        z3950BO = z3950bo;
+    }
+
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
+    }
+
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
     }
 }

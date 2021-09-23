@@ -22,6 +22,7 @@ package biblivre.administration.backup;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
@@ -36,9 +37,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+    private BackupBO backupBO;
 
     public void prepare(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         String schemas = request.getString("schemas");
         String type = request.getString("type");
 
@@ -50,13 +51,14 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        BackupBO bo = BackupBO.getInstance(schema);
-        BackupScope backupScope = bo.getBackupScope();
+        BackupScope backupScope = backupBO.getBackupScope();
+
+        String schema = SchemaThreadLocal.get();
 
         ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
 
-        if (request.isGlobalSchema()) {
+        if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             list.addAll(Arrays.asList(StringUtils.split(schemas, ",")));
 
             if (list.size() == 2) {
@@ -77,12 +79,12 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            String title = Configurations.getString(s, Constants.CONFIG_TITLE);
-            String subtitle = Configurations.getString(s, Constants.CONFIG_SUBTITLE);
+            String title = Configurations.getString(Constants.CONFIG_TITLE);
+            String subtitle = Configurations.getString(Constants.CONFIG_SUBTITLE);
             map.put(s, Pair.of(title, subtitle));
         }
 
-        BackupDTO dto = bo.prepare(map, backupType, backupScope);
+        BackupDTO dto = backupBO.prepare(map, backupType, backupScope);
 
         try {
             this.json.put("success", true);
@@ -93,28 +95,24 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=backup
     public void backup(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        BackupBO bo = BackupBO.getInstance(schema);
-        BackupDTO dto = bo.get(id);
+        BackupDTO dto = backupBO.get(id);
 
         if (dto == null) {
             this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
             return;
         }
 
-        bo.backup(dto);
-        request.setSessionAttribute(schema, "system_warning_backup", false);
+        backupBO.backup(dto);
+        request.setScopedSessionAttribute("system_warning_backup", false);
     }
 
     // http://localhost:8080/Biblivre5/?controller=download&module=administration.backup&action=download&id=1
     public void download(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        final BackupBO bo = BackupBO.getInstance(schema);
-        final BackupDTO dto = bo.get(id);
+        final BackupDTO dto = backupBO.get(id);
 
         if (dto == null) {
             // TODO: Error
@@ -125,15 +123,13 @@ public class Handler extends AbstractHandler {
 
         this.setFile(diskFile);
 
-        this.setCallback(() -> finishDownload(bo, dto));
+        this.setCallback(() -> finishDownload(backupBO, dto));
     }
 
     public void progress(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        final BackupBO bo = BackupBO.getInstance(schema);
-        final BackupDTO dto = bo.get(id);
+        final BackupDTO dto = backupBO.get(id);
 
         if (dto == null) {
             this.setMessage(ActionResult.ERROR, "error.invalid_parameters");
@@ -151,14 +147,10 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
-        BackupBO bo = BackupBO.getInstance(schema);
-
         try {
             this.json.put("success", true);
 
-            for (BackupDTO dto : bo.list()) {
+            for (BackupDTO dto : backupBO.list()) {
                 this.json.append("backups", dto.toJSONObject());
             }
         } catch (JSONException e) {
@@ -168,5 +160,9 @@ public class Handler extends AbstractHandler {
     private void finishDownload(final BackupBO bo, final BackupDTO dto) {
         dto.setDownloaded(true);
         bo.save(dto);
+    }
+
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
     }
 }

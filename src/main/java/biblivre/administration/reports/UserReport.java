@@ -32,6 +32,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldDTO;
 import biblivre.circulation.user.UserFields;
 import biblivre.core.JavascriptCacheableList;
+import biblivre.core.SchemaThreadLocal;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -45,24 +46,23 @@ import java.util.Date;
 import java.util.List;
 
 public class UserReport extends BaseBiblivreReport {
-
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
+    private UserBO userBO;
+    private LendingBO lendingBO;
+    private LendingFineBO lendingFineBO;
+    private UserTypeBO userTypeBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
         UserReportDto urdto = new UserReportDto();
-        UserBO ubo = UserBO.getInstance(this.getSchema());
         Integer userId = Integer.valueOf(dto.getUserId());
 
-        UserDTO user = ubo.get(userId);
+        UserDTO user = userBO.get(userId);
         urdto.setUser(user);
 
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
-        LendingFineBO lfbo = LendingFineBO.getInstance(this.getSchema());
+        List<LendingDTO> history = lendingBO.listHistory(user);
 
-        List<LendingDTO> history = lbo.listHistory(user);
-
-        List<LendingInfoDTO> historyInfo = lbo.populateLendingInfo(history);
+        List<LendingInfoDTO> historyInfo = lendingBO.populateLendingInfo(history);
         List<String[]> returnedLendings = new ArrayList<String[]>();
         for (LendingInfoDTO lidto : historyInfo) {
             String[] data = new String[3];
@@ -76,14 +76,15 @@ public class UserReport extends BaseBiblivreReport {
         List<String[]> currentLendings = new ArrayList<String[]>();
         List<String[]> lateLendings = new ArrayList<String[]>();
 
-        List<LendingDTO> currentLendingsList = lbo.listUserLendings(user);
-        List<LendingInfoDTO> currentLendingsInfo = lbo.populateLendingInfo(currentLendingsList);
+        List<LendingDTO> currentLendingsList = lendingBO.listUserLendings(user);
+        List<LendingInfoDTO> currentLendingsInfo =
+                lendingBO.populateLendingInfo(currentLendingsList);
         for (LendingInfoDTO lidto : currentLendingsInfo) {
             String[] data = new String[3];
             data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
             data[1] = lidto.getBiblio().getTitle();
             data[2] = lidto.getBiblio().getAuthor();
-            if (lfbo.isLateReturn(lidto.getLending())) {
+            if (lendingFineBO.isLateReturn(lidto.getLending())) {
                 lateLendings.add(data);
             } else {
                 currentLendings.add(data);
@@ -261,8 +262,7 @@ public class UserReport extends BaseBiblivreReport {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-        UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
-        UserTypeDTO usdto = utbo.get(user.getType());
+        UserTypeDTO usdto = userTypeBO.get(user.getType());
         cell = new PdfPCell(new Paragraph(this.getNormalChunk(usdto.getDescription())));
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -295,7 +295,9 @@ public class UserReport extends BaseBiblivreReport {
         PdfPTable table = new PdfPTable(4);
         table.setWidthPercentage(100f);
         PdfPCell cell;
-        JavascriptCacheableList<UserFieldDTO> fields = UserFields.getFields(this.getSchema());
+
+        JavascriptCacheableList<UserFieldDTO> fields =
+                SchemaThreadLocal.withSchema(getSchema(), UserFields::getFields);
 
         for (UserFieldDTO field : fields) {
             String fieldKey = field.getKey();
@@ -317,5 +319,21 @@ public class UserReport extends BaseBiblivreReport {
         }
 
         return table;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
+
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
+
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
+
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
     }
 }

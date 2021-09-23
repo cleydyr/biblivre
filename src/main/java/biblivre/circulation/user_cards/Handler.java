@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+    private UserBO userBO;
 
     public void createPdf(ExtendedRequest request, ExtendedResponse response) {
         LabelPrintDTO print = getLabelPrintDTO(request);
@@ -42,9 +43,8 @@ public class Handler extends AbstractHandler {
         }
 
         String printId = UUID.randomUUID().toString();
-        String schema = request.getSchema();
 
-        request.setSessionAttribute(schema, printId, print);
+        request.setScopedSessionAttribute(printId, print);
 
         try {
             this.json.put("uuid", printId);
@@ -54,13 +54,12 @@ public class Handler extends AbstractHandler {
     }
 
     public void downloadPdf(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        String printId = request.getString("id");
-        LabelPrintDTO dto = (LabelPrintDTO) request.getSessionAttribute(schema, printId);
-        UserBO ubo = UserBO.getInstance(schema);
-        final DiskFile exportFile = ubo.printUserCardsToPDF(dto, request.getTranslationsMap());
 
-        ubo.markAsPrinted(dto.getIds());
+        String printId = request.getString("id");
+        LabelPrintDTO dto = (LabelPrintDTO) request.getScopedSessionAttribute(printId);
+        final DiskFile exportFile = userBO.printUserCardsToPDF(dto, request.getTranslationsMap());
+
+        userBO.markAsPrinted(dto.getIds());
 
         this.setFile(exportFile);
 
@@ -88,5 +87,9 @@ public class Handler extends AbstractHandler {
         } catch (NumberFormatException nfe) {
             return null;
         }
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
     }
 }

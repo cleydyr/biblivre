@@ -4,6 +4,7 @@
 <%@page import="org.json.JSONObject"%>
 <%@page import="biblivre.administration.backup.BackupBO"%>
 <%@page import="biblivre.core.schemas.Schemas"%>
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -51,16 +52,25 @@
 			<legend><i18n:text key="multi_schema.backup.schemas.title" /></legend>
 			<div class="description"><i18n:text key="multi_schema.backup.schemas.description" /></div>
 			<div class="spacer"></div>
-			<% for (SchemaDTO schema : Schemas.getSchemas()) { %>
-				<% if (schema.isDisabled()) { continue; } %>
+			<%
+				for (SchemaDTO schema : Schemas.getSchemas()) {
+					if (schema.isDisabled()) {
+						continue;
+					}
 
-				<div class="library">
-					<div class="checkbox"><input type="checkbox" name="library" checked="checked" value="<%= schema.getSchema() %>" /></div>
-					<div class="title"><%= Configurations.getHtml(schema.getSchema(), Constants.CONFIG_TITLE) %></div>
-					<div class="subtitle"><%= Configurations.getHtml(schema.getSchema(), Constants.CONFIG_SUBTITLE) %></div>
-					<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
-				</div>
-			<% } %>
+					SchemaThreadLocal.withSchema(schema.getSchema(), () -> {
+			%>
+						<div class="library">
+							<div class="checkbox"><input type="checkbox" name="library" checked="checked" value="<%= schema.getSchema() %>" /></div>
+							<div class="title"><%= Configurations.getHtml(Constants.CONFIG_TITLE) %></div>
+							<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></div>
+							<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
+						</div>
+			<%
+						return null;
+					});
+				}
+			%>
 
 			<div class="buttons">
 				<a class="button main_button" onclick="Administration.backup.submit('full');"><i18n:text key="administration.maintenance.backup.button_full" /></a>
@@ -114,7 +124,8 @@
 			<div class="restore">
 				<div class="found_backups">
 					<p><strong><i18n:text key="administration.setup.biblivre4restore.title_found_backups" /></strong></p>
-					<p><i18n:text key="multi_schema.select_restore.description_found_backups" param1="<%= BackupBO.getInstance(\"global\").getBackupPath() %>" /></p>
+
+					<p><i18n:text key="multi_schema.select_restore.description_found_backups" param1="${backupPath}" /></p>
 
 					<div id="found_backups_list" class="found_backups_list"></div>
 					<textarea id="found_backups_list_template" class="template"><!--

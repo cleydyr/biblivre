@@ -20,11 +20,10 @@
 package biblivre.cataloging.holding;
 
 import biblivre.cataloging.CatalogingHandler;
-import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -36,9 +35,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends CatalogingHandler {
+    private HoldingBO holdingBO;
+    private BiblioRecordBO biblioRecordBO;
 
     public Handler() {
-        super(RecordType.HOLDING, MaterialType.HOLDINGS);
+        setDefaultMaterialType(MaterialType.HOLDINGS);
     }
 
     @Override
@@ -47,40 +48,7 @@ public class Handler extends CatalogingHandler {
     }
 
     @Override
-    public void search(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
-    public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
-    public void itemCount(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
-    public void moveRecords(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", false);
-        } catch (JSONException e) {
-        }
-    }
-
-    @Override
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id", null);
 
         if (id == null) {
@@ -88,9 +56,7 @@ public class Handler extends CatalogingHandler {
             return;
         }
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-
-        RecordDTO dto = bo.get(id);
+        RecordDTO dto = holdingBO.get(id);
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
@@ -102,8 +68,7 @@ public class Handler extends CatalogingHandler {
         String holdingLocation = marcDataReader.getShelfLocation();
 
         if (StringUtils.isBlank(holdingLocation)) {
-            RecordBO parentBO = RecordBO.getInstance(schema, RecordType.BIBLIO);
-            RecordDTO parent = parentBO.get(((HoldingDTO) dto).getRecordId());
+            RecordDTO parent = biblioRecordBO.get(((HoldingDTO) dto).getRecordId());
 
             marcDataReader = new MarcDataReader(MarcUtils.iso2709ToRecord(parent.getIso2709()));
             holdingLocation = marcDataReader.getShelfLocation();
@@ -119,11 +84,9 @@ public class Handler extends CatalogingHandler {
     }
 
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int recordId = request.getInteger("record_id");
 
-        HoldingBO bo = HoldingBO.getInstance(schema);
-        DTOCollection<HoldingDTO> list = bo.list(recordId);
+        DTOCollection<HoldingDTO> list = holdingBO.list(recordId);
 
         try {
             this.json.put("list", list.toJSONObject());
@@ -135,7 +98,6 @@ public class Handler extends CatalogingHandler {
 
     @Override
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id", null);
 
         if (id == null) {
@@ -143,15 +105,14 @@ public class Handler extends CatalogingHandler {
             return;
         }
 
-        RecordBO bo = RecordBO.getInstance(schema, this.recordType);
-        RecordDTO dto = bo.get(id);
+        RecordDTO dto = holdingBO.get(id);
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
             return;
         }
 
-        boolean success = bo.delete(dto);
+        boolean success = holdingBO.delete(dto);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
@@ -160,8 +121,37 @@ public class Handler extends CatalogingHandler {
         }
     }
 
-    @Override
-    public void hydrateRecordImpl(RecordDTO dto, ExtendedRequest request) {
+    public void createAutomaticHolding(ExtendedRequest request, ExtendedResponse response) {
+        Integer recordId = request.getInteger("record_id", null);
+
+        if (recordId == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
+
+        RecordDTO rdto = biblioRecordBO.get(recordId);
+
+        if (rdto == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
+            return;
+        }
+
+        AutomaticHoldingDTO autoDto = this.createAutomaticHoldingDto(request);
+        autoDto.setBiblioRecordDto(rdto);
+
+        if (autoDto.getHoldingCount() <= 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
+            return;
+        }
+
+        if (holdingBO.createAutomaticHolding(autoDto)) {
+            this.list(request, response);
+        } else {
+            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
+        }
+    }
+
+    protected void doHydrateRecord(RecordDTO dto, ExtendedRequest request) {
         int recordId = request.getInteger("record_id");
 
         HoldingAvailability availability =
@@ -172,40 +162,6 @@ public class Handler extends CatalogingHandler {
         hdto.setRecordId(recordId);
 
         hdto.setAvailability(availability);
-    }
-
-    public void createAutomaticHolding(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        Integer recordId = request.getInteger("record_id", null);
-
-        if (recordId == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-            return;
-        }
-
-        RecordBO rbo = RecordBO.getInstance(schema, RecordType.BIBLIO);
-        RecordDTO rdto = rbo.get(recordId);
-
-        if (rdto == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
-            return;
-        }
-
-        AutomaticHoldingDTO autoDto = this.createAutomaticHoldingDto(request);
-        autoDto.setBiblioRecordDto(rdto);
-
-        HoldingBO hbo = HoldingBO.getInstance(schema);
-
-        if (autoDto.getHoldingCount() <= 0) {
-            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
-            return;
-        }
-
-        if (hbo.createAutomaticHolding(autoDto)) {
-            this.list(request, response);
-        } else {
-            this.setMessage(ActionResult.WARNING, "cataloging.record.error.save");
-        }
     }
 
     private AutomaticHoldingDTO createAutomaticHoldingDto(ExtendedRequest request) {
@@ -221,5 +177,14 @@ public class Handler extends CatalogingHandler {
         dto.setCreatedBy(request.getLoggedUserId());
 
         return dto;
+    }
+
+    public void setHoldingBO(HoldingBO holdingBO) {
+        super.setRecordBO(holdingBO);
+        this.holdingBO = holdingBO;
+    }
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
     }
 }

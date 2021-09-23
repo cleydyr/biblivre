@@ -34,9 +34,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
+    private QuotationBO quotationBO;
+
+    public void setQuotationBO(QuotationBO quotationBO) {
+        this.quotationBO = quotationBO;
+    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
 
         String query = null;
@@ -51,12 +55,10 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        QuotationBO bo = QuotationBO.getInstance(schema);
-        DTOCollection<QuotationDTO> list = bo.search(query, limit, offset);
+        DTOCollection<QuotationDTO> list = quotationBO.search(query, limit, offset);
 
         if (list.size() == 0) {
             this.setMessage(ActionResult.WARNING, "acquisition.quotation.error.no_quotation_found");
@@ -75,11 +77,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        QuotationBO bo = QuotationBO.getInstance(schema);
-        QuotationDTO dto = bo.get(id);
+        QuotationDTO dto = quotationBO.get(id);
 
         try {
             this.json.put("quotation", dto.toJSONObject());
@@ -89,11 +89,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("supplier_id");
 
-        QuotationBO bo = QuotationBO.getInstance(schema);
-        DTOCollection<QuotationDTO> list = bo.list(id);
+        DTOCollection<QuotationDTO> list = quotationBO.list(id);
 
         try {
             this.json.put("list", list.toJSONObject());
@@ -103,8 +101,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer id = request.getInteger("id");
         QuotationDTO dto = null;
 
@@ -115,17 +111,15 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        QuotationBO bo = QuotationBO.getInstance(schema);
-
         Integer newId = 0;
         boolean result = false;
         if (id == 0) {
             dto.setCreatedBy(request.getLoggedUserId());
-            newId = bo.save(dto);
+            newId = quotationBO.save(dto);
         } else {
             dto.setId(id);
             dto.setModifiedBy(request.getLoggedUserId());
-            result = bo.update(dto);
+            result = quotationBO.update(dto);
         }
         if (newId != 0 || result) {
             if (id == 0) {
@@ -137,7 +131,7 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "acquisition.quotation.error.save");
         }
 
-        dto = bo.get(id == 0 ? newId : id);
+        dto = quotationBO.get(id == 0 ? newId : id);
 
         try {
             this.json.put("data", dto.toJSONObject());
@@ -149,15 +143,12 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer id = request.getInteger("id");
 
-        QuotationBO bo = QuotationBO.getInstance(schema);
         QuotationDTO dto = new QuotationDTO();
         dto.setId(id);
 
-        if (bo.delete(dto)) {
+        if (quotationBO.delete(dto)) {
             this.setMessage(ActionResult.SUCCESS, "acquisition.quotation.success.delete");
         } else {
             this.setMessage(ActionResult.WARNING, "acquisition.quotation.error.delete");

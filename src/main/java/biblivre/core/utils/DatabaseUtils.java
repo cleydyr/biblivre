@@ -56,7 +56,7 @@ public class DatabaseUtils {
     }
 
     public static File getPgDumpFromConfiguration(String schema) {
-        String pgdump = Configurations.getString(schema, Constants.CONFIG_PGDUMP_PATH);
+        String pgdump = Configurations.getString(Constants.CONFIG_PGDUMP_PATH);
 
         if (StringUtils.isNotBlank(pgdump)) {
             File file = new File(pgdump);
@@ -72,7 +72,7 @@ public class DatabaseUtils {
     }
 
     public static File getPsqlFromConfiguration(String schema) {
-        String psql = Configurations.getString(schema, Constants.CONFIG_PSQL_PATH);
+        String psql = Configurations.getString(Constants.CONFIG_PSQL_PATH);
 
         if (StringUtils.isNotBlank(psql)) {
             File file = new File(psql);

@@ -21,7 +21,7 @@
 	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
 
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
 

@@ -94,8 +94,7 @@ public class IndexingGroupDTO extends AbstractDTO {
 
     public List<Pair<String, List<Character>>> getDatafieldsArray() {
         if (this._array == null) {
-            List<Pair<String, List<Character>>> list =
-                    new ArrayList<>();
+            List<Pair<String, List<Character>>> list = new ArrayList<>();
 
             if (this.datafields != null) {
                 String[] fields = this.datafields.split(",");

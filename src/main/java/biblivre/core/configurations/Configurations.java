@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.configurations;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.schemas.Schemas;
@@ -49,29 +50,31 @@ public class Configurations extends StaticBO {
         Configurations.configurations = new HashMap<>();
     }
 
-    public static String getString(String schema, String key) {
-        String value = Configurations.getValue(schema, key);
+    public static String getString(String key) {
+        String value = Configurations.getValue(key);
 
         return value;
     }
 
-    public static String getHtml(String schema, String key) {
-        String value = Configurations.getValue(schema, key);
+    public static String getHtml(String key) {
+        String value = Configurations.getValue(key);
 
         return StringEscapeUtils.escapeHtml4(value);
     }
 
-    public static int getInt(String schema, String key) {
-        return Configurations.getInt(schema, key, 0);
+    public static int getInt(String key) {
+        return Configurations.getInt(key, 0);
     }
 
-    public static int getPositiveInt(String schema, String key, int def) {
-        int ret = Configurations.getInt(schema, key, def);
+    public static int getPositiveInt(String key, int def) {
+        int ret = Configurations.getInt(key, def);
         return ret > 0 ? ret : def;
     }
 
-    public static int getInt(String schema, String key, int def) {
-        String value = Configurations.getValue(schema, key);
+    public static int getInt(String key, int def) {
+        String value = Configurations.getValue(key);
+
+        String schema = SchemaThreadLocal.get();
 
         try {
             return Integer.valueOf(value);
@@ -82,8 +85,10 @@ public class Configurations extends StaticBO {
         }
     }
 
-    public static float getFloat(String schema, String key) {
-        String value = Configurations.getValue(schema, key);
+    public static float getFloat(String key) {
+        String schema = SchemaThreadLocal.get();
+
+        String value = Configurations.getValue(key);
 
         try {
             return Float.valueOf(value.replace(',', '.'));
@@ -94,14 +99,14 @@ public class Configurations extends StaticBO {
         }
     }
 
-    public static boolean getBoolean(String schema, String key) {
-        String value = Configurations.getValue(schema, key);
+    public static boolean getBoolean(String key) {
+        String value = Configurations.getValue(key);
 
         return value.equals("true");
     }
 
-    public static List<Integer> getIntArray(String schema, String key, String def) {
-        String value = Configurations.getValue(schema, key);
+    public static List<Integer> getIntArray(String key, String def) {
+        String value = Configurations.getValue(key);
 
         if (StringUtils.isBlank(value)) {
             value = def;
@@ -126,12 +131,14 @@ public class Configurations extends StaticBO {
         return list;
     }
 
-    public static List<ConfigurationsDTO> validate(String schema, List<ConfigurationsDTO> configs)
+    public static List<ConfigurationsDTO> validate(List<ConfigurationsDTO> configs)
             throws ValidationException {
         List<ConfigurationsDTO> validConfigs = new ArrayList<>(configs.size());
         ValidationException e =
                 new ValidationException("administration.configurations.error.invalid");
         boolean errors = false;
+
+        String schema = SchemaThreadLocal.get();
 
         for (ConfigurationsDTO config : configs) {
             if (config.getKey().equals(Constants.CONFIG_MULTI_SCHEMA)
@@ -156,7 +163,7 @@ public class Configurations extends StaticBO {
                 validConfigs.add(config);
             }
 
-            ConfigurationsDTO currentConfig = Configurations.get(schema, config.getKey());
+            ConfigurationsDTO currentConfig = Configurations.get(config.getKey());
 
             if (currentConfig == null) {
                 config.setType("string");
@@ -184,7 +191,7 @@ public class Configurations extends StaticBO {
         return validConfigs;
     }
 
-    public static void save(String schema, List<ConfigurationsDTO> configs, int loggedUser) {
+    public static void save(List<ConfigurationsDTO> configs, int loggedUser) {
         ConfigurationsDTO multiSchemaConfig = null;
 
         for (Iterator<ConfigurationsDTO> it = configs.iterator(); it.hasNext(); ) {
@@ -197,22 +204,33 @@ public class Configurations extends StaticBO {
         }
 
         if (multiSchemaConfig != null) {
-            ConfigurationsDAO globalDao = ConfigurationsDAO.getInstance(Constants.GLOBAL_SCHEMA);
+            final ConfigurationsDTO finalMultiSchemaConfig = multiSchemaConfig;
 
-            List<ConfigurationsDTO> multiSchemaList = new ArrayList<>();
-            multiSchemaList.add(multiSchemaConfig);
-            globalDao.save(multiSchemaList, loggedUser);
+            SchemaThreadLocal.withSchema(
+                    Constants.GLOBAL_SCHEMA,
+                    () -> {
+                        ConfigurationsDAOImpl globalDao = ConfigurationsDAOImpl.getInstance();
 
-            HashMap<String, ConfigurationsDTO> map = Configurations.getMap(Constants.GLOBAL_SCHEMA);
-            map.put(multiSchemaConfig.getKey(), multiSchemaConfig);
+                        List<ConfigurationsDTO> multiSchemaList = new ArrayList<>();
 
-            Schemas.reset();
+                        multiSchemaList.add(finalMultiSchemaConfig);
+
+                        globalDao.save(multiSchemaList, loggedUser);
+
+                        HashMap<String, ConfigurationsDTO> map = Configurations.getMap();
+
+                        map.put(finalMultiSchemaConfig.getKey(), finalMultiSchemaConfig);
+
+                        Schemas.reset();
+
+                        return null;
+                    });
         }
 
-        ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
+        ConfigurationsDAO dao = ConfigurationsDAOImpl.getInstance();
 
         if (dao.save(configs, loggedUser)) {
-            HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
+            HashMap<String, ConfigurationsDTO> map = Configurations.getMap();
 
             for (ConfigurationsDTO config : configs) {
                 map.put(config.getKey(), config);
@@ -220,15 +238,16 @@ public class Configurations extends StaticBO {
         }
     }
 
-    public static void save(String schema, ConfigurationsDTO config, int loggedUser) {
+    public static void save(ConfigurationsDTO config, int loggedUser) {
         List<ConfigurationsDTO> configs = new ArrayList<>(1);
+
         configs.add(config);
 
-        Configurations.save(schema, configs, loggedUser);
+        Configurations.save(configs, loggedUser);
     }
 
-    private static String getValue(String schema, String key) {
-        ConfigurationsDTO config = Configurations.get(schema, key);
+    private static String getValue(String key) {
+        ConfigurationsDTO config = Configurations.get(key);
 
         String value = "";
 
@@ -240,32 +259,45 @@ public class Configurations extends StaticBO {
     }
 
     public static void setMultipleSchemasEnabled(Integer loggedUser) {
-
         ConfigurationsDTO config =
-                Configurations.get(Constants.GLOBAL_SCHEMA, Constants.CONFIG_MULTI_SCHEMA);
+                SchemaThreadLocal.withSchema(
+                        Constants.GLOBAL_SCHEMA,
+                        () -> {
+                            return Configurations.get(Constants.CONFIG_MULTI_SCHEMA);
+                        });
 
         config.setValue("true");
 
-        Configurations.save(Constants.GLOBAL_SCHEMA, config, loggedUser);
+        Configurations.save(config, loggedUser);
 
         Configurations.reset();
     }
 
-    private static ConfigurationsDTO get(String schema, String key) {
-        HashMap<String, ConfigurationsDTO> map = Configurations.getMap(schema);
+    private static ConfigurationsDTO get(String key) {
+        HashMap<String, ConfigurationsDTO> map = Configurations.getMap();
 
         ConfigurationsDTO config = map.get(key);
 
         if (config == null) {
-            return schema.equals(Constants.GLOBAL_SCHEMA)
-                    ? null
-                    : Configurations.get(Constants.GLOBAL_SCHEMA, key);
+            String schema = SchemaThreadLocal.get();
+
+            if (schema.equals(Constants.GLOBAL_SCHEMA)) {
+                return null;
+            }
+
+            return SchemaThreadLocal.withSchema(
+                    Constants.GLOBAL_SCHEMA,
+                    () -> {
+                        return Configurations.get(key);
+                    });
         }
 
         return config;
     }
 
-    private static HashMap<String, ConfigurationsDTO> getMap(String schema) {
+    private static HashMap<String, ConfigurationsDTO> getMap() {
+        String schema = SchemaThreadLocal.get();
+
         HashMap<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
 
         if (map == null) {
@@ -286,9 +318,10 @@ public class Configurations extends StaticBO {
 
         Configurations.logger.debug("Loading configurations for " + schema);
 
-        ConfigurationsDAO dao = ConfigurationsDAO.getInstance(schema);
+        ConfigurationsDAO dao = ConfigurationsDAOImpl.getInstance();
 
         List<ConfigurationsDTO> configs = dao.list();
+
         map = new HashMap<>(configs.size());
 
         for (ConfigurationsDTO config : configs) {

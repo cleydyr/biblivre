@@ -43,13 +43,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
+    private UserBO userBO;
+    private LendingBO lendingBO;
+    private LendingFineBO lendingFineBO;
+    private ReservationBO reservationBO;
+    private DigitalMediaBO digitalMediaBO;
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         if (user == null) {
             this.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
@@ -81,15 +84,14 @@ public class Handler extends AbstractHandler {
 
     public DTOCollection<UserDTO> searchHelper(
             ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
 
         UserSearchDTO searchDto = new UserSearchDTO(searchParameters);
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = request.getInteger("offset", 0);
 
         Integer page = request.getInteger("page", 1);
@@ -97,9 +99,7 @@ public class Handler extends AbstractHandler {
             offset = limit * (page - 1);
         }
 
-        UserBO bo = UserBO.getInstance(schema);
-
-        DTOCollection<UserDTO> list = bo.search(searchDto, limit, offset);
+        DTOCollection<UserDTO> list = userBO.search(searchDto, limit, offset);
 
         if (list.size() == 0) {
             handler.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
@@ -109,14 +109,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
         UserDTO user = null;
 
         if (id != 0) {
-            user = bo.get(id);
+            user = userBO.get(id);
             if (user == null) {
                 this.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
                 return;
@@ -132,7 +131,7 @@ public class Handler extends AbstractHandler {
 
         user.setCreatedBy(request.getLoggedUserId());
 
-        List<UserFieldDTO> userFields = UserFields.getFields(schema);
+        List<UserFieldDTO> userFields = UserFields.getFields();
         for (UserFieldDTO userField : userFields) {
             String key = userField.getKey();
             if (request.hasParameter(key)) {
@@ -150,8 +149,6 @@ public class Handler extends AbstractHandler {
                 file.setInputStream(new ByteArrayInputStream(arr));
                 file.setSize(arr.length);
 
-                DigitalMediaBO digitalMediaBO = DigitalMediaBO.getInstance(schema);
-
                 Integer serial = digitalMediaBO.save(file);
 
                 String photoId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
@@ -168,8 +165,7 @@ public class Handler extends AbstractHandler {
                         if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
                             // Try to remove the file from Biblivre DB
 
-                            DigitalMediaBO dmbo = DigitalMediaBO.getInstance(schema);
-                            dmbo.delete(Integer.valueOf(splitId[0]), splitId[1]);
+                            digitalMediaBO.delete(Integer.valueOf(splitId[0]), splitId[1]);
                         }
                     }
                 }
@@ -177,7 +173,7 @@ public class Handler extends AbstractHandler {
         } catch (Exception e) {
         }
 
-        if (bo.save(user)) {
+        if (userBO.save(user)) {
             if (id == 0) {
                 this.setMessage(ActionResult.SUCCESS, "circulation.users.success.save");
             } else {
@@ -197,15 +193,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         String act = (user.getStatus() == UserStatus.INACTIVE) ? "delete" : "disable";
 
-        boolean success = bo.delete(user);
+        boolean success = userBO.delete(user);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.users.success." + act);
@@ -215,12 +209,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void loadTabData(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
         String tab = request.getString("tab");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         if (user == null) {
             this.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
@@ -230,15 +222,12 @@ public class Handler extends AbstractHandler {
         DTOCollection<?> data = null;
 
         if (tab.equals("lendings")) {
-            LendingBO lbo = LendingBO.getInstance(schema);
             DTOCollection<LendingInfoDTO> list =
-                    lbo.populateLendingInfo(lbo.listLendings(user), false);
-            list.addAll(lbo.populateLendingInfo(lbo.listHistory(user), false));
+                    lendingBO.populateLendingInfo(lendingBO.listLendings(user), false);
+            list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
             data = list;
         } else if (tab.equals("reservations")) {
-            ReservationBO rbo = ReservationBO.getInstance(schema);
-
-            List<ReservationInfoDTO> infos = rbo.listReservationInfo(user);
+            List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
             ReservationListDTO reservationList = new ReservationListDTO();
             reservationList.setUser(user);
             reservationList.setId(user.getId());
@@ -248,9 +237,7 @@ public class Handler extends AbstractHandler {
             list.add(reservationList);
             data = list;
         } else if (tab.equals("fines")) {
-            LendingFineBO lfbo = LendingFineBO.getInstance(schema);
-
-            List<LendingFineDTO> fines = lfbo.listLendingFines(user);
+            List<LendingFineDTO> fines = lendingFineBO.listLendingFines(user);
 
             DTOCollection<LendingFineDTO> list = new DTOCollection<>();
             list.addAll(fines);
@@ -269,11 +256,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void block(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer userId = request.getInteger("user_id");
 
-        UserBO userBo = UserBO.getInstance(schema);
-        boolean success = userBo.updateUserStatus(userId, UserStatus.BLOCKED);
+        boolean success = userBO.updateUserStatus(userId, UserStatus.BLOCKED);
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.users.success.block");
         } else {
@@ -282,15 +267,33 @@ public class Handler extends AbstractHandler {
     }
 
     public void unblock(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer userId = request.getInteger("user_id");
 
-        UserBO userBo = UserBO.getInstance(schema);
-        boolean success = userBo.updateUserStatus(userId, UserStatus.ACTIVE);
+        boolean success = userBO.updateUserStatus(userId, UserStatus.ACTIVE);
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.users.success.unblock");
         } else {
             this.setMessage(ActionResult.WARNING, "circulation.users.failure.unblock");
         }
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
+
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
+
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
+
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
+    }
+
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
     }
 }

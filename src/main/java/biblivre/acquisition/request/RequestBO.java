@@ -25,32 +25,22 @@ import biblivre.core.DTOCollection;
 import java.util.List;
 
 public class RequestBO extends AbstractBO {
-    private RequestDAO dao;
-
-    public static RequestBO getInstance(String schema) {
-        RequestBO bo = AbstractBO.getInstance(RequestBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = RequestDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private RequestDAO requestDAO;
 
     public RequestDTO get(Integer id) {
-        return this.dao.get(id);
+        return this.requestDAO.get(id);
     }
 
     public boolean save(RequestDTO dto) {
-        return this.dao.save(dto);
+        return this.requestDAO.save(dto);
     }
 
     public boolean update(RequestDTO dto) {
-        return this.dao.update(dto);
+        return this.requestDAO.update(dto);
     }
 
     public boolean delete(RequestDTO dto) {
-        return this.dao.delete(dto);
+        return this.requestDAO.delete(dto);
     }
 
     public DTOCollection<RequestDTO> list() {
@@ -58,10 +48,14 @@ public class RequestBO extends AbstractBO {
     }
 
     public DTOCollection<RequestDTO> search(String value, int limit, int offset) {
-        return this.dao.search(value, limit, offset);
+        return this.requestDAO.search(value, limit, offset);
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.requestDAO.saveFromBiblivre3(dtoList);
+    }
+
+    public void setRequestDAO(RequestDAO requestDAO) {
+        this.requestDAO = requestDAO;
     }
 }

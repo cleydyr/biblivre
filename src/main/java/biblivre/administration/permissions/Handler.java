@@ -29,17 +29,24 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.TextUtils;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
+import biblivre.spring.SpringUtils;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
+    private PermissionBO permissionBO;
+    private LoginBO loginBO;
+    private UserBO userBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler =
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
+
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -51,7 +58,7 @@ public class Handler extends AbstractHandler {
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {
-            list.add(this.populatePermission(schema, user));
+            list.add(this.populatePermission(user));
         }
 
         try {
@@ -62,17 +69,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int userId = request.getInteger("user_id");
         if (userId == 0) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
-        LoginBO lbo = LoginBO.getInstance(schema);
-
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
         if (udto == null) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
@@ -84,9 +87,8 @@ public class Handler extends AbstractHandler {
         dto.setUser(udto);
 
         if (loginId > 0) {
-            dto.setLogin(lbo.get(loginId));
-            PermissionBO bo = PermissionBO.getInstance(schema);
-            List<String> list = bo.getByLoginId(loginId);
+            dto.setLogin(loginBO.get(loginId));
+            List<String> list = permissionBO.getByLoginId(loginId);
             if (list != null) {
                 dto.setPermissions(list);
             }
@@ -100,15 +102,14 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int userId = request.getInteger("user_id");
         if (userId == 0) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
 
         if (udto == null) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
@@ -122,9 +123,6 @@ public class Handler extends AbstractHandler {
         Integer loginId = udto.getLoginId();
         boolean newLogin = (loginId == null || loginId == 0);
 
-        PermissionBO pbo = PermissionBO.getInstance(schema);
-        LoginBO lbo = LoginBO.getInstance(schema);
-
         LoginDTO ldto = new LoginDTO();
         ldto.setLogin(login);
         ldto.setEmployee(employee);
@@ -137,17 +135,17 @@ public class Handler extends AbstractHandler {
 
         if (newLogin) {
             ldto.setCreatedBy(request.getLoggedUserId());
-            result = lbo.save(ldto, udto);
+            result = loginBO.save(ldto, udto);
         } else {
             ldto.setId(udto.getLoginId());
             ldto.setModifiedBy(request.getLoggedUserId());
-            result = lbo.update(ldto);
+            result = loginBO.update(ldto);
         }
 
         String[] permissions = request.getParameterValues("permissions[]");
 
         if (permissions != null) {
-            result &= pbo.save(udto.getLoginId(), Arrays.asList(permissions));
+            result &= permissionBO.save(udto.getLoginId(), Arrays.asList(permissions));
         }
 
         if (result) {
@@ -166,7 +164,7 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "administration.permission.error.create_login");
         }
 
-        PermissionDTO dto = this.populatePermission(schema, udto);
+        PermissionDTO dto = this.populatePermission(udto);
 
         try {
             this.json.put("data", dto.toJSONObject());
@@ -178,15 +176,13 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int userId = request.getInteger("user_id");
         if (userId == 0) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
             return;
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
 
         if (udto == null) {
             this.setMessage(ActionResult.WARNING, "error.invalid_user");
@@ -195,19 +191,15 @@ public class Handler extends AbstractHandler {
 
         // WE DELETE THE LOGIN RECORD, AND THE PERMISSIONS WILL ALSO BE DELETED
         // BY THE LOGIN_BO
-        LoginBO lbo = LoginBO.getInstance(schema);
 
-        if (lbo.delete(udto)) {
+        if (loginBO.delete(udto)) {
             this.setMessage(ActionResult.SUCCESS, "administration.permission.success.delete");
         } else {
             this.setMessage(ActionResult.WARNING, "administration.permission.error.delete");
         }
     }
 
-    private PermissionDTO populatePermission(String schema, UserDTO user) {
-        PermissionBO pbo = PermissionBO.getInstance(schema);
-        LoginBO lbo = LoginBO.getInstance(schema);
-
+    private PermissionDTO populatePermission(UserDTO user) {
         PermissionDTO dto = new PermissionDTO();
         dto.setUser(user);
 
@@ -215,7 +207,7 @@ public class Handler extends AbstractHandler {
             return dto;
         }
 
-        LoginDTO ldto = lbo.get(user.getLoginId());
+        LoginDTO ldto = loginBO.get(user.getLoginId());
 
         if (ldto == null) {
             return dto;
@@ -223,7 +215,7 @@ public class Handler extends AbstractHandler {
 
         dto.setLogin(ldto);
 
-        List<String> permissions = pbo.getByLoginId(user.getLoginId());
+        List<String> permissions = permissionBO.getByLoginId(user.getLoginId());
 
         if (permissions == null) {
             return dto;
@@ -232,5 +224,17 @@ public class Handler extends AbstractHandler {
         dto.setPermissions(permissions);
 
         return dto;
+    }
+
+    public void setPermissionBO(PermissionBO permissionBO) {
+        this.permissionBO = permissionBO;
+    }
+
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
     }
 }

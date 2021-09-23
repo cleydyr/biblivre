@@ -22,11 +22,13 @@ package biblivre.administration.backup;
 import biblivre.administration.backup.exception.RestoreException;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.StringPool;
+import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -85,26 +87,11 @@ public class RestoreBO extends AbstractBO {
 
     private static final Logger logger = LoggerFactory.getLogger(RestoreBO.class);
 
-    private BackupDAO dao;
     private DigitalMediaDAO digitalMediaDAO;
-
-    public static RestoreBO getInstance(String schema) {
-        RestoreBO bo = AbstractBO.getInstance(RestoreBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = BackupDAO.getInstance(schema);
-        }
-
-        if (bo.digitalMediaDAO == null) {
-            bo.digitalMediaDAO = DigitalMediaDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private BackupBO backupBO;
+    private DigitalMediaBO digitalMediaBO;
 
     public List<RestoreDTO> list() {
-        BackupBO backupBO = BackupBO.getInstance(this.getSchema());
-
         File path = backupBO.getBackupDestination();
 
         if (path == null) {
@@ -168,8 +155,6 @@ public class RestoreBO extends AbstractBO {
     }
 
     public RestoreDTO getRestoreDTO(String filename) {
-        BackupBO backupBO = BackupBO.getInstance(this.getSchema());
-
         File path = backupBO.getBackupDestination();
 
         if (path == null) {
@@ -224,7 +209,8 @@ public class RestoreBO extends AbstractBO {
 
         _validateRestoreSchemas(restoreSchemas);
 
-        RestoreContextHelper context = new RestoreContextHelper(dto, dao.listDatabaseSchemas());
+        RestoreContextHelper context =
+                new RestoreContextHelper(dto, backupBO.listDatabaseSchemas());
 
         String globalSchema = Constants.GLOBAL_SCHEMA;
 
@@ -561,21 +547,25 @@ public class RestoreBO extends AbstractBO {
             return;
         }
 
-        DigitalMediaDAO dao = DigitalMediaDAO.getInstance(Constants.GLOBAL_SCHEMA);
+        SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    for (File file : path.listFiles()) {
+                        Matcher fileMatcher = _FILE.matcher(file.getName());
 
-        for (File file : path.listFiles()) {
-            Matcher fileMatcher = _FILE.matcher(file.getName());
+                        if (fileMatcher.find()) {
+                            String mediaId = fileMatcher.group(1);
 
-            if (fileMatcher.find()) {
-                String mediaId = fileMatcher.group(1);
+                            long oid = digitalMediaBO.importFile(file);
 
-                long oid = dao.importFile(file);
+                            String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
 
-                String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
+                            _writeLine(bw, newLine);
+                        }
+                    }
 
-                _writeLine(bw, newLine);
-            }
-        }
+                    return null;
+                });
     }
 
     private String _buildUpdateDigitalMediaQuery(String mediaId, long oid) {
@@ -724,7 +714,9 @@ public class RestoreBO extends AbstractBO {
     }
 
     private ProcessBuilder _createProcessBuilder(boolean transactional) {
-        File psql = DatabaseUtils.getPsql(this.getSchema());
+        String schema = SchemaThreadLocal.get();
+
+        File psql = DatabaseUtils.getPsql(schema);
 
         if (psql == null) {
             throw new ValidationException("administration.maintenance.backup.error.psql_not_found");

@@ -55,7 +55,7 @@ public class CalendarUtils {
         return date.getTime() == cal.getTimeInMillis();
     }
 
-    public static Date calculateExpectedReturnDate(String schema, Date lendingDate, int days) {
+    public static Date calculateExpectedReturnDate(Date lendingDate, int days) {
         DateCalculator<LocalDate> cal =
                 LocalDateKitCalculatorsFactory.getDefaultInstance()
                         .getDateCalculator(CalendarUtils.CALENDAR_NAME, HolidayHandlerType.FORWARD);
@@ -64,8 +64,7 @@ public class CalendarUtils {
             week = week.withWorkingDayFromCalendar(false, i);
         }
 
-        for (int i :
-                Configurations.getIntArray(schema, Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6")) {
+        for (int i : Configurations.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6")) {
             week = week.withWorkingDayFromCalendar(true, i);
         }
         cal.setWorkingWeek(new JodaWorkingWeek(week));

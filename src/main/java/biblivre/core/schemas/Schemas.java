@@ -22,6 +22,7 @@ package biblivre.core.schemas;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
 import biblivre.core.BiblivreInitializer;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.Updates;
 import biblivre.core.configurations.Configurations;
@@ -75,36 +76,44 @@ public class Schemas extends StaticBO {
     }
 
     public static boolean isMultipleSchemasEnabled() {
-        return Configurations.getBoolean(Constants.GLOBAL_SCHEMA, Constants.CONFIG_MULTI_SCHEMA);
+        return SchemaThreadLocal.withGlobalSchema(
+                () -> Configurations.getBoolean(Constants.CONFIG_MULTI_SCHEMA));
     }
 
     public static void reload() {
-        SchemasDAO dao = SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA);
-        Set<SchemaDTO> schemas = dao.list();
+        SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
-        if (schemas.size() == 0) {
-            schemas.add(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
-        }
+                    Set<SchemaDTO> schemas = dao.list();
 
-        Schemas.schemas = schemas;
+                    if (schemas.size() == 0) {
+                        schemas.add(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
+                    }
 
-        for (SchemaDTO dto : Schemas.schemas) {
-            if (!dto.isDisabled()) {
-                Updates.schemaUpdate(dto.getSchema());
-            }
-        }
+                    Schemas.schemas = schemas;
 
-        if (!Schemas.isLoaded(Constants.SINGLE_SCHEMA)) {
-            for (SchemaDTO dto : Schemas.schemas) {
-                if (!dto.isDisabled()) {
-                    Constants.SINGLE_SCHEMA = dto.getSchema();
-                    break;
-                }
-            }
-        }
+                    for (SchemaDTO dto : Schemas.schemas) {
+                        if (!dto.isDisabled()) {
+                            Updates.schemaUpdate(dto.getSchema());
+                        }
+                    }
 
-        Z3950ServerBO.setSingleSchema(Constants.SINGLE_SCHEMA);
-        BiblivreInitializer.reloadZ3950Server();
+                    if (!Schemas.isLoaded(Constants.SINGLE_SCHEMA)) {
+                        for (SchemaDTO dto : Schemas.schemas) {
+                            if (!dto.isDisabled()) {
+                                Constants.SINGLE_SCHEMA = dto.getSchema();
+                                break;
+                            }
+                        }
+                    }
+
+                    Z3950ServerBO.setSingleSchema(Constants.SINGLE_SCHEMA);
+                    BiblivreInitializer.reloadZ3950Server();
+
+                    return null;
+                });
     }
 
     public static SchemaDTO getSchema(String schema) {
@@ -202,33 +211,53 @@ public class Schemas extends StaticBO {
     }
 
     public static boolean disable(SchemaDTO dto) {
-        SchemasDAO dao = SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA);
-        dto.setDisabled(true);
-        boolean success = dao.save(dto);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
-        Schemas.reset();
-        return success;
+                    dto.setDisabled(true);
+
+                    return dao.save(dto);
+                });
     }
 
     public static boolean enable(SchemaDTO dto) {
-        SchemasDAO dao = SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA);
-        dto.setDisabled(false);
-        boolean success = dao.save(dto);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
-        Schemas.reset();
-        return success;
+                    dto.setDisabled(false);
+
+                    boolean success = dao.save(dto);
+
+                    Schemas.reset();
+
+                    return success;
+                });
     }
 
     public static boolean deleteSchema(SchemaDTO dto) {
-        SchemasDAO dao = SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
-        StaticBO.resetCache();
+                    StaticBO.resetCache();
 
-        return dao.delete(dto);
+                    return dao.delete(dto);
+                });
     }
 
     public static boolean exists(String schema) {
-        return SchemasDAO.getInstance(Constants.GLOBAL_SCHEMA).exists(schema);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    SchemasDAOImpl schemasDAO = SchemasDAOImpl.getInstance();
+
+                    return schemasDAO.exists(schema);
+                });
     }
 
     public static boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {

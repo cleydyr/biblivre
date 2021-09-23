@@ -32,9 +32,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
+    private Z3950BO z3950BO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
 
         String query = null;
@@ -49,12 +50,10 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        Z3950BO bo = Z3950BO.getInstance(schema);
-        DTOCollection<Z3950AddressDTO> list = bo.search(query, limit, offset);
+        DTOCollection<Z3950AddressDTO> list = z3950BO.search(query, limit, offset);
 
         if (list.size() == 0) {
             this.setMessage(ActionResult.WARNING, "administration.z3950.no_server_found");
@@ -74,8 +73,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
         Z3950AddressDTO dto = new Z3950AddressDTO();
         Integer id = request.getInteger("id");
         if (id != null && id != 0) {
@@ -86,7 +83,7 @@ public class Handler extends AbstractHandler {
         dto.setPort(request.getInteger("port"));
         dto.setCollection(request.getString("collection"));
 
-        if (bo.save(dto)) {
+        if (z3950BO.save(dto)) {
             if (id == 0) {
                 this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.save");
             } else {
@@ -106,15 +103,17 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        Z3950BO bo = Z3950BO.getInstance(schema);
         Z3950AddressDTO dto = new Z3950AddressDTO();
         dto.setId(request.getInteger("id"));
 
-        if (bo.delete(dto)) {
+        if (z3950BO.delete(dto)) {
             this.setMessage(ActionResult.SUCCESS, "administration.z3950.success.delete");
         } else {
             this.setMessage(ActionResult.ERROR, "administration.z3950.error.delete");
         }
+    }
+
+    public void setZ3950BO(Z3950BO z3950bo) {
+        z3950BO = z3950bo;
     }
 }

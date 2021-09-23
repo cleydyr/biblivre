@@ -22,40 +22,24 @@ package biblivre.cataloging.authorities;
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.core.AbstractBO;
-import biblivre.core.exceptions.ValidationException;
 import java.util.Map;
 import java.util.Set;
 
-public class AuthorityRecordBO extends RecordBO {
-
-    public static AuthorityRecordBO getInstance(String schema) {
-        AuthorityRecordBO bo = AbstractBO.getInstance(AuthorityRecordBO.class, schema);
-
-        if (bo.rdao == null) {
-            bo.rdao = AuthorityRecordDAO.getInstance(schema);
-            bo.sdao = AuthoritySearchDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+public class AuthorityRecordBO extends PaginableRecordBO {
+    private IndexingBO indexingBO;
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {}
 
     @Override
     public boolean save(RecordDTO dto) {
-        Integer id = this.rdao.getNextSerial(RecordType.AUTHORITIES + "_records_id_seq");
-
-        dto.setId(id);
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 
-        if (this.rdao.save(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.AUTHORITIES, dto);
+        if (this.recordDAO.save(dto)) {
+            indexingBO.reindex(RecordType.AUTHORITIES, dto);
             return true;
         }
 
@@ -66,9 +50,8 @@ public class AuthorityRecordBO extends RecordBO {
     public boolean update(RecordDTO dto) {
         dto.setDateOfLastTransaction();
 
-        if (this.rdao.update(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.AUTHORITIES, dto);
+        if (this.recordDAO.update(dto)) {
+            indexingBO.reindex(RecordType.AUTHORITIES, dto);
             return true;
         }
 
@@ -87,9 +70,8 @@ public class AuthorityRecordBO extends RecordBO {
         //			}
         //		}
 
-        if (this.rdao.delete(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.deleteIndexes(RecordType.AUTHORITIES, dto);
+        if (this.recordDAO.delete(dto)) {
+            indexingBO.deleteIndexes(RecordType.AUTHORITIES, dto);
             //			HoldingBO hbo = new HoldingBO();
             //			hbo.delete(dto);
         }
@@ -97,13 +79,16 @@ public class AuthorityRecordBO extends RecordBO {
     }
 
     @Override
-    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        // TODO Auto-generated method stub
-        return false;
+    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
+        return super.map(ids, RecordBO.MARC_INFO);
     }
 
     @Override
-    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return super.map(ids, RecordBO.MARC_INFO);
+    public RecordType getRecordType() {
+        return RecordType.AUTHORITIES;
+    }
+
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
     }
 }

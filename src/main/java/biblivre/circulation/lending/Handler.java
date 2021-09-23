@@ -38,6 +38,7 @@ import biblivre.core.PagingDTO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
+import biblivre.spring.SpringUtils;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,12 +46,19 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
+    private UserBO userBO;
+    private BiblioRecordBO biblioRecordBO;
+    private HoldingBO holdingBO;
+    private LendingBO lendingBO;
+    private UserTypeBO userTypeBO;
+    private LendingFineBO lendingFineBO;
+    private ReservationBO reservationBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
-        String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
         String query = null;
         Boolean lentOnly = false;
@@ -64,24 +72,21 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        HoldingBO hbo = HoldingBO.getInstance(schema);
-
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<HoldingDTO> holdingList =
-                hbo.search(query, RecordDatabase.MAIN, lentOnly, offset, limit);
+                holdingBO.search(query, RecordDatabase.MAIN, lentOnly, offset, limit);
 
         if (CollectionUtils.isEmpty(holdingList)) {
             this.setMessage(ActionResult.WARNING, "circulation.lending.no_holding_found");
             return;
         }
 
-        LendingBO lbo = LendingBO.getInstance(schema);
-        DTOCollection<LendingInfoDTO> lendingInfo = lbo.populateLendingInfoByHolding(holdingList);
+        DTOCollection<LendingInfoDTO> lendingInfo =
+                lendingBO.populateLendingInfoByHolding(holdingList);
 
         try {
             this.json.put("search", lendingInfo.toJSONObject());
@@ -92,9 +97,11 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler =
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
+
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -106,7 +113,7 @@ public class Handler extends AbstractHandler {
         list.setPaging(userList.getPaging());
 
         for (UserDTO user : userList) {
-            list.add(this.populateLendingList(schema, user, false));
+            list.add(this.populateLendingList(user, false));
         }
 
         try {
@@ -116,30 +123,25 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private LendingListDTO populateLendingList(String schema, UserDTO user, boolean history) {
-        LendingBO lbo = LendingBO.getInstance(schema);
-        HoldingBO hbo = HoldingBO.getInstance(schema);
-        BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
-        LendingFineBO lfbo = LendingFineBO.getInstance(schema);
-        ReservationBO rsvBo = ReservationBO.getInstance(schema);
-
+    private LendingListDTO populateLendingList(UserDTO user, boolean history) {
         LendingListDTO lendingList = new LendingListDTO();
 
         lendingList.setUser(user);
         lendingList.setId(user.getId());
 
-        List<LendingDTO> lendings = lbo.listUserLendings(user);
+        List<LendingDTO> lendings = lendingBO.listUserLendings(user);
         if (history) {
-            lendings.addAll(lbo.listHistory(user));
+            lendings.addAll(lendingBO.listHistory(user));
         }
 
         List<LendingInfoDTO> infos = new ArrayList<>();
 
         for (LendingDTO lending : lendings) {
-            HoldingDTO holding = (HoldingDTO) hbo.get(lending.getHoldingId(), RecordBO.MARC_INFO);
+            HoldingDTO holding =
+                    (HoldingDTO) holdingBO.get(lending.getHoldingId(), RecordBO.MARC_INFO);
 
             BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
+                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
 
             LendingInfoDTO info = new LendingInfoDTO();
 
@@ -150,10 +152,9 @@ public class Handler extends AbstractHandler {
             infos.add(info);
 
             // CHECK FOR LENDING FINES
-            Integer daysLate = lfbo.calculateLateDays(lending);
+            Integer daysLate = lendingFineBO.calculateLateDays(lending);
             if (daysLate > 0) {
-                UserTypeBO utbo = UserTypeBO.getInstance(schema);
-                UserTypeDTO userType = utbo.get(user.getType());
+                UserTypeDTO userType = userTypeBO.get(user.getType());
                 Float dailyFine = userType.getFineValue();
 
                 lending.setDaysLate(daysLate);
@@ -163,32 +164,28 @@ public class Handler extends AbstractHandler {
         }
         lendingList.setLendingInfo(infos);
 
-        lendingList.setReservedRecords(rsvBo.listReservedRecordIds(user));
+        lendingList.setReservedRecords(reservationBO.listReservedRecordIds(user));
 
         return lendingList;
     }
 
     public void lend(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer holdingId = request.getInteger("holding_id");
         Integer userId = request.getInteger("user_id");
 
-        HoldingBO holdingBo = HoldingBO.getInstance(schema);
-        HoldingDTO holding = (HoldingDTO) holdingBo.get(holdingId, RecordBO.MARC_INFO);
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(holdingId, RecordBO.MARC_INFO);
 
-        UserBO userBo = UserBO.getInstance(schema);
-        UserDTO user = userBo.get(userId);
+        UserDTO user = userBO.get(userId);
 
-        LendingBO lendingBo = LendingBO.getInstance(schema);
-        boolean success = lendingBo.doLend(holding, user, request.getLoggedUserId());
+        boolean success = lendingBO.doLend(holding, user, request.getLoggedUserId());
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.lend_success");
 
-            BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
             BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
-            LendingDTO lending = lendingBo.getCurrentLending(holding);
+                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
+            LendingDTO lending = lendingBO.getCurrentLending(holding);
             LendingInfoDTO info = new LendingInfoDTO();
             info.setLending(lending);
             info.setHolding(holding);
@@ -209,30 +206,26 @@ public class Handler extends AbstractHandler {
     }
 
     public void renewLending(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer lendingId = request.getInteger("id");
 
-        LendingBO lendingBo = LendingBO.getInstance(schema);
-        LendingDTO lending = lendingBo.get(lendingId);
+        LendingDTO lending = lendingBO.get(lendingId);
 
         Integer holdingId = lending.getHoldingId();
         Integer userId = lending.getUserId();
 
         lending.setCreatedBy(request.getLoggedUserId());
-        boolean success = lendingBo.doRenew(lending);
+        boolean success = lendingBO.doRenew(lending);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.renew_success");
 
-            HoldingBO holdingBo = HoldingBO.getInstance(schema);
-            HoldingDTO holding = (HoldingDTO) holdingBo.get(holdingId, RecordBO.MARC_INFO);
-            BiblioRecordBO rbo = BiblioRecordBO.getInstance(schema);
+            HoldingDTO holding = (HoldingDTO) holdingBO.get(holdingId, RecordBO.MARC_INFO);
             BiblioRecordDTO biblio =
-                    (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
-            UserBO userBo = UserBO.getInstance(schema);
-            UserDTO user = userBo.get(userId);
+                    (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
+            UserDTO user = userBO.get(userId);
 
-            LendingDTO newLending = lendingBo.getCurrentLending(holding);
+            LendingDTO newLending = lendingBO.getCurrentLending(holding);
 
             LendingInfoDTO info = new LendingInfoDTO();
             info.setLending(newLending);
@@ -254,14 +247,12 @@ public class Handler extends AbstractHandler {
     }
 
     public void returnLending(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer lendingId = request.getInteger("id");
         Float fineValue = request.getFloat("fine");
         boolean paid = request.getBoolean("paid");
 
-        LendingBO lendingBo = LendingBO.getInstance(schema);
-        LendingDTO lending = lendingBo.get(lendingId);
-        boolean success = lendingBo.doReturn(lending, fineValue, paid);
+        LendingDTO lending = lendingBO.get(lendingId);
+        boolean success = lendingBO.doReturn(lending, fineValue, paid);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.return_success");
@@ -271,17 +262,16 @@ public class Handler extends AbstractHandler {
     }
 
     public void payFine(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer fineId = request.getInteger("fine_id");
         Boolean exempt = request.getBoolean("exempt", false);
 
-        LendingFineBO lendingFineBo = LendingFineBO.getInstance(schema);
-        LendingFineDTO dto = lendingFineBo.getById(Integer.valueOf(fineId));
+        LendingFineDTO dto = lendingFineBO.getById(Integer.valueOf(fineId));
         if (exempt) {
             dto.setValue(0f);
         }
 
-        boolean success = lendingFineBo.update(dto);
+        boolean success = lendingFineBO.update(dto);
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "circulation.lending.fine.success_pay_fine");
         } else {
@@ -290,22 +280,19 @@ public class Handler extends AbstractHandler {
     }
 
     public void listAll(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        LendingBO bo = LendingBO.getInstance(schema);
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = request.getInteger("offset", 0);
 
         DTOCollection<LendingInfoDTO> list = new DTOCollection<>();
 
-        DTOCollection<LendingInfoDTO> lendingInfoList = bo.listLendings(offset, limit);
+        DTOCollection<LendingInfoDTO> lendingInfoList = lendingBO.listLendings(offset, limit);
 
         list.addAll(lendingInfoList);
 
-        PagingDTO paging = new PagingDTO(bo.countLendings(), limit, offset);
+        PagingDTO paging = new PagingDTO(lendingBO.countLendings(), limit, offset);
         list.setPaging(paging);
 
         if (list.size() == 0) {
@@ -322,7 +309,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void printReceipt(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String idList = request.getString("id_list");
 
         String[] idArray = idList.split(",");
@@ -335,10 +322,8 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
         }
 
-        LendingBO bo = LendingBO.getInstance(schema);
-
         try {
-            String receipt = bo.generateReceipt(ids, request.getTranslationsMap());
+            String receipt = lendingBO.generateReceipt(ids, request.getTranslationsMap());
 
             this.json.put("receipt", receipt);
         } catch (JSONException e) {
@@ -350,5 +335,33 @@ public class Handler extends AbstractHandler {
 
             this.setMessage(ActionResult.ERROR, "error.runtime_error");
         }
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
+    }
+
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
+
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
+
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
+
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
     }
 }

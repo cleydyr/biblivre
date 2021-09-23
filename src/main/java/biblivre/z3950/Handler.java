@@ -22,7 +22,6 @@ package biblivre.z3950;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
@@ -41,9 +40,11 @@ import org.json.JSONObject;
 import org.marc4j.marc.Record;
 
 public class Handler extends AbstractHandler {
+    private BiblioRecordBO biblioRecordBO;
+    private Z3950BO z3950BO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
 
         String servers = null;
@@ -60,8 +61,6 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        Z3950BO bo = Z3950BO.getInstance(schema);
-
         String[] serverIds = servers.split(",");
         List<Integer> ids = new ArrayList<>();
         for (String serverId : serverIds) {
@@ -76,26 +75,26 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        List<Z3950AddressDTO> serverList = bo.list(ids);
+        List<Z3950AddressDTO> serverList = z3950BO.list(ids);
         Pair<String, String> search = Pair.of(attribute, query);
-        List<Z3950RecordDTO> results = bo.search(serverList, search);
+        List<Z3950RecordDTO> results = z3950BO.search(serverList, search);
 
         if (results.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
             return;
         }
 
-        Integer searchId = (Integer) request.getSessionAttribute(schema, "z3950_search.last_id");
+        Integer searchId = (Integer) request.getScopedSessionAttribute("z3950_search.last_id");
         if (searchId == null) {
             searchId = 1;
         } else {
             searchId++;
         }
 
-        request.setSessionAttribute(schema, "z3950_search." + searchId, results);
-        request.setSessionAttribute(schema, "z3950_search.last_id", searchId);
+        request.setScopedSessionAttribute("z3950_search." + searchId, results);
+        request.setScopedSessionAttribute("z3950_search.last_id", searchId);
 
-        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, 1);
+        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, 1);
         collection.setId(searchId);
 
         try {
@@ -106,7 +105,6 @@ public class Handler extends AbstractHandler {
 
     @SuppressWarnings("unchecked")
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         String searchId = request.getString("search_id");
         if (StringUtils.isBlank(searchId)) {
@@ -117,12 +115,12 @@ public class Handler extends AbstractHandler {
 
         String uuid = "z3950_search." + searchId;
         List<Z3950RecordDTO> results =
-                (List<Z3950RecordDTO>) request.getSessionAttribute(schema, uuid);
+                (List<Z3950RecordDTO>) request.getScopedSessionAttribute(uuid);
         if (results == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
             return;
         }
-        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(schema, results, page);
+        DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, page);
         try {
             this.json.putOpt("search", collection.toJSONObject());
         } catch (JSONException e) {
@@ -131,7 +129,7 @@ public class Handler extends AbstractHandler {
 
     @SuppressWarnings("unchecked")
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer index = request.getInteger("id");
         String searchId = request.getString("search_id");
         if (StringUtils.isBlank(searchId)) {
@@ -140,14 +138,12 @@ public class Handler extends AbstractHandler {
         }
         String uuid = "z3950_search." + searchId;
         List<Z3950RecordDTO> results =
-                (List<Z3950RecordDTO>) request.getSessionAttribute(schema, uuid);
+                (List<Z3950RecordDTO>) request.getScopedSessionAttribute(uuid);
         if (results == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
             return;
         }
         Z3950RecordDTO dto = results.get(index);
-
-        RecordBO bo = RecordBO.getInstance(schema, RecordType.BIBLIO);
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.record_not_found");
@@ -157,7 +153,7 @@ public class Handler extends AbstractHandler {
         RecordDTO recordDTO = dto.getRecord();
         Record record = recordDTO.getRecord();
 
-        bo.populateDetails(recordDTO, RecordBO.MARC_INFO);
+        biblioRecordBO.populateDetails(recordDTO, RecordBO.MARC_INFO);
         recordDTO.setId(index);
         recordDTO.setMaterialType(MaterialType.fromRecord(record));
 
@@ -168,27 +164,33 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private DTOCollection<Z3950RecordDTO> paginateResults(
-            String schema, List<Z3950RecordDTO> results, int page) {
+    private DTOCollection<Z3950RecordDTO> paginateResults(List<Z3950RecordDTO> results, int page) {
         Integer recordsPerPage =
-                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20);
+                Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20);
         Integer start = (page - 1) * recordsPerPage;
         PagingDTO paging = new PagingDTO(results.size(), recordsPerPage, start);
         DTOCollection<Z3950RecordDTO> collection = new DTOCollection<>();
 
         List<Z3950RecordDTO> sublist =
                 results.subList(start, Math.min(start + recordsPerPage, results.size()));
-        BiblioRecordBO brbo = BiblioRecordBO.getInstance(schema);
 
         int autoGeneratedId = start;
         for (Z3950RecordDTO z3950 : sublist) {
             z3950.setAutogenId(autoGeneratedId++);
 
-            brbo.populateDetails(z3950.getRecord(), RecordBO.MARC_INFO);
+            biblioRecordBO.populateDetails(z3950.getRecord(), RecordBO.MARC_INFO);
         }
 
         collection.addAll(sublist);
         collection.setPaging(paging);
         return collection;
+    }
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
+    public void setZ3950BO(Z3950BO z3950bo) {
+        z3950BO = z3950bo;
     }
 }

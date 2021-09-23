@@ -21,6 +21,7 @@ package biblivre.administration.indexing;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.PreparedStatementUtil;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
@@ -43,20 +44,24 @@ public class IndexingGroups extends StaticBO {
     private IndexingGroups() {}
 
     static {
-        IndexingGroups.reset();
+        IndexingGroups.resetAll();
     }
 
-    public static void reset() {
+    public static void resetAll() {
         IndexingGroups.groups = new HashMap<>();
     }
 
-    public static void reset(String schema, RecordType recordType) {
+    public static void reset(RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         IndexingGroups.groups.remove(pair);
     }
 
-    public static List<IndexingGroupDTO> getGroups(String schema, RecordType recordType) {
+    public static List<IndexingGroupDTO> getGroups(RecordType recordType) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, RecordType> pair = Pair.of(schema, recordType);
 
         List<IndexingGroupDTO> list = IndexingGroups.groups.get(pair);
@@ -68,13 +73,12 @@ public class IndexingGroups extends StaticBO {
         return list;
     }
 
-    public static String getSearchableGroupsText(
-            String schema, RecordType recordType, String language) {
+    public static String getSearchableGroupsText(RecordType recordType, String language) {
         List<String> list = new ArrayList<>();
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(recordType);
 
-        TranslationsMap translations = Translations.get(schema, language);
+        TranslationsMap translations = Translations.get(language);
 
         for (IndexingGroupDTO group : groups) {
             if (group.getId() == 0) {
@@ -94,8 +98,8 @@ public class IndexingGroups extends StaticBO {
         return StringUtils.join(list, ", ");
     }
 
-    public static Integer getDefaultSortableGroupId(String schema, RecordType recordType) {
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(schema, recordType);
+    public static Integer getDefaultSortableGroupId(RecordType recordType) {
+        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(recordType);
 
         IndexingGroupDTO sort = null;
 
@@ -199,7 +203,7 @@ public class IndexingGroups extends StaticBO {
                     "Loading indexing groups from " + schema + "." + recordType);
         }
 
-        IndexingGroupsDAO dao = IndexingGroupsDAO.getInstance(schema);
+        IndexingGroupsDAOImpl dao = IndexingGroupsDAOImpl.getInstance();
 
         list = dao.list(recordType);
 

@@ -19,8 +19,6 @@
  ******************************************************************************/
 package biblivre.core;
 
-import biblivre.core.auth.AuthorizationBO;
-import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import org.apache.commons.lang3.StringUtils;
@@ -119,16 +117,5 @@ public class AbstractHandler {
 
     public void setCallback(HttpCallback callback) {
         this.callback = callback;
-    }
-
-    protected void authorize(
-            String module, String action, String schema, AuthorizationPoints authorizationPoints) {
-        if (authorizationPoints == null) {
-            authorizationPoints = AuthorizationPoints.getNotLoggedInstance(schema);
-        }
-
-        AuthorizationBO abo = AuthorizationBO.getInstance(schema);
-
-        abo.authorize(authorizationPoints, module, action);
     }
 }

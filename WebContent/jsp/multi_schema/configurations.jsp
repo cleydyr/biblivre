@@ -9,6 +9,7 @@
 <%@page import="biblivre.core.translations.Languages"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -29,12 +30,12 @@
 	<% String value; %>
 	<% String key; %>
 	<% boolean active; %>
-	<% String schema = (String) request.getAttribute("schema"); %>
+	<% String schema = SchemaThreadLocal.get(); %>
 	<div class="biblivre_form">
 		<fieldset>
 			<%
 				key = Constants.CONFIG_TITLE;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -64,7 +65,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_SUBTITLE;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -112,7 +113,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_ACCESSION_NUMBER_PREFIX;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -142,7 +143,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BUSINESS_DAYS;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -167,9 +168,9 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_DEFAULT_LANGUAGE;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 
-				LanguageDTO ldto = Languages.getLanguage(schema, value);
+				LanguageDTO ldto = Languages.getLanguage(value);
 				if (ldto != null) {
 					request.setAttribute("default_language", ldto.getName());
 				}
@@ -194,7 +195,7 @@
 					<div class="label"><i18n:text key="administration.configuration.new_value" /></div>
 					<div class="value">
 						<select name="${key}">
-							<c:forEach var="language" items="<%= Languages.getLanguages(schema) %>">
+							<c:forEach var="language" items="<%= Languages.getLanguages() %>">
 								<c:choose>
 									<c:when test="${language.language == value}">
 										<option value="${language.language}" selected="selected">${language.name}</option>
@@ -214,7 +215,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_CURRENCY;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -244,7 +245,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_SEARCH_RESULTS_PER_PAGE;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -274,7 +275,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_SEARCH_RESULT_LIMIT;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -304,7 +305,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_Z3950_RESULT_LIMIT;
-				value = Configurations.getString(schema, key);
+				value = Configurations.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -334,7 +335,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BACKUP_PATH;
-				value = BackupBO.getInstance(schema).getBackupPath();
+				value = (String) request.getAttribute("backupPath");
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 

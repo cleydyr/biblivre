@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.input.js"></script>
-	<script type="text/javascript" src="static/scripts/<%= UserFields.getFields((String) request.getAttribute("schema")).getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= UserFields.getFields().getCacheFileName() %>"></script>
 
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
@@ -59,7 +59,7 @@
 </layout:head>
 
 <%
-	List<UserTypeDTO> userTypes = UserTypeBO.getInstance((String) request.getAttribute("schema")).list();
+	List<UserTypeDTO> userTypes = (List<UserTypeDTO>) request.getAttribute("userTypes");
 %>
 
 <layout:body>
@@ -233,8 +233,8 @@
 												<div class="ncspacer"></div>
 
 												<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.info.lending.daysLate || 0) }</span><br/>
-												<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
-												<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
+												<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
+												<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
 											{#/if}
 										{#/if}
 									</div>
@@ -295,7 +295,7 @@
 									<div class="record">
 										{#if $T.info.title}<label><i18n:text key="search.bibliographic.title" /></label>: {$T.info.title}<br/>{#/if}
 										{#if $T.info.author}<label><i18n:text key="search.bibliographic.author" /></label>: {$T.info.author}<br/>{#/if}
-										<label><i18n:text key="circulation.lending.fine_value" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.info.value || 0, 'n2')}<br/>
+										<label><i18n:text key="circulation.lending.fine_value" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.value || 0, 'n2')}<br/>
 
 										{#if $T.info.payment}<label><i18n:text key="circulation.lending.payment_date" /></label>: {_d($T.info.payment, 'D')}<br/>
 										{#else}
@@ -386,7 +386,7 @@
 					<label class="search_label"><i18n:text key="search.user.field" /></label>
 					<select name="field" class="combo">
 						<option value=""><i18n:text key="search.user.name_or_id" /></option>
-						<c:forEach var="field" items="<%= UserFields.getSearchableFields((String) request.getAttribute(\"schema\")) %>" >
+						<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
 							<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 						</c:forEach>
 					</select>
@@ -403,7 +403,7 @@
 						<label class="search_label"><i18n:text key="search.user.field" /></label>
 						<select name="field" class="combo combo_expand">
 							<option value=""><i18n:text key="search.user.name_or_id" /></option>
-							<c:forEach var="field" items="<%= UserFields.getSearchableFields((String) request.getAttribute(\"schema\")) %>" >
+							<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
 								<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 							</c:forEach>
 						</select>

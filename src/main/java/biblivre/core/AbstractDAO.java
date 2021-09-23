@@ -34,7 +34,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-import org.apache.commons.lang3.StringUtils;
 import org.postgresql.PGConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,6 @@ public abstract class AbstractDAO {
     private static Map<String, DataSource> dataSourceMap = new HashMap<>();
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    private String schema;
     private String dataSourceName;
 
     private DataSourceProvider dataSourceProvider;
@@ -55,31 +53,28 @@ public abstract class AbstractDAO {
     protected AbstractDAO() {}
 
     public static <T extends AbstractDAO> T getInstance(
-            DataSourceProvider dataSourceProvider, Class<T> cls, String schema) {
+            DataSourceProvider dataSourceProvider, Class<T> cls) {
 
-        return AbstractDAO.getInstance(
-                dataSourceProvider, cls, schema, Constants.DEFAULT_DATABASE_NAME);
+        return AbstractDAO.getInstance(dataSourceProvider, cls, Constants.DEFAULT_DATABASE_NAME);
     }
 
-    public static <T extends AbstractDAO> T getInstance(Class<T> cls, String schema) {
+    public static <T extends AbstractDAO> T getInstance(Class<T> cls) {
 
-        return AbstractDAO.getInstance(cls, schema, DatabaseUtils.getDatabaseName());
+        return AbstractDAO.getInstance(cls, DatabaseUtils.getDatabaseName());
     }
 
-    public static <T extends AbstractDAO> T getInstance(
-            Class<T> cls, String schema, String dataSourceName) {
+    public static <T extends AbstractDAO> T getInstance(Class<T> cls, String dataSourceName) {
 
         DataSourceProvider dataSourceProvider = new HikariDataSourceProvider();
 
-        return getInstance(dataSourceProvider, cls, schema, dataSourceName);
+        return getInstance(dataSourceProvider, cls, dataSourceName);
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends AbstractDAO> T getInstance(
-            DataSourceProvider dataSourceProvider,
-            Class<T> cls,
-            String schema,
-            String dataSourceName) {
+            DataSourceProvider dataSourceProvider, Class<T> cls, String dataSourceName) {
+
+        String schema = SchemaThreadLocal.get();
 
         String key = cls.getName() + "#" + schema + ":" + dataSourceName;
 
@@ -93,7 +88,6 @@ public abstract class AbstractDAO {
 
             try {
                 instance = cls.newInstance();
-                instance.setSchema(schema);
                 instance.setDataSourceName(dataSourceName);
                 instance.dataSourceProvider = dataSourceProvider;
 
@@ -121,14 +115,6 @@ public abstract class AbstractDAO {
         }
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getSchema() {
-        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
-    }
-
     public String getDataSourceName() {
         return this.dataSourceName;
     }
@@ -145,10 +131,6 @@ public abstract class AbstractDAO {
         AbstractDAO.dataSourceMap = dataSourceMap;
     }
 
-    public boolean isGlobalSchema() {
-        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
-    }
-
     protected final Connection getConnection() throws SQLException {
         Connection con = this.getDataSource().getConnection();
 
@@ -160,10 +142,9 @@ public abstract class AbstractDAO {
         System.out.println("DriverMajorVersion: " + dbmd.getDriverMajorVersion());
         */
 
-        if (this.getSchema() != null) {
-            con.createStatement()
-                    .execute("SET search_path = '" + this.getSchema() + "', public, pg_catalog;");
-        }
+        con.createStatement()
+                .execute(
+                        "SET search_path = '" + SchemaThreadLocal.get() + "', public, pg_catalog;");
 
         return con;
     }
@@ -303,7 +284,7 @@ public abstract class AbstractDAO {
                     "SELECT count(*) as count FROM information_schema.columns WHERE table_schema = ? and table_name = ? and column_name = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, this.getSchema());
+            pst.setString(1, SchemaThreadLocal.get());
             pst.setString(2, tableName);
             pst.setString(3, columnName);
 
@@ -324,7 +305,7 @@ public abstract class AbstractDAO {
                     "SELECT count(*) as count FROM information_schema.tables WHERE table_schema = ? and table_name = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, this.getSchema());
+            pst.setString(1, SchemaThreadLocal.get());
             pst.setString(2, tableName);
 
             ResultSet rs = pst.executeQuery();

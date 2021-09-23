@@ -20,8 +20,8 @@
 	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.holding.input.js"></script>
 
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "biblio").getCacheFileName() %>"></script>
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "holding").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("holding").getCacheFileName() %>"></script>
 
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
@@ -74,7 +74,7 @@
 </layout:head>
 
 <layout:body>
-	<div class="page_help"><i18n:text key="search.bibliographic.page_help" param1="<%= IndexingGroups.getSearchableGroupsText((String) request.getAttribute(\"schema\"), RecordType.BIBLIO, (String) request.getAttribute(\"language\")) %>" /></div>
+	<div class="page_help"><i18n:text key="search.bibliographic.page_help" param1="<%= IndexingGroups.getSearchableGroupsText(RecordType.BIBLIO, (String) request.getAttribute(\"language\")) %>" /></div>
 
 	<div id="cataloging_search">
 		<div class="page_title">
@@ -267,7 +267,7 @@
 					<div class="field">
 						<label class="search_label"><i18n:text key="search.common.on_the_field" /></label>
 						<select name="field" class="combo combo_expand">
-							<c:forEach var="group" items="<%= IndexingGroups.getGroups((String) request.getAttribute(\"schema\"), RecordType.BIBLIO) %>">
+							<c:forEach var="group" items="<%= IndexingGroups.getGroups(RecordType.BIBLIO) %>">
 								<option value="${group.id}"><i18n:text key="cataloging.bibliographic.indexing_groups.${group.translationKey}" /></option>
 							</c:forEach>
 						</select>

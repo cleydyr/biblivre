@@ -19,25 +19,16 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import biblivre.administration.indexing.IndexingGroups;
-import biblivre.cataloging.authorities.AuthorityRecordBO;
-import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.holding.HoldingBO;
-import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
-import biblivre.cataloging.search.SearchQueryDTO;
-import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
-import biblivre.core.enums.SearchMode;
-import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
@@ -54,10 +45,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class RecordBO extends AbstractBO {
-    protected RecordDAO rdao;
-    protected SearchDAO sdao;
+
+    protected RecordDAO recordDAO;
+    protected SearchDAO searchDAO;
+    private DigitalMediaBO digitalMediaBO;
 
     public static final int FULL = 1 << 0;
     public static final int MARC_INFO = 1 << 1;
@@ -68,26 +63,6 @@ public abstract class RecordBO extends AbstractBO {
     public static final int ATTACHMENTS_LIST = 1 << 6;
 
     public static final Pattern ID_PATTERN = Pattern.compile("id=(.*?)(&|$)");
-
-    /** Class Factory */
-    public static RecordBO getInstance(String schema, RecordType recordType) {
-        if (recordType == null) {
-            return null;
-        }
-
-        switch (recordType) {
-            case BIBLIO:
-                return BiblioRecordBO.getInstance(schema);
-            case HOLDING:
-                return HoldingBO.getInstance(schema);
-            case AUTHORITIES:
-                return AuthorityRecordBO.getInstance(schema);
-            case VOCABULARY:
-                return VocabularyRecordBO.getInstance(schema);
-            default:
-                return null;
-        }
-    }
 
     public RecordDTO get(int id) {
         Set<Integer> ids = new HashSet<>();
@@ -105,11 +80,11 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return this.rdao.map(ids);
+        return this.recordDAO.map(ids, getRecordType());
     }
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
-        Map<Integer, RecordDTO> map = this.rdao.map(ids);
+        Map<Integer, RecordDTO> map = this.recordDAO.map(ids, getRecordType());
 
         for (RecordDTO dto : map.values()) {
             this.populateDetails(dto, mask);
@@ -119,19 +94,20 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public List<RecordDTO> list(int offset, int limit) {
-        return this.rdao.list(offset, limit);
+        return this.recordDAO.list(offset, limit, getRecordType());
     }
 
     public List<RecordDTO> listByLetter(char letter, int order) {
-        return this.populateDetails(this.rdao.listByLetter(letter, order), RecordBO.MARC_INFO);
+        return this.populateDetails(
+                this.recordDAO.listByLetter(letter, order, getRecordType()), RecordBO.MARC_INFO);
     }
 
     public boolean save(RecordDTO dto) {
-        return this.rdao.save(dto);
+        return this.recordDAO.save(dto);
     }
 
     public boolean update(RecordDTO dto) {
-        return this.rdao.update(dto);
+        return this.recordDAO.update(dto);
     }
 
     public boolean moveRecords(
@@ -143,11 +119,11 @@ public abstract class RecordBO extends AbstractBO {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        return this.rdao.moveRecords(ids, modifiedBy, recordDatabase);
+        return this.recordDAO.moveRecords(ids, modifiedBy, recordDatabase, getRecordType());
     }
 
     public boolean listContainsPrivateRecord(Set<Integer> ids) {
-        return this.rdao.listContainsPrivateRecord(ids);
+        return this.recordDAO.listContainsPrivateRecord(ids, getRecordType());
     }
 
     public DiskFile createExportFile(Set<Integer> ids, AuthorizationPoints authorizationPoints) {
@@ -174,7 +150,7 @@ public abstract class RecordBO extends AbstractBO {
 
             return new DiskFile(file, "x-download");
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(out);
         }
@@ -183,87 +159,21 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public boolean delete(RecordDTO dto) {
-        return this.rdao.delete(dto);
+        return this.recordDAO.delete(dto);
     }
 
     public Integer count() {
-        return this.count(null);
+        SearchDTO search = new SearchDTO(getRecordType());
+
+        return this.count(search);
     }
 
     private Integer count(SearchDTO search) {
-        return this.rdao.count(search);
-    }
-
-    public boolean search(SearchDTO search) {
-        SearchMode searchMode = search.getSearchMode();
-
-        boolean isNewSearch = (search.getId() == null);
-
-        if (isNewSearch) {
-            if (!this.sdao.createSearch(search)) {
-                return false;
-            }
-        }
-
-        switch (searchMode) {
-            case SIMPLE:
-                if (!this.sdao.populateSimpleSearch(search, !isNewSearch)) {
-                    return false;
-                }
-
-                break;
-
-            case ADVANCED:
-                if (!this.sdao.populateAdvancedSearch(search, !isNewSearch)) {
-                    return false;
-                }
-
-                break;
-
-            case LIST_ALL:
-                break;
-        }
-
-        return this.paginateSearch(search);
-    }
-
-    public boolean paginateSearch(SearchDTO search, AuthorizationPoints authorizationPoints) {
-        if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
-            this.authorize(
-                    "cataloging.bibliographic", "private_database_access", authorizationPoints);
-        }
-
-        return paginateSearch(search);
-    }
-
-    public boolean paginateSearch(SearchDTO search) {
-        if (search.getQuery().isHoldingSearch()) {
-            HoldingBO hbo = (HoldingBO) RecordBO.getInstance(this.getSchema(), RecordType.HOLDING);
-            return hbo.paginateHoldingSearch(search);
-        }
-
-        Map<Integer, Integer> groupCount = this.rdao.countSearchResults(search);
-        Integer count = groupCount.get(search.getIndexingGroup());
-
-        if (count == null || count == 0) {
-            return false;
-        }
-
-        List<RecordDTO> list = this.rdao.getSearchResults(search);
-
-        search.getPaging().setRecordCount(count);
-        search.setIndexingGroupCount(groupCount);
-
-        for (RecordDTO rdto : list) {
-            this.populateDetails(rdto, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
-            search.add(rdto);
-        }
-
-        return true;
+        return this.recordDAO.count(search);
     }
 
     public SearchDTO getSearch(Integer searchId) {
-        SearchDTO search = this.sdao.getSearch(searchId);
+        SearchDTO search = this.searchDAO.getSearch(searchId, getRecordType());
 
         if (search != null) {
             if (search.getPaging() == null) {
@@ -271,12 +181,12 @@ public abstract class RecordBO extends AbstractBO {
             }
 
             PagingDTO paging = search.getPaging();
+
             paging.setRecordsPerPage(
-                    Configurations.getPositiveInt(
-                            this.getSchema(), Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+
             paging.setRecordLimit(
-                    Configurations.getPositiveInt(
-                            this.getSchema(), Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
         }
 
         return search;
@@ -294,9 +204,11 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         List<String> listA =
-                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 10, true);
+                this.recordDAO.phraseAutocomplete(
+                        datafield, subfield, searchTerms, 10, true, getRecordType());
         List<String> listB =
-                this.rdao.phraseAutocomplete(datafield, subfield, searchTerms, 5, false);
+                this.recordDAO.phraseAutocomplete(
+                        datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
 
@@ -308,9 +220,11 @@ public abstract class RecordBO extends AbstractBO {
         String[] searchTerms = TextUtils.prepareAutocomplete(query);
 
         DTOCollection<AutocompleteDTO> listA =
-                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 10, true);
+                this.recordDAO.recordAutocomplete(
+                        datafield, subfield, searchTerms, 10, true, getRecordType());
         DTOCollection<AutocompleteDTO> listB =
-                this.rdao.recordAutocomplete(datafield, subfield, searchTerms, 5, false);
+                this.recordDAO.recordAutocomplete(
+                        datafield, subfield, searchTerms, 5, false, getRecordType());
 
         listA.addAll(listB);
 
@@ -352,8 +266,7 @@ public abstract class RecordBO extends AbstractBO {
                 }
 
                 // Try to remove the file from Biblivre DB
-                DigitalMediaBO dmbo = DigitalMediaBO.getInstance(this.getSchema());
-                dmbo.delete(Integer.valueOf(fileId), fileName);
+                digitalMediaBO.delete(Integer.valueOf(fileId), fileName);
             }
         } catch (Exception e) {
         }
@@ -362,12 +275,12 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.rdao.saveFromBiblivre3(dtoList);
+        return this.recordDAO.saveFromBiblivre3(dtoList);
     }
 
     public abstract void populateDetails(RecordDTO record, int mask);
 
-    public abstract boolean isDeleatable(HoldingDTO holding) throws ValidationException;
+    public abstract RecordType getRecordType();
 
     public RecordDTO open(int id, AuthorizationPoints authorizationPoints) {
         RecordDTO dto = get(id);
@@ -410,31 +323,6 @@ public abstract class RecordBO extends AbstractBO {
         return success;
     }
 
-    public SearchDTO search(
-            SearchQueryDTO searchQuery,
-            RecordType recordType,
-            AuthorizationPoints authorizationPoints) {
-        if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
-            authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
-        }
-
-        SearchDTO search = new SearchDTO(recordType);
-
-        PagingDTO paging = _newConfiguredPagingInstance();
-
-        search.setPaging(paging);
-
-        search.setQuery(searchQuery);
-
-        search.setSort(IndexingGroups.getDefaultSortableGroupId(schema, recordType));
-
-        search(search);
-
-        paging.endTimer();
-
-        return search;
-    }
-
     public boolean delete(
             RecordDTO dto, int loggedUserId, AuthorizationPoints authorizationPoints) {
         RecordDatabase recordDatabase = dto.getRecordDatabase();
@@ -448,30 +336,17 @@ public abstract class RecordBO extends AbstractBO {
         boolean success = false;
 
         if (recordDatabase == RecordDatabase.TRASH) {
-            success = this.rdao.delete(dto);
+            success = this.recordDAO.delete(dto);
         } else {
             Set<Integer> ids = new HashSet<>();
 
             ids.add(dto.getId());
 
-            success = this.rdao.moveRecords(ids, loggedUserId, RecordDatabase.TRASH);
+            success =
+                    this.recordDAO.moveRecords(
+                            ids, loggedUserId, RecordDatabase.TRASH, getRecordType());
         }
         return success;
-    }
-
-    private PagingDTO _newConfiguredPagingInstance() {
-        PagingDTO paging = new PagingDTO();
-
-        paging.setRecordsPerPage(
-                Configurations.getPositiveInt(
-                        schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
-
-        paging.setRecordLimit(
-                Configurations.getPositiveInt(schema, Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
-
-        paging.setPage(1);
-
-        return paging;
     }
 
     public int count(SearchDTO searchDTO, AuthorizationPoints authorizationPoints) {
@@ -480,5 +355,19 @@ public abstract class RecordBO extends AbstractBO {
         }
 
         return count(searchDTO);
+    }
+
+    protected static final Logger logger = LoggerFactory.getLogger(RecordBO.class);
+
+    public void setRecordDAO(RecordDAO recordDAO) {
+        this.recordDAO = recordDAO;
+    }
+
+    public void setSearchDAO(SearchDAO seachDAO) {
+        this.searchDAO = seachDAO;
+    }
+
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
     }
 }

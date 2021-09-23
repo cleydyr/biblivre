@@ -6,10 +6,10 @@ import java.util.function.Supplier;
 
 public class ParagraphAlignmentUtil {
     public static int getHorizontalAlignmentConfigurationValue(
-            String schema, Supplier<? extends Integer> defaultValue) {
+            Supplier<? extends Integer> defaultValue) {
 
         String configurationValue =
-                Configurations.getString(schema, Constants.CONFIG_LABEL_PRINT_PARAGRAPH_ALIGNMENT);
+                Configurations.getString(Constants.CONFIG_LABEL_PRINT_PARAGRAPH_ALIGNMENT);
         int horizontalAlignment =
                 ParagraphAlignment.valueOf(configurationValue)
                         .getAlignment()

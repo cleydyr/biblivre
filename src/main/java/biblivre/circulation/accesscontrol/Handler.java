@@ -28,15 +28,22 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
+import biblivre.spring.SpringUtils;
 import java.util.Date;
 import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
+    private AccessCardBO accessCardBO;
+    private AccessControlBO accessControlBO;
+    private UserBO userBO;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler =
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
+
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null) {
@@ -46,11 +53,8 @@ public class Handler extends AbstractHandler {
         DTOCollection<AccessControlDTO> list = new DTOCollection<>();
         list.setPaging(userList.getPaging());
 
-        AccessControlBO bo = AccessControlBO.getInstance(schema);
-        AccessCardBO abo = AccessCardBO.getInstance(schema);
-
         for (UserDTO user : userList) {
-            AccessControlDTO dto = bo.getByUserId(user.getId());
+            AccessControlDTO dto = accessControlBO.getByUserId(user.getId());
             if (dto == null) {
                 dto = new AccessControlDTO();
                 dto.setUserId(user.getId());
@@ -60,7 +64,7 @@ public class Handler extends AbstractHandler {
             dto.setUser(user);
 
             if (dto.getAccessCardId() != null) {
-                dto.setAccessCard(abo.get(dto.getAccessCardId()));
+                dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()));
             }
 
             list.add(dto);
@@ -79,10 +83,11 @@ public class Handler extends AbstractHandler {
     }
 
     public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
         biblivre.administration.accesscards.Handler cardHandler =
-                new biblivre.administration.accesscards.Handler();
+                applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
+
         DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
 
         if (cardList == null) {
@@ -92,11 +97,8 @@ public class Handler extends AbstractHandler {
         DTOCollection<AccessControlDTO> list = new DTOCollection<>();
         list.setPaging(cardList.getPaging());
 
-        AccessControlBO bo = AccessControlBO.getInstance(schema);
-        UserBO ubo = UserBO.getInstance(schema);
-
         for (AccessCardDTO card : cardList) {
-            AccessControlDTO dto = bo.getByCardId(card.getId());
+            AccessControlDTO dto = accessControlBO.getByCardId(card.getId());
             if (dto == null) {
                 dto = new AccessControlDTO();
                 dto.setAccessCardId(card.getId());
@@ -106,7 +108,7 @@ public class Handler extends AbstractHandler {
             dto.setAccessCard(card);
 
             if (dto.getUserId() != null) {
-                dto.setUser(ubo.get(dto.getUserId()));
+                dto.setUser(userBO.get(dto.getUserId()));
             }
 
             list.add(dto);
@@ -125,8 +127,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void bind(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer cardId = request.getInteger("card_id");
         Integer userId = request.getInteger("user_id");
 
@@ -136,13 +136,11 @@ public class Handler extends AbstractHandler {
         dto.setCreatedBy(request.getLoggedUserId());
         dto.setArrivalTime(new Date());
 
-        AccessControlBO bo = AccessControlBO.getInstance(schema);
-
-        if (bo.lendCard(dto)) {
+        if (accessControlBO.lendCard(dto)) {
             this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.lend.success");
             try {
-                dto = bo.getByCardId(cardId);
-                bo.populateDetails(dto);
+                dto = accessControlBO.getByCardId(cardId);
+                accessControlBO.populateDetails(dto);
                 dto.setId(cardId);
                 this.json.put("data", dto.toJSONObject());
                 this.json.put("full_data", true);
@@ -156,8 +154,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void unbind(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer cardId = request.getInteger("card_id");
         Integer userId = request.getInteger("user_id");
 
@@ -167,12 +163,10 @@ public class Handler extends AbstractHandler {
         dto.setModifiedBy(request.getLoggedUserId());
         dto.setDepartureTime(new Date());
 
-        AccessControlBO bo = AccessControlBO.getInstance(schema);
-
-        if (bo.returnCard(dto)) {
+        if (accessControlBO.returnCard(dto)) {
             this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.return.success");
             try {
-                bo.populateDetails(dto);
+                accessControlBO.populateDetails(dto);
                 dto.setId(cardId);
                 this.json.put("data", dto.toJSONObject());
                 this.json.put("full_data", true);
@@ -183,5 +177,17 @@ public class Handler extends AbstractHandler {
         } else {
             this.setMessage(ActionResult.WARNING, "circulation.accesscards.return.error");
         }
+    }
+
+    public void setAccessCardBO(AccessCardBO accessCardBO) {
+        this.accessCardBO = accessCardBO;
+    }
+
+    public void setAccessControlBO(AccessControlBO accessControlBO) {
+        this.accessControlBO = accessControlBO;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
     }
 }

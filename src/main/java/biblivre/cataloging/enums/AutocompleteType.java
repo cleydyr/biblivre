@@ -65,11 +65,7 @@ public enum AutocompleteType implements BiblivreEnum {
     }
 
     public List<String> getSuggestions(GetSuggestionsParameters parameterObject) {
-        String schema = parameterObject.getSchema();
-
-        RecordType recordType = parameterObject.getRecordType();
-
-        RecordBO bo = RecordBO.getInstance(schema, recordType);
+        RecordBO recordBO = parameterObject.getRecordBO();
 
         String datafield = parameterObject.getDatafield();
 
@@ -77,25 +73,22 @@ public enum AutocompleteType implements BiblivreEnum {
 
         String query = parameterObject.getQuery();
 
-        return bo.phraseAutocomplete(datafield, subfield, query);
+        return recordBO.phraseAutocomplete(datafield, subfield, query);
     }
 
-    public DTOCollection<AutocompleteDTO> getAutocompletion(String schema, String query) {
+    public DTOCollection<AutocompleteDTO> getAutocompletion(RecordBO recordBO, String query) {
         RecordType recordType = RecordType.fromString(this.toString());
-
-        RecordBO bo = RecordBO.getInstance(schema, recordType);
 
         Set<AutocompleteDTO> set = new HashSet<>();
 
-        for (FormTabSubfieldDTO formTabSubfield :
-                Fields.getAutocompleteSubFields(schema, recordType)) {
+        for (FormTabSubfieldDTO formTabSubfield : Fields.getAutocompleteSubFields(recordType)) {
 
             String datafield = formTabSubfield.getDatafield();
 
             String subfield = formTabSubfield.getSubfield();
 
             DTOCollection<AutocompleteDTO> additionalAutocompletions =
-                    bo.recordAutocomplete(datafield, subfield, query);
+                    recordBO.recordAutocomplete(datafield, subfield, query);
 
             set.addAll(additionalAutocompletions);
         }
@@ -112,19 +105,15 @@ public enum AutocompleteType implements BiblivreEnum {
         private String query;
         private String datafield;
         private String subfield;
-        private RecordType recordType;
+        private RecordBO recordBO;
 
         private GetSuggestionsParameters(
-                String schema,
-                String query,
-                String datafield,
-                String subfield,
-                RecordType recordType) {
+                String schema, String query, String datafield, String subfield, RecordBO recordBO) {
             this.schema = schema;
             this.query = query;
             this.datafield = datafield;
             this.subfield = subfield;
-            this.recordType = recordType;
+            this.recordBO = recordBO;
         }
 
         public String getSchema() {
@@ -143,8 +132,8 @@ public enum AutocompleteType implements BiblivreEnum {
             return subfield;
         }
 
-        public RecordType getRecordType() {
-            return recordType;
+        public RecordBO getRecordBO() {
+            return recordBO;
         }
 
         public static Builder builder() {
@@ -156,13 +145,7 @@ public enum AutocompleteType implements BiblivreEnum {
             private String query;
             private String datafield;
             private String subfield;
-            private RecordType recordType;
-
-            public Builder withSchema(String schema) {
-                this.schema = schema;
-
-                return this;
-            }
+            private RecordBO recordBO;
 
             public Builder withQuery(String query) {
                 this.query = query;
@@ -182,14 +165,14 @@ public enum AutocompleteType implements BiblivreEnum {
                 return this;
             }
 
-            public Builder withRecordType(RecordType recordType) {
-                this.recordType = recordType;
+            public Builder withRecordBO(RecordBO recordBO) {
+                this.recordBO = recordBO;
 
                 return this;
             }
 
             public GetSuggestionsParameters build() {
-                return new GetSuggestionsParameters(schema, query, datafield, subfield, recordType);
+                return new GetSuggestionsParameters(schema, query, datafield, subfield, recordBO);
             }
         }
     }

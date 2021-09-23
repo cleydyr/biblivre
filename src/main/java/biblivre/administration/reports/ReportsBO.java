@@ -2,13 +2,14 @@ package biblivre.administration.reports;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
-import biblivre.cataloging.RecordBO;
+import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.bibliographic.BiblioRecordDAO;
+import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.AbstractBO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.marc.MarcDataReader;
@@ -25,29 +26,23 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public class ReportsBO extends AbstractBO {
-
-    private ReportsDAO dao;
-
-    public static ReportsBO getInstance(String schema) {
-        ReportsBO bo = AbstractBO.getInstance(ReportsBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = ReportsDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private ReportsDAO reportsDAO;
+    private RecordDAO recordDAO;
+    private BiblioRecordBO biblioRecordBO;
 
     public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
         ReportType type = dto.getType();
         IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type);
         report.setI18n(i18n);
-        report.setSchema(this.getSchema());
+
+        String schema = SchemaThreadLocal.get();
+
+        report.setSchema(schema);
         return report.generateReport(dto);
     }
 
     public TreeMap<String, Set<Integer>> searchAuthors(String author, RecordDatabase database) {
-        return this.dao.searchAuthors(author, database);
+        return this.reportsDAO.searchAuthors(author, database);
     }
 
     public CustomCountDto getCustomCountData(ReportsDTO reportsDto) {
@@ -65,18 +60,15 @@ public class ReportsBO extends AbstractBO {
 
         if (reportsDto.getSearchId() != null && reportsDto.getSearchId() != 0) {
 
-            RecordBO bo = RecordBO.getInstance(this.getSchema(), RecordType.BIBLIO);
-
             boolean hasMore = true;
             while (hasMore) {
-                SearchDTO search = bo.getSearch(reportsDto.getSearchId());
-                search.setSort(
-                        IndexingGroups.getDefaultSortableGroupId(
-                                this.getSchema(), RecordType.BIBLIO));
+                SearchDTO search = biblioRecordBO.getSearch(reportsDto.getSearchId());
+
+                search.setSort(IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
                 search.setIndexingGroup(0);
                 search.getPaging().setRecordsPerPage(limit);
                 search.getPaging().setPage(++page);
-                bo.paginateSearch(search);
+                biblioRecordBO.paginateSearch(search);
 
                 if (search == null || search.size() == 0) {
                     hasMore = false;
@@ -86,8 +78,6 @@ public class ReportsBO extends AbstractBO {
             }
 
         } else {
-            BiblioRecordDAO bdao = BiblioRecordDAO.getInstance(this.getSchema());
-
             RecordDatabase database = reportsDto.getDatabase();
             if (database == null) {
                 database = RecordDatabase.MAIN;
@@ -95,7 +85,8 @@ public class ReportsBO extends AbstractBO {
 
             boolean hasMore = true;
             while (hasMore) {
-                List<RecordDTO> records = bdao.list(offset, limit, database);
+                List<RecordDTO> records =
+                        recordDAO.list(offset, limit, database, RecordType.BIBLIO);
                 if (records == null || records.size() == 0) {
                     hasMore = false;
                 } else {
@@ -143,5 +134,17 @@ public class ReportsBO extends AbstractBO {
                 }
             }
         }
+    }
+
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
+    }
+
+    public void setRecordDAO(RecordDAO recordDAO) {
+        this.recordDAO = recordDAO;
+    }
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
     }
 }
