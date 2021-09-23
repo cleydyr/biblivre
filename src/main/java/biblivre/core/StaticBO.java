@@ -30,11 +30,11 @@ import biblivre.core.translations.Translations;
 public abstract class StaticBO {
     public static void resetCache() {
         Configurations.reset();
-        Fields.reset();
-        IndexingGroups.reset();
-        Languages.reset();
+        Fields.resetAll();
+        IndexingGroups.resetAll();
+        Languages.resetAll();
         Schemas.reset();
         Translations.reset();
-        UserFields.reset();
+        UserFields.resetAll();
     }
 }

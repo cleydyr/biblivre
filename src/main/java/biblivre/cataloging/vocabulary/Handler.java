@@ -19,16 +19,14 @@
  ******************************************************************************/
 package biblivre.cataloging.vocabulary;
 
-import biblivre.cataloging.CatalogingHandler;
+import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 
-public class Handler extends CatalogingHandler {
-
+public class Handler extends PaginableCatalogingHandler {
     public Handler() {
-        super(RecordType.VOCABULARY, MaterialType.VOCABULARY);
+        setDefaultMaterialType(MaterialType.VOCABULARY);
     }
 
     @Override

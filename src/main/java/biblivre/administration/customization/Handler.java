@@ -40,7 +40,6 @@ import org.json.JSONObject;
 public class Handler extends AbstractHandler {
 
     public void saveBriefFormats(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         int loggedUser = request.getLoggedUserId();
 
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
@@ -65,7 +64,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.updateBriefFormats(schema, recordType, list, loggedUser);
+        boolean success = Fields.updateBriefFormats(recordType, list, loggedUser);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -75,7 +74,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void insertBriefFormat(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int loggedUser = request.getLoggedUserId();
 
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
@@ -100,7 +99,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.insertBriefFormat(schema, recordType, dto, loggedUser);
+        boolean success = Fields.insertBriefFormat(recordType, dto, loggedUser);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -110,7 +109,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void deleteBriefFormat(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
 
@@ -134,7 +132,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.deleteBriefFormat(schema, recordType, dto.getDatafieldTag());
+        boolean success = Fields.deleteBriefFormat(recordType, dto.getDatafieldTag());
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -144,7 +142,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void saveFormDatafields(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         int loggedUser = request.getLoggedUserId();
 
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
@@ -191,11 +189,9 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.updateFormTabDatafield(schema, recordType, map, loggedUser);
+        boolean success = Fields.updateFormTabDatafield(recordType, map, loggedUser);
         success =
-                success
-                        && Translations.save(
-                                schema, request.getLanguage(), translations, null, loggedUser);
+                success && Translations.save(request.getLanguage(), translations, null, loggedUser);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -205,12 +201,11 @@ public class Handler extends AbstractHandler {
     }
 
     public void deleteFormDatafield(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
         String datafieldTag = request.getString("datafield");
 
-        boolean success = Fields.deleteFormTabDatafield(schema, recordType, datafieldTag);
+        boolean success = Fields.deleteFormTabDatafield(recordType, datafieldTag);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");

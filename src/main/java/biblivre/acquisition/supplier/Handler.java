@@ -30,9 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Handler extends AbstractHandler {
+    private SupplierBO supplierBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         String searchParameters = request.getString("search_parameters");
 
         String query = null;
@@ -47,12 +47,10 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit",
-                        Configurations.getInt(schema, Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        SupplierBO bo = SupplierBO.getInstance(schema);
-        DTOCollection<SupplierDTO> list = bo.search(query, limit, offset);
+        DTOCollection<SupplierDTO> list = supplierBO.search(query, limit, offset);
 
         if (list.size() == 0) {
             this.setMessage(ActionResult.WARNING, "acquisition.supplier.error.no_supplier_found");
@@ -71,11 +69,9 @@ public class Handler extends AbstractHandler {
     }
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
         Integer id = request.getInteger("id");
 
-        SupplierBO bo = SupplierBO.getInstance(schema);
-        SupplierDTO dto = bo.get(id);
+        SupplierDTO dto = supplierBO.get(id);
 
         try {
             this.json.put("supplier", dto);
@@ -85,21 +81,17 @@ public class Handler extends AbstractHandler {
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer id = request.getInteger("id");
         SupplierDTO dto = this.populateDTO(request);
-
-        SupplierBO bo = SupplierBO.getInstance(schema);
 
         boolean result = false;
         if (id == 0) {
             dto.setCreatedBy(request.getLoggedUserId());
-            result = bo.save(dto);
+            result = supplierBO.save(dto);
         } else {
             dto.setId(id);
             dto.setModifiedBy(request.getLoggedUserId());
-            result = bo.update(dto);
+            result = supplierBO.update(dto);
         }
         if (result) {
             if (id == 0) {
@@ -121,15 +113,12 @@ public class Handler extends AbstractHandler {
     }
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-
         Integer id = request.getInteger("id");
 
-        SupplierBO bo = SupplierBO.getInstance(schema);
         SupplierDTO dto = new SupplierDTO();
         dto.setId(id);
 
-        if (bo.delete(dto)) {
+        if (supplierBO.delete(dto)) {
             this.setMessage(ActionResult.SUCCESS, "acquisition.supplier.success.delete");
         } else {
             this.setMessage(ActionResult.WARNING, "acquisition.supplier.error.delete");
@@ -164,5 +153,9 @@ public class Handler extends AbstractHandler {
         dto.setUrl(request.getString("url"));
         dto.setEmail(request.getString("email"));
         return dto;
+    }
+
+    public void setSupplierBO(SupplierBO supplierBO) {
+        this.supplierBO = supplierBO;
     }
 }

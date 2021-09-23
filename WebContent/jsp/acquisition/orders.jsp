@@ -94,7 +94,7 @@
 							{#if $T.quotation.author}<label><i18n:text key="acquisition.order.title.author" /></label>: {$T.quotation.author}<br/>{#/if}
 							{#if $T.quotation.title}<label><i18n:text key="acquisition.order.title.title" /></label>: {$T.quotation.title}<br/>{#/if}
 							{#if $T.quotation.quantity}<label><i18n:text key="acquisition.order.title.quantity" /></label>: {$T.quotation.quantity}<br/>{#/if}
-							{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.order.title.unit_value" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
+							{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.order.title.unit_value" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
 						</div>
 					{#/for}
 				{#/if}
@@ -156,7 +156,7 @@
 								<legend>{_p('acquisition.order.selected_records', $T.length)}</legend>
 								<ul>
 									{#foreach $T as order}
-										<li rel="{$T.order.id}">{$T.order.name} - {$T.order.quantity} (<%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.order.value || 0, 'n2')})</li>
+										<li rel="{$T.order.id}">{$T.order.name} - {$T.order.quantity} (<%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.order.value || 0, 'n2')})</li>
 									{#/for}
 								</ul>
 							</fieldset>
@@ -267,7 +267,7 @@
 											{#if $T.quotation.author}<label><i18n:text key="acquisition.order.title.author" /></label>: {$T.quotation.author}<br/>{#/if}
 											{#if $T.quotation.title}<label><i18n:text key="acquisition.order.title.title" /></label>: {$T.quotation.title}<br/>{#/if}
 											{#if $T.quotation.quantity}<label><i18n:text key="acquisition.order.title.quantity" /></label>: {$T.quotation.quantity}<br/>{#/if}
-											{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.order.title.unit_value" /></label>: <%= Configurations.getString((String) request.getAttribute("schema"), Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
+											{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.order.title.unit_value" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
 										</div>
 									{#/for}
 								{#/if}

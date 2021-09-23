@@ -29,13 +29,19 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
+import biblivre.spring.SpringUtils;
 import org.json.JSONException;
+import org.springframework.web.context.WebApplicationContext;
 
 public class Handler extends AbstractHandler {
+    private ReportsBO reportsBO;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
 
-        biblivre.circulation.user.Handler userHandler = new biblivre.circulation.user.Handler();
+        biblivre.circulation.user.Handler userHandler =
+                applicationContext.getBean(biblivre.circulation.user.Handler.class);
+
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -54,10 +60,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void generate(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
-        ReportsBO bo = ReportsBO.getInstance(schema);
-
         ReportsDTO dto = null;
+
         try {
             dto = this.populateDto(request);
         } catch (Exception e) {
@@ -65,10 +69,10 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DiskFile report = bo.generateReport(dto, request.getTranslationsMap());
+        DiskFile report = reportsBO.generateReport(dto, request.getTranslationsMap());
 
         if (report != null) {
-            request.setSessionAttribute(schema, report.getName(), report);
+            request.setScopedSessionAttribute(report.getName(), report);
             this.setMessage(ActionResult.SUCCESS, "administration.reports.success.generate");
         } else {
             this.setMessage(ActionResult.WARNING, "administration.reports.error.generate");
@@ -85,10 +89,10 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=download&module=cataloging.export&action=download_report&file_name={export_id}
     public void downloadReport(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String report_name = request.getString("file_name");
 
-        final DiskFile report = (DiskFile) request.getSessionAttribute(schema, report_name);
+        final DiskFile report = (DiskFile) request.getScopedSessionAttribute(report_name);
 
         this.setFile(report);
 
@@ -119,5 +123,9 @@ public class Handler extends AbstractHandler {
         dto.setDigits(request.getInteger("digits"));
 
         return dto;
+    }
+
+    public void setReportsBO(ReportsBO reportsBO) {
+        this.reportsBO = reportsBO;
     }
 }

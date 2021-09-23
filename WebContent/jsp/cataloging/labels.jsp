@@ -125,7 +125,7 @@
 					<div class="field">
 						<label class="search_label"><i18n:text key="search.common.on_the_field" /></label>
 						<select name="field" class="combo combo_expand">
-							<c:forEach var="group" items="<%= IndexingGroups.getGroups((String) request.getAttribute(\"schema\"), RecordType.BIBLIO) %>">
+							<c:forEach var="group" items="<%= IndexingGroups.getGroups(RecordType.BIBLIO) %>">
 								<option value="${group.id}"><i18n:text key="cataloging.bibliographic.indexing_groups.${group.translationKey}" /></option>
 							</c:forEach>
 						</select>

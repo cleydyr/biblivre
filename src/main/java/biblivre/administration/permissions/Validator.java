@@ -31,17 +31,16 @@ import biblivre.login.LoginBO;
 import org.apache.commons.lang3.StringUtils;
 
 public class Validator extends AbstractValidator {
+    private LoginBO loginBO;
+    private UserBO userBO;
 
     public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
 
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
-        UserBO ubo = UserBO.getInstance(schema);
-
         int userId = request.getInteger("user_id");
-        UserDTO udto = ubo.get(userId);
+        UserDTO udto = userBO.get(userId);
 
         String login = request.getString("new_login");
         String password = request.getString("new_password");
@@ -50,9 +49,7 @@ public class Validator extends AbstractValidator {
         Integer loginId = udto.getLoginId();
         boolean newLogin = (loginId == null || loginId == 0);
 
-        LoginBO lbo = LoginBO.getInstance(schema);
-
-        if (newLogin && lbo.loginExists(login)) {
+        if (newLogin && loginBO.loginExists(login)) {
             ex.addError("new_login", "login.error.login_already_exists");
         }
 
@@ -84,5 +81,13 @@ public class Validator extends AbstractValidator {
             handler.setMessage(ActionResult.WARNING, "administration.permissions.user_not_found");
             return;
         }
+    }
+
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
     }
 }

@@ -3,6 +3,7 @@ package biblivre.update.v4_1_10a;
 import biblivre.cataloging.Fields;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.PreparedStatementUtil;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.StringPool;
 import biblivre.update.UpdateService;
@@ -51,7 +52,13 @@ public class Update implements UpdateService {
 
         _invalidateIndex(connection, RecordType.BIBLIO);
 
-        Fields.reset(connection.getSchema(), RecordType.BIBLIO);
+        SchemaThreadLocal.withSchema(
+                connection.getSchema(),
+                () -> {
+                    Fields.reset(RecordType.BIBLIO);
+
+                    return null;
+                });
     }
 
     private void _invalidateIndex(Connection connection, RecordType recordType)

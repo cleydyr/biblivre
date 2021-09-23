@@ -46,7 +46,7 @@ public class Update implements UpdateService {
     private static final String INSERT_CONFIG_SQL =
             "INSERT INTO configurations (key, value, type, required, modified, modified_by) "
                     + "VALUES ('holding.label_print_paragraph_alignment', 'ALIGN_CENTER', 'string',"
-                    + "true, '2014-06-21 11:42:07.150326', 1);";
+                    + "true, '2014-06-21 11:42:07.150326', 1) ON CONFLICT DO NOTHING;";
 
     @SuppressWarnings({"unchecked", "rawtypes", "serial"})
     private static final Map<String, Map<String, String>> _TRANSLATIONS =

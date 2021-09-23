@@ -28,19 +28,13 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AccessControlBO extends AbstractBO {
-    private AccessControlDAO dao;
-
-    public static AccessControlBO getInstance(String schema) {
-        AccessControlBO bo = AbstractBO.getInstance(AccessControlBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = AccessControlDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private AccessControlDAO accessControlDAO;
+    private AccessCardBO accessCardBO;
+    private UserBO userBO;
 
     public AccessControlDTO populateDetails(AccessControlDTO dto) {
         if (dto == null) {
@@ -48,13 +42,11 @@ public class AccessControlBO extends AbstractBO {
         }
 
         if (dto.getAccessCardId() != null) {
-            AccessCardBO cardBo = AccessCardBO.getInstance(this.getSchema());
-            dto.setAccessCard(cardBo.get(dto.getAccessCardId()));
+            dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()));
         }
 
         if (dto.getUserId() != null) {
-            UserBO userBo = UserBO.getInstance(this.getSchema());
-            dto.setUser(userBo.get(dto.getUserId()));
+            dto.setUser(userBO.get(dto.getUserId()));
         }
 
         return dto;
@@ -62,19 +54,17 @@ public class AccessControlBO extends AbstractBO {
 
     public boolean lendCard(AccessControlDTO dto) {
 
-        UserBO userBO = UserBO.getInstance(this.getSchema());
         UserDTO udto = null;
         try {
             udto = userBO.get(dto.getUserId());
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         if (udto == null) {
             throw new ValidationException("circulation.error.user_not_found");
         }
 
-        AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
-        AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+        AccessCardDTO cardDto = accessCardBO.get(dto.getAccessCardId());
         if (cardDto == null) {
             throw new ValidationException("circulation.access_control.card_not_found");
         } else if (!cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
@@ -92,10 +82,10 @@ public class AccessControlBO extends AbstractBO {
 
         try {
             cardDto.setStatus(AccessCardStatus.IN_USE);
-            cardBO.update(cardDto);
-            return this.dao.save(dto);
+            accessCardBO.update(cardDto);
+            return this.accessControlDAO.save(dto);
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
 
         return false;
@@ -103,22 +93,20 @@ public class AccessControlBO extends AbstractBO {
 
     public boolean returnCard(AccessControlDTO dto) {
 
-        UserBO userBO = UserBO.getInstance(this.getSchema());
         UserDTO udto = null;
         try {
             udto = userBO.get(dto.getUserId());
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         if (udto == null) {
             throw new ValidationException("circulation.error.user_not_found");
         }
 
-        AccessCardBO cardBO = AccessCardBO.getInstance(this.getSchema());
         AccessControlDTO existingAccess = null;
 
         if (dto.getAccessCardId() != 0) {
-            AccessCardDTO cardDto = cardBO.get(dto.getAccessCardId());
+            AccessCardDTO cardDto = accessCardBO.get(dto.getAccessCardId());
             if (cardDto == null) {
                 throw new ValidationException("circulation.access_control.card_not_found");
             } else if (cardDto.getStatus().equals(AccessCardStatus.AVAILABLE)) {
@@ -136,7 +124,7 @@ public class AccessControlBO extends AbstractBO {
 
         try {
             if (existingAccess != null) {
-                AccessCardDTO cardDto = cardBO.get(existingAccess.getAccessCardId());
+                AccessCardDTO cardDto = accessCardBO.get(existingAccess.getAccessCardId());
                 // If the cardId was sent in the parameters, it means that the user has returned it.
                 // Else, it means that the user left the library without returning the card, so we
                 // have to block it.
@@ -144,29 +132,43 @@ public class AccessControlBO extends AbstractBO {
                         dto.getAccessCardId() != 0
                                 ? AccessCardStatus.AVAILABLE
                                 : AccessCardStatus.IN_USE_AND_BLOCKED);
-                cardBO.update(cardDto);
-                return this.dao.update(existingAccess);
+                accessCardBO.update(cardDto);
+                return this.accessControlDAO.update(existingAccess);
             }
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
 
         return false;
     }
 
     public boolean update(AccessControlDTO dto) {
-        return this.dao.update(dto);
+        return this.accessControlDAO.update(dto);
     }
 
     public AccessControlDTO getByCardId(Integer cardId) {
-        return this.dao.getByCardId(cardId);
+        return this.accessControlDAO.getByCardId(cardId);
     }
 
     public AccessControlDTO getByUserId(Integer userId) {
-        return this.dao.getByUserId(userId);
+        return this.accessControlDAO.getByUserId(userId);
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.accessControlDAO.saveFromBiblivre3(dtoList);
+    }
+
+    protected static final Logger logger = LoggerFactory.getLogger(AccessControlBO.class);
+
+    public void setAccessControlDAO(AccessControlDAO accessControlDAO) {
+        this.accessControlDAO = accessControlDAO;
+    }
+
+    public void setAccessCardBO(AccessCardBO accessCardBO) {
+        this.accessCardBO = accessCardBO;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
     }
 }

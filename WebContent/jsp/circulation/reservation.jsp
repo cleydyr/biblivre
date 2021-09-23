@@ -46,10 +46,6 @@
 	</script>
 </layout:head>
 
-<%
-	List<UserTypeDTO> userTypes = UserTypeBO.getInstance((String) request.getAttribute("schema")).list();
-%>
-
 <layout:body>
 	<c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
 	<div class="page_help"><i18n:text key="circulation.reservation.page_help" /></div>
@@ -141,7 +137,7 @@
 					<label class="search_label"><i18n:text key="search.user.field" /></label>
 					<select name="field" class="combo">
 						<option value=""><i18n:text key="search.user.name_or_id" /></option>
-						<c:forEach var="field" items="<%= UserFields.getSearchableFields((String) request.getAttribute(\"schema\")) %>" >
+						<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
 							<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 						</c:forEach>
 					</select>

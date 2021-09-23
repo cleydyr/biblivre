@@ -23,13 +23,10 @@ import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.circulation.lending.LendingBO;
+import biblivre.circulation.lending.LendingBO2;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
-import biblivre.core.AbstractBO;
-import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.ArrayList;
@@ -40,77 +37,66 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
 
-public class BiblioRecordBO extends RecordBO {
+public class BiblioRecordBO extends PaginableRecordBO {
 
-    public static BiblioRecordBO getInstance(String schema) {
-        BiblioRecordBO bo = AbstractBO.getInstance(BiblioRecordBO.class, schema);
-
-        if (bo.rdao == null) {
-            bo.rdao = BiblioRecordDAO.getInstance(schema);
-            bo.sdao = BiblioSearchDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private IndexingBO indexingBO;
+    private LendingBO2 lendingBO;
+    private ReservationBO reservationBO;
 
     @Override
-    public void populateDetails(RecordDTO rdto, int mask) {
-        if (rdto == null) {
+    public void populateDetails(RecordDTO recordDTO, int mask) {
+        if (recordDTO == null) {
             return;
         }
 
-        BiblioRecordDTO dto = (BiblioRecordDTO) rdto;
+        BiblioRecordDTO biblioRecordDTO = (BiblioRecordDTO) recordDTO;
 
         if ((mask & RecordBO.MARC_INFO) != 0) {
-            Record record = rdto.getRecord();
+            Record record = recordDTO.getRecord();
 
-            if (record == null && rdto.getIso2709() != null) {
-                record = MarcUtils.iso2709ToRecord(rdto.getIso2709());
+            if (record == null && recordDTO.getIso2709() != null) {
+                record = MarcUtils.iso2709ToRecord(recordDTO.getIso2709());
             }
 
             if (record != null) {
                 MarcDataReader marcDataReader = new MarcDataReader(record);
 
-                dto.setAuthor(marcDataReader.getAuthor(true));
-                dto.setTitle(marcDataReader.getTitle(false));
-                dto.setIsbn(marcDataReader.getIsbn());
-                dto.setIssn(marcDataReader.getIssn());
-                dto.setIsrc(marcDataReader.getIsrc());
-                dto.setPublicationYear(marcDataReader.getPublicationYear());
-                dto.setShelfLocation(marcDataReader.getShelfLocation());
-                dto.setSubject(marcDataReader.getSubject(true));
+                biblioRecordDTO.setAuthor(marcDataReader.getAuthor(true));
+                biblioRecordDTO.setTitle(marcDataReader.getTitle(false));
+                biblioRecordDTO.setIsbn(marcDataReader.getIsbn());
+                biblioRecordDTO.setIssn(marcDataReader.getIssn());
+                biblioRecordDTO.setIsrc(marcDataReader.getIsrc());
+                biblioRecordDTO.setPublicationYear(marcDataReader.getPublicationYear());
+                biblioRecordDTO.setShelfLocation(marcDataReader.getShelfLocation());
+                biblioRecordDTO.setSubject(marcDataReader.getSubject(true));
             }
         }
 
-        Integer recordId = dto.getId();
+        Integer recordId = biblioRecordDTO.getId();
 
         if (recordId == null || recordId <= 0) {
             return;
         }
 
-        HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
-        ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
-
         if ((mask & RecordBO.HOLDING_INFO) != 0) {
-            int totalHoldings = hbo.count(recordId);
-            int availableHoldings = hbo.countAvailableHoldings(recordId);
+            int totalHoldings = holdingBO.count(recordId);
+            int availableHoldings = holdingBO.countAvailableHoldings(recordId);
             int lentCount = 0;
             int reservedCount = 0;
 
             if (availableHoldings > 0) {
-                lentCount = lbo.countLentHoldings(recordId);
-                reservedCount = rbo.countReserved(dto);
+                lentCount = lendingBO.countLentHoldings(recordId);
+                reservedCount = reservationBO.countReserved(biblioRecordDTO);
             }
 
-            dto.setHoldingsCount(totalHoldings);
-            dto.setHoldingsAvailable(availableHoldings - lentCount);
-            dto.setHoldingsLent(lentCount);
-            dto.setHoldingsReserved(reservedCount);
+            biblioRecordDTO.setHoldingsCount(totalHoldings);
+            biblioRecordDTO.setHoldingsAvailable(availableHoldings - lentCount);
+            biblioRecordDTO.setHoldingsLent(lentCount);
+            biblioRecordDTO.setHoldingsReserved(reservedCount);
         }
 
         if ((mask & RecordBO.HOLDING_LIST) != 0) {
-            List<HoldingDTO> holdingsList = hbo.list(recordId);
+            List<HoldingDTO> holdingsList = holdingBO.list(recordId);
 
             Collections.sort(holdingsList);
 
@@ -121,38 +107,34 @@ public class BiblioRecordBO extends RecordBO {
                 holding.setShelfLocation(
                         StringUtils.isNotBlank(holdingLocation)
                                 ? holdingLocation
-                                : dto.getShelfLocation());
+                                : biblioRecordDTO.getShelfLocation());
             }
 
-            dto.setHoldings(holdingsList);
+            biblioRecordDTO.setHoldings(holdingsList);
         }
 
         if ((mask & RecordBO.LENDING_INFO) != 0) {
-            List<HoldingDTO> holdingsList = dto.getHoldings();
+            List<HoldingDTO> holdingsList = biblioRecordDTO.getHoldings();
 
             if (holdingsList == null) {
-                holdingsList = hbo.list(recordId);
+                holdingsList = holdingBO.list(recordId);
                 Collections.sort(holdingsList);
             }
 
             List<LendingDTO> lendings = new ArrayList<>();
             for (HoldingDTO holding : holdingsList) {
-                lendings.add(lbo.getCurrentLending(holding));
+                lendings.add(lendingBO.getCurrentLending(holding));
             }
         }
     }
 
     @Override
     public boolean save(RecordDTO dto) {
-        Integer id = this.rdao.getNextSerial(RecordType.BIBLIO + "_records_id_seq");
-
-        dto.setId(id);
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 
-        if (this.rdao.save(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.BIBLIO, dto);
+        if (this.recordDAO.save(dto)) {
+            indexingBO.reindex(RecordType.BIBLIO, dto);
             return true;
         }
 
@@ -163,9 +145,8 @@ public class BiblioRecordBO extends RecordBO {
     public boolean update(RecordDTO dto) {
         dto.setDateOfLastTransaction();
 
-        if (this.rdao.update(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.BIBLIO, dto);
+        if (this.recordDAO.update(dto)) {
+            indexingBO.reindex(RecordType.BIBLIO, dto);
             return true;
         }
 
@@ -184,9 +165,8 @@ public class BiblioRecordBO extends RecordBO {
         //			}
         //		}
 
-        if (this.rdao.delete(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.deleteIndexes(RecordType.BIBLIO, dto);
+        if (this.recordDAO.delete(dto)) {
+            indexingBO.deleteIndexes(RecordType.BIBLIO, dto);
             //			HoldingBO hbo = new HoldingBO();
             //			hbo.delete(dto);
         }
@@ -194,13 +174,24 @@ public class BiblioRecordBO extends RecordBO {
     }
 
     @Override
-    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        // TODO Auto-generated method stub
-        return false;
+    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
+        return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.LENDING_INFO);
     }
 
     @Override
-    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.LENDING_INFO);
+    public RecordType getRecordType() {
+        return RecordType.BIBLIO;
+    }
+
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
+    }
+
+    public void setLendingBO(LendingBO2 lendingBO) {
+        this.lendingBO = lendingBO;
+    }
+
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
     }
 }

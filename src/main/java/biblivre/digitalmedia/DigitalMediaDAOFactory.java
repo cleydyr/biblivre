@@ -15,13 +15,13 @@ public class DigitalMediaDAOFactory extends AbstractDAO {
     private DigitalMediaDAOFactory() {}
 
     @SuppressWarnings("unchecked")
-    public static DigitalMediaDAO getDigitalMediaDAOImpl(String schema) {
+    public static DigitalMediaDAO getDigitalMediaDAOImpl() {
         try {
             Class<? extends AbstractDAO> klass =
                     (Class<? extends AbstractDAO>)
                             Class.forName(_DIGITAL_MEDIA_DAO_IMPL_CLASS_NAME);
 
-            return (DigitalMediaDAO) AbstractDAO.getInstance(klass, schema);
+            return (DigitalMediaDAO) AbstractDAO.getInstance(klass);
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
 

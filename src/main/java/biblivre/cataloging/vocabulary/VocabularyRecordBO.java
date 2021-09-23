@@ -22,28 +22,16 @@ package biblivre.cataloging.vocabulary;
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.core.AbstractBO;
-import biblivre.core.exceptions.ValidationException;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.Map;
 import java.util.Set;
 import org.marc4j.marc.Record;
 
-public class VocabularyRecordBO extends RecordBO {
-
-    public static VocabularyRecordBO getInstance(String schema) {
-        VocabularyRecordBO bo = AbstractBO.getInstance(VocabularyRecordBO.class, schema);
-
-        if (bo.rdao == null) {
-            bo.rdao = VocabularyRecordDAO.getInstance(schema);
-            bo.sdao = VocabularySearchDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+public class VocabularyRecordBO extends PaginableRecordBO {
+    private IndexingBO indexingBO;
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {
@@ -72,15 +60,11 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean save(RecordDTO dto) {
-        Integer id = this.rdao.getNextSerial(RecordType.VOCABULARY + "_records_id_seq");
-
-        dto.setId(id);
         dto.setDateOfLastTransaction();
         dto.setFixedLengthDataElements();
 
-        if (this.rdao.save(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.VOCABULARY, dto);
+        if (this.recordDAO.save(dto)) {
+            indexingBO.reindex(RecordType.VOCABULARY, dto);
             return true;
         }
 
@@ -91,9 +75,8 @@ public class VocabularyRecordBO extends RecordBO {
     public boolean update(RecordDTO dto) {
         dto.setDateOfLastTransaction();
 
-        if (this.rdao.update(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.reindex(RecordType.VOCABULARY, dto);
+        if (this.recordDAO.update(dto)) {
+            indexingBO.reindex(RecordType.VOCABULARY, dto);
             return true;
         }
 
@@ -102,21 +85,24 @@ public class VocabularyRecordBO extends RecordBO {
 
     @Override
     public boolean delete(RecordDTO dto) {
-        if (this.rdao.delete(dto)) {
-            IndexingBO indexingBo = IndexingBO.getInstance(this.getSchema());
-            indexingBo.deleteIndexes(RecordType.VOCABULARY, dto);
+        if (this.recordDAO.delete(dto)) {
+            indexingBO.deleteIndexes(RecordType.VOCABULARY, dto);
         }
 
         return true;
     }
 
     @Override
-    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        return false;
+    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
+        return super.map(ids, RecordBO.MARC_INFO);
     }
 
     @Override
-    public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return super.map(ids, RecordBO.MARC_INFO);
+    public RecordType getRecordType() {
+        return RecordType.VOCABULARY;
+    }
+
+    public void setIndexingBO(IndexingBO indexingBO) {
+        this.indexingBO = indexingBO;
     }
 }

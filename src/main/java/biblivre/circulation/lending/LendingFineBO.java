@@ -34,33 +34,26 @@ import java.util.Date;
 import java.util.List;
 
 public class LendingFineBO extends AbstractBO {
-
-    private LendingFineDAO dao;
-
-    public static LendingFineBO getInstance(String schema) {
-        LendingFineBO bo = AbstractBO.getInstance(LendingFineBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = LendingFineDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private LendingFineDAO lendingFineDAO;
+    private HoldingBO holdingBO;
+    private BiblioRecordBO biblioRecordBO;
+    private LendingBO lendingBO;
+    private UserTypeBO userTypeBO;
 
     public LendingFineDTO getById(Integer fineId) {
-        return this.dao.get(fineId);
+        return this.lendingFineDAO.get(fineId);
     }
 
     public LendingFineDTO getByHistoryId(Integer lendingId) {
-        return this.dao.getByLendingId(lendingId);
+        return this.lendingFineDAO.getByLendingId(lendingId);
     }
 
     public List<LendingFineDTO> listLendingFines(UserDTO user) {
-        return this.populateFineInfo(this.dao.list(user, false));
+        return this.populateFineInfo(this.lendingFineDAO.list(user, false));
     }
 
     public List<LendingFineDTO> listLendingFines(UserDTO user, boolean pendingOnly) {
-        return this.populateFineInfo(this.dao.list(user, pendingOnly));
+        return this.populateFineInfo(this.lendingFineDAO.list(user, pendingOnly));
     }
 
     private List<LendingFineDTO> populateFineInfo(List<LendingFineDTO> fines) {
@@ -73,21 +66,17 @@ public class LendingFineBO extends AbstractBO {
     private void populateFineInfo(LendingFineDTO fine) {
         Integer lendingId = fine.getLendingId();
 
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
-        HoldingBO hbo = HoldingBO.getInstance(this.getSchema());
-        BiblioRecordBO rbo = BiblioRecordBO.getInstance(this.getSchema());
-
-        LendingDTO lending = lbo.get(lendingId);
-        HoldingDTO holding = (HoldingDTO) hbo.get(lending.getHoldingId());
+        LendingDTO lending = lendingBO.get(lendingId);
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         BiblioRecordDTO biblio =
-                (BiblioRecordDTO) rbo.get(holding.getRecordId(), RecordBO.MARC_INFO);
+                (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
 
         fine.setAuthor(biblio.getAuthor());
         fine.setTitle(biblio.getTitle());
     }
 
     public boolean update(LendingFineDTO fine) {
-        return this.dao.update(fine);
+        return this.lendingFineDAO.update(fine);
     }
 
     public LendingFineDTO createFine(LendingDTO lending, Float value, boolean paid) {
@@ -99,7 +88,7 @@ public class LendingFineBO extends AbstractBO {
             fine.setPayment(new Date());
         }
         fine.setCreatedBy(lending.getCreatedBy());
-        this.dao.insert(fine);
+        this.lendingFineDAO.insert(fine);
         return fine;
     }
 
@@ -107,8 +96,7 @@ public class LendingFineBO extends AbstractBO {
         if (daysLate == null || daysLate <= 0) {
             return 0.0f;
         }
-        UserTypeBO utBo = UserTypeBO.getInstance(this.getSchema());
-        UserTypeDTO userType = utBo.get(user.getType());
+        UserTypeDTO userType = userTypeBO.get(user.getType());
         Float fineValue = userType.getFineValue();
         return daysLate * fineValue;
     }
@@ -123,6 +111,26 @@ public class LendingFineBO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.lendingFineDAO.saveFromBiblivre3(dtoList);
+    }
+
+    public void setLendingFineDAO(LendingFineDAO lendingFineDAO) {
+        this.lendingFineDAO = lendingFineDAO;
+    }
+
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
+    }
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
+
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
     }
 }

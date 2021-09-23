@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import biblivre.AbstractContainerDatabaseTest;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO;
@@ -22,10 +23,14 @@ import org.testcontainers.shaded.com.google.common.io.Files;
 
 @Testcontainers
 public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
-    private DigitalMediaDAO dao = getInstance(PostgresLargeObjectDigitalMediaDAO.class);
+    private BaseDigitalMediaDAO dao = getInstance(PostgresLargeObjectDigitalMediaDAO.class);
+
+    private static final String DEFAULT_SCHEMA = "single";
 
     @BeforeEach
     public void deleteAll() {
+        SchemaThreadLocal.setSchema(DEFAULT_SCHEMA);
+
         List<DigitalMediaDTO> list = dao.list();
 
         for (DigitalMediaDTO digitalMedia : list) {

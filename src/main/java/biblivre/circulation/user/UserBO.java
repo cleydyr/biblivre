@@ -48,26 +48,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserBO extends AbstractBO {
-
-    private UserDAO dao;
-
-    public static UserBO getInstance(String schema) {
-        UserBO bo = AbstractBO.getInstance(UserBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = UserDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+    private UserDAO userDAO;
+    private UserTypeBO userTypeBO;
 
     public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
-        DTOCollection<UserDTO> list = this.dao.search(dto, limit, offset);
+        DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
 
-        UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
-        Map<Integer, UserTypeDTO> map = utbo.map();
+        Map<Integer, UserTypeDTO> map = userTypeBO.map();
 
         for (UserDTO udto : list) {
             UserTypeDTO utdto = map.get(udto.getType());
@@ -88,10 +79,9 @@ public class UserBO extends AbstractBO {
     }
 
     public Map<Integer, UserDTO> map(Set<Integer> ids) {
-        Map<Integer, UserDTO> map = this.dao.map(ids);
+        Map<Integer, UserDTO> map = this.userDAO.map(ids);
 
-        UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
-        Map<Integer, UserTypeDTO> typeMap = utbo.map();
+        Map<Integer, UserTypeDTO> typeMap = userTypeBO.map();
 
         for (UserDTO user : map.values()) {
             user.setUsertypeName(typeMap.get(user.getType()).getName());
@@ -101,7 +91,7 @@ public class UserBO extends AbstractBO {
     }
 
     public UserDTO getUserByLoginId(Integer loginId) {
-        Integer userId = this.dao.getUserIdByLoginId(loginId);
+        Integer userId = this.userDAO.getUserIdByLoginId(loginId);
         if (userId == null) {
             return null;
         }
@@ -109,15 +99,15 @@ public class UserBO extends AbstractBO {
     }
 
     public boolean save(UserDTO user) {
-        return this.dao.save(user);
+        return this.userDAO.save(user);
     }
 
     public boolean updateUserStatus(Integer userId, UserStatus status) {
-        return this.dao.updateUserStatus(userId, status);
+        return this.userDAO.updateUserStatus(userId, status);
     }
 
     public boolean delete(UserDTO user) {
-        return this.dao.delete(user);
+        return this.userDAO.delete(user);
     }
 
     public DiskFile printUserCardsToPDF(LabelPrintDTO dto, TranslationsMap i18n) {
@@ -150,7 +140,6 @@ public class UserBO extends AbstractBO {
                 table.addCell(cell);
             }
             Map<Integer, UserDTO> userMap = this.map(dto.getIds());
-            UserTypeBO utbo = UserTypeBO.getInstance(this.getSchema());
             for (UserDTO user : userMap.values()) {
                 String userId = String.valueOf(user.getId());
                 PdfContentByte cb = writer.getDirectContent();
@@ -174,7 +163,7 @@ public class UserBO extends AbstractBO {
                                         + ": "
                                         + user.getEnrollment()
                                         + "\n");
-                UserTypeDTO usdto = utbo.get(user.getType());
+                UserTypeDTO usdto = userTypeBO.get(user.getType());
                 Phrase p4 =
                         new Phrase(
                                 this.getText(i18n, "circulation.user_field.short_type")
@@ -210,7 +199,7 @@ public class UserBO extends AbstractBO {
 
             return new DiskFile(file, "application/pdf");
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(fos);
         }
@@ -234,10 +223,20 @@ public class UserBO extends AbstractBO {
     }
 
     public void markAsPrinted(Set<Integer> ids) {
-        this.dao.markAsPrinted(ids);
+        this.userDAO.markAsPrinted(ids);
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.userDAO.saveFromBiblivre3(dtoList);
+    }
+
+    protected static final Logger logger = LoggerFactory.getLogger(UserBO.class);
+
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
     }
 }

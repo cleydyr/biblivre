@@ -17,7 +17,7 @@
 	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
 
-	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields((String) request.getAttribute("schema"), "vocabulary").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("vocabulary").getCacheFileName() %>"></script>
 
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
@@ -40,7 +40,7 @@
 </layout:head>
 
 <layout:body>
-	<div class="page_help"><i18n:text key="search.vocabulary.page_help" param1="<%= IndexingGroups.getSearchableGroupsText((String) request.getAttribute(\"schema\"), RecordType.VOCABULARY, (String) request.getAttribute(\"language\")) %>" /></div>
+	<div class="page_help"><i18n:text key="search.vocabulary.page_help" param1="<%= IndexingGroups.getSearchableGroupsText(RecordType.VOCABULARY, (String) request.getAttribute(\"language\")) %>" /></div>
 
 	<div id="vocabulary">
 		<div class="page_title">

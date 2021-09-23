@@ -20,6 +20,7 @@
 package biblivre.circulation.user;
 
 import biblivre.core.JavascriptCacheableList;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,29 +37,29 @@ public class UserFields extends StaticBO {
     private UserFields() {}
 
     static {
-        UserFields.reset();
+        UserFields.resetAll();
     }
 
-    public static void reset() {
+    public static void resetAll() {
         UserFields.fields = new HashMap<>();
     }
 
-    public static void reset(String schema) {
-        UserFields.fields.remove(schema);
+    public static void reset() {
+        UserFields.fields.remove(SchemaThreadLocal.get());
     }
 
-    public static JavascriptCacheableList<UserFieldDTO> getFields(String schema) {
-        JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(schema);
+    public static JavascriptCacheableList<UserFieldDTO> getFields() {
+        JavascriptCacheableList<UserFieldDTO> list = _getScoped();
 
         if (list == null) {
-            list = UserFields.loadFields(schema);
+            list = UserFields.loadFields();
         }
 
         return list;
     }
 
-    public static List<UserFieldDTO> getSearchableFields(String schema) {
-        JavascriptCacheableList<UserFieldDTO> list = UserFields.getFields(schema);
+    public static List<UserFieldDTO> getSearchableFields() {
+        JavascriptCacheableList<UserFieldDTO> list = getFields();
 
         List<UserFieldDTO> searcheableList = new ArrayList<>();
         for (UserFieldDTO dto : list) {
@@ -81,8 +82,8 @@ public class UserFields extends StaticBO {
         return searcheableList;
     }
 
-    private static synchronized JavascriptCacheableList<UserFieldDTO> loadFields(String schema) {
-        JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(schema);
+    private static synchronized JavascriptCacheableList<UserFieldDTO> loadFields() {
+        JavascriptCacheableList<UserFieldDTO> list = _getScoped();
 
         // Checking again for thread safety.
         if (list != null) {
@@ -90,19 +91,30 @@ public class UserFields extends StaticBO {
         }
 
         if (UserFields.logger.isDebugEnabled()) {
-            UserFields.logger.debug("Loading user fields from " + schema + ".");
+            UserFields.logger.debug("Loading user fields from " + SchemaThreadLocal.get() + ".");
         }
 
-        UserFieldsDAO dao = UserFieldsDAO.getInstance(schema);
+        UserFieldsDAO dao = UserFieldsDAOImpl.getInstance();
 
         List<UserFieldDTO> fields = dao.listFields();
         list =
                 new JavascriptCacheableList<>(
-                        "CirculationInput.userFields", schema + ".circulation", ".user_fields.js");
+                        "CirculationInput.userFields",
+                        SchemaThreadLocal.get() + ".circulation",
+                        ".user_fields.js");
         list.addAll(fields);
 
-        UserFields.fields.put(schema, list);
+        _putScoped(list);
 
+        return list;
+    }
+
+    private static void _putScoped(JavascriptCacheableList<UserFieldDTO> list) {
+        UserFields.fields.put(SchemaThreadLocal.get(), list);
+    }
+
+    private static JavascriptCacheableList<UserFieldDTO> _getScoped() {
+        JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(SchemaThreadLocal.get());
         return list;
     }
 }

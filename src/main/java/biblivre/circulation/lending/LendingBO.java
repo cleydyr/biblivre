@@ -32,7 +32,6 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
-import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.FreemarkerTemplateHelper;
@@ -59,21 +58,16 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
-public class LendingBO extends AbstractBO {
-    private LendingDAO dao;
-
-    public static LendingBO getInstance(String schema) {
-        LendingBO bo = AbstractBO.getInstance(LendingBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = LendingDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
+public class LendingBO extends LendingBO2 {
+    private UserBO userBO;
+    private HoldingBO holdingBO;
+    private BiblioRecordBO biblioRecordBO;
+    private UserTypeBO userTypeBO;
+    private LendingFineBO lendingFineBO;
+    private ReservationBO reservationBO;
 
     public LendingDTO get(Integer lendingId) {
-        return this.dao.get(lendingId);
+        return this.lendingDAO.get(lendingId);
     }
 
     public boolean isLent(HoldingDTO holding) {
@@ -81,16 +75,12 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean wasEverLent(HoldingDTO holding) {
-        List<LendingDTO> history = this.dao.listHistory(holding);
+        List<LendingDTO> history = this.lendingDAO.listHistory(holding);
         return history.size() > 0;
     }
 
-    public LendingDTO getCurrentLending(HoldingDTO holding) {
-        return this.dao.getCurrentLending(holding);
-    }
-
     public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
-        return this.dao.getCurrentLendingMap(ids);
+        return this.lendingDAO.getCurrentLendingMap(ids);
     }
 
     public void checkLending(HoldingDTO holding, UserDTO user) {
@@ -138,16 +128,15 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean checkUserLendLimit(UserDTO user, boolean renew) {
-        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
-        UserTypeDTO type = userTypeBo.get(user.getType());
+        UserTypeDTO type = userTypeBO.get(user.getType());
         Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
-        Integer count = this.dao.getCurrentLendingsCount(user);
+        Integer count = this.lendingDAO.getCurrentLendingsCount(user);
 
         return renew ? (count <= lendingLimit) : (count < lendingLimit);
     }
 
     public Integer getCurrentLendingsCount(UserDTO user) {
-        return this.dao.getCurrentLendingsCount(user);
+        return this.lendingDAO.getCurrentLendingsCount(user);
     }
 
     public boolean doLend(HoldingDTO holding, UserDTO user, int createdBy) {
@@ -157,18 +146,16 @@ public class LendingBO extends AbstractBO {
         lending.setHoldingId(holding.getId());
         lending.setUserId(user.getId());
 
-        UserTypeBO userTypeBo = UserTypeBO.getInstance(this.getSchema());
-        UserTypeDTO type = userTypeBo.get(user.getType());
+        UserTypeDTO type = userTypeBO.get(user.getType());
 
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
-        Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
+
+        Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(today, days);
         lending.setExpectedReturnDate(expectedReturnDate);
 
-        if (this.dao.doLend(lending)) {
-            ReservationBO rbo = ReservationBO.getInstance(this.getSchema());
-            rbo.delete(user.getId(), holding.getRecordId());
+        if (this.lendingDAO.doLend(lending)) {
+            reservationBO.delete(user.getId(), holding.getRecordId());
             return true;
         } else {
             return false;
@@ -176,75 +163,70 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean doReturn(LendingDTO lending, Float fineValue, boolean paid) {
-        this.dao.doReturn(lending.getId());
+        this.lendingDAO.doReturn(lending.getId());
 
         if (fineValue > 0) {
-            LendingFineBO fineBo = LendingFineBO.getInstance(this.getSchema());
-            fineBo.createFine(lending, fineValue, paid);
+            lendingFineBO.createFine(lending, fineValue, paid);
         }
 
         return true;
     }
 
     public boolean doRenew(LendingDTO lending) {
-        UserBO userBo = UserBO.getInstance(this.getSchema());
-        UserDTO userDto = userBo.get(lending.getUserId());
+        UserDTO userDto = userBO.get(lending.getUserId());
         if (userDto == null) {
             throw new ValidationException("cataloging.lending.error.user_not_found");
         }
 
-        HoldingBO holdingBo = HoldingBO.getInstance(this.getSchema());
-        HoldingDTO holding = (HoldingDTO) holdingBo.get(lending.getHoldingId());
+        HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         this.checkRenew(holding, userDto);
 
-        UserTypeBO userTypeBO = UserTypeBO.getInstance(this.getSchema());
         UserTypeDTO type = userTypeBO.get(userDto.getType());
 
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
-        Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(this.getSchema(), today, days);
+
+        Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(today, days);
+
         lending.setExpectedReturnDate(expectedReturnDate);
 
-        return this.dao.doRenew(
+        return this.lendingDAO.doRenew(
                 lending.getId(), lending.getExpectedReturnDate(), lending.getCreatedBy());
     }
 
     public List<LendingDTO> listHistory(UserDTO user) {
-        List<LendingDTO> list = this.dao.listHistory(user);
+        List<LendingDTO> list = this.lendingDAO.listHistory(user);
         DTOCollection<LendingDTO> collection = new DTOCollection<>();
         collection.addAll(list);
         return collection;
     }
 
     public DTOCollection<LendingDTO> listLendings(UserDTO user) {
-        List<LendingDTO> list = this.dao.listLendings(user);
+        List<LendingDTO> list = this.lendingDAO.listLendings(user);
         DTOCollection<LendingDTO> collection = new DTOCollection<>();
         collection.addAll(list);
         return collection;
     }
 
     public List<LendingDTO> listUserLendings(UserDTO user) {
-        return this.dao.listLendings(user);
+        return this.lendingDAO.listLendings(user);
     }
 
     public DTOCollection<LendingInfoDTO> listLendings(int offset, int limit) {
-        List<LendingDTO> list = this.dao.listLendings(offset, limit);
+        List<LendingDTO> list = this.lendingDAO.listLendings(offset, limit);
         return this.populateLendingInfo(list);
     }
 
     public Integer countHistory(UserDTO user) {
-        return this.dao.countHistory(user);
+        return this.lendingDAO.countHistory(user);
     }
 
     public Integer countLendings(UserDTO user) {
-        return this.dao.countLendings(user);
+        return this.lendingDAO.countLendings(user);
     }
 
     public DTOCollection<LendingInfoDTO> populateLendingInfoByHolding(
             DTOCollection<HoldingDTO> holdingList) {
-        String schema = this.getSchema();
-
         Set<Integer> users = new HashSet<>();
         Set<Integer> records = new HashSet<>();
         Set<Integer> holdings = new HashSet<>();
@@ -258,9 +240,6 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        UserBO ubo = UserBO.getInstance(schema);
-        BiblioRecordBO bbo = BiblioRecordBO.getInstance(schema);
-
         Map<Integer, LendingDTO> lendingsMap = this.getCurrentLendingMap(holdings);
         for (Entry<Integer, LendingDTO> entry : lendingsMap.entrySet()) {
             Integer userid = entry.getValue().getUserId();
@@ -271,19 +250,17 @@ public class LendingBO extends AbstractBO {
 
         Map<Integer, RecordDTO> recordsMap = new HashMap<>();
         if (!records.isEmpty()) {
-            recordsMap = bbo.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
+            recordsMap = biblioRecordBO.map(records, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
         }
 
         Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
-            usersMap = ubo.map(users);
+            usersMap = userBO.map(users);
         }
 
         // Join data
         DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
         collection.setPaging(holdingList.getPaging());
-
-        LendingFineBO lfbo = LendingFineBO.getInstance(schema);
 
         for (HoldingDTO holding : holdingList) {
             LendingInfoDTO info = new LendingInfoDTO();
@@ -303,12 +280,11 @@ public class LendingBO extends AbstractBO {
 
                 if (lending.getUserId() != null) {
                     UserDTO user = usersMap.get(lending.getUserId());
-                    UserTypeBO utbo = UserTypeBO.getInstance(schema);
-                    UserTypeDTO userType = utbo.get(user.getType());
+                    UserTypeDTO userType = userTypeBO.get(user.getType());
                     user.setUsertypeName(userType.getName());
                     info.setUser(user);
 
-                    Integer daysLate = lfbo.calculateLateDays(lending);
+                    Integer daysLate = lendingFineBO.calculateLateDays(lending);
                     if (daysLate > 0) {
                         Float dailyFine = userType.getFineValue();
                         lending.setDaysLate(daysLate);
@@ -330,7 +306,6 @@ public class LendingBO extends AbstractBO {
 
     public DTOCollection<LendingInfoDTO> populateLendingInfo(
             List<LendingDTO> list, boolean populateUser) {
-        String schema = this.getSchema();
 
         DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
 
@@ -348,18 +323,14 @@ public class LendingBO extends AbstractBO {
             }
         }
 
-        UserBO userBo = UserBO.getInstance(schema);
-        HoldingBO holdingBo = HoldingBO.getInstance(schema);
-        BiblioRecordBO biblioBo = BiblioRecordBO.getInstance(schema);
-
         Map<Integer, UserDTO> users = new HashMap<>();
         if (!userIds.isEmpty()) {
-            users = userBo.map(userIds);
+            users = userBO.map(userIds);
         }
 
         Map<Integer, RecordDTO> holdings = new HashMap<>();
         if (!holdingIds.isEmpty()) {
-            holdings = holdingBo.map(holdingIds);
+            holdings = holdingBO.map(holdingIds);
         }
 
         for (RecordDTO holding : holdings.values()) {
@@ -368,7 +339,7 @@ public class LendingBO extends AbstractBO {
 
         Map<Integer, RecordDTO> records = new HashMap<>();
         if (!recordIds.isEmpty()) {
-            records = biblioBo.map(recordIds, RecordBO.MARC_INFO);
+            records = biblioRecordBO.map(recordIds, RecordBO.MARC_INFO);
         }
 
         for (LendingDTO lending : list) {
@@ -389,16 +360,12 @@ public class LendingBO extends AbstractBO {
         return collection;
     }
 
-    public Integer countLentHoldings(int recordId) {
-        return this.dao.countLentHoldings(recordId);
-    }
-
     public LendingDTO getLatest(int holdingSerial, int userId) {
-        return this.dao.getLatest(holdingSerial, userId);
+        return this.lendingDAO.getLatest(holdingSerial, userId);
     }
 
     public Integer countLendings() {
-        return this.dao.countLendings();
+        return this.lendingDAO.countLendings();
     }
 
     public List<LendingDTO> listLendings(List<Integer> lendingsIds) {
@@ -415,8 +382,7 @@ public class LendingBO extends AbstractBO {
             throws TemplateException, IOException {
         PrinterType printerType =
                 PrinterType.fromString(
-                        Configurations.getString(
-                                this.getSchema(), Constants.CONFIG_LENDING_PRINTER_TYPE));
+                        Configurations.getString(Constants.CONFIG_LENDING_PRINTER_TYPE));
         int columns = 24;
 
         if (printerType != null) {
@@ -461,7 +427,7 @@ public class LendingBO extends AbstractBO {
         receipt.append(StringUtils.repeat('*', columns)).append("\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
 
-        String libraryName = Configurations.getString(this.getSchema(), "general.title");
+        String libraryName = Configurations.getString("general.title");
 
         receipt.append("* ").append(StringUtils.center(libraryName, columns - 4)).append(" *\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
@@ -701,7 +667,7 @@ public class LendingBO extends AbstractBO {
 
         root.put("lendingInfo", lendingInfo);
 
-        String libraryName = Configurations.getString(this.getSchema(), "general.title");
+        String libraryName = Configurations.getString("general.title");
         String now = dateTimeFormat.format(new Date());
 
         root.put("libraryName", libraryName);
@@ -797,7 +763,31 @@ public class LendingBO extends AbstractBO {
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.lendingDAO.saveFromBiblivre3(dtoList);
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
+
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
+    }
+
+    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
+        this.biblioRecordBO = biblioRecordBO;
+    }
+
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
+    }
+
+    public void setLendingFineBO(LendingFineBO lendingFineBO) {
+        this.lendingFineBO = lendingFineBO;
+    }
+
+    public void setReservationBO(ReservationBO reservationBO) {
+        this.reservationBO = reservationBO;
     }
 
     //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {

@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
+import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
@@ -27,10 +28,11 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.IFCacheableJavascript;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
-import biblivre.core.schemas.SchemasDAO;
+import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
@@ -45,6 +47,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SchemaServlet extends HttpServlet {
 
@@ -64,55 +68,66 @@ public final class SchemaServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        BiblivreInitializer.initialize();
-        ExtendedRequest xRequest = ((ExtendedRequest) request);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BiblivreInitializer.initialize();
+            ExtendedRequest xRequest = ((ExtendedRequest) request);
 
-        if (xRequest.mustRedirectToSchema()) {
-            String query = xRequest.getQueryString();
+            if (xRequest.mustRedirectToSchema()) {
+                String query = xRequest.getQueryString();
 
-            if (StringUtils.isNotBlank(query)) {
-                query = "?" + query;
-            } else {
-                query = "";
-            }
-
-            ((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
-            return;
-        }
-
-        String controller = xRequest.getController();
-
-        if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
-            Writer out = response.getWriter();
-            JSONObject json = new JSONObject();
-
-            try {
-                // TODO: Completar com mais mensagens.
-                // Checking Database
-                if (!SchemasDAO.getInstance("public").testDatabaseConnection()) {
-                    json.put("success", false);
-                    json.put("status_message", "Falha no acesso ao Banco de Dados");
+                if (StringUtils.isNotBlank(query)) {
+                    query = "?" + query;
                 } else {
-                    json.put("success", true);
-                    json.put("status_message", "Disponível");
+                    query = "";
                 }
-            } catch (JSONException e) {
+
+                ((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
+                return;
             }
 
-            out.write(json.toString());
+            String controller = xRequest.getController();
 
-            return;
-        }
+            if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
+                Writer out = response.getWriter();
+                JSONObject json = new JSONObject();
 
-        String path = request.getServletPath();
-        boolean isStatic = path.contains("static/") || path.contains("extra/");
+                SchemaThreadLocal.withSchema(
+                        "public",
+                        () -> {
+                            try {
+                                // TODO: Completar com mais mensagens.
+                                // Checking Database
+                                SchemaThreadLocal.setSchema("public");
 
-        if (isStatic) {
-            this.processStaticRequest(request, response);
-        } else {
-            this.processDynamicRequest(request, response);
+                                if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
+                                    json.put("success", false);
+                                    json.put("status_message", "Falha no acesso ao Banco de Dados");
+                                } else {
+                                    json.put("success", true);
+                                    json.put("status_message", "Disponível");
+                                }
+                            } catch (JSONException e) {
+                            }
+
+                            return null;
+                        });
+
+                out.write(json.toString());
+
+                return;
+            }
+
+            String path = request.getServletPath();
+            boolean isStatic = path.contains("static/") || path.contains("extra/");
+
+            if (isStatic) {
+                this.processStaticRequest(request, response);
+            } else {
+                this.processDynamicRequest(request, response);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -137,8 +152,7 @@ public final class SchemaServlet extends HttpServlet {
         String module = xRequest.getString("module");
         String action = xRequest.getString("action");
 
-        AuthorizationPoints notLoggedAtps =
-                AuthorizationPoints.getNotLoggedInstance(xRequest.getSchema());
+        AuthorizationPoints notLoggedAtps = AuthorizationPoints.getNotLoggedInstance();
         xRequest.setAttribute("notLoggedAtps", notLoggedAtps);
 
         // If there is an action but there isn't any controller or module, it's
@@ -150,8 +164,7 @@ public final class SchemaServlet extends HttpServlet {
             controller = "jsp";
         } else if (StringUtils.isBlank(controller)
                 && (xRequest.getBoolean("force_setup")
-                        || Configurations.getBoolean(
-                                xRequest.getSchema(), Constants.CONFIG_NEW_LIBRARY))) {
+                        || Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY))) {
             xRequest.setAttribute("module", "menu");
             xRequest.setAttribute("action", "setup");
             controller = "jsp";
@@ -220,14 +233,16 @@ public final class SchemaServlet extends HttpServlet {
             String[] params = StringUtils.split(filename, ".");
 
             String schema = params[0];
+
             IFCacheableJavascript javascript = null;
 
             if (realPath.endsWith(".i18n.js")) {
-                javascript = Translations.get(schema, params[1]);
+                javascript = Translations.get(params[1]);
             } else if (realPath.endsWith(".user_fields.js")) {
-                javascript = UserFields.getFields(schema);
+                javascript = SchemaThreadLocal.withSchema(schema, UserFields::getFields);
             } else {
-                javascript = Fields.getFormFields(schema, params[2]);
+                javascript =
+                        SchemaThreadLocal.withSchema(schema, () -> Fields.getFormFields(params[2]));
             }
 
             File cacheFile = javascript.getCacheFile();
@@ -262,4 +277,6 @@ public final class SchemaServlet extends HttpServlet {
         FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
                 getServletContext(), "/freemarker");
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 }

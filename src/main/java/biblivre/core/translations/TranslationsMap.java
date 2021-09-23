@@ -21,6 +21,7 @@ package biblivre.core.translations;
 
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.JavascriptCache;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
 import java.io.File;
 import java.util.HashMap;
@@ -64,8 +65,13 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         }
 
         if (StringUtils.isEmpty(value)) {
-            if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-                value = Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()).getText(key);
+            if (!isGlobalSchema()) {
+                value =
+                        SchemaThreadLocal.withSchema(
+                                Constants.GLOBAL_SCHEMA,
+                                () -> {
+                                    return Translations.get(this.getLanguage()).getText(key);
+                                });
             } else {
                 this.logger.warn(
                         "Translation key not found: "
@@ -79,6 +85,10 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         }
 
         return value;
+    }
+
+    private boolean isGlobalSchema() {
+        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
     }
 
     public String getHtml(Object key) {
@@ -106,8 +116,14 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
     public Map<String, TranslationDTO> getAll() {
         Map<String, TranslationDTO> translations = new HashMap<>();
 
-        if (!this.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-            translations.putAll(Translations.get(Constants.GLOBAL_SCHEMA, this.getLanguage()));
+        if (!isGlobalSchema()) {
+            SchemaThreadLocal.withSchema(
+                    Constants.GLOBAL_SCHEMA,
+                    () -> {
+                        translations.putAll(Translations.get(this.getLanguage()));
+
+                        return null;
+                    });
         }
 
         for (Map.Entry<String, TranslationDTO> e : this.entrySet()) {

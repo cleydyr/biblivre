@@ -21,6 +21,7 @@ package biblivre.core.controllers;
 
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
 import java.io.IOException;
 import javax.servlet.Filter;
@@ -60,6 +61,8 @@ public class ExtendedRequestResponseFilter implements Filter {
         }
 
         chain.doFilter(xRequest, xResponse);
+
+        SchemaThreadLocal.remove();
     }
 
     @Override

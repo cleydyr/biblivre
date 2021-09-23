@@ -17,6 +17,7 @@
  */
 package biblivre.z3950.server;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.schemas.Schemas;
@@ -107,7 +108,9 @@ public class BiblivreJDBCSearchable extends JDBCSearchable {
             }
 
             boolean isZ3950Active =
-                    Configurations.getBoolean(collection, Constants.CONFIG_Z3950_SERVER_ACTIVE);
+                    SchemaThreadLocal.withSchema(
+                            collection,
+                            () -> Configurations.getBoolean(Constants.CONFIG_Z3950_SERVER_ACTIVE));
 
             if (!isZ3950Active) {
                 result.setStatus(8);
@@ -115,21 +118,33 @@ public class BiblivreJDBCSearchable extends JDBCSearchable {
                 return result;
             }
 
-            Z3950ServerDAO dao = Z3950ServerDAO.getInstance(collection);
+            SchemaThreadLocal.withSchema(
+                    collection,
+                    () -> {
+                        Z3950ServerDAOImpl dao = Z3950ServerDAOImpl.getInstance();
 
-            Collection<String> results = dao.search(term, indexingGroupId, 0, 200);
+                        Collection<String> results = dao.search(term, indexingGroupId, 0, 200);
 
-            if (results.isEmpty()) {
-                result.setStatus(8);
+                        if (results.isEmpty()) {
+                            result.setStatus(8);
 
-                return result;
-            }
+                            return result;
+                        }
 
-            results.stream()
-                    .map(r -> new OID(DATASOURCE_NAME, "Records", new BiblivreEntityKey(r)))
-                    .forEach(key -> result.add(key));
+                        results.stream()
+                                .map(
+                                        r ->
+                                                new OID(
+                                                        DATASOURCE_NAME,
+                                                        "Records",
+                                                        new BiblivreEntityKey(r)))
+                                .forEach(key -> result.add(key));
 
-            result.setStatus(4);
+                        result.setStatus(4);
+
+                        return null;
+                    });
+
         } catch (Exception e) {
             logger.warn(e.getMessage());
 

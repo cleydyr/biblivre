@@ -1,3 +1,4 @@
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.Set"%>
@@ -12,8 +13,6 @@
 <%@ taglib prefix="menu" tagdir="/WEB-INF/tags/menu" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
-<jsp:useBean id="schema" type="java.lang.String" scope="request" />
-<jsp:useBean id="translationsMap" type="biblivre.core.translations.TranslationsMap" scope="request" />
 <jsp:useBean id="isMultiPart" type="java.lang.Boolean" scope="request" />
 <jsp:useBean id="isDisableMenu" type="java.lang.Boolean" scope="request" />
 <jsp:useBean id="isBanner" type="java.lang.Boolean" scope="request" />
@@ -47,14 +46,15 @@
 						<img src="static/images/logo_biblivre_small.png" width="43" height="36" alt="Biblivre V">
 					</a>
 				</div>
-				<h1><a href="?"><%= Configurations.getString(schema, Constants.CONFIG_TITLE) %></a></h1>
-				<h2><%= Configurations.getHtml(schema, Constants.CONFIG_SUBTITLE) %></h2>
+				<h1><a href="?"><%= Configurations.getString(Constants.CONFIG_TITLE) %></a></h1>
+				<h2><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></h2>
 			</div>
 			<c:if test="${languages.size() > 1}">
 				<div id="language_selection">
 					<select class="combo combo_auto_size" name="i18n" onchange="Core.submitForm('menu', 'i18n', 'jsp');">
 						<c:forEach items="${languages}" var="dto">
 							<c:set var="selectedAttr">
+								<% TranslationsMap translations = (TranslationsMap) request.getAttribute("translationsMap"); %>
 								${translationsMap.getLanguage().equals(dto.getLanguage()) ? "selected" : ""}
 							</c:set>
 							<option value="${dto.getLanguage()}" ${selectedAttr}>${dto.toString()}</option>
@@ -123,6 +123,10 @@
 
 		<div id=notifications>
 			<div id=messages>
+
+		<%
+			String schema = SchemaThreadLocal.get();
+		%>
 
 		<c:if test="${isLogged && !isDisableMenu}">
 			<c:set var="passwordWarning" value='${schema}.system_warning_password' />

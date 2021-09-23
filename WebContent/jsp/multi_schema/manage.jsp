@@ -25,8 +25,8 @@
 			<div class="spacer"></div>
 			<% for (SchemaDTO schema : Schemas.getSchemas()) { %>
 				<div class="library <% if (schema.isDisabled()) { %>disabled<% } %>">
-					<a href="<%= schema.getSchema() %>/" target="_blank"><%= Configurations.getHtml(schema.getSchema(), Constants.CONFIG_TITLE) %></a>
-					<div class="subtitle"><%= Configurations.getHtml(schema.getSchema(), Constants.CONFIG_SUBTITLE) %></div>
+					<a href="<%= schema.getSchema() %>/" target="_blank"><%= Configurations.getHtml(Constants.CONFIG_TITLE) %></a>
+					<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></div>
 					<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
 					<a href="javascript:void(0);" onclick="Schemas.toggle('<%= schema.getSchema() %>', false, this);" class="enable">[<i18n:text key="multi_schema.manage.enable" />]</a>
 					<a href="javascript:void(0);" onclick="Schemas.deleteSchema('<%= schema.getSchema() %>', this);" class="enable">[<i18n:text key="common.delete" />]</a>

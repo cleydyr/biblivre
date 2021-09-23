@@ -62,7 +62,6 @@ public class RecordDTO extends AbstractDTO {
     private byte[] iso2709;
     private MaterialType materialType;
     private RecordDatabase recordDatabase;
-    private String schema;
     private Boolean isNew;
 
     private transient List<RecordAttachmentDTO> attachments;
@@ -269,7 +268,7 @@ public class RecordDTO extends AbstractDTO {
         if (this.fields == null) {
             MarcDataReader marcDataReader = new MarcDataReader(record);
 
-            List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(schema, getRecordType());
+            List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(getRecordType());
 
             this.fields = marcDataReader.getFieldList(formats);
         }
@@ -277,7 +276,7 @@ public class RecordDTO extends AbstractDTO {
         return this.fields;
     }
 
-    private RecordType getRecordType() {
+    public RecordType getRecordType() {
         return getMaterialType().getRecordType();
     }
 
@@ -386,14 +385,6 @@ public class RecordDTO extends AbstractDTO {
         json.putOpt("marc", this.getHumanReadableMarc());
 
         return json;
-    }
-
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
     }
 
     public boolean isNew() {

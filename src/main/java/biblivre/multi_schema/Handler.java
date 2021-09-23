@@ -58,11 +58,9 @@ public class Handler extends AbstractHandler {
             State.finish();
 
             Configurations.save(
-                    schemaParam,
                     new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam),
                     request.getLoggedUserId());
             Configurations.save(
-                    schemaParam,
                     new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
                     request.getLoggedUserId());
             this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");

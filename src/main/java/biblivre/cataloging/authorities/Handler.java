@@ -20,10 +20,9 @@
 package biblivre.cataloging.authorities;
 
 import biblivre.administration.reports.ReportsBO;
-import biblivre.cataloging.CatalogingHandler;
+import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
@@ -35,10 +34,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Handler extends CatalogingHandler {
+public class Handler extends PaginableCatalogingHandler {
+    private ReportsBO reportsBO;
 
     public Handler() {
-        super(RecordType.AUTHORITIES, MaterialType.AUTHORITIES);
+        setDefaultMaterialType(MaterialType.AUTHORITIES);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Handler extends CatalogingHandler {
     }
 
     public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         String searchParameters = request.getString("search_parameters");
         String query = "";
         RecordDatabase db = RecordDatabase.MAIN;
@@ -66,10 +66,9 @@ public class Handler extends CatalogingHandler {
             return;
         }
 
-        ReportsBO bo = ReportsBO.getInstance(schema);
         // Removed pagination (limit and offset) from method to fix a bug in the Reports/Report By
         // Author functionality.
-        TreeMap<String, Set<Integer>> result = bo.searchAuthors(query, db);
+        TreeMap<String, Set<Integer>> result = reportsBO.searchAuthors(query, db);
 
         if (result.size() == 0) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -95,6 +94,10 @@ public class Handler extends CatalogingHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setReportsBO(ReportsBO reportsBO) {
+        this.reportsBO = reportsBO;
     }
 
     //	@Override

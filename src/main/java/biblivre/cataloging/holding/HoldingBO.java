@@ -23,17 +23,15 @@ import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.labels.LabelDTO;
 import biblivre.cataloging.search.SearchDTO;
-import biblivre.circulation.lending.LendingBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.LabelPrintDTO;
-import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
@@ -61,6 +59,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,29 +69,20 @@ import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HoldingBO extends RecordBO {
+    private HoldingDAO holdingDAO;
+    private UserBO userBO;
+    private LoginBO loginBO;
 
-    private HoldingDAO dao;
-
-    public static HoldingBO getInstance(String schema) {
-        HoldingBO bo = AbstractBO.getInstance(HoldingBO.class, schema);
-
-        if (bo.dao == null) {
-            bo.dao = HoldingDAO.getInstance(schema);
-        }
-
-        return bo;
-    }
-
-    @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return this.dao.map(ids);
+        return this.holdingDAO.map(ids);
     }
 
-    @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids, int mask) {
-        Map<Integer, RecordDTO> map = this.dao.map(ids);
+        Map<Integer, RecordDTO> map = this.holdingDAO.map(ids);
 
         for (RecordDTO dto : map.values()) {
             this.populateDetails(dto, mask);
@@ -101,40 +91,36 @@ public class HoldingBO extends RecordBO {
         return map;
     }
 
-    @Override
     public List<RecordDTO> list(int offset, int limit) {
-        return this.dao.list(offset, limit);
+        return this.holdingDAO.list(offset, limit);
     }
 
-    @Override
     public Integer count() {
         return this.count(0);
     }
 
     public Integer count(int recordId) {
-        return this.dao.count(recordId, false);
+        return this.holdingDAO.count(recordId, false);
     }
 
     public Integer countAvailableHoldings(int recordId) {
-        return this.dao.count(recordId, true);
+        return this.holdingDAO.count(recordId, true);
     }
 
     public void markAsPrinted(Set<Integer> ids) {
-        this.dao.markAsPrinted(ids);
+        this.holdingDAO.markAsPrinted(ids);
     }
 
     public String getNextAccessionNumber() {
-        String prefix =
-                Configurations.getString(
-                        this.getSchema(), Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
+        String prefix = Configurations.getString(Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
         String accessionPrefix = prefix + "." + year + ".";
-        return accessionPrefix + this.dao.getNextAccessionNumber(accessionPrefix);
+        return accessionPrefix + this.holdingDAO.getNextAccessionNumber(accessionPrefix);
     }
 
     public boolean isAccessionNumberAvailable(String accessionNumber, int holdingSerial) {
-        return this.dao.isAccessionNumberAvailable(accessionNumber, holdingSerial);
+        return this.holdingDAO.isAccessionNumberAvailable(accessionNumber, holdingSerial);
     }
 
     public boolean isAccessionNumberAvailable(String accessionNumber) {
@@ -142,17 +128,17 @@ public class HoldingBO extends RecordBO {
     }
 
     public DTOCollection<HoldingDTO> list(int recordId) {
-        return this.dao.list(recordId);
+        return this.holdingDAO.list(recordId);
     }
 
     public HoldingDTO getByAccessionNumber(String accessionNumber) {
-        return this.dao.getByAccessionNumber(accessionNumber);
+        return this.holdingDAO.getByAccessionNumber(accessionNumber);
     }
 
     public DTOCollection<HoldingDTO> search(
             String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
         DTOCollection<HoldingDTO> searchResults =
-                this.dao.search(query, database, lentOnly, offset, limit);
+                this.holdingDAO.search(query, database, lentOnly, offset, limit);
         for (HoldingDTO holding : searchResults) {
             MarcDataReader reader = new MarcDataReader(holding.getRecord());
             holding.setShelfLocation(reader.getShelfLocation());
@@ -160,12 +146,25 @@ public class HoldingBO extends RecordBO {
         return searchResults;
     }
 
-    @Override
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.dao.saveFromBiblivre3(dtoList);
+        return this.holdingDAO.saveFromBiblivre3(dtoList);
     }
 
-    @Override
+    public RecordDTO get(int id) {
+        Set<Integer> ids = new HashSet<>();
+
+        ids.add(id);
+
+        return this.map(ids).get(id);
+    }
+
+    public RecordDTO get(int id, int mask) {
+        Set<Integer> ids = new HashSet<>();
+        ids.add(id);
+
+        return this.map(ids, mask).get(id);
+    }
+
     public boolean save(RecordDTO dto) {
         HoldingDTO hdto = (HoldingDTO) dto;
         Record record = hdto.getRecord();
@@ -182,33 +181,28 @@ public class HoldingBO extends RecordBO {
             throw new ValidationException("cataloging.holding.error.accession_number_unavailable");
         }
 
-        Integer id = this.dao.getNextSerial("biblio_holdings_id_seq");
-
         hdto.setDateOfLastTransaction();
 
         // Availability and RecordId are already populated at this point.
-        hdto.setId(id);
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
 
-        boolean success = this.dao.save(dto);
+        boolean success = this.holdingDAO.save(dto);
 
         if (success) {
             // UPDATE holding_creation_counter
             try {
-                UserDTO udto =
-                        UserBO.getInstance(this.getSchema()).getUserByLoginId(dto.getCreatedBy());
-                LoginDTO ldto = LoginBO.getInstance(this.getSchema()).get(dto.getCreatedBy());
-                this.dao.updateHoldingCreationCounter(udto, ldto);
+                UserDTO udto = userBO.getUserByLoginId(dto.getCreatedBy());
+                LoginDTO login = loginBO.get(dto.getCreatedBy());
+                this.holdingDAO.updateHoldingCreationCounter(udto, login);
             } catch (Exception e) {
-                this.logger.error(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
         }
 
         return success;
     }
 
-    @Override
     public boolean update(RecordDTO dto) {
         HoldingDTO hdto = (HoldingDTO) dto;
         Record record = hdto.getRecord();
@@ -231,10 +225,9 @@ public class HoldingBO extends RecordBO {
         hdto.setAccessionNumber(accessionNumber);
         hdto.setLocationD(holdingLocation);
 
-        return this.dao.update(dto);
+        return this.holdingDAO.update(dto);
     }
 
-    @Override
     public boolean delete(RecordDTO dto) {
 
         // TODO AVISAR O USER, SE O USER CONFIRMAR DELEÇÃO, DELETE CASCADE
@@ -246,25 +239,9 @@ public class HoldingBO extends RecordBO {
         //				throw new RuntimeException("MESSAGE_DELETE_BIBLIO_ERROR");
         //			}
         //		}
-        return this.dao.delete(dto);
+        return this.holdingDAO.delete(dto);
     }
 
-    // If a holding was ever lent, the user shouldn't delete it. The correct way
-    // is setting it's availability to false. If the user wants to delete it anyway,
-    // he must use the force delete function.
-    @Override
-    public boolean isDeleatable(HoldingDTO holding) throws ValidationException {
-        LendingBO lbo = LendingBO.getInstance(this.getSchema());
-
-        if (lbo.isLent(holding) || lbo.wasEverLent(holding)) {
-            throw new ValidationException(
-                    "cataloging.holding.error.shouldnt_delete_because_holding_is_or_was_lent");
-        }
-
-        return true;
-    }
-
-    @Override
     public void populateDetails(RecordDTO rdto, int mask) {
 
         if ((mask & RecordBO.MARC_INFO) != 0) {
@@ -275,14 +252,14 @@ public class HoldingBO extends RecordBO {
     }
 
     public boolean paginateHoldingSearch(SearchDTO search) {
-        Map<Integer, Integer> groupCount = this.dao.countSearchResults(search);
+        Map<Integer, Integer> groupCount = this.holdingDAO.countSearchResults(search);
         Integer count = groupCount.get(search.getIndexingGroup());
 
         if (count == null || count == 0) {
             return false;
         }
 
-        List<RecordDTO> list = this.dao.getSearchResults(search);
+        List<RecordDTO> list = this.holdingDAO.getSearchResults(search);
 
         search.getPaging().setRecordCount(count);
         search.setIndexingGroupCount(groupCount);
@@ -311,7 +288,7 @@ public class HoldingBO extends RecordBO {
                             adapter.getVerticalMargin());
             int horizontalAlignment =
                     ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(
-                            schema, () -> Element.ALIGN_CENTER);
+                            () -> Element.ALIGN_CENTER);
             File file = File.createTempFile("biblivre_label_", ".pdf");
             fos = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fos);
@@ -340,7 +317,7 @@ public class HoldingBO extends RecordBO {
 
             return new DiskFile(file, "application/pdf");
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(fos);
         }
@@ -404,35 +381,6 @@ public class HoldingBO extends RecordBO {
         }
 
         return success;
-    }
-
-    @Override
-    public List<RecordDTO> listByLetter(char letter, int order) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public boolean moveRecords(
-            Set<Integer> ids,
-            RecordDatabase recordDatabase,
-            int modifiedBy,
-            AuthorizationPoints authorizationPoints) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public boolean search(SearchDTO search) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public boolean paginateSearch(SearchDTO search) {
-        throw new RuntimeException("error.invalid_method_call");
-    }
-
-    @Override
-    public SearchDTO getSearch(Integer searchId) {
-        throw new RuntimeException("error.invalid_method_call");
     }
 
     private void _skipOffset(
@@ -554,5 +502,23 @@ public class HoldingBO extends RecordBO {
         dto.setCreatedBy(autoDto.getCreatedBy());
 
         return dto;
+    }
+
+    public RecordType getRecordType() {
+        return RecordType.HOLDING;
+    }
+
+    protected static final Logger logger = LoggerFactory.getLogger(HoldingBO.class);
+
+    public void setHoldingDAO(HoldingDAO holdingDAO) {
+        this.holdingDAO = holdingDAO;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
+
+    public void setLoginBO(LoginBO loginBO) {
+        this.loginBO = loginBO;
     }
 }

@@ -35,6 +35,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class Validator extends AbstractValidator {
+    private AccessControlBO accessControlBO;
+    private UserBO userBO;
+    private LendingBO lendingBO;
+    private UserTypeBO userTypeBO;
 
     public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -44,8 +48,7 @@ public class Validator extends AbstractValidator {
 
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
-        String schema = request.getSchema();
-        List<UserFieldDTO> userFields = UserFields.getFields(schema);
+        List<UserFieldDTO> userFields = UserFields.getFields();
 
         UserStatus status = request.getEnum(UserStatus.class, "status");
         if (status == null) {
@@ -62,7 +65,7 @@ public class Validator extends AbstractValidator {
         }
 
         Integer type = request.getInteger("type");
-        if (UserTypeBO.getInstance(schema).get(type) == null) {
+        if (userTypeBO.get(type) == null) {
             ex.addError("type", "field.error.required");
         }
 
@@ -132,23 +135,22 @@ public class Validator extends AbstractValidator {
 
     public void validateDelete(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
-        String schema = request.getSchema();
+
         Integer id = request.getInteger("id");
 
-        UserBO bo = UserBO.getInstance(schema);
-        UserDTO user = bo.get(id);
+        UserDTO user = userBO.get(id);
 
         if (user == null) {
             handler.setMessage(ActionResult.WARNING, "circulation.error.user_not_found");
             return;
         }
 
-        if (LendingBO.getInstance(schema).getCurrentLendingsCount(user) > 0) {
+        if (lendingBO.getCurrentLendingsCount(user) > 0) {
             handler.setMessage(ActionResult.WARNING, "circulation.error.delete.user_has_lendings");
             return;
         }
 
-        if (AccessControlBO.getInstance(schema).getByUserId(user.getId()) != null) {
+        if (accessControlBO.getByUserId(user.getId()) != null) {
             handler.setMessage(
                     ActionResult.WARNING, "circulation.error.delete.user_has_accesscard");
             return;
@@ -162,5 +164,21 @@ public class Validator extends AbstractValidator {
                     ActionResult.WARNING, "circulation.error.you_cannot_delete_yourself");
             return;
         }
+    }
+
+    public void setAccessControlBO(AccessControlBO accessControlBO) {
+        this.accessControlBO = accessControlBO;
+    }
+
+    public void setUserBO(UserBO userBO) {
+        this.userBO = userBO;
+    }
+
+    public void setLendingBO(LendingBO lendingBO) {
+        this.lendingBO = lendingBO;
+    }
+
+    public void setUserTypeBO(UserTypeBO userTypeBO) {
+        this.userTypeBO = userTypeBO;
     }
 }

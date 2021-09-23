@@ -20,6 +20,7 @@
 package biblivre.core.translations;
 
 import biblivre.core.FreemarkerTemplateHelper;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
@@ -414,30 +415,34 @@ public class Translations extends StaticBO {
         Translations.translations = new HashMap<>();
     }
 
-    public static void reset(String schema, String language) {
+    public static void reset(String language) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, String> pair = Pair.of(schema, language);
+
         Translations.translations.remove(pair);
     }
 
-    public static TranslationsMap get(String schema, String language) {
+    public static TranslationsMap get(String language) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, String> pair = Pair.of(schema, language);
+
         TranslationsMap map = Translations.translations.get(pair);
 
         if (map == null) {
-            map = Translations.loadLanguage(schema, language);
+            map = Translations.loadLanguage(language);
         }
 
         return map;
     }
 
     public static boolean save(
-            String schema,
             String language,
             HashMap<String, String> translation,
             HashMap<String, String> removeTranslation,
             int loggedUser) {
-        HashMap<String, HashMap<String, String>> translations =
-                new HashMap<>();
+        HashMap<String, HashMap<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
         HashMap<String, HashMap<String, String>> removeTranslations = null;
@@ -447,42 +452,44 @@ public class Translations extends StaticBO {
             removeTranslations.put(language, removeTranslation);
         }
 
-        return Translations.save(schema, translations, removeTranslations, loggedUser);
+        return Translations.save(translations, removeTranslations, loggedUser);
     }
 
     public static boolean save(
-            String schema,
             HashMap<String, HashMap<String, String>> translations,
             HashMap<String, HashMap<String, String>> removeTranslations,
             int loggedUser) {
-        TranslationsDAO.getInstance(schema).save(translations, removeTranslations, loggedUser);
+        TranslationsDAOImpl.getInstance().save(translations, removeTranslations, loggedUser);
 
         for (String language : translations.keySet()) {
-            Translations.reset(schema, language);
+            Translations.reset(language);
         }
 
-        Languages.reset(schema);
+        Languages.reset();
 
         return true;
     }
 
     public static boolean addSingleTranslation(String language, String key, String text) {
-        return addSingleTranslation(
-                Constants.GLOBAL_SCHEMA, language, key, text, Constants.ADMIN_LOGGED_USER_ID);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    return addSingleTranslation(
+                            language, key, text, Constants.ADMIN_LOGGED_USER_ID);
+                });
     }
 
     public static boolean addSingleTranslation(
-            String schema, String language, String key, String text, int loggedUser) {
+            String language, String key, String text, int loggedUser) {
         HashMap<String, String> translation = new HashMap<>();
         translation.put(key, text);
 
-        HashMap<String, HashMap<String, String>> translations =
-                new HashMap<>();
+        HashMap<String, HashMap<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
-        boolean success = TranslationsDAO.getInstance(schema).save(translations, loggedUser);
+        boolean success = TranslationsDAOImpl.getInstance().save(translations, loggedUser);
 
-        Translations.reset(schema, language);
+        Translations.reset(language);
 
         return success;
     }
@@ -529,10 +536,10 @@ public class Translations extends StaticBO {
         return LocaleUtils.isAvailableLocale(locale);
     }
 
-    public static DiskFile createDumpFile(String schema, String language) {
-        Translations.reset(schema, language);
+    public static DiskFile createDumpFile(String language) {
+        Translations.reset(language);
 
-        Map<String, TranslationDTO> translations = Translations.get(schema, language).getAll();
+        Map<String, TranslationDTO> translations = Translations.get(language).getAll();
         List<String> list = new ArrayList<>(translations.keySet());
 
         Collections.sort(list, new NamespaceComparator());
@@ -561,8 +568,11 @@ public class Translations extends StaticBO {
         return null;
     }
 
-    private static synchronized TranslationsMap loadLanguage(String schema, String language) {
+    private static synchronized TranslationsMap loadLanguage(String language) {
+        String schema = SchemaThreadLocal.get();
+
         Pair<String, String> pair = Pair.of(schema, language);
+
         TranslationsMap map = Translations.translations.get(pair);
 
         // Checking again for thread safety.
@@ -574,21 +584,27 @@ public class Translations extends StaticBO {
             Translations.logger.debug("Loading language " + schema + "." + language);
         }
 
-        TranslationsDAO dao = TranslationsDAO.getInstance(schema);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    TranslationsMap translationsMap = null;
 
-        if (StringUtils.isNotBlank(language)) {
-            List<TranslationDTO> list = dao.list(language);
-            map = new TranslationsMap(schema, language, list.size());
+                    TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
 
-            for (TranslationDTO dto : list) {
-                map.put(dto.getKey(), dto);
-            }
+                    if (StringUtils.isNotBlank(language)) {
+                        List<TranslationDTO> list = dao.list(language);
+                        translationsMap = new TranslationsMap(schema, language, list.size());
 
-            Translations.translations.put(pair, map);
-        } else {
-            map = new TranslationsMap(schema, language, 1);
-        }
+                        for (TranslationDTO dto : list) {
+                            translationsMap.put(dto.getKey(), dto);
+                        }
 
-        return map;
+                        Translations.translations.put(pair, map);
+                    } else {
+                        translationsMap = new TranslationsMap(schema, language, 1);
+                    }
+
+                    return translationsMap;
+                });
     }
 }

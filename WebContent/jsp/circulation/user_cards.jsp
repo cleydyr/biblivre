@@ -16,7 +16,7 @@
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
 	<script type="text/javascript" src="static/scripts/biblivre.circulation.user_cards.js"></script>
 
-	<script type="text/javascript" src="static/scripts/<%= UserFields.getFields((String) request.getAttribute("schema")).getCacheFileName() %>"></script>
+	<script type="text/javascript" src="static/scripts/<%= UserFields.getFields().getCacheFileName() %>"></script>
 
 	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
@@ -51,9 +51,6 @@
 	</script>
 </layout:head>
 
-<%
-	List<UserTypeDTO> userTypes = UserTypeBO.getInstance((String) request.getAttribute("schema")).list();
-%>
 <c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
 
 <layout:body>
@@ -86,7 +83,7 @@
 					<label class="search_label"><i18n:text key="search.user.field" /></label>
 					<select name="field" class="combo">
 						<option value=""><i18n:text key="search.user.name_or_id" /></option>
-						<c:forEach var="field" items="<%= UserFields.getSearchableFields((String) request.getAttribute(\"schema\")) %>" >
+						<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
 							<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 						</c:forEach>
 					</select>
@@ -103,7 +100,7 @@
 						<label class="search_label"><i18n:text key="search.user.field" /></label>
 						<select name="field" class="combo combo_expand">
 							<option value=""><i18n:text key="search.user.name_or_id" /></option>
-							<c:forEach var="field" items="<%= UserFields.getSearchableFields((String) request.getAttribute(\"schema\")) %>" >
+							<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
 								<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 							</c:forEach>
 						</select>

@@ -3,6 +3,7 @@
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
 <%@page import="biblivre.core.schemas.Schemas"%>
 <%@page import="biblivre.core.ExtendedRequest"%>
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page import="biblivre.login.LoginDTO "%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
@@ -18,7 +19,7 @@
 	<%
 	ExtendedRequest req = (ExtendedRequest) request;
 
-	if (!req.isGlobalSchema()) {
+	if (!SchemaThreadLocal.isGlobalSchema()) {
 	%>
 		<div class="picture">
 			<img src="static/images/main_picture_1.jpg"/>
@@ -49,13 +50,26 @@
 		<div class="multischema biblivre_form">
 			<fieldset>
 				<legend><i18n:text key="text.multi_schema.select_library" /></legend>
-				<% for (SchemaDTO schema : Schemas.getSchemas()) { %>
-					<% if (schema.isDisabled()) { continue; } %>
-					<div class="library">
-						<a href="<%= schema.getSchema() %>/"><%= Configurations.getHtml(schema.getSchema(), Constants.CONFIG_TITLE) %></a>
-						<div class="subtitle"><%= Configurations.getHtml(schema.getSchema(), Constants.CONFIG_SUBTITLE) %></div>
-					</div>
-				<% } %>
+				<%
+					for (final SchemaDTO schema : Schemas.getSchemas()) {
+						if (schema.isDisabled()) {
+							continue;
+						}
+
+						String currentSchema = SchemaThreadLocal.remove();
+
+				        SchemaThreadLocal.setSchema(schema.getSchema());
+				%>
+							<div class="library">
+								<a href="<%= schema.getSchema() %>/"><%= Configurations.getHtml(Constants.CONFIG_TITLE) %></a>
+								<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></div>
+							</div>
+				<%
+						SchemaThreadLocal.remove();
+
+		        		SchemaThreadLocal.setSchema(currentSchema);
+					}
+				%>
 			</fieldset>
 		</div>
 	<%
