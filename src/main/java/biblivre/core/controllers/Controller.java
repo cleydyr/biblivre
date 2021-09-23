@@ -49,7 +49,7 @@ public abstract class Controller {
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
     protected boolean headerOnly;
-    protected Class<?> handlerClass;
+    protected Class<? extends AbstractHandler> handlerClass;
 
     public Controller(ExtendedRequest xRequest, ExtendedResponse xResponse) {
         this.xRequest = xRequest;
@@ -114,7 +114,7 @@ public abstract class Controller {
         try {
             String handlerClassName = "biblivre." + module + ".Handler";
 
-            this.handlerClass = Class.forName(handlerClassName);
+            this.handlerClass = (Class<? extends AbstractHandler>) Class.forName(handlerClassName);
 
             try {
                 Object bean = applicationContext.getBean(this.handlerClass);
@@ -174,23 +174,7 @@ public abstract class Controller {
         }
 
         try {
-            Method method;
-
-            try {
-                method =
-                        this.handlerClass.getDeclaredMethod(
-                                TextUtils.camelCase(action),
-                                ExtendedRequest.class,
-                                ExtendedResponse.class);
-            } catch (NoSuchMethodException e) {
-                method =
-                        this.handlerClass
-                                .getSuperclass()
-                                .getDeclaredMethod(
-                                        TextUtils.camelCase(action),
-                                        ExtendedRequest.class,
-                                        ExtendedResponse.class);
-            }
+            Method method = _getMethodFromHandler(action);
 
             method.invoke(this.handler, this.xRequest, this.xResponse);
         } catch (InvocationTargetException e) {
@@ -240,4 +224,28 @@ public abstract class Controller {
     protected void doError(String error) throws ServletException, IOException {
         this.doError(error, null);
     }
+
+    private Method _getMethodFromHandler(String action) throws NoSuchMethodException {
+		Method method = null;
+
+		Class<? extends AbstractHandler> lookupClass = this.handlerClass;
+
+		while (method == null & !lookupClass.equals(AbstractHandler.class)) {
+			try {
+		        method =
+		                lookupClass.getDeclaredMethod(
+		                        TextUtils.camelCase(action),
+		                        ExtendedRequest.class,
+		                        ExtendedResponse.class);
+		    } catch (NoSuchMethodException e) {
+		        lookupClass = (Class<? extends AbstractHandler>) lookupClass.getSuperclass();
+		    }
+		}
+
+		if (method == null) {
+        	throw new NoSuchMethodException(action);
+        }
+
+		return method;
+	}
 }
