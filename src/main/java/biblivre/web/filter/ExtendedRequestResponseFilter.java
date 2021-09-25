@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core.controllers;
+package biblivre.web.filter;
 
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;

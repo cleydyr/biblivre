@@ -83,47 +83,52 @@ public class Updates {
     }
 
     public static boolean schemaUpdate(String schema) {
-        UpdatesDAO dao = UpdatesDAO.getInstance();
+        return SchemaThreadLocal.withSchema(
+                schema,
+                () -> {
+                    UpdatesDAO dao = UpdatesDAO.getInstance();
 
-        Connection con = null;
-        try {
-            if (!dao.checkTableExistance("versions")) {
-                dao.fixVersionsTable();
-            }
+                    Connection con = null;
+                    try {
+                        if (!dao.checkTableExistance("versions")) {
+                            dao.fixVersionsTable();
+                        }
 
-            Set<String> installedVersions = dao.getInstalledVersions();
+                        Set<String> installedVersions = dao.getInstalledVersions();
 
-            ServiceLoader<UpdateService> serviceLoader = ServiceLoader.load(UpdateService.class);
+                        ServiceLoader<UpdateService> serviceLoader =
+                                ServiceLoader.load(UpdateService.class);
 
-            for (UpdateService updateService : serviceLoader) {
-                if (!installedVersions.contains(updateService.getVersion())) {
-                    logger.info(
-                            "Processing update service {} for schema {}.",
-                            updateService.getVersion(),
-                            schema);
+                        for (UpdateService updateService : serviceLoader) {
+                            if (!installedVersions.contains(updateService.getVersion())) {
+                                logger.info(
+                                        "Processing update service {} for schema {}.",
+                                        updateService.getVersion(),
+                                        schema);
 
-                    con = dao.beginUpdate();
+                                con = dao.beginUpdate();
 
-                    updateService.doUpdateScopedBySchema(con);
+                                updateService.doUpdateScopedBySchema(con);
 
-                    dao.commitUpdate(updateService.getVersion(), con);
+                                dao.commitUpdate(updateService.getVersion(), con);
 
-                    updateService.afterUpdate();
-                } else {
-                    logger.info(
-                            "Skipping update service {} for schema {}.",
-                            updateService.getVersion(),
-                            schema);
-                }
-            }
+                                updateService.afterUpdate();
+                            } else {
+                                logger.info(
+                                        "Skipping update service {} for schema {}.",
+                                        updateService.getVersion(),
+                                        schema);
+                            }
+                        }
 
-            return true;
-        } catch (Exception e) {
-            dao.rollbackUpdate(con);
-            e.printStackTrace();
-        }
+                        return true;
+                    } catch (Exception e) {
+                        dao.rollbackUpdate(con);
+                        e.printStackTrace();
+                    }
 
-        return false;
+                    return false;
+                });
     }
 
     public static String getUID() {

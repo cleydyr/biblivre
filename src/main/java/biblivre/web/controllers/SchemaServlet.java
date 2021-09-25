@@ -17,18 +17,21 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core.controllers;
+package biblivre.web.controllers;
 
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
+import biblivre.core.AbstractHandler;
+import biblivre.core.AbstractValidator;
 import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
@@ -36,19 +39,21 @@ import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
+import biblivre.spring.SpringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
 
 public final class SchemaServlet extends HttpServlet {
 
@@ -73,19 +78,6 @@ public final class SchemaServlet extends HttpServlet {
             BiblivreInitializer.initialize();
             ExtendedRequest xRequest = ((ExtendedRequest) request);
 
-            if (xRequest.mustRedirectToSchema()) {
-                String query = xRequest.getQueryString();
-
-                if (StringUtils.isNotBlank(query)) {
-                    query = "?" + query;
-                } else {
-                    query = "";
-                }
-
-                ((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
-                return;
-            }
-
             String controller = xRequest.getController();
 
             if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
@@ -95,19 +87,15 @@ public final class SchemaServlet extends HttpServlet {
                 SchemaThreadLocal.withSchema(
                         "public",
                         () -> {
-                            try {
-                                // TODO: Completar com mais mensagens.
-                                // Checking Database
-                                SchemaThreadLocal.setSchema("public");
+                            // TODO: Completar com mais mensagens.
+                            // Checking Database
 
-                                if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
-                                    json.put("success", false);
-                                    json.put("status_message", "Falha no acesso ao Banco de Dados");
-                                } else {
-                                    json.put("success", true);
-                                    json.put("status_message", "Disponível");
-                                }
-                            } catch (JSONException e) {
+                            if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
+                                json.put("success", false);
+                                json.put("status_message", "Falha no acesso ao Banco de Dados");
+                            } else {
+                                json.put("success", true);
+                                json.put("status_message", "Disponível");
                             }
 
                             return null;
@@ -170,19 +158,38 @@ public final class SchemaServlet extends HttpServlet {
             controller = "jsp";
         }
 
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(xRequest);
+
+        Map<String, AbstractValidator> validators =
+                applicationContext.getBeansOfType(AbstractValidator.class);
+
+        Map<String, AbstractHandler> handlers =
+                applicationContext.getBeansOfType(AbstractHandler.class);
+
+        AuthorizationBO authorizationBO = applicationContext.getBean(AuthorizationBO.class);
+
         if (controller.equals("jsp")) {
             JspController jspController = new JspController(xRequest, xResponse);
             jspController.setHeaderOnly(headerOnly);
+            jspController.setHandlers(handlers);
+            jspController.setValidators(validators);
+            jspController.setAuthorizationBO(authorizationBO);
             jspController.processRequest();
 
         } else if (controller.equals("json")) {
             JsonController jsonController = new JsonController(xRequest, xResponse);
             jsonController.setHeaderOnly(headerOnly);
+            jsonController.setHandlers(handlers);
+            jsonController.setValidators(validators);
+            jsonController.setAuthorizationBO(authorizationBO);
             jsonController.processRequest();
 
         } else if (controller.equals("download")) {
             DownloadController downloadController = new DownloadController(xRequest, xResponse);
             downloadController.setHeaderOnly(headerOnly);
+            downloadController.setHandlers(handlers);
+            downloadController.setValidators(validators);
+            downloadController.setAuthorizationBO(authorizationBO);
             downloadController.processRequest();
 
         } else if (controller.equals("media") || controller.equals("DigitalMediaController")) {

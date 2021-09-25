@@ -28,7 +28,6 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.StringPool;
-import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -89,7 +88,6 @@ public class RestoreBO extends AbstractBO {
 
     private DigitalMediaDAO digitalMediaDAO;
     private BackupBO backupBO;
-    private DigitalMediaBO digitalMediaBO;
 
     public List<RestoreDTO> list() {
         File path = backupBO.getBackupDestination();
@@ -556,7 +554,7 @@ public class RestoreBO extends AbstractBO {
                         if (fileMatcher.find()) {
                             String mediaId = fileMatcher.group(1);
 
-                            long oid = digitalMediaBO.importFile(file);
+                            long oid = digitalMediaDAO.importFile(file);
 
                             String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
 
@@ -854,5 +852,13 @@ public class RestoreBO extends AbstractBO {
 
     private static boolean _isNotReferringToGlobalUnlink(String line) {
         return !line.contains("global.unlink");
+    }
+
+    public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
+        this.digitalMediaDAO = digitalMediaDAO;
+    }
+
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
     }
 }

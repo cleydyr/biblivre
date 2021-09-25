@@ -17,54 +17,77 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core.controllers;
+package biblivre.web.controllers;
 
+import biblivre.core.Dialog;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.HttpCallback;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
+import biblivre.core.file.BiblivreFile;
+import biblivre.core.utils.FileIOUtils;
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-public class JsonController extends Controller {
+public class DownloadController extends Controller {
 
-    public JsonController(ExtendedRequest xRequest, ExtendedResponse xResponse) {
+    public DownloadController(ExtendedRequest xRequest, ExtendedResponse xResponse) {
         super(xRequest, xResponse);
     }
 
     @Override
     protected void doReturn() throws ServletException, IOException {
-        JSONObject json = this.handler.getJson();
+        BiblivreFile file = this.handler.getFile();
         Message message = this.handler.getMessage();
+        int returnCode = this.handler.getReturnCode();
 
-        this.dispatch(json, message);
+        if (StringUtils.isNotBlank(message.getText()) || returnCode != 0) {
+            if (returnCode == 0) {
+                this.xResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, message.getText());
+            } else {
+                this.xResponse.setStatus(returnCode);
+            }
+
+            return;
+        }
+
+        FileIOUtils.sendHttpFile(file, this.xRequest, this.xResponse, this.headerOnly);
+
+        HttpCallback callback = this.handler.getCallback();
+
+        if (callback != null) {
+            callback.success();
+        }
     }
 
     @Override
     protected void doAuthorizationError() throws ServletException, IOException {
         Message message = new Message(ActionResult.WARNING, "error.no_permission");
 
-        this.dispatch(null, message);
+        this.dispatch("/jsp/error.jsp", message);
     }
 
     @Override
     protected void doLockedStateError() throws ServletException, IOException {
         Message message = new Message(ActionResult.WARNING, "error.biblivre_is_locked_please_wait");
 
-        this.dispatch(null, message);
+        this.dispatch("/jsp/error.jsp", message);
     }
 
     @Override
     protected void doError(String error, Throwable e) throws ServletException, IOException {
-        this.log.error(error, e);
+        if (e != null && this.log.isDebugEnabled()) {
+            this.log.error(error, e);
+        } else {
+            this.log.error(error);
+        }
 
-        Message message = new Message(ActionResult.ERROR, error, e);
-        this.dispatch(null, message);
+        Message message = new Message(ActionResult.ERROR, error);
+
+        this.dispatch("/jsp/error.jsp", message);
     }
 
     @Override
@@ -75,55 +98,16 @@ public class JsonController extends Controller {
             this.log.warn(warning);
         }
 
-        // e.printStackTrace();
-
         Message message = new Message(ActionResult.WARNING, warning, e);
-        this.dispatch(null, message);
+        this.dispatch("/jsp/error.jsp", message);
     }
 
-    private void dispatch(JSONObject json, Message message) throws IOException {
-        if (json == null) {
-            json = new JSONObject();
+    private void dispatch(String jsp, Message message) throws ServletException, IOException {
+        if (StringUtils.isNotBlank(message.getText())) {
+            Dialog.show(this.xRequest, message.getText(), message.getLevel());
         }
 
-        if (message == null) {
-            message = new Message();
-        }
-
-        try {
-            json.putOnce("success", message.isSuccess());
-
-            if (StringUtils.isNotBlank(message.getText())) {
-                json.putOnce("message", this.xRequest.getLocalizedText(message.getText()));
-                json.putOnce("message_level", message.getLevel());
-            }
-
-            if (StringUtils.isNotBlank(message.getStackTrace(false))) {
-                json.putOnce("stack_trace", message.getStackTrace(false));
-            }
-
-            List<Pair<String, String>> errorList = message.getErrorList();
-
-            if (errorList != null && !json.has("errors")) {
-                for (Pair<String, String> pair : errorList) {
-                    JSONObject error = new JSONObject();
-                    error.put(pair.getLeft(), this.xRequest.getLocalizedText(pair.getRight()));
-                    json.append("errors", error);
-                }
-            }
-        } catch (JSONException je) {
-        }
-
-        if (this.xRequest.isMultiPart()) {
-            this.xResponse.setContentType("text/html;charset=UTF-8");
-        } else {
-            this.xResponse.setContentType("application/json;charset=UTF-8");
-        }
-
-        try {
-            this.xResponse.print(json.toString());
-        } catch (JSONException e) {
-            this.log.error(e.getMessage(), e);
-        }
+        this.xResponse.setContentType("text/html;charset=UTF-8");
+        this.xRequest.getRequestDispatcher(jsp).forward(this.xRequest, this.xResponse);
     }
 }

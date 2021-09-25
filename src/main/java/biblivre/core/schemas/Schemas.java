@@ -81,39 +81,36 @@ public class Schemas extends StaticBO {
     }
 
     public static void reload() {
-        SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
-                () -> {
-                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
+        Set<SchemaDTO> schemas =
+                SchemaThreadLocal.withSchema(
+                        Constants.GLOBAL_SCHEMA,
+                        () -> {
+                            return SchemasDAOImpl.getInstance().list();
+                        });
 
-                    Set<SchemaDTO> schemas = dao.list();
+        if (schemas.size() == 0) {
+            schemas.add(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
+        }
 
-                    if (schemas.size() == 0) {
-                        schemas.add(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
-                    }
+        Schemas.schemas = schemas;
 
-                    Schemas.schemas = schemas;
+        for (SchemaDTO dto : Schemas.schemas) {
+            if (!dto.isDisabled()) {
+                Updates.schemaUpdate(dto.getSchema());
+            }
+        }
 
-                    for (SchemaDTO dto : Schemas.schemas) {
-                        if (!dto.isDisabled()) {
-                            Updates.schemaUpdate(dto.getSchema());
-                        }
-                    }
+        if (!Schemas.isLoaded(Constants.SINGLE_SCHEMA)) {
+            for (SchemaDTO dto : Schemas.schemas) {
+                if (!dto.isDisabled()) {
+                    Constants.SINGLE_SCHEMA = dto.getSchema();
+                    break;
+                }
+            }
+        }
 
-                    if (!Schemas.isLoaded(Constants.SINGLE_SCHEMA)) {
-                        for (SchemaDTO dto : Schemas.schemas) {
-                            if (!dto.isDisabled()) {
-                                Constants.SINGLE_SCHEMA = dto.getSchema();
-                                break;
-                            }
-                        }
-                    }
-
-                    Z3950ServerBO.setSingleSchema(Constants.SINGLE_SCHEMA);
-                    BiblivreInitializer.reloadZ3950Server();
-
-                    return null;
-                });
+        Z3950ServerBO.setSingleSchema(Constants.SINGLE_SCHEMA);
+        BiblivreInitializer.reloadZ3950Server();
     }
 
     public static SchemaDTO getSchema(String schema) {

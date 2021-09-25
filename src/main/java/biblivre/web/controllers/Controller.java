@@ -17,7 +17,7 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core.controllers;
+package biblivre.web.controllers;
 
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
@@ -31,16 +31,14 @@ import biblivre.core.exceptions.AuthorizationException;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
-import biblivre.spring.SpringUtils;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.web.context.WebApplicationContext;
 
 public abstract class Controller {
 
@@ -49,7 +47,10 @@ public abstract class Controller {
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
     protected boolean headerOnly;
-    protected Class<? extends AbstractHandler> handlerClass;
+
+    private Map<String, AbstractHandler> handlers;
+    private Map<String, AbstractValidator> validators;
+    private AuthorizationBO authorizationBO;
 
     public Controller(ExtendedRequest xRequest, ExtendedResponse xResponse) {
         this.xRequest = xRequest;
@@ -63,8 +64,6 @@ public abstract class Controller {
 
         this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
         this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(xRequest);
 
         try {
             module =
@@ -101,8 +100,6 @@ public abstract class Controller {
                     authPoints = AuthorizationPoints.getNotLoggedInstance();
                 }
 
-                AuthorizationBO authorizationBO = applicationContext.getBean(AuthorizationBO.class);
-
                 authorizationBO.authorize(authPoints, module, action);
             }
         } catch (AuthorizationException e) {
@@ -112,48 +109,30 @@ public abstract class Controller {
         }
 
         try {
-            String handlerClassName = "biblivre." + module + ".Handler";
-
-            this.handlerClass = (Class<? extends AbstractHandler>) Class.forName(handlerClassName);
-
-            try {
-                Object bean = applicationContext.getBean(this.handlerClass);
-                this.handler = (AbstractHandler) bean;
-            } catch (NoSuchBeanDefinitionException nsbde) {
-                this.handler = (AbstractHandler) this.handlerClass.newInstance();
-            }
-
-            String validatorClassName = "biblivre." + module + ".Validator";
-
-            Class<?> validatorClass = Class.forName(validatorClassName);
+            this.handler = handlers.get(module + ".Handler");
 
             AbstractValidator validator = null;
 
-            try {
-                Object bean = applicationContext.getBean(validatorClass);
+            validator = validators.get(module + ".Validator");
 
-                validator = (AbstractValidator) bean;
-            } catch (NoSuchBeanDefinitionException nsbde) {
-                validator = (AbstractValidator) validatorClass.newInstance();
-            }
+            if (validator != null) {
+                Method validationMethod =
+                        validator
+                                .getClass()
+                                .getDeclaredMethod(
+                                        TextUtils.camelCase("validate_" + action),
+                                        AbstractHandler.class,
+                                        ExtendedRequest.class,
+                                        ExtendedResponse.class);
 
-            String validationMethodName = "validate_" + action;
-            Method validationMethod =
-                    validatorClass.getDeclaredMethod(
-                            TextUtils.camelCase(validationMethodName),
-                            AbstractHandler.class,
-                            ExtendedRequest.class,
-                            ExtendedResponse.class);
-
-            validationMethod.invoke(validator, this.handler, this.xRequest, this.xResponse);
-            if (!validator.checkValidation(this.handler)) {
-                this.doReturn();
-                return;
+                validationMethod.invoke(validator, this.handler, this.xRequest, this.xResponse);
+                if (!validator.checkValidation(this.handler)) {
+                    this.doReturn();
+                    return;
+                }
             }
         } catch (AuthorizationException e) {
             this.doAuthorizationError();
-        } catch (ClassNotFoundException cnfe) {
-            // No Validator found, do nothing.
         } catch (NoSuchMethodException nsme) {
             // No Method found in the Validator, so do nothing.
         } catch (InvocationTargetException e) {
@@ -174,7 +153,7 @@ public abstract class Controller {
         }
 
         try {
-            Method method = _getMethodFromHandler(action);
+            Method method = _getMethodFromHandler(this.handler.getClass(), action);
 
             method.invoke(this.handler, this.xRequest, this.xResponse);
         } catch (InvocationTargetException e) {
@@ -225,10 +204,11 @@ public abstract class Controller {
         this.doError(error, null);
     }
 
-    private Method _getMethodFromHandler(String action) throws NoSuchMethodException {
+    private <T extends AbstractHandler> Method _getMethodFromHandler(
+            Class<T> handlerClass, String action) throws NoSuchMethodException {
         Method method = null;
 
-        Class<? extends AbstractHandler> lookupClass = this.handlerClass;
+        Class<? super T> lookupClass = handlerClass;
 
         while (method == null & !lookupClass.equals(AbstractHandler.class)) {
             try {
@@ -238,7 +218,7 @@ public abstract class Controller {
                                 ExtendedRequest.class,
                                 ExtendedResponse.class);
             } catch (NoSuchMethodException e) {
-                lookupClass = (Class<? extends AbstractHandler>) lookupClass.getSuperclass();
+                lookupClass = lookupClass.getSuperclass();
             }
         }
 
@@ -247,5 +227,17 @@ public abstract class Controller {
         }
 
         return method;
+    }
+
+    public void setHandlers(Map<String, AbstractHandler> handlers) {
+        this.handlers = handlers;
+    }
+
+    public void setValidators(Map<String, AbstractValidator> validators) {
+        this.validators = validators;
+    }
+
+    public void setAuthorizationBO(AuthorizationBO authorizationBO) {
+        this.authorizationBO = authorizationBO;
     }
 }

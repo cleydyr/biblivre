@@ -18,6 +18,10 @@ import java.util.Map;
 public abstract class PaginableRecordBO extends RecordBO {
     protected HoldingBO holdingBO;
 
+    public List<RecordDTO> list(int offset, int limit, RecordDatabase recordDatabase) {
+        return this.recordDAO.list(offset, limit, recordDatabase, getRecordType());
+    }
+
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
             return holdingBO.paginateHoldingSearch(search);

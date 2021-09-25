@@ -516,4 +516,8 @@ public class Handler extends AbstractHandler {
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
     }
+
+    public void setDataMigrationBO(DataMigrationBO dataMigrationBO) {
+        this.dataMigrationBO = dataMigrationBO;
+    }
 }

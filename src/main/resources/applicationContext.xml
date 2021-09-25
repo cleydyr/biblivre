@@ -6,7 +6,8 @@
 
 	<!-- Validators -->
 
-	<bean id="userValidator" name="userValidator"
+	<bean id="circulation.user.Validator"
+		name="circulation.user.Validator"
 		class="biblivre.circulation.user.Validator" scope="prototype">
 		<property name="accessControlBO" ref="accessControlBO" />
 		<property name="userBO" ref="userBO" />
@@ -14,31 +15,87 @@
 		<property name="userTypeBO" ref="userTypeBO" />
 	</bean>
 
-	<bean id="permissionValidator" name="permissionValidator"
+	<bean id="administration.permissions.Validator"
+		name="administration.permissions.Validator"
 		class="biblivre.administration.permissions.Validator"
 		scope="prototype">
 		<property name="loginBO" ref="loginBO" />
 		<property name="userBO" ref="userBO" />
 	</bean>
 
-	<bean id="loginValidator" name="loginValidator"
+	<bean id="login.Validator" name="login.Validator"
 		class="biblivre.login.Validator">
 		<property name="loginBO" ref="loginBO" />
 	</bean>
 
+	<bean id="acquisition.order.Validator"
+		name="acquisition.order.Validator"
+		class="biblivre.acquisition.order.Validator">
+	</bean>
+
+	<bean id="acquisition.quotation.Validator"
+		name="acquisition.quotation.Validator"
+		class="biblivre.acquisition.quotation.Validator">
+	</bean>
+
+	<bean id="acquisition.request.Validator"
+		name="acquisition.request.Validator"
+		class="biblivre.acquisition.request.Validator">
+	</bean>
+
+	<bean id="acquisition.supplier.Validator"
+		name="acquisition.supplier.Validator"
+		class="biblivre.acquisition.supplier.Validator">
+	</bean>
+
+	<bean id="administration.accesscards.Validator"
+		name="administration.accesscards.Validator"
+		class="biblivre.administration.accesscards.Validator">
+	</bean>
+
+	<bean id="administration.translations.Validator"
+		name="administration.translations.Validator"
+		class="biblivre.administration.translations.Validator">
+	</bean>
+
+	<bean id="administration.usertype.Validator"
+		name="administration.usertype.Validator"
+		class="biblivre.administration.usertype.Validator">
+	</bean>
+
+	<bean id="administration.z3950.Validator"
+		name="administration.z3950.Validator"
+		class="biblivre.administration.z3950.Validator">
+	</bean>
+
+	<bean id="cataloging.Validator" name="cataloging.Validator"
+		class="biblivre.cataloging.Validator">
+	</bean>
+
+	<bean id="circulation.accesscontrol.Validator"
+		name="circulation.accesscontrol.Validator"
+		class="biblivre.circulation.accesscontrol.Validator">
+	</bean>
+
+	<bean id="multi_schema.Validator" name="multi_schema.Validator"
+		class="biblivre.multi_schema.Validator">
+	</bean>
+
 	<!-- Handlers -->
 
-	<bean id="backupHandler" name="backupHandler"
+	<bean id="administration.backup.Handler"
+		name="administration.backup.Handler"
 		class="biblivre.administration.backup.Handler" scope="prototype">
 		<property name="backupBO" ref="backupBO" />
 	</bean>
 
-	<bean id="accesscardsHandler" name="accesscardsHandler"
+	<bean id="administration.accesscards.Handler"
+		name="administration.accesscards.Handler"
 		class="biblivre.administration.accesscards.Handler" scope="prototype">
 		<property name="accessCardBO" ref="accessCardBO" />
 	</bean>
 
-	<bean id="loginHandler" name="loginHandler"
+	<bean id="login.Handler" name="login.Handler"
 		class="biblivre.login.Handler">
 		<property name="loginBO" ref="loginBO" />
 		<property name="indexingBO" ref="indexingBO" />
@@ -46,19 +103,21 @@
 		<property name="backupBO" ref="backupBO" />
 	</bean>
 
-	<bean id="accesscontrolHandler" name="accesscontrolHandler"
+	<bean id="circulation.accesscontrol.Handler"
+		name="circulation.accesscontrol.Handler"
 		class="biblivre.circulation.accesscontrol.Handler" scope="prototype">
 		<property name="accessCardBO" ref="accessCardBO" />
 		<property name="accessControlBO" ref="accessControlBO" />
 		<property name="userBO" ref="userBO" />
 	</bean>
 
-	<bean id="quotationHandler" name="quotationHandler"
+	<bean id="acquisition.quotation.Handler"
+		name="acquisition.quotation.Handler"
 		class="biblivre.acquisition.quotation.Handler" scope="prototype">
 		<property name="quotationBO" ref="quotationBO" />
 	</bean>
 
-	<bean id="menuHandler" name="menuHandler"
+	<bean id="menu.Handler" name="menu.Handler"
 		class="biblivre.menu.Handler" scope="prototype">
 		<property name="userBO" ref="userBO" />
 		<property name="supplierBO" ref="supplierBO" />
@@ -69,69 +128,80 @@
 		<property name="userTypeBO" ref="userTypeBO" />
 	</bean>
 
-	<bean id="requestHandler" name="requestHandler"
+	<bean id="acquisition.request.Handler"
+		name="acquisition.request.Handler"
 		class="biblivre.acquisition.request.Handler" scope="prototype">
-		<property name="orderBO" ref="requestBO" />
+		<property name="requestBO" ref="requestBO" />
 	</bean>
 
-	<bean id="orderHandler" name="orderHandler"
+	<bean id="acquisition.order.Handler"
+		name="acquisition.order.Handler"
 		class="biblivre.acquisition.order.Handler" scope="prototype">
 		<property name="orderBO" ref="orderBO" />
 	</bean>
 
-	<bean id="supplierHandler" name="supplierHandler"
+	<bean id="acquisition.supplier.Handler"
+		name="acquisition.supplier.Handler"
 		class="biblivre.acquisition.supplier.Handler" scope="prototype">
 		<property name="supplierBO" ref="supplierBO" />
 	</bean>
 
-	<bean id="permissionHandler" name="permissionHandler"
+	<bean id="administration.permissions.Handler"
+		name="administration.permissions.Handler"
 		class="biblivre.administration.permissions.Handler" scope="prototype">
 		<property name="permissionBO" ref="permissionBO" />
 		<property name="loginBO" ref="loginBO" />
 		<property name="userBO" ref="userBO" />
 	</bean>
 
-	<bean id="reportHandler" name="reportHandler"
+	<bean id="administration.reports.Handler"
+		name="administration.reports.Handler"
 		class="biblivre.administration.reports.Handler" scope="prototype">
 		<property name="reportsBO" ref="reportsBO" />
 	</bean>
 
-	<bean id="authorityHandler" name="authorityHandler"
+	<bean id="cataloging.authorities.Handler"
+		name="cataloging.authorities.Handler"
 		class="biblivre.cataloging.authorities.Handler" scope="prototype">
 		<property name="paginableRecordBO" ref="authorityRecordBO" />
 	</bean>
 
-	<bean id="bibliographicHandler" name="bibliographicHandler"
+	<bean id="cataloging.bibliographic.Handler"
+		name="cataloging.bibliographic.Handler"
 		class="biblivre.cataloging.bibliographic.Handler" scope="prototype">
 		<property name="paginableRecordBO" ref="biblioRecordBO" />
 	</bean>
 
-	<bean id="vocabularyHandler" name="vocabularyHandler"
+	<bean id="cataloging.vocabulary.Handler"
+		name="cataloging.vocabulary.Handler"
 		class="biblivre.cataloging.vocabulary.Handler" scope="prototype">
 		<property name="paginableRecordBO" ref="vocabularyRecordBO" />
 	</bean>
 
-	<bean id="holdingHandler" name="holdingHandler"
+	<bean id="cataloging.holding.Handler"
+		name="cataloging.holding.Handler"
 		class="biblivre.cataloging.holding.Handler" scope="prototype">
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
 		<property name="holdingBO" ref="holdingBO" />
 	</bean>
 
-	<bean id="catalogingLabelHandler" name="catalogingLabelHandler"
+	<bean id="cataloging.labels.Handler"
+		name="cataloging.labels.Handler"
 		class="biblivre.cataloging.labels.Handler" scope="prototype">
 		<property name="holdingBO" ref="holdingBO" />
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
 	</bean>
 
-	<bean id="catalogingHandler" name="catalogingHandler"
+	<bean id="cataloging.Handler" name="cataloging.Handler"
 		class="biblivre.cataloging.Handler" scope="prototype">
-		<property name="recordBOs"  ref="recordBOs" />
+		<property name="recordBOs" ref="recordBOs" />
 		<property name="indexingBO" ref="indexingBO" />
 		<property name="z3950BO" ref="z3950BO" />
 		<property name="importBO" ref="importBO" />
 	</bean>
 
-	<bean id="lendingHandler" name="lendingHandler"
+	<bean id="circulation.lending.Handler"
+		name="circulation.lending.Handler"
 		class="biblivre.circulation.lending.Handler" scope="prototype">
 		<property name="userBO" ref="userBO" />
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
@@ -142,14 +212,16 @@
 		<property name="reservationBO" ref="reservationBO" />
 	</bean>
 
-	<bean id="reservationHandler" name="reservationHandler"
+	<bean id="circulation.reservation.Handler"
+		name="circulation.reservation.Handler"
 		class="biblivre.circulation.reservation.Handler" scope="prototype">
 		<property name="userBO" ref="userBO" />
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
 		<property name="reservationBO" ref="reservationBO" />
 	</bean>
 
-	<bean id="userHandler" name="userHandler"
+	<bean id="circulation.user.Handler"
+		name="circulation.user.Handler"
 		class="biblivre.circulation.user.Handler" scope="prototype">
 		<property name="userBO" ref="userBO" />
 		<property name="lendingBO" ref="lendingBO" />
@@ -158,30 +230,68 @@
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 	</bean>
 
-	<bean id="userCardHandler" name="userCardHandler"
+	<bean id="circulation.user_cards.Handler"
+		name="circulation.user_cards.Handler"
 		class="biblivre.circulation.user_cards.Handler" scope="prototype">
 		<property name="userBO" ref="userBO" />
 	</bean>
 
-	<bean id="z3950Handler" name="z3950Handler"
+	<bean id="z3950.Handler" name="z3950.Handler"
 		class="biblivre.z3950.Handler" scope="prototype">
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
 		<property name="z3950BO" ref="z3950BO" />
 	</bean>
 
-	<bean id="indexingHandler" name="indexingHandler"
+	<bean id="administration.indexing.Handler"
+		name="administration.indexing.Handler"
 		class="biblivre.administration.indexing.Handler" scope="prototype">
 		<property name="indexingBO" ref="indexingBO" />
 	</bean>
 
-	<bean id="userTypeHandler" name="userTypeHandler"
+	<bean id="administration.usertype.Handler"
+		name="administration.usertype.Handler"
 		class="biblivre.administration.usertype.Handler" scope="prototype">
 		<property name="userTypeBO" ref="userTypeBO" />
 	</bean>
 
-	<bean id="digitalMediaHandler" name="digitalMediaHandler"
+	<bean id="digitalmedia.Handler" name="digitalmedia.Handler"
 		class="biblivre.digitalmedia.Handler" scope="prototype">
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
+	</bean>
+
+	<bean id="administration.configurations.Handler"
+		name="administration.configurations.Handler"
+		class="biblivre.administration.configurations.Handler"
+		scope="prototype">
+	</bean>
+
+	<bean id="administration.customization.Handler"
+		name="administration.customization.Handler"
+		class="biblivre.administration.customization.Handler"
+		scope="prototype">
+	</bean>
+
+	<bean id="administration.setup.Handler"
+		name="administration.setup.Handler"
+		class="biblivre.administration.setup.Handler" scope="prototype">
+		<property name="restoreBO" ref="restoreBO" />
+		<property name="backupBO" ref="backupBO" />
+		<property name="dataMigrationBO" ref="dataMigrationBO" />
+	</bean>
+
+	<bean id="administration.translations.Handler"
+		name="administration.translations.Handler"
+		class="biblivre.administration.translations.Handler" scope="prototype">
+	</bean>
+
+	<bean id="administration.z3950.Handler"
+		name="administration.z3950.Handler"
+		class="biblivre.administration.z3950.Handler" scope="prototype">
+		<property name="z3950BO" ref="z3950BO" />
+	</bean>
+
+	<bean id="multi_schema.Handler" name="multi_schema.Handler"
+		class="biblivre.multi_schema.Handler" scope="prototype">
 	</bean>
 
 	<!-- BOs -->
@@ -215,7 +325,7 @@
 
 	<bean id="requestBO" name="requestBO"
 		class="biblivre.acquisition.request.RequestBO">
-		
+
 		<property name="requestDAO" ref="requestDAO" />
 	</bean>
 
@@ -287,7 +397,7 @@
 	</bean>
 
 	<bean id="lendingBO" name="lendingBO"
-		class="biblivre.circulation.lending.LendingBO" >
+		class="biblivre.circulation.lending.LendingBO">
 		<property name="lendingDAO" ref="lendingDAO" />
 		<property name="userBO" ref="userBO" />
 		<property name="holdingBO" ref="holdingBO" />
@@ -297,18 +407,18 @@
 	</bean>
 
 	<bean id="lendingBO2" name="lendingBO2"
-		class="biblivre.circulation.lending.LendingBO2" >
+		class="biblivre.circulation.lending.LendingBO2">
 		<property name="lendingDAO" ref="lendingDAO" />
 	</bean>
 
 	<bean id="userTypeBO" name="userTypeBO"
-		class="biblivre.administration.usertype.UserTypeBO" >
+		class="biblivre.administration.usertype.UserTypeBO">
 		<property name="userTypeDAO" ref="userTypeDAO" />
 		<property name="userBO" ref="userBO" />
 	</bean>
 
 	<bean id="lendingFineBO" name="lendingFineBO"
-		class="biblivre.circulation.lending.LendingFineBO" >
+		class="biblivre.circulation.lending.LendingFineBO">
 		<property name="lendingFineDAO" ref="lendingFineDAO" />
 		<property name="holdingBO" ref="holdingBO" />
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
@@ -317,7 +427,7 @@
 	</bean>
 
 	<bean id="reservationBO" name="reservationBO"
-		class="biblivre.circulation.reservation.ReservationBO" >
+		class="biblivre.circulation.reservation.ReservationBO">
 		<property name="reservationDAO" ref="reservationDAO" />
 		<property name="userBO" ref="userBO" />
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
@@ -325,31 +435,65 @@
 	</bean>
 
 	<bean id="digitalMediaBO" name="digitalMediaBO"
-		class="biblivre.digitalmedia.DigitalMediaBO" >
+		class="biblivre.digitalmedia.DigitalMediaBO">
 		<property name="digitalMediaDAO" ref="digitalMediaDAO" />
 	</bean>
 
 	<bean id="importBO" name="importBO"
-		class="biblivre.cataloging.ImportBO" >
+		class="biblivre.cataloging.ImportBO">
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
 		<property name="vocabularyRecordBO" ref="vocabularyRecordBO" />
 		<property name="authorityRecordBO" ref="authorityRecordBO" />
 	</bean>
 
-	<bean id="z3950BO" name="z3950BO"
-		class="biblivre.z3950.Z3950BO" >
+	<bean id="z3950BO" name="z3950BO" class="biblivre.z3950.Z3950BO">
 		<property name="z3950DAO" ref="z3950DAO" />
 	</bean>
 
 	<bean id="authorizationBO" name="authorizationBO"
-		class="biblivre.core.auth.AuthorizationBO" >
+		class="biblivre.core.auth.AuthorizationBO">
 		<property name="authorizationDAO" ref="authorizationDAO" />
 	</bean>
 
 	<bean id="backupBO" name="backupBO"
-		class="biblivre.administration.backup.BackupBO" >
+		class="biblivre.administration.backup.BackupBO">
 		<property name="backupDAO" ref="backupDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
+	</bean>
+
+	<bean id="reportsBO" name="reportsBO"
+		class="biblivre.administration.reports.ReportsBO">
+		<property name="reportsDAO" ref="reportsDAO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+	</bean>
+
+	<bean id="restoreBO" name="restoreBO"
+		class="biblivre.administration.backup.RestoreBO">
+		<property name="digitalMediaDAO" ref="digitalMediaDAO" />
+		<property name="backupBO" ref="backupBO" />
+	</bean>
+
+	<bean id="dataMigrationBO" name="dataMigrationBO"
+		class="biblivre.administration.setup.DataMigrationBO">
+		<property name="accessControlBO" ref="accessControlBO" />
+		<property name="accessCardBO" ref="accessCardBO" />
+		<property name="loginBO" ref="loginBO" />
+		<property name="userBO" ref="userBO" />
+		<property name="quotationBO" ref="quotationBO" />
+		<property name="orderBO" ref="orderBO" />
+		<property name="supplierBO" ref="supplierBO" />
+		<property name="requestBO" ref="requestBO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
+		<property name="authorityRecordBO" ref="authorityRecordBO" />
+		<property name="vocabularyRecordBO" ref="vocabularyRecordBO" />
+		<property name="holdingBO" ref="holdingBO" />
+		<property name="lendingBO" ref="lendingBO" />
+		<property name="userTypeBO" ref="userTypeBO" />
+		<property name="lendingFineBO" ref="lendingFineBO" />
+		<property name="reservationBO" ref="reservationBO" />
+		<property name="digitalMediaBO" ref="digitalMediaBO" />
+		<property name="dataMigrationDAO" ref="dataMigrationDAO" />
+		<property name="setupDAO" ref="setupDAO" />
 	</bean>
 
 	<!-- DAOs -->
@@ -443,15 +587,16 @@
 		class="biblivre.digitalmedia.DigitalMediaDAOFactory"
 		factory-method="getDigitalMediaDAOImpl" />
 
-	<bean id="z3950DAO"
-		class="biblivre.z3950.Z3950DAOImpl"
+	<bean id="z3950DAO" class="biblivre.z3950.Z3950DAOImpl"
 		factory-method="getInstance" />
 
 	<bean id="authorizationDAO"
 		class="biblivre.core.auth.AuthorizationDAOImpl"
 		factory-method="getInstance" />
 
-	<bean class="org.springframework.beans.factory.config.MapFactoryBean" id="recordBOs">
+	<bean
+		class="org.springframework.beans.factory.config.MapFactoryBean"
+		id="recordBOs">
 		<property name="targetMapClass">
 			<value>java.util.HashMap</value>
 		</property>

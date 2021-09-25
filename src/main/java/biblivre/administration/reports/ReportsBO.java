@@ -2,7 +2,6 @@ package biblivre.administration.reports;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
-import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -27,7 +26,6 @@ import org.marc4j.marc.Subfield;
 
 public class ReportsBO extends AbstractBO {
     private ReportsDAO reportsDAO;
-    private RecordDAO recordDAO;
     private BiblioRecordBO biblioRecordBO;
 
     public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
@@ -85,8 +83,7 @@ public class ReportsBO extends AbstractBO {
 
             boolean hasMore = true;
             while (hasMore) {
-                List<RecordDTO> records =
-                        recordDAO.list(offset, limit, database, RecordType.BIBLIO);
+                List<RecordDTO> records = biblioRecordBO.list(offset, limit, database);
                 if (records == null || records.size() == 0) {
                     hasMore = false;
                 } else {
@@ -138,10 +135,6 @@ public class ReportsBO extends AbstractBO {
 
     public void setReportsDAO(ReportsDAO reportsDAO) {
         this.reportsDAO = reportsDAO;
-    }
-
-    public void setRecordDAO(RecordDAO recordDAO) {
-        this.recordDAO = recordDAO;
     }
 
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {

@@ -71,9 +71,9 @@ public class DataMigrationBO extends AbstractBO {
     private SupplierBO supplierBO;
     private RequestBO requestBO;
     private BiblioRecordBO biblioRecordBO;
-    private AuthorityRecordBO authoritiyRecordBO;
+    private AuthorityRecordBO authorityRecordBO;
     private VocabularyRecordBO vocabularyRecordBO;
-    private HoldingBO holdingsBO;
+    private HoldingBO holdingBO;
     private LendingBO lendingBO;
     private UserTypeBO userTypeBO;
     private LendingFineBO lendingFineBO;
@@ -280,13 +280,13 @@ public class DataMigrationBO extends AbstractBO {
                 return biblioRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_AUTHORITIES:
-                return authoritiyRecordBO.saveFromBiblivre3(dtoList);
+                return authorityRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_VOCABULARY:
                 return vocabularyRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_HOLDINGS:
-                return holdingsBO.saveFromBiblivre3(dtoList);
+                return holdingBO.saveFromBiblivre3(dtoList);
 
             case ACCESS_CARDS:
                 return accessCardBO.saveFromBiblivre3(dtoList);
@@ -421,16 +421,16 @@ public class DataMigrationBO extends AbstractBO {
         this.biblioRecordBO = biblioRecordBO;
     }
 
-    public void setAuthoritiyRecordBO(AuthorityRecordBO authoritiyRecordBO) {
-        this.authoritiyRecordBO = authoritiyRecordBO;
+    public void setAuthorityRecordBO(AuthorityRecordBO authoritiyRecordBO) {
+        this.authorityRecordBO = authoritiyRecordBO;
     }
 
     public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
         this.vocabularyRecordBO = vocabularyRecordBO;
     }
 
-    public void setHoldingsBO(HoldingBO holdingsBO) {
-        this.holdingsBO = holdingsBO;
+    public void setHoldingBO(HoldingBO holdingsBO) {
+        this.holdingBO = holdingsBO;
     }
 
     public void setLendingBO(LendingBO lendingBO) {
@@ -447,5 +447,21 @@ public class DataMigrationBO extends AbstractBO {
 
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
+    }
+
+    public void setDataMigrationDAO(DataMigrationDAOImpl dataMigrationDAO) {
+        this.dataMigrationDAO = dataMigrationDAO;
+    }
+
+    public void setSetupDAO(SetupDAO setupDAO) {
+        this.setupDAO = setupDAO;
+    }
+
+    public void setZ3950BO(Z3950BO z3950bo) {
+        z3950BO = z3950bo;
+    }
+
+    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+        this.digitalMediaBO = digitalMediaBO;
     }
 }
