@@ -1,0 +1,3 @@
+biblivre.cataloging.dataimport.impl.ISO2709ImportProcessor
+biblivre.cataloging.dataimport.impl.MarcFileImportProcessor
+biblivre.cataloging.dataimport.impl.MarcXMLImportProcessor

@@ -23,26 +23,18 @@ import biblivre.cataloging.authorities.AuthorityRecordBO;
 import biblivre.cataloging.authorities.AuthorityRecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
+import biblivre.cataloging.dataimport.ImportProcessor;
+import biblivre.cataloging.dataimport.ImportProcessorUtil;
 import biblivre.cataloging.enums.ImportEncoding;
-import biblivre.cataloging.enums.ImportFormat;
 import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.core.file.MemoryFile;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.TextUtils;
-import biblivre.marc.MarcFileReader;
 import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950RecordDTO;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import org.marc4j.MarcPermissiveStreamReader;
-import org.marc4j.MarcReader;
-import org.marc4j.MarcXmlReader;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,134 +44,27 @@ public class ImportBO extends AbstractBO {
     private VocabularyRecordBO vocabularyRecordBO;
     private AuthorityRecordBO authorityRecordBO;
 
-    public ImportDTO loadFromFile(MemoryFile file, ImportFormat format, ImportEncoding enc) {
-        ImportDTO dto = null;
-        String encoding = null;
+    public ImportDTO loadFromFile(InputStream inputStream) throws IOException {
+        ImportDTO importDTO = null;
 
-        switch (enc) {
-            case AUTO_DETECT:
-                try (InputStream is = file.getNewInputStream()) {
-                    encoding = TextUtils.detectCharset(is);
-                } catch (IOException e) {
+        try (InputStream is = inputStream) {
+            for (ImportProcessor importProcessor : ImportProcessorUtil.getImportProcessors()) {
+                importDTO = importProcessor.importData(is, this::dtoFromRecord);
+
+                if (importDTO != null && importDTO.isValid()) {
+                    break;
                 }
-                break;
-
-            case UTF8:
-                encoding = Constants.DEFAULT_CHARSET.name();
-                break;
-
-            case MARC8:
-                encoding = "ISO-8859-1";
-                break;
-        }
-
-        if (encoding == null) {
-            encoding = Constants.DEFAULT_CHARSET.name();
-        }
-
-        String streamEncoding = (enc == ImportEncoding.AUTO_DETECT) ? "BESTGUESS" : encoding;
-
-        try (InputStream is = file.getNewInputStream()) {
-            switch (format) {
-                case AUTO_DETECT:
-                    MarcReader reader = null;
-                    List<ImportDTO> list = new ArrayList<>();
-
-                    reader = new MarcPermissiveStreamReader(is, true, true, streamEncoding);
-                    dto = this.readFromMarcReader(reader);
-                    dto.setFormat(ImportFormat.ISO2709);
-
-                    if (dto.isPerfect()) {
-                        break;
-                    } else {
-                        list.add(dto);
-                    }
-
-                    reader = new MarcXmlReader(is);
-                    dto = this.readFromMarcReader(reader);
-                    dto.setFormat(ImportFormat.XML);
-
-                    if (dto.isPerfect()) {
-                        break;
-                    } else {
-                        list.add(dto);
-                    }
-
-                    reader = new MarcFileReader(is, encoding);
-                    dto = this.readFromMarcReader(reader);
-                    dto.setFormat(ImportFormat.MARC);
-
-                    if (dto.isPerfect()) {
-                        break;
-                    } else {
-                        list.add(dto);
-                    }
-
-                    Collections.sort(list);
-                    dto = list.get(0);
-
-                    break;
-
-                case ISO2709:
-                    MarcReader isoReader =
-                            new MarcPermissiveStreamReader(is, true, true, streamEncoding);
-                    dto = this.readFromMarcReader(isoReader);
-                    dto.setFormat(ImportFormat.ISO2709);
-
-                    break;
-
-                case XML:
-                    MarcReader xmlReader = new MarcXmlReader(is);
-                    dto = this.readFromMarcReader(xmlReader);
-                    dto.setFormat(ImportFormat.XML);
-                    break;
-
-                case MARC:
-                    MarcReader marcReader = new MarcFileReader(is, encoding);
-                    dto = this.readFromMarcReader(marcReader);
-                    dto.setFormat(ImportFormat.MARC);
-                    break;
-
-                default:
-                    break;
             }
         } catch (Exception e) {
             logger.debug("Error reading file", e);
             throw new ValidationException(e.getMessage());
         }
 
-        if (dto != null) {
-            dto.setEncoding(enc);
+        if (importDTO != null) {
+            importDTO.setEncoding(ImportEncoding.AUTO_DETECT);
         }
 
-        return dto;
-    }
-
-    /**
-     * @param reader
-     * @return
-     */
-    private ImportDTO readFromMarcReader(MarcReader reader) {
-        ImportDTO dto = new ImportDTO();
-
-        while (reader.hasNext()) {
-            dto.incrementFound();
-
-            try {
-                RecordDTO rdto = this.dtoFromRecord(reader.next());
-
-                if (rdto != null) {
-                    dto.addRecord(rdto);
-                    dto.incrementSuccess();
-                } else {
-                    dto.incrementFailure();
-                }
-            } catch (Exception e) {
-                dto.incrementFailure();
-            }
-        }
-
-        return dto;
+        return importDTO;
     }
 
     public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {

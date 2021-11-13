@@ -45,7 +45,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
     private ImportFormat format;
     private ImportEncoding encoding;
 
-    public boolean isPerfect() {
+    public boolean isValid() {
         return this.getFound() > 0 && this.getFailure() == 0;
     }
 

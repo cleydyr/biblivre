@@ -19,7 +19,12 @@
  ******************************************************************************/
 package biblivre.cataloging.enums;
 
+import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.BiblivreEnum;
+import biblivre.core.utils.TextUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang3.StringUtils;
 
 public enum ImportEncoding implements BiblivreEnum {
@@ -50,5 +55,22 @@ public enum ImportEncoding implements BiblivreEnum {
 
     public String getString() {
         return this.toString();
+    }
+
+    public String getEncoding(MemoryFile file) throws IOException {
+        switch (this) {
+            case AUTO_DETECT:
+                try (InputStream is = file.getNewInputStream()) {
+                    return TextUtils.detectCharset(is);
+                }
+
+            case UTF8:
+                return StandardCharsets.UTF_8.name();
+
+            case MARC8:
+                return StandardCharsets.ISO_8859_1.name();
+        }
+
+        return null;
     }
 }

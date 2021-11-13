@@ -49,28 +49,11 @@ public class BiblioRecordBO extends PaginableRecordBO {
             return;
         }
 
-        BiblioRecordDTO biblioRecordDTO = (BiblioRecordDTO) recordDTO;
-
         if ((mask & RecordBO.MARC_INFO) != 0) {
-            Record record = recordDTO.getRecord();
-
-            if (record == null && recordDTO.getIso2709() != null) {
-                record = MarcUtils.iso2709ToRecord(recordDTO.getIso2709());
-            }
-
-            if (record != null) {
-                MarcDataReader marcDataReader = new MarcDataReader(record);
-
-                biblioRecordDTO.setAuthor(marcDataReader.getAuthor(true));
-                biblioRecordDTO.setTitle(marcDataReader.getTitle(false));
-                biblioRecordDTO.setIsbn(marcDataReader.getIsbn());
-                biblioRecordDTO.setIssn(marcDataReader.getIssn());
-                biblioRecordDTO.setIsrc(marcDataReader.getIsrc());
-                biblioRecordDTO.setPublicationYear(marcDataReader.getPublicationYear());
-                biblioRecordDTO.setShelfLocation(marcDataReader.getShelfLocation());
-                biblioRecordDTO.setSubject(marcDataReader.getSubject(true));
-            }
+            populateMarcInfo(recordDTO);
         }
+
+        BiblioRecordDTO biblioRecordDTO = (BiblioRecordDTO) recordDTO;
 
         Integer recordId = biblioRecordDTO.getId();
 
@@ -125,6 +108,29 @@ public class BiblioRecordBO extends PaginableRecordBO {
             for (HoldingDTO holding : holdingsList) {
                 lendings.add(lendingBO.getCurrentLending(holding));
             }
+        }
+    }
+
+    public void populateMarcInfo(RecordDTO recordDTO) {
+        BiblioRecordDTO biblioRecordDTO = (BiblioRecordDTO) recordDTO;
+
+        Record record = recordDTO.getRecord();
+
+        if (record == null && recordDTO.getIso2709() != null) {
+            record = MarcUtils.iso2709ToRecord(recordDTO.getIso2709());
+        }
+
+        if (record != null) {
+            MarcDataReader marcDataReader = new MarcDataReader(record);
+
+            biblioRecordDTO.setAuthor(marcDataReader.getAuthor(true));
+            biblioRecordDTO.setTitle(marcDataReader.getTitle(false));
+            biblioRecordDTO.setIsbn(marcDataReader.getIsbn());
+            biblioRecordDTO.setIssn(marcDataReader.getIssn());
+            biblioRecordDTO.setIsrc(marcDataReader.getIsrc());
+            biblioRecordDTO.setPublicationYear(marcDataReader.getPublicationYear());
+            biblioRecordDTO.setShelfLocation(marcDataReader.getShelfLocation());
+            biblioRecordDTO.setSubject(marcDataReader.getSubject(true));
         }
     }
 

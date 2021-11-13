@@ -22,8 +22,6 @@ package biblivre.cataloging;
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.authorities.AuthorityRecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
-import biblivre.cataloging.enums.ImportEncoding;
-import biblivre.cataloging.enums.ImportFormat;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
@@ -40,6 +38,7 @@ import biblivre.marc.RecordStatus;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import biblivre.z3950.Z3950RecordDTO;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,6 +49,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.marc4j.marc.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Handler extends AbstractHandler {
     private Map<String, RecordBO> recordBOs = new HashMap<>();
@@ -57,16 +58,22 @@ public class Handler extends AbstractHandler {
     private ImportBO importBO;
     private Z3950BO z3950BO;
 
+    private static Logger logger = LoggerFactory.getLogger(Handler.class);
+
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
 
         MemoryFile file = request.getFile("file");
 
-        ImportFormat format =
-                request.getEnum(ImportFormat.class, "format", ImportFormat.AUTO_DETECT);
-        ImportEncoding encoding =
-                request.getEnum(ImportEncoding.class, "encoding", ImportEncoding.AUTO_DETECT);
+        ImportDTO list;
+        try {
+            list = importBO.loadFromFile(file.getNewInputStream());
+        } catch (IOException ioe) {
+            logger.error(ioe.getMessage(), ioe);
 
-        ImportDTO list = importBO.loadFromFile(file, format, encoding);
+            setMessage(ActionResult.ERROR, ioe.getMessage());
+
+            return;
+        }
 
         if (list != null) {
             List<String> isbnList = new ArrayList<>();
