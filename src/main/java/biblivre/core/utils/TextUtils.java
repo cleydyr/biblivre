@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.text.Normalizer;
@@ -184,19 +185,15 @@ public class TextUtils {
         }
     }
 
-    public static String detectCharset(InputStream input) {
-        UniversalDetector detector = new UniversalDetector(null);
+    public static String detectCharset(InputStream input) throws IOException {
+        UniversalDetector detector = new UniversalDetector();
+
         byte[] buf = new byte[4096];
+
         int read;
 
-        try {
-            while ((read = input.read(buf)) > 0 && !detector.isDone()) {
-                detector.handleData(buf, 0, read);
-            }
-
-            input.reset();
-        } catch (Exception e) {
-            return null;
+        while ((read = input.read(buf)) > 0 && !detector.isDone()) {
+            detector.handleData(buf, 0, read);
         }
 
         detector.dataEnd();

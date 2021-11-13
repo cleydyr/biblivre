@@ -31,7 +31,6 @@ import org.json.JSONObject;
 public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJson {
     private static final long serialVersionUID = 1L;
 
-    /** */
     private List<RecordDTO> recordList = new ArrayList<>();
 
     private List<String> foundISBN;
