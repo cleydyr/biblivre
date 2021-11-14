@@ -184,6 +184,12 @@
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 	</bean>
 
+	<bean id="adminZ3950Handler" name="adminZ3950Handler"
+		class="biblivre.administration.z3950.Handler" scope="prototype">
+		<property name="z3950BO" ref="z3950BO" />
+	</bean>
+
+
 	<!-- BOs -->
 
 	<bean id="accessControlBO" name="accessControlBO"

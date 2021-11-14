@@ -29,7 +29,7 @@ import biblivre.cataloging.enums.ImportEncoding;
 import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.exceptions.ValidationException;
+import biblivre.core.function.UnsafeSupplier;
 import biblivre.marc.MaterialType;
 import biblivre.z3950.Z3950RecordDTO;
 import java.io.IOException;
@@ -44,20 +44,20 @@ public class ImportBO extends AbstractBO {
     private VocabularyRecordBO vocabularyRecordBO;
     private AuthorityRecordBO authorityRecordBO;
 
-    public ImportDTO loadFromFile(InputStream inputStream) throws IOException {
+    public ImportDTO loadFromFile(UnsafeSupplier<InputStream> inputStreamSupplier)
+            throws IOException {
         ImportDTO importDTO = null;
 
-        try (InputStream is = inputStream) {
-            for (ImportProcessor importProcessor : ImportProcessorUtil.getImportProcessors()) {
+        for (ImportProcessor importProcessor : ImportProcessorUtil.getImportProcessors()) {
+            try (InputStream is = inputStreamSupplier.get()) {
                 importDTO = importProcessor.importData(is, this::dtoFromRecord);
 
                 if (importDTO != null && importDTO.isValid()) {
                     break;
                 }
+            } catch (Exception e) {
+                logger.debug("Error reading file", e);
             }
-        } catch (Exception e) {
-            logger.debug("Error reading file", e);
-            throw new ValidationException(e.getMessage());
         }
 
         if (importDTO != null) {
@@ -112,6 +112,7 @@ public class ImportBO extends AbstractBO {
 
         if (rdto != null && rbo != null) {
             rdto.setRecord(record);
+            rdto.setId(0);
             rbo.populateDetails(rdto, RecordBO.MARC_INFO);
         }
 

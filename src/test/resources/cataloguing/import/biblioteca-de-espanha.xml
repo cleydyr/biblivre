@@ -1,0 +1,931 @@
+<?xml version="1.0" encoding="UTF-8"?><collection xmlns="http://www.loc.gov/MARC21/slim">
+  <record>
+    <leader>01248nam a2200337 c 4500</leader>
+    <controlfield tag="001">a6980999</controlfield>
+    <controlfield tag="003">SpMaBN</controlfield>
+    <controlfield tag="005">20211110125341.4</controlfield>
+    <controlfield tag="008">211110s2021    sp a   | |||| 000 1bspa  </controlfield>
+    <datafield tag="015" ind1=" " ind2=" ">
+      <subfield code="a">MON21</subfield>
+    </datafield>
+    <datafield tag="017" ind1=" " ind2=" ">
+      <subfield code="a">M 6529-2021</subfield>
+    </datafield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">978-84-1337-564-9</subfield>
+    </datafield>
+    <datafield tag="040" ind1=" " ind2=" ">
+      <subfield code="a">SpMaBN</subfield>
+      <subfield code="b">spa</subfield>
+      <subfield code="c">SpMaBN</subfield>
+      <subfield code="e">rda</subfield>
+    </datafield>
+    <datafield tag="080" ind1=" " ind2=" ">
+      <subfield code="a">087.5:929 García Lorca, Federico (0:82)</subfield>
+    </datafield>
+    <datafield tag="080" ind1=" " ind2=" ">
+      <subfield code="a">087.5:82</subfield>
+    </datafield>
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">Gallud Jardiel, Enrique</subfield>
+      <subfield code="d">1958-</subfield>
+      <subfield code="e">autor</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="0">
+      <subfield code="a">Federico García Lorca</subfield>
+      <subfield code="c">guión, Enrique gallud Jardiel ; ilustración, Victoria Plata</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">La Poveda (Arganda del Rey)-Madrid</subfield>
+      <subfield code="b">Verbum,</subfield>
+      <subfield code="c">[2021]</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="4">
+      <subfield code="c">©2021</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">62 páginas</subfield>
+      <subfield code="b">principalmente ilustraciones (color)</subfield>
+      <subfield code="c">26 cm</subfield>
+    </datafield>
+    <datafield tag="336" ind1=" " ind2=" ">
+      <subfield code="a">Imagen fija</subfield>
+      <subfield code="a">Texto</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="337" ind1=" " ind2=" ">
+      <subfield code="a">sin mediación</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="338" ind1=" " ind2=" ">
+      <subfield code="a">volumen</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+    <datafield tag="490" ind1="0" ind2=" ">
+      <subfield code="a">Famosos en cómic</subfield>
+    </datafield>
+    <datafield tag="490" ind1="0" ind2=" ">
+      <subfield code="a">Verbum infantil juvenil</subfield>
+    </datafield>
+    <datafield tag="505" ind1="0" ind2=" ">
+      <subfield code="a">Incluye (páginas 41-62): Bodas de sangre</subfield>
+    </datafield>
+    <datafield tag="600" ind1="1" ind2="7">
+      <subfield code="a">García Lorca, Federico</subfield>
+      <subfield code="d">1898-1936</subfield>
+      <subfield code="v">Cómics</subfield>
+      <subfield code="2">embne</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Adaptaciones a cómics</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Cómics biográficos</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Airiv Draws</subfield>
+      <subfield code="d">1996-</subfield>
+      <subfield code="e">dibujante</subfield>
+      <subfield code="4">art</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="i">Novelización gráfica de (obra)</subfield>
+      <subfield code="a">García Lorca, Federico</subfield>
+      <subfield code="d">1898-1936</subfield>
+      <subfield code="t">Bodas de sangre</subfield>
+    </datafield>
+  </record>
+  <record>
+    <leader>05544ngm a2200853 c 4500</leader>
+    <controlfield tag="001">a6978651</controlfield>
+    <controlfield tag="003">SpMaBN</controlfield>
+    <controlfield tag="005">20211105093124.6</controlfield>
+    <controlfield tag="007">vd*cvaizu</controlfield>
+    <controlfield tag="008">211105s2019    sp 096 g          vlspa  </controlfield>
+    <datafield tag="040" ind1=" " ind2=" ">
+      <subfield code="a">SpMaBN</subfield>
+      <subfield code="b">spa</subfield>
+      <subfield code="c">SpMaBN</subfield>
+      <subfield code="e">rda</subfield>
+    </datafield>
+    <datafield tag="041" ind1="0" ind2=" ">
+      <subfield code="a">spa</subfield>
+      <subfield code="h">spa</subfield>
+    </datafield>
+    <datafield tag="130" ind1="3" ind2=" ">
+      <subfield code="a">La novia (Película cinematográfica)</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="3">
+      <subfield code="a">La novia</subfield>
+      <subfield code="c">una película de Paula Ortiz ; basada en Bodas de sangre de Federico García Lorca</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">[Lugar de publicación no identificado]</subfield>
+      <subfield code="b">[editor no identificado],</subfield>
+      <subfield code="c">[2019]</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">1 videodisco (aproximadamente 96 min)</subfield>
+      <subfield code="b">sonido, color</subfield>
+      <subfield code="c">12 cm</subfield>
+    </datafield>
+    <datafield tag="336" ind1=" " ind2=" ">
+      <subfield code="a">Imagen bidimensional en movimiento</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="337" ind1=" " ind2=" ">
+      <subfield code="a">vídeo</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="338" ind1=" " ind2=" ">
+      <subfield code="a">videodisco</subfield>
+      <subfield code="b">vd</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+    <datafield tag="340" ind1=" " ind2=" ">
+      <subfield code="g">color</subfield>
+    </datafield>
+    <datafield tag="344" ind1=" " ind2=" ">
+      <subfield code="a">digital</subfield>
+      <subfield code="b">óptico</subfield>
+    </datafield>
+    <datafield tag="347" ind1=" " ind2=" ">
+      <subfield code="a">archivo de vídeo</subfield>
+      <subfield code="b">DVD-Vídeo</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Largometraje coproducido por España y Alemania en 2015</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Fecha tomada de la fecha de donación del ejemplar</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Copia de estudio de José Luis García Sánchez</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Incluye extras: tráiler, banda sonora original</subfield>
+    </datafield>
+    <datafield tag="505" ind1="0" ind2=" ">
+      <subfield code="a">Temas musicales: Los cuatro muleros / Federico García Lorca (Inma Cuesta). Nana del caballo grande / Federico García Lorca y Carmen París. Madeja, madeja / Federico García Lorca (Manuela Vellés). Andean Dreams / Dominik John
+son (Dominik Johnson). El viaje nocturno / Dominik Johnson (Dominik Johnson). Al olivo / (Jorge Usón). La tarara / Federico García Lorca (Inma Cuesta). Jaleo, jaleo / Federico García Lorca. Pequeño vals vienés / Leonard Cohen, Federico García Lorca
+ (Soledad Vélez). Dice la nostra novia (Vanesa Martín). Before the dawn / autor letra, Federico García Lorca ; música, Pachi García (Pachi García)</subfield>
+    </datafield>
+    <datafield tag="508" ind1=" " ind2=" ">
+      <subfield code="a">Una producción de Get In The Picture Productions, Cine Chromatix ; producida por Alex Lafuente, Rosana Tomás ; escrita por Paula Ortiz, Javier García Arredondo ; dirección de fotografía, Migue Amoedo ; música original, Shig
+eru Umebayashi ; montaje, Javier García Arredondo ; dirección de arte, Pilar Quintana, Jesús Bosqued Maté ; sonido, Nacho Rodríguez Arenas ; diseño de vestuario, Miriam Doz, Arantxa Ezquerro ; maquillaje y peluquería, Marta Arce, Esther Guillem, P
+iluca Guillem ; directora de producción, Rosana Tomás ; ayudante de dirección, Julio Montejo</subfield>
+    </datafield>
+    <datafield tag="511" ind1="1" ind2=" ">
+      <subfield code="a">Inma Cuesta, Álex García, Asier Etxeandía, Luisa Gavasa, Carlos Álvarez-Nóvoa, Mariana Cordero, Verónika Moral, Laura Contreras, Laura Gómez-Lacueva, Carmela del Campo, Álvaro Baumann, Anchel Pablo, Leticia Dolera, Manuel
+a Vellés</subfield>
+    </datafield>
+    <datafield tag="518" ind1=" " ind2=" ">
+      <subfield code="a">Lugares de rodaje: provincias de Zaragoza y Huesca; Capadocia (Turquía)</subfield>
+    </datafield>
+    <datafield tag="518" ind1=" " ind2=" ">
+      <subfield code="a">Largometraje estrenado el 11 de diciembre de 2015 en España</subfield>
+    </datafield>
+    <datafield tag="520" ind1="3" ind2=" ">
+      <subfield code="a">Desde pequeños, Leonardo, el novio y la novia han formado un triángulo inseparable, pero cuando se acerca la fecha de la boda las cosas se complican porque entre ella y Leonardo siempre ha habido algo más que amistad. La creci
+ente tensión entre ambos es como un hilo invisible que no se puede explicar, pero tampoco romper</subfield>
+    </datafield>
+    <datafield tag="521" ind1="1" ind2=" ">
+      <subfield code="a">No recomendada para menores de 16 años</subfield>
+    </datafield>
+    <datafield tag="546" ind1=" " ind2=" ">
+      <subfield code="a">Versión original en español</subfield>
+    </datafield>
+    <datafield tag="586" ind1=" " ind2=" ">
+      <subfield code="a">Entre otros: Mejor Actriz de Reparto y Mejor Dirección de Fotografía en los Premios Goya (2016); Medallas CEC (2016); Premios Feroz (2016); Premios Unión de Actores (2016); Premis Turia (2016); Premios YoGa (2016)</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Dramas cinematográficos</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Adaptaciones cinematográficas</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Ortiz Álvarez, Paula</subfield>
+      <subfield code="d">1979-</subfield>
+      <subfield code="e">director de cine</subfield>
+      <subfield code="e">guionista</subfield>
+      <subfield code="4">fmd </subfield>
+      <subfield code="4">aus</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Lafuente, Alex</subfield>
+      <subfield code="e">productor</subfield>
+      <subfield code="4">pro</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Tomás, Rosana</subfield>
+      <subfield code="d">1979-</subfield>
+      <subfield code="e">productor</subfield>
+      <subfield code="4">pro</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">García Arredondo, Javier</subfield>
+      <subfield code="e">guionista</subfield>
+      <subfield code="4">aus</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Amoedo, Miguel Ángel</subfield>
+      <subfield code="e">director de fotografía</subfield>
+      <subfield code="4">cng</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Umebayashi, Shigeru</subfield>
+      <subfield code="d">1951-</subfield>
+      <subfield code="e">compositor</subfield>
+      <subfield code="4">cmp</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">García Arredondo, Javier</subfield>
+      <subfield code="e">montador</subfield>
+      <subfield code="4">flm</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Quintana, Pilar</subfield>
+      <subfield code="q">Quintana Fernández</subfield>
+      <subfield code="e">director artístico</subfield>
+      <subfield code="4">adi</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Bosqued Maté, Jesús</subfield>
+      <subfield code="e">director artístico</subfield>
+      <subfield code="4">adi</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Arenas, Nacho</subfield>
+      <subfield code="e">diseñador de sonido</subfield>
+      <subfield code="4">sds</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Guillem Doz, Miriam</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Ezquerro, Arantxa</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Arce, Marta</subfield>
+      <subfield code="c">(maquilladora)</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Guillem, Esther</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Guillem, Piluca</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Tomás, Rosana</subfield>
+      <subfield code="d">1979-</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Montejo, Julio</subfield>
+      <subfield code="d">1980-</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Cuesta, Inma</subfield>
+      <subfield code="d">1980-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">García, Álex</subfield>
+      <subfield code="d">1981-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Etxeandia, Asier</subfield>
+      <subfield code="d">1975-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Gavasa, Luisa</subfield>
+      <subfield code="d">1951-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Álvarez-Nóvoa, Carlos</subfield>
+      <subfield code="d">1940-2015</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Cordero, Mariana</subfield>
+      <subfield code="d">1964-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Moral, Verónica</subfield>
+      <subfield code="d">1978-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Contreras, Laura</subfield>
+      <subfield code="d">1987-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Gómez, Laura</subfield>
+      <subfield code="d">1975-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Campo, Carmela del</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Baumann, Álvaro</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Pablo, Anchel</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Dolera, Leticia</subfield>
+      <subfield code="d">1981-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Vellés, Manuela</subfield>
+      <subfield code="d">1987-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="i">Basada en (obra):</subfield>
+      <subfield code="a">García Lorca, Federico</subfield>
+      <subfield code="d">1898-1936</subfield>
+      <subfield code="t">Bodas de sangre</subfield>
+    </datafield>
+    <datafield tag="711" ind1="2" ind2=" ">
+      <subfield code="a">Medallas CEC</subfield>
+      <subfield code="n">72º</subfield>
+      <subfield code="d">2016</subfield>
+      <subfield code="c">Madrid</subfield>
+    </datafield>
+    <datafield tag="711" ind1="2" ind2=" ">
+      <subfield code="a">Premios Feroz</subfield>
+      <subfield code="n">3º</subfield>
+      <subfield code="d">2016</subfield>
+      <subfield code="c">Madrid</subfield>
+    </datafield>
+    <datafield tag="711" ind1="2" ind2=" ">
+      <subfield code="a">Premios Unión de Actores</subfield>
+      <subfield code="n">26º</subfield>
+      <subfield code="d">2016</subfield>
+      <subfield code="c">Madrid</subfield>
+    </datafield>
+    <datafield tag="711" ind1="2" ind2=" ">
+      <subfield code="a">Premis Turia</subfield>
+      <subfield code="n">25º</subfield>
+      <subfield code="d">2016</subfield>
+      <subfield code="c">Valencia</subfield>
+    </datafield>
+    <datafield tag="711" ind1="2" ind2=" ">
+      <subfield code="a">Premios YoGa</subfield>
+      <subfield code="n">27º</subfield>
+      <subfield code="d">2016</subfield>
+      <subfield code="c">Barcelona</subfield>
+    </datafield>
+  </record>
+  <record>
+    <leader>00465nam a2200169 c 4500</leader>
+    <controlfield tag="001">a6978306</controlfield>
+    <controlfield tag="003">SpMaBN</controlfield>
+    <controlfield tag="005">20211104130410.5</controlfield>
+    <controlfield tag="008">211104s2021    sp     | |||| 000 0 spa  </controlfield>
+    <datafield tag="015" ind1=" " ind2=" ">
+      <subfield code="a">MON21</subfield>
+    </datafield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">978-84-122118-3-2</subfield>
+    </datafield>
+    <datafield tag="040" ind1=" " ind2=" ">
+      <subfield code="a">SpMaBN</subfield>
+      <subfield code="b">spa</subfield>
+      <subfield code="c">SpMaBN</subfield>
+      <subfield code="e">rda</subfield>
+    </datafield>
+    <datafield tag="245" ind1="0" ind2=" ">
+      <subfield code="a">Guía de mediadores profesionales de España 2021-2022</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="b">Ediciones Lorca</subfield>
+      <subfield code="c">2021</subfield>
+    </datafield>
+    <datafield tag="336" ind1=" " ind2=" ">
+      <subfield code="a">Texto</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="337" ind1=" " ind2=" ">
+      <subfield code="a">sin mediación</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="338" ind1=" " ind2=" ">
+      <subfield code="a">volumen</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+  </record>
+  <record>
+    <leader>00487nam a2200181 c 4500</leader>
+    <controlfield tag="001">a6977006</controlfield>
+    <controlfield tag="003">SpMaBN</controlfield>
+    <controlfield tag="005">20211103110335.4</controlfield>
+    <controlfield tag="008">211103s2020    sp     | |||| 000 0 spa  </controlfield>
+    <datafield tag="015" ind1=" " ind2=" ">
+      <subfield code="a">MON21</subfield>
+    </datafield>
+    <datafield tag="020" ind1=" " ind2=" ">
+      <subfield code="a">978-84-122397-5-1</subfield>
+    </datafield>
+    <datafield tag="040" ind1=" " ind2=" ">
+      <subfield code="a">SpMaBN</subfield>
+      <subfield code="b">spa</subfield>
+      <subfield code="c">SpMaBN</subfield>
+      <subfield code="e">rda</subfield>
+    </datafield>
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">Jiménez Lorca, Antonio</subfield>
+      <subfield code="e">autor</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2=" ">
+      <subfield code="a">Tal vez-- algún día</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="b">Ediciones Atlantis</subfield>
+      <subfield code="c">2020</subfield>
+    </datafield>
+    <datafield tag="336" ind1=" " ind2=" ">
+      <subfield code="a">Texto</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="337" ind1=" " ind2=" ">
+      <subfield code="a">sin mediación</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="338" ind1=" " ind2=" ">
+      <subfield code="a">volumen</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+  </record>
+  <record>
+    <leader>04051cgm a2200721 i 4500</leader>
+    <controlfield tag="001">a6976050</controlfield>
+    <controlfield tag="003">SpMaBN</controlfield>
+    <controlfield tag="005">20211102124936.3</controlfield>
+    <controlfield tag="007">vd*cvaizs</controlfield>
+    <controlfield tag="008">211102s2019    sp 090              spa  </controlfield>
+    <datafield tag="040" ind1=" " ind2=" ">
+      <subfield code="a">SpMaBN</subfield>
+      <subfield code="b">spa</subfield>
+      <subfield code="c">SpMaBN</subfield>
+      <subfield code="e">rdc</subfield>
+    </datafield>
+    <datafield tag="130" ind1="0" ind2=" ">
+      <subfield code="a">Sin un adiós (Película cinematográfica)</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="0">
+      <subfield code="a">Sin un adiós</subfield>
+      <subfield code="c">argumento, guión y dirección, Vicente Escrivá ; producción, José María Ramos ; director de fotografía, Raúl Pérez Cubero ; música original, Waldo de los Ríos</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">[Lugar no identificado]</subfield>
+      <subfield code="b">[editor no identificado]</subfield>
+      <subfield code="c">2019</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">1 videodisco (aproximadamente 90 min)</subfield>
+      <subfield code="b">sonido, color</subfield>
+      <subfield code="c">12 cm</subfield>
+    </datafield>
+    <datafield tag="336" ind1=" " ind2=" ">
+      <subfield code="a">Imagen (en movimiento ; bidimensional)</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="337" ind1=" " ind2=" ">
+      <subfield code="a">vídeo</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="338" ind1=" " ind2=" ">
+      <subfield code="a">videodisco</subfield>
+      <subfield code="b">vd</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+    <datafield tag="344" ind1=" " ind2=" ">
+      <subfield code="a">digital</subfield>
+    </datafield>
+    <datafield tag="347" ind1=" " ind2=" ">
+      <subfield code="a">Archivo de vídeo</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Copia personal de estudio de José Luis García Sánchez</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">En el mismo disco: Noches del universo. Bso de "El padre coplillas"</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Realizada en 1970 en España</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Rodada en Mallorca y Londres</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Estreno el 17-09-1970</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Canciones: Sin un adios ; Tu prometes, prometes = Hideaway ; Mandadme rosas ; La Rosa de los Vientos ; This is my life = La vita / Waldo de los Ríos</subfield>
+    </datafield>
+    <datafield tag="508" ind1=" " ind2=" ">
+      <subfield code="a">Montaje, Pedro del Rey ; diseño de producción, Ramiro Gómez ; maquillaje, Carmen Martín, Antonio Gentíl ; ayudante de dirección Francisco Ariza ; cámaras, Julio Sánchez Caballero y Julio Martín Leyva ; vestuario, Rosa Ga
+rcía, Juana Ramírez ; coreografía, Alberto Lorca</subfield>
+    </datafield>
+    <datafield tag="511" ind1="1" ind2=" ">
+      <subfield code="a">Raphael, Lesley Anne Down, Antonio Pica, Elena María Tejeiro, Mabel Karr, Perla Cristal, Cándida Losada, Nélida Quiroga, María Rivas, Yelena Samarina, Maite Tojar, José Bastida, Andrés Resino, Paloma Juanes, María Luisa To
+var</subfield>
+    </datafield>
+    <datafield tag="520" ind1="3" ind2=" ">
+      <subfield code="a">Mario, un cantante famoso en plena gloria, se convierte en anunciante de una marca de cigarrillos. Una de las cajetillas contiene una coronita de oro y quien la encuentre podrá disfrutar de una estancia de tres días en Mallorca
+ en compañía de Mario. Marta, una muchacha inglesa, se alza con el premio y es envidiada por todas las seguidoras del cantante. Comienza un largo sueño hecho realidad</subfield>
+    </datafield>
+    <datafield tag="521" ind1=" " ind2=" ">
+      <subfield code="a">Autorizada para todos los públicos</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Comedias cinematográficas</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Cine musical</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Escrivá, Vicente</subfield>
+      <subfield code="d">1913-1999</subfield>
+      <subfield code="e">director de cine</subfield>
+      <subfield code="e">guionista</subfield>
+      <subfield code="4">fmd </subfield>
+      <subfield code="4">aus</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Ramos, José María</subfield>
+      <subfield code="c">(productor)</subfield>
+      <subfield code="e">productor</subfield>
+      <subfield code="4">pro</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Pérez Cubero, Raúl</subfield>
+      <subfield code="d">1934-</subfield>
+      <subfield code="e">director de fotografía</subfield>
+      <subfield code="4">cng</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Ríos, Waldo de los</subfield>
+      <subfield code="d">1934-1977</subfield>
+      <subfield code="e">compositor</subfield>
+      <subfield code="4">cmp</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Rey, Pedro del</subfield>
+      <subfield code="d">1931-</subfield>
+      <subfield code="e">montador</subfield>
+      <subfield code="4">flm</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Gómez, Ramiro</subfield>
+      <subfield code="d">1916-2003</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Martín, Carmen</subfield>
+      <subfield code="c">(maquilladora)</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Gentíl, Antonio</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Ariza, Francisco</subfield>
+      <subfield code="d">1923-1991</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Sánchez Caballero, Julio</subfield>
+      <subfield code="d">fl. 1960</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Leyva, Julio</subfield>
+      <subfield code="d">fl. 1957</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">García, Rosa</subfield>
+      <subfield code="d">fl. 1969</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Ramírez, Juana</subfield>
+      <subfield code="d">fl. 1969</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Lorca, Alberto</subfield>
+      <subfield code="d">1917-2008</subfield>
+      <subfield code="e">otros</subfield>
+      <subfield code="4">oth</subfield>
+    </datafield>
+    <datafield tag="700" ind1="0" ind2=" ">
+      <subfield code="a">Raphael</subfield>
+      <subfield code="d">1943-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Down, Lesley-Anne</subfield>
+      <subfield code="d">1954-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Pica, Antonio</subfield>
+      <subfield code="d">1933-2014</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Tejeiro, Elena María</subfield>
+      <subfield code="d">1939-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Karr, Mabel</subfield>
+      <subfield code="d">1934-2001</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Cristal, Perla</subfield>
+      <subfield code="d">1937-</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Losada, Cándida</subfield>
+      <subfield code="d">1915-1992</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Quiroga, Nélida</subfield>
+      <subfield code="d">1909-1982</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Rivas, María</subfield>
+      <subfield code="d">1931-2013</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Samarina, Yelena</subfield>
+      <subfield code="d">1933-2011</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Tojar, Maite</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Bastida, José</subfield>
+      <subfield code="d">1936-2012</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Resino, Andrés</subfield>
+      <subfield code="d">1940-2011</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Juanes, Paloma</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Tovar, María Luisa</subfield>
+      <subfield code="e">actor</subfield>
+      <subfield code="4">act</subfield>
+    </datafield>
+    <datafield tag="740" ind1="0" ind2="2">
+      <subfield code="a">Noches del universo</subfield>
+    </datafield>
+    <datafield tag="740" ind1="0" ind2="2">
+      <subfield code="a">Bso de "El padre coplillas"</subfield>
+    </datafield>
+  </record>
+  <record>
+    <leader>02161ncm a2200493I  4500</leader>
+    <controlfield tag="001">a6901132</controlfield>
+    <controlfield tag="003">SpMaBN</controlfield>
+    <controlfield tag="005">20211029005611.6</controlfield>
+    <controlfield tag="007">qu</controlfield>
+    <controlfield tag="008">210702s2021    sp sga         n    spa  </controlfield>
+    <datafield tag="015" ind1=" " ind2=" ">
+      <subfield code="a">PAR21</subfield>
+    </datafield>
+    <datafield tag="017" ind1=" " ind2=" ">
+      <subfield code="a">C 451-2021</subfield>
+      <subfield code="b">Oficina Depósito Legal A Coruña</subfield>
+    </datafield>
+    <datafield tag="024" ind1="2" ind2=" ">
+      <subfield code="a">979-0-805425-27-6</subfield>
+    </datafield>
+    <datafield tag="040" ind1=" " ind2=" ">
+      <subfield code="a">SpMaBN</subfield>
+      <subfield code="b">spa</subfield>
+      <subfield code="c">SpMaBN</subfield>
+      <subfield code="e">rda</subfield>
+    </datafield>
+    <datafield tag="100" ind1="1" ind2=" ">
+      <subfield code="a">Aguado, Saúl</subfield>
+      <subfield code="e">compositor</subfield>
+    </datafield>
+    <datafield tag="240" ind1="1" ind2="3">
+      <subfield code="a">El canto del poeta (voz soprano, piano).</subfield>
+      <subfield code="n">V. 1</subfield>
+    </datafield>
+    <datafield tag="245" ind1="1" ind2="3">
+      <subfield code="a">El canto del poeta :</subfield>
+      <subfield code="b">canciones líricas para soprano y piano = lyric songs for soprano and piano.</subfield>
+      <subfield code="n">Vol. I</subfield>
+      <subfield code="c">Saúl Aguado</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">A Coruña</subfield>
+      <subfield code="b">Grupo Beroly,</subfield>
+      <subfield code="c">[2021]</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="4">
+      <subfield code="c">©2020</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">1 partitura (29 páginas)</subfield>
+      <subfield code="c">30 cm</subfield>
+    </datafield>
+    <datafield tag="336" ind1=" " ind2=" ">
+      <subfield code="a">Música notada</subfield>
+      <subfield code="2">rdacontent</subfield>
+    </datafield>
+    <datafield tag="337" ind1=" " ind2=" ">
+      <subfield code="a">sin mediación</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="338" ind1=" " ind2=" ">
+      <subfield code="a">hoja</subfield>
+    </datafield>
+    <datafield tag="348" ind1=" " ind2=" ">
+      <subfield code="a">partitura</subfield>
+    </datafield>
+    <datafield tag="382" ind1="0" ind2="1">
+      <subfield code="a">voz soprano</subfield>
+      <subfield code="n">1</subfield>
+      <subfield code="a">piano</subfield>
+      <subfield code="n">1</subfield>
+      <subfield code="s">2</subfield>
+      <subfield code="2">tmibne</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Incluye, además, la letra separada de la notación musical en español e inglés</subfield>
+    </datafield>
+    <datafield tag="500" ind1=" " ind2=" ">
+      <subfield code="a">Incluye una Nota del autor en español e inglés</subfield>
+    </datafield>
+    <datafield tag="505" ind1=" " ind2=" ">
+      <subfield code="a">Canción de luna / Saúl Aguado de Aza ; letra, Sonia Martínez -- Mi poesía nunca engaña / Saúl Aguado de Aza ; letra, Remigio G. Adares -- Sueño infantil / Saúl Aguado de Aza ; letra, Antonio Machado -- El canto quiere ser
+ luz / Saúl Aguado de Aza ; letra, Federico García Lorca</subfield>
+    </datafield>
+    <datafield tag="546" ind1=" " ind2=" ">
+      <subfield code="b">Notación en pentagrama</subfield>
+    </datafield>
+    <datafield tag="600" ind1="1" ind2=" ">
+      <subfield code="a">Martínez, Sonia</subfield>
+      <subfield code="d">1978-</subfield>
+      <subfield code="t">Canción de luna</subfield>
+      <subfield code="2">embne</subfield>
+    </datafield>
+    <datafield tag="600" ind1="1" ind2=" ">
+      <subfield code="a">Machado, Antonio</subfield>
+      <subfield code="d">1875-1939</subfield>
+      <subfield code="t">Sueño infantil</subfield>
+      <subfield code="2">embne</subfield>
+    </datafield>
+    <datafield tag="600" ind1="1" ind2=" ">
+      <subfield code="a">González, Remigio</subfield>
+      <subfield code="d">1923-2001</subfield>
+      <subfield code="t">Mi poesía nunca engaña</subfield>
+      <subfield code="2">embne</subfield>
+    </datafield>
+    <datafield tag="600" ind1="1" ind2=" ">
+      <subfield code="a">García Lorca, Federico</subfield>
+      <subfield code="d">1898-1936</subfield>
+      <subfield code="t">El canto quiere ser luz</subfield>
+      <subfield code="2">embne</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Canciones</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Adaptaciones musicales</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Partituras</subfield>
+      <subfield code="2">tgfbne</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Martínez, Sonia</subfield>
+      <subfield code="d">1978-</subfield>
+      <subfield code="e">autor</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">Machado, Antonio</subfield>
+      <subfield code="d">1875-1939</subfield>
+      <subfield code="e">autor</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">González, Remigio</subfield>
+      <subfield code="d">1923-2001</subfield>
+      <subfield code="e">autor</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="700" ind1="1" ind2=" ">
+      <subfield code="a">García Lorca, Federico</subfield>
+      <subfield code="d">1898-1936</subfield>
+      <subfield code="e">autor</subfield>
+      <subfield code="4">aut</subfield>
+    </datafield>
+    <datafield tag="740" ind1="0" ind2="2">
+      <subfield code="a">Canción de luna</subfield>
+    </datafield>
+    <datafield tag="740" ind1="0" ind2="2">
+      <subfield code="a">Mi poesía nunca engaña</subfield>
+    </datafield>
+    <datafield tag="740" ind1="0" ind2="2">
+      <subfield code="a">Sueño infantil</subfield>
+    </datafield>
+    <datafield tag="740" ind1="0" ind2="2">
+      <subfield code="a">El canto quiere ser luz</subfield>
+    </datafield>
+  </record>
+</collection>

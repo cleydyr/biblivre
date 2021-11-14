@@ -66,7 +66,7 @@ public class Handler extends AbstractHandler {
 
         ImportDTO list;
         try {
-            list = importBO.loadFromFile(file.getNewInputStream());
+            list = importBO.loadFromFile(file::getNewInputStream);
         } catch (IOException ioe) {
             logger.error(ioe.getMessage(), ioe);
 
