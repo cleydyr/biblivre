@@ -30,6 +30,7 @@ import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPointTypes;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
+import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,8 +46,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -179,8 +179,8 @@ public class Handler extends AbstractHandler {
                 warningBackup = true;
             } else {
                 int diff =
-                        Days.daysBetween(new DateTime(lastBackup.getCreated()), new DateTime())
-                                .getDays();
+                        CalendarUtils.calculateDateDifference(lastBackup.getCreated(), new Date());
+
                 warningBackup = (diff >= 3);
             }
 
