@@ -20,21 +20,16 @@
 package biblivre.core.utils;
 
 import biblivre.core.configurations.Configurations;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import net.objectlab.kit.datecalc.common.DateCalculator;
-import net.objectlab.kit.datecalc.common.HolidayHandlerType;
-import net.objectlab.kit.datecalc.common.WorkingWeek;
-import net.objectlab.kit.datecalc.joda.JodaWorkingWeek;
-import net.objectlab.kit.datecalc.joda.LocalDateKitCalculatorsFactory;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
+import java.util.List;
 
 public class CalendarUtils {
-
-    private static final String CALENDAR_NAME = "BR-BIBL";
 
     public static java.sql.Date toSqlDate(Date date) {
         return new java.sql.Date(date.getTime());
@@ -56,45 +51,36 @@ public class CalendarUtils {
     }
 
     public static Date calculateExpectedReturnDate(Date lendingDate, int days) {
-        DateCalculator<LocalDate> cal =
-                LocalDateKitCalculatorsFactory.getDefaultInstance()
-                        .getDateCalculator(CalendarUtils.CALENDAR_NAME, HolidayHandlerType.FORWARD);
-        WorkingWeek week = new WorkingWeek();
-        for (int i = 1; i <= 7; i++) {
-            week = week.withWorkingDayFromCalendar(false, i);
+        List<Integer> businessDays = Configurations.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6");
+
+        LocalDate expectedReturnDate = toLocalDateInDefaultZone(lendingDate);
+
+        int remaningDays = days;
+
+        while (remaningDays > 0) {
+        	if (businessDays.contains(expectedReturnDate.getDayOfWeek().getValue())) {
+        		expectedReturnDate.plusDays(1);
+
+        		remaningDays--;
+        	}
         }
 
-        for (int i : Configurations.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6")) {
-            week = week.withWorkingDayFromCalendar(true, i);
-        }
-        cal.setWorkingWeek(new JodaWorkingWeek(week));
-        cal.setStartDate(new LocalDate(lendingDate));
-        LocalDate newCurrent = cal.moveByDays(days).getCurrentBusinessDate();
-        // LocalDate newCurrent = cal.moveByBusinessDays(days).getCurrentBusinessDate();
-        return newCurrent.toDate();
+        return toDateInDefaultZone(expectedReturnDate);
     }
 
-    public static int calculateDeteDifference(Date initialDate, Date finalDate) {
-        DateTime firstDate = new DateTime(initialDate);
-        DateTime lastDate = new DateTime(finalDate);
-        Integer difference = Days.daysBetween(firstDate, lastDate).getDays();
-        return difference < 0 ? 0 : difference;
+	public static Date toDateInDefaultZone(java.time.LocalDate expectedReturnDate) {
+		return Date.from(expectedReturnDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+	}
+
+	public static java.time.LocalDate toLocalDateInDefaultZone(Date lendingDate) {
+		return lendingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
+    public static int calculateDateDifference(Date initialDate, Date finalDate) {
+        LocalDate initialLocalDate = toLocalDateInDefaultZone(initialDate);
+        
+        LocalDate finalLocalDate = toLocalDateInDefaultZone(finalDate);
+        
+        return (int) ChronoUnit.DAYS.between(initialLocalDate, finalLocalDate);
     }
-
-    //	public static void loadHolidays() {
-    //		Set<LocalDate> holidays = new HashSet<>();
-    // List holidays from database and add them to the holidays Set
-    //		holidays.add(new LocalDate("2006-08-28"));
-    // create a Holiday Calendar with the holidays Set
-    //		HolidayCalendar<LocalDate> calendar =
-    //				new DefaultHolidayCalendar<>(
-    //						holidays,
-    //						new LocalDate("2006-01-01"),
-    //						new LocalDate("2006-12-31"));
-    // register the holiday calendar
-    //		LocalDateKitCalculatorsFactory.
-    //			getDefaultInstance().
-    //			registerHolidays(CalendarUtils.CALENDAR_NAME, calendar);
-    //	}
-
 }

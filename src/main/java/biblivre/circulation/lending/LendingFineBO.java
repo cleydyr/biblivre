@@ -107,7 +107,7 @@ public class LendingFineBO extends AbstractBO {
 
     public Integer calculateLateDays(LendingDTO lending) {
         Date expectedReturnDate = lending.getExpectedReturnDate();
-        return CalendarUtils.calculateDeteDifference(expectedReturnDate, new Date());
+        return CalendarUtils.calculateDateDifference(expectedReturnDate, new Date());
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
