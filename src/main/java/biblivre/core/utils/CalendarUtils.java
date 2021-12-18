@@ -20,7 +20,6 @@
 package biblivre.core.utils;
 
 import biblivre.core.configurations.Configurations;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -51,36 +50,38 @@ public class CalendarUtils {
     }
 
     public static Date calculateExpectedReturnDate(Date lendingDate, int days) {
-        List<Integer> businessDays = Configurations.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6");
+        List<Integer> businessDays =
+                Configurations.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6");
 
         LocalDate expectedReturnDate = toLocalDateInDefaultZone(lendingDate);
 
         int remaningDays = days;
 
         while (remaningDays > 0) {
-        	if (businessDays.contains(expectedReturnDate.getDayOfWeek().getValue())) {
-        		expectedReturnDate.plusDays(1);
+            if (businessDays.contains(expectedReturnDate.getDayOfWeek().getValue())) {
+                expectedReturnDate.plusDays(1);
 
-        		remaningDays--;
-        	}
+                remaningDays--;
+            }
         }
 
         return toDateInDefaultZone(expectedReturnDate);
     }
 
-	public static Date toDateInDefaultZone(java.time.LocalDate expectedReturnDate) {
-		return Date.from(expectedReturnDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-	}
+    public static Date toDateInDefaultZone(java.time.LocalDate expectedReturnDate) {
+        return Date.from(
+                expectedReturnDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
 
-	public static java.time.LocalDate toLocalDateInDefaultZone(Date lendingDate) {
-		return lendingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	}
+    public static java.time.LocalDate toLocalDateInDefaultZone(Date lendingDate) {
+        return lendingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
 
     public static int calculateDateDifference(Date initialDate, Date finalDate) {
         LocalDate initialLocalDate = toLocalDateInDefaultZone(initialDate);
-        
+
         LocalDate finalLocalDate = toLocalDateInDefaultZone(finalDate);
-        
+
         return (int) ChronoUnit.DAYS.between(initialLocalDate, finalLocalDate);
     }
 }

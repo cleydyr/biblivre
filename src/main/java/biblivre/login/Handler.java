@@ -178,7 +178,8 @@ public class Handler extends AbstractHandler {
                 // bbo.simpleBackup();
                 warningBackup = true;
             } else {
-                int diff = CalendarUtils.calculateDateDifference(lastBackup.getCreated(), new Date());
+                int diff =
+                        CalendarUtils.calculateDateDifference(lastBackup.getCreated(), new Date());
 
                 warningBackup = (diff >= 3);
             }
