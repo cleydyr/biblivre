@@ -53,16 +53,29 @@ public class CalendarUtils {
         List<Integer> businessDays =
                 Configurations.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6");
 
+        return calculateExpectedReturnDate(lendingDate, days, businessDays);
+    }
+
+    public static Date calculateExpectedReturnDate(
+            Date lendingDate, int days, List<Integer> businessDays) {
         LocalDate expectedReturnDate = toLocalDateInDefaultZone(lendingDate);
 
         int remaningDays = days;
 
-        while (remaningDays > 0) {
-            if (businessDays.contains(expectedReturnDate.getDayOfWeek().getValue())) {
-                expectedReturnDate.plusDays(1);
+        boolean[] isBusinessDay = new boolean[8];
 
+        for (int businessDay : businessDays) {
+            isBusinessDay[businessDay] = true;
+        }
+
+        while (remaningDays > 0) {
+            int expectedReturnDateDayOfWeek = expectedReturnDate.getDayOfWeek().getValue();
+
+            if (isBusinessDay[expectedReturnDateDayOfWeek]) {
                 remaningDays--;
             }
+
+            expectedReturnDate = expectedReturnDate.plusDays(1);
         }
 
         return toDateInDefaultZone(expectedReturnDate);
