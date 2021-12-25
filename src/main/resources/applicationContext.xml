@@ -189,6 +189,11 @@
 		<property name="z3950BO" ref="z3950BO" />
 	</bean>
 
+	<bean id="setupHandler" name="setupHandler"
+		class="biblivre.administration.setup.Handler" scope="prototype">
+		<property name="restoreBO" ref="restoreBO" />
+		<property name="backupBO" ref="backupBO" />
+	</bean>
 
 	<!-- BOs -->
 
@@ -355,6 +360,12 @@
 		class="biblivre.administration.backup.BackupBO">
 		<property name="backupDAO" ref="backupDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
+	</bean>
+
+	<bean id="restoreBO" name="restoreBO"
+		class="biblivre.administration.backup.RestoreBO">
+		<property name="backupBO" ref="backupBO" />
+		<property name="digitalMediaDAO" ref="digitalMediaDAO" />
 	</bean>
 
 	<!-- DAOs -->

@@ -81,6 +81,7 @@ public class RestoreBO extends AbstractBO {
     private static final String _DELETE_FROM_SCHEMAS =
             "DELETE FROM \"global\".schemas WHERE \"schema\" not in (SELECT schema_name FROM information_schema.schemata);";
     private static final Pattern _LO_OPEN = Pattern.compile("(.*lo_open\\(')(.*?)(',.*)");
+
     private static final Pattern _LO_CREATE = Pattern.compile("lo_create\\('(.*?)'\\)");
 
     private static final String[] _BACKUP_EXTENSIONS = new String[] {"b4bz", "b5bz"};
@@ -88,8 +89,8 @@ public class RestoreBO extends AbstractBO {
     private static final Logger logger = LoggerFactory.getLogger(RestoreBO.class);
 
     private DigitalMediaDAO digitalMediaDAO;
+
     private BackupBO backupBO;
-    private DigitalMediaBO digitalMediaBO;
 
     public List<RestoreDTO> list() {
         File path = backupBO.getBackupDestination();
@@ -202,6 +203,14 @@ public class RestoreBO extends AbstractBO {
                         });
 
         bw.flush();
+    }
+
+    public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
+        this.digitalMediaDAO = digitalMediaDAO;
+    }
+
+    public void setBackupBO(BackupBO backupBO) {
+        this.backupBO = backupBO;
     }
 
     private synchronized boolean restoreBackup(RestoreDTO dto, File directory) {
@@ -525,6 +534,7 @@ public class RestoreBO extends AbstractBO {
                 dto.setBackup(backup);
             }
         } catch (Exception e) {
+            logger.error("Can't read zip file", e);
             dto = new RestoreDTO();
             dto.setValid(false);
         } finally {
@@ -556,7 +566,7 @@ public class RestoreBO extends AbstractBO {
                         if (fileMatcher.find()) {
                             String mediaId = fileMatcher.group(1);
 
-                            long oid = digitalMediaBO.importFile(file);
+                            long oid = digitalMediaDAO.importFile(file);
 
                             String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
 
