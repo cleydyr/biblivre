@@ -65,9 +65,6 @@
 			<div id="menu">
 				<ul>
 					<c:choose>
-						<c:when test="${isDisableMenu}">
-							<menu:help />
-						</c:when>
 						<c:when test="${isSchemaSelection}">
 							<c:choose>
 								<c:when  test="${isLogged}">
@@ -78,11 +75,9 @@
 										<menu:item module="multi_schema" action="multi_schema_translations"  />
 										<menu:item module="multi_schema" action="multi_schema_backup"  />
 									</menu:level>
-									<menu:help />
 									<menu:logout />
 								</c:when>
 								<c:otherwise>
-									<menu:help />
 									<menu:login />
 								</c:otherwise>
 							</c:choose>
@@ -97,7 +92,6 @@
 											</c:forEach>
 										</menu:level>
 									</c:forEach>
-									<menu:help />
 									<menu:logout />
 								</c:when>
 								<c:otherwise>
@@ -107,7 +101,6 @@
 										<menu:item module="search" action="search_vocabulary"  />
 										<menu:item module="search" action="search_z3950"  />
 									</menu:level>
-									<menu:help />
 									<menu:login />
 								</c:otherwise>
 							</c:choose>
