@@ -8,7 +8,7 @@ There are basically two ways to build and deploy:
 1. installing the dependencies manually in your system; and
 2. using Docker and Docker Compose
 
-1\. is the easiest way as it only requires setting up Docker and Docker Compose, while 2\. gives you more control over the system parts and also makes the database persistent by default. However 2\. is trickier to perform, revert the changes and start over when compared to 1\., so we will only provide instructions on how to generate the war file and build the initial database.
+2\. is the easiest way as it only requires setting up Docker and Docker Compose, while 1\. gives you more control over the system parts and also makes the database persistent by default. However 1\. is trickier to perform, revert the changes and start over when compared to 2\., so we will only provide instructions on how to generate the war file and build the initial database.
 
 ### Dependencies
 To build and deploy it's necessary to have in your system
