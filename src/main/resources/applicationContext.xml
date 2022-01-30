@@ -99,6 +99,7 @@
 	<bean id="authorityHandler" name="authorityHandler"
 		class="biblivre.cataloging.authorities.Handler" scope="prototype">
 		<property name="paginableRecordBO" ref="authorityRecordBO" />
+		<property name="reportsBO" ref="reportsBO" />
 	</bean>
 
 	<bean id="bibliographicHandler" name="bibliographicHandler"
@@ -366,6 +367,12 @@
 		class="biblivre.administration.backup.RestoreBO">
 		<property name="backupBO" ref="backupBO" />
 		<property name="digitalMediaDAO" ref="digitalMediaDAO" />
+	</bean>
+
+	<bean id="reportsBO" name="reportsBO"
+		class="biblivre.administration.reports.ReportsBO">
+		<property name="reportsDAO" ref="reportsDAO" />
+		<property name="biblioRecordBO" ref="biblioRecordBO" />
 	</bean>
 
 	<!-- DAOs -->

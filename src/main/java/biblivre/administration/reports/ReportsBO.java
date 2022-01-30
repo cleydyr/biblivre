@@ -2,14 +2,12 @@ package biblivre.administration.reports;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.administration.reports.dto.CustomCountDto;
-import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.marc.MarcDataReader;
@@ -27,17 +25,11 @@ import org.marc4j.marc.Subfield;
 
 public class ReportsBO extends AbstractBO {
     private ReportsDAO reportsDAO;
-    private RecordDAO recordDAO;
     private BiblioRecordBO biblioRecordBO;
 
     public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
         ReportType type = dto.getType();
-        IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type);
-        report.setI18n(i18n);
-
-        String schema = SchemaThreadLocal.get();
-
-        report.setSchema(schema);
+        IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type, i18n, this);
         return report.generateReport(dto);
     }
 
@@ -85,8 +77,7 @@ public class ReportsBO extends AbstractBO {
 
             boolean hasMore = true;
             while (hasMore) {
-                List<RecordDTO> records =
-                        recordDAO.list(offset, limit, database, RecordType.BIBLIO);
+                List<RecordDTO> records = biblioRecordBO.list(offset, limit, database);
                 if (records == null || records.size() == 0) {
                     hasMore = false;
                 } else {
@@ -138,10 +129,6 @@ public class ReportsBO extends AbstractBO {
 
     public void setReportsDAO(ReportsDAO reportsDAO) {
         this.reportsDAO = reportsDAO;
-    }
-
-    public void setRecordDAO(RecordDAO recordDAO) {
-        this.recordDAO = recordDAO;
     }
 
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {

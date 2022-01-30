@@ -73,6 +73,8 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
     protected String schema;
 
+    protected ReportsBO reportsBO;
+
     @Override
     public DiskFile generateReport(ReportsDTO dto) {
         this.generationDate = new Date();
@@ -123,7 +125,6 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
     protected abstract void generateReportBody(Document document, BaseReportDto reportData)
             throws Exception;
 
-    @Override
     public final void setI18n(TranslationsMap i18n) {
         this.i18n = i18n;
     }
@@ -232,8 +233,11 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
         return this.schema;
     }
 
-    @Override
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    public void setReportsBO(ReportsBO reportsBO) {
+        this.reportsBO = reportsBO;
     }
 }

@@ -19,46 +19,74 @@
  ******************************************************************************/
 package biblivre.administration.reports;
 
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.translations.TranslationsMap;
+
 public class BiblivreReportFactory {
 
     private BiblivreReportFactory() {}
 
-    public static IBiblivreReport getBiblivreReport(ReportType type) {
+    public static IBiblivreReport getBiblivreReport(
+            ReportType type, TranslationsMap i18n, ReportsBO reportsBO) {
+        BaseBiblivreReport report = null;
+
         switch (type) {
             case SEARCHES_BY_DATE:
-                return new SearchesByDateReport();
+                report = new SearchesByDateReport();
+                break;
             case LENDINGS_BY_DATE:
-                return new LendingsByDateReport();
+                report = new LendingsByDateReport();
+                break;
             case ALL_USERS:
-                return new AllUsersReport();
+                report = new AllUsersReport();
+                break;
             case DEWEY:
-                return new DeweyReport();
+                report = new DeweyReport();
+                break;
             case LATE_LENDINGS:
-                return new LateReturnLendingsReport();
+                report = new LateReturnLendingsReport();
+                break;
             case AUTHOR_BIBLIOGRAPHY:
-                return new BibliographyReport();
+                report = new BibliographyReport();
+                break;
             case HOLDING_CREATION_BY_DATE:
-                return new HoldingCreationByDatetReport();
+                report = new HoldingCreationByDatetReport();
+                break;
             case ACQUISITION:
-                return new RequestsByDateReport();
+                report = new RequestsByDateReport();
+                break;
             case SUMMARY:
-                return new SummaryReport();
+                report = new SummaryReport();
+                break;
             case USER:
-                return new UserReport();
+                report = new UserReport();
+                break;
             case RESERVATION:
-                return new ReservationReport();
+                report = new ReservationReport();
+                break;
             case ASSET_HOLDING:
-                return new AssetHoldingReport();
+                report = new AssetHoldingReport();
+                break;
             case ASSET_HOLDING_FULL:
-                return new AssetHoldingFullReport(false);
+                report = new AssetHoldingFullReport(false);
+                break;
             case TOPOGRAPHIC_FULL:
-                return new AssetHoldingFullReport(true);
+                report = new AssetHoldingFullReport(true);
+                break;
             case ASSET_HOLDING_BY_DATE:
-                return new AssetHoldingByDateReport();
+                report = new AssetHoldingByDateReport();
+                break;
             case CUSTOM_COUNT:
-                return new CustomCountReport();
+                report = new CustomCountReport();
+                break;
             default:
                 return null;
         }
+
+        report.setI18n(i18n);
+        report.setReportsBO(reportsBO);
+        report.setSchema(SchemaThreadLocal.get());
+
+        return report;
     }
 }
