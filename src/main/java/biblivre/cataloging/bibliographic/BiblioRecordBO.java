@@ -22,6 +22,7 @@ package biblivre.cataloging.bibliographic;
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.lending.LendingBO2;
@@ -199,5 +200,9 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
+    }
+
+    public List<RecordDTO> list(int offset, int limit, RecordDatabase database) {
+        return recordDAO.list(offset, limit, database, getRecordType());
     }
 }

@@ -28,7 +28,6 @@ import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
 import biblivre.core.utils.StringPool;
-import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

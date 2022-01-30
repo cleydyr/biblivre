@@ -37,7 +37,6 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
     private String marcField;
     private String datafield;
     private String subfield;
-    private ReportsBO reportsBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
