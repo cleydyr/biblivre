@@ -62,8 +62,6 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
         return (ReportsDAO) AbstractDAO.getInstance(ReportsDAOImpl.class);
     }
 
-    private BiblioRecordBO biblioRecordBO;
-
     @Override
     public SummaryReportDto getSummaryReportData(RecordDatabase database) {
         SummaryReportDto dto = new SummaryReportDto();
@@ -468,7 +466,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             dto.setTotals(totals);
 
             StringBuilder sqlTop20 = new StringBuilder();
-            sqlTop20.append(" SELECT b.id, count(b.id) AS rec_count ");
+            sqlTop20.append(" SELECT b.iso2709, count(b.id) AS rec_count ");
             sqlTop20.append(" FROM lendings l, biblio_records b, biblio_holdings h ");
             sqlTop20.append(" WHERE l.holding_id = h.id ");
             sqlTop20.append(" AND l.created >= to_date(?, 'DD-MM-YYYY') ");
@@ -484,10 +482,9 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             List<String[]> data = new ArrayList<String[]>();
 
             while (rs.next()) {
-                Integer biblioId = rs.getInt(1);
+                Record record = MarcUtils.iso2709ToRecord(rs.getBytes(1));
                 Integer count = rs.getInt(2);
-                RecordDTO recordDto = biblioRecordBO.get(biblioId);
-                Record record = MarcUtils.iso2709ToRecord(recordDto.getIso2709());
+
                 MarcDataReader dataReader = new MarcDataReader(record);
                 String[] arrayData = new String[3];
                 arrayData[0] = String.valueOf(count); // count
@@ -822,10 +819,5 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             this.closeConnection(con);
         }
         return dto;
-    }
-
-    @Override
-    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-        this.biblioRecordBO = biblioRecordBO;
     }
 }

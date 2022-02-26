@@ -51,6 +51,4 @@ public interface ReportsDAO {
     BibliographyReportDto getBibliographyReportData(String authorName, Integer[] recordIdArray);
 
     ReservationReportDto getReservationReportData();
-
-    void setBiblioRecordBO(BiblioRecordBO biblioRecordBO);
 }
