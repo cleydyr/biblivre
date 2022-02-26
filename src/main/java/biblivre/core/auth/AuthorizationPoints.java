@@ -896,13 +896,17 @@ public class AuthorizationPoints implements Serializable {
     }
 
     public boolean isAllowed(String module, String action) {
+        Pair<String, String> moduleAction = Pair.of(module, action);
+
+        Boolean allowed = this.points.get(moduleAction);
+
+        if (allowed == null) {
+            return false;
+        }
+
         if (admin) {
             return true;
         }
-
-        Pair<String, String> pair = Pair.of(module, action);
-
-        Boolean allowed = this.points.get(pair);
 
         return allowed != null && allowed;
     }

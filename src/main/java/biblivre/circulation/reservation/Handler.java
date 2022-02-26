@@ -252,7 +252,14 @@ public class Handler extends AbstractHandler {
         try {
             int userId = Integer.valueOf(searchDto.getQuery());
             int loggedUser = request.getLoggedUserId();
-            int dbUserId = userBO.getUserByLoginId(loggedUser).getId();
+            UserDTO readerUser = userBO.getUserByLoginId(loggedUser);
+
+            if (readerUser == null) {
+                this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+                return;
+            }
+
+            int dbUserId = readerUser.getId();
 
             if (userId != dbUserId) {
                 this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
