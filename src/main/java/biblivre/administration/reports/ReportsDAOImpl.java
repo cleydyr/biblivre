@@ -31,8 +31,6 @@ import biblivre.administration.reports.dto.RequestsByDateReportDto;
 import biblivre.administration.reports.dto.ReservationReportDto;
 import biblivre.administration.reports.dto.SearchesByDateReportDto;
 import biblivre.administration.reports.dto.SummaryReportDto;
-import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDAO;
