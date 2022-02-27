@@ -306,6 +306,7 @@
 		<property name="biblioRecordBO" ref="biblioRecordBO" />
 		<property name="userTypeBO" ref="userTypeBO" />
 		<property name="lendingFineBO" ref="lendingFineBO" />
+		<property name="reservationBO" ref="reservationBO" />
 	</bean>
 
 	<bean id="lendingBO2" name="lendingBO2"

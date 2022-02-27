@@ -31,8 +31,6 @@ import biblivre.administration.reports.dto.RequestsByDateReportDto;
 import biblivre.administration.reports.dto.ReservationReportDto;
 import biblivre.administration.reports.dto.SearchesByDateReportDto;
 import biblivre.administration.reports.dto.SummaryReportDto;
-import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDAO;
@@ -61,8 +59,6 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
     public static ReportsDAO getInstance() {
         return (ReportsDAO) AbstractDAO.getInstance(ReportsDAOImpl.class);
     }
-
-    private BiblioRecordBO biblioRecordBO;
 
     @Override
     public SummaryReportDto getSummaryReportData(RecordDatabase database) {
@@ -468,7 +464,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             dto.setTotals(totals);
 
             StringBuilder sqlTop20 = new StringBuilder();
-            sqlTop20.append(" SELECT b.id, count(b.id) AS rec_count ");
+            sqlTop20.append(" SELECT b.iso2709, count(b.id) AS rec_count ");
             sqlTop20.append(" FROM lendings l, biblio_records b, biblio_holdings h ");
             sqlTop20.append(" WHERE l.holding_id = h.id ");
             sqlTop20.append(" AND l.created >= to_date(?, 'DD-MM-YYYY') ");
@@ -484,10 +480,9 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             List<String[]> data = new ArrayList<String[]>();
 
             while (rs.next()) {
-                Integer biblioId = rs.getInt(1);
+                Record record = MarcUtils.iso2709ToRecord(rs.getBytes(1));
                 Integer count = rs.getInt(2);
-                RecordDTO recordDto = biblioRecordBO.get(biblioId);
-                Record record = MarcUtils.iso2709ToRecord(recordDto.getIso2709());
+
                 MarcDataReader dataReader = new MarcDataReader(record);
                 String[] arrayData = new String[3];
                 arrayData[0] = String.valueOf(count); // count
@@ -822,10 +817,5 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             this.closeConnection(con);
         }
         return dto;
-    }
-
-    @Override
-    public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
-        this.biblioRecordBO = biblioRecordBO;
     }
 }

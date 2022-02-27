@@ -12,7 +12,6 @@ import biblivre.administration.reports.dto.RequestsByDateReportDto;
 import biblivre.administration.reports.dto.ReservationReportDto;
 import biblivre.administration.reports.dto.SearchesByDateReportDto;
 import biblivre.administration.reports.dto.SummaryReportDto;
-import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,6 +50,4 @@ public interface ReportsDAO {
     BibliographyReportDto getBibliographyReportData(String authorName, Integer[] recordIdArray);
 
     ReservationReportDto getReservationReportData();
-
-    void setBiblioRecordBO(BiblioRecordBO biblioRecordBO);
 }
