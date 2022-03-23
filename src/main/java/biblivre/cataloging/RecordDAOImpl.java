@@ -763,6 +763,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         dto.setModifiedBy(rs.getInt("modified_by"));
         dto.setMaterialType(rs.getString("material"));
         dto.setRecordDatabase(rs.getString("database"));
+        dto.setId(rs.getInt("id"));
 
         return dto;
     }

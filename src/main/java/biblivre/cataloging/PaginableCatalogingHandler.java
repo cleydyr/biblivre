@@ -119,8 +119,6 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         RecordDTO dto = this.createRecordDTO(request);
 
-        dto.setMaterialType(materialType);
-
         Record record = null;
 
         try {
@@ -130,6 +128,10 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             record = marcReader.next();
 
             dto.setRecord(record);
+
+            dto.setId(id);
+
+            dto.setMaterialType(materialType);
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
             return;
