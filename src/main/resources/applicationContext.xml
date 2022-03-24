@@ -259,7 +259,7 @@
 		<property name="searchDAO" ref="searchDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 		<property name="indexingBO" ref="indexingBO" />
-		<property name="lendingBO" ref="lendingBO2" />
+		<property name="lendingDAO" ref="lendingDAO" />
 		<property name="reservationBO" ref="reservationBO" />
 		<property name="authorizationBO" ref="authorizationBO" />
 	</bean>
@@ -307,11 +307,6 @@
 		<property name="userTypeBO" ref="userTypeBO" />
 		<property name="lendingFineBO" ref="lendingFineBO" />
 		<property name="reservationBO" ref="reservationBO" />
-	</bean>
-
-	<bean id="lendingBO2" name="lendingBO2"
-		class="biblivre.circulation.lending.LendingBO2">
-		<property name="lendingDAO" ref="lendingDAO" />
 	</bean>
 
 	<bean id="userTypeBO" name="userTypeBO"
