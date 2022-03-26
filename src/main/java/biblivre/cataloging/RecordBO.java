@@ -58,8 +58,6 @@ public abstract class RecordBO extends AbstractBO {
     public static final int MARC_INFO = 1 << 1;
     public static final int HOLDING_INFO = 1 << 2;
     public static final int HOLDING_LIST = 1 << 3;
-    public static final int LENDING_INFO = 1 << 4;
-    public static final int LENDING_LIST = 1 << 5;
     public static final int ATTACHMENTS_LIST = 1 << 6;
 
     public static final Pattern ID_PATTERN = Pattern.compile("id=(.*?)(&|$)");
@@ -297,8 +295,7 @@ public abstract class RecordBO extends AbstractBO {
                 dto,
                 RecordBO.MARC_INFO
                         | RecordBO.HOLDING_INFO
-                        | RecordBO.HOLDING_LIST
-                        | RecordBO.LENDING_INFO);
+                        | RecordBO.HOLDING_LIST);
         return dto;
     }
 

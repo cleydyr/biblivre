@@ -96,20 +96,6 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
             biblioRecordDTO.setHoldings(holdingsList);
         }
-
-        if ((mask & RecordBO.LENDING_INFO) != 0) {
-            List<HoldingDTO> holdingsList = biblioRecordDTO.getHoldings();
-
-            if (holdingsList == null) {
-                holdingsList = holdingBO.list(recordId);
-                Collections.sort(holdingsList);
-            }
-
-            List<LendingDTO> lendings = new ArrayList<>();
-            for (HoldingDTO holding : holdingsList) {
-                lendings.add(lendingDAO.getCurrentLending(holding));
-            }
-        }
     }
 
     public void populateMarcInfo(RecordDTO recordDTO) {
@@ -182,7 +168,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
     @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.LENDING_INFO);
+        return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
     }
 
     @Override
