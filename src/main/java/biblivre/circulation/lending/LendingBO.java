@@ -58,20 +58,21 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
-public class LendingBO extends LendingBO2 {
+public class LendingBO {
     private UserBO userBO;
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
     private UserTypeBO userTypeBO;
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
+    private LendingDAO lendingDAO;
 
     public LendingDTO get(Integer lendingId) {
         return this.lendingDAO.get(lendingId);
     }
 
     public boolean isLent(HoldingDTO holding) {
-        return this.getCurrentLending(holding) != null;
+        return lendingDAO.getCurrentLending(holding) != null;
     }
 
     public boolean wasEverLent(HoldingDTO holding) {
@@ -788,6 +789,14 @@ public class LendingBO extends LendingBO2 {
 
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
+    }
+
+    public void setLendingDAO(LendingDAO lendingDAO) {
+        this.lendingDAO = lendingDAO;
+    }
+
+    public LendingDTO getCurrentLending(HoldingDTO holding) {
+        return lendingDAO.getCurrentLending(holding);
     }
 
     //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {

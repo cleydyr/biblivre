@@ -25,7 +25,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
-import biblivre.circulation.lending.LendingBO2;
+import biblivre.circulation.lending.LendingDAO;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
 import biblivre.marc.MarcDataReader;
@@ -41,8 +41,8 @@ import org.marc4j.marc.Record;
 public class BiblioRecordBO extends PaginableRecordBO {
 
     private IndexingBO indexingBO;
-    private LendingBO2 lendingBO;
     private ReservationBO reservationBO;
+    private LendingDAO lendingDAO;
 
     @Override
     public void populateDetails(RecordDTO recordDTO, int mask) {
@@ -69,7 +69,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
             int reservedCount = 0;
 
             if (availableHoldings > 0) {
-                lentCount = lendingBO.countLentHoldings(recordId);
+                lentCount = lendingDAO.countLentHoldings(recordId);
                 reservedCount = reservationBO.countReserved(biblioRecordDTO);
             }
 
@@ -95,20 +95,6 @@ public class BiblioRecordBO extends PaginableRecordBO {
             }
 
             biblioRecordDTO.setHoldings(holdingsList);
-        }
-
-        if ((mask & RecordBO.LENDING_INFO) != 0) {
-            List<HoldingDTO> holdingsList = biblioRecordDTO.getHoldings();
-
-            if (holdingsList == null) {
-                holdingsList = holdingBO.list(recordId);
-                Collections.sort(holdingsList);
-            }
-
-            List<LendingDTO> lendings = new ArrayList<>();
-            for (HoldingDTO holding : holdingsList) {
-                lendings.add(lendingBO.getCurrentLending(holding));
-            }
         }
     }
 
@@ -182,7 +168,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
     @Override
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
-        return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.LENDING_INFO);
+        return super.map(ids, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO);
     }
 
     @Override
@@ -194,8 +180,8 @@ public class BiblioRecordBO extends PaginableRecordBO {
         this.indexingBO = indexingBO;
     }
 
-    public void setLendingBO(LendingBO2 lendingBO) {
-        this.lendingBO = lendingBO;
+    public void setLendingDAO(LendingDAO lendingDAO) {
+        this.lendingDAO = lendingDAO;
     }
 
     public void setReservationBO(ReservationBO reservationBO) {
