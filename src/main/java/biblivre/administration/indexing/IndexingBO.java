@@ -319,7 +319,11 @@ public class IndexingBO extends AbstractBO {
     }
 
     private boolean _hasOutdatedIndexCount(RecordBO recordBO) {
-        return this.indexingDAO.countIndexed(recordBO.getRecordType()).equals(recordBO.count());
+        int indexedCount = this.indexingDAO.countIndexed(recordBO.getRecordType());
+
+		int persistedCount = recordBO.count();
+
+		return indexedCount != persistedCount;
     }
 
     private void clearIndexes(RecordType recordType) {
