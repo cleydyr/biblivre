@@ -55,7 +55,7 @@ It will take around 5 minutes, but it depends on the processing power of the com
 The default user is admin and the default password is abracadabra.
 
 #### Modifying and debugging Biblivre
-The `developer` profile will activate the debug flag to allow you to debug Biblivre remotely. It will also execute the tests automatically (which requires Docker to be installed and running in your machine). If you'd like to skip the tests, you can add the `-DskipTests` option to the `mvn` command (like in `mvn clean package -P developer -DskipTests`). The `docker-compose` profile already maps the port 8000 to the host and adds the debug options to the Tomcat server that runs in the container.
+The `developer` profile will activate the debug flag to allow you to debug Biblivre remotely. It will also execute the tests automatically (which requires Docker to be installed and running in your machine). If you'd like to skip the tests, you can add the `-Dmaven.test.skip=true` option to the `mvn` command (like in `mvn clean package -P developer -Dmaven.test.skip=true`). The `docker-compose` profile already maps the port 8000 to the host and adds the debug options to the Tomcat server that runs in the container.
 
 #### Configurations
 
