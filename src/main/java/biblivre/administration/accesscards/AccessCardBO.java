@@ -20,120 +20,136 @@
 package biblivre.administration.accesscards;
 
 import biblivre.core.AbstractDTO;
-import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
+import biblivre.legacy.entity.AccessCard;
+import biblivre.legacy.repository.AccessCardRepository;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AccessCardBO {
-    private AccessCardDAO accessCardDAO;
+    @Autowired private AccessCardRepository accessCardRepository;
 
-    public boolean save(AccessCardDTO dto) {
-        if (dto != null) {
-            AccessCardDTO existingCard = this.accessCardDAO.get(dto.getCode());
+    public boolean save(AccessCard accessCard) {
+        if (accessCard != null) {
+            AccessCardDTO existingCard = accessCardRepository.getByCode(accessCard.getCode());
+
             if (existingCard != null) {
                 throw new ValidationException("administration.accesscards.error.existing_card");
             }
-            return this.accessCardDAO.save(dto);
+
+            accessCardRepository.save(accessCard);
+
+            return true;
         }
 
         return false;
     }
 
-    public DTOCollection<AccessCardDTO> search(
-            String code, AccessCardStatus status, int limit, int offset) {
-        return this.accessCardDAO.search(code, status, limit, offset);
+    public Page<AccessCard> search(String code, AccessCardStatus status, int limit, int offset) {
+        int page = offset / limit;
+
+        if (code == null) {
+            if (status == null) {
+                return accessCardRepository.findAll(PageRequest.of(page, limit));
+            } else {
+                return accessCardRepository.findByCodeContaining(code, PageRequest.of(page, limit));
+            }
+        }
+
+        return null;
     }
 
-    public AccessCardDTO get(int id) {
-        return this.accessCardDAO.get(id);
+    public Optional<AccessCard> get(int id) {
+        return accessCardRepository.findById(id);
     }
 
     public AccessCardDTO get(String code) {
-        return this.accessCardDAO.get(code);
+        return accessCardRepository.getByCode(code);
     }
 
-    public List<AccessCardDTO> saveCardList(
+    public Collection<AccessCard> saveCardList(
             String prefix,
             String suffix,
             String startString,
             String endString,
             Integer loggedUserId,
             AccessCardStatus status) {
+
         int start = Integer.parseInt(startString);
+
         int end = Integer.parseInt(endString);
 
-        ArrayList<String> codeList = new ArrayList<>();
+        Collection<String> codeList = new ArrayList<>();
+
         int pad = startString.length();
+
         for (int i = start; i <= end; i++) {
             String number = StringUtils.leftPad(String.valueOf(i), pad, "0");
+
             codeList.add(prefix + number + suffix);
         }
 
         // Validate existing cards
-        List<AccessCardDTO> existingCards = this.accessCardDAO.get(codeList, null);
-        List<String> existingCodes = new ArrayList<>();
-        for (AccessCardDTO card : existingCards) {
-            existingCodes.add(card.getCode());
-        }
+        Collection<AccessCard> existingCards =
+                accessCardRepository.findByCodesInAndStatusIn(codeList, null);
+
+        Collection<String> existingCodes = existingCards.stream().map(AccessCard::getCode).toList();
+
         if (existingCodes.size() > 0) {
             ValidationException ve =
                     new ValidationException("administration.accesscards.error.existing_cards");
+
             ve.addError("existing_cards", StringUtils.join(existingCodes, ", "));
+
             throw ve;
         }
 
-        ArrayList<AccessCardDTO> cardList = new ArrayList<>();
-        for (String code : codeList) {
-            AccessCardDTO dto = new AccessCardDTO();
-            dto.setCode(code);
-            dto.setStatus(status);
-            dto.setCreatedBy(loggedUserId);
-            cardList.add(dto);
-        }
+        Collection<AccessCard> cardList =
+                codeList.stream()
+                        .map(
+                                code -> {
+                                    AccessCard accessCard = new AccessCard();
 
-        if (this.accessCardDAO.save(cardList)) {
-            return cardList;
-        } else {
-            return null;
-        }
+                                    accessCard.setCode(code);
+                                    accessCard.setAcessCardStatus(status);
+                                    accessCard.setCreatedBy(loggedUserId);
+
+                                    return accessCard;
+                                })
+                        .toList();
+
+        accessCardRepository.saveAll(cardList);
+
+        return cardList;
     }
 
-    public boolean removeCard(AccessCardDTO dto) {
-        if (dto != null) {
-            AccessCardDTO card = this.get(dto.getId());
-            if (card == null) {
-                throw new ValidationException("administration.accesscards.error.card_not_found");
-            }
+    public boolean removeCard(int id) {
+        AccessCard card = accessCardRepository.getById(id);
 
-            if (card.getStatus() == AccessCardStatus.CANCELLED) {
-                return this.delete(card.getId());
-            }
-
-            dto.setStatus(AccessCardStatus.CANCELLED);
-            return this.update(dto);
+        if (card == null) {
+            throw new ValidationException("administration.accesscards.error.card_not_found");
         }
-        return false;
-    }
 
-    public boolean update(AccessCardDTO dto) {
-        return this.accessCardDAO.update(dto);
-    }
+        if (card.getAccessCardStatus() == AccessCardStatus.CANCELLED) {
+            accessCardRepository.delete(card);
+        }
 
-    public boolean delete(int id) {
-        return this.accessCardDAO.delete(id);
+        card.setAcessCardStatus(AccessCardStatus.CANCELLED);
+
+        accessCardRepository.save(card);
+
+        return true;
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.accessCardDAO.saveFromBiblivre3(dtoList);
-    }
-
-    @Autowired
-    public void setAccessCardDAO(AccessCardDAO accessCardDAO) {
-        this.accessCardDAO = accessCardDAO;
+        return false;
     }
 }

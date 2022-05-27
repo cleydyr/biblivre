@@ -20,7 +20,6 @@
 package biblivre.circulation.accesscontrol;
 
 import biblivre.administration.accesscards.AccessCardBO;
-import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -67,7 +66,7 @@ public class Handler extends AbstractHandler {
             dto.setUser(user);
 
             if (dto.getAccessCardId() != null) {
-                dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()));
+                dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()).get());
             }
 
             list.add(dto);
@@ -85,49 +84,52 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
-
-        biblivre.administration.accesscards.Handler cardHandler =
-                applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
-
-        DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
-
-        if (cardList == null) {
-            return;
-        }
-
-        DTOCollection<AccessControlDTO> list = new DTOCollection<>();
-        list.setPaging(cardList.getPaging());
-
-        for (AccessCardDTO card : cardList) {
-            AccessControlDTO dto = accessControlBO.getByCardId(card.getId());
-            if (dto == null) {
-                dto = new AccessControlDTO();
-                dto.setAccessCardId(card.getId());
-            }
-
-            dto.setId(card.getId());
-            dto.setAccessCard(card);
-
-            if (dto.getUserId() != null) {
-                dto.setUser(userBO.get(dto.getUserId()));
-            }
-
-            list.add(dto);
-        }
-
-        if (list.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
-            return;
-        }
-
-        try {
-            this.json.put("search", list.toJSONObject());
-        } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        }
-    }
+    //    public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
+    //        WebApplicationContext applicationContext =
+    // SpringUtils.getWebApplicationContext(request);
+    //
+    //        biblivre.administration.accesscards.Handler cardHandler =
+    //                applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
+    //
+    //        DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response,
+    // this);
+    //
+    //        if (cardList == null) {
+    //            return;
+    //        }
+    //
+    //        DTOCollection<AccessControlDTO> list = new DTOCollection<>();
+    //        list.setPaging(cardList.getPaging());
+    //
+    //        for (AccessCardDTO card : cardList) {
+    //            AccessControlDTO dto = accessControlBO.getByCardId(card.getId());
+    //            if (dto == null) {
+    //                dto = new AccessControlDTO();
+    //                dto.setAccessCardId(card.getId());
+    //            }
+    //
+    //            dto.setId(card.getId());
+    //            dto.setAccessCard(card);
+    //
+    //            if (dto.getUserId() != null) {
+    //                dto.setUser(userBO.get(dto.getUserId()));
+    //            }
+    //
+    //            list.add(dto);
+    //        }
+    //
+    //        if (list.size() == 0) {
+    //            this.setMessage(ActionResult.WARNING,
+    // "administration.accesscards.error.no_card_found");
+    //            return;
+    //        }
+    //
+    //        try {
+    //            this.json.put("search", list.toJSONObject());
+    //        } catch (JSONException e) {
+    //            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+    //        }
+    //    }
 
     public void bind(ExtendedRequest request, ExtendedResponse response) {
         Integer cardId = request.getInteger("card_id");

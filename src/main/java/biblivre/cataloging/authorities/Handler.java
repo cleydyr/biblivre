@@ -40,8 +40,11 @@ import org.springframework.stereotype.Component;
 public class Handler extends PaginableCatalogingHandler {
     private ReportsBO reportsBO;
 
-    public Handler() {
-        setDefaultMaterialType(MaterialType.AUTHORITIES);
+    @Autowired
+    public Handler(AuthorityRecordBO recordBO, ReportsBO reportsBO) {
+        super(recordBO, MaterialType.BOOK);
+
+        this.reportsBO = reportsBO;
     }
 
     @Override
@@ -97,11 +100,6 @@ public class Handler extends PaginableCatalogingHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    @Autowired
-    public void setReportsBO(ReportsBO reportsBO) {
-        this.reportsBO = reportsBO;
     }
 
     //	@Override

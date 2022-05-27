@@ -14,6 +14,7 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.utils.Constants;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class PaginableRecordBO extends RecordBO {
     protected HoldingBO holdingBO;
@@ -121,7 +122,8 @@ public abstract class PaginableRecordBO extends RecordBO {
         return paging;
     }
 
-    public void setHoldingBO(HoldingBO holdingBO) {
+    @Autowired
+    public final void setHoldingBO(HoldingBO holdingBO) {
         this.holdingBO = holdingBO;
     }
 }

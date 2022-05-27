@@ -256,12 +256,10 @@ public abstract class RecordBO extends AbstractBO {
             if (matcher.find()) {
                 String encodedId = matcher.group(1);
                 String fileId = "";
-                String fileName = "";
                 String decodedId = new String(Base64.getDecoder().decode(encodedId));
                 String[] splitId = decodedId.split(":");
                 if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
                     fileId = splitId[0];
-                    fileName = splitId[1];
                 }
 
                 // Try to remove the file from Biblivre DB

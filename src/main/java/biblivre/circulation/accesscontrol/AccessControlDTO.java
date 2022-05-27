@@ -19,9 +19,9 @@
  ******************************************************************************/
 package biblivre.circulation.accesscontrol;
 
-import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
+import biblivre.legacy.entity.AccessCard;
 import java.util.Date;
 
 public class AccessControlDTO extends AbstractDTO {
@@ -34,7 +34,7 @@ public class AccessControlDTO extends AbstractDTO {
     private Date departureTime;
 
     private transient UserDTO user;
-    private transient AccessCardDTO accessCard;
+    private transient AccessCard accessCard;
 
     public Integer getId() {
         return this.id;
@@ -84,11 +84,11 @@ public class AccessControlDTO extends AbstractDTO {
         this.user = user;
     }
 
-    public AccessCardDTO getAccessCard() {
+    public AccessCard getAccessCard() {
         return this.accessCard;
     }
 
-    public void setAccessCard(AccessCardDTO accessCard) {
+    public void setAccessCard(AccessCard accessCard) {
         this.accessCard = accessCard;
     }
 }
