@@ -86,8 +86,8 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
     }
     ;
 
-    public static DataMigrationDAO getInstance() {
-        DataMigrationDAO dataMigrationDAO = AbstractDAO.getInstance(DataMigrationDAOImpl.class);
+    public static DataMigrationDAOImpl getInstance() {
+        DataMigrationDAOImpl dataMigrationDAO = AbstractDAO.getInstance(DataMigrationDAOImpl.class);
 
         return dataMigrationDAO;
     }

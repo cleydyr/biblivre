@@ -23,4 +23,6 @@ public interface UserDAO {
     boolean updateUserStatus(Integer userId, UserStatus status);
 
     Integer getUserIdByLoginId(Integer loginId);
+
+    UserDTO get(int userId);
 }

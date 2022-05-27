@@ -26,7 +26,7 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.search.SearchDTO;
-import biblivre.circulation.user.UserBO;
+import biblivre.circulation.user.UserDAO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractBO;
@@ -48,7 +48,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReservationBO extends AbstractBO {
     private ReservationDAO reservationDAO;
-    private UserBO userBO;
+    private UserDAO userDAO;
     private BiblioRecordBO biblioRecordBO;
     private UserTypeBO userTypeBO;
 
@@ -130,7 +130,7 @@ public class ReservationBO extends AbstractBO {
             dto.setAuthor(record.getAuthor());
             info.setReservation(dto);
 
-            UserDTO user = userBO.get(dto.getUserId());
+            UserDTO user = userDAO.get(dto.getUserId());
             info.setUser(user);
         }
 
@@ -209,7 +209,7 @@ public class ReservationBO extends AbstractBO {
 
         Map<Integer, UserDTO> usersMap = new HashMap<>();
         if (!users.isEmpty()) {
-            usersMap = userBO.map(users);
+            usersMap = userDAO.map(users);
         }
 
         // Join data
@@ -251,8 +251,8 @@ public class ReservationBO extends AbstractBO {
     }
 
     @Autowired
-    public void setUserBO(UserBO userBO) {
-        this.userBO = userBO;
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     @Autowired

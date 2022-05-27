@@ -1,6 +1,7 @@
 package biblivre.circulation.reservation;
 
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 import java.util.List;
@@ -30,4 +31,6 @@ public interface ReservationDAO {
     boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds);
+
+    int countByRecord(BiblioRecordDTO biblioRecordDTO);
 }

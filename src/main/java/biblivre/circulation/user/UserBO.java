@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.circulation.user;
 
-import biblivre.administration.usertype.UserTypeBO;
+import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +57,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserBO extends AbstractBO {
     private UserDAO userDAO;
-    private UserTypeBO userTypeBO;
+    private UserTypeDAO userTypeDAO;
 
     public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
         DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
 
-        Map<Integer, UserTypeDTO> map = userTypeBO.map();
+        Map<Integer, UserTypeDTO> map = map();
 
         for (UserDTO udto : list) {
             UserTypeDTO utdto = map.get(udto.getType());
@@ -84,7 +85,7 @@ public class UserBO extends AbstractBO {
     public Map<Integer, UserDTO> map(Set<Integer> ids) {
         Map<Integer, UserDTO> map = this.userDAO.map(ids);
 
-        Map<Integer, UserTypeDTO> typeMap = userTypeBO.map();
+        Map<Integer, UserTypeDTO> typeMap = map();
 
         for (UserDTO user : map.values()) {
             user.setUsertypeName(typeMap.get(user.getType()).getName());
@@ -166,7 +167,7 @@ public class UserBO extends AbstractBO {
                                         + ": "
                                         + user.getEnrollment()
                                         + "\n");
-                UserTypeDTO usdto = userTypeBO.get(user.getType());
+                UserTypeDTO usdto = userTypeDAO.get(user.getType());
                 Phrase p4 =
                         new Phrase(
                                 this.getText(i18n, "circulation.user_field.short_type")
@@ -233,6 +234,18 @@ public class UserBO extends AbstractBO {
         return this.userDAO.saveFromBiblivre3(dtoList);
     }
 
+    public Map<Integer, UserTypeDTO> map() {
+        List<UserTypeDTO> list = userTypeDAO.list();
+
+        Map<Integer, UserTypeDTO> map = new TreeMap<>();
+
+        for (UserTypeDTO dto : list) {
+            map.put(dto.getId(), dto);
+        }
+
+        return map;
+    }
+
     protected static final Logger logger = LoggerFactory.getLogger(UserBO.class);
 
     @Autowired
@@ -241,7 +254,7 @@ public class UserBO extends AbstractBO {
     }
 
     @Autowired
-    public void setUserTypeBO(UserTypeBO userTypeBO) {
-        this.userTypeBO = userTypeBO;
+    public void setUserTypeDAO(UserTypeDAO userTypeDAO) {
+        this.userTypeDAO = userTypeDAO;
     }
 }

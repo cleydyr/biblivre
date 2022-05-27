@@ -560,4 +560,9 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
         return null;
     }
+
+    @Override
+    public UserDTO get(int userId) {
+        return map(Set.of(userId)).get(userId);
+    }
 }

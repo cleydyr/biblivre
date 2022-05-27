@@ -39,7 +39,6 @@ import biblivre.administration.permissions.PermissionDAO;
 import biblivre.administration.permissions.PermissionDAOImpl;
 import biblivre.administration.reports.ReportsDAO;
 import biblivre.administration.reports.ReportsDAOImpl;
-import biblivre.administration.setup.DataMigrationDAO;
 import biblivre.administration.setup.DataMigrationDAOImpl;
 import biblivre.administration.setup.SetupDAO;
 import biblivre.administration.setup.SetupDAOImpl;
@@ -69,6 +68,8 @@ import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
 import biblivre.login.LoginDAO;
 import biblivre.login.LoginDAOImpl;
+import biblivre.z3950.Z3950DAO;
+import biblivre.z3950.Z3950DAOImpl;
 import biblivre.z3950.server.Z3950ServerBO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,7 +136,7 @@ public class BiblivreInitializer extends SpringBootServletInitializer {
     }
 
     @Bean
-    public DataMigrationDAO dataMigrationDAO() {
+    public DataMigrationDAOImpl dataMigrationDAOImpl() {
         return DataMigrationDAOImpl.getInstance();
     }
 
@@ -232,5 +233,10 @@ public class BiblivreInitializer extends SpringBootServletInitializer {
     @Bean
     public UserTypeDAO userTypeDAO() {
         return UserTypeDAOImpl.getInstance();
+    }
+
+    @Bean
+    public Z3950DAO z3950DAO() {
+        return Z3950DAOImpl.getInstance();
     }
 }

@@ -106,7 +106,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
     }
 
     @Autowired
-    public void setIndexingBO(IndexingDAO indexingDAO) {
+    public void setIndexingDAO(IndexingDAO indexingDAO) {
         this.indexingDAO = indexingDAO;
     }
 }

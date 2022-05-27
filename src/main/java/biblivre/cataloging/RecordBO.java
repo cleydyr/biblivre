@@ -364,7 +364,7 @@ public abstract class RecordBO extends AbstractBO {
     }
 
     @Autowired
-    public final void setDigitalMediaBO(DigitalMediaDAO digitalMediaDAO) {
+    public final void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
         this.digitalMediaDAO = digitalMediaDAO;
     }
 }

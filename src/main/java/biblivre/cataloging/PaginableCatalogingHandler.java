@@ -44,6 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected PaginableRecordBO paginableRecordBO;
@@ -301,6 +302,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         this.json.put("data", list.toJSONObject());
     }
 
+    @Autowired
     public void setPaginableRecordBO(PaginableRecordBO paginableRecordBO) {
         this.paginableRecordBO = paginableRecordBO;
         super.setRecordBO(paginableRecordBO);

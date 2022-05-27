@@ -26,7 +26,7 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.lending.LendingDAO;
-import biblivre.circulation.reservation.ReservationBO;
+import biblivre.circulation.reservation.ReservationDAO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.Collections;
@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 public class BiblioRecordBO extends PaginableRecordBO {
 
     private IndexingDAO indexingDAO;
-    private ReservationBO reservationBO;
+    private ReservationDAO reservationDAO;
     private LendingDAO lendingDAO;
 
     @Override
@@ -71,7 +71,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
             if (availableHoldings > 0) {
                 lentCount = lendingDAO.countLentHoldings(recordId);
-                reservedCount = reservationBO.countReserved(biblioRecordDTO);
+                reservedCount = reservationDAO.countByRecord(biblioRecordDTO);
             }
 
             biblioRecordDTO.setHoldingsCount(totalHoldings);
@@ -178,7 +178,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
     }
 
     @Autowired
-    public void setIndexingBO(IndexingDAO indexingDAO) {
+    public void setIndexingDAO(IndexingDAO indexingDAO) {
         this.indexingDAO = indexingDAO;
     }
 
@@ -188,8 +188,8 @@ public class BiblioRecordBO extends PaginableRecordBO {
     }
 
     @Autowired
-    public void setReservationBO(ReservationBO reservationBO) {
-        this.reservationBO = reservationBO;
+    public void setReservationDAO(ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
     }
 
     public List<RecordDTO> list(int offset, int limit, RecordDatabase database) {

@@ -27,8 +27,6 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,15 +41,6 @@ public class UserTypeBO extends AbstractBO {
 
     public List<UserTypeDTO> list() {
         return this.userTypeDAO.list();
-    }
-
-    public Map<Integer, UserTypeDTO> map() {
-        List<UserTypeDTO> list = this.userTypeDAO.list();
-        Map<Integer, UserTypeDTO> map = new TreeMap<>();
-        for (UserTypeDTO dto : list) {
-            map.put(dto.getId(), dto);
-        }
-        return map;
     }
 
     public DTOCollection<UserTypeDTO> search(String value, int limit, int offset) {

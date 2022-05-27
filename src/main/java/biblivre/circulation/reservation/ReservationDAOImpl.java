@@ -21,6 +21,7 @@ package biblivre.circulation.reservation;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
@@ -355,5 +356,10 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         }
 
         return map;
+    }
+
+    @Override
+    public int countByRecord(BiblioRecordDTO biblioRecordDTO) {
+        return count(null, biblioRecordDTO);
     }
 }

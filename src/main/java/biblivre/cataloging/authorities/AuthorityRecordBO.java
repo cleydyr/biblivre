@@ -92,7 +92,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
     }
 
     @Autowired
-    public void setIndexingBO(IndexingDAO indexingBO) {
+    public void setIndexingDAO(IndexingDAO indexingBO) {
         this.indexingDAO = indexingBO;
     }
 }
