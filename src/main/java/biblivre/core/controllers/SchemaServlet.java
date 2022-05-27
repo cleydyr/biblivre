@@ -73,19 +73,6 @@ public final class SchemaServlet extends HttpServlet {
             BiblivreInitializer.initialize();
             ExtendedRequest xRequest = ((ExtendedRequest) request);
 
-            if (xRequest.mustRedirectToSchema()) {
-                String query = xRequest.getQueryString();
-
-                if (StringUtils.isNotBlank(query)) {
-                    query = "?" + query;
-                } else {
-                    query = "";
-                }
-
-                ((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
-                return;
-            }
-
             String controller = xRequest.getController();
 
             if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
