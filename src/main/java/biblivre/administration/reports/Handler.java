@@ -31,8 +31,11 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.spring.SpringUtils;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+@Component("biblivre.administration.reports.Handler")
 public class Handler extends AbstractHandler {
     private ReportsBO reportsBO;
 
@@ -125,6 +128,7 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
+    @Autowired
     public void setReportsBO(ReportsBO reportsBO) {
         this.reportsBO = reportsBO;
     }

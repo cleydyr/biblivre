@@ -19,11 +19,11 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
+import biblivre.BiblivreInitializer;
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
-import biblivre.core.BiblivreInitializer;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.FreemarkerTemplateHelper;

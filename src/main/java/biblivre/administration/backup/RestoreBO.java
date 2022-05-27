@@ -55,7 +55,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RestoreBO extends AbstractBO {
     private static final String _DROP_SCHEMA_TPL = "DROP SCHEMA \"%s\" CASCADE;";
     private static final String _DELETE_DIGITALMDIA_TPL = "DELETE FROM \"%s\".digital_media;";
@@ -204,10 +207,12 @@ public class RestoreBO extends AbstractBO {
         bw.flush();
     }
 
+    @Autowired
     public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
         this.digitalMediaDAO = digitalMediaDAO;
     }
 
+    @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
     }

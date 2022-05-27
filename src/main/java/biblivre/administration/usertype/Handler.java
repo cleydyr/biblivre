@@ -28,7 +28,10 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.usertype.Handler")
 public class Handler extends AbstractHandler {
     private UserTypeBO userTypeBO;
 
@@ -127,6 +130,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }

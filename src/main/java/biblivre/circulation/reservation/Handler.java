@@ -41,8 +41,11 @@ import biblivre.spring.SpringUtils;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+@Component("biblivre.circulation.reservation.Handler")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
@@ -317,14 +320,17 @@ public class Handler extends AbstractHandler {
         this.delete(request, response);
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
     }

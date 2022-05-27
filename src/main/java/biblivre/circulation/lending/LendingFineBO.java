@@ -32,7 +32,10 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.utils.CalendarUtils;
 import java.util.Date;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LendingFineBO extends AbstractBO {
     private LendingFineDAO lendingFineDAO;
     private HoldingBO holdingBO;
@@ -114,22 +117,27 @@ public class LendingFineBO extends AbstractBO {
         return this.lendingFineDAO.saveFromBiblivre3(dtoList);
     }
 
+    @Autowired
     public void setLendingFineDAO(LendingFineDAO lendingFineDAO) {
         this.lendingFineDAO = lendingFineDAO;
     }
 
+    @Autowired
     public void setHoldingBO(HoldingBO holdingBO) {
         this.holdingBO = holdingBO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setLendingBO(LendingBO lendingBO) {
         this.lendingBO = lendingBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }

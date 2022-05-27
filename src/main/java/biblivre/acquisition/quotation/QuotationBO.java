@@ -27,20 +27,26 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class QuotationBO extends AbstractBO {
     private QuotationDAO quotationDAO;
     private SupplierBO supplierBO;
     private RequestBO requestBO;
 
+    @Autowired
     public void setQuotationDAO(QuotationDAO quotationDAO) {
         this.quotationDAO = quotationDAO;
     }
 
+    @Autowired
     public void setSupplierBO(SupplierBO supplierBO) {
         this.supplierBO = supplierBO;
     }
 
+    @Autowired
     public void setRequestBO(RequestBO requestBO) {
         this.requestBO = requestBO;
     }

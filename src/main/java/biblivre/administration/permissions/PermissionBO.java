@@ -21,7 +21,10 @@ package biblivre.administration.permissions;
 
 import biblivre.circulation.user.UserDTO;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PermissionBO {
     private PermissionDAO permissionDAO;
 
@@ -42,6 +45,7 @@ public class PermissionBO {
         return this.permissionDAO.getByLoginId(loginid);
     }
 
+    @Autowired
     public void setPermissionDAO(PermissionDAO permissionDAO) {
         this.permissionDAO = permissionDAO;
     }

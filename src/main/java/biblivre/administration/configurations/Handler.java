@@ -31,7 +31,9 @@ import biblivre.core.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.configurations.Handler")
 public class Handler extends AbstractHandler {
 
     public void save(ExtendedRequest request, ExtendedResponse response) {

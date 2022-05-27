@@ -34,8 +34,11 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+@Component("biblivre.administration.permissions.Handler")
 public class Handler extends AbstractHandler {
     private PermissionBO permissionBO;
     private LoginBO loginBO;
@@ -226,14 +229,17 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
+    @Autowired
     public void setPermissionBO(PermissionBO permissionBO) {
         this.permissionBO = permissionBO;
     }
 
+    @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }

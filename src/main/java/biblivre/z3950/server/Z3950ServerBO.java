@@ -13,7 +13,9 @@ import org.jzkit.configuration.provider.xml.XMLImpl;
 import org.jzkit.z3950.server.Z3950Listener;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Z3950ServerBO {
     private static ApplicationContext _context;
     private static Z3950LocalServer server;

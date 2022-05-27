@@ -24,7 +24,10 @@ import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import java.io.File;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DigitalMediaBO extends AbstractBO {
     protected DigitalMediaDAO digitalMediaDAO;
 
@@ -36,7 +39,7 @@ public class DigitalMediaBO extends AbstractBO {
         return this.digitalMediaDAO.load(id, name);
     }
 
-    public boolean delete(Integer fileId, String fileName) {
+    public boolean delete(Integer fileId) {
         return this.digitalMediaDAO.delete(fileId);
     }
 
@@ -48,6 +51,7 @@ public class DigitalMediaBO extends AbstractBO {
         return this.digitalMediaDAO.importFile(file);
     }
 
+    @Autowired
     public void setDigitalMediaDAO(DigitalMediaDAO digitalMediaDAO) {
         this.digitalMediaDAO = digitalMediaDAO;
     }

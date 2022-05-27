@@ -25,7 +25,10 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.TextUtils;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoginBO extends AbstractBO {
     private LoginDAO loginDAO;
     private PermissionBO permissionBO;
@@ -65,10 +68,12 @@ public class LoginBO extends AbstractBO {
         return this.loginDAO.saveFromBiblivre3(dtoList);
     }
 
+    @Autowired
     public void setLoginDAO(LoginDAO loginDAO) {
         this.loginDAO = loginDAO;
     }
 
+    @Autowired
     public void setPermissionBO(PermissionBO permissionBO) {
         this.permissionBO = permissionBO;
     }

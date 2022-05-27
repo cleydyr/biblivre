@@ -34,9 +34,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Z3950BO extends AbstractBO {
 
     private static ApplicationContext context;
@@ -135,6 +138,7 @@ public class Z3950BO extends AbstractBO {
         Z3950BO.context = context;
     }
 
+    @Autowired
     public void setZ3950DAO(Z3950DAO z3950dao) {
         z3950DAO = z3950dao;
     }

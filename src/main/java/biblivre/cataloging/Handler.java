@@ -51,7 +51,10 @@ import org.json.JSONException;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.cataloging.Handler")
 public class Handler extends AbstractHandler {
     private Map<String, RecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
@@ -301,18 +304,22 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setRecordBOs(Map<String, RecordBO> recordBOs) {
         this.recordBOs = recordBOs;
     }
 
+    @Autowired
     public void setIndexingBO(IndexingBO indexingBO) {
         this.indexingBO = indexingBO;
     }
 
+    @Autowired
     public void setImportBO(ImportBO importBO) {
         this.importBO = importBO;
     }
 
+    @Autowired
     public void setZ3950BO(Z3950BO z3950bo) {
         z3950BO = z3950bo;
     }

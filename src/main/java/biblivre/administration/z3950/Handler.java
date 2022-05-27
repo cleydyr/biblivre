@@ -30,7 +30,10 @@ import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.z3950.Handler")
 public class Handler extends AbstractHandler {
     private Z3950BO z3950BO;
 
@@ -113,6 +116,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setZ3950BO(Z3950BO z3950bo) {
         z3950BO = z3950bo;
     }

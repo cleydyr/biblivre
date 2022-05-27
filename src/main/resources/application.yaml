@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    #url: jdbc:h2:mem:testdb
+    url: jdbc:postgresql://database:5432/postgres
+    platform: postgres
+    username: biblivre
+    password: abracadabra
+  #h2:
+    #console:
+      #enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          datasource:
+            init:
+              ScriptUtils: debug

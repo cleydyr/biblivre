@@ -41,7 +41,10 @@ import java.util.Base64;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.circulation.user.Handler")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private LendingBO lendingBO;
@@ -165,7 +168,7 @@ public class Handler extends AbstractHandler {
                         if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
                             // Try to remove the file from Biblivre DB
 
-                            digitalMediaBO.delete(Integer.valueOf(splitId[0]), splitId[1]);
+                            digitalMediaBO.delete(Integer.valueOf(splitId[0]));
                         }
                     }
                 }
@@ -277,22 +280,27 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setLendingBO(LendingBO lendingBO) {
         this.lendingBO = lendingBO;
     }
 
+    @Autowired
     public void setLendingFineBO(LendingFineBO lendingFineBO) {
         this.lendingFineBO = lendingFineBO;
     }
 
+    @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
     }
 
+    @Autowired
     public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
         this.digitalMediaBO = digitalMediaBO;
     }

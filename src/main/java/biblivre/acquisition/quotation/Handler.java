@@ -32,10 +32,14 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.acquisition.quotation.Handler")
 public class Handler extends AbstractHandler {
     private QuotationBO quotationBO;
 
+    @Autowired
     public void setQuotationBO(QuotationBO quotationBO) {
         this.quotationBO = quotationBO;
     }

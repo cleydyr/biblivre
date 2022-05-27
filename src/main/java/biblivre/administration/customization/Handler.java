@@ -36,7 +36,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.customization.Handler")
 public class Handler extends AbstractHandler {
 
     public void saveBriefFormats(ExtendedRequest request, ExtendedResponse response) {

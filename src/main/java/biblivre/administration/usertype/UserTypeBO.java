@@ -29,7 +29,10 @@ import biblivre.core.exceptions.ValidationException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserTypeBO extends AbstractBO {
     private UserTypeDAO userTypeDAO;
     private UserBO userBO;
@@ -78,10 +81,12 @@ public class UserTypeBO extends AbstractBO {
         return this.userTypeDAO.saveFromBiblivre3(dtoList);
     }
 
+    @Autowired
     public void setUserTypeDAO(UserTypeDAO userTypeDAO) {
         this.userTypeDAO = userTypeDAO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }

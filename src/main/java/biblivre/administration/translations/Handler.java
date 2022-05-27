@@ -37,7 +37,9 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.translations.Handler")
 public class Handler extends AbstractHandler {
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {

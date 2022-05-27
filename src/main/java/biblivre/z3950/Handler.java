@@ -39,7 +39,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.z3950.Handler")
 public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private Z3950BO z3950BO;
@@ -191,10 +194,12 @@ public class Handler extends AbstractHandler {
         return collection;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setZ3950BO(Z3950BO z3950bo) {
         z3950BO = z3950bo;
     }

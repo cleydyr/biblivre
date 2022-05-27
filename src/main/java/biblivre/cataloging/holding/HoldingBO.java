@@ -71,7 +71,10 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HoldingBO extends RecordBO {
     private HoldingDAO holdingDAO;
     private UserBO userBO;
@@ -510,14 +513,17 @@ public class HoldingBO extends RecordBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(HoldingBO.class);
 
+    @Autowired
     public void setHoldingDAO(HoldingDAO holdingDAO) {
         this.holdingDAO = holdingDAO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
     }

@@ -31,8 +31,11 @@ import biblivre.core.enums.ActionResult;
 import biblivre.spring.SpringUtils;
 import java.util.Date;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+@Component("biblivre.circulation.accesscontrol.Handler")
 public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
@@ -179,14 +182,17 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setAccessCardBO(AccessCardBO accessCardBO) {
         this.accessCardBO = accessCardBO;
     }
 
+    @Autowired
     public void setAccessControlBO(AccessControlBO accessControlBO) {
         this.accessControlBO = accessControlBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }

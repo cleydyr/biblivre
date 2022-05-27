@@ -19,28 +19,29 @@
  ******************************************************************************/
 package biblivre.cataloging.bibliographic;
 
-import biblivre.administration.indexing.IndexingBO;
+import biblivre.administration.indexing.IndexingDAO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.lending.LendingDAO;
-import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.reservation.ReservationBO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BiblioRecordBO extends PaginableRecordBO {
 
-    private IndexingBO indexingBO;
+    private IndexingDAO indexingDAO;
     private ReservationBO reservationBO;
     private LendingDAO lendingDAO;
 
@@ -127,7 +128,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            indexingBO.reindex(RecordType.BIBLIO, dto);
+            indexingDAO.reindex(dto);
             return true;
         }
 
@@ -139,7 +140,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            indexingBO.reindex(RecordType.BIBLIO, dto);
+            indexingDAO.reindex(dto);
             return true;
         }
 
@@ -159,7 +160,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
         //		}
 
         if (this.recordDAO.delete(dto)) {
-            indexingBO.deleteIndexes(RecordType.BIBLIO, dto);
+            indexingDAO.deleteIndexes(RecordType.BIBLIO, dto);
             //			HoldingBO hbo = new HoldingBO();
             //			hbo.delete(dto);
         }
@@ -176,14 +177,17 @@ public class BiblioRecordBO extends PaginableRecordBO {
         return RecordType.BIBLIO;
     }
 
-    public void setIndexingBO(IndexingBO indexingBO) {
-        this.indexingBO = indexingBO;
+    @Autowired
+    public void setIndexingBO(IndexingDAO indexingDAO) {
+        this.indexingDAO = indexingDAO;
     }
 
+    @Autowired
     public void setLendingDAO(LendingDAO lendingDAO) {
         this.lendingDAO = lendingDAO;
     }
 
+    @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
     }

@@ -19,9 +19,9 @@
  ******************************************************************************/
 package biblivre.core.schemas;
 
+import biblivre.BiblivreInitializer;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
-import biblivre.core.BiblivreInitializer;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.Updates;
@@ -44,7 +44,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Schemas extends StaticBO {
 
     protected static Logger logger = LoggerFactory.getLogger(Schemas.class);

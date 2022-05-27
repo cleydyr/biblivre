@@ -31,7 +31,10 @@ import biblivre.core.utils.TextUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.acquisition.order.Handler")
 public class Handler extends AbstractHandler {
     private OrderBO orderBO;
 
@@ -67,6 +70,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setOrderBO(OrderBO orderBO) {
         this.orderBO = orderBO;
     }

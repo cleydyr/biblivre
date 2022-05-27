@@ -48,7 +48,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DataMigrationBO extends AbstractBO {
 
     private DataMigrationDAOImpl dataMigrationDAO;
@@ -377,74 +380,92 @@ public class DataMigrationBO extends AbstractBO {
         this.currentCount = currentCount;
     }
 
+    @Autowired
     public void setDao(DataMigrationDAOImpl dataMigrationDAO) {
         this.dataMigrationDAO = dataMigrationDAO;
     }
 
+    @Autowired
     public void setSetupDao(SetupDAO setupDao) {
         this.setupDAO = setupDao;
     }
 
+    @Autowired
     public void setAccessControlBO(AccessControlBO accessControlBO) {
         this.accessControlBO = accessControlBO;
     }
 
+    @Autowired
     public void setAccessCardBO(AccessCardBO accessCardBO) {
         this.accessCardBO = accessCardBO;
     }
 
+    @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setQuotationBO(QuotationBO quotationBO) {
         this.quotationBO = quotationBO;
     }
 
+    @Autowired
     public void setOrderBO(OrderBO orderBO) {
         this.orderBO = orderBO;
     }
 
+    @Autowired
     public void setSupplierBO(SupplierBO supplierBO) {
         this.supplierBO = supplierBO;
     }
 
+    @Autowired
     public void setRequestBO(RequestBO requestBO) {
         this.requestBO = requestBO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setAuthoritiyRecordBO(AuthorityRecordBO authoritiyRecordBO) {
         this.authoritiyRecordBO = authoritiyRecordBO;
     }
 
+    @Autowired
     public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
         this.vocabularyRecordBO = vocabularyRecordBO;
     }
 
+    @Autowired
     public void setHoldingsBO(HoldingBO holdingsBO) {
         this.holdingsBO = holdingsBO;
     }
 
+    @Autowired
     public void setLendingBO(LendingBO lendingBO) {
         this.lendingBO = lendingBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }
 
+    @Autowired
     public void setLendingFineBO(LendingFineBO lendingFineBO) {
         this.lendingFineBO = lendingFineBO;
     }
 
+    @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
     }

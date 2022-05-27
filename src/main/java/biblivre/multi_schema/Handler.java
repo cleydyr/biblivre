@@ -31,7 +31,9 @@ import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import java.io.File;
 import org.json.JSONException;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.multi_schema.Handler")
 public class Handler extends AbstractHandler {
 
     public void create(ExtendedRequest request, ExtendedResponse response) {

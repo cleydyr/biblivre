@@ -25,7 +25,10 @@ import biblivre.core.exceptions.AuthorizationException;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AuthorizationBO extends AbstractBO {
     private AuthorizationDAO authorizationDAO;
 
@@ -51,6 +54,7 @@ public class AuthorizationBO extends AbstractBO {
         return new AuthorizationPoints(schema, true, user.isEmployee(), permissions);
     }
 
+    @Autowired
     public void setAuthorizationDAO(AuthorizationDAO authorizationDAO) {
         this.authorizationDAO = authorizationDAO;
     }

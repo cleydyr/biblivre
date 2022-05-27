@@ -32,7 +32,7 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
-import biblivre.digitalmedia.DigitalMediaBO;
+import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Base64;
@@ -47,12 +47,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class RecordBO extends AbstractBO {
 
     protected RecordDAO recordDAO;
     protected SearchDAO searchDAO;
-    private DigitalMediaBO digitalMediaBO;
+    private DigitalMediaDAO digitalMediaDAO;
 
     public static final int FULL = 1 << 0;
     public static final int MARC_INFO = 1 << 1;
@@ -264,7 +265,7 @@ public abstract class RecordBO extends AbstractBO {
                 }
 
                 // Try to remove the file from Biblivre DB
-                digitalMediaBO.delete(Integer.valueOf(fileId), fileName);
+                digitalMediaDAO.delete(Integer.valueOf(fileId));
             }
         } catch (Exception e) {
         }
@@ -291,11 +292,7 @@ public abstract class RecordBO extends AbstractBO {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        populateDetails(
-                dto,
-                RecordBO.MARC_INFO
-                        | RecordBO.HOLDING_INFO
-                        | RecordBO.HOLDING_LIST);
+        populateDetails(dto, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.HOLDING_LIST);
         return dto;
     }
 
@@ -356,15 +353,18 @@ public abstract class RecordBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(RecordBO.class);
 
-    public void setRecordDAO(RecordDAO recordDAO) {
+    @Autowired
+    public final void setRecordDAO(RecordDAO recordDAO) {
         this.recordDAO = recordDAO;
     }
 
-    public void setSearchDAO(SearchDAO seachDAO) {
+    @Autowired
+    public final void setSearchDAO(SearchDAO seachDAO) {
         this.searchDAO = seachDAO;
     }
 
-    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
-        this.digitalMediaBO = digitalMediaBO;
+    @Autowired
+    public final void setDigitalMediaBO(DigitalMediaDAO digitalMediaDAO) {
+        this.digitalMediaDAO = digitalMediaDAO;
     }
 }

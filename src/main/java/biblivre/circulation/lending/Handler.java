@@ -46,8 +46,11 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+@Component("biblivre.circulation.lending.Handler")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
@@ -337,30 +340,37 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setHoldingBO(HoldingBO holdingBO) {
         this.holdingBO = holdingBO;
     }
 
+    @Autowired
     public void setLendingBO(LendingBO lendingBO) {
         this.lendingBO = lendingBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }
 
+    @Autowired
     public void setLendingFineBO(LendingFineBO lendingFineBO) {
         this.lendingFineBO = lendingFineBO;
     }
 
+    @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
     }
