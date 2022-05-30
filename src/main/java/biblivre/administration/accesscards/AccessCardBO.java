@@ -39,10 +39,10 @@ public class AccessCardBO {
 
     public boolean save(AccessCard accessCard) {
         if (accessCard != null) {
-            AccessCardDTO existingCard = accessCardRepository.getByCode(accessCard.getCode());
+            Optional<AccessCard> existingCard = accessCardRepository.getByCode(accessCard.getCode());
 
-            if (existingCard != null) {
-                throw new ValidationException("administration.accesscards.error.existing_card");
+            if (existingCard.isPresent()) {
+            	throw new ValidationException("administration.accesscards.error.existing_card");
             }
 
             accessCardRepository.save(accessCard);
@@ -56,22 +56,29 @@ public class AccessCardBO {
     public Page<AccessCard> search(String code, AccessCardStatus status, int limit, int offset) {
         int page = offset / limit;
 
-        if (code == null) {
+        PageRequest pageable = PageRequest.of(page, limit);
+
+		if (code == null) {
             if (status == null) {
-                return accessCardRepository.findAll(PageRequest.of(page, limit));
+                return accessCardRepository.findAll(pageable);
             } else {
-                return accessCardRepository.findByCodeContaining(code, PageRequest.of(page, limit));
+            	return accessCardRepository.findByAccessCardStatus(status, pageable);
             }
         }
-
-        return null;
+        else {
+        	if (status == null) {
+        		return accessCardRepository.findByCodeContaining(code, pageable);
+            } else {
+            	return accessCardRepository.findByCodeContainingAndAccessCardStatus(code, status, pageable);
+            }
+        }
     }
 
     public Optional<AccessCard> get(int id) {
         return accessCardRepository.findById(id);
     }
 
-    public AccessCardDTO get(String code) {
+    public Optional<AccessCard> get(String code) {
         return accessCardRepository.getByCode(code);
     }
 
@@ -132,24 +139,38 @@ public class AccessCardBO {
     }
 
     public boolean removeCard(int id) {
-        AccessCard card = accessCardRepository.getById(id);
+        Optional<AccessCard> oCard = accessCardRepository.findById(id);
 
-        if (card == null) {
+        if (!oCard.isPresent()) {
             throw new ValidationException("administration.accesscards.error.card_not_found");
         }
 
-        if (card.getAccessCardStatus() == AccessCardStatus.CANCELLED) {
-            accessCardRepository.delete(card);
+        AccessCard accessCard = oCard.get();
+
+        if (accessCard.getAccessCardStatus() == AccessCardStatus.CANCELLED) {
+            accessCardRepository.delete(accessCard);
+
+            return true;
         }
 
-        card.setAcessCardStatus(AccessCardStatus.CANCELLED);
+        accessCard.setAcessCardStatus(AccessCardStatus.CANCELLED);
 
-        accessCardRepository.save(card);
+        accessCardRepository.save(accessCard);
 
         return true;
     }
 
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
+        return false;
+    }
+
+    public boolean update(AccessCard accessCard) {
+        if (accessCard != null) {
+            accessCardRepository.save(accessCard);
+
+            return true;
+        }
+
         return false;
     }
 }

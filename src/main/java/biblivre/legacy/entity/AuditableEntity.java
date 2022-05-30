@@ -1,8 +1,12 @@
 package biblivre.legacy.entity;
 
 import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 @MappedSuperclass
 public class AuditableEntity {
@@ -16,6 +20,7 @@ public class AuditableEntity {
 
     @Column private Integer modifiedBy;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     public LocalDateTime getCreated() {
         return created;
     }
@@ -32,6 +37,7 @@ public class AuditableEntity {
         this.createdBy = createdBy;
     }
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     public LocalDateTime getModified() {
         return modified;
     }

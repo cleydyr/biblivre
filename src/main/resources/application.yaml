@@ -12,6 +12,7 @@ spring:
     hibernate:
       ddl-auto: validate
     database: postgresql
+
 logging:
   level:
     org:

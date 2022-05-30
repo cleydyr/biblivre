@@ -314,7 +314,7 @@ Search.prototype.displayResults = function(o) {
 	Core.trigger(this.prefix + 'before-display-results');
 
 	var search = Core.get(config, 'response.search');
-	var data = Core.get(config, 'response.search.data');
+	var data = Core.get(config, 'response.search.data') || Core.get(config, 'response.search.content');
 
 	if (!search || !data) {
 		return;

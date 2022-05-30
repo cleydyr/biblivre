@@ -1,17 +1,22 @@
 package biblivre.legacy.entity;
 
-import biblivre.administration.accesscards.AccessCardStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import biblivre.administration.accesscards.AccessCardStatus;
+
 @Entity
 @Table(name = "access_cards", schema = "single")
 public class AccessCard extends AuditableEntity {
-    @Id private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column private String code;
 
