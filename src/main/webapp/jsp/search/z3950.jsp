@@ -6,14 +6,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.cataloging.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.z3950.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.cataloging.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.z3950.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.cataloging.input.js"></script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
 
 	<script type="text/javascript">
@@ -39,7 +39,7 @@
 
 	<div id="distributed_search">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="resources/images/titles/search.png" /></div>
 
 			<div class="simple_search text">
 				<i18n:text key="search.common.distributed_search" />

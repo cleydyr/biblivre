@@ -76,9 +76,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class BiblivreInitializer extends SpringBootServletInitializer {
+public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
     private static final Logger _logger = LoggerFactory.getLogger(BiblivreInitializer.class);
 
     private static boolean initialized = false;
@@ -101,6 +103,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer {
                 _logger.error(e.getMessage(), e);
             }
         }
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/static/");
     }
 
     public static synchronized void destroy() {

@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.password.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.administration.password.js"></script>
 </layout:head>
 
 <layout:body>

@@ -6,8 +6,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.administration.customization.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/font-awesome.min.css" />
 </layout:head>
 
 <layout:body multiPart="true">
@@ -178,9 +178,9 @@
 		 	</div>
 		--></textarea>
 
-	</div><script type="text/javascript" src="static/scripts/biblivre.administration.form_customization.js"></script>
+	</div><script type="text/javascript" src="resources/scripts/biblivre.administration.form_customization.js"></script>
 
-	<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
+	<script type="text/javascript" src="resources/scripts/jquery-ui.js"></script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
 	<script>FormCustomization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
 	<script type="text/javascript" src="static/scripts/<%= Fields.getFormFields("authorities").getCacheFileName() %>"></script>

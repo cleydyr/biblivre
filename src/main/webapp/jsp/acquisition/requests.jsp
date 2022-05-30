@@ -4,12 +4,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.search.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.input.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.acquisition.request.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.acquisition.request.input.js"></script>
 	<script type="text/javascript">
 		var RequestSearch = CreateSearch(RequestSearchClass, {
 			type: 'acquisition.request',
@@ -29,7 +29,7 @@
 
 	<div id="requests">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="resources/images/titles/search.png" /></div>
 
 			<div class="simple_search text">
 				<i18n:text key="menu.acquisition_request" />

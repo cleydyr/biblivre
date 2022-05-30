@@ -4,13 +4,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.z3950.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.administration.z3950.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.z3950.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.z3950.input.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.administration.z3950.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.administration.z3950.input.js"></script>
 	<script type="text/javascript">
 		var Z3950Search = CreateSearch(Z3950SearchClass, {
 			type: 'administration.z3950',
@@ -30,7 +30,7 @@
 
 	<div id="z3950_servers">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="resources/images/titles/search.png" /></div>
 
 			<div class="simple_search text">
 				<i18n:text key="menu.administration_z3950_servers" />

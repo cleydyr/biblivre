@@ -6,17 +6,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.import.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.cataloging.import.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.import.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.cataloging.import.js"></script>
 </layout:head>
 
 <layout:body multiPart="true">
 	<div class="page_help"><i18n:text key="cataloging.import.page_help" /></div>
 
 	<div class="page_title">
-		<div class="image"><img src="static/images/titles/search.png" /></div>
+		<div class="image"><img src="resources/images/titles/search.png" /></div>
 
 		<div class="text">
 			<i18n:text key="cataloging.import.title" /> - <span class="step"><i18n:text key="common.step" /> 1</span>

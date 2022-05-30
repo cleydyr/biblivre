@@ -22,24 +22,16 @@ package biblivre.core.controllers;
 import biblivre.BiblivreInitializer;
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
-import biblivre.cataloging.Fields;
-import biblivre.circulation.user.UserFields;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.FreemarkerTemplateHelper;
-import biblivre.core.IFCacheableJavascript;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
-import biblivre.core.file.DiskFile;
 import biblivre.core.schemas.SchemasDAOImpl;
-import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.FileIOUtils;
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -57,14 +49,7 @@ public final class SchemaServlet extends HttpServlet {
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String path = request.getServletPath();
-        boolean isStatic = path.contains("static/") || path.contains("extra/");
-
-        if (isStatic) {
-            this.processStaticRequest(request, response, true);
-        } else {
-            this.processDynamicRequest(request, response, true);
-        }
+        this.processDynamicRequest(request, response, true);
     }
 
     @Override
@@ -105,14 +90,7 @@ public final class SchemaServlet extends HttpServlet {
                 return;
             }
 
-            String path = request.getServletPath();
-            boolean isStatic = path.contains("static/") || path.contains("extra/");
-
-            if (isStatic) {
-                this.processStaticRequest(request, response);
-            } else {
-                this.processDynamicRequest(request, response);
-            }
+            this.processDynamicRequest(request, response);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -194,69 +172,6 @@ public final class SchemaServlet extends HttpServlet {
 
             xRequest.dispatch(page, xResponse);
         }
-    }
-
-    protected void processStaticRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        this.processStaticRequest(request, response, false);
-    }
-
-    protected void processStaticRequest(
-            HttpServletRequest request, HttpServletResponse response, boolean headerOnly)
-            throws ServletException, IOException {
-        final String path = request.getServletPath();
-        final String realPath;
-
-        if (path.contains("static/")) {
-            realPath = path.substring(path.lastIndexOf("/static"));
-        } else {
-            realPath = path.substring(path.lastIndexOf("/extra"));
-        }
-
-        if (realPath.endsWith(".i18n.js")
-                || realPath.endsWith(".form.js")
-                || realPath.endsWith(".user_fields.js")) {
-            String filename = StringUtils.substringAfterLast(path, "/");
-            String[] params = StringUtils.split(filename, ".");
-
-            String schema = params[0];
-
-            IFCacheableJavascript javascript = null;
-
-            if (realPath.endsWith(".i18n.js")) {
-                javascript = Translations.get(params[1]);
-            } else if (realPath.endsWith(".user_fields.js")) {
-                javascript = SchemaThreadLocal.withSchema(schema, UserFields::getFields);
-            } else {
-                javascript =
-                        SchemaThreadLocal.withSchema(schema, () -> Fields.getFormFields(params[2]));
-            }
-
-            File cacheFile = javascript.getCacheFile();
-
-            if (cacheFile != null) {
-                DiskFile diskFile = new DiskFile(cacheFile, "application/javascript;charset=UTF-8");
-
-                FileIOUtils.sendHttpFile(diskFile, request, response, headerOnly);
-            } else {
-                response.getOutputStream().print(javascript.toJavascriptString());
-            }
-            return;
-        }
-
-        // Other static files
-        RequestDispatcher rd = this.getServletContext().getNamedDispatcher("default");
-
-        ExtendedRequest wrapped =
-                new ExtendedRequest(request) {
-
-                    @Override
-                    public String getServletPath() {
-                        return realPath;
-                    }
-                };
-
-        rd.forward(wrapped, response);
     }
 
     @Override

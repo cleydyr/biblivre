@@ -9,17 +9,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.circulation.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.user_cards.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.circulation.search.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.circulation.user_cards.js"></script>
 
 	<script type="text/javascript" src="static/scripts/<%= UserFields.getFields().getCacheFileName() %>"></script>
 
-	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
-	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
+	<script type="text/javascript" src="resources/scripts/zebra_datepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="resources/styles/zebra.bootstrap.css">
 
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {
@@ -58,7 +58,7 @@
 		<div class="page_help"><i18n:text key="circulation.user_cards.page_help" /></div>
 
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="resources/images/titles/search.png" /></div>
 
 			<div class="simple_search text contains_subtext">
 				<i18n:text key="search.common.simple_search" />

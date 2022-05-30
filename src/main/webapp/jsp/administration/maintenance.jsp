@@ -4,9 +4,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
+	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.administration.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.administration.maintenance.js"></script>
+	<script type="text/javascript" src="resources/scripts/biblivre.administration.maintenance.js"></script>
 </layout:head>
 
 <layout:body>

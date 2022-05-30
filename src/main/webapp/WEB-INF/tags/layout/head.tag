@@ -13,24 +13,24 @@
 				<meta name="google" content="notranslate" />
 				<title>${Configurations.getString(schema, Constants.CONFIG_TITLE)}"</title>
 
-				<link rel="shortcut icon" type="image/x-icon" href="static/images/favicon.ico" />
-				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.core.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.print.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/jquery-ui.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
+				<link rel="shortcut icon" type="image/x-icon" href="resources/images/favicon.ico" />
+				<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.core.css" />
+				<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.print.css" />
+				<link rel="stylesheet" type="text/css" href="resources/styles/jquery-ui.css" />
+				<link rel="stylesheet" type="text/css" href="resources/styles/font-awesome.min.css" />
 
-				<script type="text/javascript" src="static/scripts/json.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery.extras.js"></script>
-				<script type="text/javascript" src="static/scripts/lodash.js"></script>
+				<script type="text/javascript" src="resources/scripts/json.js"></script>
+				<script type="text/javascript" src="resources/scripts/jquery.js"></script>
+				<script type="text/javascript" src="resources/scripts/jquery-ui.js"></script>
+				<script type="text/javascript" src="resources/scripts/jquery.extras.js"></script>
+				<script type="text/javascript" src="resources/scripts/lodash.js"></script>
 
-				<script type="text/javascript" src="static/scripts/globalize.js"></script>
-				<script type="text/javascript" src="static/scripts/cultures/globalize.culture.<i18n:text key='language_code' />.js"></script>
+				<script type="text/javascript" src="resources/scripts/globalize.js"></script>
+				<script type="text/javascript" src="resources/scripts/cultures/globalize.culture.<i18n:text key='language_code' />.js"></script>
 				<script type="text/javascript" >Globalize.culture('<i18n:text key="language_code" />'); </script>
 				<script type="text/javascript" >Globalize.culture().numberFormat.currency.symbol = '${Configurations.getString(schema, Constants.CONFIG_CURRENCY)}';</script>
 
-				<script type="text/javascript" src="static/scripts/biblivre.core.js"></script>
+				<script type="text/javascript" src="resources/scripts/biblivre.core.js"></script>
 				<script type="text/javascript" src="static/scripts/${requestScope.translationMap.cacheFileName}"></script>
 	
 				<c:set var="translateError" value="false" />
