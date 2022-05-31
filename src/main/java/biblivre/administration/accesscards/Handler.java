@@ -48,13 +48,11 @@ public class Handler extends AbstractHandler {
 
     private AccessCardBO accessCardBO;
 
-    private ObjectMapper jacksonObjectMapper;
-
     @Autowired
-    public Handler(AccessCardBO accessCardBO, ObjectMapper jacksonObjectMapper) {
-        this.accessCardBO = accessCardBO;
+    public Handler(AccessCardBO accessCardBO, ObjectMapper objectMapper) {
+        super(objectMapper);
 
-        this.jacksonObjectMapper = jacksonObjectMapper;
+        this.accessCardBO = accessCardBO;
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
@@ -239,10 +237,6 @@ public class Handler extends AbstractHandler {
 
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
-    }
-
-    private JSONObject toJSONObject(Object bean) throws JsonProcessingException {
-        return new JSONObject(jacksonObjectMapper.writeValueAsString(bean));
     }
 
     private final AccessCard createCard(

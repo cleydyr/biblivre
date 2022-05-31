@@ -21,6 +21,8 @@ package biblivre.core;
 
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -32,6 +34,13 @@ public class AbstractHandler {
     protected BiblivreFile file;
     protected int returnCode;
     protected HttpCallback callback;
+    protected ObjectMapper objectMapper;
+
+    public AbstractHandler(ObjectMapper objectMapper) {
+        this();
+
+        this.objectMapper = objectMapper;
+    }
 
     public AbstractHandler() {
         this.setJson(new JSONObject());
@@ -117,5 +126,9 @@ public class AbstractHandler {
 
     public void setCallback(HttpCallback callback) {
         this.callback = callback;
+    }
+
+    protected JSONObject toJSONObject(Object bean) throws JsonProcessingException {
+        return new JSONObject(objectMapper.writeValueAsString(bean));
     }
 }
