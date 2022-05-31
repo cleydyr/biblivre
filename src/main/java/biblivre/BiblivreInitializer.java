@@ -27,8 +27,6 @@ import biblivre.acquisition.request.RequestDAO;
 import biblivre.acquisition.request.RequestDAOImpl;
 import biblivre.acquisition.supplier.SupplierDAO;
 import biblivre.acquisition.supplier.SupplierDAOImpl;
-import biblivre.administration.accesscards.AccessCardDAO;
-import biblivre.administration.accesscards.AccessCardDAOImpl;
 import biblivre.administration.backup.BackupDAO;
 import biblivre.administration.backup.BackupDAOImpl;
 import biblivre.administration.indexing.IndexingDAO;
@@ -120,11 +118,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         if (BiblivreInitializer.Z3950server != null) {
             BiblivreInitializer.Z3950server.reloadServer();
         }
-    }
-
-    @Bean
-    public AccessCardDAO accessCardDAO() {
-        return AccessCardDAOImpl.getInstance();
     }
 
     @Bean

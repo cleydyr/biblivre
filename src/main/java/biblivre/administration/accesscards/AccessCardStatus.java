@@ -20,7 +20,7 @@
 package biblivre.administration.accesscards;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import java.util.Optional;
 
 public enum AccessCardStatus implements BiblivreEnum {
     AVAILABLE,
@@ -29,28 +29,19 @@ public enum AccessCardStatus implements BiblivreEnum {
     IN_USE_AND_BLOCKED,
     CANCELLED;
 
-    public static AccessCardStatus fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
+    public static Optional<AccessCardStatus> fromString(String str) {
+        if (str == null) {
+            throw new IllegalArgumentException("str can't be null");
         }
 
-        str = str.toLowerCase();
-
-        for (AccessCardStatus type : AccessCardStatus.values()) {
-            if (str.equals(type.toString())) {
-                return type;
-            }
+        try {
+            return Optional.of(AccessCardStatus.valueOf(str.toUpperCase()));
+        } catch (IllegalArgumentException illegalArgumentException) {
+            return Optional.empty();
         }
-
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return this.name().toLowerCase();
     }
 
     public String getString() {
-        return this.toString();
+        return this.toString().toLowerCase();
     }
 }

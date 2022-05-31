@@ -39,10 +39,11 @@ public class AccessCardBO {
 
     public boolean save(AccessCard accessCard) {
         if (accessCard != null) {
-            Optional<AccessCard> existingCard = accessCardRepository.getByCode(accessCard.getCode());
+            Optional<AccessCard> existingCard =
+                    accessCardRepository.getByCode(accessCard.getCode());
 
             if (existingCard.isPresent()) {
-            	throw new ValidationException("administration.accesscards.error.existing_card");
+                throw new ValidationException("administration.accesscards.error.existing_card");
             }
 
             accessCardRepository.save(accessCard);
@@ -58,18 +59,18 @@ public class AccessCardBO {
 
         PageRequest pageable = PageRequest.of(page, limit);
 
-		if (code == null) {
+        if (code == null) {
             if (status == null) {
                 return accessCardRepository.findAll(pageable);
             } else {
-            	return accessCardRepository.findByAccessCardStatus(status, pageable);
+                return accessCardRepository.findByAccessCardStatus(status, pageable);
             }
-        }
-        else {
-        	if (status == null) {
-        		return accessCardRepository.findByCodeContaining(code, pageable);
+        } else {
+            if (status == null) {
+                return accessCardRepository.findByCodeContaining(code, pageable);
             } else {
-            	return accessCardRepository.findByCodeContainingAndAccessCardStatus(code, status, pageable);
+                return accessCardRepository.findByCodeContainingAndAccessCardStatus(
+                        code, status, pageable);
             }
         }
     }

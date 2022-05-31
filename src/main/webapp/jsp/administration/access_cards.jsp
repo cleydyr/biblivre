@@ -189,16 +189,16 @@
 						<div class="result {#cycle values=['odd', 'even']} {AccessCardsInput.getOverlayClass($T.record)}" rel="{$T.record.id}">
 							<div class="result_overlay"><div class="text">{AccessCardsInput.getOverlayText($T.record)}</div></div>
 							<div class="buttons">
-								{#if $T.record.status == '<%= AccessCardStatus.AVAILABLE %>' || $T.record.status == '<%= AccessCardStatus.IN_USE %>'}
-									<a class="button center" onclick="AccessCardsInput.changeStatus('{$T.record.id}', '{$T.record.status == '<%= AccessCardStatus.AVAILABLE %>' ? '<%= AccessCardStatus.BLOCKED %>' : '<%= AccessCardStatus.IN_USE_AND_BLOCKED %>'}');"><i18n:text key="common.block" /></a>
+								{#if $T.record.accessCardStatus == '<%= AccessCardStatus.AVAILABLE %>' || $T.record.accessCardStatus == '<%= AccessCardStatus.IN_USE %>'}
+									<a class="button center" onclick="AccessCardsInput.changeStatus('{$T.record.id}', '{$T.record.accessCardStatus == '<%= AccessCardStatus.AVAILABLE %>' ? '<%= AccessCardStatus.BLOCKED %>' : '<%= AccessCardStatus.IN_USE_AND_BLOCKED %>'}');"><i18n:text key="common.block" /></a>
 								{#/if}
 
-								{#if $T.record.status == '<%= AccessCardStatus.BLOCKED %>' || $T.record.status == '<%= AccessCardStatus.IN_USE_AND_BLOCKED %>'}
-									<a class="button center" onclick="AccessCardsInput.changeStatus('{$T.record.id}', '{$T.record.status == '<%= AccessCardStatus.BLOCKED %>' ? '<%= AccessCardStatus.AVAILABLE %>' : '<%= AccessCardStatus.IN_USE %>'}');"><i18n:text key="common.unblock" /></a>
+								{#if $T.record.accessCardStatus == '<%= AccessCardStatus.BLOCKED %>' || $T.record.accessCardStatus == '<%= AccessCardStatus.IN_USE_AND_BLOCKED %>'}
+									<a class="button center" onclick="AccessCardsInput.changeStatus('{$T.record.id}', '{$T.record.accessCardStatus == '<%= AccessCardStatus.BLOCKED %>' ? '<%= AccessCardStatus.AVAILABLE %>' : '<%= AccessCardStatus.IN_USE %>'}');"><i18n:text key="common.unblock" /></a>
 								{#/if}
 
-								{#if $T.record.status == '<%= AccessCardStatus.CANCELLED %>'}
-									<a class="button center" onclick="AccessCardsInput.changeStatus('{$T.record.id}', '<%= AccessCardStatus.AVAILABLE %>', '{$T.record.status}');"><i18n:text key="common.uncancel" /></a>
+								{#if $T.record.accessCardStatus == '<%= AccessCardStatus.CANCELLED %>'}
+									<a class="button center" onclick="AccessCardsInput.changeStatus('{$T.record.id}', '<%= AccessCardStatus.AVAILABLE %>', '{$T.record.accessCardStatus}');"><i18n:text key="common.uncancel" /></a>
 									<a class="danger_button center delete" onclick="AccessCardsInput.deleteRecord('{$T.record.id}');"><i18n:text key="common.delete" /></a>
 								{#else}
 									<a class="danger_button center delete" onclick="AccessCardsInput.changeStatus('{$T.record.id}', '<%= AccessCardStatus.CANCELLED %>');"><i18n:text key="common.cancel" /></a>
@@ -206,7 +206,7 @@
 							</div>
 							<div class="record">
 								{#if $T.record.code}<label><i18n:text key="administration.accesscards.field.code" /></label>: {$T.record.code}<br/>{#/if}
-								{#if $T.record.status}<label><i18n:text key="administration.accesscards.field.status" /></label>: {Translations.get('administration.accesscards.status.' + $T.record.status)}<br/>{#/if}
+								{#if $T.record.accessCardStatus}<label><i18n:text key="administration.accesscards.field.status" /></label>: {Translations.get('administration.accesscards.status.' + ($T.record.accessCardStatus).toLowerCase())}<br/>{#/if}
 								{#if $T.record.created}<label><i18n:text key="common.created" /></label>: {_d($T.record.created, 'd t')}<br/>{#/if}
 								{#if $T.record.modified}<label><i18n:text key="common.modified" /></label>: {_d($T.record.modified, 'd t')}<br/>{#/if}
 							</div>

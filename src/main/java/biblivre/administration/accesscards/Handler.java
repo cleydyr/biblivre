@@ -26,11 +26,11 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.legacy.entity.AccessCard;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,13 +41,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @Component("biblivre.administration.accesscards.Handler")
 @Scope("prototype")
 public class Handler extends AbstractHandler {
-	private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     private AccessCardBO accessCardBO;
 
@@ -55,23 +52,23 @@ public class Handler extends AbstractHandler {
 
     @Autowired
     public Handler(AccessCardBO accessCardBO, ObjectMapper jacksonObjectMapper) {
-		this.accessCardBO = accessCardBO;
+        this.accessCardBO = accessCardBO;
 
-		this.jacksonObjectMapper = jacksonObjectMapper;
-	}
+        this.jacksonObjectMapper = jacksonObjectMapper;
+    }
 
-	public void search(ExtendedRequest request, ExtendedResponse response) {
+    public void search(ExtendedRequest request, ExtendedResponse response) {
         Page<AccessCard> page = this.searchHelper(request, response, this);
 
         try {
             this.json.put("search", toJSONObject(page));
         } catch (JSONException jsonException) {
-        	logger.error("Couldn't parse json object", jsonException);
+            logger.error("Couldn't parse json object", jsonException);
 
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         } catch (JsonProcessingException jsonProcessingException) {
-        	logger.error("Couldn't desserialize json object", jsonProcessingException);
-		}
+            logger.error("Couldn't desserialize json object", jsonProcessingException);
+        }
     }
 
     public Page<AccessCard> searchHelper(
@@ -80,16 +77,16 @@ public class Handler extends AbstractHandler {
 
         String query = null;
 
-        AccessCardStatus status = null;
+        Optional<AccessCardStatus> oStatus = null;
 
         try {
             JSONObject json = new JSONObject(searchParameters);
 
             query = json.optString("query");
 
-            status = AccessCardStatus.fromString(json.optString("status"));
+            oStatus = AccessCardStatus.fromString(json.optString("status"));
         } catch (JSONException jsonException) {
-        	logger.error("Couldn't parse json object", jsonException);
+            logger.error("Couldn't parse json object", jsonException);
 
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
 
@@ -102,7 +99,7 @@ public class Handler extends AbstractHandler {
 
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        Page<AccessCard> page = accessCardBO.search(query, status, limit, offset);
+        Page<AccessCard> page = accessCardBO.search(query, oStatus.orElse(null), limit, offset);
 
         if (page.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
@@ -121,37 +118,37 @@ public class Handler extends AbstractHandler {
         Optional<AccessCard> oCard = accessCardBO.get(id);
 
         if (oCard.isEmpty()) {
-        	this.setMessage(
+            this.setMessage(
                     ActionResult.WARNING, "administration.accesscards.error.card_not_found");
         }
 
         AccessCard card = oCard.get();
 
         try {
-        	this.json.put("card", toJSONObject(card));
+            this.json.put("card", toJSONObject(card));
         } catch (JSONException | JsonProcessingException exception) {
-        	logger.error("Couldn't parse json object", exception);
+            logger.error("Couldn't parse json object", exception);
 
-        	this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
         AccessCardStatus status =
                 request.getEnum(AccessCardStatus.class, "status", AccessCardStatus.AVAILABLE);
-        
+
         String code = request.getString("code");
-        
+
         String prefix = request.getString("prefix");
-        
+
         String start = request.getString("start");
-        
+
         String end = request.getString("end");
-        
+
         String suffix = request.getString("suffix");
 
         boolean success = false;
-        
+
         AccessCard accessCard = null;
 
         if (StringUtils.isNotBlank(code)) {
@@ -183,7 +180,7 @@ public class Handler extends AbstractHandler {
 
             this.json.put("full_data", true);
         } catch (JSONException | JsonProcessingException exception) {
-        	logger.error("Couldn't parse json object", exception);
+            logger.error("Couldn't parse json object", exception);
 
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -191,7 +188,6 @@ public class Handler extends AbstractHandler {
 
     public void delete(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
-
 
         if (accessCardBO.removeCard(id)) {
             this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.delete");
@@ -208,7 +204,8 @@ public class Handler extends AbstractHandler {
         Optional<AccessCard> oAccessCard = accessCardBO.get(id);
 
         if (!oAccessCard.isPresent()) {
-        	this.setMessage(ActionResult.SUCCESS, "administration.accesscards.errro.no.such.access.card");
+            this.setMessage(
+                    ActionResult.SUCCESS, "administration.accesscards.errro.no.such.access.card");
         }
 
         AccessCard accessCard = oAccessCard.get();
@@ -238,15 +235,15 @@ public class Handler extends AbstractHandler {
 
             this.json.put("full_data", true);
         } catch (JSONException | JsonProcessingException exception) {
-        	logger.error("Couldn't parse json object", exception);
+            logger.error("Couldn't parse json object", exception);
 
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
     }
 
-	private JSONObject toJSONObject(Object bean) throws JsonProcessingException {
-		return new JSONObject(jacksonObjectMapper.writeValueAsString(bean));
-	}
+    private JSONObject toJSONObject(Object bean) throws JsonProcessingException {
+        return new JSONObject(jacksonObjectMapper.writeValueAsString(bean));
+    }
 
     private final AccessCard createCard(
             ExtendedRequest request, String code, AccessCardStatus status) {
@@ -258,8 +255,8 @@ public class Handler extends AbstractHandler {
 
         accessCard.setCode(code);
         accessCard.setAcessCardStatus(status);
-		accessCard.setCreatedBy(loggedUserId);
-		accessCard.setCreated(now);
+        accessCard.setCreatedBy(loggedUserId);
+        accessCard.setCreated(now);
         accessCard.setCreatedBy(loggedUserId);
         accessCard.setModified(now);
         accessCard.setModifiedBy(loggedUserId);
