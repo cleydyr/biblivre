@@ -19,8 +19,13 @@
  ******************************************************************************/
 package biblivre.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 
 public interface IFJson {
-    public JSONObject toJSONObject();
+    public default JSONObject toJSONObject() {
+        return toJSONObject(null);
+    }
+
+    JSONObject toJSONObject(ObjectMapper objectMapper);
 }

@@ -20,6 +20,7 @@
 package biblivre.core;
 
 import biblivre.core.utils.TextUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.persistence.Entity;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.JSONArray;
@@ -47,7 +49,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
     @SuppressWarnings("unchecked")
     @Override
-    public JSONObject toJSONObject() {
+    public JSONObject toJSONObject(ObjectMapper objectMapper) {
         JSONObject json = new JSONObject();
 
         try {
@@ -98,6 +100,11 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                                             (Date) value));
                         } else if (value instanceof String) {
                             json.putOpt(name, ((String) value).trim());
+                        } else if (objectMapper != null
+                                && value.getClass().getAnnotationsByType(Entity.class).length > 0) {
+                            String jsonString = objectMapper.writeValueAsString(value);
+
+                            json.putOpt(name, new JSONObject(jsonString));
                         } else {
                             json.putOpt(name, value);
                         }

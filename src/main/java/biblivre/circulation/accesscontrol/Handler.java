@@ -26,11 +26,15 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.PagingDTO;
 import biblivre.core.enums.ActionResult;
+import biblivre.legacy.entity.AccessCard;
 import biblivre.spring.SpringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -39,6 +43,18 @@ public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
     private UserBO userBO;
+
+    @Autowired
+    public Handler(
+            ObjectMapper objectMapper,
+            AccessCardBO accessCardBO,
+            AccessControlBO accessControlBO,
+            UserBO userBO) {
+        super(objectMapper);
+        this.accessCardBO = accessCardBO;
+        this.accessControlBO = accessControlBO;
+        this.userBO = userBO;
+    }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
         WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
@@ -84,52 +100,59 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    //    public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-    //        WebApplicationContext applicationContext =
-    // SpringUtils.getWebApplicationContext(request);
-    //
-    //        biblivre.administration.accesscards.Handler cardHandler =
-    //                applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
-    //
-    //        DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response,
-    // this);
-    //
-    //        if (cardList == null) {
-    //            return;
-    //        }
-    //
-    //        DTOCollection<AccessControlDTO> list = new DTOCollection<>();
-    //        list.setPaging(cardList.getPaging());
-    //
-    //        for (AccessCardDTO card : cardList) {
-    //            AccessControlDTO dto = accessControlBO.getByCardId(card.getId());
-    //            if (dto == null) {
-    //                dto = new AccessControlDTO();
-    //                dto.setAccessCardId(card.getId());
-    //            }
-    //
-    //            dto.setId(card.getId());
-    //            dto.setAccessCard(card);
-    //
-    //            if (dto.getUserId() != null) {
-    //                dto.setUser(userBO.get(dto.getUserId()));
-    //            }
-    //
-    //            list.add(dto);
-    //        }
-    //
-    //        if (list.size() == 0) {
-    //            this.setMessage(ActionResult.WARNING,
-    // "administration.accesscards.error.no_card_found");
-    //            return;
-    //        }
-    //
-    //        try {
-    //            this.json.put("search", list.toJSONObject());
-    //        } catch (JSONException e) {
-    //            this.setMessage(ActionResult.WARNING, "error.invalid_json");
-    //        }
-    //    }
+    public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
+        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
+
+        biblivre.administration.accesscards.Handler cardHandler =
+                applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
+
+        Page<AccessCard> accessCards = cardHandler.searchHelper(request, response, this);
+
+        if (accessCards == null) {
+            return;
+        }
+
+        DTOCollection<AccessControlDTO> list = new DTOCollection<>();
+
+        int recordCount = (int) accessCards.getTotalElements();
+
+        int pageCount = accessCards.getTotalPages();
+
+        int recordsPerPage = recordCount / pageCount;
+
+        int recordOffset = recordsPerPage * accessCards.getNumber();
+
+        list.setPaging(new PagingDTO(recordCount, recordsPerPage, recordOffset));
+
+        for (AccessCard card : accessCards) {
+            AccessControlDTO dto = accessControlBO.getByCardId(card.getId());
+
+            if (dto == null) {
+                dto = new AccessControlDTO();
+                dto.setAccessCardId(card.getId());
+            }
+
+            dto.setId(card.getId());
+            dto.setAccessCard(card);
+
+            if (dto.getUserId() != null) {
+                dto.setUser(userBO.get(dto.getUserId()));
+            }
+
+            list.add(dto);
+        }
+
+        if (list.size() == 0) {
+            this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
+            return;
+        }
+
+        try {
+            this.json.put("search", list.toJSONObject(objectMapper));
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+        }
+    }
 
     public void bind(ExtendedRequest request, ExtendedResponse response) {
         Integer cardId = request.getInteger("card_id");
@@ -182,20 +205,5 @@ public class Handler extends AbstractHandler {
         } else {
             this.setMessage(ActionResult.WARNING, "circulation.accesscards.return.error");
         }
-    }
-
-    @Autowired
-    public void setAccessCardBO(AccessCardBO accessCardBO) {
-        this.accessCardBO = accessCardBO;
-    }
-
-    @Autowired
-    public void setAccessControlBO(AccessControlBO accessControlBO) {
-        this.accessControlBO = accessControlBO;
-    }
-
-    @Autowired
-    public void setUserBO(UserBO userBO) {
-        this.userBO = userBO;
     }
 }

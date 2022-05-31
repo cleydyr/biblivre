@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +55,7 @@ public class DTOCollection<T extends AbstractDTO> extends ArrayList<T> implement
     }
 
     @Override
-    public JSONObject toJSONObject() {
+    public JSONObject toJSONObject(ObjectMapper objectMapper) {
         JSONObject json = null;
 
         if (this.getPaging() != null) {
@@ -66,7 +67,7 @@ public class DTOCollection<T extends AbstractDTO> extends ArrayList<T> implement
         try {
             json.putOpt("id", this.getId());
             for (T dto : this) {
-                json.append("data", dto.toJSONObject());
+                json.append("data", dto.toJSONObject(objectMapper));
             }
         } catch (JSONException e) {
         }

@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,7 +139,7 @@ public class PagingDTO implements IFJson {
     }
 
     @Override
-    public JSONObject toJSONObject() {
+    public JSONObject toJSONObject(ObjectMapper objectMapper) {
         JSONObject json = new JSONObject();
         this.endTimer();
 
