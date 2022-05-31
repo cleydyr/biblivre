@@ -188,16 +188,16 @@
 					{#foreach $T.data as record}
 						<div class="result {#cycle values=['odd', 'even']} {AccessControl.getOverlayClass($T.record.accessCard)}" rel="{$T.record.accessCard.id}">
 							<div class="result_overlay"><div class="text">{AccessControl.getOverlayText($T.record.accessCard)}</div></div>
-							{#if $T.record.accessCard.status == 'available' || $T.record.accessCard.status == 'in_use'}
+							{#if ($T.record.accessCard.accessCardStatus).toLowerCase() == 'available' || ($T.record.accessCard.accessCardStatus).toLowerCase() == 'in_use'}
 								<div class="buttons">
-									{#if $T.record.accessCard.status == 'available'}<a class="button center" onclick="AccessControl.bindCard('{$T.record.accessCard.id}');"><i18n:text key="circulation.accesscards.bind_card" /></a>{#/if}
-									{#if $T.record.accessCard.status == 'in_use'}<a class="button center" onclick="AccessControl.unbindCard('{$T.record.accessCard.id}', '{$T.record.user.id}');"><i18n:text key="circulation.accesscards.unbind_card" /></a>{#/if}
+									{#if ($T.record.accessCard.accessCardStatus).toLowerCase() == 'available'}<a class="button center" onclick="AccessControl.bindCard('{$T.record.accessCard.id}');"><i18n:text key="circulation.accesscards.bind_card" /></a>{#/if}
+									{#if ($T.record.accessCard.accessCardStatus).toLowerCase() == 'in_use'}<a class="button center" onclick="AccessControl.unbindCard('{$T.record.accessCard.id}', '{$T.record.user.id}');"><i18n:text key="circulation.accesscards.unbind_card" /></a>{#/if}
 								</div>
 							{#/if}
 
 							<div class="record">
 								{#if $T.record.accessCard.code}<label><i18n:text key="administration.accesscards.field.code" /></label>: {$T.record.accessCard.code}<br/>{#/if}
-								{#if $T.record.accessCard.status}<label><i18n:text key="administration.accesscards.field.status" /></label>: {Translations.get('administration.accesscards.status.' + $T.record.accessCard.status)}<br/>{#/if}
+								{#if ($T.record.accessCard.accessCardStatus).toLowerCase()}<label><i18n:text key="administration.accesscards.field.status" /></label>: {Translations.get('administration.accesscards.status.' + ($T.record.accessCard.accessCardStatus).toLowerCase())}<br/>{#/if}
 								{#if $T.record.user}
 									<div class="ncspacer"></div>
 									<div class="ncspacer"></div>

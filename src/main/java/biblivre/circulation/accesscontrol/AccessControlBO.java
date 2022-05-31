@@ -95,7 +95,8 @@ public class AccessControlBO extends AbstractBO {
         try {
             accessCard.setAcessCardStatus(AccessCardStatus.IN_USE);
 
-            accessCardBO.save(accessCard);
+            accessCardBO.update(accessCard);
+
             return this.accessControlDAO.save(dto);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -151,7 +152,7 @@ public class AccessControlBO extends AbstractBO {
                         dto.getAccessCardId() != 0
                                 ? AccessCardStatus.AVAILABLE
                                 : AccessCardStatus.IN_USE_AND_BLOCKED);
-                accessCardBO.save(cardDto);
+                accessCardBO.update(cardDto);
                 return this.accessControlDAO.update(existingAccess);
             }
         } catch (Exception e) {

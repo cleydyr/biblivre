@@ -183,9 +183,11 @@ public class Handler extends AbstractHandler {
 
     public void unbind(ExtendedRequest request, ExtendedResponse response) {
         Integer cardId = request.getInteger("card_id");
+
         Integer userId = request.getInteger("user_id");
 
         AccessControlDTO dto = new AccessControlDTO();
+
         dto.setAccessCardId(cardId);
         dto.setUserId(userId);
         dto.setModifiedBy(request.getLoggedUserId());
@@ -193,9 +195,12 @@ public class Handler extends AbstractHandler {
 
         if (accessControlBO.returnCard(dto)) {
             this.setMessage(ActionResult.SUCCESS, "circulation.accesscards.return.success");
+
             try {
                 accessControlBO.populateDetails(dto);
+
                 dto.setId(cardId);
+
                 this.json.put("data", dto.toJSONObject());
                 this.json.put("full_data", true);
             } catch (JSONException e) {
