@@ -445,6 +445,40 @@
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.6</version>
+
+				<configuration>
+					<workingDirectory>src/main/frontend</workingDirectory>
+					<environmentVariables>
+						<!-- Avoid certificates issues, needed behind a corporate proxy -->
+						<NODE_TLS_REJECT_UNAUTHORIZED>0</NODE_TLS_REJECT_UNAUTHORIZED>
+					</environmentVariables>
+					<installDirectory>target</installDirectory>
+					<nodeVersion>v16.13.2</nodeVersion>
+					<yarnVersion>v1.22.15</yarnVersion>
+				</configuration>
+
+				<executions>
+					<execution>
+						<goals>
+							<goal>install-node-and-yarn</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>yarn build</id>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<configuration>
+							<arguments>build</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 
 		<pluginManagement>
