@@ -478,7 +478,6 @@
 		<property name="sourceMap">
 			<map>
 				<entry key="BIBLIO" value-ref="biblioRecordBO" />
-				<entry key="HOLDING" value-ref="holdingBO" />
 				<entry key="AUTHORITIES" value-ref="authorityRecordBO" />
 				<entry key="VOCABULARY" value-ref="vocabularyRecordBO" />
 			</map>

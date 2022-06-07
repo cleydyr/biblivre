@@ -24,6 +24,7 @@ import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabSubfieldDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractBO;
 import biblivre.core.utils.TextUtils;
@@ -42,7 +43,7 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public class IndexingBO extends AbstractBO {
-    Map<String, RecordBO> recordBOs = new HashMap<>();
+    Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
 
     private IndexingDAO indexingDAO;
 
@@ -313,7 +314,7 @@ public class IndexingBO extends AbstractBO {
     }
 
     public boolean isIndexOutdated() {
-        Stream<RecordBO> stream = recordBOs.values().stream();
+        Stream<PaginableRecordBO> stream = recordBOs.values().stream();
 
         return stream.anyMatch(this::_hasOutdatedIndexCount);
     }
@@ -321,9 +322,9 @@ public class IndexingBO extends AbstractBO {
     private boolean _hasOutdatedIndexCount(RecordBO recordBO) {
         int indexedCount = this.indexingDAO.countIndexed(recordBO.getRecordType());
 
-		int persistedCount = recordBO.count();
+        int persistedCount = recordBO.count();
 
-		return indexedCount != persistedCount;
+        return indexedCount != persistedCount;
     }
 
     private void clearIndexes(RecordType recordType) {
@@ -345,7 +346,7 @@ public class IndexingBO extends AbstractBO {
         return this.indexingDAO.searchExactTerms(recordType, indexingGroupId, terms);
     }
 
-    public void setRecordBOs(Map<String, RecordBO> recordBOs) {
+    public void setRecordBOs(Map<String, PaginableRecordBO> recordBOs) {
         this.recordBOs = recordBOs;
     }
 

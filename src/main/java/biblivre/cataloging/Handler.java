@@ -22,6 +22,7 @@ package biblivre.cataloging;
 import biblivre.administration.indexing.IndexingBO;
 import biblivre.cataloging.authorities.AuthorityRecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
@@ -53,7 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Handler extends AbstractHandler {
-    private Map<String, RecordBO> recordBOs = new HashMap<>();
+    private Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
     private ImportBO importBO;
     private Z3950BO z3950BO;
@@ -301,7 +302,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    public void setRecordBOs(Map<String, RecordBO> recordBOs) {
+    public void setRecordBOs(Map<String, PaginableRecordBO> recordBOs) {
         this.recordBOs = recordBOs;
     }
 
