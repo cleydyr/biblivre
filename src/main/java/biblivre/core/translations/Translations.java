@@ -585,7 +585,7 @@ public class Translations extends StaticBO {
         }
 
         return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+                schema,
                 () -> {
                     TranslationsMap translationsMap = null;
 
