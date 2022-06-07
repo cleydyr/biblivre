@@ -20,8 +20,8 @@
 package biblivre.core;
 
 import biblivre.BiblivreInitializer;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /** Application Lifecycle Listener implementation class BiblivreContextListener */
 public class BiblivreContextListener implements ServletContextListener {

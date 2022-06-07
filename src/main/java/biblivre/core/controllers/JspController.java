@@ -24,8 +24,8 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
-import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 
 public class JspController extends Controller {

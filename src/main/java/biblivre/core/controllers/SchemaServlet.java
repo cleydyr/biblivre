@@ -30,18 +30,20 @@ import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.utils.Constants;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@MultipartConfig
 public final class SchemaServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

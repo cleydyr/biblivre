@@ -44,6 +44,8 @@ import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.administration.usertype.UserTypeDAOImpl;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDAOImpl;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDAO;
 import biblivre.cataloging.holding.HoldingDAOImpl;
 import biblivre.cataloging.search.SearchDAO;
@@ -69,8 +71,11 @@ import biblivre.login.LoginDAOImpl;
 import biblivre.z3950.Z3950DAO;
 import biblivre.z3950.Z3950DAOImpl;
 import biblivre.z3950.server.Z3950ServerBO;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
@@ -102,6 +107,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
             }
         }
     }
+
+    @Autowired Map<String, PaginableRecordBO> paginableRecordBOs;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -238,5 +245,19 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public Z3950DAO z3950DAO() {
         return Z3950DAOImpl.getInstance();
+    }
+
+    @Bean
+    public Map<RecordType, PaginableRecordBO> paginableRecordBOs() {
+        return paginableRecordBOs.entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> {
+                                    String recordTypeName =
+                                            entry.getKey().replaceFirst("RecordBO", "");
+
+                                    return RecordType.fromString(recordTypeName);
+                                },
+                                Map.Entry::getValue));
     }
 }

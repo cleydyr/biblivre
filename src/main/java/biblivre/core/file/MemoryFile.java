@@ -23,32 +23,15 @@ import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
 
 public class MemoryFile extends BiblivreFile {
 
-    private FileItem fileItem;
     private InputStream inputStream;
 
     public MemoryFile() {}
 
-    public MemoryFile(FileItem item) {
-        this.fileItem = item;
-
-        this.setName(this.fileItem.getName());
-        this.setContentType(this.fileItem.getContentType());
-        this.setSize(this.fileItem.getSize());
-    }
-
     public InputStream getNewInputStream() throws IOException {
-        if (this.fileItem == null) {
-            return this.inputStream;
-        }
-
-        IOUtils.closeQuietly(this.inputStream);
-
-        this.inputStream = this.fileItem.getInputStream();
         return this.inputStream;
     }
 
@@ -68,7 +51,7 @@ public class MemoryFile extends BiblivreFile {
     public boolean exists() {
         try {
             InputStream inputStream = this.getNewInputStream();
-            IOUtils.closeQuietly(inputStream);
+
             return inputStream != null;
         } catch (Exception e) {
             return false;

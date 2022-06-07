@@ -28,20 +28,17 @@ import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpSession;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 
 public class ExtendedRequest extends HttpServletRequestWrapper {
@@ -54,7 +51,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private Map<String, String> multiPartParameters;
     private Map<String, MemoryFile> multiPartFiles;
 
-    public ExtendedRequest(HttpServletRequest request) {
+    public ExtendedRequest(HttpServletRequest request) throws IOException, ServletException {
         super(request);
 
         String path = request.getServletPath();
@@ -63,10 +60,10 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
             return;
         }
 
-        this.loadMultiPart();
         this.loadSchemaAndController();
         this.loadLanguage();
         this.loadTranslationsMap();
+        this.loadMultiPart();
     }
 
     public String getLocalizedText(String key) {
@@ -256,26 +253,34 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         return 0;
     }
 
-    private void loadMultiPart() {
-        this.multiPart = ServletFileUpload.isMultipartContent(this);
+    private void loadMultiPart() throws IOException, ServletException {
+        Collection<Part> parts = getParts();
+
+        this.multiPart = parts.isEmpty();
 
         if (this.multiPart) {
             this.multiPartParameters = new HashMap<>();
             this.multiPartFiles = new HashMap<>();
 
             try {
-                FileItemFactory factory = new DiskFileItemFactory();
-                ServletFileUpload upload = new ServletFileUpload(factory);
-                List<FileItem> items = upload.parseRequest(this);
+                for (Part part : parts) {
+                    MemoryFile file = new MemoryFile();
 
-                for (FileItem item : items) {
-                    if (item.isFormField()) {
-                        this.multiPartParameters.put(item.getFieldName(), item.getString());
-                    } else {
-                        MemoryFile file = new MemoryFile(item);
+                    file.setContentType(part.getContentType());
 
-                        this.multiPartFiles.put(item.getFieldName(), file);
-                    }
+                    file.setName(part.getSubmittedFileName());
+
+                    file.setInputStream(part.getInputStream());
+
+                    multiPartFiles.put(part.getName(), file);
+                    //                    if (item.isFormField()) {
+                    //                        this.multiPartParameters.put(item.getFieldName(),
+                    // item.getString());
+                    //                    } else {
+                    //                        MemoryFile file = new MemoryFile(item);
+                    //
+                    //                        this.multiPartFiles.put(item.getFieldName(), file);
+                    //                    }
                 }
             } catch (Exception e) {
                 // TODO: handle exception

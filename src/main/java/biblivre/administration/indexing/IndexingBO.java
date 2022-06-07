@@ -24,6 +24,7 @@ import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabSubfieldDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractBO;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class IndexingBO extends AbstractBO {
     private volatile boolean reindexingAuthoritiesBase = false;
     private volatile boolean reindexingVocabularyBase = false;
 
-    private Map<String, RecordBO> recordBOs;
+    private Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
     public void reindex(RecordType recordType) {
         if (this.getLockState(recordType)) {
@@ -58,7 +59,7 @@ public class IndexingBO extends AbstractBO {
                 List<FormTabSubfieldDTO> autocompleteSubfields =
                         Fields.getAutocompleteSubFields(recordType);
 
-                RecordBO rbo = recordBOs.get(recordType.name());
+                PaginableRecordBO rbo = paginableRecordBOs.get(recordType);
 
                 int recordCount = rbo.count();
                 int limit = 30;
@@ -134,7 +135,7 @@ public class IndexingBO extends AbstractBO {
     public int[] getReindexProgress(RecordType recordType) {
         int progress[] = new int[2];
 
-        RecordBO rbo = recordBOs.get(recordType.name());
+        RecordBO rbo = paginableRecordBOs.get(recordType.name());
 
         progress[0] = this.countIndexed(recordType);
         progress[1] = rbo.count();
@@ -143,7 +144,7 @@ public class IndexingBO extends AbstractBO {
     }
 
     public boolean isIndexOutdated() {
-        Stream<RecordBO> stream = recordBOs.values().stream();
+        Stream<PaginableRecordBO> stream = paginableRecordBOs.values().stream();
 
         return stream.anyMatch(this::_hasOutdatedIndexCount);
     }
@@ -172,8 +173,8 @@ public class IndexingBO extends AbstractBO {
     }
 
     @Autowired
-    public void setRecordBOs(Map<String, RecordBO> recordBOs) {
-        this.recordBOs = recordBOs;
+    public void setPaginableRecordBOs(Map<RecordType, PaginableRecordBO> paginableRecordBOs) {
+        this.paginableRecordBOs = paginableRecordBOs;
     }
 
     @Autowired

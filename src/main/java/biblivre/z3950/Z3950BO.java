@@ -26,7 +26,6 @@ import biblivre.core.DTOCollection;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.utils.Constants;
 import biblivre.z3950.client.Z3950Client;
-import biblivre.z3950.client.config.Z3950Config;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,19 +34,17 @@ import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Z3950BO extends AbstractBO {
+    @Autowired Z3950Client z3950Client;
 
-    private static ApplicationContext context;
     private Z3950DAO z3950DAO;
 
     public List<Z3950RecordDTO> search(List<Z3950AddressDTO> servers, Pair<String, String> search) {
-        Z3950Client z3950Client = this.getContext().getBean(Z3950Client.class);
         List<Z3950RecordDTO> dtoList = new ArrayList<>();
+
         int limit = Configurations.getInt(Constants.CONFIG_Z3950_RESULT_LIMIT, 100);
 
         for (Z3950AddressDTO searchServer : servers) {
@@ -104,8 +101,7 @@ public class Z3950BO extends AbstractBO {
     }
 
     public Z3950AddressDTO findById(int id) {
-        List<Integer> ids = new ArrayList<>();
-        ids.add(id);
+        List<Integer> ids = List.of(id);
 
         List<Z3950AddressDTO> list = this.z3950DAO.list(ids);
 
@@ -116,27 +112,11 @@ public class Z3950BO extends AbstractBO {
         return this.z3950DAO.list(ids);
     }
 
-    private ApplicationContext getContext() {
-        if (Z3950BO.context == null) {
-            try {
-                Z3950BO.context = new AnnotationConfigApplicationContext(Z3950Config.class);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        return Z3950BO.context;
-    }
-
     public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
         return this.z3950DAO.saveFromBiblivre3(dtoList);
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(Z3950BO.class);
-
-    public static void setContext(ApplicationContext context) {
-        Z3950BO.context = context;
-    }
 
     @Autowired
     public void setZ3950DAO(Z3950DAO z3950dao) {
