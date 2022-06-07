@@ -291,11 +291,7 @@ public abstract class RecordBO extends AbstractBO {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        populateDetails(
-                dto,
-                RecordBO.MARC_INFO
-                        | RecordBO.HOLDING_INFO
-                        | RecordBO.HOLDING_LIST);
+        populateDetails(dto, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.HOLDING_LIST);
         return dto;
     }
 
