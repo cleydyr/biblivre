@@ -429,13 +429,8 @@ public class Translations extends StaticBO {
 
         Pair<String, String> pair = Pair.of(schema, language);
 
-        TranslationsMap map = Translations.translations.get(pair);
-
-        if (map == null) {
-            map = Translations.loadLanguage(language);
-        }
-
-        return map;
+        return Translations.translations.computeIfAbsent(
+                pair, p -> Translations.loadLanguage(language));
     }
 
     public static boolean save(
