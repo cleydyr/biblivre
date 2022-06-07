@@ -6,7 +6,7 @@ services:
     - "$APP_HTTP_HOST_PORT:8080"
     - "$APP_DEBUG_HOST_PORT:8000"
     environment:
-    - "JAVA_OPTS=\"-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n\""
+    - "JAVA_OPTS=\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\""
     - "DATABASE_HOST_NAME=$DATABASE_HOST_NAME"
     - "DATABASE_PORT=5432"
     - "PGUSER=biblivre"

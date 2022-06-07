@@ -69,11 +69,18 @@ import biblivre.login.LoginDAOImpl;
 import biblivre.z3950.Z3950DAO;
 import biblivre.z3950.Z3950DAOImpl;
 import biblivre.z3950.server.Z3950ServerBO;
+import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
+import jakarta.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
@@ -105,6 +112,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
             }
         }
     }
+
+    private Configuration freemarkerConfiguration;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -243,24 +252,37 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         return Z3950DAOImpl.getInstance();
     }
 
+    @Autowired ServletContext servletContext;
+
     @Bean
-    public Configuration freemarkerConfig() {
-        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_28);
+    public Configuration freemarkerConfig() throws IOException {
+        try {
+            freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_28);
 
-        // Set the preferred charset template files are stored in. UTF-8 is
-        // a good choice in most applications:
-        freemarkerConfiguration.setDefaultEncoding(StandardCharsets.UTF_8.name());
+            // Set the preferred charset template files are stored in. UTF-8 is
+            // a good choice in most applications:
+            freemarkerConfiguration.setDefaultEncoding(StandardCharsets.UTF_8.name());
 
-        // Sets how errors will appear.
-        // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
-        freemarkerConfiguration.setTemplateExceptionHandler(
-                TemplateExceptionHandler.RETHROW_HANDLER);
+            // Sets how errors will appear.
+            // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
+            freemarkerConfiguration.setTemplateExceptionHandler(
+                    TemplateExceptionHandler.RETHROW_HANDLER);
 
-        // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
-        freemarkerConfiguration.setLogTemplateExceptions(false);
+            // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+            freemarkerConfiguration.setLogTemplateExceptions(false);
 
-        // Wrap unchecked exceptions thrown during template processing in
-        freemarkerConfiguration.setWrapUncheckedExceptions(true);
+            // Wrap unchecked exceptions thrown during template processing in
+            freemarkerConfiguration.setWrapUncheckedExceptions(true);
+
+            URL resource = servletContext.getResource("/freemarker");
+
+            File file = Paths.get(resource.toURI()).toFile();
+
+            freemarkerConfiguration.setTemplateLoader(new FileTemplateLoader(file));
+
+        } catch (Exception exception) {
+            logger.fatal("can't configure freemarker", exception);
+        }
 
         return freemarkerConfiguration;
     }
