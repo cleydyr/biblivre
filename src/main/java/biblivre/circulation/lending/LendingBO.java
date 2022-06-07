@@ -34,13 +34,13 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.PrinterType;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
@@ -69,6 +69,7 @@ public class LendingBO {
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
     private LendingDAO lendingDAO;
+    private Configuration freemarkerConfiguration;
 
     public LendingDTO get(Integer lendingId) {
         return this.lendingDAO.get(lendingId);
@@ -643,7 +644,7 @@ public class LendingBO {
 
         Template template = null;
 
-        template = FreemarkerTemplateHelper.freemarkerConfiguration.getTemplate("receipt.ftl");
+        template = freemarkerConfiguration.getTemplate("receipt.ftl");
 
         Map<String, Object> root = new HashMap<>();
 
@@ -803,6 +804,11 @@ public class LendingBO {
     @Autowired
     public void setLendingDAO(LendingDAO lendingDAO) {
         this.lendingDAO = lendingDAO;
+    }
+
+    @Autowired
+    public void setFreemarkerConfiguration(Configuration freemarkerConfiguration) {
+        this.freemarkerConfiguration = freemarkerConfiguration;
     }
 
     public LendingDTO getCurrentLending(HoldingDTO holding) {

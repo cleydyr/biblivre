@@ -19,22 +19,14 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
-import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
-import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
-import freemarker.template.Template;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -534,38 +526,6 @@ public class Translations extends StaticBO {
         locale = Translations.toLocale(language.split("-")[0]);
 
         return LocaleUtils.isAvailableLocale(locale);
-    }
-
-    public static DiskFile createDumpFile(String language) {
-        Translations.reset(language);
-
-        Map<String, TranslationDTO> translations = Translations.get(language).getAll();
-        List<String> list = new ArrayList<>(translations.keySet());
-
-        Collections.sort(list, new NamespaceComparator());
-
-        try {
-            File file = File.createTempFile("biblivre_translations_" + language + "_", ".txt");
-            FileWriter out = new FileWriter(file);
-            Template template =
-                    FreemarkerTemplateHelper.freemarkerConfiguration.getTemplate(
-                            "translations_dump.ftl");
-            Map<String, Object> root = new HashMap<>();
-
-            root.put("translations", translations);
-
-            template.process(root, out);
-
-            out.flush();
-
-            out.close();
-
-            return new DiskFile(file, "x-download");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Translations.logger.error(e.getMessage(), e);
-        }
-        return null;
     }
 
     private static synchronized TranslationsMap loadLanguage(String language) {

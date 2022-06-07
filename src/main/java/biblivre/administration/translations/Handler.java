@@ -26,10 +26,19 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.LanguageDTO;
 import biblivre.core.translations.Languages;
+import biblivre.core.translations.NamespaceComparator;
+import biblivre.core.translations.TranslationDTO;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -37,10 +46,16 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.administration.translations.Handler")
 public class Handler extends AbstractHandler {
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+
+    private Configuration freemarkerConfiguration;
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {
 
@@ -74,7 +89,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        final DiskFile exportFile = Translations.createDumpFile(language);
+        final DiskFile exportFile = createDumpFile(language);
 
         exportFile.setName("biblivre_translations_" + System.currentTimeMillis() + "_" + ".txt");
 
@@ -300,5 +315,39 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
             return;
         }
+    }
+
+    public DiskFile createDumpFile(String language) {
+        Translations.reset(language);
+
+        Map<String, TranslationDTO> translations = Translations.get(language).getAll();
+        List<String> list = new ArrayList<>(translations.keySet());
+
+        Collections.sort(list, new NamespaceComparator());
+
+        try {
+            File file = File.createTempFile("biblivre_translations_" + language + "_", ".txt");
+            FileWriter out = new FileWriter(file);
+            Template template = freemarkerConfiguration.getTemplate("translations_dump.ftl");
+            Map<String, Object> root = new HashMap<>();
+
+            root.put("translations", translations);
+
+            template.process(root, out);
+
+            out.flush();
+
+            out.close();
+
+            return new DiskFile(file, "x-download");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Autowired
+    public void setFreemarkerConfiguration(Configuration freemarkerConfiguration) {
+        this.freemarkerConfiguration = freemarkerConfiguration;
     }
 }

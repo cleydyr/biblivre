@@ -30,6 +30,7 @@ import biblivre.core.AbstractBO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -135,7 +136,7 @@ public class IndexingBO extends AbstractBO {
     public int[] getReindexProgress(RecordType recordType) {
         int progress[] = new int[2];
 
-        RecordBO rbo = paginableRecordBOs.get(recordType.name());
+        RecordBO rbo = paginableRecordBOs.get(recordType);
 
         progress[0] = this.countIndexed(recordType);
         progress[1] = rbo.count();
@@ -173,8 +174,18 @@ public class IndexingBO extends AbstractBO {
     }
 
     @Autowired
-    public void setPaginableRecordBOs(Map<RecordType, PaginableRecordBO> paginableRecordBOs) {
-        this.paginableRecordBOs = paginableRecordBOs;
+    public void setPaginableRecordBOs(Map<String, PaginableRecordBO> paginableRecordBOs) {
+        this.paginableRecordBOs =
+                paginableRecordBOs.entrySet().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        entry -> {
+                                            String recordTypeName =
+                                                    entry.getKey().replaceFirst("RecordBO", "");
+
+                                            return RecordType.fromString(recordTypeName);
+                                        },
+                                        Map.Entry::getValue));
     }
 
     @Autowired

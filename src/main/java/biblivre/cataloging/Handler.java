@@ -46,6 +46,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
@@ -306,8 +307,18 @@ public class Handler extends AbstractHandler {
     }
 
     @Autowired
-    public void setPaginableRecordBOs(Map<RecordType, PaginableRecordBO> paginableRecordBOs) {
-        this.paginableRecordBOs = paginableRecordBOs;
+    public void setPaginableRecordBOs(Map<String, PaginableRecordBO> paginableRecordBOs) {
+        this.paginableRecordBOs =
+                paginableRecordBOs.entrySet().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        entry -> {
+                                            String recordTypeName =
+                                                    entry.getKey().replaceFirst("RecordBO", "");
+
+                                            return RecordType.fromString(recordTypeName);
+                                        },
+                                        Map.Entry::getValue));
     }
 
     @Autowired

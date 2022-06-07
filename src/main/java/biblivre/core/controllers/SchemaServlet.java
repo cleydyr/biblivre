@@ -24,7 +24,6 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
@@ -174,12 +173,6 @@ public final class SchemaServlet extends HttpServlet {
 
             xRequest.dispatch(page, xResponse);
         }
-    }
-
-    @Override
-    public void init() throws ServletException {
-        FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
-                getServletContext(), "/freemarker");
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);

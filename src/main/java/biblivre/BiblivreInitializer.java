@@ -44,8 +44,6 @@ import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.administration.usertype.UserTypeDAOImpl;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDAOImpl;
-import biblivre.cataloging.bibliographic.PaginableRecordBO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDAO;
 import biblivre.cataloging.holding.HoldingDAOImpl;
 import biblivre.cataloging.search.SearchDAO;
@@ -71,11 +69,11 @@ import biblivre.login.LoginDAOImpl;
 import biblivre.z3950.Z3950DAO;
 import biblivre.z3950.Z3950DAOImpl;
 import biblivre.z3950.server.Z3950ServerBO;
-import java.util.Map;
-import java.util.stream.Collectors;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateExceptionHandler;
+import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
@@ -107,8 +105,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
             }
         }
     }
-
-    @Autowired Map<String, PaginableRecordBO> paginableRecordBOs;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -248,16 +244,24 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public Map<RecordType, PaginableRecordBO> paginableRecordBOs() {
-        return paginableRecordBOs.entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                entry -> {
-                                    String recordTypeName =
-                                            entry.getKey().replaceFirst("RecordBO", "");
+    public Configuration freemarkerConfig() {
+        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_28);
 
-                                    return RecordType.fromString(recordTypeName);
-                                },
-                                Map.Entry::getValue));
+        // Set the preferred charset template files are stored in. UTF-8 is
+        // a good choice in most applications:
+        freemarkerConfiguration.setDefaultEncoding(StandardCharsets.UTF_8.name());
+
+        // Sets how errors will appear.
+        // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
+        freemarkerConfiguration.setTemplateExceptionHandler(
+                TemplateExceptionHandler.RETHROW_HANDLER);
+
+        // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+        freemarkerConfiguration.setLogTemplateExceptions(false);
+
+        // Wrap unchecked exceptions thrown during template processing in
+        freemarkerConfiguration.setWrapUncheckedExceptions(true);
+
+        return freemarkerConfiguration;
     }
 }
