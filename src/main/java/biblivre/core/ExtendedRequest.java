@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.MediaType;
 
 public class ExtendedRequest extends HttpServletRequestWrapper {
     private TranslationsMap translationsMap;
@@ -254,6 +255,10 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     private void loadMultiPart() throws IOException, ServletException {
+        if (!MediaType.MULTIPART_FORM_DATA_VALUE.equals(getContentType())) {
+            return;
+        }
+
         Collection<Part> parts = getParts();
 
         this.multiPart = parts.isEmpty();
