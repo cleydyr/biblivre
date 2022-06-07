@@ -599,7 +599,7 @@ public class Translations extends StaticBO {
                             translationsMap.put(dto.getKey(), dto);
                         }
 
-                        Translations.translations.put(pair, map);
+                        Translations.translations.put(pair, translationsMap);
                     } else {
                         translationsMap = new TranslationsMap(schema, language, 1);
                     }

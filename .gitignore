@@ -6,3 +6,4 @@
 .settings/
 .svn/
 /target/
+/.apt_generated_tests/

@@ -1,66 +1,12 @@
-import {
-  EuiBadge,
-  EuiBasicTable,
-  EuiButton,
-  EuiButtonEmpty,
-  EuiFieldSearch,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiForm,
-  EuiIcon,
-  EuiLink,
-  EuiSelect,
-  EuiSpacer
-} from '@elastic/eui';
 
 import '@elastic/eui/dist/eui_theme_light.css';
+import { useState } from 'react';
+import AccessCardScreen from './AccessCardScreen';
+import { AccessCard, AccessCardStatus } from './Card';
+import { SearchResponse } from './Response';
+import { ReponseLaxedTypeTransformer, ResponseLaxedType } from './ResponseLaxedType';
 
-interface Sort {
-  unsorted: boolean
-  sorted: boolean
-  empty: boolean
-}
-
-interface Pageable {
-  paged: boolean
-  pageNumber: number
-  offset: number
-  pageSize: number
-  unpaged: boolean
-  sort: Sort
-}
-
-type AccessCardStatus = 'AVAILABLE' | 'IN_USE' | 'BLOCKED' | 'IN_USE_AND_BLOCKED' | 'CANCELLED'
-
-interface Card {
-  code: string,
-  createdBy: number,
-  created: string,
-  modified: string,
-  modifiedBy: number,
-  id: number,
-  accessCardStatus: AccessCardStatus
-}
-
-interface SearchData {
-  number: number
-  last: boolean
-  numberOfElements: number
-  size: number
-  totalPages: number
-  pageable: Pageable
-  sort: Sort
-  content: Card[]
-  first: boolean
-  totalElements: number,
-  empty: boolean
-}
-interface Response {
-  search: SearchData,
-  success: boolean,
-}
-
-const response: Response = {
+const rawResponse: SearchResponse<ResponseLaxedType<AccessCard>> = {
   "search": {
     "number": 0,
     "last": true,
@@ -154,7 +100,7 @@ const response: Response = {
         "created": "2022-05-31T08:19:51.662",
         "modified": "2022-05-31T08:19:51.662",
         "modifiedBy": 1,
-        "id": 13,
+        "id": 113,
         "accessCardStatus": "IN_USE"
       },
       {
@@ -163,7 +109,7 @@ const response: Response = {
         "created": "2022-05-30T21:35:09.536",
         "modified": "2022-05-30T21:35:09.536",
         "modifiedBy": 1,
-        "id": 5,
+        "id": 105,
         "accessCardStatus": "CANCELLED"
       },
       {
@@ -172,7 +118,7 @@ const response: Response = {
         "created": "2022-05-30T20:54:24.322",
         "modified": "2022-05-30T20:54:24.322",
         "modifiedBy": 1,
-        "id": 6,
+        "id": 106,
         "accessCardStatus": "AVAILABLE"
       },
       {
@@ -181,7 +127,7 @@ const response: Response = {
         "created": "2022-05-30T21:25:25.162",
         "modified": "2022-05-30T21:25:25.162",
         "modifiedBy": 1,
-        "id": 4,
+        "id": 104,
         "accessCardStatus": "BLOCKED"
       },
       {
@@ -190,7 +136,7 @@ const response: Response = {
         "created": "2022-05-30T21:19:41.543715",
         "modified": "2022-05-30T21:19:41.543715",
         "modifiedBy": 1,
-        "id": 3,
+        "id": 103,
         "accessCardStatus": "AVAILABLE"
       },
       {
@@ -199,7 +145,7 @@ const response: Response = {
         "created": "2022-05-30T21:14:32.549051",
         "modified": "2022-05-30T21:14:32.549051",
         "modifiedBy": 1,
-        "id": 1,
+        "id": 101,
         "accessCardStatus": "IN_USE_AND_BLOCKED"
       },
       {
@@ -208,7 +154,7 @@ const response: Response = {
         "created": "2022-05-30T21:17:53.578356",
         "modified": "2022-05-30T21:17:53.578356",
         "modifiedBy": 1,
-        "id": 2,
+        "id": 102,
         "accessCardStatus": "AVAILABLE"
       },
       {
@@ -217,7 +163,7 @@ const response: Response = {
         "created": "2022-05-31T08:19:51.662",
         "modified": "2022-05-31T08:19:51.662",
         "modifiedBy": 1,
-        "id": 13,
+        "id": 213,
         "accessCardStatus": "IN_USE"
       },
       {
@@ -226,7 +172,7 @@ const response: Response = {
         "created": "2022-05-30T21:35:09.536",
         "modified": "2022-05-30T21:35:09.536",
         "modifiedBy": 1,
-        "id": 5,
+        "id": 205,
         "accessCardStatus": "CANCELLED"
       },
       {
@@ -235,7 +181,7 @@ const response: Response = {
         "created": "2022-05-30T20:54:24.322",
         "modified": "2022-05-30T20:54:24.322",
         "modifiedBy": 1,
-        "id": 6,
+        "id": 206,
         "accessCardStatus": "AVAILABLE"
       },
       {
@@ -244,7 +190,7 @@ const response: Response = {
         "created": "2022-05-30T21:25:25.162",
         "modified": "2022-05-30T21:25:25.162",
         "modifiedBy": 1,
-        "id": 4,
+        "id": 204,
         "accessCardStatus": "BLOCKED"
       },
       {
@@ -253,7 +199,7 @@ const response: Response = {
         "created": "2022-05-30T21:19:41.543715",
         "modified": "2022-05-30T21:19:41.543715",
         "modifiedBy": 1,
-        "id": 3,
+        "id": 203,
         "accessCardStatus": "AVAILABLE"
       },
       {
@@ -262,7 +208,7 @@ const response: Response = {
         "created": "2022-05-30T21:14:32.549051",
         "modified": "2022-05-30T21:14:32.549051",
         "modifiedBy": 1,
-        "id": 1,
+        "id": 201,
         "accessCardStatus": "IN_USE_AND_BLOCKED"
       },
       {
@@ -271,7 +217,7 @@ const response: Response = {
         "created": "2022-05-30T21:17:53.578356",
         "modified": "2022-05-30T21:17:53.578356",
         "modifiedBy": 1,
-        "id": 2,
+        "id": 202,
         "accessCardStatus": "AVAILABLE"
       },
 
@@ -283,132 +229,66 @@ const response: Response = {
   "success": true
 }
 
-const badgerMapper = (accessCardStatus: AccessCardStatus) => {
-  switch (accessCardStatus) {
-    case 'AVAILABLE':
-      return <EuiBadge color='success'>Disponível</EuiBadge>
-    case 'IN_USE':
-      return <EuiBadge color='warning'>Em uso</EuiBadge>
-    case 'BLOCKED':
-      return <EuiBadge color='danger'>Bloqueado</EuiBadge>
-    case 'CANCELLED':
-      return <EuiBadge color='default'>Cancelado</EuiBadge>
-    case 'IN_USE_AND_BLOCKED':
-      return <EuiBadge color='danger'>Em uso e bloqueado</EuiBadge>
+function parseResponse<T extends object>(response: SearchResponse<ResponseLaxedType<T>>, f: (json: ResponseLaxedType<T>) => T): SearchResponse<T> {
+  return {
+    ...response,
+    search: {
+      ...response.search,
+      content: response.search.content.map(f)
+    }
+  };
+}
+
+function identity<T>(val: T): T {
+  return val
+}
+
+const laxedTransformer: ReponseLaxedTypeTransformer<AccessCard> = {
+  code: identity,
+  createdBy: identity,
+  created: val => new Date(val),
+  modified: val => new Date(val),
+  modifiedBy: identity,
+  id: identity,
+  accessCardStatus: val => AccessCardStatus[val as keyof typeof AccessCardStatus]
+}
+
+function relaxedTransformer(responseLaxedObject: ResponseLaxedType<AccessCard>): AccessCard {
+  return {
+    code: laxedTransformer.code.call(null, responseLaxedObject.code),
+    createdBy: laxedTransformer.createdBy.call(null, responseLaxedObject.createdBy),
+    created: laxedTransformer.created.call(null, responseLaxedObject.created),
+    modified: laxedTransformer.modified.call(null, responseLaxedObject.modified),
+    modifiedBy: laxedTransformer.modifiedBy.call(null, responseLaxedObject.modifiedBy),
+    id: laxedTransformer.id.call(null, responseLaxedObject.id),
+    accessCardStatus: laxedTransformer.accessCardStatus.call(null, responseLaxedObject.accessCardStatus)
   }
 }
 
-const renderFirst = (item: Card, enabled: boolean) => {
-  if (item.accessCardStatus === 'AVAILABLE' || item.accessCardStatus === 'IN_USE') {
-    return (
-      <EuiLink color="danger">Bloquear</EuiLink>
-    );
-  }
-  else if (item.accessCardStatus === 'BLOCKED' || item.accessCardStatus === 'IN_USE_AND_BLOCKED') {
-    return (
-      <EuiLink color="success">Desbloquear</EuiLink>
-    );
-  }
-  else if (item.accessCardStatus === 'CANCELLED') {
-    return (
-      <EuiLink color="success">Recuperar</EuiLink>
-    );
-  }
-  return <></>;
-}
+export const response = parseResponse(rawResponse, relaxedTransformer)
 
-const renderSecond = (item: Card, enabled: boolean) => {
-  if (item.accessCardStatus === 'CANCELLED') {
-    return (
-      <EuiLink color="danger">Excluir</EuiLink>
-    );
-  }
-  return <EuiLink color="danger">Cancelar</EuiLink>;
-}
+const App = () => {
+  const [items, setItems] = useState(response.search.content);
 
-export default () => {
+  const onItemDelete = (accessCard: AccessCard) => {
+    const { id } = accessCard
+
+    setItems(items.filter(item => item.id !== id))
+  }
+
+  const onItemChange = (accessCard: AccessCard) => {
+    const { id, accessCardStatus } = accessCard
+
+    setItems(items.map(item => item.id === id ? { ...item, accessCardStatus } : item))
+  }
+
   return (
-    <div style={{
-      padding: 300
-    }}>
-      <EuiForm>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFieldSearch
-              fullWidth
-              placeholder='Código do cartão'
-              append={<EuiButtonEmpty >
-                <EuiSelect options={[
-                  {
-                    value: 'any',
-                    text: 'Qualquer'
-                  },
-                  {
-                    value: 'available',
-                    text: 'Disponível'
-                  },
-                  {
-                    value: 'inUse',
-                    text: 'Em uso'
-                  },
-                  {
-                    value: 'blocked',
-                    text: 'Bloqueado'
-                  },
-                  {
-                    value: 'inUseBlocked',
-                    text: 'Em uso e bloqueado'
-                  },
-                  {
-                    value: 'cancelled',
-                    text: 'Cancelado'
-                  },
-                ]}
-                />
-              </EuiButtonEmpty>
-              }
-            />
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiButton>Filtrar</EuiButton>
-          </EuiFlexItem>
-          <EuiSpacer></EuiSpacer>
-        </EuiFlexGroup>
-      </EuiForm>
-      <EuiSpacer></EuiSpacer>
-      <EuiBasicTable
-        pagination={{
-          pageIndex: response.search.pageable.pageNumber,
-          pageSize: response.search.pageable.pageSize,
-          totalItemCount: response.search.totalElements
-        }}
-        onChange={() => {}}
-        items={response.search.content}
-        columns={[
-          {
-            field: 'code',
-            name: 'Código',
-          },
-          {
-            field: 'accessCardStatus',
-            name: 'Estado',
-            render: (value: AccessCardStatus, card: Card) => badgerMapper(value)
-          },
-          {
-            name: 'Ações',
-            actions: [
-              {
-                render: renderFirst
-              },
-              {
-                render: renderSecond
-              }
-            ]
-          }
-        ]}
-      >
-
-      </EuiBasicTable>
-    </div>
+    <AccessCardScreen
+      items={items}
+      onItemChange={onItemChange}
+      onItemDelete={onItemDelete}
+    />
   );
-};
+}
+
+export default App

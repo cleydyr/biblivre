@@ -39,6 +39,10 @@
 		<aws.java.sdk.version>2.17.100</aws.java.sdk.version>
 		<spotless.version>2.9.0</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
+		<installDirectory>${project.build.directory}</installDirectory>
+		<nodeVersion>v16.13.2</nodeVersion>
+		<yarnVersion>v1.22.15</yarnVersion>
+		<frontend-src-dir>${project.basedir}/src/main/frontend</frontend-src-dir>
 	</properties>
 
 	<dependencyManagement>
@@ -451,14 +455,10 @@
 				<version>1.6</version>
 
 				<configuration>
-					<workingDirectory>src/main/frontend</workingDirectory>
-					<environmentVariables>
-						<!-- Avoid certificates issues, needed behind a corporate proxy -->
-						<NODE_TLS_REJECT_UNAUTHORIZED>0</NODE_TLS_REJECT_UNAUTHORIZED>
-					</environmentVariables>
-					<installDirectory>target</installDirectory>
-					<nodeVersion>v16.13.2</nodeVersion>
-					<yarnVersion>v1.22.15</yarnVersion>
+					<nodeVersion>${nodeVersion}</nodeVersion>
+					<yarnVersion>${yarnVersion}</yarnVersion>
+					<workingDirectory>${frontend-src-dir}</workingDirectory>
+					<installDirectory>${project.build.directory}</installDirectory>
 				</configuration>
 
 				<executions>
@@ -479,6 +479,28 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>position-react-build</id>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<phase>prepare-package</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${frontend-src-dir}/build</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 
 		<pluginManagement>

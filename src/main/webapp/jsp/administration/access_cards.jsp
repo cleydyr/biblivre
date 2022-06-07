@@ -5,27 +5,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="resources/styles/biblivre.search.css" />
-
-	<script type="text/javascript" src="resources/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="resources/scripts/biblivre.administration.accesscards.search.js"></script>
-	<script type="text/javascript" src="resources/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="resources/scripts/biblivre.administration.accesscards.input.js"></script>
-	<script type="text/javascript">
-		var AccessCardsSearch = CreateSearch(AccessCardsSearchClass, {
-			type: 'administration.accesscards',
-			root: '#access_cards',
-			autoSelect: false,
-			autoSearch: true,
-			enableTabs: false,
-			enableHistory: false
-		});
-
-		AccessCardsInput.type = 'administration.accesscards';
-		AccessCardsInput.root = '#access_cards';
-		AccessCardsInput.search = AccessCardsSearch;
-	</script>
-	
+	<script defer="defer" src="resources/js/main.min.js"></script>
+    <link href="resources/css/main.min.css" rel="stylesheet">
 </layout:head>
 
 <layout:body>
