@@ -70,10 +70,10 @@ public class RecordDTO extends AbstractDTO {
     private transient String humanReadableMarc;
 
     public RecordDTO() {
-		this.record = MarcFactory.newInstance().newRecord();
+        this.record = MarcFactory.newInstance().newRecord();
 
-		this.id = INVALID_ID;
-	}
+        this.id = INVALID_ID;
+    }
 
     public MaterialType getMaterialType() {
         if (this.materialType == null) {

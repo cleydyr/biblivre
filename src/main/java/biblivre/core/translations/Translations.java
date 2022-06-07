@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -428,13 +429,8 @@ public class Translations extends StaticBO {
 
         Pair<String, String> pair = Pair.of(schema, language);
 
-        TranslationsMap map = Translations.translations.get(pair);
-
-        if (map == null) {
-            map = Translations.loadLanguage(language);
-        }
-
-        return map;
+        return Translations.translations.computeIfAbsent(
+                pair, p -> Translations.loadLanguage(language));
     }
 
     public static boolean save(
@@ -573,38 +569,35 @@ public class Translations extends StaticBO {
 
         Pair<String, String> pair = Pair.of(schema, language);
 
-        TranslationsMap map = Translations.translations.get(pair);
-
-        // Checking again for thread safety.
-        if (map != null) {
-            return map;
-        }
-
-        if (Translations.logger.isDebugEnabled()) {
-            Translations.logger.debug("Loading language " + schema + "." + language);
-        }
-
-        return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
-                () -> {
-                    TranslationsMap translationsMap = null;
-
-                    TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
-
-                    if (StringUtils.isNotBlank(language)) {
-                        List<TranslationDTO> list = dao.list(language);
-                        translationsMap = new TranslationsMap(schema, language, list.size());
-
-                        for (TranslationDTO dto : list) {
-                            translationsMap.put(dto.getKey(), dto);
-                        }
-
-                        Translations.translations.put(pair, map);
-                    } else {
-                        translationsMap = new TranslationsMap(schema, language, 1);
+        return Translations.translations.computeIfAbsent(
+                pair,
+                p -> {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Loading language " + schema + "." + language);
                     }
 
-                    return translationsMap;
+                    return SchemaThreadLocal.withSchema(
+                            Constants.GLOBAL_SCHEMA,
+                            () -> {
+                                if (StringUtils.isBlank(language)) {
+                                    return new TranslationsMap(schema, language, 1);
+                                }
+
+                                TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
+
+                                Collection<TranslationDTO> list = dao.list(language);
+
+                                TranslationsMap translationsMap =
+                                        new TranslationsMap(schema, language, list.size());
+
+                                for (TranslationDTO dto : list) {
+                                    translationsMap.put(dto.getKey(), dto);
+                                }
+
+                                Translations.translations.put(pair, translationsMap);
+
+                                return translationsMap;
+                            });
                 });
     }
 }

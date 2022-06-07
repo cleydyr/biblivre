@@ -21,16 +21,12 @@ package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
-import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.PagingDTO;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
-import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 import java.io.File;
@@ -51,7 +47,6 @@ import org.slf4j.LoggerFactory;
 public abstract class RecordBO extends AbstractBO {
 
     protected RecordDAO recordDAO;
-    protected SearchDAO searchDAO;
     private DigitalMediaBO digitalMediaBO;
 
     public static final int FULL = 1 << 0;
@@ -170,26 +165,6 @@ public abstract class RecordBO extends AbstractBO {
         return this.recordDAO.count(search);
     }
 
-    public SearchDTO getSearch(Integer searchId) {
-        SearchDTO search = this.searchDAO.getSearch(searchId, getRecordType());
-
-        if (search != null) {
-            if (search.getPaging() == null) {
-                search.setPaging(new PagingDTO());
-            }
-
-            PagingDTO paging = search.getPaging();
-
-            paging.setRecordsPerPage(
-                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
-
-            paging.setRecordLimit(
-                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
-        }
-
-        return search;
-    }
-
     public List<RecordDTO> populateDetails(List<RecordDTO> list, int mask) {
         for (RecordDTO rdto : list) {
             this.populateDetails(rdto, mask);
@@ -291,11 +266,7 @@ public abstract class RecordBO extends AbstractBO {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        populateDetails(
-                dto,
-                RecordBO.MARC_INFO
-                        | RecordBO.HOLDING_INFO
-                        | RecordBO.HOLDING_LIST);
+        populateDetails(dto, RecordBO.MARC_INFO | RecordBO.HOLDING_INFO | RecordBO.HOLDING_LIST);
         return dto;
     }
 
@@ -358,10 +329,6 @@ public abstract class RecordBO extends AbstractBO {
 
     public void setRecordDAO(RecordDAO recordDAO) {
         this.recordDAO = recordDAO;
-    }
-
-    public void setSearchDAO(SearchDAO seachDAO) {
-        this.searchDAO = seachDAO;
     }
 
     public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {

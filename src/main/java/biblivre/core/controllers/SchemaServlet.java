@@ -237,7 +237,8 @@ public final class SchemaServlet extends HttpServlet {
             IFCacheableJavascript javascript = null;
 
             if (realPath.endsWith(".i18n.js")) {
-                javascript = Translations.get(params[1]);
+                javascript =
+                        SchemaThreadLocal.withSchema(schema, () -> Translations.get(params[1]));
             } else if (realPath.endsWith(".user_fields.js")) {
                 javascript = SchemaThreadLocal.withSchema(schema, UserFields::getFields);
             } else {

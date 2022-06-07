@@ -5,6 +5,7 @@ import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.holding.HoldingBO;
+import biblivre.cataloging.search.SearchDAO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.PagingDTO;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 public abstract class PaginableRecordBO extends RecordBO {
     protected HoldingBO holdingBO;
+    protected SearchDAO searchDAO;
 
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
@@ -123,5 +125,29 @@ public abstract class PaginableRecordBO extends RecordBO {
 
     public void setHoldingBO(HoldingBO holdingBO) {
         this.holdingBO = holdingBO;
+    }
+
+    public SearchDTO getSearch(Integer searchId) {
+        SearchDTO search = this.searchDAO.getSearch(searchId, getRecordType());
+
+        if (search != null) {
+            if (search.getPaging() == null) {
+                search.setPaging(new PagingDTO());
+            }
+
+            PagingDTO paging = search.getPaging();
+
+            paging.setRecordsPerPage(
+                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+
+            paging.setRecordLimit(
+                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+        }
+
+        return search;
+    }
+
+    public void setSearchDAO(SearchDAO seachDAO) {
+        this.searchDAO = seachDAO;
     }
 }
