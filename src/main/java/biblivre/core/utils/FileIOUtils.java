@@ -328,9 +328,7 @@ public class FileIOUtils {
             response.setDateHeader(
                     "Expires", System.currentTimeMillis() + Constants.DEFAULT_EXPIRE_TIME);
 
-            OutputStream output = null;
-            try {
-                output = response.getOutputStream();
+            try (OutputStream output = response.getOutputStream()) {
 
                 if (ranges.isEmpty() || ranges.get(0) == full) {
                     // Return full file.
@@ -405,8 +403,6 @@ public class FileIOUtils {
                 }
             } finally {
                 file.close();
-
-                IOUtils.closeQuietly(output);
             }
 
             return;

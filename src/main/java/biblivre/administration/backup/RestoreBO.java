@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
@@ -226,8 +227,6 @@ public class RestoreBO extends AbstractBO {
 
         ProcessBuilder pb = _createProcessBuilder(transactional);
 
-        BufferedWriter bw = null;
-
         try {
             State.writeLog("Starting psql");
 
@@ -235,57 +234,56 @@ public class RestoreBO extends AbstractBO {
 
             _connectOutputToStateLogger(p);
 
-            bw = _getBufferedWriter(p);
+            try (BufferedWriter bw = _getBufferedWriter(p)) {
 
-            _processRenames(context.getPreRenameSchemas(), bw);
-
-            bw.flush();
-
-            String extension = _getExtension(dto);
-
-            if (restoreSchemas.containsKey(globalSchema)) {
-                _processGlobalSchema(directory, extension, bw);
+                _processRenames(context.getPreRenameSchemas(), bw);
 
                 bw.flush();
-            }
 
-            for (String schema : restoreSchemas.keySet()) {
-                if (!globalSchema.equals(schema)) {
-                    _processSchemaRestores(directory, extension, schema, bw);
+                String extension = _getExtension(dto);
+
+                if (restoreSchemas.containsKey(globalSchema)) {
+                    _processGlobalSchema(directory, extension, bw);
 
                     bw.flush();
                 }
+
+                for (String schema : restoreSchemas.keySet()) {
+                    if (!globalSchema.equals(schema)) {
+                        _processSchemaRestores(directory, extension, schema, bw);
+
+                        bw.flush();
+                    }
+                }
+
+                _processRenames(context.getPostRenameSchemas(), bw);
+
+                bw.flush();
+
+                _processRenames(context.getRestoreRenamedSchemas(), bw);
+
+                bw.flush();
+
+                _postProcessDeletes(context.getDeleteSchemas(), bw);
+
+                bw.flush();
+
+                _postProcessRenames(dto, restoreSchemas, bw);
+
+                _writeLine(bw, _DELETE_FROM_SCHEMAS);
+
+                _writeLine(bw, "ANALYZE");
+
+                bw.close();
+
+                p.waitFor();
+
+                return p.exitValue() == 0;
             }
-
-            _processRenames(context.getPostRenameSchemas(), bw);
-
-            bw.flush();
-
-            _processRenames(context.getRestoreRenamedSchemas(), bw);
-
-            bw.flush();
-
-            _postProcessDeletes(context.getDeleteSchemas(), bw);
-
-            bw.flush();
-
-            _postProcessRenames(dto, restoreSchemas, bw);
-
-            _writeLine(bw, _DELETE_FROM_SCHEMAS);
-
-            _writeLine(bw, "ANALYZE");
-
-            bw.close();
-
-            p.waitFor();
-
-            return p.exitValue() == 0;
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(bw);
         }
 
         return false;
@@ -525,7 +523,7 @@ public class RestoreBO extends AbstractBO {
             try (InputStream content = zipFile.getInputStream(metadata)) {
                 StringWriter writer = new StringWriter();
 
-                IOUtils.copy(content, writer);
+                IOUtils.copy(content, writer, StandardCharsets.UTF_8);
 
                 JSONObject json = new JSONObject(writer.toString());
 

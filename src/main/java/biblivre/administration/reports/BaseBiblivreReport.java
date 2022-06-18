@@ -42,7 +42,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,25 +88,32 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
     protected DiskFile generateReportFile(BaseReportDto reportData, String fileName) {
         Document document = new Document(PageSize.A4);
         DiskFile report = null;
-        FileOutputStream out = null;
+
         try {
             File file = File.createTempFile(fileName, ".pdf");
-            out = new FileOutputStream(file);
-            this.writer = PdfWriter.getInstance(document, out);
-            this.writer.setPageEvent(this);
-            this.writer.setFullCompression();
-            document.open();
-            generateReportBody(document, reportData);
-            this.writer.flush();
-            document.close();
-            report = new DiskFile(file, "application/pdf");
-            report.setName(fileName);
+
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                this.writer = PdfWriter.getInstance(document, out);
+                this.writer.setPageEvent(this);
+                this.writer.setFullCompression();
+
+                document.open();
+
+                generateReportBody(document, reportData);
+
+                this.writer.flush();
+
+                document.close();
+
+                report = new DiskFile(file, "application/pdf");
+
+                report.setName(fileName);
+            }
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
             return null;
-        } finally {
-            IOUtils.closeQuietly(out);
         }
+
         return report;
     }
 

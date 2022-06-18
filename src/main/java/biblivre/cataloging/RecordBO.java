@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
 import org.slf4j.Logger;
@@ -126,26 +125,22 @@ public abstract class RecordBO extends AbstractBO {
 
         Map<Integer, RecordDTO> records = this.map(ids);
 
-        FileOutputStream out = null;
-
         try {
             File file = File.createTempFile("biblivre", ".mrc");
 
-            out = new FileOutputStream(file);
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                MarcStreamWriter writer = new MarcStreamWriter(out);
 
-            MarcStreamWriter writer = new MarcStreamWriter(out);
+                for (RecordDTO dto : records.values()) {
+                    writer.write(dto.getRecord());
+                }
 
-            for (RecordDTO dto : records.values()) {
-                writer.write(dto.getRecord());
+                writer.close();
+
+                return new DiskFile(file, "x-download");
             }
-
-            writer.close();
-
-            return new DiskFile(file, "x-download");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(out);
         }
 
         return null;
