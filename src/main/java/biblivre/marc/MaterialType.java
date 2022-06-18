@@ -76,10 +76,10 @@ public enum MaterialType implements BiblivreEnum {
         searchableMaterials = Collections.unmodifiableList(tempSearchableMaterials);
     }
 
-    private char typeOfRecord;
-    private String implDefined1;
-    private boolean searchable;
-    private RecordType recordType;
+    private final char typeOfRecord;
+    private final String implDefined1;
+    private final boolean searchable;
+    private final RecordType recordType;
 
     private MaterialType(char typeOfRecord, String implDef1, boolean searchable) {
         this(typeOfRecord, implDef1, searchable, RecordType.BIBLIO);
