@@ -314,7 +314,7 @@ public class Handler extends AbstractHandler {
         this.importBO = importBO;
     }
 
-    public void setZ3950BO(Z3950BO z3950bo) {
-        z3950BO = z3950bo;
+    public void setZ3950BO(Z3950BO z3950BO) {
+        this.z3950BO = z3950BO;
     }
 }
