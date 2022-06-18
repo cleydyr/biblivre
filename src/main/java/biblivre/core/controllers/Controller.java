@@ -230,7 +230,7 @@ public abstract class Controller {
 
         Class<? extends AbstractHandler> lookupClass = this.handlerClass;
 
-        while (method == null & !lookupClass.equals(AbstractHandler.class)) {
+        while (method == null && !lookupClass.equals(AbstractHandler.class)) {
             try {
                 method =
                         lookupClass.getDeclaredMethod(
