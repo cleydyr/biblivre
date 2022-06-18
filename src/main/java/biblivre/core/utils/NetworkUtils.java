@@ -52,10 +52,7 @@ public class NetworkUtils {
                 for (int i = 0; i < ips.length; i++) {
                     final String proxy = ips[i].trim();
                     if (!"unknown".equals(proxy) && !proxy.isEmpty()) {
-                        try {
-                            return InetAddress.getByName(proxy);
-                        } catch (UnknownHostException e) {
-                        }
+                        return InetAddress.getByName(proxy);
                     }
                 }
             }

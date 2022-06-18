@@ -770,7 +770,8 @@ public class RestoreBO extends AbstractBO {
         return pb;
     }
 
-    private static void _countRestoreSteps(RestoreDTO dto, File tmpDir, String extension) {
+    private static void _countRestoreSteps(RestoreDTO dto, File tmpDir, String extension)
+            throws IOException {
         long steps = 0;
 
         for (String schema : dto.getRestoreSchemas().keySet()) {

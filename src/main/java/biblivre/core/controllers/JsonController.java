@@ -90,28 +90,25 @@ public class JsonController extends Controller {
             message = new Message();
         }
 
-        try {
-            json.putOnce("success", message.isSuccess());
+        json.putOnce("success", message.isSuccess());
 
-            if (StringUtils.isNotBlank(message.getText())) {
-                json.putOnce("message", this.xRequest.getLocalizedText(message.getText()));
-                json.putOnce("message_level", message.getLevel());
+        if (StringUtils.isNotBlank(message.getText())) {
+            json.putOnce("message", this.xRequest.getLocalizedText(message.getText()));
+            json.putOnce("message_level", message.getLevel());
+        }
+
+        if (StringUtils.isNotBlank(message.getStackTrace(false))) {
+            json.putOnce("stack_trace", message.getStackTrace(false));
+        }
+
+        List<Pair<String, String>> errorList = message.getErrorList();
+
+        if (errorList != null && !json.has("errors")) {
+            for (Pair<String, String> pair : errorList) {
+                JSONObject error = new JSONObject();
+                error.put(pair.getLeft(), this.xRequest.getLocalizedText(pair.getRight()));
+                json.append("errors", error);
             }
-
-            if (StringUtils.isNotBlank(message.getStackTrace(false))) {
-                json.putOnce("stack_trace", message.getStackTrace(false));
-            }
-
-            List<Pair<String, String>> errorList = message.getErrorList();
-
-            if (errorList != null && !json.has("errors")) {
-                for (Pair<String, String> pair : errorList) {
-                    JSONObject error = new JSONObject();
-                    error.put(pair.getLeft(), this.xRequest.getLocalizedText(pair.getRight()));
-                    json.append("errors", error);
-                }
-            }
-        } catch (JSONException je) {
         }
 
         if (this.xRequest.isMultiPart()) {

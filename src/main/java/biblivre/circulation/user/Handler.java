@@ -139,38 +139,35 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        try {
-            String photoData = request.getString("photo_data");
-            if (StringUtils.isNotBlank(photoData)) {
-                MemoryFile file = new MemoryFile();
+        String photoData = request.getString("photo_data");
+        if (StringUtils.isNotBlank(photoData)) {
+            MemoryFile file = new MemoryFile();
 
-                byte[] arr = Base64.getDecoder().decode(photoData);
-                file.setName(user.getName() + ".jpeg");
-                file.setInputStream(new ByteArrayInputStream(arr));
-                file.setSize(arr.length);
+            byte[] arr = Base64.getDecoder().decode(photoData);
+            file.setName(user.getName() + ".jpeg");
+            file.setInputStream(new ByteArrayInputStream(arr));
+            file.setSize(arr.length);
 
-                Integer serial = digitalMediaBO.save(file);
+            Integer serial = digitalMediaBO.save(file);
 
-                String photoId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
+            String photoId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
 
-                String oldPhotoId = user.getPhotoId();
+            String oldPhotoId = user.getPhotoId();
 
-                if (StringUtils.isNotBlank(photoId)) {
-                    user.setPhotoId(photoId);
+            if (StringUtils.isNotBlank(photoId)) {
+                user.setPhotoId(photoId);
 
-                    if (StringUtils.isNotBlank(oldPhotoId)) {
-                        String decodedId = new String(Base64.getDecoder().decode(oldPhotoId));
-                        String[] splitId = decodedId.split(":");
+                if (StringUtils.isNotBlank(oldPhotoId)) {
+                    String decodedId = new String(Base64.getDecoder().decode(oldPhotoId));
+                    String[] splitId = decodedId.split(":");
 
-                        if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-                            // Try to remove the file from Biblivre DB
+                    if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
+                        // Try to remove the file from Biblivre DB
 
-                            digitalMediaBO.delete(Integer.valueOf(splitId[0]), splitId[1]);
-                        }
+                        digitalMediaBO.delete(Integer.valueOf(splitId[0]), splitId[1]);
                     }
                 }
             }
-        } catch (Exception e) {
         }
 
         if (userBO.save(user)) {

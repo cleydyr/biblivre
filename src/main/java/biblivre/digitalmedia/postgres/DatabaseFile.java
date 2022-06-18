@@ -97,30 +97,29 @@ public class DatabaseFile extends BiblivreFile {
     }
 
     @Override
-    public void close() {
-        LargeObject largeObject = this.getLargeObject();
-        if (largeObject != null) {
-            this.setLargeObject(null);
-            try {
+    public void close() throws IOException {
+        try {
+            LargeObject largeObject = this.getLargeObject();
+
+            if (largeObject != null) {
+                this.setLargeObject(null);
+
                 largeObject.close();
-            } catch (SQLException ignore) {
             }
-        }
 
-        Connection con = this.getConnection();
-        if (con != null) {
-            this.setConnection(null);
-            try {
+            Connection con = this.getConnection();
+
+            if (con != null) {
+                this.setConnection(null);
+
                 con.commit();
-            } catch (SQLException ignore) {
-            }
 
-            try {
                 if (!con.isClosed()) {
                     con.close();
                 }
-            } catch (SQLException ignore) {
             }
+        } catch (SQLException sqlException) {
+            throw new IOException(sqlException);
         }
     }
 }

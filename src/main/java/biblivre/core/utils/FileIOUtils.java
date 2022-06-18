@@ -23,11 +23,10 @@ import biblivre.core.file.BiblivreFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.LineNumberReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -504,18 +503,8 @@ public class FileIOUtils {
         return FileIOUtils.getWritablePath(path) != null;
     }
 
-    public static long countLines(File file) {
-        LineNumberReader reader = null;
-        int count = 1;
-        try {
-            reader = new LineNumberReader(new FileReader(file));
-            reader.skip(Long.MAX_VALUE);
-            count = reader.getLineNumber() + 1;
-            reader.close();
-        } catch (Exception e) {
-        }
-
-        return count;
+    public static long countLines(File file) throws IOException {
+        return Files.lines(file.toPath()).count();
     }
 
     public static long countFiles(File file) {

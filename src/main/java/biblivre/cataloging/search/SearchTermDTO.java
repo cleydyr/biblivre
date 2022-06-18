@@ -22,6 +22,7 @@ package biblivre.cataloging.search;
 import biblivre.cataloging.enums.SearchOperator;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.TextUtils;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -78,13 +79,10 @@ public class SearchTermDTO extends AbstractDTO {
         return this.startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(String startDate) throws ParseException {
         this.startDate = null;
         if (StringUtils.isNotBlank(startDate)) {
-            try {
-                this.startDate = TextUtils.parseDate(startDate);
-            } catch (Exception e) {
-            }
+            this.startDate = TextUtils.parseDate(startDate);
         }
     }
 
@@ -92,13 +90,10 @@ public class SearchTermDTO extends AbstractDTO {
         return this.endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(String endDate) throws ParseException {
         this.endDate = null;
         if (StringUtils.isNotBlank(endDate)) {
-            try {
-                this.endDate = TextUtils.parseDate(endDate);
-            } catch (Exception e) {
-            }
+            this.endDate = TextUtils.parseDate(endDate);
         }
     }
 

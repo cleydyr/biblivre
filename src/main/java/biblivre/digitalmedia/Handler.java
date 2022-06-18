@@ -80,15 +80,12 @@ public class Handler extends AbstractHandler {
 
     private BiblivreFile _tryFetchingDBFileWithEncoding(
             String id, String fileId, String fileName, Charset charset) {
-        try {
-            String decodedId = new String(Base64.getDecoder().decode(id), charset);
+        String decodedId = new String(Base64.getDecoder().decode(id), charset);
 
-            String[] splitId = decodedId.split(":");
-            if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-                fileId = splitId[0];
-                fileName = splitId[1];
-            }
-        } catch (Exception e) {
+        String[] splitId = decodedId.split(":");
+        if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
+            fileId = splitId[0];
+            fileName = splitId[1];
         }
 
         if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {

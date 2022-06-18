@@ -177,31 +177,24 @@ public class Handler extends AbstractHandler {
     public void parseMarc(ExtendedRequest request, ExtendedResponse response) {
         String marc = request.getString("marc");
 
-        RecordDTO dto = null;
-        try {
-            HumanReadableMarcReader humanReadableMarcReader =
-                    new HumanReadableMarcReader(marc, RecordStatus.NEW);
+        HumanReadableMarcReader humanReadableMarcReader =
+                new HumanReadableMarcReader(marc, RecordStatus.NEW);
 
-            Record record = humanReadableMarcReader.next();
+        Record record = humanReadableMarcReader.next();
 
-            dto = importBO.dtoFromRecord(record);
-            BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
+        RecordDTO dto = importBO.dtoFromRecord(record);
 
-            if (StringUtils.isNotBlank(rdto.getIsbn())) {
-                List<String> search =
-                        indexingBO.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
-                this.json.putOpt("isbn", !search.isEmpty());
-            } else if (StringUtils.isNotBlank(rdto.getIssn())) {
-                List<String> search =
-                        indexingBO.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
-                this.json.putOpt("issn", !search.isEmpty());
-            } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-                List<String> search =
-                        indexingBO.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
-                this.json.putOpt("isrc", !search.isEmpty());
-            }
+        BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
 
-        } catch (Exception e) {
+        if (StringUtils.isNotBlank(rdto.getIsbn())) {
+            List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
+            this.json.putOpt("isbn", !search.isEmpty());
+        } else if (StringUtils.isNotBlank(rdto.getIssn())) {
+            List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
+            this.json.putOpt("issn", !search.isEmpty());
+        } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
+            List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
+            this.json.putOpt("isrc", !search.isEmpty());
         }
 
         if (dto == null) {

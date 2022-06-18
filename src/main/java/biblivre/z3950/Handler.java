@@ -65,10 +65,7 @@ public class Handler extends AbstractHandler {
         String[] serverIds = servers.split(",");
         List<Integer> ids = new ArrayList<>();
         for (String serverId : serverIds) {
-            try {
-                ids.add(Integer.parseInt(serverId.trim()));
-            } catch (Exception e) {
-            }
+            ids.add(Integer.parseInt(serverId.trim()));
         }
 
         if (ids.isEmpty()) {

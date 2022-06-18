@@ -135,10 +135,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     public Integer getInteger(String key, Integer defaultValue) {
         Integer retValue = defaultValue;
 
-        try {
-            retValue = Integer.valueOf(this.getRequestParameter(key));
-        } catch (NumberFormatException e) {
-        }
+        retValue = Integer.valueOf(this.getRequestParameter(key));
 
         return retValue;
     }
@@ -150,10 +147,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     public Float getFloat(String key, Float defaultValue) {
         Float retValue = defaultValue;
 
-        try {
-            retValue = Float.valueOf(this.getRequestParameter(key));
-        } catch (NumberFormatException e) {
-        }
+        retValue = Float.valueOf(this.getRequestParameter(key));
 
         return retValue;
     }
