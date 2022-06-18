@@ -23,7 +23,7 @@ public enum RecordStatus {
     NEW('n'),
     CORRECTED('c');
 
-    private char code;
+    private final char code;
 
     private RecordStatus(char code) {
         this.code = code;
