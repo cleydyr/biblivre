@@ -95,13 +95,13 @@ public class BiblivreJDBCSearchable extends JDBCSearchable {
 
             String collection = (String) q.getCollections().get(0);
 
-            if ((StringUtils.isBlank(collection)) || collection.equalsIgnoreCase("default")) {
+            if (StringUtils.isBlank(collection) || collection.equalsIgnoreCase("default")) {
                 collection = Z3950ServerBO.getSingleSchema();
             }
 
             SchemaDTO schemaDto = Schemas.getSchema(collection);
 
-            if ((schemaDto == null) || (schemaDto.isDisabled())) {
+            if (schemaDto == null || schemaDto.isDisabled()) {
                 result.setStatus(8);
 
                 return result;

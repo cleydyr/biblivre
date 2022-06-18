@@ -105,7 +105,7 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        boolean success = (disable) ? Schemas.disable(dto) : Schemas.enable(dto);
+        boolean success = disable ? Schemas.disable(dto) : Schemas.enable(dto);
         try {
             this.json.put("success", success);
         } catch (JSONException e) {

@@ -845,7 +845,7 @@ public class RestoreBO extends AbstractBO {
     }
 
     private static String _getExtension(RestoreDTO dto) {
-        return (dto.getBackup().getPath().endsWith("b5bz")) ? "b5b" : "b4b";
+        return dto.getBackup().getPath().endsWith("b5bz") ? "b5b" : "b4b";
     }
 
     private static void _writeLine(BufferedWriter bw, String newLine) {

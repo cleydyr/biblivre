@@ -54,7 +54,7 @@ public class JZKitBackend implements Z3950NonBlockingBackend, ApplicationContext
     public void search(BackendSearchResult bsr) {
         checkSearchSession();
 
-        QueryModel qm = new Type1QueryModel((RPNQuery_type) (bsr.query.o));
+        QueryModel qm = new Type1QueryModel((RPNQuery_type) bsr.query.o);
 
         LandscapeSpecification ls = new SimpleLandscapeSpecification(bsr.database_names);
 
