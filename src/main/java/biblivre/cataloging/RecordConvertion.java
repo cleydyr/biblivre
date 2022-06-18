@@ -34,7 +34,7 @@ public enum RecordConvertion {
     FORM(JsonMarcReader.class),
     HOLDING_FORM(JsonMarcReader.class);
 
-    private Class<? extends MarcReader> readerClass;
+    private final Class<? extends MarcReader> readerClass;
 
     RecordConvertion(Class<? extends MarcReader> readerClass) {
         this.readerClass = readerClass;
