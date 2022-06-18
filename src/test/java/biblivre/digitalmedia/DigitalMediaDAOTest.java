@@ -103,7 +103,7 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
     }
 
     @Test
-    public void testLoad() {
+    public void testLoad() throws IOException {
         int quantity = 5;
 
         for (int i = 0; i < quantity; i++) {
