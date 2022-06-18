@@ -16,6 +16,8 @@ services:
     depends_on:
     - database
     command: sh -c 'wait-for.sh -t 30 database:5432 -- /usr/local/tomcat/bin/catalina.sh run'
+    volumes:
+    - "./logs:/usr/local/tomcat/logs"
   database:
     image: postgres:11
     ports:
