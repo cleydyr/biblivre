@@ -45,6 +45,58 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
     private transient Map<String, IFJson> _extraData = new HashMap<>();
 
+    public AbstractDTO() {}
+
+    public AbstractDTO(JSONObject jsonObject) {
+        Class<?> clazz = this.getClass();
+
+        for (Field field : clazz.getDeclaredFields()) {
+            try {
+                String name = field.getName();
+
+                Class<?> fieldClass = field.getType();
+
+                Object value = null;
+
+                Method setter =
+                        clazz.getDeclaredMethod("set" + StringUtils.capitalize(name), fieldClass);
+
+                if (setter == null) {
+                    continue;
+                }
+
+                if (fieldClass.equals(String.class)) {
+                    value = jsonObject.has(name) ? jsonObject.getString(name) : null;
+                } else if (fieldClass.equals(Integer.class)) {
+                    try {
+                        value = jsonObject.has(name) ? jsonObject.getInt(name) : null;
+                    } catch (Exception e) {
+                        value = -1;
+                    }
+                } else if (fieldClass.equals(Float.class)) {
+                    String sValue =
+                            jsonObject.has(name)
+                                    ? jsonObject.getString(name).replaceAll(",", ".")
+                                    : null;
+                    value = sValue != null ? Float.valueOf(sValue) : null;
+                } else if (fieldClass.equals(Date.class)) {
+                    value = jsonObject.has(name) ? jsonObject.getString(name) : null;
+                    value = value != null ? TextUtils.parseDate((String) value) : null;
+                } else if (fieldClass.equals(Boolean.class) || fieldClass.equals(boolean.class)) {
+                    value = jsonObject.has(name) ? jsonObject.getBoolean(name) : null;
+                }
+
+                if (value == null) {
+                    continue;
+                }
+
+                setter.invoke(this, value);
+            } catch (Exception e) {
+                continue;
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public JSONObject toJSONObject() {
@@ -153,64 +205,6 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
     public String toJSONString() {
         return this.toJSONObject().toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <T extends AbstractDTO> T fromJSONObject(String jsonData) {
-        try {
-            JSONObject json = new JSONObject(jsonData);
-            return this.fromJSONObject(json);
-        } catch (JSONException je) {
-        }
-
-        return (T) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <T extends AbstractDTO> T fromJSONObject(JSONObject json) {
-        Class<?> clazz = this.getClass();
-
-        for (Field field : clazz.getDeclaredFields()) {
-            try {
-                String name = field.getName();
-                Class<?> fieldClass = field.getType();
-                Object value = null;
-
-                Method setter =
-                        clazz.getDeclaredMethod("set" + StringUtils.capitalize(name), fieldClass);
-                if (setter == null) {
-                    continue;
-                }
-
-                if (fieldClass.equals(String.class)) {
-                    value = json.has(name) ? json.getString(name) : null;
-                } else if (fieldClass.equals(Integer.class)) {
-                    try {
-                        value = json.has(name) ? json.getInt(name) : null;
-                    } catch (Exception e) {
-                        value = -1;
-                    }
-                } else if (fieldClass.equals(Float.class)) {
-                    String sValue =
-                            json.has(name) ? json.getString(name).replaceAll(",", ".") : null;
-                    value = sValue != null ? Float.valueOf(sValue) : null;
-                } else if (fieldClass.equals(Date.class)) {
-                    value = json.has(name) ? json.getString(name) : null;
-                    value = value != null ? TextUtils.parseDate((String) value) : null;
-                } else if (fieldClass.equals(Boolean.class) || fieldClass.equals(boolean.class)) {
-                    value = json.has(name) ? json.getBoolean(name) : null;
-                }
-
-                if (value == null) {
-                    continue;
-                }
-
-                setter.invoke(this, value);
-            } catch (Exception e) {
-                continue;
-            }
-        }
-        return (T) this;
     }
 
     public final Date getCreated() {

@@ -33,7 +33,7 @@ public class BriefTabFieldFormatDTO extends AbstractDTO
     public BriefTabFieldFormatDTO() {}
 
     public BriefTabFieldFormatDTO(JSONObject jsonObject) {
-        this.fromJSONObject(jsonObject);
+        super(jsonObject);
     }
 
     public BriefTabFieldFormatDTO(String datafieldTag, String format) {

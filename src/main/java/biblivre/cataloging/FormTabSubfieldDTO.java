@@ -36,8 +36,7 @@ public class FormTabSubfieldDTO extends AbstractDTO {
     private Integer sortOrder;
 
     public FormTabSubfieldDTO(JSONObject jsonObject) {
-        super();
-        this.fromJSONObject(jsonObject);
+        super(jsonObject);
         this.setAutocompleteType(jsonObject.getString("autocomplete_type"));
     }
 

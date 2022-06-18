@@ -41,7 +41,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
     private Integer sortOrder;
 
     public FormTabDatafieldDTO(JSONObject jsonObject) {
-        this.fromJSONObject(jsonObject);
+        super(jsonObject);
         this.subfields = new ArrayList<>();
 
         if (jsonObject.has("subfields")) {
