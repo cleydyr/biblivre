@@ -56,7 +56,8 @@ public enum MaterialType implements BiblivreEnum {
         List<MaterialType> tempBibliographicMaterials = new ArrayList<>();
         List<MaterialType> tempSearchableMaterials = new ArrayList<>();
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+
         sb.append("[");
 
         for (MaterialType material : MaterialType.values()) {
@@ -64,7 +65,9 @@ public enum MaterialType implements BiblivreEnum {
                 tempSearchableMaterials.add(material);
                 if (!material.equals(MaterialType.ALL)) {
                     tempBibliographicMaterials.add(material);
-                    sb.append("\'").append(material.toString()).append("\',");
+                    sb.append('\'');
+                    sb.append(material.toString());
+                    sb.append("\',");
                 }
             }
         }
