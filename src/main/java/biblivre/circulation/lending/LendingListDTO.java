@@ -83,17 +83,4 @@ public class LendingListDTO extends AbstractDTO {
     public void setLendingInfo(List<LendingInfoDTO> lendingInfo) {
         this.lendingInfo = lendingInfo;
     }
-
-    /*
-    @Override
-    public JSONObject toJSONObject() {
-    	JSONObject json = super.toJSONObject();
-
-    	try {
-    		json.put("id", this.getUser().getId());
-    	} catch (JSONException e) { }
-
-    	return json;
-    }*/
-
 }

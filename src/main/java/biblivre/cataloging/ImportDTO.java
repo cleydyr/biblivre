@@ -25,7 +25,6 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.IFJson;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJson {
@@ -147,53 +146,41 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO>, IFJ
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("success", this.getSuccess());
-            json.putOpt("failure", this.getFailure());
-            json.putOpt("found", this.getFound());
-            json.putOpt("format", this.getFormat());
-            json.putOpt("encoding", this.getEncoding());
+        json.putOpt("success", this.getSuccess());
+        json.putOpt("failure", this.getFailure());
+        json.putOpt("found", this.getFound());
+        json.putOpt("format", this.getFormat());
+        json.putOpt("encoding", this.getEncoding());
 
-            for (RecordDTO dto : this.getRecordList()) {
-                json.append("record_list", dto.toJSONObject());
-            }
-
-            JSONObject isbnJSON = new JSONObject();
-            JSONObject issnJSON = new JSONObject();
-            JSONObject isrcJSON = new JSONObject();
-
-            if (this.getFoundISBN() != null) {
-                for (String term : this.getFoundISBN()) {
-                    try {
-                        isbnJSON.putOpt(term, true);
-                    } catch (JSONException e) {
-                    }
-                }
-            }
-
-            if (this.getFoundISSN() != null) {
-                for (String term : this.getFoundISSN()) {
-                    try {
-                        issnJSON.putOpt(term, true);
-                    } catch (JSONException e) {
-                    }
-                }
-            }
-
-            if (this.getFoundISRC() != null) {
-                for (String term : this.getFoundISRC()) {
-                    try {
-                        isrcJSON.putOpt(term, true);
-                    } catch (JSONException e) {
-                    }
-                }
-            }
-
-            json.putOpt("isbn_list", isbnJSON);
-            json.putOpt("issn_list", issnJSON);
-            json.putOpt("isrc_list", isrcJSON);
-        } catch (JSONException e) {
+        for (RecordDTO dto : this.getRecordList()) {
+            json.append("record_list", dto.toJSONObject());
         }
+
+        JSONObject isbnJSON = new JSONObject();
+        JSONObject issnJSON = new JSONObject();
+        JSONObject isrcJSON = new JSONObject();
+
+        if (this.getFoundISBN() != null) {
+            for (String term : this.getFoundISBN()) {
+                isbnJSON.putOpt(term, true);
+            }
+        }
+
+        if (this.getFoundISSN() != null) {
+            for (String term : this.getFoundISSN()) {
+                issnJSON.putOpt(term, true);
+            }
+        }
+
+        if (this.getFoundISRC() != null) {
+            for (String term : this.getFoundISRC()) {
+                isrcJSON.putOpt(term, true);
+            }
+        }
+
+        json.putOpt("isbn_list", isbnJSON);
+        json.putOpt("issn_list", issnJSON);
+        json.putOpt("isrc_list", isrcJSON);
 
         return json;
     }

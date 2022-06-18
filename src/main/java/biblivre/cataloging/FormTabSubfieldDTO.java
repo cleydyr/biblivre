@@ -21,7 +21,6 @@ package biblivre.cataloging;
 
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.core.AbstractDTO;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FormTabSubfieldDTO extends AbstractDTO {
@@ -104,15 +103,12 @@ public class FormTabSubfieldDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("datafield", this.getDatafield());
-            json.putOpt("subfield", this.getSubfield());
-            json.putOpt("collapsed", this.isCollapsed());
-            json.putOpt("repeatable", this.isRepeatable());
-            json.putOpt("autocomplete_type", this.getAutocompleteType());
-            json.putOpt("sortOrder", this.getSortOrder());
-        } catch (JSONException e) {
-        }
+        json.putOpt("datafield", this.getDatafield());
+        json.putOpt("subfield", this.getSubfield());
+        json.putOpt("collapsed", this.isCollapsed());
+        json.putOpt("repeatable", this.isRepeatable());
+        json.putOpt("autocomplete_type", this.getAutocompleteType());
+        json.putOpt("sortOrder", this.getSortOrder());
 
         return json;
     }

@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
     private UserBO userBO;
@@ -55,10 +54,7 @@ public class Handler extends AbstractHandler {
     private UserTypeBO userTypeBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", true);
-        } catch (JSONException e) {
-        }
+        this.json.put("success", true);
     }
 
     public void i18n(ExtendedRequest request, ExtendedResponse response) throws IOException {

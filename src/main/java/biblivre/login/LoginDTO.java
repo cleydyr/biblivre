@@ -21,7 +21,6 @@ package biblivre.login;
 
 import biblivre.core.AbstractDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginDTO extends AbstractDTO {
@@ -94,10 +93,7 @@ public class LoginDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
 
-        try {
-            json.putOpt("employee", Boolean.valueOf(isEmployee()));
-        } catch (JSONException e) {
-        }
+        json.putOpt("employee", Boolean.valueOf(isEmployee()));
 
         return json;
     }

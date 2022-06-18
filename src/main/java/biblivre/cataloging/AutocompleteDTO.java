@@ -20,7 +20,6 @@
 package biblivre.cataloging;
 
 import biblivre.core.AbstractDTO;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AutocompleteDTO extends AbstractDTO {
@@ -97,18 +96,15 @@ public class AutocompleteDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("id", this.getId());
-            json.putOpt("record_id", this.getRecordId());
-            json.putOpt("datafield", this.getDatafield());
-            json.putOpt("subfield", this.getSubfield());
-            json.putOpt("word", this.getWord());
-            json.putOpt("phrase", this.getPhrase());
+        json.putOpt("id", this.getId());
+        json.putOpt("record_id", this.getRecordId());
+        json.putOpt("datafield", this.getDatafield());
+        json.putOpt("subfield", this.getSubfield());
+        json.putOpt("word", this.getWord());
+        json.putOpt("phrase", this.getPhrase());
 
-            if (this.getRecord() != null) {
-                json.putOpt("record", this.getRecord().toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (this.getRecord() != null) {
+            json.putOpt("record", this.getRecord().toJSONObject());
         }
 
         return json;

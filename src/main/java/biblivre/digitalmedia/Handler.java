@@ -30,7 +30,6 @@ import java.nio.charset.Charset;
 import java.util.Base64;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 
 public class Handler extends AbstractHandler {
 
@@ -73,10 +72,7 @@ public class Handler extends AbstractHandler {
         String encodedId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
 
         if (StringUtils.isNotBlank(encodedId)) {
-            try {
-                this.json.put("id", encodedId);
-            } catch (JSONException e) {
-            }
+            this.json.put("id", encodedId);
         } else {
             this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
         }

@@ -98,10 +98,7 @@ public class Handler extends AbstractHandler {
         DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, 1);
         collection.setId(searchId);
 
-        try {
-            this.json.putOpt("search", collection.toJSONObject());
-        } catch (JSONException e) {
-        }
+        this.json.putOpt("search", collection.toJSONObject());
     }
 
     @SuppressWarnings("unchecked")
@@ -122,10 +119,8 @@ public class Handler extends AbstractHandler {
             return;
         }
         DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, page);
-        try {
-            this.json.putOpt("search", collection.toJSONObject());
-        } catch (JSONException e) {
-        }
+
+        this.json.putOpt("search", collection.toJSONObject());
     }
 
     @SuppressWarnings("unchecked")

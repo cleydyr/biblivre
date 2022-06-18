@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONException;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,15 +108,12 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        try {
-            if (list == null) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
-            } else if (list.getSuccess() == 0) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
-            } else {
-                this.json.putOpt("data", list.toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (list == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
+        } else if (list.getSuccess() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
+        } else {
+            this.json.putOpt("data", list.toJSONObject());
         }
     }
 
@@ -169,15 +165,12 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        try {
-            if (list == null) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
-            } else if (list.getSuccess() == 0) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
-            } else {
-                this.json.putOpt("data", list.toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (list == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
+        } else if (list.getSuccess() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
+        } else {
+            this.json.putOpt("data", list.toJSONObject());
         }
     }
 
@@ -211,13 +204,10 @@ public class Handler extends AbstractHandler {
         } catch (Exception e) {
         }
 
-        try {
-            if (dto == null) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_marc");
-            } else {
-                this.json.putOpt("data", dto.toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (dto == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_marc");
+        } else {
+            this.json.putOpt("data", dto.toJSONObject());
         }
     }
 

@@ -24,7 +24,6 @@ import biblivre.core.utils.SchemaUtils;
 import java.io.File;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class BackupDTO extends AbstractDTO {
@@ -133,22 +132,19 @@ public class BackupDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("id", this.getId());
-            json.putOpt("schemas", this.getSchemas());
-            json.putOpt("type", this.getType());
-            json.putOpt("backup_scope", this.getBackupScope());
-            json.putOpt("created", this.getCreated());
+        json.putOpt("id", this.getId());
+        json.putOpt("schemas", this.getSchemas());
+        json.putOpt("type", this.getType());
+        json.putOpt("backup_scope", this.getBackupScope());
+        json.putOpt("created", this.getCreated());
 
-            json.putOpt("steps", this.getSteps());
-            json.putOpt("current_step", this.getCurrentStep());
+        json.putOpt("steps", this.getSteps());
+        json.putOpt("current_step", this.getCurrentStep());
 
-            json.putOpt("downloaded", this.isDownloaded());
+        json.putOpt("downloaded", this.isDownloaded());
 
-            boolean exists = (this.getBackup() != null && this.getBackup().exists());
-            json.putOpt("exists", exists);
-        } catch (JSONException e) {
-        }
+        boolean exists = (this.getBackup() != null && this.getBackup().exists());
+        json.putOpt("exists", exists);
 
         return json;
     }

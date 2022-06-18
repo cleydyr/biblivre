@@ -23,7 +23,6 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LendingInfoDTO extends AbstractDTO {
@@ -80,10 +79,7 @@ public class LendingInfoDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
 
-        try {
-            json.put("id", this.getHolding().getId());
-        } catch (JSONException e) {
-        }
+        json.put("id", this.getHolding().getId());
 
         return json;
     }

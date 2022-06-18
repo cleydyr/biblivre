@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SearchTermDTO extends AbstractDTO {
@@ -111,25 +110,20 @@ public class SearchTermDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.append("terms", StringUtils.join(this.getTerms(), " "));
-            json.putOpt("field", this.getField());
-            json.putOpt("operator", this.getOperator());
+        json.append("terms", StringUtils.join(this.getTerms(), " "));
+        json.putOpt("field", this.getField());
+        json.putOpt("operator", this.getOperator());
 
-            if (this.getStartDate() != null) {
-                json.putOpt(
-                        "start_date",
-                        DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(
-                                this.getStartDate()));
-            }
+        if (this.getStartDate() != null) {
+            json.putOpt(
+                    "start_date",
+                    DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getStartDate()));
+        }
 
-            if (this.getEndDate() != null) {
-                json.putOpt(
-                        "end_date",
-                        DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(
-                                this.getEndDate()));
-            }
-        } catch (JSONException e) {
+        if (this.getEndDate() != null) {
+            json.putOpt(
+                    "end_date",
+                    DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(this.getEndDate()));
         }
 
         return json;

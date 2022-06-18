@@ -27,7 +27,6 @@ import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.marc.MaterialType;
 import java.util.Collections;
 import java.util.List;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.MarcFactory;
@@ -127,18 +126,15 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
 
-        try {
-            json.putOpt("material_type", this.getMaterialType());
-            json.putOpt("record_id", this.getRecordId());
-            json.putOpt("accession_number", this.getAccessionNumber());
-            json.putOpt("location_d", this.getLocationD());
-            json.putOpt("shelf_location", this.getShelfLocation());
-            json.putOpt("availability", this.getAvailability().toString());
+        json.putOpt("material_type", this.getMaterialType());
+        json.putOpt("record_id", this.getRecordId());
+        json.putOpt("accession_number", this.getAccessionNumber());
+        json.putOpt("location_d", this.getLocationD());
+        json.putOpt("shelf_location", this.getShelfLocation());
+        json.putOpt("availability", this.getAvailability().toString());
 
-            if (this.getBiblioRecord() != null) {
-                json.put("biblio", this.getBiblioRecord().toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (this.getBiblioRecord() != null) {
+            json.put("biblio", this.getBiblioRecord().toJSONObject());
         }
 
         return json;
