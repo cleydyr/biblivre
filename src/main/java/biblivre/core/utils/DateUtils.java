@@ -17,7 +17,7 @@ public class DateUtils {
                 days--;
             }
 
-            returnDate.plusDays(1);
+            returnDate = returnDate.plusDays(1);
         }
 
         return returnDate;
