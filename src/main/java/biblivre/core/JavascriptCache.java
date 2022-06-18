@@ -41,12 +41,14 @@ public class JavascriptCache {
                             this.parent.getCacheFileNameSuffix());
             this.cacheFile.deleteOnExit();
 
-            BufferedWriter out =
+            try (BufferedWriter out =
                     new BufferedWriter(
-                            new FileWriterWithEncoding(this.cacheFile, Constants.DEFAULT_CHARSET));
+                            new FileWriterWithEncoding(
+                                    this.cacheFile, Constants.DEFAULT_CHARSET))) {
+                out.write(this.parent.toJavascriptString());
+                out.close();
+            }
 
-            out.write(this.parent.toJavascriptString());
-            out.close();
         } catch (Exception e) {
             this.cacheFile = null;
         }

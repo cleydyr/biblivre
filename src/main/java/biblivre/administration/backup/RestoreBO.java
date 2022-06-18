@@ -448,23 +448,26 @@ public class RestoreBO extends AbstractBO {
     }
 
     private void _connectOutputToStateLogger(Process p) {
-        InputStreamReader input =
-                new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET);
+        try (InputStreamReader input =
+                new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET)) {
 
-        Executor executor = Executors.newSingleThreadScheduledExecutor();
+            Executor executor = Executors.newSingleThreadScheduledExecutor();
 
-        executor.execute(
-                () -> {
-                    String outputLine;
+            executor.execute(
+                    () -> {
+                        String outputLine;
 
-                    try (BufferedReader br = new BufferedReader(input)) {
-                        while ((outputLine = br.readLine()) != null) {
-                            State.writeLog(outputLine);
+                        try (BufferedReader br = new BufferedReader(input)) {
+                            while ((outputLine = br.readLine()) != null) {
+                                State.writeLog(outputLine);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
+        } catch (IOException ioException) {
+            logger.error("error while restoring backup", ioException);
+        }
     }
 
     private synchronized boolean restoreBackupBiblivre3(File sql) {
@@ -475,33 +478,31 @@ public class RestoreBO extends AbstractBO {
         try {
             Process p = pb.start();
 
-            OutputStreamWriter writer =
-                    new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
+            try (OutputStreamWriter writer =
+                            new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
+                    final BufferedWriter bw = new BufferedWriter(writer)) {
 
-            final BufferedWriter bw = new BufferedWriter(writer);
+                _connectOutputToStateLogger(p);
 
-            _connectOutputToStateLogger(p);
+                _validateBackup(sql);
 
-            _validateBackup(sql);
+                Files.lines(sql.toPath())
+                        .filter(StringUtils::isNotBlank)
+                        .filter(RestoreBO::_isNotCommentLine)
+                        .filter(RestoreBO::_isNotProceduralLanguageStatement)
+                        .filter(RestoreBO::_isNotDatabaseStatement)
+                        .map(RestoreBO::_replaceDatabaseConnection)
+                        .map(RestoreBO::_replaceUserIfGrantingOrRevoking)
+                        .map(RestoreBO::_removeLCProperties)
+                        .forEach(
+                                line -> {
+                                    _writeLine(bw, line);
+                                });
 
-            Files.lines(sql.toPath())
-                    .filter(StringUtils::isNotBlank)
-                    .filter(RestoreBO::_isNotCommentLine)
-                    .filter(RestoreBO::_isNotProceduralLanguageStatement)
-                    .filter(RestoreBO::_isNotDatabaseStatement)
-                    .map(RestoreBO::_replaceDatabaseConnection)
-                    .map(RestoreBO::_replaceUserIfGrantingOrRevoking)
-                    .map(RestoreBO::_removeLCProperties)
-                    .forEach(
-                            line -> {
-                                _writeLine(bw, line);
-                            });
+                p.waitFor();
 
-            bw.close();
-
-            p.waitFor();
-
-            return p.exitValue() == 0;
+                return p.exitValue() == 0;
+            }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {

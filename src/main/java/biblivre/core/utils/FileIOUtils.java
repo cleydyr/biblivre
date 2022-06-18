@@ -84,16 +84,10 @@ public class FileIOUtils {
     }
 
     public static void zipFolder(File src, File dest) throws IOException {
-        ZipOutputStream zip = null;
-        FileOutputStream fileWriter = null;
-
-        fileWriter = new FileOutputStream(dest);
-        zip = new ZipOutputStream(fileWriter);
-
-        FileIOUtils.addFolderToZip("", src, zip);
-
-        zip.flush();
-        zip.close();
+        try (FileOutputStream fileWriter = new FileOutputStream(dest);
+                ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
+            FileIOUtils.addFolderToZip("", src, zip);
+        }
     }
 
     private static void addFileToZip(String path, File src, ZipOutputStream zip, boolean flag)
@@ -170,14 +164,10 @@ public class FileIOUtils {
     public static File ungzipBackup(File zip) throws IOException {
         File output = new File(zip.getParent(), zip.getName() + ".sql");
 
-        GZIPInputStream is = new GZIPInputStream(new FileInputStream(zip));
-        OutputStream os = new FileOutputStream(output);
+        try (GZIPInputStream is = new GZIPInputStream(new FileInputStream(zip));
+                OutputStream os = new FileOutputStream(output)) {
 
-        try {
             IOUtils.copy(is, os);
-        } finally {
-            os.close();
-            is.close();
         }
 
         return output;
