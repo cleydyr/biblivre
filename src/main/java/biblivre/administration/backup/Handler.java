@@ -140,7 +140,7 @@ public class Handler extends AbstractHandler {
             this.json.put("success", true);
             this.json.put("current", dto.getCurrentStep());
             this.json.put("total", dto.getSteps());
-            this.json.put("complete", dto.getCurrentStep() == dto.getSteps());
+            this.json.put("complete", dto.getCurrentStep().equals(dto.getSteps()));
         } catch (JSONException e) {
         }
     }
