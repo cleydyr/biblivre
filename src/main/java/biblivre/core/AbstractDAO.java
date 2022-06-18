@@ -87,7 +87,7 @@ public abstract class AbstractDAO {
             }
 
             try {
-                instance = cls.newInstance();
+                instance = cls.getDeclaredConstructor().newInstance();
                 instance.setDataSourceName(dataSourceName);
                 instance.dataSourceProvider = dataSourceProvider;
 

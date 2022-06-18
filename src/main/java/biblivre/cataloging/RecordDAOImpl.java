@@ -752,9 +752,8 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
     }
 
     protected RecordDTO populateDTO(ResultSet rs, Class<? extends RecordDTO> recordClass)
-            throws SQLException, UnsupportedEncodingException, InstantiationException,
-                    IllegalAccessException {
-        RecordDTO dto = recordClass.newInstance();
+            throws Exception {
+        RecordDTO dto = recordClass.getDeclaredConstructor().newInstance();
 
         dto.setIso2709(rs.getBytes("iso2709"));
         dto.setCreated(rs.getTimestamp("created"));
