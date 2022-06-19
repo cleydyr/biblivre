@@ -242,17 +242,17 @@ public class MarcUtils {
             } else {
                 leader.setTypeOfRecord(pLeader.charAt(6));
                 char $07 = pLeader.charAt(7);
-                char $08 = (pLeader.charAt(8)) == 'a' ? 'a' : ' ';
+                char $08 = pLeader.charAt(8) == 'a' ? 'a' : ' ';
                 char[] implDef1 = {$07, $08};
                 leader.setImplDefined1(implDef1);
             }
 
-            char $09 = (pLeader.charAt(9)) == 'a' ? 'a' : ' ';
+            char $09 = pLeader.charAt(9) == 'a' ? 'a' : ' ';
             leader.setCharCodingScheme($09);
             leader.setIndicatorCount(2);
             leader.setSubfieldCodeLength(2);
             leader.setImplDefined2(pLeader.substring(17, 20).toCharArray());
-            leader.setEntryMap((pLeader.substring(20)).toCharArray());
+            leader.setEntryMap(pLeader.substring(20).toCharArray());
         } else {
             leader = MarcUtils.createBasicLeader(materialType, status);
         }

@@ -120,7 +120,8 @@ public abstract class Controller {
                 Object bean = applicationContext.getBean(this.handlerClass);
                 this.handler = (AbstractHandler) bean;
             } catch (NoSuchBeanDefinitionException nsbde) {
-                this.handler = (AbstractHandler) this.handlerClass.newInstance();
+                this.handler =
+                        (AbstractHandler) this.handlerClass.getDeclaredConstructor().newInstance();
             }
 
             String validatorClassName = "biblivre." + module + ".Validator";
@@ -134,7 +135,8 @@ public abstract class Controller {
 
                 validator = (AbstractValidator) bean;
             } catch (NoSuchBeanDefinitionException nsbde) {
-                validator = (AbstractValidator) validatorClass.newInstance();
+                validator =
+                        (AbstractValidator) validatorClass.getDeclaredConstructor().newInstance();
             }
 
             String validationMethodName = "validate_" + action;
@@ -230,7 +232,7 @@ public abstract class Controller {
 
         Class<? extends AbstractHandler> lookupClass = this.handlerClass;
 
-        while (method == null & !lookupClass.equals(AbstractHandler.class)) {
+        while (method == null && !lookupClass.equals(AbstractHandler.class)) {
             try {
                 method =
                         lookupClass.getDeclaredMethod(

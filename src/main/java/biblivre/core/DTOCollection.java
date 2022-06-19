@@ -20,7 +20,6 @@
 package biblivre.core;
 
 import java.util.ArrayList;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DTOCollection<T extends AbstractDTO> extends ArrayList<T> implements IFJson {
@@ -63,12 +62,9 @@ public class DTOCollection<T extends AbstractDTO> extends ArrayList<T> implement
             json = new JSONObject();
         }
 
-        try {
-            json.putOpt("id", this.getId());
-            for (T dto : this) {
-                json.append("data", dto.toJSONObject());
-            }
-        } catch (JSONException e) {
+        json.putOpt("id", this.getId());
+        for (T dto : this) {
+            json.append("data", dto.toJSONObject());
         }
 
         return json;

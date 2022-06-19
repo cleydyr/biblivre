@@ -56,7 +56,8 @@ public enum MaterialType implements BiblivreEnum {
         List<MaterialType> tempBibliographicMaterials = new ArrayList<>();
         List<MaterialType> tempSearchableMaterials = new ArrayList<>();
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+
         sb.append("[");
 
         for (MaterialType material : MaterialType.values()) {
@@ -64,7 +65,9 @@ public enum MaterialType implements BiblivreEnum {
                 tempSearchableMaterials.add(material);
                 if (!material.equals(MaterialType.ALL)) {
                     tempBibliographicMaterials.add(material);
-                    sb.append("\'").append(material.toString()).append("\',");
+                    sb.append('\'');
+                    sb.append(material.toString());
+                    sb.append("\',");
                 }
             }
         }
@@ -76,10 +79,10 @@ public enum MaterialType implements BiblivreEnum {
         searchableMaterials = Collections.unmodifiableList(tempSearchableMaterials);
     }
 
-    private char typeOfRecord;
-    private String implDefined1;
-    private boolean searchable;
-    private RecordType recordType;
+    private final char typeOfRecord;
+    private final String implDefined1;
+    private final boolean searchable;
+    private final RecordType recordType;
 
     private MaterialType(char typeOfRecord, String implDef1, boolean searchable) {
         this(typeOfRecord, implDef1, searchable, RecordType.BIBLIO);

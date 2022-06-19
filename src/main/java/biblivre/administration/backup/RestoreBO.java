@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
@@ -226,8 +227,6 @@ public class RestoreBO extends AbstractBO {
 
         ProcessBuilder pb = _createProcessBuilder(transactional);
 
-        BufferedWriter bw = null;
-
         try {
             State.writeLog("Starting psql");
 
@@ -235,57 +234,56 @@ public class RestoreBO extends AbstractBO {
 
             _connectOutputToStateLogger(p);
 
-            bw = _getBufferedWriter(p);
+            try (BufferedWriter bw = _getBufferedWriter(p)) {
 
-            _processRenames(context.getPreRenameSchemas(), bw);
-
-            bw.flush();
-
-            String extension = _getExtension(dto);
-
-            if (restoreSchemas.containsKey(globalSchema)) {
-                _processGlobalSchema(directory, extension, bw);
+                _processRenames(context.getPreRenameSchemas(), bw);
 
                 bw.flush();
-            }
 
-            for (String schema : restoreSchemas.keySet()) {
-                if (!globalSchema.equals(schema)) {
-                    _processSchemaRestores(directory, extension, schema, bw);
+                String extension = _getExtension(dto);
+
+                if (restoreSchemas.containsKey(globalSchema)) {
+                    _processGlobalSchema(directory, extension, bw);
 
                     bw.flush();
                 }
+
+                for (String schema : restoreSchemas.keySet()) {
+                    if (!globalSchema.equals(schema)) {
+                        _processSchemaRestores(directory, extension, schema, bw);
+
+                        bw.flush();
+                    }
+                }
+
+                _processRenames(context.getPostRenameSchemas(), bw);
+
+                bw.flush();
+
+                _processRenames(context.getRestoreRenamedSchemas(), bw);
+
+                bw.flush();
+
+                _postProcessDeletes(context.getDeleteSchemas(), bw);
+
+                bw.flush();
+
+                _postProcessRenames(dto, restoreSchemas, bw);
+
+                _writeLine(bw, _DELETE_FROM_SCHEMAS);
+
+                _writeLine(bw, "ANALYZE");
+
+                bw.close();
+
+                p.waitFor();
+
+                return p.exitValue() == 0;
             }
-
-            _processRenames(context.getPostRenameSchemas(), bw);
-
-            bw.flush();
-
-            _processRenames(context.getRestoreRenamedSchemas(), bw);
-
-            bw.flush();
-
-            _postProcessDeletes(context.getDeleteSchemas(), bw);
-
-            bw.flush();
-
-            _postProcessRenames(dto, restoreSchemas, bw);
-
-            _writeLine(bw, _DELETE_FROM_SCHEMAS);
-
-            _writeLine(bw, "ANALYZE");
-
-            bw.close();
-
-            p.waitFor();
-
-            return p.exitValue() == 0;
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(bw);
         }
 
         return false;
@@ -448,23 +446,26 @@ public class RestoreBO extends AbstractBO {
     }
 
     private void _connectOutputToStateLogger(Process p) {
-        InputStreamReader input =
-                new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET);
+        try (InputStreamReader input =
+                new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET)) {
 
-        Executor executor = Executors.newSingleThreadScheduledExecutor();
+            Executor executor = Executors.newSingleThreadScheduledExecutor();
 
-        executor.execute(
-                () -> {
-                    String outputLine;
+            executor.execute(
+                    () -> {
+                        String outputLine;
 
-                    try (BufferedReader br = new BufferedReader(input)) {
-                        while ((outputLine = br.readLine()) != null) {
-                            State.writeLog(outputLine);
+                        try (BufferedReader br = new BufferedReader(input)) {
+                            while ((outputLine = br.readLine()) != null) {
+                                State.writeLog(outputLine);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
+        } catch (IOException ioException) {
+            logger.error("error while restoring backup", ioException);
+        }
     }
 
     private synchronized boolean restoreBackupBiblivre3(File sql) {
@@ -475,33 +476,31 @@ public class RestoreBO extends AbstractBO {
         try {
             Process p = pb.start();
 
-            OutputStreamWriter writer =
-                    new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
+            try (OutputStreamWriter writer =
+                            new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
+                    final BufferedWriter bw = new BufferedWriter(writer)) {
 
-            final BufferedWriter bw = new BufferedWriter(writer);
+                _connectOutputToStateLogger(p);
 
-            _connectOutputToStateLogger(p);
+                _validateBackup(sql);
 
-            _validateBackup(sql);
+                Files.lines(sql.toPath())
+                        .filter(StringUtils::isNotBlank)
+                        .filter(RestoreBO::_isNotCommentLine)
+                        .filter(RestoreBO::_isNotProceduralLanguageStatement)
+                        .filter(RestoreBO::_isNotDatabaseStatement)
+                        .map(RestoreBO::_replaceDatabaseConnection)
+                        .map(RestoreBO::_replaceUserIfGrantingOrRevoking)
+                        .map(RestoreBO::_removeLCProperties)
+                        .forEach(
+                                line -> {
+                                    _writeLine(bw, line);
+                                });
 
-            Files.lines(sql.toPath())
-                    .filter(StringUtils::isNotBlank)
-                    .filter(RestoreBO::_isNotCommentLine)
-                    .filter(RestoreBO::_isNotProceduralLanguageStatement)
-                    .filter(RestoreBO::_isNotDatabaseStatement)
-                    .map(RestoreBO::_replaceDatabaseConnection)
-                    .map(RestoreBO::_replaceUserIfGrantingOrRevoking)
-                    .map(RestoreBO::_removeLCProperties)
-                    .forEach(
-                            line -> {
-                                _writeLine(bw, line);
-                            });
+                p.waitFor();
 
-            bw.close();
-
-            p.waitFor();
-
-            return p.exitValue() == 0;
+                return p.exitValue() == 0;
+            }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
@@ -524,7 +523,7 @@ public class RestoreBO extends AbstractBO {
             try (InputStream content = zipFile.getInputStream(metadata)) {
                 StringWriter writer = new StringWriter();
 
-                IOUtils.copy(content, writer);
+                IOUtils.copy(content, writer, StandardCharsets.UTF_8);
 
                 JSONObject json = new JSONObject(writer.toString());
 
@@ -769,7 +768,8 @@ public class RestoreBO extends AbstractBO {
         return pb;
     }
 
-    private static void _countRestoreSteps(RestoreDTO dto, File tmpDir, String extension) {
+    private static void _countRestoreSteps(RestoreDTO dto, File tmpDir, String extension)
+            throws IOException {
         long steps = 0;
 
         for (String schema : dto.getRestoreSchemas().keySet()) {
@@ -845,7 +845,7 @@ public class RestoreBO extends AbstractBO {
     }
 
     private static String _getExtension(RestoreDTO dto) {
-        return (dto.getBackup().getPath().endsWith("b5bz")) ? "b5b" : "b4b";
+        return dto.getBackup().getPath().endsWith("b5bz") ? "b5b" : "b4b";
     }
 
     private static void _writeLine(BufferedWriter bw, String newLine) {

@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -266,63 +265,56 @@ public class BackupBO extends AbstractBO {
     }
 
     private boolean exportDigitalMedia(String schema, File path) {
-        OutputStream writer = null;
         List<DigitalMediaDTO> list = digitalMediaBO.list();
 
-        try {
-            for (DigitalMediaDTO dto : list) {
-                BiblivreFile file = digitalMediaBO.load(dto.getId(), dto.getName());
-                File destination =
-                        new File(
-                                path,
-                                dto.getId()
-                                        + "_"
-                                        + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
-                writer = new FileOutputStream(destination);
-
+        for (DigitalMediaDTO dto : list) {
+            BiblivreFile file = digitalMediaBO.load(dto.getId(), dto.getName());
+            File destination =
+                    new File(
+                            path,
+                            dto.getId()
+                                    + "_"
+                                    + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
+            try (OutputStream writer = new FileOutputStream(destination)) {
                 file.copy(writer);
 
                 file.close();
-            }
+            } catch (IOException ioException) {
+                logger.error("error while exporting digital media", ioException);
 
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            IOUtils.closeQuietly(writer);
+                return false;
+            }
         }
+
+        return true;
     }
 
     private boolean dumpDatabase(ProcessBuilder pb) {
         pb.redirectErrorStream(true);
 
-        BufferedReader br = null;
-
         try {
             Process p = pb.start();
 
-            InputStreamReader isr = new InputStreamReader(p.getInputStream());
-            br = new BufferedReader(isr);
-            String line;
+            try (InputStreamReader isr = new InputStreamReader(p.getInputStream());
+                    BufferedReader br = new BufferedReader(isr)) {
+                String line;
 
-            while ((line = br.readLine()) != null) {
-                // There was a system.out.println here for the 'line' var,
-                // with a FIX_ME tag.  So I changed it to logger.debug().
-                if (logger.isDebugEnabled()) {
-                    logger.debug(line);
+                while ((line = br.readLine()) != null) {
+                    // There was a system.out.println here for the 'line' var,
+                    // with a FIX_ME tag.  So I changed it to logger.debug().
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(line);
+                    }
                 }
+
+                p.waitFor();
+
+                return p.exitValue() == 0;
             }
-
-            p.waitFor();
-
-            return p.exitValue() == 0;
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(br);
         }
 
         return false;

@@ -23,11 +23,10 @@ import biblivre.core.file.BiblivreFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.LineNumberReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -84,16 +83,10 @@ public class FileIOUtils {
     }
 
     public static void zipFolder(File src, File dest) throws IOException {
-        ZipOutputStream zip = null;
-        FileOutputStream fileWriter = null;
-
-        fileWriter = new FileOutputStream(dest);
-        zip = new ZipOutputStream(fileWriter);
-
-        FileIOUtils.addFolderToZip("", src, zip);
-
-        zip.flush();
-        zip.close();
+        try (FileOutputStream fileWriter = new FileOutputStream(dest);
+                ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
+            FileIOUtils.addFolderToZip("", src, zip);
+        }
     }
 
     private static void addFileToZip(String path, File src, ZipOutputStream zip, boolean flag)
@@ -170,14 +163,10 @@ public class FileIOUtils {
     public static File ungzipBackup(File zip) throws IOException {
         File output = new File(zip.getParent(), zip.getName() + ".sql");
 
-        GZIPInputStream is = new GZIPInputStream(new FileInputStream(zip));
-        OutputStream os = new FileOutputStream(output);
+        try (GZIPInputStream is = new GZIPInputStream(new FileInputStream(zip));
+                OutputStream os = new FileOutputStream(output)) {
 
-        try {
             IOUtils.copy(is, os);
-        } finally {
-            os.close();
-            is.close();
         }
 
         return output;
@@ -339,9 +328,7 @@ public class FileIOUtils {
             response.setDateHeader(
                     "Expires", System.currentTimeMillis() + Constants.DEFAULT_EXPIRE_TIME);
 
-            OutputStream output = null;
-            try {
-                output = response.getOutputStream();
+            try (OutputStream output = response.getOutputStream()) {
 
                 if (ranges.isEmpty() || ranges.get(0) == full) {
                     // Return full file.
@@ -416,8 +403,6 @@ public class FileIOUtils {
                 }
             } finally {
                 file.close();
-
-                IOUtils.closeQuietly(output);
             }
 
             return;
@@ -514,18 +499,8 @@ public class FileIOUtils {
         return FileIOUtils.getWritablePath(path) != null;
     }
 
-    public static long countLines(File file) {
-        LineNumberReader reader = null;
-        int count = 1;
-        try {
-            reader = new LineNumberReader(new FileReader(file));
-            reader.skip(Long.MAX_VALUE);
-            count = reader.getLineNumber() + 1;
-            reader.close();
-        } catch (Exception e) {
-        }
-
-        return count;
+    public static long countLines(File file) throws IOException {
+        return Files.lines(file.toPath()).count();
     }
 
     public static long countFiles(File file) {

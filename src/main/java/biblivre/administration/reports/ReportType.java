@@ -37,9 +37,9 @@ public enum ReportType {
     ASSET_HOLDING_BY_DATE("16", "rp16_", true),
     CUSTOM_COUNT("17", "rp17_", false);
 
-    private String id;
-    private String name;
-    private boolean timePeriod;
+    private final String id;
+    private final String name;
+    private final boolean timePeriod;
 
     private ReportType(String id, String name, boolean timePeriod) {
         this.id = id;

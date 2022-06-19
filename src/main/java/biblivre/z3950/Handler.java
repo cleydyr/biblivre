@@ -65,10 +65,7 @@ public class Handler extends AbstractHandler {
         String[] serverIds = servers.split(",");
         List<Integer> ids = new ArrayList<>();
         for (String serverId : serverIds) {
-            try {
-                ids.add(Integer.parseInt(serverId.trim()));
-            } catch (Exception e) {
-            }
+            ids.add(Integer.parseInt(serverId.trim()));
         }
 
         if (ids.isEmpty()) {
@@ -98,10 +95,7 @@ public class Handler extends AbstractHandler {
         DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, 1);
         collection.setId(searchId);
 
-        try {
-            this.json.putOpt("search", collection.toJSONObject());
-        } catch (JSONException e) {
-        }
+        this.json.putOpt("search", collection.toJSONObject());
     }
 
     @SuppressWarnings("unchecked")
@@ -122,10 +116,8 @@ public class Handler extends AbstractHandler {
             return;
         }
         DTOCollection<Z3950RecordDTO> collection = this.paginateResults(results, page);
-        try {
-            this.json.putOpt("search", collection.toJSONObject());
-        } catch (JSONException e) {
-        }
+
+        this.json.putOpt("search", collection.toJSONObject());
     }
 
     @SuppressWarnings("unchecked")
@@ -195,7 +187,7 @@ public class Handler extends AbstractHandler {
         this.biblioRecordBO = biblioRecordBO;
     }
 
-    public void setZ3950BO(Z3950BO z3950bo) {
-        z3950BO = z3950bo;
+    public void setZ3950BO(Z3950BO z3950BO) {
+        this.z3950BO = z3950BO;
     }
 }

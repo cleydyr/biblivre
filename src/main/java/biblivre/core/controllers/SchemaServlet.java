@@ -45,7 +45,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,19 +94,16 @@ public final class SchemaServlet extends HttpServlet {
                 SchemaThreadLocal.withSchema(
                         "public",
                         () -> {
-                            try {
-                                // TODO: Completar com mais mensagens.
-                                // Checking Database
-                                SchemaThreadLocal.setSchema("public");
+                            // TODO: Completar com mais mensagens.
+                            // Checking Database
+                            SchemaThreadLocal.setSchema("public");
 
-                                if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
-                                    json.put("success", false);
-                                    json.put("status_message", "Falha no acesso ao Banco de Dados");
-                                } else {
-                                    json.put("success", true);
-                                    json.put("status_message", "Disponível");
-                                }
-                            } catch (JSONException e) {
+                            if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
+                                json.put("success", false);
+                                json.put("status_message", "Falha no acesso ao Banco de Dados");
+                            } else {
+                                json.put("success", true);
+                                json.put("status_message", "Disponível");
                             }
 
                             return null;

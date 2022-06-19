@@ -35,14 +35,15 @@ public class BibliographyReport extends BaseBiblivreReport {
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
         String ids = dto.getRecordIds();
+
         String[] idArray = ids.split(",");
+
         List<Integer> idList = new ArrayList<>();
+
         for (int i = 0; i < idArray.length; i++) {
-            try {
-                idList.add(Integer.valueOf(idArray[i].trim()));
-            } catch (Exception e) {
-            }
+            idList.add(Integer.valueOf(idArray[i].trim()));
         }
+
         return ReportsDAOImpl.getInstance()
                 .getBibliographyReportData(dto.getAuthorName(), idList.toArray(new Integer[] {}));
     }

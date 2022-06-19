@@ -47,7 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,96 +111,94 @@ public class UserBO extends AbstractBO {
 
     public DiskFile printUserCardsToPDF(LabelPrintDTO dto, TranslationsMap i18n) {
         Document document = new Document();
-        FileOutputStream fos = null;
 
         try {
             File file = File.createTempFile("biblivre_user_cards_", ".pdf");
 
-            fos = new FileOutputStream(file);
-            PdfWriter writer = PdfWriter.getInstance(document, fos);
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                PdfWriter writer = PdfWriter.getInstance(document, fos);
 
-            document.setPageSize(PageSize.A4);
-            document.setMargins(
-                    7.15f * Constants.MM_UNIT,
-                    7.15f * Constants.MM_UNIT,
-                    9.09f * Constants.MM_UNIT,
-                    9.09f * Constants.MM_UNIT);
-            document.open();
-            PdfPTable table = new PdfPTable(3);
-            table.setWidthPercentage(100f);
-            PdfPCell cell;
-            int i = 0;
-            int offset = dto.getOffset();
-            // Fill the empty cell till the startOffset cell
-            for (i = 0; i < offset; i++) {
-                cell = new PdfPCell();
-                cell.setBorder(Rectangle.NO_BORDER);
-                cell.setFixedHeight(46.47f * Constants.MM_UNIT);
-                table.addCell(cell);
-            }
-            Map<Integer, UserDTO> userMap = this.map(dto.getIds());
-            for (UserDTO user : userMap.values()) {
-                String userId = String.valueOf(user.getId());
-                PdfContentByte cb = writer.getDirectContent();
-                Barcode39 code39 = new Barcode39();
-                code39.setExtended(true);
-                while (userId.length() < 10) {
-                    userId = "0" + userId;
-                }
-                code39.setCode(userId);
-                code39.setStartStopText(false);
-                Image image39 = code39.createImageWithBarcode(cb, null, null);
-                image39.scalePercent(110f);
-                Paragraph para = new Paragraph();
-                String userName = user.getName();
-                userName = userName.length() >= 30 ? userName.substring(0, 30) : userName;
-                Phrase p1 = new Phrase(userName + "\n");
-                Phrase p2 = new Phrase(new Chunk(image39, 0, 0));
-                Phrase p3 =
-                        new Phrase(
-                                this.getText(i18n, "circulation.user_field.id")
-                                        + ": "
-                                        + user.getEnrollment()
-                                        + "\n");
-                UserTypeDTO usdto = userTypeBO.get(user.getType());
-                Phrase p4 =
-                        new Phrase(
-                                this.getText(i18n, "circulation.user_field.short_type")
-                                        + ": "
-                                        + usdto.getDescription()
-                                        + "\n\n");
-                para.add(p1);
-                para.add(p3);
-                para.add(p4);
-                para.add(p2);
-                cell = new PdfPCell(para);
-                i++;
-                cell.setFixedHeight(46.47f * Constants.MM_UNIT);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setBorder(Rectangle.NO_BORDER);
-                table.addCell(cell);
-            }
-
-            if ((i % 3) != 0) {
-                while ((i % 3) != 0) {
-                    i++;
+                document.setPageSize(PageSize.A4);
+                document.setMargins(
+                        7.15f * Constants.MM_UNIT,
+                        7.15f * Constants.MM_UNIT,
+                        9.09f * Constants.MM_UNIT,
+                        9.09f * Constants.MM_UNIT);
+                document.open();
+                PdfPTable table = new PdfPTable(3);
+                table.setWidthPercentage(100f);
+                PdfPCell cell;
+                int i = 0;
+                int offset = dto.getOffset();
+                // Fill the empty cell till the startOffset cell
+                for (i = 0; i < offset; i++) {
                     cell = new PdfPCell();
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    cell.setFixedHeight(46.47f * Constants.MM_UNIT);
+                    table.addCell(cell);
+                }
+                Map<Integer, UserDTO> userMap = this.map(dto.getIds());
+                for (UserDTO user : userMap.values()) {
+                    String userId = String.valueOf(user.getId());
+                    PdfContentByte cb = writer.getDirectContent();
+                    Barcode39 code39 = new Barcode39();
+                    code39.setExtended(true);
+                    while (userId.length() < 10) {
+                        userId = "0" + userId;
+                    }
+                    code39.setCode(userId);
+                    code39.setStartStopText(false);
+                    Image image39 = code39.createImageWithBarcode(cb, null, null);
+                    image39.scalePercent(110f);
+                    Paragraph para = new Paragraph();
+                    String userName = user.getName();
+                    userName = userName.length() >= 30 ? userName.substring(0, 30) : userName;
+                    Phrase p1 = new Phrase(userName + "\n");
+                    Phrase p2 = new Phrase(new Chunk(image39, 0, 0));
+                    Phrase p3 =
+                            new Phrase(
+                                    this.getText(i18n, "circulation.user_field.id")
+                                            + ": "
+                                            + user.getEnrollment()
+                                            + "\n");
+                    UserTypeDTO usdto = userTypeBO.get(user.getType());
+                    Phrase p4 =
+                            new Phrase(
+                                    this.getText(i18n, "circulation.user_field.short_type")
+                                            + ": "
+                                            + usdto.getDescription()
+                                            + "\n\n");
+                    para.add(p1);
+                    para.add(p3);
+                    para.add(p4);
+                    para.add(p2);
+                    cell = new PdfPCell(para);
+                    i++;
+                    cell.setFixedHeight(46.47f * Constants.MM_UNIT);
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                     cell.setBorder(Rectangle.NO_BORDER);
                     table.addCell(cell);
                 }
+
+                if ((i % 3) != 0) {
+                    while ((i % 3) != 0) {
+                        i++;
+                        cell = new PdfPCell();
+                        cell.setBorder(Rectangle.NO_BORDER);
+                        table.addCell(cell);
+                    }
+                }
+
+                document.add(table);
+                writer.flush();
+                document.close();
+                fos.close();
+
+                return new DiskFile(file, "application/pdf");
             }
-
-            document.add(table);
-            writer.flush();
-            document.close();
-            fos.close();
-
-            return new DiskFile(file, "application/pdf");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(fos);
         }
 
         return null;

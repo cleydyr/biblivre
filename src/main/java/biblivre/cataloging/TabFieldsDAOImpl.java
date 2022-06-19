@@ -389,10 +389,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
                 pstDatafieldInsert.setInt(8, loggedUser);
                 pstDatafieldInsert.setInt(9, loggedUser);
 
-                try {
-                    pstDatafieldInsert.execute();
-                } catch (Exception e) {
-                }
+                pstDatafieldInsert.execute();
             }
 
             con.setAutoCommit(false);

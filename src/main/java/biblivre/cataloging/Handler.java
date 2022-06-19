@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONException;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,15 +108,12 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        try {
-            if (list == null) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
-            } else if (list.getSuccess() == 0) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
-            } else {
-                this.json.putOpt("data", list.toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (list == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
+        } else if (list.getSuccess() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
+        } else {
+            this.json.putOpt("data", list.toJSONObject());
         }
     }
 
@@ -169,55 +165,42 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        try {
-            if (list == null) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
-            } else if (list.getSuccess() == 0) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
-            } else {
-                this.json.putOpt("data", list.toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (list == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
+        } else if (list.getSuccess() == 0) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
+        } else {
+            this.json.putOpt("data", list.toJSONObject());
         }
     }
 
     public void parseMarc(ExtendedRequest request, ExtendedResponse response) {
         String marc = request.getString("marc");
 
-        RecordDTO dto = null;
-        try {
-            HumanReadableMarcReader humanReadableMarcReader =
-                    new HumanReadableMarcReader(marc, RecordStatus.NEW);
+        HumanReadableMarcReader humanReadableMarcReader =
+                new HumanReadableMarcReader(marc, RecordStatus.NEW);
 
-            Record record = humanReadableMarcReader.next();
+        Record record = humanReadableMarcReader.next();
 
-            dto = importBO.dtoFromRecord(record);
-            BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
+        RecordDTO dto = importBO.dtoFromRecord(record);
 
-            if (StringUtils.isNotBlank(rdto.getIsbn())) {
-                List<String> search =
-                        indexingBO.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
-                this.json.putOpt("isbn", !search.isEmpty());
-            } else if (StringUtils.isNotBlank(rdto.getIssn())) {
-                List<String> search =
-                        indexingBO.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
-                this.json.putOpt("issn", !search.isEmpty());
-            } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-                List<String> search =
-                        indexingBO.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
-                this.json.putOpt("isrc", !search.isEmpty());
-            }
+        BiblioRecordDTO rdto = ((BiblioRecordDTO) dto);
 
-        } catch (Exception e) {
+        if (StringUtils.isNotBlank(rdto.getIsbn())) {
+            List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
+            this.json.putOpt("isbn", !search.isEmpty());
+        } else if (StringUtils.isNotBlank(rdto.getIssn())) {
+            List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
+            this.json.putOpt("issn", !search.isEmpty());
+        } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
+            List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
+            this.json.putOpt("isrc", !search.isEmpty());
         }
 
-        try {
-            if (dto == null) {
-                this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_marc");
-            } else {
-                this.json.putOpt("data", dto.toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (dto == null) {
+            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_marc");
+        } else {
+            this.json.putOpt("data", dto.toJSONObject());
         }
     }
 
@@ -314,7 +297,7 @@ public class Handler extends AbstractHandler {
         this.importBO = importBO;
     }
 
-    public void setZ3950BO(Z3950BO z3950bo) {
-        z3950BO = z3950bo;
+    public void setZ3950BO(Z3950BO z3950BO) {
+        this.z3950BO = z3950BO;
     }
 }

@@ -48,10 +48,10 @@ public enum DataMigrationPhase implements BiblivreEnum {
     LENDING_FINE("lending_fine", "lending_fines", "lending_fines_id_seq", "id"),
     RESERVATIONS("reservation", "reservations", "reservations_id_seq", "id");
 
-    private String biblivre3TableName;
-    private String biblivre4TableName;
-    private String biblivre4SequenceName;
-    private String biblivre4IdColumnName;
+    private final String biblivre3TableName;
+    private final String biblivre4TableName;
+    private final String biblivre4SequenceName;
+    private final String biblivre4IdColumnName;
 
     private DataMigrationPhase(
             String biblivre3TableName,

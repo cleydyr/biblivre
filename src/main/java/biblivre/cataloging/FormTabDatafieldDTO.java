@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<BriefTabFieldFormatDTO> {
@@ -41,7 +40,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
     private Integer sortOrder;
 
     public FormTabDatafieldDTO(JSONObject jsonObject) {
-        this.fromJSONObject(jsonObject);
+        super(jsonObject);
         this.subfields = new ArrayList<>();
 
         if (jsonObject.has("subfields")) {
@@ -138,29 +137,26 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("datafield", this.getDatafield());
-            json.putOpt("collapsed", this.isCollapsed());
-            json.putOpt("repeatable", this.isRepeatable());
-            json.putOpt("material_type", this.getMaterialType());
-            json.putOpt("sortOrder", this.getSortOrder());
+        json.putOpt("datafield", this.getDatafield());
+        json.putOpt("collapsed", this.isCollapsed());
+        json.putOpt("repeatable", this.isRepeatable());
+        json.putOpt("material_type", this.getMaterialType());
+        json.putOpt("sortOrder", this.getSortOrder());
 
-            if (StringUtils.isNotBlank(this.getIndicator1())) {
-                json.putOpt("indicator1", new JSONArray(this.getIndicator1Values()));
-            }
+        if (StringUtils.isNotBlank(this.getIndicator1())) {
+            json.putOpt("indicator1", new JSONArray(this.getIndicator1Values()));
+        }
 
-            if (StringUtils.isNotBlank(this.getIndicator2())) {
-                json.putOpt("indicator2", new JSONArray(this.getIndicator2Values()));
-            }
+        if (StringUtils.isNotBlank(this.getIndicator2())) {
+            json.putOpt("indicator2", new JSONArray(this.getIndicator2Values()));
+        }
 
-            if (StringUtils.isNotBlank(this.getMaterialType())) {
-                json.putOpt("material_type", new JSONArray(this.getMaterialTypeValues()));
-            }
+        if (StringUtils.isNotBlank(this.getMaterialType())) {
+            json.putOpt("material_type", new JSONArray(this.getMaterialTypeValues()));
+        }
 
-            for (FormTabSubfieldDTO subfield : this.getSubfields()) {
-                json.append("subfields", subfield.toJSONObject());
-            }
-        } catch (JSONException e) {
+        for (FormTabSubfieldDTO subfield : this.getSubfields()) {
+            json.append("subfields", subfield.toJSONObject());
         }
 
         return json;

@@ -161,7 +161,7 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
             case 0:
                 return o1[this.index].compareTo(o2[this.index]);
             case 1:
-                return (Integer.valueOf(o2[this.index]).compareTo(Integer.valueOf(o1[this.index])));
+                return Integer.valueOf(o2[this.index]).compareTo(Integer.valueOf(o1[this.index]));
             default:
                 return o1[this.index].compareTo(o2[this.index]);
         }

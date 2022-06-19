@@ -26,6 +26,7 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MaterialType;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +36,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SearchQueryDTO extends AbstractDTO {
@@ -72,7 +72,7 @@ public class SearchQueryDTO extends AbstractDTO {
         }
     }
 
-    private void fromJson(String jsonString) throws JSONException {
+    private void fromJson(String jsonString) throws ParseException {
         JSONObject json = new JSONObject(jsonString);
 
         this.setSearchMode(SearchMode.fromString(json.optString("search_mode")));
@@ -240,14 +240,11 @@ public class SearchQueryDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("search_mode", this.getSearchMode());
-            json.putOpt("database", this.getDatabase());
-            json.putOpt("material_type", this.getMaterialType());
-            json.putOpt("holding_search", this.isHoldingSearch());
-            json.putOpt("terms", this.getTerms());
-        } catch (JSONException e) {
-        }
+        json.putOpt("search_mode", this.getSearchMode());
+        json.putOpt("database", this.getDatabase());
+        json.putOpt("material_type", this.getMaterialType());
+        json.putOpt("holding_search", this.isHoldingSearch());
+        json.putOpt("terms", this.getTerms());
 
         return json;
     }

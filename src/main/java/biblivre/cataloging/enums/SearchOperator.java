@@ -27,7 +27,7 @@ public enum SearchOperator implements BiblivreEnum {
     OR(" OR "),
     AND_NOT(" AND NOT ");
 
-    private String operator;
+    private final String operator;
 
     private SearchOperator(String operator) {
         this.operator = operator;

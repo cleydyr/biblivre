@@ -63,7 +63,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
@@ -273,8 +272,6 @@ public class HoldingBO extends RecordBO {
     }
 
     public DiskFile printLabelsToPDF(List<LabelDTO> labels, LabelPrintDTO printDTO) {
-        OutputStream fos = null;
-
         try {
             ITextPimacoTagSheetAdapter adapter =
                     new ITextPimacoTagSheetAdapter(printDTO.getModel());
@@ -290,36 +287,37 @@ public class HoldingBO extends RecordBO {
                     ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(
                             () -> Element.ALIGN_CENTER);
             File file = File.createTempFile("biblivre_label_", ".pdf");
-            fos = new FileOutputStream(file);
-            PdfWriter writer = PdfWriter.getInstance(document, fos);
-            PdfPTable table = new PdfPTable(adapter.getColumns());
 
-            document.open();
+            try (OutputStream fos = new FileOutputStream(file)) {
+                PdfWriter writer = PdfWriter.getInstance(document, fos);
+                PdfPTable table = new PdfPTable(adapter.getColumns());
 
-            table.setWidthPercentage(100f);
+                document.open();
 
-            table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+                table.setWidthPercentage(100f);
 
-            float fixedHeight = adapter.getCellHeight();
+                table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 
-            _skipOffset(printDTO, horizontalAlignment, table, fixedHeight);
+                float fixedHeight = adapter.getCellHeight();
 
-            for (LabelDTO ldto : labels) {
-                _printOddLabels(printDTO, fixedHeight, writer, table, horizontalAlignment, ldto);
-                _printEvenLabels(fixedHeight, table, ldto, horizontalAlignment);
+                _skipOffset(printDTO, horizontalAlignment, table, fixedHeight);
+
+                for (LabelDTO ldto : labels) {
+                    _printOddLabels(
+                            printDTO, fixedHeight, writer, table, horizontalAlignment, ldto);
+                    _printEvenLabels(fixedHeight, table, ldto, horizontalAlignment);
+                }
+
+                table.completeRow();
+
+                document.add(table);
+                writer.flush();
+                document.close();
+
+                return new DiskFile(file, "application/pdf");
             }
-
-            table.completeRow();
-
-            document.add(table);
-            writer.flush();
-            document.close();
-
-            return new DiskFile(file, "application/pdf");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(fos);
         }
 
         return null;

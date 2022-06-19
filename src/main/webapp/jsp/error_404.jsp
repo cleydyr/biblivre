@@ -1,5 +1,4 @@
 <%@ page import="biblivre.core.ExtendedResponse" %>
-<%@ page import="org.apache.commons.httpclient.HttpStatus" %>
 <%@ page import="biblivre.core.exceptions.DAOException" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page isErrorPage="true" import="java.io.*" %>

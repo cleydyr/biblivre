@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -286,8 +285,6 @@ public class Schemas extends StaticBO {
 
         pb.redirectErrorStream(true);
 
-        BufferedWriter bw = null;
-
         try {
             State.writeLog("Starting psql");
 
@@ -298,70 +295,69 @@ public class Schemas extends StaticBO {
 
             OutputStreamWriter osw =
                     new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
-            bw = new BufferedWriter(osw);
+            try (BufferedWriter bw = new BufferedWriter(osw)) {
 
-            Thread t =
-                    new Thread(
-                            new Runnable() {
+                Thread t =
+                        new Thread(
+                                new Runnable() {
 
-                                @Override
-                                public void run() {
-                                    String outputLine;
-                                    try (final BufferedReader br = new BufferedReader(isr)) {
-                                        while ((outputLine = br.readLine()) != null) {
-                                            State.writeLog(outputLine);
+                                    @Override
+                                    public void run() {
+                                        String outputLine;
+                                        try (final BufferedReader br = new BufferedReader(isr)) {
+                                            while ((outputLine = br.readLine()) != null) {
+                                                State.writeLog(outputLine);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
-                                }
-                            });
+                                });
 
-            t.start();
+                t.start();
 
-            if (Schemas.exists(dto.getSchema())) {
-                State.writeLog("Dropping old schema");
+                if (Schemas.exists(dto.getSchema())) {
+                    State.writeLog("Dropping old schema");
 
-                if (!dto.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-                    bw.write("DELETE FROM \"" + dto.getSchema() + "\".digital_media;\n");
+                    if (!dto.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
+                        bw.write("DELETE FROM \"" + dto.getSchema() + "\".digital_media;\n");
+                    }
+
+                    bw.write("DROP SCHEMA \"" + dto.getSchema() + "\" CASCADE;\n");
                 }
 
-                bw.write("DROP SCHEMA \"" + dto.getSchema() + "\" CASCADE;\n");
+                State.writeLog("Creating schema for '" + dto.getSchema() + "'");
+
+                RestoreBO.processRestore(template, bw);
+
+                State.writeLog("Renaming schema bib4template to " + dto.getSchema());
+                bw.write("ALTER SCHEMA \"bib4template\" RENAME TO \"" + dto.getSchema() + "\";\n");
+
+                if (addToGlobal) {
+                    bw.write(
+                            "INSERT INTO \""
+                                    + Constants.GLOBAL_SCHEMA
+                                    + "\".schemas (schema, name) VALUES ('"
+                                    + dto.getSchema()
+                                    + "', E'"
+                                    + dto.getName()
+                                    + "');\n");
+                }
+
+                bw.write("ANALYZE;\n");
+
+                bw.close();
+
+                p.waitFor();
+
+                Schemas.reset();
+
+                return p.exitValue() == 0;
             }
-
-            State.writeLog("Creating schema for '" + dto.getSchema() + "'");
-
-            RestoreBO.processRestore(template, bw);
-
-            State.writeLog("Renaming schema bib4template to " + dto.getSchema());
-            bw.write("ALTER SCHEMA \"bib4template\" RENAME TO \"" + dto.getSchema() + "\";\n");
-
-            if (addToGlobal) {
-                bw.write(
-                        "INSERT INTO \""
-                                + Constants.GLOBAL_SCHEMA
-                                + "\".schemas (schema, name) VALUES ('"
-                                + dto.getSchema()
-                                + "', E'"
-                                + dto.getName()
-                                + "');\n");
-            }
-
-            bw.write("ANALYZE;\n");
-
-            bw.close();
-
-            p.waitFor();
-
-            Schemas.reset();
-
-            return p.exitValue() == 0;
         } catch (IOException e) {
             Schemas.logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
             Schemas.logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(bw);
         }
 
         return false;

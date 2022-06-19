@@ -381,8 +381,8 @@ public class DataMigrationBO extends AbstractBO {
         this.dataMigrationDAO = dataMigrationDAO;
     }
 
-    public void setSetupDao(SetupDAO setupDao) {
-        this.setupDAO = setupDao;
+    public void setSetupDao(SetupDAO setupDAO) {
+        this.setupDAO = setupDAO;
     }
 
     public void setAccessControlBO(AccessControlBO accessControlBO) {

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.IOUtils;
 
 public class MemoryFile extends BiblivreFile {
 
@@ -46,7 +45,9 @@ public class MemoryFile extends BiblivreFile {
             return this.inputStream;
         }
 
-        IOUtils.closeQuietly(this.inputStream);
+        if (this.inputStream != null) {
+            this.inputStream.close();
+        }
 
         this.inputStream = this.fileItem.getInputStream();
         return this.inputStream;
@@ -66,9 +67,8 @@ public class MemoryFile extends BiblivreFile {
 
     @Override
     public boolean exists() {
-        try {
-            InputStream inputStream = this.getNewInputStream();
-            IOUtils.closeQuietly(inputStream);
+        try (InputStream inputStream = this.getNewInputStream()) {
+
             return inputStream != null;
         } catch (Exception e) {
             return false;
@@ -77,28 +77,30 @@ public class MemoryFile extends BiblivreFile {
 
     @Override
     public void copy(OutputStream out, long start, long size) throws IOException {
-        InputStream input = this.getNewInputStream();
+        try (InputStream input = this.getNewInputStream()) {
 
-        if (input == null) {
-            return;
+            if (input == null) {
+                return;
+            }
+
+            if (start != 0) {
+                throw new IOException(
+                        "MemoryFile doesn't implements seek. Start parameter must be 0");
+            }
+
+            byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
+            int read;
+
+            while ((read = input.read(buffer)) > 0) {
+                out.write(buffer, 0, read);
+            }
         }
-
-        if (start != 0) {
-            throw new IOException("MemoryFile doesn't implements seek. Start parameter must be 0");
-        }
-
-        byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
-        int read;
-
-        while ((read = input.read(buffer)) > 0) {
-            out.write(buffer, 0, read);
-        }
-
-        IOUtils.closeQuietly(input);
     }
 
     @Override
-    public void close() {
-        IOUtils.closeQuietly(this.inputStream);
+    public void close() throws IOException {
+        if (this.inputStream != null) {
+            this.inputStream.close();
+        }
     }
 }

@@ -301,11 +301,11 @@ public enum AuthorizationPointTypes {
             AuthorizationPointGroups.SEARCH,
             true);
 
-    private AuthorizationPointGroups group;
-    private AuthorizationSchemaScope schemaScope;
-    private AuthorizationUserScope userScope;
-    private boolean _public;
-    private boolean _publicForLoggedUsers;
+    private final AuthorizationPointGroups group;
+    private final AuthorizationSchemaScope schemaScope;
+    private final AuthorizationUserScope userScope;
+    private final boolean _public;
+    private final boolean _publicForLoggedUsers;
 
     private AuthorizationPointTypes(
             AuthorizationSchemaScope schemaScope,

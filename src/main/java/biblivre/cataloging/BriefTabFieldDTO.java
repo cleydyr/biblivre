@@ -20,7 +20,6 @@
 package biblivre.cataloging;
 
 import biblivre.core.AbstractDTO;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class BriefTabFieldDTO extends AbstractDTO {
@@ -54,11 +53,8 @@ public class BriefTabFieldDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("datafield", this.getDatafieldTag());
-            json.putOpt("value", this.getValue());
-        } catch (JSONException e) {
-        }
+        json.putOpt("datafield", this.getDatafieldTag());
+        json.putOpt("value", this.getValue());
 
         return json;
     }

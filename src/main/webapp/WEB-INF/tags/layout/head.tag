@@ -1,6 +1,5 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 
-<%@ tag import="org.apache.commons.httpclient.HttpStatus"%>
 <%@ tag import="biblivre.core.configurations.Configurations"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -34,7 +33,7 @@
 				<script type="text/javascript" src="static/scripts/${requestScope.translationMap.cacheFileName}"></script>
 	
 				<c:set var="translateError" value="false" />
-				<c:if test="${response.status eq HttpStatus.SC_NOT_FOUND}">
+				<c:if test="${response.status eq 404}">
 					<c:set var="message" value="error.file_not_found" />
 					<c:set var="messageLevel" value="error" />
 					<c:set var="messageLevel" value="true" />

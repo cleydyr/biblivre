@@ -23,6 +23,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
+import java.text.ParseException;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -55,7 +56,7 @@ public class UserSearchDTO extends AbstractDTO {
         }
     }
 
-    private void fromJson(String jsonString) throws JSONException {
+    private void fromJson(String jsonString) throws JSONException, ParseException {
         JSONObject json = new JSONObject(jsonString);
 
         this.setSearchMode(SearchMode.fromString(json.optString("search_mode")));
@@ -149,13 +150,10 @@ public class UserSearchDTO extends AbstractDTO {
         return this.createdStartDate;
     }
 
-    public void setCreatedStartDate(String createdStartDate) {
+    public void setCreatedStartDate(String createdStartDate) throws ParseException {
         this.createdStartDate = null;
         if (StringUtils.isNotBlank(createdStartDate)) {
-            try {
-                this.createdStartDate = TextUtils.parseDate(createdStartDate);
-            } catch (Exception e) {
-            }
+            this.createdStartDate = TextUtils.parseDate(createdStartDate);
         }
     }
 
@@ -163,13 +161,10 @@ public class UserSearchDTO extends AbstractDTO {
         return this.createdEndDate;
     }
 
-    public void setCreatedEndDate(String createdEndDate) {
+    public void setCreatedEndDate(String createdEndDate) throws ParseException {
         this.createdEndDate = null;
         if (StringUtils.isNotBlank(createdEndDate)) {
-            try {
-                this.createdEndDate = TextUtils.parseDate(createdEndDate);
-            } catch (Exception e) {
-            }
+            this.createdEndDate = TextUtils.parseDate(createdEndDate);
         }
     }
 
@@ -177,13 +172,10 @@ public class UserSearchDTO extends AbstractDTO {
         return this.modifiedStartDate;
     }
 
-    public void setModifiedStartDate(String modifiedStartDate) {
+    public void setModifiedStartDate(String modifiedStartDate) throws ParseException {
         this.modifiedStartDate = null;
         if (StringUtils.isNotBlank(modifiedStartDate)) {
-            try {
-                this.modifiedStartDate = TextUtils.parseDate(modifiedStartDate);
-            } catch (Exception e) {
-            }
+            this.modifiedStartDate = TextUtils.parseDate(modifiedStartDate);
         }
     }
 
@@ -191,13 +183,10 @@ public class UserSearchDTO extends AbstractDTO {
         return this.modifiedEndDate;
     }
 
-    public void setModifiedEndDate(String modifiedEndDate) {
+    public void setModifiedEndDate(String modifiedEndDate) throws ParseException {
         this.modifiedEndDate = null;
         if (StringUtils.isNotBlank(modifiedEndDate)) {
-            try {
-                this.modifiedEndDate = TextUtils.parseDate(modifiedEndDate);
-            } catch (Exception e) {
-            }
+            this.modifiedEndDate = TextUtils.parseDate(modifiedEndDate);
         }
     }
 }

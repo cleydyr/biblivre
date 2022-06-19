@@ -53,7 +53,6 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,23 +93,17 @@ public class Handler extends AbstractHandler {
             Configurations.save(dto, 0);
         }
 
-        try {
-            this.json.put("success", success);
-        } catch (JSONException e) {
-        }
+        this.json.put("success", success);
     }
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list_restores
     public void listRestores(ExtendedRequest request, ExtendedResponse response) {
         List<RestoreDTO> list = restoreBO.list();
 
-        try {
-            this.json.put("success", true);
+        this.json.put("success", true);
 
-            for (RestoreDTO dto : list) {
-                this.json.append("restores", dto.toJSONObject());
-            }
-        } catch (JSONException e) {
+        for (RestoreDTO dto : list) {
+            this.json.append("restores", dto.toJSONObject());
         }
     }
 
@@ -136,14 +129,11 @@ public class Handler extends AbstractHandler {
             logger.error(e.getMessage(), e);
             success = false;
         }
-        try {
-            this.json.put("success", success);
-            this.json.put("file", uuid);
+        this.json.put("success", success);
+        this.json.put("file", uuid);
 
-            if (success && dto != null) {
-                this.json.put("metadata", dto.toJSONObject());
-            }
-        } catch (JSONException e) {
+        if (success && dto != null) {
+            this.json.put("metadata", dto.toJSONObject());
         }
     }
 
@@ -198,10 +188,7 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        try {
-            this.json.put("success", success);
-        } catch (JSONException e) {
-        }
+        this.json.put("success", success);
     }
 
     private Map<String, String> breakString(String string) {
@@ -430,10 +417,7 @@ public class Handler extends AbstractHandler {
             State.cancel();
         }
 
-        try {
-            this.json.put("success", success);
-        } catch (JSONException e) {
-        }
+        this.json.put("success", success);
     }
 
     public void importBiblivre3(ExtendedRequest request, ExtendedResponse response) {
@@ -490,21 +474,15 @@ public class Handler extends AbstractHandler {
             State.cancel();
         }
 
-        try {
-            this.json.put("success", success);
-        } catch (JSONException e) {
-        }
+        this.json.put("success", success);
     }
 
     public void progress(ExtendedRequest request, ExtendedResponse response) {
-        try {
-            this.json.put("success", true);
-            this.json.put("current", State.getCurrentStep());
-            this.json.put("total", State.getSteps());
-            this.json.put("secondary_current", State.getCurrentSecondaryStep());
-            this.json.put("complete", !State.LOCKED.get());
-        } catch (JSONException e) {
-        }
+        this.json.put("success", true);
+        this.json.put("current", State.getCurrentStep());
+        this.json.put("total", State.getSteps());
+        this.json.put("secondary_current", State.getCurrentSecondaryStep());
+        this.json.put("complete", !State.LOCKED.get());
     }
 
     public void setRestoreBO(RestoreBO restoreBO) {

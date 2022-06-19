@@ -30,7 +30,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RestoreDTO extends AbstractDTO {
@@ -153,24 +152,21 @@ public class RestoreDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
-        try {
-            json.putOpt("schemas", this.getSchemas());
-            json.putOpt("type", this.getType());
-            json.putOpt("backup_scope", this.getBackupScope());
+        json.putOpt("schemas", this.getSchemas());
+        json.putOpt("type", this.getType());
+        json.putOpt("backup_scope", this.getBackupScope());
 
-            if (this.getCreated() != null) {
-                String formattedDate = DEFAULT_DATE_PRINTER_TIMEZONE.format(this.getCreated());
+        if (this.getCreated() != null) {
+            String formattedDate = DEFAULT_DATE_PRINTER_TIMEZONE.format(this.getCreated());
 
-                json.putOpt("created", formattedDate);
-            }
-
-            if (this.getBackup() != null) {
-                json.putOpt("file", this.getBackup().getName());
-            }
-
-            json.putOpt("valid", this.isValid());
-        } catch (JSONException e) {
+            json.putOpt("created", formattedDate);
         }
+
+        if (this.getBackup() != null) {
+            json.putOpt("file", this.getBackup().getName());
+        }
+
+        json.putOpt("valid", this.isValid());
 
         return json;
     }
