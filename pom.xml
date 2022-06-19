@@ -439,6 +439,11 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludeVulnerabilityIds>
+						<exclude>CVE-2016-1000027</exclude>
+					</excludeVulnerabilityIds>
+				</configuration>
 			</plugin>
 		</plugins>
 
