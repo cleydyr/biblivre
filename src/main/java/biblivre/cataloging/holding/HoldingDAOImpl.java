@@ -34,6 +34,7 @@ import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
+import biblivre.core.utils.StringPool;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
@@ -281,7 +282,9 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             sql.append("VALUES (?, ?, ?); ");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
-            pst.setString(1, dto.getName());
+
+            pst.setString(1, dto == null ? StringPool.BLANK : dto.getName());
+
             if (ldto != null) {
                 pst.setString(2, ldto.getLogin());
             } else {
