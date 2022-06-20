@@ -564,40 +564,32 @@ public class Translations extends StaticBO {
         return null;
     }
 
-    private static synchronized TranslationsMap loadLanguage(String language) {
+    private static TranslationsMap loadLanguage(String language) {
         String schema = SchemaThreadLocal.get();
 
-        Pair<String, String> pair = Pair.of(schema, language);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Loading language " + schema + "." + language);
+        }
 
-        return Translations.translations.computeIfAbsent(
-                pair,
-                p -> {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Loading language " + schema + "." + language);
+        return SchemaThreadLocal.withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    if (StringUtils.isBlank(language)) {
+                        return new TranslationsMap(schema, language, 1);
                     }
 
-                    return SchemaThreadLocal.withSchema(
-                            Constants.GLOBAL_SCHEMA,
-                            () -> {
-                                if (StringUtils.isBlank(language)) {
-                                    return new TranslationsMap(schema, language, 1);
-                                }
+                    TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
 
-                                TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
+                    Collection<TranslationDTO> list = dao.list(language);
 
-                                Collection<TranslationDTO> list = dao.list(language);
+                    TranslationsMap translationsMap =
+                            new TranslationsMap(schema, language, list.size());
 
-                                TranslationsMap translationsMap =
-                                        new TranslationsMap(schema, language, list.size());
+                    for (TranslationDTO dto : list) {
+                        translationsMap.put(dto.getKey(), dto);
+                    }
 
-                                for (TranslationDTO dto : list) {
-                                    translationsMap.put(dto.getKey(), dto);
-                                }
-
-                                Translations.translations.put(pair, translationsMap);
-
-                                return translationsMap;
-                            });
+                    return translationsMap;
                 });
     }
 }
