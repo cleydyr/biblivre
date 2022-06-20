@@ -43,8 +43,12 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExtendedRequest extends HttpServletRequestWrapper {
+    private static final Logger logger = LoggerFactory.getLogger(ExtendedRequest.class);
+
     private TranslationsMap translationsMap;
 
     private String controller;
@@ -135,7 +139,17 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     public Integer getInteger(String key, Integer defaultValue) {
         Integer retValue = defaultValue;
 
-        retValue = Integer.valueOf(this.getRequestParameter(key));
+        String parameter = this.getRequestParameter(key);
+
+        if (parameter == null || parameter.isBlank()) {
+            return defaultValue;
+        }
+
+        try {
+            retValue = Integer.valueOf(parameter);
+        } catch (NumberFormatException numberFormatException) {
+            logger.warn("parameter " + key + " is not a valid number");
+        }
 
         return retValue;
     }

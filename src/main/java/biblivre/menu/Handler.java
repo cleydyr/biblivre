@@ -53,9 +53,7 @@ public class Handler extends AbstractHandler {
     private BackupBO backupBO;
     private UserTypeBO userTypeBO;
 
-    public void ping(ExtendedRequest request, ExtendedResponse response) {
-        this.json.put("success", true);
-    }
+    public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
     public void i18n(ExtendedRequest request, ExtendedResponse response) throws IOException {
         if (request.getString("from_translations").equals("true")) {
