@@ -300,108 +300,103 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         try {
             con = this.getConnection();
 
-            boolean delete = false;
             boolean insert = false;
+            boolean delete = false;
 
-            StringBuilder sqlDelete = new StringBuilder();
-            sqlDelete.append("DELETE FROM " + recordType + "_form_subfields ");
-            sqlDelete.append("WHERE datafield = ?; ");
+            PreparedStatement deleteSubfieldsPST =
+                    con.prepareStatement(
+                            "DELETE FROM " + recordType + "_form_subfields WHERE datafield = ?");
 
-            PreparedStatement pstDelete = con.prepareStatement(sqlDelete.toString());
+            PreparedStatement insertSubfieldsPST =
+                    con.prepareStatement(
+                            "INSERT INTO "
+                                    + recordType
+                                    + "_form_subfields "
+                                    + "(datafield, subfield, collapsed, repeatable, created, created_by,"
+                                    + "	modified, modified_by, autocomplete_type, sort_order) "
+                                    + "VALUES (?, ?, ?, ?, now(), ?, now(), ?, ?, ?); ");
 
-            StringBuilder sqlInsert = new StringBuilder();
-            sqlInsert.append("INSERT INTO " + recordType + "_form_subfields ");
-            sqlInsert.append(
-                    "(datafield, subfield, collapsed, repeatable, created, created_by, modified, modified_by, autocomplete_type, sort_order) ");
-            sqlInsert.append(" VALUES (?, ?, ?, ?, now(), ?, now(), ?, ?, ?); ");
-
-            PreparedStatement pstInsert = con.prepareStatement(sqlInsert.toString());
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE " + recordType + "_form_datafields ");
-            sql.append("SET sort_order = ?, ");
-            sql.append("datafield = ?, ");
-            sql.append("collapsed = ?, ");
-            sql.append("repeatable = ?, ");
-            sql.append("indicator_1 = ?, ");
-            sql.append("indicator_2 = ?, ");
-            sql.append("material_type = ?, ");
-            sql.append("modified = now(), ");
-            sql.append("modified_by = ? ");
-            sql.append("WHERE datafield = ?; ");
-
-            StringBuilder sqlDatafieldInsert = new StringBuilder();
-            sqlDatafieldInsert.append(
-                    "INSERT INTO "
-                            + recordType
-                            + "_form_datafields (sort_order, datafield, collapsed, repeatable, indicator_1, indicator_2, material_type, created_by, modified_by) ");
-            sqlDatafieldInsert.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-            PreparedStatement pstDatafieldInsert =
-                    con.prepareStatement(sqlDatafieldInsert.toString());
+            PreparedStatement updateDataFieldsPST =
+                    con.prepareStatement(
+                            "UPDATE "
+                                    + recordType
+                                    + "_form_datafields "
+                                    + "SET sort_order = ?, datafield = ?, collapsed = ?, repeatable = ?, "
+                                    + "indicator_1 = ?, indicator_2 = ?, material_type = ?, "
+                                    + "modified = now(), modified_by = ? "
+                                    + "WHERE datafield = ?");
+            PreparedStatement insertDataFieldsPST =
+                    con.prepareStatement(
+                            "INSERT INTO "
+                                    + recordType
+                                    + "_form_datafields"
+                                    + "(sort_order, datafield, collapsed, repeatable, indicator_1, "
+                                    + "indicator_2, material_type, created_by, modified_by) "
+                                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING");
 
             for (Entry<String, FormTabDatafieldDTO> entry : formDatafields.entrySet()) {
-                String key = entry.getKey();
-                FormTabDatafieldDTO dto = entry.getValue();
+                String tag = entry.getKey();
 
-                if (dto.getSubfields() != null && dto.getSubfields().size() > 0) {
-                    delete = true;
+                FormTabDatafieldDTO datafield = entry.getValue();
 
-                    pstDelete.setString(1, key);
-                    pstDelete.addBatch();
+                delete |= datafield.getSubfields() != null && datafield.getSubfields().size() > 0;
 
-                    for (FormTabSubfieldDTO sub : dto.getSubfields()) {
+                if (delete) {
+                    deleteSubfieldsPST.setString(1, tag);
+
+                    deleteSubfieldsPST.addBatch();
+
+                    for (FormTabSubfieldDTO sub : datafield.getSubfields()) {
                         insert = true;
 
-                        pstInsert.setString(1, sub.getDatafield());
-                        pstInsert.setString(2, sub.getSubfield());
-                        pstInsert.setBoolean(3, sub.isCollapsed());
-                        pstInsert.setBoolean(4, sub.isRepeatable());
-                        pstInsert.setInt(5, loggedUser);
-                        pstInsert.setInt(6, loggedUser);
-                        pstInsert.setString(7, sub.getAutocompleteType().toString());
-                        pstInsert.setInt(8, sub.getSortOrder());
+                        insertSubfieldsPST.setString(1, sub.getDatafield());
+                        insertSubfieldsPST.setString(2, sub.getSubfield());
+                        insertSubfieldsPST.setBoolean(3, sub.isCollapsed());
+                        insertSubfieldsPST.setBoolean(4, sub.isRepeatable());
+                        insertSubfieldsPST.setInt(5, loggedUser);
+                        insertSubfieldsPST.setInt(6, loggedUser);
+                        insertSubfieldsPST.setString(7, sub.getAutocompleteType().toString());
+                        insertSubfieldsPST.setInt(8, sub.getSortOrder());
 
-                        pstInsert.addBatch();
+                        insertSubfieldsPST.addBatch();
                     }
                 }
 
-                pst.setInt(1, dto.getSortOrder());
-                pst.setString(2, dto.getDatafield());
-                pst.setBoolean(3, dto.isCollapsed());
-                pst.setBoolean(4, dto.isRepeatable());
-                pst.setString(5, dto.getIndicator1());
-                pst.setString(6, dto.getIndicator2());
-                pst.setString(7, dto.getMaterialType());
-                pst.setInt(8, loggedUser);
-                pst.setString(9, dto.getDatafield());
+                updateDataFieldsPST.setInt(1, datafield.getSortOrder());
+                updateDataFieldsPST.setString(2, datafield.getDatafield());
+                updateDataFieldsPST.setBoolean(3, datafield.isCollapsed());
+                updateDataFieldsPST.setBoolean(4, datafield.isRepeatable());
+                updateDataFieldsPST.setString(5, datafield.getIndicator1());
+                updateDataFieldsPST.setString(6, datafield.getIndicator2());
+                updateDataFieldsPST.setString(7, datafield.getMaterialType());
+                updateDataFieldsPST.setInt(8, loggedUser);
+                updateDataFieldsPST.setString(9, datafield.getDatafield());
 
-                pst.addBatch();
+                updateDataFieldsPST.addBatch();
 
-                pstDatafieldInsert.setInt(1, dto.getSortOrder());
-                pstDatafieldInsert.setString(2, dto.getDatafield());
-                pstDatafieldInsert.setBoolean(3, dto.isCollapsed());
-                pstDatafieldInsert.setBoolean(4, dto.isRepeatable());
-                pstDatafieldInsert.setString(5, dto.getIndicator1());
-                pstDatafieldInsert.setString(6, dto.getIndicator2());
-                pstDatafieldInsert.setString(7, dto.getMaterialType());
-                pstDatafieldInsert.setInt(8, loggedUser);
-                pstDatafieldInsert.setInt(9, loggedUser);
+                insertDataFieldsPST.setInt(1, datafield.getSortOrder());
+                insertDataFieldsPST.setString(2, datafield.getDatafield());
+                insertDataFieldsPST.setBoolean(3, datafield.isCollapsed());
+                insertDataFieldsPST.setBoolean(4, datafield.isRepeatable());
+                insertDataFieldsPST.setString(5, datafield.getIndicator1());
+                insertDataFieldsPST.setString(6, datafield.getIndicator2());
+                insertDataFieldsPST.setString(7, datafield.getMaterialType());
+                insertDataFieldsPST.setInt(8, loggedUser);
+                insertDataFieldsPST.setInt(9, loggedUser);
 
-                pstDatafieldInsert.execute();
+                insertDataFieldsPST.execute();
+            }
+
+            if (delete) {
+                deleteSubfieldsPST.executeBatch();
             }
 
             con.setAutoCommit(false);
 
-            if (delete) {
-                pstDelete.executeBatch();
-            }
-
-            pst.executeBatch();
+            updateDataFieldsPST.executeBatch();
 
             if (insert) {
-                pstInsert.executeBatch();
+                insertSubfieldsPST.executeBatch();
             }
 
             this.commit(con);
