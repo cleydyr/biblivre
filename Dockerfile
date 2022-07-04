@@ -5,7 +5,7 @@ RUN apt-get update \
 	netcat \
 	gnupg \
 	&& curl "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | apt-key add - \
-	&& sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt focal-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
+	&& sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
 	&& apt update \
 	&& apt install -y \
 	postgresql-client-11 \

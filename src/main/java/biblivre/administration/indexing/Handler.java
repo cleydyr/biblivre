@@ -54,7 +54,6 @@ public class Handler extends AbstractHandler {
 
         }
 
-        this.json.put("success", true);
         this.json.put("time", (end - start) / 1000.0);
     }
 
@@ -74,7 +73,6 @@ public class Handler extends AbstractHandler {
 
         int progress[] = indexingBO.getReindexProgress(recordType);
 
-        this.json.put("success", true);
         this.json.put("current", progress[0]);
         this.json.put("total", progress[1]);
         this.json.put("complete", progress[0] == progress[1]);

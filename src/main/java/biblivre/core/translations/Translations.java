@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -46,8 +47,8 @@ import org.slf4j.LoggerFactory;
 public class Translations extends StaticBO {
     private static Logger logger = LoggerFactory.getLogger(Translations.class);
 
-    // HashMap<Pair<Schema, Language>, TranslationsMap>
-    private static HashMap<Pair<String, String>, TranslationsMap> translations;
+    private static Map<Pair<String, String>, TranslationsMap> translations;
+
     private static Set<String> availableJavascriptLocales =
             new HashSet<>(
                     Arrays.asList(
@@ -413,7 +414,7 @@ public class Translations extends StaticBO {
     }
 
     public static void reset() {
-        Translations.translations = new HashMap<>();
+        Translations.translations = new ConcurrentHashMap<>();
     }
 
     public static void reset(String language) {
@@ -429,8 +430,7 @@ public class Translations extends StaticBO {
 
         Pair<String, String> pair = Pair.of(schema, language);
 
-        return Translations.translations.computeIfAbsent(
-                pair, p -> Translations.loadLanguage(language));
+        return Translations.translations.computeIfAbsent(pair, p -> loadLanguage(language));
     }
 
     public static boolean save(

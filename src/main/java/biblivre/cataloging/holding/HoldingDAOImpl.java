@@ -287,10 +287,11 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             if (ldto != null) {
                 pst.setString(2, ldto.getLogin());
+                pst.setInt(3, 0);
             } else {
                 pst.setNull(2, java.sql.Types.VARCHAR);
+                pst.setNull(3, java.sql.Types.INTEGER);
             }
-            pst.setInt(3, ldto.getId());
 
             return pst.executeUpdate() > 0;
         } catch (Exception e) {

@@ -90,7 +90,9 @@ public class JsonController extends Controller {
             message = new Message();
         }
 
-        json.putOnce("success", message.isSuccess());
+        if (!json.has("success")) {
+            json.putOnce("success", message.isSuccess());
+        }
 
         if (StringUtils.isNotBlank(message.getText())) {
             json.putOnce("message", this.xRequest.getLocalizedText(message.getText()));
