@@ -85,7 +85,6 @@ public class Handler extends AbstractHandler {
 
         BackupDTO dto = backupBO.prepare(map, backupType, backupScope);
 
-        this.json.put("success", true);
         this.json.put("id", dto.getId());
     }
 
@@ -132,7 +131,6 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        this.json.put("success", true);
         this.json.put("current", dto.getCurrentStep());
         this.json.put("total", dto.getSteps());
         this.json.put("complete", dto.getCurrentStep().equals(dto.getSteps()));
@@ -140,8 +138,6 @@ public class Handler extends AbstractHandler {
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        this.json.put("success", true);
-
         for (BackupDTO dto : backupBO.list()) {
             this.json.append("backups", dto.toJSONObject());
         }
