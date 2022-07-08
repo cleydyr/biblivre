@@ -100,16 +100,19 @@
 		class="biblivre.cataloging.authorities.Handler" scope="prototype">
 		<property name="paginableRecordBO" ref="authorityRecordBO" />
 		<property name="reportsBO" ref="reportsBO" />
+		<property name="recordBOs" ref="recordBOs" />
 	</bean>
 
 	<bean id="bibliographicHandler" name="bibliographicHandler"
 		class="biblivre.cataloging.bibliographic.Handler" scope="prototype">
 		<property name="paginableRecordBO" ref="biblioRecordBO" />
+		<property name="recordBOs" ref="recordBOs" />
 	</bean>
 
 	<bean id="vocabularyHandler" name="vocabularyHandler"
 		class="biblivre.cataloging.vocabulary.Handler" scope="prototype">
 		<property name="paginableRecordBO" ref="vocabularyRecordBO" />
+		<property name="recordBOs" ref="recordBOs" />
 	</bean>
 
 	<bean id="holdingHandler" name="holdingHandler"
