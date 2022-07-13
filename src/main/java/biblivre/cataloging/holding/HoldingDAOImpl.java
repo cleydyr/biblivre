@@ -57,6 +57,8 @@ import org.marc4j.marc.Record;
 
 public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
+    private static final int ADMIN_OR_REMOVED_LOGIN_ID = 0;
+
     public static HoldingDAOImpl getInstance() {
         return AbstractDAO.getInstance(HoldingDAOImpl.class);
     }
@@ -287,7 +289,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             if (ldto != null) {
                 pst.setString(2, ldto.getLogin());
-                pst.setInt(3, 0);
+                pst.setInt(3, ADMIN_OR_REMOVED_LOGIN_ID);
             } else {
                 pst.setNull(2, java.sql.Types.VARCHAR);
                 pst.setNull(3, java.sql.Types.INTEGER);

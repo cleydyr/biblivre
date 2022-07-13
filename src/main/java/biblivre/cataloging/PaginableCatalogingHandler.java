@@ -36,7 +36,9 @@ import biblivre.core.file.DiskFile;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -47,6 +49,8 @@ import org.marc4j.marc.Record;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected PaginableRecordBO paginableRecordBO;
+
+    protected Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -254,8 +258,10 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             case BIBLIO:
             case AUTHORITIES:
             case VOCABULARY:
+                PaginableRecordBO autocompleteRecordBO = recordBOs.get(type.name());
+
                 DTOCollection<AutocompleteDTO> autocompletion =
-                        type.getAutocompletion(paginableRecordBO, query);
+                        type.getAutocompletion(autocompleteRecordBO, query);
 
                 this.json.putOpt("data", autocompletion.toJSONObject());
 
@@ -308,5 +314,9 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
     public void setDefaultMaterialType(MaterialType defaultMaterialType) {
         this.defaultMaterialType = defaultMaterialType;
+    }
+
+    public void setRecordBOs(Map<String, PaginableRecordBO> recordBOs) {
+        this.recordBOs = recordBOs;
     }
 }
