@@ -72,7 +72,8 @@ public class Translations extends StaticBO {
 
         Pair<String, String> pair = Pair.of(schema, language);
 
-        return Translations.translations.computeIfAbsent(pair, p -> loadLanguage(language));
+        return Translations.translations.computeIfAbsent(
+                pair, __ -> loadLanguage(schema, language));
     }
 
     public static boolean save(
@@ -206,15 +207,13 @@ public class Translations extends StaticBO {
         return null;
     }
 
-    private static TranslationsMap loadLanguage(String language) {
-        String schema = SchemaThreadLocal.get();
-
+    private static TranslationsMap loadLanguage(String schema, String language) {
         if (logger.isDebugEnabled()) {
             logger.debug("Loading language " + schema + "." + language);
         }
 
         return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+                schema,
                 () -> {
                     if (StringUtils.isBlank(language)) {
                         return new TranslationsMap(schema, language, 1);
