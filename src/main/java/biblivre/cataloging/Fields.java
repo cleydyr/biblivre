@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +40,12 @@ public class Fields extends StaticBO {
 
     private static Logger logger = LoggerFactory.getLogger(Fields.class);
 
-    private static HashMap<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>>
-            briefTabFieldFormats;
+    private static Map<Pair<String, RecordType>, List<BriefTabFieldFormatDTO>> briefTabFieldFormats;
 
-    private static HashMap<Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>
+    private static Map<Pair<String, RecordType>, JavascriptCacheableList<FormTabDatafieldDTO>>
             formTabFields;
 
-    private static HashMap<Pair<String, RecordType>, List<FormTabSubfieldDTO>>
-            autocompleteSubfields;
+    private static Map<Pair<String, RecordType>, List<FormTabSubfieldDTO>> autocompleteSubfields;
 
     private Fields() {}
 
@@ -127,7 +126,7 @@ public class Fields extends StaticBO {
 
     public static boolean updateFormTabDatafield(
             RecordType recordType,
-            HashMap<String, FormTabDatafieldDTO> formDatafields,
+            Map<String, FormTabDatafieldDTO> formDatafields,
             int loggedUser) {
 
         TabFieldsDAO dao = TabFieldsDAOImpl.getInstance();

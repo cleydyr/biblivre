@@ -23,6 +23,7 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.utils.Constants;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class Languages extends StaticBO {
     private static Logger logger = LoggerFactory.getLogger(Languages.class);
 
-    private static HashMap<String, Set<LanguageDTO>> languages;
+    private static Map<String, Set<LanguageDTO>> languages;
 
     private Languages() {}
 

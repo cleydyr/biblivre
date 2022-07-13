@@ -363,7 +363,7 @@ public class MarcDataReader {
     }
 
     private Map<String, List<DataField>> readDataFieldMap() {
-        HashMap<String, List<DataField>> hash = new HashMap<>();
+        Map<String, List<DataField>> hash = new HashMap<>();
         Record record = this.getRecord();
 
         if (record == null) {

@@ -1,8 +1,8 @@
 package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordType;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TabFieldsDAO {
 
@@ -20,7 +20,5 @@ public interface TabFieldsDAO {
     List<FormTabDatafieldDTO> listFields(RecordType recordType);
 
     boolean updateFormTabDatafield(
-            HashMap<String, FormTabDatafieldDTO> formDatafields,
-            RecordType recordType,
-            int loggedUser);
+            Map<String, FormTabDatafieldDTO> formDatafields, RecordType recordType, int loggedUser);
 }

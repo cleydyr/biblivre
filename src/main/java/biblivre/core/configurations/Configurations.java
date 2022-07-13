@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class Configurations extends StaticBO {
 
     private static Logger logger = LoggerFactory.getLogger(Translations.class);
     // HashMap<Schema, HashMap<Key, Value>>
-    private static HashMap<String, HashMap<String, ConfigurationsDTO>> configurations;
+    private static Map<String, Map<String, ConfigurationsDTO>> configurations;
 
     private Configurations() {}
 
@@ -217,7 +218,7 @@ public class Configurations extends StaticBO {
 
                         globalDao.save(multiSchemaList, loggedUser);
 
-                        HashMap<String, ConfigurationsDTO> map = Configurations.getMap();
+                        Map<String, ConfigurationsDTO> map = Configurations.getMap();
 
                         map.put(finalMultiSchemaConfig.getKey(), finalMultiSchemaConfig);
 
@@ -230,7 +231,7 @@ public class Configurations extends StaticBO {
         ConfigurationsDAO dao = ConfigurationsDAOImpl.getInstance();
 
         if (dao.save(configs, loggedUser)) {
-            HashMap<String, ConfigurationsDTO> map = Configurations.getMap();
+            Map<String, ConfigurationsDTO> map = Configurations.getMap();
 
             for (ConfigurationsDTO config : configs) {
                 map.put(config.getKey(), config);
@@ -274,7 +275,7 @@ public class Configurations extends StaticBO {
     }
 
     private static ConfigurationsDTO get(String key) {
-        HashMap<String, ConfigurationsDTO> map = Configurations.getMap();
+        Map<String, ConfigurationsDTO> map = Configurations.getMap();
 
         ConfigurationsDTO config = map.get(key);
 
@@ -295,10 +296,10 @@ public class Configurations extends StaticBO {
         return config;
     }
 
-    private static HashMap<String, ConfigurationsDTO> getMap() {
+    private static Map<String, ConfigurationsDTO> getMap() {
         String schema = SchemaThreadLocal.get();
 
-        HashMap<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
+        Map<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
 
         if (map == null) {
             map = Configurations.loadConfigurations(schema);
@@ -307,9 +308,8 @@ public class Configurations extends StaticBO {
         return map;
     }
 
-    private static synchronized HashMap<String, ConfigurationsDTO> loadConfigurations(
-            String schema) {
-        HashMap<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
+    private static synchronized Map<String, ConfigurationsDTO> loadConfigurations(String schema) {
+        Map<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
 
         // Checking again for thread safety.
         if (map != null) {

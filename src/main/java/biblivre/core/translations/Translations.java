@@ -78,13 +78,13 @@ public class Translations extends StaticBO {
 
     public static boolean save(
             String language,
-            HashMap<String, String> translation,
-            HashMap<String, String> removeTranslation,
+            Map<String, String> translation,
+            Map<String, String> removeTranslation,
             int loggedUser) {
-        HashMap<String, HashMap<String, String>> translations = new HashMap<>();
+        Map<String, Map<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
-        HashMap<String, HashMap<String, String>> removeTranslations = null;
+        Map<String, Map<String, String>> removeTranslations = null;
 
         if (removeTranslation != null) {
             removeTranslations = new HashMap<>();
@@ -95,8 +95,8 @@ public class Translations extends StaticBO {
     }
 
     public static boolean save(
-            HashMap<String, HashMap<String, String>> translations,
-            HashMap<String, HashMap<String, String>> removeTranslations,
+            Map<String, Map<String, String>> translations,
+            Map<String, Map<String, String>> removeTranslations,
             int loggedUser) {
         TranslationsDAOImpl.getInstance().save(translations, removeTranslations, loggedUser);
 
@@ -120,10 +120,10 @@ public class Translations extends StaticBO {
 
     public static boolean addSingleTranslation(
             String language, String key, String text, int loggedUser) {
-        HashMap<String, String> translation = new HashMap<>();
+        Map<String, String> translation = new HashMap<>();
         translation.put(key, text);
 
-        HashMap<String, HashMap<String, String>> translations = new HashMap<>();
+        Map<String, Map<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
         boolean success = TranslationsDAOImpl.getInstance().save(translations, loggedUser);

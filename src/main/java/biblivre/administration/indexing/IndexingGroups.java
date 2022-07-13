@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class IndexingGroups extends StaticBO {
     private static Logger logger = LoggerFactory.getLogger(IndexingGroups.class);
 
-    private static HashMap<Pair<String, RecordType>, List<IndexingGroupDTO>> groups;
+    private static Map<Pair<String, RecordType>, List<IndexingGroupDTO>> groups;
 
     private IndexingGroups() {}
 

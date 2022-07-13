@@ -84,8 +84,8 @@ public class Handler extends AbstractHandler {
     public void load(ExtendedRequest request, ExtendedResponse response) {
         int loggedUser = request.getLoggedUserId();
         boolean loadUserCreated = StringUtils.isNotBlank(request.getString("user_created"));
-        HashMap<String, String> addTranslation = new HashMap<>();
-        HashMap<String, String> removeTranslation = new HashMap<>();
+        Map<String, String> addTranslation = new HashMap<>();
+        Map<String, String> removeTranslation = new HashMap<>();
         char type = '\0';
         String key = null;
         String value = null;
@@ -232,7 +232,7 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            HashMap<String, HashMap<String, String>> newTranslations = new HashMap<>();
+            Map<String, Map<String, String>> newTranslations = new HashMap<>();
 
             jsonTranslations
                     .keys()
@@ -242,7 +242,7 @@ public class Handler extends AbstractHandler {
                                         jsonTranslations.optJSONObject(language);
 
                                 if (jsonTranslation != null) {
-                                    HashMap<String, String> newTranslation = new HashMap<>();
+                                    Map<String, String> newTranslation = new HashMap<>();
 
                                     jsonTranslation
                                             .keys()
@@ -283,7 +283,7 @@ public class Handler extends AbstractHandler {
                 return;
             }
 
-            HashMap<String, String> newTranslation = new HashMap<>();
+            Map<String, String> newTranslation = new HashMap<>();
 
             json.keys().forEachRemaining(key -> newTranslation.put(key, json.optString(key)));
 
