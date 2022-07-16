@@ -60,7 +60,7 @@ public enum ImportEncoding implements BiblivreEnum {
     public String getEncoding(MemoryFile file) throws IOException {
         switch (this) {
             case AUTO_DETECT:
-                try (InputStream is = file.getNewInputStream()) {
+                try (InputStream is = file.getInputStream()) {
                     return TextUtils.detectCharset(is);
                 }
 

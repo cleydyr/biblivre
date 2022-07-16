@@ -41,6 +41,7 @@ import java.util.Base64;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+import org.springframework.http.MediaType;
 
 public class Handler extends AbstractHandler {
     private UserBO userBO;
@@ -140,13 +141,18 @@ public class Handler extends AbstractHandler {
         }
 
         String photoData = request.getString("photo_data");
-        if (StringUtils.isNotBlank(photoData)) {
-            MemoryFile file = new MemoryFile();
 
+        if (StringUtils.isNotBlank(photoData)) {
             byte[] arr = Base64.getDecoder().decode(photoData);
-            file.setName(user.getName() + ".jpeg");
-            file.setInputStream(new ByteArrayInputStream(arr));
-            file.setSize(arr.length);
+
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(arr);
+
+            MemoryFile file =
+                    new MemoryFile(
+                            user.getName() + ".jpeg",
+                            MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                            arr.length,
+                            byteArrayInputStream);
 
             Integer serial = digitalMediaBO.save(file);
 
