@@ -25,6 +25,7 @@ import biblivre.core.StaticBO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class UserFields extends StaticBO {
 
     private static Logger logger = LoggerFactory.getLogger(UserFields.class);
 
-    private static HashMap<String, JavascriptCacheableList<UserFieldDTO>> fields; // FormTab
+    private static Map<String, JavascriptCacheableList<UserFieldDTO>> fields; // FormTab
 
     private UserFields() {}
 

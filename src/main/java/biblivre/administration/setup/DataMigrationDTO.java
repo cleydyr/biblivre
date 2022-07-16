@@ -22,6 +22,7 @@ package biblivre.administration.setup;
 import biblivre.core.AbstractDTO;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class DataMigrationDTO extends AbstractDTO {
@@ -32,7 +33,7 @@ public class DataMigrationDTO extends AbstractDTO {
     private volatile DataMigrationPhase currentPhase;
     private volatile Integer index;
     private volatile Integer total;
-    private volatile HashMap<DataMigrationPhase, Boolean> phases;
+    private volatile Map<DataMigrationPhase, Boolean> phases;
     private volatile Set<DataMigrationPhase> completedPhases;
 
     public DataMigrationDTO() {

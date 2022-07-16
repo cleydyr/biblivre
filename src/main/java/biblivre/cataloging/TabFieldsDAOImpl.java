@@ -30,6 +30,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
@@ -201,7 +202,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
     @Override
     public List<FormTabDatafieldDTO> listFields(RecordType recordType) {
         List<FormTabDatafieldDTO> list = new ArrayList<>();
-        HashMap<String, FormTabDatafieldDTO> hash = new HashMap<>();
+        Map<String, FormTabDatafieldDTO> hash = new HashMap<>();
 
         Connection con = null;
         try {
@@ -293,7 +294,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
 
     @Override
     public boolean updateFormTabDatafield(
-            HashMap<String, FormTabDatafieldDTO> formDatafields,
+            Map<String, FormTabDatafieldDTO> formDatafields,
             RecordType recordType,
             int loggedUser) {
         Connection con = null;

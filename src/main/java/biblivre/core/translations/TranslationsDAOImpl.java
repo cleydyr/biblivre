@@ -27,7 +27,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -93,14 +92,14 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
     }
 
     @Override
-    public boolean save(HashMap<String, HashMap<String, String>> translations, int loggedUser) {
+    public boolean save(Map<String, Map<String, String>> translations, int loggedUser) {
         return this.save(translations, null, loggedUser);
     }
 
     @Override
     public boolean save(
-            HashMap<String, HashMap<String, String>> translations,
-            HashMap<String, HashMap<String, String>> removeTranslations,
+            Map<String, Map<String, String>> translations,
+            Map<String, Map<String, String>> removeTranslations,
             int loggedUser) {
         Connection con = null;
         try {

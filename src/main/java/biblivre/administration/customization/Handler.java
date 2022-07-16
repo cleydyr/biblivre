@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -148,8 +149,8 @@ public class Handler extends AbstractHandler {
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
 
         String fields = request.getString("fields", "{}");
-        HashMap<String, FormTabDatafieldDTO> map = new HashMap<>();
-        HashMap<String, String> translations = new HashMap<>();
+        Map<String, FormTabDatafieldDTO> map = new HashMap<>();
+        Map<String, String> translations = new HashMap<>();
 
         try {
             JSONObject json = new JSONObject(fields);

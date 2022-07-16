@@ -446,26 +446,23 @@ public class RestoreBO extends AbstractBO {
     }
 
     private void _connectOutputToStateLogger(Process p) {
-        try (InputStreamReader input =
-                new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET)) {
+        Executor executor = Executors.newSingleThreadScheduledExecutor();
 
-            Executor executor = Executors.newSingleThreadScheduledExecutor();
+        executor.execute(
+                () -> {
+                    String outputLine;
 
-            executor.execute(
-                    () -> {
-                        String outputLine;
-
-                        try (BufferedReader br = new BufferedReader(input)) {
-                            while ((outputLine = br.readLine()) != null) {
-                                State.writeLog(outputLine);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    try (InputStreamReader input =
+                                    new InputStreamReader(
+                                            p.getInputStream(), Constants.DEFAULT_CHARSET);
+                            BufferedReader br = new BufferedReader(input)) {
+                        while ((outputLine = br.readLine()) != null) {
+                            State.writeLog(outputLine);
                         }
-                    });
-        } catch (IOException ioException) {
-            logger.error("error while restoring backup", ioException);
-        }
+                    } catch (Exception e) {
+                        logger.error("error while restoring backup", e);
+                    }
+                });
     }
 
     private synchronized boolean restoreBackupBiblivre3(File sql) {
