@@ -552,8 +552,7 @@ public class RestoreBO extends AbstractBO {
             return;
         }
 
-        SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+        SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     for (File file : path.listFiles()) {
                         Matcher fileMatcher = _FILE.matcher(file.getName());

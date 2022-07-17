@@ -45,7 +45,7 @@
 }
 
 @mixin linear-gradient-2($colorA, $percentA, $colorB, $percentB, $background: "") {
-	background: ($colorA / 2) + ($colorB / 2) $background;
+	background: ($colorA * 0.5) + ($colorB * 0.5) $background;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$colorA}', endColorstr='#{$colorB}', GradientType=0);   
 	background: $background, -webkit-gradient(linear, 0 0, 0 100%, color-stop($percentA, $colorA), color-stop($percentB, $colorB));
 	background: $background, -webkit-linear-gradient(top, $colorA $percentA, $colorB $percentB);
@@ -55,7 +55,7 @@
 }
 
 @mixin linear-gradient-4($colorA, $percentA, $colorB, $percentB, $colorC, $percentC, $colorD, $percentD) {
-	background-color: ($colorA / 2) + ($colorD / 2);
+	background-color: ($colorA * 0.5) + ($colorD * 0.5);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$colorA}', endColorstr='#{$colorC}', GradientType=0);   
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop($percentA, $colorA), color-stop($percentB, $colorB), color-stop($percentC, $colorC), color-stop($percentD, $colorD));
 	background-image: -webkit-linear-gradient(top, $colorA $percentA, $colorB $percentB, $colorC $percentC, $colorD $percentD);

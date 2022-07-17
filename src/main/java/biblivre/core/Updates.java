@@ -131,8 +131,7 @@ public class Updates {
     }
 
     public static String getUID() {
-        return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+        return SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     String uid = Configurations.getString(Constants.CONFIG_UID);
 

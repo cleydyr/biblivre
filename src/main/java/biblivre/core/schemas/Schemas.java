@@ -80,8 +80,7 @@ public class Schemas extends StaticBO {
     }
 
     public static void reload() {
-        SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+        SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
@@ -210,8 +209,7 @@ public class Schemas extends StaticBO {
     }
 
     public static boolean disable(SchemaDTO dto) {
-        return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+        return SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
@@ -222,8 +220,7 @@ public class Schemas extends StaticBO {
     }
 
     public static boolean enable(SchemaDTO dto) {
-        return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+        return SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
@@ -238,8 +235,7 @@ public class Schemas extends StaticBO {
     }
 
     public static boolean deleteSchema(SchemaDTO dto) {
-        return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+        return SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
 
@@ -250,8 +246,7 @@ public class Schemas extends StaticBO {
     }
 
     public static boolean exists(String schema) {
-        return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
+        return SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     SchemasDAOImpl schemasDAO = SchemasDAOImpl.getInstance();
 

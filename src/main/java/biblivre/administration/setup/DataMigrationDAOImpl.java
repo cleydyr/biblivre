@@ -267,14 +267,18 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                MemoryFile dto = new MemoryFile();
+                byte[] file = rs.getBytes("file");
+
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file);
+
+                MemoryFile dto =
+                        new MemoryFile(
+                                rs.getString("file_name"),
+                                rs.getString("mime_type"),
+                                file.length,
+                                byteArrayInputStream);
 
                 dto.setId(rs.getInt("id"));
-                dto.setContentType(rs.getString("mime_type"));
-                dto.setName(rs.getString("file_name"));
-                byte[] file = rs.getBytes("file");
-                dto.setInputStream(new ByteArrayInputStream(file));
-                dto.setSize(file.length);
 
                 list.add(dto);
             }

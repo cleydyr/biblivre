@@ -67,11 +67,8 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         if (StringUtils.isEmpty(value)) {
             if (!isGlobalSchema()) {
                 value =
-                        SchemaThreadLocal.withSchema(
-                                Constants.GLOBAL_SCHEMA,
-                                () -> {
-                                    return Translations.get(this.getLanguage()).getText(key);
-                                });
+                        SchemaThreadLocal.withGlobalSchema(
+                                () -> Translations.get(this.getLanguage()).getText(key));
             } else {
                 this.logger.warn(
                         "Translation key not found: "
@@ -117,8 +114,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         Map<String, TranslationDTO> translations = new HashMap<>();
 
         if (!isGlobalSchema()) {
-            SchemaThreadLocal.withSchema(
-                    Constants.GLOBAL_SCHEMA,
+            SchemaThreadLocal.withGlobalSchema(
                     () -> {
                         translations.putAll(Translations.get(this.getLanguage()));
 

@@ -31,20 +31,17 @@ import biblivre.login.LoginDTO;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import javax.servlet.http.Part;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 
 public class ExtendedRequest extends HttpServletRequestWrapper {
     private static final Logger logger = LoggerFactory.getLogger(ExtendedRequest.class);
@@ -58,7 +55,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private Map<String, String> multiPartParameters;
     private Map<String, MemoryFile> multiPartFiles;
 
-    public ExtendedRequest(HttpServletRequest request) {
+    public ExtendedRequest(HttpServletRequest request) throws IOException, ServletException {
         super(request);
 
         String path = request.getServletPath();
@@ -67,7 +64,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
             return;
         }
 
-        this.loadMultiPart();
+        this.loadMultiPart(request);
         this.loadSchemaAndController();
         this.loadLanguage();
         this.loadTranslationsMap();
@@ -264,29 +261,32 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         return 0;
     }
 
-    private void loadMultiPart() {
-        this.multiPart = ServletFileUpload.isMultipartContent(this);
+    private void loadMultiPart(HttpServletRequest httpServletRequest)
+            throws IOException, ServletException {
+        String contentType = httpServletRequest.getContentType();
+
+        this.multiPart =
+                contentType != null && contentType.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE);
 
         if (this.multiPart) {
             this.multiPartParameters = new HashMap<>();
             this.multiPartFiles = new HashMap<>();
 
-            try {
-                FileItemFactory factory = new DiskFileItemFactory();
-                ServletFileUpload upload = new ServletFileUpload(factory);
-                List<FileItem> items = upload.parseRequest(this);
+            for (Part part : httpServletRequest.getParts()) {
+                String filename = part.getSubmittedFileName();
 
-                for (FileItem item : items) {
-                    if (item.isFormField()) {
-                        this.multiPartParameters.put(item.getFieldName(), item.getString());
-                    } else {
-                        MemoryFile file = new MemoryFile(item);
-
-                        this.multiPartFiles.put(item.getFieldName(), file);
-                    }
+                if (filename != null) {
+                    this.multiPartFiles.put(
+                            part.getName(),
+                            new MemoryFile(
+                                    part.getSubmittedFileName(),
+                                    part.getContentType(),
+                                    part.getSize(),
+                                    part.getInputStream()));
+                } else {
+                    this.multiPartParameters.put(
+                            part.getName(), new String(part.getInputStream().readAllBytes()));
                 }
-            } catch (Exception e) {
-                // TODO: handle exception
             }
         }
     }

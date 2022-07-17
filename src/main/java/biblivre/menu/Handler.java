@@ -35,7 +35,6 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.z3950.Z3950AddressDTO;
 import biblivre.z3950.Z3950BO;
@@ -295,8 +294,7 @@ public class Handler extends AbstractHandler {
 
     public void multiSchemaBackup(ExtendedRequest request, ExtendedResponse response) {
         String backupPath =
-                SchemaThreadLocal.withSchema(
-                        Constants.GLOBAL_SCHEMA,
+                SchemaThreadLocal.withGlobalSchema(
                         () -> {
                             return backupBO.getBackupPath();
                         });
@@ -309,6 +307,14 @@ public class Handler extends AbstractHandler {
     }
 
     public void multiSchemaConfigurations(ExtendedRequest request, ExtendedResponse response) {
+        String backupPath =
+                SchemaThreadLocal.withGlobalSchema(
+                        () -> {
+                            return backupBO.getBackupPath();
+                        });
+
+        request.setAttribute("backupPath", backupPath);
+
         this.jspURL = "/jsp/multi_schema/configurations.jsp";
         return;
     }

@@ -110,12 +110,8 @@ public class Translations extends StaticBO {
     }
 
     public static boolean addSingleTranslation(String language, String key, String text) {
-        return SchemaThreadLocal.withSchema(
-                Constants.GLOBAL_SCHEMA,
-                () -> {
-                    return addSingleTranslation(
-                            language, key, text, Constants.ADMIN_LOGGED_USER_ID);
-                });
+        return SchemaThreadLocal.withGlobalSchema(
+                () -> addSingleTranslation(language, key, text, Constants.ADMIN_LOGGED_USER_ID));
     }
 
     public static boolean addSingleTranslation(

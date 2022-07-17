@@ -23,61 +23,32 @@ import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.apache.commons.fileupload.FileItem;
 
 public class MemoryFile extends BiblivreFile {
 
-    private FileItem fileItem;
     private InputStream inputStream;
 
     public MemoryFile() {}
 
-    public MemoryFile(FileItem item) {
-        this.fileItem = item;
-
-        this.setName(this.fileItem.getName());
-        this.setContentType(this.fileItem.getContentType());
-        this.setSize(this.fileItem.getSize());
-    }
-
-    public InputStream getNewInputStream() throws IOException {
-        if (this.fileItem == null) {
-            return this.inputStream;
-        }
-
-        if (this.inputStream != null) {
-            this.inputStream.close();
-        }
-
-        this.inputStream = this.fileItem.getInputStream();
-        return this.inputStream;
-    }
-
-    public void setInputStream(InputStream is) {
-        this.inputStream = is;
+    public MemoryFile(String name, String contentType, long size, InputStream inputStream) {
+        this.setName(name);
+        this.setContentType(contentType);
+        this.setSize(size);
+        this.inputStream = inputStream;
     }
 
     public InputStream getInputStream() throws IOException {
-        if (this.inputStream == null) {
-            return this.getNewInputStream();
-        }
-
         return this.inputStream;
     }
 
     @Override
     public boolean exists() {
-        try (InputStream inputStream = this.getNewInputStream()) {
-
-            return inputStream != null;
-        } catch (Exception e) {
-            return false;
-        }
+        return inputStream != null;
     }
 
     @Override
     public void copy(OutputStream out, long start, long size) throws IOException {
-        try (InputStream input = this.getNewInputStream()) {
+        try (InputStream input = this.inputStream) {
 
             if (input == null) {
                 return;

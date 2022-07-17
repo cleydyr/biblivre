@@ -29,7 +29,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
     @Override
     public final Integer save(MemoryFile file) {
-        try (InputStream is = file.getNewInputStream()) {
+        try (InputStream is = file.getInputStream()) {
             Integer serial = file.getId();
             if (serial == null) {
                 serial = this.getNextSerial("digital_media_id_seq");

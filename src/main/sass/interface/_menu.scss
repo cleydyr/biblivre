@@ -232,7 +232,7 @@ $notifications-border-color: #BDBDBD;
 	left: 50%;
 
 	width: $content-width;
-	margin-left: - $content-width / 2;
+	margin-left: - $content-width * 0.5;
 
 	text-align: right;
 	z-index: 110;
@@ -276,7 +276,7 @@ $notifications-border-color: #BDBDBD;
 	bottom: -6px;
 	left: 50%;
 
-	margin-left: - $content-width / 2;
+	margin-left: - $content-width * 0.5;
 
 	width: $content-width;
 	height: $menu-height;

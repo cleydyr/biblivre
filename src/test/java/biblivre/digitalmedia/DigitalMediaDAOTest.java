@@ -178,17 +178,9 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
     }
 
     private MemoryFile _createMemoryFile(String fileName, String content) {
-        MemoryFile file = new MemoryFile();
-
-        file.setName(fileName);
-
-        file.setContentType("text/plain");
-
         ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes());
 
-        file.setInputStream(inputStream);
-
-        file.setSize(content.length());
+        MemoryFile file = new MemoryFile(fileName, "text/plain", content.length(), inputStream);
 
         return file;
     }

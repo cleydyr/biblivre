@@ -57,18 +57,14 @@
 					if (schema.isDisabled()) {
 						continue;
 					}
-
-					SchemaThreadLocal.withSchema(schema.getSchema(), () -> {
 			%>
 						<div class="library">
 							<div class="checkbox"><input type="checkbox" name="library" checked="checked" value="<%= schema.getSchema() %>" /></div>
-							<div class="title"><%= Configurations.getHtml(Constants.CONFIG_TITLE) %></div>
-							<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></div>
+							<div class="title"><%= Configurations.getHtml(Constants.CONFIG_TITLE, schema.getSchema()) %></div>
+							<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE, schema.getSchema()) %></div>
 							<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
 						</div>
 			<%
-						return null;
-					});
 				}
 			%>
 
