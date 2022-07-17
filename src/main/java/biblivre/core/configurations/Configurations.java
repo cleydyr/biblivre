@@ -225,8 +225,7 @@ public class Configurations extends StaticBO {
         if (multiSchemaConfig != null) {
             final ConfigurationsDTO finalMultiSchemaConfig = multiSchemaConfig;
 
-            SchemaThreadLocal.withSchema(
-                    Constants.GLOBAL_SCHEMA,
+            SchemaThreadLocal.withGlobalSchema(
                     () -> {
                         ConfigurationsDAOImpl globalDao = ConfigurationsDAOImpl.getInstance();
 
@@ -279,11 +278,8 @@ public class Configurations extends StaticBO {
 
     public static void setMultipleSchemasEnabled(Integer loggedUser) {
         ConfigurationsDTO config =
-                SchemaThreadLocal.withSchema(
-                        Constants.GLOBAL_SCHEMA,
-                        () -> {
-                            return Configurations.get(Constants.CONFIG_MULTI_SCHEMA);
-                        });
+                SchemaThreadLocal.withGlobalSchema(
+                        () -> Configurations.get(Constants.CONFIG_MULTI_SCHEMA));
 
         config.setValue("true");
 
@@ -304,11 +300,7 @@ public class Configurations extends StaticBO {
                 return null;
             }
 
-            return SchemaThreadLocal.withSchema(
-                    Constants.GLOBAL_SCHEMA,
-                    () -> {
-                        return Configurations.get(key);
-                    });
+            return SchemaThreadLocal.withGlobalSchema(() -> Configurations.get(key));
         }
 
         return config;
@@ -324,11 +316,7 @@ public class Configurations extends StaticBO {
                 return null;
             }
 
-            return SchemaThreadLocal.withSchema(
-                    Constants.GLOBAL_SCHEMA,
-                    () -> {
-                        return Configurations.get(key);
-                    });
+            return SchemaThreadLocal.withGlobalSchema(() -> Configurations.get(key));
         }
 
         return config;
