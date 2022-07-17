@@ -307,6 +307,14 @@ public class Handler extends AbstractHandler {
     }
 
     public void multiSchemaConfigurations(ExtendedRequest request, ExtendedResponse response) {
+        String backupPath =
+                SchemaThreadLocal.withGlobalSchema(
+                        () -> {
+                            return backupBO.getBackupPath();
+                        });
+
+        request.setAttribute("backupPath", backupPath);
+
         this.jspURL = "/jsp/multi_schema/configurations.jsp";
         return;
     }
