@@ -1,7 +1,7 @@
 package biblivre.core;
 
+import biblivre.core.function.UnsafeSupplier;
 import biblivre.core.utils.Constants;
-import java.util.function.Supplier;
 
 public class SchemaThreadLocal {
     private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
@@ -26,25 +26,29 @@ public class SchemaThreadLocal {
         return Constants.GLOBAL_SCHEMA.equals(get());
     }
 
-    public static <T> T withGlobalSchema(Supplier<T> supplier) {
+    public static <T> T withGlobalSchema(UnsafeSupplier<T> supplier) {
         return withSchema(Constants.GLOBAL_SCHEMA, supplier);
     }
 
-    public static <T> T withPublicSchema(Supplier<T> supplier) {
+    public static <T> T withPublicSchema(UnsafeSupplier<T> supplier) {
         return withSchema("public", supplier);
     }
 
-    public static <T> T withSchema(String schema, Supplier<T> supplier) {
+    public static <T> T withSchema(String schema, UnsafeSupplier<T> supplier) {
         String currentSchema = SchemaThreadLocal.remove();
 
-        SchemaThreadLocal.setSchema(schema);
+        try {
+            SchemaThreadLocal.setSchema(schema);
 
-        T value = supplier.get();
+            T value = supplier.get();
 
-        SchemaThreadLocal.remove();
+            return value;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            SchemaThreadLocal.remove();
 
-        SchemaThreadLocal.setSchema(currentSchema);
-
-        return value;
+            SchemaThreadLocal.setSchema(currentSchema);
+        }
     }
 }

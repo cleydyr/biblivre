@@ -57,6 +57,24 @@ public class Configurations extends StaticBO {
         return value;
     }
 
+    public static String getHtml(String key, String schema) {
+        String value = Configurations.getValue(key, schema);
+
+        return StringEscapeUtils.escapeHtml4(value);
+    }
+
+    private static String getValue(String key, String schema) {
+        ConfigurationsDTO config = Configurations.get(key, schema);
+
+        String value = "";
+
+        if (config != null) {
+            value = config.getValue();
+        }
+
+        return StringUtils.defaultString(value);
+    }
+
     public static String getHtml(String key) {
         String value = Configurations.getValue(key);
 
@@ -294,6 +312,36 @@ public class Configurations extends StaticBO {
         }
 
         return config;
+    }
+
+    private static ConfigurationsDTO get(String key, String schema) {
+        Map<String, ConfigurationsDTO> map = Configurations.getMap(schema);
+
+        ConfigurationsDTO config = map.get(key);
+
+        if (config == null) {
+            if (schema.equals(Constants.GLOBAL_SCHEMA)) {
+                return null;
+            }
+
+            return SchemaThreadLocal.withSchema(
+                    Constants.GLOBAL_SCHEMA,
+                    () -> {
+                        return Configurations.get(key);
+                    });
+        }
+
+        return config;
+    }
+
+    private static Map<String, ConfigurationsDTO> getMap(String schema) {
+        Map<String, ConfigurationsDTO> map = Configurations.configurations.get(schema);
+
+        if (map == null) {
+            map = Configurations.loadConfigurations(schema);
+        }
+
+        return map;
     }
 
     private static Map<String, ConfigurationsDTO> getMap() {
