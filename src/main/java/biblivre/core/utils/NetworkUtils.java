@@ -19,12 +19,12 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
-import javax.servlet.http.HttpServletRequest;
 
 public class NetworkUtils {
     public static boolean isLocalRequest(HttpServletRequest request) throws UnknownHostException {

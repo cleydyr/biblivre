@@ -26,7 +26,6 @@ import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
@@ -36,21 +35,23 @@ import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @MultipartConfig
+@WebServlet(name = "SchemaServlet", urlPatterns = "/")
 public final class SchemaServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -273,8 +274,9 @@ public final class SchemaServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
-                getServletContext(), "/freemarker");
+        //
+        // FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
+        //                getServletContext(), "/freemarker");
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);

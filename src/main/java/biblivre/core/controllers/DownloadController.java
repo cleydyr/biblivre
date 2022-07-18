@@ -27,9 +27,9 @@ import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.utils.FileIOUtils;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
 public class DownloadController extends Controller {

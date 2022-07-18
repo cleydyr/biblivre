@@ -19,19 +19,74 @@
  ******************************************************************************/
 package biblivre;
 
+import biblivre.acquisition.order.OrderDAO;
+import biblivre.acquisition.order.OrderDAOImpl;
+import biblivre.acquisition.quotation.QuotationDAO;
+import biblivre.acquisition.quotation.QuotationDAOImpl;
+import biblivre.acquisition.request.RequestDAO;
+import biblivre.acquisition.request.RequestDAOImpl;
+import biblivre.acquisition.supplier.SupplierDAO;
+import biblivre.acquisition.supplier.SupplierDAOImpl;
+import biblivre.administration.backup.BackupDAO;
+import biblivre.administration.backup.BackupDAOImpl;
+import biblivre.administration.indexing.IndexingDAO;
+import biblivre.administration.indexing.IndexingDAOImpl;
+import biblivre.administration.indexing.IndexingGroupsDAO;
+import biblivre.administration.indexing.IndexingGroupsDAOImpl;
+import biblivre.administration.permissions.PermissionDAO;
+import biblivre.administration.permissions.PermissionDAOImpl;
+import biblivre.administration.reports.ReportsDAO;
+import biblivre.administration.reports.ReportsDAOImpl;
+import biblivre.administration.setup.DataMigrationDAO;
+import biblivre.administration.setup.DataMigrationDAOImpl;
+import biblivre.administration.setup.SetupDAO;
+import biblivre.administration.setup.SetupDAOImpl;
+import biblivre.administration.usertype.UserTypeDAO;
+import biblivre.administration.usertype.UserTypeDAOImpl;
+import biblivre.cataloging.RecordDAO;
+import biblivre.cataloging.RecordDAOImpl;
+import biblivre.cataloging.holding.HoldingDAO;
+import biblivre.cataloging.holding.HoldingDAOImpl;
+import biblivre.cataloging.search.SearchDAO;
+import biblivre.cataloging.search.SearchDAOImpl;
+import biblivre.circulation.accesscontrol.AccessControlDAO;
+import biblivre.circulation.accesscontrol.AccessControlDAOImpl;
+import biblivre.circulation.lending.LendingDAO;
+import biblivre.circulation.lending.LendingDAOImpl;
+import biblivre.circulation.lending.LendingFineDAO;
+import biblivre.circulation.lending.LendingFineDAOImpl;
+import biblivre.circulation.reservation.ReservationDAO;
+import biblivre.circulation.reservation.ReservationDAOImpl;
+import biblivre.circulation.user.UserDAO;
+import biblivre.circulation.user.UserDAOImpl;
 import biblivre.core.DigitalMediaMigrator;
 import biblivre.core.Updates;
+import biblivre.core.auth.AuthorizationDAO;
+import biblivre.core.auth.AuthorizationDAOImpl;
+import biblivre.digitalmedia.DigitalMediaDAO;
+import biblivre.digitalmedia.DigitalMediaDAOFactory;
+import biblivre.login.LoginDAO;
+import biblivre.login.LoginDAOImpl;
+import biblivre.z3950.Z3950DAO;
+import biblivre.z3950.Z3950DAOImpl;
 import biblivre.z3950.server.Z3950ServerBO;
+import freemarker.template.Configuration;
+import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class BiblivreInitializer extends SpringBootServletInitializer {
+public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
     private static final Logger _logger = LoggerFactory.getLogger(BiblivreInitializer.class);
 
     private static boolean initialized = false;
+
     public static Z3950ServerBO Z3950server = null;
 
     public static synchronized void initialize() {
@@ -52,6 +107,13 @@ public class BiblivreInitializer extends SpringBootServletInitializer {
         }
     }
 
+    private Configuration freemarkerConfiguration;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/static/");
+    }
+
     public static synchronized void destroy() {
         if (BiblivreInitializer.Z3950server != null) {
             BiblivreInitializer.Z3950server.stopServer();
@@ -63,4 +125,160 @@ public class BiblivreInitializer extends SpringBootServletInitializer {
             BiblivreInitializer.Z3950server.reloadServer();
         }
     }
+
+    @Bean
+    public AccessControlDAO accessControlDAO() {
+        return AccessControlDAOImpl.getInstance();
+    }
+
+    @Bean
+    public AuthorizationDAO authorizationDAO() {
+        return AuthorizationDAOImpl.getInstance();
+    }
+
+    @Bean
+    public BackupDAO backupDAO() {
+        return BackupDAOImpl.getInstance();
+    }
+
+    @Bean
+    public DataMigrationDAO dataMigrationDAOImpl() {
+        return DataMigrationDAOImpl.getInstance();
+    }
+
+    @Bean
+    public DigitalMediaDAO digitalMediaDAO() {
+        return DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
+    }
+
+    @Bean
+    public HoldingDAO holdingDAO() {
+        return HoldingDAOImpl.getInstance();
+    }
+
+    @Bean
+    public IndexingDAO indexingDAO() {
+        return IndexingDAOImpl.getInstance();
+    }
+
+    @Bean
+    public IndexingGroupsDAO indexingGroupsDAO() {
+        return IndexingGroupsDAOImpl.getInstance();
+    }
+
+    @Bean
+    public LendingDAO lendingDAO() {
+        return LendingDAOImpl.getInstance();
+    }
+
+    @Bean
+    public LendingFineDAO lendingFineDAO() {
+        return LendingFineDAOImpl.getInstance();
+    }
+
+    @Bean
+    public LoginDAO loginDAO() {
+        return LoginDAOImpl.getInstance();
+    }
+
+    @Bean
+    public OrderDAO orderDAO() {
+        return OrderDAOImpl.getInstance();
+    }
+
+    @Bean
+    public PermissionDAO permissionDAO() {
+        return PermissionDAOImpl.getInstance();
+    }
+
+    @Bean
+    public QuotationDAO quotationDAO() {
+        return QuotationDAOImpl.getInstance();
+    }
+
+    @Bean
+    public RecordDAO recordDAO() {
+        return RecordDAOImpl.getInstance();
+    }
+
+    @Bean
+    public ReportsDAO reportsDAO() {
+        return ReportsDAOImpl.getInstance();
+    }
+
+    @Bean
+    public RequestDAO requestDAO() {
+        return RequestDAOImpl.getInstance();
+    }
+
+    @Bean
+    public ReservationDAO reservationDAO() {
+        return ReservationDAOImpl.getInstance();
+    }
+
+    @Bean
+    public SearchDAO searchDAO() {
+        return SearchDAOImpl.getInstance();
+    }
+
+    @Bean
+    public SetupDAO setupDAO() {
+        return SetupDAOImpl.getInstance();
+    }
+
+    @Bean
+    public SupplierDAO supplierDAO() {
+        return SupplierDAOImpl.getInstance();
+    }
+
+    @Bean
+    public UserDAO userDAO() {
+        return UserDAOImpl.getInstance();
+    }
+
+    @Bean
+    public UserTypeDAO userTypeDAO() {
+        return UserTypeDAOImpl.getInstance();
+    }
+
+    @Bean
+    public Z3950DAO z3950DAO() {
+        return Z3950DAOImpl.getInstance();
+    }
+
+    @Autowired ServletContext servletContext;
+
+    //    @Bean
+    //    public Configuration freemarkerConfig() throws IOException {
+    //        try {
+    //            freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_28);
+    //
+    //            // Set the preferred charset template files are stored in. UTF-8 is
+    //            // a good choice in most applications:
+    //            freemarkerConfiguration.setDefaultEncoding(StandardCharsets.UTF_8.name());
+    //
+    //            // Sets how errors will appear.
+    //            // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is
+    // better.
+    //            freemarkerConfiguration.setTemplateExceptionHandler(
+    //                    TemplateExceptionHandler.RETHROW_HANDLER);
+    //
+    //            // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+    //            freemarkerConfiguration.setLogTemplateExceptions(false);
+    //
+    //            // Wrap unchecked exceptions thrown during template processing in
+    //            freemarkerConfiguration.setWrapUncheckedExceptions(true);
+    //
+    //            URL resource = servletContext.getResource("/freemarker");
+    //
+    //            File file = Paths.get(resource.toURI()).toFile();
+    //
+    //            freemarkerConfiguration.setTemplateLoader(new FileTemplateLoader(file));
+    //
+    //        } catch (Exception exception) {
+    //            logger.fatal("can't configure freemarker", exception);
+    //        }
+    //
+    //        return freemarkerConfiguration;
+    //    }
 }

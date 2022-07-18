@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk17
+FROM tomcat:10-jdk17
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
 	&& apt install -y \

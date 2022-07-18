@@ -4,16 +4,6 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 	version="4.0">
 
-	<servlet>
-		<servlet-name>SchemaServlet</servlet-name>
-		<servlet-class>biblivre.core.controllers.SchemaServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>SchemaServlet</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
-
 	<error-page>
 		<error-code>404</error-code>
 		<location>/jsp/error_404.jsp</location>
@@ -41,10 +31,6 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-
-	<listener>
-		<listener-class>biblivre.core.BiblivreContextListener</listener-class>
-	</listener>
 
 	<jsp-config>
 		<jsp-property-group>
