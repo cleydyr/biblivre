@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.BiblivreInitializer;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 

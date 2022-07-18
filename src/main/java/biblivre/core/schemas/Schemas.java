@@ -19,9 +19,9 @@
  ******************************************************************************/
 package biblivre.core.schemas;
 
+import biblivre.BiblivreInitializer;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
-import biblivre.core.BiblivreInitializer;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.Updates;

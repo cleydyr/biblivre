@@ -17,13 +17,18 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core;
+package biblivre;
 
+import biblivre.core.DigitalMediaMigrator;
+import biblivre.core.Updates;
 import biblivre.z3950.server.Z3950ServerBO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-public class BiblivreInitializer {
+@SpringBootApplication
+public class BiblivreInitializer extends SpringBootServletInitializer {
     private static final Logger _logger = LoggerFactory.getLogger(BiblivreInitializer.class);
 
     private static boolean initialized = false;
