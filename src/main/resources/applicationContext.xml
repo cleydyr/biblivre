@@ -42,7 +42,7 @@
 		class="biblivre.login.Handler">
 		<property name="loginBO" ref="loginBO" />
 		<property name="indexingBO" ref="indexingBO" />
-		<property name="authorizationBO" ref="authorizationBO" />
+		<property name="permissionBO" ref="permissionBO" />
 		<property name="backupBO" ref="backupBO" />
 	</bean>
 
@@ -264,7 +264,7 @@
 		<property name="indexingBO" ref="indexingBO" />
 		<property name="lendingDAO" ref="lendingDAO" />
 		<property name="reservationBO" ref="reservationBO" />
-		<property name="authorizationBO" ref="authorizationBO" />
+		<property name="permissionBO" ref="permissionBO" />
 	</bean>
 
 	<bean id="vocabularyRecordBO" name="vocabularyRecordBO"
@@ -274,7 +274,7 @@
 		<property name="searchDAO" ref="searchDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 		<property name="indexingBO" ref="indexingBO" />
-		<property name="authorizationBO" ref="authorizationBO" />
+		<property name="permissionBO" ref="permissionBO" />
 	</bean>
 
 	<bean id="authorityRecordBO" name="authorityRecordBO"
@@ -284,7 +284,7 @@
 		<property name="searchDAO" ref="searchDAO" />
 		<property name="digitalMediaBO" ref="digitalMediaBO" />
 		<property name="indexingBO" ref="indexingBO" />
-		<property name="authorizationBO" ref="authorizationBO" />
+		<property name="permissionBO" ref="permissionBO" />
 	</bean>
 
 	<bean id="holdingBO" name="holdingBO"
@@ -292,7 +292,7 @@
 		<property name="holdingDAO" ref="holdingDAO" />
 		<property name="loginBO" ref="loginBO" />
 		<property name="userBO" ref="userBO" />
-		<property name="authorizationBO" ref="authorizationBO" />
+		<property name="permissionBO" ref="permissionBO" />
 	</bean>
 
 	<bean id="indexingBO" name="indexingBO"
@@ -349,11 +349,6 @@
 
 	<bean id="z3950BO" name="z3950BO" class="biblivre.z3950.Z3950BO">
 		<property name="z3950DAO" ref="z3950DAO" />
-	</bean>
-
-	<bean id="authorizationBO" name="authorizationBO"
-		class="biblivre.core.auth.AuthorizationBO">
-		<property name="authorizationDAO" ref="authorizationDAO" />
 	</bean>
 
 	<bean id="backupBO" name="backupBO"
@@ -466,10 +461,6 @@
 		factory-method="getDigitalMediaDAOImpl" />
 
 	<bean id="z3950DAO" class="biblivre.z3950.Z3950DAOImpl"
-		factory-method="getInstance" />
-
-	<bean id="authorizationDAO"
-		class="biblivre.core.auth.AuthorizationDAOImpl"
 		factory-method="getInstance" />
 
 	<bean

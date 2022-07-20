@@ -20,6 +20,11 @@
 package biblivre.administration.permissions;
 
 import biblivre.circulation.user.UserDTO;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.auth.AuthorizationPoints;
+import biblivre.core.exceptions.AuthorizationException;
+import biblivre.login.LoginDTO;
+import java.util.Collection;
 import java.util.List;
 
 public class PermissionBO {
@@ -38,11 +43,32 @@ public class PermissionBO {
         return false;
     }
 
-    public List<String> getByLoginId(Integer loginid) {
+    public Collection<String> getByLoginId(Integer loginid) {
         return this.permissionDAO.getByLoginId(loginid);
     }
 
     public void setPermissionDAO(PermissionDAO permissionDAO) {
         this.permissionDAO = permissionDAO;
+    }
+
+    public void authorize(AuthorizationPoints atps, String module, String action) {
+        if (atps == null) {
+            atps = AuthorizationPoints.getNotLoggedInstance();
+        }
+
+        if (!atps.isAllowed(module, action)) {
+            throw new AuthorizationException();
+        }
+    }
+
+    public AuthorizationPoints getUserAuthorizationPoints(LoginDTO login) {
+        Collection<String> permissions = null;
+
+        if (!SchemaThreadLocal.isGlobalSchema()) {
+            permissions = this.permissionDAO.getByLoginId(login.getId());
+        }
+
+        return new AuthorizationPoints(
+                SchemaThreadLocal.get(), true, login.isEmployee(), permissions);
     }
 }
