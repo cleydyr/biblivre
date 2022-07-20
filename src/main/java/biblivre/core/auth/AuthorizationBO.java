@@ -19,15 +19,15 @@
  ******************************************************************************/
 package biblivre.core.auth;
 
+import biblivre.administration.permissions.PermissionDAO;
 import biblivre.core.AbstractBO;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.AuthorizationException;
-import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
-import java.util.Map;
+import java.util.Collection;
 
 public class AuthorizationBO extends AbstractBO {
-    private AuthorizationDAO authorizationDAO;
+    private PermissionDAO permissionDAO;
 
     public void authorize(AuthorizationPoints atps, String module, String action) {
         if (atps == null) {
@@ -39,18 +39,18 @@ public class AuthorizationBO extends AbstractBO {
         }
     }
 
-    public AuthorizationPoints getUserAuthorizationPoints(LoginDTO user) {
-        Map<String, Boolean> permissions = null;
-        String schema = SchemaThreadLocal.get();
+    public AuthorizationPoints getUserAuthorizationPoints(LoginDTO login) {
+        Collection<String> permissions = null;
 
-        if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
-            permissions = this.authorizationDAO.getUserPermissions(user);
+        if (SchemaThreadLocal.isGlobalSchema()) {
+            permissions = this.permissionDAO.getByLoginId(login.getId());
         }
 
-        return new AuthorizationPoints(schema, true, user.isEmployee(), permissions);
+        return new AuthorizationPoints(
+                SchemaThreadLocal.get(), true, login.isEmployee(), permissions);
     }
 
-    public void setAuthorizationDAO(AuthorizationDAO authorizationDAO) {
-        this.authorizationDAO = authorizationDAO;
+    public void setAuthorizationDAO(PermissionDAO permissionDAO) {
+        this.permissionDAO = permissionDAO;
     }
 }

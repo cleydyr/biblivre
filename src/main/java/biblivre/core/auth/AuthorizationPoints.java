@@ -22,6 +22,8 @@ package biblivre.core.auth;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,7 +35,7 @@ public class AuthorizationPoints implements Serializable {
     private static AuthorizationPoints notLoggedSingleSchemaInstance;
 
     private Map<Pair<String, String>, Boolean> points;
-    private Map<String, Boolean> permissions;
+    private Collection<String> permissions;
     private boolean admin;
     private boolean logged;
 
@@ -67,7 +69,7 @@ public class AuthorizationPoints implements Serializable {
      * @param permissions
      */
     public AuthorizationPoints(
-            String schema, boolean logged, boolean employee, Map<String, Boolean> permissions) {
+            String schema, boolean logged, boolean employee, Collection<String> permissions) {
         this.schema = schema;
         this.admin = false;
         this.employee = employee;
@@ -75,7 +77,7 @@ public class AuthorizationPoints implements Serializable {
         this.logged = logged;
 
         if (this.permissions == null) {
-            this.permissions = new HashMap<>();
+            this.permissions = Collections.emptySet();
         }
 
         this.points = new HashMap<>();
@@ -885,7 +887,7 @@ public class AuthorizationPoints implements Serializable {
             allowed =
                     type.isPublic()
                             || (type.isPublicForLoggedUsers() && this.isLogged())
-                            || this.permissions.containsKey(type.name());
+                            || this.permissions.contains(type.name());
 
             if (allowed) {
                 break;
@@ -912,7 +914,7 @@ public class AuthorizationPoints implements Serializable {
     }
 
     public boolean isAllowed(AuthorizationPointTypes type) {
-        return this.admin || this.permissions.containsKey(type.name());
+        return this.admin || this.permissions.contains(type.name());
     }
 
     public void setAdmin(boolean admin) {
