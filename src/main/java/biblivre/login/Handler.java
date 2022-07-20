@@ -22,11 +22,11 @@ package biblivre.login;
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.backup.BackupDTO;
 import biblivre.administration.indexing.IndexingBO;
+import biblivre.administration.permissions.PermissionBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPointTypes;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
@@ -52,7 +52,7 @@ import org.json.JSONObject;
 public class Handler extends AbstractHandler {
     private LoginBO loginBO;
     private IndexingBO indexingBO;
-    private AuthorizationBO authorizationBO;
+    private PermissionBO permissionBO;
     private BackupBO backupBO;
 
     public void login(ExtendedRequest request, ExtendedResponse response) {
@@ -69,7 +69,7 @@ public class Handler extends AbstractHandler {
         LoginDTO user = loginBO.login(username, password);
 
         if (user != null) {
-            AuthorizationPoints atps = authorizationBO.getUserAuthorizationPoints(user);
+            AuthorizationPoints atps = permissionBO.getUserAuthorizationPoints(user);
 
             _setAdmin(user, atps);
 
@@ -262,8 +262,8 @@ public class Handler extends AbstractHandler {
         this.indexingBO = indexingBO;
     }
 
-    public void setAuthorizationBO(AuthorizationBO authorizationBO) {
-        this.authorizationBO = authorizationBO;
+    public void setPermissionBO(PermissionBO permissionBO) {
+        this.permissionBO = permissionBO;
     }
 
     public void setBackupBO(BackupBO backupBO) {

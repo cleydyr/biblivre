@@ -19,12 +19,12 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
+import biblivre.administration.permissions.PermissionBO;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.auth.AuthorizationBO;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.AuthorizationException;
@@ -101,9 +101,9 @@ public abstract class Controller {
                     authPoints = AuthorizationPoints.getNotLoggedInstance();
                 }
 
-                AuthorizationBO authorizationBO = applicationContext.getBean(AuthorizationBO.class);
+                PermissionBO permissionBO = applicationContext.getBean(PermissionBO.class);
 
-                authorizationBO.authorize(authPoints, module, action);
+                permissionBO.authorize(authPoints, module, action);
             }
         } catch (AuthorizationException e) {
             // Exception thrown in abo.authorize

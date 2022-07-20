@@ -19,21 +19,21 @@
  ******************************************************************************/
 package biblivre.core;
 
-import biblivre.core.auth.AuthorizationBO;
+import biblivre.administration.permissions.PermissionBO;
 import biblivre.core.auth.AuthorizationPoints;
 
 public abstract class AbstractBO {
-    private AuthorizationBO authorizationBO;
+    private PermissionBO permissionBO;
 
     public void authorize(String module, String action, AuthorizationPoints authorizationPoints) {
         if (authorizationPoints == null) {
             authorizationPoints = AuthorizationPoints.getNotLoggedInstance();
         }
 
-        authorizationBO.authorize(authorizationPoints, module, action);
+        permissionBO.authorize(authorizationPoints, module, action);
     }
 
-    public void setAuthorizationBO(AuthorizationBO authorizationBO) {
-        this.authorizationBO = authorizationBO;
+    public void setPermissionBO(PermissionBO permissionBO) {
+        this.permissionBO = permissionBO;
     }
 }
