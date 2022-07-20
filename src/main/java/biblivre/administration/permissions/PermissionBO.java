@@ -20,6 +20,7 @@
 package biblivre.administration.permissions;
 
 import biblivre.circulation.user.UserDTO;
+import java.util.Collection;
 import java.util.List;
 
 public class PermissionBO {
@@ -38,7 +39,7 @@ public class PermissionBO {
         return false;
     }
 
-    public List<String> getByLoginId(Integer loginid) {
+    public Collection<String> getByLoginId(Integer loginid) {
         return this.permissionDAO.getByLoginId(loginid);
     }
 

@@ -25,10 +25,16 @@ import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
+
+    private static final String SELECT_PERMISSION_BY_LOGIN =
+            "SELECT permission FROM permissions WHERE login_id = ?;";
 
     public static PermissionDAO getInstance() {
         return (PermissionDAO) AbstractDAO.getInstance(PermissionDAOImpl.class);
@@ -59,26 +65,24 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
     }
 
     @Override
-    public List<String> getByLoginId(Integer loginid) {
-        Connection con = null;
-        List<String> list = new ArrayList<>();
-        try {
-            con = this.getConnection();
-            String sql = "SELECT permission FROM permissions WHERE login_id = ?;";
+    public Collection<String> getByLoginId(Integer loginId) {
+        Set<String> permissions = new HashSet<>();
 
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, loginid);
+        try (Connection con = this.getConnection();
+                PreparedStatement pst = con.prepareStatement(SELECT_PERMISSION_BY_LOGIN)) {
+
+            pst.setInt(1, loginId);
 
             ResultSet rs = pst.executeQuery();
+
             while (rs.next()) {
-                list.add(rs.getString("permission"));
+                permissions.add(rs.getString("permission"));
             }
+
+            return Collections.unmodifiableSet(permissions);
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
-        return list;
     }
 
     @Override

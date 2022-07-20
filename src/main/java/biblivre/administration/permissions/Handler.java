@@ -31,7 +31,7 @@ import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
 import biblivre.spring.SpringUtils;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.springframework.web.context.WebApplicationContext;
@@ -88,7 +88,7 @@ public class Handler extends AbstractHandler {
 
         if (loginId > 0) {
             dto.setLogin(loginBO.get(loginId));
-            List<String> list = permissionBO.getByLoginId(loginId);
+            Collection<String> list = permissionBO.getByLoginId(loginId);
             if (list != null) {
                 dto.setPermissions(list);
             }
@@ -215,7 +215,7 @@ public class Handler extends AbstractHandler {
 
         dto.setLogin(ldto);
 
-        List<String> permissions = permissionBO.getByLoginId(user.getLoginId());
+        Collection<String> permissions = permissionBO.getByLoginId(user.getLoginId());
 
         if (permissions == null) {
             return dto;

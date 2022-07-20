@@ -22,14 +22,14 @@ package biblivre.administration.permissions;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 import biblivre.login.LoginDTO;
-import java.util.List;
+import java.util.Collection;
 import org.json.JSONObject;
 
 public class PermissionDTO extends AbstractDTO {
 
     private static final long serialVersionUID = 1L;
 
-    private List<String> permissions;
+    private Collection<String> permissions;
     private LoginDTO login;
     private UserDTO user;
 
@@ -41,11 +41,11 @@ public class PermissionDTO extends AbstractDTO {
         this.login = login;
     }
 
-    public List<String> getPermissions() {
+    public Collection<String> getPermissions() {
         return this.permissions;
     }
 
-    public void setPermissions(List<String> permissions) {
+    public void setPermissions(Collection<String> permissions) {
         this.permissions = permissions;
     }
 
