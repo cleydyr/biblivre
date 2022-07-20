@@ -43,7 +43,6 @@ public class AuthorizationBO extends AbstractBO {
         Map<String, Boolean> permissions = null;
         String schema = SchemaThreadLocal.get();
 
-        // TODO: Fixme?
         if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
             permissions = this.authorizationDAO.getUserPermissions(user);
         }
