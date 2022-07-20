@@ -64,7 +64,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
         List<String> list = new ArrayList<>();
         try {
             con = this.getConnection();
-            String sql = "SELECT login_id, permission FROM permissions WHERE login_id = ?;";
+            String sql = "SELECT permission FROM permissions WHERE login_id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, loginid);
