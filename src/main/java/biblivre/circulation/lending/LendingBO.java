@@ -57,7 +57,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LendingBO {
     private UserBO userBO;
     private HoldingBO holdingBO;
@@ -767,36 +770,43 @@ public class LendingBO {
         return this.lendingDAO.saveFromBiblivre3(dtoList);
     }
 
+    public LendingDTO getCurrentLending(HoldingDTO holding) {
+        return lendingDAO.getCurrentLending(holding);
+    }
+
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setHoldingBO(HoldingBO holdingBO) {
         this.holdingBO = holdingBO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }
 
+    @Autowired
     public void setLendingFineBO(LendingFineBO lendingFineBO) {
         this.lendingFineBO = lendingFineBO;
     }
 
+    @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
     }
 
+    @Autowired
     public void setLendingDAO(LendingDAO lendingDAO) {
         this.lendingDAO = lendingDAO;
-    }
-
-    public LendingDTO getCurrentLending(HoldingDTO holding) {
-        return lendingDAO.getCurrentLending(holding);
     }
 
     //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {

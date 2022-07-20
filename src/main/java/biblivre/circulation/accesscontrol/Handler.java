@@ -28,22 +28,22 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
-import biblivre.spring.SpringUtils;
 import java.util.Date;
 import org.json.JSONException;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.circulation.accesscontrol.Handler")
+@Scope("prototype")
 public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
     private UserBO userBO;
+    private biblivre.circulation.user.Handler userHandler;
+    private biblivre.administration.accesscards.Handler cardHandler;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
-
-        biblivre.circulation.user.Handler userHandler =
-                applicationContext.getBean(biblivre.circulation.user.Handler.class);
-
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null) {
@@ -83,11 +83,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
-
-        biblivre.administration.accesscards.Handler cardHandler =
-                applicationContext.getBean(biblivre.administration.accesscards.Handler.class);
-
         DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
 
         if (cardList == null) {
@@ -179,15 +174,28 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setAccessCardBO(AccessCardBO accessCardBO) {
         this.accessCardBO = accessCardBO;
     }
 
+    @Autowired
     public void setAccessControlBO(AccessControlBO accessControlBO) {
         this.accessControlBO = accessControlBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
+    }
+
+    @Autowired
+    public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
+        this.userHandler = userHandler;
+    }
+
+    @Autowired
+    public void setCardHandler(biblivre.administration.accesscards.Handler cardHandler) {
+        this.cardHandler = cardHandler;
     }
 }

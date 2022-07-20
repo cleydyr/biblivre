@@ -26,7 +26,10 @@ import biblivre.core.exceptions.AuthorizationException;
 import biblivre.login.LoginDTO;
 import java.util.Collection;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PermissionBO {
     private PermissionDAO permissionDAO;
 
@@ -45,10 +48,6 @@ public class PermissionBO {
 
     public Collection<String> getByLoginId(Integer loginid) {
         return this.permissionDAO.getByLoginId(loginid);
-    }
-
-    public void setPermissionDAO(PermissionDAO permissionDAO) {
-        this.permissionDAO = permissionDAO;
     }
 
     public void authorize(AuthorizationPoints atps, String module, String action) {
@@ -70,5 +69,10 @@ public class PermissionBO {
 
         return new AuthorizationPoints(
                 SchemaThreadLocal.get(), true, login.isEmployee(), permissions);
+    }
+
+    @Autowired
+    public void setPermissionDAO(PermissionDAO permissionDAO) {
+        this.permissionDAO = permissionDAO;
     }
 }

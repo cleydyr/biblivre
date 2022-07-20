@@ -49,7 +49,10 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserBO extends AbstractBO {
     private UserDAO userDAO;
     private UserTypeBO userTypeBO;
@@ -229,10 +232,12 @@ public class UserBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(UserBO.class);
 
+    @Autowired
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }

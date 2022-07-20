@@ -73,11 +73,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@ServletComponentScan
 @SpringBootApplication
 public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
     private static final Logger _logger = LoggerFactory.getLogger(BiblivreInitializer.class);

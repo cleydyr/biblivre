@@ -31,29 +31,42 @@ import biblivre.core.exceptions.AuthorizationException;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
-import biblivre.spring.SpringUtils;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Controller {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     protected ExtendedRequest xRequest;
+
+    public void setxRequest(ExtendedRequest xRequest) {
+        this.xRequest = xRequest;
+    }
+
+    public void setxResponse(ExtendedResponse xResponse) {
+        this.xResponse = xResponse;
+    }
+
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
     protected boolean headerOnly;
     protected Class<? extends AbstractHandler> handlerClass;
 
-    public Controller(ExtendedRequest xRequest, ExtendedResponse xResponse) {
-        this.xRequest = xRequest;
-        this.xResponse = xResponse;
+    private PermissionBO permissionBO;
+
+    private Collection<AbstractHandler> handlers;
+
+    private Collection<AbstractValidator> validators;
+
+    public Controller() {
         this.headerOnly = false;
     }
 
@@ -63,8 +76,6 @@ public abstract class Controller {
 
         this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
         this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(xRequest);
 
         try {
             module =
@@ -101,8 +112,6 @@ public abstract class Controller {
                     authPoints = AuthorizationPoints.getNotLoggedInstance();
                 }
 
-                PermissionBO permissionBO = applicationContext.getBean(PermissionBO.class);
-
                 permissionBO.authorize(authPoints, module, action);
             }
         } catch (AuthorizationException e) {
@@ -114,11 +123,12 @@ public abstract class Controller {
         try {
             String handlerClassName = "biblivre." + module + ".Handler";
 
-            this.handlerClass = (Class<? extends AbstractHandler>) Class.forName(handlerClassName);
-
             try {
-                Object bean = applicationContext.getBean(this.handlerClass);
-                this.handler = (AbstractHandler) bean;
+                this.handler =
+                        handlers.stream()
+                                .filter(h -> h.getClass().getName().equals(handlerClassName))
+                                .findAny()
+                                .get();
             } catch (NoSuchBeanDefinitionException nsbde) {
                 this.handler =
                         (AbstractHandler) this.handlerClass.getDeclaredConstructor().newInstance();
@@ -131,7 +141,11 @@ public abstract class Controller {
             AbstractValidator validator = null;
 
             try {
-                Object bean = applicationContext.getBean(validatorClass);
+                Object bean =
+                        validators.stream()
+                                .filter(f -> f.getClass().getName().equals(validatorClassName))
+                                .findAny()
+                                .get();
 
                 validator = (AbstractValidator) bean;
             } catch (NoSuchBeanDefinitionException nsbde) {
@@ -249,5 +263,20 @@ public abstract class Controller {
         }
 
         return method;
+    }
+
+    @Autowired
+    public final void setPermissionBO(PermissionBO permissionBO) {
+        this.permissionBO = permissionBO;
+    }
+
+    @Autowired
+    public final void setHandlers(Collection<AbstractHandler> handlers) {
+        this.handlers = handlers;
+    }
+
+    @Autowired
+    public final void setValidators(Collection<AbstractValidator> validators) {
+        this.validators = validators;
     }
 }

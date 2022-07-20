@@ -20,19 +20,17 @@
 package biblivre.core.controllers;
 
 import biblivre.core.Dialog;
-import biblivre.core.ExtendedRequest;
-import biblivre.core.ExtendedResponse;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class JspController extends Controller {
-
-    public JspController(ExtendedRequest xRequest, ExtendedResponse xResponse) {
-        super(xRequest, xResponse);
-    }
 
     @Override
     protected void doReturn() throws ServletException, IOException {

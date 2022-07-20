@@ -38,7 +38,6 @@ import biblivre.core.PagingDTO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
-import biblivre.spring.SpringUtils;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,8 +45,12 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.circulation.lending.Handler")
+@Scope("prototype")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
@@ -56,6 +59,7 @@ public class Handler extends AbstractHandler {
     private UserTypeBO userTypeBO;
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
+    private biblivre.circulation.user.Handler userHandler;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -97,11 +101,6 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
-
-        biblivre.circulation.user.Handler userHandler =
-                applicationContext.getBean(biblivre.circulation.user.Handler.class);
-
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -337,31 +336,43 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setHoldingBO(HoldingBO holdingBO) {
         this.holdingBO = holdingBO;
     }
 
+    @Autowired
     public void setLendingBO(LendingBO lendingBO) {
         this.lendingBO = lendingBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }
 
+    @Autowired
     public void setLendingFineBO(LendingFineBO lendingFineBO) {
         this.lendingFineBO = lendingFineBO;
     }
 
+    @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
+    }
+
+    @Autowired
+    public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
+        this.userHandler = userHandler;
     }
 }

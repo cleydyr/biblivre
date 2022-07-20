@@ -49,12 +49,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @MultipartConfig
 @WebServlet(name = "SchemaServlet", urlPatterns = "/")
 public final class SchemaServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    @Autowired JspController jspController;
+
+    @Autowired DownloadController downloadController;
+
+    @Autowired JsonController jsonController;
 
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response)
@@ -170,17 +177,14 @@ public final class SchemaServlet extends HttpServlet {
         }
 
         if (controller.equals("jsp")) {
-            JspController jspController = new JspController(xRequest, xResponse);
             jspController.setHeaderOnly(headerOnly);
             jspController.processRequest();
 
         } else if (controller.equals("json")) {
-            JsonController jsonController = new JsonController(xRequest, xResponse);
             jsonController.setHeaderOnly(headerOnly);
             jsonController.processRequest();
 
         } else if (controller.equals("download")) {
-            DownloadController downloadController = new DownloadController(xRequest, xResponse);
             downloadController.setHeaderOnly(headerOnly);
             downloadController.processRequest();
 
@@ -188,7 +192,6 @@ public final class SchemaServlet extends HttpServlet {
             xRequest.setAttribute("module", "digitalmedia");
             xRequest.setAttribute("action", "download");
 
-            DownloadController downloadController = new DownloadController(xRequest, xResponse);
             downloadController.setHeaderOnly(headerOnly);
             downloadController.processRequest();
 

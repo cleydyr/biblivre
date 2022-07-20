@@ -19,8 +19,6 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
-import biblivre.core.ExtendedRequest;
-import biblivre.core.ExtendedResponse;
 import biblivre.core.Message;
 import biblivre.core.enums.ActionResult;
 import jakarta.servlet.ServletException;
@@ -30,12 +28,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class JsonController extends Controller {
-
-    public JsonController(ExtendedRequest xRequest, ExtendedResponse xResponse) {
-        super(xRequest, xResponse);
-    }
 
     @Override
     protected void doReturn() throws ServletException, IOException {

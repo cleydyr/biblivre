@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.administration.usertype;
 
-import biblivre.circulation.user.UserBO;
+import biblivre.circulation.user.UserDAO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserSearchDTO;
 import biblivre.core.AbstractBO;
@@ -29,10 +29,13 @@ import biblivre.core.exceptions.ValidationException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserTypeBO extends AbstractBO {
     private UserTypeDAO userTypeDAO;
-    private UserBO userBO;
+    private UserDAO userDAO;
 
     public UserTypeDTO get(int id) {
         return this.userTypeDAO.get(id);
@@ -64,7 +67,7 @@ public class UserTypeBO extends AbstractBO {
         UserSearchDTO dto = new UserSearchDTO();
         dto.setType(id);
 
-        DTOCollection<UserDTO> userList = userBO.search(dto, 1, 0);
+        DTOCollection<UserDTO> userList = userDAO.search(dto, 1, 0);
         boolean existingUser = userList.size() > 0;
 
         if (existingUser) {
@@ -78,12 +81,14 @@ public class UserTypeBO extends AbstractBO {
         return this.userTypeDAO.saveFromBiblivre3(dtoList);
     }
 
+    @Autowired
     public void setUserTypeDAO(UserTypeDAO userTypeDAO) {
         this.userTypeDAO = userTypeDAO;
     }
 
-    public void setUserBO(UserBO userBO) {
-        this.userBO = userBO;
+    @Autowired
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     //	public boolean updateUserType(UserTypeDTO userTypeDTO) {

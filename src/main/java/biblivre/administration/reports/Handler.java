@@ -29,19 +29,18 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
-import biblivre.spring.SpringUtils;
 import org.json.JSONException;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.reports.Handler")
+@Scope("prototype")
 public class Handler extends AbstractHandler {
     private ReportsBO reportsBO;
+    private biblivre.circulation.user.Handler userHandler;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
-
-        biblivre.circulation.user.Handler userHandler =
-                applicationContext.getBean(biblivre.circulation.user.Handler.class);
-
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -125,7 +124,13 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
+    @Autowired
     public void setReportsBO(ReportsBO reportsBO) {
         this.reportsBO = reportsBO;
+    }
+
+    @Autowired
+    public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
+        this.userHandler = userHandler;
     }
 }

@@ -29,24 +29,24 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.TextUtils;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
-import biblivre.spring.SpringUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.permissions.Handler")
+@Scope("prototype")
 public class Handler extends AbstractHandler {
     private PermissionBO permissionBO;
     private LoginBO loginBO;
     private UserBO userBO;
 
+    biblivre.circulation.user.Handler userHandler;
+
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        WebApplicationContext applicationContext = SpringUtils.getWebApplicationContext(request);
-
-        biblivre.circulation.user.Handler userHandler =
-                applicationContext.getBean(biblivre.circulation.user.Handler.class);
-
         DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
 
         if (userList == null || userList.size() == 0) {
@@ -226,15 +226,23 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
+    @Autowired
     public void setPermissionBO(PermissionBO permissionBO) {
         this.permissionBO = permissionBO;
     }
 
+    @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
+    }
+
+    @Autowired
+    public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
+        this.userHandler = userHandler;
     }
 }
