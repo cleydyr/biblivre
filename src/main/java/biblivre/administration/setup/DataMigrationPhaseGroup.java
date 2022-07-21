@@ -37,7 +37,6 @@ public enum DataMigrationPhaseGroup implements BiblivreEnum {
             DataMigrationPhase.ACQUISITION_QUOTATION,
             DataMigrationPhase.ACQUISITION_ITEM_QUOTATION,
             DataMigrationPhase.ACQUISITION_ORDER),
-    Z3950_SERVERS(DataMigrationPhase.Z3950_SERVERS),
     ACCESS_CONTROL(
             DataMigrationPhase.ACCESS_CARDS,
             DataMigrationPhase.ACCESS_CONTROL,

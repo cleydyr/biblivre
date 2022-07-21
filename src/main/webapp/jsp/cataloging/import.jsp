@@ -39,46 +39,6 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="selection_box submit_on_enter">
-			<div class="title"><input type="radio" name="source" id="source_search"/> <label for="source_search"><i18n:text key="cataloging.import.source_search_title" /></label></div>
-			<div class="subtitle"><i18n:text key="cataloging.import.source_search_subtitle" param1="<%= String.valueOf(Configurations.getInt(Constants.CONFIG_Z3950_RESULT_LIMIT, 100))%>"/></div>
-			<div class="body">
-				<div class="search_input_div">
-					<label class="search_label"><i18n:text key="search.common.containing_text" /></label>
-					<input type="text" class="search_input big_input" name="search_query" />
-				</div>
-
-				<div class="clear"></div>
-
-				<div class="search_attribute_div">
-					<label class="search_label"><i18n:text key="search.common.on_the_field" /> </label>
-					<select name="search_attribute">
-						<option value="4"><i18n:text key="search.distributed.title" /></option>
-						<option value="1003"><i18n:text key="search.distributed.author" /></option>
-						<option value="7"><i18n:text key="search.distributed.isbn" /></option>
-						<option value="8"><i18n:text key="search.distributed.issn" /></option>
-						<option value="21"><i18n:text key="search.distributed.subject" /></option>
-						<option value="1016"><i18n:text key="search.distributed.any" /></option>
-					</select>
-				</div>
-
-				<div class="search_server_div">
-					<label class="search_label"><i18n:text key="search.common.in_this_library" /> </label>
-					<select name="search_server">
-						<c:forEach var="server" items="${servers}">
-							<option value="${server.id}">${server.name}</option>
-						</c:forEach>
-					</select>
-				</div>
-
-				<div class="clear"></div>
-
-				<div class="search_button_div">
-					<a class="button arrow_right main_button" onclick="Import.search();"><i18n:text key="cataloging.import.search_button" /></a>
-				</div>
-			</div>
-		</div>
 	</fieldset>
 
 	<fieldset class="wizard" id="step_2">

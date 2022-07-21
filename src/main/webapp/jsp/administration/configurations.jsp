@@ -314,54 +314,6 @@
 
 		<fieldset>
 			<%
-				key = Constants.CONFIG_Z3950_RESULT_LIMIT;
-				value = Configurations.getString(key);
-				request.setAttribute("key", key);
-				request.setAttribute("value", value);
-			%>
-			<legend><i18n:text key="administration.configuration.title.${key}" /></legend>
-			<div class="description"><i18n:text key="administration.configuration.description.${key}" /></div>
-			<div class="fields">
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.original_value" /></div>
-					<div class="value">100</div>
-					<div class="clear"></div>
-				</div>
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.current_value" /></div>
-					<div class="value"><c:out value="${value}"/></div>
-					<div class="clear"></div>
-				</div>
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.new_value" /></div>
-					<div class="value">
-						<input type="text" name="${key}" class="finput" value="<c:out value="${value}"/>">
-					</div>
-					<div class="clear"></div>
-				</div>
-			</div>
-		</fieldset>
-
-		<fieldset>
-			<%
-				key = Constants.CONFIG_Z3950_SERVER_ACTIVE;
-				active = Configurations.getBoolean(key);
-				request.setAttribute("key", key);
-				request.setAttribute("active", active);
-			%>
-			<legend><i18n:text key="administration.configuration.title.${key}" /></legend>
-			<div class="description"><i18n:text key="administration.configuration.description.${key}" param1="${schema}"/></div>
-			<div class="fields">
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.current_value" /></div>
-					<div class="value"><input type="checkbox" id="z3950_server_active" name="${key}" class="finput" <c:if test="${active}">checked="checked"</c:if> style="width: auto;"/></div>
-					<div class="clear"></div>
-				</div>
-			</div>
-		</fieldset>
-
-		<fieldset>
-			<%
 				key = Constants.CONFIG_LENDING_PRINTER_TYPE;
 				value = Configurations.getString(key);
 				request.setAttribute("key", key);

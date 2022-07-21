@@ -43,7 +43,6 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.MemoryFile;
 import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.login.LoginBO;
-import biblivre.z3950.Z3950BO;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +77,6 @@ public class DataMigrationBO extends AbstractBO {
     private UserTypeBO userTypeBO;
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
-    private Z3950BO z3950BO;
     private DigitalMediaBO digitalMediaBO;
 
     public boolean isBiblivre3Available() {
@@ -224,9 +222,6 @@ public class DataMigrationBO extends AbstractBO {
             case ACQUISITION_ORDER:
                 return this.dataMigrationDAO.listAquisitionOrder(limit, offset);
 
-            case Z3950_SERVERS:
-                return this.dataMigrationDAO.listZ3950Servers(limit, offset);
-
             case ACCESS_CONTROL:
                 return this.dataMigrationDAO.listAccessControl(limit, offset);
 
@@ -314,9 +309,6 @@ public class DataMigrationBO extends AbstractBO {
 
             case ACQUISITION_ORDER:
                 return orderBO.saveFromBiblivre3(dtoList);
-
-            case Z3950_SERVERS:
-                return z3950BO.saveFromBiblivre3(dtoList);
 
             case ACCESS_CONTROL:
                 return accessControlBO.saveFromBiblivre3(dtoList);

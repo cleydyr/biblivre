@@ -17,7 +17,6 @@ import biblivre.circulation.reservation.ReservationDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.file.MemoryFile;
 import biblivre.login.LoginDTO;
-import biblivre.z3950.Z3950AddressDTO;
 import java.util.List;
 
 public interface DataMigrationDAO {
@@ -33,8 +32,6 @@ public interface DataMigrationDAO {
     List<AccessCardDTO> listAccessCards(int limit, int offset);
 
     List<LoginDTO> listLogins(int limit, int offset);
-
-    List<Z3950AddressDTO> listZ3950Servers(int limit, int offset);
 
     List<AccessControlDTO> listAccessControl(int limit, int offset);
 

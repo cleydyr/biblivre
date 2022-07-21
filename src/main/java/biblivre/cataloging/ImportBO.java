@@ -31,10 +31,8 @@ import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.function.UnsafeSupplier;
 import biblivre.marc.MaterialType;
-import biblivre.z3950.Z3950RecordDTO;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,28 +63,6 @@ public class ImportBO extends AbstractBO {
         }
 
         return importDTO;
-    }
-
-    public ImportDTO readFromZ3950Results(List<Z3950RecordDTO> recordList) {
-        ImportDTO dto = new ImportDTO();
-        for (Z3950RecordDTO z3950Dto : recordList) {
-            dto.incrementFound();
-            try {
-                BiblioRecordDTO brdto = z3950Dto.getRecord();
-
-                if (brdto != null) {
-                    biblioRecordBO.populateDetails(brdto, RecordBO.MARC_INFO);
-
-                    dto.addRecord(brdto);
-
-                    dto.incrementSuccess();
-                }
-            } catch (Exception e) {
-                dto.incrementFailure();
-            }
-        }
-
-        return dto;
     }
 
     public RecordDTO dtoFromRecord(Record record) {

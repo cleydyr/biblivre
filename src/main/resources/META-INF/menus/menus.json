@@ -6,8 +6,7 @@
             "items": [
                 "search_bibliographic",
                 "search_authorities",
-                "search_vocabulary",
-                "search_z3950"
+                "search_vocabulary"
             ]
         },
         {
@@ -51,7 +50,6 @@
                 "administration_permissions",
                 "administration_user_types",
                 "administration_access_cards",
-                "administration_z3950_servers",
                 "administration_reports",
                 "administration_maintenance",
                 "administration_configurations",

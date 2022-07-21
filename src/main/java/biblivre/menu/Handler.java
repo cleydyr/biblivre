@@ -36,8 +36,6 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.DatabaseUtils;
-import biblivre.z3950.Z3950AddressDTO;
-import biblivre.z3950.Z3950BO;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -48,7 +46,6 @@ public class Handler extends AbstractHandler {
     private SupplierBO supplierBO;
     private RequestBO requestBO;
     private BiblioRecordBO biblioRecordBO;
-    private Z3950BO z3950BO;
     private BackupBO backupBO;
     private UserTypeBO userTypeBO;
 
@@ -107,15 +104,6 @@ public class Handler extends AbstractHandler {
         return;
     }
 
-    public void searchZ3950(ExtendedRequest request, ExtendedResponse response) {
-        List<Z3950AddressDTO> servers = z3950BO.listAll();
-
-        request.setAttribute("servers", servers);
-
-        this.jspURL = "/jsp/search/z3950.jsp";
-        return;
-    }
-
     public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
         this.jspURL = "/jsp/cataloging/bibliographic.jsp";
         return;
@@ -128,15 +116,6 @@ public class Handler extends AbstractHandler {
 
     public void catalogingVocabulary(ExtendedRequest request, ExtendedResponse response) {
         this.jspURL = "/jsp/cataloging/vocabulary.jsp";
-        return;
-    }
-
-    public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
-        List<Z3950AddressDTO> servers = z3950BO.listAll();
-
-        request.setAttribute("servers", servers);
-
-        this.jspURL = "/jsp/cataloging/import.jsp";
         return;
     }
 
@@ -245,11 +224,6 @@ public class Handler extends AbstractHandler {
         return;
     }
 
-    public void administrationZ3950Servers(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/z3950_servers.jsp";
-        return;
-    }
-
     public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
         this.jspURL = "/jsp/administration/reports.jsp";
         return;
@@ -348,10 +322,6 @@ public class Handler extends AbstractHandler {
 
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
-    }
-
-    public void setZ3950BO(Z3950BO z3950BO) {
-        this.z3950BO = z3950BO;
     }
 
     public void setBackupBO(BackupBO backupBO) {

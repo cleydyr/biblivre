@@ -36,9 +36,6 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.HumanReadableMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import biblivre.z3950.Z3950AddressDTO;
-import biblivre.z3950.Z3950BO;
-import biblivre.z3950.Z3950RecordDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +52,6 @@ public class Handler extends AbstractHandler {
     private Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
     private ImportBO importBO;
-    private Z3950BO z3950BO;
 
     private static Logger logger = LoggerFactory.getLogger(Handler.class);
 
@@ -93,63 +88,6 @@ public class Handler extends AbstractHandler {
                     }
                 }
                 // TODO: Completar para autoridades e vocabulário
-            }
-
-            if (isbnList.size() > 0) {
-                list.setFoundISBN(indexingBO.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
-            }
-
-            if (issnList.size() > 0) {
-                list.setFoundISSN(indexingBO.searchExactTerms(RecordType.BIBLIO, 6, issnList));
-            }
-
-            if (isrcList.size() > 0) {
-                list.setFoundISRC(indexingBO.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
-            }
-        }
-
-        if (list == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
-        } else if (list.getSuccess() == 0) {
-            this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
-        } else {
-            this.json.putOpt("data", list.toJSONObject());
-        }
-    }
-
-    public void importSearch(ExtendedRequest request, ExtendedResponse response) {
-
-        Integer id = request.getInteger("search_server");
-        String attribute = request.getString("search_attribute");
-        String value = request.getString("search_query");
-
-        Z3950AddressDTO server = z3950BO.findById(id);
-
-        List<Z3950AddressDTO> serverList = new ArrayList<>();
-        serverList.add(server);
-        Pair<String, String> search = Pair.of(attribute, value);
-
-        List<Z3950RecordDTO> recordList = z3950BO.search(serverList, search);
-
-        ImportDTO list = importBO.readFromZ3950Results(recordList);
-
-        if (list != null) {
-            List<String> isbnList = new ArrayList<>();
-            List<String> issnList = new ArrayList<>();
-            List<String> isrcList = new ArrayList<>();
-
-            for (RecordDTO dto : list.getRecordList()) {
-                if (dto instanceof BiblioRecordDTO) {
-                    BiblioRecordDTO rdto = (BiblioRecordDTO) dto;
-
-                    if (StringUtils.isNotBlank(rdto.getIsbn())) {
-                        isbnList.add(rdto.getIsbn());
-                    } else if (StringUtils.isNotBlank(rdto.getIssn())) {
-                        issnList.add(rdto.getIssn());
-                    } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-                        isrcList.add(rdto.getIsrc());
-                    }
-                }
             }
 
             if (isbnList.size() > 0) {
@@ -295,9 +233,5 @@ public class Handler extends AbstractHandler {
 
     public void setImportBO(ImportBO importBO) {
         this.importBO = importBO;
-    }
-
-    public void setZ3950BO(Z3950BO z3950BO) {
-        this.z3950BO = z3950BO;
     }
 }

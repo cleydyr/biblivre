@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core.schemas;
 
-import biblivre.BiblivreInitializer;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
 import biblivre.core.SchemaThreadLocal;
@@ -29,7 +28,6 @@ import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
-import biblivre.z3950.server.Z3950ServerBO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -106,9 +104,6 @@ public class Schemas extends StaticBO {
                             }
                         }
                     }
-
-                    Z3950ServerBO.setSingleSchema(Constants.SINGLE_SCHEMA);
-                    BiblivreInitializer.reloadZ3950Server();
 
                     return null;
                 });

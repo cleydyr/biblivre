@@ -99,7 +99,6 @@
 										<menu:item module="search" action="search_bibliographic"  />
 										<menu:item module="search" action="search_authorities"  />
 										<menu:item module="search" action="search_vocabulary"  />
-										<menu:item module="search" action="search_z3950"  />
 									</menu:level>
 									<menu:login />
 								</c:otherwise>

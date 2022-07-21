@@ -251,18 +251,6 @@ public enum AuthorizationPointTypes {
             AuthorizationSchemaScope.SINGLE_SCHEMA,
             AuthorizationUserScope.EMPLOYEE,
             AuthorizationPointGroups.ADMIN),
-    ADMINISTRATION_Z3950_SEARCH(
-            AuthorizationSchemaScope.SINGLE_SCHEMA,
-            AuthorizationUserScope.EMPLOYEE,
-            AuthorizationPointGroups.ADMIN),
-    ADMINISTRATION_Z3950_SAVE(
-            AuthorizationSchemaScope.SINGLE_SCHEMA,
-            AuthorizationUserScope.EMPLOYEE,
-            AuthorizationPointGroups.ADMIN),
-    ADMINISTRATION_Z3950_DELETE(
-            AuthorizationSchemaScope.SINGLE_SCHEMA,
-            AuthorizationUserScope.EMPLOYEE,
-            AuthorizationPointGroups.ADMIN),
     ADMINISTRATION_REPORTS(
             AuthorizationSchemaScope.SINGLE_SCHEMA,
             AuthorizationUserScope.EMPLOYEE,
@@ -293,12 +281,6 @@ public enum AuthorizationPointTypes {
             AuthorizationSchemaScope.SINGLE_SCHEMA,
             AuthorizationUserScope.ANY,
             AuthorizationPointGroups.DIGITALMEDIA,
-            true),
-
-    Z3950_SEARCH(
-            AuthorizationSchemaScope.SINGLE_SCHEMA,
-            AuthorizationUserScope.ANY,
-            AuthorizationPointGroups.SEARCH,
             true);
 
     private final AuthorizationPointGroups group;

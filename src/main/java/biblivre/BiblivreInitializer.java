@@ -65,9 +65,6 @@ import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
 import biblivre.login.LoginDAO;
 import biblivre.login.LoginDAOImpl;
-import biblivre.z3950.Z3950DAO;
-import biblivre.z3950.Z3950DAOImpl;
-import biblivre.z3950.server.Z3950ServerBO;
 import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,8 +83,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     private static boolean initialized = false;
 
-    public static Z3950ServerBO Z3950server = null;
-
     public static synchronized void initialize() {
         if (!BiblivreInitializer.initialized) {
             try {
@@ -95,9 +90,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
                 Updates.globalUpdate();
 
                 DigitalMediaMigrator.processMigration();
-
-                BiblivreInitializer.Z3950server = new Z3950ServerBO();
-                BiblivreInitializer.Z3950server.startServer();
 
                 BiblivreInitializer.initialized = true;
             } catch (Exception e) {
@@ -109,18 +101,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("/static/");
-    }
-
-    public static synchronized void destroy() {
-        if (BiblivreInitializer.Z3950server != null) {
-            BiblivreInitializer.Z3950server.stopServer();
-        }
-    }
-
-    public static synchronized void reloadZ3950Server() {
-        if (BiblivreInitializer.Z3950server != null) {
-            BiblivreInitializer.Z3950server.reloadServer();
-        }
     }
 
     @Bean
@@ -231,11 +211,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public UserTypeDAO userTypeDAO() {
         return UserTypeDAOImpl.getInstance();
-    }
-
-    @Bean
-    public Z3950DAO z3950DAO() {
-        return Z3950DAOImpl.getInstance();
     }
 
     @Autowired ServletContext servletContext;
