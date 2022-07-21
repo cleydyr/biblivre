@@ -14,6 +14,12 @@ public abstract class CatalogingHandler extends AbstractHandler {
     protected RecordBO recordBO;
     protected MaterialType defaultMaterialType;
 
+    public CatalogingHandler(RecordBO recordBO, MaterialType defaultMaterialType) {
+        this.recordBO = recordBO;
+
+        this.defaultMaterialType = defaultMaterialType;
+    }
+
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id", null);
 

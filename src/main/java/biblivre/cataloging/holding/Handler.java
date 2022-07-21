@@ -41,8 +41,11 @@ public class Handler extends CatalogingHandler {
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
 
-    public Handler() {
-        setDefaultMaterialType(MaterialType.HOLDINGS);
+    @Autowired
+    public Handler(HoldingBO recordBO, HoldingBO holdingBO, BiblioRecordBO biblioRecordBO) {
+        super(recordBO, MaterialType.HOLDINGS);
+        this.holdingBO = holdingBO;
+        this.biblioRecordBO = biblioRecordBO;
     }
 
     @Override

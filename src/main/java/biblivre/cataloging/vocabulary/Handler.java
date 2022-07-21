@@ -23,12 +23,15 @@ import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.cataloging.vocabulary.Handler")
 public class Handler extends PaginableCatalogingHandler {
-    public Handler() {
-        setDefaultMaterialType(MaterialType.VOCABULARY);
+
+    @Autowired
+    public Handler(VocabularyRecordBO vocabularyRecordBO) {
+        super(vocabularyRecordBO, MaterialType.VOCABULARY);
     }
 
     @Override

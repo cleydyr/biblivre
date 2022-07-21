@@ -124,10 +124,6 @@ public abstract class PaginableRecordBO extends RecordBO {
         return paging;
     }
 
-    public void setHoldingBO(HoldingBO holdingBO) {
-        this.holdingBO = holdingBO;
-    }
-
     public SearchDTO getSearch(Integer searchId) {
         SearchDTO search = this.searchDAO.getSearch(searchId, getRecordType());
 
@@ -146,6 +142,11 @@ public abstract class PaginableRecordBO extends RecordBO {
         }
 
         return search;
+    }
+
+    @Autowired
+    public void setHoldingBO(HoldingBO holdingBO) {
+        this.holdingBO = holdingBO;
     }
 
     @Autowired

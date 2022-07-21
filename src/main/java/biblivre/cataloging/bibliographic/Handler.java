@@ -23,12 +23,15 @@ import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.cataloging.bibliographic.Handler")
 public class Handler extends PaginableCatalogingHandler {
-    public Handler() {
-        setDefaultMaterialType(MaterialType.BOOK);
+
+    @Autowired
+    public Handler(BiblioRecordBO biblioRecordBO) {
+        super(biblioRecordBO, MaterialType.BOOK);
     }
 
     @Override

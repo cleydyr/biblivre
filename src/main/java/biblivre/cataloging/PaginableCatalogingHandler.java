@@ -46,11 +46,19 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected PaginableRecordBO paginableRecordBO;
 
     protected Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
+
+    public PaginableCatalogingHandler(
+            PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
+        super(paginableRecordBO, defaultMaterialType);
+
+        this.paginableRecordBO = paginableRecordBO;
+    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -307,15 +315,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         this.json.put("data", list.toJSONObject());
     }
 
-    public void setPaginableRecordBO(PaginableRecordBO paginableRecordBO) {
-        this.paginableRecordBO = paginableRecordBO;
-        super.setRecordBO(paginableRecordBO);
-    }
-
-    public void setDefaultMaterialType(MaterialType defaultMaterialType) {
-        this.defaultMaterialType = defaultMaterialType;
-    }
-
+    @Autowired
     public void setRecordBOs(Map<String, PaginableRecordBO> recordBOs) {
         this.recordBOs = recordBOs;
     }

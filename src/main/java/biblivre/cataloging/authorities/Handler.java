@@ -40,8 +40,11 @@ import org.springframework.stereotype.Component;
 public class Handler extends PaginableCatalogingHandler {
     private ReportsBO reportsBO;
 
-    public Handler() {
-        setDefaultMaterialType(MaterialType.AUTHORITIES);
+    @Autowired
+    public Handler(AuthorityRecordBO recordBO, ReportsBO reportsBO) {
+        super(recordBO, MaterialType.AUTHORITIES);
+
+        this.reportsBO = reportsBO;
     }
 
     @Override
