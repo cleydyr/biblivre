@@ -40,7 +40,7 @@ public class LendingFineBO extends AbstractBO {
     private LendingFineDAO lendingFineDAO;
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
-    private LendingBO lendingBO;
+    private LendingDAO lendingDAO;
     private UserTypeBO userTypeBO;
 
     public LendingFineDTO getById(Integer fineId) {
@@ -69,7 +69,7 @@ public class LendingFineBO extends AbstractBO {
     private void populateFineInfo(LendingFineDTO fine) {
         Integer lendingId = fine.getLendingId();
 
-        LendingDTO lending = lendingBO.get(lendingId);
+        LendingDTO lending = lendingDAO.get(lendingId);
         HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         BiblioRecordDTO biblio =
                 (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId(), RecordBO.MARC_INFO);
@@ -133,8 +133,8 @@ public class LendingFineBO extends AbstractBO {
     }
 
     @Autowired
-    public void setLendingBO(LendingBO lendingBO) {
-        this.lendingBO = lendingBO;
+    public void setLendingDAO(LendingDAO lendingDAO) {
+        this.lendingDAO = lendingDAO;
     }
 
     @Autowired
