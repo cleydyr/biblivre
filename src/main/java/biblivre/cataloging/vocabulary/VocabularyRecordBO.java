@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.cataloging.vocabulary;
 
-import biblivre.administration.indexing.IndexingBO;
+import biblivre.administration.indexing.IndexingDAO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
@@ -29,9 +29,12 @@ import biblivre.marc.MarcUtils;
 import java.util.Map;
 import java.util.Set;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class VocabularyRecordBO extends PaginableRecordBO {
-    private IndexingBO indexingBO;
+    private IndexingDAO indexingDAO;
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {
@@ -64,7 +67,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            indexingBO.reindex(RecordType.VOCABULARY, dto);
+            indexingDAO.reindex(dto);
             return true;
         }
 
@@ -76,7 +79,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            indexingBO.reindex(RecordType.VOCABULARY, dto);
+            indexingDAO.reindex(dto);
             return true;
         }
 
@@ -86,7 +89,7 @@ public class VocabularyRecordBO extends PaginableRecordBO {
     @Override
     public boolean delete(RecordDTO dto) {
         if (this.recordDAO.delete(dto)) {
-            indexingBO.deleteIndexes(RecordType.VOCABULARY, dto);
+            indexingDAO.deleteIndexes(RecordType.VOCABULARY, dto);
         }
 
         return true;
@@ -102,7 +105,8 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         return RecordType.VOCABULARY;
     }
 
-    public void setIndexingBO(IndexingBO indexingBO) {
-        this.indexingBO = indexingBO;
+    @Autowired
+    public void setIndexingDAO(IndexingDAO indexingDAO) {
+        this.indexingDAO = indexingDAO;
     }
 }

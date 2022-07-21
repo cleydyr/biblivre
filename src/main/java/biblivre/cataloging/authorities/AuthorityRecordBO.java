@@ -19,16 +19,19 @@
  ******************************************************************************/
 package biblivre.cataloging.authorities;
 
-import biblivre.administration.indexing.IndexingBO;
+import biblivre.administration.indexing.IndexingDAO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AuthorityRecordBO extends PaginableRecordBO {
-    private IndexingBO indexingBO;
+    private IndexingDAO indexingDAO;
 
     @Override
     public void populateDetails(RecordDTO rdto, int mask) {}
@@ -39,7 +42,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            indexingBO.reindex(RecordType.AUTHORITIES, dto);
+            indexingDAO.reindex(dto);
             return true;
         }
 
@@ -51,7 +54,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            indexingBO.reindex(RecordType.AUTHORITIES, dto);
+            indexingDAO.reindex(dto);
             return true;
         }
 
@@ -71,7 +74,7 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         //		}
 
         if (this.recordDAO.delete(dto)) {
-            indexingBO.deleteIndexes(RecordType.AUTHORITIES, dto);
+            indexingDAO.deleteIndexes(RecordType.AUTHORITIES, dto);
             //			HoldingBO hbo = new HoldingBO();
             //			hbo.delete(dto);
         }
@@ -88,7 +91,8 @@ public class AuthorityRecordBO extends PaginableRecordBO {
         return RecordType.AUTHORITIES;
     }
 
-    public void setIndexingBO(IndexingBO indexingBO) {
-        this.indexingBO = indexingBO;
+    @Autowired
+    public void setIndexingDAO(IndexingDAO indexingBO) {
+        this.indexingDAO = indexingBO;
     }
 }
