@@ -33,7 +33,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.circulation.user.Validator")
 public class Validator extends AbstractValidator {
     private AccessControlBO accessControlBO;
     private UserBO userBO;

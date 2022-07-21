@@ -35,25 +35,16 @@ import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Controller {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     protected ExtendedRequest xRequest;
-
-    public void setxRequest(ExtendedRequest xRequest) {
-        this.xRequest = xRequest;
-    }
-
-    public void setxResponse(ExtendedResponse xResponse) {
-        this.xResponse = xResponse;
-    }
 
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
@@ -62,9 +53,9 @@ public abstract class Controller {
 
     private PermissionBO permissionBO;
 
-    private Collection<AbstractHandler> handlers;
+    private Map<String, AbstractHandler> handlersMap;
 
-    private Collection<AbstractValidator> validators;
+    private Map<String, AbstractValidator> validatorsMap;
 
     public Controller() {
         this.headerOnly = false;
@@ -123,16 +114,9 @@ public abstract class Controller {
         try {
             String handlerClassName = "biblivre." + module + ".Handler";
 
-            try {
-                this.handler =
-                        handlers.stream()
-                                .filter(h -> h.getClass().getName().equals(handlerClassName))
-                                .findAny()
-                                .get();
-            } catch (NoSuchBeanDefinitionException nsbde) {
-                this.handler =
-                        (AbstractHandler) this.handlerClass.getDeclaredConstructor().newInstance();
-            }
+            this.handlerClass = (Class<? extends AbstractHandler>) Class.forName(handlerClassName);
+
+            this.handler = handlersMap.get(handlerClassName);
 
             String validatorClassName = "biblivre." + module + ".Validator";
 
@@ -140,18 +124,7 @@ public abstract class Controller {
 
             AbstractValidator validator = null;
 
-            try {
-                Object bean =
-                        validators.stream()
-                                .filter(f -> f.getClass().getName().equals(validatorClassName))
-                                .findAny()
-                                .get();
-
-                validator = (AbstractValidator) bean;
-            } catch (NoSuchBeanDefinitionException nsbde) {
-                validator =
-                        (AbstractValidator) validatorClass.getDeclaredConstructor().newInstance();
-            }
+            validator = validatorsMap.get(validatorClassName);
 
             String validationMethodName = "validate_" + action;
             Method validationMethod =
@@ -271,12 +244,20 @@ public abstract class Controller {
     }
 
     @Autowired
-    public final void setHandlers(Collection<AbstractHandler> handlers) {
-        this.handlers = handlers;
+    public final void setHandlers(Map<String, AbstractHandler> handlersMap) {
+        this.handlersMap = handlersMap;
     }
 
     @Autowired
-    public final void setValidators(Collection<AbstractValidator> validators) {
-        this.validators = validators;
+    public final void setValidators(Map<String, AbstractValidator> validatorsMap) {
+        this.validatorsMap = validatorsMap;
+    }
+
+    public void setRequest(ExtendedRequest xRequest) {
+        this.xRequest = xRequest;
+    }
+
+    public void setResponse(ExtendedResponse xResponse) {
+        this.xResponse = xResponse;
     }
 }

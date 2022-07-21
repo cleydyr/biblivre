@@ -55,7 +55,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.setup.Handler")
 public class Handler extends AbstractHandler {
     private RestoreBO restoreBO;
     private BackupBO backupBO;
@@ -485,12 +488,14 @@ public class Handler extends AbstractHandler {
         this.json.put("complete", !State.LOCKED.get());
     }
 
+    @Autowired
     public void setRestoreBO(RestoreBO restoreBO) {
         this.restoreBO = restoreBO;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
+    @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
     }

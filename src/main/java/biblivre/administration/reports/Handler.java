@@ -31,11 +31,9 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.administration.reports.Handler")
-@Scope("prototype")
 public class Handler extends AbstractHandler {
     private ReportsBO reportsBO;
     private biblivre.circulation.user.Handler userHandler;

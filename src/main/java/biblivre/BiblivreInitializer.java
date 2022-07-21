@@ -27,6 +27,8 @@ import biblivre.acquisition.request.RequestDAO;
 import biblivre.acquisition.request.RequestDAOImpl;
 import biblivre.acquisition.supplier.SupplierDAO;
 import biblivre.acquisition.supplier.SupplierDAOImpl;
+import biblivre.administration.accesscards.AccessCardDAO;
+import biblivre.administration.accesscards.AccessCardDAOImpl;
 import biblivre.administration.backup.BackupDAO;
 import biblivre.administration.backup.BackupDAOImpl;
 import biblivre.administration.indexing.IndexingDAO;
@@ -65,21 +67,17 @@ import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
 import biblivre.login.LoginDAO;
 import biblivre.login.LoginDAOImpl;
-import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@ServletComponentScan
 @SpringBootApplication(
         exclude = {
             DataSourceAutoConfiguration.class,
@@ -221,5 +219,13 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         return UserTypeDAOImpl.getInstance();
     }
 
-    @Autowired ServletContext servletContext;
+    @Bean
+    public AccessCardDAO accessCardDAO() {
+        return AccessCardDAOImpl.getInstance();
+    }
+
+    @Bean
+    public DataMigrationDAOImpl dataMigrationDAO() {
+        return DataMigrationDAOImpl.getInstance();
+    }
 }

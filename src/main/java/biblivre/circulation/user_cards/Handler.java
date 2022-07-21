@@ -30,7 +30,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.circulation.user_cards.Handler")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
 
@@ -89,6 +92,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }

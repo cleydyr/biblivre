@@ -32,13 +32,12 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.acquisition.quotation.Handler")
 public class Handler extends AbstractHandler {
     private QuotationBO quotationBO;
-
-    public void setQuotationBO(QuotationBO quotationBO) {
-        this.quotationBO = quotationBO;
-    }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -189,5 +188,10 @@ public class Handler extends AbstractHandler {
         dto.setQuotationsList(quotations);
 
         return dto;
+    }
+
+    @Autowired
+    public void setQuotationBO(QuotationBO quotationBO) {
+        this.quotationBO = quotationBO;
     }
 }

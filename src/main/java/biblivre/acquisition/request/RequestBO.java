@@ -23,7 +23,10 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RequestBO extends AbstractBO {
     private RequestDAO requestDAO;
 
@@ -55,6 +58,7 @@ public class RequestBO extends AbstractBO {
         return this.requestDAO.saveFromBiblivre3(dtoList);
     }
 
+    @Autowired
     public void setRequestDAO(RequestDAO requestDAO) {
         this.requestDAO = requestDAO;
     }

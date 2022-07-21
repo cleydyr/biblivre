@@ -53,7 +53,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BackupBO extends AbstractBO {
     private BackupDAO backupDAO;
     private DigitalMediaBO digitalMediaBO;
@@ -421,10 +424,12 @@ public class BackupBO extends AbstractBO {
         return backupDAO.listDatabaseSchemas();
     }
 
+    @Autowired
     public void setBackupDAO(BackupDAO backupDAO) {
         this.backupDAO = backupDAO;
     }
 
+    @Autowired
     public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
         this.digitalMediaBO = digitalMediaBO;
     }

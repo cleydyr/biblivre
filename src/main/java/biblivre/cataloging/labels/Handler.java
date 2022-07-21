@@ -42,7 +42,10 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.marc4j.marc.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.cataloging.labels.Handler")
 public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private HoldingBO holdingBO;
@@ -127,10 +130,12 @@ public class Handler extends AbstractHandler {
         // TODO RENAME RECORD_FILE_TXT => printText
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setHoldingBO(HoldingBO holdingBO) {
         this.holdingBO = holdingBO;
     }

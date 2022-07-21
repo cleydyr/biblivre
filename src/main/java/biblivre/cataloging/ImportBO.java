@@ -36,7 +36,10 @@ import java.io.InputStream;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ImportBO extends AbstractBO {
     private BiblioRecordBO biblioRecordBO;
     private VocabularyRecordBO vocabularyRecordBO;
@@ -97,14 +100,17 @@ public class ImportBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(ImportBO.class);
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {
         this.vocabularyRecordBO = vocabularyRecordBO;
     }
 
+    @Autowired
     public void setAuthorityRecordBO(AuthorityRecordBO authorityRecordBO) {
         this.authorityRecordBO = authorityRecordBO;
     }

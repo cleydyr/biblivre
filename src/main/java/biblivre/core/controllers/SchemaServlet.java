@@ -24,6 +24,8 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
+import biblivre.core.AbstractHandler;
+import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.IFCacheableJavascript;
@@ -36,6 +38,7 @@ import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -45,11 +48,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 @MultipartConfig
 @WebServlet(name = "SchemaServlet", urlPatterns = "/")
@@ -57,11 +62,45 @@ public final class SchemaServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    @Autowired JspController jspController;
+    private JspController jspController;
 
-    @Autowired DownloadController downloadController;
+    private DownloadController downloadController;
 
-    @Autowired JsonController jsonController;
+    private JsonController jsonController;
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ServletContext servletContext = request.getServletContext();
+
+        WebApplicationContext applicationContext =
+                WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+
+        WebApplicationContext webApplicationContext = applicationContext;
+
+        Map<String, AbstractHandler> handlerMap =
+                webApplicationContext.getBeansOfType(AbstractHandler.class);
+
+        Map<String, AbstractValidator> validatorMap =
+                webApplicationContext.getBeansOfType(AbstractValidator.class);
+
+        jspController = webApplicationContext.getBean(JspController.class);
+
+        jspController.setRequest((ExtendedRequest) request);
+        jspController.setResponse((ExtendedResponse) response);
+
+        downloadController = webApplicationContext.getBean(DownloadController.class);
+
+        downloadController.setRequest((ExtendedRequest) request);
+        downloadController.setResponse((ExtendedResponse) response);
+
+        jsonController = webApplicationContext.getBean(JsonController.class);
+
+        jsonController.setRequest((ExtendedRequest) request);
+        jsonController.setResponse((ExtendedResponse) response);
+
+        super.service(request, response);
+    }
 
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response)

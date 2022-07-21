@@ -34,11 +34,9 @@ import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.administration.permissions.Handler")
-@Scope("prototype")
 public class Handler extends AbstractHandler {
     private PermissionBO permissionBO;
     private LoginBO loginBO;

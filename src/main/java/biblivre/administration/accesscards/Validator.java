@@ -26,7 +26,9 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.accesscards.Validator")
 public class Validator extends AbstractValidator {
 
     public void validateSave(

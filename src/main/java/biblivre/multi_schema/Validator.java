@@ -27,7 +27,9 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.multi_schema.Validator")
 public class Validator extends AbstractValidator {
 
     public void validateCreate(

@@ -46,11 +46,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.circulation.lending.Handler")
-@Scope("prototype")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;

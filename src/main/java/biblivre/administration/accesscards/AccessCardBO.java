@@ -25,7 +25,10 @@ import biblivre.core.exceptions.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AccessCardBO {
     private AccessCardDAO accessCardDAO;
 
@@ -129,6 +132,7 @@ public class AccessCardBO {
         return this.accessCardDAO.saveFromBiblivre3(dtoList);
     }
 
+    @Autowired
     public void setAccessCardDAO(AccessCardDAO accessCardDAO) {
         this.accessCardDAO = accessCardDAO;
     }

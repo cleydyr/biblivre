@@ -30,7 +30,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.accesscards.Handler")
 public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
 
@@ -191,6 +194,7 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
+    @Autowired
     public void setAccessCardBO(AccessCardBO accessCardBO) {
         this.accessCardBO = accessCardBO;
     }

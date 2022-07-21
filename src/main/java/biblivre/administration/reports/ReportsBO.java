@@ -22,7 +22,10 @@ import java.util.TreeMap;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ReportsBO extends AbstractBO {
     private ReportsDAO reportsDAO;
     private BiblioRecordBO biblioRecordBO;
@@ -127,10 +130,12 @@ public class ReportsBO extends AbstractBO {
         }
     }
 
+    @Autowired
     public void setReportsDAO(ReportsDAO reportsDAO) {
         this.reportsDAO = reportsDAO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }

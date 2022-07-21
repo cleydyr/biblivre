@@ -48,7 +48,10 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.login.Handler")
 public class Handler extends AbstractHandler {
     private LoginBO loginBO;
     private IndexingBO indexingBO;
@@ -254,18 +257,22 @@ public class Handler extends AbstractHandler {
                                         .toURI())));
     }
 
+    @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
     }
 
+    @Autowired
     public void setIndexingBO(IndexingBO indexingBO) {
         this.indexingBO = indexingBO;
     }
 
+    @Autowired
     public void setPermissionBO(PermissionBO permissionBO) {
         this.permissionBO = permissionBO;
     }
 
+    @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
     }

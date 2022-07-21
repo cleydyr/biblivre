@@ -40,7 +40,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.menu.Handler")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private SupplierBO supplierBO;
@@ -308,26 +311,32 @@ public class Handler extends AbstractHandler {
         return;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setSupplierBO(SupplierBO supplierBO) {
         this.supplierBO = supplierBO;
     }
 
+    @Autowired
     public void setRequestBO(RequestBO requestBO) {
         this.requestBO = requestBO;
     }
 
+    @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
 
+    @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }

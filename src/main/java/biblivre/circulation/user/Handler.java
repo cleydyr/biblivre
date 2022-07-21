@@ -42,12 +42,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.circulation.user.Handler")
-@Scope("prototype")
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private LendingBO lendingBO;

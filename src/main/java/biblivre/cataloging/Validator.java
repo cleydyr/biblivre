@@ -26,7 +26,9 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.cataloging.Validator")
 public class Validator extends AbstractValidator {
 
     public void validateImportUpload(

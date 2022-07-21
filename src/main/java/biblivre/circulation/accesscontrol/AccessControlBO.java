@@ -30,7 +30,10 @@ import biblivre.core.exceptions.ValidationException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AccessControlBO extends AbstractBO {
     private AccessControlDAO accessControlDAO;
     private AccessCardBO accessCardBO;
@@ -160,14 +163,17 @@ public class AccessControlBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(AccessControlBO.class);
 
+    @Autowired
     public void setAccessControlDAO(AccessControlDAO accessControlDAO) {
         this.accessControlDAO = accessControlDAO;
     }
 
+    @Autowired
     public void setAccessCardBO(AccessCardBO accessCardBO) {
         this.accessCardBO = accessCardBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }

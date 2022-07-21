@@ -31,11 +31,9 @@ import biblivre.core.enums.ActionResult;
 import java.util.Date;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.circulation.accesscontrol.Handler")
-@Scope("prototype")
 public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;

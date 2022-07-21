@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class RecordBO extends AbstractBO {
 
@@ -319,11 +320,13 @@ public abstract class RecordBO extends AbstractBO {
 
     protected static final Logger logger = LoggerFactory.getLogger(RecordBO.class);
 
-    public void setRecordDAO(RecordDAO recordDAO) {
+    @Autowired
+    public final void setRecordDAO(RecordDAO recordDAO) {
         this.recordDAO = recordDAO;
     }
 
-    public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
+    @Autowired
+    public final void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
         this.digitalMediaBO = digitalMediaBO;
     }
 }

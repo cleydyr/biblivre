@@ -30,7 +30,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.digitalmedia.Handler")
 public class Handler extends AbstractHandler {
 
     private DigitalMediaBO digitalMediaBO;
@@ -102,6 +105,7 @@ public class Handler extends AbstractHandler {
         return _tryFetchingDBFileWithEncoding(id, fileId, fileName, Constants.WINDOWS_CHARSET);
     }
 
+    @Autowired
     public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
         this.digitalMediaBO = digitalMediaBO;
     }

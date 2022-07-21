@@ -28,7 +28,10 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.acquisition.supplier.Handler")
 public class Handler extends AbstractHandler {
     private SupplierBO supplierBO;
 
@@ -155,6 +158,7 @@ public class Handler extends AbstractHandler {
         return dto;
     }
 
+    @Autowired
     public void setSupplierBO(SupplierBO supplierBO) {
         this.supplierBO = supplierBO;
     }

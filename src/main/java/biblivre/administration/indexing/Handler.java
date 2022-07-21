@@ -25,7 +25,10 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("biblivre.administration.indexing.Handler")
 public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
 
@@ -78,6 +81,7 @@ public class Handler extends AbstractHandler {
         this.json.put("complete", progress[0] == progress[1]);
     }
 
+    @Autowired
     public void setIndexingBO(IndexingBO indexingBO) {
         this.indexingBO = indexingBO;
     }
