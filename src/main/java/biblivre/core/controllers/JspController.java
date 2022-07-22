@@ -25,11 +25,11 @@ import biblivre.core.enums.ActionResult;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component
-@Scope("prototype")
+@RequestScope
 public class JspController extends Controller {
 
     @Override

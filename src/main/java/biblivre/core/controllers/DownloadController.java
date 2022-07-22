@@ -29,11 +29,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component
-@Scope("prototype")
+@RequestScope
 public class DownloadController extends Controller {
 
     @Override
