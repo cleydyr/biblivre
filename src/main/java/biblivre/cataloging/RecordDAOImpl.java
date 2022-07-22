@@ -30,6 +30,7 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.marc.MaterialType;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -753,7 +754,9 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
     protected RecordDTO populateDTO(ResultSet rs, Class<? extends RecordDTO> recordClass)
             throws Exception {
-        RecordDTO dto = recordClass.getDeclaredConstructor().newInstance();
+        Constructor<? extends RecordDTO> constructor = recordClass.getDeclaredConstructor();
+
+        RecordDTO dto = constructor.newInstance();
 
         dto.setIso2709(rs.getBytes("iso2709"));
         dto.setCreated(rs.getTimestamp("created"));
