@@ -160,14 +160,12 @@ public class Handler extends CatalogingHandler {
     }
 
     protected void doHydrateRecord(RecordDTO dto, ExtendedRequest request) {
-        int recordId = request.getInteger("record_id");
+        super.doHydrateRecord(dto, request);
 
         HoldingAvailability availability =
                 request.getEnum(HoldingAvailability.class, "availability");
 
         HoldingDTO hdto = (HoldingDTO) dto;
-
-        hdto.setRecordId(recordId);
 
         hdto.setAvailability(availability);
     }
