@@ -44,8 +44,10 @@ import org.json.JSONException;
 import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.cataloging.labels.Handler")
+@RequestScope
 public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private HoldingBO holdingBO;

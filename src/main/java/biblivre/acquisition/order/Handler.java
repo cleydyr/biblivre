@@ -33,8 +33,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.acquisition.order.Handler")
+@RequestScope
 public class Handler extends AbstractHandler {
     private OrderBO orderBO;
 

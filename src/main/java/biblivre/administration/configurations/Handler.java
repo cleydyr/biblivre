@@ -32,8 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.configurations.Handler")
+@RequestScope
 public class Handler extends AbstractHandler {
 
     public void save(ExtendedRequest request, ExtendedResponse response) {

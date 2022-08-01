@@ -23,7 +23,9 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import org.springframework.web.context.annotation.RequestScope;
 
+@RequestScope
 public class AbstractHandler {
 
     protected JSONObject json;

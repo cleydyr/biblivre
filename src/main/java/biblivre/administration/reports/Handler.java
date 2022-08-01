@@ -32,8 +32,10 @@ import biblivre.core.utils.TextUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.reports.Handler")
+@RequestScope
 public class Handler extends AbstractHandler {
     private ReportsBO reportsBO;
     private biblivre.circulation.user.Handler userHandler;
