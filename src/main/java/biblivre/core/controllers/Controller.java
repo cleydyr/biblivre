@@ -49,8 +49,6 @@ public abstract class Controller {
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
     protected boolean headerOnly;
-    protected Class<? extends AbstractHandler> handlerClass;
-
     private PermissionBO permissionBO;
 
     private Map<String, AbstractHandler> handlersMap;
@@ -113,8 +111,6 @@ public abstract class Controller {
 
         try {
             String handlerClassName = "biblivre." + module + ".Handler";
-
-            this.handlerClass = (Class<? extends AbstractHandler>) Class.forName(handlerClassName);
 
             this.handler = handlersMap.get(handlerClassName);
 
@@ -217,7 +213,7 @@ public abstract class Controller {
     private Method _getMethodFromHandler(String action) throws NoSuchMethodException {
         Method method = null;
 
-        Class<? extends AbstractHandler> lookupClass = this.handlerClass;
+        Class<?> lookupClass = this.handler.getClass();
 
         while (method == null && !lookupClass.equals(AbstractHandler.class)) {
             try {
@@ -227,7 +223,7 @@ public abstract class Controller {
                                 ExtendedRequest.class,
                                 ExtendedResponse.class);
             } catch (NoSuchMethodException e) {
-                lookupClass = (Class<? extends AbstractHandler>) lookupClass.getSuperclass();
+                lookupClass = lookupClass.getSuperclass();
             }
         }
 
