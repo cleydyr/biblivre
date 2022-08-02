@@ -40,8 +40,10 @@ public class HandlerContextFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        chain.doFilter(request, response);
-
-        HandlerContextThreadLocal.remove();
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            HandlerContextThreadLocal.remove();
+        }
     }
 }

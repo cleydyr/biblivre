@@ -47,9 +47,11 @@ public class SchemaFilter implements Filter {
 
         SchemaThreadLocal.setSchema(schema);
 
-        chain.doFilter(request, response);
-
-        SchemaThreadLocal.remove();
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            SchemaThreadLocal.remove();
+        }
     }
 
     private String extractSchema(ServletRequest request) {

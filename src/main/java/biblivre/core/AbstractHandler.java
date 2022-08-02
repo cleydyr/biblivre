@@ -26,28 +26,30 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 public class AbstractHandler {
-    private final HandlerContext handlerContext = HandlerContextThreadLocal.get();
-
     public AbstractHandler() {}
 
+    protected HandlerContext getHandlerContext() {
+        return HandlerContextThreadLocal.get();
+    }
+
     public void setJson(JSONObject json) {
-        handlerContext.setJson(json);
+        getHandlerContext().setJson(json);
     }
 
     public JSONObject getJson() {
-        return handlerContext.getJson();
+        return getHandlerContext().getJson();
     }
 
     public void setJspURL(String jspURL) {
-        handlerContext.setJspURL(jspURL);
+        getHandlerContext().setJspURL(jspURL);
     }
 
     public String getJspURL() {
-        return handlerContext.getJspURL();
+        return getHandlerContext().getJspURL();
     }
 
     public void setMessage(Message message) {
-        handlerContext.setMessage(message);
+        getHandlerContext().setMessage(message);
     }
 
     public void setMessage(ActionResult level) {
@@ -55,7 +57,7 @@ public class AbstractHandler {
     }
 
     public void setMessage(ActionResult level, String message) {
-        handlerContext.setMessage(new Message(level, message));
+        getHandlerContext().setMessage(new Message(level, message));
     }
 
     public void setMessage(Throwable exception) {
@@ -63,7 +65,7 @@ public class AbstractHandler {
     }
 
     public Message getMessage() {
-        return handlerContext.getMessage();
+        return getHandlerContext().getMessage();
     }
 
     public boolean hasErrors() {
@@ -86,27 +88,27 @@ public class AbstractHandler {
     }
 
     public BiblivreFile getFile() {
-        return handlerContext.getFile();
+        return getHandlerContext().getFile();
     }
 
     public void setFile(BiblivreFile file) {
-        handlerContext.setFile(file);
+        getHandlerContext().setFile(file);
     }
 
     public int getReturnCode() {
-        return handlerContext.getReturnCode();
+        return getHandlerContext().getReturnCode();
     }
 
     public void setReturnCode(int returnCode) {
-        handlerContext.setReturnCode(returnCode);
+        getHandlerContext().setReturnCode(returnCode);
     }
 
     public HttpCallback getCallback() {
-        return handlerContext.getCallback();
+        return getHandlerContext().getCallback();
     }
 
     public void setCallback(HttpCallback callback) {
-        handlerContext.setCallback(callback);
+        getHandlerContext().setCallback(callback);
     }
 
     public void put(String key, Object object) {
