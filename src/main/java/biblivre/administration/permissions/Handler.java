@@ -35,10 +35,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.permissions.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private PermissionBO permissionBO;
     private LoginBO loginBO;
@@ -62,7 +60,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -94,7 +92,7 @@ public class Handler extends AbstractHandler {
             }
         }
         try {
-            this.json.put("permission", dto.toJSONObject());
+            put("permission", dto.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
@@ -167,8 +165,8 @@ public class Handler extends AbstractHandler {
         PermissionDTO dto = this.populatePermission(udto);
 
         try {
-            this.json.put("data", dto.toJSONObject());
-            this.json.put("full_data", true);
+            put("data", dto.toJSONObject());
+            put("full_data", true);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;

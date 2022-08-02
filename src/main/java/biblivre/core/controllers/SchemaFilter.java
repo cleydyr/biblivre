@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
-import biblivre.core.ExtendedRequest;
-import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import jakarta.annotation.Priority;
 import jakarta.servlet.DispatcherType;
@@ -31,39 +31,56 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.apache.commons.lang3.StringUtils;
 
 @WebFilter(
         urlPatterns = "*",
-        dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
-@Priority(10)
-public class ExtendedRequestResponseFilter implements Filter {
+        dispatcherTypes = {DispatcherType.REQUEST})
+@Priority(30)
+public class SchemaFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        String schema = extractSchema(request);
 
-        request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-        response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+        SchemaThreadLocal.setSchema(schema);
 
-        ExtendedRequest xRequest = null;
-        ExtendedResponse xResponse = null;
+        chain.doFilter(request, response);
 
-        if (request instanceof ExtendedRequest) {
-            // Avoid rewrapping if forwarding
-            xRequest = (ExtendedRequest) request;
-        } else {
-            xRequest = new ExtendedRequest((HttpServletRequest) request);
+        SchemaThreadLocal.remove();
+    }
+
+    private String extractSchema(ServletRequest request) {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+
+        String requestURI = httpServletRequest.getRequestURI();
+
+        String contextPath = httpServletRequest.getContextPath();
+
+        String url = requestURI.substring(contextPath.length() + 1);
+
+        String schema = null;
+
+        if (StringUtils.isNotBlank(url)) {
+            String[] urlArray = url.split("/");
+
+            if (!"DigitalMediaController".equals(urlArray[0])) {
+                schema = urlArray[0];
+            }
         }
 
-        if (response instanceof ExtendedResponse) {
-            // Avoid rewrapping if forwarding
-            xResponse = (ExtendedResponse) response;
-        } else {
-            xResponse = new ExtendedResponse((HttpServletResponse) response);
+        if (Schemas.isNotLoaded(schema)) {
+            boolean isMultipleSchemasEnabled = Schemas.isMultipleSchemasEnabled();
+
+            if (isMultipleSchemasEnabled) {
+                schema = Constants.GLOBAL_SCHEMA;
+            } else {
+                schema = Constants.SINGLE_SCHEMA;
+            }
         }
 
-        chain.doFilter(xRequest, xResponse);
+        return schema;
     }
 }

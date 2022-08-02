@@ -27,10 +27,8 @@ import biblivre.core.enums.ActionResult;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.indexing.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
 
@@ -59,7 +57,7 @@ public class Handler extends AbstractHandler {
 
         }
 
-        this.json.put("time", (end - start) / 1000.0);
+        put("time", (end - start) / 1000.0);
     }
 
     public void progress(ExtendedRequest request, ExtendedResponse response) {
@@ -78,9 +76,9 @@ public class Handler extends AbstractHandler {
 
         int progress[] = indexingBO.getReindexProgress(recordType);
 
-        this.json.put("current", progress[0]);
-        this.json.put("total", progress[1]);
-        this.json.put("complete", progress[0] == progress[1]);
+        put("current", progress[0]);
+        put("total", progress[1]);
+        put("complete", progress[0] == progress[1]);
     }
 
     @Autowired

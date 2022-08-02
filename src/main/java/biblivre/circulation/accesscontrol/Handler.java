@@ -32,10 +32,8 @@ import java.util.Date;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.circulation.accesscontrol.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
@@ -76,7 +74,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -115,7 +113,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -137,8 +135,8 @@ public class Handler extends AbstractHandler {
                 dto = accessControlBO.getByCardId(cardId);
                 accessControlBO.populateDetails(dto);
                 dto.setId(cardId);
-                this.json.put("data", dto.toJSONObject());
-                this.json.put("full_data", true);
+                put("data", dto.toJSONObject());
+                put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, "error.invalid_json");
                 return;
@@ -163,8 +161,8 @@ public class Handler extends AbstractHandler {
             try {
                 accessControlBO.populateDetails(dto);
                 dto.setId(cardId);
-                this.json.put("data", dto.toJSONObject());
-                this.json.put("full_data", true);
+                put("data", dto.toJSONObject());
+                put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, "error.invalid_json");
                 return;

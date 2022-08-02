@@ -44,10 +44,8 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.circulation.user.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private LendingBO lendingBO;
@@ -66,7 +64,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("user", user.toJSONObject());
+            put("user", user.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
@@ -77,7 +75,7 @@ public class Handler extends AbstractHandler {
         DTOCollection<UserDTO> list = this.searchHelper(request, response, this);
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
@@ -192,8 +190,8 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("data", user.toJSONObject());
-            this.json.put("full_data", true);
+            put("data", user.toJSONObject());
+            put("full_data", true);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
@@ -256,7 +254,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("data", data.toJSONObject());
+            put("data", data.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;

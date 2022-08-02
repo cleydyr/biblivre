@@ -49,10 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.cataloging.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
     private IndexingBO indexingBO;
@@ -113,7 +111,7 @@ public class Handler extends AbstractHandler {
         } else if (list.getSuccess() == 0) {
             this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
         } else {
-            this.json.putOpt("data", list.toJSONObject());
+            putOpt("data", list.toJSONObject());
         }
     }
 
@@ -131,19 +129,19 @@ public class Handler extends AbstractHandler {
 
         if (StringUtils.isNotBlank(rdto.getIsbn())) {
             List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 5, rdto.getIsbn());
-            this.json.putOpt("isbn", !search.isEmpty());
+            putOpt("isbn", !search.isEmpty());
         } else if (StringUtils.isNotBlank(rdto.getIssn())) {
             List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 6, rdto.getIssn());
-            this.json.putOpt("issn", !search.isEmpty());
+            putOpt("issn", !search.isEmpty());
         } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
             List<String> search = indexingBO.searchExactTerm(RecordType.BIBLIO, 7, rdto.getIsrc());
-            this.json.putOpt("isrc", !search.isEmpty());
+            putOpt("isrc", !search.isEmpty());
         }
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_marc");
         } else {
-            this.json.putOpt("data", dto.toJSONObject());
+            putOpt("data", dto.toJSONObject());
         }
     }
 
@@ -218,10 +216,10 @@ public class Handler extends AbstractHandler {
 
         try {
             for (Integer id : successIds) {
-                this.json.append("saved", id);
+                append("saved", id);
             }
             for (Integer id : failedIds) {
-                this.json.append("failed", id);
+                append("failed", id);
             }
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");

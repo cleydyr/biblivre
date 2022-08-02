@@ -32,10 +32,8 @@ import biblivre.core.utils.TextUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.reports.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private ReportsBO reportsBO;
     private biblivre.circulation.user.Handler userHandler;
@@ -52,7 +50,7 @@ public class Handler extends AbstractHandler {
         list.setPaging(userList.getPaging());
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -79,7 +77,7 @@ public class Handler extends AbstractHandler {
 
         try {
             if (report != null) {
-                this.json.put("file_name", report.getName());
+                put("file_name", report.getName());
             }
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");

@@ -37,7 +37,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        this.json.put("data", dto.toJSONObject());
+        put("data", dto.toJSONObject());
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
@@ -68,7 +68,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         _setSuccessMessage(isNew);
 
-        this.json.put("data", recordDTO.toJSONObject());
+        put("data", recordDTO.toJSONObject());
     }
 
     private void hydrateRecord(RecordDTO recordDTO, ExtendedRequest request) {

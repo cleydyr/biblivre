@@ -42,10 +42,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component
-@RequestScope
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
@@ -77,10 +75,10 @@ public class Handler extends AbstractHandler {
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(recordType);
 
         try {
-            this.json.put("search", search.toJSONObject());
+            put("search", search.toJSONObject());
 
             for (IndexingGroupDTO group : groups) {
-                this.json.accumulate("indexing_groups", group.toJSONObject());
+                accumulate("indexing_groups", group.toJSONObject());
             }
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
@@ -106,12 +104,12 @@ public class Handler extends AbstractHandler {
 
         reservationBO.populateReservationInfoByBiblio(search);
 
-        this.json.put("search", search.toJSONObject());
+        put("search", search.toJSONObject());
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(RecordType.BIBLIO);
 
         for (IndexingGroupDTO group : groups) {
-            this.json.accumulate("indexing_groups", group.toJSONObject());
+            accumulate("indexing_groups", group.toJSONObject());
         }
     }
 
@@ -131,7 +129,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -167,8 +165,8 @@ public class Handler extends AbstractHandler {
             info.setUser(user);
 
             try {
-                this.json.put("data", info.toJSONObject());
-                this.json.put("full_data", true);
+                put("data", info.toJSONObject());
+                put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, "error.invalid_json");
                 return;
@@ -213,10 +211,10 @@ public class Handler extends AbstractHandler {
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(RecordType.BIBLIO);
 
         try {
-            this.json.put("search", search.toJSONObject());
+            put("search", search.toJSONObject());
 
             for (IndexingGroupDTO group : groups) {
-                this.json.accumulate("indexing_groups", group.toJSONObject());
+                accumulate("indexing_groups", group.toJSONObject());
             }
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
@@ -284,7 +282,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }

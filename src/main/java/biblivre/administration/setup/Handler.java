@@ -57,10 +57,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.setup.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private RestoreBO restoreBO;
     private BackupBO backupBO;
@@ -98,17 +96,17 @@ public class Handler extends AbstractHandler {
             Configurations.save(dto, 0);
         }
 
-        this.json.put("success", success);
+        put("success", success);
     }
 
     // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list_restores
     public void listRestores(ExtendedRequest request, ExtendedResponse response) {
         List<RestoreDTO> list = restoreBO.list();
 
-        this.json.put("success", true);
+        put("success", true);
 
         for (RestoreDTO dto : list) {
-            this.json.append("restores", dto.toJSONObject());
+            append("restores", dto.toJSONObject());
         }
     }
 
@@ -134,11 +132,11 @@ public class Handler extends AbstractHandler {
             logger.error(e.getMessage(), e);
             success = false;
         }
-        this.json.put("success", success);
-        this.json.put("file", uuid);
+        put("success", success);
+        put("file", uuid);
 
         if (success && dto != null) {
-            this.json.put("metadata", dto.toJSONObject());
+            put("metadata", dto.toJSONObject());
         }
     }
 
@@ -193,7 +191,7 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        this.json.put("success", success);
+        put("success", success);
     }
 
     private Map<String, String> breakString(String string) {
@@ -239,7 +237,7 @@ public class Handler extends AbstractHandler {
                         State.writeLog(
                                 request.getLocalizedText(
                                         "administration.setup.biblivre4restore.error.digital_media_only_selected"));
-                        this.json.put("success", false);
+                        put("success", false);
                         return false;
                     }
 
@@ -259,12 +257,12 @@ public class Handler extends AbstractHandler {
                             State.writeLog(
                                     request.getLocalizedText(
                                             "administration.setup.biblivre4restore.error.digital_media_only_should_be_selected"));
-                            this.json.put("success", false);
+                            put("success", false);
                             return false;
                         }
 
-                        this.json.put("success", true);
-                        this.json.put("ask_for_media_backup", true);
+                        put("success", true);
+                        put("ask_for_media_backup", true);
                         return false;
                     }
             }
@@ -422,7 +420,7 @@ public class Handler extends AbstractHandler {
             State.cancel();
         }
 
-        this.json.put("success", success);
+        put("success", success);
     }
 
     public void importBiblivre3(ExtendedRequest request, ExtendedResponse response) {
@@ -479,15 +477,15 @@ public class Handler extends AbstractHandler {
             State.cancel();
         }
 
-        this.json.put("success", success);
+        put("success", success);
     }
 
     public void progress(ExtendedRequest request, ExtendedResponse response) {
-        this.json.put("success", true);
-        this.json.put("current", State.getCurrentStep());
-        this.json.put("total", State.getSteps());
-        this.json.put("secondary_current", State.getCurrentSecondaryStep());
-        this.json.put("complete", !State.LOCKED.get());
+        put("success", true);
+        put("current", State.getCurrentStep());
+        put("total", State.getSteps());
+        put("secondary_current", State.getCurrentSecondaryStep());
+        put("complete", !State.LOCKED.get());
     }
 
     @Autowired

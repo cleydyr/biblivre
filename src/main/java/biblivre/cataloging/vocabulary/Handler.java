@@ -25,10 +25,8 @@ import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.cataloging.vocabulary.Handler")
-@RequestScope
 public class Handler extends PaginableCatalogingHandler {
 
     @Autowired

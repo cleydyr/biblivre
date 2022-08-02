@@ -35,10 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.cataloging.authorities.Handler")
-@RequestScope
 public class Handler extends PaginableCatalogingHandler {
     private ReportsBO reportsBO;
 
@@ -97,7 +95,7 @@ public class Handler extends PaginableCatalogingHandler {
             }
             JSONObject searchResult = new JSONObject();
             searchResult.put("data", data);
-            this.json.put("search", searchResult);
+            put("search", searchResult);
 
         } catch (JSONException e) {
             e.printStackTrace();

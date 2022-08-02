@@ -32,10 +32,8 @@ import java.util.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.digitalmedia.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
 
     private DigitalMediaBO digitalMediaBO;
@@ -77,7 +75,7 @@ public class Handler extends AbstractHandler {
         String encodedId = DigitalMediaEncodingUtil.getEncodedId(serial, file.getName());
 
         if (StringUtils.isNotBlank(encodedId)) {
-            this.json.put("id", encodedId);
+            put("id", encodedId);
         } else {
             this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
         }

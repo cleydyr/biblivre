@@ -32,10 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.configurations.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
@@ -73,7 +71,7 @@ public class Handler extends AbstractHandler {
 
         this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
 
-        this.json.put("reload", multiSchemaBefore != multiSchemaAfter);
+        put("reload", multiSchemaBefore != multiSchemaAfter);
     }
 
     public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {

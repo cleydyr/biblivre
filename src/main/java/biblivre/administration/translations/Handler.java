@@ -38,10 +38,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.administration.translations.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {
@@ -59,7 +57,7 @@ public class Handler extends AbstractHandler {
         request.setScopedSessionAttribute(dumpId, language);
 
         try {
-            this.json.put("uuid", dumpId);
+            put("uuid", dumpId);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -216,7 +214,7 @@ public class Handler extends AbstractHandler {
                 });
 
         try {
-            this.json.put("translations", new JSONObject(translations));
+            put("translations", new JSONObject(translations));
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;

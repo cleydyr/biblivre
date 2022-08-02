@@ -77,10 +77,10 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
 
-        this.json.put("search", search.toJSONObject());
+        put("search", search.toJSONObject());
 
         for (IndexingGroupDTO group : groups) {
-            this.json.accumulate("indexing_groups", group.toJSONObject());
+            accumulate("indexing_groups", group.toJSONObject());
         }
     }
 
@@ -108,12 +108,12 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        this.json.put("search", search.toJSONObject());
+        put("search", search.toJSONObject());
 
         List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
 
         for (IndexingGroupDTO group : groups) {
-            this.json.accumulate("indexing_groups", group.toJSONObject());
+            accumulate("indexing_groups", group.toJSONObject());
         }
     }
 
@@ -149,7 +149,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        this.json.put("data", dto.toJSONObject());
+        put("data", dto.toJSONObject());
     }
 
     public void itemCount(ExtendedRequest request, ExtendedResponse response) {
@@ -171,7 +171,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         int count = paginableRecordBO.count(searchDTO, request.getAuthorizationPoints());
 
-        this.json.put("count", count);
+        put("count", count);
     }
 
     public void moveRecords(ExtendedRequest request, ExtendedResponse response) {
@@ -209,7 +209,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         request.setScopedSessionAttribute(exportId, idList);
 
-        this.json.put("uuid", exportId);
+        put("uuid", exportId);
     }
 
     public void downloadExport(ExtendedRequest request, ExtendedResponse response) {
@@ -259,7 +259,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
                                 .build();
 
                 for (String term : type.getSuggestions(parameterObject)) {
-                    this.json.append("data", term);
+                    append("data", term);
                 }
 
                 break;
@@ -271,7 +271,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
                 DTOCollection<AutocompleteDTO> autocompletion =
                         type.getAutocompletion(autocompleteRecordBO, query);
 
-                this.json.putOpt("data", autocompletion.toJSONObject());
+                putOpt("data", autocompletion.toJSONObject());
 
                 break;
 
@@ -312,7 +312,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         list.addAll(formats);
 
-        this.json.put("data", list.toJSONObject());
+        put("data", list.toJSONObject());
     }
 
     @Autowired

@@ -32,10 +32,8 @@ import biblivre.core.utils.Constants;
 import java.io.File;
 import org.json.JSONException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.multi_schema.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
 
     public void create(ExtendedRequest request, ExtendedResponse response) {
@@ -75,13 +73,13 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("success", success);
+            put("success", success);
 
             if (success) {
-                this.json.put("data", dto.toJSONObject());
-                this.json.put("full_data", true);
+                put("data", dto.toJSONObject());
+                put("full_data", true);
             } else {
-                this.json.put("log", true);
+                put("log", true);
             }
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
@@ -111,7 +109,7 @@ public class Handler extends AbstractHandler {
 
         boolean success = disable ? Schemas.disable(dto) : Schemas.enable(dto);
         try {
-            this.json.put("success", success);
+            put("success", success);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
@@ -126,7 +124,7 @@ public class Handler extends AbstractHandler {
         boolean success = Schemas.deleteSchema(dto);
 
         try {
-            this.json.put("success", success);
+            put("success", success);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;

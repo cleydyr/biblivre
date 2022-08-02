@@ -33,10 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.acquisition.order.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private OrderBO orderBO;
 
@@ -66,7 +64,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -87,7 +85,7 @@ public class Handler extends AbstractHandler {
         OrderDTO dto = orderBO.get(id);
 
         try {
-            this.json.put("request", dto);
+            put("request", dto);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -133,8 +131,8 @@ public class Handler extends AbstractHandler {
         dto = orderBO.get(id == 0 ? newId : id);
 
         try {
-            this.json.put("data", dto.toJSONObject());
-            this.json.put("full_data", true);
+            put("data", dto.toJSONObject());
+            put("full_data", true);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;

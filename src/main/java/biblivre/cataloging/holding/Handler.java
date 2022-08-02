@@ -35,10 +35,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.cataloging.holding.Handler")
-@RequestScope
 public class Handler extends CatalogingHandler {
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
@@ -85,7 +83,7 @@ public class Handler extends CatalogingHandler {
         ((HoldingDTO) dto).setShelfLocation(holdingLocation);
 
         try {
-            this.json.put("data", dto.toJSONObject());
+            put("data", dto.toJSONObject());
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -97,7 +95,7 @@ public class Handler extends CatalogingHandler {
         DTOCollection<HoldingDTO> list = holdingBO.list(recordId);
 
         try {
-            this.json.put("list", list.toJSONObject());
+            put("list", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;

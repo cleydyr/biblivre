@@ -50,10 +50,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.login.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private LoginBO loginBO;
     private IndexingBO indexingBO;
@@ -66,8 +64,8 @@ public class Handler extends AbstractHandler {
         String password = request.getString("password");
 
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-            this.message.setText(ActionResult.WARNING, "login.access_denied");
-            this.jspURL = "/jsp/index.jsp";
+            setMessage(ActionResult.WARNING, "login.access_denied");
+            setJspURL("/jsp/index.jsp");
             return;
         }
 
@@ -82,12 +80,12 @@ public class Handler extends AbstractHandler {
 
             _populateSessionAttributes(request, user, atps);
 
-            this.message.setText(ActionResult.NORMAL, "login.welcome");
-            this.jspURL = "/jsp/index.jsp";
+            setMessage(ActionResult.NORMAL, "login.welcome");
+            setJspURL("/jsp/index.jsp");
             return;
         } else {
-            this.message.setText(ActionResult.WARNING, "login.access_denied");
-            this.jspURL = "/jsp/index.jsp";
+            setMessage(ActionResult.WARNING, "login.access_denied");
+            setJspURL("/jsp/index.jsp");
             return;
         }
     }
@@ -109,8 +107,8 @@ public class Handler extends AbstractHandler {
 
         request.setScopedSessionAttribute("language", language);
 
-        this.message.setText(ActionResult.NORMAL, "login.goodbye");
-        this.jspURL = "/jsp/index.jsp";
+        setMessage(ActionResult.NORMAL, "login.goodbye");
+        setJspURL("/jsp/index.jsp");
         return;
     }
 
@@ -128,8 +126,8 @@ public class Handler extends AbstractHandler {
                 newPassword.equals("abracadabra") && login.getLogin().equals("admin");
         request.setScopedSessionAttribute("system_warning_password", warningPassword);
 
-        this.message.setText(ActionResult.SUCCESS, "login.password.success");
-        this.jspURL = "/jsp/administration/password.jsp";
+        setMessage(ActionResult.SUCCESS, "login.password.success");
+        setJspURL("/jsp/administration/password.jsp");
         return;
     }
 

@@ -24,8 +24,6 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.Fields;
 import biblivre.circulation.user.UserFields;
-import biblivre.core.AbstractHandler;
-import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.IFCacheableJavascript;
@@ -48,7 +46,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -73,16 +70,8 @@ public final class SchemaServlet extends HttpServlet {
             throws ServletException, IOException {
         ServletContext servletContext = request.getServletContext();
 
-        WebApplicationContext applicationContext =
+        WebApplicationContext webApplicationContext =
                 WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-
-        WebApplicationContext webApplicationContext = applicationContext;
-
-        Map<String, AbstractHandler> handlerMap =
-                webApplicationContext.getBeansOfType(AbstractHandler.class);
-
-        Map<String, AbstractValidator> validatorMap =
-                webApplicationContext.getBeansOfType(AbstractValidator.class);
 
         jspController = webApplicationContext.getBean(JspController.class);
 

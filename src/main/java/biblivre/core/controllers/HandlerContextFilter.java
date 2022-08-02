@@ -19,9 +19,7 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
-import biblivre.core.ExtendedRequest;
-import biblivre.core.ExtendedResponse;
-import biblivre.core.utils.Constants;
+import biblivre.core.HandlerContextThreadLocal;
 import jakarta.annotation.Priority;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
@@ -30,40 +28,20 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebFilter(
         urlPatterns = "*",
-        dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
-@Priority(10)
-public class ExtendedRequestResponseFilter implements Filter {
+        dispatcherTypes = {DispatcherType.REQUEST})
+@Priority(20)
+public class HandlerContextFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-        response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
+        chain.doFilter(request, response);
 
-        ExtendedRequest xRequest = null;
-        ExtendedResponse xResponse = null;
-
-        if (request instanceof ExtendedRequest) {
-            // Avoid rewrapping if forwarding
-            xRequest = (ExtendedRequest) request;
-        } else {
-            xRequest = new ExtendedRequest((HttpServletRequest) request);
-        }
-
-        if (response instanceof ExtendedResponse) {
-            // Avoid rewrapping if forwarding
-            xResponse = (ExtendedResponse) response;
-        } else {
-            xResponse = new ExtendedResponse((HttpServletResponse) response);
-        }
-
-        chain.doFilter(xRequest, xResponse);
+        HandlerContextThreadLocal.remove();
     }
 }

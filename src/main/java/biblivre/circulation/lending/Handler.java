@@ -47,10 +47,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.circulation.lending.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
@@ -93,7 +91,7 @@ public class Handler extends AbstractHandler {
                 lendingBO.populateLendingInfoByHolding(holdingList);
 
         try {
-            this.json.put("search", lendingInfo.toJSONObject());
+            put("search", lendingInfo.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
@@ -116,7 +114,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
@@ -192,8 +190,8 @@ public class Handler extends AbstractHandler {
             info.setUser(user);
 
             try {
-                this.json.put("data", info.toJSONObject());
-                this.json.put("full_data", true);
+                put("data", info.toJSONObject());
+                put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, "error.invalid_json");
                 return;
@@ -233,8 +231,8 @@ public class Handler extends AbstractHandler {
             info.setUser(user);
 
             try {
-                this.json.put("data", info.toJSONObject());
-                this.json.put("full_data", true);
+                put("data", info.toJSONObject());
+                put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, "error.invalid_json");
                 return;
@@ -300,7 +298,7 @@ public class Handler extends AbstractHandler {
         }
 
         try {
-            this.json.put("search", list.toJSONObject());
+            put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
@@ -324,7 +322,7 @@ public class Handler extends AbstractHandler {
         try {
             String receipt = lendingBO.generateReceipt(ids, request.getTranslationsMap());
 
-            this.json.put("receipt", receipt);
+            put("receipt", receipt);
         } catch (JSONException e) {
             e.printStackTrace();
 

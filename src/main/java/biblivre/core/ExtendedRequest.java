@@ -22,7 +22,6 @@ package biblivre.core;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.MemoryFile;
-import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Languages;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
@@ -65,7 +64,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         }
 
         this.loadMultiPart(request);
-        this.loadSchemaAndController();
+        this.loadController();
         this.loadLanguage();
         this.loadTranslationsMap();
     }
@@ -291,20 +290,12 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         }
     }
 
-    private void loadSchemaAndController() {
+    private void loadController() {
         String url = this.getRequestURI().substring(this.getContextPath().length() + 1);
-        String schema = null;
         String controller = null;
 
         if (StringUtils.isNotBlank(url)) {
             String[] urlArray = url.split("/");
-
-            schema = urlArray[0];
-
-            if (schema.equals("DigitalMediaController")) {
-                schema = null;
-                controller = "DigitalMediaController";
-            }
 
             if (urlArray.length > 1) {
                 controller = urlArray[1];
@@ -313,21 +304,9 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
             }
         }
 
-        if (Schemas.isNotLoaded(schema)) {
-            boolean isMultipleSchemasEnabled = Schemas.isMultipleSchemasEnabled();
-
-            if (isMultipleSchemasEnabled) {
-                schema = Constants.GLOBAL_SCHEMA;
-            } else {
-                schema = Constants.SINGLE_SCHEMA;
-            }
-        }
-
         if (controller == null) {
             controller = this.getString("controller");
         }
-
-        SchemaThreadLocal.setSchema(schema);
 
         this.setController(controller);
     }

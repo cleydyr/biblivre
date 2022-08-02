@@ -19,68 +19,56 @@
  ******************************************************************************/
 package biblivre.core;
 
+import biblivre.core.HandlerContextThreadLocal.HandlerContext;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.springframework.web.context.annotation.RequestScope;
 
-@RequestScope
 public class AbstractHandler {
+    private final HandlerContext handlerContext = HandlerContextThreadLocal.get();
 
-    protected JSONObject json;
-    protected String jspURL;
-    protected Message message;
-    protected BiblivreFile file;
-    protected int returnCode;
-    protected HttpCallback callback;
-
-    public AbstractHandler() {
-        this.setJson(new JSONObject());
-        this.setJspURL("");
-        this.setMessage(new Message());
-        this.setFile(null);
-        this.setReturnCode(0);
-    }
+    public AbstractHandler() {}
 
     public void setJson(JSONObject json) {
-        this.json = json;
+        handlerContext.setJson(json);
     }
 
     public JSONObject getJson() {
-        return this.json;
+        return handlerContext.getJson();
     }
 
     public void setJspURL(String jspURL) {
-        this.jspURL = jspURL;
+        handlerContext.setJspURL(jspURL);
     }
 
     public String getJspURL() {
-        return this.jspURL;
+        return handlerContext.getJspURL();
     }
 
     public void setMessage(Message message) {
-        this.message = message;
+        handlerContext.setMessage(message);
     }
 
     public void setMessage(ActionResult level) {
-        this.message = new Message(level, "");
+        setMessage(level, "");
     }
 
     public void setMessage(ActionResult level, String message) {
-        this.message = new Message(level, message);
+        handlerContext.setMessage(new Message(level, message));
     }
 
     public void setMessage(Throwable exception) {
-        this.message = new Message(exception);
+        setMessage(new Message(exception));
     }
 
     public Message getMessage() {
-        return this.message;
+        return handlerContext.getMessage();
     }
 
     public boolean hasErrors() {
         Message message = this.getMessage();
+
         boolean hasErrorMessage = StringUtils.isNotBlank(message.getText());
 
         if (!hasErrorMessage) {
@@ -98,26 +86,50 @@ public class AbstractHandler {
     }
 
     public BiblivreFile getFile() {
-        return this.file;
+        return handlerContext.getFile();
     }
 
     public void setFile(BiblivreFile file) {
-        this.file = file;
+        handlerContext.setFile(file);
     }
 
     public int getReturnCode() {
-        return this.returnCode;
+        return handlerContext.getReturnCode();
     }
 
     public void setReturnCode(int returnCode) {
-        this.returnCode = returnCode;
+        handlerContext.setReturnCode(returnCode);
     }
 
     public HttpCallback getCallback() {
-        return this.callback;
+        return handlerContext.getCallback();
     }
 
     public void setCallback(HttpCallback callback) {
-        this.callback = callback;
+        handlerContext.setCallback(callback);
+    }
+
+    public void put(String key, Object object) {
+        JSONObject json = getJson();
+
+        json.put(key, object);
+    }
+
+    public void append(String key, Object object) {
+        JSONObject json = getJson();
+
+        json.append(key, object);
+    }
+
+    public void putOpt(String key, Object object) {
+        JSONObject json = getJson();
+
+        json.putOpt(key, object);
+    }
+
+    public void accumulate(String key, Object object) {
+        JSONObject json = getJson();
+
+        json.accumulate(key, object);
     }
 }

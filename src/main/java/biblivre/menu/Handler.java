@@ -42,10 +42,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component("biblivre.menu.Handler")
-@RequestScope
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private SupplierBO supplierBO;
@@ -57,12 +55,11 @@ public class Handler extends AbstractHandler {
     public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
     public void i18n(ExtendedRequest request, ExtendedResponse response) throws IOException {
-        if (request.getString("from_translations").equals("true")) {
-            this.jspURL = "/jsp/administration/translations.jsp";
+        if (request.getBoolean("from_translations")) {
+            setJspURL("/jsp/administration/translations.jsp");
         } else {
-            this.jspURL = "/jsp/index.jsp";
+            setJspURL("/jsp/index.jsp");
         }
-        return;
     }
 
     public void listBibliographic(ExtendedRequest request, ExtendedResponse response) {
@@ -80,75 +77,63 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("records", records);
 
-        this.jspURL = "/jsp/list/bibliographic.jsp";
+        setJspURL("/jsp/list/bibliographic.jsp");
         return;
     }
 
     public void listAuthorities(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/list/authorities.jsp";
-        return;
+        setJspURL("/jsp/list/authorities.jsp");
     }
 
     public void listVocabulary(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/list/vocabulary.jsp";
-        return;
+        setJspURL("/jsp/list/vocabulary.jsp");
     }
 
     public void searchBibliographic(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/search/bibliographic.jsp";
-        return;
+        setJspURL("/jsp/search/bibliographic.jsp");
     }
 
     public void searchAuthorities(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/search/authorities.jsp";
-        return;
+        setJspURL("/jsp/search/authorities.jsp");
     }
 
     public void searchVocabulary(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/search/vocabulary.jsp";
-        return;
+        setJspURL("/jsp/search/vocabulary.jsp");
     }
 
     public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/cataloging/bibliographic.jsp";
-        return;
+        setJspURL("/jsp/cataloging/bibliographic.jsp");
     }
 
     public void catalogingAuthorities(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/cataloging/authorities.jsp";
-        return;
+        setJspURL("/jsp/cataloging/authorities.jsp");
     }
 
     public void catalogingVocabulary(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/cataloging/vocabulary.jsp";
-        return;
+        setJspURL("/jsp/cataloging/vocabulary.jsp");
     }
 
     public void catalogingLabels(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/cataloging/labels.jsp";
-        return;
+        setJspURL("/jsp/cataloging/labels.jsp");
     }
 
     public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("userTypes", userTypeBO.list());
-        this.jspURL = "/jsp/circulation/user.jsp";
-        return;
+        setJspURL("/jsp/circulation/user.jsp");
     }
 
     public void circulationLending(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/circulation/lending.jsp";
-        return;
+        setJspURL("/jsp/circulation/lending.jsp");
     }
 
     public void circulationReservation(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/circulation/reservation.jsp";
-        return;
+        setJspURL("/jsp/circulation/reservation.jsp");
     }
 
     public void circulationUserReservation(ExtendedRequest request, ExtendedResponse response) {
         Integer loggedUser = request.getLoggedUserId();
         if (loggedUser == null || loggedUser == 0) {
-            this.jspURL = "/jsp/index.jsp";
+            setJspURL("/jsp/index.jsp");
         } else {
             UserDTO user = userBO.getUserByLoginId(loggedUser);
             if (user != null) {
@@ -157,29 +142,25 @@ public class Handler extends AbstractHandler {
                 request.setAttribute("RESERVATION_USER_ID", 0);
             }
 
-            this.jspURL = "/jsp/circulation/user_reservation.jsp";
+            setJspURL("/jsp/circulation/user_reservation.jsp");
         }
         return;
     }
 
     public void circulationAccess(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/circulation/access_control.jsp";
-        return;
+        setJspURL("/jsp/circulation/access_control.jsp");
     }
 
     public void circulationUserCards(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/circulation/user_cards.jsp";
-        return;
+        setJspURL("/jsp/circulation/user_cards.jsp");
     }
 
     public void acquisitionSupplier(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/acquisition/suppliers.jsp";
-        return;
+        setJspURL("/jsp/acquisition/suppliers.jsp");
     }
 
     public void acquisitionRequest(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/acquisition/requests.jsp";
-        return;
+        setJspURL("/jsp/acquisition/requests.jsp");
     }
 
     public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
@@ -189,31 +170,26 @@ public class Handler extends AbstractHandler {
         List<RequestDTO> requests = requestBO.list();
         request.setAttribute("requests", requests);
 
-        this.jspURL = "/jsp/acquisition/quotations.jsp";
-        return;
+        setJspURL("/jsp/acquisition/quotations.jsp");
     }
 
     public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
         List<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
-        this.jspURL = "/jsp/acquisition/orders.jsp";
-        return;
+        setJspURL("/jsp/acquisition/orders.jsp");
     }
 
     public void administrationPassword(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/password.jsp";
-        return;
+        setJspURL("/jsp/administration/password.jsp");
     }
 
     public void administrationMaintenance(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/maintenance.jsp";
-        return;
+        setJspURL("/jsp/administration/maintenance.jsp");
     }
 
     public void administrationPermissions(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/permissions.jsp";
-        return;
+        setJspURL("/jsp/administration/permissions.jsp");
     }
 
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
@@ -225,50 +201,41 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("dumpAbsolutePath", dumpAbsolutePath);
 
-        this.jspURL = "/jsp/administration/configurations.jsp";
-        return;
+        setJspURL("/jsp/administration/configurations.jsp");
     }
 
     public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/reports.jsp";
-        return;
+        setJspURL("/jsp/administration/reports.jsp");
     }
 
     public void administrationUserTypes(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/user_types.jsp";
-        return;
+        setJspURL("/jsp/administration/user_types.jsp");
     }
 
     public void administrationAccessCards(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/access_cards.jsp";
-        return;
+        setJspURL("/jsp/administration/access_cards.jsp");
     }
 
     public void administrationDatamigration(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/migration.jsp";
-        return;
+        setJspURL("/jsp/administration/migration.jsp");
     }
 
     public void administrationTranslations(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/translations.jsp";
-        return;
+        setJspURL("/jsp/administration/translations.jsp");
     }
 
     public void administrationBriefCustomization(
             ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/brief_customization.jsp";
-        return;
+        setJspURL("/jsp/administration/brief_customization.jsp");
     }
 
     public void administrationFormCustomization(
             ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/administration/form_customization.jsp";
-        return;
+        setJspURL("/jsp/administration/form_customization.jsp");
     }
 
     public void multiSchemaTranslations(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/multi_schema/translations.jsp";
-        return;
+        setJspURL("/jsp/multi_schema/translations.jsp");
     }
 
     public void multiSchemaBackup(ExtendedRequest request, ExtendedResponse response) {
@@ -280,9 +247,7 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("backupPath", backupPath);
 
-        this.jspURL = "/jsp/multi_schema/backup.jsp";
-
-        return;
+        setJspURL("/jsp/multi_schema/backup.jsp");
     }
 
     public void multiSchemaConfigurations(ExtendedRequest request, ExtendedResponse response) {
@@ -294,23 +259,19 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("backupPath", backupPath);
 
-        this.jspURL = "/jsp/multi_schema/configurations.jsp";
-        return;
+        setJspURL("/jsp/multi_schema/configurations.jsp");
     }
 
     public void multiSchemaManage(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/multi_schema/manage.jsp";
-        return;
+        setJspURL("/jsp/multi_schema/manage.jsp");
     }
 
     public void helpAboutBiblivre(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/help/about_biblivre.jsp";
-        return;
+        setJspURL("/jsp/help/about_biblivre.jsp");
     }
 
     public void setup(ExtendedRequest request, ExtendedResponse response) {
-        this.jspURL = "/jsp/setup.jsp";
-        return;
+        setJspURL("/jsp/setup.jsp");
     }
 
     @Autowired
