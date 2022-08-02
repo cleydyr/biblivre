@@ -97,7 +97,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
     }
 
     protected void doHydrateRecord(RecordDTO recordDTO, ExtendedRequest request) {
-        int recordId = request.getInteger("record_id");
+        int recordId = request.getInteger("id");
 
         recordDTO.setId(recordId);
     }
