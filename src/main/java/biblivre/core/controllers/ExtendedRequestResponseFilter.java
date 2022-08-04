@@ -22,22 +22,17 @@ package biblivre.core.controllers;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.utils.Constants;
-import jakarta.annotation.Priority;
-import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.stereotype.Component;
 
-@WebFilter(
-        urlPatterns = "*",
-        dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
-@Priority(10)
+@Component
 public class ExtendedRequestResponseFilter implements Filter {
 
     @Override

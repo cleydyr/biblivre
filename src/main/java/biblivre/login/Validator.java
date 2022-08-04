@@ -26,6 +26,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.login.Validator")
@@ -85,6 +86,7 @@ public class Validator extends AbstractValidator {
         }
     }
 
+    @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
     }

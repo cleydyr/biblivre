@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -59,6 +60,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.ITemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Component
 public class LendingBO {
@@ -69,6 +72,7 @@ public class LendingBO {
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
     private LendingDAO lendingDAO;
+    private ITemplateEngine templateEngine;
 
     public LendingDTO get(Integer lendingId) {
         return this.lendingDAO.get(lendingId);
@@ -761,6 +765,10 @@ public class LendingBO {
 
         StringWriter writer = new StringWriter();
 
+        Context context = new Context(Locale.getDefault(), root);
+
+        templateEngine.process("receipt", context, writer);
+
         template.process(root, writer);
 
         return writer.toString();
@@ -807,6 +815,11 @@ public class LendingBO {
     @Autowired
     public void setLendingDAO(LendingDAO lendingDAO) {
         this.lendingDAO = lendingDAO;
+    }
+
+    @Autowired
+    public void setTemplateEngin(ITemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
     }
 
     //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {

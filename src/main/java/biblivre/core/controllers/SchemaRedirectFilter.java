@@ -19,65 +19,50 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.schemas.Schemas;
-import biblivre.core.utils.Constants;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SchemaFilter implements Filter {
+public class SchemaRedirectFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String schema = extractSchema(request);
-
-        SchemaThreadLocal.setSchema(schema);
-
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            SchemaThreadLocal.remove();
-        }
-    }
-
-    private String extractSchema(ServletRequest request) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        String requestURI = httpServletRequest.getRequestURI();
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        String contextPath = httpServletRequest.getContextPath();
-
-        String url = requestURI.substring(contextPath.length() + 1);
-
-        String schema = null;
+        String url =
+                httpServletRequest
+                        .getRequestURI()
+                        .substring(httpServletRequest.getContextPath().length() + 1);
 
         if (StringUtils.isNotBlank(url)) {
             String[] urlArray = url.split("/");
 
-            if (!"DigitalMediaController".equals(urlArray[0])) {
-                schema = urlArray[0];
+            if (urlArray.length <= 1 && !url.endsWith("/")) {
+                String query = httpServletRequest.getQueryString();
+
+                if (StringUtils.isNotBlank(query)) {
+                    query = "?" + query;
+                } else {
+                    query = "";
+                }
+
+                httpServletResponse.sendRedirect(httpServletRequest.getRequestURI() + "/" + query);
+
+                return;
             }
         }
 
-        if (Schemas.isNotLoaded(schema)) {
-            boolean isMultipleSchemasEnabled = Schemas.isMultipleSchemasEnabled();
-
-            if (isMultipleSchemasEnabled) {
-                schema = Constants.GLOBAL_SCHEMA;
-            } else {
-                schema = Constants.SINGLE_SCHEMA;
-            }
-        }
-
-        return schema;
+        chain.doFilter(request, response);
     }
 }

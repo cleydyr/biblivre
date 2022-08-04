@@ -20,8 +20,7 @@
 package biblivre.core.controllers;
 
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.schemas.Schemas;
-import biblivre.core.utils.Constants;
+import biblivre.core.schemas.SchemasDAOImpl;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,55 +28,66 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Writer;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SchemaFilter implements Filter {
+public class StatusFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String schema = extractSchema(request);
-
-        SchemaThreadLocal.setSchema(schema);
-
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            SchemaThreadLocal.remove();
-        }
-    }
-
-    private String extractSchema(ServletRequest request) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        String requestURI = httpServletRequest.getRequestURI();
+        String url =
+                httpServletRequest
+                        .getRequestURI()
+                        .substring(httpServletRequest.getContextPath().length() + 1);
 
-        String contextPath = httpServletRequest.getContextPath();
-
-        String url = requestURI.substring(contextPath.length() + 1);
-
-        String schema = null;
+        String controller = null;
 
         if (StringUtils.isNotBlank(url)) {
             String[] urlArray = url.split("/");
 
-            if (!"DigitalMediaController".equals(urlArray[0])) {
-                schema = urlArray[0];
+            if (urlArray.length > 1) {
+                controller = urlArray[1];
             }
         }
 
-        if (Schemas.isNotLoaded(schema)) {
-            boolean isMultipleSchemasEnabled = Schemas.isMultipleSchemasEnabled();
-
-            if (isMultipleSchemasEnabled) {
-                schema = Constants.GLOBAL_SCHEMA;
-            } else {
-                schema = Constants.SINGLE_SCHEMA;
-            }
+        if (controller == null) {
+            controller = httpServletRequest.getParameter("controller");
         }
 
-        return schema;
+        if ("status".equals(controller)) {
+
+            Writer out = response.getWriter();
+            JSONObject json = new JSONObject();
+
+            SchemaThreadLocal.withSchema(
+                    "public",
+                    () -> {
+                        // TODO: Completar com mais mensagens.
+                        // Checking Database
+                        SchemaThreadLocal.setSchema("public");
+
+                        if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
+                            json.put("success", false);
+                            json.put("status_message", "Falha no acesso ao Banco de Dados");
+                        } else {
+                            json.put("success", true);
+                            json.put("status_message", "Disponível");
+                        }
+
+                        return null;
+                    });
+
+            out.write(json.toString());
+
+            return;
+        }
+
+        chain.doFilter(request, response);
     }
 }

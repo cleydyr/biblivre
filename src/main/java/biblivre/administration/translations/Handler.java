@@ -37,10 +37,13 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.ITemplateEngine;
 
 @Component("biblivre.administration.translations.Handler")
 public class Handler extends AbstractHandler {
+    private ITemplateEngine templateEngine;
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {
 
@@ -74,7 +77,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        final DiskFile exportFile = Translations.createDumpFile(language);
+        final DiskFile exportFile = Translations.createDumpFile(language, templateEngine);
 
         exportFile.setName("biblivre_translations_" + System.currentTimeMillis() + "_" + ".txt");
 
@@ -300,5 +303,10 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
             return;
         }
+    }
+
+    @Autowired
+    public void setTemplateEngine(ITemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
     }
 }

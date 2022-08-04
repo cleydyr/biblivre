@@ -45,7 +45,6 @@ public abstract class Controller {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     protected ExtendedRequest xRequest;
-
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
     protected boolean headerOnly;
@@ -62,9 +61,6 @@ public abstract class Controller {
     protected void processRequest() throws ServletException, IOException {
         String module = null;
         String action = null;
-
-        this.xRequest.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
-        this.xResponse.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
         try {
             module =

@@ -31,7 +31,6 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
-import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
@@ -45,9 +44,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -68,6 +65,12 @@ public final class SchemaServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        wireUpControllers(request, response);
+
+        super.service(request, response);
+    }
+
+    private void wireUpControllers(HttpServletRequest request, HttpServletResponse response) {
         ServletContext servletContext = request.getServletContext();
 
         WebApplicationContext webApplicationContext =
@@ -87,8 +90,6 @@ public final class SchemaServlet extends HttpServlet {
 
         jsonController.setRequest((ExtendedRequest) request);
         jsonController.setResponse((ExtendedResponse) response);
-
-        super.service(request, response);
     }
 
     @Override
@@ -108,51 +109,9 @@ public final class SchemaServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             BiblivreInitializer.initialize();
-            ExtendedRequest xRequest = ((ExtendedRequest) request);
-
-            if (xRequest.mustRedirectToSchema()) {
-                String query = xRequest.getQueryString();
-
-                if (StringUtils.isNotBlank(query)) {
-                    query = "?" + query;
-                } else {
-                    query = "";
-                }
-
-                ((ExtendedResponse) response).sendRedirect(xRequest.getRequestURI() + "/" + query);
-                return;
-            }
-
-            String controller = xRequest.getController();
-
-            if (StringUtils.isNotBlank(controller) && controller.equals("status")) {
-                Writer out = response.getWriter();
-                JSONObject json = new JSONObject();
-
-                SchemaThreadLocal.withSchema(
-                        "public",
-                        () -> {
-                            // TODO: Completar com mais mensagens.
-                            // Checking Database
-                            SchemaThreadLocal.setSchema("public");
-
-                            if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
-                                json.put("success", false);
-                                json.put("status_message", "Falha no acesso ao Banco de Dados");
-                            } else {
-                                json.put("success", true);
-                                json.put("status_message", "Disponível");
-                            }
-
-                            return null;
-                        });
-
-                out.write(json.toString());
-
-                return;
-            }
 
             String path = request.getServletPath();
+
             boolean isStatic = path.contains("static/") || path.contains("extra/");
 
             if (isStatic) {

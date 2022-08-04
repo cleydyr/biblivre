@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.circulation.user.Validator")
@@ -168,18 +169,22 @@ public class Validator extends AbstractValidator {
         }
     }
 
+    @Autowired
     public void setAccessControlBO(AccessControlBO accessControlBO) {
         this.accessControlBO = accessControlBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setLendingBO(LendingBO lendingBO) {
         this.lendingBO = lendingBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
     }

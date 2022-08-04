@@ -20,20 +20,15 @@
 package biblivre.core.controllers;
 
 import biblivre.core.HandlerContextThreadLocal;
-import jakarta.annotation.Priority;
-import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
+import org.springframework.stereotype.Component;
 
-@WebFilter(
-        urlPatterns = "*",
-        dispatcherTypes = {DispatcherType.REQUEST})
-@Priority(20)
+@Component
 public class HandlerContextFilter implements Filter {
 
     @Override

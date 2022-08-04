@@ -63,20 +63,34 @@ import biblivre.circulation.user.UserDAO;
 import biblivre.circulation.user.UserDAOImpl;
 import biblivre.core.DigitalMediaMigrator;
 import biblivre.core.Updates;
+import biblivre.core.controllers.ExtendedRequestResponseFilter;
+import biblivre.core.controllers.HandlerContextFilter;
+import biblivre.core.controllers.SchemaFilter;
+import biblivre.core.controllers.SchemaRedirectFilter;
+import biblivre.core.controllers.StatusFilter;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
 import biblivre.login.LoginDAO;
 import biblivre.login.LoginDAOImpl;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.templatemode.TemplateMode;
 
 @SpringBootApplication(
         exclude = {
@@ -227,5 +241,80 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public DataMigrationDAOImpl dataMigrationDAO() {
         return DataMigrationDAOImpl.getInstance();
+    }
+
+    @Autowired private ApplicationContext applicationContext;
+
+    @Bean
+    public SpringResourceTemplateResolver templateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+
+        templateResolver.setApplicationContext(applicationContext);
+        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setSuffix(".template");
+        templateResolver.setTemplateMode(TemplateMode.TEXT);
+        templateResolver.setCacheable(true);
+
+        return templateResolver;
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine() {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+
+        templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.setEnableSpringELCompiler(true);
+
+        return templateEngine;
+    }
+
+    @Bean
+    public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
+        return createFilterRegistration(SchemaFilter.class, 1, DispatcherType.REQUEST);
+    }
+
+    @Bean
+    public FilterRegistrationBean<ExtendedRequestResponseFilter>
+            extendedRequestResponseFilterRegistration() throws Exception {
+        return createFilterRegistration(
+                ExtendedRequestResponseFilter.class,
+                2,
+                DispatcherType.REQUEST,
+                DispatcherType.FORWARD);
+    }
+
+    @Bean
+    public FilterRegistrationBean<HandlerContextFilter> handlerContextFilterRegistration()
+            throws Exception {
+        return createFilterRegistration(
+                HandlerContextFilter.class, 3, DispatcherType.REQUEST, DispatcherType.FORWARD);
+    }
+
+    @Bean
+    public FilterRegistrationBean<SchemaRedirectFilter> schemaRedirectFilterRegistration()
+            throws Exception {
+        return createFilterRegistration(SchemaRedirectFilter.class, 4, DispatcherType.REQUEST);
+    }
+
+    @Bean
+    public FilterRegistrationBean<StatusFilter> StatusFilterRegistration() throws Exception {
+        return createFilterRegistration(StatusFilter.class, 5, DispatcherType.REQUEST);
+    }
+
+    @Bean
+    public <T extends Filter> FilterRegistrationBean<T> createFilterRegistration(
+            Class<T> filterClass, int order, DispatcherType first, DispatcherType... rest)
+            throws Exception {
+
+        FilterRegistrationBean<T> registration = new FilterRegistrationBean<>();
+
+        Constructor<T> constructor = filterClass.getConstructor();
+
+        registration.setFilter(constructor.newInstance());
+        registration.addUrlPatterns("/*");
+        registration.setOrder(order);
+        registration.setDispatcherTypes(first, rest);
+
+        return registration;
     }
 }

@@ -19,12 +19,10 @@
  ******************************************************************************/
 package biblivre.core.translations;
 
-import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
-import freemarker.template.Template;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -41,7 +39,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.thymeleaf.ITemplateEngine;
+import org.thymeleaf.context.Context;
 
+@Component
 public class Translations extends StaticBO {
     private static Logger logger = LoggerFactory.getLogger(Translations.class);
 
@@ -171,7 +173,7 @@ public class Translations extends StaticBO {
         return LocaleUtils.isAvailableLocale(locale);
     }
 
-    public static DiskFile createDumpFile(String language) {
+    public static DiskFile createDumpFile(String language, ITemplateEngine templateEngine) {
         Translations.reset(language);
 
         Map<String, TranslationDTO> translations = Translations.get(language).getAll();
@@ -181,15 +183,16 @@ public class Translations extends StaticBO {
 
         try {
             File file = File.createTempFile("biblivre_translations_" + language + "_", ".txt");
+
             FileWriter out = new FileWriter(file);
-            Template template =
-                    FreemarkerTemplateHelper.freemarkerConfiguration.getTemplate(
-                            "translations_dump.ftl");
+
             Map<String, Object> root = new HashMap<>();
 
             root.put("translations", translations);
 
-            template.process(root, out);
+            Context context = new Context(toLocale(language), root);
+
+            templateEngine.process("translations_dump", context, out);
 
             out.flush();
 
