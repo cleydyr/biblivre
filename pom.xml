@@ -57,7 +57,7 @@
 	</dependencyManagement>
 
 	<repositories>
-	<repository>
+		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
 			<url>https://repo.spring.io/snapshot</url>
