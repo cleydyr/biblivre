@@ -38,7 +38,6 @@ import biblivre.core.PagingDTO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
-import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -327,7 +326,7 @@ public class Handler extends AbstractHandler {
             e.printStackTrace();
 
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        } catch (TemplateException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
 
             this.setMessage(ActionResult.ERROR, "error.runtime_error");

@@ -177,6 +177,7 @@ public class Translations extends StaticBO {
         Translations.reset(language);
 
         Map<String, TranslationDTO> translations = Translations.get(language).getAll();
+
         List<String> list = new ArrayList<>(translations.keySet());
 
         Collections.sort(list, new NamespaceComparator());

@@ -34,15 +34,12 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.FreemarkerTemplateHelper;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.PrinterType;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -387,7 +384,7 @@ public class LendingBO {
     }
 
     public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
-            throws TemplateException, IOException {
+            throws IOException {
         PrinterType printerType =
                 PrinterType.fromString(
                         Configurations.getString(Constants.CONFIG_LENDING_PRINTER_TYPE));
@@ -643,11 +640,7 @@ public class LendingBO {
     }
 
     private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
-            throws TemplateException, IOException {
-
-        Template template = null;
-
-        template = FreemarkerTemplateHelper.freemarkerConfiguration.getTemplate("receipt.ftl");
+            throws IOException {
 
         Map<String, Object> root = new HashMap<>();
 
@@ -768,8 +761,6 @@ public class LendingBO {
         Context context = new Context(Locale.getDefault(), root);
 
         templateEngine.process("receipt", context, writer);
-
-        template.process(root, writer);
 
         return writer.toString();
     }
