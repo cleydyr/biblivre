@@ -324,7 +324,7 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public ServletRegistrationBean<SchemaServlet> exampleServletBean() {
+    public ServletRegistrationBean<SchemaServlet> schemaServletRegistration() {
         ServletRegistrationBean<SchemaServlet> servletRegistration =
                 new ServletRegistrationBean<>(new SchemaServlet(), "/");
 
