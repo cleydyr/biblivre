@@ -34,10 +34,9 @@ import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import jakarta.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -49,6 +48,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.login.Handler")
@@ -57,6 +58,11 @@ public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
     private PermissionBO permissionBO;
     private BackupBO backupBO;
+
+    @Value("classpath:META-INF/menus/menus.json")
+    private Resource menusResource;
+
+    private Map<Integer, JSONObject> prioritizedMenus;
 
     public void login(ExtendedRequest request, ExtendedResponse response) {
 
@@ -198,12 +204,14 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private static void _populateMenus(ExtendedRequest request, AuthorizationPoints atps)
+    private void _populateMenus(ExtendedRequest request, AuthorizationPoints atps)
             throws Exception {
 
-        JSONObject json = new JSONObject(_readMenusFile());
+        if (prioritizedMenus == null) {
+            JSONObject json = new JSONObject(_readMenusFile());
 
-        Map<Integer, JSONObject> prioritizedMenus = _getPrioritizedMenus(json);
+            prioritizedMenus = _getPrioritizedMenus(json);
+        }
 
         Map<String, List<String>> allowedModules = new LinkedHashMap<>();
 
@@ -244,17 +252,16 @@ public class Handler extends AbstractHandler {
 
                     prioritizedMenus.put(priority, module);
                 });
+
         return prioritizedMenus;
     }
 
-    private static String _readMenusFile() throws IOException, URISyntaxException {
-        return new String(
-                Files.readAllBytes(
-                        Paths.get(
-                                Thread.currentThread()
-                                        .getContextClassLoader()
-                                        .getResource("/META-INF/menus/menus.json")
-                                        .toURI())));
+    private String _readMenusFile() throws IOException, URISyntaxException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        menusResource.getInputStream().transferTo(byteArrayOutputStream);
+
+        return byteArrayOutputStream.toString();
     }
 
     @Autowired
