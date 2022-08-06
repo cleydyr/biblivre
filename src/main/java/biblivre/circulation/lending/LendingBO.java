@@ -812,14 +812,4 @@ public class LendingBO {
     public void setTemplateEngin(ITemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
-
-    //	public List<LendingInfoDTO> listByRecordSerial(Integer recordSerial) {
-    //		List<LendingInfoDTO> result = new ArrayList<>();
-    //		List<LendingDTO> lendings = new LendingDAO().listByRecordSerial(recordSerial);
-    //		for (LendingDTO lending : lendings) {
-    //			result.add(new LendingInfoDTO(lending));
-    //		}
-    //		return result;
-    //	}
-
 }
