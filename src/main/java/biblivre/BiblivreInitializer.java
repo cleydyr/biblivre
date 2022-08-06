@@ -67,13 +67,16 @@ import biblivre.core.controllers.ExtendedRequestResponseFilter;
 import biblivre.core.controllers.HandlerContextFilter;
 import biblivre.core.controllers.SchemaFilter;
 import biblivre.core.controllers.SchemaRedirectFilter;
+import biblivre.core.controllers.SchemaServlet;
 import biblivre.core.controllers.StatusFilter;
+import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
 import biblivre.login.LoginDAO;
 import biblivre.login.LoginDAOImpl;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
+import jakarta.servlet.MultipartConfigElement;
 import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +86,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -316,5 +320,19 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         registration.setDispatcherTypes(first, rest);
 
         return registration;
+    }
+
+    @Bean
+    public ServletRegistrationBean<SchemaServlet> exampleServletBean() {
+        ServletRegistrationBean<SchemaServlet> servletRegistration =
+                new ServletRegistrationBean<>(new SchemaServlet(), "/");
+
+        servletRegistration.setLoadOnStartup(1);
+
+        MultipartConfigElement multipartConfig = new MultipartConfigElement(StringPool.BLANK);
+
+        servletRegistration.setMultipartConfig(multipartConfig);
+
+        return servletRegistration;
     }
 }
