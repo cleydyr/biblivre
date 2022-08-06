@@ -13,13 +13,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.circulation.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.permissions.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.administration.permissions.js"></script>
 
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(PermissionsSearchClass, {
@@ -44,7 +44,7 @@
 
 	<div id="circulation_search">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="/static/images/titles/search.png" /></div>
 
 			<div class="text">
 				<i18n:text key="administration.permissions.title" />

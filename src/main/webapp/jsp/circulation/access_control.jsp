@@ -11,13 +11,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.accesscards.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.administration.accesscards.search.js"></script>
 
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.access_control.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.access_control.js"></script>
 
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {
@@ -54,7 +54,7 @@
 
 	<div id="circulation_search">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="/static/images/titles/search.png" /></div>
 
 			<div class="text">
 				<i18n:text key="circulation.access.user.search" />
@@ -141,7 +141,7 @@
 
 	<div id="access_cards">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="/static/images/titles/search.png" /></div>
 
 			<div class="simple_search text">
 				<i18n:text key="menu.administration_access_cards" />

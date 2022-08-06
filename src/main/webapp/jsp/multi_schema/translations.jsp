@@ -6,7 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.translations.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.administration.translations.js"></script>
 </layout:head>
 
 <layout:body multiPart="true">

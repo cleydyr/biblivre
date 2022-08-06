@@ -244,7 +244,7 @@ public final class SchemaServlet extends HttpServlet {
         }
 
         // Other static files
-        RequestDispatcher rd = this.getServletContext().getNamedDispatcher("default");
+        RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
 
         ExtendedRequest wrapped =
                 new ExtendedRequest(request) {

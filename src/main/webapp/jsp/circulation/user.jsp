@@ -11,19 +11,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.circulation.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.input.js"></script>
-	<script type="text/javascript" src="static/scripts/<%= UserFields.getFields().getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.input.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.input.js"></script>
+	<script type="text/javascript" src="/static/scripts/<%= UserFields.getFields().getCacheFileName() %>"></script>
 
-	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
-	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
+	<script type="text/javascript" src="/static/scripts/zebra_datepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/styles/zebra.bootstrap.css">
 
-	<script type="text/javascript" src="static/scripts/jquery.imgareaselect.js"></script>
+	<script type="text/javascript" src="/static/scripts/jquery.imgareaselect.js"></script>
 
 
 	<script type="text/javascript">
@@ -69,7 +69,7 @@
 		<c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
 
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="/static/images/titles/search.png" /></div>
 
 			<div class="simple_search text contains_subtext">
 				<i18n:text key="search.common.simple_search" />
@@ -125,7 +125,7 @@
 			{#if $T.photo_id}
 				<img class="user_photo" src="DigitalMediaController/?id={$T.photo_id}"/>
 			{#else}
-				<img class="user_photo" src="static/images/photo.png"/>
+				<img class="user_photo" src="/static/images/photo.png"/>
 			{#/if}
 			<div class="record">
 				{#if $T.name}<label><i18n:text key="circulation.user_field.name" /></label>: {$T.name}<br/>{#/if}

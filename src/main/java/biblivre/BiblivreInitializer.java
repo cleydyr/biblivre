@@ -81,6 +81,7 @@ import java.lang.reflect.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -124,7 +125,7 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("/static/");
     }
 
     @Bean
@@ -334,5 +335,9 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         servletRegistration.setMultipartConfig(multipartConfig);
 
         return servletRegistration;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(BiblivreInitializer.class, args);
     }
 }

@@ -1338,7 +1338,7 @@ Header.setTime = function() {
 		var text = config.loadingText ||Translations.get('common.loading');
 
 		if (config.showImage) {
-			div.append('<img src="static/images/ajax-loader.gif" width="16" height="16" alt="' + text + '"/> ');
+			div.append('<img src="/static/images/ajax-loader.gif" width="16" height="16" alt="' + text + '"/> ');
 		}
 
 		if (config.showText) {

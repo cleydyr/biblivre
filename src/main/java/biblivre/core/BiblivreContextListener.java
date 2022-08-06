@@ -20,7 +20,6 @@
 package biblivre.core;
 
 import biblivre.BiblivreInitializer;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -30,8 +29,6 @@ public class BiblivreContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ServletContext servletContext = servletContextEvent.getServletContext();
-
         BiblivreInitializer.initialize();
     }
 }

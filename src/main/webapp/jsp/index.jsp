@@ -11,8 +11,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.index.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.multi_schema.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.index.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.multi_schema.css" />
 </layout:head>
 
 <layout:body>
@@ -22,7 +22,7 @@
 	if (!SchemaThreadLocal.isGlobalSchema()) {
 	%>
 		<div class="picture">
-			<img src="static/images/main_picture_1.jpg"/>
+			<img src="/static/images/main_picture_1.jpg"/>
 		</div>
 
 		<div class="text">

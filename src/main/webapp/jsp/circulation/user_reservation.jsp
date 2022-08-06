@@ -14,13 +14,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.circulation.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.cataloging.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.search.js"></script>
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {
 			type: 'circulation.reservation',
@@ -46,7 +46,7 @@
 		});
 
 	</script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.user_reservation.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.user_reservation.js"></script>
 </layout:head>
 
 
@@ -56,7 +56,7 @@
 
 	<div id="circulation_search">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="/static/images/titles/search.png" /></div>
 
 			<div class="text">
 				<i18n:text key="circulation.reservation.users.title" />
@@ -162,7 +162,7 @@
 
 	<div id="cataloging_search">
 		<div class="page_title">
-			<div class="image"><img src="static/images/titles/search.png" /></div>
+			<div class="image"><img src="/static/images/titles/search.png" /></div>
 
 			<div class="text">
 				<i18n:text key="circulation.reservation.holdings.title" />
