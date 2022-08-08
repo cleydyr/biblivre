@@ -2,7 +2,6 @@ package biblivre.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -16,7 +15,6 @@ public class HttpRequestTest {
 
     @Autowired private TestRestTemplate restTemplate;
 
-    @Test
     public void greetingShouldReturnDefaultMessage() throws Exception {
         String forObject = this.restTemplate.getForObject("http://localhost:" + port, String.class);
 
