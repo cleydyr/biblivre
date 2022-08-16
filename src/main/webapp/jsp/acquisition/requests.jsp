@@ -29,7 +29,7 @@
 
 	<div id="requests">
 		<div class="page_title">
-			<div class="image"><img src="/static/images/titles/search.png" /></div>
+			<div class="search_icon"></div>
 
 			<div class="simple_search text">
 				<i18n:text key="menu.acquisition_request" />

@@ -69,7 +69,7 @@
 		<c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
 
 		<div class="page_title">
-			<div class="image"><img src="/static/images/titles/search.png" /></div>
+			<div class="search_icon"></div>
 
 			<div class="simple_search text contains_subtext">
 				<i18n:text key="search.common.simple_search" />

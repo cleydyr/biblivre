@@ -56,7 +56,7 @@
 
 	<div id="circulation_search">
 		<div class="page_title">
-			<div class="image"><img src="/static/images/titles/search.png" /></div>
+			<div class="search_icon"></div>
 
 			<div class="text">
 				<i18n:text key="circulation.reservation.users.title" />
@@ -162,7 +162,7 @@
 
 	<div id="cataloging_search">
 		<div class="page_title">
-			<div class="image"><img src="/static/images/titles/search.png" /></div>
+			<div class="search_icon"></div>
 
 			<div class="text">
 				<i18n:text key="circulation.reservation.holdings.title" />
