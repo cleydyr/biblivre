@@ -2,22 +2,36 @@ package biblivre.e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import biblivre.AbstractContainerDatabaseTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class HttpRequestTest {
+@Testcontainers
+public class HttpRequestTest extends AbstractContainerDatabaseTest {
 
     @LocalServerPort private int port;
 
     @Autowired private TestRestTemplate restTemplate;
 
-    public void greetingShouldReturnDefaultMessage() throws Exception {
-        String forObject = this.restTemplate.getForObject("http://localhost:" + port, String.class);
+    @Test
+    public void testHomePageWithTitle() throws Exception {
+        execute(
+                () -> {
+                    String forObject =
+                            this.restTemplate.getForObject(
+                                    "http://localhost:" + port, String.class);
 
-        assertThat(forObject).contains("Biblivre V");
+                    assertThat(forObject).contains("Biblivre V");
+                    assertThat(forObject).contains("menu_search");
+                    assertThat(forObject).contains("search_bibliographic");
+                    assertThat(forObject).contains("search_vocabulary");
+                    assertThat(forObject).contains("search_authorities");
+                });
     }
 }
