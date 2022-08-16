@@ -4,7 +4,7 @@ RUN apt-get update \
 	&& apt install -y \
 	netcat \
 	gnupg \
-	&& curl "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | apt-key add - \
+	&& wget -O- "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | apt-key add - \
 	&& sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
 	&& apt update \
 	&& apt install -y \
