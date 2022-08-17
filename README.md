@@ -12,13 +12,13 @@ There are basically two ways to build and deploy:
 
 ### Dependencies
 To build and deploy it's necessary to have in your system
-1. JDK (version 8 or newer)
+1. JDK (version 17 or newer)
 1. Maven
-1. Docker (optional, but required for testing and for using the docker and docker-compose profiles)
+1. Docker (optional, but required for testing and for using the developer, docker and docker-compose profiles)
 1. Docker Compose (optional, but required for using the docker-compose profile)
 
 If you're setting up the system manually, you'll also need as a minimum:
-1. Tomcat (version 9 or newer)
+1. Tomcat (version 10 or newer)
 1. PostgreSQL (version 11 or newer)
 
 ### Manual installation
