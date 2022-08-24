@@ -35,8 +35,6 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.utils.DatabaseUtils;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
