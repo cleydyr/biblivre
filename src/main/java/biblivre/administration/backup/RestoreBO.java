@@ -720,9 +720,7 @@ public class RestoreBO extends AbstractBO {
     }
 
     private ProcessBuilder _createProcessBuilder(boolean transactional) {
-        String schema = SchemaThreadLocal.get();
-
-        File psql = DatabaseUtils.getPsql(schema);
+        File psql = DatabaseUtils.getPsql();
 
         if (psql == null) {
             throw new ValidationException("administration.maintenance.backup.error.psql_not_found");

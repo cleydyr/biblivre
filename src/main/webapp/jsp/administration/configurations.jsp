@@ -417,65 +417,6 @@
 
 		<fieldset>
 			<%
-				key = Constants.CONFIG_PGDUMP_PATH;
-				value = (String) request.getAttribute("dumpAbsolutePath");
-				request.setAttribute("key", key);
-				request.setAttribute("value", value);
-			%>
-			<legend><i18n:text key="administration.configuration.title.${key}" /></legend>
-			<div class="description"><i18n:text key="administration.configuration.description.${key}" /></div>
-			<div class="fields">
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.current_value" /></div>
-					<% if (value != null) { %>
-						<div class="value"><c:out value="${value}"/></div>
-					<% } else {%>
-						<div class="value value_error"><i18n:text key="administration.configuration.invalid_pg_dump_path" /></div>
-					<% }%>
-					<div class="clear"></div>
-				</div>
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.new_value" /></div>
-					<div class="value">
-						<input type="text" name="${key}" class="finput" value="<c:out value="${value}"/>">
-					</div>
-					<div class="clear"></div>
-				</div>
-			</div>
-		</fieldset>
-
-		<fieldset>
-			<%
-				key = Constants.CONFIG_PSQL_PATH;
-				File psql = DatabaseUtils.getPsql(schema);
-				value = (psql == null) ? null : psql.getAbsolutePath();
-				request.setAttribute("key", key);
-				request.setAttribute("value", value);
-			%>
-			<legend><i18n:text key="administration.configuration.title.${key}" /></legend>
-			<div class="description"><i18n:text key="administration.configuration.description.${key}" /></div>
-			<div class="fields">
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.current_value" /></div>
-					<% if (value != null) {%>
-						<div class="value"><c:out value="${value}"/></div>
-					<% } else {%>
-						<div class="value value_error"><i18n:text key="administration.configuration.invalid_psql_path" /></div>
-					<% }%>
-					<div class="clear"></div>
-				</div>
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.new_value" /></div>
-					<div class="value">
-						<input type="text" name="${key}" class="finput" value="<c:out value="${value}"/>">
-					</div>
-					<div class="clear"></div>
-				</div>
-			</div>
-		</fieldset>
-
-		<fieldset>
-			<%
 				key = Constants.CONFIG_LABEL_PRINT_PARAGRAPH_ALIGNMENT;
 				value = Configurations.getString(key);
 				request.setAttribute("key", key);

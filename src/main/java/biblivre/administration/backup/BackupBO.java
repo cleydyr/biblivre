@@ -149,9 +149,7 @@ public class BackupBO extends AbstractBO {
     }
 
     public void createBackup(BackupDTO dto) throws IOException {
-        String schema_ = SchemaThreadLocal.get();
-
-        File pgdump = DatabaseUtils.getPgDump(schema_);
+        File pgdump = DatabaseUtils.getPgDump();
 
         if (pgdump == null) {
             return;
@@ -336,7 +334,7 @@ public class BackupBO extends AbstractBO {
             String excludeTablePattern,
             String includeTablePattern) {
 
-        File pgdump = DatabaseUtils.getPgDump(schema);
+        File pgdump = DatabaseUtils.getPgDump();
 
         InetSocketAddress defaultAddress =
                 new InetSocketAddress(

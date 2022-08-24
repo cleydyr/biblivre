@@ -35,8 +35,6 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.utils.DatabaseUtils;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -194,12 +192,6 @@ public class Handler extends AbstractHandler {
 
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("backupPath", backupBO.getBackupPath());
-
-        File pgDump = DatabaseUtils.getPgDump(SchemaThreadLocal.get());
-
-        String dumpAbsolutePath = (pgDump == null) ? null : pgDump.getAbsolutePath();
-
-        request.setAttribute("dumpAbsolutePath", dumpAbsolutePath);
 
         setJspURL("/jsp/administration/configurations.jsp");
     }
