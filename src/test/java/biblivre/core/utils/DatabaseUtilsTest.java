@@ -1,17 +1,9 @@
 package biblivre.core.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.Configurations;
-import biblivre.core.configurations.ConfigurationsDTO;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -24,82 +16,6 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
     @BeforeEach
     void setDefaultSchema() {
         SchemaThreadLocal.setSchema(DEFAULT_SCHEMA);
-    }
-
-    @Test
-    void testGetPgDump() {
-        execute(
-                () -> {
-                    String dummyPath = _getTempFilePath();
-
-                    _saveSingleConfiguration(Constants.CONFIG_PGDUMP_PATH, dummyPath);
-
-                    File pgDump = DatabaseUtils.getPgDump(DEFAULT_SCHEMA);
-
-                    assertNotNull(pgDump);
-
-                    assertEquals(dummyPath, pgDump.getAbsolutePath());
-
-                    _resetConfiguration(Constants.CONFIG_PGDUMP_PATH);
-                });
-    }
-
-    @Test
-    void testGetPsql() {
-        execute(
-                () -> {
-                    String path = _getTempFilePath();
-
-                    _saveSingleConfiguration(Constants.CONFIG_PSQL_PATH, path);
-
-                    File psql = DatabaseUtils.getPsql(DEFAULT_SCHEMA);
-
-                    assertNotNull(psql);
-
-                    assertEquals(path, psql.getAbsolutePath());
-
-                    _resetConfiguration(Constants.CONFIG_PSQL_PATH);
-                });
-    }
-
-    @Test
-    void testGetPgDumpFromConfiguration() {
-        execute(
-                () -> {
-                    assertNull(DatabaseUtils.getPgDumpFromConfiguration(DEFAULT_SCHEMA));
-
-                    String path = _getTempFilePath();
-
-                    _saveSingleConfiguration(Constants.CONFIG_PGDUMP_PATH, path);
-
-                    File pgDump = DatabaseUtils.getPgDumpFromConfiguration(DEFAULT_SCHEMA);
-
-                    assertNotNull(pgDump);
-
-                    assertEquals(path, pgDump.getAbsolutePath());
-
-                    _resetConfiguration(Constants.CONFIG_PGDUMP_PATH);
-                });
-    }
-
-    @Test
-    void testGetPsqlFromConfiguration() {
-        execute(
-                () -> {
-                    assertNull(DatabaseUtils.getPsqlFromConfiguration(DEFAULT_SCHEMA));
-
-                    String path = _getTempFilePath();
-
-                    _saveSingleConfiguration(Constants.CONFIG_PSQL_PATH, path);
-
-                    File pgDump = DatabaseUtils.getPsqlFromConfiguration(DEFAULT_SCHEMA);
-
-                    assertNotNull(pgDump);
-
-                    assertEquals(path, pgDump.getAbsolutePath());
-
-                    _resetConfiguration(Constants.CONFIG_PSQL_PATH);
-                });
     }
 
     @Test
@@ -142,24 +58,5 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
                 () -> {
                     assertEquals(container.getUsername(), DatabaseUtils.getDatabaseUsername());
                 });
-    }
-
-    private String _getTempFilePath() throws IOException {
-        Path tempFile = Files.createTempFile("foo", "bar");
-
-        String path = tempFile.toString();
-        return path;
-    }
-
-    private void _resetConfiguration(String config) {
-        ConfigurationsDTO nullConfiguration = new ConfigurationsDTO(config, null);
-
-        Configurations.save(nullConfiguration, 1);
-    }
-
-    private void _saveSingleConfiguration(String config, String value) {
-        ConfigurationsDTO configuration = new ConfigurationsDTO(config, value);
-
-        Configurations.save(configuration, 1);
     }
 }

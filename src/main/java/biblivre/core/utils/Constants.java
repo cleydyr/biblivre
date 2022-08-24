@@ -67,8 +67,6 @@ public class Constants {
     public static final String CONFIG_ACCESSION_NUMBER_PREFIX =
             "cataloging.accession_number_prefix";
 
-    public static final String CONFIG_PGDUMP_PATH = "general.pg_dump_path";
-    public static final String CONFIG_PSQL_PATH = "general.psql_path";
     public static final String CONFIG_BACKUP_PATH = "general.backup_path";
 
     public static final String CONFIG_SEARCH_RESULTS_PER_PAGE = "search.results_per_page";

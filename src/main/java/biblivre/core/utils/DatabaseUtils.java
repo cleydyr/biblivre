@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
-import biblivre.core.configurations.Configurations;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +26,6 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,105 +34,43 @@ public class DatabaseUtils {
     private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
     public static File getPgDump(String schema) {
-        File pgdump = DatabaseUtils.getPgDumpFromConfiguration(schema);
-
-        if (pgdump == null) {
-            pgdump = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPgDumpFilename());
-        }
-
-        return pgdump;
+        return DatabaseUtils.getFromFilesystem(DatabaseUtils.getPgDumpFilename());
     }
 
     public static File getPsql(String schema) {
-        File psql = DatabaseUtils.getPsqlFromConfiguration(schema);
-
-        if (psql == null) {
-            psql = DatabaseUtils.getFromFilesystem(DatabaseUtils.getPsqlFilename());
-        }
-
-        return psql;
-    }
-
-    public static File getPgDumpFromConfiguration(String schema) {
-        String pgdump = Configurations.getString(Constants.CONFIG_PGDUMP_PATH);
-
-        if (StringUtils.isNotBlank(pgdump)) {
-            File file = new File(pgdump);
-
-            if (file.isDirectory()) {
-                file = new File(file, DatabaseUtils.getPgDumpFilename());
-            }
-
-            return file.exists() ? file : null;
-        }
-
-        return null;
-    }
-
-    public static File getPsqlFromConfiguration(String schema) {
-        String psql = Configurations.getString(Constants.CONFIG_PSQL_PATH);
-
-        if (StringUtils.isNotBlank(psql)) {
-            File file = new File(psql);
-
-            if (file.isDirectory()) {
-                file = new File(file, DatabaseUtils.getPsqlFilename());
-            }
-
-            return file.exists() ? file : null;
-        }
-
-        return null;
+        return DatabaseUtils.getFromFilesystem(DatabaseUtils.getPsqlFilename());
     }
 
     public static String getDatabaseHostName() {
-        String databaseHostName = System.getenv(Constants.DATABASE_HOST_NAME);
-
-        if (databaseHostName != null) {
-            return databaseHostName;
-        }
-
-        return InetAddress.getLoopbackAddress().getHostName();
+        return getConfigFromEnv(
+                Constants.DATABASE_HOST_NAME, InetAddress.getLoopbackAddress().getHostName());
     }
 
     public static String getDatabaseName() {
-        String databaseName = System.getenv(Constants.DATABASE_NAME);
-
-        if (databaseName != null) {
-            return databaseName;
-        }
-
-        return Constants.DEFAULT_DATABASE_NAME;
+        return getConfigFromEnv(Constants.DATABASE_NAME, Constants.DEFAULT_DATABASE_NAME);
     }
 
     public static String getDatabasePort() {
-        String databasePort = System.getenv(Constants.DATABASE_PORT);
-
-        if (databasePort != null) {
-            return databasePort;
-        }
-
-        return String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT);
+        return getConfigFromEnv(
+                Constants.DATABASE_PORT, String.valueOf(Constants.DEFAULT_POSTGRESQL_PORT));
     }
 
     public static String getDatabasePassword() {
-        String databasePassword = System.getenv(Constants.DATABASE_PASSWORD);
-
-        if (databasePassword != null) {
-            return databasePassword;
-        }
-
-        return Constants.DEFAULT_DATABASE_PASSWORD;
+        return getConfigFromEnv(Constants.DATABASE_PASSWORD, Constants.DEFAULT_DATABASE_PASSWORD);
     }
 
     public static String getDatabaseUsername() {
-        String databaseUser = System.getenv(Constants.DATABASE_USERNAME);
+        return getConfigFromEnv(Constants.DATABASE_USERNAME, Constants.DEFAULT_DATABASE_USERNAME);
+    }
 
-        if (databaseUser != null) {
-            return databaseUser;
+    private static String getConfigFromEnv(String key, String defaultValue) {
+        String value = System.getenv(key);
+
+        if (value != null) {
+            return value;
         }
 
-        return Constants.DEFAULT_DATABASE_USERNAME;
+        return defaultValue;
     }
 
     private static File getFromFilesystem(String fileName) {
