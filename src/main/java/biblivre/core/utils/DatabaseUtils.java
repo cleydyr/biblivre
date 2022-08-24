@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +35,22 @@ public class DatabaseUtils {
     private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
     public static File getPgDump(String schema) {
+        String pgDumpPath = getPGDumpPath();
+
+        if (StringUtils.isNotBlank(pgDumpPath)) {
+            return new File(pgDumpPath);
+        }
+
         return DatabaseUtils.getFromFilesystem(DatabaseUtils.getPgDumpFilename());
     }
 
     public static File getPsql(String schema) {
+        String psqlPath = getPsqlPath();
+
+        if (StringUtils.isNotBlank(psqlPath)) {
+            return new File(psqlPath);
+        }
+
         return DatabaseUtils.getFromFilesystem(DatabaseUtils.getPsqlFilename());
     }
 
@@ -61,6 +74,14 @@ public class DatabaseUtils {
 
     public static String getDatabaseUsername() {
         return getConfigFromEnv(Constants.DATABASE_USERNAME, Constants.DEFAULT_DATABASE_USERNAME);
+    }
+
+    public static String getPsqlPath() {
+        return getConfigFromEnv(Constants.PSQL_PATH, null);
+    }
+
+    public static String getPGDumpPath() {
+        return getConfigFromEnv(Constants.PGDUMP_PATH, null);
     }
 
     private static String getConfigFromEnv(String key, String defaultValue) {
