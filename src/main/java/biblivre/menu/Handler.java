@@ -195,12 +195,6 @@ public class Handler extends AbstractHandler {
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("backupPath", backupBO.getBackupPath());
 
-        File pgDump = DatabaseUtils.getPgDump(SchemaThreadLocal.get());
-
-        String dumpAbsolutePath = (pgDump == null) ? null : pgDump.getAbsolutePath();
-
-        request.setAttribute("dumpAbsolutePath", dumpAbsolutePath);
-
         setJspURL("/jsp/administration/configurations.jsp");
     }
 
