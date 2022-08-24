@@ -37,6 +37,8 @@ import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +52,8 @@ public class Schemas extends StaticBO {
     private static final Collection<String> SCHEMA_BLACKLIST =
             Set.of("schema", "public", "template", "bib4template", "DigitalMediaController");
 
-    private static final String SCHEMA_VALIDATION_REGEX = "([a-zA-Z0-9_]+)";
+    private static final Predicate<String> SCHEMA_VALID =
+            Pattern.compile("([a-zA-Z0-9_]+)").asMatchPredicate();
 
     private Schemas() {}
 
@@ -190,7 +193,7 @@ public class Schemas extends StaticBO {
             return false;
         }
 
-        if (!name.matches(SCHEMA_VALIDATION_REGEX)) {
+        if (SCHEMA_VALID.test(name)) {
             return false;
         }
 
