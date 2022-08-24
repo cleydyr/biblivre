@@ -34,9 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -47,16 +46,11 @@ public class Schemas extends StaticBO {
     protected static Logger logger = LoggerFactory.getLogger(Schemas.class);
 
     private static Set<SchemaDTO> schemas;
-    private static final List<String> schemaBlacklist = new ArrayList<>();
-    private static final String SCHEMA_VALIDATION_REGEX = "([a-zA-Z0-9_]+)";
 
-    static {
-        schemaBlacklist.add("schema");
-        schemaBlacklist.add("public");
-        schemaBlacklist.add("template");
-        schemaBlacklist.add("bib4template");
-        schemaBlacklist.add("DigitalMediaController");
-    }
+    private static final Collection<String> SCHEMA_BLACKLIST =
+            Set.of("schema", "public", "template", "bib4template", "DigitalMediaController");
+
+    private static final String SCHEMA_VALIDATION_REGEX = "([a-zA-Z0-9_]+)";
 
     private Schemas() {}
 
@@ -192,7 +186,7 @@ public class Schemas extends StaticBO {
             return false;
         }
 
-        if (schemaBlacklist.contains(name)) {
+        if (SCHEMA_BLACKLIST.contains(name)) {
             return false;
         }
 
