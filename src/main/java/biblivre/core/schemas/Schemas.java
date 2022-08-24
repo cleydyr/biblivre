@@ -251,7 +251,7 @@ public class Schemas extends StaticBO {
 
     public static boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {
 
-        File psql = DatabaseUtils.getPsql(Constants.GLOBAL_SCHEMA);
+        File psql = DatabaseUtils.getPsql();
 
         if (psql == null) {
             throw new ValidationException("administration.maintenance.backup.error.psql_not_found");

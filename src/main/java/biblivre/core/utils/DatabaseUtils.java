@@ -34,7 +34,7 @@ public class DatabaseUtils {
 
     private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
-    public static File getPgDump(String schema) {
+    public static File getPgDump() {
         String pgDumpPath = getPGDumpPath();
 
         if (StringUtils.isNotBlank(pgDumpPath)) {
@@ -44,7 +44,7 @@ public class DatabaseUtils {
         return DatabaseUtils.getFromFilesystem(DatabaseUtils.getPgDumpFilename());
     }
 
-    public static File getPsql(String schema) {
+    public static File getPsql() {
         String psqlPath = getPsqlPath();
 
         if (StringUtils.isNotBlank(psqlPath)) {
