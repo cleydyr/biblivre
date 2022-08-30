@@ -25,7 +25,7 @@ import biblivre.acquisition.request.RequestBO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.usertype.UserTypeBO;
-import biblivre.cataloging.authorities.AuthorityRecordBO;
+import biblivre.cataloging.authorities.AuthoritiesRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingBO;
@@ -73,7 +73,7 @@ public class DataMigrationBO extends AbstractBO {
     private SupplierBO supplierBO;
     private RequestBO requestBO;
     private BiblioRecordBO biblioRecordBO;
-    private AuthorityRecordBO authoritiyRecordBO;
+    private AuthoritiesRecordBO authoritiesRecordBO;
     private VocabularyRecordBO vocabularyRecordBO;
     private HoldingBO holdingsBO;
     private LendingBO lendingBO;
@@ -278,7 +278,7 @@ public class DataMigrationBO extends AbstractBO {
                 return biblioRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_AUTHORITIES:
-                return authoritiyRecordBO.saveFromBiblivre3(dtoList);
+                return authoritiesRecordBO.saveFromBiblivre3(dtoList);
 
             case CATALOGING_VOCABULARY:
                 return vocabularyRecordBO.saveFromBiblivre3(dtoList);
@@ -428,8 +428,8 @@ public class DataMigrationBO extends AbstractBO {
     }
 
     @Autowired
-    public void setAuthoritiyRecordBO(AuthorityRecordBO authoritiyRecordBO) {
-        this.authoritiyRecordBO = authoritiyRecordBO;
+    public void setAuthoritiesRecordBO(AuthoritiesRecordBO authoritiesRecordBO) {
+        this.authoritiesRecordBO = authoritiesRecordBO;
     }
 
     public void setVocabularyRecordBO(VocabularyRecordBO vocabularyRecordBO) {

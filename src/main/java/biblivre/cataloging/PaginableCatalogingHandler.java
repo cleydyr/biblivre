@@ -24,6 +24,7 @@ import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.DTOCollection;
@@ -36,7 +37,6 @@ import biblivre.core.file.DiskFile;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected PaginableRecordBO paginableRecordBO;
 
-    protected Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
+    protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
     public PaginableCatalogingHandler(
             PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
@@ -266,7 +266,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             case BIBLIO:
             case AUTHORITIES:
             case VOCABULARY:
-                PaginableRecordBO autocompleteRecordBO = recordBOs.get(type.name());
+                PaginableRecordBO autocompleteRecordBO =
+                        paginableRecordBOs.get(RecordType.fromString(type.toString()));
 
                 DTOCollection<AutocompleteDTO> autocompletion =
                         type.getAutocompletion(autocompleteRecordBO, query);
@@ -316,7 +317,17 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     @Autowired
-    public void setRecordBOs(Map<String, PaginableRecordBO> recordBOs) {
-        this.recordBOs = recordBOs;
+    public void setPaginableRecordBOs(Map<String, PaginableRecordBO> paginableRecordBOs) {
+        this.paginableRecordBOs =
+                paginableRecordBOs.entrySet().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        entry -> {
+                                            String recordTypeName =
+                                                    entry.getKey().replaceFirst("RecordBO", "");
+
+                                            return RecordType.fromString(recordTypeName);
+                                        },
+                                        Map.Entry::getValue));
     }
 }

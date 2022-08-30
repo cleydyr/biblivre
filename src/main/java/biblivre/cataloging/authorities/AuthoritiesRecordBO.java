@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthorityRecordBO extends PaginableRecordBO {
+public class AuthoritiesRecordBO extends PaginableRecordBO {
     private IndexingDAO indexingDAO;
 
     @Override

@@ -38,11 +38,11 @@ import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ import org.springframework.stereotype.Component;
 
 @Component("biblivre.cataloging.Handler")
 public class Handler extends AbstractHandler {
-    private Map<String, PaginableRecordBO> recordBOs = new HashMap<>();
+    private Map<RecordType, PaginableRecordBO> paginableRecordBOs;
     private IndexingBO indexingBO;
     private ImportBO importBO;
 
@@ -162,7 +162,7 @@ public class Handler extends AbstractHandler {
                 continue;
             }
 
-            RecordBO bo = recordBOs.get(recordType.name());
+            PaginableRecordBO bo = paginableRecordBOs.get(recordType);
 
             RecordDTO dto = null;
 
@@ -227,8 +227,18 @@ public class Handler extends AbstractHandler {
     }
 
     @Autowired
-    public void setRecordBOs(Map<String, PaginableRecordBO> recordBOs) {
-        this.recordBOs = recordBOs;
+    public void setPaginableRecordBOs(Map<String, PaginableRecordBO> paginableRecordBOs) {
+        this.paginableRecordBOs =
+                paginableRecordBOs.entrySet().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        entry -> {
+                                            String recordTypeName =
+                                                    entry.getKey().replaceFirst("RecordBO", "");
+
+                                            return RecordType.fromString(recordTypeName);
+                                        },
+                                        Map.Entry::getValue));
     }
 
     @Autowired

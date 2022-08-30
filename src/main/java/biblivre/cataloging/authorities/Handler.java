@@ -41,7 +41,7 @@ public class Handler extends PaginableCatalogingHandler {
     private ReportsBO reportsBO;
 
     @Autowired
-    public Handler(AuthorityRecordBO recordBO, ReportsBO reportsBO) {
+    public Handler(AuthoritiesRecordBO recordBO, ReportsBO reportsBO) {
         super(recordBO, MaterialType.AUTHORITIES);
 
         this.reportsBO = reportsBO;
