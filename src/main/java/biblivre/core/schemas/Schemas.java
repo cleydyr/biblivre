@@ -193,7 +193,7 @@ public class Schemas extends StaticBO {
             return false;
         }
 
-        if (SCHEMA_VALID.test(name)) {
+        if (!SCHEMA_VALID.test(name)) {
             return false;
         }
 

@@ -166,6 +166,8 @@ public class Handler extends CatalogingHandler {
         HoldingDTO hdto = (HoldingDTO) dto;
 
         hdto.setAvailability(availability);
+
+        hdto.setRecordId(request.getInteger("record_id"));
     }
 
     private AutomaticHoldingDTO createAutomaticHoldingDto(ExtendedRequest request) {

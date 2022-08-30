@@ -19,7 +19,7 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import biblivre.cataloging.authorities.AuthorityRecordBO;
+import biblivre.cataloging.authorities.AuthoritiesRecordBO;
 import biblivre.cataloging.authorities.AuthorityRecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 public class ImportBO extends AbstractBO {
     private BiblioRecordBO biblioRecordBO;
     private VocabularyRecordBO vocabularyRecordBO;
-    private AuthorityRecordBO authorityRecordBO;
+    private AuthoritiesRecordBO authorityRecordBO;
 
     public ImportDTO loadFromFile(UnsafeSupplier<InputStream> inputStreamSupplier)
             throws IOException {
@@ -111,7 +111,7 @@ public class ImportBO extends AbstractBO {
     }
 
     @Autowired
-    public void setAuthorityRecordBO(AuthorityRecordBO authorityRecordBO) {
+    public void setAuthorityRecordBO(AuthoritiesRecordBO authorityRecordBO) {
         this.authorityRecordBO = authorityRecordBO;
     }
 }
