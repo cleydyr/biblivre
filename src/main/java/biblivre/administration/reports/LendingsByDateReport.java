@@ -27,7 +27,9 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LendingsByDateReport extends BaseBiblivreReport {
 
     @Override
@@ -146,5 +148,10 @@ public class LendingsByDateReport extends BaseBiblivreReport {
             table.addCell(cell);
         }
         return table;
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.LENDINGS_BY_DATE;
     }
 }

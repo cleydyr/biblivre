@@ -70,12 +70,11 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
     private Date generationDate;
     protected DateFormat dateFormat;
 
-    protected String schema;
-
     protected ReportsBO reportsBO;
 
     @Override
-    public DiskFile generateReport(ReportsDTO dto) {
+    public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
+        this.i18n = i18n;
         this.generationDate = new Date();
         this.dateFormat = new SimpleDateFormat(this.getText("format.datetime"));
         BaseReportDto reportData = getReportData(dto);
@@ -233,14 +232,6 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
     protected PdfWriter getWriter() {
         return this.writer;
-    }
-
-    public String getSchema() {
-        return this.schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
     }
 
     public void setReportsBO(ReportsBO reportsBO) {

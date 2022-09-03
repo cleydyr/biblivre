@@ -29,7 +29,9 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.Date;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ReservationReport extends BaseBiblivreReport {
 
     @Override
@@ -191,5 +193,10 @@ public class ReservationReport extends BaseBiblivreReport {
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
         }
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.RESERVATION;
     }
 }

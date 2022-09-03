@@ -31,7 +31,9 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AssetHoldingReport extends BaseBiblivreReport implements Comparator<String[]> {
 
     @Override
@@ -141,5 +143,10 @@ public class AssetHoldingReport extends BaseBiblivreReport implements Comparator
     public int compare(String[] o1, String[] o2) {
         if (o1 == null && o2 == null) return 0;
         return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.ASSET_HOLDING;
     }
 }

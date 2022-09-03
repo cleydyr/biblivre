@@ -30,7 +30,9 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.util.Collections;
 import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomCountReport extends BaseBiblivreReport implements Comparator<String[]> {
 
     private Integer index;
@@ -169,5 +171,10 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
 
     public void setReportsBO(ReportsBO reportsBO) {
         this.reportsBO = reportsBO;
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.CUSTOM_COUNT;
     }
 }

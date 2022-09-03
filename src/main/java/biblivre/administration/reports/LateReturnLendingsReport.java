@@ -28,7 +28,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LateReturnLendingsReport extends BaseBiblivreReport {
 
     @Override
@@ -138,5 +140,10 @@ public class LateReturnLendingsReport extends BaseBiblivreReport {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.LATE_LENDINGS;
     }
 }

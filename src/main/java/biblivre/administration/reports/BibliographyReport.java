@@ -29,7 +29,9 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BibliographyReport extends BaseBiblivreReport {
 
     @Override
@@ -153,5 +155,10 @@ public class BibliographyReport extends BaseBiblivreReport {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.AUTHOR_BIBLIOGRAPHY;
     }
 }

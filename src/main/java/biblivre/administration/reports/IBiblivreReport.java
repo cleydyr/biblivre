@@ -20,8 +20,11 @@
 package biblivre.administration.reports;
 
 import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationsMap;
 
 public interface IBiblivreReport {
 
-    public DiskFile generateReport(ReportsDTO dto);
+    public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n);
+
+    public ReportType getReportType();
 }

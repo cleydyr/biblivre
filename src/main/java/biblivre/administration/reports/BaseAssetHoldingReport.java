@@ -21,7 +21,6 @@ package biblivre.administration.reports;
 
 import biblivre.administration.reports.dto.AssetHoldingDto;
 import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.core.utils.NaturalOrderComparator;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -36,14 +35,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
-public class AssetHoldingFullReport extends BaseBiblivreReport implements Comparator<String[]> {
-
-    private Boolean topographic;
-
-    public AssetHoldingFullReport(Boolean topographic) {
-        this.topographic = topographic;
-    }
+@Component
+public abstract class BaseAssetHoldingReport extends BaseBiblivreReport
+        implements Comparator<String[]> {
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -54,13 +50,7 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
     protected void generateReportBody(Document document, BaseReportDto reportData)
             throws Exception {
         AssetHoldingDto dto = (AssetHoldingDto) reportData;
-        String title = "";
-        if (this.topographic) {
-            title = this.getText("administration.reports.title.topographic");
-        } else {
-            title = this.getText("administration.reports.title.holdings_full");
-        }
-        Paragraph p1 = new Paragraph(title);
+        Paragraph p1 = new Paragraph(getTitle());
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n"));
@@ -134,6 +124,8 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
         document.add(table);
     }
 
+    protected abstract String getTitle();
+
     private void createHeader(PdfPTable table) {
         PdfPCell cell;
         cell =
@@ -183,10 +175,8 @@ public class AssetHoldingFullReport extends BaseBiblivreReport implements Compar
             return 1;
         }
 
-        if (this.topographic) {
-            return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[4], o2[4]);
-        } else {
-            return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[1], o2[1]);
-        }
+        return doCompare(o1, o2);
     }
+
+    protected abstract int doCompare(String[] o1, String[] o2);
 }
