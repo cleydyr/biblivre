@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
@@ -191,7 +190,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
         }
     }
 
-    protected JSONArray toJSONArray(List<? extends IFJson> list) {
+    protected JSONArray toJSONArray(Collection<? extends IFJson> list) {
         if (list == null) {
             return null;
         }

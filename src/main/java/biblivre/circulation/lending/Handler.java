@@ -40,6 +40,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
@@ -284,7 +285,7 @@ public class Handler extends AbstractHandler {
 
         DTOCollection<LendingInfoDTO> list = new DTOCollection<>();
 
-        DTOCollection<LendingInfoDTO> lendingInfoList = lendingBO.listLendings(offset, limit);
+        Collection<LendingInfoDTO> lendingInfoList = lendingBO.listLendings(offset, limit);
 
         list.addAll(lendingInfoList);
 
