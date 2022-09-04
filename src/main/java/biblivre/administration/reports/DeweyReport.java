@@ -28,13 +28,12 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DeweyReport extends BaseBiblivreReport implements Comparator<String[]> {
+public class DeweyReport extends BaseBiblivreReport {
 
     private Integer index = 0;
 
@@ -59,7 +58,19 @@ public class DeweyReport extends BaseBiblivreReport implements Comparator<String
         int totalRecords = 0;
         int totalHoldings = 0;
         List<String[]> dataList = dto.getData();
-        Collections.sort(dataList, this);
+        Collections.sort(
+                dataList,
+                (o1, o2) -> {
+                    if (o1 == null || o1[this.index] == null) {
+                        return -1;
+                    }
+
+                    if (o2 == null || o2[this.index] == null) {
+                        return 1;
+                    }
+
+                    return o1[this.index].compareTo(o2[this.index]);
+                });
         for (String[] data : dataList) {
             if (StringUtils.isBlank(data[0])) {
                 data[0] = this.getText("administration.reports.field.unclassified");
@@ -133,19 +144,6 @@ public class DeweyReport extends BaseBiblivreReport implements Comparator<String
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-    }
-
-    @Override
-    public int compare(String[] o1, String[] o2) {
-        if (o1 == null || o1[this.index] == null) {
-            return -1;
-        }
-
-        if (o2 == null || o2[this.index] == null) {
-            return 1;
-        }
-
-        return o1[this.index].compareTo(o2[this.index]);
     }
 
     @Override
