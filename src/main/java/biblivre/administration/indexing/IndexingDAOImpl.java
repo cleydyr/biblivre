@@ -32,6 +32,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
@@ -113,14 +114,14 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
                 final int groupId = index.getIndexingGroupId();
 
                 Map<Integer, Set<String>> wordsGroups = index.getWords();
-                for (Integer key : wordsGroups.keySet()) {
-                    Set<String> words = wordsGroups.get(key);
+                for (Entry<Integer, Set<String>> entry : wordsGroups.entrySet()) {
+                    Set<String> words = entry.getValue();
 
                     for (String word : words) {
                         pst.setInt(1, recordId);
                         pst.setInt(2, groupId);
                         pst.setString(3, word);
-                        pst.setInt(4, key);
+                        pst.setInt(4, entry.getKey());
                         pst.addBatch();
                     }
                 }

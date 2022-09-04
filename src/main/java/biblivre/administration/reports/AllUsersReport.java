@@ -31,6 +31,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -86,18 +87,17 @@ public class AllUsersReport extends BaseBiblivreReport {
 
         int total = 0;
         PdfPCell cell;
-        for (String description : tipos.keySet()) {
-            total += tipos.get(description);
-            cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
+        for (Entry<String, Integer> entry : tipos.entrySet()) {
+            int count = entry.getValue();
+
+            total += count;
+            cell = new PdfPCell(new Paragraph(this.getHeaderChunk(entry.getKey().toUpperCase())));
             cell.setBackgroundColor(this.headerBgColor);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setColspan(2);
             table.addCell(cell);
-            cell =
-                    new PdfPCell(
-                            new Paragraph(
-                                    this.getNormalChunk(String.valueOf(tipos.get(description)))));
+            cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(count))));
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
@@ -124,9 +124,10 @@ public class AllUsersReport extends BaseBiblivreReport {
             ArrayList<PdfPTable> tabelas = new ArrayList<>();
             PdfPTable table = null;
             PdfPCell cell;
-            for (String description : data.keySet()) {
+            for (Entry<String, List<String>> entry : data.entrySet()) {
                 table = new PdfPTable(4);
                 table.setWidthPercentage(100f);
+                String description = entry.getKey();
                 cell = new PdfPCell(new Paragraph(this.getHeaderChunk(description.toUpperCase())));
                 cell.setColspan(4);
                 cell.setBorder(Rectangle.NO_BORDER);
@@ -182,7 +183,7 @@ public class AllUsersReport extends BaseBiblivreReport {
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
 
-                for (String line : data.get(description)) {
+                for (String line : entry.getValue()) {
                     String[] dados = line.split("\t");
                     // Nome
                     cell = new PdfPCell(new Paragraph(this.getNormalChunk(dados[0])));
