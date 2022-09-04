@@ -36,6 +36,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,17 +163,17 @@ public class Handler extends AbstractHandler {
     }
 
     public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
-        List<SupplierDTO> suppliers = supplierBO.list();
+        Collection<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
-        List<RequestDTO> requests = requestBO.list();
+        Collection<RequestDTO> requests = requestBO.list();
         request.setAttribute("requests", requests);
 
         setJspURL("/jsp/acquisition/quotations.jsp");
     }
 
     public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
-        List<SupplierDTO> suppliers = supplierBO.list();
+        Collection<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
         setJspURL("/jsp/acquisition/orders.jsp");

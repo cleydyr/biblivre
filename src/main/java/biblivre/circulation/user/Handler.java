@@ -26,6 +26,7 @@ import biblivre.circulation.lending.LendingInfoDTO;
 import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.reservation.ReservationInfoDTO;
 import biblivre.circulation.reservation.ReservationListDTO;
+import biblivre.core.AbstractDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
@@ -38,6 +39,7 @@ import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaEncodingUtil;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -225,13 +227,13 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<?> data = null;
+        DTOCollection<AbstractDTO> data = new DTOCollection<>();
 
         if (tab.equals("lendings")) {
-            DTOCollection<LendingInfoDTO> list =
+            Collection<LendingInfoDTO> list =
                     lendingBO.populateLendingInfo(lendingBO.listLendings(user), false);
             list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
-            data = list;
+            data.addAll(list);
         } else if (tab.equals("reservations")) {
             List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
             ReservationListDTO reservationList = new ReservationListDTO();
@@ -239,15 +241,11 @@ public class Handler extends AbstractHandler {
             reservationList.setId(user.getId());
             reservationList.setReservationInfoList(infos);
 
-            DTOCollection<ReservationListDTO> list = new DTOCollection<>();
-            list.add(reservationList);
-            data = list;
+            data.add(reservationList);
         } else if (tab.equals("fines")) {
             List<LendingFineDTO> fines = lendingFineBO.listLendingFines(user);
 
-            DTOCollection<LendingFineDTO> list = new DTOCollection<>();
-            list.addAll(fines);
-            data = list;
+            data.addAll(fines);
         } else {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
             return;

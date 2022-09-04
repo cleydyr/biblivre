@@ -45,6 +45,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -199,7 +200,7 @@ public class LendingBO {
                 lending.getId(), lending.getExpectedReturnDate(), lending.getCreatedBy());
     }
 
-    public List<LendingDTO> listHistory(UserDTO user) {
+    public Collection<LendingDTO> listHistory(UserDTO user) {
         List<LendingDTO> list = this.lendingDAO.listHistory(user);
         DTOCollection<LendingDTO> collection = new DTOCollection<>();
         collection.addAll(list);
@@ -217,7 +218,7 @@ public class LendingBO {
         return this.lendingDAO.listLendings(user);
     }
 
-    public DTOCollection<LendingInfoDTO> listLendings(int offset, int limit) {
+    public Collection<LendingInfoDTO> listLendings(int offset, int limit) {
         List<LendingDTO> list = this.lendingDAO.listLendings(offset, limit);
         return this.populateLendingInfo(list);
     }
@@ -305,12 +306,12 @@ public class LendingBO {
         return collection;
     }
 
-    public DTOCollection<LendingInfoDTO> populateLendingInfo(List<LendingDTO> list) {
+    public Collection<LendingInfoDTO> populateLendingInfo(Collection<LendingDTO> list) {
         return this.populateLendingInfo(list, true);
     }
 
-    public DTOCollection<LendingInfoDTO> populateLendingInfo(
-            List<LendingDTO> list, boolean populateUser) {
+    public Collection<LendingInfoDTO> populateLendingInfo(
+            Collection<LendingDTO> list, boolean populateUser) {
 
         DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
 
@@ -373,8 +374,8 @@ public class LendingBO {
         return this.lendingDAO.countLendings();
     }
 
-    public List<LendingDTO> listLendings(List<Integer> lendingsIds) {
-        List<LendingDTO> lendingList = new ArrayList<>();
+    public Collection<LendingDTO> listLendings(Collection<Integer> lendingsIds) {
+        Collection<LendingDTO> lendingList = new ArrayList<>();
 
         for (Integer id : lendingsIds) {
             lendingList.add(this.get(id));
@@ -418,11 +419,11 @@ public class LendingBO {
             List<Integer> lendingsIds, TranslationsMap i18n, int columns) {
         DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
 
-        List<LendingDTO> lendings = this.listLendings(lendingsIds);
+        Collection<LendingDTO> lendings = this.listLendings(lendingsIds);
         if (lendings == null || lendings.isEmpty()) {
             return "";
         }
-        List<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+        Collection<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
         if (lendingInfo == null || lendingInfo.isEmpty()) {
             return "";
         }
@@ -443,7 +444,9 @@ public class LendingBO {
 
         if (lendingInfo.size() > 0) {
 
-            UserDTO user = lendingInfo.get(0).getUser();
+            LendingInfoDTO firstEntry = lendingInfo.iterator().next();
+
+            UserDTO user = firstEntry.getUser();
 
             String nameLabel = i18n.getText("circulation.user_field.name");
             String userName = StringEscapeUtils.escapeHtml4(user.getName());
@@ -654,13 +657,13 @@ public class LendingBO {
 
         root.put("dateFormat", formatDate);
 
-        List<LendingDTO> lendings = this.listLendings(lendingsIds);
+        Collection<LendingDTO> lendings = this.listLendings(lendingsIds);
 
         if (lendings == null || lendings.isEmpty()) {
             return "";
         }
 
-        List<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+        Collection<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
 
         if (lendingInfo == null || lendingInfo.isEmpty()) {
             return "";
@@ -676,7 +679,9 @@ public class LendingBO {
 
         if (lendingInfo.size() > 0) {
 
-            UserDTO user = lendingInfo.get(0).getUser();
+            LendingInfoDTO firstEntry = lendingInfo.iterator().next();
+
+            UserDTO user = firstEntry.getUser();
 
             root.put("user", user);
 
