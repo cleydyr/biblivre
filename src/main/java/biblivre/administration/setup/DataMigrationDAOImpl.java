@@ -55,6 +55,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -849,7 +850,7 @@ public class DataMigrationDAOImpl extends AbstractDAO implements DataMigrationDA
                 dto.setPhotoId(rs.getString("photo_id"));
                 dto.setStatus(this.convertUserStatus(rs.getString("status")));
 
-                List<UserFieldDTO> userFields =
+                Collection<UserFieldDTO> userFields =
                         SchemaThreadLocal.withSchema(userSchema, UserFields::getFields);
 
                 for (UserFieldDTO userField : userFields) {

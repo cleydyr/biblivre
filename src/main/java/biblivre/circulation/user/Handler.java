@@ -137,7 +137,7 @@ public class Handler extends AbstractHandler {
 
         user.setCreatedBy(request.getLoggedUserId());
 
-        List<UserFieldDTO> userFields = UserFields.getFields();
+        Collection<UserFieldDTO> userFields = UserFields.getFields();
         for (UserFieldDTO userField : userFields) {
             String key = userField.getKey();
             if (request.hasParameter(key)) {
