@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
 public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO {
@@ -110,13 +111,15 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
                 CallableStatement function =
                         con.prepareCall("{ call global.update_translation(?, ?, ?, ?) }");
 
-                for (String language : translations.keySet()) {
-                    Map<String, String> translation = translations.get(language);
+                for (Entry<String, Map<String, String>> entry : translations.entrySet()) {
+                    String language = entry.getKey();
 
-                    for (String key : translation.keySet()) {
+                    Map<String, String> translation = entry.getValue();
+
+                    for (Entry<String, String> translationEntry : translation.entrySet()) {
                         function.setString(1, language);
-                        function.setString(2, key);
-                        function.setString(3, translation.get(key));
+                        function.setString(2, translationEntry.getKey());
+                        function.setString(3, translationEntry.getValue());
                         function.setInt(4, loggedUser);
                         function.addBatch();
                     }
@@ -130,8 +133,10 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
                 String sql = "DELETE FROM translations WHERE language = ? AND key = ?; ";
                 PreparedStatement pst = con.prepareStatement(sql);
 
-                for (String language : removeTranslations.keySet()) {
-                    Map<String, String> translation = removeTranslations.get(language);
+                for (Entry<String, Map<String, String>> entry : removeTranslations.entrySet()) {
+                    String language = entry.getKey();
+
+                    Map<String, String> translation = entry.getValue();
 
                     for (String key : translation.keySet()) {
                         pst.setString(1, language);

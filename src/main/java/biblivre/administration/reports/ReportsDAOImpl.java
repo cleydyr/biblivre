@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
@@ -159,10 +160,10 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
             List<String[]> data = new ArrayList<String[]>();
             dto.setData(data);
-            for (String key : acc.keySet()) {
+            for (Entry<String, Integer[]> entry : acc.entrySet()) {
                 String[] arrayData = new String[3];
-                arrayData[0] = key;
-                Integer[] totals = acc.get(key);
+                arrayData[0] = entry.getKey();
+                Integer[] totals = entry.getValue();
                 arrayData[1] = String.valueOf(totals[0]);
                 arrayData[2] = String.valueOf(totals[1]);
                 dto.getData().add(arrayData);

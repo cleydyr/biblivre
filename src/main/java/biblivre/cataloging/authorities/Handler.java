@@ -27,6 +27,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.marc.MaterialType;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
@@ -84,11 +85,11 @@ public class Handler extends PaginableCatalogingHandler {
         try {
             JSONArray data = new JSONArray();
             int id = 1;
-            for (String key : result.keySet()) {
-                Set<Integer> ids = result.get(key);
+            for (Entry<String, Set<Integer>> entry : result.entrySet()) {
+                Set<Integer> ids = entry.getValue();
                 JSONObject obj = new JSONObject();
                 obj.put("id", id++);
-                obj.put("author", key);
+                obj.put("author", entry.getKey());
                 obj.put("count", ids.size());
                 obj.put("ids", StringUtils.join(ids, ","));
                 data.put(obj);
