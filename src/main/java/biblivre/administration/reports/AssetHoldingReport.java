@@ -29,12 +29,11 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AssetHoldingReport extends BaseBiblivreReport implements Comparator<String[]> {
+public class AssetHoldingReport extends BaseBiblivreReport {
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -54,7 +53,12 @@ public class AssetHoldingReport extends BaseBiblivreReport implements Comparator
         createHeader(table);
         PdfPCell cell;
         List<String[]> dataList = dto.getData();
-        Collections.sort(dataList, this);
+        Collections.sort(
+                dataList,
+                (o1, o2) -> {
+                    if (o1 == null && o2 == null) return 0;
+                    return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
+                });
         for (String[] data : dataList) {
             cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[0])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -137,12 +141,6 @@ public class AssetHoldingReport extends BaseBiblivreReport implements Comparator
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-    }
-
-    @Override
-    public int compare(String[] o1, String[] o2) {
-        if (o1 == null && o2 == null) return 0;
-        return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
     }
 
     @Override

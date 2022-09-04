@@ -28,12 +28,11 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.Collections;
-import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SummaryReport extends BaseBiblivreReport implements Comparator<String[]> {
+public class SummaryReport extends BaseBiblivreReport {
 
     private Integer index;
 
@@ -71,7 +70,19 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
         PdfPTable table = new PdfPTable(10);
         table.setWidthPercentage(100f);
         createHeader(table);
-        Collections.sort(dto.getData(), this);
+        Collections.sort(
+                dto.getData(),
+                (o1, o2) -> {
+                    if (o1 == null || o1[this.index] == null) {
+                        return -1;
+                    }
+
+                    if (o2 == null || o2[this.index] == null) {
+                        return 1;
+                    }
+
+                    return o1[this.index].compareTo(o2[this.index]);
+                });
         PdfPCell cell;
         for (String[] data : dto.getData()) {
             cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[6])));
@@ -197,19 +208,6 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-    }
-
-    @Override
-    public int compare(String[] o1, String[] o2) {
-        if (o1 == null || o1[this.index] == null) {
-            return -1;
-        }
-
-        if (o2 == null || o2[this.index] == null) {
-            return 1;
-        }
-
-        return o1[this.index].compareTo(o2[this.index]);
     }
 
     @Override
