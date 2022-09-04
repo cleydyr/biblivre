@@ -125,7 +125,7 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
 
     protected abstract Comparator<String[]> getComparator();
 
-	protected abstract String getTitle();
+    protected abstract String getTitle();
 
     private void createHeader(PdfPTable table) {
         PdfPCell cell;
