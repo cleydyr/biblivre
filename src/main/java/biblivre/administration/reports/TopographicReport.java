@@ -4,16 +4,15 @@ import biblivre.core.utils.NaturalOrderComparator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AssetHoldingFullReport extends BaseAssetHoldingReport {
-
+public class TopographicReport extends BaseAssetHoldingReport {
     @Override
     public ReportType getReportType() {
-        return ReportType.ASSET_HOLDING_FULL;
+        return ReportType.TOPOGRAPHIC_FULL;
     }
 
     @Override
     protected String getTitle() {
-        return this.getText("administration.reports.title.holdings_full");
+        return this.getText("administration.reports.title.topographic");
     }
 
     @Override

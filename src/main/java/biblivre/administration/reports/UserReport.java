@@ -31,8 +31,6 @@ import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldDTO;
 import biblivre.circulation.user.UserFields;
-import biblivre.core.JavascriptCacheableList;
-import biblivre.core.SchemaThreadLocal;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -42,8 +40,10 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserReport extends BaseBiblivreReport {
     public static final DateFormat dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
@@ -296,8 +296,7 @@ public class UserReport extends BaseBiblivreReport {
         table.setWidthPercentage(100f);
         PdfPCell cell;
 
-        JavascriptCacheableList<UserFieldDTO> fields =
-                SchemaThreadLocal.withSchema(getSchema(), UserFields::getFields);
+        Collection<UserFieldDTO> fields = UserFields.getFields();
 
         for (UserFieldDTO field : fields) {
             String fieldKey = field.getKey();
@@ -321,19 +320,28 @@ public class UserReport extends BaseBiblivreReport {
         return table;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
 
+    @Autowired
     public void setLendingBO(LendingBO lendingBO) {
         this.lendingBO = lendingBO;
     }
 
+    @Autowired
     public void setLendingFineBO(LendingFineBO lendingFineBO) {
         this.lendingFineBO = lendingFineBO;
     }
 
+    @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.USER;
     }
 }

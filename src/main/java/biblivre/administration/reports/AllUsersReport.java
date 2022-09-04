@@ -31,13 +31,16 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AllUsersReport extends BaseBiblivreReport {
+
+    private ReportsDAO reportsDAO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        ReportsDAO dao = ReportsDAOImpl.getInstance();
-        return dao.getAllUsersReportData();
+        return reportsDAO.getAllUsersReportData();
     }
 
     @Override
@@ -212,5 +215,10 @@ public class AllUsersReport extends BaseBiblivreReport {
             this.logger.error(e.getMessage(), e);
             return null;
         }
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.ALL_USERS;
     }
 }

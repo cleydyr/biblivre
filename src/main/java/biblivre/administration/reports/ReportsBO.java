@@ -30,10 +30,21 @@ public class ReportsBO extends AbstractBO {
     private ReportsDAO reportsDAO;
     private BiblioRecordBO biblioRecordBO;
 
+    private Collection<IBiblivreReport> reports;
+
     public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
         ReportType type = dto.getType();
-        IBiblivreReport report = BiblivreReportFactory.getBiblivreReport(type, i18n, this);
-        return report.generateReport(dto);
+
+        IBiblivreReport report = getByType(type);
+
+        return report.generateReport(dto, i18n);
+    }
+
+    private IBiblivreReport getByType(ReportType type) {
+        return reports.stream()
+                .filter(report -> report.getReportType().equals(type))
+                .findFirst()
+                .get();
     }
 
     public TreeMap<String, Set<Integer>> searchAuthors(String author, RecordDatabase database) {
@@ -138,5 +149,10 @@ public class ReportsBO extends AbstractBO {
     @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
+    }
+
+    @Autowired
+    public void setReports(Collection<IBiblivreReport> reports) {
+        this.reports = reports;
     }
 }

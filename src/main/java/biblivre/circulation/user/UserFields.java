@@ -115,7 +115,6 @@ public class UserFields extends StaticBO {
     }
 
     private static JavascriptCacheableList<UserFieldDTO> _getScoped() {
-        JavascriptCacheableList<UserFieldDTO> list = UserFields.fields.get(SchemaThreadLocal.get());
-        return list;
+        return UserFields.fields.get(SchemaThreadLocal.get());
     }
 }

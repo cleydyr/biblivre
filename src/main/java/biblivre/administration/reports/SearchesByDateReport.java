@@ -27,7 +27,9 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SearchesByDateReport extends BaseBiblivreReport {
 
     @Override
@@ -99,5 +101,10 @@ public class SearchesByDateReport extends BaseBiblivreReport {
             table.addCell(cell);
         }
         return table;
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.SEARCHES_BY_DATE;
     }
 }

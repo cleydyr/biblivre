@@ -31,7 +31,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DeweyReport extends BaseBiblivreReport implements Comparator<String[]> {
 
     private Integer index = 0;
@@ -144,5 +146,10 @@ public class DeweyReport extends BaseBiblivreReport implements Comparator<String
         }
 
         return o1[this.index].compareTo(o2[this.index]);
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.DEWEY;
     }
 }

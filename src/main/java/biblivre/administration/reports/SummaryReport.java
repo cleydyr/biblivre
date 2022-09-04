@@ -30,7 +30,9 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.util.Collections;
 import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SummaryReport extends BaseBiblivreReport implements Comparator<String[]> {
 
     private Integer index;
@@ -208,5 +210,10 @@ public class SummaryReport extends BaseBiblivreReport implements Comparator<Stri
         }
 
         return o1[this.index].compareTo(o2[this.index]);
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.SUMMARY;
     }
 }

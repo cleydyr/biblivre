@@ -30,7 +30,9 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HoldingCreationByDatetReport extends BaseBiblivreReport {
 
     private static Map<String, Integer> userTotal;
@@ -277,5 +279,10 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
+    }
+
+    @Override
+    public ReportType getReportType() {
+        return ReportType.HOLDING_CREATION_BY_DATE;
     }
 }
