@@ -1,6 +1,7 @@
 package biblivre.administration.reports;
 
 import biblivre.core.utils.NaturalOrderComparator;
+import java.util.Comparator;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +17,7 @@ public class TopographicReport extends BaseAssetHoldingReport {
     }
 
     @Override
-    protected int doCompare(String[] o1, String[] o2) {
-        return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[1], o2[1]);
+    protected Comparator<String[]> getComparator() {
+        return (o1, o2) -> NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[1], o2[1]);
     }
 }

@@ -38,8 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public abstract class BaseAssetHoldingReport extends BaseBiblivreReport
-        implements Comparator<String[]> {
+public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -59,7 +58,7 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport
         createHeader(table);
         PdfPCell cell;
         List<String[]> dataList = dto.getData();
-        Collections.sort(dataList, this);
+        Collections.sort(dataList, getComparator());
         for (String[] data : dataList) {
             PdfContentByte cb = getWriter().getDirectContent();
 
@@ -124,6 +123,8 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport
         document.add(table);
     }
 
+    protected abstract Comparator<String[]> getComparator();
+
     protected abstract String getTitle();
 
     private void createHeader(PdfPTable table) {
@@ -164,19 +165,4 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
     }
-
-    @Override
-    public int compare(String[] o1, String[] o2) {
-        if (o1 == null) {
-            return -1;
-        }
-
-        if (o2 == null) {
-            return 1;
-        }
-
-        return doCompare(o1, o2);
-    }
-
-    protected abstract int doCompare(String[] o1, String[] o2);
 }

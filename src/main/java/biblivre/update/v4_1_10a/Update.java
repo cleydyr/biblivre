@@ -52,13 +52,7 @@ public class Update implements UpdateService {
 
         _invalidateIndex(connection, RecordType.BIBLIO);
 
-        SchemaThreadLocal.withSchema(
-                connection.getSchema(),
-                () -> {
-                    Fields.reset(RecordType.BIBLIO);
-
-                    return null;
-                });
+        SchemaThreadLocal.withSchema(connection.getSchema(), () -> Fields.reset(RecordType.BIBLIO));
     }
 
     private void _invalidateIndex(Connection connection, RecordType recordType)

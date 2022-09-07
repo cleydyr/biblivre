@@ -21,16 +21,18 @@ package biblivre.core;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import org.json.JSONArray;
 
-public class JavascriptCacheableList<T extends IFJson> extends ArrayList<T>
-        implements IFCacheableJavascript {
-    private static final long serialVersionUID = 1L;
-
+public class JavascriptCacheableList<T extends IFJson>
+        implements Collection<T>, IFCacheableJavascript {
     private String variable;
     private String prefix;
     private String suffix;
     private JavascriptCache cache;
+
+    private final Collection<T> list = new ArrayList<>();
 
     public JavascriptCacheableList(String variable, String prefix, String suffix) {
         this.variable = variable;
@@ -80,5 +82,70 @@ public class JavascriptCacheableList<T extends IFJson> extends ArrayList<T>
     @Override
     public void invalidateCache() {
         this.cache = null;
+    }
+
+    @Override
+    public int size() {
+        return list.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return list.contains(o);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return list.iterator();
+    }
+
+    @Override
+    public Object[] toArray() {
+        return list.toArray();
+    }
+
+    @Override
+    public <U> U[] toArray(U[] a) {
+        return list.toArray(a);
+    }
+
+    @Override
+    public boolean add(T e) {
+        return list.add(e);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return list.remove(o);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return list.containsAll(c);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        return list.containsAll(c);
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return list.removeAll(c);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return list.retainAll(c);
+    }
+
+    @Override
+    public void clear() {
+        list.clear();
     }
 }

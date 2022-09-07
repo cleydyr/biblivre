@@ -302,7 +302,7 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public FilterRegistrationBean<StatusFilter> StatusFilterRegistration() throws Exception {
+    public FilterRegistrationBean<StatusFilter> statusFilterRegistration() throws Exception {
         return createFilterRegistration(StatusFilter.class, 5, DispatcherType.REQUEST);
     }
 

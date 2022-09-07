@@ -79,8 +79,6 @@ public class StatusFilter implements Filter {
                             json.put("success", true);
                             json.put("status_message", "Disponível");
                         }
-
-                        return null;
                     });
 
             out.write(json.toString());

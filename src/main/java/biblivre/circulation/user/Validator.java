@@ -30,7 +30,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class Validator extends AbstractValidator {
 
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
-        List<UserFieldDTO> userFields = UserFields.getFields();
+        Collection<UserFieldDTO> userFields = UserFields.getFields();
 
         UserStatus status = request.getEnum(UserStatus.class, "status");
         if (status == null) {

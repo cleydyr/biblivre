@@ -28,12 +28,11 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.Collections;
-import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomCountReport extends BaseBiblivreReport implements Comparator<String[]> {
+public class CustomCountReport extends BaseBiblivreReport {
 
     private Integer index;
     private String marcField;
@@ -91,7 +90,32 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
                                 + this.datafield
                                 + ".subfield."
                                 + this.subfield));
-        Collections.sort(dto.getData(), this);
+        Collections.sort(
+                dto.getData(),
+                (o1, o2) -> {
+                    if (o1 == null) {
+                        return 0;
+                    }
+
+                    if (o2 == null) {
+                        return 0;
+                    }
+
+                    if (o1[this.index] == null && o2[this.index] == null) {
+                        return 0;
+                    }
+
+                    switch (this.index) {
+                        case 0:
+                            return o1[this.index].compareTo(o2[this.index]);
+                        case 1:
+                            return Integer.valueOf(o2[this.index])
+                                    .compareTo(Integer.valueOf(o1[this.index]));
+                        default:
+                            return o1[this.index].compareTo(o2[this.index]);
+                    }
+                });
+
         PdfPCell cell;
         int total = 0;
         for (String[] data : dto.getData()) {
@@ -143,30 +167,6 @@ public class CustomCountReport extends BaseBiblivreReport implements Comparator<
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
-    }
-
-    @Override
-    public int compare(String[] o1, String[] o2) {
-        if (o1 == null) {
-            return 0;
-        }
-
-        if (o2 == null) {
-            return 0;
-        }
-
-        if (o1[this.index] == null && o2[this.index] == null) {
-            return 0;
-        }
-
-        switch (this.index) {
-            case 0:
-                return o1[this.index].compareTo(o2[this.index]);
-            case 1:
-                return Integer.valueOf(o2[this.index]).compareTo(Integer.valueOf(o1[this.index]));
-            default:
-                return o1[this.index].compareTo(o2[this.index]);
-        }
     }
 
     public void setReportsBO(ReportsBO reportsBO) {

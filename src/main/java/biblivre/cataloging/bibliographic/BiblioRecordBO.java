@@ -29,6 +29,8 @@ import biblivre.circulation.lending.LendingDAO;
 import biblivre.circulation.reservation.ReservationDAO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -81,11 +83,15 @@ public class BiblioRecordBO extends PaginableRecordBO {
         }
 
         if ((mask & RecordBO.HOLDING_LIST) != 0) {
-            List<HoldingDTO> holdingsList = holdingBO.list(recordId);
+            Collection<HoldingDTO> holdingsList = holdingBO.list(recordId);
 
-            Collections.sort(holdingsList);
+            List<HoldingDTO> list = new ArrayList<>();
 
-            for (HoldingDTO holding : holdingsList) {
+            list.addAll(holdingsList);
+
+            Collections.sort(list);
+
+            for (HoldingDTO holding : list) {
                 MarcDataReader marcDataReader = new MarcDataReader(holding.getRecord());
 
                 String holdingLocation = marcDataReader.getShelfLocation();
@@ -95,7 +101,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
                                 : biblioRecordDTO.getShelfLocation());
             }
 
-            biblioRecordDTO.setHoldings(holdingsList);
+            biblioRecordDTO.setHoldings(list);
         }
     }
 
