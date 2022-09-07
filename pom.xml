@@ -310,6 +310,12 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 			<version>2.7.2</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.31</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -402,6 +408,7 @@
 					<excludeVulnerabilityIds>
 						<exclude>CVE-2016-1000027</exclude>
 						<exclude>sonatype-2022-4402</exclude>
+						<exclude>CVE-2022-38752</exclude>
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
