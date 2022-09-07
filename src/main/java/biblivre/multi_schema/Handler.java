@@ -23,6 +23,7 @@ import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.enums.ActionResult;
@@ -59,12 +60,17 @@ public class Handler extends AbstractHandler {
         if (success) {
             State.finish();
 
-            Configurations.save(
-                    new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam),
-                    request.getLoggedUserId());
-            Configurations.save(
-                    new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
-                    request.getLoggedUserId());
+            SchemaThreadLocal.withSchema(
+                    schemaParam,
+                    () -> {
+                        Configurations.save(
+                                new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam),
+                                request.getLoggedUserId());
+                        Configurations.save(
+                                new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
+                                request.getLoggedUserId());
+                    });
+
             this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
         } else {
             State.cancel();

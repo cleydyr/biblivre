@@ -52,8 +52,6 @@ public class Update implements UpdateService {
                     IndexingGroups.reset(RecordType.BIBLIO);
 
                     Fields.reset(RecordType.BIBLIO);
-
-                    return null;
                 });
     }
 

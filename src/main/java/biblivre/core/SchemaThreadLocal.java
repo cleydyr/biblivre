@@ -1,5 +1,6 @@
 package biblivre.core;
 
+import biblivre.core.function.UnsafeRunnable;
 import biblivre.core.function.UnsafeSupplier;
 import biblivre.core.utils.Constants;
 
@@ -50,5 +51,15 @@ public class SchemaThreadLocal {
 
             SchemaThreadLocal.setSchema(currentSchema);
         }
+    }
+
+    public static void withSchema(String schema, UnsafeRunnable runnable) {
+        withSchema(
+                schema,
+                () -> {
+                    runnable.run();
+
+                    return null;
+                });
     }
 }
