@@ -131,7 +131,7 @@ public class JavascriptCacheableList<T extends IFJson>
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return list.containsAll(c);
+        return list.addAll(c);
     }
 
     @Override
