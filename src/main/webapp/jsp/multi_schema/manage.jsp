@@ -1,3 +1,4 @@
+<%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
@@ -25,6 +26,11 @@
 			<div class="spacer"></div>
 			<% for (SchemaDTO schema : Schemas.getSchemas()) { %>
 				<div class="library <% if (schema.isDisabled()) { %>disabled<% } %>">
+				<%
+					String currentSchema = SchemaThreadLocal.remove();
+
+				    SchemaThreadLocal.setSchema(schema.getSchema());
+				%>
 					<a href="<%= schema.getSchema() %>/" target="_blank"><%= Configurations.getHtml(Constants.CONFIG_TITLE) %></a>
 					<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></div>
 					<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
@@ -32,7 +38,11 @@
 					<a href="javascript:void(0);" onclick="Schemas.deleteSchema('<%= schema.getSchema() %>', this);" class="enable">[<i18n:text key="common.delete" />]</a>
 					<a href="javascript:void(0);" onclick="Schemas.toggle('<%= schema.getSchema() %>', true, this);" class="disable">[<i18n:text key="multi_schema.manage.disable" />]</a>
 				</div>
-			<% } %>
+			<%
+					SchemaThreadLocal.remove();
+
+					SchemaThreadLocal.setSchema(currentSchema);
+			} %>
 		</fieldset>
 
 		<fieldset>
