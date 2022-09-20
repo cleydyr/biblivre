@@ -22,7 +22,11 @@ import org.testcontainers.containers.PostgreSQLContainer;
 public abstract class AbstractContainerDatabaseTest {
     private static DataSource dataSource;
 
-    protected static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:11");
+    protected static PostgreSQLContainer<?> container =
+            new PostgreSQLContainer<>("postgres:11")
+                    .withDatabaseName(Constants.DEFAULT_DATABASE_NAME)
+                    .withUsername(Constants.DEFAULT_DATABASE_USERNAME)
+                    .withPassword(Constants.DEFAULT_DATABASE_PASSWORD);
 
     private static boolean setup = false;
 
@@ -38,10 +42,6 @@ public abstract class AbstractContainerDatabaseTest {
                 container.start();
 
                 logger.info("Creating and populating database with default " + "data");
-
-                String createDatabaseSQL = _readSQLAsString("sql/createdatabase.sql");
-
-                performQuery(container, createDatabaseSQL);
 
                 String populateDatabaseSQL = _readSQLAsString("sql/biblivre4.sql");
 
