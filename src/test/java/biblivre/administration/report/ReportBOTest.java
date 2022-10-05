@@ -1,5 +1,7 @@
 package biblivre.administration.report;
 
+import static org.junit.Assert.assertNotNull;
+
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.administration.reports.ReportType;
 import biblivre.administration.reports.ReportsBO;
@@ -13,9 +15,6 @@ import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.StringPool;
-
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

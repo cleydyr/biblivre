@@ -21,6 +21,7 @@ package biblivre.core.controllers;
 
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.RequestParserHelper;
 import biblivre.core.utils.Constants;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -30,10 +31,12 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ExtendedRequestResponseFilter implements Filter {
+    @Autowired private RequestParserHelper requestParserHelper;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -49,7 +52,7 @@ public class ExtendedRequestResponseFilter implements Filter {
             // Avoid rewrapping if forwarding
             xRequest = (ExtendedRequest) request;
         } else {
-            xRequest = new ExtendedRequest((HttpServletRequest) request);
+            xRequest = new ExtendedRequest((HttpServletRequest) request, requestParserHelper);
         }
 
         if (response instanceof ExtendedResponse) {

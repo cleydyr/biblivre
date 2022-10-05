@@ -27,6 +27,7 @@ import biblivre.circulation.user.UserFields;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.IFCacheableJavascript;
+import biblivre.core.RequestParserHelper;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
@@ -203,13 +204,8 @@ public final class SchemaServlet extends HttpServlet {
             HttpServletRequest request, HttpServletResponse response, boolean headerOnly)
             throws ServletException, IOException {
         final String path = request.getServletPath();
-        final String realPath;
-
-        if (path.contains("static/")) {
-            realPath = path.substring(path.lastIndexOf("/static"));
-        } else {
-            realPath = path.substring(path.lastIndexOf("/extra"));
-        }
+        final String realPath =
+                path.substring(path.lastIndexOf(path.contains("static/") ? "/static" : "/extra"));
 
         if (realPath.endsWith(".i18n.js")
                 || realPath.endsWith(".form.js")
@@ -247,7 +243,7 @@ public final class SchemaServlet extends HttpServlet {
         RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
 
         ExtendedRequest wrapped =
-                new ExtendedRequest(request) {
+                new ExtendedRequest(request, getRequestParserHelper(request)) {
 
                     @Override
                     public String getServletPath() {
@@ -256,6 +252,15 @@ public final class SchemaServlet extends HttpServlet {
                 };
 
         rd.forward(wrapped, response);
+    }
+
+    private RequestParserHelper getRequestParserHelper(HttpServletRequest request) {
+        ServletContext servletContext = request.getServletContext();
+
+        WebApplicationContext webApplicationContext =
+                WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+
+        return webApplicationContext.getBean(RequestParserHelper.class);
     }
 
     @Override
