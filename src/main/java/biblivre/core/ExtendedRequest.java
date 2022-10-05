@@ -54,17 +54,23 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private Map<String, String> multiPartParameters;
     private Map<String, MemoryFile> multiPartFiles;
 
-    public ExtendedRequest(HttpServletRequest request) throws IOException, ServletException {
+    public ExtendedRequest(HttpServletRequest request, RequestParserHelper requestParserHelper)
+            throws IOException, ServletException {
         super(request);
 
-        String path = request.getServletPath();
+        String servletPath = request.getServletPath();
 
-        if (path.contains("static/")) {
+        if (servletPath.contains("static/")) {
             return;
         }
 
         this.loadMultiPart(request);
-        this.loadController();
+
+        String requestPath = this.getRequestURI().substring(this.getContextPath().length() + 1);
+
+        this.setController(
+                requestParserHelper.parseController(requestPath, getString("controller")));
+        this.setMustRedirectToSchema(requestParserHelper.isMustRedirectToSchema(requestPath));
         this.loadLanguage();
         this.loadTranslationsMap();
     }
@@ -288,27 +294,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
                 }
             }
         }
-    }
-
-    private void loadController() {
-        String url = this.getRequestURI().substring(this.getContextPath().length() + 1);
-        String controller = null;
-
-        if (StringUtils.isNotBlank(url)) {
-            String[] urlArray = url.split("/");
-
-            if (urlArray.length > 1) {
-                controller = urlArray[1];
-            } else if (!url.endsWith("/")) {
-                this.setMustRedirectToSchema(true);
-            }
-        }
-
-        if (controller == null) {
-            controller = this.getString("controller");
-        }
-
-        this.setController(controller);
     }
 
     public void clearSessionAttributes(String schema) {
