@@ -4,7 +4,9 @@ import biblivre.cataloging.dataimport.BaseImportProcessor;
 import biblivre.marc.MarcFileReader;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MarcFileImportProcessor extends BaseImportProcessor {
 
     @Override
