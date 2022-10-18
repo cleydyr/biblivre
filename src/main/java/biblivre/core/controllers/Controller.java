@@ -211,6 +211,11 @@ public abstract class Controller {
 
         Class<?> lookupClass = this.handler.getClass();
 
+        return getMethod(action, method, lookupClass);
+    }
+
+    public static Method getMethod(String action, Method method, Class<?> lookupClass)
+            throws NoSuchMethodException {
         while (method == null && !lookupClass.equals(AbstractHandler.class)) {
             try {
                 method =

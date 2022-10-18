@@ -34,22 +34,10 @@ import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import jakarta.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.login.Handler")
@@ -59,10 +47,7 @@ public class Handler extends AbstractHandler {
     private PermissionBO permissionBO;
     private BackupBO backupBO;
 
-    @Value("classpath:META-INF/menus/menus.json")
-    private Resource menusResource;
-
-    private Map<Integer, JSONObject> prioritizedMenus;
+    @Autowired MenuProvider menuProvider;
 
     public void login(ExtendedRequest request, ExtendedResponse response) {
 
@@ -207,61 +192,8 @@ public class Handler extends AbstractHandler {
     private void _populateMenus(ExtendedRequest request, AuthorizationPoints atps)
             throws Exception {
 
-        if (prioritizedMenus == null) {
-            JSONObject json = new JSONObject(_readMenusFile());
-
-            prioritizedMenus = _getPrioritizedMenus(json);
-        }
-
-        Map<String, List<String>> allowedModules = new LinkedHashMap<>();
-
-        prioritizedMenus
-                .values()
-                .forEach(
-                        module -> {
-                            JSONArray items = module.getJSONArray("items");
-
-                            String name = module.getString("name");
-
-                            items.forEach(
-                                    obj -> {
-                                        String item = obj.toString();
-
-                                        if (atps.isAllowed("menu", item)) {
-                                            allowedModules
-                                                    .computeIfAbsent(name, __ -> new ArrayList<>())
-                                                    .add(item);
-                                        }
-                                    });
-                        });
-
-        request.setSessionAttribute("modules", allowedModules);
-    }
-
-    private static Map<Integer, JSONObject> _getPrioritizedMenus(JSONObject json) {
-
-        JSONArray modules = json.getJSONArray("modules");
-
-        Map<Integer, JSONObject> prioritizedMenus = new TreeMap<>();
-
-        modules.forEach(
-                obj -> {
-                    JSONObject module = (JSONObject) obj;
-
-                    int priority = module.getInt("priority");
-
-                    prioritizedMenus.put(priority, module);
-                });
-
-        return prioritizedMenus;
-    }
-
-    private String _readMenusFile() throws IOException, URISyntaxException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        menusResource.getInputStream().transferTo(byteArrayOutputStream);
-
-        return byteArrayOutputStream.toString();
+        request.setSessionAttribute(
+                "modules", menuProvider.getAllowedModules(item -> atps.isAllowed("menu", item)));
     }
 
     @Autowired

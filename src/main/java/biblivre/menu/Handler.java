@@ -267,6 +267,10 @@ public class Handler extends AbstractHandler {
         setJspURL("/jsp/setup.jsp");
     }
 
+    public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
+        setJspURL("/jsp/cataloging/import.jsp");
+    }
+
     @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;

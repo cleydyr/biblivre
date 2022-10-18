@@ -24,7 +24,6 @@ import biblivre.cataloging.authorities.AuthorityRecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.dataimport.ImportProcessor;
-import biblivre.cataloging.dataimport.ImportProcessorUtil;
 import biblivre.cataloging.enums.ImportEncoding;
 import biblivre.cataloging.vocabulary.VocabularyRecordBO;
 import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
@@ -33,6 +32,8 @@ import biblivre.core.function.UnsafeSupplier;
 import biblivre.marc.MaterialType;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
 import org.marc4j.marc.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +46,13 @@ public class ImportBO extends AbstractBO {
     private VocabularyRecordBO vocabularyRecordBO;
     private AuthoritiesRecordBO authorityRecordBO;
 
+    private Collection<ImportProcessor> importProcessors = Collections.emptyList();
+
     public ImportDTO loadFromFile(UnsafeSupplier<InputStream> inputStreamSupplier)
             throws IOException {
         ImportDTO importDTO = null;
 
-        for (ImportProcessor importProcessor : ImportProcessorUtil.getImportProcessors()) {
+        for (ImportProcessor importProcessor : importProcessors) {
             try (InputStream is = inputStreamSupplier.get()) {
                 importDTO = importProcessor.importData(is, this::dtoFromRecord);
 
@@ -113,5 +116,10 @@ public class ImportBO extends AbstractBO {
     @Autowired
     public void setAuthorityRecordBO(AuthoritiesRecordBO authorityRecordBO) {
         this.authorityRecordBO = authorityRecordBO;
+    }
+
+    @Autowired
+    public void setImportProcessors(Collection<ImportProcessor> importProcessors) {
+        this.importProcessors = importProcessors;
     }
 }
