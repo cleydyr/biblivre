@@ -198,7 +198,6 @@ public class RestoreBO extends AbstractBO {
         Files.lines(restore.toPath())
                 .filter(StringUtils::isNotBlank)
                 .filter(RestoreBO::_isNotCommentLine)
-                .filter(RestoreBO::_isNotReferringToGlobalUnlink)
                 .forEach(
                         line -> {
                             _writeLine(bw, line);
@@ -858,9 +857,5 @@ public class RestoreBO extends AbstractBO {
 
     private static boolean _isNotCommentLine(String line) {
         return !line.trim().startsWith("--");
-    }
-
-    private static boolean _isNotReferringToGlobalUnlink(String line) {
-        return !line.contains("global.unlink");
     }
 }

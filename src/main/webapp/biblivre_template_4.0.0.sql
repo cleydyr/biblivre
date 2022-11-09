@@ -4079,16 +4079,6 @@ CREATE TRIGGER "TRIGGER_clear_vocabulary_indexing_type" AFTER DELETE ON vocabula
 
 CREATE TRIGGER "TRIGGER_clear_vocabulary_record" AFTER DELETE ON vocabulary_records FOR EACH ROW EXECUTE PROCEDURE clear_record('vocabulary');
 
-
---
--- TOC entry 2762 (class 2620 OID 729935)
--- Dependencies: 265 206
--- Name: TRIGGER_digital_media_lo; Type: TRIGGER; Schema: bib4template; Owner: biblivre
---
-
-CREATE TRIGGER "TRIGGER_digital_media_lo" BEFORE DELETE ON digital_media FOR EACH ROW EXECUTE PROCEDURE global.unlink();
-
-
 --
 -- TOC entry 2737 (class 2606 OID 729936)
 -- Dependencies: 170 172 2604

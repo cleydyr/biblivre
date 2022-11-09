@@ -1,6 +1,7 @@
 package biblivre.digitalmedia.migrator;
 
 import biblivre.core.AbstractDAO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.schemas.Schemas;
@@ -59,33 +60,37 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
 
         PostgresLargeObjectDigitalMediaDAO digitalMediaDAO =
                 (PostgresLargeObjectDigitalMediaDAO)
-                        AbstractDAO.getInstance(
-                                PostgresLargeObjectDigitalMediaDAO.class, schemaName);
+                        AbstractDAO.getInstance(PostgresLargeObjectDigitalMediaDAO.class);
 
-        List<DigitalMediaDTO> list = digitalMediaDAO.list();
+        SchemaThreadLocal.withSchema(
+                schemaName,
+                () -> {
+                    List<DigitalMediaDTO> list = digitalMediaDAO.list();
 
-        for (DigitalMediaDTO media : list) {
-            try {
-                DatabaseFile databaseFile =
-                        (DatabaseFile) digitalMediaDAO.load(media.getId(), media.getName());
+                    for (DigitalMediaDTO media : list) {
+                        try {
+                            DatabaseFile databaseFile =
+                                    (DatabaseFile)
+                                            digitalMediaDAO.load(media.getId(), media.getName());
 
-                logger.info(
-                        "Uploading {}, (id: {}, size: {})",
-                        media.getId(),
-                        media.getName(),
-                        FileUtils.byteCountToDisplaySize(databaseFile.getSize()));
+                            logger.info(
+                                    "Uploading {}, (id: {}, size: {})",
+                                    media.getId(),
+                                    media.getName(),
+                                    FileUtils.byteCountToDisplaySize(databaseFile.getSize()));
 
-                _uploadToS3(databaseFile);
+                            _uploadToS3(databaseFile);
 
-                logger.info("Removing {}, (id: {})", media.getName(), media.getId());
+                            logger.info("Removing {}, (id: {})", media.getName(), media.getId());
 
-                _delete(databaseFile);
+                            _delete(databaseFile);
 
-                _cleanUp(databaseFile);
-            } catch (SQLException e) {
-                throw new DAOException(e);
-            }
-        }
+                            _cleanUp(databaseFile);
+                        } catch (SQLException e) {
+                            throw new DAOException(e);
+                        }
+                    }
+                });
     }
 
     private void _cleanUp(DatabaseFile databaseFile) throws SQLException {
