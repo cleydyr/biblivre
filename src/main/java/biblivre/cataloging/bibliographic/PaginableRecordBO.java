@@ -1,6 +1,6 @@
 package biblivre.cataloging.bibliographic;
 
-import biblivre.administration.indexing.IndexingGroups;
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class PaginableRecordBO extends RecordBO {
     protected HoldingBO holdingBO;
     protected SearchDAO searchDAO;
+    private IndexingGroupBO indexingGroupBO;
 
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
@@ -59,7 +60,7 @@ public abstract class PaginableRecordBO extends RecordBO {
 
         search.setQuery(searchQuery);
 
-        search.setSort(IndexingGroups.getDefaultSortableGroupId(getRecordType()));
+        search.setSort(indexingGroupBO.getDefaultSortableGroupId(getRecordType()));
 
         search(search);
 
@@ -152,5 +153,10 @@ public abstract class PaginableRecordBO extends RecordBO {
     @Autowired
     public void setSearchDAO(SearchDAO seachDAO) {
         this.searchDAO = seachDAO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }

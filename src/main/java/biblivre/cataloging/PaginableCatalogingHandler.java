@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.indexing.IndexingGroupDTO;
-import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -53,6 +53,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
+    private IndexingGroupBO indexingGroupBO;
+
     public PaginableCatalogingHandler(
             PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
         super(paginableRecordBO, defaultMaterialType);
@@ -75,7 +77,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
+        List<IndexingGroupDTO> groups =
+                indexingGroupBO.getGroups(paginableRecordBO.getRecordType());
 
         put("search", search.toJSONObject());
 
@@ -85,7 +88,12 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = HttpRequestSearchHelper.paginate(request, paginableRecordBO);
+        Integer defaultSortableGroupId =
+                indexingGroupBO.getDefaultSortableGroupId(paginableRecordBO.getRecordType());
+
+        SearchDTO search =
+                HttpRequestSearchHelper.paginate(
+                        request, paginableRecordBO, defaultSortableGroupId);
 
         if (search == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -110,7 +118,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         put("search", search.toJSONObject());
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
+        List<IndexingGroupDTO> groups =
+                indexingGroupBO.getGroups(paginableRecordBO.getRecordType());
 
         for (IndexingGroupDTO group : groups) {
             accumulate("indexing_groups", group.toJSONObject());
@@ -329,5 +338,10 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
                                             return RecordType.fromString(recordTypeName);
                                         },
                                         Map.Entry::getValue));
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }

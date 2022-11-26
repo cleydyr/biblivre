@@ -24,7 +24,7 @@ import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.administration.backup.BackupBO;
-import biblivre.administration.indexing.IndexingGroups;
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
@@ -52,6 +52,7 @@ public class Handler extends AbstractHandler {
     private BackupBO backupBO;
     private UserTypeBO userTypeBO;
     private UserFieldBO userFieldBO;
+    private IndexingGroupBO indexingGroupBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
@@ -68,7 +69,7 @@ public class Handler extends AbstractHandler {
         String letter = request.getString("letter");
         Integer order =
                 request.getInteger(
-                        "order", IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
+                        "order", indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         if (StringUtils.isBlank(letter)) {
             letter = "a";
@@ -91,22 +92,43 @@ public class Handler extends AbstractHandler {
     }
 
     public void searchBibliographic(ExtendedRequest request, ExtendedResponse response) {
+        String language = (String) request.getAttribute("language");
+
+        request.setAttribute(
+                "bibliographicSearchableGroupsText",
+                indexingGroupBO.getSearchableGroupsText(RecordType.BIBLIO, language));
+
         setJspURL("/jsp/search/bibliographic.jsp");
     }
 
     public void searchAuthorities(ExtendedRequest request, ExtendedResponse response) {
+        String language = (String) request.getAttribute("language");
+
+        request.setAttribute(
+                "authoritiesSearchableGroupsText",
+                indexingGroupBO.getSearchableGroupsText(RecordType.AUTHORITIES, language));
+
         setJspURL("/jsp/search/authorities.jsp");
     }
 
     public void searchVocabulary(ExtendedRequest request, ExtendedResponse response) {
+        String language = (String) request.getAttribute("language");
+
+        request.setAttribute(
+                "vocabulariesSearchableGroupsText",
+                indexingGroupBO.getSearchableGroupsText(RecordType.VOCABULARY, language));
+
         setJspURL("/jsp/search/vocabulary.jsp");
     }
 
     public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
+
         setJspURL("/jsp/cataloging/bibliographic.jsp");
     }
 
     public void catalogingAuthorities(ExtendedRequest request, ExtendedResponse response) {
+
         setJspURL("/jsp/cataloging/authorities.jsp");
     }
 
@@ -115,6 +137,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void catalogingLabels(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
+
         setJspURL("/jsp/cataloging/labels.jsp");
     }
 
@@ -324,5 +348,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setUserFieldBO(UserFieldBO userFieldBO) {
         this.userFieldBO = userFieldBO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }

@@ -45,6 +45,8 @@ public class IndexingBO extends AbstractBO {
 
     private Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
+    private IndexingGroupBO indexingGroupBO;
+
     public void reindex(RecordType recordType) {
         if (this.getLockState(recordType)) {
             return;
@@ -56,7 +58,7 @@ public class IndexingBO extends AbstractBO {
             try {
                 this.clearIndexes(recordType);
 
-                List<IndexingGroupDTO> indexingGroups = IndexingGroups.getGroups(recordType);
+                List<IndexingGroupDTO> indexingGroups = indexingGroupBO.getGroups(recordType);
                 List<FormTabSubfieldDTO> autocompleteSubfields =
                         Fields.getAutocompleteSubFields(recordType);
 
@@ -195,5 +197,10 @@ public class IndexingBO extends AbstractBO {
     @Autowired
     public void setIndexingDAO(IndexingDAO indexingDAO) {
         this.indexingDAO = indexingDAO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }

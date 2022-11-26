@@ -49,7 +49,7 @@ public interface IndexingDAO {
         RecordType recordType = dto.getRecordType();
 
         synchronized (this) {
-            List<IndexingGroupDTO> indexingGroups = IndexingGroups.getGroups(recordType);
+            List<IndexingGroupDTO> indexingGroups = getIndexingGroups(recordType);
             List<FormTabSubfieldDTO> autocompleteSubfields =
                     Fields.getAutocompleteSubFields(recordType);
 
@@ -67,6 +67,8 @@ public interface IndexingDAO {
             insertAutocompleteIndexes(recordType, autocompleteIndexes);
         }
     }
+
+    List<IndexingGroupDTO> getIndexingGroups(RecordType recordType);
 
     static void populateIndexes(
             RecordDTO dto,

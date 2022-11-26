@@ -1,12 +1,14 @@
 package biblivre.cataloging;
 
-import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.ExtendedRequest;
 
 public class HttpRequestSearchHelper {
-    public static SearchDTO paginate(ExtendedRequest request, PaginableRecordBO paginableRecordBO) {
+    public static SearchDTO paginate(
+            ExtendedRequest request,
+            PaginableRecordBO paginableRecordBO,
+            int defaultSortableGroupId) {
         Integer searchId = request.getInteger("search_id", null);
 
         SearchDTO search = paginableRecordBO.getSearch(searchId);
@@ -14,9 +16,6 @@ public class HttpRequestSearchHelper {
         if (search == null) {
             return null;
         }
-
-        Integer defaultSortableGroupId =
-                IndexingGroups.getDefaultSortableGroupId(paginableRecordBO.getRecordType());
 
         Integer sort = request.getInteger("sort", defaultSortableGroupId);
 

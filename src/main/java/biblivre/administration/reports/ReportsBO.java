@@ -1,6 +1,6 @@
 package biblivre.administration.reports;
 
-import biblivre.administration.indexing.IndexingGroups;
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.reports.dto.CustomCountDto;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
@@ -32,6 +32,7 @@ public class ReportsBO extends AbstractBO {
     private BiblioRecordBO biblioRecordBO;
 
     private Collection<IBiblivreReport> reports;
+    private IndexingGroupBO indexingGroupBO;
 
     public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
         ReportType type = dto.getType();
@@ -71,7 +72,7 @@ public class ReportsBO extends AbstractBO {
             while (hasMore) {
                 SearchDTO search = biblioRecordBO.getSearch(reportsDto.getSearchId());
 
-                search.setSort(IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
+                search.setSort(indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
                 search.setIndexingGroup(0);
                 search.getPaging().setRecordsPerPage(limit);
                 search.getPaging().setPage(++page);
@@ -155,5 +156,10 @@ public class ReportsBO extends AbstractBO {
     @Autowired
     public void setReports(Collection<IBiblivreReport> reports) {
         this.reports = reports;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }

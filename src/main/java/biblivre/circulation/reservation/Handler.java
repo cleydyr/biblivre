@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.circulation.reservation;
 
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.indexing.IndexingGroupDTO;
-import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.HttpRequestSearchHelper;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
@@ -49,6 +49,7 @@ public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private ReservationBO reservationBO;
     private biblivre.circulation.user.Handler userHandler;
+    private IndexingGroupBO indexingGroupBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -72,7 +73,7 @@ public class Handler extends AbstractHandler {
 
         reservationBO.populateReservationInfoByBiblio(search);
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(recordType);
+        List<IndexingGroupDTO> groups = indexingGroupBO.getGroups(recordType);
 
         try {
             put("search", search.toJSONObject());
@@ -87,7 +88,11 @@ public class Handler extends AbstractHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = HttpRequestSearchHelper.paginate(request, biblioRecordBO);
+        Integer defaultSortableGroupId =
+                indexingGroupBO.getDefaultSortableGroupId(biblioRecordBO.getRecordType());
+
+        SearchDTO search =
+                HttpRequestSearchHelper.paginate(request, biblioRecordBO, defaultSortableGroupId);
 
         if (search == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -106,7 +111,7 @@ public class Handler extends AbstractHandler {
 
         put("search", search.toJSONObject());
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(RecordType.BIBLIO);
+        List<IndexingGroupDTO> groups = indexingGroupBO.getGroups(RecordType.BIBLIO);
 
         for (IndexingGroupDTO group : groups) {
             accumulate("indexing_groups", group.toJSONObject());
@@ -208,7 +213,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(RecordType.BIBLIO);
+        List<IndexingGroupDTO> groups = indexingGroupBO.getGroups(RecordType.BIBLIO);
 
         try {
             put("search", search.toJSONObject());
@@ -327,5 +332,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
         this.userHandler = userHandler;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }

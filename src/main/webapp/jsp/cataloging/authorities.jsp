@@ -1,7 +1,6 @@
 <%@ page import="biblivre.marc.MaterialType" %>
 <%@ page import="biblivre.cataloging.enums.RecordType" %>
 <%@ page import="biblivre.cataloging.Fields" %>
-<%@ page import="biblivre.administration.indexing.IndexingGroups" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>

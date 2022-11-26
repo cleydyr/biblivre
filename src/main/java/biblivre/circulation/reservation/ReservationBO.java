@@ -19,12 +19,14 @@
  ******************************************************************************/
 package biblivre.circulation.reservation;
 
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -51,6 +53,7 @@ public class ReservationBO extends AbstractBO {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
     private UserTypeBO userTypeBO;
+    private IndexingGroupBO indexingGroupBO;
 
     public boolean deleteExpired() {
         return this.reservationDAO.deleteExpired();
@@ -61,7 +64,8 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationDTO> get(RecordDTO record) {
-        return this.reservationDAO.list(null, record);
+        return this.reservationDAO.list(
+                null, record, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
     }
 
     public int countReserved(RecordDTO record) {
@@ -74,7 +78,9 @@ public class ReservationBO extends AbstractBO {
 
     public List<Integer> listReservedRecordIds(UserDTO user) {
         List<Integer> reservedRecords = new ArrayList<>();
-        List<ReservationDTO> list = this.reservationDAO.list(user, null);
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        user, null, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         for (ReservationDTO dto : list) {
             reservedRecords.add(dto.getRecordId());
@@ -84,7 +90,9 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationDTO> list(UserDTO user) {
-        List<ReservationDTO> list = this.reservationDAO.list(user, null);
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        user, null, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         for (ReservationDTO dto : list) {
             BiblioRecordDTO record =
@@ -98,7 +106,9 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
-        List<ReservationDTO> list = this.reservationDAO.list(user, null);
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        user, null, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
         List<ReservationInfoDTO> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
@@ -116,7 +126,9 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationInfoDTO> list() {
-        List<ReservationDTO> list = this.reservationDAO.list();
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
         List<ReservationInfoDTO> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
@@ -263,5 +275,10 @@ public class ReservationBO extends AbstractBO {
     @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }
