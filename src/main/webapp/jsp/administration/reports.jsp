@@ -1,4 +1,3 @@
-<%@page import="biblivre.circulation.user.UserFields"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
 <%@page import="biblivre.cataloging.Fields"%>

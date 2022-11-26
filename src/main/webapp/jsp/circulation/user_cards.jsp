@@ -1,4 +1,3 @@
-<%@page import="biblivre.circulation.user.UserFields"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.administration.usertype.UserTypeBO"%>
 <%@page import="biblivre.administration.usertype.UserTypeDTO"%>
@@ -16,7 +15,7 @@
 	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.circulation.user_cards.js"></script>
 
-	<script type="text/javascript" src="/static/scripts/<%= UserFields.getFields().getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.cacheFileName}"></script>
 
 	<script type="text/javascript" src="/static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/styles/zebra.bootstrap.css">
@@ -51,7 +50,7 @@
 	</script>
 </layout:head>
 
-<c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
+<c:set var="user_field_prefix" value="<%=Constants.TRANSLATION_USER_FIELD%>" scope="page" />
 
 <layout:body>
 	<div id="circulation_user">
@@ -83,7 +82,7 @@
 					<label class="search_label"><i18n:text key="search.user.field" /></label>
 					<select name="field" class="combo">
 						<option value=""><i18n:text key="search.user.name_or_id" /></option>
-						<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
+						<c:forEach var="field" items="${requestScope.searchableFields}" >
 							<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 						</c:forEach>
 					</select>
@@ -100,7 +99,7 @@
 						<label class="search_label"><i18n:text key="search.user.field" /></label>
 						<select name="field" class="combo combo_expand">
 							<option value=""><i18n:text key="search.user.name_or_id" /></option>
-							<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
+							<c:forEach var="field" items="${requestScope.searchableFields}" >
 								<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 							</c:forEach>
 						</select>

@@ -31,6 +31,7 @@ import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
+import biblivre.circulation.user.UserFieldBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -50,6 +51,7 @@ public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private BackupBO backupBO;
     private UserTypeBO userTypeBO;
+    private UserFieldBO userFieldBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
@@ -118,14 +120,23 @@ public class Handler extends AbstractHandler {
 
     public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("userTypes", userTypeBO.list());
+
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
+        request.setAttribute("cacheFileName", userFieldBO.getFields().getCacheFileName());
+
         setJspURL("/jsp/circulation/user.jsp");
     }
 
     public void circulationLending(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/circulation/lending.jsp");
     }
 
     public void circulationReservation(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/circulation/reservation.jsp");
     }
 
@@ -141,16 +152,23 @@ public class Handler extends AbstractHandler {
                 request.setAttribute("RESERVATION_USER_ID", 0);
             }
 
+            request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
             setJspURL("/jsp/circulation/user_reservation.jsp");
         }
-        return;
     }
 
     public void circulationAccess(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/circulation/access_control.jsp");
     }
 
     public void circulationUserCards(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
+        request.setAttribute("cacheFileName", userFieldBO.getFields().getCacheFileName());
+
         setJspURL("/jsp/circulation/user_cards.jsp");
     }
 
@@ -188,6 +206,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationPermissions(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/administration/permissions.jsp");
     }
 
@@ -299,5 +319,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Autowired
+    public void setUserFieldBO(UserFieldBO userFieldBO) {
+        this.userFieldBO = userFieldBO;
     }
 }

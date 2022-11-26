@@ -39,10 +39,6 @@ import biblivre.administration.permissions.PermissionDAO;
 import biblivre.administration.permissions.PermissionDAOImpl;
 import biblivre.administration.reports.ReportsDAO;
 import biblivre.administration.reports.ReportsDAOImpl;
-import biblivre.administration.setup.DataMigrationDAO;
-import biblivre.administration.setup.DataMigrationDAOImpl;
-import biblivre.administration.setup.SetupDAO;
-import biblivre.administration.setup.SetupDAOImpl;
 import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.administration.usertype.UserTypeDAOImpl;
 import biblivre.cataloging.RecordDAO;
@@ -61,6 +57,8 @@ import biblivre.circulation.reservation.ReservationDAO;
 import biblivre.circulation.reservation.ReservationDAOImpl;
 import biblivre.circulation.user.UserDAO;
 import biblivre.circulation.user.UserDAOImpl;
+import biblivre.circulation.user.UserFieldsDAO;
+import biblivre.circulation.user.UserFieldsDAOImpl;
 import biblivre.core.DigitalMediaMigrator;
 import biblivre.core.Updates;
 import biblivre.core.controllers.ExtendedRequestResponseFilter;
@@ -139,11 +137,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public DataMigrationDAO dataMigrationDAOImpl() {
-        return DataMigrationDAOImpl.getInstance();
-    }
-
-    @Bean
     public DigitalMediaDAO digitalMediaDAO() {
         return DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
     }
@@ -219,11 +212,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public SetupDAO setupDAO() {
-        return SetupDAOImpl.getInstance();
-    }
-
-    @Bean
     public SupplierDAO supplierDAO() {
         return SupplierDAOImpl.getInstance();
     }
@@ -244,8 +232,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public DataMigrationDAOImpl dataMigrationDAO() {
-        return DataMigrationDAOImpl.getInstance();
+    public UserFieldsDAO userFieldsDAO() {
+        return UserFieldsDAOImpl.getInstance();
     }
 
     @Autowired private ApplicationContext applicationContext;

@@ -23,13 +23,19 @@ import biblivre.core.utils.BiblivreEnum;
 import org.apache.commons.lang3.StringUtils;
 
 public enum UserFieldType implements BiblivreEnum {
-    STRING,
-    TEXT,
-    NUMBER,
-    DATE,
-    DATETIME,
-    BOOLEAN,
-    LIST;
+    STRING(true),
+    TEXT(true),
+    NUMBER(true),
+    DATE(false),
+    DATETIME(false),
+    BOOLEAN(false),
+    LIST(false);
+
+    private final boolean searchable;
+
+    private UserFieldType(boolean searchable) {
+        this.searchable = searchable;
+    }
 
     public static UserFieldType fromString(String str) {
         if (StringUtils.isBlank(str)) {
@@ -54,5 +60,9 @@ public enum UserFieldType implements BiblivreEnum {
 
     public String getString() {
         return this.toString();
+    }
+
+    public boolean isSearchable() {
+        return searchable;
     }
 }

@@ -54,6 +54,7 @@ public class Handler extends AbstractHandler {
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
     private DigitalMediaBO digitalMediaBO;
+    private UserFieldBO userFieldBO;
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -137,8 +138,7 @@ public class Handler extends AbstractHandler {
 
         user.setCreatedBy(request.getLoggedUserId());
 
-        Collection<UserFieldDTO> userFields = UserFields.getFields();
-        for (UserFieldDTO userField : userFields) {
+        for (UserFieldDTO userField : userFieldBO.getFields()) {
             String key = userField.getKey();
             if (request.hasParameter(key)) {
                 user.addField(key, request.getString(key));
@@ -304,5 +304,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
         this.digitalMediaBO = digitalMediaBO;
+    }
+
+    @Autowired
+    public void setUserFieldBO(UserFieldBO userFieldBO) {
+        this.userFieldBO = userFieldBO;
     }
 }

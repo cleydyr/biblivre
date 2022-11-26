@@ -5,7 +5,6 @@
 <%@page import="biblivre.administration.usertype.UserTypeBO"%>
 <%@page import="biblivre.administration.usertype.UserTypeDTO"%>
 <%@ page import="biblivre.core.utils.Constants" %>
-<%@ page import="biblivre.circulation.user.UserFields" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -47,7 +46,7 @@
 </layout:head>
 
 <layout:body>
-	<c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
+	<c:set var="user_field_prefix" value="<%=Constants.TRANSLATION_USER_FIELD%>" scope="page" />
 	<div class="page_help"><i18n:text key="circulation.lending.page_help" /></div>
 
 	<div id="circulation_search">
@@ -125,8 +124,8 @@
 									<div class="ncspacer"></div>
 
 									<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.info.lending.daysLate || 0) }</span><br/>
-									<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
-									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
+									<label><i18n:text key="circulation.lending.daily_fine" /></label>:Configurations.getString(Constants.CONFIG_CURRENCY)CY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
+									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"Configurations.getString(Constants.CONFIG_CURRENCY)CY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
 								{#/if}
 							</div>
 							<div class="lending_buttons">
@@ -158,7 +157,7 @@
 					<label class="search_label"><i18n:text key="search.user.field" /></label>
 					<select name="field" class="combo">
 						<option value=""><i18n:text key="search.user.name_or_id" /></option>
-						<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
+						<c:forEach var="field" items="${requestScope.searchableFields}" >
 							<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 						</c:forEach>
 					</select>

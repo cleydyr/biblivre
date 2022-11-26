@@ -21,7 +21,6 @@ package biblivre.core;
 
 import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.Fields;
-import biblivre.circulation.user.UserFields;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Languages;
@@ -35,6 +34,5 @@ public abstract class StaticBO {
         Languages.resetAll();
         Schemas.reset();
         Translations.reset();
-        UserFields.resetAll();
     }
 }

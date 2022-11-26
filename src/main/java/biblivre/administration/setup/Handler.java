@@ -31,7 +31,6 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.StaticBO;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
-import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.schemas.SchemaDTO;
@@ -42,7 +41,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +60,6 @@ import org.springframework.stereotype.Component;
 public class Handler extends AbstractHandler {
     private RestoreBO restoreBO;
     private BackupBO backupBO;
-    private DataMigrationBO dataMigrationBO;
 
     public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
 
@@ -415,63 +412,6 @@ public class Handler extends AbstractHandler {
             State.writeLog(ExceptionUtils.getStackTrace(e));
             State.cancel();
         } catch (Throwable e) {
-            this.setMessage(e);
-            State.writeLog(ExceptionUtils.getStackTrace(e));
-            State.cancel();
-        }
-
-        put("success", success);
-    }
-
-    public void importBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-        String schema = SchemaThreadLocal.get();
-
-        String origin = request.getString("origin", "biblivre3");
-
-        String[] groups = request.getParameterValues("groups[]");
-        List<DataMigrationPhaseGroup> phaseGroups = new ArrayList<>();
-
-        if (groups != null) {
-            for (String group : groups) {
-                phaseGroups.add(DataMigrationPhaseGroup.fromString(group));
-            }
-        }
-
-        if (phaseGroups.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return;
-        }
-
-        List<DataMigrationPhase> selectedPhases = new ArrayList<>();
-        for (DataMigrationPhaseGroup group : phaseGroups) {
-            selectedPhases.addAll(group.getPhases());
-        }
-
-        boolean success = false;
-
-        try {
-            State.start();
-            State.writeLog(
-                    request.getLocalizedText("administration.setup.biblivre3import.log_header"));
-
-            success = dataMigrationBO.migrate(schema, origin, selectedPhases);
-
-            if (success) {
-                ConfigurationsDTO cdto =
-                        new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(cdto, 0);
-
-                StaticBO.resetCache();
-
-                State.finish();
-            } else {
-                State.cancel();
-            }
-        } catch (ValidationException e) {
-            this.setMessage(e);
-            State.writeLog(request.getLocalizedText(e.getMessage()));
-            State.cancel();
-        } catch (Exception e) {
             this.setMessage(e);
             State.writeLog(ExceptionUtils.getStackTrace(e));
             State.cancel();
