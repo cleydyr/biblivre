@@ -22,7 +22,7 @@ package biblivre.core.controllers;
 import biblivre.BiblivreInitializer;
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
-import biblivre.cataloging.Fields;
+import biblivre.cataloging.TabFieldsBO;
 import biblivre.circulation.user.UserFieldBO;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -61,6 +61,8 @@ public final class SchemaServlet extends HttpServlet {
 
     private UserFieldBO userFields;
 
+    private TabFieldsBO tabFieldsBO;
+
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -91,6 +93,8 @@ public final class SchemaServlet extends HttpServlet {
         jsonController.setResponse((ExtendedResponse) response);
 
         userFields = webApplicationContext.getBean(UserFieldBO.class);
+
+        tabFieldsBO = webApplicationContext.getBean(TabFieldsBO.class);
     }
 
     @Override
@@ -228,7 +232,8 @@ public final class SchemaServlet extends HttpServlet {
                 javascript = SchemaThreadLocal.withSchema(schema, userFields::getFields);
             } else {
                 javascript =
-                        SchemaThreadLocal.withSchema(schema, () -> Fields.getFormFields(params[2]));
+                        SchemaThreadLocal.withSchema(
+                                schema, () -> tabFieldsBO.getFormFields(params[2]));
             }
 
             File cacheFile = javascript.getCacheFile();

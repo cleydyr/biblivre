@@ -44,6 +44,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
     private IndexingGroupBO indexingGroupBO;
+
+    protected TabFieldsBO tabFieldsBO;
 
     public PaginableCatalogingHandler(
             PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
@@ -158,7 +161,11 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        put("data", dto.toJSONObject());
+        JSONObject recordJSON = dto.toJSONObject();
+
+        populateFields(dto, recordJSON);
+
+        put("data", recordJSON);
     }
 
     public void itemCount(ExtendedRequest request, ExtendedResponse response) {
@@ -275,11 +282,15 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             case BIBLIO:
             case AUTHORITIES:
             case VOCABULARY:
-                PaginableRecordBO autocompleteRecordBO =
-                        paginableRecordBOs.get(RecordType.fromString(type.toString()));
+                RecordType recordType = RecordType.fromString(type.toString());
+
+                PaginableRecordBO autocompleteRecordBO = paginableRecordBOs.get(recordType);
 
                 DTOCollection<AutocompleteDTO> autocompletion =
-                        type.getAutocompletion(autocompleteRecordBO, query);
+                        type.getAutocompletion(
+                                autocompleteRecordBO,
+                                query,
+                                tabFieldsBO.getAutocompleteSubFields(recordType));
 
                 putOpt("data", autocompletion.toJSONObject());
 
@@ -316,7 +327,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     public void listBriefFormats(ExtendedRequest request, ExtendedResponse response) {
 
         List<BriefTabFieldFormatDTO> formats =
-                Fields.getBriefFormats(paginableRecordBO.getRecordType());
+                tabFieldsBO.getBriefFormats(paginableRecordBO.getRecordType());
 
         DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<>();
 
@@ -343,5 +354,10 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     @Autowired
     public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
         this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
     }
 }

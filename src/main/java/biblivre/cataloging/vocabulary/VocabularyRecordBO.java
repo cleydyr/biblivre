@@ -20,6 +20,7 @@
 package biblivre.cataloging.vocabulary;
 
 import biblivre.administration.indexing.IndexingDAO;
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
@@ -67,7 +68,10 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            indexingDAO.reindex(dto);
+            indexingDAO.reindex(
+                    dto,
+                    indexingGroupBO.getGroups(dto.getRecordType()),
+                    tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
             return true;
         }
 
@@ -79,7 +83,10 @@ public class VocabularyRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            indexingDAO.reindex(dto);
+            indexingDAO.reindex(
+                    dto,
+                    indexingGroupBO.getGroups(dto.getRecordType()),
+                    tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
             return true;
         }
 
@@ -108,5 +115,10 @@ public class VocabularyRecordBO extends PaginableRecordBO {
     @Autowired
     public void setIndexingDAO(IndexingDAO indexingDAO) {
         this.indexingDAO = indexingDAO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
     }
 }

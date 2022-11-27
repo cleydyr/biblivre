@@ -1,6 +1,6 @@
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
-<%@page import="biblivre.cataloging.Fields"%>
+<%@page import="biblivre.cataloging.TabFieldsBO"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page import="biblivre.cataloging.enums.RecordDatabase"%>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
@@ -20,7 +20,7 @@
 	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.search.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.input.js"></script>
-	<script type="text/javascript" src="/static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.biblioCacheFileName}"></script>
 
 	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
 

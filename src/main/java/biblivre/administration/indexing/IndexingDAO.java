@@ -1,7 +1,6 @@
 package biblivre.administration.indexing;
 
 import biblivre.cataloging.AutocompleteDTO;
-import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabSubfieldDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
@@ -45,14 +44,13 @@ public interface IndexingDAO {
 
     List<String> searchExactTerms(RecordType recordType, int indexingGroupId, List<String> terms);
 
-    default void reindex(RecordDTO dto) {
+    default void reindex(
+            RecordDTO dto,
+            List<IndexingGroupDTO> indexingGroups,
+            List<FormTabSubfieldDTO> autocompleteSubfields) {
         RecordType recordType = dto.getRecordType();
 
         synchronized (this) {
-            List<IndexingGroupDTO> indexingGroups = getIndexingGroups(recordType);
-            List<FormTabSubfieldDTO> autocompleteSubfields =
-                    Fields.getAutocompleteSubFields(recordType);
-
             List<IndexingDTO> indexes = new ArrayList<>();
             List<IndexingDTO> sortIndexes = new ArrayList<>();
             List<AutocompleteDTO> autocompleteIndexes = new ArrayList<>();
@@ -67,8 +65,6 @@ public interface IndexingDAO {
             insertAutocompleteIndexes(recordType, autocompleteIndexes);
         }
     }
-
-    List<IndexingGroupDTO> getIndexingGroups(RecordType recordType);
 
     static void populateIndexes(
             RecordDTO dto,

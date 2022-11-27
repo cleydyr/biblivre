@@ -1,7 +1,7 @@
 <%@page import="biblivre.cataloging.enums.HoldingAvailability"%>
 <%@ page import="biblivre.marc.MaterialType" %>
 <%@ page import="biblivre.cataloging.enums.RecordType" %>
-<%@ page import="biblivre.cataloging.Fields" %>
+
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -19,8 +19,8 @@
 	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.input.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.holding.input.js"></script>
 
-	<script type="text/javascript" src="/static/scripts/<%=Fields.getFormFields("biblio").getCacheFileName()%>"></script>
-	<script type="text/javascript" src="/static/scripts/<%=Fields.getFormFields("holding").getCacheFileName()%>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.biblioCacheFileName}"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.holdingCacheFileName}"></script>
 
 	<script type="text/javascript" src="/static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/styles/zebra.bootstrap.css">

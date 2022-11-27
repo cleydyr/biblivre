@@ -1,18 +1,26 @@
 package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
+import biblivre.core.AbstractDTO;
 import biblivre.core.AbstractHandler;
+import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
+import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
+import java.util.List;
+import org.json.JSONObject;
 import org.marc4j.MarcReader;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class CatalogingHandler extends AbstractHandler {
     protected RecordBO recordBO;
     protected MaterialType defaultMaterialType;
+
+    protected TabFieldsBO tabFieldsBO;
 
     public CatalogingHandler(RecordBO recordBO, MaterialType defaultMaterialType) {
         this.recordBO = recordBO;
@@ -37,7 +45,26 @@ public abstract class CatalogingHandler extends AbstractHandler {
             return;
         }
 
-        put("data", dto.toJSONObject());
+        JSONObject data = dto.toJSONObject();
+
+        populateFields(dto, data);
+
+        put("data", data);
+    }
+
+    protected void populateFields(RecordDTO dto, JSONObject data) {
+        MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
+
+        List<BriefTabFieldDTO> fieldList =
+                marcDataReader.getFieldList(tabFieldsBO.getBriefFormats(dto.getRecordType()));
+
+        DTOCollection<AbstractDTO> collection = new DTOCollection<>();
+
+        collection.addAll(fieldList);
+
+        dto.addExtraData("fields", collection);
+
+        dto.populateExtraData(data);
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
@@ -156,5 +183,10 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
     public void setDefaultMaterialType(MaterialType defaultMaterialType) {
         this.defaultMaterialType = defaultMaterialType;
+    }
+
+    @Autowired
+    public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
     }
 }

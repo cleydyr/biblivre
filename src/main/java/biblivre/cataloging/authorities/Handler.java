@@ -107,10 +107,4 @@ public class Handler extends PaginableCatalogingHandler {
     public void setReportsBO(ReportsBO reportsBO) {
         this.reportsBO = reportsBO;
     }
-
-    //	@Override
-    //	public void paginate(ExtendedRequest request, ExtendedResponse response) {
-    //		this.search(request, response);
-    //	}
-
 }

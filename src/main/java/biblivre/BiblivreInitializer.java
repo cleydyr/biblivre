@@ -43,6 +43,8 @@ import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.administration.usertype.UserTypeDAOImpl;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDAOImpl;
+import biblivre.cataloging.TabFieldsDAO;
+import biblivre.cataloging.TabFieldsDAOImpl;
 import biblivre.cataloging.holding.HoldingDAO;
 import biblivre.cataloging.holding.HoldingDAOImpl;
 import biblivre.cataloging.search.SearchDAO;
@@ -234,6 +236,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public UserFieldsDAO userFieldsDAO() {
         return UserFieldsDAOImpl.getInstance();
+    }
+
+    @Bean
+    public TabFieldsDAO tabFieldsDAO() {
+        return TabFieldsDAOImpl.getInstance();
     }
 
     @Autowired private ApplicationContext applicationContext;

@@ -20,8 +20,8 @@
 package biblivre.administration.customization;
 
 import biblivre.cataloging.BriefTabFieldFormatDTO;
-import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabDatafieldDTO;
+import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
@@ -37,10 +37,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.administration.customization.Handler")
 public class Handler extends AbstractHandler {
+    private TabFieldsBO tabFieldsBO;
 
     public void saveBriefFormats(ExtendedRequest request, ExtendedResponse response) {
         int loggedUser = request.getLoggedUserId();
@@ -67,7 +69,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.updateBriefFormats(recordType, list, loggedUser);
+        boolean success = tabFieldsBO.updateBriefFormats(recordType, list, loggedUser);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -102,7 +104,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.insertBriefFormat(recordType, dto, loggedUser);
+        boolean success = tabFieldsBO.insertBriefFormat(recordType, dto, loggedUser);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -135,7 +137,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.deleteBriefFormat(recordType, dto.getDatafieldTag());
+        boolean success = tabFieldsBO.deleteBriefFormat(recordType, dto.getDatafieldTag());
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -192,7 +194,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean success = Fields.updateFormTabDatafield(recordType, map, loggedUser);
+        boolean success = tabFieldsBO.updateFormTabDatafield(recordType, map, loggedUser);
         success =
                 success && Translations.save(request.getLanguage(), translations, null, loggedUser);
 
@@ -208,12 +210,17 @@ public class Handler extends AbstractHandler {
         RecordType recordType = request.getEnum(RecordType.class, "record_type", RecordType.BIBLIO);
         String datafieldTag = request.getString("datafield");
 
-        boolean success = Fields.deleteFormTabDatafield(recordType, datafieldTag);
+        boolean success = tabFieldsBO.deleteFormTabDatafield(recordType, datafieldTag);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.delete");
         } else {
             this.setMessage(ActionResult.WARNING, "cataloging.record.error.delete");
         }
+    }
+
+    @Autowired
+    public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
     }
 }

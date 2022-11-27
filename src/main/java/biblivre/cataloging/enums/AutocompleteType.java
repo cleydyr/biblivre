@@ -20,7 +20,6 @@
 package biblivre.cataloging.enums;
 
 import biblivre.cataloging.AutocompleteDTO;
-import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabSubfieldDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.core.DTOCollection;
@@ -76,12 +75,11 @@ public enum AutocompleteType implements BiblivreEnum {
         return recordBO.phraseAutocomplete(datafield, subfield, query);
     }
 
-    public DTOCollection<AutocompleteDTO> getAutocompletion(RecordBO recordBO, String query) {
-        RecordType recordType = RecordType.fromString(this.toString());
-
+    public DTOCollection<AutocompleteDTO> getAutocompletion(
+            RecordBO recordBO, String query, Iterable<FormTabSubfieldDTO> autocompleteSubFields) {
         Set<AutocompleteDTO> set = new HashSet<>();
 
-        for (FormTabSubfieldDTO formTabSubfield : Fields.getAutocompleteSubFields(recordType)) {
+        for (FormTabSubfieldDTO formTabSubfield : autocompleteSubFields) {
 
             String datafield = formTabSubfield.getDatafield();
 

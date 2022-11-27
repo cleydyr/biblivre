@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core;
 
-import biblivre.cataloging.Fields;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.schemas.Schemas;
 import biblivre.core.translations.Languages;
@@ -28,7 +27,6 @@ import biblivre.core.translations.Translations;
 public abstract class StaticBO {
     public static void resetCache() {
         Configurations.reset();
-        Fields.resetAll();
         Languages.resetAll();
         Schemas.reset();
         Translations.reset();

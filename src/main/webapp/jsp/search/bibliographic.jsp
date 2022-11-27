@@ -1,4 +1,4 @@
-<%@ page import="biblivre.cataloging.Fields"%>
+<%@ page import="biblivre.cataloging.TabFieldsBO"%>
 <%@ page import="biblivre.cataloging.enums.HoldingAvailability"%>
 <%@ page import="biblivre.cataloging.enums.RecordType"%>
 <%@ page import="biblivre.marc.MaterialType"%>
@@ -19,8 +19,8 @@
 	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.input.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.holding.input.js"></script>
 
-	<script type="text/javascript" src="/static/scripts/<%=Fields.getFormFields("biblio").getCacheFileName()%>"></script>
-	<script type="text/javascript" src="/static/scripts/<%=Fields.getFormFields("holding").getCacheFileName()%>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.biblioCacheFileName}"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.holdingCacheFileName}"></script>
 
 	<script type="text/javascript" src="/static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/styles/zebra.bootstrap.css">
@@ -266,7 +266,7 @@
 					<div class="field">
 						<label class="search_label"><i18n:text key="search.common.on_the_field" /></label>
 						<select name="field" class="combo combo_expand">
-							<c:forEach var="group" items="<%=IndexingGroupBO.getGroups(RecordType.BIBLIO)%>">
+							<c:forEach var="group" items="${requestScope.biblioIndexingGroups}">
 								<option value="${group.id}"><i18n:text key="cataloging.bibliographic.indexing_groups.${group.translationKey}" /></option>
 							</c:forEach>
 						</select>

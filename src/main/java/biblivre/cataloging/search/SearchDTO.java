@@ -28,8 +28,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class SearchDTO extends DTOCollection<RecordDTO> {
-    private static final long serialVersionUID = 1L;
-
     private RecordType recordType;
 
     private SearchQueryDTO query;

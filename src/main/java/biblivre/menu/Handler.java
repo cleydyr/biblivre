@@ -27,6 +27,7 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserBO;
@@ -53,6 +54,7 @@ public class Handler extends AbstractHandler {
     private UserTypeBO userTypeBO;
     private UserFieldBO userFieldBO;
     private IndexingGroupBO indexingGroupBO;
+    private TabFieldsBO tabFieldsBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
@@ -98,11 +100,19 @@ public class Handler extends AbstractHandler {
                 "bibliographicSearchableGroupsText",
                 indexingGroupBO.getSearchableGroupsText(RecordType.BIBLIO, language));
 
+        request.setAttribute("biblioCachefilename", tabFieldsBO.getFormFields(RecordType.BIBLIO));
+
+        request.setAttribute("holdingCachefilename", tabFieldsBO.getFormFields(RecordType.HOLDING));
+
         setJspURL("/jsp/search/bibliographic.jsp");
     }
 
     public void searchAuthorities(ExtendedRequest request, ExtendedResponse response) {
         String language = (String) request.getAttribute("language");
+
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
 
         request.setAttribute(
                 "authoritiesSearchableGroupsText",
@@ -115,6 +125,10 @@ public class Handler extends AbstractHandler {
         String language = (String) request.getAttribute("language");
 
         request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
+        request.setAttribute(
                 "vocabulariesSearchableGroupsText",
                 indexingGroupBO.getSearchableGroupsText(RecordType.VOCABULARY, language));
 
@@ -122,17 +136,30 @@ public class Handler extends AbstractHandler {
     }
 
     public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+        request.setAttribute(
+                "holdingCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.HOLDING).getCacheFileName());
         request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
 
         setJspURL("/jsp/cataloging/bibliographic.jsp");
     }
 
     public void catalogingAuthorities(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
 
         setJspURL("/jsp/cataloging/authorities.jsp");
     }
 
     public void catalogingVocabulary(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
         setJspURL("/jsp/cataloging/vocabulary.jsp");
     }
 
@@ -242,6 +269,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+
         setJspURL("/jsp/administration/reports.jsp");
     }
 
@@ -263,11 +294,31 @@ public class Handler extends AbstractHandler {
 
     public void administrationBriefCustomization(
             ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
+        request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
         setJspURL("/jsp/administration/brief_customization.jsp");
     }
 
     public void administrationFormCustomization(
             ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
+        request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
         setJspURL("/jsp/administration/form_customization.jsp");
     }
 
@@ -353,5 +404,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
         this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
     }
 }
