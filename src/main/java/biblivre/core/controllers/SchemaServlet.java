@@ -32,6 +32,7 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.DiskFile;
+import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.Translations;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
@@ -62,6 +63,8 @@ public final class SchemaServlet extends HttpServlet {
     private UserFieldBO userFields;
 
     private TabFieldsBO tabFieldsBO;
+
+    private LanguageBO languageBO;
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -95,6 +98,8 @@ public final class SchemaServlet extends HttpServlet {
         userFields = webApplicationContext.getBean(UserFieldBO.class);
 
         tabFieldsBO = webApplicationContext.getBean(TabFieldsBO.class);
+
+        languageBO = webApplicationContext.getBean(LanguageBO.class);
     }
 
     @Override
@@ -252,7 +257,7 @@ public final class SchemaServlet extends HttpServlet {
         RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
 
         ExtendedRequest wrapped =
-                new ExtendedRequest(request, getRequestParserHelper(request)) {
+                new ExtendedRequest(request, getRequestParserHelper(request), languageBO) {
 
                     @Override
                     public String getServletPath() {
@@ -270,13 +275,6 @@ public final class SchemaServlet extends HttpServlet {
                 WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
 
         return webApplicationContext.getBean(RequestParserHelper.class);
-    }
-
-    @Override
-    public void init() throws ServletException {
-        //
-        // FreemarkerTemplateHelper.freemarkerConfiguration.setServletContextForTemplateLoading(
-        //                getServletContext(), "/freemarker");
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);

@@ -69,6 +69,8 @@ import biblivre.core.controllers.SchemaFilter;
 import biblivre.core.controllers.SchemaRedirectFilter;
 import biblivre.core.controllers.SchemaServlet;
 import biblivre.core.controllers.StatusFilter;
+import biblivre.core.translations.LanguageDAO;
+import biblivre.core.translations.LanguageDAOImpl;
 import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
@@ -241,6 +243,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public TabFieldsDAO tabFieldsDAO() {
         return TabFieldsDAOImpl.getInstance();
+    }
+
+    @Bean
+    public LanguageDAO languagesDAO() {
+        return LanguageDAOImpl.getInstance();
     }
 
     @Autowired private ApplicationContext applicationContext;

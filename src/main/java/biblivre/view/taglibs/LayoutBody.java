@@ -20,7 +20,7 @@
 package biblivre.view.taglibs;
 
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.translations.Languages;
+import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
@@ -40,6 +40,7 @@ public class LayoutBody extends TagSupport {
     private boolean multiPart;
     private boolean banner;
     private boolean disableMenu;
+    private LanguageBO languageBO;
 
     public boolean isMultiPart() {
         return this.multiPart;
@@ -94,7 +95,10 @@ public class LayoutBody extends TagSupport {
 
     private void init() {
         HttpServletRequest request = (HttpServletRequest) this.pageContext.getRequest();
+
         this.translationsMap = (TranslationsMap) request.getAttribute("translationsMap");
+
+        this.languageBO = (LanguageBO) request.getAttribute("languageBO");
     }
 
     @Override
@@ -117,7 +121,7 @@ public class LayoutBody extends TagSupport {
         request.setAttribute("isBanner", this.isBanner());
         request.setAttribute("isSchemaSelection", this.isSchemaSelection());
         request.setAttribute("isEmployee", this.isEmployee());
-        request.setAttribute("languages", Languages.getLanguages());
+        request.setAttribute("languages", languageBO.getLanguages());
 
         String updateWarning =
                 (String)

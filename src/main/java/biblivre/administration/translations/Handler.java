@@ -25,7 +25,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.LanguageDTO;
-import biblivre.core.translations.Languages;
+import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
@@ -44,6 +44,7 @@ import org.thymeleaf.ITemplateEngine;
 @Component("biblivre.administration.translations.Handler")
 public class Handler extends AbstractHandler {
     private ITemplateEngine templateEngine;
+    private LanguageBO languageBO;
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {
 
@@ -199,9 +200,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        Languages.reset();
+        Set<LanguageDTO> languages = languageBO.getLanguages();
 
-        Set<LanguageDTO> languages = Languages.getLanguages();
         Map<String, Map<String, String>> translations = new HashMap<>();
 
         languages.forEach(
@@ -308,5 +308,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setTemplateEngine(ITemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
+    }
+
+    @Autowired
+    public void setLanguageBO(LanguageBO languageBO) {
+        this.languageBO = languageBO;
     }
 }

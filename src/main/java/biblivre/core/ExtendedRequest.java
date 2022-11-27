@@ -22,7 +22,7 @@ package biblivre.core;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.Configurations;
 import biblivre.core.file.MemoryFile;
-import biblivre.core.translations.Languages;
+import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.Translations;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
@@ -37,6 +37,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,10 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private Map<String, String> multiPartParameters;
     private Map<String, MemoryFile> multiPartFiles;
 
-    public ExtendedRequest(HttpServletRequest request, RequestParserHelper requestParserHelper)
+    public ExtendedRequest(
+            HttpServletRequest request,
+            RequestParserHelper requestParserHelper,
+            LanguageBO languageBO)
             throws IOException, ServletException {
         super(request);
 
@@ -71,8 +75,9 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         this.setController(
                 requestParserHelper.parseController(requestPath, getString("controller")));
         this.setMustRedirectToSchema(requestParserHelper.isMustRedirectToSchema(requestPath));
-        this.loadLanguage();
+        this.loadLanguage(languageBO::isNotLoaded, languageBO.getDefaultLanguage());
         this.loadTranslationsMap();
+        this.setAttribute("languageBO", languageBO);
     }
 
     public String getLocalizedText(String key) {
@@ -306,35 +311,35 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         }
     }
 
-    private void loadLanguage() {
+    private void loadLanguage(Predicate<String> isNotLoaded, String defaultLanguage) {
         HttpSession session = this.getSession();
 
         String language = this.getString("i18n");
 
-        String schema = SchemaThreadLocal.get();
+        if (isNotLoaded.test(language)) {
+            String schema = SchemaThreadLocal.get();
 
-        if (Languages.isNotLoaded(language)) {
             language = (String) session.getAttribute(schema + ".language");
         }
 
-        if (Languages.isNotLoaded(language)) {
+        if (isNotLoaded.test(language)) {
             language = (String) session.getAttribute("global.language");
         }
 
-        if (Languages.isNotLoaded(language)) {
+        if (isNotLoaded.test(language)) {
             language = this.getLocale().toString().replaceAll("[_]", "-");
         }
 
-        if (Languages.isNotLoaded(language)) {
+        if (isNotLoaded.test(language)) {
             language = Configurations.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
         }
 
-        if (Languages.isNotLoaded(language)) {
+        if (isNotLoaded.test(language)) {
             language = "pt-BR";
         }
 
-        if (Languages.isNotLoaded(language)) {
-            language = Languages.getDefaultLanguage();
+        if (isNotLoaded.test(language)) {
+            language = defaultLanguage;
         }
 
         this.setScopedSessionAttribute("language", language);

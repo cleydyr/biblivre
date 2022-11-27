@@ -37,6 +37,10 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.configurations.Configurations;
+import biblivre.core.translations.LanguageDTO;
+import biblivre.core.translations.LanguageBO;
+import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -55,6 +59,7 @@ public class Handler extends AbstractHandler {
     private UserFieldBO userFieldBO;
     private IndexingGroupBO indexingGroupBO;
     private TabFieldsBO tabFieldsBO;
+    private LanguageBO languageBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
@@ -265,6 +270,16 @@ public class Handler extends AbstractHandler {
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("backupPath", backupBO.getBackupPath());
 
+        request.setAttribute("languages", languageBO.getLanguages());
+
+        String defaultLanguage = Configurations.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
+
+        LanguageDTO language = languageBO.getLanguage(defaultLanguage);
+
+        if (language != null) {
+            request.setAttribute("default_language", language.getName());
+        }
+
         setJspURL("/jsp/administration/configurations.jsp");
     }
 
@@ -289,6 +304,8 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationTranslations(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("languages", languageBO.getLanguages());
+
         setJspURL("/jsp/administration/translations.jsp");
     }
 
@@ -339,13 +356,19 @@ public class Handler extends AbstractHandler {
     }
 
     public void multiSchemaConfigurations(ExtendedRequest request, ExtendedResponse response) {
-        String backupPath =
-                SchemaThreadLocal.withGlobalSchema(
-                        () -> {
-                            return backupBO.getBackupPath();
-                        });
+        String backupPath = SchemaThreadLocal.withGlobalSchema(backupBO::getBackupPath);
 
         request.setAttribute("backupPath", backupPath);
+
+        request.setAttribute("languages", languageBO.getLanguages());
+
+        String defaultLanguage = Configurations.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
+
+        LanguageDTO language = languageBO.getLanguage(defaultLanguage);
+
+        if (language != null) {
+            request.setAttribute("default_language", language.getName());
+        }
 
         setJspURL("/jsp/multi_schema/configurations.jsp");
     }
@@ -409,5 +432,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setFieldsBO(TabFieldsBO tabFieldsBO) {
         this.tabFieldsBO = tabFieldsBO;
+    }
+
+    @Autowired
+    public void setLanguageBO(LanguageBO languageBO) {
+        this.languageBO = languageBO;
     }
 }

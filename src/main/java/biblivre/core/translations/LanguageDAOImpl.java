@@ -30,10 +30,10 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LanguagesDAOImpl extends AbstractDAO implements LanguagesDAO {
+public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
 
-    public static LanguagesDAO getInstance() {
-        return (LanguagesDAO) AbstractDAO.getInstance(LanguagesDAOImpl.class);
+    public static LanguageDAO getInstance() {
+        return (LanguageDAO) AbstractDAO.getInstance(LanguageDAOImpl.class);
     }
 
     @Override

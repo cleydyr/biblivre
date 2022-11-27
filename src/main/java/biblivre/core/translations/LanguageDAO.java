@@ -2,7 +2,7 @@ package biblivre.core.translations;
 
 import java.util.Set;
 
-public interface LanguagesDAO {
+public interface LanguageDAO {
 
     Set<LanguageDTO> list();
 }

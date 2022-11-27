@@ -106,8 +106,6 @@ public class Translations extends StaticBO {
             Translations.reset(language);
         }
 
-        Languages.reset();
-
         return true;
     }
 

@@ -2,7 +2,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.Set"%>
-<%@ page import="biblivre.core.translations.Languages"%>
 <%@ page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page import="biblivre.core.translations.LanguageDTO"%>
 <%@ page import="biblivre.core.configurations.Configurations"%>

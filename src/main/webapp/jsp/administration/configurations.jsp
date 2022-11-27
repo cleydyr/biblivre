@@ -7,7 +7,6 @@
 <%@page import="java.io.File"%>
 <%@page import="biblivre.core.utils.DatabaseUtils"%>
 <%@page import="biblivre.administration.backup.BackupBO"%>
-<%@page import="biblivre.core.translations.Languages"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@page import="biblivre.core.configurations.Configurations"%>
 <%@page import="biblivre.core.SchemaThreadLocal"%>
@@ -180,10 +179,6 @@
 				key = Constants.CONFIG_DEFAULT_LANGUAGE;
 				value = Configurations.getString(key);
 
-				LanguageDTO ldto = Languages.getLanguage(value);
-				if (ldto != null) {
-					request.setAttribute("default_language", ldto.getName());
-				}
 
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
@@ -205,7 +200,7 @@
 					<div class="label"><i18n:text key="administration.configuration.new_value" /></div>
 					<div class="value">
 						<select name="${key}">
-							<c:forEach var="language" items="<%= Languages.getLanguages() %>">
+							<c:forEach var="language" items="${requestScope.languages}">
 								<c:choose>
 									<c:when test="${language.language == value}">
 										<option value="${language.language}" selected="selected">${language.name}</option>

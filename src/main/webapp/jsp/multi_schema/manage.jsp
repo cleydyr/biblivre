@@ -3,7 +3,6 @@
 <%@page import="biblivre.core.configurations.Configurations"%>
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
 <%@page import="biblivre.core.schemas.Schemas"%>
-<%@page import="biblivre.core.translations.Languages"%>
 <%@page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
