@@ -19,19 +19,20 @@
  ******************************************************************************/
 package biblivre.core;
 
-import biblivre.core.configurations.Configurations;
-import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.utils.Constants;
 import biblivre.update.UpdateService;
 import java.sql.Connection;
-import java.util.ServiceLoader;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Updates {
+    private Map<String, UpdateService> updateServicesMap;
 
     private static final Logger logger = LoggerFactory.getLogger(Updates.class);
 
@@ -39,7 +40,7 @@ public class Updates {
         return Constants.BIBLIVRE_VERSION;
     }
 
-    public static boolean globalUpdate() {
+    public boolean globalUpdate() {
         return SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     UpdatesDAO dao = UpdatesDAO.getInstance();
@@ -48,26 +49,23 @@ public class Updates {
                     try {
                         Set<String> installedVersions = dao.getInstalledVersions();
 
-                        ServiceLoader<UpdateService> serviceLoader =
-                                ServiceLoader.load(UpdateService.class);
+                        for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
+                            String version = entry.getKey();
 
-                        for (UpdateService updateService : serviceLoader) {
-                            if (!installedVersions.contains(updateService.getVersion())) {
-                                logger.info(
-                                        "Processing global update service {}.",
-                                        updateService.getVersion());
+                            UpdateService updateService = entry.getValue();
+
+                            if (!installedVersions.contains(version)) {
+                                logger.info("Processing global update service {}.", version);
 
                                 con = dao.beginUpdate();
 
                                 updateService.doUpdate(con);
 
-                                dao.commitUpdate(updateService.getVersion(), con);
+                                dao.commitUpdate(version, con);
 
                                 updateService.afterUpdate();
                             } else {
-                                logger.info(
-                                        "Skipping global update service {}.",
-                                        updateService.getVersion());
+                                logger.info("Skipping global update service {}.", version);
                             }
                         }
 
@@ -81,7 +79,7 @@ public class Updates {
                 });
     }
 
-    public static boolean schemaUpdate(String schema) {
+    public boolean schemaUpdate(String schema) {
         return SchemaThreadLocal.withSchema(
                 schema,
                 () -> {
@@ -95,27 +93,28 @@ public class Updates {
 
                         Set<String> installedVersions = dao.getInstalledVersions();
 
-                        ServiceLoader<UpdateService> serviceLoader =
-                                ServiceLoader.load(UpdateService.class);
+                        for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
+                            String version = entry.getKey();
 
-                        for (UpdateService updateService : serviceLoader) {
-                            if (!installedVersions.contains(updateService.getVersion())) {
+                            UpdateService updateService = entry.getValue();
+
+                            if (!installedVersions.contains(version)) {
                                 logger.info(
                                         "Processing update service {} for schema {}.",
-                                        updateService.getVersion(),
+                                        version,
                                         schema);
 
                                 con = dao.beginUpdate();
 
                                 updateService.doUpdateScopedBySchema(con);
 
-                                dao.commitUpdate(updateService.getVersion(), con);
+                                dao.commitUpdate(version, con);
 
                                 updateService.afterUpdate();
                             } else {
                                 logger.info(
                                         "Skipping update service {} for schema {}.",
-                                        updateService.getVersion(),
+                                        version,
                                         schema);
                             }
                         }
@@ -130,46 +129,8 @@ public class Updates {
                 });
     }
 
-    public static String getUID() {
-        return SchemaThreadLocal.withGlobalSchema(
-                () -> {
-                    String uid = Configurations.getString(Constants.CONFIG_UID);
-
-                    if (StringUtils.isBlank(uid)) {
-                        uid = UUID.randomUUID().toString();
-
-                        ConfigurationsDTO config = new ConfigurationsDTO();
-                        config.setKey(Constants.CONFIG_UID);
-                        config.setValue(uid);
-                        config.setType("string");
-                        config.setRequired(false);
-
-                        Configurations.save(config, 0);
-                    }
-
-                    return uid;
-                });
-    }
-
-    public static void fixPostgreSQL81() {
-        SchemaThreadLocal.withSchema(
-                "public",
-                () -> {
-                    UpdatesDAO dao = UpdatesDAO.getInstance();
-
-                    try {
-                        if (!dao.checkFunctionExistance("array_agg")) {
-                            String version = dao.getPostgreSQLVersion();
-
-                            if (version.contains("8.1")) {
-                                dao.create81ArrayAgg();
-                            } else {
-                                dao.createArrayAgg();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+    @Autowired
+    public void setUpdateServicesMap(Map<String, UpdateService> updateServiceMap) {
+        this.updateServicesMap = updateServiceMap;
     }
 }

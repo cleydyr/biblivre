@@ -1,23 +1,23 @@
 package biblivre.update.v6_0_0$1_0_1$alpha;
 
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import biblivre.update.UpdateService;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("6.0.0-1.0.1-alpha")
 public class Update implements UpdateService {
+
+    private TranslationBO translationBO;
 
     public void doUpdate(Connection connection) throws SQLException {
         _addTranslations();
         _addConfiguration(connection);
-    }
-
-    @Override
-    public String getVersion() {
-        return "6.0.0-1.0.1-alpha";
     }
 
     private void _addTranslations() throws SQLException {
@@ -29,7 +29,7 @@ public class Update implements UpdateService {
 
                 String translation = entry2.getValue();
 
-                Translations.addSingleTranslation(language, key, translation);
+                translationBO.addSingleTranslation(language, key, translation);
             }
         }
     }
@@ -41,6 +41,11 @@ public class Update implements UpdateService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @Autowired
+    public void setTranslationsBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
     }
 
     private static final String INSERT_CONFIG_SQL =

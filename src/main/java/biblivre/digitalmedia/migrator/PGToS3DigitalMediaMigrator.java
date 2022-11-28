@@ -3,8 +3,8 @@ package biblivre.digitalmedia.migrator;
 import biblivre.core.AbstractDAO;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
-import biblivre.core.schemas.Schemas;
 import biblivre.digitalmedia.DigitalMediaDTO;
 import biblivre.digitalmedia.postgres.DatabaseFile;
 import biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO;
@@ -19,17 +19,22 @@ import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+@Component
 public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMediaStoreMigrator {
-    private final S3Client s3;
-    private final String bucketName;
+    private S3Client s3;
+    private String bucketName;
+    private SchemaBO schemaBO;
     private static final Logger logger = LoggerFactory.getLogger(PGToS3DigitalMediaMigrator.class);
 
-    public PGToS3DigitalMediaMigrator() {
+    @Override
+    public void init() {
         this.s3 =
                 S3Client.builder().credentialsProvider(DefaultCredentialsProvider.create()).build();
 
@@ -48,7 +53,7 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
 
     @Override
     public void migrate() {
-        Set<SchemaDTO> schemas = Schemas.getSchemas();
+        Set<SchemaDTO> schemas = schemaBO.getSchemas();
 
         for (SchemaDTO schema : schemas) {
             _doMigrate(schema.getSchema());
@@ -129,5 +134,10 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
         InputStream inputStream = largeObject.getInputStream();
 
         s3.putObject(request, RequestBody.fromInputStream(inputStream, databaseFile.getSize()));
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }

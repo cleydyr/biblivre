@@ -1,4 +1,4 @@
-<%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@page import="biblivre.circulation.user.UserStatus"%>
 <%@page import="java.util.List"%>
 <%@page import="biblivre.administration.usertype.UserTypeBO"%>
@@ -8,6 +8,10 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+%>
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
@@ -232,8 +236,8 @@
 												<div class="ncspacer"></div>
 
 												<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.info.lending.daysLate || 0) }</span><br/>
-												<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
-												<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
+												<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
+												<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
 											{#/if}
 										{#/if}
 									</div>
@@ -294,7 +298,7 @@
 									<div class="record">
 										{#if $T.info.title}<label><i18n:text key="search.bibliographic.title" /></label>: {$T.info.title}<br/>{#/if}
 										{#if $T.info.author}<label><i18n:text key="search.bibliographic.author" /></label>: {$T.info.author}<br/>{#/if}
-										<label><i18n:text key="circulation.lending.fine_value" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.value || 0, 'n2')}<br/>
+										<label><i18n:text key="circulation.lending.fine_value" /></label>: <%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.value || 0, 'n2')}<br/>
 
 										{#if $T.info.payment}<label><i18n:text key="circulation.lending.payment_date" /></label>: {_d($T.info.payment, 'D')}<br/>
 										{#else}

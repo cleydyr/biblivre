@@ -61,14 +61,16 @@ import biblivre.circulation.user.UserDAO;
 import biblivre.circulation.user.UserDAOImpl;
 import biblivre.circulation.user.UserFieldsDAO;
 import biblivre.circulation.user.UserFieldsDAOImpl;
-import biblivre.core.DigitalMediaMigrator;
-import biblivre.core.Updates;
+import biblivre.core.configurations.ConfigurationsDAO;
+import biblivre.core.configurations.ConfigurationsDAOImpl;
 import biblivre.core.controllers.ExtendedRequestResponseFilter;
 import biblivre.core.controllers.HandlerContextFilter;
 import biblivre.core.controllers.SchemaFilter;
 import biblivre.core.controllers.SchemaRedirectFilter;
 import biblivre.core.controllers.SchemaServlet;
 import biblivre.core.controllers.StatusFilter;
+import biblivre.core.schemas.SchemaDAO;
+import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.LanguageDAO;
 import biblivre.core.translations.LanguageDAOImpl;
 import biblivre.core.utils.StringPool;
@@ -80,9 +82,8 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import java.lang.reflect.Constructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -106,25 +107,6 @@ import org.thymeleaf.templatemode.TemplateMode;
             HibernateJpaAutoConfiguration.class
         })
 public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
-    private static final Logger _logger = LoggerFactory.getLogger(BiblivreInitializer.class);
-
-    private static boolean initialized = false;
-
-    public static synchronized void initialize() {
-        if (!BiblivreInitializer.initialized) {
-            try {
-                Updates.fixPostgreSQL81();
-                Updates.globalUpdate();
-
-                DigitalMediaMigrator.processMigration();
-
-                BiblivreInitializer.initialized = true;
-            } catch (Exception e) {
-                _logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("/static/");
@@ -250,7 +232,19 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         return LanguageDAOImpl.getInstance();
     }
 
+    @Bean
+    public SchemaDAO schemasDAO() {
+        return SchemasDAOImpl.getInstance();
+    }
+
+    @Bean
+    public ConfigurationsDAO configurationsDAO() {
+        return ConfigurationsDAOImpl.getInstance();
+    }
+
     @Autowired private ApplicationContext applicationContext;
+
+    @Autowired private AutowireCapableBeanFactory autowireCapableBeanFactory;
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
@@ -308,7 +302,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         return createFilterRegistration(StatusFilter.class, 5, DispatcherType.REQUEST);
     }
 
-    @Bean
     public <T extends Filter> FilterRegistrationBean<T> createFilterRegistration(
             Class<T> filterClass, int order, DispatcherType first, DispatcherType... rest)
             throws Exception {
@@ -317,7 +310,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
         Constructor<T> constructor = filterClass.getConstructor();
 
-        registration.setFilter(constructor.newInstance());
+        T filter = constructor.newInstance();
+
+        autowireCapableBeanFactory.autowireBean(filter);
+
+        registration.setFilter(filter);
         registration.addUrlPatterns("/*");
         registration.setOrder(order);
         registration.setDispatcherTypes(first, rest);
@@ -327,8 +324,12 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Bean
     public ServletRegistrationBean<SchemaServlet> schemaServletRegistration() {
+        SchemaServlet servlet = new SchemaServlet();
+
+        autowireCapableBeanFactory.autowireBean(servlet);
+
         ServletRegistrationBean<SchemaServlet> servletRegistration =
-                new ServletRegistrationBean<>(new SchemaServlet(), "/");
+                new ServletRegistrationBean<>(servlet, "/");
 
         servletRegistration.setLoadOnStartup(1);
 

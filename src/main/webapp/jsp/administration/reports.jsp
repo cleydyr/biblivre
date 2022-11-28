@@ -1,5 +1,4 @@
 <%@page import="biblivre.core.utils.Constants"%>
-<%@page import="biblivre.core.configurations.Configurations"%>
 <%@page import="biblivre.cataloging.TabFieldsBO"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page import="biblivre.cataloging.enums.RecordDatabase"%>

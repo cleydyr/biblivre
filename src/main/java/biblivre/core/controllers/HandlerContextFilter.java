@@ -26,9 +26,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import java.io.IOException;
-import org.springframework.stereotype.Component;
 
-@Component
 public class HandlerContextFilter implements Filter {
 
     @Override

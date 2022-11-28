@@ -29,7 +29,6 @@ import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.utils.Constants;
@@ -150,7 +149,7 @@ public class Handler extends AbstractHandler {
         int start = request.getInteger("start", 1);
         int end =
                 request.getInteger(
-                        "end", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "end", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Set<Integer> successIds = new HashSet<>();
         Set<Integer> failedIds = new HashSet<>();
 

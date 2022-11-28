@@ -1,13 +1,17 @@
+<%@page import="java.util.Collection"%>
 <%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@page import="biblivre.core.utils.Constants"%>
-<%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
-<%@page import="biblivre.core.schemas.Schemas"%>
 <%@page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+%>
 
 <layout:head>
 	<script type="text/javascript" src="/static/scripts/biblivre.multi_schema.js"></script>
@@ -23,15 +27,15 @@
 			<legend><i18n:text key="multi_schema.manage.schemas.title" /></legend>
 			<div class="description"><i18n:text key="multi_schema.manage.schemas.description" /></div>
 			<div class="spacer"></div>
-			<% for (SchemaDTO schema : Schemas.getSchemas()) { %>
+			<% for (SchemaDTO schema : (Collection<SchemaDTO>) request.getAttribute("schemas")) { %>
 				<div class="library <% if (schema.isDisabled()) { %>disabled<% } %>">
 				<%
 					String currentSchema = SchemaThreadLocal.remove();
 
 				    SchemaThreadLocal.setSchema(schema.getSchema());
 				%>
-					<a href="<%= schema.getSchema() %>/" target="_blank"><%= Configurations.getHtml(Constants.CONFIG_TITLE) %></a>
-					<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></div>
+					<a href="<%= schema.getSchema() %>/" target="_blank"><%= configurationBO.getHtml(Constants.CONFIG_TITLE) %></a>
+					<div class="subtitle"><%= configurationBO.getHtml(Constants.CONFIG_SUBTITLE) %></div>
 					<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
 					<a href="javascript:void(0);" onclick="Schemas.toggle('<%= schema.getSchema() %>', false, this);" class="enable">[<i18n:text key="multi_schema.manage.enable" />]</a>
 					<a href="javascript:void(0);" onclick="Schemas.deleteSchema('<%= schema.getSchema() %>', this);" class="enable">[<i18n:text key="common.delete" />]</a>

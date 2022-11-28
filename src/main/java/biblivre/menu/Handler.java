@@ -37,9 +37,9 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.Configurations;
-import biblivre.core.translations.LanguageDTO;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.translations.LanguageBO;
+import biblivre.core.translations.LanguageDTO;
 import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.util.Collection;
@@ -60,6 +60,7 @@ public class Handler extends AbstractHandler {
     private IndexingGroupBO indexingGroupBO;
     private TabFieldsBO tabFieldsBO;
     private LanguageBO languageBO;
+    private SchemaBO schemaBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
@@ -272,13 +273,16 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("languages", languageBO.getLanguages());
 
-        String defaultLanguage = Configurations.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
+        String defaultLanguage = configurationBO.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
 
         LanguageDTO language = languageBO.getLanguage(defaultLanguage);
 
         if (language != null) {
             request.setAttribute("default_language", language.getName());
         }
+
+        request.setAttribute(
+                "isMultipleSchemasEnabled", configurationBO.isMultipleSchemasEnabled());
 
         setJspURL("/jsp/administration/configurations.jsp");
     }
@@ -352,6 +356,8 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("backupPath", backupPath);
 
+        request.setAttribute("enabledSchemas", schemaBO.getEnabledSchemasList());
+
         setJspURL("/jsp/multi_schema/backup.jsp");
     }
 
@@ -362,13 +368,16 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("languages", languageBO.getLanguages());
 
-        String defaultLanguage = Configurations.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
+        String defaultLanguage = configurationBO.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
 
         LanguageDTO language = languageBO.getLanguage(defaultLanguage);
 
         if (language != null) {
             request.setAttribute("default_language", language.getName());
         }
+
+        request.setAttribute(
+                "isMultipleSchemasEnabled", configurationBO.isMultipleSchemasEnabled());
 
         setJspURL("/jsp/multi_schema/configurations.jsp");
     }
@@ -437,5 +446,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setLanguageBO(LanguageBO languageBO) {
         this.languageBO = languageBO;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }

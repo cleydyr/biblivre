@@ -2,7 +2,7 @@ package biblivre.core.schemas;
 
 import java.util.Set;
 
-public interface SchemasDAO {
+public interface SchemaDAO {
 
     Set<SchemaDTO> list();
 

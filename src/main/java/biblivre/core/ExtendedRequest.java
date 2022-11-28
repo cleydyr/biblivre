@@ -20,12 +20,10 @@
 package biblivre.core;
 
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.translations.LanguageBO;
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import biblivre.core.translations.TranslationsMap;
-import biblivre.core.utils.Constants;
 import biblivre.login.LoginDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,12 +53,17 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private Map<String, String> multiPartParameters;
     private Map<String, MemoryFile> multiPartFiles;
 
+    private TranslationBO translationBO;
+
     public ExtendedRequest(
             HttpServletRequest request,
             RequestParserHelper requestParserHelper,
-            LanguageBO languageBO)
+            LanguageBO languageBO,
+            TranslationBO translationBO)
             throws IOException, ServletException {
         super(request);
+
+        this.translationBO = translationBO;
 
         String servletPath = request.getServletPath();
 
@@ -235,7 +238,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     public Locale getSelectedLocale() {
-        Locale locale = Translations.toLocale(this.getLanguage());
+        Locale locale = translationBO.toLocale(this.getLanguage());
 
         return (locale == null) ? this.getLocale() : locale;
     }
@@ -331,10 +334,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         }
 
         if (isNotLoaded.test(language)) {
-            language = Configurations.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
-        }
-
-        if (isNotLoaded.test(language)) {
             language = "pt-BR";
         }
 
@@ -348,7 +347,11 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     private void loadTranslationsMap() {
-        this.setTranslationsMap(Translations.get(this.language));
+        this.setTranslationsMap(getTranslationMap());
+    }
+
+    private TranslationsMap getTranslationMap() {
+        return translationBO.get(this.language);
     }
 
     @Deprecated

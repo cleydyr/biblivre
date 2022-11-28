@@ -28,13 +28,12 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.StaticBO;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
-import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
 import java.io.File;
@@ -60,10 +59,12 @@ import org.springframework.stereotype.Component;
 public class Handler extends AbstractHandler {
     private RestoreBO restoreBO;
     private BackupBO backupBO;
+    private SchemaBO schemaBO;
+    private ConfigurationBO configurationBO;
 
     public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
 
-        boolean isNewLibrary = Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY);
+        boolean isNewLibrary = configurationBO.getBoolean(Constants.CONFIG_NEW_LIBRARY);
         boolean success = true;
 
         if (!isNewLibrary) {
@@ -79,7 +80,7 @@ public class Handler extends AbstractHandler {
                     new File(
                             request.getSession().getServletContext().getRealPath("/"),
                             "biblivre_template_4.0.0.sql");
-            success = Schemas.createSchema(dto, template, false);
+            success = schemaBO.createSchema(dto, template, false);
 
             if (success) {
                 State.finish();
@@ -90,7 +91,7 @@ public class Handler extends AbstractHandler {
 
         if (success) {
             ConfigurationsDTO dto = new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-            Configurations.save(dto, 0);
+            configurationBO.save(dto, 0);
         }
 
         put("success", success);
@@ -358,7 +359,7 @@ public class Handler extends AbstractHandler {
                             "administration.maintenance.backup.error.invalid_origin_schema");
                 }
 
-                if (StringUtils.isBlank(value) || !Schemas.isValidName(value)) {
+                if (StringUtils.isBlank(value) || !SchemaBO.isValidName(value)) {
                     throw new ValidationException(
                             "administration.maintenance.backup.error.invalid_destination_schema");
                 }
@@ -390,11 +391,9 @@ public class Handler extends AbstractHandler {
             if (success) {
                 ConfigurationsDTO cdto =
                         new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(cdto, 0);
+                configurationBO.save(cdto, 0);
 
                 State.finish();
-
-                StaticBO.resetCache();
             } else {
                 State.cancel();
             }
@@ -438,5 +437,15 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

@@ -27,7 +27,7 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +43,7 @@ import org.springframework.stereotype.Component;
 @Component("biblivre.administration.customization.Handler")
 public class Handler extends AbstractHandler {
     private TabFieldsBO tabFieldsBO;
+    private TranslationBO translationBO;
 
     public void saveBriefFormats(ExtendedRequest request, ExtendedResponse response) {
         int loggedUser = request.getLoggedUserId();
@@ -196,7 +197,9 @@ public class Handler extends AbstractHandler {
 
         boolean success = tabFieldsBO.updateFormTabDatafield(recordType, map, loggedUser);
         success =
-                success && Translations.save(request.getLanguage(), translations, null, loggedUser);
+                success
+                        && translationBO.save(
+                                request.getLanguage(), translations, null, loggedUser);
 
         if (success) {
             this.setMessage(ActionResult.SUCCESS, "cataloging.record.success.save");
@@ -222,5 +225,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
         this.tabFieldsBO = tabFieldsBO;
+    }
+
+    @Autowired
+    public void setTranslationsBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
     }
 }

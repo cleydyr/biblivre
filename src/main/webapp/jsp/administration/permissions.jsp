@@ -1,7 +1,6 @@
 <%@page import="biblivre.core.auth.AuthorizationSchemaScope"%>
 <%@page import="biblivre.core.auth.AuthorizationUserScope"%>
 <%@page import="biblivre.core.translations.TranslationsMap"%>
-<%@page import="biblivre.core.translations.Translations"%>
 <%@page import="biblivre.core.translations.TranslationDTO"%>
 <%@page import="biblivre.core.auth.AuthorizationPointGroups"%>
 <%@page import="biblivre.core.auth.AuthorizationPointTypes"%>

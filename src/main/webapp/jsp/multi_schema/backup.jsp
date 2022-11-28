@@ -1,14 +1,18 @@
+<%@page import="java.util.Collection"%>
 <%@page import="biblivre.core.utils.Constants"%>
-<%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
 <%@page import="org.json.JSONObject"%>
 <%@page import="biblivre.administration.backup.BackupBO"%>
-<%@page import="biblivre.core.schemas.Schemas"%>
 <%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+%>
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.administration.css" />
@@ -32,7 +36,7 @@
 
 		<%
 			JSONObject schemas = new JSONObject();
-			for (String schema : Schemas.getEnabledSchemasList()) {
+			for (String schema : (Collection<String>) request.getAttribute("enabledSchemas")) {
 				schemas.put(schema, true);
 			}
 		%>
@@ -53,15 +57,15 @@
 			<div class="description"><i18n:text key="multi_schema.backup.schemas.description" /></div>
 			<div class="spacer"></div>
 			<%
-				for (SchemaDTO schema : Schemas.getSchemas()) {
+				for (SchemaDTO schema : (Collection<SchemaDTO>) request.getAttribute("schemas")) {
 					if (schema.isDisabled()) {
 						continue;
 					}
 			%>
 						<div class="library">
 							<div class="checkbox"><input type="checkbox" name="library" checked="checked" value="<%= schema.getSchema() %>" /></div>
-							<div class="title"><%= Configurations.getHtml(Constants.CONFIG_TITLE, schema.getSchema()) %></div>
-							<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE, schema.getSchema()) %></div>
+							<div class="title"><%= configurationBO.getHtml(Constants.CONFIG_TITLE, schema.getSchema()) %></div>
+							<div class="subtitle"><%= configurationBO.getHtml(Constants.CONFIG_SUBTITLE, schema.getSchema()) %></div>
 							<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
 						</div>
 			<%

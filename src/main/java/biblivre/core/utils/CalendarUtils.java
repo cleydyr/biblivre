@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
-import biblivre.core.configurations.Configurations;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -47,13 +46,6 @@ public class CalendarUtils {
         cal.set(Calendar.MILLISECOND, 0);
 
         return date.getTime() == cal.getTimeInMillis();
-    }
-
-    public static Date calculateExpectedReturnDate(Date lendingDate, int days) {
-        List<Integer> businessDays =
-                Configurations.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6");
-
-        return calculateExpectedReturnDate(lendingDate, days, businessDays);
     }
 
     public static Date calculateExpectedReturnDate(

@@ -26,7 +26,7 @@ import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.exceptions.AuthorizationException;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
@@ -53,6 +53,7 @@ public abstract class Controller {
     private Map<String, AbstractHandler> handlersMap;
 
     private Map<String, AbstractValidator> validatorsMap;
+    private ConfigurationBO configurationBO;
 
     public Controller() {
         this.headerOnly = false;
@@ -86,7 +87,7 @@ public abstract class Controller {
                             || (module.equals("menu") && action.equals("setup")));
 
             if (isSetup
-                    && (Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY)
+                    && (configurationBO.getBoolean(Constants.CONFIG_NEW_LIBRARY)
                             || action.equals("progress"))) {
                 // authorize
             } else {
@@ -248,6 +249,11 @@ public abstract class Controller {
     @Autowired
     public final void setValidators(Map<String, AbstractValidator> validatorsMap) {
         this.validatorsMap = validatorsMap;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 
     public void setRequest(ExtendedRequest xRequest) {

@@ -32,7 +32,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.LabelPrintDTO;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
@@ -78,6 +78,7 @@ public class HoldingBO extends RecordBO {
     private HoldingDAO holdingDAO;
     private UserBO userBO;
     private LoginBO loginBO;
+    private ConfigurationBO configurationBO;
 
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         return this.holdingDAO.map(ids);
@@ -114,7 +115,7 @@ public class HoldingBO extends RecordBO {
     }
 
     public String getNextAccessionNumber() {
-        String prefix = Configurations.getString(Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
+        String prefix = configurationBO.getString(Constants.CONFIG_ACCESSION_NUMBER_PREFIX);
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
         String accessionPrefix = prefix + "." + year + ".";
@@ -278,7 +279,9 @@ public class HoldingBO extends RecordBO {
                             adapter.getVerticalMargin());
             int horizontalAlignment =
                     ParagraphAlignmentUtil.getHorizontalAlignmentConfigurationValue(
-                            () -> Element.ALIGN_CENTER);
+                            () -> Element.ALIGN_CENTER,
+                            configurationBO.getString(
+                                    Constants.CONFIG_LABEL_PRINT_PARAGRAPH_ALIGNMENT));
             File file = File.createTempFile("biblivre_label_", ".pdf");
 
             try (OutputStream fos = new FileOutputStream(file)) {
@@ -514,5 +517,10 @@ public class HoldingBO extends RecordBO {
     @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

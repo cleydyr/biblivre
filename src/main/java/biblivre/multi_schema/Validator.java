@@ -24,13 +24,16 @@ import biblivre.core.AbstractValidator;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.core.schemas.Schemas;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.multi_schema.Validator")
 public class Validator extends AbstractValidator {
+
+    private SchemaBO schemaBO;
 
     public void validateCreate(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -50,14 +53,19 @@ public class Validator extends AbstractValidator {
             ex.addError("schema", "field.error.invalid");
         } else if (schemaParam.equals(Constants.GLOBAL_SCHEMA)) {
             ex.addError("schema", "field.error.invalid");
-        } else if (!Schemas.isValidName(schemaParam)) {
+        } else if (!schemaBO.isValidName(schemaParam)) {
             ex.addError("schema", "field.error.invalid");
-        } else if (Schemas.isLoaded(schemaParam)) {
+        } else if (schemaBO.isLoaded(schemaParam)) {
             ex.addError("schema", "field.error.invalid");
         }
 
         if (ex.hasErrors()) {
             handler.setMessage(ex);
         }
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }

@@ -34,7 +34,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.PrinterType;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationsMap;
@@ -71,6 +71,7 @@ public class LendingBO {
     private ReservationBO reservationBO;
     private LendingDAO lendingDAO;
     private ITemplateEngine templateEngine;
+    private ConfigurationBO configurationBO;
 
     public LendingDTO get(Integer lendingId) {
         return this.lendingDAO.get(lendingId);
@@ -157,7 +158,11 @@ public class LendingBO {
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
 
-        Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(today, days);
+        Date expectedReturnDate =
+                CalendarUtils.calculateExpectedReturnDate(
+                        today,
+                        days,
+                        configurationBO.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6"));
         lending.setExpectedReturnDate(expectedReturnDate);
 
         if (this.lendingDAO.doLend(lending)) {
@@ -192,7 +197,11 @@ public class LendingBO {
         Date today = new Date();
         int days = (type != null) ? type.getLendingTimeLimit() : 7;
 
-        Date expectedReturnDate = CalendarUtils.calculateExpectedReturnDate(today, days);
+        Date expectedReturnDate =
+                CalendarUtils.calculateExpectedReturnDate(
+                        today,
+                        days,
+                        configurationBO.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6"));
 
         lending.setExpectedReturnDate(expectedReturnDate);
 
@@ -388,7 +397,7 @@ public class LendingBO {
             throws IOException {
         PrinterType printerType =
                 PrinterType.fromString(
-                        Configurations.getString(Constants.CONFIG_LENDING_PRINTER_TYPE));
+                        configurationBO.getString(Constants.CONFIG_LENDING_PRINTER_TYPE));
         int columns = 24;
 
         if (printerType != null) {
@@ -433,7 +442,7 @@ public class LendingBO {
         receipt.append(StringUtils.repeat('*', columns)).append("\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
 
-        String libraryName = Configurations.getString("general.title");
+        String libraryName = configurationBO.getString("general.title");
 
         receipt.append("* ").append(StringUtils.center(libraryName, columns - 4)).append(" *\n");
         receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
@@ -671,7 +680,7 @@ public class LendingBO {
 
         root.put("lendingInfo", lendingInfo);
 
-        String libraryName = Configurations.getString("general.title");
+        String libraryName = configurationBO.getString("general.title");
         String now = dateTimeFormat.format(new Date());
 
         root.put("libraryName", libraryName);
@@ -816,5 +825,10 @@ public class LendingBO {
     @Autowired
     public void setTemplateEngin(ITemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

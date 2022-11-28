@@ -1,5 +1,4 @@
 <%@page import="biblivre.cataloging.enums.RecordType"%>
-<%@page import="biblivre.core.configurations.Configurations"%>
 <%@page import="biblivre.marc.MaterialType"%>
 <%@page import="biblivre.circulation.user.UserStatus"%>
 <%@page import="java.util.List"%>

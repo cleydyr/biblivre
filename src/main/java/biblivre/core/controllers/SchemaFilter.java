@@ -20,7 +20,8 @@
 package biblivre.core.controllers;
 
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.schemas.Schemas;
+import biblivre.core.configurations.ConfigurationBO;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -30,10 +31,11 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
 public class SchemaFilter implements Filter {
+    private SchemaBO schemaBO;
+    private ConfigurationBO configurationBO;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -41,6 +43,10 @@ public class SchemaFilter implements Filter {
         String schema = extractSchema(request);
 
         SchemaThreadLocal.setSchema(schema);
+
+        request.setAttribute("schemas", schemaBO.getSchemas());
+
+        request.setAttribute("configurations", configurationBO);
 
         try {
             chain.doFilter(request, response);
@@ -68,8 +74,8 @@ public class SchemaFilter implements Filter {
             }
         }
 
-        if (Schemas.isNotLoaded(schema)) {
-            boolean isMultipleSchemasEnabled = Schemas.isMultipleSchemasEnabled();
+        if (schemaBO.isNotLoaded(schema)) {
+            boolean isMultipleSchemasEnabled = configurationBO.isMultipleSchemasEnabled();
 
             if (isMultipleSchemasEnabled) {
                 schema = Constants.GLOBAL_SCHEMA;
@@ -79,5 +85,15 @@ public class SchemaFilter implements Filter {
         }
 
         return schema;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

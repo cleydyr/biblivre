@@ -20,7 +20,6 @@
 package biblivre.core.translations;
 
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.StaticBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
 import java.io.File;
@@ -33,10 +32,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -44,41 +41,18 @@ import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
 @Component
-public class Translations extends StaticBO {
-    private static Logger logger = LoggerFactory.getLogger(Translations.class);
-
-    private static Map<Pair<String, String>, TranslationsMap> translations;
+public class TranslationBO {
+    private static Logger logger = LoggerFactory.getLogger(TranslationBO.class);
 
     private static Set<String> availableJavascriptLocales = Set.of("es-US", "es", "pt-BR");
 
-    private Translations() {}
-
-    static {
-        Translations.reset();
-    }
-
-    public static void reset() {
-        Translations.translations = new ConcurrentHashMap<>();
-    }
-
-    public static void reset(String language) {
+    public TranslationsMap get(String language) {
         String schema = SchemaThreadLocal.get();
 
-        Pair<String, String> pair = Pair.of(schema, language);
-
-        Translations.translations.remove(pair);
+        return loadLanguage(schema, language);
     }
 
-    public static TranslationsMap get(String language) {
-        String schema = SchemaThreadLocal.get();
-
-        Pair<String, String> pair = Pair.of(schema, language);
-
-        return Translations.translations.computeIfAbsent(
-                pair, __ -> loadLanguage(schema, language));
-    }
-
-    public static boolean save(
+    public boolean save(
             String language,
             Map<String, String> translation,
             Map<String, String> removeTranslation,
@@ -93,29 +67,24 @@ public class Translations extends StaticBO {
             removeTranslations.put(language, removeTranslation);
         }
 
-        return Translations.save(translations, removeTranslations, loggedUser);
+        return save(translations, removeTranslations, loggedUser);
     }
 
-    public static boolean save(
+    public boolean save(
             Map<String, Map<String, String>> translations,
             Map<String, Map<String, String>> removeTranslations,
             int loggedUser) {
         TranslationsDAOImpl.getInstance().save(translations, removeTranslations, loggedUser);
 
-        for (String language : translations.keySet()) {
-            Translations.reset(language);
-        }
-
         return true;
     }
 
-    public static boolean addSingleTranslation(String language, String key, String text) {
+    public boolean addSingleTranslation(String language, String key, String text) {
         return SchemaThreadLocal.withGlobalSchema(
                 () -> addSingleTranslation(language, key, text, Constants.ADMIN_LOGGED_USER_ID));
     }
 
-    public static boolean addSingleTranslation(
-            String language, String key, String text, int loggedUser) {
+    public boolean addSingleTranslation(String language, String key, String text, int loggedUser) {
         Map<String, String> translation = new HashMap<>();
         translation.put(key, text);
 
@@ -124,12 +93,10 @@ public class Translations extends StaticBO {
 
         boolean success = TranslationsDAOImpl.getInstance().save(translations, loggedUser);
 
-        Translations.reset(language);
-
         return success;
     }
 
-    public static Locale toLocale(String locale) {
+    public Locale toLocale(String locale) {
         if (locale == null) {
             return null;
         }
@@ -143,20 +110,20 @@ public class Translations extends StaticBO {
         }
     }
 
-    public static boolean isJavaScriptLocaleAvailable(String language) {
+    public boolean isJavaScriptLocaleAvailable(String language) {
         if (language == null) {
             return false;
         }
 
-        if (Translations.availableJavascriptLocales.contains(language)) {
+        if (TranslationBO.availableJavascriptLocales.contains(language)) {
             return true;
         }
 
-        return Translations.availableJavascriptLocales.contains(language.split("-")[0]);
+        return TranslationBO.availableJavascriptLocales.contains(language.split("-")[0]);
     }
 
-    public static boolean isJavaLocaleAvailable(String language) {
-        Locale locale = Translations.toLocale(language);
+    public boolean isJavaLocaleAvailable(String language) {
+        Locale locale = toLocale(language);
 
         if (locale == null) {
             return false;
@@ -166,15 +133,13 @@ public class Translations extends StaticBO {
             return true;
         }
 
-        locale = Translations.toLocale(language.split("-")[0]);
+        locale = toLocale(language.split("-")[0]);
 
         return LocaleUtils.isAvailableLocale(locale);
     }
 
-    public static DiskFile createDumpFile(String language, ITemplateEngine templateEngine) {
-        Translations.reset(language);
-
-        Map<String, TranslationDTO> translations = Translations.get(language).getAll();
+    public DiskFile createDumpFile(String language, ITemplateEngine templateEngine) {
+        Map<String, TranslationDTO> translations = get(language).getAll();
 
         List<String> list = new ArrayList<>(translations.keySet());
 
@@ -200,12 +165,12 @@ public class Translations extends StaticBO {
             return new DiskFile(file, "x-download");
         } catch (Exception e) {
             e.printStackTrace();
-            Translations.logger.error(e.getMessage(), e);
+            TranslationBO.logger.error(e.getMessage(), e);
         }
         return null;
     }
 
-    private static TranslationsMap loadLanguage(String schema, String language) {
+    private TranslationsMap loadLanguage(String schema, String language) {
         if (logger.isDebugEnabled()) {
             logger.debug("Loading language " + schema + "." + language);
         }
@@ -214,7 +179,7 @@ public class Translations extends StaticBO {
                 schema,
                 () -> {
                     if (StringUtils.isBlank(language)) {
-                        return new TranslationsMap(schema, language, 1);
+                        return new TranslationsMap(schema, language, 1, this);
                     }
 
                     TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
@@ -222,7 +187,7 @@ public class Translations extends StaticBO {
                     Collection<TranslationDTO> list = dao.list(language);
 
                     TranslationsMap translationsMap =
-                            new TranslationsMap(schema, language, list.size());
+                            new TranslationsMap(schema, language, list.size(), this);
 
                     for (TranslationDTO dto : list) {
                         translationsMap.put(dto.getKey(), dto);

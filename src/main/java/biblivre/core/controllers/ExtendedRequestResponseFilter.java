@@ -23,6 +23,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.RequestParserHelper;
 import biblivre.core.translations.LanguageBO;
+import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -33,13 +34,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ExtendedRequestResponseFilter implements Filter {
-    @Autowired private RequestParserHelper requestParserHelper;
+    private RequestParserHelper requestParserHelper;
 
-    @Autowired private LanguageBO languageBO;
+    private LanguageBO languageBO;
+
+    private TranslationBO translationBO;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -57,7 +58,10 @@ public class ExtendedRequestResponseFilter implements Filter {
         } else {
             xRequest =
                     new ExtendedRequest(
-                            (HttpServletRequest) request, requestParserHelper, languageBO);
+                            (HttpServletRequest) request,
+                            requestParserHelper,
+                            languageBO,
+                            translationBO);
         }
 
         if (response instanceof ExtendedResponse) {
@@ -68,5 +72,20 @@ public class ExtendedRequestResponseFilter implements Filter {
         }
 
         chain.doFilter(xRequest, xResponse);
+    }
+
+    @Autowired
+    public void setRequestParserHelper(RequestParserHelper requestParserHelper) {
+        this.requestParserHelper = requestParserHelper;
+    }
+
+    @Autowired
+    public void setLanguageBO(LanguageBO languageBO) {
+        this.languageBO = languageBO;
+    }
+
+    @Autowired
+    public void setTranslationBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
     }
 }

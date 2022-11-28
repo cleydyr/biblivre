@@ -22,9 +22,6 @@ package biblivre.core.schemas;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.StaticBO;
-import biblivre.core.Updates;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -42,12 +39,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class Schemas extends StaticBO {
+@Component
+public class SchemaBO {
+    private SchemaDAO schemaDAO;
 
-    protected static Logger logger = LoggerFactory.getLogger(Schemas.class);
-
-    private static Set<SchemaDTO> schemas;
+    protected static Logger logger = LoggerFactory.getLogger(SchemaBO.class);
 
     private static final Collection<String> SCHEMA_BLACKLIST =
             Set.of("schema", "public", "template", "bib4template", "DigitalMediaController");
@@ -55,63 +54,12 @@ public class Schemas extends StaticBO {
     private static final Predicate<String> SCHEMA_VALID =
             Pattern.compile("([a-zA-Z0-9_]+)").asMatchPredicate();
 
-    private Schemas() {}
-
-    static {
-        Schemas.reset();
+    public boolean isNotLoaded(String schema) {
+        return !isLoaded(schema);
     }
 
-    public static void reset() {
-        Schemas.schemas = null;
-    }
-
-    public static boolean isNotLoaded(String schema) {
-        return !Schemas.isLoaded(schema);
-    }
-
-    public static boolean isMultipleSchemasEnabled() {
-        return SchemaThreadLocal.withGlobalSchema(
-                () -> Configurations.getBoolean(Constants.CONFIG_MULTI_SCHEMA));
-    }
-
-    public static void reload() {
-        SchemaThreadLocal.withGlobalSchema(
-                () -> {
-                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
-
-                    Set<SchemaDTO> schemas = dao.list();
-
-                    if (schemas.size() == 0) {
-                        schemas.add(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
-                    }
-
-                    Schemas.schemas = schemas;
-
-                    for (SchemaDTO dto : Schemas.schemas) {
-                        if (!dto.isDisabled()) {
-                            Updates.schemaUpdate(dto.getSchema());
-                        }
-                    }
-
-                    if (!Schemas.isLoaded(Constants.SINGLE_SCHEMA)) {
-                        for (SchemaDTO dto : Schemas.schemas) {
-                            if (!dto.isDisabled()) {
-                                Constants.SINGLE_SCHEMA = dto.getSchema();
-                                break;
-                            }
-                        }
-                    }
-
-                    return null;
-                });
-    }
-
-    public static SchemaDTO getSchema(String schema) {
-        if (Schemas.schemas == null) {
-            Schemas.reload();
-        }
-
-        for (SchemaDTO dto : Schemas.schemas) {
+    public SchemaDTO getSchema(String schema) {
+        for (SchemaDTO dto : getSchemas()) {
             if (dto.getSchema().equals(schema)) {
                 return dto;
             }
@@ -120,13 +68,10 @@ public class Schemas extends StaticBO {
         return null;
     }
 
-    public static int countEnabledSchemas() {
-        if (Schemas.schemas == null) {
-            Schemas.reload();
-        }
-
+    public int countEnabledSchemas() {
         int count = 0;
-        for (SchemaDTO d : Schemas.schemas) {
+
+        for (SchemaDTO d : getSchemas()) {
             if (!d.isDisabled()) {
                 count++;
             }
@@ -135,21 +80,22 @@ public class Schemas extends StaticBO {
         return count;
     }
 
-    public static Set<SchemaDTO> getSchemas() {
-        if (Schemas.schemas == null) {
-            Schemas.reload();
-        }
+    public Set<SchemaDTO> getSchemas() {
+        return SchemaThreadLocal.withGlobalSchema(
+                () -> {
+                    Set<SchemaDTO> schemas = schemaDAO.list();
 
-        return Schemas.schemas;
+                    if (schemas.size() == 0) {
+                        schemas.add(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
+                    }
+
+                    return schemas;
+                });
     }
 
-    public static Set<String> getEnabledSchemasList() {
-        if (Schemas.schemas == null) {
-            Schemas.reload();
-        }
-
+    public Set<String> getEnabledSchemasList() {
         Set<String> set = new HashSet<>();
-        for (SchemaDTO schema : Schemas.schemas) {
+        for (SchemaDTO schema : getSchemas()) {
             if (!schema.isDisabled()) {
                 set.add(schema.getSchema());
             }
@@ -158,11 +104,7 @@ public class Schemas extends StaticBO {
         return set;
     }
 
-    public static boolean isLoaded(String schema) {
-        if (Schemas.schemas == null) {
-            Schemas.reload();
-        }
-
+    public boolean isLoaded(String schema) {
         if (StringUtils.isBlank(schema)) {
             return false;
         }
@@ -171,7 +113,7 @@ public class Schemas extends StaticBO {
             return true;
         }
 
-        for (SchemaDTO dto : Schemas.schemas) {
+        for (SchemaDTO dto : getSchemas()) {
             if (schema.equals(dto.getSchema())) {
                 return !dto.isDisabled();
             }
@@ -200,53 +142,41 @@ public class Schemas extends StaticBO {
         return true;
     }
 
-    public static boolean disable(SchemaDTO dto) {
+    public boolean disable(SchemaDTO dto) {
         return SchemaThreadLocal.withGlobalSchema(
                 () -> {
-                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
-
                     dto.setDisabled(true);
 
-                    return dao.save(dto);
+                    return schemaDAO.save(dto);
                 });
     }
 
-    public static boolean enable(SchemaDTO dto) {
+    public boolean enable(SchemaDTO dto) {
         return SchemaThreadLocal.withGlobalSchema(
                 () -> {
-                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
-
                     dto.setDisabled(false);
 
-                    boolean success = dao.save(dto);
-
-                    Schemas.reset();
+                    boolean success = schemaDAO.save(dto);
 
                     return success;
                 });
     }
 
-    public static boolean deleteSchema(SchemaDTO dto) {
+    public boolean deleteSchema(SchemaDTO dto) {
         return SchemaThreadLocal.withGlobalSchema(
                 () -> {
-                    SchemasDAOImpl dao = SchemasDAOImpl.getInstance();
-
-                    StaticBO.resetCache();
-
-                    return dao.delete(dto);
+                    return schemaDAO.delete(dto);
                 });
     }
 
-    public static boolean exists(String schema) {
+    public boolean exists(String schema) {
         return SchemaThreadLocal.withGlobalSchema(
                 () -> {
-                    SchemasDAOImpl schemasDAO = SchemasDAOImpl.getInstance();
-
-                    return schemasDAO.exists(schema);
+                    return schemaDAO.exists(schema);
                 });
     }
 
-    public static boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {
+    public boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {
 
         File psql = DatabaseUtils.getPsql();
 
@@ -303,7 +233,7 @@ public class Schemas extends StaticBO {
 
                 t.start();
 
-                if (Schemas.exists(dto.getSchema())) {
+                if (exists(dto.getSchema())) {
                     State.writeLog("Dropping old schema");
 
                     if (!dto.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
@@ -337,16 +267,19 @@ public class Schemas extends StaticBO {
 
                 p.waitFor();
 
-                Schemas.reset();
-
                 return p.exitValue() == 0;
             }
         } catch (IOException e) {
-            Schemas.logger.error(e.getMessage(), e);
+            SchemaBO.logger.error(e.getMessage(), e);
         } catch (InterruptedException e) {
-            Schemas.logger.error(e.getMessage(), e);
+            SchemaBO.logger.error(e.getMessage(), e);
         }
 
         return false;
+    }
+
+    @Autowired
+    public void setSchemaDAO(SchemaDAO schemaDAO) {
+        this.schemaDAO = schemaDAO;
     }
 }

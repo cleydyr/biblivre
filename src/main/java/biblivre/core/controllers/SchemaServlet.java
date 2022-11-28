@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
-import biblivre.BiblivreInitializer;
 import biblivre.administration.backup.BackupBO;
 import biblivre.administration.setup.State;
 import biblivre.cataloging.TabFieldsBO;
@@ -30,14 +29,13 @@ import biblivre.core.IFCacheableJavascript;
 import biblivre.core.RequestParserHelper;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.LanguageBO;
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,8 +45,7 @@ import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public final class SchemaServlet extends HttpServlet {
 
@@ -60,11 +57,17 @@ public final class SchemaServlet extends HttpServlet {
 
     private JsonController jsonController;
 
-    private UserFieldBO userFields;
+    private UserFieldBO userFieldBO;
 
     private TabFieldsBO tabFieldsBO;
 
     private LanguageBO languageBO;
+
+    private TranslationBO translationBO;
+
+    private ConfigurationBO configurationBO;
+
+    private RequestParserHelper requestParserHelper;
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -75,31 +78,14 @@ public final class SchemaServlet extends HttpServlet {
     }
 
     private void wireUpControllers(HttpServletRequest request, HttpServletResponse response) {
-        ServletContext servletContext = request.getServletContext();
-
-        WebApplicationContext webApplicationContext =
-                WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-
-        jspController = webApplicationContext.getBean(JspController.class);
-
         jspController.setRequest((ExtendedRequest) request);
         jspController.setResponse((ExtendedResponse) response);
-
-        downloadController = webApplicationContext.getBean(DownloadController.class);
 
         downloadController.setRequest((ExtendedRequest) request);
         downloadController.setResponse((ExtendedResponse) response);
 
-        jsonController = webApplicationContext.getBean(JsonController.class);
-
         jsonController.setRequest((ExtendedRequest) request);
         jsonController.setResponse((ExtendedResponse) response);
-
-        userFields = webApplicationContext.getBean(UserFieldBO.class);
-
-        tabFieldsBO = webApplicationContext.getBean(TabFieldsBO.class);
-
-        languageBO = webApplicationContext.getBean(LanguageBO.class);
     }
 
     @Override
@@ -118,8 +104,6 @@ public final class SchemaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
-            BiblivreInitializer.initialize();
-
             String path = request.getServletPath();
 
             boolean isStatic = path.contains("static/") || path.contains("extra/");
@@ -167,7 +151,7 @@ public final class SchemaServlet extends HttpServlet {
             controller = "jsp";
         } else if (StringUtils.isBlank(controller)
                 && (xRequest.getBoolean("force_setup")
-                        || Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY))) {
+                        || configurationBO.getBoolean(Constants.CONFIG_NEW_LIBRARY))) {
             xRequest.setAttribute("module", "menu");
             xRequest.setAttribute("action", "setup");
             controller = "jsp";
@@ -232,9 +216,9 @@ public final class SchemaServlet extends HttpServlet {
 
             if (realPath.endsWith(".i18n.js")) {
                 javascript =
-                        SchemaThreadLocal.withSchema(schema, () -> Translations.get(params[1]));
+                        SchemaThreadLocal.withSchema(schema, () -> translationBO.get(params[1]));
             } else if (realPath.endsWith(".user_fields.js")) {
-                javascript = SchemaThreadLocal.withSchema(schema, userFields::getFields);
+                javascript = SchemaThreadLocal.withSchema(schema, userFieldBO::getFields);
             } else {
                 javascript =
                         SchemaThreadLocal.withSchema(
@@ -257,7 +241,7 @@ public final class SchemaServlet extends HttpServlet {
         RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
 
         ExtendedRequest wrapped =
-                new ExtendedRequest(request, getRequestParserHelper(request), languageBO) {
+                new ExtendedRequest(request, requestParserHelper, languageBO, translationBO) {
 
                     @Override
                     public String getServletPath() {
@@ -268,14 +252,45 @@ public final class SchemaServlet extends HttpServlet {
         rd.forward(wrapped, response);
     }
 
-    private RequestParserHelper getRequestParserHelper(HttpServletRequest request) {
-        ServletContext servletContext = request.getServletContext();
+    private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
 
-        WebApplicationContext webApplicationContext =
-                WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-
-        return webApplicationContext.getBean(RequestParserHelper.class);
+    @Autowired
+    public void setJspController(JspController jspController) {
+        this.jspController = jspController;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
+    @Autowired
+    public void setDownloadController(DownloadController downloadController) {
+        this.downloadController = downloadController;
+    }
+
+    @Autowired
+    public void setJsonController(JsonController jsonController) {
+        this.jsonController = jsonController;
+    }
+
+    @Autowired
+    public void setUserFields(UserFieldBO userFieldBO) {
+        this.userFieldBO = userFieldBO;
+    }
+
+    @Autowired
+    public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
+    }
+
+    @Autowired
+    public void setLanguageBO(LanguageBO languageBO) {
+        this.languageBO = languageBO;
+    }
+
+    @Autowired
+    public void setTranslationBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
+    }
 }

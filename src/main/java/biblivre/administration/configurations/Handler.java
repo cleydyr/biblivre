@@ -22,19 +22,20 @@ package biblivre.administration.configurations;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.schemas.Schemas;
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.administration.configurations.Handler")
 public class Handler extends AbstractHandler {
+
+    private TranslationBO translationBO;
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
         int loggedUser = request.getLoggedUserId();
@@ -53,7 +54,8 @@ public class Handler extends AbstractHandler {
 
                             if (key.equals("text.main.logged_in")
                                     || key.equals("text.main.logged_out")) {
-                                Translations.addSingleTranslation(language, key, value, loggedUser);
+                                translationBO.addSingleTranslation(
+                                        language, key, value, loggedUser);
                             } else {
                                 configs.add(new ConfigurationsDTO(key, value));
                             }
@@ -63,11 +65,13 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        boolean multiSchemaBefore = Schemas.isMultipleSchemasEnabled();
+        boolean multiSchemaBefore = configurationBO.isMultipleSchemasEnabled();
 
-        Configurations.save(Configurations.validate(configs), loggedUser);
+        configurationBO.save(
+                configurationBO.validate(configs, configurationBO.isMultipleSchemasEnabled()),
+                loggedUser);
 
-        boolean multiSchemaAfter = Schemas.isMultipleSchemasEnabled();
+        boolean multiSchemaAfter = configurationBO.isMultipleSchemasEnabled();
 
         this.setMessage(ActionResult.SUCCESS, "administration.configurations.save.success");
 
@@ -76,5 +80,10 @@ public class Handler extends AbstractHandler {
 
     public void ignoreUpdate(ExtendedRequest request, ExtendedResponse response) {
         request.getSession().removeAttribute(".system_warning_new_version");
+    }
+
+    @Autowired
+    public void setTranslationsBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
     }
 }

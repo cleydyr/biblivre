@@ -21,7 +21,7 @@ package biblivre.administration.indexing;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import biblivre.core.translations.TranslationsMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,8 @@ public class IndexingGroupBO {
 
     private IndexingGroupsDAO indexingGroupDAO;
 
+    private TranslationBO translationBO;
+
     public List<IndexingGroupDTO> getGroups(RecordType recordType) {
         return loadGroups(SchemaThreadLocal.get(), recordType);
     }
@@ -44,7 +46,7 @@ public class IndexingGroupBO {
     public String getSearchableGroupsText(RecordType recordType, String language) {
         List<String> list = new ArrayList<>();
 
-        TranslationsMap translations = Translations.get(language);
+        TranslationsMap translations = translationBO.get(language);
 
         for (IndexingGroupDTO group : getGroups(recordType)) {
             if (group.getId() == 0) {
@@ -96,5 +98,10 @@ public class IndexingGroupBO {
     @Autowired
     public void setIndexingGroupDAO(IndexingGroupsDAO indexingGroupDAO) {
         this.indexingGroupDAO = indexingGroupDAO;
+    }
+
+    @Autowired
+    public void setTranslationsBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
     }
 }

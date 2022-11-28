@@ -40,13 +40,17 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
     private String schema;
     private String language;
     private JavascriptCache cache;
+    private TranslationBO translationBO;
 
-    public TranslationsMap(String schema, String language) {
-        this(schema, language, 16);
+    public TranslationsMap(String schema, String language, TranslationBO translationBO) {
+        this(schema, language, 16, translationBO);
     }
 
-    public TranslationsMap(String schema, String language, int initialSize) {
+    public TranslationsMap(
+            String schema, String language, int initialSize, TranslationBO translationBO) {
         super(initialSize);
+
+        this.translationBO = translationBO;
 
         this.setSchema(schema);
         this.setLanguage(language);
@@ -68,7 +72,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
             if (!isGlobalSchema()) {
                 value =
                         SchemaThreadLocal.withGlobalSchema(
-                                () -> Translations.get(this.getLanguage()).getText(key));
+                                () -> translationBO.get(this.getLanguage()).getText(key));
             } else {
                 this.logger.warn(
                         "Translation key not found: "
@@ -116,7 +120,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         if (!isGlobalSchema()) {
             SchemaThreadLocal.withGlobalSchema(
                     () -> {
-                        translations.putAll(Translations.get(this.getLanguage()));
+                        translations.putAll(translationBO.get(this.getLanguage()));
 
                         return null;
                     });
@@ -187,5 +191,9 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
     @Override
     public String toString() {
         return new JSONObject(this.getAllValues()).toString();
+    }
+
+    public void setTranslationsBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
     }
 }
