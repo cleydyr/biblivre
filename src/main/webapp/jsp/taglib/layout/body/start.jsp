@@ -13,8 +13,7 @@
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
 <%
-p
- ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations")
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
 %>
 
 <jsp:useBean id="isMultiPart" type="java.lang.Boolean" scope="request" />
