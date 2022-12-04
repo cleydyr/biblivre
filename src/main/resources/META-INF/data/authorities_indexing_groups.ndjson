@@ -1,0 +1,5 @@
+{"id":0,"translation_key":"all","datafields":null,"sortable":false,"default_sort":false}
+{"id":1,"translation_key":"author","datafields":"100_a","sortable":true,"default_sort":true}
+{"id":2,"translation_key":"entity","datafields":"110_a","sortable":true,"default_sort":false}
+{"id":3,"translation_key":"event","datafields":"111_a","sortable":true,"default_sort":false}
+{"id":4,"translation_key":"other_name","datafields":"400_a, 410_a, 411_a","sortable":true,"default_sort":false}

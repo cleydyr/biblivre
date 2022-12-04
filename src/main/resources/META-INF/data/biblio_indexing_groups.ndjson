@@ -1,0 +1,9 @@
+{"id":4,"translation_key":"subject","datafields":"650_a_x_y_z,600_a_x_y_z,610_a_x_y_z,611_a_x_y_z,630_a_x_y_z,651_a_x_y_z,699_a_x_y_z","sortable":false,"default_sort":false}
+{"id":5,"translation_key":"isbn","datafields":"020_a","sortable":false,"default_sort":false}
+{"id":6,"translation_key":"issn","datafields":"022_a","sortable":false,"default_sort":false}
+{"id":1,"translation_key":"author","datafields":"100_a,110_a,111_a,700_a,710_a,711_a","sortable":true,"default_sort":false}
+{"id":0,"translation_key":"all","datafields":null,"sortable":false,"default_sort":false}
+{"id":2,"translation_key":"year","datafields":"260_c","sortable":true,"default_sort":false}
+{"id":7,"translation_key":"publisher","datafields":"260_b","sortable":true,"default_sort":false}
+{"id":8,"translation_key":"series","datafields":"490_a","sortable":true,"default_sort":false}
+{"id":3,"translation_key":"title","datafields":"245_a_b,243_a_f,240_a,730_a,740_a_n_p,830_a_v,250_a,130_a","sortable":true,"default_sort":true}

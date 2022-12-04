@@ -1,0 +1,60 @@
+{"datafield":"260","format":"${a}_{: }${b}_{, }${c}","sort_order":20}
+{"datafield":"650","format":"${a}_{ - }${x}_{ - }${y}_{ - }${z}","sort_order":41}
+{"datafield":"651","format":"${a}_{ - }${x}_{ - }${y}_{ - }${z}","sort_order":42}
+{"datafield":"699","format":"${a}_{ - }${x}_{ - }${y}_{ - }${z}","sort_order":43}
+{"datafield":"306","format":"${a}","sort_order":25}
+{"datafield":"520","format":"${a}","sort_order":27}
+{"datafield":"020","format":"${a}","sort_order":22}
+{"datafield":"022","format":"${a}","sort_order":23}
+{"datafield":"024","format":"${a}","sort_order":24}
+{"datafield":"256","format":"${a}","sort_order":44}
+{"datafield":"043","format":"${a}","sort_order":45}
+{"datafield":"045","format":"${a}","sort_order":46}
+{"datafield":"255","format":"${a}","sort_order":47}
+{"datafield":"041","format":"${a}","sort_order":48}
+{"datafield":"090","format":"${a}_{ }${b}_{ }${c}_{ }${d}","sort_order":49}
+{"datafield":"310","format":"${a}","sort_order":50}
+{"datafield":"362","format":"${a}","sort_order":51}
+{"datafield":"555","format":"${a}","sort_order":52}
+{"datafield":"852","format":"${a}","sort_order":53}
+{"datafield":"400","format":"${a}","sort_order":5}
+{"datafield":"410","format":"${a}","sort_order":6}
+{"datafield":"411","format":"${a}","sort_order":7}
+{"datafield":"243","format":"${a}_{ }${f}","sort_order":12}
+{"datafield":"240","format":"${a}","sort_order":13}
+{"datafield":"730","format":"${a}","sort_order":14}
+{"datafield":"740","format":"${a}_{ }${n}_{ }${p}","sort_order":15}
+{"datafield":"250","format":"${a}","sort_order":17}
+{"datafield":"257","format":"${a}","sort_order":18}
+{"datafield":"258","format":"${a}","sort_order":19}
+{"datafield":"300","format":"${a}_{ }${b}_{ }${c}_{ }${e}","sort_order":21}
+{"datafield":"013","format":"${a}_{; }${b}_{; }${c}_{; }${d}_{; }${e}_{; }${f}","sort_order":56}
+{"datafield":"095","format":"${a}","sort_order":57}
+{"datafield":"500","format":"${a}","sort_order":28}
+{"datafield":"504","format":"${a}","sort_order":29}
+{"datafield":"505","format":"${a}","sort_order":30}
+{"datafield":"521","format":"${a}","sort_order":31}
+{"datafield":"534","format":"${a}","sort_order":32}
+{"datafield":"590","format":"${a}","sort_order":33}
+{"datafield":"502","format":"${a}","sort_order":34}
+{"datafield":"506","format":"${a}","sort_order":35}
+{"datafield":"876","format":"${h}","sort_order":36}
+{"datafield":"080","format":"${a}_{ }${2}","sort_order":54}
+{"datafield":"082","format":"${a}_{ }${2}","sort_order":55}
+{"datafield":"501","format":"${a}","sort_order":28}
+{"datafield":"530","format":"${a}","sort_order":31}
+{"datafield":"595","format":"${a}","sort_order":33}
+{"datafield":"245","format":"${a}_{: }${b}_{ / }${c}","sort_order":11}
+{"datafield":"100","format":"${a}_{ - }${d}_{ }(${q})","sort_order":1}
+{"datafield":"110","format":"${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})","sort_order":2}
+{"datafield":"111","format":"${a}_{. }(${n}_{ : }${d}_{ : }${c})","sort_order":3}
+{"datafield":"130","format":"${a}_{. }${l}_{. }${f}","sort_order":4}
+{"datafield":"600","format":"${a}_{. }${b}_{. }${c}_{. }${d}_{ - }${x}_{ - }${y}_{ - }${z}","sort_order":37}
+{"datafield":"610","format":"${a}_{. }${b}_{ - }${x}_{ - }${y}_{ - }${z}","sort_order":38}
+{"datafield":"611","format":"${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})_{ - }${x}_{ - }${y}_{ - }${z}","sort_order":39}
+{"datafield":"700","format":"${a}_{. }${d}","sort_order":8}
+{"datafield":"710","format":"${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})","sort_order":9}
+{"datafield":"711","format":"${a}_{. }${b. }_{ }(${n}_{ : }${d}_{ : }${c})","sort_order":10}
+{"datafield":"630","format":"${a}_{. }(${d})","sort_order":40}
+{"datafield":"490","format":"(${a}_{ ; }${v})","sort_order":26}
+{"datafield":"830","format":"${a}_{. }${p}_{ ; }${v}","sort_order":16}

@@ -1,0 +1,7 @@
+{"datafield":"100","collapsed":false,"repeatable":false,"indicator_1":"0,1,2,3","indicator_2":"","material_type":"100","sort_order":100}
+{"datafield":"110","collapsed":false,"repeatable":false,"indicator_1":"0,1,2","indicator_2":"","material_type":"110","sort_order":110}
+{"datafield":"111","collapsed":false,"repeatable":false,"indicator_1":"0,1,2","indicator_2":"","material_type":"111","sort_order":111}
+{"datafield":"400","collapsed":false,"repeatable":true,"indicator_1":"","indicator_2":"","material_type":"100","sort_order":400}
+{"datafield":"410","collapsed":false,"repeatable":true,"indicator_1":"","indicator_2":"","material_type":"110","sort_order":410}
+{"datafield":"411","collapsed":false,"repeatable":true,"indicator_1":"","indicator_2":"","material_type":"111","sort_order":411}
+{"datafield":"670","collapsed":false,"repeatable":true,"indicator_1":"","indicator_2":"","material_type":"100,110,111","sort_order":670}

@@ -1,0 +1,16 @@
+{"key":"email","type":"string","required":true,"max_length":0,"sort_order":1}
+{"key":"gender","type":"list","required":false,"max_length":2,"sort_order":2}
+{"key":"phone_cel","type":"string","required":false,"max_length":25,"sort_order":3}
+{"key":"phone_home","type":"string","required":false,"max_length":25,"sort_order":4}
+{"key":"phone_work","type":"string","required":false,"max_length":25,"sort_order":5}
+{"key":"obs","type":"text","required":false,"max_length":0,"sort_order":1002}
+{"key":"id_cpf","type":"string","required":false,"max_length":20,"sort_order":8}
+{"key":"address","type":"string","required":false,"max_length":500,"sort_order":9}
+{"key":"address_number","type":"string","required":false,"max_length":100,"sort_order":10}
+{"key":"address_complement","type":"string","required":false,"max_length":100,"sort_order":11}
+{"key":"address_zip","type":"string","required":false,"max_length":20,"sort_order":12}
+{"key":"address_city","type":"string","required":false,"max_length":100,"sort_order":13}
+{"key":"address_state","type":"string","required":false,"max_length":100,"sort_order":14}
+{"key":"birthday","type":"date","required":false,"max_length":0,"sort_order":15}
+{"key":"id_rg","type":"string","required":false,"max_length":20,"sort_order":7}
+{"key":"phone_work_extension","type":"string","required":false,"max_length":10,"sort_order":6}

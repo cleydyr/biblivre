@@ -1,0 +1,15 @@
+{"key":"holding.label_print_paragraph_alignment","value":"ALIGN_CENTER","type":"string","required":true}
+{"key":"general.default_language","value":"pt-BR","type":"string","required":true}
+{"key":"search.results_per_page","value":"25","type":"integer","required":true}
+{"key":"search.result_limit","value":"6000","type":"integer","required":true}
+{"key":"general.currency","value":"R$","type":"string","required":true}
+{"key":"cataloging.accession_number_prefix","value":"Bib","type":"string","required":true}
+{"key":"search.distributed_search_limit","value":"100","type":"integer","required":true}
+{"key":"general.business_days","value":"2,3,4,5,6","type":"string","required":true}
+{"key":"general.uid","value":"","type":"string","required":false}
+{"key":"general.multi_schema","value":"false","type":"boolean","required":true}
+{"key":"general.psql_path","value":"","type":"string","required":false}
+{"key":"general.pg_dump_path","value":"","type":"string","required":false}
+{"key":"general.backup_path","value":"","type":"string","required":false}
+{"key":"general.subtitle","value":"Versão 5.0 Beta","type":"string","required":false}
+{"key":"general.title","value":"Biblivre V","type":"string","required":true}
