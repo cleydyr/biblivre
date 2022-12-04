@@ -79,7 +79,7 @@ public class Handler extends AbstractHandler {
             File template =
                     new File(
                             request.getSession().getServletContext().getRealPath("/"),
-                            "biblivre_template_4.0.0.sql");
+                            "biblivre_template_6.0.0.sql");
             success = schemaBO.createSchema(dto, template, false);
 
             if (success) {
