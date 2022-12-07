@@ -11,4 +11,6 @@ public interface DigitalMediaStoreMigrator {
     }
 
     void migrate();
+
+    void init();
 }

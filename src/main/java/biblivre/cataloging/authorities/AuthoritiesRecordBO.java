@@ -42,7 +42,10 @@ public class AuthoritiesRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            indexingDAO.reindex(dto);
+            indexingDAO.reindex(
+                    dto,
+                    indexingGroupBO.getGroups(dto.getRecordType()),
+                    tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
             return true;
         }
 
@@ -54,7 +57,10 @@ public class AuthoritiesRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            indexingDAO.reindex(dto);
+            indexingDAO.reindex(
+                    dto,
+                    indexingGroupBO.getGroups(dto.getRecordType()),
+                    tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
             return true;
         }
 

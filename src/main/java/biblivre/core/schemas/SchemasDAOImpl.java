@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.postgresql.core.BaseConnection;
 
-public class SchemasDAOImpl extends AbstractDAO implements SchemasDAO {
+public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
 
     public static SchemasDAOImpl getInstance() {
         return (SchemasDAOImpl) AbstractDAO.getInstance(SchemasDAOImpl.class);

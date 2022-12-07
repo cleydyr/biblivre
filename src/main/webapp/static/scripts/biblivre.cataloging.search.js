@@ -29,16 +29,16 @@ var CatalogingSearchClass = {
 	historyMaterialParam: 'material',
 	historyGroupParam: 'group',
 
-	initialize: function() {
+	initialize: function () {
 		this.advancedSearchForm = this.root.find('.search_box .advanced_search');
 		this.simpleSearchForm = this.root.find('.search_box .simple_search');
 
 		if (CirculationSearch) {
-			Core.subscribe(CirculationSearch.prefix + 'open-record', function(e, record) {
+			Core.subscribe(CirculationSearch.prefix + 'open-record', function (e, record) {
 				$('#cataloging_search').hide();
 			}, this);
 
-			Core.subscribe(CirculationSearch.prefix + 'record-selected', function(e, record) {
+			Core.subscribe(CirculationSearch.prefix + 'record-selected', function (e, record) {
 				$('#cataloging_search').show();
 			}, this);
 		}
@@ -76,13 +76,13 @@ var CatalogingSearchClass = {
 		simpleQuery.data('oldVal', simpleQuery.val());
 
 		// Look for changes in the value
-		simpleQuery.bind("change propertychange keyup input paste", function(event) {
+		simpleQuery.bind("change propertychange keyup input paste", function (event) {
 			var el = $(this);
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 
-				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
+				simpleButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -92,21 +92,21 @@ var CatalogingSearchClass = {
 		var me = this;
 
 		// Look for changes in the value
-		advancedQuery.bind("change propertychange keyup input paste", function(event) {
+		advancedQuery.bind("change propertychange keyup input paste", function (event) {
 			var el = $(this);
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 
 				var empty = true;
-				me.root.find('.advanced_search :input[name=query]').each(function() {
+				me.root.find('.advanced_search :input[name=query]').each(function () {
 					if ($.trim($(this).val()) != '') {
 						empty = false;
 						return false;
 					}
 				});
 
-				advancedButton.text(empty ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
+				advancedButton.text(empty ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -118,16 +118,16 @@ var CatalogingSearchClass = {
 			this.switchToSimpleSearch();
 		}
 	},
-	initializeHistory: function() {
-		$.History.bind($.proxy(function(trigger) {
+	initializeHistory: function () {
+		$.History.bind($.proxy(function (trigger) {
 			return this.historyRead(trigger);
 		}, this));
 
 		if (!Core.qhs('search')) {
 			this.switchToSimpleSearch();
-		};
+		}
 	},
-	afterHistoryRead: function(trigger) {
+	afterHistoryRead: function (trigger) {
 		if (this.isAdvancedSearch) {
 			var query = Core.historyCheckAndSet(trigger, this.historyQueryParam);
 			var group = Core.historyCheckAndSet(trigger, this.historyGroupParam);
@@ -154,7 +154,7 @@ var CatalogingSearchClass = {
 			}
 		}
 	},
-	clearResults: function(keepOrderingBar) {
+	clearResults: function (keepOrderingBar) {
 		Core.trigger(this.prefix + 'clear-search');
 
 		if (!keepOrderingBar) {
@@ -165,7 +165,7 @@ var CatalogingSearchClass = {
 			Core.removeMsg();
 		}
 	},
-	clearAdvancedSearch: function() {
+	clearAdvancedSearch: function () {
 		var form = this.advancedSearchForm;
 
 		form.find('.search_entry:gt(0)').remove();
@@ -177,7 +177,7 @@ var CatalogingSearchClass = {
 		this.addEntryAdvancedSearch();
 		this.addEntryAdvancedSearch();
 	},
-	addEntryAdvancedSearch: function() {
+	addEntryAdvancedSearch: function () {
 		var entry = this.advancedSearchForm.find('.search_entry:last');
 		var clone = entry.clone(true);
 
@@ -187,21 +187,21 @@ var CatalogingSearchClass = {
 
 		entry.after(clone);
 	},
-	getCurrentDatabase: function() {
+	getCurrentDatabase: function () {
 		if (CatalogingInput.getCurrentDatabase) {
 			return CatalogingInput.getCurrentDatabase();
 		} else {
 			return 'main';
 		}
 	},
-	createPagingParameters: function(parameters, response) {
+	createPagingParameters: function (parameters, response) {
 		return {
 			page: response.search.page,
 			search_id: response.search.id,
 			indexing_group: 0
 		};
 	},
-	simpleSearch: function() {
+	simpleSearch: function () {
 		var query = this.simpleSearchForm.find(':input[name=query]').val();
 		var materialType = this.simpleSearchForm.find(':input[name=material]').val();
 
@@ -235,7 +235,7 @@ var CatalogingSearchClass = {
 
 		this.submit(searchParameters);
 	},
-	advancedSearch: function() {
+	advancedSearch: function () {
 		var searchParameters = $.extend({
 			database: this.getCurrentDatabase(),
 			material_type: this.advancedSearchForm.find(':input[name=material]').val(),
@@ -244,7 +244,7 @@ var CatalogingSearchClass = {
 
 		var searchTerms = [];
 
-		this.advancedSearchForm.find('.search_entry').each(function() {
+		this.advancedSearchForm.find('.search_entry').each(function () {
 			var entry = $(this);
 			var query = entry.find(':input[name=query]').val();
 			var field = entry.find(':input[name=field]').val();
@@ -314,12 +314,12 @@ var CatalogingSearchClass = {
 		searchParameters.search_terms = searchTerms;
 		this.submit(searchParameters);
 	},
-	afterDisplayResult: function(config) {
+	afterDisplayResult: function (config) {
 		this.root.find('.search_ordering_bar').show();
 		this.root.find('.search_indexing_groups').processTemplate(config.response);
 		this.root.find('.search_sort_by').processTemplate(config.response).find('select').combo();
 	},
-	changeIndexingGroup: function(indexingGroup) {
+	changeIndexingGroup: function (indexingGroup) {
 		if (!this.lastPagingParameters) {
 			return;
 		}
@@ -328,7 +328,7 @@ var CatalogingSearchClass = {
 		this.lastPagingParameters.page = 1;
 		this.paginate(this.lastPagingParameters);
 	},
-	changeSort: function(sort) {
+	changeSort: function (sort) {
 		if (!this.lastPagingParameters) {
 			return;
 		}
@@ -337,7 +337,7 @@ var CatalogingSearchClass = {
 		this.lastPagingParameters.page = 1;
 		this.paginate(this.lastPagingParameters);
 	},
-	searchTerm: function(obj) {
+	searchTerm: function (obj) {
 		var query = $('<div />').html(obj.query).text();
 
 		if (this.isSimpleSearch) {
@@ -358,12 +358,10 @@ var CatalogingSearchClass = {
 
 		this.root.find('.search_box .main_button:visible').trigger('click');
 	},
-	tabHandler: function(tab, params) {
-		try {
-			if (HoldingInput && HoldingInput.editing) {
-				return false;
-			}
-		} catch (e) {}
+	tabHandler: function (tab, params) {
+		if (HoldingInput && HoldingInput.editing) {
+			return false;
+		}
 
 		params = params || {};
 		data = params.data || this.selectedRecord;
@@ -373,8 +371,13 @@ var CatalogingSearchClass = {
 				return false;
 			}
 
-			CatalogingInput.convert(this.selectedTab, tab, $.proxy(function(newData) {
-				Core.changeTab(tab, this, { data: newData, keepEditing: true, skipConvert: true, force: true });
+			CatalogingInput.convert(this.selectedTab, tab, $.proxy(function (newData) {
+				Core.changeTab(tab, this, {
+					data: newData,
+					keepEditing: true,
+					skipConvert: true,
+					force: true
+				});
 			}, this));
 
 			return false;
@@ -405,7 +408,7 @@ var CatalogingSearchClass = {
 			HoldingSearch.clearResults();
 		}
 	},
-	clearTab: function(tab) {
+	clearTab: function (tab) {
 		if (!this.enableTabs) {
 			return;
 		}
@@ -436,7 +439,7 @@ var CatalogingSearchClass = {
 				break;
 		}
 	},
-	clearAll: function() {
+	clearAll: function () {
 		if (!this.enableTabs) {
 			return;
 		}
@@ -446,7 +449,7 @@ var CatalogingSearchClass = {
 		this.clearTab('form');
 		this.clearTab('holding');
 	},
-	loadCatalogingRecord: function(record, params) {
+	loadCatalogingRecord: function (record, params) {
 		var div = $('#biblivre_record');
 
 		if (div.data('loaded')) {
@@ -467,7 +470,7 @@ var CatalogingSearchClass = {
 
 		$('#biblivre_attachments').processTemplate(record);
 	},
-	loadCatalogingMarc: function(record, params) {
+	loadCatalogingMarc: function (record, params) {
 		var div = $('#biblivre_marc');
 
 		if (div.data('loaded')) {
@@ -498,7 +501,7 @@ var CatalogingSearchClass = {
 			CatalogingInput.setAsReadOnly('marc');
 		}
 	},
-	loadCatalogingForm: function(record, params) {
+	loadCatalogingForm: function (record, params) {
 		var form = $('#biblivre_form');
 
 		if (form.data('loaded')) {
@@ -533,7 +536,7 @@ var CatalogingSearchClass = {
 			CatalogingInput.setAsReadOnly('form');
 		}
 	},
-	loadHoldingList: function(record, params) {
+	loadHoldingList: function (record, params) {
 		var div = this.root.find('.biblivre_holdings');
 
 		this.clearTab('holdings');
@@ -544,7 +547,7 @@ var CatalogingSearchClass = {
 			data: record.holdings
 		});
 	},
-	linkToSearch: function(text, group) {
+	linkToSearch: function (text, group) {
 		var terms = (text || '').split('\n');
 		var database = this.getCurrentDatabase();
 
@@ -555,7 +558,7 @@ var CatalogingSearchClass = {
 
 		return html.join('; ');
 	},
-	openHolding: function(holding_id) {
+	openHolding: function (holding_id) {
 		var holding = {};
 		var node = this.root.find('.holding_list div.result[rel=' + holding_id + ']');
 
@@ -573,7 +576,7 @@ var CatalogingSearchClass = {
 			$('#content_outer').stop().scrollTo(0, {
 				duration: 600
 			})
-		).then(function() {
+		).then(function () {
 			$('#content_inner').height('auto');
 		});
 
@@ -588,7 +591,7 @@ var CatalogingSearchClass = {
 			})
 			.animate({
 				top: selectedHighlight.getHiddenDimensions().position.top
-			}, 600, function() {
+			}, 600, function () {
 				highlight.css({
 					position: 'relative',
 					top: 0,
@@ -605,7 +608,7 @@ var CatalogingSearchClass = {
 				Core.changeTab('holding_form', me);
 			});
 	},
-	exportSelectedRecords: function() {
+	exportSelectedRecords: function () {
 		var list = [];
 
 		for (var i = 0; i < this.selectedList.length; i++) {
@@ -628,7 +631,7 @@ var CatalogingSearchClass = {
 			},
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				window.open(window.location.pathname + '?controller=download&module=' + this.type + '&action=download_export&id=' + response.uuid);
 				this.selectedList = [];
@@ -639,11 +642,11 @@ var CatalogingSearchClass = {
 			}
 		});
 	},
-	reserve: function(id, action) {
+	reserve: function (id, action) {
 		var _action = action || 'reserve';
 		if (!CirculationSearch.selectedRecord) {
 			Core.msg({
-				message:Translations.get('circulation.reservation.error.select_reader_first'),
+				message: Translations.get('circulation.reservation.error.select_reader_first'),
 				message_level: 'warning'
 			});
 			return;
@@ -664,7 +667,7 @@ var CatalogingSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				Core.trigger(this.prefix + 'reservation-created', id, response.data);
 			}
@@ -672,7 +675,7 @@ var CatalogingSearchClass = {
 			Core.msg(response);
 		});
 	},
-	deleteReservation: function(reservationInfo, action) {
+	deleteReservation: function (reservationInfo, action) {
 		var _action = action || 'delete';
 		if (!reservationInfo || !reservationInfo.reservation) {
 			return;
@@ -692,7 +695,7 @@ var CatalogingSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				Core.trigger(this.prefix + 'reservation-deleted', reservationInfo.reservation.id);
 			}

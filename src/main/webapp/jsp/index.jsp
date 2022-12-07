@@ -1,14 +1,18 @@
+<%@page import="java.util.Collection"%>
 <%@page import="biblivre.core.utils.Constants"%>
-<%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@page import="biblivre.core.schemas.SchemaDTO"%>
-<%@page import="biblivre.core.schemas.Schemas"%>
 <%@page import="biblivre.core.ExtendedRequest"%>
 <%@page import="biblivre.core.SchemaThreadLocal"%>
-<%@ page import="biblivre.login.LoginDTO "%>
+<%@ page import="biblivre.login.LoginDTO"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+%>
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.index.css" />
@@ -47,7 +51,7 @@
 			<fieldset>
 				<legend><i18n:text key="text.multi_schema.select_library" /></legend>
 				<%
-					for (final SchemaDTO schema : Schemas.getSchemas()) {
+					for (final SchemaDTO schema : (Collection<SchemaDTO>) request.getAttribute("schemas")) {
 						if (schema.isDisabled()) {
 							continue;
 						}
@@ -57,8 +61,8 @@
 				        SchemaThreadLocal.setSchema(schema.getSchema());
 				%>
 							<div class="library">
-								<a href="<%= schema.getSchema() %>/"><%= Configurations.getHtml(Constants.CONFIG_TITLE) %></a>
-								<div class="subtitle"><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></div>
+								<a href="<%= schema.getSchema() %>/"><%= configurationBO.getHtml(Constants.CONFIG_TITLE) %></a>
+								<div class="subtitle"><%= configurationBO.getHtml(Constants.CONFIG_SUBTITLE) %></div>
 							</div>
 				<%
 						SchemaThreadLocal.remove();

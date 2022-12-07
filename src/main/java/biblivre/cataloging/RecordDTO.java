@@ -69,6 +69,8 @@ public class RecordDTO extends AbstractDTO {
     private transient JSONObject json;
     private transient String humanReadableMarc;
 
+    private List<BriefTabFieldFormatDTO> briefTabFieldFormats;
+
     public RecordDTO() {
         this.record = MarcFactory.newInstance().newRecord();
 
@@ -270,13 +272,11 @@ public class RecordDTO extends AbstractDTO {
         return index;
     }
 
-    public List<BriefTabFieldDTO> getFields() {
+    protected List<BriefTabFieldDTO> getFields() {
         if (this.fields == null) {
             MarcDataReader marcDataReader = new MarcDataReader(record);
 
-            List<BriefTabFieldFormatDTO> formats = Fields.getBriefFormats(getRecordType());
-
-            this.fields = marcDataReader.getFieldList(formats);
+            this.fields = marcDataReader.getFieldList(briefTabFieldFormats);
         }
 
         return this.fields;
@@ -386,7 +386,6 @@ public class RecordDTO extends AbstractDTO {
         json.putOpt("modified", this.getModified());
 
         json.putOpt("attachments", this.toJSONArray(this.getAttachments()));
-        json.putOpt("fields", this.toJSONArray(this.getFields()));
         json.putOpt("json", this.getJson());
         json.putOpt("marc", this.getHumanReadableMarc());
 

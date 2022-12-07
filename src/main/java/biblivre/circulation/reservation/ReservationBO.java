@@ -19,12 +19,14 @@
  ******************************************************************************/
 package biblivre.circulation.reservation;
 
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
@@ -32,8 +34,10 @@ import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.CalendarUtils;
+import biblivre.core.utils.Constants;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,6 +55,8 @@ public class ReservationBO extends AbstractBO {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;
     private UserTypeBO userTypeBO;
+    private IndexingGroupBO indexingGroupBO;
+    private ConfigurationBO configurationBO;
 
     public boolean deleteExpired() {
         return this.reservationDAO.deleteExpired();
@@ -61,7 +67,8 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationDTO> get(RecordDTO record) {
-        return this.reservationDAO.list(null, record);
+        return this.reservationDAO.list(
+                null, record, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
     }
 
     public int countReserved(RecordDTO record) {
@@ -74,7 +81,9 @@ public class ReservationBO extends AbstractBO {
 
     public List<Integer> listReservedRecordIds(UserDTO user) {
         List<Integer> reservedRecords = new ArrayList<>();
-        List<ReservationDTO> list = this.reservationDAO.list(user, null);
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        user, null, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         for (ReservationDTO dto : list) {
             reservedRecords.add(dto.getRecordId());
@@ -84,7 +93,9 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationDTO> list(UserDTO user) {
-        List<ReservationDTO> list = this.reservationDAO.list(user, null);
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        user, null, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         for (ReservationDTO dto : list) {
             BiblioRecordDTO record =
@@ -98,7 +109,9 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationInfoDTO> listReservationInfo(UserDTO user) {
-        List<ReservationDTO> list = this.reservationDAO.list(user, null);
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        user, null, indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
         List<ReservationInfoDTO> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
@@ -116,7 +129,9 @@ public class ReservationBO extends AbstractBO {
     }
 
     public List<ReservationInfoDTO> list() {
-        List<ReservationDTO> list = this.reservationDAO.list();
+        List<ReservationDTO> list =
+                this.reservationDAO.list(
+                        indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
         List<ReservationInfoDTO> result = new ArrayList<>();
 
         for (ReservationDTO dto : list) {
@@ -180,7 +195,11 @@ public class ReservationBO extends AbstractBO {
 
         Date today = new Date();
         int days = (type != null) ? type.getReservationTimeLimit() : 7;
-        Date expires = CalendarUtils.calculateExpectedReturnDate(today, days);
+        Date expires =
+                CalendarUtils.calculateExpectedReturnDate(
+                        today,
+                        days,
+                        configurationBO.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6"));
 
         reservation.setExpires(expires);
 
@@ -263,5 +282,15 @@ public class ReservationBO extends AbstractBO {
     @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

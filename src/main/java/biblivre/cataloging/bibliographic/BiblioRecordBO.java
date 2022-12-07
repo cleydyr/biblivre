@@ -20,6 +20,7 @@
 package biblivre.cataloging.bibliographic;
 
 import biblivre.administration.indexing.IndexingDAO;
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -46,6 +47,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
     private IndexingDAO indexingDAO;
     private ReservationDAO reservationDAO;
     private LendingDAO lendingDAO;
+    private IndexingGroupBO indexingGroupBO;
 
     @Override
     public void populateDetails(RecordDTO recordDTO, int mask) {
@@ -134,7 +136,10 @@ public class BiblioRecordBO extends PaginableRecordBO {
         dto.setFixedLengthDataElements();
 
         if (this.recordDAO.save(dto)) {
-            indexingDAO.reindex(dto);
+            indexingDAO.reindex(
+                    dto,
+                    indexingGroupBO.getGroups(dto.getRecordType()),
+                    tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
             return true;
         }
 
@@ -146,7 +151,10 @@ public class BiblioRecordBO extends PaginableRecordBO {
         dto.setDateOfLastTransaction();
 
         if (this.recordDAO.update(dto)) {
-            indexingDAO.reindex(dto);
+            indexingDAO.reindex(
+                    dto,
+                    indexingGroupBO.getGroups(dto.getRecordType()),
+                    tabFieldsBO.getAutocompleteSubFields(dto.getRecordType()));
             return true;
         }
 

@@ -1,11 +1,9 @@
 <%@page import="biblivre.core.auth.AuthorizationSchemaScope"%>
 <%@page import="biblivre.core.auth.AuthorizationUserScope"%>
 <%@page import="biblivre.core.translations.TranslationsMap"%>
-<%@page import="biblivre.core.translations.Translations"%>
 <%@page import="biblivre.core.translations.TranslationDTO"%>
 <%@page import="biblivre.core.auth.AuthorizationPointGroups"%>
 <%@page import="biblivre.core.auth.AuthorizationPointTypes"%>
-<%@page import="biblivre.circulation.user.UserFields"%>
 <%@page import="biblivre.core.utils.Constants"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
@@ -39,7 +37,7 @@
 </layout:head>
 
 <layout:body>
-	<c:set var="user_field_prefix" value="<%= Constants.TRANSLATION_USER_FIELD %>" scope="page" />
+	<c:set var="user_field_prefix" value="<%=Constants.TRANSLATION_USER_FIELD%>" scope="page" />
 	<div class="page_help"><i18n:text key="administration.permissions.page_help" /></div>
 
 	<div id="circulation_search">
@@ -133,76 +131,76 @@
 				<div class="tab_extra_content biblivre_form" id="permissions" data-tab="login">
 					<div class="permissions_area" data="true">
 					<%
-						TranslationsMap translations = (TranslationsMap) request.getAttribute("translationsMap");
-						AuthorizationPointGroups lastGroup = null;
-						for (AuthorizationPointTypes atp : AuthorizationPointTypes.values()) {
-							if (atp.isPublic() || atp.isPublicForLoggedUsers()) {
-								continue;
-							}
+					TranslationsMap translations = (TranslationsMap) request.getAttribute("translationsMap");
+									AuthorizationPointGroups lastGroup = null;
+									for (AuthorizationPointTypes atp : AuthorizationPointTypes.values()) {
+										if (atp.isPublic() || atp.isPublicForLoggedUsers()) {
+											continue;
+										}
 
-							if (atp.getUserScope() == AuthorizationUserScope.READER) {
-								continue;
-							}
+										if (atp.getUserScope() == AuthorizationUserScope.READER) {
+											continue;
+										}
 
-							if (atp.getSchemaScope() == AuthorizationSchemaScope.GLOBAL_SCHEMA) {
-								continue;
-							}
+										if (atp.getSchemaScope() == AuthorizationSchemaScope.GLOBAL_SCHEMA) {
+											continue;
+										}
 
 
-							if (!atp.getGroup().equals(lastGroup)) {
-								if (lastGroup != null) {
-									out.println("</div></fieldset>");
-								}
+										if (!atp.getGroup().equals(lastGroup)) {
+											if (lastGroup != null) {
+												out.println("</div></fieldset>");
+											}
 
-								lastGroup = atp.getGroup();
+											lastGroup = atp.getGroup();
 
-								out.println("<fieldset>");
-								out.println("<legend><input type=\"checkbox\" onclick=\"PermissionsInput.checkAllPermissions(this);\" class=\"legend\" style=\"vertical-align: middle\"/>&#160;" + translations.getText("administration.permissions.groups." + lastGroup.toString().toLowerCase()) + "</legend>");
-								out.println("<div class=\"fields\">");
-							}
+											out.println("<fieldset>");
+											out.println("<legend><input type=\"checkbox\" onclick=\"PermissionsInput.checkAllPermissions(this);\" class=\"legend\" style=\"vertical-align: middle\"/>&#160;" + translations.getText("administration.permissions.groups." + lastGroup.toString().toLowerCase()) + "</legend>");
+											out.println("<div class=\"fields\">");
+										}
 
-							out.println("<div><input type=\"checkbox\" value=\"" + atp + "\" name=\"employee_permissions\" id=\"permission_" + atp + "\" />&#160;<label for=\"permission_" + atp + "\">" + translations.getText("administration.permissions.items." + atp.toString().toLowerCase()) + "</label></div>");
-						}
+										out.println("<div><input type=\"checkbox\" value=\"" + atp + "\" name=\"employee_permissions\" id=\"permission_" + atp + "\" />&#160;<label for=\"permission_" + atp + "\">" + translations.getText("administration.permissions.items." + atp.toString().toLowerCase()) + "</label></div>");
+									}
 
-						if (lastGroup != null) {
-							out.println("</fieldset>");
-							lastGroup = null;
-						}
+									if (lastGroup != null) {
+										out.println("</fieldset>");
+										lastGroup = null;
+									}
 					%>
 					</div>
 					<div class="permissions_area" data="false">
 					<%
-						for (AuthorizationPointTypes atp : AuthorizationPointTypes.values()) {
-							if (atp.isPublic() || atp.isPublicForLoggedUsers()) {
-								continue;
-							}
+					for (AuthorizationPointTypes atp : AuthorizationPointTypes.values()) {
+										if (atp.isPublic() || atp.isPublicForLoggedUsers()) {
+											continue;
+										}
 
-							if (atp.getUserScope() == AuthorizationUserScope.EMPLOYEE) {
-								continue;
-							}
+										if (atp.getUserScope() == AuthorizationUserScope.EMPLOYEE) {
+											continue;
+										}
 
-							if (atp.getSchemaScope() == AuthorizationSchemaScope.GLOBAL_SCHEMA) {
-								continue;
-							}
+										if (atp.getSchemaScope() == AuthorizationSchemaScope.GLOBAL_SCHEMA) {
+											continue;
+										}
 
-							if (!atp.getGroup().equals(lastGroup)) {
-								if (lastGroup != null) {
-									out.println("</div></fieldset>");
-								}
+										if (!atp.getGroup().equals(lastGroup)) {
+											if (lastGroup != null) {
+												out.println("</div></fieldset>");
+											}
 
-								lastGroup = atp.getGroup();
+											lastGroup = atp.getGroup();
 
-								out.println("<fieldset>");
-								out.println("<legend><input type=\"checkbox\" onclick=\"PermissionsInput.checkAllPermissions(this);\" class=\"legend\" style=\"vertical-align: middle\"/>&#160;" + translations.getText("administration.permissions.groups." + lastGroup.toString().toLowerCase()) + "</legend>");
-								out.println("<div class=\"fields\">");
-							}
+											out.println("<fieldset>");
+											out.println("<legend><input type=\"checkbox\" onclick=\"PermissionsInput.checkAllPermissions(this);\" class=\"legend\" style=\"vertical-align: middle\"/>&#160;" + translations.getText("administration.permissions.groups." + lastGroup.toString().toLowerCase()) + "</legend>");
+											out.println("<div class=\"fields\">");
+										}
 
-							out.println("<div><input type=\"checkbox\" value=\"" + atp + "\" name=\"reader_permissions\" id=\"permission_" + atp + "\" />&#160;<label for=\"permission_" + atp + "\">" + translations.getText("administration.permissions.items." + atp.toString().toLowerCase()) + "</label></div>");
-						}
+										out.println("<div><input type=\"checkbox\" value=\"" + atp + "\" name=\"reader_permissions\" id=\"permission_" + atp + "\" />&#160;<label for=\"permission_" + atp + "\">" + translations.getText("administration.permissions.items." + atp.toString().toLowerCase()) + "</label></div>");
+									}
 
-						if (lastGroup != null) {
-							out.println("</fieldset>");
-						}
+									if (lastGroup != null) {
+										out.println("</fieldset>");
+									}
 					%>
 					</div>
 				</div>
@@ -224,7 +222,7 @@
 					<label class="search_label"><i18n:text key="search.user.field" /></label>
 					<select name="field" class="combo">
 						<option value=""><i18n:text key="search.user.name_or_id" /></option>
-						<c:forEach var="field" items="<%= UserFields.getSearchableFields() %>" >
+						<c:forEach var="field" items="${requestScope.searchableFields}" >
 							<option value="${field.key}"><i18n:text key="${user_field_prefix}${field.key}" /></option>
 						</c:forEach>
 					</select>

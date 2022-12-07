@@ -1,0 +1,10 @@
+{"datafield":"040","format":"${a}_{- }${b}","sort_order":1}
+{"datafield":"150","format":"${a}_{- }${i}_{; }${x}","sort_order":2}
+{"datafield":"450","format":"${a}_{; }${x}","sort_order":4}
+{"datafield":"550","format":"${a}_{; }${x}","sort_order":5}
+{"datafield":"670","format":"${a}","sort_order":6}
+{"datafield":"680","format":"${a}","sort_order":7}
+{"datafield":"685","format":"${a}","sort_order":8}
+{"datafield":"750","format":"${a}_{; }${x}_{; }${y}_{; }${z}","sort_order":9}
+{"datafield":"913","format":"${a}","sort_order":10}
+{"datafield":"360","format":"${a}_{; }${x}","sort_order":3}

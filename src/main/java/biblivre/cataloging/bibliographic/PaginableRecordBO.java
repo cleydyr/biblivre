@@ -1,8 +1,9 @@
 package biblivre.cataloging.bibliographic;
 
-import biblivre.administration.indexing.IndexingGroups;
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.search.SearchDAO;
@@ -10,7 +11,6 @@ import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.PagingDTO;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.utils.Constants;
 import java.util.List;
@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class PaginableRecordBO extends RecordBO {
     protected HoldingBO holdingBO;
     protected SearchDAO searchDAO;
+    protected IndexingGroupBO indexingGroupBO;
+    protected TabFieldsBO tabFieldsBO;
 
     public boolean paginateSearch(SearchDTO search) {
         if (search.getQuery().isHoldingSearch()) {
@@ -59,7 +61,7 @@ public abstract class PaginableRecordBO extends RecordBO {
 
         search.setQuery(searchQuery);
 
-        search.setSort(IndexingGroups.getDefaultSortableGroupId(getRecordType()));
+        search.setSort(indexingGroupBO.getDefaultSortableGroupId(getRecordType()));
 
         search(search);
 
@@ -114,10 +116,10 @@ public abstract class PaginableRecordBO extends RecordBO {
         PagingDTO paging = new PagingDTO();
 
         paging.setRecordsPerPage(
-                Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+                configurationBO.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
 
         paging.setRecordLimit(
-                Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+                configurationBO.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
 
         paging.setPage(1);
 
@@ -135,10 +137,10 @@ public abstract class PaginableRecordBO extends RecordBO {
             PagingDTO paging = search.getPaging();
 
             paging.setRecordsPerPage(
-                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
+                    configurationBO.getPositiveInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 20));
 
             paging.setRecordLimit(
-                    Configurations.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
+                    configurationBO.getPositiveInt(Constants.CONFIG_SEARCH_RESULT_LIMIT, 2000));
         }
 
         return search;
@@ -152,5 +154,15 @@ public abstract class PaginableRecordBO extends RecordBO {
     @Autowired
     public void setSearchDAO(SearchDAO seachDAO) {
         this.searchDAO = seachDAO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
     }
 }

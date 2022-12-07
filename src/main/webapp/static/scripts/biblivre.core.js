@@ -30,32 +30,32 @@
  */
 var Translations = {
 	translations: {},
-	get: function(key, params) {
+	get: function (key, params) {
 		var string = this.translations[key] || "__" + key + "__";
 		var args = params || {};
 
-		return string.replace(/\{(.+?)\}/g, function(m, i) {
+		return string.replace(/\{(.+?)\}/g, function (m, i) {
 			return args[m.substring(1, m.length - 1)];
 		});
 	}
 };
 
-var _field = function(field) {
+var _field = function (field) {
 	var key = 'cataloging.tab.record.custom.field_label.biblio_' + field;
 	var otherKey = 'marc.bibliographic.datafield.' + field;
 	return Translations.translations[key] || Translations.translations[otherKey];
 }
 
-var _f = function(elem, param) {
+var _f = function (elem, param) {
 	return Globalize.format(elem, param || 'n0');
 };
 
-var _d = function(date, param) {
+var _d = function (date, param) {
 	var myDate = new Date(date);
 
 	if (isNaN(myDate)) {
 		myDate = newDateFix(date);
-	};
+	}
 
 	var params = (param || 'd').split(' ');
 
@@ -67,7 +67,7 @@ var _d = function(date, param) {
 	return arr.join(' ');
 };
 
-var _p = function(key, number) {
+var _p = function (key, number) {
 	if (number == 1) {
 		return Translations.get(key + '_singular', [number]);
 	} else {
@@ -76,27 +76,27 @@ var _p = function(key, number) {
 };
 
 
-var newDateFix = function(s){
-    var day, tz,
-    rx=/^(\d{4}\-\d\d\-\d\d([tT ][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
-    p= rx.exec(s) || [];
-    if(p[1]){
-        day= p[1].split(/\D/);
-        for(var i= 0, L= day.length; i<L; i++){
-            day[i]= parseInt(day[i], 10) || 0;
-        };
-        day[1]-= 1;
-        day= new Date(Date.UTC.apply(Date, day));
-        if(!day.getDate()) return NaN;
-        if(p[5]){
-            tz= (parseInt(p[5], 10)*60);
-            if(p[6]) tz+= parseInt(p[6], 10);
-            if(p[4]== '+') tz*= -1;
-            if(tz) day.setUTCMinutes(day.getUTCMinutes()+ tz);
-        }
-        return day;
-    }
-    return NaN;
+var newDateFix = function (s) {
+	var day, tz,
+		rx = /^(\d{4}\-\d\d\-\d\d([tT ][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
+		p = rx.exec(s) || [];
+	if (p[1]) {
+		day = p[1].split(/\D/);
+		for (var i = 0, L = day.length; i < L; i++) {
+			day[i] = parseInt(day[i], 10) || 0;
+		}
+		day[1] -= 1;
+		day = new Date(Date.UTC.apply(Date, day));
+		if (!day.getDate()) return NaN;
+		if (p[5]) {
+			tz = (parseInt(p[5], 10) * 60);
+			if (p[6]) tz += parseInt(p[6], 10);
+			if (p[4] == '+') tz *= -1;
+			if (tz) day.setUTCMinutes(day.getUTCMinutes() + tz);
+		}
+		return day;
+	}
+	return NaN;
 };
 
 /**
@@ -110,7 +110,7 @@ var newDateFix = function(s){
 
 var Core = {};
 
-Core.get = function(root, path) {
+Core.get = function (root, path) {
 	if (!root) {
 		return null;
 	}
@@ -129,17 +129,17 @@ Core.get = function(root, path) {
 	return r;
 };
 
-Core.subscribe = function(event, callback, scope) {
+Core.subscribe = function (event, callback, scope) {
 	$(document).on(event, $.proxy(callback, scope || window));
 };
 
-Core.trigger = function(event) {
+Core.trigger = function (event) {
 	return $(document).triggerHandler(event, [].splice.call(arguments, 1, arguments.length));
 };
 
 Core.currentHistoryTrigger = {};
 
-Core.historyTrigger = function(obj) {
+Core.historyTrigger = function (obj) {
 	var changed = false;
 
 	for (var param in obj) {
@@ -159,7 +159,7 @@ Core.historyTrigger = function(obj) {
 	}
 };
 
-Core.historyCheckAndSet = function(trigger, param) {
+Core.historyCheckAndSet = function (trigger, param) {
 	var value = Core.hs(trigger, param);
 	var changed = false;
 
@@ -174,7 +174,7 @@ Core.historyCheckAndSet = function(trigger, param) {
 	};
 };
 
-Core.submitForm = function(module, action, controller) {
+Core.submitForm = function (module, action, controller) {
 	var form = document.getElementById('page_submit');
 
 	$('#module').val(module);
@@ -187,31 +187,31 @@ Core.submitForm = function(module, action, controller) {
 	form.submit();
 };
 
-Core.convertDateFormat = function(format) {
+Core.convertDateFormat = function (format) {
 	var dateReplaces = [
-    	['yyyy', 'Y'],
-    	['yy', 'y'],
-    	['MMMM', 'F'],
-    	['MMM', 'M'],
-    	['MM', 'm'],
-    	['M', 'n'],
-    	['dddd', 'l'],
-    	['ddd', 'D'],
-    	['dd', 'd'],
-    	['d', 'j']
-    ];
+		['yyyy', 'Y'],
+		['yy', 'y'],
+		['MMMM', 'F'],
+		['MMM', 'M'],
+		['MM', 'm'],
+		['M', 'n'],
+		['dddd', 'l'],
+		['ddd', 'D'],
+		['dd', 'd'],
+		['d', 'j']
+	];
 
 
-    for (var i = 0; i < dateReplaces.length; i++) {
-    	var r = dateReplaces[i];
+	for (var i = 0; i < dateReplaces.length; i++) {
+		var r = dateReplaces[i];
 
-    	format = format.replace(new RegExp('(^|[^\*])' + r[0] + '($|[^\*])', 'g'), '$1&*' + r[1] + '*&$2');
-    }
+		format = format.replace(new RegExp('(^|[^\*])' + r[0] + '($|[^\*])', 'g'), '$1&*' + r[1] + '*&$2');
+	}
 
-    return format.replace(/(\*|&)/g, '');
+	return format.replace(/(\*|&)/g, '');
 };
 
-Core.submitFormOnEnter = function(e) {
+Core.submitFormOnEnter = function (e) {
 	if (e.keyCode != 10 && e.keyCode != 13) {
 		return;
 	}
@@ -222,7 +222,7 @@ Core.submitFormOnEnter = function(e) {
 	$(this).find('.main_button:not(.disabled)').trigger('click');
 };
 
-Core.getCachedElement = function(sel) {
+Core.getCachedElement = function (sel) {
 	if (!Core._cache) {
 		Core._cache = {};
 	}
@@ -236,7 +236,7 @@ Core.getCachedElement = function(sel) {
 	return el;
 };
 
-Core.ignoreUpdate = function(el) {
+Core.ignoreUpdate = function (el) {
 	$(el).closest('.message').remove();
 
 	$.ajax({
@@ -251,7 +251,7 @@ Core.ignoreUpdate = function(el) {
 	});
 };
 
-Core.fixResize = function() {
+Core.fixResize = function () {
 	var html = Core.getCachedElement('html');
 
 	// Fixing long titles
@@ -286,7 +286,7 @@ Core.fixResize = function() {
 				.removeClass('left_side_fixed');
 		}
 
-	// Case 2: Window is small and biblivre logo would be outside of it. Stop centering content.
+		// Case 2: Window is small and biblivre logo would be outside of it. Stop centering content.
 	} else if (Math.ceil((windowWidth - contentWidth) / 2) <= biblivreLogoWidth) {
 		if (!html.hasClass('left_side_fixed')) {
 			html
@@ -294,7 +294,7 @@ Core.fixResize = function() {
 				.removeClass('left_side_compact');
 		}
 
-	// Case 3: No problem with the left side of the screen
+		// Case 3: No problem with the left side of the screen
 	} else {
 		html
 			.removeClass('left_side_fixed')
@@ -311,7 +311,7 @@ Core.fixResize = function() {
 				.removeClass('right_side_small');
 		}
 
-	// Right side Case 2:
+		// Right side Case 2:
 	} else if (right < sponsorLogoWidth + supportLogoWidth) {
 		if (!html.hasClass('right_side_small')) {
 			html
@@ -319,11 +319,11 @@ Core.fixResize = function() {
 				.removeClass('right_side_compact');
 		}
 
-	// Right side Case 3:
+		// Right side Case 3:
 	} else {
 		html
-		.removeClass('right_side_small')
-		.removeClass('right_side_compact');
+			.removeClass('right_side_small')
+			.removeClass('right_side_compact');
 	}
 
 	var header = Core.getCachedElement('#header');
@@ -355,7 +355,7 @@ Core.fixResize = function() {
 	}
 };
 
-Core.msg = function(o, level) {
+Core.msg = function (o, level) {
 	var defaults = {
 		message_level: 'normal',
 		animate: true,
@@ -393,8 +393,8 @@ Core.msg = function(o, level) {
 		.addClass(config.message_level)
 		.append($('<div></div>').text(config.message))
 		.prependTo('#messages')
-		.click(function() {
-			message.fadeOut(config.animate ? 'normal' : 0, function() {
+		.click(function () {
+			message.fadeOut(config.animate ? 'normal' : 0, function () {
 				Core.removeMsg(message);
 				message = null;
 			});
@@ -410,7 +410,7 @@ Core.msg = function(o, level) {
 	Core.fixResize();
 };
 
-Core.formErrors = function(errors, root) {
+Core.formErrors = function (errors, root) {
 	if (!errors) {
 		return;
 	}
@@ -455,13 +455,13 @@ Core.formErrors = function(errors, root) {
 	}
 };
 
-Core.clearFormErrors = function(root) {
+Core.clearFormErrors = function (root) {
 	root = root || $(document);
 
 	root.find('.form_error, .form_error_ico').remove();
 };
 
-Core.removeMsg = function(message) {
+Core.removeMsg = function (message) {
 	if (message) {
 		message.remove();
 	} else {
@@ -471,13 +471,13 @@ Core.removeMsg = function(message) {
 	Core.fixResize();
 };
 
-Core.popup = function(settings) {
+Core.popup = function (settings) {
 	var defaults = {
 		closeable: true,
 		title: '',
-		closeText:Translations.get('common.close'),
-		cancelText:Translations.get('common.cancel'),
-		okText:Translations.get('common.ok')
+		closeText: Translations.get('common.close'),
+		cancelText: Translations.get('common.cancel'),
+		okText: Translations.get('common.ok')
 	};
 
 	var options = $.extend({}, defaults, settings);
@@ -506,7 +506,7 @@ Core.popup = function(settings) {
 
 	var lastFocus = $(':focus').blur();
 
-	var close = function() {
+	var close = function () {
 		Core.hideOverlay();
 		div.remove();
 
@@ -518,7 +518,7 @@ Core.popup = function(settings) {
 		$('<div class="close"></div>')
 			.text(options.closeText)
 			.appendTo(div)
-			.click(function() {
+			.click(function () {
 				close();
 
 				if ($.isFunction(options.cancelHandler)) {
@@ -555,7 +555,7 @@ Core.popup = function(settings) {
 		$('<a class="button"></a>')
 			.text(options.cancelText)
 			.appendTo(buttons)
-			.click(function() {
+			.click(function () {
 				close();
 
 				if ($.isFunction(options.cancelHandler)) {
@@ -568,7 +568,7 @@ Core.popup = function(settings) {
 		$('<a class="button main_button"></a>')
 			.text(options.okText)
 			.appendTo(buttons)
-			.click(function() {
+			.click(function () {
 				if ($.isFunction(options.okHandler)) {
 					var res = options.okHandler();
 					if (res !== false) {
@@ -588,7 +588,7 @@ Core.popup = function(settings) {
 	return div;
 };
 
-Core.fadeInOverlay = function(speed) {
+Core.fadeInOverlay = function (speed) {
 	var div = $('<div class="overlay"></div>');
 
 	div.appendTo('body').css({
@@ -598,15 +598,15 @@ Core.fadeInOverlay = function(speed) {
 	}, speed);
 };
 
-Core.showOverlay = function() {
+Core.showOverlay = function () {
 	$('<div class="overlay"></div>').appendTo('body').show();
 };
 
-Core.hideOverlay = function() {
+Core.hideOverlay = function () {
 	$('.overlay').remove();
 };
 
-Core.showLoadingTimedOverlay = function() {
+Core.showLoadingTimedOverlay = function () {
 	var el = $('body');
 	var count = el.data('loading_overlay_count') || 0;
 	count++;
@@ -615,13 +615,15 @@ Core.showLoadingTimedOverlay = function() {
 
 	if (count == 1) {
 		var div = $('<div class="loading_overlay"></div>').appendTo(el);
-		setTimeout(function() {
-			div.animate({ opacity: 0.7 }, 'fast');
+		setTimeout(function () {
+			div.animate({
+				opacity: 0.7
+			}, 'fast');
 		}, 1000);
 	}
 };
 
-Core.hideLoadingTimedOverlay = function() {
+Core.hideLoadingTimedOverlay = function () {
 	var el = $('body');
 	var count = el.data('loading_overlay_count');
 	count--;
@@ -632,7 +634,7 @@ Core.hideLoadingTimedOverlay = function() {
 	}
 };
 
-Core.changeTab = function(tab, scope, params) {
+Core.changeTab = function (tab, scope, params) {
 	if (typeof tab == 'string') {
 		tab = 'li.tab[data-tab=' + tab + ']';
 	}
@@ -653,7 +655,7 @@ Core.changeTab = function(tab, scope, params) {
 	return true;
 };
 
-Core.toggleAreas = function(area, val, root) {
+Core.toggleAreas = function (area, val, root) {
 	root = root || $(document);
 	var divs = root.find('div.' + area).hide();
 
@@ -661,7 +663,7 @@ Core.toggleAreas = function(area, val, root) {
 		return;
 	}
 
-	divs.each(function() {
+	divs.each(function () {
 		var div = $(this);
 		var dataArr = (div.attr('data') || '').split(',');
 
@@ -671,12 +673,12 @@ Core.toggleAreas = function(area, val, root) {
 	});
 };
 
-Core.pagingGenerator = function(o) {
+Core.pagingGenerator = function (o) {
 	var config = $.extend({}, {
 		pageCount: 0,
 		currentPage: 1,
 		recordsPerPage: 1,
-		linkFunction: function() {},
+		linkFunction: function () {},
 		pagingHolder: null
 	}, o);
 
@@ -721,21 +723,21 @@ Core.pagingGenerator = function(o) {
 	config.pagingHolder.on('click', 'a[rel]', config.linkFunction);
 };
 
-Core.qs = function(key) {
+Core.qs = function (key) {
 	var qs = window.location.href.split('?')[1] || '';
 	qs = qs.split('#')[0];
 
 	return Core.hs(qs, key);
 };
 
-Core.qhs = function(key) {
+Core.qhs = function (key) {
 	var qs = window.location.href.split('?')[1] || '';
 	qs = qs.split('#')[1];
 
 	return Core.hs(qs, key);
 };
 
-Core.hs = function(qs, key) {
+Core.hs = function (qs, key) {
 	key = (key) ? key.toLowerCase() : '';
 
 	if (key && qs) {
@@ -751,7 +753,7 @@ Core.hs = function(qs, key) {
 	return;
 };
 
-Core.qso = function() {
+Core.qso = function () {
 	var qs = window.location.href.split('?')[1] || '';
 	qs = qs.split('#')[0];
 
@@ -770,18 +772,36 @@ Core.qso = function() {
 
 
 Core.scrollbarWidth;
-Core.getScrollbarWidth = function() {
+Core.getScrollbarWidth = function () {
 	if (Core.scrollbarWidth === undefined) {
 		if ($.browser.msie) {
-			var textareaA = $('<textarea cols="10" rows="2"></textarea>').css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body');
-			var textareaB = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body');
+			const textareaA = $('<textarea cols="10" rows="2"></textarea>').css({
+				position: 'absolute',
+				top: -1000,
+				left: -1000
+			}).appendTo('body');
+			const textareaB = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({
+				position: 'absolute',
+				top: -1000,
+				left: -1000
+			}).appendTo('body');
 
 			Core.scrollbarWidth = textareaA.width() - textareaB.width();
 			textareaA.remove();
 			textareaB.remove();
 		} else {
-			var divA = $('<div></div>').css({ width: 100, height: 100, overflow: 'auto', position: 'absolute', top: -1000, left: -1000 }).prependTo('body');
-			var divB = $('<div></div>').css({ width: '100%', height: 200 }).appendTo(divA);
+			const divA = $('<div></div>').css({
+				width: 100,
+				height: 100,
+				overflow: 'auto',
+				position: 'absolute',
+				top: -1000,
+				left: -1000
+			}).prependTo('body');
+			const divB = $('<div></div>').css({
+				width: '100%',
+				height: 200
+			}).appendTo(divA);
 
 			Core.scrollbarWidth = 100 - divB.width();
 			divA.remove();
@@ -792,7 +812,7 @@ Core.getScrollbarWidth = function() {
 };
 
 // Keep session from expiring
-Core.keepSession = function() {
+Core.keepSession = function () {
 	$.ajax({
 		type: 'POST',
 		url: window.location.pathname,
@@ -802,14 +822,14 @@ Core.keepSession = function() {
 			module: 'menu',
 			action: 'ping'
 		},
-		complete: function() {
+		complete: function () {
 			setTimeout(Core.keepSession, 300000);
 		}
 	});
 };
 setTimeout(Core.keepSession, 30000);
 
-Core.fixNavigationHeight = function() {
+Core.fixNavigationHeight = function () {
 	var title = $('.page_title');
 	var navigation = $('.page_navigation');
 
@@ -829,16 +849,16 @@ Core.fixNavigationHeight = function() {
  * Menu
  */
 var Menu = {};
-Menu.hide = function() {
+Menu.hide = function () {
 	Core.getCachedElement('#menu .submenu, #slider').fadeOut('fast');
 };
 
-Menu.initialize = function() {
+Menu.initialize = function () {
 	var action = Core.qs('action');
 	var slider = Core.getCachedElement('#slider');
 	var menu = Core.getCachedElement('#menu');
 
-	$('#menu > ul > li').mouseenter(function(e, hide) {
+	$('#menu > ul > li').mouseenter(function (e, hide) {
 		var item = $(this);
 		var module = item.data('module');
 
@@ -869,7 +889,7 @@ Menu.initialize = function() {
 	var module = subitem.parents('li').data('module');
 	Menu.module = module || 'start';
 
-	menu.mouseleave(function() {
+	menu.mouseleave(function () {
 		if (action == '' || !subitem.size()) {
 			Menu.hide();
 		} else if (subitem.size()) {
@@ -878,7 +898,7 @@ Menu.initialize = function() {
 	}).trigger('mouseleave').unselectable();
 
 	if ($.browser.msie) {
-		menu.each(function() {
+		menu.each(function () {
 			var el = $(this);
 			el.width(el.outerWidth());
 		});
@@ -899,8 +919,8 @@ Menu.initialize = function() {
 };
 
 var PageHelp = {};
-PageHelp.initialize = function() {
-	$('<a class="xclose">&times;</a>').prependTo('.page_help').click(function() {
+PageHelp.initialize = function () {
+	$('<a class="xclose">&times;</a>').prependTo('.page_help').click(function () {
 		PageHelp.close();
 	});
 
@@ -913,14 +933,14 @@ PageHelp.initialize = function() {
 	}
 };
 
-PageHelp.close = function(instant) {
+PageHelp.close = function (instant) {
 	var pageHelp = $('.page_help');
 
 	pageHelp.addClass('page_help_closed').animate({
 		width: 0,
 		height: 0,
 		marginTop: -20
-	}, instant ? 0 : 'normal', function() {
+	}, instant ? 0 : 'normal', function () {
 		pageHelp.hide();
 		$('#page_help_icon').show();
 	});
@@ -930,7 +950,7 @@ PageHelp.close = function(instant) {
 	}
 };
 
-PageHelp.show = function() {
+PageHelp.show = function () {
 	var pageHelp = $('.page_help').css({
 		width: 'auto',
 		height: 'auto'
@@ -942,59 +962,59 @@ PageHelp.show = function() {
 	var h = pageHelp.height();
 
 	pageHelp
-	.addClass('page_help_closed')
-	.css({
-		width: 0,
-		height: 0
-	}).animate({
-		width: w,
-		height: h,
-		marginTop: 0
-	}, function() {
-		pageHelp.removeClass('page_help_closed');
-	});
+		.addClass('page_help_closed')
+		.css({
+			width: 0,
+			height: 0
+		}).animate({
+			width: w,
+			height: h,
+			marginTop: 0
+		}, function () {
+			pageHelp.removeClass('page_help_closed');
+		});
 
 	$.jStorage.set(Core.qs('action') + '_help', true);
 };
 
 var Header = {};
 
-Header.animateLogos = function() {
-	$('#logo_support div:last').fadeOut(2000, function() {
+Header.animateLogos = function () {
+	$('#logo_support div:last').fadeOut(2000, function () {
 		var logo = $(this);
 		logo.parent().prepend(this);
 		logo.show();
 	});
 };
 
-Header.setTime = function() {
+Header.setTime = function () {
 	$('#clock').text(_d(new Date(), 't'));
 };
 
-(function($) {
-	$.fn.anyChange = function(handler) {
+(function ($) {
+	$.fn.anyChange = function (handler) {
 		this.bind("change propertychange keyup input paste", handler);
 	};
 
-	$.fn.bindFirst = function(name, fn) {
+	$.fn.bindFirst = function (name, fn) {
 		this.bind(name, fn);
 
 		var handlers = this.data('events')[name.split('.')[0]];
 		var handler = handlers.pop();
-	    handlers.splice(0, 0, handler);
+		handlers.splice(0, 0, handler);
 	};
 
-	$.fn.getIsoDate = function() {
+	$.fn.getIsoDate = function () {
 		var val = Globalize.parseDate(this.val(), 'd') || '';
 		return Globalize.format(val, 'S');
 	};
 
-	var disabledFunction = function(e) {
+	var disabledFunction = function (e) {
 		return false;
 	};
 
-	$.fn.disable = function(o) {
-		return this.each(function() {
+	$.fn.disable = function (o) {
+		return this.each(function () {
 			var el = $(this);
 
 			if (el.hasClass('disabled')) {
@@ -1007,7 +1027,7 @@ Header.setTime = function() {
 				el.data('onclick', onclick);
 
 				this.onclick = null;
-			};
+			}
 			var events = el.data('events');
 			if (events && events.click) {
 				el.data('onclick_events', events.click);
@@ -1018,8 +1038,8 @@ Header.setTime = function() {
 		});
 	};
 
-	$.fn.enable = function(o) {
-		return this.each(function() {
+	$.fn.enable = function (o) {
+		return this.each(function () {
 			var el = $(this);
 
 			if (!el.hasClass('disabled')) {
@@ -1030,7 +1050,7 @@ Header.setTime = function() {
 			var onclick = el.data('onclick');
 			if (onclick) {
 				this.onclick = onclick;
-			};
+			}
 
 			var events = el.data('onclick_events');
 			if (events) {
@@ -1041,19 +1061,23 @@ Header.setTime = function() {
 		});
 	};
 
-	$.fn.fadeOutToHidden = function() {
-		return this.animate({ opacity: 0 }, 600, function() {
+	$.fn.fadeOutToHidden = function () {
+		return this.animate({
+			opacity: 0
+		}, 600, function () {
 			$(this).css('visibility', 'hidden');
 		});
 	};
 
-	$.fn.fadeInFromHidden = function() {
-		return this.css('visibility', 'visible').animate({ opacity: 1 }, 600);
+	$.fn.fadeInFromHidden = function () {
+		return this.css('visibility', 'visible').animate({
+			opacity: 1
+		}, 600);
 	};
 
-	$.fn.combo = function(o) {
+	$.fn.combo = function (o) {
 		// TODO: Keyboard access
-		return this.each(function() {
+		return this.each(function () {
 			var defaults = {
 				inputClass: 'combo_input',
 				wrapClass: 'combo_wrap',
@@ -1090,7 +1114,7 @@ Header.setTime = function() {
 			var id = combo.attr('id');
 			combo.removeAttr('id');
 
-			var closeCombo = function(e) {
+			var closeCombo = function (e) {
 				e.data.trigger('click');
 			};
 
@@ -1098,17 +1122,17 @@ Header.setTime = function() {
 				.attr('id', id)
 				.addClass(config.wrapClass)
 				.addClass(combo.attr('class'))
-				.hover(function() {
+				.hover(function () {
 					var $wrap = $(this);
 
 					if (!$wrap.hasClass('disabled')) {
 						$wrap.addClass(config.hoverClass);
 					}
-				}, function() {
+				}, function () {
 					var $wrap = $(this);
 
 					$wrap.removeClass(config.hoverClass);
-				}).click(function(e) {
+				}).click(function (e) {
 					var $wrap = $(this);
 
 					//if ($wrap.hasClass('disabled')) {
@@ -1136,14 +1160,14 @@ Header.setTime = function() {
 							width: Math.max(listWidth, $list.width())
 						});
 
-						setTimeout(function() {
+						setTimeout(function () {
 							$('body').on('click', $wrap, closeCombo);
 						}, 0);
 					}
-				}).on('reset', function() {
+				}).on('reset', function () {
 					$(this).find('.' + config.rowClass + ':first').trigger('click', true);
-				}).on('setvalue', function(e, value) {
-					$(this).find('.' + config.rowClass).each(function() {
+				}).on('setvalue', function (e, value) {
+					$(this).find('.' + config.rowClass).each(function () {
 						var el = $(this);
 
 						if (el.data('value') == value) {
@@ -1165,7 +1189,7 @@ Header.setTime = function() {
 				text.width(wrap.getHiddenDimensions().width - arrow.getHiddenDimensions().outerWidth);
 			}
 
-			combo.children('option').each(function() {
+			combo.children('option').each(function () {
 				var option = $(this);
 
 				if (config.hideEmptyValue && option.val() == '') {
@@ -1179,7 +1203,7 @@ Header.setTime = function() {
 					.text(option.text())
 					.appendTo(list)
 					.hoverClass()
-					.click(function(e, suppress) {
+					.click(function (e, suppress) {
 						var el = $(this);
 						var $wrap = el.parents('.' + config.wrapClass);
 						var $text = $wrap.find('.' + config.textClass);
@@ -1214,9 +1238,9 @@ Header.setTime = function() {
 			};
 
 			if (config.alignRight) {
-				css.right = - (parseInt(wrap.css('margin-left'), 10) + parseInt(wrap.css('border-left-width'), 10));
+				css.right = -(parseInt(wrap.css('margin-left'), 10) + parseInt(wrap.css('border-left-width'), 10));
 			} else {
-				css.left = - (parseInt(wrap.css('margin-left'), 10) + parseInt(wrap.css('border-left-width'), 10));
+				css.left = -(parseInt(wrap.css('margin-left'), 10) + parseInt(wrap.css('border-left-width'), 10));
 			}
 
 			list.css(css);
@@ -1224,53 +1248,55 @@ Header.setTime = function() {
 	};
 
 	// Add a class when objects are hovered
-	$.fn.hoverClass = function(cls) {
+	$.fn.hoverClass = function (cls) {
 		if (!cls) {
 			cls = 'hover';
 		}
 
-		return this.hover(function() {
+		return this.hover(function () {
 			var el = $(this);
 
 			if (!el.hasClass('disabled')) {
 				el.addClass(cls);
 			}
-		}, function() {
+		}, function () {
 			$(this).removeClass(cls);
 		});
 	};
 
 	// Add a class when objects are clicked
-	$.fn.clickClass = function(cls) {
+	$.fn.clickClass = function (cls) {
 		if (!cls) {
 			cls = 'clicked';
 		}
 
-		return this.bind('mousedown', function() {
+		return this.bind('mousedown', function () {
 			var el = $(this);
 
 			if (!el.hasClass('disabled')) {
 				el.addClass(cls);
 			}
-		}).bind('mouseup', function() {
+		}).bind('mouseup', function () {
 			$(this).removeClass(cls);
 		});
 	};
 
-	$.fn.toggleValue = function() {
+	$.fn.toggleValue = function () {
 		var el = $(this);
 		el.attr('checked', !el.attr('checked'));
 	};
 
-	$.fn.unselectable = function() {
-		return this.each(function() {
-			this.onselectstart = function() { return false; };
+	$.fn.unselectable = function () {
+		return this.each(function () {
+			this.onselectstart = function () {
+				return false;
+			};
 			this.unselectable = 'on';
 			this.style.MozUserSelect = 'none';
 		});
 	};
 
-	$.fn.center = function() {
+	$.fn.center = function () {
 		return this.css({
 			'position': 'fixed',
 			'left': '50%',
@@ -1281,7 +1307,7 @@ Header.setTime = function() {
 		});
 	};
 
-	$.fn.progressbar = function(o) {
+	$.fn.progressbar = function (o) {
 		if (!o) {
 			this.find('.progress_text').text(Translations.get('common.wait'));
 			this.find('.progress_bar_inner').width('0%');
@@ -1312,30 +1338,32 @@ Header.setTime = function() {
 		return this;
 	};
 
-	$.fn.continuousProgress = function() {
+	$.fn.continuousProgress = function () {
 		this.find('.progress_text').text(Translations.get('common.wait'));
-		this.find('.progress_bar_inner').width(0).animate({ width: '100%' }, 2000, 'linear', $.proxy($.fn.continuousProgress, this));
+		this.find('.progress_bar_inner').width(0).animate({
+			width: '100%'
+		}, 2000, 'linear', $.proxy($.fn.continuousProgress, this));
 
 		return this;
 	};
 
-	$.fn.stopContinuousProgress = function() {
+	$.fn.stopContinuousProgress = function () {
 		this.find('.progress_bar_inner').stop();
 		return this;
 	};
 
-	$.fn.loadingButton = function(o) {
+	$.fn.loadingButton = function (o) {
 		return this.disable().addClass('loading');
 	};
 
-	$.fn.loading = function(o) {
+	$.fn.loading = function (o) {
 		var config = $.extend({}, o, {
 			showText: true,
 			showImage: true
 		});
 
 		var div = $('<div class="loading_indicator"></div>');
-		var text = config.loadingText ||Translations.get('common.loading');
+		var text = config.loadingText || Translations.get('common.loading');
 
 		if (config.showImage) {
 			div.append('<div class="loader-icon"></div>');
@@ -1348,19 +1376,19 @@ Header.setTime = function() {
 		return this.append(div);
 	};
 
-	$.fn.removeLoadingButton = function() {
+	$.fn.removeLoadingButton = function () {
 		return this.enable().removeClass('loading');
 	};
 
-	$.fn.removeLoading = function() {
+	$.fn.removeLoading = function () {
 		this.find('.loading_indicator').remove();
 
 		return this;
 	};
 
 
-	$.fn.fixButtonsHeight = function() {
-		return this.each(function() {
+	$.fn.fixButtonsHeight = function () {
+		return this.each(function () {
 			var result = $(this);
 			var record = result.children('.record');
 			var buttons = result.children('.buttons');
@@ -1381,7 +1409,7 @@ Header.setTime = function() {
 
 
 	$.ajaxSetup({
-		beforeSend: function(xhr, settings) {
+		beforeSend: function (xhr, settings) {
 			xhr.loadingHolder = settings.loadingHolder;
 			xhr.loadingText = settings.loadingText;
 
@@ -1412,7 +1440,7 @@ Header.setTime = function() {
 				Core.showLoadingTimedOverlay();
 			}
 		},
-		complete: function(xhr) {
+		complete: function (xhr) {
 			if (xhr.loadingHolder) {
 				$(xhr.loadingHolder).removeLoading();
 			}
@@ -1440,7 +1468,7 @@ Header.setTime = function() {
 })(jQuery);
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 	$('html').removeClass('noscript');
 
 	$(window).resize(Core.fixResize);
@@ -1449,7 +1477,7 @@ $(document).ready(function() {
 	$('#page_submit').attr('action', window.location.pathname);
 
 	// It's good to have all images with their titles the same as their alts
-	$('img[alt]').attr('title', function() {
+	$('img[alt]').attr('title', function () {
 		return $(this).attr('alt');
 	});
 
@@ -1457,7 +1485,7 @@ $(document).ready(function() {
 	$('input, textarea').placeholder();
 
 	// Focus the .auto_focus input
-	setTimeout(function() {
+	setTimeout(function () {
 		$('.auto_focus:input:first').focus();
 	}, 50);
 

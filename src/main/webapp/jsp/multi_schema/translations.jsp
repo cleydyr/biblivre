@@ -1,4 +1,3 @@
-<%@page import="biblivre.core.translations.Languages"%>
 <%@page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
@@ -23,7 +22,7 @@
 				<div>
 					<div class="label"></div>
 					<div class="value">
-						<c:forEach var="language" items="<%= Languages.getLanguages() %>">
+						<c:forEach var="language" items="${requestScope.languages}">
 							<a href="javascript:void(0);" onclick="Translation.dump('${language.language}');">${language.name}</a><br/>
 						</c:forEach>
 					</div>

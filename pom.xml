@@ -314,7 +314,7 @@
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>1.32</version>
+			<version>1.33</version>
 		</dependency>
 
 		<dependency>
@@ -415,6 +415,7 @@
 						<exclude>CVE-2016-1000027</exclude>
 						<exclude>sonatype-2022-4402</exclude>
 						<exclude>CVE-2022-38752</exclude>
+						<exclude>CVE-2022-1471</exclude>
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>

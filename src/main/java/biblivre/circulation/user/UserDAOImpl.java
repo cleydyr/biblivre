@@ -23,10 +23,8 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
-import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -92,10 +90,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
         if (StringUtils.isNotBlank(query)) {
             query = TextUtils.removeDiacriticals(query);
-        }
-
-        if (limit == 0) {
-            limit = Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE, 25);
         }
 
         Connection con = null;

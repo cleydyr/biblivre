@@ -1,0 +1,2 @@
+{"id":1,"name":"Leitor","description":"Leitores","lending_limit":3,"reservation_limit":3,"lending_time_limit":15,"reservation_time_limit":10,"fine_value":0,"created":"2014-05-18T15:46:31.379","created_by":1}
+{"id":2,"name":"Funcionário","description":"Funcionários","lending_limit":99,"reservation_limit":99,"lending_time_limit":365,"reservation_time_limit":365,"fine_value":0,"created":"2014-05-18T15:46:31.379","created_by":1}

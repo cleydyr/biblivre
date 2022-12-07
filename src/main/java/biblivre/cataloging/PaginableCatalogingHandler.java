@@ -19,8 +19,8 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.indexing.IndexingGroupDTO;
-import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -44,6 +44,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.marc4j.MarcReader;
 import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,10 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected PaginableRecordBO paginableRecordBO;
 
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
+
+    private IndexingGroupBO indexingGroupBO;
+
+    protected TabFieldsBO tabFieldsBO;
 
     public PaginableCatalogingHandler(
             PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
@@ -75,7 +80,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
+        List<IndexingGroupDTO> groups =
+                indexingGroupBO.getGroups(paginableRecordBO.getRecordType());
 
         put("search", search.toJSONObject());
 
@@ -85,7 +91,12 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
-        SearchDTO search = HttpRequestSearchHelper.paginate(request, paginableRecordBO);
+        Integer defaultSortableGroupId =
+                indexingGroupBO.getDefaultSortableGroupId(paginableRecordBO.getRecordType());
+
+        SearchDTO search =
+                HttpRequestSearchHelper.paginate(
+                        request, paginableRecordBO, defaultSortableGroupId);
 
         if (search == null) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
@@ -110,7 +121,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         put("search", search.toJSONObject());
 
-        List<IndexingGroupDTO> groups = IndexingGroups.getGroups(paginableRecordBO.getRecordType());
+        List<IndexingGroupDTO> groups =
+                indexingGroupBO.getGroups(paginableRecordBO.getRecordType());
 
         for (IndexingGroupDTO group : groups) {
             accumulate("indexing_groups", group.toJSONObject());
@@ -149,7 +161,11 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             return;
         }
 
-        put("data", dto.toJSONObject());
+        JSONObject recordJSON = dto.toJSONObject();
+
+        populateFields(dto, recordJSON);
+
+        put("data", recordJSON);
     }
 
     public void itemCount(ExtendedRequest request, ExtendedResponse response) {
@@ -266,11 +282,15 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             case BIBLIO:
             case AUTHORITIES:
             case VOCABULARY:
-                PaginableRecordBO autocompleteRecordBO =
-                        paginableRecordBOs.get(RecordType.fromString(type.toString()));
+                RecordType recordType = RecordType.fromString(type.toString());
+
+                PaginableRecordBO autocompleteRecordBO = paginableRecordBOs.get(recordType);
 
                 DTOCollection<AutocompleteDTO> autocompletion =
-                        type.getAutocompletion(autocompleteRecordBO, query);
+                        type.getAutocompletion(
+                                autocompleteRecordBO,
+                                query,
+                                tabFieldsBO.getAutocompleteSubFields(recordType));
 
                 putOpt("data", autocompletion.toJSONObject());
 
@@ -307,7 +327,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     public void listBriefFormats(ExtendedRequest request, ExtendedResponse response) {
 
         List<BriefTabFieldFormatDTO> formats =
-                Fields.getBriefFormats(paginableRecordBO.getRecordType());
+                tabFieldsBO.getBriefFormats(paginableRecordBO.getRecordType());
 
         DTOCollection<BriefTabFieldFormatDTO> list = new DTOCollection<>();
 
@@ -329,5 +349,15 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
                                             return RecordType.fromString(recordTypeName);
                                         },
                                         Map.Entry::getValue));
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
     }
 }

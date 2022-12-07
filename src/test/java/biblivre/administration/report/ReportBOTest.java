@@ -11,7 +11,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.StringPool;
@@ -28,6 +28,8 @@ public class ReportBOTest extends AbstractContainerDatabaseTest {
 
     @Autowired private UserDAO userDAO;
 
+    @Autowired private TranslationBO translationBO;
+
     @Test
     public void testAllReportsInjected() {
         execute(
@@ -40,7 +42,7 @@ public class ReportBOTest extends AbstractContainerDatabaseTest {
 
                     ReportsDTO report = createReportForUser(user);
 
-                    TranslationsMap i18n = Translations.get("en-US");
+                    TranslationsMap i18n = translationBO.get("en-US");
 
                     DiskFile file = reportBO.generateReport(report, i18n);
 

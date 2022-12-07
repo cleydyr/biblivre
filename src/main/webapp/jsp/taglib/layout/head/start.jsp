@@ -1,6 +1,6 @@
 <%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@page import="biblivre.core.utils.Constants"%>
-<%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -9,6 +9,7 @@
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
 <%
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
 	String schema = SchemaThreadLocal.get();
 %>
 
@@ -17,7 +18,7 @@
 			<head>
 				<meta charset="utf-8">
 				<meta name="google" content="notranslate" />
-				<title><%= Configurations.getString(Constants.CONFIG_TITLE) %></title>
+				<title><%= configurationBO.getString(Constants.CONFIG_TITLE) %></title>
 
 				<link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico" />
 				<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.core.css" />
@@ -30,7 +31,7 @@
 				<script type="text/javascript" src="/static/scripts/globalize.js"></script>
 				<script type="text/javascript" src="/static/scripts/cultures/globalize.culture.<i18n:text key='language_code' />.js"></script>
 				<script type="text/javascript" >Globalize.culture('<i18n:text key="language_code" />'); </script>
-				<script type="text/javascript" >Globalize.culture().numberFormat.currency.symbol = '<%= Configurations.getString(Constants.CONFIG_CURRENCY) %>';</script>
+				<script type="text/javascript" >Globalize.culture().numberFormat.currency.symbol = '<%= configurationBO.getString(Constants.CONFIG_CURRENCY) %>';</script>
 
 				<script type="text/javascript" src="/static/scripts/biblivre.core.js"></script>
 				<script type="text/javascript" src="/static/scripts/${requestScope.translationsMap.getCacheFileName()}"></script>

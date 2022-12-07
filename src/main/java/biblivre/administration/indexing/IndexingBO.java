@@ -20,10 +20,10 @@
 package biblivre.administration.indexing;
 
 import biblivre.cataloging.AutocompleteDTO;
-import biblivre.cataloging.Fields;
 import biblivre.cataloging.FormTabSubfieldDTO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractBO;
@@ -45,6 +45,10 @@ public class IndexingBO extends AbstractBO {
 
     private Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
+    private IndexingGroupBO indexingGroupBO;
+
+    private TabFieldsBO tabFieldsBO;
+
     public void reindex(RecordType recordType) {
         if (this.getLockState(recordType)) {
             return;
@@ -56,9 +60,9 @@ public class IndexingBO extends AbstractBO {
             try {
                 this.clearIndexes(recordType);
 
-                List<IndexingGroupDTO> indexingGroups = IndexingGroups.getGroups(recordType);
+                List<IndexingGroupDTO> indexingGroups = indexingGroupBO.getGroups(recordType);
                 List<FormTabSubfieldDTO> autocompleteSubfields =
-                        Fields.getAutocompleteSubFields(recordType);
+                        tabFieldsBO.getAutocompleteSubFields(recordType);
 
                 PaginableRecordBO rbo = paginableRecordBOs.get(recordType);
 
@@ -195,5 +199,15 @@ public class IndexingBO extends AbstractBO {
     @Autowired
     public void setIndexingDAO(IndexingDAO indexingDAO) {
         this.indexingDAO = indexingDAO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setTabFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
     }
 }

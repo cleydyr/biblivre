@@ -1,0 +1,5 @@
+{"id":0,"translation_key":"all","datafields":null,"sortable":false,"default_sort":false}
+{"id":1,"translation_key":"te_term","datafields":"150_a","sortable":true,"default_sort":true}
+{"id":2,"translation_key":"up_term","datafields":"450_a","sortable":true,"default_sort":false}
+{"id":3,"translation_key":"tg_term","datafields":"550_a","sortable":true,"default_sort":false}
+{"id":4,"translation_key":"vt_ta_term","datafields":"360_a","sortable":true,"default_sort":false}

@@ -1,4 +1,3 @@
-<%@ page import="biblivre.cataloging.Fields" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -84,10 +83,10 @@
 	</div>
 	<script type="text/javascript" src="/static/scripts/jquery-ui.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.administration.brief_customization.js"></script>
-	<script type="text/javascript" src="/static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.biblioCacheFileName}"></script>
 	<script>Customization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	<script type="text/javascript" src="/static/scripts/<%= Fields.getFormFields("authorities").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.authoritiesCacheFileName}"></script>
 	<script>Customization.formFields['authorities'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	<script type="text/javascript" src="/static/scripts/<%= Fields.getFormFields("vocabulary").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.vocabulariesCacheFileName}"></script>
 	<script>Customization.formFields['vocabulary'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
 </layout:body>

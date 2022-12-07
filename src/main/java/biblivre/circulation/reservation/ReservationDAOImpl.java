@@ -19,9 +19,7 @@
  ******************************************************************************/
 package biblivre.circulation.reservation;
 
-import biblivre.administration.indexing.IndexingGroups;
 import biblivre.cataloging.RecordDTO;
-import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.AbstractDTO;
@@ -69,12 +67,12 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     }
 
     @Override
-    public List<ReservationDTO> list() {
-        return this.list(null, null);
+    public List<ReservationDTO> list(int defaultSortableGroupId) {
+        return this.list(null, null, defaultSortableGroupId);
     }
 
     @Override
-    public List<ReservationDTO> list(UserDTO user, RecordDTO record) {
+    public List<ReservationDTO> list(UserDTO user, RecordDTO record, int defaultSortableGroupId) {
         List<ReservationDTO> list = new ArrayList<>();
         Connection con = null;
         try {
@@ -98,7 +96,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             PreparedStatement pst = con.prepareStatement(sql.toString());
 
             int index = 1;
-            pst.setInt(index++, IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
+            pst.setInt(index++, defaultSortableGroupId);
 
             if (user != null) {
                 pst.setInt(index++, user.getId());

@@ -39,14 +39,12 @@ import biblivre.administration.permissions.PermissionDAO;
 import biblivre.administration.permissions.PermissionDAOImpl;
 import biblivre.administration.reports.ReportsDAO;
 import biblivre.administration.reports.ReportsDAOImpl;
-import biblivre.administration.setup.DataMigrationDAO;
-import biblivre.administration.setup.DataMigrationDAOImpl;
-import biblivre.administration.setup.SetupDAO;
-import biblivre.administration.setup.SetupDAOImpl;
 import biblivre.administration.usertype.UserTypeDAO;
 import biblivre.administration.usertype.UserTypeDAOImpl;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDAOImpl;
+import biblivre.cataloging.TabFieldsDAO;
+import biblivre.cataloging.TabFieldsDAOImpl;
 import biblivre.cataloging.holding.HoldingDAO;
 import biblivre.cataloging.holding.HoldingDAOImpl;
 import biblivre.cataloging.search.SearchDAO;
@@ -61,14 +59,20 @@ import biblivre.circulation.reservation.ReservationDAO;
 import biblivre.circulation.reservation.ReservationDAOImpl;
 import biblivre.circulation.user.UserDAO;
 import biblivre.circulation.user.UserDAOImpl;
-import biblivre.core.DigitalMediaMigrator;
-import biblivre.core.Updates;
+import biblivre.circulation.user.UserFieldsDAO;
+import biblivre.circulation.user.UserFieldsDAOImpl;
+import biblivre.core.configurations.ConfigurationsDAO;
+import biblivre.core.configurations.ConfigurationsDAOImpl;
 import biblivre.core.controllers.ExtendedRequestResponseFilter;
 import biblivre.core.controllers.HandlerContextFilter;
 import biblivre.core.controllers.SchemaFilter;
 import biblivre.core.controllers.SchemaRedirectFilter;
 import biblivre.core.controllers.SchemaServlet;
 import biblivre.core.controllers.StatusFilter;
+import biblivre.core.schemas.SchemaDAO;
+import biblivre.core.schemas.SchemasDAOImpl;
+import biblivre.core.translations.LanguageDAO;
+import biblivre.core.translations.LanguageDAOImpl;
 import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
@@ -78,9 +82,8 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import java.lang.reflect.Constructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -104,25 +107,6 @@ import org.thymeleaf.templatemode.TemplateMode;
             HibernateJpaAutoConfiguration.class
         })
 public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
-    private static final Logger _logger = LoggerFactory.getLogger(BiblivreInitializer.class);
-
-    private static boolean initialized = false;
-
-    public static synchronized void initialize() {
-        if (!BiblivreInitializer.initialized) {
-            try {
-                Updates.fixPostgreSQL81();
-                Updates.globalUpdate();
-
-                DigitalMediaMigrator.processMigration();
-
-                BiblivreInitializer.initialized = true;
-            } catch (Exception e) {
-                _logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("/static/");
@@ -136,11 +120,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public BackupDAO backupDAO() {
         return BackupDAOImpl.getInstance();
-    }
-
-    @Bean
-    public DataMigrationDAO dataMigrationDAOImpl() {
-        return DataMigrationDAOImpl.getInstance();
     }
 
     @Bean
@@ -219,11 +198,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public SetupDAO setupDAO() {
-        return SetupDAOImpl.getInstance();
-    }
-
-    @Bean
     public SupplierDAO supplierDAO() {
         return SupplierDAOImpl.getInstance();
     }
@@ -244,11 +218,33 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
-    public DataMigrationDAOImpl dataMigrationDAO() {
-        return DataMigrationDAOImpl.getInstance();
+    public UserFieldsDAO userFieldsDAO() {
+        return UserFieldsDAOImpl.getInstance();
+    }
+
+    @Bean
+    public TabFieldsDAO tabFieldsDAO() {
+        return TabFieldsDAOImpl.getInstance();
+    }
+
+    @Bean
+    public LanguageDAO languagesDAO() {
+        return LanguageDAOImpl.getInstance();
+    }
+
+    @Bean
+    public SchemaDAO schemasDAO() {
+        return SchemasDAOImpl.getInstance();
+    }
+
+    @Bean
+    public ConfigurationsDAO configurationsDAO() {
+        return ConfigurationsDAOImpl.getInstance();
     }
 
     @Autowired private ApplicationContext applicationContext;
+
+    @Autowired private AutowireCapableBeanFactory autowireCapableBeanFactory;
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
@@ -275,7 +271,7 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Bean
     public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
-        return createFilterRegistration(SchemaFilter.class, 1, DispatcherType.REQUEST);
+        return createFilterRegistration(SchemaFilter.class, 1, DispatcherType.REQUEST, DispatcherType.ERROR);
     }
 
     @Bean
@@ -285,7 +281,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
                 ExtendedRequestResponseFilter.class,
                 2,
                 DispatcherType.REQUEST,
-                DispatcherType.FORWARD);
+                DispatcherType.FORWARD,
+                DispatcherType.ERROR);
     }
 
     @Bean
@@ -306,7 +303,6 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         return createFilterRegistration(StatusFilter.class, 5, DispatcherType.REQUEST);
     }
 
-    @Bean
     public <T extends Filter> FilterRegistrationBean<T> createFilterRegistration(
             Class<T> filterClass, int order, DispatcherType first, DispatcherType... rest)
             throws Exception {
@@ -315,7 +311,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
         Constructor<T> constructor = filterClass.getConstructor();
 
-        registration.setFilter(constructor.newInstance());
+        T filter = constructor.newInstance();
+
+        autowireCapableBeanFactory.autowireBean(filter);
+
+        registration.setFilter(filter);
         registration.addUrlPatterns("/*");
         registration.setOrder(order);
         registration.setDispatcherTypes(first, rest);
@@ -325,8 +325,12 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Bean
     public ServletRegistrationBean<SchemaServlet> schemaServletRegistration() {
+        SchemaServlet servlet = new SchemaServlet();
+
+        autowireCapableBeanFactory.autowireBean(servlet);
+
         ServletRegistrationBean<SchemaServlet> servletRegistration =
-                new ServletRegistrationBean<>(new SchemaServlet(), "/");
+                new ServletRegistrationBean<>(servlet, "/");
 
         servletRegistration.setLoadOnStartup(1);
 

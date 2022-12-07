@@ -30,7 +30,6 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,7 @@ public class Validator extends AbstractValidator {
     private UserBO userBO;
     private LendingBO lendingBO;
     private UserTypeBO userTypeBO;
+    private UserFieldBO userFieldBO;
 
     public void validateSave(
             AbstractHandler handler, ExtendedRequest request, ExtendedResponse response) {
@@ -50,8 +50,6 @@ public class Validator extends AbstractValidator {
                 new SimpleDateFormat(request.getLocalizedText("format.datetime"));
 
         ValidationException ex = new ValidationException("error.form_invalid_values");
-
-        Collection<UserFieldDTO> userFields = UserFields.getFields();
 
         UserStatus status = request.getEnum(UserStatus.class, "status");
         if (status == null) {
@@ -72,7 +70,7 @@ public class Validator extends AbstractValidator {
             ex.addError("type", "field.error.required");
         }
 
-        for (UserFieldDTO userField : userFields) {
+        for (UserFieldDTO userField : userFieldBO.getFields()) {
             String key = userField.getKey();
             String param = request.getString(key);
 
@@ -187,5 +185,10 @@ public class Validator extends AbstractValidator {
     @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Autowired
+    public void setUserFieldBO(UserFieldBO userFieldBO) {
+        this.userFieldBO = userFieldBO;
     }
 }

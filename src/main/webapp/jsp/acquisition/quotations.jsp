@@ -1,9 +1,13 @@
-<%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@page import="biblivre.core.utils.Constants" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+%>
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
@@ -94,7 +98,7 @@
 							{#if $T.quotation.author}<label><i18n:text key="acquisition.quotation.title.author" /></label>: {$T.quotation.author}<br/>{#/if}
 							{#if $T.quotation.title}<label><i18n:text key="acquisition.quotation.title.title" /></label>: {$T.quotation.title}<br/>{#/if}
 							{#if $T.quotation.quantity}<label><i18n:text key="acquisition.quotation.title.quantity" /></label>: {$T.quotation.quantity}<br/>{#/if}
-							{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.quotation.title.unit_value" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
+							{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.quotation.title.unit_value" /></label>: <%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
 						</div>
 					{#/for}
 				{#/if}
@@ -191,7 +195,7 @@
 								<legend>{_p('acquisition.quotation.selected_records', $T.length)}</legend>
 								<ul>
 									{#foreach $T as quotation}
-										<li rel="{$T.quotation.id}">{$T.quotation.name} - {$T.quotation.quantity} (<%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.value || 0, 'n2')})<a class="xclose" onclick="QuotationInput.removeQuotation({$T.quotation.id});">&times;</a></li>
+										<li rel="{$T.quotation.id}">{$T.quotation.name} - {$T.quotation.quantity} (<%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.value || 0, 'n2')})<a class="xclose" onclick="QuotationInput.removeQuotation({$T.quotation.id});">&times;</a></li>
 									{#/for}
 								</ul>
 							</fieldset>
@@ -259,7 +263,7 @@
 											{#if $T.quotation.author}<label><i18n:text key="acquisition.quotation.title.author" /></label>: {$T.quotation.author}<br/>{#/if}
 											{#if $T.quotation.title}<label><i18n:text key="acquisition.quotation.title.title" /></label>: {$T.quotation.title}<br/>{#/if}
 											{#if $T.quotation.quantity}<label><i18n:text key="acquisition.quotation.title.quantity" /></label>: {$T.quotation.quantity}<br/>{#/if}
-											{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.quotation.title.unit_value" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
+											{#if $T.quotation.unitValue}<label><i18n:text key="acquisition.quotation.title.unit_value" /></label>: <%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.quotation.unitValue || 0, 'n2')}<br/>{#/if}
 										</div>
 									{#/for}
 								{#/if}

@@ -24,9 +24,9 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
+import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.LanguageDTO;
-import biblivre.core.translations.Languages;
-import biblivre.core.translations.Translations;
+import biblivre.core.translations.TranslationBO;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import java.util.HashMap;
@@ -44,6 +44,8 @@ import org.thymeleaf.ITemplateEngine;
 @Component("biblivre.administration.translations.Handler")
 public class Handler extends AbstractHandler {
     private ITemplateEngine templateEngine;
+    private LanguageBO languageBO;
+    private TranslationBO translationBO;
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {
 
@@ -77,7 +79,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        final DiskFile exportFile = Translations.createDumpFile(language, templateEngine);
+        final DiskFile exportFile = translationBO.createDumpFile(language, templateEngine);
 
         exportFile.setName("biblivre_translations_" + System.currentTimeMillis() + "_" + ".txt");
 
@@ -170,14 +172,14 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        if (!Translations.isJavaScriptLocaleAvailable(language)) {
+        if (!translationBO.isJavaScriptLocaleAvailable(language)) {
             this.setMessage(
                     ActionResult.WARNING,
                     "administration.translations.error.javascript_locale_not_available");
             return;
         }
 
-        if (!Translations.isJavaLocaleAvailable(language)) {
+        if (!translationBO.isJavaLocaleAvailable(language)) {
             this.setMessage(
                     ActionResult.WARNING,
                     "administration.translations.error.java_locale_not_available");
@@ -186,7 +188,7 @@ public class Handler extends AbstractHandler {
 
         try {
             boolean success =
-                    Translations.save(language, addTranslation, removeTranslation, loggedUser);
+                    translationBO.save(language, addTranslation, removeTranslation, loggedUser);
             if (success) {
                 this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
             } else {
@@ -199,18 +201,15 @@ public class Handler extends AbstractHandler {
     }
 
     public void list(ExtendedRequest request, ExtendedResponse response) {
-        Languages.reset();
+        Set<LanguageDTO> languages = languageBO.getLanguages();
 
-        Set<LanguageDTO> languages = Languages.getLanguages();
         Map<String, Map<String, String>> translations = new HashMap<>();
 
         languages.forEach(
                 languageDTO -> {
                     String language = languageDTO.getLanguage();
 
-                    Translations.reset(language);
-
-                    TranslationsMap translationsMap = Translations.get(language);
+                    TranslationsMap translationsMap = translationBO.get(language);
                     Map<String, String> translation = translationsMap.getAllValues();
 
                     translations.put(language, translation);
@@ -262,7 +261,7 @@ public class Handler extends AbstractHandler {
                                 }
                             });
 
-            Translations.save(newTranslations, null, loggedUser);
+            translationBO.save(newTranslations, null, loggedUser);
 
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
         } catch (JSONException e) {
@@ -282,7 +281,7 @@ public class Handler extends AbstractHandler {
             JSONObject json = new JSONObject(strJson);
             String language = json.getString("language_code");
 
-            if (!Translations.isJavaScriptLocaleAvailable(language)) {
+            if (!translationBO.isJavaScriptLocaleAvailable(language)) {
                 this.setMessage(
                         ActionResult.WARNING, "administration.translations.error.invalid_language");
                 return;
@@ -292,7 +291,7 @@ public class Handler extends AbstractHandler {
 
             json.keys().forEachRemaining(key -> newTranslation.put(key, json.optString(key)));
 
-            Translations.save(language, newTranslation, new HashMap<>(), loggedUser);
+            translationBO.save(language, newTranslation, new HashMap<>(), loggedUser);
 
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
 
@@ -308,5 +307,15 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setTemplateEngine(ITemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
+    }
+
+    @Autowired
+    public void setLanguageBO(LanguageBO languageBO) {
+        this.languageBO = languageBO;
+    }
+
+    @Autowired
+    public void setTranslationsBO(TranslationBO translationBO) {
+        this.translationBO = translationBO;
     }
 }

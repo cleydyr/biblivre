@@ -28,21 +28,18 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.StaticBO;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.ConfigurationsDTO;
-import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.MemoryFile;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
-import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,11 +59,12 @@ import org.springframework.stereotype.Component;
 public class Handler extends AbstractHandler {
     private RestoreBO restoreBO;
     private BackupBO backupBO;
-    private DataMigrationBO dataMigrationBO;
+    private SchemaBO schemaBO;
+    private ConfigurationBO configurationBO;
 
     public void cleanInstall(ExtendedRequest request, ExtendedResponse response) {
 
-        boolean isNewLibrary = Configurations.getBoolean(Constants.CONFIG_NEW_LIBRARY);
+        boolean isNewLibrary = configurationBO.getBoolean(Constants.CONFIG_NEW_LIBRARY);
         boolean success = true;
 
         if (!isNewLibrary) {
@@ -81,8 +79,8 @@ public class Handler extends AbstractHandler {
             File template =
                     new File(
                             request.getSession().getServletContext().getRealPath("/"),
-                            "biblivre_template_4.0.0.sql");
-            success = Schemas.createSchema(dto, template, false);
+                            "biblivre_template_6.0.0.sql");
+            success = schemaBO.createSchema(dto, template, false);
 
             if (success) {
                 State.finish();
@@ -93,7 +91,7 @@ public class Handler extends AbstractHandler {
 
         if (success) {
             ConfigurationsDTO dto = new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-            Configurations.save(dto, 0);
+            configurationBO.save(dto, 0);
         }
 
         put("success", success);
@@ -361,7 +359,7 @@ public class Handler extends AbstractHandler {
                             "administration.maintenance.backup.error.invalid_origin_schema");
                 }
 
-                if (StringUtils.isBlank(value) || !Schemas.isValidName(value)) {
+                if (StringUtils.isBlank(value) || !SchemaBO.isValidName(value)) {
                     throw new ValidationException(
                             "administration.maintenance.backup.error.invalid_destination_schema");
                 }
@@ -393,11 +391,9 @@ public class Handler extends AbstractHandler {
             if (success) {
                 ConfigurationsDTO cdto =
                         new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(cdto, 0);
+                configurationBO.save(cdto, 0);
 
                 State.finish();
-
-                StaticBO.resetCache();
             } else {
                 State.cancel();
             }
@@ -415,63 +411,6 @@ public class Handler extends AbstractHandler {
             State.writeLog(ExceptionUtils.getStackTrace(e));
             State.cancel();
         } catch (Throwable e) {
-            this.setMessage(e);
-            State.writeLog(ExceptionUtils.getStackTrace(e));
-            State.cancel();
-        }
-
-        put("success", success);
-    }
-
-    public void importBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-        String schema = SchemaThreadLocal.get();
-
-        String origin = request.getString("origin", "biblivre3");
-
-        String[] groups = request.getParameterValues("groups[]");
-        List<DataMigrationPhaseGroup> phaseGroups = new ArrayList<>();
-
-        if (groups != null) {
-            for (String group : groups) {
-                phaseGroups.add(DataMigrationPhaseGroup.fromString(group));
-            }
-        }
-
-        if (phaseGroups.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return;
-        }
-
-        List<DataMigrationPhase> selectedPhases = new ArrayList<>();
-        for (DataMigrationPhaseGroup group : phaseGroups) {
-            selectedPhases.addAll(group.getPhases());
-        }
-
-        boolean success = false;
-
-        try {
-            State.start();
-            State.writeLog(
-                    request.getLocalizedText("administration.setup.biblivre3import.log_header"));
-
-            success = dataMigrationBO.migrate(schema, origin, selectedPhases);
-
-            if (success) {
-                ConfigurationsDTO cdto =
-                        new ConfigurationsDTO(Constants.CONFIG_NEW_LIBRARY, "false");
-                Configurations.save(cdto, 0);
-
-                StaticBO.resetCache();
-
-                State.finish();
-            } else {
-                State.cancel();
-            }
-        } catch (ValidationException e) {
-            this.setMessage(e);
-            State.writeLog(request.getLocalizedText(e.getMessage()));
-            State.cancel();
-        } catch (Exception e) {
             this.setMessage(e);
             State.writeLog(ExceptionUtils.getStackTrace(e));
             State.cancel();
@@ -498,5 +437,15 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

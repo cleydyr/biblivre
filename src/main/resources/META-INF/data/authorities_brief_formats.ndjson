@@ -1,0 +1,7 @@
+{"datafield":"100","format":"${a}_{; }${c}_{ - }${d}","sort_order":1}
+{"datafield":"670","format":"${a}","sort_order":7}
+{"datafield":"400","format":"${a}","sort_order":4}
+{"datafield":"410","format":"${a}","sort_order":5}
+{"datafield":"411","format":"${a}","sort_order":6}
+{"datafield":"111","format":"${a}_{; }${c}_{ - }${d}","sort_order":3}
+{"datafield":"110","format":"${a}_{; }${b}_{; }${c}_{ - }${d}","sort_order":2}

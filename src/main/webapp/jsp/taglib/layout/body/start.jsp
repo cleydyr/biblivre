@@ -2,16 +2,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.Set"%>
-<%@ page import="biblivre.core.translations.Languages"%>
 <%@ page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page import="biblivre.core.translations.LanguageDTO"%>
-<%@ page import="biblivre.core.configurations.Configurations"%>
+<%@ page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@ page import="biblivre.core.utils.Constants"%>
 <%@ page import="org.apache.commons.lang3.StringUtils"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="menu" tagdir="/WEB-INF/tags/menu" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
+
+<%
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+%>
 
 <jsp:useBean id="isMultiPart" type="java.lang.Boolean" scope="request" />
 <jsp:useBean id="isDisableMenu" type="java.lang.Boolean" scope="request" />
@@ -46,8 +49,8 @@
 						<img src="/static/images/logo_biblivre_small.png" width="43" height="36" alt="Biblivre V">
 					</a>
 				</div>
-				<h1><a href="?"><%= Configurations.getString(Constants.CONFIG_TITLE) %></a></h1>
-				<h2><%= Configurations.getHtml(Constants.CONFIG_SUBTITLE) %></h2>
+				<h1><a href="?"><%= configurationBO.getString(Constants.CONFIG_TITLE) %></a></h1>
+				<h2><%= configurationBO.getHtml(Constants.CONFIG_SUBTITLE) %></h2>
 			</div>
 			<c:if test="${languages.size() > 1}">
 				<div id="language_selection">

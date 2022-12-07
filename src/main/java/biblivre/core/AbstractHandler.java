@@ -20,12 +20,16 @@
 package biblivre.core;
 
 import biblivre.core.HandlerContextThreadLocal.HandlerContext;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AbstractHandler {
+    protected ConfigurationBO configurationBO;
+
     public AbstractHandler() {}
 
     protected HandlerContext getHandlerContext() {
@@ -133,5 +137,10 @@ public class AbstractHandler {
         JSONObject json = getJson();
 
         json.accumulate(key, object);
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

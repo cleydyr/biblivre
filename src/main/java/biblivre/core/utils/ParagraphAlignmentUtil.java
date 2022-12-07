@@ -1,15 +1,12 @@
 package biblivre.core.utils;
 
-import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ParagraphAlignment;
 import java.util.function.Supplier;
 
 public class ParagraphAlignmentUtil {
     public static int getHorizontalAlignmentConfigurationValue(
-            Supplier<? extends Integer> defaultValue) {
+            Supplier<? extends Integer> defaultValue, String configurationValue) {
 
-        String configurationValue =
-                Configurations.getString(Constants.CONFIG_LABEL_PRINT_PARAGRAPH_ALIGNMENT);
         int horizontalAlignment =
                 ParagraphAlignment.valueOf(configurationValue)
                         .getAlignment()

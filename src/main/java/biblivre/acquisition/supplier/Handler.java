@@ -23,7 +23,6 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import org.json.JSONException;
@@ -50,7 +49,7 @@ public class Handler extends AbstractHandler {
 
         Integer limit =
                 request.getInteger(
-                        "limit", Configurations.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
+                        "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<SupplierDTO> list = supplierBO.search(query, limit, offset);

@@ -23,10 +23,9 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
-import biblivre.core.schemas.Schemas;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +39,7 @@ import org.springframework.stereotype.Component;
 @Component("biblivre.administration.backup.Handler")
 public class Handler extends AbstractHandler {
     private BackupBO backupBO;
+    private SchemaBO schemaBO;
 
     public void prepare(ExtendedRequest request, ExtendedResponse response) {
         String schemas = request.getString("schemas");
@@ -74,15 +74,15 @@ public class Handler extends AbstractHandler {
         Map<String, Pair<String, String>> map = new HashMap<>();
 
         for (String s : list) {
-            if (Schemas.isNotLoaded(s)) {
+            if (schemaBO.isNotLoaded(s)) {
                 this.setMessage(
                         ActionResult.ERROR,
                         "administration.maintenance.backup.error.invalid_schema");
                 return;
             }
 
-            String title = Configurations.getString(Constants.CONFIG_TITLE);
-            String subtitle = Configurations.getString(Constants.CONFIG_SUBTITLE);
+            String title = configurationBO.getString(Constants.CONFIG_TITLE);
+            String subtitle = configurationBO.getString(Constants.CONFIG_SUBTITLE);
             map.put(s, Pair.of(title, subtitle));
         }
 
@@ -154,5 +154,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setBackupBO(BackupBO backupBO) {
         this.backupBO = backupBO;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }

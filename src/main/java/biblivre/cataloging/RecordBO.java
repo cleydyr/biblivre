@@ -26,6 +26,7 @@ import biblivre.core.AbstractBO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.auth.AuthorizationPoints;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
@@ -48,6 +49,7 @@ public abstract class RecordBO extends AbstractBO {
 
     protected RecordDAO recordDAO;
     private DigitalMediaBO digitalMediaBO;
+    protected ConfigurationBO configurationBO;
 
     public static final int FULL = 1 << 0;
     public static final int MARC_INFO = 1 << 1;
@@ -328,5 +330,10 @@ public abstract class RecordBO extends AbstractBO {
     @Autowired
     public final void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
         this.digitalMediaBO = digitalMediaBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

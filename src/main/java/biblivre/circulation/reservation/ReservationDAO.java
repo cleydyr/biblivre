@@ -11,9 +11,9 @@ public interface ReservationDAO {
 
     ReservationDTO get(Integer id);
 
-    List<ReservationDTO> list();
+    List<ReservationDTO> list(int defaultSortableGroupId);
 
-    List<ReservationDTO> list(UserDTO user, RecordDTO record);
+    List<ReservationDTO> list(UserDTO user, RecordDTO record, int defaultSortableGroupId);
 
     int count();
 

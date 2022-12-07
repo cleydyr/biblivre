@@ -754,7 +754,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
     protected RecordDTO populateDTO(ResultSet rs, Class<? extends RecordDTO> recordClass)
             throws Exception {
-        Constructor<? extends RecordDTO> constructor = recordClass.getDeclaredConstructor();
+        Constructor<? extends RecordDTO> constructor = recordClass.getConstructor();
 
         RecordDTO dto = constructor.newInstance();
 

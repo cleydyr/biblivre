@@ -1,6 +1,4 @@
 <%@page import="org.apache.commons.lang3.StringUtils"%>
-<%@page import="biblivre.administration.setup.DataMigrationBO"%>
-<%@page import="biblivre.administration.setup.DataMigrationPhaseGroup"%>
 <%@page import="biblivre.core.translations.TranslationsMap"%>
 <%@ page import="biblivre.login.LoginDTO "%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
@@ -122,44 +120,6 @@
 					<div class="clear"></div>
 				</div>
 			</div>
-
-			<div class="buttons">
-				<a class="danger_button" onclick="Administration.setup.cancelRestore();"><i18n:text key="common.cancel" /></a>
-
-				<a class="button" onclick="Administration.setup.confirmBiblivre4Restore(Administration.setup.confirmBiblivre4RestoreFile, { skip: true });"><i18n:text key="administration.setup.biblivre4restore.skip" /></a>
-
-				<a class="main_button arrow_right" onclick="Administration.setup.biblivre4RestoreFromFileMedia();"><i18n:text key="administration.setup.biblivre4restore.button" /></a>
-			</div>
-		</fieldset>
-
-		<fieldset id="biblivre3restore">
-			<legend><i18n:text key="administration.setup.biblivre3restore" /></legend>
-			<div class="description"><i18n:text key="administration.setup.biblivre3restore.description" /></div>
-			<div class="spacer"></div>
-			<div class="fields">
-				<div>
-					<div class="label"><i18n:text key="administration.setup.biblivre3restore.field.upload_file" /></div>
-					<div class="value">
-						<input type="file" class="import_file" name="biblivre3backup"/>
-					</div>
-					<div class="clear"></div>
-				</div>
-			</div>
-			<div class="spacer"></div>
-			<div class="fields">
-				<%
-					TranslationsMap translations = (TranslationsMap) request.getAttribute("translationsMap");
-					for (DataMigrationPhaseGroup phase : DataMigrationPhaseGroup.values()) {
-						out.println("<div><input type=\"checkbox\" value=\"" + phase + "\" name=\"phases\" id=\"phase_" + phase + "\" / checked=\"checked\">&#160;<label for=\"phase_" + phase + "\">" + translations.getText("administration.migration.groups." + phase.toString()) + "</label></div>");
-					}
-				%>
-			</div>
-			<div class="spacer"></div>
-
-			<div class="buttons">
-				<a class="main_button arrow_right" onclick="Administration.setup.biblivre3ImportFromFile();"><i18n:text key="administration.setup.biblivre3restore.button" /></a>
-			</div>
-		</fieldset>
 	</div>
 
 	<div id="upload_popup" class="popup">

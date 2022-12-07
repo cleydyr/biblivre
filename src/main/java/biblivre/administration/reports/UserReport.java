@@ -29,8 +29,8 @@ import biblivre.circulation.lending.LendingFineBO;
 import biblivre.circulation.lending.LendingInfoDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
+import biblivre.circulation.user.UserFieldBO;
 import biblivre.circulation.user.UserFieldDTO;
-import biblivre.circulation.user.UserFields;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -53,6 +53,7 @@ public class UserReport extends BaseBiblivreReport {
     private LendingBO lendingBO;
     private LendingFineBO lendingFineBO;
     private UserTypeBO userTypeBO;
+    private UserFieldBO userFieldBO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -298,9 +299,7 @@ public class UserReport extends BaseBiblivreReport {
         table.setWidthPercentage(100f);
         PdfPCell cell;
 
-        Collection<UserFieldDTO> fields = UserFields.getFields();
-
-        for (UserFieldDTO field : fields) {
+        for (UserFieldDTO field : userFieldBO.getFields()) {
             String fieldKey = field.getKey();
             cell =
                     new PdfPCell(
@@ -340,6 +339,11 @@ public class UserReport extends BaseBiblivreReport {
     @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Autowired
+    public void setUserFieldBO(UserFieldBO userFieldBO) {
+        this.userFieldBO = userFieldBO;
     }
 
     @Override

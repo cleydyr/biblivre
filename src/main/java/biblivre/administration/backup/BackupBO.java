@@ -21,9 +21,9 @@ package biblivre.administration.backup;
 
 import biblivre.core.AbstractBO;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.Configurations;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.file.BiblivreFile;
-import biblivre.core.schemas.Schemas;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
@@ -60,6 +60,8 @@ import org.springframework.stereotype.Component;
 public class BackupBO extends AbstractBO {
     private BackupDAO backupDAO;
     private DigitalMediaBO digitalMediaBO;
+    private SchemaBO schemaBO;
+    private ConfigurationBO configurationBO;
 
     public void simpleBackup() {
         BackupType backupType = BackupType.FULL;
@@ -71,7 +73,7 @@ public class BackupBO extends AbstractBO {
         String schema = SchemaThreadLocal.get();
 
         if (Constants.GLOBAL_SCHEMA.equals(schema)) {
-            list.addAll(Schemas.getEnabledSchemasList());
+            list.addAll(schemaBO.getEnabledSchemasList());
         } else {
             list.add(schema);
         }
@@ -79,12 +81,12 @@ public class BackupBO extends AbstractBO {
         Map<String, Pair<String, String>> map = new HashMap<>();
 
         for (String s : list) {
-            if (Schemas.isNotLoaded(s)) {
+            if (schemaBO.isNotLoaded(s)) {
                 continue;
             }
 
-            String title = Configurations.getString(Constants.CONFIG_TITLE);
-            String subtitle = Configurations.getString(Constants.CONFIG_SUBTITLE);
+            String title = configurationBO.getString(Constants.CONFIG_TITLE);
+            String subtitle = configurationBO.getString(Constants.CONFIG_SUBTITLE);
             map.put(s, Pair.of(title, subtitle));
         }
 
@@ -97,7 +99,7 @@ public class BackupBO extends AbstractBO {
 
         if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             return BackupScope.MULTI_SCHEMA;
-        } else if (Schemas.isMultipleSchemasEnabled()) {
+        } else if (configurationBO.isMultipleSchemasEnabled()) {
             return BackupScope.SINGLE_SCHEMA_FROM_MULTI_SCHEMA;
         } else {
             return BackupScope.SINGLE_SCHEMA;
@@ -243,7 +245,7 @@ public class BackupBO extends AbstractBO {
     }
 
     public String getBackupPath() {
-        String path = Configurations.getString(Constants.CONFIG_BACKUP_PATH);
+        String path = configurationBO.getString(Constants.CONFIG_BACKUP_PATH);
 
         if (StringUtils.isBlank(path) || FileIOUtils.doesNotExists(path)) {
             File home = new File(System.getProperty("user.home"));
@@ -430,5 +432,15 @@ public class BackupBO extends AbstractBO {
     @Autowired
     public void setDigitalMediaBO(DigitalMediaBO digitalMediaBO) {
         this.digitalMediaBO = digitalMediaBO;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

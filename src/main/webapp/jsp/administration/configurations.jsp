@@ -1,5 +1,4 @@
 <%@page import="biblivre.core.enums.ParagraphAlignment"%>
-<%@page import="biblivre.core.schemas.Schemas"%>
 <%@page import="biblivre.core.enums.PrinterType"%>
 <%@page import="biblivre.core.utils.FileIOUtils"%>
 <%@page import="org.apache.commons.lang3.StringUtils"%>
@@ -7,14 +6,17 @@
 <%@page import="java.io.File"%>
 <%@page import="biblivre.core.utils.DatabaseUtils"%>
 <%@page import="biblivre.administration.backup.BackupBO"%>
-<%@page import="biblivre.core.translations.Languages"%>
 <%@page import="biblivre.core.utils.Constants"%>
-<%@page import="biblivre.core.configurations.Configurations"%>
+<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+%>
 
 <layout:head>
 	<script type="text/javascript" src="/static/scripts/biblivre.administration.configurations.js"></script>
@@ -36,7 +38,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_TITLE;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -66,7 +68,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_SUBTITLE;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -124,7 +126,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_ACCESSION_NUMBER_PREFIX;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -154,7 +156,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BUSINESS_DAYS;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -178,12 +180,8 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_DEFAULT_LANGUAGE;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 
-				LanguageDTO ldto = Languages.getLanguage(value);
-				if (ldto != null) {
-					request.setAttribute("default_language", ldto.getName());
-				}
 
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
@@ -205,7 +203,7 @@
 					<div class="label"><i18n:text key="administration.configuration.new_value" /></div>
 					<div class="value">
 						<select name="${key}">
-							<c:forEach var="language" items="<%= Languages.getLanguages() %>">
+							<c:forEach var="language" items="${requestScope.languages}">
 								<c:choose>
 									<c:when test="${language.language == value}">
 										<option value="${language.language}" selected="selected">${language.name}</option>
@@ -225,7 +223,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_CURRENCY;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -255,7 +253,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_SEARCH_RESULTS_PER_PAGE;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -285,7 +283,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_SEARCH_RESULT_LIMIT;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -315,7 +313,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_LENDING_PRINTER_TYPE;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>
@@ -353,37 +351,53 @@
 			</div>
 		</fieldset>
 
-		<% if (!Schemas.isMultipleSchemasEnabled()) { %>
-		<fieldset>
-			<%
-				key = Constants.CONFIG_MULTI_SCHEMA;
-				active = Schemas.isMultipleSchemasEnabled();
-				request.setAttribute("key", key);
-				request.setAttribute("active", active);
-			%>
-			<legend><i18n:text key="administration.configuration.title.${key}" /></legend>
-			<div class="description"><i18n:text key="administration.configuration.description.${key}" param1="${schema}"/></div>
-			<div class="fields">
-				<div>
-					<div class="label"><i18n:text key="administration.configuration.current_value" /></div>
-					<div class="value"><input type="checkbox" id="multi_schema_active" name="${key}" class="finput" <c:if test="${active}">checked="checked"</c:if> style="width: auto;"/></div>
-					<div class="clear"></div>
-				</div>
-			</div>
-		</fieldset>
-		<% } else { %>
-		<fieldset>
-			<%
-				key = Constants.CONFIG_MULTI_SCHEMA;
-				active = Schemas.isMultipleSchemasEnabled();
-				request.setAttribute("key", key);
-				request.setAttribute("active", active);
-			%>
-			<legend><i18n:text key="administration.configuration.title.${key}" /></legend>
-			<p class="description" style="margin: 10px;"><i18n:text key="administration.configuration.description.multi_schema.enabled" /></p>
-		</fieldset>
-		<% } %>
-
+		<c:choose>
+			<c:when test="${!requestScope.isMultipleSchemasEnabled}">
+				<fieldset>
+					<%
+					key = Constants.CONFIG_MULTI_SCHEMA;
+					request.setAttribute("key", key);
+					request.setAttribute("active", false);
+					%>
+					<legend>
+						<i18n:text key="administration.configuration.title.${key}" />
+					</legend>
+					<div class="description">
+						<i18n:text key="administration.configuration.description.${key}"
+							param1="${schema}" />
+					</div>
+					<div class="fields">
+						<div>
+							<div class="label">
+								<i18n:text key="administration.configuration.current_value" />
+							</div>
+							<div class="value">
+								<input type="checkbox" id="multi_schema_active" name="${key}"
+									class="finput" <c:if test="${active}">checked="checked"</c:if>
+									style="width: auto;" />
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+				</fieldset>
+			</c:when>
+			<c:otherwise>
+				<fieldset>
+					<%
+					key = Constants.CONFIG_MULTI_SCHEMA;
+					request.setAttribute("key", key);
+					request.setAttribute("active", true);
+					%>
+					<legend>
+						<i18n:text key="administration.configuration.title.${key}" />
+					</legend>
+					<p class="description" style="margin: 10px;">
+						<i18n:text
+							key="administration.configuration.description.multi_schema.enabled" />
+					</p>
+				</fieldset>
+			</c:otherwise>
+		</c:choose>
 		<fieldset>
 			<%
 				key = Constants.CONFIG_BACKUP_PATH;
@@ -418,7 +432,7 @@
 		<fieldset>
 			<%
 				key = Constants.CONFIG_LABEL_PRINT_PARAGRAPH_ALIGNMENT;
-				value = Configurations.getString(key);
+				value = configurationBO.getString(key);
 				request.setAttribute("key", key);
 				request.setAttribute("value", value);
 			%>

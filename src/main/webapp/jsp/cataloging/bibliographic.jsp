@@ -1,8 +1,7 @@
 <%@page import="biblivre.cataloging.enums.HoldingAvailability"%>
 <%@ page import="biblivre.marc.MaterialType" %>
 <%@ page import="biblivre.cataloging.enums.RecordType" %>
-<%@ page import="biblivre.cataloging.Fields" %>
-<%@ page import="biblivre.administration.indexing.IndexingGroups" %>
+
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -20,8 +19,8 @@
 	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.input.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.holding.input.js"></script>
 
-	<script type="text/javascript" src="/static/scripts/<%= Fields.getFormFields("biblio").getCacheFileName() %>"></script>
-	<script type="text/javascript" src="/static/scripts/<%= Fields.getFormFields("holding").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.biblioCacheFileName}"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.holdingCacheFileName}"></script>
 
 	<script type="text/javascript" src="/static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/styles/zebra.bootstrap.css">
@@ -186,7 +185,7 @@
 							<div class="label"><i18n:text key="cataloging.bibliographic.material_type"/></div>
 							<div class="value">
 								<select name="material_type" onchange="CatalogingInput.toggleMaterialType(this.value);">
-									<c:forEach var="material" items="<%= MaterialType.bibliographicValues() %>" >
+									<c:forEach var="material" items="<%=MaterialType.bibliographicValues()%>" >
 										<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 									</c:forEach>
 								</select>
@@ -202,7 +201,7 @@
 							<div class="label"><i18n:text key="cataloging.bibliographic.material_type"/></div>
 							<div class="value">
 								<select name="material_type" onchange="CatalogingInput.toggleMaterialType(this.value);">
-									<c:forEach var="material" items="<%= MaterialType.bibliographicValues() %>" >
+									<c:forEach var="material" items="<%=MaterialType.bibliographicValues()%>" >
 										<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 									</c:forEach>
 								</select>
@@ -335,7 +334,7 @@
 				<div class="buttons">
 					<label class="search_label"><i18n:text key="search.bibliographic.material_type" /></label>
 					<select name="material" class="combo combo_expand">
-						<c:forEach var="material" items="<%= MaterialType.searchableValues() %>" >
+						<c:forEach var="material" items="<%=MaterialType.searchableValues()%>" >
 							<option value="${material.string}"><i18n:text key="marc.material_type.${material.string}" /></option>
 						</c:forEach>
 					</select>
@@ -360,7 +359,7 @@
 					<div class="field">
 						<label class="search_label"><i18n:text key="search.common.on_the_field" /></label>
 						<select name="field" class="combo combo_expand">
-							<c:forEach var="group" items="<%= IndexingGroups.getGroups(RecordType.BIBLIO) %>">
+							<c:forEach var="group" items="${requestScope.biblioIndexingGroups}">
 								<option value="${group.id}"><i18n:text key="cataloging.bibliographic.indexing_groups.${group.translationKey}" /></option>
 							</c:forEach>
 							<option value="holding_accession_number"><i18n:text key="cataloging.bibliographic.search.holding_accession_number" /></option>

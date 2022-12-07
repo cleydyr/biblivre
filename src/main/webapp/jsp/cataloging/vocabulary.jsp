@@ -1,7 +1,6 @@
 <%@ page import="biblivre.marc.MaterialType" %>
 <%@ page import="biblivre.cataloging.enums.RecordType" %>
-<%@ page import="biblivre.cataloging.Fields" %>
-<%@ page import="biblivre.administration.indexing.IndexingGroups" %>
+
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
@@ -17,7 +16,7 @@
 	<script type="text/javascript" src="/static/scripts/biblivre.input.js"></script>
 	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.input.js"></script>
 
-	<script type="text/javascript" src="/static/scripts/<%= Fields.getFormFields("vocabulary").getCacheFileName() %>"></script>
+	<script type="text/javascript" src="/static/scripts/${requestScope.vocabulariesCacheFileName}"></script>
 
 	<script type="text/javascript" src="/static/scripts/zebra_datepicker.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/styles/zebra.bootstrap.css">

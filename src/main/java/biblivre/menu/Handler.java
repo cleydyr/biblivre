@@ -24,17 +24,23 @@ import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.administration.backup.BackupBO;
-import biblivre.administration.indexing.IndexingGroups;
+import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.TabFieldsBO;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
+import biblivre.circulation.user.UserFieldBO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.schemas.SchemaBO;
+import biblivre.core.translations.LanguageBO;
+import biblivre.core.translations.LanguageDTO;
+import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -50,6 +56,11 @@ public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private BackupBO backupBO;
     private UserTypeBO userTypeBO;
+    private UserFieldBO userFieldBO;
+    private IndexingGroupBO indexingGroupBO;
+    private TabFieldsBO tabFieldsBO;
+    private LanguageBO languageBO;
+    private SchemaBO schemaBO;
 
     public void ping(ExtendedRequest request, ExtendedResponse response) {}
 
@@ -66,7 +77,7 @@ public class Handler extends AbstractHandler {
         String letter = request.getString("letter");
         Integer order =
                 request.getInteger(
-                        "order", IndexingGroups.getDefaultSortableGroupId(RecordType.BIBLIO));
+                        "order", indexingGroupBO.getDefaultSortableGroupId(RecordType.BIBLIO));
 
         if (StringUtils.isBlank(letter)) {
             letter = "a";
@@ -89,43 +100,100 @@ public class Handler extends AbstractHandler {
     }
 
     public void searchBibliographic(ExtendedRequest request, ExtendedResponse response) {
+        String language = (String) request.getAttribute("language");
+
+        request.setAttribute(
+                "bibliographicSearchableGroupsText",
+                indexingGroupBO.getSearchableGroupsText(RecordType.BIBLIO, language));
+
+        request.setAttribute("biblioCachefilename", tabFieldsBO.getFormFields(RecordType.BIBLIO));
+
+        request.setAttribute("holdingCachefilename", tabFieldsBO.getFormFields(RecordType.HOLDING));
+
         setJspURL("/jsp/search/bibliographic.jsp");
     }
 
     public void searchAuthorities(ExtendedRequest request, ExtendedResponse response) {
+        String language = (String) request.getAttribute("language");
+
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
+
+        request.setAttribute(
+                "authoritiesSearchableGroupsText",
+                indexingGroupBO.getSearchableGroupsText(RecordType.AUTHORITIES, language));
+
         setJspURL("/jsp/search/authorities.jsp");
     }
 
     public void searchVocabulary(ExtendedRequest request, ExtendedResponse response) {
+        String language = (String) request.getAttribute("language");
+
+        request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
+        request.setAttribute(
+                "vocabulariesSearchableGroupsText",
+                indexingGroupBO.getSearchableGroupsText(RecordType.VOCABULARY, language));
+
         setJspURL("/jsp/search/vocabulary.jsp");
     }
 
     public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+        request.setAttribute(
+                "holdingCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.HOLDING).getCacheFileName());
+        request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
+
         setJspURL("/jsp/cataloging/bibliographic.jsp");
     }
 
     public void catalogingAuthorities(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
+
         setJspURL("/jsp/cataloging/authorities.jsp");
     }
 
     public void catalogingVocabulary(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
         setJspURL("/jsp/cataloging/vocabulary.jsp");
     }
 
     public void catalogingLabels(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
+
         setJspURL("/jsp/cataloging/labels.jsp");
     }
 
     public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("userTypes", userTypeBO.list());
+
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
+        request.setAttribute("cacheFileName", userFieldBO.getFields().getCacheFileName());
+
         setJspURL("/jsp/circulation/user.jsp");
     }
 
     public void circulationLending(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/circulation/lending.jsp");
     }
 
     public void circulationReservation(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/circulation/reservation.jsp");
     }
 
@@ -141,16 +209,23 @@ public class Handler extends AbstractHandler {
                 request.setAttribute("RESERVATION_USER_ID", 0);
             }
 
+            request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
             setJspURL("/jsp/circulation/user_reservation.jsp");
         }
-        return;
     }
 
     public void circulationAccess(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/circulation/access_control.jsp");
     }
 
     public void circulationUserCards(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
+        request.setAttribute("cacheFileName", userFieldBO.getFields().getCacheFileName());
+
         setJspURL("/jsp/circulation/user_cards.jsp");
     }
 
@@ -188,16 +263,35 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationPermissions(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
+
         setJspURL("/jsp/administration/permissions.jsp");
     }
 
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("backupPath", backupBO.getBackupPath());
 
+        request.setAttribute("languages", languageBO.getLanguages());
+
+        String defaultLanguage = configurationBO.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
+
+        LanguageDTO language = languageBO.getLanguage(defaultLanguage);
+
+        if (language != null) {
+            request.setAttribute("default_language", language.getName());
+        }
+
+        request.setAttribute(
+                "isMultipleSchemasEnabled", configurationBO.isMultipleSchemasEnabled());
+
         setJspURL("/jsp/administration/configurations.jsp");
     }
 
     public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+
         setJspURL("/jsp/administration/reports.jsp");
     }
 
@@ -214,16 +308,38 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationTranslations(ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute("languages", languageBO.getLanguages());
+
         setJspURL("/jsp/administration/translations.jsp");
     }
 
     public void administrationBriefCustomization(
             ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
+        request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
         setJspURL("/jsp/administration/brief_customization.jsp");
     }
 
     public void administrationFormCustomization(
             ExtendedRequest request, ExtendedResponse response) {
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
+        request.setAttribute(
+                "authoritiesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
+        request.setAttribute(
+                "vocabulariesCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
+
         setJspURL("/jsp/administration/form_customization.jsp");
     }
 
@@ -240,17 +356,28 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("backupPath", backupPath);
 
+        request.setAttribute("enabledSchemas", schemaBO.getEnabledSchemasList());
+
         setJspURL("/jsp/multi_schema/backup.jsp");
     }
 
     public void multiSchemaConfigurations(ExtendedRequest request, ExtendedResponse response) {
-        String backupPath =
-                SchemaThreadLocal.withGlobalSchema(
-                        () -> {
-                            return backupBO.getBackupPath();
-                        });
+        String backupPath = SchemaThreadLocal.withGlobalSchema(backupBO::getBackupPath);
 
         request.setAttribute("backupPath", backupPath);
+
+        request.setAttribute("languages", languageBO.getLanguages());
+
+        String defaultLanguage = configurationBO.getString(Constants.CONFIG_DEFAULT_LANGUAGE);
+
+        LanguageDTO language = languageBO.getLanguage(defaultLanguage);
+
+        if (language != null) {
+            request.setAttribute("default_language", language.getName());
+        }
+
+        request.setAttribute(
+                "isMultipleSchemasEnabled", configurationBO.isMultipleSchemasEnabled());
 
         setJspURL("/jsp/multi_schema/configurations.jsp");
     }
@@ -299,5 +426,30 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setUserTypeBO(UserTypeBO userTypeBO) {
         this.userTypeBO = userTypeBO;
+    }
+
+    @Autowired
+    public void setUserFieldBO(UserFieldBO userFieldBO) {
+        this.userFieldBO = userFieldBO;
+    }
+
+    @Autowired
+    public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
+        this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setFieldsBO(TabFieldsBO tabFieldsBO) {
+        this.tabFieldsBO = tabFieldsBO;
+    }
+
+    @Autowired
+    public void setLanguageBO(LanguageBO languageBO) {
+        this.languageBO = languageBO;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }

@@ -24,18 +24,19 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.Configurations;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.enums.ActionResult;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
-import biblivre.core.schemas.Schemas;
 import biblivre.core.utils.Constants;
 import java.io.File;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("biblivre.multi_schema.Handler")
 public class Handler extends AbstractHandler {
+    private SchemaBO schemaBO;
 
     public void create(ExtendedRequest request, ExtendedResponse response) {
 
@@ -54,19 +55,19 @@ public class Handler extends AbstractHandler {
         File template =
                 new File(
                         request.getSession().getServletContext().getRealPath("/"),
-                        "biblivre_template_4.0.0.sql");
+                        "biblivre_template_6.0.0.sql");
 
-        boolean success = Schemas.createSchema(dto, template, true);
+        boolean success = schemaBO.createSchema(dto, template, true);
         if (success) {
             State.finish();
 
             SchemaThreadLocal.withSchema(
                     schemaParam,
                     () -> {
-                        Configurations.save(
+                        configurationBO.save(
                                 new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam),
                                 request.getLoggedUserId());
-                        Configurations.save(
+                        configurationBO.save(
                                 new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
                                 request.getLoggedUserId());
                     });
@@ -97,7 +98,7 @@ public class Handler extends AbstractHandler {
         String schemaParam = request.getString("schema");
         boolean disable = request.getBoolean("disable", false);
 
-        SchemaDTO dto = Schemas.getSchema(schemaParam);
+        SchemaDTO dto = schemaBO.getSchema(schemaParam);
 
         if (dto == null) {
             this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.toggle");
@@ -105,7 +106,7 @@ public class Handler extends AbstractHandler {
         }
 
         if (disable) {
-            if (Schemas.countEnabledSchemas() <= 1) {
+            if (schemaBO.countEnabledSchemas() <= 1) {
                 this.setMessage(
                         ActionResult.WARNING,
                         "multi_schema.manage.error.cant_disable_last_library");
@@ -113,7 +114,7 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        boolean success = disable ? Schemas.disable(dto) : Schemas.enable(dto);
+        boolean success = disable ? schemaBO.disable(dto) : schemaBO.enable(dto);
         try {
             put("success", success);
         } catch (JSONException e) {
@@ -126,8 +127,8 @@ public class Handler extends AbstractHandler {
 
         String schemaParam = request.getString("schema");
 
-        SchemaDTO dto = Schemas.getSchema(schemaParam);
-        boolean success = Schemas.deleteSchema(dto);
+        SchemaDTO dto = schemaBO.getSchema(schemaParam);
+        boolean success = schemaBO.deleteSchema(dto);
 
         try {
             put("success", success);
@@ -135,5 +136,10 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
             return;
         }
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }
