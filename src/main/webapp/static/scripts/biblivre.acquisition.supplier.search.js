@@ -23,22 +23,21 @@ var SupplierInput = SupplierInput || {};
 
 var SupplierSearchClass = {
 
-	initialize: function() {
+	initialize: function () {
 		var me = this;
 
 		this.root.find('.search_results').setTemplateElement(this.root.find('.search_results_template'));
 
-		$.History.bind(function(trigger) {
+		$.History.bind(function (trigger) {
 			return me.historyRead(trigger);
 		});
 
 		if (!Core.qhs('search')) {
 			me.switchToSimpleSearch();
-//			this.search('simple');
-		};
+		}
 
 	},
-	afterHistoryRead: function(trigger) {
+	afterHistoryRead: function (trigger) {
 		var query = Core.historyCheckAndSet(trigger, 'query');
 
 		if (query.changed) {
@@ -49,10 +48,10 @@ var SupplierSearchClass = {
 			}
 		}
 	},
-	clearResults: function() {
+	clearResults: function () {
 		Core.trigger(this.prefix + 'clear-search');
 	},
-	simpleSearch: function() {
+	simpleSearch: function () {
 		var query = this.root.find('.search_box .simple_search :input[name=query]').val();
 
 		var searchParameters = {
@@ -66,16 +65,16 @@ var SupplierSearchClass = {
 
 		this.submit(searchParameters);
 	},
-	afterDisplayResult: function(config) {
+	afterDisplayResult: function (config) {
 		this.root.find('.search_results .result').fixButtonsHeight();
 	},
-	searchTerm: function(obj) {
+	searchTerm: function (obj) {
 		var query = $("<div />").html(obj.query).text();
 		this.root.find('.search_box .simple_search :input[name=query]').val(query);
 
 		this.root.find('.search_box .main_button:visible').trigger('click');
 	},
-	loadRecord: function(record, callback) {
+	loadRecord: function (record, callback) {
 		this.clearAll();
 		this.selectedRecord = record;
 
@@ -83,7 +82,7 @@ var SupplierSearchClass = {
 			Core.changeTab(this.selectedTab || 'form', this);
 		}
 	},
-	tabHandler: function(tab, params) {
+	tabHandler: function (tab, params) {
 		params = params || {};
 		data = params.data || this.selectedRecord;
 
@@ -94,7 +93,7 @@ var SupplierSearchClass = {
 				break;
 		}
 	},
-	clearTab: function(tab) {
+	clearTab: function (tab) {
 		switch (tab) {
 			case 'form':
 				$('#biblivre_supplier_form').empty().data('loaded', false);
@@ -103,10 +102,10 @@ var SupplierSearchClass = {
 				break;
 		}
 	},
-	clearAll: function() {
+	clearAll: function () {
 		this.clearTab('form');
 	},
-	loadSupplierForm: function(record, params) {
+	loadSupplierForm: function (record, params) {
 		var div = $('#biblivre_supplier_form_body');
 
 		if (div.data('loaded')) {

@@ -27,7 +27,7 @@ var CirculationSearchClass = {
 	historyFieldParam: 'field',
 	defaultTab: 'form',
 
-	initialize: function() {
+	initialize: function () {
 		this.advancedSearchForm = this.root.find('.search_box .advanced_search');
 		this.simpleSearchForm = this.root.find('.search_box .simple_search');
 
@@ -46,13 +46,13 @@ var CirculationSearchClass = {
 		simpleQuery.data('oldVal', simpleQuery.val());
 
 		// Look for changes in the value
-		simpleQuery.bind("change propertychange keyup input paste", function(event) {
+		simpleQuery.bind("change propertychange keyup input paste", function (event) {
 			var el = $(this);
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 
-				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
+				simpleButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -61,13 +61,13 @@ var CirculationSearchClass = {
 		advancedQuery.data('oldVal', simpleQuery.val());
 
 		// Look for changes in the value
-		advancedQuery.bind("change propertychange keyup input paste", function(event) {
+		advancedQuery.bind("change propertychange keyup input paste", function (event) {
 			var el = $(this);
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 
-				advancedButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
+				advancedButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -79,14 +79,14 @@ var CirculationSearchClass = {
 			this.switchToSimpleSearch();
 		}
 	},
-	initializeHistory: function() {
+	initializeHistory: function () {
 		$.History.bind($.proxy(this.historyRead, this));
 
 		if (!Core.qhs('search')) {
 			this.switchToSimpleSearch();
-		};
+		}
 	},
-	afterHistoryRead: function(trigger) {
+	afterHistoryRead: function (trigger) {
 		var query = Core.historyCheckAndSet(trigger, this.historyQueryParam);
 		var field = Core.historyCheckAndSet(trigger, this.historyFieldParam);
 
@@ -99,10 +99,10 @@ var CirculationSearchClass = {
 			}
 		}
 	},
-	clearResults: function() {
+	clearResults: function () {
 		Core.trigger(this.prefix + 'clear-search');
 	},
-	clearAdvancedSearch: function() {
+	clearAdvancedSearch: function () {
 		var form = this.advancedSearchForm;
 
 		form.find(':input[name=query]').val('').change();
@@ -114,7 +114,7 @@ var CirculationSearchClass = {
 			form.find('#users_without_user_card').attr('checked', 'checked');
 		}
 	},
-	simpleSearch: function() {
+	simpleSearch: function () {
 		var query = this.simpleSearchForm.find(':input[name=query]').val();
 		var field = this.simpleSearchForm.find(':input[name=field]').val();
 
@@ -134,7 +134,7 @@ var CirculationSearchClass = {
 
 		this.submit(searchParameters);
 	},
-	advancedSearch: function() {
+	advancedSearch: function () {
 		var query = this.advancedSearchForm.find(':input[name=query]').val();
 		var field = this.advancedSearchForm.find(':input[name=field]').val();
 
@@ -176,12 +176,12 @@ var CirculationSearchClass = {
 
 		this.submit(searchParameters);
 	},
-	afterDisplayResult: function(config) {
+	afterDisplayResult: function (config) {
 		if (this.lastSearchParameters.field) {
 			var field = this.lastSearchParameters.field;
 			var me = this;
 
-			this.root.find('.search_results .result').each(function() {
+			this.root.find('.search_results .result').each(function () {
 				var el = $(this);
 				var id = el.attr('rel');
 
@@ -199,7 +199,7 @@ var CirculationSearchClass = {
 			this.root.find('.search_results .result').fixButtonsHeight();
 		}
 	},
-	searchTerm: function(obj) {
+	searchTerm: function (obj) {
 		var query = $("<div />").html(obj.query).text();
 		this.root.find('.search_box .simple_search :input[name=query]').val(query);
 
@@ -209,7 +209,7 @@ var CirculationSearchClass = {
 
 		this.root.find('.search_box .main_button:visible').trigger('click');
 	},
-	loadRecord: function(record, callback) {
+	loadRecord: function (record, callback) {
 		this.clearAll();
 		this.selectedRecord = record;
 
@@ -217,19 +217,22 @@ var CirculationSearchClass = {
 			Core.changeTab(this.selectedTab || this.defaultTab, this);
 		}
 	},
-	tabHandler: function(tab, params) {
+	tabHandler: function (tab, params) {
 		params = params || {};
 		data = params.data || this.selectedRecord;
 
-		try {
-			if (CirculationInput.editing && tab != 'form') {
-				return false;
-			}
-		} catch (e) {}
+		if (CirculationInput.editing && tab != 'form') {
+			return false;
+		}
 
 		if (tab != 'form' && !params.skipConvert) {
-			CirculationSearch.loadTabData(tab, $.proxy(function(newData) {
-				Core.changeTab(tab, this, { data: newData, keepEditing: params.keepEditing, skipConvert: true, force: true });
+			CirculationSearch.loadTabData(tab, $.proxy(function (newData) {
+				Core.changeTab(tab, this, {
+					data: newData,
+					keepEditing: params.keepEditing,
+					skipConvert: true,
+					force: true
+				});
 			}, this));
 
 			return false;
@@ -256,7 +259,7 @@ var CirculationSearchClass = {
 		}
 	},
 	_loadTabDataXHR: null,
-	loadTabData: function(tab, callback) {
+	loadTabData: function (tab, callback) {
 		var user = this.selectedRecord.id;
 
 		if (this._loadTabDataXHR) {
@@ -275,7 +278,7 @@ var CirculationSearchClass = {
 				id: user
 			},
 			loadingTimedOverlay: true
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				if ($.isFunction(callback)) {
 					callback(response.data);
@@ -285,7 +288,7 @@ var CirculationSearchClass = {
 			}
 		});
 	},
-	clearTab: function(tab) {
+	clearTab: function (tab) {
 		switch (tab) {
 			case 'form':
 				$('#biblivre_circulation_form').empty().data('loaded', false);
@@ -303,13 +306,13 @@ var CirculationSearchClass = {
 				break;
 		}
 	},
-	clearAll: function() {
+	clearAll: function () {
 		this.clearTab('form');
 		this.clearTab('lendings');
 		this.clearTab('reservations');
 		this.clearTab('fines');
 	},
-	loadCirculationForm: function(record, params) {
+	loadCirculationForm: function (record, params) {
 		var div = $('#biblivre_circulation_form');
 
 		if (div.data('loaded')) {
@@ -329,7 +332,7 @@ var CirculationSearchClass = {
 			CirculationInput.setAsReadOnly();
 		}
 	},
-	loadCirculationLendings: function(record, params) {
+	loadCirculationLendings: function (record, params) {
 		var div = $('#biblivre_circulation_lendings');
 
 		if (div.data('loaded')) {
@@ -350,7 +353,7 @@ var CirculationSearchClass = {
 		wrap = $('<div class="m30nfc"></div>');
 		div.find('.user_lending_returned_lending').wrapAll(wrap).parent().prepend($('<strong></strong>').text(Translations.get('circulation.user.returned_lendings')));
 	},
-	loadCirculationReservations: function(record, params) {
+	loadCirculationReservations: function (record, params) {
 		var div = $('#biblivre_circulation_reservations');
 
 		if (div.data('loaded')) {
@@ -364,7 +367,7 @@ var CirculationSearchClass = {
 		div.data('loaded', true);
 		div.processTemplate(record);
 	},
-	loadCirculationFines: function(record, params) {
+	loadCirculationFines: function (record, params) {
 		var div = $('#biblivre_circulation_fines');
 
 		if (div.data('loaded')) {
@@ -378,7 +381,7 @@ var CirculationSearchClass = {
 		div.data('loaded', true);
 		div.processTemplate(record);
 	},
-	payFine: function(fineId, exempt) {
+	payFine: function (fineId, exempt) {
 		var data = {
 			controller: 'json',
 			module: 'circulation.lending',
@@ -394,19 +397,19 @@ var CirculationSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				var fineDiv = $('.user_fines[rel="' + fineId + '"]');
 				fineDiv.find('.fines_buttons').remove();
 				fineDiv.find('.description').remove();
-				var newDiv = '<label>' +Translations.get('circulation.lending.payment_date') + '</label>: '+  _d(new Date(), 'D') + '<br/>';
+				var newDiv = '<label>' + Translations.get('circulation.lending.payment_date') + '</label>: ' + _d(new Date(), 'D') + '<br/>';
 				fineDiv.find('.record').append(newDiv);
 			}
 
 			Core.msg(response);
 		});
 	},
-	blockUser: function(userId) {
+	blockUser: function (userId) {
 		var data = {
 			controller: 'json',
 			module: this.type,
@@ -421,7 +424,7 @@ var CirculationSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				if (!CirculationSearch.lastSearchResult) {
 					return;
@@ -443,7 +446,7 @@ var CirculationSearchClass = {
 			Core.msg(response);
 		});
 	},
-	unblockUser: function(userId) {
+	unblockUser: function (userId) {
 		var data = {
 			controller: 'json',
 			module: this.type,
@@ -458,7 +461,7 @@ var CirculationSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				if (!CirculationSearch.lastSearchResult) {
 					return;
@@ -482,7 +485,7 @@ var CirculationSearchClass = {
 	},
 	_printReceiptXHR: null,
 	receiptList: [],
-	printReceipt: function(id) {
+	printReceipt: function (id) {
 		if (this._printReceiptXHR) {
 			this._printReceiptXHR.abort();
 		}
@@ -498,7 +501,7 @@ var CirculationSearchClass = {
 				id_list: id || this.receiptList.join(',')
 			},
 			loadingTimedOverlay: true
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success && response.receipt) {
 				var w = window.open();
 				$(w.document.body).html(response.receipt);

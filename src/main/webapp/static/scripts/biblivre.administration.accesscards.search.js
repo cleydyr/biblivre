@@ -25,7 +25,7 @@ var AccessCardsSearchClass = {
 	historyQueryParam: 'query',
 	historyStatusParam: 'status',
 
-	initialize: function() {
+	initialize: function () {
 		this.root.find('.search_results').setTemplateElement(this.root.find('.search_results_template'));
 
 		if (this.enableHistory) {
@@ -34,14 +34,14 @@ var AccessCardsSearchClass = {
 			this.switchToSimpleSearch();
 		}
 	},
-	initializeHistory: function() {
+	initializeHistory: function () {
 		$.History.bind($.proxy(this.historyRead, this));
 
 		if (!Core.qhs('search')) {
 			this.switchToSimpleSearch();
-		};
+		}
 	},
-	afterHistoryRead: function(trigger) {
+	afterHistoryRead: function (trigger) {
 		var query = Core.historyCheckAndSet(trigger, this.historyQueryParam);
 		var status = Core.historyCheckAndSet(trigger, this.historyStatusParam);
 
@@ -54,10 +54,10 @@ var AccessCardsSearchClass = {
 			}
 		}
 	},
-	clearResults: function() {
+	clearResults: function () {
 		Core.trigger(this.prefix + 'clear-search');
 	},
-	simpleSearch: function(extraParams) {
+	simpleSearch: function (extraParams) {
 		var query = this.root.find('.search_box .simple_search :input[name=query]').val();
 		var status = this.root.find('.search_box .simple_search :input[name=status]').val();
 
@@ -77,17 +77,17 @@ var AccessCardsSearchClass = {
 
 		this.submit(searchParameters, extraParams);
 	},
-	afterDisplayResult: function(config) {
+	afterDisplayResult: function (config) {
 		this.root.find('.search_results .result').fixButtonsHeight();
 	},
-	searchTerm: function(obj) {
+	searchTerm: function (obj) {
 		var query = $("<div />").html(obj.query).text();
 		this.root.find('.search_box .simple_search :input[name=query]').val(query);
 		this.root.find('.search_box .simple_search :input[name=status]').trigger('setvalue', obj.status || 'all');
 
 		this.root.find('.search_box .main_button:visible').trigger('click');
 	},
-	loadRecord: function(record, callback) {
+	loadRecord: function (record, callback) {
 		this.clearAll();
 		this.selectedRecord = record;
 
@@ -95,7 +95,7 @@ var AccessCardsSearchClass = {
 			Core.changeTab(this.selectedTab || 'form', this);
 		}
 	},
-	tabHandler: function(tab, params) {
+	tabHandler: function (tab, params) {
 		params = params || {};
 		data = params.data || this.selectedRecord;
 
@@ -106,7 +106,7 @@ var AccessCardsSearchClass = {
 				break;
 		}
 	},
-	clearTab: function(tab) {
+	clearTab: function (tab) {
 		switch (tab) {
 			case 'form':
 				$('#biblivre_accesscards_form_body').empty().data('loaded', false);
@@ -115,10 +115,10 @@ var AccessCardsSearchClass = {
 				break;
 		}
 	},
-	clearAll: function() {
+	clearAll: function () {
 		this.clearTab('form');
 	},
-	loadAccessCardForm: function(record, params) {
+	loadAccessCardForm: function (record, params) {
 		var div = $('#biblivre_accesscards_form_body');
 
 		if (div.data('loaded')) {

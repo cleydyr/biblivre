@@ -19,40 +19,36 @@
  *
  */
 var AccessControl = {
-	getOverlayClass: function(record) {
+	getOverlayClass: function (record) {
 		switch (record.status) {
 			case 'blocked':
 			case 'in_use_and_blocked':
 			case 'cancelled':
 				return 'overlay_warning';
-				break;
-
 			default:
 				return '';
 		}
 	},
-	getOverlayText: function(record) {
+	getOverlayText: function (record) {
 		switch (record.status) {
 			case 'blocked':
 			case 'in_use_and_blocked':
 			case 'cancelled':
 				return Translations.get('cartao bloqueado');
-				break;
-
 			default:
 				return '';
 		}
 	},
-	bindCard: function(cardId, askForConfirmation) {
+	bindCard: function (cardId, askForConfirmation) {
 		if (!CirculationSearch.selectedRecord) {
 			Core.msg({
 				message_level: 'normal',
-				message:Translations.get('TODO')
+				message: Translations.get('TODO')
 			});
 			return;
 		}
 
-		var bind = function() {
+		var bind = function () {
 			$.ajax({
 				url: window.location.pathname,
 				type: 'POST',
@@ -65,7 +61,7 @@ var AccessControl = {
 					user_id: CirculationSearch.selectedRecord.id
 				},
 				loadingTimedOverlay: true
-			}).done($.proxy(function(response) {
+			}).done($.proxy(function (response) {
 				if (response.success) {
 					var oldRecord = AccessCardsSearch.getSearchResult(cardId);
 					if (oldRecord) {
@@ -85,9 +81,9 @@ var AccessControl = {
 				title: 'TODO',
 				description: 'TODO',
 				confirm: 'TODO!',
-				okText:Translations.get('common.yes'),
-				cancelText:Translations.get('common.no'),
-				okHandler: $.proxy(function() {
+				okText: Translations.get('common.yes'),
+				cancelText: Translations.get('common.no'),
+				okHandler: $.proxy(function () {
 					$.proxy(bind, this)();
 					$(':focus').blur();
 				}, this),
@@ -97,8 +93,8 @@ var AccessControl = {
 			$.proxy(bind, this)();
 		}
 	},
-	unbindCard: function(cardId, userId, askForConfirmation) {
-		var bind = function() {
+	unbindCard: function (cardId, userId, askForConfirmation) {
+		var bind = function () {
 			$.ajax({
 				url: window.location.pathname,
 				type: 'POST',
@@ -111,7 +107,7 @@ var AccessControl = {
 					user_id: userId
 				},
 				loadingTimedOverlay: true
-			}).done($.proxy(function(response) {
+			}).done($.proxy(function (response) {
 				if (response.success) {
 					var oldRecord = AccessCardsSearch.getSearchResult(cardId);
 					if (oldRecord) {
@@ -131,9 +127,9 @@ var AccessControl = {
 				title: 'TODO',
 				description: 'TODO',
 				confirm: 'TODO!',
-				okText:Translations.get('common.yes'),
-				cancelText:Translations.get('common.no'),
-				okHandler: $.proxy(function() {
+				okText: Translations.get('common.yes'),
+				cancelText: Translations.get('common.no'),
+				okHandler: $.proxy(function () {
 					$.proxy(bind, this)();
 					$(':focus').blur();
 				}, this),

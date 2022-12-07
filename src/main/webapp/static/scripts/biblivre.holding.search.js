@@ -28,26 +28,26 @@ var HoldingSearchClass = {
 	historyQueryParam: 'query',
 	historyFieldParam: 'field',
 
-	initialize: function() {
+	initialize: function () {
 		this.root.find('.search_results').setTemplateElement(this.root.find('.search_results_template'));
 
 		if (CirculationSearch) {
-			Core.subscribe(CirculationSearch.prefix + 'open-record', function(e, record) {
+			Core.subscribe(CirculationSearch.prefix + 'open-record', function (e, record) {
 				$('#holding_search').hide();
 			}, this);
 
-			Core.subscribe(CirculationSearch.prefix + 'record-selected', function(e, record) {
+			Core.subscribe(CirculationSearch.prefix + 'record-selected', function (e, record) {
 				$('#holding_search').show();
 			}, this);
 		}
 
 		if (CatalogingSearch) {
-			Core.subscribe(CatalogingSearch.prefix + 'record-selected', function(e) {
+			Core.subscribe(CatalogingSearch.prefix + 'record-selected', function (e) {
 				$('#holding_search').show();
 				this.toggleSearch(false, true);
 			}, this);
 
-			Core.subscribe(CatalogingSearch.prefix + 'display-search', function(e) {
+			Core.subscribe(CatalogingSearch.prefix + 'display-search', function (e) {
 				$('#holding_search').hide();
 				this.closeResult(true);
 
@@ -56,21 +56,21 @@ var HoldingSearchClass = {
 				}
 			}, this);
 
-			Core.subscribe(CatalogingSearch.prefix + 'next-result', function(e) {
+			Core.subscribe(CatalogingSearch.prefix + 'next-result', function (e) {
 				this.closeResult();
 			}, this);
 
-			Core.subscribe(CatalogingSearch.prefix + 'previous-result', function(e) {
+			Core.subscribe(CatalogingSearch.prefix + 'previous-result', function (e) {
 				this.closeResult();
 			}, this);
 
 
 			if (HoldingInput) {
-				Core.subscribe(HoldingInput.prefix + 'edit-record-start', function() {
+				Core.subscribe(HoldingInput.prefix + 'edit-record-start', function () {
 					$('#database_selection_combo, #new_record_button, #new_holding_button').disable();
 				}, this);
 
-				Core.subscribe(HoldingInput.prefix + 'edit-record-end', function() {
+				Core.subscribe(HoldingInput.prefix + 'edit-record-end', function () {
 					$('#database_selection_combo, #new_record_button, #new_holding_button').enable();
 				}, this);
 
@@ -79,17 +79,17 @@ var HoldingSearchClass = {
 		}
 
 		if (CatalogingInput) {
-			Core.subscribe(CatalogingInput.prefix + 'record-new', function(e) {
+			Core.subscribe(CatalogingInput.prefix + 'record-new', function (e) {
 				this.closeResult();
 			}, this);
 
 			if (HoldingInput) {
-				Core.subscribe(HoldingInput.prefix + 'edit-record-start', function() {
+				Core.subscribe(HoldingInput.prefix + 'edit-record-start', function () {
 					CatalogingInput.root.find('.page_navigation .button').disable();
 					CatalogingInput.root.find('.selected_highlight').find('.button, .danger_button').disable();
 				}, this);
 
-				Core.subscribe(HoldingInput.prefix + 'edit-record-end', function() {
+				Core.subscribe(HoldingInput.prefix + 'edit-record-end', function () {
 					CatalogingInput.root.find('.page_navigation .button').enable();
 					CatalogingInput.root.find('.selected_highlight').find('.button, .danger_button').enable();
 				}, this);
@@ -101,13 +101,13 @@ var HoldingSearchClass = {
 		simpleQuery.data('oldVal', simpleQuery.val());
 
 		// Look for changes in the value
-		simpleQuery.bind("change propertychange keyup input paste", function(event) {
+		simpleQuery.bind("change propertychange keyup input paste", function (event) {
 			var el = $(this);
 			var val = el.val();
 			if (el.data('oldVal') != val) {
 				el.data('oldVal', val);
 
-				simpleButton.text($.trim(val) == '' ?Translations.get('search.common.button.list_all') :Translations.get('search.common.button.search'));
+				simpleButton.text($.trim(val) == '' ? Translations.get('search.common.button.list_all') : Translations.get('search.common.button.search'));
 			}
 		});
 
@@ -117,17 +117,17 @@ var HoldingSearchClass = {
 			this.switchToSimpleSearch();
 		}
 	},
-	initializeHistory: function() {
+	initializeHistory: function () {
 		$.History.bind($.proxy(this.historyRead, this));
 
 		if (!Core.qhs('search')) {
 			this.switchToSimpleSearch();
-		};
+		}
 	},
-	clearResults: function(keepOrderingBar) {
+	clearResults: function (keepOrderingBar) {
 		Core.trigger(this.prefix + 'clear-search');
 	},
-	tabHandler: function(tab, params) {
+	tabHandler: function (tab, params) {
 		params = params || {};
 		data = params.data || this.selectedRecord;
 
@@ -136,8 +136,13 @@ var HoldingSearchClass = {
 		this.selectedTab = tab;
 		if (HoldingInput.editing && !params.skipConvert) {
 
-			HoldingInput.convert(oldTab, tab, $.proxy(function(newData) {
-				Core.changeTab(tab, this, { data: newData, keepEditing: true, skipConvert: true, force: true });
+			HoldingInput.convert(oldTab, tab, $.proxy(function (newData) {
+				Core.changeTab(tab, this, {
+					data: newData,
+					keepEditing: true,
+					skipConvert: true,
+					force: true
+				});
 			}, this));
 
 			return false;
@@ -153,7 +158,7 @@ var HoldingSearchClass = {
 				break;
 		}
 	},
-	clearTab: function(tab) {
+	clearTab: function (tab) {
 		if (!this.enableTabs) {
 			return;
 		}
@@ -171,7 +176,7 @@ var HoldingSearchClass = {
 				break;
 		}
 	},
-	clearAll: function() {
+	clearAll: function () {
 		if (!this.enableTabs) {
 			return;
 		}
@@ -179,7 +184,7 @@ var HoldingSearchClass = {
 		this.clearTab('holding_form');
 		this.clearTab('holding_marc');
 	},
-	loadHoldingMarc: function(record, params) {
+	loadHoldingMarc: function (record, params) {
 		var div = $('#biblivre_holding_marc');
 
 		if (div.data('loaded')) {
@@ -200,7 +205,7 @@ var HoldingSearchClass = {
 			HoldingInput.setAsReadOnly('holding_marc');
 		}
 	},
-	loadHoldingForm: function(record, params) {
+	loadHoldingForm: function (record, params) {
 		var form = $('#biblivre_holding_form');
 
 		if (form.data('loaded')) {
@@ -224,7 +229,7 @@ var HoldingSearchClass = {
 			HoldingInput.setAsReadOnly('holding_form');
 		}
 	},
-	simpleSearch: function() {
+	simpleSearch: function () {
 		var query = this.root.find('.search_box .simple_search :input[name=query]').val();
 		var holding_list_lendings = this.root.find('.search_box :input[name=holding_list_lendings]').attr('checked');
 
@@ -238,9 +243,9 @@ var HoldingSearchClass = {
 
 		this.submit(searchParameters);
 	},
-	lend: function(id) {
+	lend: function (id) {
 		Core.msg({
-			message:Translations.get('circulation.lending.error.select_reader_first'),
+			message: Translations.get('circulation.lending.error.select_reader_first'),
 			message_level: 'warning'
 		});
 
@@ -260,7 +265,7 @@ var HoldingSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				Core.trigger(this.prefix + 'holding-lent', id, response.data);
 			}
@@ -268,7 +273,7 @@ var HoldingSearchClass = {
 			Core.msg(response);
 		});
 	},
-	returnLending: function(lendingInfo) {
+	returnLending: function (lendingInfo) {
 		if (!lendingInfo || !lendingInfo.lending) {
 			return;
 		}
@@ -290,7 +295,7 @@ var HoldingSearchClass = {
 			this.submitReturnLending(lendingInfo, 0.0, true);
 		}
 	},
-	renewLending: function(lendingInfo) {
+	renewLending: function (lendingInfo) {
 		var data = {
 			controller: 'json',
 			module: this.type,
@@ -305,7 +310,7 @@ var HoldingSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				Core.trigger(this.prefix + 'holding-renewed', lendingInfo.lending.id, response.data);
 			}
@@ -313,7 +318,7 @@ var HoldingSearchClass = {
 			Core.msg(response);
 		});
 	},
-	submitReturnLending: function(lendingInfo, fine, paid) {
+	submitReturnLending: function (lendingInfo, fine, paid) {
 		var data = {
 			controller: 'json',
 			module: this.type,
@@ -330,7 +335,7 @@ var HoldingSearchClass = {
 			data: data,
 			loadingTimedOverlay: true,
 			context: this
-		}).done(function(response) {
+		}).done(function (response) {
 			if (response.success) {
 				Core.trigger(this.prefix + 'holding-returned', lendingInfo.lending.id);
 				this.closeFinePopup();
@@ -339,21 +344,21 @@ var HoldingSearchClass = {
 			Core.msg(response);
 		});
 	},
-	closeFinePopup: function() {
+	closeFinePopup: function () {
 		this.selectedLendingInfo = null;
 
 		Core.hideOverlay();
 		$('#fine_popup').hide();
 	},
-	applyFine: function() {
+	applyFine: function () {
 		var fine = Globalize.parseFloat($('#fine_popup input[name="fine_value"]').val());
 		this.submitReturnLending(this.selectedLendingInfo, fine, false);
 	},
-	payFine: function() {
+	payFine: function () {
 		var fine = Globalize.parseFloat($('#fine_popup input[name="fine_value"]').val());
 		this.submitReturnLending(this.selectedLendingInfo, fine, true);
 	},
-	dismissFine: function() {
+	dismissFine: function () {
 		this.submitReturnLending(this.selectedLendingInfo, 0.0, true);
 	}
 };

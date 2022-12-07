@@ -34,7 +34,7 @@
 
 				    SchemaThreadLocal.setSchema(schema.getSchema());
 				%>
-					<a href="<%= schema.getSchema() %>/" target="_blank"><%= configurationBO.getHtml(Constants.CONFIG_TITLE) %></a>
+					<a href="<%= schema.getSchema() %>/" target="_blank" rel="noopener"><%= configurationBO.getHtml(Constants.CONFIG_TITLE) %></a>
 					<div class="subtitle"><%= configurationBO.getHtml(Constants.CONFIG_SUBTITLE) %></div>
 					<div><span class="address"></span><strong><%= schema.getSchema() %></strong>/</div>
 					<a href="javascript:void(0);" onclick="Schemas.toggle('<%= schema.getSchema() %>', false, this);" class="enable">[<i18n:text key="multi_schema.manage.enable" />]</a>
