@@ -775,12 +775,12 @@ Core.scrollbarWidth;
 Core.getScrollbarWidth = function () {
 	if (Core.scrollbarWidth === undefined) {
 		if ($.browser.msie) {
-			var textareaA = $('<textarea cols="10" rows="2"></textarea>').css({
+			const textareaA = $('<textarea cols="10" rows="2"></textarea>').css({
 				position: 'absolute',
 				top: -1000,
 				left: -1000
 			}).appendTo('body');
-			var textareaB = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({
+			const textareaB = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({
 				position: 'absolute',
 				top: -1000,
 				left: -1000
@@ -790,7 +790,7 @@ Core.getScrollbarWidth = function () {
 			textareaA.remove();
 			textareaB.remove();
 		} else {
-			var divA = $('<div></div>').css({
+			const divA = $('<div></div>').css({
 				width: 100,
 				height: 100,
 				overflow: 'auto',
@@ -798,7 +798,7 @@ Core.getScrollbarWidth = function () {
 				top: -1000,
 				left: -1000
 			}).prependTo('body');
-			var divB = $('<div></div>').css({
+			const divB = $('<div></div>').css({
 				width: '100%',
 				height: 200
 			}).appendTo(divA);
