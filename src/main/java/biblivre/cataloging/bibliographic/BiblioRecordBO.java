@@ -20,7 +20,6 @@
 package biblivre.cataloging.bibliographic;
 
 import biblivre.administration.indexing.IndexingDAO;
-import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
@@ -47,7 +46,6 @@ public class BiblioRecordBO extends PaginableRecordBO {
     private IndexingDAO indexingDAO;
     private ReservationDAO reservationDAO;
     private LendingDAO lendingDAO;
-    private IndexingGroupBO indexingGroupBO;
 
     @Override
     public void populateDetails(RecordDTO recordDTO, int mask) {
