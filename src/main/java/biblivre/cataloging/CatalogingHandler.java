@@ -1,19 +1,16 @@
 package biblivre.cataloging;
 
 import biblivre.cataloging.enums.RecordDatabase;
-import biblivre.core.AbstractDTO;
 import biblivre.core.AbstractHandler;
-import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import java.util.List;
 import org.json.JSONObject;
 import org.marc4j.MarcReader;
+import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class CatalogingHandler extends AbstractHandler {
@@ -52,20 +49,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
         put("data", data);
     }
 
-    protected void populateFields(RecordDTO dto, JSONObject data) {
-        MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
-
-        List<BriefTabFieldDTO> fieldList =
-                marcDataReader.getFieldList(tabFieldsBO.getBriefFormats(dto.getRecordType()));
-
-        DTOCollection<AbstractDTO> collection = new DTOCollection<>();
-
-        collection.addAll(fieldList);
-
-        dto.addExtraData("fields", collection);
-
-        dto.populateExtraData(data);
-    }
+    protected abstract void populateFields(RecordDTO dto, JSONObject data);
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -96,6 +80,45 @@ public abstract class CatalogingHandler extends AbstractHandler {
         _setSuccessMessage(isNew);
 
         put("data", recordDTO.toJSONObject());
+    }
+
+    public void convert(ExtendedRequest request, ExtendedResponse response) {
+        String data = request.getString("data");
+
+        RecordConvertion from = request.getEnum(RecordConvertion.class, "from");
+
+        MaterialType materialType =
+                request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
+
+        Integer id = request.getInteger("id");
+
+        boolean isNew = id == 0;
+
+        RecordDTO dto = this.createRecordDTO(request);
+
+        Record record = null;
+
+        try {
+            MarcReader marcReader =
+                    from.getReader(data, materialType, RecordStatus.fromNewStatus(isNew));
+
+            record = marcReader.next();
+
+            dto.setRecord(record);
+
+            dto.setId(id);
+
+            dto.setMaterialType(materialType);
+        } catch (Exception e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+            return;
+        }
+
+        JSONObject recordJSON = dto.toJSONObject();
+
+        populateFields(dto, recordJSON);
+
+        put("data", recordJSON);
     }
 
     private void hydrateRecord(RecordDTO recordDTO, ExtendedRequest request) {

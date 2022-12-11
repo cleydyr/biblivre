@@ -27,6 +27,7 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
+import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -34,8 +35,8 @@ import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
+import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
-import biblivre.marc.RecordStatus;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.marc4j.MarcReader;
-import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
@@ -127,45 +126,6 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         for (IndexingGroupDTO group : groups) {
             accumulate("indexing_groups", group.toJSONObject());
         }
-    }
-
-    public void convert(ExtendedRequest request, ExtendedResponse response) {
-        String data = request.getString("data");
-
-        RecordConvertion from = request.getEnum(RecordConvertion.class, "from");
-
-        MaterialType materialType =
-                request.getEnum(MaterialType.class, "material_type", this.defaultMaterialType);
-
-        Integer id = request.getInteger("id");
-
-        boolean isNew = id == 0;
-
-        RecordDTO dto = this.createRecordDTO(request);
-
-        Record record = null;
-
-        try {
-            MarcReader marcReader =
-                    from.getReader(data, materialType, RecordStatus.fromNewStatus(isNew));
-
-            record = marcReader.next();
-
-            dto.setRecord(record);
-
-            dto.setId(id);
-
-            dto.setMaterialType(materialType);
-        } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return;
-        }
-
-        JSONObject recordJSON = dto.toJSONObject();
-
-        populateFields(dto, recordJSON);
-
-        put("data", recordJSON);
     }
 
     public void itemCount(ExtendedRequest request, ExtendedResponse response) {
@@ -334,6 +294,21 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         list.addAll(formats);
 
         put("data", list.toJSONObject());
+    }
+
+    protected void populateFields(RecordDTO dto, JSONObject data) {
+        MarcDataReader marcDataReader = new MarcDataReader(dto.getRecord());
+
+        List<BriefTabFieldDTO> fieldList =
+                marcDataReader.getFieldList(tabFieldsBO.getBriefFormats(dto.getRecordType()));
+
+        DTOCollection<AbstractDTO> collection = new DTOCollection<>();
+
+        collection.addAll(fieldList);
+
+        dto.addExtraData("fields", collection);
+
+        dto.populateExtraData(data);
     }
 
     @Autowired
