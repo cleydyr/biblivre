@@ -102,23 +102,6 @@ Administration.setup.cancel = function() {
 	window.location.href = window.location.pathname;
 };
 
-Administration.setup.biblivre3Import = function() {
-	Administration.setup.showConfirm('biblivre3import', function() {
-		Administration.setup.confirmBiblivre3Import('import');
-	});
-};
-
-Administration.setup.biblivre3ImportFromFile = function() {
-	if ($('input[name="biblivre3backup"]').val() == '') {
-		alert(Translations.get('administration.setup.biblivre3restore.select_file'));
-		return;
-	}
-
-	Administration.setup.showConfirm('biblivre3restore', function() {
-		Administration.setup.biblivre3UploadBackup();
-	});
-};
-
 Administration.setup.biblivre4Restore = function(file, params) {
 	Administration.setup.showConfirm('biblivre4restore', function() {
 		Administration.setup.confirmBiblivre4Restore(file, params);
@@ -145,45 +128,6 @@ Administration.setup.biblivre4RestoreFromFileMedia = function(file) {
 	}
 
 	Administration.setup.biblivre4UploadBackup(true);
-};
-
-Administration.setup.biblivre3UploadBackup = function() {
-	$('#page_submit').ajaxSubmit({
-		beforeSerialize: function($form, options) {
-			$('#controller').val('json');
-			$('#module').val('administration.setup');
-			$('#action').val('upload_biblivre3');
-		},
-		beforeSubmit: function() {
-			Upload.showUploadPopup();
-		},
-		dataType: 'json',
-		forceSync: true,
-		complete: function() {
-			$('#controller').val('jsp');
-		},
-		success: function(response) {
-			Upload.cancel();
-
-
-			if (response.success) {
-				Administration.setup.confirmBiblivre3Import('restore');
-			} else {
-				Administration.setup.showError('biblivre3restore');
-			}
-		},
-		error: function() {
-			Upload.cancel();
-			Administration.setup.showError('biblivre3restore');
-		},
-		uploadProgress: function(event, current, total, percentComplete) {
-			if (current == total) {
-				Upload.continuousProgress();
-			} else {
-				Upload.advanceUploadProgress(current, total, percentComplete);
-			}
-		}
-	});
 };
 
 Administration.setup.biblivre4UploadBackup = function(mediaUpload) {
@@ -231,43 +175,6 @@ Administration.setup.biblivre4UploadBackup = function(mediaUpload) {
 			} else {
 				Upload.advanceUploadProgress(current, total, percentComplete);
 			}
-		}
-	});
-};
-
-
-Administration.setup.confirmBiblivre3Import = function(type) {
-	var phaseGroups = [];
-	$('#biblivre3' + type + ' input:checkbox:checked[name="phases"]').each(function() {
-		phaseGroups.push($(this).val());
-	});
-
-	Administration.progress.showPopupProgress();
-	Administration.progress.progress(1000);
-
-	$.ajax({
-		url: window.location.pathname,
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			controller: 'json',
-			module: 'administration.setup',
-			action: 'import_biblivre3',
-			origin: (type == 'restore') ? 'biblivre4_b3b_restore' : 'biblivre3',
-			groups: phaseGroups
-		},
-		success: function(response) {
-			Administration.progress.cancel();
-
-			if (response.success) {
-				Administration.setup.showSuccess('biblivre3' + type);
-			} else {
-				Administration.setup.showError('biblivre3' + type);
-			}
-		},
-		error: function(response) {
-			Administration.progress.cancel();
-			Administration.setup.showError('biblivre3' + type);
 		}
 	});
 };

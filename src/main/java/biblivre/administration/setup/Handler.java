@@ -138,60 +138,6 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    public void uploadBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-
-        boolean success = false;
-
-        OutputStream os = null;
-
-        try {
-            State.start();
-            State.writeLog(
-                    request.getLocalizedText("administration.setup.biblivre3restore.log_header"));
-
-            MemoryFile file = request.getFile("biblivre3backup");
-            File gzip = new File(FileIOUtils.createTempDir(), file.getName());
-            os = new FileOutputStream(gzip);
-
-            file.copy(os);
-
-            os.close();
-
-            success = restoreBO.restoreBiblivre3(gzip);
-
-            FileUtils.deleteQuietly(gzip);
-
-            if (success) {
-                State.finish();
-            } else {
-                State.cancel();
-            }
-        } catch (ValidationException e) {
-            this.setMessage(e);
-            State.writeLog(request.getLocalizedText(e.getMessage()));
-
-            if (e.getCause() != null) {
-                State.writeLog(ExceptionUtils.getStackTrace(e.getCause()));
-            }
-
-            State.cancel();
-        } catch (Exception e) {
-            this.setMessage(e);
-            State.writeLog(ExceptionUtils.getStackTrace(e));
-            State.cancel();
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        put("success", success);
-    }
-
     private Map<String, String> breakString(String string) {
         Map<String, String> ret = new HashMap<>();
 

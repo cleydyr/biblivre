@@ -760,16 +760,7 @@ public class AuthorizationPoints implements Serializable {
                 "upload_biblivre4",
                 AuthorizationPointTypes.ADMINISTRATION_RESTORE);
         this.addAuthPoint(
-                "administration.setup",
-                "upload_biblivre3",
-                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-        this.addAuthPoint(
                 "administration.setup", "restore", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-        this.addAuthPoint(
-                "administration.setup",
-                "import_biblivre3",
-                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-
         this.addAuthPoint(
                 "administration.customization",
                 "save_brief_formats",

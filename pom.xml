@@ -35,7 +35,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.8</jdk.version>
+		<jdk.version>17</jdk.version>
 		<debug>false</debug>
 		<dockerfile.version>1.4.1</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
