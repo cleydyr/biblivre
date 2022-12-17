@@ -2,8 +2,14 @@ package biblivre.database.util;
 
 import biblivre.database.util.exception.UncoveredStateException;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-public class PostgreSQLStatementIterable implements Iterator<String> {
+public class PostgreSQLStatementIterable implements Iterable<String> {
+    private static final String COPY_PREFIX = "COPY ";
+    private static final char DOT = '.';
+    private static final char BACKSLASH = '\\';
     private static final char SPACE = ' ';
     private static final char DASH = '-';
     private static final char NEW_LINE = '\n';
@@ -14,12 +20,49 @@ public class PostgreSQLStatementIterable implements Iterator<String> {
 
     private Iterator<Character> sourceIterator;
 
+    private String dollarQuoteStringTag;
+
+    private StringBuilder dollarQuoteStringTagSB;
+
+    private String next;
+
     public PostgreSQLStatementIterable(Iterator<Character> sourceIterator) {
         this.sourceIterator = sourceIterator;
+
+        this.dollarQuoteStringTagSB = new StringBuilder();
+
+        this.next = loadNext();
     }
 
     @Override
-    public String next() {
+    public Iterator<String> iterator() {
+        return new Iterator<String>() {
+
+            @Override
+            public String next() {
+                return PostgreSQLStatementIterable.this.next();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return PostgreSQLStatementIterable.this.hasNext();
+            }
+        };
+    }
+
+    public Stream<String> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
+    private String next() {
+        String currentNext = this.next;
+
+        this.next = loadNext();
+
+        return currentNext;
+    }
+
+    private String loadNext() {
         State currentState = State.WAITING_SEMICOLON;
 
         StringBuilder sb = new StringBuilder();
@@ -30,10 +73,24 @@ public class PostgreSQLStatementIterable implements Iterator<String> {
             char c = sourceIterator.next();
 
             if (c == SEMICOLON && currentState == State.WAITING_SEMICOLON) {
-                break;
+                sb.append(SEMICOLON);
+
+                if (sb.indexOf(COPY_PREFIX) != 0) {
+                    break;
+                }
+
+                currentState = State.ON_COPY;
+
+                continue;
             }
 
             State newState = nextState(c, currentState);
+
+            if (currentState == State.CLOSING_COPY_DOT && newState == State.WAITING_SEMICOLON) {
+                sb.append(c);
+
+                break;
+            }
 
             if (newState == State.OPENING_DASH) {
                 // don't add it yet
@@ -60,12 +117,31 @@ public class PostgreSQLStatementIterable implements Iterator<String> {
                 continue;
             }
 
+            if (currentState == State.OPENING_DOLLAR_QUOTE_TAG) {
+                if (newState == State.DOLLAR_QUOTE_STRING) {
+                    dollarQuoteStringTag = dollarQuoteStringTagSB.toString();
+
+                    dollarQuoteStringTagSB = new StringBuilder();
+                } else {
+                    dollarQuoteStringTagSB.append(c);
+                }
+            }
+
+            if (currentState == State.CLOSING_DOLLAR_QUOTE_TAG) {
+                if (newState == State.CLOSING_DOLLAR_QUOTE_TAG) {
+                    dollarQuoteStringTagSB.append(c);
+                } else {
+                    dollarQuoteStringTagSB = new StringBuilder();
+                }
+            }
+
             currentState = newState;
 
-            sb.append(
-                    (Character.isWhitespace(c) && currentState != State.DOLLAR_QUOTE_STRING)
-                            ? SPACE
-                            : c);
+            if (sb.length() == 0 && Character.isWhitespace(c)) {
+                continue;
+            }
+
+            sb.append((Character.isWhitespace(c) && !isKeepWhitespace(currentState)) ? SPACE : c);
 
             lastChar = c;
         }
@@ -73,29 +149,15 @@ public class PostgreSQLStatementIterable implements Iterator<String> {
         return sb.toString();
     }
 
-    @Override
-    public boolean hasNext() {
-        return sourceIterator.hasNext();
+    private boolean isKeepWhitespace(State state) {
+        return state == State.DOLLAR_QUOTE_STRING || state == State.ON_COPY;
     }
 
-    enum State {
-        WHITESPACE,
-
-        OPENING_DASH,
-        COMMENT,
-
-        OPENING_DOLLAR_SIGN,
-        DOLLAR_QUOTE_STRING,
-        CLOSING_DOLLAR,
-
-        SINGLE_QUOTE_STRING,
-
-        DOUBLE_QUOTE_STRING,
-
-        WAITING_SEMICOLON,
+    private boolean hasNext() {
+        return !this.next.isBlank();
     }
 
-    private static State nextState(char c, State currentState) {
+    private State nextState(char c, State currentState) {
         switch (currentState) {
             case WHITESPACE:
             case WAITING_SEMICOLON:
@@ -112,7 +174,7 @@ public class PostgreSQLStatementIterable implements Iterator<String> {
                 }
 
                 if (c == DOLLAR_SIGN) {
-                    return State.OPENING_DOLLAR_SIGN;
+                    return State.OPENING_DOLLAR_QUOTE_TAG;
                 }
 
                 if (Character.isWhitespace(c)) {
@@ -134,7 +196,7 @@ public class PostgreSQLStatementIterable implements Iterator<String> {
                 }
 
                 if (c == DOLLAR_SIGN) {
-                    return State.OPENING_DOLLAR_SIGN;
+                    return State.OPENING_DOLLAR_QUOTE_TAG;
                 }
 
                 if (Character.isWhitespace(c)) {
@@ -148,58 +210,86 @@ public class PostgreSQLStatementIterable implements Iterator<String> {
                 }
 
                 return State.COMMENT;
-            case OPENING_DOLLAR_SIGN:
+            case OPENING_DOLLAR_QUOTE_TAG:
                 if (c == DOLLAR_SIGN) {
                     return State.DOLLAR_QUOTE_STRING;
                 }
 
-                if (c == DASH) {
-                    return State.OPENING_DASH;
-                }
-
-                if (c == SINGLE_QUOTE) {
-                    return State.SINGLE_QUOTE_STRING;
-                }
-
-                if (c == DOUBLE_QUOTE) {
-                    return State.DOUBLE_QUOTE_STRING;
-                }
-
-                if (Character.isWhitespace(c)) {
-                    return State.WHITESPACE;
-                }
-
-                return State.WAITING_SEMICOLON;
+                return State.OPENING_DOLLAR_QUOTE_TAG;
             case DOLLAR_QUOTE_STRING:
                 if (c == DOLLAR_SIGN) {
-                    return State.CLOSING_DOLLAR;
+                    return State.CLOSING_DOLLAR_QUOTE_TAG;
                 }
 
                 return State.DOLLAR_QUOTE_STRING;
-            case CLOSING_DOLLAR:
-                if (c == DOLLAR_SIGN) {
+            case CLOSING_DOLLAR_QUOTE_TAG:
+                String provisionalDollaQuoteStringTag = dollarQuoteStringTagSB.toString();
+
+                if (c == DOLLAR_SIGN
+                        && Objects.equals(dollarQuoteStringTag, provisionalDollaQuoteStringTag)) {
                     return State.WAITING_SEMICOLON;
                 }
 
-                return State.DOLLAR_QUOTE_STRING;
+                if (dollarQuoteStringTag != null
+                        && dollarQuoteStringTag.startsWith(provisionalDollaQuoteStringTag + c)) {
+                    return State.CLOSING_DOLLAR_QUOTE_TAG;
+                }
 
+                return State.DOLLAR_QUOTE_STRING;
             case SINGLE_QUOTE_STRING:
                 if (c != SINGLE_QUOTE) {
                     return State.SINGLE_QUOTE_STRING;
                 }
 
                 return State.WAITING_SEMICOLON;
-
             case DOUBLE_QUOTE_STRING:
                 if (c != DOUBLE_QUOTE) {
                     return State.DOUBLE_QUOTE_STRING;
                 }
 
                 return State.WAITING_SEMICOLON;
+            case ON_COPY:
+                if (c == BACKSLASH) {
+                    return State.CLOSING_COPY_BACKSLASH;
+                }
 
+                return State.ON_COPY;
+            case CLOSING_COPY_BACKSLASH:
+                if (c == DOT) {
+                    return State.CLOSING_COPY_DOT;
+                }
+
+                return State.ON_COPY;
+            case CLOSING_COPY_DOT:
+                if (c == NEW_LINE) {
+                    return State.WAITING_SEMICOLON;
+                }
+
+                return State.ON_COPY;
             default:
                 throw new UncoveredStateException(
                         "State from %s receving %c is not covered".formatted(currentState, c));
         }
+    }
+
+    enum State {
+        WHITESPACE,
+
+        OPENING_DASH,
+        COMMENT,
+
+        OPENING_DOLLAR_QUOTE_TAG,
+        DOLLAR_QUOTE_STRING,
+        CLOSING_DOLLAR_QUOTE_TAG,
+
+        SINGLE_QUOTE_STRING,
+
+        DOUBLE_QUOTE_STRING,
+
+        WAITING_SEMICOLON,
+
+        ON_COPY,
+        CLOSING_COPY_BACKSLASH,
+        CLOSING_COPY_DOT
     }
 }

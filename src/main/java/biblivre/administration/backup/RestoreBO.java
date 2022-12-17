@@ -40,6 +40,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,6 +63,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RestoreBO extends AbstractBO {
+    private static final String[] FILTERED_OUT_STATEMENT_PREFIXES =
+            new String[] {"CREATE FUNCTION", "ALTER FUNCTION", "CREATE TRIGGER"};
+
     private static final class BufferedReaderIterator implements Iterator<Character> {
         private final BufferedReader bufferedReader;
         int read;
@@ -209,15 +213,20 @@ public class RestoreBO extends AbstractBO {
             PostgreSQLStatementIterable postgreSQLStatementIterable =
                     new PostgreSQLStatementIterable(new BufferedReaderIterator(bufferedReader));
 
-            postgreSQLStatementIterable.forEachRemaining(
-                    statement -> {
-                        _writeLine(bw, statement);
-                        State.incrementCurrentStep();
-                    });
-            ;
+            postgreSQLStatementIterable.stream()
+                    .filter(RestoreBO::notFunctionOrTriggerRelated)
+                    .forEach(
+                            statement -> {
+                                _writeLine(bw, statement);
+                                State.incrementCurrentStep();
+                            });
         }
 
         bw.flush();
+    }
+
+    private static boolean notFunctionOrTriggerRelated(String statement) {
+        return !Arrays.stream(FILTERED_OUT_STATEMENT_PREFIXES).anyMatch(statement::startsWith);
     }
 
     @Autowired
@@ -719,8 +728,6 @@ public class RestoreBO extends AbstractBO {
     private static void _writeLine(BufferedWriter bw, String newLine) {
         try {
             bw.write(newLine);
-
-            System.out.println(newLine);
 
             bw.newLine();
         } catch (IOException ioe) {

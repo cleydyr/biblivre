@@ -271,7 +271,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Bean
     public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
-        return createFilterRegistration(SchemaFilter.class, 1, DispatcherType.REQUEST, DispatcherType.ERROR);
+        return createFilterRegistration(
+                SchemaFilter.class, 1, DispatcherType.REQUEST, DispatcherType.ERROR);
     }
 
     @Bean
