@@ -20,8 +20,11 @@
 package biblivre.core.translations;
 
 import biblivre.core.AbstractDAO;
+import biblivre.core.PreparedStatementUtil;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
-import java.sql.CallableStatement;
+import biblivre.core.function.UnsafeFunction;
+import biblivre.core.utils.StringPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,22 +54,30 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-
-            sql.append(
-                    "SELECT K.language, K.key, coalesce(T.text, '') as text, T.created, T.created_by, T.modified, T.modified_by, T.user_created FROM ( ");
-            sql.append(
-                    "SELECT DISTINCT B.language, A.key FROM (SELECT DISTINCT key FROM translations UNION SELECT DISTINCT key FROM global.translations) A ");
-            sql.append(
-                    "CROSS JOIN (SELECT DISTINCT language FROM translations UNION SELECT DISTINCT language FROM global.translations) B ");
-            sql.append(
-                    ") K LEFT JOIN translations T ON T.key = K.key AND T.language = K.language ");
-
-            if (StringUtils.isNotBlank(language)) {
-                sql.append("WHERE K.language = ? ");
-            }
-
-            sql.append("ORDER BY K.language, K.key;");
+            String sql =
+                    """
+                    SELECT K.language, K.key, coalesce(T.text, '') as text, T.created, T.created_by, T.modified, T.modified_by, T.user_created
+                    FROM (
+                        SELECT DISTINCT B.language, A.key
+                        FROM (
+                            SELECT DISTINCT key
+                            FROM translations
+                                UNION SELECT DISTINCT key FROM global.translations
+                        ) A
+                        CROSS JOIN (
+                            SELECT DISTINCT language
+                                FROM translations
+                                    UNION SELECT DISTINCT language FROM global.translations
+                        ) B
+                    ) K
+                    LEFT JOIN translations T ON T.key = K.key AND T.language = K.language
+                    %s
+                    ORDER BY K.language, K.key
+                    """
+                            .formatted(
+                                    StringUtils.isNotBlank(language)
+                                            ? "WHERE K.language = ? "
+                                            : StringPool.BLANK);
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
 
@@ -99,41 +110,34 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
 
     @Override
     public boolean save(
-            Map<String, Map<String, String>> translations,
-            Map<String, Map<String, String>> removeTranslations,
+            Map<String, Map<String, String>> translationsToAdd,
+            Map<String, Map<String, String>> translationsToRemove,
             int loggedUser) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = getConnection()) {
             con.setAutoCommit(false);
 
-            if (translations != null) {
-                CallableStatement function =
-                        con.prepareCall("{ call global.update_translation(?, ?, ?, ?) }");
-
-                for (Entry<String, Map<String, String>> entry : translations.entrySet()) {
+            if (translationsToAdd != null) {
+                for (Entry<String, Map<String, String>> entry : translationsToAdd.entrySet()) {
                     String language = entry.getKey();
 
                     Map<String, String> translation = entry.getValue();
 
                     for (Entry<String, String> translationEntry : translation.entrySet()) {
-                        function.setString(1, language);
-                        function.setString(2, translationEntry.getKey());
-                        function.setString(3, translationEntry.getValue());
-                        function.setInt(4, loggedUser);
-                        function.addBatch();
+                        updateTranslation(
+                                language,
+                                translationEntry.getKey(),
+                                translationEntry.getValue(),
+                                loggedUser,
+                                con::prepareStatement);
                     }
                 }
-
-                function.executeBatch();
-                function.close();
             }
 
-            if (removeTranslations != null) {
+            if (translationsToRemove != null) {
                 String sql = "DELETE FROM translations WHERE language = ? AND key = ?; ";
                 PreparedStatement pst = con.prepareStatement(sql);
 
-                for (Entry<String, Map<String, String>> entry : removeTranslations.entrySet()) {
+                for (Entry<String, Map<String, String>> entry : translationsToRemove.entrySet()) {
                     String language = entry.getKey();
 
                     Map<String, String> translation = entry.getValue();
@@ -152,9 +156,134 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
+    }
+
+    private void updateTranslation(
+            String language,
+            String key,
+            String value,
+            int loggedUser,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String globalValue = getGlobalValue(language, key, preparedStatementGenerator);
+
+        if (value != null && value.equals(globalValue)) {
+            deleteFrom(language, key, preparedStatementGenerator);
+
+            return;
+        }
+
+        String currentValue = getValue(language, key, preparedStatementGenerator);
+
+        if (value != null && value.equals(currentValue)) {
+            return;
+        }
+
+        boolean userCreated = globalValue == null && !SchemaThreadLocal.isGlobalSchema();
+
+        if (currentValue == null) {
+            insertTranslation(
+                    language, key, value, loggedUser, userCreated, preparedStatementGenerator);
+        } else {
+            updateTranslation(
+                    language, key, value, loggedUser, userCreated, preparedStatementGenerator);
+        }
+    }
+
+    private void updateTranslation(
+            String language,
+            String key,
+            String value,
+            int loggedUser,
+            boolean userCreated,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String sql =
+                "UPDATE translations SET text = ?, modified = now(), modified_by = ?, WHERE language = ? and key = ?";
+
+        try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
+
+            PreparedStatementUtil.setAllParameters(
+                    preparedStatement, value, loggedUser, language, key);
+
+            preparedStatement.execute();
+        }
+    }
+
+    private void insertTranslation(
+            String language,
+            String key,
+            String value,
+            int loggedUser,
+            boolean userCreated,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String sql =
+                "INSERT INTO translations (language, key, text, created_by, modified_by, user_created) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
+
+            PreparedStatementUtil.setAllParameters(
+                    preparedStatement, language, key, value, loggedUser, loggedUser, userCreated);
+
+            preparedStatement.execute();
+        }
+    }
+
+    private String getGlobalValue(
+            String language,
+            String key,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        return getValue(language, key, true, preparedStatementGenerator);
+    }
+
+    private String getValue(
+            String language,
+            String key,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        return getValue(language, key, false, preparedStatementGenerator);
+    }
+
+    private void deleteFrom(
+            String language,
+            String key,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String sql = "DELETE FROM translations WHERE language = ? AND key = ?";
+
+        try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
+
+            PreparedStatementUtil.setAllParameters(preparedStatement, language, key);
+
+            preparedStatement.execute();
+        }
+    }
+
+    private String getValue(
+            String language,
+            String key,
+            boolean isGlobal,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String sql =
+                "SELECT text FROM %stranslations WHERE language = ? AND key = ?"
+                        .formatted(isGlobal ? "global." : StringPool.BLANK);
+
+        try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
+
+            PreparedStatementUtil.setAllParameters(preparedStatement, language, key);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString(1);
+            }
+        }
+
+        return null;
     }
 
     private TranslationDTO populateDTO(ResultSet rs) throws SQLException {
