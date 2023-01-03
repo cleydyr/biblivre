@@ -3,7 +3,6 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import java.util.Set;
 public interface RecordDAO {
 
     boolean save(RecordDTO dto);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     boolean update(RecordDTO dto);
 

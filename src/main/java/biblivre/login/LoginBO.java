@@ -22,9 +22,7 @@ package biblivre.login;
 import biblivre.administration.permissions.PermissionBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.utils.TextUtils;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,10 +60,6 @@ public class LoginBO extends AbstractBO {
 
     public boolean save(LoginDTO dto, UserDTO udto) {
         return this.loginDAO.save(dto, udto);
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.loginDAO.saveFromBiblivre3(dtoList);
     }
 
     @Autowired

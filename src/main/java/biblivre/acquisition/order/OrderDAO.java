@@ -1,6 +1,5 @@
 package biblivre.acquisition.order;
 
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import java.util.List;
 
@@ -9,8 +8,6 @@ public interface OrderDAO {
     OrderDTO get(Integer orderId);
 
     Integer save(OrderDTO dto);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     List<OrderDTO> listBuyOrders(String status, int offset, int limit);
 

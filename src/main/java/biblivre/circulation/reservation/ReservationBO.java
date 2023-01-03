@@ -32,7 +32,6 @@ import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.exceptions.ValidationException;
@@ -258,10 +257,6 @@ public class ReservationBO extends AbstractBO {
 
     public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
         return this.reservationDAO.getReservationsMap(recordIds);
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.reservationDAO.saveFromBiblivre3(dtoList);
     }
 
     @Autowired

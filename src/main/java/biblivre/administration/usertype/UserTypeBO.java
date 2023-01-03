@@ -23,7 +23,6 @@ import biblivre.circulation.user.UserDAO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserSearchDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
 import java.util.List;
@@ -75,10 +74,6 @@ public class UserTypeBO extends AbstractBO {
         }
 
         return this.userTypeDAO.delete(id);
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.userTypeDAO.saveFromBiblivre3(dtoList);
     }
 
     @Autowired

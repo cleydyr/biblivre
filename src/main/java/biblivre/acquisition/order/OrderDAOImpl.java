@@ -20,7 +20,6 @@
 package biblivre.acquisition.order;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
@@ -116,68 +115,6 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
         } finally {
             this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append(" INSERT INTO orders (quotation_id, created, ");
-            sql.append(" created_by, info, status, invoice_number, ");
-            sql.append(" receipt_date, total_value, delivered_quantity, ");
-            sql.append(" terms_of_payment, deadline_date, id) ");
-            sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                OrderDTO dto = (OrderDTO) abstractDto;
-                pst.setInt(1, dto.getQuotationId());
-                pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
-                pst.setInt(3, dto.getCreatedBy());
-                pst.setString(4, dto.getInfo());
-                pst.setString(5, dto.getStatus());
-                pst.setString(6, dto.getInvoiceNumber());
-
-                Date receiptDate = dto.getReceiptDate();
-                if (receiptDate != null) {
-                    pst.setDate(7, new java.sql.Date(receiptDate.getTime()));
-                } else {
-                    pst.setNull(7, java.sql.Types.DATE);
-                }
-
-                Float totalValue = dto.getTotalValue();
-                if (totalValue != null) {
-                    pst.setFloat(8, totalValue);
-                } else {
-                    pst.setNull(8, java.sql.Types.FLOAT);
-                }
-
-                Integer deliveryQuantity = dto.getDeliveredQuantity();
-                if (deliveryQuantity != null) {
-                    pst.setInt(9, deliveryQuantity);
-                } else {
-                    pst.setNull(9, java.sql.Types.INTEGER);
-                }
-
-                pst.setString(10, dto.getTermsOfPayment());
-                pst.setDate(11, new java.sql.Date(dto.getDeadlineDate().getTime()));
-                pst.setInt(12, dto.getId());
-                pst.addBatch();
-            }
-
-            pst.executeBatch();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-
-        return true;
     }
 
     @Override

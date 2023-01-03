@@ -22,7 +22,6 @@ package biblivre.circulation.reservation;
 import biblivre.cataloging.RecordDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import java.sql.Connection;
@@ -268,38 +267,6 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         } finally {
             this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO reservations (record_id, user_id, expires, created_by, id) ");
-            sql.append("VALUES (?, ?, ?, ?, ?) ");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                ReservationDTO dto = (ReservationDTO) abstractDto;
-                pst.setInt(1, dto.getRecordId());
-                pst.setInt(2, dto.getUserId());
-                pst.setTimestamp(3, CalendarUtils.toSqlTimestamp(dto.getExpires()));
-                pst.setInt(4, dto.getCreatedBy());
-                pst.setInt(5, dto.getId());
-                pst.addBatch();
-            }
-
-            pst.executeBatch();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     private ReservationDTO populateDTO(ResultSet rs) throws SQLException {

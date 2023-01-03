@@ -1,8 +1,6 @@
 package biblivre.circulation.user;
 
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,8 +11,6 @@ public interface UserDAO {
     DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset);
 
     boolean save(UserDTO user);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     boolean delete(UserDTO user);
 

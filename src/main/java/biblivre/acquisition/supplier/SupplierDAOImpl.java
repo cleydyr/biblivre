@@ -20,14 +20,12 @@
 package biblivre.acquisition.supplier;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
@@ -82,66 +80,6 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
             pstInsert.setInt(24, dto.getCreatedBy());
 
             pstInsert.executeUpdate();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO suppliers ( ");
-            sql.append("trademark, supplier_name, supplier_number, ");
-            sql.append("vat_registration_number, address, address_number, ");
-            sql.append("address_complement, area, city, state, country, ");
-            sql.append("zip_code, telephone_1, telephone_2, telephone_3, ");
-            sql.append("telephone_4, contact_1, contact_2, contact_3, ");
-            sql.append("contact_4, info, url, email, created_by, id) ");
-            sql.append("VALUES (");
-            sql.append(StringUtils.repeat("?", ", ", 25));
-            sql.append(");");
-
-            PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                SupplierDTO dto = (SupplierDTO) abstractDto;
-                pstInsert.setString(1, dto.getTrademark());
-                pstInsert.setString(2, dto.getName());
-                pstInsert.setString(3, dto.getSupplierNumber());
-                pstInsert.setString(4, dto.getVatRegistrationNumber());
-                pstInsert.setString(5, dto.getAddress());
-                pstInsert.setString(6, dto.getAddressNumber());
-                pstInsert.setString(7, dto.getComplement());
-                pstInsert.setString(8, dto.getArea());
-                pstInsert.setString(9, dto.getCity());
-                pstInsert.setString(10, dto.getState());
-                pstInsert.setString(11, dto.getCountry());
-                pstInsert.setString(12, dto.getZipCode());
-                pstInsert.setString(13, dto.getTelephone1());
-                pstInsert.setString(14, dto.getTelephone2());
-                pstInsert.setString(15, dto.getTelephone3());
-                pstInsert.setString(16, dto.getTelephone4());
-                pstInsert.setString(17, dto.getContact1());
-                pstInsert.setString(18, dto.getContact2());
-                pstInsert.setString(19, dto.getContact3());
-                pstInsert.setString(20, dto.getContact4());
-                pstInsert.setString(21, dto.getInfo());
-                pstInsert.setString(22, dto.getUrl());
-                pstInsert.setString(23, dto.getEmail());
-                pstInsert.setInt(24, dto.getCreatedBy());
-                pstInsert.setInt(25, dto.getId());
-                pstInsert.addBatch();
-            }
-
-            pstInsert.executeBatch();
 
         } catch (Exception e) {
             throw new DAOException(e);

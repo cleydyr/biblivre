@@ -20,7 +20,6 @@
 package biblivre.administration.usertype;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
@@ -205,43 +204,6 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
         } finally {
             closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append(
-                    "INSERT INTO users_types (name, description, lending_limit, reservation_limit, ");
-            sql.append(
-                    "lending_time_limit, reservation_time_limit, fine_value, created_by, id) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?); ");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                UserTypeDTO dto = (UserTypeDTO) abstractDto;
-                pst.setString(1, dto.getName());
-                pst.setString(2, dto.getDescription());
-                pst.setInt(3, dto.getLendingLimit());
-                pst.setInt(4, dto.getReservationLimit());
-                pst.setInt(5, dto.getLendingTimeLimit());
-                pst.setInt(6, dto.getReservationTimeLimit());
-                pst.setInt(7, dto.getCreatedBy());
-                pst.setInt(8, dto.getId());
-                pst.addBatch();
-            }
-
-            pst.executeBatch();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            closeConnection(con);
-        }
-        return true;
     }
 
     @Override

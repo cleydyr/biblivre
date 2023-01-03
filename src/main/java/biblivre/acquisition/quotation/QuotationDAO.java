@@ -1,14 +1,11 @@
 package biblivre.acquisition.quotation;
 
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import java.util.List;
 
 public interface QuotationDAO {
 
     Integer save(QuotationDTO dto);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     boolean update(QuotationDTO dto);
 

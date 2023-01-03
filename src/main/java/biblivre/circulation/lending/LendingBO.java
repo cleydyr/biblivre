@@ -32,7 +32,6 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserStatus;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.PrinterType;
@@ -777,10 +776,6 @@ public class LendingBO {
         templateEngine.process("receipt", context, writer);
 
         return writer.toString();
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.lendingDAO.saveFromBiblivre3(dtoList);
     }
 
     public LendingDTO getCurrentLending(HoldingDTO holding) {

@@ -28,7 +28,6 @@ import biblivre.cataloging.labels.LabelDTO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.ITextPimacoTagSheetAdapter;
 import biblivre.core.LabelPrintDTO;
@@ -147,10 +146,6 @@ public class HoldingBO extends RecordBO {
             holding.setShelfLocation(reader.getShelfLocation());
         }
         return searchResults;
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.holdingDAO.saveFromBiblivre3(dtoList);
     }
 
     public RecordDTO get(int id) {

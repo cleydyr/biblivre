@@ -2,7 +2,6 @@ package biblivre.circulation.reservation;
 
 import biblivre.cataloging.RecordDTO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDTO;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,8 +25,6 @@ public interface ReservationDAO {
     boolean delete(Integer userId, Integer recordId);
 
     int insert(ReservationDTO dto);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds);
 }

@@ -20,20 +20,17 @@
 package biblivre.circulation.user;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
@@ -341,59 +338,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } finally {
             this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
-
-            StringBuilder sql = new StringBuilder();
-            sql.append(
-                    "INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii) ");
-            sql.append("VALUES (?, ?, ?, ?, ?, ?, ?);");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            CallableStatement function =
-                    con.prepareCall("{ call global.update_user_value(?, ?, ?, ?) }");
-
-            for (AbstractDTO abstractDto : dtoList) {
-                UserDTO user = (UserDTO) abstractDto;
-                pst.setInt(1, user.getId());
-                pst.setString(2, user.getName());
-                pst.setInt(3, user.getType());
-                pst.setString(4, user.getPhotoId());
-                pst.setString(5, user.getStatus().toString());
-                pst.setInt(6, user.getCreatedBy());
-                pst.setString(7, TextUtils.removeDiacriticals(user.getName()));
-
-                pst.addBatch();
-
-                for (String key : user.getFields().keySet()) {
-                    String value = user.getFields().get(key);
-                    function.setInt(1, user.getId());
-                    function.setString(2, key);
-                    function.setString(3, value);
-                    function.setString(4, TextUtils.removeDiacriticals(value));
-                    function.addBatch();
-                }
-            }
-
-            pst.executeBatch();
-            function.executeBatch();
-            function.close();
-
-            con.commit();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     @Override

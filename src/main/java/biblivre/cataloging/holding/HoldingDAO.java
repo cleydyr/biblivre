@@ -5,7 +5,6 @@ import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.login.LoginDTO;
 import java.util.List;
@@ -23,8 +22,6 @@ public interface HoldingDAO extends RecordDAO {
     List<RecordDTO> list(int offset, int limit);
 
     boolean save(RecordDTO dto);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     boolean updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto);
 

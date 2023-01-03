@@ -28,7 +28,6 @@ import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.utils.CalendarUtils;
 import java.util.Date;
 import java.util.List;
@@ -111,10 +110,6 @@ public class LendingFineBO extends AbstractBO {
     public Integer calculateLateDays(LendingDTO lending) {
         Date expectedReturnDate = lending.getExpectedReturnDate();
         return CalendarUtils.calculateDateDifference(expectedReturnDate, new Date());
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.lendingFineDAO.saveFromBiblivre3(dtoList);
     }
 
     @Autowired

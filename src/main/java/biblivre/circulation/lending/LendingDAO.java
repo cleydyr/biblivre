@@ -2,7 +2,6 @@ package biblivre.circulation.lending;
 
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDTO;
 import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
@@ -38,8 +37,6 @@ public interface LendingDAO {
     boolean doLend(LendingDTO lending);
 
     boolean doLend(LendingDTO lending, Connection con);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     boolean doReturn(int lendingId);
 

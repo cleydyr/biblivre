@@ -25,9 +25,7 @@ import biblivre.administration.accesscards.AccessCardStatus;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.ValidationException;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,10 +153,6 @@ public class AccessControlBO extends AbstractBO {
 
     public AccessControlDTO getByUserId(Integer userId) {
         return this.accessControlDAO.getByUserId(userId);
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.accessControlDAO.saveFromBiblivre3(dtoList);
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(AccessControlBO.class);

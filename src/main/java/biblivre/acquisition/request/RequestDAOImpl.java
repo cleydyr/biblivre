@@ -20,14 +20,12 @@
 package biblivre.acquisition.request;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
@@ -69,48 +67,6 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         } finally {
             this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO requests ( ");
-            sql.append("requester, author, item_title, item_subtitle, ");
-            sql.append("edition_number, publisher, info, status, quantity, created_by, id) ");
-            sql.append("VALUES (");
-            sql.append(StringUtils.repeat("?", ", ", 11));
-            sql.append(");");
-
-            PreparedStatement pstInsert = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                RequestDTO dto = (RequestDTO) abstractDto;
-                pstInsert.setString(1, dto.getRequester());
-                pstInsert.setString(2, dto.getAuthor());
-                pstInsert.setString(3, dto.getTitle());
-                pstInsert.setString(4, dto.getSubtitle());
-                pstInsert.setString(5, dto.getEditionNumber());
-                pstInsert.setString(6, dto.getPublisher());
-                pstInsert.setString(7, dto.getInfo());
-                pstInsert.setString(8, dto.getStatus().toString());
-                pstInsert.setInt(9, dto.getQuantity());
-                pstInsert.setInt(10, dto.getCreatedBy());
-                pstInsert.setInt(11, dto.getId());
-                pstInsert.addBatch();
-            }
-
-            pstInsert.executeBatch();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     @Override

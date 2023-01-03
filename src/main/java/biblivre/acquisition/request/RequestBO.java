@@ -20,9 +20,7 @@
 package biblivre.acquisition.request;
 
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -52,10 +50,6 @@ public class RequestBO extends AbstractBO {
 
     public DTOCollection<RequestDTO> search(String value, int limit, int offset) {
         return this.requestDAO.search(value, limit, offset);
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.requestDAO.saveFromBiblivre3(dtoList);
     }
 
     @Autowired
