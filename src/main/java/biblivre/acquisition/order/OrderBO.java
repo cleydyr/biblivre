@@ -60,11 +60,11 @@ public class OrderBO extends AbstractBO {
     }
 
     public DTOCollection<OrderDTO> list() {
-        return this.search(null, Integer.MAX_VALUE, 0);
+        return this.search(null, 0, Integer.MAX_VALUE);
     }
 
-    public DTOCollection<OrderDTO> search(String value, int limit, int offset) {
-        DTOCollection<OrderDTO> list = this.orderDAO.search(value, limit, offset);
+    public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
+        DTOCollection<OrderDTO> list = this.orderDAO.search(value, offset, limit);
 
         for (OrderDTO dto : list) {
             this.populateDTO(dto);
