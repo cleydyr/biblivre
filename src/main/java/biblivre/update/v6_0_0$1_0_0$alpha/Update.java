@@ -2,8 +2,8 @@ package biblivre.update.v6_0_0$1_0_0$alpha;
 
 import biblivre.core.translations.TranslationBO;
 import biblivre.update.UpdateService;
+import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +14,11 @@ public class Update implements UpdateService {
 
     private TranslationBO translationBO;
 
-    public void doUpdate(Connection connection) throws SQLException {
+    public void doUpdate(Connection connection) throws UpdateException {
         _addTranslations(connection);
     }
 
-    private void _addTranslations(Connection connection) throws SQLException {
+    private void _addTranslations(Connection connection) throws UpdateException {
         for (Map.Entry<String, Map<String, String>> entry : _TRANSLATIONS.entrySet()) {
             for (Map.Entry<String, String> entry2 : entry.getValue().entrySet()) {
                 String key = entry.getKey();

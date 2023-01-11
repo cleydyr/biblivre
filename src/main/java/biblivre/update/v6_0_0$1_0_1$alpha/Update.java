@@ -2,6 +2,7 @@ package biblivre.update.v6_0_0$1_0_1$alpha;
 
 import biblivre.core.translations.TranslationBO;
 import biblivre.update.UpdateService;
+import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,12 +16,12 @@ public class Update implements UpdateService {
 
     private TranslationBO translationBO;
 
-    public void doUpdate(Connection connection) throws SQLException {
+    public void doUpdate(Connection connection) throws UpdateException {
         _addTranslations();
         _addConfiguration(connection);
     }
 
-    private void _addTranslations() throws SQLException {
+    private void _addTranslations() {
         for (Map.Entry<String, Map<String, String>> entry : _TRANSLATIONS.entrySet()) {
             for (Map.Entry<String, String> entry2 : entry.getValue().entrySet()) {
                 String key = entry.getKey();
@@ -37,9 +38,8 @@ public class Update implements UpdateService {
     private void _addConfiguration(Connection connection) {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_CONFIG_SQL)) {
             statement.execute();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (SQLException sqlException) {
+            throw new UpdateException("can't add configuration", sqlException);
         }
     }
 
