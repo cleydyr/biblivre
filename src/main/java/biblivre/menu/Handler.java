@@ -110,6 +110,8 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("holdingCachefilename", tabFieldsBO.getFormFields(RecordType.HOLDING));
 
+        request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
+
         setJspURL("/jsp/search/bibliographic.jsp");
     }
 
