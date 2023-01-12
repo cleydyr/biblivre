@@ -36,7 +36,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.administration.backup.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private BackupBO backupBO;
     private SchemaBO schemaBO;

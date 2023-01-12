@@ -51,6 +51,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -524,20 +525,19 @@ public class RestoreBO extends AbstractBO {
 
         logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-        try {
+        try (Stream<String> lines = Files.lines(restore.toPath())) {
             // Since PostgreSQL uses global OIDs for LargeObjects, we can't simply
             // restore a digital_media backup. To prevent oid conflicts, we will create
             // a new oid, replacing the old one.
 
             Map<Long, Long> oidMap = new HashMap<>();
 
-            Files.lines(restore.toPath())
-                    .forEach(
-                            line -> {
-                                State.incrementCurrentStep();
+            lines.forEach(
+                    line -> {
+                        State.incrementCurrentStep();
 
-                                _processLOLine(line, oidMap, bw);
-                            });
+                        _processLOLine(line, oidMap, bw);
+                    });
 
             bw.flush();
 

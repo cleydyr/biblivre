@@ -20,18 +20,20 @@
 package biblivre.view.taglibs;
 
 import biblivre.core.utils.Constants;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
-import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LayoutHead extends TagSupport {
     private static final long serialVersionUID = 1L;
 
     private String schema;
+
+    private static final Logger logger = LoggerFactory.getLogger(LayoutHead.class);
 
     public boolean isSchemaSelection() {
         return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
@@ -56,12 +58,8 @@ public class LayoutHead extends TagSupport {
 
         try {
             this.pageContext.include("/jsp/taglib/layout/head/start.jsp");
-        } catch (ServletException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("can't do start tag", e);
         }
 
         return EVAL_BODY_INCLUDE;
@@ -71,12 +69,8 @@ public class LayoutHead extends TagSupport {
     public int doEndTag() throws JspException {
         try {
             this.pageContext.include("/jsp/taglib/layout/head/end.jsp");
-        } catch (ServletException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("can't do end tag", e);
         }
 
         return Tag.EVAL_PAGE;

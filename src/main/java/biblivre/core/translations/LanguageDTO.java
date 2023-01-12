@@ -20,6 +20,7 @@
 package biblivre.core.translations;
 
 import biblivre.core.AbstractDTO;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> {
@@ -50,20 +51,17 @@ public class LanguageDTO extends AbstractDTO implements Comparable<LanguageDTO> 
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
+    public int hashCode() {
+        return Objects.hash(language);
+    }
 
-        if (other == null || !(other instanceof LanguageDTO)) {
-            return false;
-        }
-
-        LanguageDTO otherDto = (LanguageDTO) other;
-
-        return this.language == null
-                ? otherDto.language == null
-                : this.language.equals(otherDto.language);
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        LanguageDTO other = (LanguageDTO) obj;
+        return Objects.equals(language, other.language);
     }
 
     @Override

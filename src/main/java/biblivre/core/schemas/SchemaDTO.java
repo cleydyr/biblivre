@@ -20,6 +20,7 @@
 package biblivre.core.schemas;
 
 import biblivre.core.AbstractDTO;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public class SchemaDTO extends AbstractDTO implements Comparable<SchemaDTO> {
@@ -71,18 +72,17 @@ public class SchemaDTO extends AbstractDTO implements Comparable<SchemaDTO> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
+    public int hashCode() {
+        return Objects.hash(schema);
+    }
 
-        if (other == null || !(other instanceof SchemaDTO)) {
-            return false;
-        }
-
-        SchemaDTO otherDto = (SchemaDTO) other;
-
-        return this.schema == null ? otherDto.schema == null : this.schema.equals(otherDto.schema);
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        SchemaDTO other = (SchemaDTO) obj;
+        return Objects.equals(schema, other.schema);
     }
 
     @Override

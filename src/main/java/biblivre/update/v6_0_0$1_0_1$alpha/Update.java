@@ -11,7 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("6.0.0-1.0.1-alpha")
+@Component
 public class Update implements UpdateService {
 
     private TranslationBO translationBO;

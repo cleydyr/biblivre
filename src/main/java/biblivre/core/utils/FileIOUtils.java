@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -500,7 +501,9 @@ public class FileIOUtils {
     }
 
     public static long countLines(File file) throws IOException {
-        return Files.lines(file.toPath()).count();
+        try (Stream<String> lines = Files.lines(file.toPath())) {
+            return lines.count();
+        }
     }
 
     public static long countFiles(File file) {

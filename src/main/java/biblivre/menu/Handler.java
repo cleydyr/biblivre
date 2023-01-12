@@ -48,7 +48,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.menu.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private SupplierBO supplierBO;

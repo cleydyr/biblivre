@@ -47,7 +47,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.circulation.lending.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private BiblioRecordBO biblioRecordBO;

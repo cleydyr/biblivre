@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.cataloging.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private Map<RecordType, PaginableRecordBO> paginableRecordBOs;
     private IndexingBO indexingBO;

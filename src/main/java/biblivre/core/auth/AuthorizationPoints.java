@@ -62,12 +62,6 @@ public class AuthorizationPoints implements Serializable {
         return AuthorizationPoints.notLoggedSingleSchemaInstance;
     }
 
-    /**
-     * @param schema
-     * @param logged
-     * @param employee
-     * @param permissions
-     */
     public AuthorizationPoints(
             String schema, boolean logged, boolean employee, Collection<String> permissions) {
         this.schema = schema;

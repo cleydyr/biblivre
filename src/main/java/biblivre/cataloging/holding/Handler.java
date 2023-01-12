@@ -37,7 +37,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.cataloging.holding.Handler")
+@Component
 public class Handler extends CatalogingHandler {
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;

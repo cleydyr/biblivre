@@ -26,7 +26,7 @@ import biblivre.marc.MaterialType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.cataloging.vocabulary.Handler")
+@Component
 public class Handler extends PaginableCatalogingHandler {
 
     @Autowired

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import org.springframework.stereotype.Component;
 
-@Component("v6_0_0$1_1_0$alpha")
+@Component
 public class Update implements UpdateService {
 
     public void doUpdate(Connection connection) throws UpdateException {

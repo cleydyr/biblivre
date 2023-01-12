@@ -46,7 +46,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.circulation.user.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private UserBO userBO;
     private LendingBO lendingBO;

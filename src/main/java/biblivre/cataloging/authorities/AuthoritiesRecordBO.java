@@ -29,7 +29,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("authorities")
 public class AuthoritiesRecordBO extends PaginableRecordBO {
     private IndexingDAO indexingDAO;
 

@@ -34,7 +34,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.multi_schema.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private SchemaBO schemaBO;
 

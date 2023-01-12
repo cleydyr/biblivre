@@ -9,7 +9,6 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.marc4j.marc.DataField;
@@ -17,10 +16,10 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public interface IndexingDAO {
-    static final String[] nonfillingCharactersInIndicator1 =
-            new String[] {"130", "630", "730", "740"};
-    static final String[] nonfillingCharactersInIndicator2 =
-            new String[] {"240", "243", "245", "830"};
+    static final List<String> nonfillingCharactersInIndicator1 =
+            List.of("130", "630", "730", "740");
+    static final List<String> nonfillingCharactersInIndicator2 =
+            List.of("240", "243", "245", "830");
 
     Integer countIndexed(RecordType recordType);
 
@@ -137,10 +136,11 @@ public interface IndexingDAO {
                     // Some datafields have nonfillings characters, based on indicator 1 or 2
                     if (!charsToIgnoreSet && sortIndex.getPhraseLength() > 0) {
                         char indicator = '0';
-                        if (ArrayUtils.contains(nonfillingCharactersInIndicator1, datafieldTag)) {
+                        if (nonfillingCharactersInIndicator1.stream()
+                                .anyMatch(datafieldTag::equals)) {
                             indicator = datafield.getIndicator1();
-                        } else if (ArrayUtils.contains(
-                                nonfillingCharactersInIndicator2, datafieldTag)) {
+                        } else if (nonfillingCharactersInIndicator2.stream()
+                                .anyMatch(datafieldTag::equals)) {
                             indicator = datafield.getIndicator2();
                         }
 

@@ -34,7 +34,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.acquisition.order.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private OrderBO orderBO;
     private ConfigurationBO configurationBO;

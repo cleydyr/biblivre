@@ -36,7 +36,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.administration.permissions.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private PermissionBO permissionBO;
     private LoginBO loginBO;

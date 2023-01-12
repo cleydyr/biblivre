@@ -187,12 +187,7 @@ public class IndexingBO extends AbstractBO {
                 paginableRecordBOs.entrySet().stream()
                         .collect(
                                 Collectors.toMap(
-                                        entry -> {
-                                            String recordTypeName =
-                                                    entry.getKey().replaceFirst("RecordBO", "");
-
-                                            return RecordType.fromString(recordTypeName);
-                                        },
+                                        entry -> RecordType.fromString(entry.getKey()),
                                         Map.Entry::getValue));
     }
 

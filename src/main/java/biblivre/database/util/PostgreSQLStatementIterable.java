@@ -106,9 +106,8 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
             }
 
             if (newState == State.COMMENT
-                    || newState == State.WHITESPACE
-                            && (Character.isWhitespace(lastChar)
-                                    || currentState == State.COMMENT)) {
+                    || (newState == State.WHITESPACE && (Character.isWhitespace(lastChar))
+                            || currentState == State.COMMENT)) {
 
                 lastChar = c;
 

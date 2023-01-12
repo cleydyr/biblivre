@@ -226,7 +226,7 @@ public class SchemaBO {
                                                 State.writeLog(outputLine);
                                             }
                                         } catch (Exception e) {
-                                            e.printStackTrace();
+                                            logger.error("error while creating new schema", e);
                                         }
                                     }
                                 });

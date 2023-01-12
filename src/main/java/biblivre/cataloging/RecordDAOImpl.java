@@ -168,30 +168,15 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
             pst.executeUpdate();
 
-            //			StringBuilder sqlSearch = new StringBuilder();
-            //			sqlSearch.append("DELETE FROM ").append(recordType).append("_search_results
-            // ");
-            //			sqlSearch.append("WHERE record_id IN (");
-            //			sqlSearch.append(StringUtils.repeat("?", ", ", ids.length));
-            //			sqlSearch.append(");");
-            //
-            //			i = 1;
-            //			PreparedStatement pstSearch = con.prepareStatement(sqlSearch.toString());
-            //			for (int j = 0; j < ids.length; j++) {
-            //				pstSearch.setInt(i++, ids[j]);
-            //			}
-            //
-            //			pstSearch.executeUpdate();
-
             if (recordType == RecordType.BIBLIO) {
-                StringBuilder sqlHolding = new StringBuilder();
+                String holdingSQL =
+                        """
+                        UPDATE biblio_holdings SET database = B.database
+                        FROM biblio_records B
+                        WHERE biblio_holdings.record_id = B.id
+                        AND biblio_holdings.database <> B.database""";
 
-                sqlHolding.append("UPDATE biblio_holdings SET database = B.database ");
-                sqlHolding.append("FROM biblio_records B ");
-                sqlHolding.append("WHERE biblio_holdings.record_id = B.id ");
-                sqlHolding.append("AND biblio_holdings.database <> B.database ");
-
-                con.createStatement().executeUpdate(sqlHolding.toString());
+                con.createStatement().executeUpdate(holdingSQL);
             }
 
             con.commit();
