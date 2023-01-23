@@ -55,8 +55,6 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
         return translationsListCache.computeIfAbsent(
                 key,
                 __ -> {
-                    translationsMapCache.remove(getTranslationMapCacheKey(schema, language));
-
                     List<TranslationDTO> list = new ArrayList<>();
 
                     String sql =
