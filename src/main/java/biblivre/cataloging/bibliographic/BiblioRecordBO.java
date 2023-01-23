@@ -40,7 +40,7 @@ import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("biblio")
 public class BiblioRecordBO extends PaginableRecordBO {
 
     private IndexingDAO indexingDAO;

@@ -32,12 +32,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.cataloging.authorities.Handler")
+@Component
 public class Handler extends PaginableCatalogingHandler {
     private ReportsBO reportsBO;
 
@@ -82,25 +81,20 @@ public class Handler extends PaginableCatalogingHandler {
             return;
         }
 
-        try {
-            JSONArray data = new JSONArray();
-            int id = 1;
-            for (Entry<String, Set<Integer>> entry : result.entrySet()) {
-                Set<Integer> ids = entry.getValue();
-                JSONObject obj = new JSONObject();
-                obj.put("id", id++);
-                obj.put("author", entry.getKey());
-                obj.put("count", ids.size());
-                obj.put("ids", StringUtils.join(ids, ","));
-                data.put(obj);
-            }
-            JSONObject searchResult = new JSONObject();
-            searchResult.put("data", data);
-            put("search", searchResult);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        JSONArray data = new JSONArray();
+        int id = 1;
+        for (Entry<String, Set<Integer>> entry : result.entrySet()) {
+            Set<Integer> ids = entry.getValue();
+            JSONObject obj = new JSONObject();
+            obj.put("id", id++);
+            obj.put("author", entry.getKey());
+            obj.put("count", ids.size());
+            obj.put("ids", StringUtils.join(ids, ","));
+            data.put(obj);
         }
+        JSONObject searchResult = new JSONObject();
+        searchResult.put("data", data);
+        put("search", searchResult);
     }
 
     @Autowired

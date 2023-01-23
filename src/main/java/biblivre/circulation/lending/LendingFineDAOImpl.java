@@ -21,7 +21,6 @@ package biblivre.circulation.lending;
 
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import java.sql.Connection;
@@ -67,44 +66,6 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         } finally {
             this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO lending_fines ");
-            sql.append("(user_id, lending_id, fine_value, payment_date, created_by, id) ");
-            sql.append("VALUES (?, ?, ?, ?, ?, ?);");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                LendingFineDTO fine = (LendingFineDTO) abstractDto;
-                pst.setInt(1, fine.getUserId());
-                pst.setInt(2, fine.getLendingId());
-                pst.setFloat(3, fine.getValue());
-                if (fine.getPayment() != null) {
-                    pst.setDate(4, CalendarUtils.toSqlDate(fine.getPayment()));
-                } else {
-                    pst.setNull(4, Types.DATE);
-                }
-                pst.setInt(5, fine.getCreatedBy());
-                pst.setInt(6, fine.getId());
-                pst.addBatch();
-            }
-
-            pst.executeBatch();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     @Override

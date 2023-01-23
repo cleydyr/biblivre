@@ -539,7 +539,6 @@ es	marc.bibliographic.datafield.013.subfield.c	Tipo	2014-07-19 11:28:46.69376	1	
 es	marc.bibliographic.datafield.630.indicator.1.0	Ningún carácter a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.630.indicator.1.1	1 carácter a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.630.indicator.1.2	2 caracteres a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.description	Use esta opción en caso que usted quiera restaurar e importar un backup existente del Biblivre 3.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.import.upload_button	Enviar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.630.indicator.1.7	7 caracteres a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.configuration.title.search.distributed_search_limit	Límite de resultados para búsquedas distribuidas	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -615,7 +614,6 @@ es	marc.bibliographic.datafield.246.indicator.2._	ninguna información suministr
 es	cataloging.tab.record.custom.field_label.authorities_411	Otra forma de nombre	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.tab.record.custom.field_label.authorities_410	Otra forma de nombre	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.migration.groups.cataloging_bibliographic	Catálogo Bibliográfico y de Ejemplares	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore	Restaurar un Backup del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.distributed.issn	ISSN (incluyendo guiones)	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	error.no_permission	Usted no tiene permiso para ejecutar esta acción	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.user.button.new	Nuevo usuario	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -852,7 +850,6 @@ es	administration.reports.fieldset.field_count	Recuento por campo Marc	2014-07-1
 es	marc.bibliographic.datafield.041.subfield.b	Código de idioma del sumario o resumen	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.041.subfield.a	Código del idioma de texto	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.holding.confirm_delete_record_question	¿Usted realmente desea excluir este registro de ejemplar?	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.error.description	Infelizmente ocurrió un error al restaurar este backup del Biblivre 3. Verifique la próxima pantalla por el log de errores y, en caso necesario, entre en el fórum Biblivre para obtener ayuda.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.maintenance.reindex.button_bibliographic	Reindizar base bibliográfica	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.option.database.main	Principal	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.600	Asunto - Nombre personal	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1014,7 +1011,6 @@ es	aquisition.supplier.error.supplier_not_found	No fue posible encontrar el prov
 es	circulation.user_cards.button.print_user_cards	Imprimir carnets	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.vocabulary.indexing_groups.tg_term	Término General (TG)	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.change_password.description.6	En caso que el usuario pierda su contraseña, deberá igualmente entrar en contacto con el Administrador o Bibliotecario responsable por el Biblivre, que podrá proveer una nueva contraseña.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3migration.button	Importar datos del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.import.issn_already_in_database	Ya existe un registro con este ISSN en la base de datos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.630.subfield.a	Título uniforme atribuido al documento	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.z3950.field.url	URL	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1119,7 +1115,6 @@ es	administration.usertype.confirm_delete_record_question.forever	¿Usted realme
 es	circulation.users.success.delete	Usuario excluido permanentemente	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	label.logout	Salir	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.order.field.quotation	Cotización	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.success	Restauración de Backup	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.quotation.field.requisition_select	Seleccione una Solicitud	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.title.holdings	Informe de Sello Patrimonial	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	warning.create_backup	Hace más de 3 días que usted está sin generar una copia de seguridad (backup)	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1176,7 +1171,6 @@ es	label.password	Contraseña	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69
 es	circulation.user_cards.button.select_item	Seleccionar usuario	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.bibliographic.confirm_delete_record.forever	Será excluido permanentemente del sistema y no podrá ser recuperado	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.select.option.select_marc_field	Seleccione un campo Marc	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.button	Restaurar backup seleccionado	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.bibliographic.simple_search	Búsqueda Bibliográfica Simplificada	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.lending.receipt.holding_id	Nro. Registro	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.830.indicator.2.2	2 caracteres a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1223,7 +1217,6 @@ es	marc.holding.datafield.852.indicator.2.1	Numeración primaria	2014-07-19 11:2
 es	marc.holding.datafield.852.indicator.2.0	No numerada	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.525	Nota de Suplemento	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.lending.button.print_return_receipt	Imprimir recibo de devolución	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import.success	Importación de datos del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.user_cards.popup.description	Seleccione en qué etiqueta desea iniciar la impresión	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.request.error.delete	Falla al excluir la Solicitud	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.521	Notas de público meta	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1272,7 +1265,6 @@ es	cataloging.tab.record.custom.field_label.biblio_250	Edición	2014-07-19 11:28
 es	administration.reports.field.datafield	Campo MARC	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.tab.record.custom.field_label.biblio_255	Escala	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.tab.record.custom.field_label.biblio_256	Características del archivo	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import.error.description	Infelizmente ocurrió un error al importar los datos del Biblivre 3. Verifique la próxima pantalla por el log de errores y, en caso necesario, entre en el fórum Biblivre para obtener ayuda.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.tab.record.custom.field_label.biblio_257	Lugar de producción	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.quotation.success.update	Cotización guardada con éxito	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.tab.record.custom.field_label.biblio_258	Información sobre el material	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1344,7 +1336,6 @@ es	menu.circulation_access	Control de Acceso	2014-07-19 11:28:46.69376	1	2014-07
 es	administration.permissions.items.login_change_password	Cambiar contraseña	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.210	Título Abreviado	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	menu.multi_schema_manage	Gerencia de Bibliotecas	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.select_file	Seleccione un archivo de backup primero	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.856.subfield.y	Link en texto	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	field.error.date	El valor rellenado no tiene una fecha válida. Utilice el formato {0}	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.856.subfield.u	URI	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1464,7 +1455,6 @@ es	circulation.lending.page_help	<p>Para realizar un préstamo usted deberá sel
 es	administration.user_type.field.fine_value	Valor de la Multa por atrasos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.common.distributed_search	Búsqueda Distribuida	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	menu.cataloging_authorities	Autoridades	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import	Importar datos del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.permissions.items.acquisition_quotation_list	Listar cotizaciones	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.user_cards.paper_description	{paper_size} {count} etiquetas ({height} mm x {width} mm)	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.fieldset.order	Ordenación	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1639,7 +1629,6 @@ es	administration.permissions.items.acquisition_order_list	Listar pedidos	2014-0
 es	administration.migration.groups.access_control	Tarjetas de acceso y Control de acceso	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.distributed.query_placeholder	Rellene los términos de la búsqueda	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.distributed.any	Cualquier	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.confirm_title	Restaurar Backup	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.user_type.field.description	Descripción	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.accesscards.lend.success	Tarjeta vinculada con éxito	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.accesscards.change_status.title.unblock	Desbloquear Tarjeta	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1655,7 +1644,6 @@ es	marc.vocabulary.datafield.750.indicator.2.4	Source not specified	2014-07-19 1
 es	search.bibliographic.select_item_button	Seleccionar registro	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.user.button.block	Bloquear	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.maintenance.reindex.button_vocabulary	Reindizar base de vocabulario	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import.error	Error al importar datos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.400	Otra Forma de nombre	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.permissions.items.administration_accesscards_delete	Excluir tarjetas de acceso	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.translations.download.field.languages	Idioma	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1687,7 +1675,6 @@ es	search.common.advanced_search	Búsqueda Avanzada	2014-07-19 11:28:46.69376	1	
 es	administration.configuration.description.general.title	Esta configuración representa el nombre de la biblioteca, que será exhibido al inicio de las páginas del Biblivre y en los informes.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.maintenance.backup.label_full	Backup completo	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.configuration.title.search.result_limit	Límite de resultados	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.error	Error al restaurar backup	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.custom.user_field.gender	Género	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.lending.empty_lending_list	Este lector no posee ejemplares prestados	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	menu.acquisition_supplier	Proveedores	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1704,7 +1691,6 @@ es	administration.user_type.field.reservation_limit	Límite de reservas simultá
 es	circulation.users.failure.unblock	Falla al desbloquear al Usuario	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.quotation.field.expiration_date	Fecha de Validez de la Cotización	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.change_password.submit_button	Cambiar contraseña	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.field.upload_file	Seleccionar archivo de backup	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.database.work	Trabajo	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.245.indicator.2	Número de caracteres a ser despreciados en la alfabetización	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.permissions.reader	Lector	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1741,7 +1727,6 @@ es	administration.reports.option.database.work	Trabajo	2014-07-19 11:28:46.69376
 es	menu.administration	Administración	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.856	Localización de obras por medio electrónico	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	login.error.login_already_exists	Este login ya existe. Escoja otro nombre	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.success.description	Backup restaurado con éxito	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.request.field.requester	Solicitante	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.bibliographic.title	Título	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	format.datetime	dd/MM/yyyy HH:mm	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -1793,7 +1778,6 @@ es	administration.permissions.items.acquisition_request_list	Listar requerimient
 es	administration.configuration.invalid_pg_dump_path	Camino inválido. El Biblivre no será capaz de generar backups ya que el archivo <strong>pg_dump</strong> no fue encontrado.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.lending.holdings.title	Buscar Ejemplar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.select.option.accession_number	Informe de Sello Patrimonial	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import.confirm_title	Importar datos del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.configuration.description.cataloging.accession_number_prefix	El sello patrimonial es el campo que identifica únicamente un ejemplar. En el Biblivre, la regla de formación para el sello patrimonial depende del año de adquisición del ejemplar, de la cantidad de ejemplares adquiridos en el año y del prefijo del sello patrimonial. Este prefijo es el término que será incluido antes de la numeración de año, en el formato <prefijo>.<año>.<contador> (Ex: Bib.2014.7).	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.authorities.confirm_delete_record.forever	Será excluido permanentemente del sistema y no podrá ser recuperado	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.111.indicator.1.1	nombre de la jurisdicción	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2071,7 +2055,6 @@ es	cataloging.tab.form.remove	Remover	2014-07-19 11:28:46.69376	1	2014-07-19 11:
 es	marc.bibliographic.datafield.240.indicator.2.3	3 caracteres a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.362.indicator.1	Formato de la fecha	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.permissions.items.acquisition_quotation_save	Guardar registro de cotización	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3migration	Importar datos del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.order.field.info	Observaciones	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.title.orders_by_date	Informe de Pedidos por Período	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.lending.lend_success	Ejemplar prestado con éxito	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2140,7 +2123,6 @@ es	menu.acquisition	Adquisición	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46
 es	marc.vocabulary.datafield.913	Código Lugar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.tab.record.custom.field_label.vocabulary_150	Término Específico	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.quotation.confirm_delete_record_question	¿Usted realmente desea excluir este registro de cotización?	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3restore.confirm_description	¿Usted realmente desea restaurar este Backup?	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.fieldset.database	Base de Datos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.common.clear_simple_search	Limpiar resultados de la búsqueda	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.import.source_search_subtitle	Seleccione una biblioteca remota y rellene los términos de la búsqueda. La búsqueda devolverá un límite de {0} registros. En caso que no encuentre el registro de interés, refine su búsqueda.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2204,7 +2186,6 @@ es	acquisition.order.field.supplier	Proveedor	2014-07-19 11:28:46.69376	1	2014-0
 es	cataloging.bibliographic.selected_records_singular	{0} registro seleccionado	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.020.subfield.a	Número de ISBN	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.020.subfield.c	Modalidad de adquisición	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import.confirm_description	¿Usted realmente desea importar los datos del Biblivre 3?	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.lending.button.select_reader	Seleccionar lector	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.material_type.score	Partitura	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.852.indicator.2	Tipo de ordenación	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2255,7 +2236,6 @@ es	marc.bibliographic.datafield.342.indicator.2.3	Lugar planear	2014-07-19 11:28
 pt-BR	administration.setup.biblivre4restore.confirm_description	Você realmente deseja restaurar este Backup?	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.progress_popup.processing	O Biblivre desta biblioteca está em manutenção. Aguarde até que a mesma seja concluída.	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.permissions.select.default	Selecione uma opção	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import.button	Importar dados do Biblivre 3	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 es	marc.bibliographic.datafield.342.indicator.2.4	Lugar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.tab.record.custom.field_label.authorities_110	Autor	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.243.subfield.g	Información adicional	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2268,7 +2248,6 @@ es	marc.bibliographic.datafield.342.indicator.2.7	A especificar	2014-07-19 11:28
 pt-BR	administration.setup.button.continue_to_biblivre	Ir para o Biblivre	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.biblivre4restore.title_found_backups	Backups Encontrados	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.biblivre4restore.success.description	Backup restaurado com sucesso	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
-pt-BR	administration.setup.biblivre3migration.button	Importar dados do Biblivre 3	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.button.show_log	Exibir log	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.maintenance.backup.error.psql_not_found	PSQL não encontrado	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.biblivre4restore.confirm_title	Restaurar Backup	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
@@ -2280,65 +2259,46 @@ pt-BR	administration.setup.biblivre4restore.field.upload_file	Selecionar arquivo
 pt-BR	administration.migration.migrate.error	Falha ao importar os dados	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.clean_install.button	Iniciar como uma nova biblioteca	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.biblivre4restore.error	Erro ao restaurar backup	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
-pt-BR	administration.setup.biblivre3migration	Importar dados do Biblivre 3	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.biblivre4restore.newest_backup	Backup mais recente	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.setup.biblivre4restore.description_found_backups_1	Abaixo estão os backups encontrados nos documentos do seu computador. Para restaurar um destes backups, clique sobre o seu nome.	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	administration.migration.migrate.success	Dados importados com sucesso	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	common.calculating	Calculando	2014-05-21 21:47:27.923	1	2014-05-21 21:47:27.923	1	f
 pt-BR	text.main.noscript		2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.description	Use esta opção caso você queira restaurar e importar um backup existente do Biblivre 3.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore	Restaurar um Backup do Biblivre 3	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.maintenance.backup.description.4	O Backup somente de arquivos digitais é uma cópia de todos os arquivos de mídia digital que foram gravados no Biblivre, sem nenhum outro dado ou informação, como usuários, base catalográfica, etc.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.select.default	Selecione uma opção	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.confirm_description	Você realmente deseja restaurar este Backup?	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.setup.biblivre4restore	Restaurar um Backup do Biblivre 4 ou Biblivre 5	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.562071	0	f
 pt-BR	circulation.custom.user_field.id_cpf	CPF	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.setup.upload_popup.processing	Processando...	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	multi_schema.manage.button.show_log	Exibir log	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	multi_schema.manage.error.create	Falha ao criar nova biblioteca.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	cataloging.bibliographic.button.export_records	Exportar registros	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	administration.setup.biblivre3restore.error.description	Infelizmente ocorreu um erro ao restaurar este backup do Biblivre 3. Verifique a próxima tela pelo log de erros e, caso necessário, entre no fórum Biblivre para obter ajuda.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.address_complement	Complemento	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.permissions.items.cataloging_bibliographic_private_database_access	Acesso à Base Privada.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.setup.no_backups_found	Nenhum backup encontrado	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.maintenance.backup.warning	Este processo pode demorar alguns minutos, dependendo da configuração de hardware do seu servidor.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.address	Endereço	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.address_zip	CEP	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.success	Restauração de Backup	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.button	Restaurar backup selecionado	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import.success	Importação de dados do Biblivre 3	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import.error.description	Infelizmente ocorreu um erro ao importar os dados do Biblivre 3. Verifique a próxima tela pelo log de erros e, caso necessário, entre no fórum Biblivre para obter ajuda.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.address_city	Cidade	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.configuration.title.general.multi_schema	Habilitar Multi-bibliotecas	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.select_file	Selecione um arquivo de backup primeiro	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.lending.reserved.warning	Todos os exemplares disponíveis deste registro estão reservados para outros leitores. O empréstimo pode ser efetuado, porém verifique as informações de reservas.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.phone_cel	Celular	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import	Importar dados do Biblivre 3	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.setup.upload_popup.uploading	Enviando arquivo...	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.phone_home	Telefone Residencial	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.confirm_title	Restaurar Backup	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	multi_schema.manage.error.description	Falha ao criar nova biblioteca	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import.error	Erro ao importar dados	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.error	Erro ao restaurar backup	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.permissions.groups.digitalmedia	Mídia Digital	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.field.upload_file	Selecionar arquivo de backup	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.permissions.reader	Leitor	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3restore.success.description	Backup restaurado com sucesso	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import.confirm_title	Importar dados do Biblivre 3	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	multi_schema.manage.success.create	Nova biblioteca criada com sucesso.	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.birthday	Data de Nascimento	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.address_state	Estado	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	multi_schema.manage.log_header	[Log de criação de nova biblioteca do BIBLIVRE 5]	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	circulation.custom.user_field.phone_work_extension	Ramal do Telefone Comercial	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.permissions.items.digitalmedia_upload	Enviar mídia digital	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import.confirm_description	Você realmente deseja importar os dados do Biblivre 3?	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.address_number	Número	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.gender.1	Masculino	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.gender.2	Feminino	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.id_rg	Identidade	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	circulation.custom.user_field.phone_work	Telefone Comercial	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	administration.setup.upload_popup.title	Abrindo Arquivo	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
-pt-BR	administration.setup.biblivre3import.success.description	Dados importados com sucesso	2014-06-14 19:32:35.338749	1	2014-06-14 19:32:35.338749	1	f
 pt-BR	acquisition.supplier.confirm_delete_record_title.forever	Excluir registro de fornecedor	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	menu.circulation_user	Cadastro de Usuários	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.reports.title.dewey	Relatório de Classificação Dewey	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -4296,7 +4256,6 @@ es	marc.bibliographic.datafield.245.indicator.2.5	5 caracteres a despreciar	2014
 es	marc.bibliographic.datafield.555.indicator.1	Control de constante en la exhibición	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.migration.title	Migración de datos del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.245.indicator.2.0	Ningún carácter a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import.success.description	Datos importados con éxito	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.245.indicator.2.1	1 carácter a despreciar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.select.option.bibliography	Informe de Bibliografía del Autor	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.supplier.field.vat_registration_number	Inscripción Estatal	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -4317,7 +4276,6 @@ es	marc.bibliographic.datafield.595.subfield.b	Notas de Bibliografía, índices 
 es	marc.bibliographic.datafield.595.subfield.a	Código de la bibliografía	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.020	ISBN	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.343.subfield.a	Método de codificación de la coordenada plana	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	administration.setup.biblivre3import.button	Importar datos del Biblivre 3	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.343.subfield.b	Unidad de distancia plana	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.configuration.title.circulation.lending_receipt.printer.type	Tipo de impresora para recibo de préstamos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.111.subfield.n	Número de orden de evento	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -4433,7 +4391,6 @@ en-US	marc.bibliographic.datafield.013.subfield.c	Type	2014-07-26 10:56:18.33886
 en-US	marc.bibliographic.datafield.630.indicator.1.0	No character to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.630.indicator.1.1	1 character to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.630.indicator.1.2	2 characters to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.description	Use this option if you wish to restore and import a Biblivre3 existing backup.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.import.upload_button	Send	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.630.indicator.1.7	7 characters to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.configuration.title.search.distributed_search_limit	Limit of results for distributed searches	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -4504,7 +4461,6 @@ en-US	marc.bibliographic.datafield.246.indicator.2._	no information provided	201
 en-US	cataloging.tab.record.custom.field_label.authorities_411	Another name format	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.authorities_410	Another name format	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.migration.groups.cataloging_bibliographic	Bibliographic and Units Catalogue	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore	Restore a Biblivre 3 Backup	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.distributed.issn	ISSN (including hyphens)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	multi_schema.restore.warning_overwrite	Beware!:  There is already a library registered with the address above. If you restore using the option selected, the content of the existing library will be replaced by the Backup content.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	error.no_permission	You have no permission to execute this action	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -4739,7 +4695,6 @@ en-US	administration.reports.fieldset.field_count	Count by Marc field	2014-07-26
 en-US	marc.bibliographic.datafield.041.subfield.b	Language code of summary or abstract	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.041.subfield.a	Language code of text	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.holding.confirm_delete_record_question	Do you really wish to delete this unit record?	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.error.description	Regretably an error occurred when restoring Biblivre3 backup. Check the next screen by error log and, if necessary go to the Biblivre forum for assistance\n.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.maintenance.reindex.button_bibliographic	Reindex bibliographic base	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.option.database.main	Main	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.600	Subject - Personal name	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -4896,7 +4851,6 @@ en-US	aquisition.supplier.error.supplier_not_found	It was not possible to find t
 en-US	circulation.user_cards.button.print_user_cards	Print user cards	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.vocabulary.indexing_groups.tg_term	Broader Term (BT)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.change_password.description.6	If the user losses his/her password, he / she must contact the Administrator or the Librarian in charge of Biblivre, and they may furnish a new password.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3migration.button	Import Biblivre 3 data	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.import.issn_already_in_database	There is already a record with this ISSN in the database	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.630.subfield.a	Uniform title given to the document	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.z3950.field.url	URL	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5002,7 +4956,6 @@ en-US	administration.usertype.confirm_delete_record_question.forever	Do you real
 en-US	circulation.users.success.delete	User deleted forever	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	label.logout	Logout	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.order.field.quotation	Quotation	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.success	Backup restoration	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.quotation.field.requisition_select	Select a Requisition	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.title.holdings	Asset Cataloging Report	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	warning.create_backup	You have not created a backup copy in more than 3 days	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5060,7 +5013,6 @@ en-US	label.password	Password	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.3
 en-US	circulation.user_cards.button.select_item	Select user	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.bibliographic.confirm_delete_record.forever	It will be deleted from the system forever and cannot be restored	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.select.option.select_marc_field	Select a Marc field	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.button	Restore selected backup	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.bibliographic.simple_search	Simplified Bibliographic Search	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.receipt.holding_id	Record No.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.830.indicator.2.2	2 characters to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5106,7 +5058,6 @@ en-US	cataloging.tab.record.custom.field_label.biblio_240	Uniform Title	2014-07-
 en-US	marc.holding.datafield.852.indicator.2.1	Primary numbering	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.525	Supplementary Note	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.button.print_return_receipt	Print return receipt	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import.success	Import of Biblivre 3 data	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.user_cards.popup.description	Select in which label you wish to start printing	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.request.error.delete	Error when deleting Requisition	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.521	Target public notes	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5152,7 +5103,6 @@ en-US	multi_schema.restore.restore_complete_backup.description	Should you wish t
 en-US	administration.reports.field.datafield	MARC field	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.biblio_255	Scale	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.biblio_256	File characteristics	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import.error.description	Regretably there was an error when importing Biblivre 3 data. Please check the next screen by the error log and, if necessary, go to the Biblivre forum for assistance.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.biblio_257	Production place	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.quotation.success.update	Quotation successfully saved	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.biblio_258	Information on the material	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5224,7 +5174,6 @@ en-US	menu.circulation_access	Access Control	2014-07-26 10:56:18.338867	1	2014-0
 en-US	administration.permissions.items.login_change_password	Change password	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.210	Abbreviated Title	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	menu.multi_schema_manage	Libraries Management	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.select_file	Select a backup file first	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.holding.datafield.856.subfield.y	Text link	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	field.error.date	The Value filled in is not a valid date. Use the format {0}	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.holding.datafield.856.subfield.u	URI	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5347,7 +5296,6 @@ en-US	circulation.lending.page_help	<p>In order to conduct a loan you will have 
 en-US	administration.user_type.field.fine_value	Value of fine in case of late returns	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.common.distributed_search	Distributed search	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	menu.cataloging_authorities	Authorities	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import	Import Biblivre 3 Data	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.permissions.items.acquisition_quotation_list	List quotations	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	multi_schema.manage.disable	Disable library	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.user_cards.paper_description	{paper_size} {count} labels ({height} mm x {width} mm)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5514,7 +5462,6 @@ en-US	administration.permissions.items.acquisition_order_list	List orders	2014-0
 en-US	administration.migration.groups.access_control	Access cards and access Control	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.distributed.query_placeholder	Fill in the terms for the search	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.distributed.any	Any	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.confirm_title	Restore Backup	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.user_type.field.description	Description	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.accesscards.lend.success	Card successfully bound	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.accesscards.change_status.title.unblock	Unblock Card	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5530,7 +5477,6 @@ en-US	marc.vocabulary.datafield.750.indicator.2.4	Source not specified	2014-07-2
 en-US	search.bibliographic.select_item_button	Select record	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.user.button.block	Block	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.maintenance.reindex.button_vocabulary	Reindex vocabulary base	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import.error	Import data error	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.400	Other name form	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.permissions.items.administration_accesscards_delete	Delete access cards	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.translations.download.field.languages	Language	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5563,7 +5509,6 @@ en-US	search.common.advanced_search	Advanced Search	2014-07-26 10:56:18.338867	1
 en-US	administration.configuration.description.general.title	This configuration represents the name of the library, to be shown on the upper part of the Biblivre pages and in the reports.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.maintenance.backup.label_full	Complete Backup	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.configuration.title.search.result_limit	Result limit	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.error	Backup restoration error	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.custom.user_field.gender	Gender	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.empty_lending_list	This reader does not have units (copies) lent	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	menu.acquisition_supplier	Suppliers	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5579,7 +5524,6 @@ en-US	administration.user_type.field.reservation_limit	Simultaneous reservations
 en-US	circulation.users.failure.unblock	Failure unblocking User	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.quotation.field.expiration_date	Quotation expiration date	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.change_password.submit_button	Change password	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.field.upload_file	Select backup file	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.database.work	Work	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.245.indicator.2	Number of characters to be overridden in alphabetation	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.permissions.reader	Reader	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5616,7 +5560,6 @@ en-US	administration.reports.option.database.work	Work	2014-07-26 10:56:18.33886
 en-US	menu.administration	Administration	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.holding.datafield.856	Work tracking by electronic means	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	login.error.login_already_exists	This login already exists. Choose another name	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.success.description	Backup successfully restored	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.request.field.requester	Requester	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.bibliographic.title	Title	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	format.datetime	dd/MM/yyyy HH:mm	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5669,7 +5612,6 @@ en-US	administration.permissions.items.acquisition_request_list	List requests	20
 en-US	administration.configuration.invalid_pg_dump_path	Invalid path. Biblivre will not be able to create backups because the <strong>pg_dump</strong> file was not found.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.holdings.title	Search Copy (Unit)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.select.option.accession_number	Asset Cataloging Report	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import.confirm_title	Import Biblivre 3 data	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.configuration.description.cataloging.accession_number_prefix	Asset cataloging is the field that solely identifies a copy. In Biblivre, the rule for asset reference numbers depends on the year of acquisition of the unit, on the quantity of units entered in the year and on the prefix of the asset reference number. This prefix is the term to be included before the year number, in the format <prefix>.<year>.<counter> (Ex: Bib.2014.7).	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.authorities.confirm_delete_record.forever	It will be deleted from system forever and cannot be recovered	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.111.indicator.1.1	name of jurisdiction	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -5942,7 +5884,6 @@ en-US	cataloging.tab.form.remove	Remove	2014-07-26 10:56:18.338867	1	2014-07-26 
 en-US	marc.bibliographic.datafield.240.indicator.2.3	3 characters to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.362.indicator.1	Date format	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.permissions.items.acquisition_quotation_save	Save quotation record	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3migration	Import Biblivre 3 data	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.order.field.info	Remarks	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.title.orders_by_date	Report on Orders by Period	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.lend_success	Copy (unit) lent successfully	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6013,7 +5954,6 @@ en-US	menu.acquisition	Acquisition	2014-07-26 10:56:18.338867	1	2014-07-26 10:56
 en-US	marc.vocabulary.datafield.913	Local code	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.vocabulary_150	Narrower Term	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.quotation.confirm_delete_record_question	Do you really wish to delete this quotation record?	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3restore.confirm_description	Do you really wish to restore this Backup?	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.fieldset.database	Database	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.common.clear_simple_search	Clear search results	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.import.source_search_subtitle	Select a remote library and fill in the search terms. The search will provide a limit of  {0} records. If you do not see the record that interests you, please refine your search.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6082,7 +6022,6 @@ en-US	acquisition.order.field.supplier	Supplier	2014-07-26 10:56:18.338867	1	201
 en-US	cataloging.bibliographic.selected_records_singular	{0} record selected	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.020.subfield.a	ISBN number	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.020.subfield.c	Acquisition arrangement	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import.confirm_description	Do you really wish to import Biblivre 3 data?	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.button.select_reader	Select reader	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.material_type.score	Score	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.holding.datafield.852.indicator.2	Order type	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6301,7 +6240,6 @@ en-US	marc.bibliographic.datafield.245.indicator.2.5	5 characters to be overridd
 en-US	marc.bibliographic.datafield.555.indicator.1	Constant exhibition control	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.migration.title	Biblivre 3 data migration	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.245.indicator.2.0	No character to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import.success.description	Data successfully imported	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.245.indicator.2.1	1 character to be overridden	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.select.option.bibliography	Author Bibliography Report	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.supplier.field.vat_registration_number	State registration number	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6323,7 +6261,6 @@ en-US	marc.bibliographic.datafield.595.subfield.b	Notes for bibliography, indice
 en-US	marc.bibliographic.datafield.595.subfield.a	Bibliography code	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.020	ISBN	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.343.subfield.a	Method for codification of flat coordinate	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.biblivre3import.button	Import Biblivre 3 data	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.343.subfield.b	Flat distance unit	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.configuration.title.circulation.lending_receipt.printer.type	Type of printer for loan receipts	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.111.subfield.n	Number of order of the event	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6467,9 +6404,6 @@ es	cataloging.bibliographic.search.holding_accession_number	Sello patrimonial	20
 es	cataloging.bibliographic.search.holding_id	Código de barras de la etiqueta	2022-12-04 11:05:55.373683	0	2022-12-04 11:05:55.373683	0	f
 es	search.holding.shelf_location	Localización	2022-12-04 11:05:55.374112	0	2022-12-04 11:05:55.374112	0	f
 es	circulation.lending.no_holding_found	Ningún ejemplar encontrado	2022-12-04 11:05:55.374585	0	2022-12-04 11:05:55.374585	0	f
-pt-BR	administration.setup.biblivre3restore.log_header	[Log de restauração de backup do Biblivre 3]\n\n	2022-12-04 11:05:55.378677	0	2022-12-04 11:05:55.378677	0	f
-en-US	administration.setup.biblivre3restore.log_header	[Log for Biblivre 3 backup restoration]\n\n	2022-12-04 11:05:55.379439	0	2022-12-04 11:05:55.379439	0	f
-es	administration.setup.biblivre3restore.log_header	[Log de restauración de backup del Biblivre 3]\n\n	2022-12-04 11:05:55.380327	0	2022-12-04 11:05:55.380327	0	f
 pt-BR	administration.setup.biblivre4restore.skip	Ignorar	2022-12-04 11:05:55.39173	0	2022-12-04 11:05:55.39173	0	f
 en-US	administration.setup.biblivre4restore.skip	Skip	2022-12-04 11:05:55.392991	0	2022-12-04 11:05:55.392991	0	f
 es	administration.setup.biblivre4restore.skip	Pasar	2022-12-04 11:05:55.393954	0	2022-12-04 11:05:55.393954	0	f
@@ -6714,17 +6648,14 @@ es	administration.migration.page_help	<p>El módulo de <strong>"Migración de Da
 es	administration.configuration.description.logged_out_text	Texto a ser exhibido en la pantalla del Biblivre, para usuarios que no tengan ingresado con login y contraseña. Usted puede utilizar tags HTML, pero cuidado de no quebrar el diseño del BIBLIVRE 5. Atención: esta configuración se relaciona con el sistema de traducciones. Las alteraciones realizadas en esta pantalla afectarán solamente el idioma actual. Para alterar en otros idiomas, utilice la pantalla de traducciones o acceda al Biblivre utilizando el idioma a ser alterado.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	multi_schema.manage.schemas.description	Abajo están todas las bibliotecas registradas en este BIBLIVRE 5. En caso que quiera alterar un nombre o subtítulo, accese a la pantalla de configuraciones de la biblioteca.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	administration.translations.page_help	<p>El módulo de <strong>"Traducciones"</strong> permite agregar nuevos idiomas al BIBLIVRE 5 o alterar los textos ya existentes.</p>\n<p><strong>Atención: Este módulo realiza configuraciones avanzadas del BIBLIVRE 5, y debe ser utilizado solamente por Usuarios avanzados, con experiencia en informática.</strong>.</p>\n<p>Para agregar un nuevo idioma, baje el archivo de idioma en portugués, haga la traducción de los textos y después envíe el archivo. Recuerde que solamente los <strong>textos</strong> (después del signo igual) deben ser alterados.  No altere las llaves, caso contrario el BIBLIVRE 5 no conseguirá localizar el texto</p>\n<p>Ejemplo: digamos que usted quiera alterar el texto en el menú principal de <i>Búsqueda</i> para <i>Buscar</i>.  Usted deberá entonces bajar el archivo del idioma y alterar la siguiente línea:</p>\n<p><strong>*menu.search</strong> = Búsqueda</p>\n<p>Para:</p>\n<p><strong>*menu.search</strong> = Busca</p>\n<p>Y entonces hacer el envío del archivo de idiomas. El BIBLIVRE 5 procesará el archivo, y alterará el texto del menú.</p>	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
-es	administration.setup.biblivre3import.description	Fue detectada una instalación del Biblivre 3 en esta computadora. Usted podrá importar estos datos para el BIBLIVRE 5 seleccionando los items de interés y haciendo click en el botón abajo. Luego de la importación, <strong>usted deberá reindizar las tres bases: Bibliográfica, Autoridades y Vocabulario</strong>, a través de la pantalla <strong>"Manutención"</strong> em <strong>"Administración"</strong> y <strong>seleccionar nuevamente las autorizaciones de los empleados con acceso al Biblivre</strong>, a través de la pantalla <strong>"Logins y Permisos"</strong> en <strong>"Administración"</strong>.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	administration.maintenance.reinstall.confirm.description	¿Desea ir a la pantalla de restauración y reconfiguración? Usted podrá restaurar un backup del BIBLIVRE 5, borrar los datos de su biblioteca o rehacer una migración.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	administration.setup.clean_install.description	En caso que usted no tenga o no desee restaurar un backup, esta opción permitirá iniciar el uso del BIBLIVRE 5 con una base de datos vacía. Luego de entrar en el BIBLIVRE 5 por primera vez, utilice el login <strong>admin</strong> y la contraseña <strong>abracadabra</strong> para entrar al sistema y configurar su nueva biblioteca.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
-es	administration.setup.biblivre3migration.description	Fue detectada una instalación de Biblivre 3 en esta computadora. Usted podrá importar estos datos para el BIBLIVRE 5 seleccionando los items de interés y haciendo click en el botón abajo. Luego de la importación, <strong>usted deberá reindizar las tres bases: Bibliográfica, Autoridades y Vocabulario</strong>, a través de la pantalla <strong>"Manutención"</strong> en <strong>"Administración"</strong> y <strong>seleccionar nuevamente las autorizaciones de los empleados con acceso al Biblivre</strong>, a través de la pantalla <strong>"Logins y Permisos"</strong> en <strong>"Administración"</strong>.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	multi_schema.configuration.description.general.title	Nombre que será exhibido cuando se accede a la página principal de este grupo de bibliotecas. Esta página listará todas las bibliotecas registradas en este grupo (administradas por el mismo BIBLIVRE 5).	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	multi_schema.manage.page_help	La pantalla de multibibliotecas permite registrar diversas bibliotecas para ser administradas por un único Biblivre. A partir del momento que usted habilita el sistema de multi-bibliotecas, la lista de bibliotecas registradas será exhibida siempre que alguien entre en la dirección estándar del BIBLIVRE 5.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	administration.configuration.description.general.multi_schema	Esta configuración permite que se habilite el sistema de múltiples bibliotecas en esta instalación del BIBLIVRE 5.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	multi_schema.manage.log_header	[Log de creación de nueva biblioteca del BIBLIVRE 5]	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	administration.setup.cancel.description	Cliquee en el botón abajo para desistir de restaurar esta instalación del BIBLIVRE 5 y volver a su biblioteca.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	multi_schema.manage.new_schema.description	Para crear una nueva biblioteca, rellene abajo con su nombre y un subtítulo opcional. Usted también precisará de un nombre reducido para la biblioteca, llamado de atajo, que será usado en la dirección Web de acceso al BIBLIVRE 5, permitiendo diferenciar las diversas bibliotecas instaladas en el sistema. Este atajo debe contener solamente letras, números y/o caracteres _. Para facilitar, el BIBLIVRE 5 sugerirá un atajo automáticamente, basado en el nombre de la biblioteca.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
-es	administration.setup.biblivre3import.log_header	[Log de importación de datos del Biblivre 3 para el BIBLIVRE 5]	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	administration.maintenance.reinstall.description	Use esta opción en caso que usted desee restaurar un backup del BIBLIVRE 5, borrar los datos de su biblioteca o rehacer la migración del Biblivre 3. Usted será enviado a la pantalla inicial de instalación del Biblivre, donde podrá cancelar en caso que desista de hacer alteraciones.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	administration.configuration.description.logged_in_text	Texto a ser exhibido en la pantalla inicial del Biblivre, para usuarios que tengan ingresado con login y contraseña. Usted puede utilizar tags HTML, pero cuidado de no quebrar el diseño del BIBLIVRE 5. El término {0} será sustituido por el nombre del usuario logueado. Atención: esta configuración se relaciona con el sistema de traducciones. Las alteraciones realizadas en esta pantalla afectarán solamente el idioma actual. Para alterar en otros idiomas, utilice la pantalla de traducciones o acceda al Biblivre usando el idioma a ser alterado.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 es	warning.new_version	Ya está disponible una actualización para el BIBLIVRE 5<br/>Versión instalada: {0}. Versión más reciente: {1}	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
@@ -6734,15 +6665,12 @@ es	administration.translations.upload.description	Seleccione abajo el archivo de
 es	administration.setup.biblivre4restore	Restaurar un Backup del Biblivre 4 o Biblivre 5	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.563156	0	f
 es	multi_schema.translations.page_help	<p>El módulo de <strong>"Traducciones"</strong> de Multibibliotecas funciona de forma análoga a su versión de una única biblioteca, no obstante, los textos alterados aquí se aplicarán a todas las bibliotecas del grupo, siempre que estas no hayan alterado el valor original de cada traducción.</p>\n<p>Por ejemplo, si usted altera la traducción de la llave <strong>"menu.search"</strong> de "Búsqueda" para "Busca" por el módulo de traducciones multibibliotecas, todas las bibliotecas de este grupo verán la nueva traducción. Sin embargo, si uno de los administradores de una de estas bibliotecas alterara, a través del módulo de <strong>"Traducciones"</strong> de su biblioteca, la misma llave para "Procurar", esta traducción interna tendrá prioridad, solamente para esta biblioteca.</p>\n<p>Para agregar un nuevo idioma, baje el archivo de idioma en Portugués, realice la traducción de los textos y después envíe el archivo. Recuerde que solamente los <strong>textos</strong> (después del signo igual) deben ser alterados.  No altere las llaves, o el BIBLIVRE 5 no conseguirá localizar el texto</p>\n<p>Ejemplo: digamos que usted quiera alterar el texto en el menú principal de <i>Búsqueda</i> para <i>Busca</i>.  Usted deberá entonces bajar el archivo de idioma y alterar la siguiente línea:</p>\n<p><strong>*menu.search</strong> = Búsqueda</p>\n<p>Para:</p>\n<p><strong>*menu.search</strong> = Busca</p>\n<p>Y entonces hacer el Envío de archivo de idiomas. El BIBLIVRE 5 procesará el archivo, y alterará el texto del menú.</p>	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.setup.clean_install.description	Caso você não tenha ou não queira restaurar um backup, esta opção permitirá iniciar o uso do BIBLIVRE 5 com uma base de dados vazia. Após entrar no BIBLIVRE 5 pela primeira vez, utilize o login <strong>admin</strong> e senha <strong>abracadabra</strong> para acessar o sistema e configurar sua nova biblioteca.	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.5474	1	f
-pt-BR	administration.setup.biblivre3migration.description	Foi detectada uma instalação do Biblivre 3 neste computador. Você poderá importar estes dados para o BIBLIVRE 5 selecionando os itens de interesse e clicando no botão abaixo. Após a importação, <strong>você deverá reindexar as três bases: Bibliográfica, Autoridades e Vocabulário</strong>, através da tela <strong>"Manutenção"</strong> em <strong>"Administração"</strong> e <strong>selecionar novamente as permissões dos funcionários com acesso ao Biblivre</strong>, através da tela <strong>"Logins e Permissões"</strong> em <strong>"Administração"</strong>.	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.5474	1	f
-pt-BR	administration.setup.biblivre3import.log_header	[Log de importação de dados do Biblivre 3 para o BIBLIVRE 5]	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.setup.progress_popup.title	Manutenção do BIBLIVRE 5	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.setup.biblivre4restore.log_header	[Log de restauração de backup do BIBLIVRE 5]	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.setup.biblivre4restore.error.description	Infelizmente ocorreu um erro ao restaurar este backup do BIBLIVRE 5. Verifique a próxima tela pelo log de erros e, caso necessário, entre no fórum Biblivre para obter ajuda.	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.maintenance.backup.description.3	O Backup sem arquivos digitais é uma cópia de todos os dados e informações do BIBLIVRE 5, <strong>excluindo</strong> os arquivos de mídia digital. Por excluir os arquivos de mídia digital, o processo tanto de backup quanto de recuperação é mais rápido, e o arquivo de backup é menor.	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.maintenance.backup.description.1	O Backup é um processo onde executamos a cópia de informações para salvaguardá-las em caso de algum problema no sistema. É uma cópia dos registros e informações do Biblivre. O BIBLIVRE 5 possui 3 tipos de backup:	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.maintenance.backup.description.2	O Backup completo é uma cópia de todos os dados e informações do BIBLIVRE 5, incluindo os arquivos de mídia digital, como fotos dos usuários, arquivos digitais dos registros bibliográficos, etc.	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
-pt-BR	administration.setup.biblivre3import.description	Foi detectada uma instalação do Biblivre 3 neste computador. Você poderá importar estes dados para o BIBLIVRE 5 selecionando os itens de interesse e clicando no botão abaixo. Após a importação, <strong>você deverá reindexar as três bases: Bibliográfica, Autoridades e Vocabulário</strong>, através da tela <strong>"Manutenção"</strong> em <strong>"Administração"</strong> e <strong>selecionar novamente as permissões dos funcionários com acesso ao Biblivre</strong>, através da tela <strong>"Logins e Permissões"</strong> em <strong>"Administração"</strong>.	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.configuration.description.general.multi_schema	Esta configuração permite que se habilite o sistema de múltiplas bibliotecas nesta instalação do BIBLIVRE 5.	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.configuration.description.multi_schema.enabled	O sistema de multi-bibliotecas já está habilitado para esta instalação do BIBLIVRE 5. O administrador do sistema poderá desabilitar essa opção no menu de configuração de multi-bibliotecas.	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.migration.page_help	<p>O módulo de <strong>"Migração de Dados"</strong> permite importar os dados constantes de uma base de dados do Biblivre 3 existente para a base de dados vazia do BIBLIVRE 5.</p>	2014-06-14 19:34:08.805257	1	2022-12-04 11:05:55.5474	1	f
@@ -6755,13 +6683,11 @@ en-US	administration.migration.page_help	<p>The  <strong>"Data Migration"</stron
 en-US	administration.translations.page_help	<p> The module <strong>"Translations"</strong> allows adding new languages to BIBLIVRE 5 or modifying existing texts.</p>\n<p><strong>Attention: this module performs advanced configurations in BIBLIVRE 5, and needs to be used solely by advanced Users, experienced in IT.</strong>.</p>\n<p>To add a new language, please download the Portuguese language file, do the translation of the texts and then send the file. Remember that only the <strong>texts</strong> (after the = sign) must be translated. Do not modify the keys; if you do so, BIBLIVRE 5 will not be able to find the text </p>\n<p>Example: let´s imagine that you wish to modify the text in the main menu of <i>Search</i> to <i>Look for</i>. You will then have to download the language file and modify the following line:</p>\n<p><strong>*menu.search</strong> = Search</p>\n<p>To:</p>\n<p><strong>*menu.search</strong> = Loo for</p>\n<p>And then deliver the language file. BIBLIVRE 5 will process the file and will modify the menu text.</p>	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	administration.maintenance.reinstall.confirm.description	Do you wish to go to the restoration and reconfiguration screen? You will be able to restore a BIBLIVRE 5 backup, delete data in your library or redo a migration	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	administration.setup.clean_install.description	If you do not have or do not wish to restore a backup, this option will allow start using BIBLIVRE 5 with an empty database. When entering BIBLIVRE 5 for the first time, use the <strong>admin</strong> and password <strong>abracadabra</strong> to access the system and configure your new library.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
-en-US	administration.setup.biblivre3migration.description	A Biblivre 3 installation was detected in this computer. You may wish to import these data for BIBLIVRE 5 by selecting the items you are interested in and pressing the button below. After importation, <strong>you will have to reindex the three bases: the Bibliographic ones, Authorities and Vocabulary </strong>, through the <strong>"Maintenance"</strong> screen in <strong>"Administration"</strong> and <strong>select again the permissions of employees able to access Biblivre</strong>, through the <strong>"Logins and Permissions"</strong> screen in <strong>"Administration"</strong>.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	multi_schema.configuration.description.general.title	Nome to be shown when the main page of the library group is accessed. o que será exibido quando a página principal deste grupo de bibliotecas for acessada. This page will list all the registered libraries in this group (managed by the same BIBLIVRE 5).	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	multi_schema.manage.page_help	The multi-libraries screen allows registering several libraries to be managed by a single Biblivre. Since the moment the multi-libraries system is in action, the list of registered libraries will be shown when the person accesses the standard BIBLIVRE 5 address.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	administration.configuration.description.general.multi_schema	This configuration allows setting up the multiple library system in this BIBLIVRE 5 installation.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	multi_schema.manage.log_header	[New BIBLIVRE 5 Library Log]	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	multi_schema.manage.new_schema.description	To create a new library, please fill in below your name and an optional subtitle. You will also need a short name for the library, which is called shortcut, to be used in the web address for accessing BIBLIVRE 5, which allows differentiation among different libraries installed in the system. This shortcut must contain only letters, numbers and the character _. To make things easier, BIBLIVRE 5 will automatically suggest a shortcut, based on the library name.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
-en-US	administration.setup.biblivre3import.log_header	[Import data log from Biblivre 3 to BIBLIVRE 5]	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	administration.maintenance.reinstall.description	Use this option if you wish to restore a BIBLIVRE 5 backup, or to delete data in your library or to redo Biblivre 3 migration. You will be taken to the Biblivre install initial screen, and you may cancel the operation if you do not wish to make modifications.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	administration.setup.progress_popup.title	BIBLIVRE 5 maintenance	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	administration.setup.biblivre4restore.log_header	[Log for BIBLIVRE 5 backup restoration]	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
@@ -6773,7 +6699,6 @@ en-US	multi_schema.manage.schemas.description	Please see below all the libraries
 en-US	administration.setup.biblivre4restore.error.description	Regrettably an error occurred when restoring this BIBLIVRE 5  backup. Check next screen through the error log and, if necessary, go to the Biblivre forum for assistance.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	multi_schema.configuration.description.general.subtitle	Subtitle shown when the main page in this library broup is accessed. This page will list all the registered libraries in this group (managed by the same BIBLIVRE 5).	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	warning.new_version	There's an update for BIBLIVRE 5 available<br/>Current Version: {0}. Latest version: {1}	2014-07-26 12:01:11.320131	1	2022-12-04 11:05:55.5474	1	f
-en-US	administration.setup.biblivre3import.description	A Biblivre 3 installation was detected in this computer. You may wish to import these data for BIBLIVRE 5, by selecting the items you are interested in, and pressing the button below. After importation, <strong>you will have to reindex the three bases: the Bibliographic one, and the ones for Authorities and Vocabulary </strong>, through the <strong>"Maintenance"</strong> screen in <strong>"Administration"</strong> and <strong>select again the permissions of employees with access to Biblivre</strong>, through the <strong>"Logins and Permissions"</strong> screen in <strong>"Administration"</strong>.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 en-US	multi_schema.translations.page_help	<p>The module of <strong>"Translations"</strong> for Multilibraries Works similarly to the version corresponding to just one library. However, texts which were modified here will be applied to all the libraries in the group, provided they have not modified the original value of each translation.</p>\n<p>For example, if you modify the translation of the key <strong>"menu.search"</strong> from "Search" to "Trace" through the Translations module for multi-libraries, all the libraries in this group will see the new translation. However, if one of the administrators of one of these libraries modifies, through the <strong>"Translations"</strong> module of his library, the same key to "Search", this in-house translation will have priority just for this library.</p>\n<p>In order to add a new language, you will have to download the language file in Portuguese, do the translation of the texts and then upload the file. Remember that only the <strong>texts</strong> (after the = sign) must be modified.  Do not modify the keys, as otherwise the BIBLIVRE 5 will not be able to trace the text </p>\n<p>Example: Let´s say that you wish to modify the text in the main menu from <i>Search</i> to <i>Trace</i>.  You will have to download the language file and modify this line:</p>\n<p><strong>*menu.search</strong> = Search</p>\n<p>To:</p>\n<p><strong>*menu.search</strong> = Trace</p>\n<p>and then upload the language file. BIBLIVRE 5 will process the file and will modify the menu text.</p>	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.setup.biblivre4restore.select_file	Selecione um arquivo de backup do BIBLIVRE 5	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	0	f
 en-US	administration.setup.biblivre4restore.select_file	Select a BIBLIVRE 5 backup file	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	0	f

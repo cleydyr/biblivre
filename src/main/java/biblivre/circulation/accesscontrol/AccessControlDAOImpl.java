@@ -20,12 +20,10 @@
 package biblivre.circulation.accesscontrol;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 
 public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDAO {
 
@@ -50,37 +48,6 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
             pst.setInt(3, dto.getCreatedBy());
 
             return pst.executeUpdate() > 0;
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO access_control ");
-            sql.append("(access_card_id, user_id, created_by, id) ");
-            sql.append("VALUES (?, ?, ?, ?);");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                AccessControlDTO dto = (AccessControlDTO) abstractDto;
-                pst.setInt(1, dto.getAccessCardId());
-                pst.setInt(2, dto.getUserId());
-                pst.setInt(3, dto.getCreatedBy());
-                pst.setInt(4, dto.getId());
-                pst.addBatch();
-            }
-
-            return pst.executeBatch()[0] > 0;
 
         } catch (Exception e) {
             throw new DAOException(e);

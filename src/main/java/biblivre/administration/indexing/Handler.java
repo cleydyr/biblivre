@@ -28,7 +28,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.administration.indexing.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
 

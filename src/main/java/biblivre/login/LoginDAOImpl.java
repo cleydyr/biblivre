@@ -21,7 +21,6 @@ package biblivre.login;
 
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
@@ -29,7 +28,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
@@ -239,35 +237,6 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
         } finally {
             this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            String sqlInsertLogin =
-                    "INSERT INTO logins (id, login, password, employee, created_by) VALUES (?, ?, ?, ?, ?);";
-            PreparedStatement pstInsertLogin = con.prepareStatement(sqlInsertLogin);
-            for (AbstractDTO abstractDto : dtoList) {
-                LoginDTO dto = (LoginDTO) abstractDto;
-                pstInsertLogin.setInt(1, dto.getId());
-                pstInsertLogin.setString(2, dto.getLogin());
-                pstInsertLogin.setString(3, dto.getEncPassword());
-                pstInsertLogin.setBoolean(4, dto.isEmployee());
-                pstInsertLogin.setInt(5, dto.getCreatedBy());
-                pstInsertLogin.addBatch();
-            }
-
-            pstInsertLogin.executeBatch();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     private LoginDTO populateDTO(ResultSet rs) throws SQLException {

@@ -146,7 +146,7 @@ public class BackupBO extends AbstractBO {
                 this.move(dto);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("error while creating backup", e);
         }
     }
 

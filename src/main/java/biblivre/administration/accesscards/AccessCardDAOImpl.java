@@ -20,7 +20,6 @@
 package biblivre.administration.accesscards;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
@@ -251,37 +250,6 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
                 AccessCardDTO dto = cardList.get(0);
                 dto.setId(keys.getInt(1));
             }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO access_cards(code, status, created_by, id) ");
-            sql.append("VALUES (?, ?, ?, ?);");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                AccessCardDTO dto = (AccessCardDTO) abstractDto;
-                pst.setString(1, dto.getCode());
-                pst.setString(2, dto.getStatus().toString());
-                pst.setInt(3, dto.getCreatedBy());
-                pst.setInt(4, dto.getId());
-                pst.addBatch();
-            }
-
-            pst.executeBatch();
-
         } catch (Exception e) {
             throw new DAOException(e);
         } finally {

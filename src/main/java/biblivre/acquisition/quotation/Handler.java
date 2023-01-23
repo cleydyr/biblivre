@@ -35,7 +35,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.acquisition.quotation.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private QuotationBO quotationBO;
     private ConfigurationBO configurationBO;

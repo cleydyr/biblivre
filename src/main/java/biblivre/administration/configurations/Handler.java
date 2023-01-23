@@ -32,7 +32,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.administration.configurations.Handler")
+@Component
 public class Handler extends AbstractHandler {
 
     private TranslationBO translationBO;

@@ -24,7 +24,6 @@ import biblivre.acquisition.request.RequestDTO;
 import biblivre.acquisition.supplier.SupplierBO;
 import biblivre.acquisition.supplier.SupplierDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,10 +92,6 @@ public class QuotationBO extends AbstractBO {
 
         SupplierDTO sdto = sbo.get(dto.getSupplierId());
         dto.setSupplierName(sdto.getTrademark());
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.quotationDAO.saveFromBiblivre3(dtoList);
     }
 
     @Autowired

@@ -33,7 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.digitalmedia.Handler")
+@Component
 public class Handler extends AbstractHandler {
 
     private DigitalMediaBO digitalMediaBO;

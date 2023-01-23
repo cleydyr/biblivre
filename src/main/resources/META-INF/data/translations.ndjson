@@ -164,7 +164,6 @@
 {"language":"es","key":"marc.bibliographic.datafield.630.indicator.1.0","text":"Ningún carácter a despreciar","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.630.indicator.1.1","text":"1 carácter a despreciar","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.630.indicator.1.2","text":"2 caracteres a despreciar","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.description","text":"Use esta opción en caso que usted quiera restaurar e importar un backup existente del Biblivre 3.","user_created":false}
 {"language":"es","key":"cataloging.import.upload_button","text":"Enviar","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.630.indicator.1.7","text":"7 caracteres a despreciar","user_created":false}
 {"language":"es","key":"administration.configuration.title.search.distributed_search_limit","text":"Límite de resultados para búsquedas distribuidas","user_created":false}
@@ -240,7 +239,6 @@
 {"language":"es","key":"cataloging.tab.record.custom.field_label.authorities_411","text":"Otra forma de nombre","user_created":false}
 {"language":"es","key":"cataloging.tab.record.custom.field_label.authorities_410","text":"Otra forma de nombre","user_created":false}
 {"language":"es","key":"administration.migration.groups.cataloging_bibliographic","text":"Catálogo Bibliográfico y de Ejemplares","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore","text":"Restaurar un Backup del Biblivre 3","user_created":false}
 {"language":"es","key":"search.distributed.issn","text":"ISSN (incluyendo guiones)","user_created":false}
 {"language":"es","key":"error.no_permission","text":"Usted no tiene permiso para ejecutar esta acción","user_created":false}
 {"language":"es","key":"circulation.user.button.new","text":"Nuevo usuario","user_created":false}
@@ -477,7 +475,6 @@
 {"language":"es","key":"marc.bibliographic.datafield.041.subfield.b","text":"Código de idioma del sumario o resumen","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.041.subfield.a","text":"Código del idioma de texto","user_created":false}
 {"language":"es","key":"cataloging.holding.confirm_delete_record_question","text":"¿Usted realmente desea excluir este registro de ejemplar?","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.error.description","text":"Infelizmente ocurrió un error al restaurar este backup del Biblivre 3. Verifique la próxima pantalla por el log de errores y, en caso necesario, entre en el fórum Biblivre para obtener ayuda.","user_created":false}
 {"language":"es","key":"administration.maintenance.reindex.button_bibliographic","text":"Reindizar base bibliográfica","user_created":false}
 {"language":"es","key":"administration.reports.option.database.main","text":"Principal","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.600","text":"Asunto - Nombre personal","user_created":false}
@@ -639,7 +636,6 @@
 {"language":"es","key":"circulation.user_cards.button.print_user_cards","text":"Imprimir carnets","user_created":false}
 {"language":"es","key":"cataloging.vocabulary.indexing_groups.tg_term","text":"Término General (TG)","user_created":false}
 {"language":"es","key":"administration.change_password.description.6","text":"En caso que el usuario pierda su contraseña, deberá igualmente entrar en contacto con el Administrador o Bibliotecario responsable por el Biblivre, que podrá proveer una nueva contraseña.","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3migration.button","text":"Importar datos del Biblivre 3","user_created":false}
 {"language":"es","key":"cataloging.import.issn_already_in_database","text":"Ya existe un registro con este ISSN en la base de datos","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.630.subfield.a","text":"Título uniforme atribuido al documento","user_created":false}
 {"language":"es","key":"administration.z3950.field.url","text":"URL","user_created":false}
@@ -744,7 +740,6 @@
 {"language":"es","key":"circulation.users.success.delete","text":"Usuario excluido permanentemente","user_created":false}
 {"language":"es","key":"label.logout","text":"Salir","user_created":false}
 {"language":"es","key":"acquisition.order.field.quotation","text":"Cotización","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.success","text":"Restauración de Backup","user_created":false}
 {"language":"es","key":"acquisition.quotation.field.requisition_select","text":"Seleccione una Solicitud","user_created":false}
 {"language":"es","key":"administration.reports.title.holdings","text":"Informe de Sello Patrimonial","user_created":false}
 {"language":"es","key":"warning.create_backup","text":"Hace más de 3 días que usted está sin generar una copia de seguridad (backup)","user_created":false}
@@ -801,7 +796,6 @@
 {"language":"es","key":"circulation.user_cards.button.select_item","text":"Seleccionar usuario","user_created":false}
 {"language":"es","key":"cataloging.bibliographic.confirm_delete_record.forever","text":"Será excluido permanentemente del sistema y no podrá ser recuperado","user_created":false}
 {"language":"es","key":"administration.reports.select.option.select_marc_field","text":"Seleccione un campo Marc","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.button","text":"Restaurar backup seleccionado","user_created":false}
 {"language":"es","key":"search.bibliographic.simple_search","text":"Búsqueda Bibliográfica Simplificada","user_created":false}
 {"language":"es","key":"circulation.lending.receipt.holding_id","text":"Nro. Registro","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.830.indicator.2.2","text":"2 caracteres a despreciar","user_created":false}
@@ -848,7 +842,6 @@
 {"language":"es","key":"marc.holding.datafield.852.indicator.2.0","text":"No numerada","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.525","text":"Nota de Suplemento","user_created":false}
 {"language":"es","key":"circulation.lending.button.print_return_receipt","text":"Imprimir recibo de devolución","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.success","text":"Importación de datos del Biblivre 3","user_created":false}
 {"language":"es","key":"circulation.user_cards.popup.description","text":"Seleccione en qué etiqueta desea iniciar la impresión","user_created":false}
 {"language":"es","key":"acquisition.request.error.delete","text":"Falla al excluir la Solicitud","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.521","text":"Notas de público meta","user_created":false}
@@ -897,7 +890,6 @@
 {"language":"es","key":"administration.reports.field.datafield","text":"Campo MARC","user_created":false}
 {"language":"es","key":"cataloging.tab.record.custom.field_label.biblio_255","text":"Escala","user_created":false}
 {"language":"es","key":"cataloging.tab.record.custom.field_label.biblio_256","text":"Características del archivo","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.error.description","text":"Infelizmente ocurrió un error al importar los datos del Biblivre 3. Verifique la próxima pantalla por el log de errores y, en caso necesario, entre en el fórum Biblivre para obtener ayuda.","user_created":false}
 {"language":"es","key":"cataloging.tab.record.custom.field_label.biblio_257","text":"Lugar de producción","user_created":false}
 {"language":"es","key":"acquisition.quotation.success.update","text":"Cotización guardada con éxito","user_created":false}
 {"language":"es","key":"cataloging.tab.record.custom.field_label.biblio_258","text":"Información sobre el material","user_created":false}
@@ -969,7 +961,6 @@
 {"language":"es","key":"administration.permissions.items.login_change_password","text":"Cambiar contraseña","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.210","text":"Título Abreviado","user_created":false}
 {"language":"es","key":"menu.multi_schema_manage","text":"Gerencia de Bibliotecas","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.select_file","text":"Seleccione un archivo de backup primero","user_created":false}
 {"language":"es","key":"marc.holding.datafield.856.subfield.y","text":"Link en texto","user_created":false}
 {"language":"es","key":"field.error.date","text":"El valor rellenado no tiene una fecha válida. Utilice el formato {0}","user_created":false}
 {"language":"es","key":"marc.holding.datafield.856.subfield.u","text":"URI","user_created":false}
@@ -1089,7 +1080,6 @@
 {"language":"es","key":"administration.user_type.field.fine_value","text":"Valor de la Multa por atrasos","user_created":false}
 {"language":"es","key":"search.common.distributed_search","text":"Búsqueda Distribuida","user_created":false}
 {"language":"es","key":"menu.cataloging_authorities","text":"Autoridades","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import","text":"Importar datos del Biblivre 3","user_created":false}
 {"language":"es","key":"administration.permissions.items.acquisition_quotation_list","text":"Listar cotizaciones","user_created":false}
 {"language":"es","key":"circulation.user_cards.paper_description","text":"{paper_size} {count} etiquetas ({height} mm x {width} mm)","user_created":false}
 {"language":"es","key":"administration.reports.fieldset.order","text":"Ordenación","user_created":false}
@@ -1264,7 +1254,6 @@
 {"language":"es","key":"administration.migration.groups.access_control","text":"Tarjetas de acceso y Control de acceso","user_created":false}
 {"language":"es","key":"search.distributed.query_placeholder","text":"Rellene los términos de la búsqueda","user_created":false}
 {"language":"es","key":"search.distributed.any","text":"Cualquier","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.confirm_title","text":"Restaurar Backup","user_created":false}
 {"language":"es","key":"administration.user_type.field.description","text":"Descripción","user_created":false}
 {"language":"es","key":"circulation.accesscards.lend.success","text":"Tarjeta vinculada con éxito","user_created":false}
 {"language":"es","key":"administration.accesscards.change_status.title.unblock","text":"Desbloquear Tarjeta","user_created":false}
@@ -1280,7 +1269,6 @@
 {"language":"es","key":"search.bibliographic.select_item_button","text":"Seleccionar registro","user_created":false}
 {"language":"es","key":"circulation.user.button.block","text":"Bloquear","user_created":false}
 {"language":"es","key":"administration.maintenance.reindex.button_vocabulary","text":"Reindizar base de vocabulario","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.error","text":"Error al importar datos","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.400","text":"Otra Forma de nombre","user_created":false}
 {"language":"es","key":"administration.permissions.items.administration_accesscards_delete","text":"Excluir tarjetas de acceso","user_created":false}
 {"language":"es","key":"administration.translations.download.field.languages","text":"Idioma","user_created":false}
@@ -1312,7 +1300,6 @@
 {"language":"es","key":"administration.configuration.description.general.title","text":"Esta configuración representa el nombre de la biblioteca, que será exhibido al inicio de las páginas del Biblivre y en los informes.","user_created":false}
 {"language":"es","key":"administration.maintenance.backup.label_full","text":"Backup completo","user_created":false}
 {"language":"es","key":"administration.configuration.title.search.result_limit","text":"Límite de resultados","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.error","text":"Error al restaurar backup","user_created":false}
 {"language":"es","key":"circulation.custom.user_field.gender","text":"Género","user_created":false}
 {"language":"es","key":"circulation.lending.empty_lending_list","text":"Este lector no posee ejemplares prestados","user_created":false}
 {"language":"es","key":"menu.acquisition_supplier","text":"Proveedores","user_created":false}
@@ -1329,7 +1316,6 @@
 {"language":"es","key":"circulation.users.failure.unblock","text":"Falla al desbloquear al Usuario","user_created":false}
 {"language":"es","key":"acquisition.quotation.field.expiration_date","text":"Fecha de Validez de la Cotización","user_created":false}
 {"language":"es","key":"administration.change_password.submit_button","text":"Cambiar contraseña","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.field.upload_file","text":"Seleccionar archivo de backup","user_created":false}
 {"language":"es","key":"cataloging.database.work","text":"Trabajo","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.245.indicator.2","text":"Número de caracteres a ser despreciados en la alfabetización","user_created":false}
 {"language":"es","key":"administration.permissions.reader","text":"Lector","user_created":false}
@@ -1366,7 +1352,6 @@
 {"language":"es","key":"menu.administration","text":"Administración","user_created":false}
 {"language":"es","key":"marc.holding.datafield.856","text":"Localización de obras por medio electrónico","user_created":false}
 {"language":"es","key":"login.error.login_already_exists","text":"Este login ya existe. Escoja otro nombre","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.success.description","text":"Backup restaurado con éxito","user_created":false}
 {"language":"es","key":"acquisition.request.field.requester","text":"Solicitante","user_created":false}
 {"language":"es","key":"search.bibliographic.title","text":"Título","user_created":false}
 {"language":"es","key":"format.datetime","text":"dd/MM/yyyy HH:mm","user_created":false}
@@ -1418,7 +1403,6 @@
 {"language":"es","key":"administration.configuration.invalid_pg_dump_path","text":"Camino inválido. El Biblivre no será capaz de generar backups ya que el archivo <strong>pg_dump</strong> no fue encontrado.","user_created":false}
 {"language":"es","key":"circulation.lending.holdings.title","text":"Buscar Ejemplar","user_created":false}
 {"language":"es","key":"administration.reports.select.option.accession_number","text":"Informe de Sello Patrimonial","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.confirm_title","text":"Importar datos del Biblivre 3","user_created":false}
 {"language":"es","key":"administration.configuration.description.cataloging.accession_number_prefix","text":"El sello patrimonial es el campo que identifica únicamente un ejemplar. En el Biblivre, la regla de formación para el sello patrimonial depende del año de adquisición del ejemplar, de la cantidad de ejemplares adquiridos en el año y del prefijo del sello patrimonial. Este prefijo es el término que será incluido antes de la numeración de año, en el formato <prefijo>.<año>.<contador> (Ex: Bib.2014.7).","user_created":false}
 {"language":"es","key":"cataloging.authorities.confirm_delete_record.forever","text":"Será excluido permanentemente del sistema y no podrá ser recuperado","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.111.indicator.1.1","text":"nombre de la jurisdicción","user_created":false}
@@ -1696,7 +1680,6 @@
 {"language":"es","key":"marc.bibliographic.datafield.240.indicator.2.3","text":"3 caracteres a despreciar","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.362.indicator.1","text":"Formato de la fecha","user_created":false}
 {"language":"es","key":"administration.permissions.items.acquisition_quotation_save","text":"Guardar registro de cotización","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3migration","text":"Importar datos del Biblivre 3","user_created":false}
 {"language":"es","key":"acquisition.order.field.info","text":"Observaciones","user_created":false}
 {"language":"es","key":"administration.reports.title.orders_by_date","text":"Informe de Pedidos por Período","user_created":false}
 {"language":"es","key":"circulation.lending.lend_success","text":"Ejemplar prestado con éxito","user_created":false}
@@ -1765,7 +1748,6 @@
 {"language":"es","key":"marc.vocabulary.datafield.913","text":"Código Lugar","user_created":false}
 {"language":"es","key":"cataloging.tab.record.custom.field_label.vocabulary_150","text":"Término Específico","user_created":false}
 {"language":"es","key":"acquisition.quotation.confirm_delete_record_question","text":"¿Usted realmente desea excluir este registro de cotización?","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.confirm_description","text":"¿Usted realmente desea restaurar este Backup?","user_created":false}
 {"language":"es","key":"administration.reports.fieldset.database","text":"Base de Datos","user_created":false}
 {"language":"es","key":"search.common.clear_simple_search","text":"Limpiar resultados de la búsqueda","user_created":false}
 {"language":"es","key":"cataloging.import.source_search_subtitle","text":"Seleccione una biblioteca remota y rellene los términos de la búsqueda. La búsqueda devolverá un límite de {0} registros. En caso que no encuentre el registro de interés, refine su búsqueda.","user_created":false}
@@ -1829,7 +1811,6 @@
 {"language":"es","key":"cataloging.bibliographic.selected_records_singular","text":"{0} registro seleccionado","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.020.subfield.a","text":"Número de ISBN","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.020.subfield.c","text":"Modalidad de adquisición","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.confirm_description","text":"¿Usted realmente desea importar los datos del Biblivre 3?","user_created":false}
 {"language":"es","key":"circulation.lending.button.select_reader","text":"Seleccionar lector","user_created":false}
 {"language":"es","key":"marc.material_type.score","text":"Partitura","user_created":false}
 {"language":"es","key":"marc.holding.datafield.852.indicator.2","text":"Tipo de ordenación","user_created":false}
@@ -1880,7 +1861,6 @@
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.confirm_description","text":"Você realmente deseja restaurar este Backup?","user_created":false}
 {"language":"pt-BR","key":"administration.setup.progress_popup.processing","text":"O Biblivre desta biblioteca está em manutenção. Aguarde até que a mesma seja concluída.","user_created":false}
 {"language":"pt-BR","key":"administration.permissions.select.default","text":"Selecione uma opção","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.button","text":"Importar dados do Biblivre 3","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.342.indicator.2.4","text":"Lugar","user_created":false}
 {"language":"es","key":"cataloging.tab.record.custom.field_label.authorities_110","text":"Autor","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.243.subfield.g","text":"Información adicional","user_created":false}
@@ -1893,7 +1873,6 @@
 {"language":"pt-BR","key":"administration.setup.button.continue_to_biblivre","text":"Ir para o Biblivre","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.title_found_backups","text":"Backups Encontrados","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.success.description","text":"Backup restaurado com sucesso","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3migration.button","text":"Importar dados do Biblivre 3","user_created":false}
 {"language":"pt-BR","key":"administration.setup.button.show_log","text":"Exibir log","user_created":false}
 {"language":"pt-BR","key":"administration.maintenance.backup.error.psql_not_found","text":"PSQL não encontrado","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.confirm_title","text":"Restaurar Backup","user_created":false}
@@ -1905,65 +1884,46 @@
 {"language":"pt-BR","key":"administration.migration.migrate.error","text":"Falha ao importar os dados","user_created":false}
 {"language":"pt-BR","key":"administration.setup.clean_install.button","text":"Iniciar como uma nova biblioteca","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.error","text":"Erro ao restaurar backup","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3migration","text":"Importar dados do Biblivre 3","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.newest_backup","text":"Backup mais recente","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.description_found_backups_1","text":"Abaixo estão os backups encontrados nos documentos do seu computador. Para restaurar um destes backups, clique sobre o seu nome.","user_created":false}
 {"language":"pt-BR","key":"administration.migration.migrate.success","text":"Dados importados com sucesso","user_created":false}
 {"language":"pt-BR","key":"common.calculating","text":"Calculando","user_created":false}
 {"language":"pt-BR","key":"text.main.noscript","text":"","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.description","text":"Use esta opção caso você queira restaurar e importar um backup existente do Biblivre 3.","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore","text":"Restaurar um Backup do Biblivre 3","user_created":false}
 {"language":"pt-BR","key":"administration.maintenance.backup.description.4","text":"O Backup somente de arquivos digitais é uma cópia de todos os arquivos de mídia digital que foram gravados no Biblivre, sem nenhum outro dado ou informação, como usuários, base catalográfica, etc.","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.select.default","text":"Selecione uma opção","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.confirm_description","text":"Você realmente deseja restaurar este Backup?","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore","text":"Restaurar um Backup do Biblivre 4 ou Biblivre 5","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.id_cpf","text":"CPF","user_created":false}
 {"language":"pt-BR","key":"administration.setup.upload_popup.processing","text":"Processando...","user_created":false}
 {"language":"pt-BR","key":"multi_schema.manage.button.show_log","text":"Exibir log","user_created":false}
 {"language":"pt-BR","key":"multi_schema.manage.error.create","text":"Falha ao criar nova biblioteca.","user_created":false}
 {"language":"pt-BR","key":"cataloging.bibliographic.button.export_records","text":"Exportar registros","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.error.description","text":"Infelizmente ocorreu um erro ao restaurar este backup do Biblivre 3. Verifique a próxima tela pelo log de erros e, caso necessário, entre no fórum Biblivre para obter ajuda.","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.address_complement","text":"Complemento","user_created":false}
 {"language":"pt-BR","key":"administration.permissions.items.cataloging_bibliographic_private_database_access","text":"Acesso à Base Privada.","user_created":false}
 {"language":"pt-BR","key":"administration.setup.no_backups_found","text":"Nenhum backup encontrado","user_created":false}
 {"language":"pt-BR","key":"administration.maintenance.backup.warning","text":"Este processo pode demorar alguns minutos, dependendo da configuração de hardware do seu servidor.","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.address","text":"Endereço","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.address_zip","text":"CEP","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.success","text":"Restauração de Backup","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.button","text":"Restaurar backup selecionado","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.success","text":"Importação de dados do Biblivre 3","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.error.description","text":"Infelizmente ocorreu um erro ao importar os dados do Biblivre 3. Verifique a próxima tela pelo log de erros e, caso necessário, entre no fórum Biblivre para obter ajuda.","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.address_city","text":"Cidade","user_created":false}
 {"language":"pt-BR","key":"administration.configuration.title.general.multi_schema","text":"Habilitar Multi-bibliotecas","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.select_file","text":"Selecione um arquivo de backup primeiro","user_created":false}
 {"language":"pt-BR","key":"circulation.lending.reserved.warning","text":"Todos os exemplares disponíveis deste registro estão reservados para outros leitores. O empréstimo pode ser efetuado, porém verifique as informações de reservas.","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.phone_cel","text":"Celular","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import","text":"Importar dados do Biblivre 3","user_created":false}
 {"language":"pt-BR","key":"administration.setup.upload_popup.uploading","text":"Enviando arquivo...","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.phone_home","text":"Telefone Residencial","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.confirm_title","text":"Restaurar Backup","user_created":false}
 {"language":"pt-BR","key":"multi_schema.manage.error.description","text":"Falha ao criar nova biblioteca","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.error","text":"Erro ao importar dados","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.error","text":"Erro ao restaurar backup","user_created":false}
 {"language":"pt-BR","key":"administration.permissions.groups.digitalmedia","text":"Mídia Digital","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.field.upload_file","text":"Selecionar arquivo de backup","user_created":false}
 {"language":"pt-BR","key":"administration.permissions.reader","text":"Leitor","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.success.description","text":"Backup restaurado com sucesso","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.confirm_title","text":"Importar dados do Biblivre 3","user_created":false}
 {"language":"pt-BR","key":"multi_schema.manage.success.create","text":"Nova biblioteca criada com sucesso.","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.birthday","text":"Data de Nascimento","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.address_state","text":"Estado","user_created":false}
 {"language":"pt-BR","key":"multi_schema.manage.log_header","text":"[Log de criação de nova biblioteca do BIBLIVRE 5]","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.phone_work_extension","text":"Ramal do Telefone Comercial","user_created":false}
 {"language":"pt-BR","key":"administration.permissions.items.digitalmedia_upload","text":"Enviar mídia digital","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.confirm_description","text":"Você realmente deseja importar os dados do Biblivre 3?","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.address_number","text":"Número","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.gender.1","text":"Masculino","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.gender.2","text":"Feminino","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.id_rg","text":"Identidade","user_created":false}
 {"language":"pt-BR","key":"circulation.custom.user_field.phone_work","text":"Telefone Comercial","user_created":false}
 {"language":"pt-BR","key":"administration.setup.upload_popup.title","text":"Abrindo Arquivo","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.success.description","text":"Dados importados com sucesso","user_created":false}
 {"language":"pt-BR","key":"acquisition.supplier.confirm_delete_record_title.forever","text":"Excluir registro de fornecedor","user_created":false}
 {"language":"pt-BR","key":"menu.circulation_user","text":"Cadastro de Usuários","user_created":false}
 {"language":"pt-BR","key":"administration.reports.title.dewey","text":"Relatório de Classificação Dewey","user_created":false}
@@ -3921,7 +3881,6 @@
 {"language":"es","key":"marc.bibliographic.datafield.555.indicator.1","text":"Control de constante en la exhibición","user_created":false}
 {"language":"es","key":"administration.migration.title","text":"Migración de datos del Biblivre 3","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.245.indicator.2.0","text":"Ningún carácter a despreciar","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.success.description","text":"Datos importados con éxito","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.245.indicator.2.1","text":"1 carácter a despreciar","user_created":false}
 {"language":"es","key":"administration.reports.select.option.bibliography","text":"Informe de Bibliografía del Autor","user_created":false}
 {"language":"es","key":"acquisition.supplier.field.vat_registration_number","text":"Inscripción Estatal","user_created":false}
@@ -3942,7 +3901,6 @@
 {"language":"es","key":"marc.bibliographic.datafield.595.subfield.a","text":"Código de la bibliografía","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.020","text":"ISBN","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.343.subfield.a","text":"Método de codificación de la coordenada plana","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.button","text":"Importar datos del Biblivre 3","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.343.subfield.b","text":"Unidad de distancia plana","user_created":false}
 {"language":"es","key":"administration.configuration.title.circulation.lending_receipt.printer.type","text":"Tipo de impresora para recibo de préstamos","user_created":false}
 {"language":"es","key":"marc.bibliographic.datafield.111.subfield.n","text":"Número de orden de evento","user_created":false}
@@ -4058,7 +4016,6 @@
 {"language":"en-US","key":"marc.bibliographic.datafield.630.indicator.1.0","text":"No character to be overridden","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.630.indicator.1.1","text":"1 character to be overridden","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.630.indicator.1.2","text":"2 characters to be overridden","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.description","text":"Use this option if you wish to restore and import a Biblivre3 existing backup.","user_created":false}
 {"language":"en-US","key":"cataloging.import.upload_button","text":"Send","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.630.indicator.1.7","text":"7 characters to be overridden","user_created":false}
 {"language":"en-US","key":"administration.configuration.title.search.distributed_search_limit","text":"Limit of results for distributed searches","user_created":false}
@@ -4129,7 +4086,6 @@
 {"language":"en-US","key":"cataloging.tab.record.custom.field_label.authorities_411","text":"Another name format","user_created":false}
 {"language":"en-US","key":"cataloging.tab.record.custom.field_label.authorities_410","text":"Another name format","user_created":false}
 {"language":"en-US","key":"administration.migration.groups.cataloging_bibliographic","text":"Bibliographic and Units Catalogue","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore","text":"Restore a Biblivre 3 Backup","user_created":false}
 {"language":"en-US","key":"search.distributed.issn","text":"ISSN (including hyphens)","user_created":false}
 {"language":"en-US","key":"multi_schema.restore.warning_overwrite","text":"Beware!:  There is already a library registered with the address above. If you restore using the option selected, the content of the existing library will be replaced by the Backup content.","user_created":false}
 {"language":"en-US","key":"error.no_permission","text":"You have no permission to execute this action","user_created":false}
@@ -4364,7 +4320,6 @@
 {"language":"en-US","key":"marc.bibliographic.datafield.041.subfield.b","text":"Language code of summary or abstract","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.041.subfield.a","text":"Language code of text","user_created":false}
 {"language":"en-US","key":"cataloging.holding.confirm_delete_record_question","text":"Do you really wish to delete this unit record?","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.error.description","text":"Regretably an error occurred when restoring Biblivre3 backup. Check the next screen by error log and, if necessary go to the Biblivre forum for assistance\\n.","user_created":false}
 {"language":"en-US","key":"administration.maintenance.reindex.button_bibliographic","text":"Reindex bibliographic base","user_created":false}
 {"language":"en-US","key":"administration.reports.option.database.main","text":"Main","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.600","text":"Subject - Personal name","user_created":false}
@@ -4521,7 +4476,6 @@
 {"language":"en-US","key":"circulation.user_cards.button.print_user_cards","text":"Print user cards","user_created":false}
 {"language":"en-US","key":"cataloging.vocabulary.indexing_groups.tg_term","text":"Broader Term (BT)","user_created":false}
 {"language":"en-US","key":"administration.change_password.description.6","text":"If the user losses his/her password, he / she must contact the Administrator or the Librarian in charge of Biblivre, and they may furnish a new password.","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3migration.button","text":"Import Biblivre 3 data","user_created":false}
 {"language":"en-US","key":"cataloging.import.issn_already_in_database","text":"There is already a record with this ISSN in the database","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.630.subfield.a","text":"Uniform title given to the document","user_created":false}
 {"language":"en-US","key":"administration.z3950.field.url","text":"URL","user_created":false}
@@ -4627,7 +4581,6 @@
 {"language":"en-US","key":"circulation.users.success.delete","text":"User deleted forever","user_created":false}
 {"language":"en-US","key":"label.logout","text":"Logout","user_created":false}
 {"language":"en-US","key":"acquisition.order.field.quotation","text":"Quotation","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.success","text":"Backup restoration","user_created":false}
 {"language":"en-US","key":"acquisition.quotation.field.requisition_select","text":"Select a Requisition","user_created":false}
 {"language":"en-US","key":"administration.reports.title.holdings","text":"Asset Cataloging Report","user_created":false}
 {"language":"en-US","key":"warning.create_backup","text":"You have not created a backup copy in more than 3 days","user_created":false}
@@ -4685,7 +4638,6 @@
 {"language":"en-US","key":"circulation.user_cards.button.select_item","text":"Select user","user_created":false}
 {"language":"en-US","key":"cataloging.bibliographic.confirm_delete_record.forever","text":"It will be deleted from the system forever and cannot be restored","user_created":false}
 {"language":"en-US","key":"administration.reports.select.option.select_marc_field","text":"Select a Marc field","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.button","text":"Restore selected backup","user_created":false}
 {"language":"en-US","key":"search.bibliographic.simple_search","text":"Simplified Bibliographic Search","user_created":false}
 {"language":"en-US","key":"circulation.lending.receipt.holding_id","text":"Record No.","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.830.indicator.2.2","text":"2 characters to be overridden","user_created":false}
@@ -4731,7 +4683,6 @@
 {"language":"en-US","key":"marc.holding.datafield.852.indicator.2.1","text":"Primary numbering","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.525","text":"Supplementary Note","user_created":false}
 {"language":"en-US","key":"circulation.lending.button.print_return_receipt","text":"Print return receipt","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.success","text":"Import of Biblivre 3 data","user_created":false}
 {"language":"en-US","key":"circulation.user_cards.popup.description","text":"Select in which label you wish to start printing","user_created":false}
 {"language":"en-US","key":"acquisition.request.error.delete","text":"Error when deleting Requisition","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.521","text":"Target public notes","user_created":false}
@@ -4777,7 +4728,6 @@
 {"language":"en-US","key":"administration.reports.field.datafield","text":"MARC field","user_created":false}
 {"language":"en-US","key":"cataloging.tab.record.custom.field_label.biblio_255","text":"Scale","user_created":false}
 {"language":"en-US","key":"cataloging.tab.record.custom.field_label.biblio_256","text":"File characteristics","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.error.description","text":"Regretably there was an error when importing Biblivre 3 data. Please check the next screen by the error log and, if necessary, go to the Biblivre forum for assistance.","user_created":false}
 {"language":"en-US","key":"cataloging.tab.record.custom.field_label.biblio_257","text":"Production place","user_created":false}
 {"language":"en-US","key":"acquisition.quotation.success.update","text":"Quotation successfully saved","user_created":false}
 {"language":"en-US","key":"cataloging.tab.record.custom.field_label.biblio_258","text":"Information on the material","user_created":false}
@@ -4849,7 +4799,6 @@
 {"language":"en-US","key":"administration.permissions.items.login_change_password","text":"Change password","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.210","text":"Abbreviated Title","user_created":false}
 {"language":"en-US","key":"menu.multi_schema_manage","text":"Libraries Management","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.select_file","text":"Select a backup file first","user_created":false}
 {"language":"en-US","key":"marc.holding.datafield.856.subfield.y","text":"Text link","user_created":false}
 {"language":"en-US","key":"field.error.date","text":"The Value filled in is not a valid date. Use the format {0}","user_created":false}
 {"language":"en-US","key":"marc.holding.datafield.856.subfield.u","text":"URI","user_created":false}
@@ -4972,7 +4921,6 @@
 {"language":"en-US","key":"administration.user_type.field.fine_value","text":"Value of fine in case of late returns","user_created":false}
 {"language":"en-US","key":"search.common.distributed_search","text":"Distributed search","user_created":false}
 {"language":"en-US","key":"menu.cataloging_authorities","text":"Authorities","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import","text":"Import Biblivre 3 Data","user_created":false}
 {"language":"en-US","key":"administration.permissions.items.acquisition_quotation_list","text":"List quotations","user_created":false}
 {"language":"en-US","key":"multi_schema.manage.disable","text":"Disable library","user_created":false}
 {"language":"en-US","key":"circulation.user_cards.paper_description","text":"{paper_size} {count} labels ({height} mm x {width} mm)","user_created":false}
@@ -5139,7 +5087,6 @@
 {"language":"en-US","key":"administration.migration.groups.access_control","text":"Access cards and access Control","user_created":false}
 {"language":"en-US","key":"search.distributed.query_placeholder","text":"Fill in the terms for the search","user_created":false}
 {"language":"en-US","key":"search.distributed.any","text":"Any","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.confirm_title","text":"Restore Backup","user_created":false}
 {"language":"en-US","key":"administration.user_type.field.description","text":"Description","user_created":false}
 {"language":"en-US","key":"circulation.accesscards.lend.success","text":"Card successfully bound","user_created":false}
 {"language":"en-US","key":"administration.accesscards.change_status.title.unblock","text":"Unblock Card","user_created":false}
@@ -5155,7 +5102,6 @@
 {"language":"en-US","key":"search.bibliographic.select_item_button","text":"Select record","user_created":false}
 {"language":"en-US","key":"circulation.user.button.block","text":"Block","user_created":false}
 {"language":"en-US","key":"administration.maintenance.reindex.button_vocabulary","text":"Reindex vocabulary base","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.error","text":"Import data error","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.400","text":"Other name form","user_created":false}
 {"language":"en-US","key":"administration.permissions.items.administration_accesscards_delete","text":"Delete access cards","user_created":false}
 {"language":"en-US","key":"administration.translations.download.field.languages","text":"Language","user_created":false}
@@ -5188,7 +5134,6 @@
 {"language":"en-US","key":"administration.configuration.description.general.title","text":"This configuration represents the name of the library, to be shown on the upper part of the Biblivre pages and in the reports.","user_created":false}
 {"language":"en-US","key":"administration.maintenance.backup.label_full","text":"Complete Backup","user_created":false}
 {"language":"en-US","key":"administration.configuration.title.search.result_limit","text":"Result limit","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.error","text":"Backup restoration error","user_created":false}
 {"language":"en-US","key":"circulation.custom.user_field.gender","text":"Gender","user_created":false}
 {"language":"en-US","key":"circulation.lending.empty_lending_list","text":"This reader does not have units (copies) lent","user_created":false}
 {"language":"en-US","key":"menu.acquisition_supplier","text":"Suppliers","user_created":false}
@@ -5204,7 +5149,6 @@
 {"language":"en-US","key":"circulation.users.failure.unblock","text":"Failure unblocking User","user_created":false}
 {"language":"en-US","key":"acquisition.quotation.field.expiration_date","text":"Quotation expiration date","user_created":false}
 {"language":"en-US","key":"administration.change_password.submit_button","text":"Change password","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.field.upload_file","text":"Select backup file","user_created":false}
 {"language":"en-US","key":"cataloging.database.work","text":"Work","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.245.indicator.2","text":"Number of characters to be overridden in alphabetation","user_created":false}
 {"language":"en-US","key":"administration.permissions.reader","text":"Reader","user_created":false}
@@ -5241,7 +5185,6 @@
 {"language":"en-US","key":"menu.administration","text":"Administration","user_created":false}
 {"language":"en-US","key":"marc.holding.datafield.856","text":"Work tracking by electronic means","user_created":false}
 {"language":"en-US","key":"login.error.login_already_exists","text":"This login already exists. Choose another name","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.success.description","text":"Backup successfully restored","user_created":false}
 {"language":"en-US","key":"acquisition.request.field.requester","text":"Requester","user_created":false}
 {"language":"en-US","key":"search.bibliographic.title","text":"Title","user_created":false}
 {"language":"en-US","key":"format.datetime","text":"dd/MM/yyyy HH:mm","user_created":false}
@@ -5294,7 +5237,6 @@
 {"language":"en-US","key":"administration.configuration.invalid_pg_dump_path","text":"Invalid path. Biblivre will not be able to create backups because the <strong>pg_dump</strong> file was not found.","user_created":false}
 {"language":"en-US","key":"circulation.lending.holdings.title","text":"Search Copy (Unit)","user_created":false}
 {"language":"en-US","key":"administration.reports.select.option.accession_number","text":"Asset Cataloging Report","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.confirm_title","text":"Import Biblivre 3 data","user_created":false}
 {"language":"en-US","key":"administration.configuration.description.cataloging.accession_number_prefix","text":"Asset cataloging is the field that solely identifies a copy. In Biblivre, the rule for asset reference numbers depends on the year of acquisition of the unit, on the quantity of units entered in the year and on the prefix of the asset reference number. This prefix is the term to be included before the year number, in the format <prefix>.<year>.<counter> (Ex: Bib.2014.7).","user_created":false}
 {"language":"en-US","key":"cataloging.authorities.confirm_delete_record.forever","text":"It will be deleted from system forever and cannot be recovered","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.111.indicator.1.1","text":"name of jurisdiction","user_created":false}
@@ -5567,7 +5509,6 @@
 {"language":"en-US","key":"marc.bibliographic.datafield.240.indicator.2.3","text":"3 characters to be overridden","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.362.indicator.1","text":"Date format","user_created":false}
 {"language":"en-US","key":"administration.permissions.items.acquisition_quotation_save","text":"Save quotation record","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3migration","text":"Import Biblivre 3 data","user_created":false}
 {"language":"en-US","key":"acquisition.order.field.info","text":"Remarks","user_created":false}
 {"language":"en-US","key":"administration.reports.title.orders_by_date","text":"Report on Orders by Period","user_created":false}
 {"language":"en-US","key":"circulation.lending.lend_success","text":"Copy (unit) lent successfully","user_created":false}
@@ -5638,7 +5579,6 @@
 {"language":"en-US","key":"marc.vocabulary.datafield.913","text":"Local code","user_created":false}
 {"language":"en-US","key":"cataloging.tab.record.custom.field_label.vocabulary_150","text":"Narrower Term","user_created":false}
 {"language":"en-US","key":"acquisition.quotation.confirm_delete_record_question","text":"Do you really wish to delete this quotation record?","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.confirm_description","text":"Do you really wish to restore this Backup?","user_created":false}
 {"language":"en-US","key":"administration.reports.fieldset.database","text":"Database","user_created":false}
 {"language":"en-US","key":"search.common.clear_simple_search","text":"Clear search results","user_created":false}
 {"language":"en-US","key":"cataloging.import.source_search_subtitle","text":"Select a remote library and fill in the search terms. The search will provide a limit of  {0} records. If you do not see the record that interests you, please refine your search.","user_created":false}
@@ -5707,7 +5647,6 @@
 {"language":"en-US","key":"cataloging.bibliographic.selected_records_singular","text":"{0} record selected","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.020.subfield.a","text":"ISBN number","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.020.subfield.c","text":"Acquisition arrangement","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.confirm_description","text":"Do you really wish to import Biblivre 3 data?","user_created":false}
 {"language":"en-US","key":"circulation.lending.button.select_reader","text":"Select reader","user_created":false}
 {"language":"en-US","key":"marc.material_type.score","text":"Score","user_created":false}
 {"language":"en-US","key":"marc.holding.datafield.852.indicator.2","text":"Order type","user_created":false}
@@ -5926,7 +5865,6 @@
 {"language":"en-US","key":"marc.bibliographic.datafield.555.indicator.1","text":"Constant exhibition control","user_created":false}
 {"language":"en-US","key":"administration.migration.title","text":"Biblivre 3 data migration","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.245.indicator.2.0","text":"No character to be overridden","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.success.description","text":"Data successfully imported","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.245.indicator.2.1","text":"1 character to be overridden","user_created":false}
 {"language":"en-US","key":"administration.reports.select.option.bibliography","text":"Author Bibliography Report","user_created":false}
 {"language":"en-US","key":"acquisition.supplier.field.vat_registration_number","text":"State registration number","user_created":false}
@@ -5948,7 +5886,6 @@
 {"language":"en-US","key":"marc.bibliographic.datafield.595.subfield.a","text":"Bibliography code","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.020","text":"ISBN","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.343.subfield.a","text":"Method for codification of flat coordinate","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.button","text":"Import Biblivre 3 data","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.343.subfield.b","text":"Flat distance unit","user_created":false}
 {"language":"en-US","key":"administration.configuration.title.circulation.lending_receipt.printer.type","text":"Type of printer for loan receipts","user_created":false}
 {"language":"en-US","key":"marc.bibliographic.datafield.111.subfield.n","text":"Number of order of the event","user_created":false}
@@ -6092,9 +6029,6 @@
 {"language":"es","key":"cataloging.bibliographic.search.holding_id","text":"Código de barras de la etiqueta","user_created":false}
 {"language":"es","key":"search.holding.shelf_location","text":"Localización","user_created":false}
 {"language":"es","key":"circulation.lending.no_holding_found","text":"Ningún ejemplar encontrado","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3restore.log_header","text":"[Log de restauração de backup do Biblivre 3]\\n\\n","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3restore.log_header","text":"[Log for Biblivre 3 backup restoration]\\n\\n","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3restore.log_header","text":"[Log de restauración de backup del Biblivre 3]\\n\\n","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.skip","text":"Ignorar","user_created":false}
 {"language":"en-US","key":"administration.setup.biblivre4restore.skip","text":"Skip","user_created":false}
 {"language":"es","key":"administration.setup.biblivre4restore.skip","text":"Pasar","user_created":false}
@@ -6339,17 +6273,14 @@
 {"language":"es","key":"administration.configuration.description.logged_out_text","text":"Texto a ser exhibido en la pantalla del Biblivre, para usuarios que no tengan ingresado con login y contraseña. Usted puede utilizar tags HTML, pero cuidado de no quebrar el diseño del BIBLIVRE 5. Atención: esta configuración se relaciona con el sistema de traducciones. Las alteraciones realizadas en esta pantalla afectarán solamente el idioma actual. Para alterar en otros idiomas, utilice la pantalla de traducciones o acceda al Biblivre utilizando el idioma a ser alterado.","user_created":false}
 {"language":"es","key":"multi_schema.manage.schemas.description","text":"Abajo están todas las bibliotecas registradas en este BIBLIVRE 5. En caso que quiera alterar un nombre o subtítulo, accese a la pantalla de configuraciones de la biblioteca.","user_created":false}
 {"language":"es","key":"administration.translations.page_help","text":"<p>El módulo de <strong>\\"Traducciones\\"</strong> permite agregar nuevos idiomas al BIBLIVRE 5 o alterar los textos ya existentes.</p>\\n<p><strong>Atención: Este módulo realiza configuraciones avanzadas del BIBLIVRE 5, y debe ser utilizado solamente por Usuarios avanzados, con experiencia en informática.</strong>.</p>\\n<p>Para agregar un nuevo idioma, baje el archivo de idioma en portugués, haga la traducción de los textos y después envíe el archivo. Recuerde que solamente los <strong>textos</strong> (después del signo igual) deben ser alterados.  No altere las llaves, caso contrario el BIBLIVRE 5 no conseguirá localizar el texto</p>\\n<p>Ejemplo: digamos que usted quiera alterar el texto en el menú principal de <i>Búsqueda</i> para <i>Buscar</i>.  Usted deberá entonces bajar el archivo del idioma y alterar la siguiente línea:</p>\\n<p><strong>*menu.search</strong> = Búsqueda</p>\\n<p>Para:</p>\\n<p><strong>*menu.search</strong> = Busca</p>\\n<p>Y entonces hacer el envío del archivo de idiomas. El BIBLIVRE 5 procesará el archivo, y alterará el texto del menú.</p>","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.description","text":"Fue detectada una instalación del Biblivre 3 en esta computadora. Usted podrá importar estos datos para el BIBLIVRE 5 seleccionando los items de interés y haciendo click en el botón abajo. Luego de la importación, <strong>usted deberá reindizar las tres bases: Bibliográfica, Autoridades y Vocabulario</strong>, a través de la pantalla <strong>\\"Manutención\\"</strong> em <strong>\\"Administración\\"</strong> y <strong>seleccionar nuevamente las autorizaciones de los empleados con acceso al Biblivre</strong>, a través de la pantalla <strong>\\"Logins y Permisos\\"</strong> en <strong>\\"Administración\\"</strong>.","user_created":false}
 {"language":"es","key":"administration.maintenance.reinstall.confirm.description","text":"¿Desea ir a la pantalla de restauración y reconfiguración? Usted podrá restaurar un backup del BIBLIVRE 5, borrar los datos de su biblioteca o rehacer una migración.","user_created":false}
 {"language":"es","key":"administration.setup.clean_install.description","text":"En caso que usted no tenga o no desee restaurar un backup, esta opción permitirá iniciar el uso del BIBLIVRE 5 con una base de datos vacía. Luego de entrar en el BIBLIVRE 5 por primera vez, utilice el login <strong>admin</strong> y la contraseña <strong>abracadabra</strong> para entrar al sistema y configurar su nueva biblioteca.","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3migration.description","text":"Fue detectada una instalación de Biblivre 3 en esta computadora. Usted podrá importar estos datos para el BIBLIVRE 5 seleccionando los items de interés y haciendo click en el botón abajo. Luego de la importación, <strong>usted deberá reindizar las tres bases: Bibliográfica, Autoridades y Vocabulario</strong>, a través de la pantalla <strong>\\"Manutención\\"</strong> en <strong>\\"Administración\\"</strong> y <strong>seleccionar nuevamente las autorizaciones de los empleados con acceso al Biblivre</strong>, a través de la pantalla <strong>\\"Logins y Permisos\\"</strong> en <strong>\\"Administración\\"</strong>.","user_created":false}
 {"language":"es","key":"multi_schema.configuration.description.general.title","text":"Nombre que será exhibido cuando se accede a la página principal de este grupo de bibliotecas. Esta página listará todas las bibliotecas registradas en este grupo (administradas por el mismo BIBLIVRE 5).","user_created":false}
 {"language":"es","key":"multi_schema.manage.page_help","text":"La pantalla de multibibliotecas permite registrar diversas bibliotecas para ser administradas por un único Biblivre. A partir del momento que usted habilita el sistema de multi-bibliotecas, la lista de bibliotecas registradas será exhibida siempre que alguien entre en la dirección estándar del BIBLIVRE 5.","user_created":false}
 {"language":"es","key":"administration.configuration.description.general.multi_schema","text":"Esta configuración permite que se habilite el sistema de múltiples bibliotecas en esta instalación del BIBLIVRE 5.","user_created":false}
 {"language":"es","key":"multi_schema.manage.log_header","text":"[Log de creación de nueva biblioteca del BIBLIVRE 5]","user_created":false}
 {"language":"es","key":"administration.setup.cancel.description","text":"Cliquee en el botón abajo para desistir de restaurar esta instalación del BIBLIVRE 5 y volver a su biblioteca.","user_created":false}
 {"language":"es","key":"multi_schema.manage.new_schema.description","text":"Para crear una nueva biblioteca, rellene abajo con su nombre y un subtítulo opcional. Usted también precisará de un nombre reducido para la biblioteca, llamado de atajo, que será usado en la dirección Web de acceso al BIBLIVRE 5, permitiendo diferenciar las diversas bibliotecas instaladas en el sistema. Este atajo debe contener solamente letras, números y/o caracteres _. Para facilitar, el BIBLIVRE 5 sugerirá un atajo automáticamente, basado en el nombre de la biblioteca.","user_created":false}
-{"language":"es","key":"administration.setup.biblivre3import.log_header","text":"[Log de importación de datos del Biblivre 3 para el BIBLIVRE 5]","user_created":false}
 {"language":"es","key":"administration.maintenance.reinstall.description","text":"Use esta opción en caso que usted desee restaurar un backup del BIBLIVRE 5, borrar los datos de su biblioteca o rehacer la migración del Biblivre 3. Usted será enviado a la pantalla inicial de instalación del Biblivre, donde podrá cancelar en caso que desista de hacer alteraciones.","user_created":false}
 {"language":"es","key":"administration.configuration.description.logged_in_text","text":"Texto a ser exhibido en la pantalla inicial del Biblivre, para usuarios que tengan ingresado con login y contraseña. Usted puede utilizar tags HTML, pero cuidado de no quebrar el diseño del BIBLIVRE 5. El término {0} será sustituido por el nombre del usuario logueado. Atención: esta configuración se relaciona con el sistema de traducciones. Las alteraciones realizadas en esta pantalla afectarán solamente el idioma actual. Para alterar en otros idiomas, utilice la pantalla de traducciones o acceda al Biblivre usando el idioma a ser alterado.","user_created":false}
 {"language":"es","key":"warning.new_version","text":"Ya está disponible una actualización para el BIBLIVRE 5<br/>Versión instalada: {0}. Versión más reciente: {1}","user_created":false}
@@ -6359,15 +6290,12 @@
 {"language":"es","key":"administration.setup.biblivre4restore","text":"Restaurar un Backup del Biblivre 4 o Biblivre 5","user_created":false}
 {"language":"es","key":"multi_schema.translations.page_help","text":"<p>El módulo de <strong>\\"Traducciones\\"</strong> de Multibibliotecas funciona de forma análoga a su versión de una única biblioteca, no obstante, los textos alterados aquí se aplicarán a todas las bibliotecas del grupo, siempre que estas no hayan alterado el valor original de cada traducción.</p>\\n<p>Por ejemplo, si usted altera la traducción de la llave <strong>\\"menu.search\\"</strong> de \\"Búsqueda\\" para \\"Busca\\" por el módulo de traducciones multibibliotecas, todas las bibliotecas de este grupo verán la nueva traducción. Sin embargo, si uno de los administradores de una de estas bibliotecas alterara, a través del módulo de <strong>\\"Traducciones\\"</strong> de su biblioteca, la misma llave para \\"Procurar\\", esta traducción interna tendrá prioridad, solamente para esta biblioteca.</p>\\n<p>Para agregar un nuevo idioma, baje el archivo de idioma en Portugués, realice la traducción de los textos y después envíe el archivo. Recuerde que solamente los <strong>textos</strong> (después del signo igual) deben ser alterados.  No altere las llaves, o el BIBLIVRE 5 no conseguirá localizar el texto</p>\\n<p>Ejemplo: digamos que usted quiera alterar el texto en el menú principal de <i>Búsqueda</i> para <i>Busca</i>.  Usted deberá entonces bajar el archivo de idioma y alterar la siguiente línea:</p>\\n<p><strong>*menu.search</strong> = Búsqueda</p>\\n<p>Para:</p>\\n<p><strong>*menu.search</strong> = Busca</p>\\n<p>Y entonces hacer el Envío de archivo de idiomas. El BIBLIVRE 5 procesará el archivo, y alterará el texto del menú.</p>","user_created":false}
 {"language":"pt-BR","key":"administration.setup.clean_install.description","text":"Caso você não tenha ou não queira restaurar um backup, esta opção permitirá iniciar o uso do BIBLIVRE 5 com uma base de dados vazia. Após entrar no BIBLIVRE 5 pela primeira vez, utilize o login <strong>admin</strong> e senha <strong>abracadabra</strong> para acessar o sistema e configurar sua nova biblioteca.","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3migration.description","text":"Foi detectada uma instalação do Biblivre 3 neste computador. Você poderá importar estes dados para o BIBLIVRE 5 selecionando os itens de interesse e clicando no botão abaixo. Após a importação, <strong>você deverá reindexar as três bases: Bibliográfica, Autoridades e Vocabulário</strong>, através da tela <strong>\\"Manutenção\\"</strong> em <strong>\\"Administração\\"</strong> e <strong>selecionar novamente as permissões dos funcionários com acesso ao Biblivre</strong>, através da tela <strong>\\"Logins e Permissões\\"</strong> em <strong>\\"Administração\\"</strong>.","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.log_header","text":"[Log de importação de dados do Biblivre 3 para o BIBLIVRE 5]","user_created":false}
 {"language":"pt-BR","key":"administration.setup.progress_popup.title","text":"Manutenção do BIBLIVRE 5","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.log_header","text":"[Log de restauração de backup do BIBLIVRE 5]","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.error.description","text":"Infelizmente ocorreu um erro ao restaurar este backup do BIBLIVRE 5. Verifique a próxima tela pelo log de erros e, caso necessário, entre no fórum Biblivre para obter ajuda.","user_created":false}
 {"language":"pt-BR","key":"administration.maintenance.backup.description.3","text":"O Backup sem arquivos digitais é uma cópia de todos os dados e informações do BIBLIVRE 5, <strong>excluindo</strong> os arquivos de mídia digital. Por excluir os arquivos de mídia digital, o processo tanto de backup quanto de recuperação é mais rápido, e o arquivo de backup é menor.","user_created":false}
 {"language":"pt-BR","key":"administration.maintenance.backup.description.1","text":"O Backup é um processo onde executamos a cópia de informações para salvaguardá-las em caso de algum problema no sistema. É uma cópia dos registros e informações do Biblivre. O BIBLIVRE 5 possui 3 tipos de backup:","user_created":false}
 {"language":"pt-BR","key":"administration.maintenance.backup.description.2","text":"O Backup completo é uma cópia de todos os dados e informações do BIBLIVRE 5, incluindo os arquivos de mídia digital, como fotos dos usuários, arquivos digitais dos registros bibliográficos, etc.","user_created":false}
-{"language":"pt-BR","key":"administration.setup.biblivre3import.description","text":"Foi detectada uma instalação do Biblivre 3 neste computador. Você poderá importar estes dados para o BIBLIVRE 5 selecionando os itens de interesse e clicando no botão abaixo. Após a importação, <strong>você deverá reindexar as três bases: Bibliográfica, Autoridades e Vocabulário</strong>, através da tela <strong>\\"Manutenção\\"</strong> em <strong>\\"Administração\\"</strong> e <strong>selecionar novamente as permissões dos funcionários com acesso ao Biblivre</strong>, através da tela <strong>\\"Logins e Permissões\\"</strong> em <strong>\\"Administração\\"</strong>.","user_created":false}
 {"language":"pt-BR","key":"administration.configuration.description.general.multi_schema","text":"Esta configuração permite que se habilite o sistema de múltiplas bibliotecas nesta instalação do BIBLIVRE 5.","user_created":false}
 {"language":"pt-BR","key":"administration.configuration.description.multi_schema.enabled","text":"O sistema de multi-bibliotecas já está habilitado para esta instalação do BIBLIVRE 5. O administrador do sistema poderá desabilitar essa opção no menu de configuração de multi-bibliotecas.","user_created":false}
 {"language":"pt-BR","key":"administration.migration.page_help","text":"<p>O módulo de <strong>\\"Migração de Dados\\"</strong> permite importar os dados constantes de uma base de dados do Biblivre 3 existente para a base de dados vazia do BIBLIVRE 5.</p>","user_created":false}
@@ -6380,13 +6308,11 @@
 {"language":"en-US","key":"administration.translations.page_help","text":"<p> The module <strong>\\"Translations\\"</strong> allows adding new languages to BIBLIVRE 5 or modifying existing texts.</p>\\n<p><strong>Attention: this module performs advanced configurations in BIBLIVRE 5, and needs to be used solely by advanced Users, experienced in IT.</strong>.</p>\\n<p>To add a new language, please download the Portuguese language file, do the translation of the texts and then send the file. Remember that only the <strong>texts</strong> (after the = sign) must be translated. Do not modify the keys; if you do so, BIBLIVRE 5 will not be able to find the text </p>\\n<p>Example: let´s imagine that you wish to modify the text in the main menu of <i>Search</i> to <i>Look for</i>. You will then have to download the language file and modify the following line:</p>\\n<p><strong>*menu.search</strong> = Search</p>\\n<p>To:</p>\\n<p><strong>*menu.search</strong> = Loo for</p>\\n<p>And then deliver the language file. BIBLIVRE 5 will process the file and will modify the menu text.</p>","user_created":false}
 {"language":"en-US","key":"administration.maintenance.reinstall.confirm.description","text":"Do you wish to go to the restoration and reconfiguration screen? You will be able to restore a BIBLIVRE 5 backup, delete data in your library or redo a migration","user_created":false}
 {"language":"en-US","key":"administration.setup.clean_install.description","text":"If you do not have or do not wish to restore a backup, this option will allow start using BIBLIVRE 5 with an empty database. When entering BIBLIVRE 5 for the first time, use the <strong>admin</strong> and password <strong>abracadabra</strong> to access the system and configure your new library.","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3migration.description","text":"A Biblivre 3 installation was detected in this computer. You may wish to import these data for BIBLIVRE 5 by selecting the items you are interested in and pressing the button below. After importation, <strong>you will have to reindex the three bases: the Bibliographic ones, Authorities and Vocabulary </strong>, through the <strong>\\"Maintenance\\"</strong> screen in <strong>\\"Administration\\"</strong> and <strong>select again the permissions of employees able to access Biblivre</strong>, through the <strong>\\"Logins and Permissions\\"</strong> screen in <strong>\\"Administration\\"</strong>.","user_created":false}
 {"language":"en-US","key":"multi_schema.configuration.description.general.title","text":"Nome to be shown when the main page of the library group is accessed. o que será exibido quando a página principal deste grupo de bibliotecas for acessada. This page will list all the registered libraries in this group (managed by the same BIBLIVRE 5).","user_created":false}
 {"language":"en-US","key":"multi_schema.manage.page_help","text":"The multi-libraries screen allows registering several libraries to be managed by a single Biblivre. Since the moment the multi-libraries system is in action, the list of registered libraries will be shown when the person accesses the standard BIBLIVRE 5 address.","user_created":false}
 {"language":"en-US","key":"administration.configuration.description.general.multi_schema","text":"This configuration allows setting up the multiple library system in this BIBLIVRE 5 installation.","user_created":false}
 {"language":"en-US","key":"multi_schema.manage.log_header","text":"[New BIBLIVRE 5 Library Log]","user_created":false}
 {"language":"en-US","key":"multi_schema.manage.new_schema.description","text":"To create a new library, please fill in below your name and an optional subtitle. You will also need a short name for the library, which is called shortcut, to be used in the web address for accessing BIBLIVRE 5, which allows differentiation among different libraries installed in the system. This shortcut must contain only letters, numbers and the character _. To make things easier, BIBLIVRE 5 will automatically suggest a shortcut, based on the library name.","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.log_header","text":"[Import data log from Biblivre 3 to BIBLIVRE 5]","user_created":false}
 {"language":"en-US","key":"administration.maintenance.reinstall.description","text":"Use this option if you wish to restore a BIBLIVRE 5 backup, or to delete data in your library or to redo Biblivre 3 migration. You will be taken to the Biblivre install initial screen, and you may cancel the operation if you do not wish to make modifications.","user_created":false}
 {"language":"en-US","key":"administration.setup.progress_popup.title","text":"BIBLIVRE 5 maintenance","user_created":false}
 {"language":"en-US","key":"administration.setup.biblivre4restore.log_header","text":"[Log for BIBLIVRE 5 backup restoration]","user_created":false}
@@ -6398,7 +6324,6 @@
 {"language":"en-US","key":"administration.setup.biblivre4restore.error.description","text":"Regrettably an error occurred when restoring this BIBLIVRE 5  backup. Check next screen through the error log and, if necessary, go to the Biblivre forum for assistance.","user_created":false}
 {"language":"en-US","key":"multi_schema.configuration.description.general.subtitle","text":"Subtitle shown when the main page in this library broup is accessed. This page will list all the registered libraries in this group (managed by the same BIBLIVRE 5).","user_created":false}
 {"language":"en-US","key":"warning.new_version","text":"There's an update for BIBLIVRE 5 available<br/>Current Version: {0}. Latest version: {1}","user_created":false}
-{"language":"en-US","key":"administration.setup.biblivre3import.description","text":"A Biblivre 3 installation was detected in this computer. You may wish to import these data for BIBLIVRE 5, by selecting the items you are interested in, and pressing the button below. After importation, <strong>you will have to reindex the three bases: the Bibliographic one, and the ones for Authorities and Vocabulary </strong>, through the <strong>\\"Maintenance\\"</strong> screen in <strong>\\"Administration\\"</strong> and <strong>select again the permissions of employees with access to Biblivre</strong>, through the <strong>\\"Logins and Permissions\\"</strong> screen in <strong>\\"Administration\\"</strong>.","user_created":false}
 {"language":"en-US","key":"multi_schema.translations.page_help","text":"<p>The module of <strong>\\"Translations\\"</strong> for Multilibraries Works similarly to the version corresponding to just one library. However, texts which were modified here will be applied to all the libraries in the group, provided they have not modified the original value of each translation.</p>\\n<p>For example, if you modify the translation of the key <strong>\\"menu.search\\"</strong> from \\"Search\\" to \\"Trace\\" through the Translations module for multi-libraries, all the libraries in this group will see the new translation. However, if one of the administrators of one of these libraries modifies, through the <strong>\\"Translations\\"</strong> module of his library, the same key to \\"Search\\", this in-house translation will have priority just for this library.</p>\\n<p>In order to add a new language, you will have to download the language file in Portuguese, do the translation of the texts and then upload the file. Remember that only the <strong>texts</strong> (after the = sign) must be modified.  Do not modify the keys, as otherwise the BIBLIVRE 5 will not be able to trace the text </p>\\n<p>Example: Let´s say that you wish to modify the text in the main menu from <i>Search</i> to <i>Trace</i>.  You will have to download the language file and modify this line:</p>\\n<p><strong>*menu.search</strong> = Search</p>\\n<p>To:</p>\\n<p><strong>*menu.search</strong> = Trace</p>\\n<p>and then upload the language file. BIBLIVRE 5 will process the file and will modify the menu text.</p>","user_created":false}
 {"language":"pt-BR","key":"administration.setup.biblivre4restore.select_file","text":"Selecione um arquivo de backup do BIBLIVRE 5","user_created":false}
 {"language":"en-US","key":"administration.setup.biblivre4restore.select_file","text":"Select a BIBLIVRE 5 backup file","user_created":false}

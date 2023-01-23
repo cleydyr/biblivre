@@ -41,7 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
 
-@Component("biblivre.administration.translations.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private ITemplateEngine templateEngine;
     private LanguageBO languageBO;

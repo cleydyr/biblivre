@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.administration.accesscards;
 
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
 import java.util.ArrayList;
@@ -126,10 +125,6 @@ public class AccessCardBO {
 
     public boolean delete(int id) {
         return this.accessCardDAO.delete(id);
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.accessCardDAO.saveFromBiblivre3(dtoList);
     }
 
     @Autowired

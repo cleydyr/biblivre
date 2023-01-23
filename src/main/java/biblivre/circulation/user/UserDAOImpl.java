@@ -20,21 +20,22 @@
 package biblivre.circulation.user;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.PreparedStatementUtil;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.function.UnsafeFunction;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -279,9 +280,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     public boolean save(UserDTO user) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = this.getConnection()) {
             con.setAutoCommit(false);
 
             StringBuilder sql = new StringBuilder();
@@ -319,81 +318,18 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
             pst.executeUpdate();
 
-            CallableStatement function =
-                    con.prepareCall("{ call global.update_user_value(?, ?, ?, ?) }");
+            Map<String, String> fields = user.getFields();
 
-            for (String key : user.getFields().keySet()) {
-                String value = user.getFields().get(key);
-                function.setInt(1, user.getId());
-                function.setString(2, key);
-                function.setString(3, value);
-                function.setString(4, TextUtils.removeDiacriticals(value));
-                function.addBatch();
+            for (Entry<String, String> entry : fields.entrySet()) {
+                updateUserValue(user, entry.getKey(), entry.getValue(), con::prepareStatement);
             }
 
-            function.executeBatch();
-            function.close();
-
             con.commit();
+
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
-
-            StringBuilder sql = new StringBuilder();
-            sql.append(
-                    "INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii) ");
-            sql.append("VALUES (?, ?, ?, ?, ?, ?, ?);");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            CallableStatement function =
-                    con.prepareCall("{ call global.update_user_value(?, ?, ?, ?) }");
-
-            for (AbstractDTO abstractDto : dtoList) {
-                UserDTO user = (UserDTO) abstractDto;
-                pst.setInt(1, user.getId());
-                pst.setString(2, user.getName());
-                pst.setInt(3, user.getType());
-                pst.setString(4, user.getPhotoId());
-                pst.setString(5, user.getStatus().toString());
-                pst.setInt(6, user.getCreatedBy());
-                pst.setString(7, TextUtils.removeDiacriticals(user.getName()));
-
-                pst.addBatch();
-
-                for (String key : user.getFields().keySet()) {
-                    String value = user.getFields().get(key);
-                    function.setInt(1, user.getId());
-                    function.setString(2, key);
-                    function.setString(3, value);
-                    function.setString(4, TextUtils.removeDiacriticals(value));
-                    function.addBatch();
-                }
-            }
-
-            pst.executeBatch();
-            function.executeBatch();
-            function.close();
-
-            con.commit();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     @Override
@@ -550,6 +486,94 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             throw new DAOException(e);
         } finally {
             this.closeConnection(con);
+        }
+
+        return null;
+    }
+
+    private void updateUserValue(
+            UserDTO user,
+            String key,
+            String value,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        if (SchemaThreadLocal.isGlobalSchema()) {
+            return;
+        }
+
+        String currentValue = getCurrentValue(user.getId(), key, preparedStatementGenerator);
+
+        if (value != null && value.equals(currentValue)) {
+            return;
+        }
+
+        if (currentValue == null) {
+            insertValue(
+                    user.getId(),
+                    key,
+                    value,
+                    TextUtils.removeDiacriticals(value),
+                    preparedStatementGenerator);
+        } else {
+            updateValue(
+                    user.getId(),
+                    key,
+                    value,
+                    TextUtils.removeDiacriticals(value),
+                    preparedStatementGenerator);
+        }
+    }
+
+    private void updateValue(
+            int userId,
+            String key,
+            String value,
+            String ascii,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String sql = "UPDATE users_values SET value = ?, ascii = ? WHERE user_id = ? AND key = ?";
+
+        try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
+
+            PreparedStatementUtil.setAllParameters(preparedStatement, value, ascii, userId, key);
+
+            preparedStatement.execute();
+        }
+    }
+
+    private void insertValue(
+            int userId,
+            String key,
+            String value,
+            String ascii,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String sql = "INSERT INTO users_values (user_id, key, value, ascii) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
+
+            PreparedStatementUtil.setAllParameters(preparedStatement, userId, key, value, ascii);
+
+            preparedStatement.execute();
+        }
+    }
+
+    private String getCurrentValue(
+            int userId,
+            String key,
+            UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
+            throws Exception {
+        String sql = "SELECT value FROM users_values WHERE user_id = ? AND key = ?";
+
+        try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
+
+            PreparedStatementUtil.setAllParameters(preparedStatement, userId, key);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString(1);
+            }
         }
 
         return null;

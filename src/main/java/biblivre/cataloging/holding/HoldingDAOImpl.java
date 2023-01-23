@@ -28,7 +28,6 @@ import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchTermDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
@@ -44,7 +43,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -218,53 +216,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             pst.setInt(9, holding.getCreatedBy());
 
             return pst.executeUpdate() > 0;
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO biblio_holdings ");
-            sql.append(
-                    "(id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by, created, modified) ");
-            sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-            for (AbstractDTO abstractDto : dtoList) {
-                HoldingDTO holding = (HoldingDTO) abstractDto;
-                pst.setInt(1, holding.getId());
-                pst.setInt(2, holding.getRecordId());
-                pst.setString(3, holding.getUTF8Iso2709());
-                pst.setString(4, holding.getAvailability().toString());
-                pst.setString(5, holding.getRecordDatabase().toString());
-                pst.setString(6, holding.getMaterialType().toString());
-                pst.setString(7, holding.getAccessionNumber());
-                pst.setString(8, holding.getLocationD());
-                pst.setInt(9, holding.getCreatedBy());
-
-                if (holding.getCreated() != null) {
-                    pst.setDate(10, new java.sql.Date(holding.getCreated().getTime()));
-                } else {
-                    pst.setNull(10, Types.NULL);
-                }
-                if (holding.getCreated() != null) {
-                    pst.setDate(11, new java.sql.Date(holding.getModified().getTime()));
-                } else {
-                    pst.setNull(11, Types.NULL);
-                }
-
-                pst.addBatch();
-            }
-
-            return pst.executeBatch()[0] > 0;
         } catch (Exception e) {
             throw new DAOException(e);
         } finally {

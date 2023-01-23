@@ -1,6 +1,5 @@
 package biblivre.administration.accesscards;
 
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,6 @@ public interface AccessCardDAO {
     boolean save(AccessCardDTO dto);
 
     boolean save(ArrayList<AccessCardDTO> cardList);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 
     boolean update(AccessCardDTO dto);
 

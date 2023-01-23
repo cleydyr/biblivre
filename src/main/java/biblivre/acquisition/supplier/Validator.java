@@ -28,7 +28,7 @@ import biblivre.core.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.acquisition.supplier.Validator")
+@Component
 public class Validator extends AbstractValidator {
 
     public void validateSave(

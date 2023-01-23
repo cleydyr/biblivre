@@ -1,8 +1,6 @@
 package biblivre.login;
 
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDTO;
-import java.util.List;
 
 public interface LoginDAO {
 
@@ -17,6 +15,4 @@ public interface LoginDAO {
     boolean delete(UserDTO userDTO);
 
     boolean save(LoginDTO dto, UserDTO udto);
-
-    boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList);
 }

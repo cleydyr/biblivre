@@ -20,6 +20,7 @@
 package biblivre.core;
 
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.StringPool;
 import biblivre.update.UpdateService;
 import java.sql.Connection;
 import java.util.Map;
@@ -50,9 +51,14 @@ public class Updates {
                         Set<String> installedVersions = dao.getInstalledVersions();
 
                         for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
-                            String version = entry.getKey();
-
                             UpdateService updateService = entry.getValue();
+
+                            String version =
+                                    entry.getKey()
+                                            .replaceFirst("biblivre.update.", StringPool.BLANK)
+                                            .replaceFirst(
+                                                    updateService.getClass().getSimpleName(),
+                                                    StringPool.BLANK);
 
                             if (!installedVersions.contains(version)) {
                                 logger.info("Processing global update service {}.", version);

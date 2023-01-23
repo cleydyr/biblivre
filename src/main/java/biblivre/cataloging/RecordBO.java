@@ -23,7 +23,6 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.ConfigurationBO;
@@ -240,10 +239,6 @@ public abstract class RecordBO extends AbstractBO {
         }
 
         return dto;
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.recordDAO.saveFromBiblivre3(dtoList);
     }
 
     public abstract void populateDetails(RecordDTO record, int mask);

@@ -27,11 +27,12 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import biblivre.core.utils.FileIOUtils;
-import biblivre.core.utils.StringPool;
+import biblivre.database.util.PostgreSQLStatementIterable;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,8 +40,10 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -48,11 +51,11 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +64,40 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RestoreBO extends AbstractBO {
+    private static final String[] FILTERED_OUT_STATEMENT_PREFIXES =
+            new String[] {"CREATE FUNCTION", "ALTER FUNCTION", "CREATE TRIGGER"};
+
+    private static final class BufferedReaderIterator implements Iterator<Character> {
+        private final BufferedReader bufferedReader;
+        int read;
+
+        private BufferedReaderIterator(BufferedReader bufferedReader) throws IOException {
+            this.bufferedReader = bufferedReader;
+
+            read = bufferedReader.read();
+        }
+
+        @Override
+        public Character next() {
+            char c = (char) read;
+
+            try {
+                read = bufferedReader.read();
+            } catch (IOException ioException) {
+                logger.error("error while reading script", ioException);
+
+                read = -1;
+            }
+
+            return c;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return read != -1;
+        }
+    }
+
     private static final String _DROP_SCHEMA_TPL = "DROP SCHEMA \"%s\" CASCADE;";
     private static final String _DELETE_DIGITALMDIA_TPL = "DELETE FROM \"%s\".digital_media;";
     private static final String _UPDATE_DIGITALMEDIA_BLOB_TPL =
@@ -68,14 +105,6 @@ public class RestoreBO extends AbstractBO {
     private static final Pattern _FILE = Pattern.compile("^(\\d+)_(.*)$");
     private static final String _UPDATE_DIGITALMEDIA_TPL =
             "UPDATE digital_media SET blob = '%d' WHERE id = '%s';";
-    private static final String _DROP_RESTORE_DATABASE =
-            "DROP DATABASE IF EXISTS biblivre4_b3b_restore;";
-    private static final String _CREATE_RESTORE_DATABASE =
-            "CREATE DATABASE biblivre4_b3b_restore WITH OWNER = biblivre ENCODING = 'UTF8';";
-    private static final String _TERMINATE_BACKEND =
-            "SELECT pg_terminate_backend(pg_stat_activity.procpid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND procpid <> pg_backend_pid();";
-    private static final String _TERMINATE_BACKEND_92 =
-            "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'biblivre4_b3b_restore' AND pid <> pg_backend_pid();";
     private static final String _ALTER_SCHEMA_TPL = "ALTER SCHEMA \"%s\" RENAME TO \"%s\";";
     private static final String _DELETE_SCHEMA_TPL =
             "DELETE FROM \"global\".schemas WHERE \"schema\" = '%s';";
@@ -142,22 +171,6 @@ public class RestoreBO extends AbstractBO {
         return restoreBackup;
     }
 
-    public boolean restoreBiblivre3(File gzipFile) throws IOException {
-        _validateFile(gzipFile);
-
-        File sql = FileIOUtils.ungzipBackup(gzipFile);
-
-        boolean success =
-                (this.recreateBiblivre3RestoreDatabase(false)
-                        || this.recreateBiblivre3RestoreDatabase(true));
-
-        if (!success) {
-            return false;
-        }
-
-        return restoreBackupBiblivre3(sql);
-    }
-
     public RestoreDTO getRestoreDTO(String filename) {
         File path = backupBO.getBackupDestination();
 
@@ -195,16 +208,26 @@ public class RestoreBO extends AbstractBO {
 
         logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-        Files.lines(restore.toPath())
-                .filter(StringUtils::isNotBlank)
-                .filter(RestoreBO::_isNotCommentLine)
-                .forEach(
-                        line -> {
-                            _writeLine(bw, line);
-                            State.incrementCurrentStep();
-                        });
+        try (FileReader fileReader = new FileReader(restore);
+                BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+
+            PostgreSQLStatementIterable postgreSQLStatementIterable =
+                    new PostgreSQLStatementIterable(new BufferedReaderIterator(bufferedReader));
+
+            postgreSQLStatementIterable.stream()
+                    .filter(RestoreBO::notFunctionOrTriggerRelated)
+                    .forEach(
+                            statement -> {
+                                _writeLine(bw, statement);
+                                State.incrementCurrentStep();
+                            });
+        }
 
         bw.flush();
+    }
+
+    private static boolean notFunctionOrTriggerRelated(String statement) {
+        return !Arrays.stream(FILTERED_OUT_STATEMENT_PREFIXES).anyMatch(statement::startsWith);
     }
 
     @Autowired
@@ -398,57 +421,6 @@ public class RestoreBO extends AbstractBO {
         }
     }
 
-    private synchronized boolean recreateBiblivre3RestoreDatabase(boolean tryPGSQL92)
-            throws IOException {
-
-        boolean transactional = false;
-
-        ProcessBuilder pb = _createProcessBuilder(transactional);
-
-        Process p;
-
-        p = pb.start();
-
-        try (BufferedWriter bw =
-                new BufferedWriter(
-                        new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET))) {
-
-            _connectOutputToStateLogger(p);
-
-            _terminateBackendProcess(tryPGSQL92, bw);
-
-            _dropExistingV3Database(bw);
-
-            _createV3Database(bw);
-
-            bw.close();
-
-            p.waitFor();
-
-            return p.exitValue() == 0;
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return false;
-    }
-
-    private void _createV3Database(BufferedWriter bw) {
-        _writeLine(bw, _CREATE_RESTORE_DATABASE);
-    }
-
-    private void _dropExistingV3Database(BufferedWriter bw) throws IOException {
-        _writeLine(bw, _DROP_RESTORE_DATABASE);
-    }
-
-    private void _terminateBackendProcess(boolean tryPGSQL92, BufferedWriter bw) {
-        if (tryPGSQL92) {
-            _writeLine(bw, _TERMINATE_BACKEND_92);
-        } else {
-            _writeLine(bw, _TERMINATE_BACKEND);
-        }
-    }
-
     private void _connectOutputToStateLogger(Process p) {
         Executor executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -467,48 +439,6 @@ public class RestoreBO extends AbstractBO {
                         logger.error("error while restoring backup", e);
                     }
                 });
-    }
-
-    private synchronized boolean restoreBackupBiblivre3(File sql) {
-        boolean transactional = true;
-
-        ProcessBuilder pb = _createProcessBuilder(transactional);
-
-        try {
-            Process p = pb.start();
-
-            try (OutputStreamWriter writer =
-                            new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
-                    final BufferedWriter bw = new BufferedWriter(writer)) {
-
-                _connectOutputToStateLogger(p);
-
-                _validateBackup(sql);
-
-                Files.lines(sql.toPath())
-                        .filter(StringUtils::isNotBlank)
-                        .filter(RestoreBO::_isNotCommentLine)
-                        .filter(RestoreBO::_isNotProceduralLanguageStatement)
-                        .filter(RestoreBO::_isNotDatabaseStatement)
-                        .map(RestoreBO::_replaceDatabaseConnection)
-                        .map(RestoreBO::_replaceUserIfGrantingOrRevoking)
-                        .map(RestoreBO::_removeLCProperties)
-                        .forEach(
-                                line -> {
-                                    _writeLine(bw, line);
-                                });
-
-                p.waitFor();
-
-                return p.exitValue() == 0;
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-        return false;
     }
 
     private static RestoreDTO toRestoreDTO(File backup) {
@@ -595,20 +525,19 @@ public class RestoreBO extends AbstractBO {
 
         logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-        try {
+        try (Stream<String> lines = Files.lines(restore.toPath())) {
             // Since PostgreSQL uses global OIDs for LargeObjects, we can't simply
             // restore a digital_media backup. To prevent oid conflicts, we will create
             // a new oid, replacing the old one.
 
             Map<Long, Long> oidMap = new HashMap<>();
 
-            Files.lines(restore.toPath())
-                    .forEach(
-                            line -> {
-                                State.incrementCurrentStep();
+            lines.forEach(
+                    line -> {
+                        State.incrementCurrentStep();
 
-                                _processLOLine(line, oidMap, bw);
-                            });
+                        _processLOLine(line, oidMap, bw);
+                    });
 
             bw.flush();
 
@@ -676,49 +605,6 @@ public class RestoreBO extends AbstractBO {
 
     private static String _buildUpdateDigitalMediaQuery(long oid, long newOid) {
         return String.format(_UPDATE_DIGITALMEDIA_BLOB_TPL, newOid, oid);
-    }
-
-    private static boolean _isNotProceduralLanguageStatement(String line) {
-        return !line.startsWith("CREATE PROCEDURAL LANGUAGE")
-                && !line.startsWith("ALTER PROCEDURAL LANGUAGE");
-    }
-
-    private static boolean _isNotDatabaseStatement(String line) {
-        return !line.startsWith("CREATE DATABASE") && !line.startsWith("ALTER DATABASE");
-    }
-
-    private static String _replaceUserIfGrantingOrRevoking(String line) {
-        if (line.startsWith("GRANT") || line.startsWith("REVOKE")) {
-            return line.replace("postgres", DatabaseUtils.getDatabaseUsername());
-        }
-
-        return line;
-    }
-
-    private static String _replaceDatabaseConnection(String line) {
-        if (line.startsWith("\\connect")) {
-            return "\\connect biblivre4_b3b_restore\n";
-        }
-
-        return line;
-    }
-
-    private static void _validateBackup(File sql) throws IOException {
-        boolean validBackup =
-                Files.lines(sql.toPath())
-                        .map(String::trim)
-                        .anyMatch(line -> line.startsWith("\\connect biblivre"));
-
-        if (!validBackup) {
-            State.writeLog("Never reached \\connect biblivre;");
-            throw new ValidationException(
-                    "administration.maintenance.backup.error.corrupted_backup_file");
-        }
-    }
-
-    private static String _removeLCProperties(String line) {
-        return line.replaceAll("LC_COLLATE = '[^']*'", StringPool.BLANK)
-                .replaceAll("LC_CTYPE = '[^']*'", StringPool.BLANK);
     }
 
     private ProcessBuilder _createProcessBuilder(boolean transactional) {
@@ -831,13 +717,6 @@ public class RestoreBO extends AbstractBO {
                 });
     }
 
-    private static void _validateFile(File gzipFile) {
-        if (gzipFile == null || !gzipFile.exists()) {
-            throw new ValidationException(
-                    "administration.maintenance.backup.error." + "corrupted_backup_file");
-        }
-    }
-
     private static boolean _verifyDTO(RestoreDTO dto) {
         return dto.isValid() && dto.getBackup() != null && dto.getBackup().exists();
     }
@@ -849,13 +728,10 @@ public class RestoreBO extends AbstractBO {
     private static void _writeLine(BufferedWriter bw, String newLine) {
         try {
             bw.write(newLine);
+
             bw.newLine();
         } catch (IOException ioe) {
             throw new RestoreException(ioe);
         }
-    }
-
-    private static boolean _isNotCommentLine(String line) {
-        return !line.trim().startsWith("--");
     }
 }

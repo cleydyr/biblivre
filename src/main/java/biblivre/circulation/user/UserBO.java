@@ -22,7 +22,6 @@ package biblivre.circulation.user;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.LabelPrintDTO;
 import biblivre.core.file.DiskFile;
@@ -44,7 +43,6 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -224,10 +222,6 @@ public class UserBO extends AbstractBO {
 
     public void markAsPrinted(Set<Integer> ids) {
         this.userDAO.markAsPrinted(ids);
-    }
-
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        return this.userDAO.saveFromBiblivre3(dtoList);
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(UserBO.class);

@@ -20,7 +20,6 @@
 package biblivre.acquisition.quotation;
 
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
@@ -94,101 +93,6 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
         } finally {
             this.closeConnection(con);
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        if (dtoList == null || dtoList.isEmpty()) {
-            return true;
-        }
-
-        AbstractDTO abstractDto = dtoList.get(0);
-
-        if (abstractDto instanceof QuotationDTO) {
-            return this.saveQuotationFromBiblivre3(dtoList);
-        } else if (abstractDto instanceof RequestQuotationDTO) {
-            return this.saveRequestQuotationFromBiblivre3(dtoList);
-        } else {
-            throw new IllegalArgumentException(
-                    "List is not of QuotationDTO or RequestQuotationDTO objects.");
-        }
-    }
-
-    private boolean saveQuotationFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
-
-            StringBuilder sqlQuotations = new StringBuilder();
-            sqlQuotations.append("INSERT INTO quotations (id, supplier_id, ");
-            sqlQuotations.append("response_date, expiration_date, delivery_time, ");
-            sqlQuotations.append("info, created_by, created) ");
-            sqlQuotations.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-
-            PreparedStatement pstQuotations = con.prepareStatement(sqlQuotations.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                QuotationDTO dto = (QuotationDTO) abstractDto;
-                pstQuotations.setInt(1, dto.getId());
-                pstQuotations.setInt(2, dto.getSupplierId());
-                pstQuotations.setDate(3, new java.sql.Date(dto.getResponseDate().getTime()));
-                pstQuotations.setDate(4, new java.sql.Date(dto.getExpirationDate().getTime()));
-                pstQuotations.setInt(5, dto.getDeliveryTime());
-                pstQuotations.setString(6, dto.getInfo());
-                pstQuotations.setInt(7, dto.getCreatedBy());
-                pstQuotations.setDate(8, new java.sql.Date(dto.getCreated().getTime()));
-                pstQuotations.addBatch();
-            }
-
-            pstQuotations.executeBatch();
-
-            con.commit();
-
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
-    }
-
-    private boolean saveRequestQuotationFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
-
-            StringBuilder sqlRQuotations = new StringBuilder();
-            sqlRQuotations.append("INSERT INTO request_quotation ");
-            sqlRQuotations.append("(request_id, quotation_id, quotation_quantity, unit_value, ");
-            sqlRQuotations.append("response_quantity) ");
-            sqlRQuotations.append("VALUES (?, ?, ?, ?, ?);");
-
-            PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                RequestQuotationDTO rqdto = (RequestQuotationDTO) abstractDto;
-                pstRQuotations.setInt(1, rqdto.getRequestId());
-                pstRQuotations.setInt(2, rqdto.getQuotationId());
-                pstRQuotations.setInt(3, rqdto.getQuantity());
-                pstRQuotations.setFloat(4, rqdto.getUnitValue());
-                pstRQuotations.setInt(5, rqdto.getResponseQuantity());
-                pstRQuotations.addBatch();
-            }
-
-            pstRQuotations.executeBatch();
-
-            con.commit();
-
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     @Override

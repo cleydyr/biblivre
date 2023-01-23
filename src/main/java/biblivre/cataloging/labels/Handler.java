@@ -45,7 +45,7 @@ import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.cataloging.labels.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private BiblioRecordBO biblioRecordBO;
     private HoldingBO holdingBO;

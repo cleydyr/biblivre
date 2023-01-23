@@ -31,7 +31,7 @@ import biblivre.login.LoginBO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.administration.permissions.Validator")
+@Component
 public class Validator extends AbstractValidator {
     private LoginBO loginBO;
     private UserBO userBO;

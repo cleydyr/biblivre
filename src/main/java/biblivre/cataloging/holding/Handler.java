@@ -33,10 +33,11 @@ import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.cataloging.holding.Handler")
+@Component
 public class Handler extends CatalogingHandler {
     private HoldingBO holdingBO;
     private BiblioRecordBO biblioRecordBO;
@@ -195,4 +196,7 @@ public class Handler extends CatalogingHandler {
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
     }
+
+    @Override
+    protected void populateFields(RecordDTO dto, JSONObject data) {}
 }

@@ -34,7 +34,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.acquisition.order.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private OrderBO orderBO;
     private ConfigurationBO configurationBO;
@@ -57,7 +57,7 @@ public class Handler extends AbstractHandler {
                         "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
         Integer offset = (request.getInteger("page", 1) - 1) * limit;
 
-        DTOCollection<OrderDTO> list = orderBO.search(query, limit, offset);
+        DTOCollection<OrderDTO> list = orderBO.search(query, offset, limit);
 
         if (list.size() == 0) {
             this.setMessage(ActionResult.WARNING, "acquisition.request.error.no_request_found");

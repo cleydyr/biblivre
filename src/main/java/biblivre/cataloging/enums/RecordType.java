@@ -33,7 +33,7 @@ public enum RecordType implements BiblivreEnum {
     VOCABULARY(VocabularyRecordDTO.class),
     HOLDING(HoldingDTO.class);
 
-    private Class<? extends RecordDTO> recordClass;
+    private final Class<? extends RecordDTO> recordClass;
 
     RecordType(Class<? extends RecordDTO> recordClass) {
         this.recordClass = recordClass;

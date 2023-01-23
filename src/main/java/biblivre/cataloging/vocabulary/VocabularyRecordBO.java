@@ -33,7 +33,7 @@ import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("vocabulary")
 public class VocabularyRecordBO extends PaginableRecordBO {
     private IndexingDAO indexingDAO;
 

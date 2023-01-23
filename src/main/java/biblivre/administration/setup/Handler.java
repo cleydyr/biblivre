@@ -35,10 +35,8 @@ import biblivre.core.file.MemoryFile;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.FileIOUtils;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +45,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -55,7 +52,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.administration.setup.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private RestoreBO restoreBO;
     private BackupBO backupBO;
@@ -136,60 +133,6 @@ public class Handler extends AbstractHandler {
         if (success && dto != null) {
             put("metadata", dto.toJSONObject());
         }
-    }
-
-    public void uploadBiblivre3(ExtendedRequest request, ExtendedResponse response) {
-
-        boolean success = false;
-
-        OutputStream os = null;
-
-        try {
-            State.start();
-            State.writeLog(
-                    request.getLocalizedText("administration.setup.biblivre3restore.log_header"));
-
-            MemoryFile file = request.getFile("biblivre3backup");
-            File gzip = new File(FileIOUtils.createTempDir(), file.getName());
-            os = new FileOutputStream(gzip);
-
-            file.copy(os);
-
-            os.close();
-
-            success = restoreBO.restoreBiblivre3(gzip);
-
-            FileUtils.deleteQuietly(gzip);
-
-            if (success) {
-                State.finish();
-            } else {
-                State.cancel();
-            }
-        } catch (ValidationException e) {
-            this.setMessage(e);
-            State.writeLog(request.getLocalizedText(e.getMessage()));
-
-            if (e.getCause() != null) {
-                State.writeLog(ExceptionUtils.getStackTrace(e.getCause()));
-            }
-
-            State.cancel();
-        } catch (Exception e) {
-            this.setMessage(e);
-            State.writeLog(ExceptionUtils.getStackTrace(e));
-            State.cancel();
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        put("success", success);
     }
 
     private Map<String, String> breakString(String string) {

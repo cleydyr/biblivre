@@ -22,7 +22,6 @@ package biblivre.circulation.lending;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import java.sql.Connection;
@@ -376,60 +375,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
                 this.closeConnection(con);
             }
         }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO lendings (holding_id, user_id, previous_lending_id, ");
-            sql.append(
-                    "expected_return_date, created_by, id, created, return_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-
-            for (AbstractDTO abstractDto : dtoList) {
-                LendingDTO lending = (LendingDTO) abstractDto;
-                pst.setInt(1, lending.getHoldingId());
-                pst.setInt(2, lending.getUserId());
-                if (lending.getPreviousLendingId() != null) {
-                    pst.setInt(3, lending.getPreviousLendingId());
-                } else {
-                    pst.setNull(3, Types.INTEGER);
-                }
-                if (lending.getExpectedReturnDate() != null) {
-                    pst.setDate(4, CalendarUtils.toSqlDate(lending.getExpectedReturnDate()));
-                } else {
-                    pst.setNull(4, Types.DATE);
-                }
-                pst.setInt(5, lending.getCreatedBy());
-                pst.setInt(6, lending.getId());
-
-                if (lending.getCreated() != null) {
-                    pst.setTimestamp(7, CalendarUtils.toSqlTimestamp(lending.getCreated()));
-                } else {
-                    pst.setNull(7, Types.TIMESTAMP);
-                }
-
-                if (lending.getReturnDate() != null) {
-                    pst.setTimestamp(8, CalendarUtils.toSqlTimestamp(lending.getReturnDate()));
-                } else {
-                    pst.setNull(8, Types.DATE);
-                }
-                pst.addBatch();
-            }
-
-            pst.executeBatch();
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-        return true;
     }
 
     @Override

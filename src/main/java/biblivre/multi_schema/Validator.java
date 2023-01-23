@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.multi_schema.Validator")
+@Component
 public class Validator extends AbstractValidator {
 
     private SchemaBO schemaBO;

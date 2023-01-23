@@ -1,7 +1,5 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 
-<%@ tag import="biblivre.core.configurations.Configurations"%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 

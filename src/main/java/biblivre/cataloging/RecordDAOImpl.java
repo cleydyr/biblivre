@@ -23,7 +23,6 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.AbstractDAO;
-import biblivre.core.AbstractDTO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
@@ -35,7 +34,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,54 +71,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             pst.setInt(5, dto.getCreatedBy());
 
             return pst.executeUpdate() > 0;
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-    }
-
-    @Override
-    public boolean saveFromBiblivre3(List<? extends AbstractDTO> dtoList) {
-        if (dtoList.isEmpty()) {
-            return true;
-        }
-
-        Connection con = null;
-
-        RecordType recordType = ((RecordDTO) dtoList.get(0)).getRecordType();
-
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO ").append(recordType).append("_records ");
-            sql.append("(id, iso2709, material, database, created_by, created, modified) ");
-            sql.append("VALUES (?, ?, ?, ?, ?, ?, ?); ");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-            for (AbstractDTO abstractDto : dtoList) {
-                RecordDTO dto = (RecordDTO) abstractDto;
-                pst.setInt(1, dto.getId());
-                pst.setString(2, dto.getUTF8Iso2709());
-                pst.setString(3, dto.getMaterialType().toString());
-                pst.setString(4, dto.getRecordDatabase().toString());
-                pst.setInt(5, dto.getCreatedBy());
-                if (dto.getCreated() != null) {
-                    pst.setDate(6, new java.sql.Date(dto.getCreated().getTime()));
-                } else {
-                    pst.setNull(6, Types.NULL);
-                }
-                if (dto.getCreated() != null) {
-                    pst.setDate(7, new java.sql.Date(dto.getModified().getTime()));
-                } else {
-                    pst.setNull(7, Types.NULL);
-                }
-                pst.addBatch();
-            }
-
-            return pst.executeBatch()[0] > 0;
 
         } catch (Exception e) {
             throw new DAOException(e);
@@ -218,30 +168,15 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
             pst.executeUpdate();
 
-            //			StringBuilder sqlSearch = new StringBuilder();
-            //			sqlSearch.append("DELETE FROM ").append(recordType).append("_search_results
-            // ");
-            //			sqlSearch.append("WHERE record_id IN (");
-            //			sqlSearch.append(StringUtils.repeat("?", ", ", ids.length));
-            //			sqlSearch.append(");");
-            //
-            //			i = 1;
-            //			PreparedStatement pstSearch = con.prepareStatement(sqlSearch.toString());
-            //			for (int j = 0; j < ids.length; j++) {
-            //				pstSearch.setInt(i++, ids[j]);
-            //			}
-            //
-            //			pstSearch.executeUpdate();
-
             if (recordType == RecordType.BIBLIO) {
-                StringBuilder sqlHolding = new StringBuilder();
+                String holdingSQL =
+                        """
+                        UPDATE biblio_holdings SET database = B.database
+                        FROM biblio_records B
+                        WHERE biblio_holdings.record_id = B.id
+                        AND biblio_holdings.database <> B.database""";
 
-                sqlHolding.append("UPDATE biblio_holdings SET database = B.database ");
-                sqlHolding.append("FROM biblio_records B ");
-                sqlHolding.append("WHERE biblio_holdings.record_id = B.id ");
-                sqlHolding.append("AND biblio_holdings.database <> B.database ");
-
-                con.createStatement().executeUpdate(sqlHolding.toString());
+                con.createStatement().executeUpdate(holdingSQL);
             }
 
             con.commit();

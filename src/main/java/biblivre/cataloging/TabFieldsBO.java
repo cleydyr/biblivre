@@ -26,6 +26,7 @@ import biblivre.core.SchemaThreadLocal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,18 +38,23 @@ public class TabFieldsBO {
 
     private static Logger logger = LoggerFactory.getLogger(TabFieldsBO.class);
 
+    private Map<String, JavascriptCacheableList<FormTabDatafieldDTO>> tabFieldsCache =
+            new ConcurrentHashMap<>();
+
     public List<BriefTabFieldFormatDTO> getBriefFormats(RecordType recordType) {
         return loadBriefFormats(recordType);
     }
 
     public boolean insertBriefFormat(
             RecordType recordType, BriefTabFieldFormatDTO dto, int loggedUser) {
+        clearTabFieldsCache(recordType);
 
         return tabFieldsDAO.insertBriefFormat(dto, recordType, loggedUser);
     }
 
     public boolean updateBriefFormats(
             RecordType recordType, List<BriefTabFieldFormatDTO> briefFormats, int loggedUser) {
+        clearTabFieldsCache(recordType);
 
         return tabFieldsDAO.updateBriefFormats(briefFormats, recordType, loggedUser);
     }
@@ -58,14 +64,20 @@ public class TabFieldsBO {
             Map<String, FormTabDatafieldDTO> formDatafields,
             int loggedUser) {
 
+        clearTabFieldsCache(recordType);
+
         return tabFieldsDAO.updateFormTabDatafield(formDatafields, recordType, loggedUser);
     }
 
     public boolean deleteBriefFormat(RecordType recordType, String datafield) {
+        clearTabFieldsCache(recordType);
+
         return tabFieldsDAO.deleteBriefFormat(datafield, recordType);
     }
 
     public boolean deleteFormTabDatafield(RecordType recordType, String datafield) {
+        clearTabFieldsCache(recordType);
+
         return tabFieldsDAO.deleteFormTabDatafield(datafield, recordType);
     }
 
@@ -104,31 +116,42 @@ public class TabFieldsBO {
     private JavascriptCacheableList<FormTabDatafieldDTO> loadFormFields(RecordType recordType) {
         String schema = SchemaThreadLocal.get();
 
-        if (TabFieldsBO.logger.isDebugEnabled()) {
-            TabFieldsBO.logger.debug("Loading form fields from " + schema + "." + recordType);
-        }
+        String key = getTabFieldsCacheKey(recordType, schema);
 
-        List<FormTabDatafieldDTO> fields = tabFieldsDAO.listFields(recordType);
+        return tabFieldsCache.computeIfAbsent(
+                key,
+                __ -> {
+                    if (TabFieldsBO.logger.isDebugEnabled()) {
+                        TabFieldsBO.logger.debug(
+                                "Loading form fields from " + schema + "." + recordType);
+                    }
 
-        JavascriptCacheableList<FormTabDatafieldDTO> list;
+                    List<FormTabDatafieldDTO> fields = tabFieldsDAO.listFields(recordType);
 
-        if (recordType == RecordType.HOLDING) {
-            list =
-                    new JavascriptCacheableList<>(
-                            "CatalogingInput.holdingFields",
-                            schema + ".cataloging." + recordType.toString(),
-                            ".form.js");
-        } else {
-            list =
-                    new JavascriptCacheableList<>(
-                            "CatalogingInput.formFields",
-                            schema + ".cataloging." + recordType.toString(),
-                            ".form.js");
-        }
+                    JavascriptCacheableList<FormTabDatafieldDTO> list;
 
-        list.addAll(fields);
+                    if (recordType == RecordType.HOLDING) {
+                        list =
+                                new JavascriptCacheableList<>(
+                                        "CatalogingInput.holdingFields",
+                                        schema + ".cataloging." + recordType.toString(),
+                                        ".form.js");
+                    } else {
+                        list =
+                                new JavascriptCacheableList<>(
+                                        "CatalogingInput.formFields",
+                                        schema + ".cataloging." + recordType.toString(),
+                                        ".form.js");
+                    }
 
-        return list;
+                    list.addAll(fields);
+
+                    return list;
+                });
+    }
+
+    private String getTabFieldsCacheKey(RecordType recordType, String schema) {
+        return "%s#%s".formatted(schema, recordType.toString());
     }
 
     private List<FormTabSubfieldDTO> loadAutocompleteSubFields(RecordType recordType) {
@@ -171,6 +194,12 @@ public class TabFieldsBO {
         }
 
         return list;
+    }
+
+    private void clearTabFieldsCache(RecordType recordType) {
+        String key = getTabFieldsCacheKey(recordType, SchemaThreadLocal.get());
+
+        tabFieldsCache.remove(key);
     }
 
     @Autowired

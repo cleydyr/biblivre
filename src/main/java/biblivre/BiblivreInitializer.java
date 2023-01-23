@@ -73,6 +73,8 @@ import biblivre.core.schemas.SchemaDAO;
 import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.LanguageDAO;
 import biblivre.core.translations.LanguageDAOImpl;
+import biblivre.core.translations.TranslationsDAO;
+import biblivre.core.translations.TranslationsDAOImpl;
 import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
@@ -94,10 +96,11 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 @SpringBootApplication(
@@ -105,7 +108,8 @@ import org.thymeleaf.templatemode.TemplateMode;
             DataSourceAutoConfiguration.class,
             DataSourceTransactionManagerAutoConfiguration.class,
             HibernateJpaAutoConfiguration.class
-        })
+        },
+        nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
 public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -242,6 +246,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         return ConfigurationsDAOImpl.getInstance();
     }
 
+    @Bean
+    public TranslationsDAO translationsDAO() {
+        return TranslationsDAOImpl.getInstance();
+    }
+
     @Autowired private ApplicationContext applicationContext;
 
     @Autowired private AutowireCapableBeanFactory autowireCapableBeanFactory;
@@ -271,7 +280,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Bean
     public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
-        return createFilterRegistration(SchemaFilter.class, 1, DispatcherType.REQUEST, DispatcherType.ERROR);
+        return createFilterRegistration(
+                SchemaFilter.class, 1, DispatcherType.REQUEST, DispatcherType.ERROR);
     }
 
     @Bean

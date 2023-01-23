@@ -33,6 +33,8 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDTO implements IFJson, Serializable {
     private static final long serialVersionUID = 1L;
@@ -43,6 +45,8 @@ public abstract class AbstractDTO implements IFJson, Serializable {
     private int modifiedBy;
 
     private transient Map<String, IFJson> _extraData = new HashMap<>();
+
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractDTO.class);
 
     public AbstractDTO() {}
 
@@ -168,8 +172,9 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                 clazz = clazz.getSuperclass();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("error while converting to JSON object", e);
         }
+
         return json;
     }
 

@@ -33,7 +33,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.circulation.user_cards.Handler")
+@Component
 public class Handler extends AbstractHandler {
     private UserBO userBO;
 

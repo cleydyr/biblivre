@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
 
-@Component("biblivre.administration.usertype.Validator")
+@Component
 public class Validator extends AbstractValidator {
 
     public void validateSave(
