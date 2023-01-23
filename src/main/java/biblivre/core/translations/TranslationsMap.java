@@ -21,7 +21,6 @@ package biblivre.core.translations;
 
 import biblivre.core.IFCacheableJavascript;
 import biblivre.core.JavascriptCache;
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
 import java.io.File;
 import java.util.HashMap;
@@ -40,18 +39,24 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
     private String schema;
     private String language;
     private JavascriptCache cache;
-    private TranslationBO translationBO;
+    private TranslationsMap globalTranslationsMap;
 
-    public TranslationsMap(String schema, String language, TranslationBO translationBO) {
-        this(schema, language, 16, translationBO);
+    public TranslationsMap(
+            String schema,
+            String language,
+            TranslationBO translationBO,
+            TranslationsMap globalTranslationsMap) {
+        this(schema, language, 16, globalTranslationsMap);
     }
 
     public TranslationsMap(
-            String schema, String language, int initialSize, TranslationBO translationBO) {
+            String schema,
+            String language,
+            int initialSize,
+            TranslationsMap globalTranslationsMap) {
         super(initialSize);
 
-        this.translationBO = translationBO;
-
+        this.globalTranslationsMap = globalTranslationsMap;
         this.setSchema(schema);
         this.setLanguage(language);
     }
@@ -70,9 +75,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
 
         if (StringUtils.isEmpty(value)) {
             if (!isGlobalSchema()) {
-                value =
-                        SchemaThreadLocal.withGlobalSchema(
-                                () -> translationBO.get(this.getLanguage()).getText(key));
+                value = globalTranslationsMap.getText(key);
             } else {
                 this.logger.warn(
                         "Translation key not found: "
@@ -118,12 +121,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         Map<String, TranslationDTO> translations = new HashMap<>();
 
         if (!isGlobalSchema()) {
-            SchemaThreadLocal.withGlobalSchema(
-                    () -> {
-                        translations.putAll(translationBO.get(this.getLanguage()));
-
-                        return null;
-                    });
+            translations.putAll(globalTranslationsMap);
         }
 
         for (Map.Entry<String, TranslationDTO> e : this.entrySet()) {
@@ -191,9 +189,5 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
     @Override
     public String toString() {
         return new JSONObject(this.getAllValues()).toString();
-    }
-
-    public void setTranslationsBO(TranslationBO translationBO) {
-        this.translationBO = translationBO;
     }
 }

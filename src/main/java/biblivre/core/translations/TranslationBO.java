@@ -25,7 +25,6 @@ import biblivre.core.utils.Constants;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +32,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.LocaleUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
@@ -45,6 +44,8 @@ public class TranslationBO {
     private static Logger logger = LoggerFactory.getLogger(TranslationBO.class);
 
     private static Set<String> availableJavascriptLocales = Set.of("es-US", "es", "pt-BR");
+
+    private TranslationsDAO translationsDAO;
 
     public TranslationsMap get(String language) {
         String schema = SchemaThreadLocal.get();
@@ -164,7 +165,6 @@ public class TranslationBO {
 
             return new DiskFile(file, "x-download");
         } catch (Exception e) {
-            e.printStackTrace();
             TranslationBO.logger.error(e.getMessage(), e);
         }
         return null;
@@ -175,25 +175,18 @@ public class TranslationBO {
             logger.debug("Loading language " + schema + "." + language);
         }
 
+        final TranslationsMap globalTranslationsMap =
+                Constants.GLOBAL_SCHEMA.equals(schema)
+                        ? null
+                        : loadLanguage(Constants.GLOBAL_SCHEMA, language);
+
         return SchemaThreadLocal.withSchema(
                 schema,
-                () -> {
-                    if (StringUtils.isBlank(language)) {
-                        return new TranslationsMap(schema, language, 1, this);
-                    }
+                () -> translationsDAO.getTranslationsMap(schema, language, globalTranslationsMap));
+    }
 
-                    TranslationsDAOImpl dao = TranslationsDAOImpl.getInstance();
-
-                    Collection<TranslationDTO> list = dao.list(language);
-
-                    TranslationsMap translationsMap =
-                            new TranslationsMap(schema, language, list.size(), this);
-
-                    for (TranslationDTO dto : list) {
-                        translationsMap.put(dto.getKey(), dto);
-                    }
-
-                    return translationsMap;
-                });
+    @Autowired
+    public void setTranslationsDAO(TranslationsDAO translationsDAO) {
+        this.translationsDAO = translationsDAO;
     }
 }

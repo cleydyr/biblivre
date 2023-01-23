@@ -73,6 +73,8 @@ import biblivre.core.schemas.SchemaDAO;
 import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.core.translations.LanguageDAO;
 import biblivre.core.translations.LanguageDAOImpl;
+import biblivre.core.translations.TranslationsDAO;
+import biblivre.core.translations.TranslationsDAOImpl;
 import biblivre.core.utils.StringPool;
 import biblivre.digitalmedia.DigitalMediaDAO;
 import biblivre.digitalmedia.DigitalMediaDAOFactory;
@@ -242,6 +244,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public ConfigurationsDAO configurationsDAO() {
         return ConfigurationsDAOImpl.getInstance();
+    }
+
+    @Bean
+    public TranslationsDAO translationsDAO() {
+        return TranslationsDAOImpl.getInstance();
     }
 
     @Autowired private ApplicationContext applicationContext;

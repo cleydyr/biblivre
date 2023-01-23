@@ -48,7 +48,9 @@ public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
             sql.append(
                     "SELECT language, text as name FROM global.translations WHERE key = 'language_name' ");
 
-            if (!SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
+            String schema = SchemaThreadLocal.get();
+
+            if (Constants.GLOBAL_SCHEMA.equals(schema)) {
                 sql.append("UNION ");
                 sql.append(
                         "SELECT language, text as name FROM translations WHERE key = 'language_name' ");

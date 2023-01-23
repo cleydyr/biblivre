@@ -30,32 +30,37 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 
 public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO {
+    private Map<String, TranslationsMap> translationsMapCache = new ConcurrentHashMap<>();
+
+    private Map<String, List<TranslationDTO>> translationsListCache = new ConcurrentHashMap<>();
 
     public static TranslationsDAOImpl getInstance() {
         return (TranslationsDAOImpl) AbstractDAO.getInstance(TranslationsDAOImpl.class);
     }
 
     @Override
-    public List<TranslationDTO> list() {
-        return this.list(null);
-    }
-
-    @Override
     public List<TranslationDTO> list(String language) {
-        List<TranslationDTO> list = new ArrayList<>();
+        String schema = SchemaThreadLocal.get();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        String key = getTranslationListCacheKey(schema, language);
 
-            String sql =
-                    """
+        return translationsListCache.computeIfAbsent(
+                key,
+                __ -> {
+                    translationsMapCache.remove(getTranslationMapCacheKey(schema, language));
+
+                    List<TranslationDTO> list = new ArrayList<>();
+
+                    String sql =
+                            """
                     SELECT K.language, K.key, coalesce(T.text, '') as text, T.created, T.created_by, T.modified, T.modified_by, T.user_created
                     FROM (
                         SELECT DISTINCT B.language, A.key
@@ -74,33 +79,29 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
                     %s
                     ORDER BY K.language, K.key
                     """
-                            .formatted(
-                                    StringUtils.isNotBlank(language)
-                                            ? "WHERE K.language = ? "
-                                            : StringPool.BLANK);
+                                    .formatted(
+                                            StringUtils.isNotBlank(language)
+                                                    ? "WHERE K.language = ? "
+                                                    : StringPool.BLANK);
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+                    try (Connection con = this.getConnection();
+                            PreparedStatement pst = con.prepareStatement(sql)) {
 
-            if (StringUtils.isNotBlank(language)) {
-                pst.setString(1, language);
-            }
+                        if (StringUtils.isNotBlank(language)) {
+                            pst.setString(1, language);
+                        }
 
-            ResultSet rs = pst.executeQuery();
+                        ResultSet rs = pst.executeQuery();
 
-            while (rs.next()) {
-                try {
-                    list.add(this.populateDTO(rs));
-                } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
-                }
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                        while (rs.next()) {
+                            list.add(this.populateDTO(rs));
+                        }
+                    } catch (Exception e) {
+                        throw new DAOException(e);
+                    }
 
-        return list;
+                    return list;
+                });
     }
 
     @Override
@@ -113,6 +114,8 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             Map<String, Map<String, String>> translationsToAdd,
             Map<String, Map<String, String>> translationsToRemove,
             int loggedUser) {
+        String schema = SchemaThreadLocal.get();
+
         try (Connection con = getConnection()) {
             con.setAutoCommit(false);
 
@@ -140,6 +143,8 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
                 for (Entry<String, Map<String, String>> entry : translationsToRemove.entrySet()) {
                     String language = entry.getKey();
 
+                    clearCache(schema, language);
+
                     Map<String, String> translation = entry.getValue();
 
                     for (String key : translation.keySet()) {
@@ -153,10 +158,16 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             }
 
             this.commit(con);
+
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
         }
+    }
+
+    private void clearCache(String schema, String language) {
+        translationsListCache.remove(getTranslationListCacheKey(schema, language));
+        translationsMapCache.remove(getTranslationMapCacheKey(schema, language));
     }
 
     private void updateTranslation(
@@ -208,6 +219,8 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
                     preparedStatement, value, loggedUser, language, key);
 
             preparedStatement.execute();
+
+            clearCache(SchemaThreadLocal.get(), language);
         }
     }
 
@@ -228,6 +241,8 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
                     preparedStatement, language, key, value, loggedUser, loggedUser, userCreated);
 
             preparedStatement.execute();
+
+            clearCache(SchemaThreadLocal.get(), language);
         }
     }
 
@@ -259,6 +274,8 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             PreparedStatementUtil.setAllParameters(preparedStatement, language, key);
 
             preparedStatement.execute();
+
+            clearCache(SchemaThreadLocal.get(), language);
         }
     }
 
@@ -301,5 +318,39 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
         dto.setUserCreated(rs.getBoolean("user_created"));
 
         return dto;
+    }
+
+    @Override
+    public TranslationsMap getTranslationsMap(
+            String schema, String language, TranslationsMap globalTranslationsMap) {
+        if (StringUtils.isBlank(language)) {
+            return new TranslationsMap(schema, language, 1, globalTranslationsMap);
+        }
+
+        String key = getTranslationMapCacheKey(schema, language);
+
+        return translationsMapCache.computeIfAbsent(
+                key,
+                __ -> {
+                    Collection<TranslationDTO> list = list(language);
+
+                    TranslationsMap translationsMap =
+                            new TranslationsMap(
+                                    schema, language, list.size(), globalTranslationsMap);
+
+                    for (TranslationDTO dto : list) {
+                        translationsMap.put(dto.getKey(), dto);
+                    }
+
+                    return translationsMap;
+                });
+    }
+
+    private String getTranslationMapCacheKey(String schema, String language) {
+        return "%s#%s".formatted(schema, language);
+    }
+
+    private String getTranslationListCacheKey(String schema, String language) {
+        return "%s#%s".formatted(schema, language);
     }
 }
