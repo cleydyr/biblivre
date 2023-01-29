@@ -102,8 +102,8 @@ public class LendingsByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.lendings"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -112,9 +112,9 @@ public class LendingsByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.title"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -123,9 +123,9 @@ public class LendingsByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.author"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

@@ -134,9 +134,9 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getBoldChunk(
                                         this.getText("administration.reports.field.id"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(6);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -146,9 +146,9 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
                                 this.getBoldChunk(
                                         this.getText(
                                                 "administration.reports.field.accession_number"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(3);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -158,9 +158,9 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
                                 this.getBoldChunk(
                                         this.getText(
                                                 "administration.reports.field.holdings_count"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(11);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
