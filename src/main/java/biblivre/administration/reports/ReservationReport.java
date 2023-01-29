@@ -60,8 +60,8 @@ public class ReservationReport extends BaseBiblivreReport {
                                     this.getHeaderChunk(
                                             this.getText(
                                                     "administration.reports.field.biblio_reservation"))));
-            cell.setBackgroundColor(this.headerBgColor);
-            cell.setBorderWidth(this.headerBorderWidth);
+            cell.setBackgroundColor(this.HEADER_BG_COLOR);
+            cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setColspan(7);
@@ -80,8 +80,8 @@ public class ReservationReport extends BaseBiblivreReport {
                                     this.getHeaderChunk(
                                             this.getText(
                                                     "administration.reports.field.holding_reservation"))));
-            cell.setBackgroundColor(this.headerBgColor);
-            cell.setBorderWidth(this.headerBorderWidth);
+            cell.setBackgroundColor(this.HEADER_BG_COLOR);
+            cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setColspan(7);
@@ -98,8 +98,8 @@ public class ReservationReport extends BaseBiblivreReport {
                             + " - "
                             + this.dateFormat.format(new Date());
             PdfPCell cell = new PdfPCell(new Paragraph(this.getHeaderChunk(message)));
-            cell.setBackgroundColor(this.headerBgColor);
-            cell.setBorderWidth(this.headerBorderWidth);
+            cell.setBackgroundColor(this.HEADER_BG_COLOR);
+            cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             noDataTable.addCell(cell);
@@ -114,8 +114,8 @@ public class ReservationReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.user_id"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -124,9 +124,9 @@ public class ReservationReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.user_name"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -135,9 +135,9 @@ public class ReservationReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.title"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -146,8 +146,8 @@ public class ReservationReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.author"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -157,8 +157,8 @@ public class ReservationReport extends BaseBiblivreReport {
                                 this.getHeaderChunk(
                                         this.getText(
                                                 "administration.reports.field.reservation_date"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

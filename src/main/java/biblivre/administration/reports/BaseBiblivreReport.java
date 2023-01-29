@@ -27,10 +27,10 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
@@ -38,6 +38,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,29 +49,43 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseBiblivreReport extends PdfPageEventHelper implements IBiblivreReport {
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-    protected final Float headerBorderWidth = 0.8f;
-    protected final Float smallFontSize = 8f;
-    protected final Float reportFontSize = 10f;
-    protected final Float pageNumberFontSize = 8f;
-    protected final Color headerBgColor = new Color(239, 239, 239);
-    protected final Font smallFont =
-            FontFactory.getFont("Arial", this.smallFontSize, Font.NORMAL, Color.BLACK);
-    protected final Font textFont =
-            FontFactory.getFont("Arial", this.reportFontSize, Font.NORMAL, Color.BLACK);
-    protected final Font boldFont =
-            FontFactory.getFont("Arial", this.smallFontSize, Font.BOLD, Color.BLACK);
-    protected final Font headerFont =
-            FontFactory.getFont("Arial", this.reportFontSize, Font.BOLD, Color.BLACK);
-    protected final Font footerFont =
-            FontFactory.getFont(
-                    FontFactory.COURIER, this.pageNumberFontSize, Font.BOLD, Color.BLACK);
+    protected static final Logger logger = LoggerFactory.getLogger(BaseBiblivreReport.class);
+
+    protected static final Float HEADER_BORDER_WIDTH = 0.8f;
+    protected static final Float smallFontSize = 8f;
+    protected static final Float reportFontSize = 10f;
+    protected static final Float pageNumberFontSize = 8f;
+    protected static final Color HEADER_BG_COLOR = new Color(239, 239, 239);
+    protected static final Font SMALL_FONT;
+    protected static final Font TEXT_FONT;
+    protected static final Font BOLD_FONT;
+    protected static final Font HEADER_FONT;
+    protected static final Font FOOTER_FONT;
+
     protected TranslationsMap i18n;
     private PdfWriter writer;
     private Date generationDate;
     protected DateFormat dateFormat;
 
     protected ReportsBO reportsBO;
+
+    static {
+        try {
+            SMALL_FONT = getFont(8);
+
+            TEXT_FONT = getFont(10);
+
+            BOLD_FONT = getFont(8, Font.BOLD);
+
+            HEADER_FONT = getFont(10, Font.BOLD);
+
+            FOOTER_FONT = getFont(8, Font.BOLD);
+        } catch (IOException e) {
+            logger.error("Can't load fonts", e);
+
+            throw new Error();
+        }
+    }
 
     @Override
     public DiskFile generateReport(ReportsDTO dto, TranslationsMap i18n) {
@@ -106,10 +121,10 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
                 report = new DiskFile(file, "application/pdf");
 
-                report.setName(fileName);
+                report.setName(file.getName());
             }
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return null;
         }
 
@@ -188,7 +203,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
             PdfPTable foot = new PdfPTable(1);
             Chunk pageNumber = new Chunk(String.valueOf(document.getPageNumber()));
-            pageNumber.setFont(this.footerFont);
+            pageNumber.setFont(FOOTER_FONT);
             cell = new PdfPCell(new Paragraph(pageNumber));
             cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             cell.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -208,25 +223,25 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
     protected Chunk getNormalChunk(String text) {
         Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-        chunk.setFont(this.textFont);
+        chunk.setFont(TEXT_FONT);
         return chunk;
     }
 
     protected Chunk getBoldChunk(String text) {
         Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-        chunk.setFont(this.boldFont);
+        chunk.setFont(BOLD_FONT);
         return chunk;
     }
 
     protected Chunk getSmallFontChunk(String text) {
         Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-        chunk.setFont(this.smallFont);
+        chunk.setFont(SMALL_FONT);
         return chunk;
     }
 
     protected Chunk getHeaderChunk(String text) {
         Chunk chunk = new Chunk(StringUtils.defaultIfEmpty(text, ""));
-        chunk.setFont(this.headerFont);
+        chunk.setFont(HEADER_FONT);
         return chunk;
     }
 
@@ -236,5 +251,21 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
     public void setReportsBO(ReportsBO reportsBO) {
         this.reportsBO = reportsBO;
+    }
+
+    private static Font getFont(int size, int style) throws IOException {
+        Font font = getFont(size);
+
+        font.setStyle(style);
+
+        return font;
+    }
+
+    private static Font getFont(int size) throws IOException {
+        BaseFont baseFont =
+                BaseFont.createFont("META-INF/fonts/arialuni.ttf", BaseFont.IDENTITY_H, false);
+
+        Font font = new Font(baseFont, size);
+        return font;
     }
 }

@@ -91,8 +91,8 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getBoldChunk(
                                         this.getText("administration.reports.field.created"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -102,8 +102,8 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
                                 this.getBoldChunk(
                                         this.getText(
                                                 "administration.reports.field.accession_number"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -112,9 +112,9 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getBoldChunk(
                                         this.getText("administration.reports.field.title"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -123,9 +123,9 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getBoldChunk(
                                         this.getText("administration.reports.field.author"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -134,8 +134,8 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getBoldChunk(
                                         this.getText("administration.reports.field.date"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -144,8 +144,8 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getBoldChunk(
                                         this.getText("administration.reports.field.acquisition"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

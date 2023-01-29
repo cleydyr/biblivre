@@ -93,8 +93,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                                     this.getHeaderChunk(
                                             this.getText(
                                                     "administration.reports.field.user_name"))));
-            cell.setBackgroundColor(this.headerBgColor);
-            cell.setBorderWidth(this.headerBorderWidth);
+            cell.setBackgroundColor(this.HEADER_BG_COLOR);
+            cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
@@ -103,8 +103,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                             new Paragraph(
                                     this.getHeaderChunk(
                                             this.getText("administration.reports.field.total"))));
-            cell.setBackgroundColor(this.headerBgColor);
-            cell.setBorderWidth(this.headerBorderWidth);
+            cell.setBackgroundColor(this.HEADER_BG_COLOR);
+            cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
@@ -143,8 +143,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                                 this.getHeaderChunk(
                                         this.getText(
                                                 "administration.reports.field.database_count"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -153,8 +153,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.biblio"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -164,8 +164,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                                 this.getHeaderChunk(
                                         this.getText(
                                                 "administration.reports.field.holdings_count"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -176,7 +176,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                                 this.getHeaderChunk(
                                         this.getText(
                                                 "administration.reports.field.database_main"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -199,7 +199,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                                 this.getHeaderChunk(
                                         this.getText(
                                                 "administration.reports.field.database_work"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -256,8 +256,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.date"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -266,9 +266,9 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.user_name"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -277,8 +277,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.total"))));
-        cell.setBackgroundColor(this.headerBgColor);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

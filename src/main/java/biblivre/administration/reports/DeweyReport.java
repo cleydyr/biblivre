@@ -114,9 +114,9 @@ public class DeweyReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.dewey"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -126,9 +126,9 @@ public class DeweyReport extends BaseBiblivreReport {
                                 this.getHeaderChunk(
                                         this.getText(
                                                 "administration.reports.field.number_of_titles"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -138,9 +138,9 @@ public class DeweyReport extends BaseBiblivreReport {
                                 this.getHeaderChunk(
                                         this.getText(
                                                 "administration.reports.field.number_of_holdings"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(this.HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.headerBorderWidth);
+        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

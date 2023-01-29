@@ -93,7 +93,7 @@ public class AllUsersReport extends BaseBiblivreReport {
 
             total += count;
             cell = new PdfPCell(new Paragraph(this.getHeaderChunk(entry.getKey().toUpperCase())));
-            cell.setBackgroundColor(this.headerBgColor);
+            cell.setBackgroundColor(HEADER_BG_COLOR);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setColspan(2);
@@ -108,7 +108,7 @@ public class AllUsersReport extends BaseBiblivreReport {
                         new Paragraph(
                                 this.getHeaderChunk(
                                         this.getText("administration.reports.field.total"))));
-        cell.setBackgroundColor(this.headerBgColor);
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setColspan(2);
@@ -142,8 +142,8 @@ public class AllUsersReport extends BaseBiblivreReport {
                                         this.getHeaderChunk(
                                                 this.getText(
                                                         "administration.reports.field.user_name"))));
-                cell.setBackgroundColor(this.headerBgColor);
-                cell.setBorderWidth(this.headerBorderWidth);
+                cell.setBackgroundColor(HEADER_BG_COLOR);
+                cell.setBorderWidth(HEADER_BORDER_WIDTH);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
@@ -154,8 +154,8 @@ public class AllUsersReport extends BaseBiblivreReport {
                                         this.getHeaderChunk(
                                                 this.getText(
                                                         "administration.reports.field.user_id"))));
-                cell.setBackgroundColor(this.headerBgColor);
-                cell.setBorderWidth(this.headerBorderWidth);
+                cell.setBackgroundColor(HEADER_BG_COLOR);
+                cell.setBorderWidth(HEADER_BORDER_WIDTH);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
@@ -166,8 +166,8 @@ public class AllUsersReport extends BaseBiblivreReport {
                                         this.getHeaderChunk(
                                                 this.getText(
                                                         "administration.reports.field.creation_date"))));
-                cell.setBackgroundColor(this.headerBgColor);
-                cell.setBorderWidth(this.headerBorderWidth);
+                cell.setBackgroundColor(HEADER_BG_COLOR);
+                cell.setBorderWidth(HEADER_BORDER_WIDTH);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
@@ -178,8 +178,8 @@ public class AllUsersReport extends BaseBiblivreReport {
                                         this.getHeaderChunk(
                                                 this.getText(
                                                         "administration.reports.field.modified"))));
-                cell.setBackgroundColor(this.headerBgColor);
-                cell.setBorderWidth(this.headerBorderWidth);
+                cell.setBackgroundColor(HEADER_BG_COLOR);
+                cell.setBorderWidth(HEADER_BORDER_WIDTH);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
