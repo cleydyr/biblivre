@@ -17,8 +17,9 @@
  * @author Alberto Wagner <alberto@biblivre.org.br>
  * @author Danniel Willian <danniel@biblivre.org.br>
  ******************************************************************************/
-package biblivre.core;
+package biblivre.labels.print;
 
+import biblivre.core.AbstractDTO;
 import java.util.Set;
 
 public class LabelPrintDTO extends AbstractDTO {

@@ -28,9 +28,9 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.LabelPrintDTO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
+import biblivre.labels.print.LabelPrintDTO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.util.ArrayList;
@@ -100,9 +100,7 @@ public class Handler extends AbstractHandler {
             label.setId(rdto.getId());
             label.setAccessionNumber(holding.getAccessionNumber());
 
-            BiblioRecordDTO biblio = (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId());
-            Record biblioRecord = MarcUtils.iso2709ToRecord(biblio.getIso2709());
-            MarcDataReader dataReader = new MarcDataReader(biblioRecord);
+            MarcDataReader dataReader = getBibliographicRecordMarcDataReader(holding);
 
             label.setAuthor(StringUtils.defaultString(dataReader.getAuthorName(false)));
             label.setTitle(StringUtils.defaultString(dataReader.getTitle(false)));
@@ -123,6 +121,13 @@ public class Handler extends AbstractHandler {
         this.setFile(exportFile);
 
         this.setCallback(exportFile::delete);
+    }
+
+    private MarcDataReader getBibliographicRecordMarcDataReader(HoldingDTO holding) {
+        BiblioRecordDTO biblio = (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId());
+        Record biblioRecord = MarcUtils.iso2709ToRecord(biblio.getIso2709());
+        MarcDataReader dataReader = new MarcDataReader(biblioRecord);
+        return dataReader;
     }
 
     public void printText(ExtendedRequest request, ExtendedResponse response) {
