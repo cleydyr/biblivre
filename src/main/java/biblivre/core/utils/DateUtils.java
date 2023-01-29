@@ -10,7 +10,7 @@ public class DateUtils {
     }
 
     public static LocalDate addOpenedDays(LocalDate today, int days, String schema) {
-        LocalDate returnDate = LocalDate.from(today);
+        LocalDate returnDate = today;
 
         while (days > 0) {
             if (isOpen(returnDate, schema)) {
