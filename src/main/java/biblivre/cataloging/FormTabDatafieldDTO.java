@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<BriefTabFieldFormatDTO> {
+public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<FormTabDatafieldDTO> {
 
     private static final long serialVersionUID = 1L;
 
@@ -163,7 +163,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<Brief
     }
 
     @Override
-    public int compareTo(BriefTabFieldFormatDTO other) {
+    public int compareTo(FormTabDatafieldDTO other) {
         if (other == null) {
             return -1;
         }
