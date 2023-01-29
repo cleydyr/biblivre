@@ -36,6 +36,7 @@
 		<aws.java.sdk.version>2.17.100</aws.java.sdk.version>
 		<spotless.version>2.9.0</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
+		<error-prone.version>2.18.0</error-prone.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -193,7 +194,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.marc4j</groupId>
 			<artifactId>marc4j</artifactId>
@@ -332,6 +333,17 @@
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
+					<compilerArgs>
+						<arg>-XDcompilePolicy=simple</arg>
+						<arg>-Xplugin:ErrorProne</arg>
+					</compilerArgs>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>com.google.errorprone</groupId>
+							<artifactId>error_prone_core</artifactId>
+							<version>${error-prone.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>

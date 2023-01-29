@@ -4,7 +4,6 @@ import biblivre.core.translations.TranslationBO;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,25 +36,14 @@ public class Update implements UpdateService {
         this.translationBO = translationBO;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     private static final Map<String, Map<String, String>> _TRANSLATIONS =
-            new HashMap() {
-                {
-                    put(
-                            "circulation.error.invalid_user_name",
-                            new HashMap() {
-                                {
-                                    put(
-                                            "pt-BR",
-                                            "Este usuário possui nome com caracteres inválidos (:)");
-                                    put(
-                                            "es",
-                                            "Este usuario posee un nombre con caracteres inválidos (:)");
-                                    put(
-                                            "en-US",
-                                            "This user has a name with invalid characters (:)");
-                                }
-                            });
-                }
-            };
+            Map.of(
+                    "circulation.error.invalid_user_name",
+                    Map.of(
+                            "pt-BR",
+                            "Este usuário possui nome com caracteres inválidos (:)",
+                            "es",
+                            "Este usuario posee un nombre con caracteres inválidos (:)",
+                            "en-US",
+                            "This user has a name with invalid characters (:)"));
 }

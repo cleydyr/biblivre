@@ -6,7 +6,6 @@ import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,85 +52,41 @@ public class Update implements UpdateService {
                     + "VALUES ('holding.label_print_paragraph_alignment', 'ALIGN_CENTER', 'string',"
                     + "true, '2014-06-21 11:42:07.150326', 1) ON CONFLICT DO NOTHING;";
 
-    @SuppressWarnings({"unchecked", "rawtypes", "serial"})
     private static final Map<String, Map<String, String>> _TRANSLATIONS =
-            new HashMap() {
-                {
-                    put(
-                            "administration.configuration.title.holding.label_print_paragraph_alignment",
-                            new HashMap() {
-                                {
-                                    put("pt-BR", "Alinhamento de parágrafo");
-                                    put("es", "Alineación de párrafo");
-                                    put("en-US", "Paragraph alignment");
-                                }
-                            });
-
-                    put(
-                            "administration.configuration.description.holding.label_print_paragraph_alignment",
-                            new HashMap() {
-                                {
-                                    put(
-                                            "pt-BR",
-                                            "Alinhamento de parágrafo que será utilizado em cada etiqueta impressa");
-                                    put(
-                                            "es",
-                                            "Alineación de párrafo que va a ser usado en cada etiqueta impresa");
-                                    put(
-                                            "en-US",
-                                            "Paragraph alignment which will be used in each printed label");
-                                }
-                            });
-
-                    put(
-                            "administration.configuration.label_print.ALIGN_CENTER",
-                            new HashMap() {
-                                {
-                                    put("pt-BR", "Centralizado");
-                                    put("es", "Centrado");
-                                    put("en-US", "Center");
-                                }
-                            });
-
-                    put(
-                            "administration.configuration.label_print.ALIGN_JUSTIFIED_ALL",
-                            new HashMap() {
-                                {
-                                    put("pt-BR", "Justificado (tudo)");
-                                    put("es", "Justificado (todo)");
-                                    put("en-US", "Justified (all)");
-                                }
-                            });
-
-                    put(
-                            "administration.configuration.label_print.ALIGN_JUSTIFIED",
-                            new HashMap() {
-                                {
-                                    put("pt-BR", "Justificado");
-                                    put("es", "Justificado");
-                                    put("en-US", "Justified");
-                                }
-                            });
-
-                    put(
-                            "administration.configuration.label_print.ALIGN_LEFT",
-                            new HashMap() {
-                                {
-                                    put("pt-BR", "À esquerda");
-                                    put("es", "A la izquierda");
-                                    put("en-US", "Left");
-                                }
-                            });
-
-                    put(
-                            "administration.configuration.label_print.ALIGN_RIGHT",
-                            new HashMap() {
-                                {
-                                    put("pt-BR", "À direita");
-                                    put("es", "A la derecha");
-                                    put("en-US", "Right");
-                                }
-                            });
-                }
-            };
+            Map.of(
+                    "administration.configuration.title.holding.label_print_paragraph_alignment",
+                    Map.of(
+                            "pt-BR",
+                            "Alinhamento de parágrafo",
+                            "es",
+                            "Alineación de párrafo",
+                            "en-US",
+                            "Paragraph alignment"),
+                    "administration.configuration.description.holding.label_print_paragraph_alignment",
+                    Map.of(
+                            "pt-BR",
+                            "Alinhamento de parágrafo que será utilizado em cada etiqueta impressa",
+                            "es",
+                            "Alineación de párrafo que va a ser usado en cada etiqueta impresa",
+                            "en-US",
+                            "Paragraph alignment which will be used in each printed label"),
+                    "administration.configuration.label_print.ALIGN_CENTER",
+                    Map.of("pt-BR", "Centralizado", "es", "Centrado", "en-US", "Center"),
+                    "administration.configuration.label_print.ALIGN_JUSTIFIED_ALL",
+                    Map.of(
+                            "pt-BR", "Justificado (tudo)",
+                            "es", "Justificado (todo)",
+                            "en-US", "Justified (all)"),
+                    "administration.configuration.label_print.ALIGN_JUSTIFIED",
+                    Map.of(
+                            "pt-BR", "Justificado",
+                            "es", "Justificado",
+                            "en-US", "Justified"),
+                    "administration.configuration.label_print.ALIGN_LEFT",
+                    Map.of(
+                            "pt-BR", "À esquerda",
+                            "es", "A la izquierda",
+                            "en-US", "Left"),
+                    "administration.configuration.label_print.ALIGN_RIGHT",
+                    Map.of("pt-BR", "À direita", "es", "A la derecha", "en-US", "Right"));
 }
