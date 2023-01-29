@@ -1,8 +1,8 @@
 package biblivre.cataloging.labels;
 
 import biblivre.core.ITextPimacoTagSheetAdapter;
-import biblivre.core.LabelPrintDTO;
 import biblivre.core.file.DiskFile;
+import biblivre.labels.print.LabelPrintDTO;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
