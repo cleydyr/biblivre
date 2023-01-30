@@ -1219,7 +1219,8 @@ CREATE TABLE single.logins (
     created timestamp without time zone DEFAULT now() NOT NULL,
     created_by integer,
     modified timestamp without time zone DEFAULT now() NOT NULL,
-    modified_by integer
+    modified_by integer,
+    password_salt byte,
 );
 
 

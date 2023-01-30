@@ -125,8 +125,12 @@ public class Handler extends AbstractHandler {
         ldto.setLogin(login);
         ldto.setEmployee(employee);
 
+        byte[] passwordSalt = TextUtils.generatePasswordSalt();
+
+        ldto.setPasswordSalt(passwordSalt);
+
         if (StringUtils.isNotBlank(password)) {
-            ldto.setEncPassword(TextUtils.encodePassword(password));
+            ldto.setEncPassword(TextUtils.encodePassword(password, passwordSalt));
         }
 
         boolean result = true;

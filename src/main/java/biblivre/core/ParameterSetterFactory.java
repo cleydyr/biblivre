@@ -18,6 +18,9 @@ public class ParameterSetterFactory {
         } else if (parameterClass.isAssignableFrom(Boolean.class)) {
             return (PreparedStatement preparedStatement, Object parameter, int position) ->
                     preparedStatement.setBoolean(position, (Boolean) parameter);
+        } else if (parameterClass == byte[].class) {
+            return (PreparedStatement preparedStatement, Object parameter, int position) ->
+                    preparedStatement.setBytes(position, (byte[]) parameter);
         } else {
             throw new ParameterSetterNotFoundException(parameterClass);
         }

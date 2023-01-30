@@ -22,6 +22,8 @@ package biblivre.core.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,13 +31,49 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.mozilla.universalchardet.UniversalDetector;
 
 public class TextUtils {
-    public static String encodePassword(String password) {
+    private static final int PBE_KEY_LENGTH = 256 * 8;
+    private static final int PBE_KEY_ITERATION_COUNT = 4096;
+
+    public static String encodePassword(String password, byte[] salt) {
+        if (StringUtils.isBlank(password)) {
+            throw new IllegalArgumentException("Password is null");
+        }
+
+        try {
+            KeySpec spec =
+                    new PBEKeySpec(
+                            password.toCharArray(), salt, PBE_KEY_ITERATION_COUNT, PBE_KEY_LENGTH);
+
+            SecretKeyFactory secretKeyFactory =
+                    SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+
+            byte[] encoded = secretKeyFactory.generateSecret(spec).getEncoded();
+
+            return new String(encoded);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public static byte[] generatePasswordSalt() {
+        SecureRandom secureRandom = new SecureRandom();
+
+        byte[] salt = new byte[32];
+
+        secureRandom.nextBytes(salt);
+
+        return salt;
+    }
+
+    public static String encodePasswordSHA(String password) {
         if (StringUtils.isBlank(password)) {
             throw new IllegalArgumentException("Password is null");
         }
