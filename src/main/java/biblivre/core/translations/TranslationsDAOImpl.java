@@ -135,24 +135,26 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             }
 
             if (translationsToRemove != null) {
-                String sql = "DELETE FROM translations WHERE language = ? AND key = ?; ";
-                PreparedStatement pst = con.prepareStatement(sql);
+                String sql = "DELETE FROM translations WHERE language = ? AND key = ?";
+                try (PreparedStatement pst = con.prepareStatement(sql)) {
 
-                for (Entry<String, Map<String, String>> entry : translationsToRemove.entrySet()) {
-                    String language = entry.getKey();
+                    for (Entry<String, Map<String, String>> entry :
+                            translationsToRemove.entrySet()) {
+                        String language = entry.getKey();
 
-                    clearCache(schema, language);
+                        clearCache(schema, language);
 
-                    Map<String, String> translation = entry.getValue();
+                        Map<String, String> translation = entry.getValue();
 
-                    for (String key : translation.keySet()) {
-                        pst.setString(1, language);
-                        pst.setString(2, key);
-                        pst.addBatch();
+                        for (String key : translation.keySet()) {
+                            pst.setString(1, language);
+                            pst.setString(2, key);
+                            pst.addBatch();
+                        }
                     }
-                }
 
-                pst.executeBatch();
+                    pst.executeBatch();
+                }
             }
 
             this.commit(con);
@@ -209,7 +211,11 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
             throws Exception {
         String sql =
-                "UPDATE translations SET text = ?, modified = now(), modified_by = ?, WHERE language = ? and key = ?";
+                """
+                UPDATE translations
+                SET text = ?, modified = now(), modified_by = ?
+                WHERE language = ? and key = ?
+                """;
 
         try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
 
@@ -231,7 +237,10 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             UnsafeFunction<String, PreparedStatement> preparedStatementGenerator)
             throws Exception {
         String sql =
-                "INSERT INTO translations (language, key, text, created_by, modified_by, user_created) VALUES (?, ?, ?, ?, ?, ?)";
+                """
+                INSERT INTO translations (language, key, text, created_by, modified_by, user_created)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
 
         try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
 
