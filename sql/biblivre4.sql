@@ -1220,7 +1220,7 @@ CREATE TABLE single.logins (
     created_by integer,
     modified timestamp without time zone DEFAULT now() NOT NULL,
     modified_by integer,
-    password_salt byte,
+    password_salt bytea
 );
 
 
