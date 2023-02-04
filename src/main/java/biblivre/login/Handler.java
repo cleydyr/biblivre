@@ -108,9 +108,17 @@ public class Handler extends AbstractHandler {
         int loggedId = request.getLoggedUserId();
 
         String newPassword = request.getString("new_password");
+
         LoginDTO login = loginBO.get(loggedId);
+
         login.setModifiedBy(loggedId);
-        login.setEncPassword(TextUtils.encodePassword(newPassword));
+
+        byte[] passwordSalt = TextUtils.generatePasswordSalt();
+
+        login.setEncPassword(TextUtils.encodePassword(newPassword, passwordSalt));
+
+        login.setPasswordSalt(passwordSalt);
+
         loginBO.update(login);
 
         boolean warningPassword =

@@ -86,11 +86,11 @@ public class Updates {
     }
 
     public boolean schemaUpdate(String schema) {
+        UpdatesDAO dao = UpdatesDAO.getInstance();
+
         return SchemaThreadLocal.withSchema(
                 schema,
                 () -> {
-                    UpdatesDAO dao = UpdatesDAO.getInstance();
-
                     Connection con = null;
                     try {
                         if (!dao.checkTableExistance("versions")) {

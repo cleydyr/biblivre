@@ -30,8 +30,8 @@ public class LoginDTO extends AbstractDTO {
     private String login;
     private String encPassword;
     private boolean employee;
+    private byte[] passwordSalt;
 
-    private transient String plainPassword;
     private transient String name;
 
     public int getId() {
@@ -73,14 +73,6 @@ public class LoginDTO extends AbstractDTO {
         this.encPassword = encPassword;
     }
 
-    public String getPlainPassword() {
-        return this.plainPassword;
-    }
-
-    public void setPlainPassword(String plainPassword) {
-        this.plainPassword = plainPassword;
-    }
-
     public boolean isEmployee() {
         return this.employee;
     }
@@ -96,5 +88,13 @@ public class LoginDTO extends AbstractDTO {
         json.putOpt("employee", Boolean.valueOf(isEmployee()));
 
         return json;
+    }
+
+    public byte[] getPasswordSalt() {
+        return passwordSalt;
+    }
+
+    public void setPasswordSalt(byte[] salt) {
+        this.passwordSalt = salt;
     }
 }

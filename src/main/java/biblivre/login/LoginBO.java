@@ -32,9 +32,37 @@ public class LoginBO extends AbstractBO {
     private PermissionBO permissionBO;
 
     public final LoginDTO login(String login, String password) {
-        String encodedPassword = TextUtils.encodePassword(password);
+        LoginDTO loginDTO = loginDAO.getByLogin(login);
 
-        return this.loginDAO.login(login, encodedPassword);
+        if (loginDTO.getPasswordSalt() == null) {
+            String encodedPassword = TextUtils.encodePasswordSHA(password);
+
+            loginDTO = this.loginDAO.login(login, encodedPassword);
+
+            if (loginDTO != null) {
+                updatePasswordAlgorithm(password, loginDTO);
+            }
+        } else {
+            byte[] passwordSalt = loginDTO.getPasswordSalt();
+
+            String passwordHash = TextUtils.encodePassword(password, passwordSalt);
+
+            loginDTO = this.loginDAO.login(login, passwordHash);
+        }
+
+        return loginDTO;
+    }
+
+    private void updatePasswordAlgorithm(String password, LoginDTO loginDTO) {
+        byte[] passwordSalt = TextUtils.generatePasswordSalt();
+
+        loginDTO.setPasswordSalt(passwordSalt);
+
+        String newPasswordHash = TextUtils.encodePassword(password, passwordSalt);
+
+        loginDTO.setEncPassword(newPasswordHash);
+
+        loginDAO.update(loginDTO);
     }
 
     public boolean update(LoginDTO login) {

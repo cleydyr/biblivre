@@ -40,12 +40,10 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
     public Set<SchemaDTO> list() {
         Set<SchemaDTO> set = new HashSet<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            String sql = "SELECT * FROM schemas;";
+        try (Connection con = getConnection();
+                Statement st = con.createStatement()) {
+            String sql = "SELECT * FROM global.schemas";
 
-            Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
@@ -57,8 +55,6 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return set;
