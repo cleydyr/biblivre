@@ -359,7 +359,7 @@ var CatalogingSearchClass = {
 		this.root.find('.search_box .main_button:visible').trigger('click');
 	},
 	tabHandler: function (tab, params) {
-		if (HoldingInput && HoldingInput.editing) {
+		if (typeof HoldingInput !== 'undefined' && HoldingInput && HoldingInput.editing) {
 			return false;
 		}
 
