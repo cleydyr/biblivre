@@ -29,6 +29,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.login.LoginBO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -85,10 +86,12 @@ public class Validator extends AbstractValidator {
         }
     }
 
+    @Autowired
     public void setLoginBO(LoginBO loginBO) {
         this.loginBO = loginBO;
     }
 
+    @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
     }
