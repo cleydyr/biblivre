@@ -45,9 +45,21 @@ public class LoginBO extends AbstractBO {
         } else {
             byte[] passwordSalt = loginDTO.getPasswordSalt();
 
-            String passwordHash = TextUtils.encodePassword(password, passwordSalt);
+            byte[] saltedPassword = TextUtils.encodeSaltedPassword(password, passwordSalt);
 
-            loginDTO = this.loginDAO.login(login, passwordHash);
+            if (loginDTO.getSaltedPassword() == null) {
+                String utf8Password = new String(saltedPassword);
+
+                loginDTO = this.loginDAO.login(login, utf8Password);
+
+                if (loginDTO != null) {
+                    loginDTO.setSaltedPassword(saltedPassword);
+
+                    loginDAO.update(loginDTO);
+                }
+            } else {
+                loginDTO = this.loginDAO.login(login, saltedPassword);
+            }
         }
 
         return loginDTO;
@@ -58,9 +70,9 @@ public class LoginBO extends AbstractBO {
 
         loginDTO.setPasswordSalt(passwordSalt);
 
-        String newPasswordHash = TextUtils.encodePassword(password, passwordSalt);
+        byte[] saltedPassword = TextUtils.encodeSaltedPassword(password, passwordSalt);
 
-        loginDTO.setEncPassword(newPasswordHash);
+        loginDTO.setSaltedPassword(saltedPassword);
 
         loginDAO.update(loginDTO);
     }

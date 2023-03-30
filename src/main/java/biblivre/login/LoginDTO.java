@@ -31,6 +31,7 @@ public class LoginDTO extends AbstractDTO {
     private String encPassword;
     private boolean employee;
     private byte[] passwordSalt;
+    private byte[] saltedPassword;
 
     private transient String name;
 
@@ -96,5 +97,13 @@ public class LoginDTO extends AbstractDTO {
 
     public void setPasswordSalt(byte[] salt) {
         this.passwordSalt = salt;
+    }
+
+    public byte[] getSaltedPassword() {
+        return saltedPassword;
+    }
+
+    public void setSaltedPassword(byte[] saltedPassword) {
+        this.saltedPassword = saltedPassword;
     }
 }

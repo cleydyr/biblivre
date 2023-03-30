@@ -130,7 +130,7 @@ public class Handler extends AbstractHandler {
         ldto.setPasswordSalt(passwordSalt);
 
         if (StringUtils.isNotBlank(password)) {
-            ldto.setEncPassword(TextUtils.encodePassword(password, passwordSalt));
+            ldto.setSaltedPassword(TextUtils.encodeSaltedPassword(password, passwordSalt));
         }
 
         boolean result = true;

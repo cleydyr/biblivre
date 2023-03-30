@@ -15,4 +15,6 @@ public interface LoginDAO {
     boolean delete(UserDTO userDTO);
 
     boolean save(LoginDTO dto, UserDTO udto);
+
+    LoginDTO login(String login, byte[] saltedPassword);
 }

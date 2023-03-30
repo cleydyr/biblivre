@@ -115,7 +115,7 @@ public class Handler extends AbstractHandler {
 
         byte[] passwordSalt = TextUtils.generatePasswordSalt();
 
-        login.setEncPassword(TextUtils.encodePassword(newPassword, passwordSalt));
+        login.setSaltedPassword(TextUtils.encodeSaltedPassword(newPassword, passwordSalt));
 
         login.setPasswordSalt(passwordSalt);
 

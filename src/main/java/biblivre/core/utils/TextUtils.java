@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
+import biblivre.core.utils.exception.PasswordEncodingException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -42,7 +43,7 @@ public class TextUtils {
     private static final int PBE_KEY_LENGTH = 256 * 8;
     private static final int PBE_KEY_ITERATION_COUNT = 4096;
 
-    public static String encodePassword(String password, byte[] salt) {
+    public static byte[] encodeSaltedPassword(String password, byte[] salt) {
         if (StringUtils.isBlank(password)) {
             throw new IllegalArgumentException("Password is null");
         }
@@ -55,11 +56,10 @@ public class TextUtils {
             SecretKeyFactory secretKeyFactory =
                     SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 
-            byte[] encoded = secretKeyFactory.generateSecret(spec).getEncoded();
+            return secretKeyFactory.generateSecret(spec).getEncoded();
 
-            return new String(encoded);
         } catch (Exception e) {
-            return "";
+            throw new PasswordEncodingException("can't encode password", e);
         }
     }
 
