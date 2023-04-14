@@ -348,8 +348,8 @@ public class RecordDTO extends AbstractDTO {
             char ind1 = field.getIndicator1();
             char ind2 = field.getIndicator2();
 
-            sb.append(ind1 == ' ' ? '_' : ind1);
-            sb.append(ind2 == ' ' ? '_' : ind2);
+            sb.append(ind1 == ' ' ? MarcConstants.NO_INDICATOR : ind1);
+            sb.append(ind2 == ' ' ? MarcConstants.NO_INDICATOR : ind2);
 
             for (Subfield subfield : field.getSubfields()) {
                 sb.append(MarcConstants.DEFAULT_SPLITTER);

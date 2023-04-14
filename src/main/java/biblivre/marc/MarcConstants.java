@@ -70,4 +70,6 @@ public final class MarcConstants {
     public static final String ACCESSION_NUMBER = "949";
 
     public static final String SOURCE_ACQUISITION_NOTES = "541";
+
+    public static final char NO_INDICATOR = '_';
 }

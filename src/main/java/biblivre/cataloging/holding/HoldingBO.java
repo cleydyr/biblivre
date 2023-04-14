@@ -38,6 +38,7 @@ import biblivre.core.utils.ParagraphAlignmentUtil;
 import biblivre.labels.print.LabelPrintDTO;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
+import biblivre.marc.MarcConstants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
@@ -319,7 +320,11 @@ public class HoldingBO extends RecordBO {
         MarcFactory factory = MarcFactory.newInstance();
         Record record = factory.newRecord();
 
-        DataField df = factory.newDataField("090", '_', '_');
+        DataField df =
+                factory.newDataField(
+                        MarcConstants.SHELF_LOCATION,
+                        MarcConstants.NO_INDICATOR,
+                        MarcConstants.NO_INDICATOR);
         record.addVariableField(df);
         for (int i = 0; i < 4; i++) {
             if (StringUtils.isNotBlank(location[i])) {
@@ -329,7 +334,11 @@ public class HoldingBO extends RecordBO {
             }
         }
 
-        DataField df1 = factory.newDataField("541", '_', '_');
+        DataField df1 =
+                factory.newDataField(
+                        MarcConstants.SOURCE_ACQUISITION_NOTES,
+                        MarcConstants.NO_INDICATOR,
+                        MarcConstants.NO_INDICATOR);
         record.addVariableField(df1);
         for (int i = 0; i < 3; i++) {
             if (StringUtils.isNotBlank(notes[i])) {

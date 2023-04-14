@@ -320,8 +320,10 @@ public class MarcUtils {
                 int iTag = Integer.parseInt(tags[i]);
 
                 if (iTag >= 10) {
-                    char ind1 = value.charAt(0) != '_' ? value.charAt(0) : ' ';
-                    char ind2 = value.charAt(1) != '_' ? value.charAt(1) : ' ';
+                    char ind1 =
+                            value.charAt(0) != MarcConstants.NO_INDICATOR ? value.charAt(0) : ' ';
+                    char ind2 =
+                            value.charAt(1) != MarcConstants.NO_INDICATOR ? value.charAt(1) : ' ';
                     DataField dataField = factory.newDataField(tag, ind1, ind2);
                     record.addVariableField(dataField);
 
