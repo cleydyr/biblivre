@@ -35,8 +35,8 @@ public class LendingsByDateReport extends BaseBiblivreReport {
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
         ReportsDAO dao = ReportsDAOImpl.getInstance();
-        String initialDate = this.dateFormat.format(dto.getInitialDate());
-        String finalDate = this.dateFormat.format(dto.getFinalDate());
+        String initialDate = dateFormat.format(dto.getInitialDate());
+        String finalDate = dateFormat.format(dto.getFinalDate());
         return dao.getLendingsByDateReportData(initialDate, finalDate);
     }
 
@@ -44,47 +44,47 @@ public class LendingsByDateReport extends BaseBiblivreReport {
     protected void generateReportBody(Document document, BaseReportDto reportData)
             throws Exception {
         LendingsByDateReportDto dto = (LendingsByDateReportDto) reportData;
-        Paragraph p1 = new Paragraph(this.getText("administration.reports.title.lendings_by_date"));
+        Paragraph p1 = new Paragraph(getText("administration.reports.title.lendings_by_date"));
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n"));
         StringBuilder header = new StringBuilder();
-        header.append(this.getText("administration.reports.field.date_from"));
+        header.append(getText("administration.reports.field.date_from"));
         header.append(" " + dto.getInitialDate() + " ");
-        header.append(this.getText("administration.reports.field.date_to"));
+        header.append(getText("administration.reports.field.date_to"));
         header.append(" " + dto.getFinalDate());
-        Paragraph p2 = new Paragraph(this.getHeaderChunk(header.toString()));
+        Paragraph p2 = new Paragraph(getHeaderChunk(header.toString()));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p2);
         document.add(new Phrase("\n"));
 
         Paragraph p3 =
                 new Paragraph(
-                        this.getHeaderChunk(
-                                this.getText("administration.reports.field.lendings_count")
+                        getHeaderChunk(
+                                getText("administration.reports.field.lendings_count")
                                         + ":  "
                                         + dto.getTotals()[0]));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p3);
         Paragraph p4 =
                 new Paragraph(
-                        this.getHeaderChunk(
-                                this.getText("administration.reports.field.lendings_current")
+                        getHeaderChunk(
+                                getText("administration.reports.field.lendings_current")
                                         + ":  "
                                         + dto.getTotals()[1]));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p4);
         Paragraph p5 =
                 new Paragraph(
-                        this.getHeaderChunk(
-                                this.getText("administration.reports.field.lendings_late")
+                        getHeaderChunk(
+                                getText("administration.reports.field.lendings_late")
                                         + ":  "
                                         + dto.getTotals()[2]));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p5);
         document.add(new Phrase("\n"));
 
-        document.add(new Phrase(this.getText("administration.reports.field.lendings_top")));
+        document.add(new Phrase(getText("administration.reports.field.lendings_top")));
         document.add(new Phrase("\n"));
 
         PdfPTable table = createTable(dto);
@@ -100,48 +100,45 @@ public class LendingsByDateReport extends BaseBiblivreReport {
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.lendings"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getHeaderChunk(getText("administration.reports.field.lendings"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.title"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(getText("administration.reports.field.title"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.author"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(getText("administration.reports.field.author"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         // Table body
         if (dto.getData() == null || dto.getData().isEmpty()) return table;
         for (String[] data : dto.getData()) {
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[0])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[1])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[1])));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[2])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[2])));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);

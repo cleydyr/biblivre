@@ -47,7 +47,7 @@ public class DeweyReport extends BaseBiblivreReport {
     protected void generateReportBody(Document document, BaseReportDto reportData)
             throws Exception {
         DeweyReportDto dto = (DeweyReportDto) reportData;
-        Paragraph p1 = new Paragraph(this.getText("administration.reports.title.dewey"));
+        Paragraph p1 = new Paragraph(getText("administration.reports.title.dewey"));
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n\n"));
@@ -61,19 +61,19 @@ public class DeweyReport extends BaseBiblivreReport {
         Collections.sort(
                 dataList,
                 (o1, o2) -> {
-                    if (o1 == null || o1[this.index] == null) {
+                    if (o1 == null || o1[index] == null) {
                         return -1;
                     }
 
-                    if (o2 == null || o2[this.index] == null) {
+                    if (o2 == null || o2[index] == null) {
                         return 1;
                     }
 
-                    return o1[this.index].compareTo(o2[this.index]);
+                    return o1[index].compareTo(o2[index]);
                 });
         for (String[] data : dataList) {
             if (StringUtils.isBlank(data[0])) {
-                data[0] = this.getText("administration.reports.field.unclassified");
+                data[0] = getText("administration.reports.field.unclassified");
             }
             totalRecords += Integer.parseInt(data[1]);
             totalHoldings += Integer.parseInt(data[2]);
@@ -81,24 +81,24 @@ public class DeweyReport extends BaseBiblivreReport {
         if (totalRecords > 0) {
             dataList.add(
                     new String[] {
-                        this.getText("administration.reports.field.total"),
+                        getText("administration.reports.field.total"),
                         String.valueOf(totalRecords),
                         String.valueOf(totalHoldings)
                     });
         }
 
         for (String[] data : dataList) {
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[0])));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[1])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[1])));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[2])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[2])));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -112,35 +112,33 @@ public class DeweyReport extends BaseBiblivreReport {
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.dewey"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(getText("administration.reports.field.dewey"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText(
-                                                "administration.reports.field.number_of_titles"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(
+                                        getText("administration.reports.field.number_of_titles"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText(
+                                getHeaderChunk(
+                                        getText(
                                                 "administration.reports.field.number_of_holdings"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

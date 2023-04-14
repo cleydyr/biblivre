@@ -37,6 +37,7 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
+import biblivre.marc.MarcConstants;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import java.sql.Connection;
@@ -138,9 +139,9 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                 String dewey = "";
 
                 MarcDataReader dataReader = new MarcDataReader(record);
-                if (datafield.equals("082")) {
+                if (datafield.equals(MarcConstants.DDCN)) {
                     dewey = dataReader.getDDCN();
-                } else if (datafield.equals("090")) {
+                } else if (datafield.equals(MarcConstants.SHELF_LOCATION)) {
                     dewey = dataReader.getLocation();
                 }
 

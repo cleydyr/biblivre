@@ -34,8 +34,8 @@ public class SearchesByDateReport extends BaseBiblivreReport {
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        String initialDate = this.dateFormat.format(dto.getInitialDate());
-        String finalDate = this.dateFormat.format(dto.getFinalDate());
+        String initialDate = dateFormat.format(dto.getInitialDate());
+        String finalDate = dateFormat.format(dto.getFinalDate());
         return ReportsDAOImpl.getInstance().getSearchesByDateReportData(initialDate, finalDate);
     }
 
@@ -43,16 +43,16 @@ public class SearchesByDateReport extends BaseBiblivreReport {
     protected void generateReportBody(Document document, BaseReportDto reportData)
             throws Exception {
         SearchesByDateReportDto dto = (SearchesByDateReportDto) reportData;
-        Paragraph p1 = new Paragraph(this.getText("administration.reports.title.searches_by_date"));
+        Paragraph p1 = new Paragraph(getText("administration.reports.title.searches_by_date"));
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n"));
         StringBuilder p2Builder = new StringBuilder();
-        p2Builder.append(this.getText("administration.reports.field.date_from") + " ");
+        p2Builder.append(getText("administration.reports.field.date_from") + " ");
         p2Builder.append(dto.getInitialDate());
-        p2Builder.append(" " + this.getText("administration.reports.field.date_to") + " ");
+        p2Builder.append(" " + getText("administration.reports.field.date_to") + " ");
         p2Builder.append(dto.getFinalDate());
-        Paragraph p2 = new Paragraph(this.getHeaderChunk(p2Builder.toString()));
+        Paragraph p2 = new Paragraph(getHeaderChunk(p2Builder.toString()));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p2);
         document.add(new Phrase("\n"));
@@ -70,32 +70,30 @@ public class SearchesByDateReport extends BaseBiblivreReport {
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.date"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getHeaderChunk(getText("administration.reports.field.date"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.total"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(getText("administration.reports.field.total"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         // Table body
         if (dto.getData() == null || dto.getData().isEmpty()) return table;
         for (String[] data : dto.getData()) {
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[1])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[1])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[0])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);

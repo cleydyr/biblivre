@@ -75,40 +75,37 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[1])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[1])));
             cell.setColspan(3);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
 
             Paragraph para = new Paragraph();
-            para.add(new Phrase(this.getSmallFontChunk(data[2] + "\n")));
-            para.add(new Phrase(this.getSmallFontChunk(data[3] + "\n")));
+            para.add(new Phrase(getSmallFontChunk(data[2] + "\n")));
+            para.add(new Phrase(getSmallFontChunk(data[3] + "\n")));
 
             if (StringUtils.isNotBlank(data[4])) {
                 para.add(
                         new Phrase(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.location")
-                                                + ": ")));
-                para.add(new Phrase(this.getSmallFontChunk(data[4] + " ")));
+                                getBoldChunk(
+                                        getText("administration.reports.field.location") + ": ")));
+                para.add(new Phrase(getSmallFontChunk(data[4] + " ")));
             }
 
             if (StringUtils.isNotBlank(data[5])) {
                 para.add(
                         new Phrase(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.edition")
-                                                + ": ")));
-                para.add(new Phrase(this.getSmallFontChunk(data[5] + " ")));
+                                getBoldChunk(
+                                        getText("administration.reports.field.edition") + ": ")));
+                para.add(new Phrase(getSmallFontChunk(data[5] + " ")));
             }
 
             if (StringUtils.isNotBlank(data[6])) {
                 para.add(
                         new Phrase(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.date") + ": ")));
-                para.add(new Phrase(this.getSmallFontChunk(data[6])));
+                                getBoldChunk(getText("administration.reports.field.date") + ": ")));
+                para.add(new Phrase(getSmallFontChunk(data[6])));
             }
 
             cell = new PdfPCell(para);
@@ -131,36 +128,32 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
         PdfPCell cell;
         cell =
                 new PdfPCell(
-                        new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.id"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                        new Paragraph(getBoldChunk(getText("administration.reports.field.id"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(6);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText(
-                                                "administration.reports.field.accession_number"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getBoldChunk(
+                                        getText("administration.reports.field.accession_number"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(3);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText(
-                                                "administration.reports.field.holdings_count"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getBoldChunk(
+                                        getText("administration.reports.field.holdings_count"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(11);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

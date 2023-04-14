@@ -214,7 +214,7 @@ public class AllUsersReport extends BaseBiblivreReport {
             }
             return tabelas;
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return null;
         }
     }

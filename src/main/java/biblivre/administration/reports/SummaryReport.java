@@ -45,16 +45,16 @@ public class SummaryReport extends BaseBiblivreReport {
         }
         switch (order) {
             case 1:
-                this.index = 6;
+                index = 6;
                 break; // dewey
             case 2:
-                this.index = 0;
+                index = 0;
                 break; // title
             case 3:
-                this.index = 1;
+                index = 1;
                 break; // author
             default:
-                this.index = 6; // dewey
+                index = 6; // dewey
         }
         return ReportsDAOImpl.getInstance().getSummaryReportData(dto.getDatabase());
     }
@@ -63,7 +63,7 @@ public class SummaryReport extends BaseBiblivreReport {
     protected void generateReportBody(Document document, BaseReportDto reportData)
             throws Exception {
         SummaryReportDto dto = (SummaryReportDto) reportData;
-        Paragraph p1 = new Paragraph(this.getText("administration.reports.title.summary"));
+        Paragraph p1 = new Paragraph(getText("administration.reports.title.summary"));
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n"));
@@ -73,49 +73,49 @@ public class SummaryReport extends BaseBiblivreReport {
         Collections.sort(
                 dto.getData(),
                 (o1, o2) -> {
-                    if (o1 == null || o1[this.index] == null) {
+                    if (o1 == null || o1[index] == null) {
                         return -1;
                     }
 
-                    if (o2 == null || o2[this.index] == null) {
+                    if (o2 == null || o2[index] == null) {
                         return 1;
                     }
 
-                    return o1[this.index].compareTo(o2[this.index]);
+                    return o1[index].compareTo(o2[index]);
                 });
         PdfPCell cell;
         for (String[] data : dto.getData()) {
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[6])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[6])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[0])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[0])));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[1])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[1])));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[2])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[2])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[3])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[3])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[4])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[4])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[5])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[5])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getSmallFontChunk(data[7])));
+            cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[7])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
@@ -127,84 +127,72 @@ public class SummaryReport extends BaseBiblivreReport {
         PdfPCell cell;
         cell =
                 new PdfPCell(
-                        new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.dewey"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                        new Paragraph(getBoldChunk(getText("administration.reports.field.dewey"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
-                        new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.title"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                        new Paragraph(getBoldChunk(getText("administration.reports.field.title"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.author"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getBoldChunk(getText("administration.reports.field.author"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell =
+                new PdfPCell(
+                        new Paragraph(getBoldChunk(getText("administration.reports.field.isbn"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.isbn"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getBoldChunk(getText("administration.reports.field.editor"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+        cell =
+                new PdfPCell(
+                        new Paragraph(getBoldChunk(getText("administration.reports.field.year"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.editor"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getBoldChunk(getText("administration.reports.field.edition"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.year"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table.addCell(cell);
-        cell =
-                new PdfPCell(
-                        new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText("administration.reports.field.edition"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table.addCell(cell);
-        cell =
-                new PdfPCell(
-                        new Paragraph(
-                                this.getBoldChunk(
-                                        this.getText(
-                                                "administration.reports.field.holdings_count"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getBoldChunk(
+                                        getText("administration.reports.field.holdings_count"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);

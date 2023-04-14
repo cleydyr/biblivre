@@ -41,8 +41,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
         ReportsDAO dao = ReportsDAOImpl.getInstance();
-        String initialDate = this.dateFormat.format(dto.getInitialDate());
-        String finalDate = this.dateFormat.format(dto.getFinalDate());
+        String initialDate = dateFormat.format(dto.getInitialDate());
+        String finalDate = dateFormat.format(dto.getFinalDate());
         return dao.getHoldingCreationByDateReportData(initialDate, finalDate);
     }
 
@@ -52,20 +52,19 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         HoldingCreationByDateReportDto dto = (HoldingCreationByDateReportDto) reportData;
         userTotal = new HashMap<>();
         Paragraph p1 =
-                new Paragraph(
-                        this.getText("administration.reports.title.holdings_creation_by_date"));
+                new Paragraph(getText("administration.reports.title.holdings_creation_by_date"));
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n"));
         String dateSpan =
-                this.getText("administration.reports.field.date_from")
+                getText("administration.reports.field.date_from")
                         + " "
                         + dto.getInitialDate()
                         + " "
-                        + this.getText("administration.reports.field.date_to")
+                        + getText("administration.reports.field.date_to")
                         + " "
                         + dto.getFinalDate();
-        Paragraph p2 = new Paragraph(this.getHeaderChunk(dateSpan));
+        Paragraph p2 = new Paragraph(getHeaderChunk(dateSpan));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p2);
         document.add(new Phrase("\n"));
@@ -79,9 +78,8 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         if (userTotal.size() > 0) {
             Paragraph p3 =
                     new Paragraph(
-                            this.getHeaderChunk(
-                                    this.getText(
-                                            "administration.reports.title.user_creation_count")));
+                            getHeaderChunk(
+                                    getText("administration.reports.title.user_creation_count")));
             p3.setAlignment(Element.ALIGN_CENTER);
             document.add(p3);
             document.add(new Phrase("\n"));
@@ -90,35 +88,32 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
             cell =
                     new PdfPCell(
                             new Paragraph(
-                                    this.getHeaderChunk(
-                                            this.getText(
-                                                    "administration.reports.field.user_name"))));
-            cell.setBackgroundColor(this.HEADER_BG_COLOR);
-            cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                    getHeaderChunk(
+                                            getText("administration.reports.field.user_name"))));
+            cell.setBackgroundColor(HEADER_BG_COLOR);
+            cell.setBorderWidth(HEADER_BORDER_WIDTH);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
             cell =
                     new PdfPCell(
                             new Paragraph(
-                                    this.getHeaderChunk(
-                                            this.getText("administration.reports.field.total"))));
-            cell.setBackgroundColor(this.HEADER_BG_COLOR);
-            cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                    getHeaderChunk(getText("administration.reports.field.total"))));
+            cell.setBackgroundColor(HEADER_BG_COLOR);
+            cell.setBorderWidth(HEADER_BORDER_WIDTH);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
             for (Entry<String, Integer> entry : userTotal.entrySet()) {
                 String name = entry.getKey();
 
-                cell = new PdfPCell(new Paragraph(this.getNormalChunk(name)));
+                cell = new PdfPCell(new Paragraph(getNormalChunk(name)));
                 cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
                 cell =
                         new PdfPCell(
-                                new Paragraph(
-                                        this.getNormalChunk(String.valueOf(entry.getValue()))));
+                                new Paragraph(getNormalChunk(String.valueOf(entry.getValue()))));
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
@@ -130,8 +125,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         // Database totals table
         Paragraph p3 =
                 new Paragraph(
-                        this.getHeaderChunk(
-                                this.getText("administration.reports.field.database_count")));
+                        getHeaderChunk(getText("administration.reports.field.database_count")));
         p3.setAlignment(Element.ALIGN_CENTER);
         document.add(p3);
         document.add(new Phrase("\n"));
@@ -140,32 +134,29 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText(
-                                                "administration.reports.field.database_count"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getHeaderChunk(
+                                        getText("administration.reports.field.database_count"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.biblio"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getHeaderChunk(getText("administration.reports.field.biblio"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText(
-                                                "administration.reports.field.holdings_count"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getHeaderChunk(
+                                        getText("administration.reports.field.holdings_count"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
@@ -173,22 +164,21 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText(
-                                                "administration.reports.field.database_main"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(
+                                        getText("administration.reports.field.database_main"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         String biblio = dto.getTotalBiblioMain();
         biblio = biblio != null ? biblio : "";
-        cell = new PdfPCell(new Paragraph(this.getNormalChunk(biblio)));
+        cell = new PdfPCell(new Paragraph(getNormalChunk(biblio)));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         String tombos = dto.getTotalHoldingMain();
         tombos = tombos != null ? tombos : "";
-        PdfPCell cell2 = new PdfPCell(new Paragraph(this.getNormalChunk(tombos)));
+        PdfPCell cell2 = new PdfPCell(new Paragraph(getNormalChunk(tombos)));
         cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell2);
@@ -196,22 +186,21 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText(
-                                                "administration.reports.field.database_work"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(
+                                        getText("administration.reports.field.database_work"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         biblio = dto.getTotalBiblioWork();
         biblio = biblio != null ? biblio : "";
-        cell = new PdfPCell(new Paragraph(this.getNormalChunk(biblio)));
+        cell = new PdfPCell(new Paragraph(getNormalChunk(biblio)));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         tombos = dto.getTotalHoldingWork();
         tombos = tombos != null ? tombos : "";
-        cell2 = new PdfPCell(new Paragraph(this.getNormalChunk(tombos)));
+        cell2 = new PdfPCell(new Paragraph(getNormalChunk(tombos)));
         cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell2);
@@ -232,16 +221,16 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
             } else {
                 userTotal.put(name, total);
             }
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(data[0])));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(data[0])));
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(name)));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(name)));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(this.getNormalChunk(String.valueOf(total))));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(String.valueOf(total))));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
@@ -254,31 +243,28 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.date"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getHeaderChunk(getText("administration.reports.field.date"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.user_name"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
+                                getHeaderChunk(getText("administration.reports.field.user_name"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
         cell.setColspan(2);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
         cell =
                 new PdfPCell(
                         new Paragraph(
-                                this.getHeaderChunk(
-                                        this.getText("administration.reports.field.total"))));
-        cell.setBackgroundColor(this.HEADER_BG_COLOR);
-        cell.setBorderWidth(this.HEADER_BORDER_WIDTH);
+                                getHeaderChunk(getText("administration.reports.field.total"))));
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
