@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.5</version>
+		<version>3.0.6</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<developers>
@@ -137,7 +137,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20220924</version>
+			<version>20230227</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.stefanbirkner</groupId>
@@ -377,13 +377,8 @@
 				</executions>
 				<configuration>
 					<excludeVulnerabilityIds>
-						<exclude>CVE-2016-1000027</exclude>
-						<exclude>sonatype-2022-4402</exclude>
-						<exclude>CVE-2022-38752</exclude>
 						<exclude>CVE-2022-1471</exclude>
 						<exclude>sonatype-2022-6438</exclude>
-						<exclude>CVE-2022-45143</exclude>
-						<exclude>CVE-2022-45688</exclude>
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
