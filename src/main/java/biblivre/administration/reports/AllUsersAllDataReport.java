@@ -133,51 +133,18 @@ public class AllUsersAllDataReport extends BaseBiblivreReport {
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell);
 
-                cell =
-                        new PdfPCell(
-                                new Paragraph(
-                                        getHeaderChunk(
-                                                getText(
-                                                        "administration.reports.field.user_name"))));
-                cell.setBackgroundColor(HEADER_BG_COLOR);
-                cell.setBorderWidth(HEADER_BORDER_WIDTH);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                table.addCell(cell);
+                table.addCell(
+                        getCenterMiddleHeaderChunkCell("administration.reports.field.user_name"));
 
-                cell =
-                        new PdfPCell(
-                                new Paragraph(
-                                        getHeaderChunk(
-                                                getText("administration.reports.field.user_id"))));
-                cell.setBackgroundColor(HEADER_BG_COLOR);
-                cell.setBorderWidth(HEADER_BORDER_WIDTH);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                table.addCell(cell);
+                table.addCell(
+                        getCenterMiddleHeaderChunkCell("administration.reports.field.user_id"));
 
-                cell =
-                        new PdfPCell(
-                                new Paragraph(
-                                        getHeaderChunk(
-                                                getText(
-                                                        "administration.reports.field.creation_date"))));
-                cell.setBackgroundColor(HEADER_BG_COLOR);
-                cell.setBorderWidth(HEADER_BORDER_WIDTH);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                table.addCell(cell);
+                table.addCell(
+                        getCenterMiddleHeaderChunkCell(
+                                "administration.reports.field.creation_date"));
 
-                cell =
-                        new PdfPCell(
-                                new Paragraph(
-                                        getHeaderChunk(
-                                                getText("administration.reports.field.modified"))));
-                cell.setBackgroundColor(HEADER_BG_COLOR);
-                cell.setBorderWidth(HEADER_BORDER_WIDTH);
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                table.addCell(cell);
+                table.addCell(
+                        getCenterMiddleHeaderChunkCell("administration.reports.field.modified"));
 
                 for (String line : entry.getValue()) {
                     String[] dados = line.split("\t");
@@ -212,6 +179,17 @@ public class AllUsersAllDataReport extends BaseBiblivreReport {
             logger.error(e.getMessage(), e);
             return null;
         }
+    }
+
+    private PdfPCell getCenterMiddleHeaderChunkCell(String key) {
+        PdfPCell cell = new PdfPCell(new Paragraph(getHeaderChunk(getText(key))));
+
+        cell.setBackgroundColor(HEADER_BG_COLOR);
+        cell.setBorderWidth(HEADER_BORDER_WIDTH);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+        return cell;
     }
 
     @Override
