@@ -72,8 +72,8 @@ public class AllUsersAllDataReport extends BaseBiblivreReport {
             p3.setAlignment(Element.ALIGN_LEFT);
             document.add(p3);
             document.add(new Phrase("\n"));
-            for (PdfPTable tabela : listTable) {
-                document.add(tabela);
+            for (PdfPTable table : listTable) {
+                document.add(table);
                 document.add(new Phrase("\n"));
             }
         }
