@@ -71,10 +71,6 @@
 			<url>https://repo1.maven.org/maven2/</url>
 		</repository>
 		<repository>
-			<id>legacy-libs</id>
-			<url>file://${project.basedir}/lib</url>
-		</repository>
-		<repository>
 			<id>clojars.org</id>
 			<url>http://clojars.org/repo</url>
 		</repository>
@@ -219,11 +215,6 @@
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jdbm</groupId>
-			<artifactId>jdbm</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.zaxxer</groupId>
