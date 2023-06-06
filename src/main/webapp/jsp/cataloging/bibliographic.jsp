@@ -558,7 +558,6 @@
 			</div>
 			<div class="record">
 				{#if $T.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.accession_number}<br/>{#/if}
-				{#if $T.lent}<label><i18n:text key="search.holding.lending_state" /></label>: {$T.lent}<br/>{#/if}
 				{#if $T.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.availability)}<br/>{#/if}
 				{#if $T.shelf_location || $T.location_d}
 					<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.shelf_location || ''} {$T.location_d || ''}<br/>
@@ -667,7 +666,6 @@
 							</div>
 							<div class="record">
 								{#if $T.record.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.record.accession_number}<br/>{#/if}
-								{#if $T.record.lent}<label><i18n:text key="search.holding.lending_state" /></label>: {$T.record.lent}<br/>{#/if}
 								{#if $T.record.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.record.availability)}<br/>{#/if}
 								{#if $T.record.shelf_location || $T.record.location_d}
 									<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.record.shelf_location || ''} {$T.record.location_d || ''}<br/>

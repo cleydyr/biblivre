@@ -437,7 +437,6 @@
 		<textarea class="selected_highlight_template template"><!--
 			<div class="record">
 				{#if $T.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.accession_number}<br/>{#/if}
-				{#if $T.lent}<label><i18n:text key="search.holding.lending_state" /></label>: {$T.lent}<br/>{#/if}
 				{#if $T.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.availability)}<br/>{#/if}
 				{#if $T.shelf_location}<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.shelf_location}<br/>{#/if}
 				<label><i18n:text key="search.bibliographic.id" /></label>: {$T.id}<br/>
@@ -519,7 +518,6 @@
 							<div class="result_overlay"><div class="text">{$T.data.overlay_text}</div></div>
 							<div class="record">
 								{#if $T.record.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.record.accession_number}<br/>{#/if}
-								{#if $T.record.lent}<label><i18n:text key="search.holding.lending_state" /></label>: {$T.record.lent}<br/>{#/if}
 								{#if $T.record.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.record.availability)}<br/>{#/if}
 								{#if $T.record.shelf_location}<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.record.shelf_location}<br/>{#/if}
 								<label><i18n:text key="search.bibliographic.id" /></label>: {$T.record.id}<br/>
