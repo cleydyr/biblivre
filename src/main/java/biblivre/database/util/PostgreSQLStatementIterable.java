@@ -105,9 +105,9 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
                 sb.append(lastChar);
             }
 
-            if (newState == State.COMMENT
-                    || (newState == State.WHITESPACE && (Character.isWhitespace(lastChar))
-                            || currentState == State.COMMENT)) {
+            if ((newState == State.COMMENT)
+                    || (((newState == State.WHITESPACE) && (Character.isWhitespace(lastChar)))
+                    || (currentState == State.COMMENT))) {
 
                 lastChar = c;
 

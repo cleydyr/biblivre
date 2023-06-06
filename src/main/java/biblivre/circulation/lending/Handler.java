@@ -62,7 +62,7 @@ public class Handler extends AbstractHandler {
 
         String searchParameters = request.getString("search_parameters");
         String query = null;
-        Boolean lentOnly = false;
+        boolean lentOnly = false;
 
         try {
             JSONObject json = new JSONObject(searchParameters);
@@ -76,7 +76,7 @@ public class Handler extends AbstractHandler {
         Integer limit =
                 request.getInteger(
                         "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-        Integer offset = (request.getInteger("page", 1) - 1) * limit;
+        int offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<HoldingDTO> holdingList =
                 holdingBO.search(query, RecordDatabase.MAIN, lentOnly, offset, limit);
