@@ -38,10 +38,10 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class Handler extends AbstractHandler {
