@@ -41,7 +41,7 @@ public abstract class AbstractContainerDatabaseTest {
 
                 container.start();
 
-                logger.info("Creating and populating database with default " + "data");
+                logger.info("Creating and populating database with default data");
 
                 String populateDatabaseSQL = _readSQLAsString("sql/biblivre4.sql");
 

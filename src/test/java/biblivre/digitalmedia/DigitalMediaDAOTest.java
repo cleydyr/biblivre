@@ -1,29 +1,29 @@
 package biblivre.digitalmedia;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.google.common.io.Files;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.google.common.io.Files;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Testcontainers
 public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
-    private BaseDigitalMediaDAO dao = getInstance(PostgresLargeObjectDigitalMediaDAO.class);
+    private final BaseDigitalMediaDAO dao = getInstance(PostgresLargeObjectDigitalMediaDAO.class);
 
     private static final String DEFAULT_SCHEMA = "single";
 
@@ -84,7 +84,7 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 
             retrievedFile.setSize(content.length());
 
-            assertNull(retrievedFile.getName());
+            Assertions.assertNull(retrievedFile.getName());
 
             String retrievedContent = _getContent(retrievedFile);
 
@@ -127,18 +127,17 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 
         Integer id = dao.save(file);
 
-        BiblivreFile retrievedFile = dao.load(id, fileName);
+        try (BiblivreFile retrievedFile = dao.load(id, fileName)) {
 
-        assertTrue(fileName.equals(retrievedFile.getName()));
+            assertEquals(fileName, retrievedFile.getName());
 
-        assertNull(dao.load(0, "nonexistent"));
+            Assertions.assertNull(dao.load(0, "nonexistent"));
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        try {
             retrievedFile.copy(outputStream);
 
-            assertTrue(fileContent.equals(outputStream.toString()));
+            assertEquals(fileContent, outputStream.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -164,14 +163,12 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
 
         dao.delete(id2);
 
-        BiblivreFile retrievedFile1 = dao.load(id1, fileName1);
+        try (BiblivreFile retrievedFile1 = dao.load(id1, fileName1)) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        try {
             retrievedFile1.copy(outputStream);
 
-            assertTrue(fileContent1.equals(outputStream.toString()));
+            assertEquals(fileContent1, outputStream.toString());
         } catch (Exception e) {
             fail(e);
         }
@@ -180,8 +177,6 @@ public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
     private MemoryFile _createMemoryFile(String fileName, String content) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes());
 
-        MemoryFile file = new MemoryFile(fileName, "text/plain", content.length(), inputStream);
-
-        return file;
+        return new MemoryFile(fileName, "text/plain", content.length(), inputStream);
     }
 }
