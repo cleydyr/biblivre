@@ -1,25 +1,24 @@
 package biblivre.digitalmedia;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.google.common.io.Files;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.google.common.io.Files;
 
 @Testcontainers
 public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
