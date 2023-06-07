@@ -2,21 +2,33 @@ package biblivre.cataloging;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import biblivre.cataloging.dataimport.impl.ISO2709ImportProcessor;
+import biblivre.cataloging.dataimport.impl.MarcFileImportProcessor;
+import biblivre.cataloging.dataimport.impl.MarcXMLImportProcessor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.xml.sax.SAXException;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ImportBOTest {
-    @Autowired ImportBO importBO;
+    ImportBO importBO;
+
+    @BeforeEach
+    void setUp() {
+        importBO = new ImportBO();
+
+        importBO.setImportProcessors(
+                List.of(
+                        new ISO2709ImportProcessor(),
+                        new MarcXMLImportProcessor(),
+                        new MarcFileImportProcessor()));
+    }
 
     @Test
     void testImportBO() throws IOException, URISyntaxException {
