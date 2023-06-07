@@ -8,25 +8,26 @@ import biblivre.core.utils.Constants;
 import com.github.stefanbirkner.systemlambda.Statement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.SQLException;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.MountableFile;
 
 public abstract class AbstractContainerDatabaseTest {
     private static DataSource dataSource;
 
     protected static PostgreSQLContainer<?> container =
-            new PostgreSQLContainer<>("postgres:11")
+            new PostgreSQLContainer<>("postgres:12")
                     .withDatabaseName(Constants.DEFAULT_DATABASE_NAME)
                     .withUsername(Constants.DEFAULT_DATABASE_USERNAME)
-                    .withPassword(Constants.DEFAULT_DATABASE_PASSWORD);
+                    .withPassword(Constants.DEFAULT_DATABASE_PASSWORD)
+                    .withCopyToContainer(
+                            MountableFile.forClasspathResource("sql/biblivre4.sql"),
+                            "/docker-entrypoint-initdb.d/populate-initial-data.sql");
 
     private static boolean setup = false;
 
@@ -41,12 +42,6 @@ public abstract class AbstractContainerDatabaseTest {
 
                 container.start();
 
-                logger.info("Creating and populating database with default data");
-
-                String populateDatabaseSQL = _readSQLAsString("sql/biblivre4.sql");
-
-                performQuery(container, populateDatabaseSQL);
-
                 logger.info("Setup complete!");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -56,16 +51,13 @@ public abstract class AbstractContainerDatabaseTest {
         }
     }
 
-    protected static <T extends AbstractDAO> T getInstance(Class<T> clazz) {
-        return AbstractDAO.getInstance(__ -> getDataSource(container), clazz, "single");
+    @AfterAll
+    static void close() {
+        container.close();
     }
 
-    protected static void performQuery(JdbcDatabaseContainer<?> container, String sql)
-            throws SQLException {
-
-        DataSource ds = getDataSource(container);
-        java.sql.Statement statement = ds.getConnection().createStatement();
-        statement.execute(sql);
+    protected static <T extends AbstractDAO> T getInstance(Class<T> clazz) {
+        return AbstractDAO.getInstance(__ -> getDataSource(container), clazz, "single");
     }
 
     protected static DataSource getDataSource(JdbcDatabaseContainer<?> container) {
@@ -81,14 +73,6 @@ public abstract class AbstractContainerDatabaseTest {
         }
 
         return dataSource;
-    }
-
-    private static String _readSQLAsString(String path) throws Exception {
-        ClassLoader classLoader = AbstractContainerDatabaseTest.class.getClassLoader();
-
-        URL resource = classLoader.getResource(path);
-
-        return new String(Files.readAllBytes(Paths.get(resource.toURI())));
     }
 
     protected void execute(Statement statement) {
