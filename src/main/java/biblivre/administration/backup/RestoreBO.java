@@ -226,8 +226,8 @@ public class RestoreBO extends AbstractBO {
         bw.flush();
     }
 
-    private static boolean notFunctionOrTriggerRelated(String statement) {
-        return !Arrays.stream(FILTERED_OUT_STATEMENT_PREFIXES).anyMatch(statement::startsWith);
+    public static boolean notFunctionOrTriggerRelated(String statement) {
+        return Arrays.stream(FILTERED_OUT_STATEMENT_PREFIXES).noneMatch(statement::startsWith);
     }
 
     @Autowired
