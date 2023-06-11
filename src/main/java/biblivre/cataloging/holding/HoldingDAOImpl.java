@@ -880,7 +880,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         dto.setIso2709(rs.getBytes("iso2709"));
 
-        if (this.hasColumn(rs, "biblio")) {
+        if (this.hasBiblioColumn(rs)) {
             BiblioRecordDTO biblioRecordDTO = new BiblioRecordDTO();
 
             biblioRecordDTO.setIso2709(rs.getBytes("biblio"));

@@ -39,14 +39,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDAO {
-    private static Map<String, DataSource> dataSourceMap = new HashMap<>();
+    private static final Map<String, DataSource> dataSourceMap = new HashMap<>();
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     private String dataSourceName;
 
     private DataSourceProvider dataSourceProvider;
 
-    private static Map<String, AbstractDAO> instances = new HashMap<>();
+    private static final Map<String, AbstractDAO> instances = new HashMap<>();
 
     private static final Logger _logger = LoggerFactory.getLogger(AbstractDAO.class);
 
@@ -115,32 +115,12 @@ public abstract class AbstractDAO {
         }
     }
 
-    public String getDataSourceName() {
-        return this.dataSourceName;
-    }
-
     public void setDataSourceName(String dataSourceName) {
         this.dataSourceName = dataSourceName;
     }
 
-    public static Map<String, DataSource> getDataSourceMap() {
-        return dataSourceMap;
-    }
-
-    public static void setDataSourceMap(Map<String, DataSource> dataSourceMap) {
-        AbstractDAO.dataSourceMap = dataSourceMap;
-    }
-
     protected final Connection getConnection() throws SQLException {
         Connection con = this.getDataSource().getConnection();
-
-        /*
-        DatabaseMetaData dbmd = con.getMetaData();
-        System.out.println("=====  Driver info =====");
-        System.out.println("DriverName: " + dbmd.getDriverName() );
-        System.out.println("DriverVersion: " + dbmd.getDriverVersion() );
-        System.out.println("DriverMajorVersion: " + dbmd.getDriverMajorVersion());
-        */
 
         con.createStatement()
                 .execute(
@@ -149,7 +129,7 @@ public abstract class AbstractDAO {
         return con;
     }
 
-    private final DataSource getDataSource() {
+    private DataSource getDataSource() {
         DataSource ds = dataSourceMap.get(dataSourceName);
 
         if (ds == null) {
@@ -196,103 +176,21 @@ public abstract class AbstractDAO {
         }
     }
 
-    public final Integer getNextSerial(String sequence) {
-        Integer serial = 0;
-        Connection con = null;
+    public final int getNextSerial(String sequence) {
+        String sql = "SELECT nextval('%s') FROM %s".formatted(sequence, sequence);
 
-        try {
-            con = this.getConnection();
-
-            String sql = "SELECT nextval('" + sequence + "') FROM " + sequence;
-            PreparedStatement pst = con.prepareStatement(sql);
-
+        try (Connection con = this.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
             ResultSet rs = pst.executeQuery();
 
             if ((rs != null) && rs.next()) {
-                serial = rs.getInt(1);
+                return rs.getInt(1);
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
-        return serial;
-    }
-
-    public final void fixSequence(String sequence, String tableName) {
-        this.fixSequence(sequence, tableName, "id");
-    }
-
-    public final void fixSequence(String sequence, String tableName, String tableIdColumnName) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
-            String sql =
-                    "SELECT setval('"
-                            + sequence
-                            + "', coalesce((SELECT max("
-                            + tableIdColumnName
-                            + ") + 1 FROM "
-                            + tableName
-                            + "), 1), false);";
-            PreparedStatement pst = con.prepareStatement(sql);
-
-            pst.executeQuery();
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-    }
-
-    public final boolean checkFunctionExistance(String functionName) throws SQLException {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
-            String sql = "SELECT count(*) as count FROM pg_catalog.pg_proc WHERE proname = ?;";
-
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, functionName);
-
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                int count = rs.getInt("count");
-
-                return count > 0;
-            }
-
-            return false;
-        } finally {
-            this.closeConnection(con);
-        }
-    }
-
-    public final boolean checkColumnExistance(String tableName, String columnName)
-            throws SQLException {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
-            String sql =
-                    "SELECT count(*) as count FROM information_schema.columns WHERE table_schema = ? and table_name = ? and column_name = ?;";
-
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, SchemaThreadLocal.get());
-            pst.setString(2, tableName);
-            pst.setString(3, columnName);
-
-            ResultSet rs = pst.executeQuery();
-            return rs.next() && rs.getInt("count") == 1;
-        } finally {
-            this.closeConnection(con);
-        }
+        return -1;
     }
 
     public final boolean checkTableExistance(String tableName) throws SQLException {
@@ -315,33 +213,11 @@ public abstract class AbstractDAO {
         }
     }
 
-    public final String getPostgreSQLVersion() throws SQLException {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
-            String sql = "SELECT version() as version;";
-
-            Statement st = con.createStatement();
-
-            ResultSet rs = st.executeQuery(sql);
-
-            if (rs.next()) {
-                return rs.getString("version");
-            }
-
-            return "";
-        } finally {
-            this.closeConnection(con);
-        }
-    }
-
-    protected final boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
+    protected final boolean hasBiblioColumn(ResultSet rs) throws SQLException {
         ResultSetMetaData metadata = rs.getMetaData();
         int columns = metadata.getColumnCount();
         for (int x = 1; x <= columns; x++) {
-            if (columnName.equals(metadata.getColumnName(x))) {
+            if ("biblio".equals(metadata.getColumnName(x))) {
                 return true;
             }
         }
@@ -349,39 +225,24 @@ public abstract class AbstractDAO {
     }
 
     protected PGConnection getPGConnection(Connection con) {
-        PGConnection pgcon = null;
-
         try {
-            pgcon = (PGConnection) con.unwrap(PGConnection.class);
-
-            return pgcon;
+            return con.unwrap(PGConnection.class);
         } catch (Exception e) {
-            this.logger.info("getInnermostDelegate Unwrap");
-            e.printStackTrace();
+            this.logger.warn("exception when calling getInnermostDelegate Unwrap", e);
         }
 
         try {
-            pgcon =
-                    _getInnermostDelegateFromConnection(
-                            con, "org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
-
-            return pgcon;
+            return _getInnermostDelegateFromConnection(
+                    con, "org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
         } catch (Exception e) {
-            this.logger.info("Skipping org.apache.tomcat.dbcp.dbcp.DelegatingConnection");
-
-            e.printStackTrace();
+            this.logger.warn("Skipping org.apache.tomcat.dbcp.dbcp.DelegatingConnection", e);
         }
 
         try {
-            pgcon =
-                    _getInnermostDelegateFromConnection(
-                            con, "org.apache.commons.dbcp.DelegatingConnection");
-
-            return pgcon;
+            return _getInnermostDelegateFromConnection(
+                    con, "org.apache.commons.dbcp.DelegatingConnection");
         } catch (Exception e) {
-            this.logger.info("org.apache.commons.dbcp.DelegatingConnection");
-
-            e.printStackTrace();
+            this.logger.warn("org.apache.commons.dbcp.DelegatingConnection", e);
         }
 
         return null;
@@ -391,13 +252,11 @@ public abstract class AbstractDAO {
             throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
                     IllegalAccessException, InvocationTargetException {
 
-        PGConnection pgcon;
         Class<?> D = Class.forName(className);
         Constructor<?> c = D.getConstructor(Connection.class);
         Object o = c.newInstance(con);
         Method m = D.getMethod("getInnermostDelegate");
 
-        pgcon = (PGConnection) m.invoke(o);
-        return pgcon;
+        return (PGConnection) m.invoke(o);
     }
 }
