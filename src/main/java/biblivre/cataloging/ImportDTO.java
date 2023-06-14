@@ -138,7 +138,7 @@ public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO> {
             return -1;
         }
 
-        return Integer.valueOf(o.getSuccess()).compareTo(this.getSuccess());
+        return Integer.compare(o.getSuccess(), this.getSuccess());
     }
 
     @Override
