@@ -35,7 +35,6 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.HumanReadableMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

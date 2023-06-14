@@ -21,7 +21,6 @@ package biblivre.view.taglibs;
 
 import biblivre.core.utils.Constants;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
 import org.apache.commons.lang3.StringUtils;

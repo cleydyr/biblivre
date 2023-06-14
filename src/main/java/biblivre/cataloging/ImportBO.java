@@ -30,7 +30,6 @@ import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.function.UnsafeSupplier;
 import biblivre.marc.MaterialType;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;

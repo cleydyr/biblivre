@@ -38,7 +38,6 @@ import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -874,8 +873,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         }
     }
 
-    protected RecordDTO populateDTO(ResultSet rs)
-            throws SQLException {
+    protected RecordDTO populateDTO(ResultSet rs) throws SQLException {
         HoldingDTO dto = new HoldingDTO();
 
         dto.setIso2709(rs.getBytes("iso2709"));

@@ -1,7 +1,6 @@
 package biblivre.update;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public interface UpdateService {
     public default void doUpdate(Connection connection) {

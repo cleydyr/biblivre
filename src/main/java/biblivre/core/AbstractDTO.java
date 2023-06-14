@@ -44,7 +44,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
     private Date modified;
     private int modifiedBy;
 
-    private transient final Map<String, IFJson> _extraData = new HashMap<>();
+    private final transient Map<String, IFJson> _extraData = new HashMap<>();
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractDTO.class);
 

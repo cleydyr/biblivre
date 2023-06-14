@@ -142,8 +142,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
         return reportName + day + month + hour + minute + "_" + second;
     }
 
-    protected abstract void generateReportBody(Document document, BaseReportDto reportData)
-            ;
+    protected abstract void generateReportBody(Document document, BaseReportDto reportData);
 
     public final void setI18n(TranslationsMap i18n) {
         this.i18n = i18n;

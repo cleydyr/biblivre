@@ -28,7 +28,6 @@ import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.marc.MaterialType;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -705,8 +704,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         return dto;
     }
 
-    protected AutocompleteDTO populateAutocompleteDTO(ResultSet rs)
-            throws SQLException {
+    protected AutocompleteDTO populateAutocompleteDTO(ResultSet rs) throws SQLException {
         AutocompleteDTO dto = new AutocompleteDTO();
 
         RecordDTO rdto = new RecordDTO();

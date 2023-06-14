@@ -7,14 +7,11 @@ import biblivre.cataloging.dataimport.impl.MarcFileImportProcessor;
 import biblivre.cataloging.dataimport.impl.MarcXMLImportProcessor;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
 
 public class ImportBOTest {
     ImportBO importBO;
@@ -41,8 +38,7 @@ public class ImportBOTest {
     }
 
     @Test
-    void testLoadFromFileWithXML()
-            throws IOException {
+    void testLoadFromFileWithXML() throws IOException {
         ImportDTO importDTO =
                 importBO.loadFromFile(
                         () -> fromResource("cataloguing/import/biblioteca-de-espanha.xml"));

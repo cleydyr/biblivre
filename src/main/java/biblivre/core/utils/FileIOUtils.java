@@ -143,7 +143,8 @@ public class FileIOUtils {
                 FileUtils.forceMkdir(destination);
             } else {
 
-                try (InputStream is = zipFile.getInputStream(entry); FileOutputStream os = FileUtils.openOutputStream(destination)) {
+                try (InputStream is = zipFile.getInputStream(entry);
+                        FileOutputStream os = FileUtils.openOutputStream(destination)) {
                     IOUtils.copy(is, os);
                 }
 
@@ -324,13 +325,15 @@ public class FileIOUtils {
             response.setDateHeader(
                     "Expires", System.currentTimeMillis() + Constants.DEFAULT_EXPIRE_TIME);
 
-            try (file; OutputStream output = response.getOutputStream()) {
+            try (file;
+                    OutputStream output = response.getOutputStream()) {
 
                 if (ranges.isEmpty() || ranges.get(0) == full) {
                     // Return full file.
                     response.setContentType(contentType);
                     response.setHeader(
-                            "Content-Range", "bytes " + full.start + "-" + full.end + "/" + full.total);
+                            "Content-Range",
+                            "bytes " + full.start + "-" + full.end + "/" + full.total);
 
                     if (!headerOnly) {
                         if (!acceptsGzip) {

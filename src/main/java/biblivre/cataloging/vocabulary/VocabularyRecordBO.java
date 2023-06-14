@@ -20,7 +20,6 @@
 package biblivre.cataloging.vocabulary;
 
 import biblivre.administration.indexing.IndexingDAO;
-import biblivre.administration.indexing.IndexingGroupBO;
 import biblivre.cataloging.RecordBO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.PaginableRecordBO;

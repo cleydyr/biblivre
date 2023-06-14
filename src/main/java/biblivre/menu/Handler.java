@@ -41,7 +41,6 @@ import biblivre.core.schemas.SchemaBO;
 import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.LanguageDTO;
 import biblivre.core.utils.Constants;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
