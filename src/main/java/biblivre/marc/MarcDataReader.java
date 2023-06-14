@@ -105,10 +105,10 @@ public class MarcDataReader {
         List<DataField> fields = this.getDataFields(MarcConstants.ELECTRONIC_LOCATION);
         List<RecordAttachmentDTO> attachments = new ArrayList<>();
 
-        String file = null;
-        String name = null;
-        String path = null;
-        String uri = null;
+        String file;
+        String name;
+        String path;
+        String uri;
 
         for (DataField field : fields) {
             file = this.getFirstSubfieldData(field, 'f');
@@ -370,9 +370,9 @@ public class MarcDataReader {
             return hash;
         }
 
-        DataField field = null;
-        String tag = null;
-        List<DataField> fieldList = null;
+        DataField field;
+        String tag;
+        List<DataField> fieldList;
 
         for (Object obj : record.getDataFields()) {
             field = (DataField) obj;
@@ -418,7 +418,7 @@ public class MarcDataReader {
             String lastSeparator = null;
             String lastValue = null;
             boolean newSeparator = false;
-            boolean endsWithSeparator = false;
+            boolean endsWithSeparator;
             boolean shouldAddStartParenthesis = false;
 
             while (matcher.find()) {

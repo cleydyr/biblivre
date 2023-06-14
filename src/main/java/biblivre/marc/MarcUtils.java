@@ -73,7 +73,7 @@ public class MarcUtils {
     public static Record marcToRecord(String marc, MaterialType materialType, RecordStatus status) {
         String splitter = MarcUtils.detectSplitter(marc);
         String unescaped = StringEscapeUtils.unescapeHtml4(marc);
-        Scanner scanner = null;
+        Scanner scanner;
 
         ByteArrayInputStream is =
                 new ByteArrayInputStream(unescaped.getBytes(Constants.DEFAULT_CHARSET));

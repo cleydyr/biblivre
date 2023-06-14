@@ -161,7 +161,7 @@ public class Handler extends AbstractHandler {
                         default -> new RecordDTO();
                     };
 
-            Record record = null;
+            Record record;
             try {
                 HumanReadableMarcReader humanReadableMarcReader =
                         new HumanReadableMarcReader(marc, RecordStatus.NEW);

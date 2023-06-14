@@ -211,7 +211,7 @@ public class SchemaServlet extends HttpServlet {
 
             String schema = params[0];
 
-            IFCacheableJavascript javascript = null;
+            IFCacheableJavascript javascript;
 
             if (realPath.endsWith(".i18n.js")) {
                 javascript =

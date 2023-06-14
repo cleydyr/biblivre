@@ -60,8 +60,8 @@ public class Handler extends AbstractHandler {
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
         String searchParameters = request.getString("search_parameters");
-        String query = null;
-        boolean lentOnly = false;
+        String query;
+        boolean lentOnly;
 
         try {
             JSONObject json = new JSONObject(searchParameters);

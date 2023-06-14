@@ -57,7 +57,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void generate(ExtendedRequest request, ExtendedResponse response) {
-        ReportsDTO dto = null;
+        ReportsDTO dto;
 
         try {
             dto = this.populateDto(request);

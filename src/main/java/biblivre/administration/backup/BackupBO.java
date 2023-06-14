@@ -111,7 +111,7 @@ public class BackupBO extends AbstractBO {
         BackupDTO dto = new BackupDTO(schemas, type, scope);
         dto.setCurrentStep(0);
 
-        int steps = 0;
+        int steps;
         int schemasCount = dto.getSchemas().size();
 
         steps =

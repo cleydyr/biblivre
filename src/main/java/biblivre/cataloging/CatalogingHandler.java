@@ -96,7 +96,7 @@ public abstract class CatalogingHandler extends AbstractHandler {
 
         RecordDTO dto = this.createRecordDTO(request);
 
-        Record record = null;
+        Record record;
 
         try {
             MarcReader marcReader =

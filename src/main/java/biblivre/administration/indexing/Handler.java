@@ -44,8 +44,8 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        long start = 0;
-        long end = 0;
+        long start;
+        long end;
 
         start = new Date().getTime();
         indexingBO.reindex(recordType);

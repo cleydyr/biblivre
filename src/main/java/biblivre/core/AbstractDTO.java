@@ -112,7 +112,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
                 for (Field field : clazz.getDeclaredFields()) {
                     String name = field.getName();
-                    Method getter = null;
+                    Method getter;
 
                     try {
                         getter = clazz.getDeclaredMethod("get" + StringUtils.capitalize(name));

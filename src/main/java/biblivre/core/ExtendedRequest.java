@@ -164,7 +164,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     public Float getFloat(String key, Float defaultValue) {
-        Float retValue = defaultValue;
+        Float retValue;
 
         retValue = Float.valueOf(this.getRequestParameter(key));
 

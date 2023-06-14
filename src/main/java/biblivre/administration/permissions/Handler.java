@@ -133,7 +133,7 @@ public class Handler extends AbstractHandler {
             ldto.setSaltedPassword(TextUtils.encodeSaltedPassword(password, passwordSalt));
         }
 
-        boolean result = true;
+        boolean result;
 
         if (newLogin) {
             ldto.setCreatedBy(request.getLoggedUserId());

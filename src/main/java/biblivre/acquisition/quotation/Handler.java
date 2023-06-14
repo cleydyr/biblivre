@@ -43,7 +43,7 @@ public class Handler extends AbstractHandler {
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
 
-        String query = null;
+        String query;
 
         try {
             JSONObject json = new JSONObject(searchParameters);
@@ -102,7 +102,7 @@ public class Handler extends AbstractHandler {
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
-        QuotationDTO dto = null;
+        QuotationDTO dto;
 
         try {
             dto = this.populateDTO(request);

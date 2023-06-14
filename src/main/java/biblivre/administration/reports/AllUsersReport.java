@@ -122,7 +122,7 @@ public class AllUsersReport extends BaseBiblivreReport {
     private ArrayList<PdfPTable> createListTable(Map<String, List<String>> data) {
         try {
             ArrayList<PdfPTable> tabelas = new ArrayList<>();
-            PdfPTable table = null;
+            PdfPTable table;
             PdfPCell cell;
             for (Entry<String, List<String>> entry : data.entrySet()) {
                 table = new PdfPTable(4);

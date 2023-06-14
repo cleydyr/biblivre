@@ -38,7 +38,7 @@ public class Handler extends AbstractHandler {
 
         String searchParameters = request.getString("search_parameters");
 
-        String query = null;
+        String query;
 
         try {
             JSONObject json = new JSONObject(searchParameters);
@@ -77,7 +77,7 @@ public class Handler extends AbstractHandler {
 
         Integer id = request.getInteger("id", 0);
 
-        UserTypeDTO dto = null;
+        UserTypeDTO dto;
 
         if (id != 0) {
             dto = userTypeBO.get(id);

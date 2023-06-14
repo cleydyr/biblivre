@@ -155,8 +155,8 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            String sql = null;
-            PreparedStatement pst = null;
+            String sql;
+            PreparedStatement pst;
 
             sql = "SELECT login_id FROM users WHERE id = ?;";
             pst = con.prepareStatement(sql);
@@ -191,7 +191,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
     @Override
     public synchronized boolean save(LoginDTO dto, UserDTO udto) {
         Connection con = null;
-        int loginId = 0;
+        int loginId;
         try {
             con = this.getConnection();
             con.setAutoCommit(false);

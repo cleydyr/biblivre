@@ -56,7 +56,7 @@ public class Handler extends PaginableCatalogingHandler {
 
         String searchParameters = request.getString("search_parameters");
         String query = "";
-        RecordDatabase db = RecordDatabase.MAIN;
+        RecordDatabase db;
 
         try {
             JSONObject json = new JSONObject(searchParameters);

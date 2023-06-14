@@ -103,11 +103,9 @@ public class RequestsByDateReport extends BaseBiblivreReport {
                     table.addCell(cell);
                 }
 
-                requester = "";
                 title = new StringBuilder();
                 quantity = new StringBuilder();
                 unit_value = new StringBuilder();
-                total_value = "";
             }
 
             lastQuotationId = data[0];

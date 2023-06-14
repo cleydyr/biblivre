@@ -170,7 +170,7 @@ public class Handler extends AbstractHandler {
     private void _checkLastBackup(ExtendedRequest request, AuthorizationPoints atps) {
 
         if (atps.isAllowed(AuthorizationPointTypes.ADMINISTRATION_BACKUP)) {
-            boolean warningBackup = false;
+            boolean warningBackup;
 
             BackupDTO lastBackup = backupBO.getLastBackup();
 

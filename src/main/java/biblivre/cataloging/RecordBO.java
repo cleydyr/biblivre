@@ -266,7 +266,7 @@ public abstract class RecordBO extends AbstractBO {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        boolean success = false;
+        boolean success;
 
         if (recordDTO.isNew()) {
             recordDTO.setCreatedBy(loggedUserId);
@@ -291,7 +291,7 @@ public abstract class RecordBO extends AbstractBO {
 
         dto.setModifiedBy(loggedUserId);
 
-        boolean success = false;
+        boolean success;
 
         if (recordDatabase == RecordDatabase.TRASH) {
             success = this.recordDAO.delete(dto);

@@ -57,7 +57,7 @@ public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> 
 
     @Override
     public JSONObject toJSONObject() {
-        JSONObject json = null;
+        JSONObject json;
 
         if (this.getPaging() != null) {
             json = this.getPaging().toJSONObject();

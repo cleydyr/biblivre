@@ -50,8 +50,8 @@ public class Handler extends AbstractHandler {
             ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
         String searchParameters = request.getString("search_parameters");
 
-        String query = null;
-        AccessCardStatus status = null;
+        String query;
+        AccessCardStatus status;
         try {
             JSONObject json = new JSONObject(searchParameters);
             query = json.optString("query");
@@ -106,7 +106,7 @@ public class Handler extends AbstractHandler {
         String end = request.getString("end");
         String suffix = request.getString("suffix");
 
-        boolean success = false;
+        boolean success;
         AccessCardDTO returnDto = null;
 
         if (StringUtils.isNotBlank(code)) {

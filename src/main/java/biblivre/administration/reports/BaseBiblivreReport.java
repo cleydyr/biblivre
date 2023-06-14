@@ -101,7 +101,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
 
     protected DiskFile generateReportFile(BaseReportDto reportData, String fileName) {
         Document document = new Document(PageSize.A4);
-        DiskFile report = null;
+        DiskFile report;
 
         try {
             File file = File.createTempFile(fileName, ".pdf");

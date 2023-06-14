@@ -410,7 +410,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
     public LendingsByDateReportDto getLendingsByDateReportData(
             String initialDate, String finalDate) {
         Connection con = null;
-        PreparedStatement st = null;
+        PreparedStatement st;
         LendingsByDateReportDto dto = new LendingsByDateReportDto();
         dto.setInitialDate(initialDate);
         dto.setFinalDate(finalDate);

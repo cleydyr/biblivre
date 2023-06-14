@@ -118,7 +118,7 @@ public class Handler extends AbstractHandler {
 
         Integer id = request.getInteger("id");
 
-        UserDTO user = null;
+        UserDTO user;
 
         if (id != 0) {
             user = userBO.get(id);

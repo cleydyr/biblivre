@@ -39,7 +39,7 @@ public class Handler extends AbstractHandler {
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
 
-        String query = null;
+        String query;
 
         try {
             JSONObject json = new JSONObject(searchParameters);
@@ -88,7 +88,7 @@ public class Handler extends AbstractHandler {
         Integer id = request.getInteger("id");
         RequestDTO dto = this.populateDTO(request);
 
-        boolean result = false;
+        boolean result;
         if (id == 0) {
             dto.setStatus(RequestStatus.PENDING);
             dto.setCreatedBy(request.getLoggedUserId());

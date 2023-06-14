@@ -340,7 +340,7 @@ public class RestoreBO extends AbstractBO {
         restoreSchemas.forEach(
                 (originalSchemaName, finalSchemaName) -> {
                     if (!Constants.GLOBAL_SCHEMA.equals(finalSchemaName)) {
-                        String schemaTitle = finalSchemaName;
+                        String schemaTitle;
 
                         schemaTitle = dto.getSchemas().get(originalSchemaName).getLeft();
 

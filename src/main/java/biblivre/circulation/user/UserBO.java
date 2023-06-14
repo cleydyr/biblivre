@@ -129,7 +129,7 @@ public class UserBO extends AbstractBO {
                 PdfPTable table = new PdfPTable(3);
                 table.setWidthPercentage(100f);
                 PdfPCell cell;
-                int i = 0;
+                int i;
                 int offset = dto.getOffset();
                 // Fill the empty cell till the startOffset cell
                 for (i = 0; i < offset; i++) {

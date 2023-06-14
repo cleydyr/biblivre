@@ -116,7 +116,7 @@ public class UserReport extends BaseBiblivreReport {
         document.add(new Phrase("\n"));
         document.add(createDateTable(dto.getUser()));
 
-        Paragraph p3 = null;
+        Paragraph p3;
         if (dto.getLendings() != null && dto.getLendings().size() > 0) {
             document.add(new Phrase("\n"));
             p3 = new Paragraph(getText("administration.reports.field.user_lendings"));

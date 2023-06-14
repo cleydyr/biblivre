@@ -49,8 +49,8 @@ public class ExtendedRequestResponseFilter implements Filter {
         request.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
         response.setCharacterEncoding(Constants.DEFAULT_CHARSET.name());
 
-        ExtendedRequest xRequest = null;
-        ExtendedResponse xResponse = null;
+        ExtendedRequest xRequest;
+        ExtendedResponse xResponse;
 
         if (request instanceof ExtendedRequest) {
             // Avoid rewrapping if forwarding

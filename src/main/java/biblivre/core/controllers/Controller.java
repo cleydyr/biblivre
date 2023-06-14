@@ -60,8 +60,8 @@ public abstract class Controller {
     }
 
     protected void processRequest() throws ServletException, IOException {
-        String module = null;
-        String action = null;
+        String module;
+        String action;
 
         try {
             module =
@@ -115,7 +115,7 @@ public abstract class Controller {
 
             Class<?> validatorClass = Class.forName(validatorClassName);
 
-            AbstractValidator validator = null;
+            AbstractValidator validator;
 
             validator = validatorsMap.get(validatorClassName);
 

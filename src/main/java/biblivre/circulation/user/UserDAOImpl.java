@@ -284,7 +284,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             con.setAutoCommit(false);
 
             StringBuilder sql = new StringBuilder();
-            PreparedStatement pst = null;
+            PreparedStatement pst;
             boolean newUser = user.getId() == 0;
 
             if (newUser) {
@@ -339,8 +339,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            StringBuilder sql = null;
-            PreparedStatement pst = null;
+            StringBuilder sql;
+            PreparedStatement pst;
 
             sql = new StringBuilder();
             sql.append("DELETE FROM users ");
