@@ -30,9 +30,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserFieldBO {
 
-    private static Logger logger = LoggerFactory.getLogger(UserFieldBO.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserFieldBO.class);
 
-    private UserFieldsDAO userFieldsDAO;
+    private final UserFieldsDAO userFieldsDAO;
 
     @Autowired
     public UserFieldBO(UserFieldsDAO userFieldsDAO) {

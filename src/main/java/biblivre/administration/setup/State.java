@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class State {
-    public static AtomicBoolean LOCKED = new AtomicBoolean(false);
+    public static final AtomicBoolean LOCKED = new AtomicBoolean(false);
     private static StringBuilder log;
     private static String lastMessage;
     private static long steps;

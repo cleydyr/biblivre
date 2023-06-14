@@ -33,13 +33,13 @@ import org.slf4j.LoggerFactory;
 
 public class TranslationsMap extends HashMap<String, TranslationDTO>
         implements IFCacheableJavascript {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final long serialVersionUID = 1L;
 
     private String schema;
     private String language;
     private JavascriptCache cache;
-    private TranslationsMap globalTranslationsMap;
+    private final TranslationsMap globalTranslationsMap;
 
     public TranslationsMap(
             String schema,

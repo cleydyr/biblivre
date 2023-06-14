@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LanguageBO {
-    private static Logger logger = LoggerFactory.getLogger(LanguageBO.class);
+    private static final Logger logger = LoggerFactory.getLogger(LanguageBO.class);
 
     private LanguageDAO languageDAO;
 

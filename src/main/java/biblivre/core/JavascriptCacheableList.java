@@ -27,9 +27,9 @@ import org.json.JSONArray;
 
 public class JavascriptCacheableList<T extends IFJson>
         implements Collection<T>, IFCacheableJavascript {
-    private String variable;
-    private String prefix;
-    private String suffix;
+    private final String variable;
+    private final String prefix;
+    private final String suffix;
     private JavascriptCache cache;
 
     private final Collection<T> list = new ArrayList<>();

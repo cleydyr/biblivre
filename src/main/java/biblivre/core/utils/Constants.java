@@ -91,7 +91,7 @@ public class Constants {
     public static final String GLOBAL_SCHEMA = "global";
 
     // The constants below should not be final
-    public static String SINGLE_SCHEMA = "single";
+    public static final String SINGLE_SCHEMA = "single";
     public static boolean REINDEXING = false;
 
     // Label print configuration

@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfigurationBO {
 
-    private static Logger logger = LoggerFactory.getLogger(TranslationBO.class);
+    private static final Logger logger = LoggerFactory.getLogger(TranslationBO.class);
     private SchemaBO schemaBO;
 
     public String getString(String key) {

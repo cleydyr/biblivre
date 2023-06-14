@@ -55,7 +55,7 @@ public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
     private ImportBO importBO;
 
-    private static Logger logger = LoggerFactory.getLogger(Handler.class);
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public void importUpload(ExtendedRequest request, ExtendedResponse response) {
 

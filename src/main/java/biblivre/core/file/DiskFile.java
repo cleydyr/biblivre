@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class DiskFile extends BiblivreFile {
-    private File file;
+    private final File file;
 
     public DiskFile(File file, String contentType) {
         this.file = file;

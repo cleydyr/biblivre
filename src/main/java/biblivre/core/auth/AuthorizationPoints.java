@@ -34,7 +34,7 @@ public class AuthorizationPoints implements Serializable {
     private static AuthorizationPoints notLoggedMultiSchemaInstance;
     private static AuthorizationPoints notLoggedSingleSchemaInstance;
 
-    private Map<Pair<String, String>, Boolean> points;
+    private final Map<Pair<String, String>, Boolean> points;
     private Collection<String> permissions;
     private boolean admin;
     private boolean logged;

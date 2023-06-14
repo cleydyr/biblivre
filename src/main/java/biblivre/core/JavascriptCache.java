@@ -27,7 +27,7 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 public class JavascriptCache {
 
     private File cacheFile;
-    private IFCacheableJavascript parent;
+    private final IFCacheableJavascript parent;
 
     public JavascriptCache(IFCacheableJavascript parent) {
         this.parent = parent;

@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class RestoreContextHelper {
-    private Map<String, String> deleteSchemas = new HashMap<>();
-    private Map<String, String> preRenameSchemas = new HashMap<>();
-    private Map<String, String> postRenameSchemas = new HashMap<>();
-    private Map<String, String> restoreRenamedSchemas = new HashMap<>();
+    private final Map<String, String> deleteSchemas = new HashMap<>();
+    private final Map<String, String> preRenameSchemas = new HashMap<>();
+    private final Map<String, String> postRenameSchemas = new HashMap<>();
+    private final Map<String, String> restoreRenamedSchemas = new HashMap<>();
 
     public Map<String, String> getDeleteSchemas() {
         return deleteSchemas;

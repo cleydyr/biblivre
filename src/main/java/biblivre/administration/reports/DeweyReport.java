@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeweyReport extends BaseBiblivreReport {
 
-    private Integer index = 0;
+    private final Integer index = 0;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {

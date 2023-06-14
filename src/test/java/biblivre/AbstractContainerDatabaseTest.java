@@ -20,7 +20,7 @@ import org.testcontainers.utility.MountableFile;
 public abstract class AbstractContainerDatabaseTest {
     private static DataSource dataSource;
 
-    protected static PostgreSQLContainer<?> container =
+    protected static final PostgreSQLContainer<?> container =
             new PostgreSQLContainer<>("postgres:12")
                     .withDatabaseName(Constants.DEFAULT_DATABASE_NAME)
                     .withUsername(Constants.DEFAULT_DATABASE_USERNAME)

@@ -49,7 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
-    protected PaginableRecordBO paginableRecordBO;
+    protected final PaginableRecordBO paginableRecordBO;
 
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 

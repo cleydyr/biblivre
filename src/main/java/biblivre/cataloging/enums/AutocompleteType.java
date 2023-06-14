@@ -99,11 +99,11 @@ public enum AutocompleteType implements BiblivreEnum {
     }
 
     public static class GetSuggestionsParameters {
-        private String schema;
-        private String query;
-        private String datafield;
-        private String subfield;
-        private RecordBO recordBO;
+        private final String schema;
+        private final String query;
+        private final String datafield;
+        private final String subfield;
+        private final RecordBO recordBO;
 
         private GetSuggestionsParameters(
                 String schema, String query, String datafield, String subfield, RecordBO recordBO) {

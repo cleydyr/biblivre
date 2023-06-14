@@ -46,7 +46,7 @@ import org.springframework.stereotype.Component;
 public class SchemaBO {
     private SchemaDAO schemaDAO;
 
-    protected static Logger logger = LoggerFactory.getLogger(SchemaBO.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SchemaBO.class);
 
     private static final Collection<String> SCHEMA_BLACKLIST =
             Set.of("schema", "public", "template", "bib4template", "DigitalMediaController");

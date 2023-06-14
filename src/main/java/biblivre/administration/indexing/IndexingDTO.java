@@ -32,8 +32,8 @@ public class IndexingDTO extends AbstractDTO {
 
     private Integer recordId;
     private Integer indexingGroupId;
-    private StringBuilder phrase;
-    private Map<Integer, Set<String>> words;
+    private final StringBuilder phrase;
+    private final Map<Integer, Set<String>> words;
     private int ignoreCharsCount;
 
     public IndexingDTO() {

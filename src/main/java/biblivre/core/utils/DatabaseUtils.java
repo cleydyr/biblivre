@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class DatabaseUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 
     public static File getPgDump() {
         String pgDumpPath = getPGDumpPath();

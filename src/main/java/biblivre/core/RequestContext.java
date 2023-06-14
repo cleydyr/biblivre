@@ -1,10 +1,10 @@
 package biblivre.core;
 
 public class RequestContext {
-    private ExtendedRequest xRequest;
-    private ExtendedResponse xResponse;
-    private boolean headerOnly;
-    private AbstractHandler handler;
+    private final ExtendedRequest xRequest;
+    private final ExtendedResponse xResponse;
+    private final boolean headerOnly;
+    private final AbstractHandler handler;
 
     public RequestContext(
             ExtendedRequest xRequest,

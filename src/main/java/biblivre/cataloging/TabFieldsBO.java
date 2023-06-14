@@ -36,9 +36,9 @@ import org.springframework.stereotype.Component;
 public class TabFieldsBO {
     private TabFieldsDAO tabFieldsDAO;
 
-    private static Logger logger = LoggerFactory.getLogger(TabFieldsBO.class);
+    private static final Logger logger = LoggerFactory.getLogger(TabFieldsBO.class);
 
-    private Map<String, JavascriptCacheableList<FormTabDatafieldDTO>> tabFieldsCache =
+    private final Map<String, JavascriptCacheableList<FormTabDatafieldDTO>> tabFieldsCache =
             new ConcurrentHashMap<>();
 
     public List<BriefTabFieldFormatDTO> getBriefFormats(RecordType recordType) {

@@ -53,7 +53,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     private Map<String, String> multiPartParameters;
     private Map<String, MemoryFile> multiPartFiles;
 
-    private TranslationBO translationBO;
+    private final TranslationBO translationBO;
 
     public ExtendedRequest(
             HttpServletRequest request,

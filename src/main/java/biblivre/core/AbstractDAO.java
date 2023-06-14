@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractDAO {
     private static final Map<String, DataSource> dataSourceMap = new HashMap<>();
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private String dataSourceName;
 
     private DataSourceProvider dataSourceProvider;

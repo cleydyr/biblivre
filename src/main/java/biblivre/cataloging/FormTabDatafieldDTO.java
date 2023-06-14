@@ -36,7 +36,7 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<FormT
     private String indicator1;
     private String indicator2;
     private String materialType;
-    private List<FormTabSubfieldDTO> subfields;
+    private final List<FormTabSubfieldDTO> subfields;
     private Integer sortOrder;
 
     public FormTabDatafieldDTO(JSONObject jsonObject) {

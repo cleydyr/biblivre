@@ -36,7 +36,7 @@ public class Update implements UpdateService {
         this.translationBO = translationBO;
     }
 
-    private Map<String, Map<String, String>> _TRANSLATIONS =
+    private final Map<String, Map<String, String>> _TRANSLATIONS =
             Map.of(
                     "cataloging.reservation.error.limit_exceeded",
                     Map.of(

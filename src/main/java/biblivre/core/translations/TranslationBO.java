@@ -41,9 +41,9 @@ import org.thymeleaf.context.Context;
 
 @Component
 public class TranslationBO {
-    private static Logger logger = LoggerFactory.getLogger(TranslationBO.class);
+    private static final Logger logger = LoggerFactory.getLogger(TranslationBO.class);
 
-    private static Set<String> availableJavascriptLocales = Set.of("es-US", "es", "pt-BR");
+    private static final Set<String> availableJavascriptLocales = Set.of("es-US", "es", "pt-BR");
 
     private TranslationsDAO translationsDAO;
 

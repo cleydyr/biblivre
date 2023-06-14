@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 public class MarcUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(MarcUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(MarcUtils.class);
 
     public static Record iso2709ToRecord(String iso2709) {
         return MarcUtils.iso2709ToRecord(iso2709.getBytes(Constants.DEFAULT_CHARSET));

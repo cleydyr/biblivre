@@ -38,9 +38,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 
 public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO {
-    private Map<String, TranslationsMap> translationsMapCache = new ConcurrentHashMap<>();
+    private final Map<String, TranslationsMap> translationsMapCache = new ConcurrentHashMap<>();
 
-    private Map<String, List<TranslationDTO>> translationsListCache = new ConcurrentHashMap<>();
+    private final Map<String, List<TranslationDTO>> translationsListCache = new ConcurrentHashMap<>();
 
     public static TranslationsDAOImpl getInstance() {
         return (TranslationsDAOImpl) AbstractDAO.getInstance(TranslationsDAOImpl.class);

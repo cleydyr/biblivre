@@ -18,7 +18,7 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
     private static final char SEMICOLON = ';';
     private static final char DOLLAR_SIGN = '$';
 
-    private Iterator<Character> sourceIterator;
+    private final Iterator<Character> sourceIterator;
 
     private String dollarQuoteStringTag;
 

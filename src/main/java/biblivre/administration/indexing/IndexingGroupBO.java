@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class IndexingGroupBO {
-    private static Logger logger = LoggerFactory.getLogger(IndexingGroupBO.class);
+    private static final Logger logger = LoggerFactory.getLogger(IndexingGroupBO.class);
 
     private IndexingGroupsDAO indexingGroupDAO;
 
