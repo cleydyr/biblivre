@@ -598,9 +598,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             firstSql.append("SELECT count(u.type) as total, t.description, t.id ");
             firstSql.append("FROM users u, users_types t ");
             firstSql.append("WHERE u.type = t.id ");
-            firstSql.append("AND u.status <> '")
-                    .append(UserStatus.INACTIVE)
-                    .append("' ");
+            firstSql.append("AND u.status <> '").append(UserStatus.INACTIVE).append("' ");
             firstSql.append("GROUP BY u.type, t.description, t.id ");
             firstSql.append("ORDER BY t.description;");
             ResultSet rs = con.createStatement().executeQuery(firstSql.toString());

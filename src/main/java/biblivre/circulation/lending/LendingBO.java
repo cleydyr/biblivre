@@ -39,7 +39,6 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.Constants;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

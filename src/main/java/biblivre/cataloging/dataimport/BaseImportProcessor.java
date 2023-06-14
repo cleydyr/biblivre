@@ -3,7 +3,6 @@ package biblivre.cataloging.dataimport;
 import biblivre.cataloging.ImportDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.ImportFormat;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Function;
 import org.marc4j.MarcReader;
@@ -13,7 +12,8 @@ public abstract class BaseImportProcessor implements ImportProcessor {
     protected MarcReader marcReader;
 
     @Override
-    public ImportDTO importData(InputStream inputStream, Function<Record, RecordDTO> recordAdapter) {
+    public ImportDTO importData(
+            InputStream inputStream, Function<Record, RecordDTO> recordAdapter) {
         MarcReader marcReader = getMarcReader(inputStream);
 
         ImportDTO importDTO = readFromMarcReader(marcReader, recordAdapter);

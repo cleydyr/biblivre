@@ -98,9 +98,7 @@ public class Handler extends AbstractHandler {
         String value = null;
 
         try (Scanner sc =
-                new Scanner(
-                        request.getFile("file").getInputStream(),
-                        Constants.DEFAULT_CHARSET)) {
+                new Scanner(request.getFile("file").getInputStream(), Constants.DEFAULT_CHARSET)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine().trim();
 

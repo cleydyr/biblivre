@@ -37,7 +37,6 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
