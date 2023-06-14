@@ -36,7 +36,7 @@ import java.util.Map.Entry;
 public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
 
     public static TabFieldsDAO getInstance() {
-        return (TabFieldsDAO) AbstractDAO.getInstance(TabFieldsDAOImpl.class);
+        return AbstractDAO.getInstance(TabFieldsDAOImpl.class);
     }
 
     @Override
@@ -78,12 +78,11 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append(" INSERT INTO ").append(recordType).append("_brief_formats ");
-            sql.append(" (datafield, format, sort_order, created_by) ");
-            sql.append(" VALUES (?, ?, ?, ?); ");
+            String sql = " INSERT INTO " + recordType + "_brief_formats " +
+                    " (datafield, format, sort_order, created_by) " +
+                    " VALUES (?, ?, ?, ?); ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, dto.getDatafieldTag());
             pst.setString(2, dto.getFormat());
             pst.setInt(3, dto.getSortOrder());
@@ -107,15 +106,14 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append(" UPDATE ").append(recordType).append("_brief_formats ");
-            sql.append(" SET sort_order = ?, ");
-            sql.append(" format = ?, ");
-            sql.append(" modified = now(), ");
-            sql.append(" modified_by = ? ");
-            sql.append(" WHERE datafield = ?; ");
+            String sql = " UPDATE " + recordType + "_brief_formats " +
+                    " SET sort_order = ?, " +
+                    " format = ?, " +
+                    " modified = now(), " +
+                    " modified_by = ? " +
+                    " WHERE datafield = ?; ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             for (BriefTabFieldFormatDTO dto : briefFormats) {
                 pst.setInt(1, dto.getSortOrder());
@@ -144,11 +142,10 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append(" DELETE FROM ").append(recordType).append("_brief_formats ");
-            sql.append(" WHERE datafield = ?; ");
+            String sql = " DELETE FROM " + recordType + "_brief_formats " +
+                    " WHERE datafield = ?; ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, datafield);
 
             pst.executeUpdate();
@@ -170,20 +167,18 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            StringBuilder subfieldSql = new StringBuilder();
-            subfieldSql.append(" DELETE FROM ").append(recordType).append("_form_subfields ");
-            subfieldSql.append(" WHERE datafield = ?; ");
+            String subfieldSql = " DELETE FROM " + recordType + "_form_subfields " +
+                    " WHERE datafield = ?; ";
 
-            PreparedStatement subfieldPst = con.prepareStatement(subfieldSql.toString());
+            PreparedStatement subfieldPst = con.prepareStatement(subfieldSql);
             subfieldPst.setString(1, datafield);
 
             subfieldPst.executeUpdate();
 
-            StringBuilder datafieldSql = new StringBuilder();
-            datafieldSql.append(" DELETE FROM ").append(recordType).append("_form_datafields ");
-            datafieldSql.append(" WHERE datafield = ?; ");
+            String datafieldSql = " DELETE FROM " + recordType + "_form_datafields " +
+                    " WHERE datafield = ?; ";
 
-            PreparedStatement datafieldPst = con.prepareStatement(datafieldSql.toString());
+            PreparedStatement datafieldPst = con.prepareStatement(datafieldSql);
             datafieldPst.setString(1, datafield);
 
             datafieldPst.executeUpdate();

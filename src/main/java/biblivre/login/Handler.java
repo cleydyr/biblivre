@@ -98,7 +98,6 @@ public class Handler extends AbstractHandler {
 
         setMessage(ActionResult.NORMAL, "login.goodbye");
         setJspURL("/jsp/index.jsp");
-        return;
     }
 
     public void changePassword(ExtendedRequest request, ExtendedResponse response) {
@@ -125,7 +124,6 @@ public class Handler extends AbstractHandler {
 
         setMessage(ActionResult.SUCCESS, "login.password.success");
         setJspURL("/jsp/administration/password.jsp");
-        return;
     }
 
     private void _performChecks(
@@ -163,7 +161,7 @@ public class Handler extends AbstractHandler {
     }
 
     private void _checkDefaultPassword(ExtendedRequest request, String password) {
-        boolean warningPassword = password.toLowerCase().equals("abracadabra");
+        boolean warningPassword = password.equalsIgnoreCase("abracadabra");
         request.setScopedSessionAttribute("system_warning_password", warningPassword);
     }
 

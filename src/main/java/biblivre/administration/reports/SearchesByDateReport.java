@@ -46,12 +46,11 @@ public class SearchesByDateReport extends BaseBiblivreReport {
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n"));
-        StringBuilder p2Builder = new StringBuilder();
-        p2Builder.append(getText("administration.reports.field.date_from")).append(" ");
-        p2Builder.append(dto.getInitialDate());
-        p2Builder.append(" ").append(getText("administration.reports.field.date_to")).append(" ");
-        p2Builder.append(dto.getFinalDate());
-        Paragraph p2 = new Paragraph(getHeaderChunk(p2Builder.toString()));
+        String p2Builder = getText("administration.reports.field.date_from") + " " +
+                dto.getInitialDate() +
+                " " + getText("administration.reports.field.date_to") + " " +
+                dto.getFinalDate();
+        Paragraph p2 = new Paragraph(getHeaderChunk(p2Builder));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p2);
         document.add(new Phrase("\n"));

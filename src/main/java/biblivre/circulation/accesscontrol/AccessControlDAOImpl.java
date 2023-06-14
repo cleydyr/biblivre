@@ -28,7 +28,7 @@ import java.sql.ResultSet;
 public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDAO {
 
     public static AccessControlDAO getInstance() {
-        return (AccessControlDAO) AbstractDAO.getInstance(AccessControlDAOImpl.class);
+        return AbstractDAO.getInstance(AccessControlDAOImpl.class);
     }
 
     @Override
@@ -37,12 +37,11 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO access_control ");
-            sql.append("(access_card_id, user_id, created_by) ");
-            sql.append("VALUES (?, ?, ?);");
+            String sql = "INSERT INTO access_control " +
+                    "(access_card_id, user_id, created_by) " +
+                    "VALUES (?, ?, ?);";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, dto.getAccessCardId());
             pst.setInt(2, dto.getUserId());
             pst.setInt(3, dto.getCreatedBy());
@@ -62,14 +61,13 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE access_control ");
-            sql.append("SET departure_time = now(), ");
-            sql.append("modified = now(), ");
-            sql.append("modified_by = ? ");
-            sql.append("WHERE id = ?;");
+            String sql = "UPDATE access_control " +
+                    "SET departure_time = now(), " +
+                    "modified = now(), " +
+                    "modified_by = ? " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, dto.getModifiedBy());
             pst.setInt(2, dto.getId());
 
@@ -88,12 +86,11 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM access_control ");
-            sql.append("WHERE access_card_id = ? AND ");
-            sql.append("departure_time is null;");
+            String sql = "SELECT * FROM access_control " +
+                    "WHERE access_card_id = ? AND " +
+                    "departure_time is null;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, cardId);
 
             ResultSet rs = pst.executeQuery();
@@ -116,12 +113,11 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM access_control ");
-            sql.append("WHERE user_id = ? and ");
-            sql.append("departure_time is null;");
+            String sql = "SELECT * FROM access_control " +
+                    "WHERE user_id = ? and " +
+                    "departure_time is null;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, userId);
 
             ResultSet rs = pst.executeQuery();

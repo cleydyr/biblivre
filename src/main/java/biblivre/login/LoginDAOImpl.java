@@ -33,7 +33,7 @@ import java.sql.SQLException;
 public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
 
     public static LoginDAO getInstance() {
-        return (LoginDAO) AbstractDAO.getInstance(LoginDAOImpl.class);
+        return AbstractDAO.getInstance(LoginDAOImpl.class);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
         }
 
         try (Connection con = getConnection();
-                PreparedStatement pst = con.prepareStatement(sql.toString())) {
+                PreparedStatement pst = con.prepareStatement(sql)) {
             PreparedStatementUtil.setAllParameters(pst, login, password);
 
             ResultSet rs = pst.executeQuery();
@@ -260,7 +260,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
         }
 
         try (Connection con = getConnection();
-                PreparedStatement pst = con.prepareStatement(sql.toString())) {
+                PreparedStatement pst = con.prepareStatement(sql)) {
             PreparedStatementUtil.setAllParameters(pst, login, saltedPassword);
 
             ResultSet rs = pst.executeQuery();

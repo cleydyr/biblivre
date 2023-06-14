@@ -441,16 +441,15 @@ public class RecordDTO extends AbstractDTO {
             // come with the freemarc string.
             field = factory.newControlField("008");
 
-            StringBuilder data = new StringBuilder();
             // From 01 to 06
 
             Format cf008Format = new SimpleDateFormat(_CF008_FORMAT);
 
-            data.append(cf008Format.format(new Date()));
-            // From 07 to 40
-            data.append("s||||     bl|||||||||||||||||por|u");
+            String data = cf008Format.format(new Date()) +
+                    // From 07 to 40
+                    "s||||     bl|||||||||||||||||por|u";
 
-            field.setData(data.toString());
+            field.setData(data);
 
             record.addVariableField(field);
         }

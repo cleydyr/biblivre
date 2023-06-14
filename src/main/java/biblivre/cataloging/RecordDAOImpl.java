@@ -57,12 +57,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO ").append(dto.getRecordType()).append("_records ");
-            sql.append("(id, iso2709, material, database, created_by) ");
-            sql.append("VALUES (?, ?, ?, ?, ?); ");
+            String sql = "INSERT INTO " + dto.getRecordType() + "_records " +
+                    "(id, iso2709, material, database, created_by) " +
+                    "VALUES (?, ?, ?, ?, ?); ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, dto.getId());
             pst.setString(2, dto.getUTF8Iso2709());
             pst.setString(3, dto.getMaterialType().toString());
@@ -85,12 +84,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE ").append(dto.getRecordType()).append("_records ");
-            sql.append("SET iso2709 = ?, material = ?, modified = now(), modified_by = ? ");
-            sql.append("WHERE id = ?;");
+            String sql = "UPDATE " + dto.getRecordType() + "_records " +
+                    "SET iso2709 = ?, material = ?, modified = now(), modified_by = ? " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, dto.getUTF8Iso2709());
             pst.setString(2, dto.getMaterialType().toString());
             pst.setInt(3, dto.getModifiedBy());
@@ -113,14 +111,13 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT count(*) as total FROM ").append(recordType).append("_records ");
-            sql.append("WHERE database = ? AND id IN (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(");");
+            String sql = "SELECT count(*) as total FROM " + recordType + "_records " +
+                    "WHERE database = ? AND id IN (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ");";
 
             int i = 1;
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(i++, RecordDatabase.PRIVATE.toString());
 
             for (Integer id : ids) {
@@ -149,15 +146,14 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE ").append(recordType).append("_records ");
-            sql.append("SET database = ?, modified = now(), modified_by = ? ");
-            sql.append("WHERE id IN (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(");");
+            String sql = "UPDATE " + recordType + "_records " +
+                    "SET database = ?, modified = now(), modified_by = ? " +
+                    "WHERE id IN (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ");";
 
             int i = 1;
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(i++, database.toString());
             pst.setInt(i++, modifiedBy);
 
@@ -195,11 +191,10 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM ").append(dto.getRecordType()).append("_records ");
-            sql.append("WHERE id = ?;");
+            String sql = "DELETE FROM " + dto.getRecordType() + "_records " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, dto.getId());
 
             return pst.executeUpdate() > 0;
@@ -279,13 +274,12 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM ").append(recordType).append("_records ");
-            sql.append("WHERE id in (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(");");
+            String sql = "SELECT * FROM " + recordType + "_records " +
+                    "WHERE id in (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ");";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
             for (Integer id : ids) {
                 pst.setInt(index++, id);
@@ -364,13 +358,12 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM ").append(recordType).append("_records R ");
-            sql.append("LEFT JOIN ").append(recordType).append("_idx_sort S ");
-            sql.append("ON S.record_id = R.id AND S.indexing_group_id = ? ");
-            sql.append("WHERE S.phrase ~ ? ORDER BY S.phrase NULLS LAST, R.id ASC;");
+            String sql = "SELECT * FROM " + recordType + "_records R " +
+                    "LEFT JOIN " + recordType + "_idx_sort S " +
+                    "ON S.record_id = R.id AND S.indexing_group_id = ? " +
+                    "WHERE S.phrase ~ ? ORDER BY S.phrase NULLS LAST, R.id ASC;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setInt(1, order);
             if (CharUtils.isAsciiAlpha(letter)) {
@@ -587,12 +580,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 sql.append(" and phrase not ilike ?");
             }
 
-            StringBuilder completeSQL = new StringBuilder();
-            completeSQL.append("SELECT DISTINCT phrase FROM ( ");
-            completeSQL.append(StringUtils.repeat(sql.toString(), " INTERSECT ", terms.length));
-            completeSQL.append(" ) A ORDER BY A.phrase ASC LIMIT ?");
+            String completeSQL = "SELECT DISTINCT phrase FROM ( " +
+                    StringUtils.repeat(sql.toString(), " INTERSECT ", terms.length) +
+                    " ) A ORDER BY A.phrase ASC LIMIT ?";
 
-            PreparedStatement pst = con.prepareStatement(completeSQL.toString());
+            PreparedStatement pst = con.prepareStatement(completeSQL);
 
             int index = 1;
 
@@ -649,17 +641,15 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 sql.append(" and phrase not ilike ?");
             }
 
-            StringBuilder completeSQL = new StringBuilder();
-            completeSQL.append("SELECT DISTINCT A.record_id, A.phrase, R.iso2709 FROM ( ");
-            completeSQL.append(StringUtils.repeat(sql.toString(), " INTERSECT ", terms.length));
-            completeSQL.append(" ) A ");
-            completeSQL
-                    .append("INNER JOIN ")
-                    .append(recordType)
-                    .append("_records R ON A.record_id = R.id ");
-            completeSQL.append("ORDER BY A.phrase ASC LIMIT ?");
+            String completeSQL = "SELECT DISTINCT A.record_id, A.phrase, R.iso2709 FROM ( " +
+                    StringUtils.repeat(sql.toString(), " INTERSECT ", terms.length) +
+                    " ) A " +
+                    "INNER JOIN " +
+                    recordType +
+                    "_records R ON A.record_id = R.id " +
+                    "ORDER BY A.phrase ASC LIMIT ?";
 
-            PreparedStatement pst = con.prepareStatement(completeSQL.toString());
+            PreparedStatement pst = con.prepareStatement(completeSQL);
 
             int index = 1;
 

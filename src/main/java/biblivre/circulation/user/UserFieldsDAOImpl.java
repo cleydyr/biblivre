@@ -31,7 +31,7 @@ import java.util.List;
 public class UserFieldsDAOImpl extends AbstractDAO implements UserFieldsDAO {
 
     public static UserFieldsDAO getInstance() {
-        return (UserFieldsDAO) AbstractDAO.getInstance(UserFieldsDAOImpl.class);
+        return AbstractDAO.getInstance(UserFieldsDAOImpl.class);
     }
 
     @Override

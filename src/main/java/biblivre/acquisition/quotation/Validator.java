@@ -96,7 +96,6 @@ public class Validator extends AbstractValidator {
 
         if (ex.hasErrors()) {
             handler.setMessage(ex);
-            return;
         }
     }
 
@@ -106,7 +105,6 @@ public class Validator extends AbstractValidator {
         if (id == 0) {
             handler.setMessage(
                     ActionResult.WARNING, "aquisition.quotation.error.quotation_not_found");
-            return;
         }
     }
 
@@ -116,7 +114,6 @@ public class Validator extends AbstractValidator {
         if (id == 0) {
             handler.setMessage(
                     ActionResult.WARNING, "aquisition.quotation.error.quotation_not_found");
-            return;
         }
     }
 }

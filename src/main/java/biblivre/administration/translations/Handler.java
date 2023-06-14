@@ -184,7 +184,6 @@ public class Handler extends AbstractHandler {
             }
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
-            return;
         }
     }
 
@@ -207,7 +206,6 @@ public class Handler extends AbstractHandler {
             put("translations", new JSONObject(translations));
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         }
     }
 
@@ -254,10 +252,8 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
-            return;
         }
     }
 
@@ -285,10 +281,8 @@ public class Handler extends AbstractHandler {
 
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
-            return;
         }
     }
 

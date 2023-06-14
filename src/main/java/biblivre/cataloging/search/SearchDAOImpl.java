@@ -52,12 +52,11 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
 
-            sql.append("SELECT * FROM ").append(recordType).append("_searches ");
-            sql.append("WHERE id = ?;");
+            String sql = "SELECT * FROM " + recordType + "_searches " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setInt(1, searchId);
 
@@ -154,14 +153,12 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             if (deleteOldResults) {
                 con.setAutoCommit(false);
 
-                StringBuilder deleteSql = new StringBuilder();
-                deleteSql
-                        .append("DELETE FROM ")
-                        .append(search.getRecordType())
-                        .append("_search_results ");
-                deleteSql.append("WHERE search_id = ?;");
+                String deleteSql = "DELETE FROM " +
+                        search.getRecordType() +
+                        "_search_results " +
+                        "WHERE search_id = ?;";
 
-                PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
+                PreparedStatement deletePst = con.prepareStatement(deleteSql);
                 deletePst.setInt(1, search.getId());
                 deletePst.executeUpdate();
             }
@@ -226,14 +223,12 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             if (deleteOld) {
                 con.setAutoCommit(false);
 
-                StringBuilder deleteSql = new StringBuilder();
-                deleteSql
-                        .append("DELETE FROM ")
-                        .append(search.getRecordType())
-                        .append("_search_results ");
-                deleteSql.append("WHERE search_id = ?;");
+                String deleteSql = "DELETE FROM " +
+                        search.getRecordType() +
+                        "_search_results " +
+                        "WHERE search_id = ?;";
 
-                PreparedStatement deletePst = con.prepareStatement(deleteSql.toString());
+                PreparedStatement deletePst = con.prepareStatement(deleteSql);
                 deletePst.setInt(1, search.getId());
                 deletePst.executeUpdate();
             }

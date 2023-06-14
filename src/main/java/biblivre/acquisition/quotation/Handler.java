@@ -138,7 +138,6 @@ public class Handler extends AbstractHandler {
             put("full_data", true);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         }
     }
 

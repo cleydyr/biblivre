@@ -65,7 +65,6 @@ public class Handler extends AbstractHandler {
             put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         }
     }
 
@@ -115,7 +114,6 @@ public class Handler extends AbstractHandler {
             put("full_data", true);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         }
     }
 

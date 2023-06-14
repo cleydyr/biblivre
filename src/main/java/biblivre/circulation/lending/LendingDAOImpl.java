@@ -40,7 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
     public static LendingDAO getInstance() {
-        return (LendingDAO) AbstractDAO.getInstance(LendingDAOImpl.class);
+        return AbstractDAO.getInstance(LendingDAOImpl.class);
     }
 
     @Override
@@ -69,11 +69,10 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM lendings WHERE ");
-            sql.append("holding_id = ? AND return_date IS null ORDER BY id DESC;");
+            String sql = "SELECT * FROM lendings WHERE " +
+                    "holding_id = ? AND return_date IS null ORDER BY id DESC;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, holding.getId());
 
             ResultSet rs = pst.executeQuery();
@@ -97,13 +96,12 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM lendings WHERE ");
-            sql.append("holding_id in (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(") AND return_date IS null ORDER BY id DESC;");
+            String sql = "SELECT * FROM lendings WHERE " +
+                    "holding_id in (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ") AND return_date IS null ORDER BY id DESC;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
             for (Integer id : ids) {
                 pst.setInt(index++, id);
@@ -129,11 +127,10 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM lendings WHERE holding_id = ? ");
-            sql.append("AND return_date IS NOT null ORDER BY id DESC;");
+            String sql = "SELECT * FROM lendings WHERE holding_id = ? " +
+                    "AND return_date IS NOT null ORDER BY id DESC;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, holding.getId());
 
             ResultSet rs = pst.executeQuery();
@@ -234,13 +231,12 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM lendings l ");
-            sql.append("INNER JOIN biblio_holdings h ");
-            sql.append("ON l.holding_id = h.id ");
-            sql.append("WHERE h.record_id = ?;");
+            String sql = "SELECT * FROM lendings l " +
+                    "INNER JOIN biblio_holdings h " +
+                    "ON l.holding_id = h.id " +
+                    "WHERE h.record_id = ?;";
 
-            PreparedStatement ppst = con.prepareStatement(sql.toString());
+            PreparedStatement ppst = con.prepareStatement(sql);
             ppst.setInt(1, recordId);
 
             ResultSet rs = ppst.executeQuery();
@@ -262,12 +258,11 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM lendings ");
-            sql.append("WHERE return_date IS null ");
-            sql.append("ORDER BY return_date ASC ");
-            sql.append("LIMIT ? OFFSET ?;");
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            String sql = "SELECT * FROM lendings " +
+                    "WHERE return_date IS null " +
+                    "ORDER BY return_date ASC " +
+                    "LIMIT ? OFFSET ?;";
+            PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setInt(1, limit);
             pst.setInt(2, offset);
@@ -292,10 +287,9 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder countSql = new StringBuilder();
-            countSql.append("SELECT count(*) as total FROM lendings ");
-            countSql.append("WHERE return_date IS null;");
-            PreparedStatement pstCount = con.prepareStatement(countSql.toString());
+            String countSql = "SELECT count(*) as total FROM lendings " +
+                    "WHERE return_date IS null;";
+            PreparedStatement pstCount = con.prepareStatement(countSql);
 
             ResultSet rsCount = pstCount.executeQuery();
 
@@ -318,12 +312,11 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT COUNT(*) FROM lendings ");
-            sql.append("WHERE user_id = ? ");
-            sql.append("AND return_date IS null;");
+            String sql = "SELECT COUNT(*) FROM lendings " +
+                    "WHERE user_id = ? " +
+                    "AND return_date IS null;";
 
-            PreparedStatement ppst = con.prepareStatement(sql.toString());
+            PreparedStatement ppst = con.prepareStatement(sql);
             ppst.setInt(1, user.getId());
 
             ResultSet rs = ppst.executeQuery();
@@ -352,11 +345,10 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
                 con = this.getConnection();
             }
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO lendings (holding_id, user_id, previous_lending_id, ");
-            sql.append("expected_return_date, created_by) VALUES (?, ?, ?, ?, ?) ");
+            String sql = "INSERT INTO lendings (holding_id, user_id, previous_lending_id, " +
+                    "expected_return_date, created_by) VALUES (?, ?, ?, ?, ?) ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, lending.getHoldingId());
             pst.setInt(2, lending.getUserId());
             if (lending.getPreviousLendingId() != null) {
@@ -390,12 +382,11 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
                 con = this.getConnection();
             }
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE lendings ");
-            sql.append("SET return_date = now() ");
-            sql.append("WHERE id = ?;");
+            String sql = "UPDATE lendings " +
+                    "SET return_date = now() " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, lendingId);
 
             return pst.executeUpdate() > 0;
@@ -440,13 +431,11 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT COUNT(*) FROM lendings L INNER JOIN biblio_holdings H ");
-            sql.append("ON L.holding_id = H.id ");
-            sql.append(
-                    "WHERE H.record_id = ? AND H.availability = 'available' AND L.return_date is NULL;");
+            String sql = "SELECT COUNT(*) FROM lendings L INNER JOIN biblio_holdings H " +
+                    "ON L.holding_id = H.id " +
+                    "WHERE H.record_id = ? AND H.availability = 'available' AND L.return_date is NULL;";
 
-            PreparedStatement ppst = con.prepareStatement(sql.toString());
+            PreparedStatement ppst = con.prepareStatement(sql);
             ppst.setInt(1, recordId);
 
             ResultSet rs = ppst.executeQuery();
@@ -469,12 +458,11 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM lendings ");
-            sql.append("WHERE holding_id = ? AND user_id = ?");
-            sql.append("ORDER BY id DESC LIMIT 1;");
+            String sql = "SELECT * FROM lendings " +
+                    "WHERE holding_id = ? AND user_id = ?" +
+                    "ORDER BY id DESC LIMIT 1;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, holdingSerial);
             pst.setInt(2, userId);
 

@@ -155,7 +155,6 @@ public class Validator extends AbstractValidator {
             // MESSAGE_FAILED_CANNOT_DELETE_YOU_ARE_USING_THIS_ACCOUNT
             handler.setMessage(
                     ActionResult.WARNING, "circulation.error.you_cannot_delete_yourself");
-            return;
         }
     }
 

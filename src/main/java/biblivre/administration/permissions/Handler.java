@@ -95,7 +95,6 @@ public class Handler extends AbstractHandler {
             put("permission", dto.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         }
     }
 
@@ -173,7 +172,6 @@ public class Handler extends AbstractHandler {
             put("full_data", true);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         }
     }
 

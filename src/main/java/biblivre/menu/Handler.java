@@ -85,7 +85,6 @@ public class Handler extends AbstractHandler {
         request.setAttribute("records", records);
 
         setJspURL("/jsp/list/bibliographic.jsp");
-        return;
     }
 
     public void listAuthorities(ExtendedRequest request, ExtendedResponse response) {

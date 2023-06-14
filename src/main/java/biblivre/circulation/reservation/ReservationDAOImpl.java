@@ -39,7 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
 
     public static ReservationDAO getInstance() {
-        return (ReservationDAO) AbstractDAO.getInstance(ReservationDAOImpl.class);
+        return AbstractDAO.getInstance(ReservationDAOImpl.class);
     }
 
     @Override
@@ -218,14 +218,12 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM reservations WHERE id IN ");
-            sql.append(
-                    "(SELECT id FROM reservations WHERE user_id = ? AND record_id = ? AND expires > localtimestamp ");
-            sql.append("ORDER BY expires ASC LIMIT 1);"); // Users can reserve more than one copy of
+            String sql = "DELETE FROM reservations WHERE id IN " +
+                    "(SELECT id FROM reservations WHERE user_id = ? AND record_id = ? AND expires > localtimestamp " +
+                    "ORDER BY expires ASC LIMIT 1);"; // Users can reserve more than one copy of
             // each record
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, userId);
             pst.setInt(2, recordId);
 
@@ -243,12 +241,11 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO reservations (record_id, user_id, expires, created_by) ");
-            sql.append("VALUES (?, ?, ?, ?) ");
+            String sql = "INSERT INTO reservations (record_id, user_id, expires, created_by) " +
+                    "VALUES (?, ?, ?, ?) ";
 
             PreparedStatement pst =
-                    con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+                    con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pst.setInt(1, dto.getRecordId());
             pst.setInt(2, dto.getUserId());
             pst.setTimestamp(3, CalendarUtils.toSqlTimestamp(dto.getExpires()));
@@ -291,13 +288,12 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM reservations WHERE ");
-            sql.append("record_id in (");
-            sql.append(StringUtils.repeat("?", ", ", recordIds.size()));
-            sql.append(") AND expires > localtimestamp ORDER BY created ASC;");
+            String sql = "SELECT * FROM reservations WHERE " +
+                    "record_id in (" +
+                    StringUtils.repeat("?", ", ", recordIds.size()) +
+                    ") AND expires > localtimestamp ORDER BY created ASC;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
             for (Integer id : recordIds) {
                 pst.setInt(index++, id);

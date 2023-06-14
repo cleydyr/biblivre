@@ -43,7 +43,7 @@ import org.apache.commons.lang3.time.DateUtils;
 public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     public static UserDAO getInstance() {
-        return (UserDAO) AbstractDAO.getInstance(UserDAOImpl.class);
+        return AbstractDAO.getInstance(UserDAOImpl.class);
     }
 
     @Override
@@ -54,16 +54,13 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append(
-                    "SELECT U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed, array_agg(V.key) as keys, array_agg(V.value) as values ");
-            sql.append("FROM users U LEFT JOIN users_values V on V.user_id = U.id ");
-            sql.append("WHERE U.id in (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(
-                    ") GROUP BY U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed;");
+            String sql = "SELECT U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed, array_agg(V.key) as keys, array_agg(V.value) as values " +
+                    "FROM users U LEFT JOIN users_values V on V.user_id = U.id " +
+                    "WHERE U.id in (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ") GROUP BY U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
             for (Integer id : ids) {
                 pst.setInt(index++, id);
@@ -418,13 +415,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE users SET user_card_printed = true ");
-            sql.append("WHERE id in (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(");");
+            String sql = "UPDATE users SET user_card_printed = true " +
+                    "WHERE id in (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ");";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
             for (Integer id : ids) {
                 pst.setInt(index++, id);
@@ -445,11 +441,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE users SET status = ? ");
-            sql.append("WHERE id = ?;");
+            String sql = "UPDATE users SET status = ? " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, status.toString());
             pst.setInt(2, userId);
 
@@ -471,10 +466,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT id FROM users WHERE login_id = ?;");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement("SELECT id FROM users WHERE login_id = ?;");
             pst.setInt(1, loginId);
 
             ResultSet rs = pst.executeQuery();

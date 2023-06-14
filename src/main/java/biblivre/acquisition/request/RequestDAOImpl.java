@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 
     public static RequestDAO getInstance() {
-        return (RequestDAO) AbstractDAO.getInstance(RequestDAOImpl.class);
+        return AbstractDAO.getInstance(RequestDAOImpl.class);
     }
 
     @Override
@@ -40,15 +40,14 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO requests ( ");
-            sql.append("requester, author, item_title, item_subtitle, ");
-            sql.append("edition_number, publisher, info, status, quantity, created_by) ");
-            sql.append("VALUES (");
-            sql.append(StringUtils.repeat("?", ", ", 10));
-            sql.append(");");
+            String sql = "INSERT INTO requests ( " +
+                    "requester, author, item_title, item_subtitle, " +
+                    "edition_number, publisher, info, status, quantity, created_by) " +
+                    "VALUES (" +
+                    StringUtils.repeat("?", ", ", 10) +
+                    ");";
 
-            PreparedStatement pstInsert = con.prepareStatement(sql.toString());
+            PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setString(1, dto.getRequester());
             pstInsert.setString(2, dto.getAuthor());
             pstInsert.setString(3, dto.getTitle());
@@ -75,11 +74,10 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM requests ");
-            sql.append("WHERE id = ?;");
+            String sql = "SELECT * FROM requests " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
 
             ResultSet rs = pst.executeQuery();
@@ -162,14 +160,13 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE requests ");
-            sql.append("SET author = ?, item_title = ?, item_subtitle = ?, edition_number = ?, ");
-            sql.append("publisher = ?, info = ?, ");
-            sql.append("requester = ?, quantity = ?, modified = now(), modified_by = ? ");
-            sql.append("WHERE id = ?;");
+            String sql = "UPDATE requests " +
+                    "SET author = ?, item_title = ?, item_subtitle = ?, edition_number = ?, " +
+                    "publisher = ?, info = ?, " +
+                    "requester = ?, quantity = ?, modified = now(), modified_by = ? " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, dto.getAuthor());
             pst.setString(2, dto.getTitle());
             pst.setString(3, dto.getSubtitle());
@@ -195,19 +192,18 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE requests SET status = ? ");
-            sql.append("WHERE id IN (");
-            sql.append("SELECT r.id FROM requests r ");
-            sql.append("INNER JOIN request_quotation rq ");
-            sql.append("ON rq.request_id = r.id ");
-            sql.append("INNER JOIN quotation q ");
-            sql.append("ON q.id = rq.quotation_id ");
-            sql.append("INNER JOIN order o ");
-            sql.append("ON o.quotation_id = q.id ");
-            sql.append("WHERE o.id = ?); ");
+            String sql = "UPDATE requests SET status = ? " +
+                    "WHERE id IN (" +
+                    "SELECT r.id FROM requests r " +
+                    "INNER JOIN request_quotation rq " +
+                    "ON rq.request_id = r.id " +
+                    "INNER JOIN quotation q " +
+                    "ON q.id = rq.quotation_id " +
+                    "INNER JOIN order o " +
+                    "ON o.quotation_id = q.id " +
+                    "WHERE o.id = ?); ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, status.toString());
             pst.setInt(2, orderId);
 
@@ -226,11 +222,10 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM requests ");
-            sql.append("WHERE id = ?; ");
+            String sql = "DELETE FROM requests " +
+                    "WHERE id = ?; ";
 
-            PreparedStatement pstInsert = con.prepareStatement(sql.toString());
+            PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setInt(1, dto.getId());
 
             return pstInsert.executeUpdate() > 0;

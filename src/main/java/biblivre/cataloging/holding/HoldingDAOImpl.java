@@ -132,13 +132,12 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM biblio_holdings ");
-            sql.append("WHERE id in (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(");");
+            String sql = "SELECT * FROM biblio_holdings " +
+                    "WHERE id in (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ");";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
             for (Integer id : ids) {
                 pst.setInt(index++, id);
@@ -167,7 +166,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             con = this.getConnection();
             String sql = "SELECT * biblio_holdings ORDER BY id OFFSET ? LIMIT ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setInt(1, offset);
             pst.setInt(2, limit);
@@ -199,13 +198,11 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             con = this.getConnection();
             int id = this.getNextSerial("biblio_holdings_id_seq");
             holding.setId(id);
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO biblio_holdings ");
-            sql.append(
-                    "(id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by) ");
-            sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ");
+            String sql = "INSERT INTO biblio_holdings " +
+                    "(id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, holding.getId());
             pst.setInt(2, holding.getRecordId());
             pst.setString(3, holding.getUTF8Iso2709());
@@ -230,12 +227,11 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO holding_creation_counter ");
-            sql.append("(user_name, user_login, created_by) ");
-            sql.append("VALUES (?, ?, ?); ");
+            String sql = "INSERT INTO holding_creation_counter " +
+                    "(user_name, user_login, created_by) " +
+                    "VALUES (?, ?, ?); ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setString(1, dto == null ? StringPool.BLANK : dto.getName());
 
@@ -263,13 +259,11 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE biblio_holdings ");
-            sql.append(
-                    "SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, label_printed = ?, modified = now(), modified_by = ? ");
-            sql.append("WHERE id = ?;");
+            String sql = "UPDATE biblio_holdings " +
+                    "SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, label_printed = ?, modified = now(), modified_by = ? " +
+                    "WHERE id = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, holding.getRecordId());
             pst.setString(2, holding.getUTF8Iso2709());
             pst.setString(3, holding.getAvailability().toString());
@@ -294,13 +288,12 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE biblio_holdings SET label_printed = true ");
-            sql.append("WHERE id in (");
-            sql.append(StringUtils.repeat("?", ", ", ids.size()));
-            sql.append(");");
+            String sql = "UPDATE biblio_holdings SET label_printed = true " +
+                    "WHERE id in (" +
+                    StringUtils.repeat("?", ", ", ids.size()) +
+                    ");";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
             for (Integer id : ids) {
                 pst.setInt(index++, id);
@@ -321,10 +314,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM biblio_holdings WHERE id = ?;");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement("DELETE FROM biblio_holdings WHERE id = ?;");
             pst.setInt(1, dto.getId());
 
             return pst.executeUpdate() > 0;
@@ -408,10 +398,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM biblio_holdings WHERE record_id = ?;");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement("SELECT * FROM biblio_holdings WHERE record_id = ?;");
             pst.setInt(1, recordId);
 
             ResultSet rs = pst.executeQuery();
@@ -721,25 +708,19 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
 
-            sql.append(
-                    "SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H ");
-            sql.append("INNER JOIN biblio_search_results B ON H.record_id = B.record_id ");
-            sql.append("WHERE B.search_id = ? ");
-            sql.append(this.createAdvancedWhereClause(search));
+            String sql = "SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H " +
+                    "INNER JOIN biblio_search_results B ON H.record_id = B.record_id " +
+                    "WHERE B.search_id = ? " +
+                    this.createAdvancedWhereClause(search) +
+                    "UNION " +
+                    "SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H " +
+                    "INNER JOIN biblio_search_results B ON H.record_id = B.record_id " +
+                    "WHERE B.search_id = ? " +
+                    this.createAdvancedWhereClause(search) +
+                    "and B.indexing_group_id <> 0 GROUP BY B.indexing_group_id";
 
-            sql.append("UNION ");
-            sql.append(
-                    "SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H ");
-            sql.append("INNER JOIN biblio_search_results B ON H.record_id = B.record_id ");
-            sql.append("WHERE B.search_id = ? ");
-
-            sql.append(this.createAdvancedWhereClause(search));
-
-            sql.append("and B.indexing_group_id <> 0 GROUP BY B.indexing_group_id");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             int index = 1;
             pst.setInt(index++, search.getId());

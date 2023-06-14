@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
 
     public static OrderDAO getInstance() {
-        return (OrderDAO) AbstractDAO.getInstance(OrderDAOImpl.class);
+        return AbstractDAO.getInstance(OrderDAOImpl.class);
     }
 
     @Override
@@ -69,13 +69,11 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
 
             int orderId = this.getNextSerial("orders_id_seq");
 
-            StringBuilder sql = new StringBuilder();
-            sql.append(" INSERT INTO orders (quotation_id, created, ");
-            sql.append(" created_by, info, status, invoice_number, ");
-            sql.append(" receipt_date, total_value, delivered_quantity, ");
-            sql.append(" terms_of_payment, deadline_date, id) ");
-            sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ");
-            String sqlInsert = sql.toString();
+            String sqlInsert = " INSERT INTO orders (quotation_id, created, " +
+                    " created_by, info, status, invoice_number, " +
+                    " receipt_date, total_value, delivered_quantity, " +
+                    " terms_of_payment, deadline_date, id) " +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ";
 
             PreparedStatement pst = con.prepareStatement(sqlInsert);
             pst.setInt(1, dto.getQuotationId());
@@ -157,14 +155,12 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append(" UPDATE orders ");
-            sql.append(" SET quotation_id = ?, created = ?, ");
-            sql.append(" created_by = ?, info = ?, status = ?, ");
-            sql.append(" invoice_number = ?, receipt_date = ?, total_value = ?, ");
-            sql.append(" delivered_quantity = ?, terms_of_payment = ?, deadline_date= ? ");
-            sql.append(" WHERE id = ?;");
-            String sqlInsert = sql.toString();
+            String sqlInsert = " UPDATE orders " +
+                    " SET quotation_id = ?, created = ?, " +
+                    " created_by = ?, info = ?, status = ?, " +
+                    " invoice_number = ?, receipt_date = ?, total_value = ?, " +
+                    " delivered_quantity = ?, terms_of_payment = ?, deadline_date= ? " +
+                    " WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sqlInsert);
             pst.setInt(1, dto.getQuotationId());
@@ -258,7 +254,7 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
             pst.setInt(i++, offset);
             pst.setInt(i++, limit);
 
-            StringBuilder sqlCount = new StringBuilder("SELECT count(*) as total FROM orders O ");
+            String sqlCount = "SELECT count(*) as total FROM orders O ";
             if (StringUtils.isNumeric(value)) {
                 sql.append("WHERE O.id = ? ");
             } else if (StringUtils.isNotBlank(value)) {
@@ -271,7 +267,7 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
                         "AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?));");
             }
 
-            PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
+            PreparedStatement pstCount = con.prepareStatement(sqlCount);
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(1, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {

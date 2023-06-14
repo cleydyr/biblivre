@@ -94,7 +94,6 @@ public class Validator extends AbstractValidator {
 
         if (ex.hasErrors()) {
             handler.setMessage(ex);
-            return;
         }
     }
 
@@ -104,7 +103,6 @@ public class Validator extends AbstractValidator {
         if (id == 0) {
             handler.setMessage(
                     ActionResult.WARNING, "administration.accesscards.error.card_not_found");
-            return;
         }
     }
 
@@ -114,7 +112,6 @@ public class Validator extends AbstractValidator {
         if (id == 0) {
             handler.setMessage(
                     ActionResult.WARNING, "administration.accesscards.error.card_not_found");
-            return;
         }
     }
 
@@ -124,7 +121,6 @@ public class Validator extends AbstractValidator {
         if (id == 0) {
             handler.setMessage(
                     ActionResult.WARNING, "administration.accesscards.error.card_not_found");
-            return;
         }
     }
 }

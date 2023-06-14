@@ -484,11 +484,9 @@ public class LendingBO {
                 LendingDTO lendingDto = info.getLending();
                 if (lendingDto.getReturnDate() != null) {
                     currentReturns.add(info);
-                    continue;
                 } else if (lendingDto.getPreviousLendingId() != null
                         && lendingDto.getPreviousLendingId() > 0) {
                     currentRenews.add(info);
-                    continue;
                 } else {
                     currentLendings.add(info);
                 }
@@ -707,11 +705,9 @@ public class LendingBO {
 
                 if (lendingDto.getReturnDate() != null) {
                     currentReturns.add(info);
-                    continue;
                 } else if (lendingDto.getPreviousLendingId() != null
                         && lendingDto.getPreviousLendingId() > 0) {
                     currentRenews.add(info);
-                    continue;
                 } else {
                     currentLendings.add(info);
                 }

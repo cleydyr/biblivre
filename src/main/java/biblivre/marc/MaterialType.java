@@ -67,7 +67,7 @@ public enum MaterialType implements BiblivreEnum {
                     tempBibliographicMaterials.add(material);
                     sb.append('\'');
                     sb.append(material);
-                    sb.append("\',");
+                    sb.append("',");
                 }
             }
         }

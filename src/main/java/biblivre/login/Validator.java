@@ -82,7 +82,6 @@ public class Validator extends AbstractValidator {
         if (checkLogin == null) {
             ex.addError("current_password", "login.error.invalid_password");
             handler.setMessage(ex);
-            return;
         }
     }
 

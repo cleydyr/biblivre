@@ -35,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     public static UserTypeDAO getInstance() {
-        return (UserTypeDAO) AbstractDAO.getInstance(UserTypeDAOImpl.class);
+        return AbstractDAO.getInstance(UserTypeDAOImpl.class);
     }
 
     @Override
@@ -44,11 +44,10 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM users_types ");
-            sql.append("WHERE id = ? ");
+            String sql = "SELECT * FROM users_types " +
+                    "WHERE id = ? ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
 

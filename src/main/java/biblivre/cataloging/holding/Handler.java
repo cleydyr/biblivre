@@ -99,7 +99,6 @@ public class Handler extends CatalogingHandler {
             put("list", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-            return;
         }
     }
 

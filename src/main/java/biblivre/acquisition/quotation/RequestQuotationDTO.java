@@ -94,12 +94,11 @@ public class RequestQuotationDTO extends AbstractDTO {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(this.getQuantity());
-        builder.append("x ");
-        builder.append(this.getAuthor());
-        builder.append(" - ");
-        builder.append(this.getTitle());
-        return builder.toString();
+        String builder = this.getQuantity() +
+                "x " +
+                this.getAuthor() +
+                " - " +
+                this.getTitle();
+        return builder;
     }
 }

@@ -9,11 +9,11 @@ public class DigitalMediaEncodingUtil {
             throw new IllegalArgumentException("name can't be null");
         }
 
-        StringBuilder composedName = new StringBuilder(3).append(id).append(':').append(name);
+        String composedName = String.valueOf(id) + ':' + name;
 
         Encoder encoder = Base64.getEncoder();
 
-        String encodedId = new String(encoder.encode(composedName.toString().getBytes()));
+        String encodedId = new String(encoder.encode(composedName.getBytes()));
 
         return encodedId.replaceAll("\\\\", "_");
     }

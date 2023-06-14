@@ -37,7 +37,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
             "SELECT permission FROM permissions WHERE login_id = ?;";
 
     public static PermissionDAO getInstance() {
-        return (PermissionDAO) AbstractDAO.getInstance(PermissionDAOImpl.class);
+        return AbstractDAO.getInstance(PermissionDAOImpl.class);
     }
 
     @Override
@@ -48,9 +48,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM permissions WHERE login_id = ?;");
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement("DELETE FROM permissions WHERE login_id = ?;");
             pst.setInt(1, user.getLoginId());
             pst.executeUpdate();
 

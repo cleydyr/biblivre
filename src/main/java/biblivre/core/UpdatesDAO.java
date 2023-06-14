@@ -30,7 +30,7 @@ import java.util.Set;
 public class UpdatesDAO extends AbstractDAO {
 
     public static UpdatesDAO getInstance() {
-        return (UpdatesDAO) AbstractDAO.getInstance(UpdatesDAO.class);
+        return AbstractDAO.getInstance(UpdatesDAO.class);
     }
 
     public Set<String> getInstalledVersions() throws SQLException {

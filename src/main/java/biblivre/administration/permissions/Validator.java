@@ -82,7 +82,6 @@ public class Validator extends AbstractValidator {
         Integer id = request.getInteger("user_id");
         if (id == 0) {
             handler.setMessage(ActionResult.WARNING, "administration.permissions.user_not_found");
-            return;
         }
     }
 

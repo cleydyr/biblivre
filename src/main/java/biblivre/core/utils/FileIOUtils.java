@@ -326,7 +326,7 @@ public class FileIOUtils {
                     "Expires", System.currentTimeMillis() + Constants.DEFAULT_EXPIRE_TIME);
 
             try (file;
-                    OutputStream output = response.getOutputStream()) {
+                    ServletOutputStream output = response.getOutputStream()) {
 
                 if (ranges.isEmpty() || ranges.get(0) == full) {
                     // Return full file.
@@ -368,7 +368,7 @@ public class FileIOUtils {
 
                     if (!headerOnly) {
                         // Cast back to ServletOutputStream to get the easy println methods.
-                        ServletOutputStream sos = (ServletOutputStream) output;
+                        ServletOutputStream sos = output;
 
                         // Copy multi part range.
                         for (Range r : ranges) {
@@ -395,7 +395,6 @@ public class FileIOUtils {
                 }
             }
 
-            return;
         }
     }
 

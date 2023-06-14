@@ -34,7 +34,7 @@ import java.util.List;
 public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
 
     public static LendingFineDAO getInstance() {
-        return (LendingFineDAO) AbstractDAO.getInstance(LendingFineDAOImpl.class);
+        return AbstractDAO.getInstance(LendingFineDAOImpl.class);
     }
 
     @Override
@@ -43,12 +43,11 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO lending_fines ");
-            sql.append("(user_id, lending_id, fine_value, payment_date, created_by) ");
-            sql.append("VALUES (?, ?, ?, ?, ?);");
+            String sql = "INSERT INTO lending_fines " +
+                    "(user_id, lending_id, fine_value, payment_date, created_by) " +
+                    "VALUES (?, ?, ?, ?, ?);";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, fine.getUserId());
             pst.setInt(2, fine.getLendingId());
             pst.setFloat(3, fine.getValue());
@@ -152,11 +151,10 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE lending_fines SET payment_date = now(), ");
-            sql.append("fine_value = ? WHERE id = ?; ");
+            String sql = "UPDATE lending_fines SET payment_date = now(), " +
+                    "fine_value = ? WHERE id = ?; ";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setFloat(1, fine.getValue());
             pst.setInt(2, fine.getId());
 

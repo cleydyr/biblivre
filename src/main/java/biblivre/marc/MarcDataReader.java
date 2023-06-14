@@ -294,11 +294,9 @@ public class MarcDataReader {
             return null;
         }
 
-        for (Object obj : record.getControlFields()) {
-            ControlField field = (ControlField) obj;
-
-            if (field.getTag().equals(tag)) {
-                return field;
+        for (ControlField obj : record.getControlFields()) {
+            if (obj.getTag().equals(tag)) {
+                return obj;
             }
         }
 
@@ -370,15 +368,10 @@ public class MarcDataReader {
             return hash;
         }
 
-        DataField field;
-        String tag;
-        List<DataField> fieldList;
+        for (DataField field : record.getDataFields()) {
+            String tag = field.getTag();
 
-        for (Object obj : record.getDataFields()) {
-            field = (DataField) obj;
-            tag = field.getTag();
-
-            fieldList = hash.computeIfAbsent(tag, k -> new ArrayList<>());
+            List<DataField> fieldList = hash.computeIfAbsent(tag, k -> new ArrayList<>());
 
             fieldList.add(field);
         }

@@ -36,7 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     public static BackupDAO getInstance() {
-        return (BackupDAO) AbstractDAO.getInstance(BackupDAOImpl.class);
+        return AbstractDAO.getInstance(BackupDAOImpl.class);
     }
 
     @Override
@@ -123,10 +123,8 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM backups WHERE id = ?;");
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement("SELECT * FROM backups WHERE id = ?;");
 
             pst.setInt(1, id);
 

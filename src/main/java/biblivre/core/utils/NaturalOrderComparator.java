@@ -109,8 +109,8 @@ public final class NaturalOrderComparator implements Comparator<String> {
 
     @Override
     public int compare(String o1, String o2) {
-        String a = o1.toString();
-        String b = o2.toString();
+        String a = o1;
+        String b = o2;
 
         int ia = 0, ib = 0;
         int nza, nzb;

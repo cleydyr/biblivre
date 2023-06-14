@@ -180,9 +180,9 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
         if (StringUtils.isBlank(value)) {
             return defaultValue;
-        } else if (value.toLowerCase().equals("true")) {
+        } else if (value.equalsIgnoreCase("true")) {
             return true;
-        } else if (value.toLowerCase().equals("false")) {
+        } else if (value.equalsIgnoreCase("false")) {
             return false;
         }
 
@@ -262,7 +262,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     public int getLoggedUserId() {
         Object user = this.getScopedSessionAttribute("logged_user");
 
-        if (user != null && user instanceof LoginDTO) {
+        if (user instanceof LoginDTO) {
             return ((LoginDTO) user).getId();
         }
 

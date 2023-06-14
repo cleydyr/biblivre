@@ -110,13 +110,12 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
         BiblivreFile file = null;
 
         try (Connection con = this.getConnection()) {
-            StringBuilder sql = new StringBuilder();
             // We check both ID and FILE_NAME for security reasons, so users can't "guess"
             // id's and get the files.
-            sql.append("SELECT name, blob, content_type, size, created FROM digital_media ");
-            sql.append("WHERE id = ? AND name = ?;");
+            String sql = "SELECT name, blob, content_type, size, created FROM digital_media " +
+                    "WHERE id = ? AND name = ?;";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
             pst.setString(2, name);
 
@@ -161,13 +160,12 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
                 dto.setBlob(rs.getLong("blob"));
                 dto.setName(rs.getString("name"));
 
-                StringBuilder sql = new StringBuilder();
                 // We check both ID and FILE_NAME for security reasons, so users can't "guess"
                 // id's and get the files.
-                sql.append("DELETE FROM digital_media ");
-                sql.append("WHERE id = ?;");
+                String sql = "DELETE FROM digital_media " +
+                        "WHERE id = ?;";
 
-                PreparedStatement pst = con.prepareStatement(sql.toString());
+                PreparedStatement pst = con.prepareStatement(sql);
                 pst.setInt(1, id);
 
                 int deleted = pst.executeUpdate();

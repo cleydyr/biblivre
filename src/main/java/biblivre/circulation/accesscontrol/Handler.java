@@ -139,7 +139,6 @@ public class Handler extends AbstractHandler {
                 put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, "error.invalid_json");
-                return;
             }
         } else {
             this.setMessage(ActionResult.WARNING, "circulation.accesscards.lend.error");
@@ -165,7 +164,6 @@ public class Handler extends AbstractHandler {
                 put("full_data", true);
             } catch (JSONException e) {
                 this.setMessage(ActionResult.WARNING, "error.invalid_json");
-                return;
             }
         } else {
             this.setMessage(ActionResult.WARNING, "circulation.accesscards.return.error");

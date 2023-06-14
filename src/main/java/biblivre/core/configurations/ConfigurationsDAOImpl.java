@@ -32,7 +32,7 @@ import java.util.List;
 public class ConfigurationsDAOImpl extends AbstractDAO implements ConfigurationsDAO {
 
     public static ConfigurationsDAOImpl getInstance() {
-        return (ConfigurationsDAOImpl) AbstractDAO.getInstance(ConfigurationsDAOImpl.class);
+        return AbstractDAO.getInstance(ConfigurationsDAOImpl.class);
     }
 
     @Override

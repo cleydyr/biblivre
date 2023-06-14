@@ -33,7 +33,7 @@ import java.util.Set;
 public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
 
     public static LanguageDAO getInstance() {
-        return (LanguageDAO) AbstractDAO.getInstance(LanguageDAOImpl.class);
+        return AbstractDAO.getInstance(LanguageDAOImpl.class);
     }
 
     @Override

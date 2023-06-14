@@ -32,7 +32,7 @@ import java.util.List;
 public class IndexingGroupsDAOImpl extends AbstractDAO implements IndexingGroupsDAO {
 
     public static IndexingGroupsDAOImpl getInstance() {
-        return (IndexingGroupsDAOImpl) AbstractDAO.getInstance(IndexingGroupsDAOImpl.class);
+        return AbstractDAO.getInstance(IndexingGroupsDAOImpl.class);
     }
 
     public List<IndexingGroupDTO> list(RecordType recordType) {

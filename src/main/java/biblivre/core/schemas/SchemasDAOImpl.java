@@ -33,7 +33,7 @@ import org.postgresql.core.BaseConnection;
 public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
 
     public static SchemasDAOImpl getInstance() {
-        return (SchemasDAOImpl) AbstractDAO.getInstance(SchemasDAOImpl.class);
+        return AbstractDAO.getInstance(SchemasDAOImpl.class);
     }
 
     @Override

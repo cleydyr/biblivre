@@ -173,15 +173,14 @@ public class CustomCountReport extends BaseBiblivreReport {
     @Override
     protected void generateReportBody(Document document, BaseReportDto reportData) {
         CustomCountDto dto = (CustomCountDto) reportData;
-        StringBuilder text = new StringBuilder();
-        text.append(getText("administration.reports.title.custom_count")).append(":\n");
-        text.append(datafield).append(" (");
-        text.append(getText("marc.bibliographic.datafield." + datafield));
-        text.append(")\n$").append(subfield);
-        text.append(" (");
-        text.append(getText("marc.bibliographic.datafield." + datafield + ".subfield." + subfield));
-        text.append(")");
-        Paragraph p2 = new Paragraph(text.toString());
+        String text = getText("administration.reports.title.custom_count") + ":\n" +
+                datafield + " (" +
+                getText("marc.bibliographic.datafield." + datafield) +
+                ")\n$" + subfield +
+                " (" +
+                getText("marc.bibliographic.datafield." + datafield + ".subfield." + subfield) +
+                ")";
+        Paragraph p2 = new Paragraph(text);
         p2.setAlignment(Element.ALIGN_CENTER);
         document.add(p2);
         document.add(new Phrase("\n"));
@@ -206,7 +205,6 @@ public class CustomCountReport extends BaseBiblivreReport {
                             }
 
                             return switch (index) {
-                                case 0 -> o1[index].compareTo(o2[index]);
                                 case 1 -> Integer.valueOf(o2[index])
                                         .compareTo(Integer.valueOf(o1[index]));
                                 default -> o1[index].compareTo(o2[index]);

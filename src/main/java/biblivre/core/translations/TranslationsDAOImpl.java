@@ -44,7 +44,7 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             new ConcurrentHashMap<>();
 
     public static TranslationsDAOImpl getInstance() {
-        return (TranslationsDAOImpl) AbstractDAO.getInstance(TranslationsDAOImpl.class);
+        return AbstractDAO.getInstance(TranslationsDAOImpl.class);
     }
 
     @Override

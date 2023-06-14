@@ -71,7 +71,6 @@ public class Validator extends AbstractValidator {
 
         if (ex.hasErrors()) {
             handler.setMessage(ex);
-            return;
         }
     }
 
@@ -80,7 +79,6 @@ public class Validator extends AbstractValidator {
         Integer id = request.getInteger("id");
         if (id == 0) {
             handler.setMessage(ActionResult.WARNING, "aquisition.request.error.request_not_found");
-            return;
         }
     }
 
@@ -89,7 +87,6 @@ public class Validator extends AbstractValidator {
         Integer id = request.getInteger("id");
         if (id == 0) {
             handler.setMessage(ActionResult.WARNING, "aquisition.request.error.request_not_found");
-            return;
         }
     }
 }

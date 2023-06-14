@@ -35,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
 
     public static AccessCardDAO getInstance() {
-        return (AccessCardDAO) AbstractDAO.getInstance(AccessCardDAOImpl.class);
+        return AbstractDAO.getInstance(AccessCardDAOImpl.class);
     }
 
     @Override
@@ -108,9 +108,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM access_cards WHERE id = ?; ");
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement("SELECT * FROM access_cards WHERE id = ?; ");
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -199,11 +197,10 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO access_cards(code, status, created_by) ");
-            sql.append("VALUES (?, ?, ?);");
+            String sql = "INSERT INTO access_cards(code, status, created_by) " +
+                    "VALUES (?, ?, ?);";
             PreparedStatement pst =
-                    con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+                    con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pst.setString(1, dto.getCode());
             pst.setString(2, dto.getStatus().toString());
             pst.setInt(3, dto.getCreatedBy());
@@ -229,12 +226,11 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
         try {
             con = this.getConnection();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO access_cards(code, status, created_by) ");
-            sql.append("VALUES (?, ?, ?);");
+            String sql = "INSERT INTO access_cards(code, status, created_by) " +
+                    "VALUES (?, ?, ?);";
 
             PreparedStatement pst =
-                    con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+                    con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             for (AccessCardDTO card : cardList) {
                 pst.setString(1, card.getCode());
@@ -263,11 +259,10 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE access_cards SET status = ?, ");
-            sql.append("modified = now(), modified_by = ? ");
-            sql.append("WHERE id = ?;");
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            String sql = "UPDATE access_cards SET status = ?, " +
+                    "modified = now(), modified_by = ? " +
+                    "WHERE id = ?;";
+            PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, dto.getStatus().toString());
             pst.setInt(2, dto.getModifiedBy());
             pst.setInt(3, dto.getId());

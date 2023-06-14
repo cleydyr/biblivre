@@ -224,7 +224,6 @@ public class HoldingBO extends RecordBO {
             MarcDataReader reader = new MarcDataReader(rdto.getRecord());
             ((HoldingDTO) rdto).setShelfLocation(reader.getShelfLocation());
         }
-        return;
     }
 
     public boolean paginateHoldingSearch(SearchDTO search) {

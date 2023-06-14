@@ -64,8 +64,7 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
         logger.info("Migrating {}.", schemaName);
 
         PostgresLargeObjectDigitalMediaDAO digitalMediaDAO =
-                (PostgresLargeObjectDigitalMediaDAO)
-                        AbstractDAO.getInstance(PostgresLargeObjectDigitalMediaDAO.class);
+                AbstractDAO.getInstance(PostgresLargeObjectDigitalMediaDAO.class);
 
         SchemaThreadLocal.withSchema(
                 schemaName,

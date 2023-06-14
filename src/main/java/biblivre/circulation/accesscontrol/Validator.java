@@ -43,7 +43,6 @@ public class Validator extends AbstractValidator {
 
         if (ex.hasErrors()) {
             handler.setMessage(ex);
-            return;
         }
     }
 
@@ -65,7 +64,6 @@ public class Validator extends AbstractValidator {
 
         if (ex.hasErrors()) {
             handler.setMessage(ex);
-            return;
         }
     }
 
@@ -87,7 +85,6 @@ public class Validator extends AbstractValidator {
 
         if (ex.hasErrors()) {
             handler.setMessage(ex);
-            return;
         }
     }
 }

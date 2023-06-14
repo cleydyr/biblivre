@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
     public static IndexingDAO getInstance() {
-        return (IndexingDAO) AbstractDAO.getInstance(IndexingDAOImpl.class);
+        return AbstractDAO.getInstance(IndexingDAOImpl.class);
     }
 
     @Override
@@ -100,11 +100,10 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO ").append(recordType).append("_idx_fields ");
-            sql.append("(record_id, indexing_group_id, word, datafield) VALUES (?, ?, ?, ?);");
+            String sql = "INSERT INTO " + recordType + "_idx_fields " +
+                    "(record_id, indexing_group_id, word, datafield) VALUES (?, ?, ?, ?);";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             for (IndexingDTO index : indexes) {
                 final int recordId = index.getRecordId();
@@ -143,12 +142,10 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO ").append(recordType).append("_idx_sort ");
-            sql.append(
-                    "(record_id, indexing_group_id, phrase, ignore_chars_count) VALUES (?, ?, ?, ?);");
+            String sql = "INSERT INTO " + recordType + "_idx_sort " +
+                    "(record_id, indexing_group_id, phrase, ignore_chars_count) VALUES (?, ?, ?, ?);";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             for (IndexingDTO sortIndex : sortIndexes) {
                 pst.setInt(1, sortIndex.getRecordId());
@@ -178,11 +175,10 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
-            sql.append("INSERT INTO ").append(recordType).append("_idx_autocomplete ");
-            sql.append("(datafield, subfield, word, phrase, record_id) VALUES (?, ?, ?, ?, ?);");
+            String sql = "INSERT INTO " + recordType + "_idx_autocomplete " +
+                    "(datafield, subfield, word, phrase, record_id) VALUES (?, ?, ?, ?, ?);";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             for (AutocompleteDTO index : autocompleteIndexes) {
                 final Integer recordId = index.getRecordId();
@@ -340,15 +336,14 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            StringBuilder sql = new StringBuilder();
 
-            sql.append("SELECT phrase FROM ")
-                    .append(recordType)
-                    .append("_idx_sort WHERE indexing_group_id = ? AND phrase in (");
-            sql.append(StringUtils.repeat("?", ", ", terms.size()));
-            sql.append(");");
+            String sql = "SELECT phrase FROM " +
+                    recordType +
+                    "_idx_sort WHERE indexing_group_id = ? AND phrase in (" +
+                    StringUtils.repeat("?", ", ", terms.size()) +
+                    ");";
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+            PreparedStatement pst = con.prepareStatement(sql);
 
             int index = 1;
             pst.setInt(index++, indexingGroupId);
