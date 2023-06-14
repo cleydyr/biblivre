@@ -307,9 +307,7 @@ public class RestoreBO extends AbstractBO {
 
                 return p.exitValue() == 0;
             }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
 

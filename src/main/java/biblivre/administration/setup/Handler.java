@@ -349,10 +349,6 @@ public class Handler extends AbstractHandler {
             }
 
             State.cancel();
-        } catch (Exception e) {
-            this.setMessage(e);
-            State.writeLog(ExceptionUtils.getStackTrace(e));
-            State.cancel();
         } catch (Throwable e) {
             this.setMessage(e);
             State.writeLog(ExceptionUtils.getStackTrace(e));

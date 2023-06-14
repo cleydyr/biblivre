@@ -142,10 +142,7 @@ public class LayoutBody extends TagSupport {
 
         try {
             this.pageContext.include(path);
-        } catch (ServletException e) {
-            e.printStackTrace();
-            throw new JspException(e);
-        } catch (IOException e) {
+        } catch (ServletException | IOException e) {
             e.printStackTrace();
             throw new JspException(e);
         }
@@ -156,10 +153,7 @@ public class LayoutBody extends TagSupport {
         String path = "/jsp/taglib/layout/body/end.jsp";
         try {
             this.pageContext.include(path);
-        } catch (ServletException e) {
-            e.printStackTrace();
-            throw new JspException(e);
-        } catch (IOException e) {
+        } catch (ServletException | IOException e) {
             e.printStackTrace();
             throw new JspException(e);
         }

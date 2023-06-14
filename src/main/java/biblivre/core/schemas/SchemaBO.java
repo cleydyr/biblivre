@@ -263,9 +263,7 @@ public class SchemaBO {
 
                 return p.exitValue() == 0;
             }
-        } catch (IOException e) {
-            SchemaBO.logger.error(e.getMessage(), e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             SchemaBO.logger.error(e.getMessage(), e);
         }
 
