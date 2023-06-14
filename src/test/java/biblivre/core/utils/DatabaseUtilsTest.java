@@ -21,42 +21,32 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
     @Test
     void testGetDatabaseHostName() {
         execute(
-                () -> {
-                    assertEquals("localhost", DatabaseUtils.getDatabaseHostName());
-                });
+                () -> assertEquals("localhost", DatabaseUtils.getDatabaseHostName()));
     }
 
     @Test
     void testGetDatabaseName() {
         execute(
-                () -> {
-                    assertEquals(container.getDatabaseName(), DatabaseUtils.getDatabaseName());
-                });
+                () -> assertEquals(container.getDatabaseName(), DatabaseUtils.getDatabaseName()));
     }
 
     @Test
     void testGetDatabasePort() {
         execute(
-                () -> {
-                    assertEquals(
-                            container.getMappedPort(Constants.DEFAULT_POSTGRESQL_PORT),
-                            Integer.valueOf(DatabaseUtils.getDatabasePort()));
-                });
+                () -> assertEquals(
+                        container.getMappedPort(Constants.DEFAULT_POSTGRESQL_PORT),
+                        Integer.valueOf(DatabaseUtils.getDatabasePort())));
     }
 
     @Test
     void testGetDatabasePassword() {
         execute(
-                () -> {
-                    assertEquals(container.getPassword(), DatabaseUtils.getDatabasePassword());
-                });
+                () -> assertEquals(container.getPassword(), DatabaseUtils.getDatabasePassword()));
     }
 
     @Test
     void testGetDatabaseUsername() {
         execute(
-                () -> {
-                    assertEquals(container.getUsername(), DatabaseUtils.getDatabaseUsername());
-                });
+                () -> assertEquals(container.getUsername(), DatabaseUtils.getDatabaseUsername()));
     }
 }

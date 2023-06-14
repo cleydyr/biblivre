@@ -141,9 +141,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         Map<String, String> translation = new HashMap<>();
 
         all.forEach(
-                (key, translationDTO) -> {
-                    translation.put(key, translationDTO.getText());
-                });
+                (key, translationDTO) -> translation.put(key, translationDTO.getText()));
 
         return translation;
     }
