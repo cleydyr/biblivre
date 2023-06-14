@@ -22,7 +22,6 @@ package biblivre.cataloging.bibliographic;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.lending.LendingDTO;
-
 import java.io.Serial;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,7 @@ import java.util.Map.Entry;
 import org.json.JSONObject;
 
 public class BiblioRecordDTO extends RecordDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private String title;
     private String author;

@@ -48,7 +48,8 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            PreparedStatement pst = con.prepareStatement("DELETE FROM permissions WHERE login_id = ?;");
+            PreparedStatement pst =
+                    con.prepareStatement("DELETE FROM permissions WHERE login_id = ?;");
             pst.setInt(1, user.getLoginId());
             pst.executeUpdate();
 

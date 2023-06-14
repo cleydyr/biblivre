@@ -54,11 +54,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed, array_agg(V.key) as keys, array_agg(V.value) as values " +
-                    "FROM users U LEFT JOIN users_values V on V.user_id = U.id " +
-                    "WHERE U.id in (" +
-                    StringUtils.repeat("?", ", ", ids.size()) +
-                    ") GROUP BY U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed;";
+            String sql =
+                    "SELECT U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed, array_agg(V.key) as keys, array_agg(V.value) as values "
+                            + "FROM users U LEFT JOIN users_values V on V.user_id = U.id "
+                            + "WHERE U.id in ("
+                            + StringUtils.repeat("?", ", ", ids.size())
+                            + ") GROUP BY U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
@@ -415,10 +416,11 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE users SET user_card_printed = true " +
-                    "WHERE id in (" +
-                    StringUtils.repeat("?", ", ", ids.size()) +
-                    ");";
+            String sql =
+                    "UPDATE users SET user_card_printed = true "
+                            + "WHERE id in ("
+                            + StringUtils.repeat("?", ", ", ids.size())
+                            + ");";
 
             PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
@@ -441,8 +443,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE users SET status = ? " +
-                    "WHERE id = ?;";
+            String sql = "UPDATE users SET status = ? " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, status.toString());
@@ -466,7 +467,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             con = this.getConnection();
 
-            PreparedStatement pst = con.prepareStatement("SELECT id FROM users WHERE login_id = ?;");
+            PreparedStatement pst =
+                    con.prepareStatement("SELECT id FROM users WHERE login_id = ?;");
             pst.setInt(1, loginId);
 
             ResultSet rs = pst.executeQuery();

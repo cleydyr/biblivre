@@ -20,14 +20,12 @@
 package biblivre.circulation.lending;
 
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 import java.util.Date;
 
 public class LendingFineDTO extends AbstractDTO {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Integer id;
     private Integer lendingId;

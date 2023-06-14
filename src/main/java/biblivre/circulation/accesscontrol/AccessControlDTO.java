@@ -22,13 +22,11 @@ package biblivre.circulation.accesscontrol;
 import biblivre.administration.accesscards.AccessCardDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 import java.util.Date;
 
 public class AccessControlDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Integer id;
     private Integer accessCardId;

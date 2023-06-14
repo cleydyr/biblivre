@@ -20,13 +20,11 @@
 package biblivre.cataloging.vocabulary;
 
 import biblivre.cataloging.RecordDTO;
+import java.io.Serial;
 import org.json.JSONObject;
 
-import java.io.Serial;
-
 public class VocabularyRecordDTO extends RecordDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     // transient fields
     private transient String termTE;

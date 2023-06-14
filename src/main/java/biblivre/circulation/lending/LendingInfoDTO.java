@@ -23,14 +23,12 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
-import org.json.JSONObject;
-
 import java.io.Serial;
+import org.json.JSONObject;
 
 public class LendingInfoDTO extends AbstractDTO {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private BiblioRecordDTO biblio;
     private HoldingDTO holding;

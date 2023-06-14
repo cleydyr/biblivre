@@ -40,12 +40,13 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            String sql = "INSERT INTO requests ( " +
-                    "requester, author, item_title, item_subtitle, " +
-                    "edition_number, publisher, info, status, quantity, created_by) " +
-                    "VALUES (" +
-                    StringUtils.repeat("?", ", ", 10) +
-                    ");";
+            String sql =
+                    "INSERT INTO requests ( "
+                            + "requester, author, item_title, item_subtitle, "
+                            + "edition_number, publisher, info, status, quantity, created_by) "
+                            + "VALUES ("
+                            + StringUtils.repeat("?", ", ", 10)
+                            + ");";
 
             PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setString(1, dto.getRequester());
@@ -74,8 +75,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM requests " +
-                    "WHERE id = ?;";
+            String sql = "SELECT * FROM requests " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
@@ -160,11 +160,12 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE requests " +
-                    "SET author = ?, item_title = ?, item_subtitle = ?, edition_number = ?, " +
-                    "publisher = ?, info = ?, " +
-                    "requester = ?, quantity = ?, modified = now(), modified_by = ? " +
-                    "WHERE id = ?;";
+            String sql =
+                    "UPDATE requests "
+                            + "SET author = ?, item_title = ?, item_subtitle = ?, edition_number = ?, "
+                            + "publisher = ?, info = ?, "
+                            + "requester = ?, quantity = ?, modified = now(), modified_by = ? "
+                            + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, dto.getAuthor());
@@ -192,16 +193,17 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE requests SET status = ? " +
-                    "WHERE id IN (" +
-                    "SELECT r.id FROM requests r " +
-                    "INNER JOIN request_quotation rq " +
-                    "ON rq.request_id = r.id " +
-                    "INNER JOIN quotation q " +
-                    "ON q.id = rq.quotation_id " +
-                    "INNER JOIN order o " +
-                    "ON o.quotation_id = q.id " +
-                    "WHERE o.id = ?); ";
+            String sql =
+                    "UPDATE requests SET status = ? "
+                            + "WHERE id IN ("
+                            + "SELECT r.id FROM requests r "
+                            + "INNER JOIN request_quotation rq "
+                            + "ON rq.request_id = r.id "
+                            + "INNER JOIN quotation q "
+                            + "ON q.id = rq.quotation_id "
+                            + "INNER JOIN order o "
+                            + "ON o.quotation_id = q.id "
+                            + "WHERE o.id = ?); ";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, status.toString());
@@ -222,8 +224,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         try {
             con = this.getConnection();
 
-            String sql = "DELETE FROM requests " +
-                    "WHERE id = ?; ";
+            String sql = "DELETE FROM requests " + "WHERE id = ?; ";
 
             PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setInt(1, dto.getId());

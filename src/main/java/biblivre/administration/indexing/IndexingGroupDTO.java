@@ -20,7 +20,6 @@
 package biblivre.administration.indexing;
 
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +31,7 @@ import org.json.JSONObject;
  * be indexed by datafields 100, 110, 111, etc.
  */
 public class IndexingGroupDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Integer id;
     private String translationKey;

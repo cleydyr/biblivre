@@ -21,7 +21,6 @@ package biblivre.cataloging.authorities;
 
 import biblivre.cataloging.RecordDTO;
 import biblivre.marc.MarcDataReader;
-
 import java.io.Serial;
 import java.util.Arrays;
 import org.json.JSONObject;
@@ -30,8 +29,7 @@ import org.marc4j.marc.Record;
 public class AuthorityRecordDTO extends RecordDTO {
     private static final String[] AUTHOR_TYPE_TAGS = new String[] {"100", "110", "111"};
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private String authorName;
     private String authorOtherName;

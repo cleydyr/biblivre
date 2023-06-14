@@ -20,13 +20,11 @@
 package biblivre.cataloging;
 
 import biblivre.core.AbstractDTO;
+import java.io.Serial;
 import org.json.JSONObject;
 
-import java.io.Serial;
-
 public class BriefTabFieldDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private String datafieldTag;
     private String value;

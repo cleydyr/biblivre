@@ -132,10 +132,11 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            String sql = "SELECT * FROM biblio_holdings " +
-                    "WHERE id in (" +
-                    StringUtils.repeat("?", ", ", ids.size()) +
-                    ");";
+            String sql =
+                    "SELECT * FROM biblio_holdings "
+                            + "WHERE id in ("
+                            + StringUtils.repeat("?", ", ", ids.size())
+                            + ");";
 
             PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
@@ -198,9 +199,10 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             con = this.getConnection();
             int id = this.getNextSerial("biblio_holdings_id_seq");
             holding.setId(id);
-            String sql = "INSERT INTO biblio_holdings " +
-                    "(id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ";
+            String sql =
+                    "INSERT INTO biblio_holdings "
+                            + "(id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, holding.getId());
@@ -227,9 +229,10 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            String sql = "INSERT INTO holding_creation_counter " +
-                    "(user_name, user_login, created_by) " +
-                    "VALUES (?, ?, ?); ";
+            String sql =
+                    "INSERT INTO holding_creation_counter "
+                            + "(user_name, user_login, created_by) "
+                            + "VALUES (?, ?, ?); ";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -259,9 +262,10 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE biblio_holdings " +
-                    "SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, label_printed = ?, modified = now(), modified_by = ? " +
-                    "WHERE id = ?;";
+            String sql =
+                    "UPDATE biblio_holdings "
+                            + "SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, label_printed = ?, modified = now(), modified_by = ? "
+                            + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, holding.getRecordId());
@@ -288,10 +292,11 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE biblio_holdings SET label_printed = true " +
-                    "WHERE id in (" +
-                    StringUtils.repeat("?", ", ", ids.size()) +
-                    ");";
+            String sql =
+                    "UPDATE biblio_holdings SET label_printed = true "
+                            + "WHERE id in ("
+                            + StringUtils.repeat("?", ", ", ids.size())
+                            + ");";
 
             PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;
@@ -314,7 +319,8 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            PreparedStatement pst = con.prepareStatement("DELETE FROM biblio_holdings WHERE id = ?;");
+            PreparedStatement pst =
+                    con.prepareStatement("DELETE FROM biblio_holdings WHERE id = ?;");
             pst.setInt(1, dto.getId());
 
             return pst.executeUpdate() > 0;
@@ -398,7 +404,8 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            PreparedStatement pst = con.prepareStatement("SELECT * FROM biblio_holdings WHERE record_id = ?;");
+            PreparedStatement pst =
+                    con.prepareStatement("SELECT * FROM biblio_holdings WHERE record_id = ?;");
             pst.setInt(1, recordId);
 
             ResultSet rs = pst.executeQuery();
@@ -709,16 +716,17 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H " +
-                    "INNER JOIN biblio_search_results B ON H.record_id = B.record_id " +
-                    "WHERE B.search_id = ? " +
-                    this.createAdvancedWhereClause(search) +
-                    "UNION " +
-                    "SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H " +
-                    "INNER JOIN biblio_search_results B ON H.record_id = B.record_id " +
-                    "WHERE B.search_id = ? " +
-                    this.createAdvancedWhereClause(search) +
-                    "and B.indexing_group_id <> 0 GROUP BY B.indexing_group_id";
+            String sql =
+                    "SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H "
+                            + "INNER JOIN biblio_search_results B ON H.record_id = B.record_id "
+                            + "WHERE B.search_id = ? "
+                            + this.createAdvancedWhereClause(search)
+                            + "UNION "
+                            + "SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H "
+                            + "INNER JOIN biblio_search_results B ON H.record_id = B.record_id "
+                            + "WHERE B.search_id = ? "
+                            + this.createAdvancedWhereClause(search)
+                            + "and B.indexing_group_id <> 0 GROUP BY B.indexing_group_id";
 
             PreparedStatement pst = con.prepareStatement(sql);
 

@@ -43,9 +43,10 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         try {
             con = this.getConnection();
 
-            String sql = "INSERT INTO lending_fines " +
-                    "(user_id, lending_id, fine_value, payment_date, created_by) " +
-                    "VALUES (?, ?, ?, ?, ?);";
+            String sql =
+                    "INSERT INTO lending_fines "
+                            + "(user_id, lending_id, fine_value, payment_date, created_by) "
+                            + "VALUES (?, ?, ?, ?, ?);";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, fine.getUserId());
@@ -151,8 +152,9 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE lending_fines SET payment_date = now(), " +
-                    "fine_value = ? WHERE id = ?; ";
+            String sql =
+                    "UPDATE lending_fines SET payment_date = now(), "
+                            + "fine_value = ? WHERE id = ?; ";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setFloat(1, fine.getValue());

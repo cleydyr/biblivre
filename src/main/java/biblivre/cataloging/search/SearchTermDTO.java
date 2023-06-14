@@ -22,7 +22,6 @@ package biblivre.cataloging.search;
 import biblivre.cataloging.enums.SearchOperator;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.TextUtils;
-
 import java.io.Serial;
 import java.text.ParseException;
 import java.util.Date;
@@ -33,8 +32,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.JSONObject;
 
 public class SearchTermDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Set<String> terms;
     private String field;

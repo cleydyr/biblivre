@@ -20,14 +20,12 @@
 package biblivre.acquisition.quotation;
 
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
 public class QuotationDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private int id;
     private int supplierId;

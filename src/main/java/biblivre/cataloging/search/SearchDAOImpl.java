@@ -53,8 +53,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM " + recordType + "_searches " +
-                    "WHERE id = ?;";
+            String sql = "SELECT * FROM " + recordType + "_searches " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -153,10 +152,11 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             if (deleteOldResults) {
                 con.setAutoCommit(false);
 
-                String deleteSql = "DELETE FROM " +
-                        search.getRecordType() +
-                        "_search_results " +
-                        "WHERE search_id = ?;";
+                String deleteSql =
+                        "DELETE FROM "
+                                + search.getRecordType()
+                                + "_search_results "
+                                + "WHERE search_id = ?;";
 
                 PreparedStatement deletePst = con.prepareStatement(deleteSql);
                 deletePst.setInt(1, search.getId());
@@ -223,10 +223,11 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             if (deleteOld) {
                 con.setAutoCommit(false);
 
-                String deleteSql = "DELETE FROM " +
-                        search.getRecordType() +
-                        "_search_results " +
-                        "WHERE search_id = ?;";
+                String deleteSql =
+                        "DELETE FROM "
+                                + search.getRecordType()
+                                + "_search_results "
+                                + "WHERE search_id = ?;";
 
                 PreparedStatement deletePst = con.prepareStatement(deleteSql);
                 deletePst.setInt(1, search.getId());

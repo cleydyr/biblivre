@@ -23,15 +23,13 @@ import biblivre.core.utils.Constants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
+import java.io.Serial;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serial;
-
 public class LayoutHead extends TagSupport {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private String schema;
 

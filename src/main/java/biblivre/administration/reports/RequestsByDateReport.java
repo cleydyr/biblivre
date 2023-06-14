@@ -48,10 +48,14 @@ public class RequestsByDateReport extends BaseBiblivreReport {
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
         document.add(new Phrase("\n"));
-        String header = getText("administration.reports.field.date_from") +
-                " " + dto.getInitialDate() + " " +
-                getText("administration.reports.field.date_to") +
-                " " + dto.getFinalDate();
+        String header =
+                getText("administration.reports.field.date_from")
+                        + " "
+                        + dto.getInitialDate()
+                        + " "
+                        + getText("administration.reports.field.date_to")
+                        + " "
+                        + dto.getFinalDate();
         Paragraph p2 = new Paragraph(getHeaderChunk(header));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p2);

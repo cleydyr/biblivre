@@ -47,10 +47,11 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
             int quotationId = this.getNextSerial("quotations_id_seq");
             dto.setId(quotationId);
 
-            String sqlQuotations = "INSERT INTO quotations (id, supplier_id, " +
-                    "response_date, expiration_date, delivery_time, " +
-                    "info, created_by, created) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            String sqlQuotations =
+                    "INSERT INTO quotations (id, supplier_id, "
+                            + "response_date, expiration_date, delivery_time, "
+                            + "info, created_by, created) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
             PreparedStatement pstQuotations = con.prepareStatement(sqlQuotations);
             pstQuotations.setInt(1, dto.getId());
@@ -64,10 +65,11 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
 
             pstQuotations.executeUpdate();
 
-            String sqlRQuotations = "INSERT INTO request_quotation " +
-                    "(request_id, quotation_id, quotation_quantity, unit_value, " +
-                    "response_quantity) " +
-                    "VALUES (?, ?, ?, ?, ?);";
+            String sqlRQuotations =
+                    "INSERT INTO request_quotation "
+                            + "(request_id, quotation_id, quotation_quantity, unit_value, "
+                            + "response_quantity) "
+                            + "VALUES (?, ?, ?, ?, ?);";
 
             PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations);
 
@@ -101,10 +103,11 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            String sqlQuotations = "UPDATE quotations SET supplier_id = ?, " +
-                    "response_date = ?, expiration_date = ?, delivery_time = ?, " +
-                    "info = ?, modified_by = ?, modified = now() " +
-                    "WHERE id = ?;";
+            String sqlQuotations =
+                    "UPDATE quotations SET supplier_id = ?, "
+                            + "response_date = ?, expiration_date = ?, delivery_time = ?, "
+                            + "info = ?, modified_by = ?, modified = now() "
+                            + "WHERE id = ?;";
 
             PreparedStatement pstQuotations = con.prepareStatement(sqlQuotations);
             pstQuotations.setInt(1, dto.getSupplierId());
@@ -117,17 +120,16 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
 
             pstQuotations.executeUpdate();
 
-            String sqlItemQuotations = "DELETE FROM request_quotation " +
-                    "WHERE quotation_id = ?;";
-            PreparedStatement pstItemQuotations =
-                    con.prepareStatement(sqlItemQuotations);
+            String sqlItemQuotations = "DELETE FROM request_quotation " + "WHERE quotation_id = ?;";
+            PreparedStatement pstItemQuotations = con.prepareStatement(sqlItemQuotations);
             pstItemQuotations.setInt(1, dto.getId());
             pstItemQuotations.executeUpdate();
 
-            String sqlRQuotations = "INSERT INTO request_quotation " +
-                    "(request_id, quotation_id, quotation_quantity, unit_value, " +
-                    "response_quantity) " +
-                    "VALUES (?, ?, ?, ?, ?);";
+            String sqlRQuotations =
+                    "INSERT INTO request_quotation "
+                            + "(request_id, quotation_id, quotation_quantity, unit_value, "
+                            + "response_quantity) "
+                            + "VALUES (?, ?, ?, ?, ?);";
 
             PreparedStatement pstRQuotations = con.prepareStatement(sqlRQuotations);
 
@@ -160,8 +162,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM quotations " +
-                    "WHERE id = ?;";
+            String sql = "SELECT * FROM quotations " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
@@ -185,8 +186,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM request_quotation " +
-                    "WHERE quotation_id = ?;";
+            String sql = "SELECT * FROM request_quotation " + "WHERE quotation_id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, quotationId);
@@ -209,8 +209,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
         try {
             con = this.getConnection();
 
-            String sql = "DELETE FROM quotations " +
-                    "WHERE id = ?;";
+            String sql = "DELETE FROM quotations " + "WHERE id = ?;";
 
             PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setInt(1, dto.getId());
@@ -302,7 +301,10 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
             // sql.append("WHERE supplier_id = ? AND expiration_date + interval '1 day' >= now();
             // ");
 
-            PreparedStatement pst = con.prepareStatement("SELECT * FROM quotations " + "WHERE supplier_id = ? AND expiration_date >= now()::date; ");
+            PreparedStatement pst =
+                    con.prepareStatement(
+                            "SELECT * FROM quotations "
+                                    + "WHERE supplier_id = ? AND expiration_date >= now()::date; ");
             pst.setInt(1, supplierId);
 
             ResultSet rs = pst.executeQuery();

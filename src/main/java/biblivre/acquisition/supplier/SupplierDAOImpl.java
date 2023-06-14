@@ -41,16 +41,17 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
         try {
             con = this.getConnection();
 
-            String sql = "INSERT INTO suppliers ( " +
-                    "trademark, supplier_name, supplier_number, " +
-                    "vat_registration_number, address, address_number, " +
-                    "address_complement, area, city, state, country, " +
-                    "zip_code, telephone_1, telephone_2, telephone_3, " +
-                    "telephone_4, contact_1, contact_2, contact_3, " +
-                    "contact_4, info, url, email, created_by) " +
-                    "VALUES (" +
-                    StringUtils.repeat("?", ", ", 24) +
-                    ");";
+            String sql =
+                    "INSERT INTO suppliers ( "
+                            + "trademark, supplier_name, supplier_number, "
+                            + "vat_registration_number, address, address_number, "
+                            + "address_complement, area, city, state, country, "
+                            + "zip_code, telephone_1, telephone_2, telephone_3, "
+                            + "telephone_4, contact_1, contact_2, contact_3, "
+                            + "contact_4, info, url, email, created_by) "
+                            + "VALUES ("
+                            + StringUtils.repeat("?", ", ", 24)
+                            + ");";
 
             PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setString(1, dto.getTrademark());
@@ -94,14 +95,15 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE suppliers SET " +
-                    "trademark = ?, supplier_name = ?, supplier_number = ?, vat_registration_number = ?, " +
-                    "address = ?, address_number = ?, address_complement = ?, area = ?, city = ?, " +
-                    "state = ?, country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?, " +
-                    "telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?, " +
-                    "contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?, " +
-                    "modified = now(), modified_by = ? " +
-                    "WHERE id = ?; ";
+            String sql =
+                    "UPDATE suppliers SET "
+                            + "trademark = ?, supplier_name = ?, supplier_number = ?, vat_registration_number = ?, "
+                            + "address = ?, address_number = ?, address_complement = ?, area = ?, city = ?, "
+                            + "state = ?, country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?, "
+                            + "telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?, "
+                            + "contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?, "
+                            + "modified = now(), modified_by = ? "
+                            + "WHERE id = ?; ";
 
             PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setString(1, dto.getTrademark());
@@ -145,8 +147,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
         try {
             con = this.getConnection();
 
-            String sql = "DELETE FROM suppliers " +
-                    "WHERE id = ?;";
+            String sql = "DELETE FROM suppliers " + "WHERE id = ?;";
 
             PreparedStatement pstInsert = con.prepareStatement(sql);
             pstInsert.setInt(1, dto.getId());
@@ -166,8 +167,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM suppliers " +
-                    "WHERE id = ?;";
+            String sql = "SELECT * FROM suppliers " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);

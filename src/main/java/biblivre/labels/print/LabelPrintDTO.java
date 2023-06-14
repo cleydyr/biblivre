@@ -20,13 +20,11 @@
 package biblivre.labels.print;
 
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 import java.util.Set;
 
 public class LabelPrintDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Set<Integer> ids;
     private int offset;

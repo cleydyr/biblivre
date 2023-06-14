@@ -37,9 +37,10 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            String sql = "INSERT INTO access_control " +
-                    "(access_card_id, user_id, created_by) " +
-                    "VALUES (?, ?, ?);";
+            String sql =
+                    "INSERT INTO access_control "
+                            + "(access_card_id, user_id, created_by) "
+                            + "VALUES (?, ?, ?);";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, dto.getAccessCardId());
@@ -61,11 +62,12 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            String sql = "UPDATE access_control " +
-                    "SET departure_time = now(), " +
-                    "modified = now(), " +
-                    "modified_by = ? " +
-                    "WHERE id = ?;";
+            String sql =
+                    "UPDATE access_control "
+                            + "SET departure_time = now(), "
+                            + "modified = now(), "
+                            + "modified_by = ? "
+                            + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, dto.getModifiedBy());
@@ -86,9 +88,10 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM access_control " +
-                    "WHERE access_card_id = ? AND " +
-                    "departure_time is null;";
+            String sql =
+                    "SELECT * FROM access_control "
+                            + "WHERE access_card_id = ? AND "
+                            + "departure_time is null;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, cardId);
@@ -113,9 +116,10 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM access_control " +
-                    "WHERE user_id = ? and " +
-                    "departure_time is null;";
+            String sql =
+                    "SELECT * FROM access_control "
+                            + "WHERE user_id = ? and "
+                            + "departure_time is null;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, userId);

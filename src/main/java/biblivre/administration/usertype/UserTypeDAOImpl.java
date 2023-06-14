@@ -44,8 +44,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM users_types " +
-                    "WHERE id = ? ";
+            String sql = "SELECT * FROM users_types " + "WHERE id = ? ";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);

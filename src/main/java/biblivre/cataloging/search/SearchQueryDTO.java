@@ -26,7 +26,6 @@ import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MaterialType;
-
 import java.io.Serial;
 import java.text.ParseException;
 import java.util.*;
@@ -38,8 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class SearchQueryDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private SearchMode searchMode;
     private RecordDatabase database;

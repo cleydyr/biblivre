@@ -69,11 +69,12 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
 
             int orderId = this.getNextSerial("orders_id_seq");
 
-            String sqlInsert = " INSERT INTO orders (quotation_id, created, " +
-                    " created_by, info, status, invoice_number, " +
-                    " receipt_date, total_value, delivered_quantity, " +
-                    " terms_of_payment, deadline_date, id) " +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ";
+            String sqlInsert =
+                    " INSERT INTO orders (quotation_id, created, "
+                            + " created_by, info, status, invoice_number, "
+                            + " receipt_date, total_value, delivered_quantity, "
+                            + " terms_of_payment, deadline_date, id) "
+                            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ";
 
             PreparedStatement pst = con.prepareStatement(sqlInsert);
             pst.setInt(1, dto.getQuotationId());
@@ -155,12 +156,13 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            String sqlInsert = " UPDATE orders " +
-                    " SET quotation_id = ?, created = ?, " +
-                    " created_by = ?, info = ?, status = ?, " +
-                    " invoice_number = ?, receipt_date = ?, total_value = ?, " +
-                    " delivered_quantity = ?, terms_of_payment = ?, deadline_date= ? " +
-                    " WHERE id = ?;";
+            String sqlInsert =
+                    " UPDATE orders "
+                            + " SET quotation_id = ?, created = ?, "
+                            + " created_by = ?, info = ?, status = ?, "
+                            + " invoice_number = ?, receipt_date = ?, total_value = ?, "
+                            + " delivered_quantity = ?, terms_of_payment = ?, deadline_date= ? "
+                            + " WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sqlInsert);
             pst.setInt(1, dto.getQuotationId());

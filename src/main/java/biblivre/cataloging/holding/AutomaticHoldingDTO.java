@@ -22,13 +22,11 @@ package biblivre.cataloging.holding;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 
 public class AutomaticHoldingDTO extends AbstractDTO {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Integer holdingCount;
     private Integer issueNumber;

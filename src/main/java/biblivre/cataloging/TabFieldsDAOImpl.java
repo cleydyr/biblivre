@@ -78,9 +78,12 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         try {
             con = this.getConnection();
 
-            String sql = " INSERT INTO " + recordType + "_brief_formats " +
-                    " (datafield, format, sort_order, created_by) " +
-                    " VALUES (?, ?, ?, ?); ";
+            String sql =
+                    " INSERT INTO "
+                            + recordType
+                            + "_brief_formats "
+                            + " (datafield, format, sort_order, created_by) "
+                            + " VALUES (?, ?, ?, ?); ";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, dto.getDatafieldTag());
@@ -106,12 +109,15 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         try {
             con = this.getConnection();
 
-            String sql = " UPDATE " + recordType + "_brief_formats " +
-                    " SET sort_order = ?, " +
-                    " format = ?, " +
-                    " modified = now(), " +
-                    " modified_by = ? " +
-                    " WHERE datafield = ?; ";
+            String sql =
+                    " UPDATE "
+                            + recordType
+                            + "_brief_formats "
+                            + " SET sort_order = ?, "
+                            + " format = ?, "
+                            + " modified = now(), "
+                            + " modified_by = ? "
+                            + " WHERE datafield = ?; ";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -142,8 +148,8 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         try {
             con = this.getConnection();
 
-            String sql = " DELETE FROM " + recordType + "_brief_formats " +
-                    " WHERE datafield = ?; ";
+            String sql =
+                    " DELETE FROM " + recordType + "_brief_formats " + " WHERE datafield = ?; ";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, datafield);
@@ -167,16 +173,16 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             con = this.getConnection();
             con.setAutoCommit(false);
 
-            String subfieldSql = " DELETE FROM " + recordType + "_form_subfields " +
-                    " WHERE datafield = ?; ";
+            String subfieldSql =
+                    " DELETE FROM " + recordType + "_form_subfields " + " WHERE datafield = ?; ";
 
             PreparedStatement subfieldPst = con.prepareStatement(subfieldSql);
             subfieldPst.setString(1, datafield);
 
             subfieldPst.executeUpdate();
 
-            String datafieldSql = " DELETE FROM " + recordType + "_form_datafields " +
-                    " WHERE datafield = ?; ";
+            String datafieldSql =
+                    " DELETE FROM " + recordType + "_form_datafields " + " WHERE datafield = ?; ";
 
             PreparedStatement datafieldPst = con.prepareStatement(datafieldSql);
             datafieldPst.setString(1, datafield);

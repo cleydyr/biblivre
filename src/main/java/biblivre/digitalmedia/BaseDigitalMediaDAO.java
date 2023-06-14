@@ -112,8 +112,9 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
         try (Connection con = this.getConnection()) {
             // We check both ID and FILE_NAME for security reasons, so users can't "guess"
             // id's and get the files.
-            String sql = "SELECT name, blob, content_type, size, created FROM digital_media " +
-                    "WHERE id = ? AND name = ?;";
+            String sql =
+                    "SELECT name, blob, content_type, size, created FROM digital_media "
+                            + "WHERE id = ? AND name = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
@@ -162,8 +163,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
                 // We check both ID and FILE_NAME for security reasons, so users can't "guess"
                 // id's and get the files.
-                String sql = "DELETE FROM digital_media " +
-                        "WHERE id = ?;";
+                String sql = "DELETE FROM digital_media " + "WHERE id = ?;";
 
                 PreparedStatement pst = con.prepareStatement(sql);
                 pst.setInt(1, id);

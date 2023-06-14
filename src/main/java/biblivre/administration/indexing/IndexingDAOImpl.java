@@ -100,8 +100,11 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            String sql = "INSERT INTO " + recordType + "_idx_fields " +
-                    "(record_id, indexing_group_id, word, datafield) VALUES (?, ?, ?, ?);";
+            String sql =
+                    "INSERT INTO "
+                            + recordType
+                            + "_idx_fields "
+                            + "(record_id, indexing_group_id, word, datafield) VALUES (?, ?, ?, ?);";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -142,8 +145,11 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            String sql = "INSERT INTO " + recordType + "_idx_sort " +
-                    "(record_id, indexing_group_id, phrase, ignore_chars_count) VALUES (?, ?, ?, ?);";
+            String sql =
+                    "INSERT INTO "
+                            + recordType
+                            + "_idx_sort "
+                            + "(record_id, indexing_group_id, phrase, ignore_chars_count) VALUES (?, ?, ?, ?);";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -175,8 +181,11 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            String sql = "INSERT INTO " + recordType + "_idx_autocomplete " +
-                    "(datafield, subfield, word, phrase, record_id) VALUES (?, ?, ?, ?, ?);";
+            String sql =
+                    "INSERT INTO "
+                            + recordType
+                            + "_idx_autocomplete "
+                            + "(datafield, subfield, word, phrase, record_id) VALUES (?, ?, ?, ?, ?);";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -337,11 +346,12 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT phrase FROM " +
-                    recordType +
-                    "_idx_sort WHERE indexing_group_id = ? AND phrase in (" +
-                    StringUtils.repeat("?", ", ", terms.size()) +
-                    ");";
+            String sql =
+                    "SELECT phrase FROM "
+                            + recordType
+                            + "_idx_sort WHERE indexing_group_id = ? AND phrase in ("
+                            + StringUtils.repeat("?", ", ", terms.size())
+                            + ");";
 
             PreparedStatement pst = con.prepareStatement(sql);
 

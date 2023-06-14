@@ -206,8 +206,7 @@ public class TextUtils {
             return null;
         }
         return DateUtils.parseDate(
-                date,
-                DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.getPattern());
+                date, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.getPattern());
     }
 
     public static int defaultInt(String value) {

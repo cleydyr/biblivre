@@ -20,7 +20,6 @@
 package biblivre.administration.indexing;
 
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,8 +29,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class IndexingDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Integer recordId;
     private Integer indexingGroupId;

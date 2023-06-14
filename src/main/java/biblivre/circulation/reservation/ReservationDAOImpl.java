@@ -218,9 +218,11 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         try {
             con = this.getConnection();
 
-            String sql = "DELETE FROM reservations WHERE id IN " +
-                    "(SELECT id FROM reservations WHERE user_id = ? AND record_id = ? AND expires > localtimestamp " +
-                    "ORDER BY expires ASC LIMIT 1);"; // Users can reserve more than one copy of
+            String sql =
+                    "DELETE FROM reservations WHERE id IN "
+                            + "(SELECT id FROM reservations WHERE user_id = ? AND record_id = ? AND expires > localtimestamp "
+                            + "ORDER BY expires ASC LIMIT 1);"; // Users can reserve more than one
+            // copy of
             // each record
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -241,11 +243,11 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         try {
             con = this.getConnection();
 
-            String sql = "INSERT INTO reservations (record_id, user_id, expires, created_by) " +
-                    "VALUES (?, ?, ?, ?) ";
+            String sql =
+                    "INSERT INTO reservations (record_id, user_id, expires, created_by) "
+                            + "VALUES (?, ?, ?, ?) ";
 
-            PreparedStatement pst =
-                    con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pst.setInt(1, dto.getRecordId());
             pst.setInt(2, dto.getUserId());
             pst.setTimestamp(3, CalendarUtils.toSqlTimestamp(dto.getExpires()));
@@ -288,10 +290,11 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         try {
             con = this.getConnection();
 
-            String sql = "SELECT * FROM reservations WHERE " +
-                    "record_id in (" +
-                    StringUtils.repeat("?", ", ", recordIds.size()) +
-                    ") AND expires > localtimestamp ORDER BY created ASC;";
+            String sql =
+                    "SELECT * FROM reservations WHERE "
+                            + "record_id in ("
+                            + StringUtils.repeat("?", ", ", recordIds.size())
+                            + ") AND expires > localtimestamp ORDER BY created ASC;";
 
             PreparedStatement pst = con.prepareStatement(sql);
             int index = 1;

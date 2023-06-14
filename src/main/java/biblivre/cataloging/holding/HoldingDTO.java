@@ -25,7 +25,6 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
 import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.marc.MaterialType;
-
 import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
@@ -38,8 +37,7 @@ import org.marc4j.marc.Record;
 public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
     private static final String CONTROL_NUMBER_FOR_RELATED_BIBLIOGRAPHIC_RECORD_TAG = "004";
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Integer recordId;
     private String accessionNumber;

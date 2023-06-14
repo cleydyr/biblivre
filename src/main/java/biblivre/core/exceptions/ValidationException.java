@@ -25,8 +25,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class ValidationException extends RuntimeException {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private List<Pair<String, String>> errorList;
 

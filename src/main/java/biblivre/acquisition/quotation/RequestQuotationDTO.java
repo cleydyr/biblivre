@@ -20,12 +20,10 @@
 package biblivre.acquisition.quotation;
 
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 
 public class RequestQuotationDTO extends AbstractDTO {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private int requestId;
     private int quotationId;
@@ -94,11 +92,7 @@ public class RequestQuotationDTO extends AbstractDTO {
 
     @Override
     public String toString() {
-        String builder = this.getQuantity() +
-                "x " +
-                this.getAuthor() +
-                " - " +
-                this.getTitle();
+        String builder = this.getQuantity() + "x " + this.getAuthor() + " - " + this.getTitle();
         return builder;
     }
 }

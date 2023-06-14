@@ -22,13 +22,11 @@ package biblivre.circulation.reservation;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
-
 import java.io.Serial;
 
 public class ReservationInfoDTO extends AbstractDTO {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private BiblioRecordDTO biblio;
     private ReservationDTO reservation;
