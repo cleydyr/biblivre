@@ -210,18 +210,14 @@ public class SchemaBO {
 
                 Thread t =
                         new Thread(
-                                new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        String outputLine;
-                                        try (final BufferedReader br = new BufferedReader(isr)) {
-                                            while ((outputLine = br.readLine()) != null) {
-                                                State.writeLog(outputLine);
-                                            }
-                                        } catch (Exception e) {
-                                            logger.error("error while creating new schema", e);
+                                () -> {
+                                    String outputLine;
+                                    try (final BufferedReader br = new BufferedReader(isr)) {
+                                        while ((outputLine = br.readLine()) != null) {
+                                            State.writeLog(outputLine);
                                         }
+                                    } catch (Exception e) {
+                                        logger.error("error while creating new schema", e);
                                     }
                                 });
 
