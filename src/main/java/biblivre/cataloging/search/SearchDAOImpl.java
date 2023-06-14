@@ -120,7 +120,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
         Set<String> terms = search.getQuery().getSimpleTerms();
         List<String> sqlTerms = new ArrayList<>(terms.size());
         List<String> sqlOperators = new ArrayList<>(terms.size());
-        List<String[]> exactTerms = new ArrayList<String[]>();
+        List<String[]> exactTerms = new ArrayList<>();
 
         for (String term : terms) {
             String operator = "=";

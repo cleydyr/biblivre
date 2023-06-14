@@ -131,7 +131,7 @@ public class CustomCountReport extends BaseBiblivreReport {
             }
         }
 
-        List<String[]> data = new ArrayList<String[]>();
+        List<String[]> data = new ArrayList<>();
 
         for (Entry<String, Integer> entry : subfieldCounter.entrySet()) {
             String[] valuePair = new String[2];

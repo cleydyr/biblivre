@@ -221,7 +221,7 @@ public class PostgreSQLStatementIteratorTest {
     private void assertEqualsAfterNormalization(String original, String normalized) {
         PostgreSQLStatementIterable postgreSQLStatementIterable =
                 new PostgreSQLStatementIterable(
-                        new Iterator<Character>() {
+                        new Iterator<>() {
                             int i = 0;
 
                             @Override
