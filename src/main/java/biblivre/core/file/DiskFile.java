@@ -65,7 +65,9 @@ public class DiskFile extends BiblivreFile {
         }
     }
 
-    public boolean delete() {
-        return this.file != null && this.file.delete();
+    public void delete() {
+        if (this.file != null) {
+            this.file.delete();
+        }
     }
 }

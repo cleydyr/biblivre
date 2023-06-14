@@ -79,8 +79,8 @@ public class TranslationBO {
         return true;
     }
 
-    public boolean addSingleTranslation(String language, String key, String text) {
-        return SchemaThreadLocal.withGlobalSchema(
+    public void addSingleTranslation(String language, String key, String text) {
+        SchemaThreadLocal.withGlobalSchema(
                 () -> addSingleTranslation(language, key, text, Constants.ADMIN_LOGGED_USER_ID));
     }
 

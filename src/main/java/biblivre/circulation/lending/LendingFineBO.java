@@ -81,7 +81,7 @@ public class LendingFineBO extends AbstractBO {
         return this.lendingFineDAO.update(fine);
     }
 
-    public LendingFineDTO createFine(LendingDTO lending, Float value, boolean paid) {
+    public void createFine(LendingDTO lending, Float value, boolean paid) {
         LendingFineDTO fine = new LendingFineDTO();
         fine.setUserId(lending.getUserId());
         fine.setLendingId(lending.getId());
@@ -91,7 +91,6 @@ public class LendingFineBO extends AbstractBO {
         }
         fine.setCreatedBy(lending.getCreatedBy());
         this.lendingFineDAO.insert(fine);
-        return fine;
     }
 
     public Float calculateFineValue(Integer daysLate, UserDTO user) {

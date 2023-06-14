@@ -38,7 +38,7 @@ public interface LendingDAO {
 
     boolean doLend(LendingDTO lending, Connection con);
 
-    boolean doReturn(int lendingId);
+    void doReturn(int lendingId);
 
     boolean doReturn(int lendingId, Connection con);
 

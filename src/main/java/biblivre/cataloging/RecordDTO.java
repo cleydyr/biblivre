@@ -207,11 +207,11 @@ public class RecordDTO extends AbstractDTO {
         this.record.addVariableField(field);
     }
 
-    public RecordAttachmentDTO removeAttachment(String uri, String name) {
+    public void removeAttachment(String uri, String name) {
         int index = _getAttachmentIndex(uri, name);
 
         if (index == this.attachments.size()) {
-            return null;
+            return;
         }
 
         RecordAttachmentDTO attachmentToRemove = this.attachments.remove(index);
@@ -219,8 +219,6 @@ public class RecordDTO extends AbstractDTO {
         _removeEletronicResourceField(uri, name);
 
         nullifyDerivedFields();
-
-        return attachmentToRemove;
     }
 
     private void _removeEletronicResourceField(String uri, String name) {

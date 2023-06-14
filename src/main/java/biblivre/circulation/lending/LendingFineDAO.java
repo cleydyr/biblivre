@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface LendingFineDAO {
 
-    boolean insert(LendingFineDTO fine);
+    void insert(LendingFineDTO fine);
 
     LendingFineDTO get(Integer lendingFineId);
 

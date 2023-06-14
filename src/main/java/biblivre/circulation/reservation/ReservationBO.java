@@ -155,8 +155,8 @@ public class ReservationBO extends AbstractBO {
         return this.reservationDAO.delete(id);
     }
 
-    public boolean delete(Integer userId, Integer recordId) {
-        return this.reservationDAO.delete(userId, recordId);
+    public void delete(Integer userId, Integer recordId) {
+        this.reservationDAO.delete(userId, recordId);
     }
 
     public void checkReservation(RecordDTO record, UserDTO user) {
@@ -205,7 +205,7 @@ public class ReservationBO extends AbstractBO {
         return this.reservationDAO.insert(reservation);
     }
 
-    public SearchDTO populateReservationInfoByBiblio(SearchDTO search) {
+    public void populateReservationInfoByBiblio(SearchDTO search) {
         Set<Integer> users = new HashSet<>();
         Set<Integer> records = new HashSet<>();
 
@@ -249,8 +249,6 @@ public class ReservationBO extends AbstractBO {
             }
             record.addExtraData("reservationInfo", infoList);
         }
-
-        return search;
     }
 
     public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {

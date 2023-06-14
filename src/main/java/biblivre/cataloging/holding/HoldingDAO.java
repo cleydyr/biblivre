@@ -23,7 +23,7 @@ public interface HoldingDAO extends RecordDAO {
 
     boolean save(RecordDTO dto);
 
-    boolean updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto);
+    void updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto);
 
     boolean update(RecordDTO dto);
 

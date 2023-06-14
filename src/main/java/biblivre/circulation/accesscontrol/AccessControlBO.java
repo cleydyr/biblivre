@@ -37,9 +37,9 @@ public class AccessControlBO extends AbstractBO {
     private AccessCardBO accessCardBO;
     private UserBO userBO;
 
-    public AccessControlDTO populateDetails(AccessControlDTO dto) {
+    public void populateDetails(AccessControlDTO dto) {
         if (dto == null) {
-            return null;
+            return;
         }
 
         if (dto.getAccessCardId() != null) {
@@ -49,8 +49,6 @@ public class AccessControlBO extends AbstractBO {
         if (dto.getUserId() != null) {
             dto.setUser(userBO.get(dto.getUserId()));
         }
-
-        return dto;
     }
 
     public boolean lendCard(AccessControlDTO dto) {

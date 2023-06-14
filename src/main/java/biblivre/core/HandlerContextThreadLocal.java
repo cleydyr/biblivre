@@ -15,12 +15,10 @@ public class HandlerContextThreadLocal {
         return threadLocal.get();
     }
 
-    public static HandlerContext remove() {
+    public static void remove() {
         HandlerContext value = threadLocal.get();
 
         threadLocal.remove();
-
-        return value;
     }
 
     static class HandlerContext {

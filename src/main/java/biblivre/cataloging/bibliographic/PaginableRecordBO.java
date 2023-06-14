@@ -70,37 +70,37 @@ public abstract class PaginableRecordBO extends RecordBO {
         return search;
     }
 
-    public boolean paginateSearch(SearchDTO search, AuthorizationPoints authorizationPoints) {
+    public void paginateSearch(SearchDTO search, AuthorizationPoints authorizationPoints) {
         if (search.getQuery().getDatabase() == RecordDatabase.PRIVATE) {
             this.authorize(
                     "cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
 
-        return paginateSearch(search);
+        paginateSearch(search);
     }
 
-    public boolean search(SearchDTO search) {
+    public void search(SearchDTO search) {
         SearchMode searchMode = search.getSearchMode();
 
         boolean isNewSearch = (search.getId() == null);
 
         if (isNewSearch) {
             if (!this.searchDAO.createSearch(search)) {
-                return false;
+                return;
             }
         }
 
         switch (searchMode) {
             case SIMPLE:
                 if (!this.searchDAO.populateSimpleSearch(search, !isNewSearch)) {
-                    return false;
+                    return;
                 }
 
                 break;
 
             case ADVANCED:
                 if (!this.searchDAO.populateAdvancedSearch(search, !isNewSearch)) {
-                    return false;
+                    return;
                 }
 
                 break;
@@ -109,7 +109,7 @@ public abstract class PaginableRecordBO extends RecordBO {
                 break;
         }
 
-        return this.paginateSearch(search);
+        this.paginateSearch(search);
     }
 
     private PagingDTO _newConfiguredPagingInstance() {

@@ -211,8 +211,7 @@ public abstract class RecordBO extends AbstractBO {
         update(recordDTO);
     }
 
-    public RecordDTO removeAttachment(
-            Integer recordId, String uri, String description, Integer userId) {
+    public void removeAttachment(Integer recordId, String uri, String description, Integer userId) {
         RecordDTO dto = this.get(recordId);
 
         dto.removeAttachment(uri, description);
@@ -237,8 +236,6 @@ public abstract class RecordBO extends AbstractBO {
             // Try to remove the file from Biblivre DB
             digitalMediaBO.delete(Integer.valueOf(fileId), fileName);
         }
-
-        return dto;
     }
 
     public abstract void populateDetails(RecordDTO record, int mask);

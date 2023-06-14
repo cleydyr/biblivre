@@ -38,7 +38,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     }
 
     @Override
-    public boolean insert(LendingFineDTO fine) {
+    public void insert(LendingFineDTO fine) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -59,7 +59,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
             }
             pst.setInt(5, fine.getCreatedBy());
 
-            return pst.executeUpdate() > 0;
+            pst.executeUpdate();
 
         } catch (Exception e) {
             throw new DAOException(e);

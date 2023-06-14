@@ -214,7 +214,7 @@ public class BackupBO extends AbstractBO {
         return this.backupDAO.save(dto);
     }
 
-    public boolean move(BackupDTO dto) {
+    public void move(BackupDTO dto) {
         File destination = this.getBackupDestination();
         File backup = dto.getBackup();
 
@@ -239,7 +239,7 @@ public class BackupBO extends AbstractBO {
             dto.setBackup(movedBackup);
         }
 
-        return this.save(dto);
+        this.save(dto);
     }
 
     public String getBackupPath() {
@@ -265,7 +265,7 @@ public class BackupBO extends AbstractBO {
         return FileIOUtils.getWritablePath(path);
     }
 
-    private boolean exportDigitalMedia(String schema, File path) {
+    private void exportDigitalMedia(String schema, File path) {
         List<DigitalMediaDTO> list = digitalMediaBO.list();
 
         for (DigitalMediaDTO dto : list) {
@@ -283,14 +283,12 @@ public class BackupBO extends AbstractBO {
             } catch (IOException ioException) {
                 logger.error("error while exporting digital media", ioException);
 
-                return false;
+                return;
             }
         }
-
-        return true;
     }
 
-    private boolean dumpDatabase(ProcessBuilder pb) {
+    private void dumpDatabase(ProcessBuilder pb) {
         pb.redirectErrorStream(true);
 
         try {
@@ -310,13 +308,11 @@ public class BackupBO extends AbstractBO {
 
                 p.waitFor();
 
-                return p.exitValue() == 0;
+                p.exitValue();
             }
         } catch (IOException | InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
-
-        return false;
     }
 
     private void dumpDatabase(PgDumpCommand command) {

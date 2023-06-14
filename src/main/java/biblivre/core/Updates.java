@@ -41,8 +41,8 @@ public class Updates {
         return Constants.BIBLIVRE_VERSION;
     }
 
-    public boolean globalUpdate() {
-        return SchemaThreadLocal.withGlobalSchema(
+    public void globalUpdate() {
+        SchemaThreadLocal.withGlobalSchema(
                 () -> {
                     UpdatesDAO dao = UpdatesDAO.getInstance();
 
@@ -85,10 +85,10 @@ public class Updates {
                 });
     }
 
-    public boolean schemaUpdate(String schema) {
+    public void schemaUpdate(String schema) {
         UpdatesDAO dao = UpdatesDAO.getInstance();
 
-        return SchemaThreadLocal.withSchema(
+        SchemaThreadLocal.withSchema(
                 schema,
                 () -> {
                     Connection con = null;

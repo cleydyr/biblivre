@@ -377,8 +377,8 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     @Override
-    public boolean doReturn(int lendingId) {
-        return this.doReturn(lendingId, null);
+    public void doReturn(int lendingId) {
+        this.doReturn(lendingId, null);
     }
 
     @Override

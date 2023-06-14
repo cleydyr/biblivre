@@ -224,7 +224,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
     }
 
     @Override
-    public boolean updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto) {
+    public void updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto) {
         Connection con = null;
         try {
             con = this.getConnection();
@@ -246,7 +246,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                 pst.setNull(3, java.sql.Types.INTEGER);
             }
 
-            return pst.executeUpdate() > 0;
+            pst.executeUpdate();
         } catch (Exception e) {
             throw new DAOException(e);
         } finally {

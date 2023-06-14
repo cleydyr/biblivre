@@ -39,8 +39,8 @@ public class DigitalMediaBO extends AbstractBO {
         return this.digitalMediaDAO.load(id, name);
     }
 
-    public boolean delete(Integer fileId, String fileName) {
-        return this.digitalMediaDAO.delete(fileId);
+    public void delete(Integer fileId, String fileName) {
+        this.digitalMediaDAO.delete(fileId);
     }
 
     public List<DigitalMediaDTO> list() {
