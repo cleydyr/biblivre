@@ -392,8 +392,7 @@ public class LendingBO {
         return lendingList;
     }
 
-    public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
-            throws IOException {
+    public String generateReceipt(List<Integer> lendingsIds, TranslationsMap i18n) {
         PrinterType printerType =
                 PrinterType.fromString(
                         configurationBO.getString(Constants.CONFIG_LENDING_PRINTER_TYPE));

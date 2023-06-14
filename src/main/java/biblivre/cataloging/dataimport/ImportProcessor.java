@@ -9,5 +9,5 @@ import org.marc4j.marc.Record;
 
 public interface ImportProcessor {
     ImportDTO importData(InputStream inputStream, Function<Record, RecordDTO> recordAdapter)
-            throws IOException;
+            ;
 }

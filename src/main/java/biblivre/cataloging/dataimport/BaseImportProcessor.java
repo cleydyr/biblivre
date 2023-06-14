@@ -13,8 +13,7 @@ public abstract class BaseImportProcessor implements ImportProcessor {
     protected MarcReader marcReader;
 
     @Override
-    public ImportDTO importData(InputStream inputStream, Function<Record, RecordDTO> recordAdapter)
-            throws IOException {
+    public ImportDTO importData(InputStream inputStream, Function<Record, RecordDTO> recordAdapter) {
         MarcReader marcReader = getMarcReader(inputStream);
 
         ImportDTO importDTO = readFromMarcReader(marcReader, recordAdapter);

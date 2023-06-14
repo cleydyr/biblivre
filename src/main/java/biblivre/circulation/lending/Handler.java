@@ -326,10 +326,6 @@ public class Handler extends AbstractHandler {
             e.printStackTrace();
 
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            this.setMessage(ActionResult.ERROR, "error.runtime_error");
         }
     }
 

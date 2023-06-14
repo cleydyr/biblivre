@@ -28,7 +28,7 @@ public class ImportBOTest {
     }
 
     @Test
-    void testImportBO() throws IOException {
+    void testImportBO() {
         ImportDTO importDTO =
                 importBO.loadFromFile(() -> fromResource("cataloguing/import/biblivre-import.mrc"));
 
@@ -38,7 +38,7 @@ public class ImportBOTest {
     }
 
     @Test
-    void testLoadFromFileWithXML() throws IOException {
+    void testLoadFromFileWithXML() {
         ImportDTO importDTO =
                 importBO.loadFromFile(
                         () -> fromResource("cataloguing/import/biblioteca-de-espanha.xml"));
