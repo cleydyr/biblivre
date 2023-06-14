@@ -148,48 +148,53 @@ public class BackupBO extends AbstractBO {
         }
     }
 
-    public void createBackup(BackupDTO dto) throws IOException {
+    public void createBackup(BackupDTO dto) throws BackupException {
         File pgdump = DatabaseUtils.getPgDump();
 
         if (pgdump == null) {
             return;
         }
 
-        File tmpDir = FileIOUtils.createTempDir();
+        File tmpDir = null;
+        try {
+            tmpDir = FileIOUtils.createTempDir();
 
-        Map<String, Pair<String, String>> schemas = dto.getSchemas();
-        BackupType type = dto.getType();
+            Map<String, Pair<String, String>> schemas = dto.getSchemas();
+            BackupType type = dto.getType();
 
-        // Writing metadata
-        File meta = new File(tmpDir, "backup.meta");
-        Writer writer = new FileWriterWithEncoding(meta, Constants.DEFAULT_CHARSET);
-        writer.write(new RestoreDTO(dto).toJSONString());
-        writer.flush();
-        writer.close();
+            // Writing metadata
+            File meta = new File(tmpDir, "backup.meta");
+            Writer writer = new FileWriterWithEncoding(meta, Constants.DEFAULT_CHARSET);
+            writer.write(new RestoreDTO(dto).toJSONString());
+            writer.flush();
+            writer.close();
 
-        for (String schema : schemas.keySet()) {
-            if (type == BackupType.FULL || type == BackupType.EXCLUDE_DIGITAL_MEDIA) {
-                dumpSchema(dto, tmpDir, schema);
+            for (String schema : schemas.keySet()) {
+                if (type == BackupType.FULL || type == BackupType.EXCLUDE_DIGITAL_MEDIA) {
+                    dumpSchema(dto, tmpDir, schema);
 
-                dumpData(dto, tmpDir, schema);
-            }
+                    dumpData(dto, tmpDir, schema);
+                }
 
-            if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
-                if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
-                    dumpMedia(dto, tmpDir, schema);
+                if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
+                    if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
+                        dumpMedia(dto, tmpDir, schema);
+                    }
                 }
             }
+
+            File tmpZip = new File(tmpDir.getAbsolutePath() + ".b5bz");
+
+            FileIOUtils.zipFolder(tmpDir, tmpZip);
+            FileUtils.deleteQuietly(tmpDir);
+
+            dto.increaseCurrentStep();
+            this.save(dto);
+
+            dto.setBackup(tmpZip);
+        } catch (IOException e) {
+            throw new BackupException("can't create temp dir", e);
         }
-
-        File tmpZip = new File(tmpDir.getAbsolutePath() + ".b5bz");
-
-        FileIOUtils.zipFolder(tmpDir, tmpZip);
-        FileUtils.deleteQuietly(tmpDir);
-
-        dto.increaseCurrentStep();
-        this.save(dto);
-
-        dto.setBackup(tmpZip);
     }
 
     public BackupDTO get(Integer id) {
@@ -250,7 +255,9 @@ public class BackupBO extends AbstractBO {
             File biblivre = new File(home, "Biblivre");
 
             if (!biblivre.exists() && home.isDirectory() && home.canWrite()) {
-                biblivre.mkdir();
+                if (!biblivre.mkdir()) {
+                    return null;
+                }
             }
 
             path = biblivre.getAbsolutePath();
@@ -388,7 +395,7 @@ public class BackupBO extends AbstractBO {
                 includeTablePattern);
     }
 
-    private void dumpMedia(BackupDTO dto, File tmpDir, String schema) {
+    private void dumpMedia(BackupDTO dto, File tmpDir, String schema) throws BackupException {
         File mediaBackup = new File(tmpDir, schema + ".media.b5b");
         boolean isSchemaOnly = false;
         boolean isDataOnly = true;
@@ -405,7 +412,12 @@ public class BackupBO extends AbstractBO {
                 includeTablePattern);
 
         File schemaBackup = new File(tmpDir, schema);
-        schemaBackup.mkdir();
+
+        if (!schemaBackup.mkdir()) {
+            throw new BackupException(
+                    "can't create schema backup directory " + schemaBackup.toString());
+        }
+
         this.exportDigitalMedia(schema, schemaBackup);
         this.save(dto);
     }
