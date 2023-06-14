@@ -139,8 +139,10 @@ public class MarcUtils {
                     int dataFieldIntTag = Integer.parseInt(dataFieldTag);
 
                     if (dataFieldIntTag == 0) {
+                        continue;
+                    }
 
-                    } else if (dataFieldIntTag < 10) {
+                    if (dataFieldIntTag < 10) {
                         ControlField cf =
                                 factory.newControlField(dataFieldTag, json.getString(dataFieldTag));
                         record.addVariableField(cf);
