@@ -37,10 +37,10 @@ public class SummaryReport extends BaseBiblivreReport {
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        Integer order = 1;
+        int order = 1;
         if (StringUtils.isNotBlank(dto.getOrder())
                 && StringUtils.isNumeric(dto.getOrder().trim())) {
-            order = Integer.valueOf(dto.getOrder().trim());
+            order = Integer.parseInt(dto.getOrder().trim());
         }
         switch (order) {
             case 1 -> index = 6;
