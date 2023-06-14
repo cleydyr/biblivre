@@ -62,8 +62,6 @@ public class Handler extends AbstractHandler {
     private LanguageBO languageBO;
     private SchemaBO schemaBO;
 
-    public void ping(ExtendedRequest request, ExtendedResponse response) {}
-
     public void i18n(ExtendedRequest request, ExtendedResponse response) throws IOException {
         if (request.getBoolean("from_translations")) {
             setJspURL("/jsp/administration/translations.jsp");

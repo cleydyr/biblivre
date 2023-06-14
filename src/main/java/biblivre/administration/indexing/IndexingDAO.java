@@ -25,8 +25,6 @@ public interface IndexingDAO {
 
     void clearIndexes(RecordType recordType);
 
-    void startIndexing();
-
     void insertIndexes(RecordType recordType, List<IndexingDTO> indexes);
 
     void insertSortIndexes(RecordType recordType, List<IndexingDTO> sortIndexes);

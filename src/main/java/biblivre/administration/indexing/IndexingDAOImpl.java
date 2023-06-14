@@ -87,9 +87,6 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
     }
 
     @Override
-    public void startIndexing() {}
-
-    @Override
     public void insertIndexes(RecordType recordType, List<IndexingDTO> indexes) {
         int total = 0;
         for (IndexingDTO index : indexes) {

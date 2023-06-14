@@ -129,11 +129,6 @@ public class Handler extends AbstractHandler {
         return new MarcDataReader(biblioRecord);
     }
 
-    public void printText(ExtendedRequest request, ExtendedResponse response) {
-        // TODO Implementar e Melhorar
-        // TODO RENAME RECORD_FILE_TXT => printText
-    }
-
     @Autowired
     public void setBiblioRecordBO(BiblioRecordBO biblioRecordBO) {
         this.biblioRecordBO = biblioRecordBO;
