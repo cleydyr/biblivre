@@ -367,16 +367,13 @@ public class FileIOUtils {
                     response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
 
                     if (!headerOnly) {
-                        // Cast back to ServletOutputStream to get the easy println methods.
-                        ServletOutputStream sos = output;
-
                         // Copy multi part range.
                         for (Range r : ranges) {
                             // Add multipart boundary and header fields for every range.
-                            sos.println();
-                            sos.println("--" + Constants.MULTIPART_BOUNDARY);
-                            sos.println("Content-Type: " + contentType);
-                            sos.println(
+                            output.println();
+                            output.println("--" + Constants.MULTIPART_BOUNDARY);
+                            output.println("Content-Type: " + contentType);
+                            output.println(
                                     "Content-Range: bytes "
                                             + r.start
                                             + "-"
@@ -389,8 +386,8 @@ public class FileIOUtils {
                         }
 
                         // End with multipart boundary.
-                        sos.println();
-                        sos.println("--" + Constants.MULTIPART_BOUNDARY + "--");
+                        output.println();
+                        output.println("--" + Constants.MULTIPART_BOUNDARY + "--");
                     }
                 }
             }
