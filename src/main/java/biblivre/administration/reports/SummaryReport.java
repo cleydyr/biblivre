@@ -69,19 +69,17 @@ public class SummaryReport extends BaseBiblivreReport {
         PdfPTable table = new PdfPTable(10);
         table.setWidthPercentage(100f);
         createHeader(table);
-        Collections.sort(
-                dto.getData(),
-                (o1, o2) -> {
-                    if (o1 == null || o1[index] == null) {
-                        return -1;
-                    }
+        dto.getData().sort((o1, o2) -> {
+            if (o1 == null || o1[index] == null) {
+                return -1;
+            }
 
-                    if (o2 == null || o2[index] == null) {
-                        return 1;
-                    }
+            if (o2 == null || o2[index] == null) {
+                return 1;
+            }
 
-                    return o1[index].compareTo(o2[index]);
-                });
+            return o1[index].compareTo(o2[index]);
+        });
         PdfPCell cell;
         for (String[] data : dto.getData()) {
             cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[6])));

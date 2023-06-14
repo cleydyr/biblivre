@@ -52,12 +52,10 @@ public class AssetHoldingReport extends BaseBiblivreReport {
         createHeader(table);
         PdfPCell cell;
         List<String[]> dataList = dto.getData();
-        Collections.sort(
-                dataList,
-                (o1, o2) -> {
-                    if (o1 == null && o2 == null) return 0;
-                    return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
-                });
+        dataList.sort((o1, o2) -> {
+            if (o1 == null && o2 == null) return 0;
+            return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
+        });
         for (String[] data : dataList) {
             cell = new PdfPCell(new Paragraph(data[0], SMALL_FONT));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);

@@ -191,30 +191,28 @@ public class CustomCountReport extends BaseBiblivreReport {
         createHeader(
                 table,
                 getText("marc.bibliographic.datafield." + datafield + ".subfield." + subfield));
-        Collections.sort(
-                dto.getData(),
-                (o1, o2) -> {
-                    if (o1 == null) {
-                        return 0;
-                    }
+        dto.getData().sort((o1, o2) -> {
+            if (o1 == null) {
+                return 0;
+            }
 
-                    if (o2 == null) {
-                        return 0;
-                    }
+            if (o2 == null) {
+                return 0;
+            }
 
-                    if (o1[index] == null && o2[index] == null) {
-                        return 0;
-                    }
+            if (o1[index] == null && o2[index] == null) {
+                return 0;
+            }
 
-                    switch (index) {
-                        case 0:
-                            return o1[index].compareTo(o2[index]);
-                        case 1:
-                            return Integer.valueOf(o2[index]).compareTo(Integer.valueOf(o1[index]));
-                        default:
-                            return o1[index].compareTo(o2[index]);
-                    }
-                });
+            switch (index) {
+                case 0:
+                    return o1[index].compareTo(o2[index]);
+                case 1:
+                    return Integer.valueOf(o2[index]).compareTo(Integer.valueOf(o1[index]));
+                default:
+                    return o1[index].compareTo(o2[index]);
+            }
+        });
 
         PdfPCell cell;
         int total = 0;

@@ -57,7 +57,7 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
         createHeader(table);
         PdfPCell cell;
         List<String[]> dataList = dto.getData();
-        Collections.sort(dataList, getComparator());
+        dataList.sort(getComparator());
         for (String[] data : dataList) {
             PdfContentByte cb = getWriter().getDirectContent();
 

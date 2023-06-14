@@ -142,7 +142,7 @@ public class TranslationBO {
 
         List<String> list = new ArrayList<>(translations.keySet());
 
-        Collections.sort(list, new NamespaceComparator());
+        list.sort(new NamespaceComparator());
 
         try {
             File file = File.createTempFile("biblivre_translations_" + language + "_", ".txt");
