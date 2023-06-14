@@ -48,7 +48,7 @@ public abstract class BaseImportProcessor implements ImportProcessor {
         return dto;
     }
 
-    private MarcReader getMarcReader(InputStream inputStream) throws IOException {
+    private MarcReader getMarcReader(InputStream inputStream) {
         if (marcReader == null) {
             initMarcReader(inputStream);
         }

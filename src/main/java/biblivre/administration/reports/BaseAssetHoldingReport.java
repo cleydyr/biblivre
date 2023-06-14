@@ -46,8 +46,7 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         AssetHoldingDto dto = (AssetHoldingDto) reportData;
         Paragraph p1 = new Paragraph(getTitle());
         p1.setAlignment(Element.ALIGN_CENTER);

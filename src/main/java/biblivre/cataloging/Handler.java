@@ -62,15 +62,7 @@ public class Handler extends AbstractHandler {
         MemoryFile file = request.getFile("file");
 
         ImportDTO list;
-        try {
-            list = importBO.loadFromFile(file::getInputStream);
-        } catch (IOException ioe) {
-            logger.error(ioe.getMessage(), ioe);
-
-            setMessage(ActionResult.ERROR, ioe.getMessage());
-
-            return;
-        }
+        list = importBO.loadFromFile(file::getInputStream);
 
         if (list != null) {
             List<String> isbnList = new ArrayList<>();

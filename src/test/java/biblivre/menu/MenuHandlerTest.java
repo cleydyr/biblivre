@@ -16,7 +16,7 @@ public class MenuHandlerTest extends AbstractContainerDatabaseTest {
     @Autowired private MenuProvider menuProvider;
 
     @Test
-    public void testAllMenusHaveMethods() throws IOException, URISyntaxException {
+    public void testAllMenusHaveMethods() {
 
         menuProvider
                 .getAllowedModules(item -> true)

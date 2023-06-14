@@ -41,8 +41,7 @@ public class AssetHoldingByDateReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         AssetHoldingByDateDto dto = (AssetHoldingByDateDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.holdings_by_date"));
         p1.setAlignment(Element.ALIGN_CENTER);

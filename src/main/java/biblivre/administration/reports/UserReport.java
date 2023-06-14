@@ -100,8 +100,7 @@ public class UserReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         UserReportDto dto = (UserReportDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.user"));
         p1.setAlignment(Element.ALIGN_CENTER);

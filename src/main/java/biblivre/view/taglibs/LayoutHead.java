@@ -49,7 +49,7 @@ public class LayoutHead extends TagSupport {
     }
 
     @Override
-    public int doStartTag() throws JspException {
+    public int doStartTag() {
         this.init();
 
         String schema = this.getSchema();
@@ -66,7 +66,7 @@ public class LayoutHead extends TagSupport {
     }
 
     @Override
-    public int doEndTag() throws JspException {
+    public int doEndTag() {
         try {
             this.pageContext.include("/jsp/taglib/layout/head/end.jsp");
         } catch (Exception e) {

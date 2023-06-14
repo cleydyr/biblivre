@@ -60,8 +60,7 @@ public class SummaryReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         SummaryReportDto dto = (SummaryReportDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.summary"));
         p1.setAlignment(Element.ALIGN_CENTER);

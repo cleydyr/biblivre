@@ -55,7 +55,7 @@ public class RestoreDTO extends AbstractDTO {
         this.setBackup(dto.getBackup());
     }
 
-    public RestoreDTO(JSONObject json) throws Exception {
+    public RestoreDTO(JSONObject json) {
         this.setSchemas(json.get("schemas").toString());
         this.setType(BackupType.fromString(json.getString("type")));
         this.setBackupScope(BackupScope.fromString(json.getString("backup_scope")));

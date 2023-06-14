@@ -195,8 +195,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private void _populateMenus(ExtendedRequest request, AuthorizationPoints atps)
-            throws Exception {
+    private void _populateMenus(ExtendedRequest request, AuthorizationPoints atps) {
 
         request.setSessionAttribute(
                 "modules", menuProvider.getAllowedModules(item -> atps.isAllowed("menu", item)));

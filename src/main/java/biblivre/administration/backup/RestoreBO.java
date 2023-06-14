@@ -475,7 +475,7 @@ public class RestoreBO extends AbstractBO {
         return dto;
     }
 
-    private void processMediaRestoreFolder(File path, BufferedWriter bw) throws IOException {
+    private void processMediaRestoreFolder(File path, BufferedWriter bw) {
         if (path == null) {
             logger.info("===== Skipping File 'null' =====");
             return;

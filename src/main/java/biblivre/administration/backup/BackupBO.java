@@ -394,7 +394,7 @@ public class BackupBO extends AbstractBO {
                 includeTablePattern);
     }
 
-    private void dumpMedia(BackupDTO dto, File tmpDir, String schema) throws IOException {
+    private void dumpMedia(BackupDTO dto, File tmpDir, String schema) {
         File mediaBackup = new File(tmpDir, schema + ".media.b5b");
         boolean isSchemaOnly = false;
         boolean isDataOnly = true;

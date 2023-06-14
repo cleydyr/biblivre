@@ -172,8 +172,7 @@ public class CustomCountReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         CustomCountDto dto = (CustomCountDto) reportData;
         StringBuilder text = new StringBuilder();
         text.append(getText("administration.reports.title.custom_count") + ":\n");

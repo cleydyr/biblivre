@@ -37,7 +37,7 @@ import org.springframework.web.context.annotation.RequestScope;
 public class DownloadController extends Controller {
 
     @Override
-    protected void doReturn() throws ServletException, IOException {
+    protected void doReturn() throws IOException {
         BiblivreFile file = this.handler.getFile();
         Message message = this.handler.getMessage();
         int returnCode = this.handler.getReturnCode();

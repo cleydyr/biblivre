@@ -706,7 +706,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
     }
 
     protected AutocompleteDTO populateAutocompleteDTO(ResultSet rs)
-            throws SQLException, UnsupportedEncodingException {
+            throws SQLException {
         AutocompleteDTO dto = new AutocompleteDTO();
 
         RecordDTO rdto = new RecordDTO();

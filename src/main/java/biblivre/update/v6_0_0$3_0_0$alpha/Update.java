@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class Update implements UpdateService {
 
     @Override
-    public void doUpdate(Connection connection) throws SQLException {
+    public void doUpdate(Connection connection) {
         addBytePasswordColumnToLoginTable(connection);
     }
 
     @Override
-    public void doUpdateScopedBySchema(Connection connection) throws SQLException {
+    public void doUpdateScopedBySchema(Connection connection) {
         addBytePasswordColumnToLoginTable(connection);
         dropNonNullConstraintFromPasswordColumn(connection);
     }

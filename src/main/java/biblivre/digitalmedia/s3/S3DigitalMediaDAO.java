@@ -30,7 +30,7 @@ public class S3DigitalMediaDAO extends BaseDigitalMediaDAO {
     }
 
     @Override
-    protected void persist(InputStream is, long oid, long size) throws Exception {
+    protected void persist(InputStream is, long oid, long size) {
 
         logger.info(
                 "Uploading file to S3, (oid: {}, size: {})",
@@ -56,7 +56,7 @@ public class S3DigitalMediaDAO extends BaseDigitalMediaDAO {
     }
 
     @Override
-    protected BiblivreFile getFile(long oid) throws Exception {
+    protected BiblivreFile getFile(long oid) {
         GetObjectRequest request =
                 GetObjectRequest.builder().bucket(bucketName).key(String.valueOf(oid)).build();
 

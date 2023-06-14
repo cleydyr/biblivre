@@ -47,8 +47,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         HoldingCreationByDateReportDto dto = (HoldingCreationByDateReportDto) reportData;
         userTotal = new HashMap<>();
         Paragraph p1 =

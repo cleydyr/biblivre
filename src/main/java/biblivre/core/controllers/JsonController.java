@@ -36,7 +36,7 @@ import org.springframework.web.context.annotation.RequestScope;
 public class JsonController extends Controller {
 
     @Override
-    protected void doReturn() throws ServletException, IOException {
+    protected void doReturn() throws IOException {
         JSONObject json = this.handler.getJson();
         Message message = this.handler.getMessage();
 
@@ -44,21 +44,21 @@ public class JsonController extends Controller {
     }
 
     @Override
-    protected void doAuthorizationError() throws ServletException, IOException {
+    protected void doAuthorizationError() throws IOException {
         Message message = new Message(ActionResult.WARNING, "error.no_permission");
 
         this.dispatch(null, message);
     }
 
     @Override
-    protected void doLockedStateError() throws ServletException, IOException {
+    protected void doLockedStateError() throws IOException {
         Message message = new Message(ActionResult.WARNING, "error.biblivre_is_locked_please_wait");
 
         this.dispatch(null, message);
     }
 
     @Override
-    protected void doError(String error, Throwable e) throws ServletException, IOException {
+    protected void doError(String error, Throwable e) throws IOException {
         this.log.error(error, e);
 
         Message message = new Message(ActionResult.ERROR, error, e);
@@ -66,7 +66,7 @@ public class JsonController extends Controller {
     }
 
     @Override
-    protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
+    protected void doWarning(String warning, Throwable e) throws IOException {
         if (e != null && this.log.isDebugEnabled()) {
             this.log.warn(warning, e);
         } else {

@@ -650,8 +650,7 @@ public class LendingBO {
         return receipt.toString();
     }
 
-    private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n)
-            throws IOException {
+    private String generateTableReceipt(List<Integer> lendingsIds, TranslationsMap i18n) {
 
         Map<String, Object> root = new HashMap<>();
 

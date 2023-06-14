@@ -875,7 +875,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
     }
 
     protected RecordDTO populateDTO(ResultSet rs)
-            throws SQLException, UnsupportedEncodingException {
+            throws SQLException {
         HoldingDTO dto = new HoldingDTO();
 
         dto.setIso2709(rs.getBytes("iso2709"));

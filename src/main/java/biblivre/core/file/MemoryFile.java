@@ -37,7 +37,7 @@ public class MemoryFile extends BiblivreFile {
         this.inputStream = inputStream;
     }
 
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() {
         return this.inputStream;
     }
 

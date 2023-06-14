@@ -31,7 +31,7 @@ public class ImportBOTest {
     }
 
     @Test
-    void testImportBO() throws IOException, URISyntaxException {
+    void testImportBO() throws IOException {
         ImportDTO importDTO =
                 importBO.loadFromFile(() -> fromResource("cataloguing/import/biblivre-import.mrc"));
 
@@ -42,7 +42,7 @@ public class ImportBOTest {
 
     @Test
     void testLoadFromFileWithXML()
-            throws IOException, URISyntaxException, ParserConfigurationException, SAXException {
+            throws IOException {
         ImportDTO importDTO =
                 importBO.loadFromFile(
                         () -> fromResource("cataloguing/import/biblioteca-de-espanha.xml"));
@@ -52,7 +52,7 @@ public class ImportBOTest {
         assertEquals(importDTO.getSuccess(), 6);
     }
 
-    private InputStream fromResource(String path) throws IOException, URISyntaxException {
+    private InputStream fromResource(String path) throws IOException {
         return Files.newInputStream(Paths.get("src/test/resources/" + path));
     }
 }

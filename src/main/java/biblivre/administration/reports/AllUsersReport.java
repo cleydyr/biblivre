@@ -46,8 +46,7 @@ public class AllUsersReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         AllUsersReportDto dto = (AllUsersReportDto) reportData;
         Paragraph p1 = new Paragraph(this.getText("administration.reports.title.all_users"));
         p1.setAlignment(Element.ALIGN_CENTER);

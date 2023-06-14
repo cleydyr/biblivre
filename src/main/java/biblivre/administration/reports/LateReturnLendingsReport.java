@@ -39,8 +39,7 @@ public class LateReturnLendingsReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         LateLendingsDto dto = (LateLendingsDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.late_lendings"));
         p1.setAlignment(Element.ALIGN_CENTER);

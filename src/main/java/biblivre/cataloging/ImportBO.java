@@ -48,8 +48,7 @@ public class ImportBO extends AbstractBO {
 
     private Collection<ImportProcessor> importProcessors = Collections.emptyList();
 
-    public ImportDTO loadFromFile(UnsafeSupplier<InputStream> inputStreamSupplier)
-            throws IOException {
+    public ImportDTO loadFromFile(UnsafeSupplier<InputStream> inputStreamSupplier) {
         ImportDTO importDTO = null;
 
         for (ImportProcessor importProcessor : importProcessors) {

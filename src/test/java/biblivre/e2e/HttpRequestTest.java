@@ -20,7 +20,7 @@ public class HttpRequestTest extends AbstractContainerDatabaseTest {
     @Autowired private TestRestTemplate restTemplate;
 
     @Test
-    public void testHomePageWithTitle() throws Exception {
+    public void testHomePageWithTitle() {
         execute(
                 () -> {
                     String forObject =

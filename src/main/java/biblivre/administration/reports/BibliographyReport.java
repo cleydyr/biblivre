@@ -51,8 +51,7 @@ public class BibliographyReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         BibliographyReportDto dto = (BibliographyReportDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.bibliography"));
         p1.setAlignment(Element.ALIGN_CENTER);

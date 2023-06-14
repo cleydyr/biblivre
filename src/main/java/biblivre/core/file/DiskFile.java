@@ -40,7 +40,7 @@ public class DiskFile extends BiblivreFile {
     }
 
     @Override
-    public void close() throws IOException {}
+    public void close() {}
 
     @Override
     public boolean exists() {

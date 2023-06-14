@@ -143,7 +143,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
     }
 
     protected abstract void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception;
+            ;
 
     public final void setI18n(TranslationsMap i18n) {
         this.i18n = i18n;

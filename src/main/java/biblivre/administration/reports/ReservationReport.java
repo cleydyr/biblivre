@@ -40,8 +40,7 @@ public class ReservationReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         ReservationReportDto dto = (ReservationReportDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.reservation"));
         p1.setAlignment(Element.ALIGN_CENTER);

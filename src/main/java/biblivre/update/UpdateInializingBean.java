@@ -14,7 +14,7 @@ public class UpdateInializingBean implements InitializingBean {
     private SchemaDAO schemaDAO;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         updatesSuite.globalUpdate();
 
         for (SchemaDTO schema : schemaDAO.list()) {

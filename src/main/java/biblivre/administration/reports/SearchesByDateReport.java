@@ -40,8 +40,7 @@ public class SearchesByDateReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         SearchesByDateReportDto dto = (SearchesByDateReportDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.searches_by_date"));
         p1.setAlignment(Element.ALIGN_CENTER);

@@ -44,8 +44,7 @@ public class DeweyReport extends BaseBiblivreReport {
     }
 
     @Override
-    protected void generateReportBody(Document document, BaseReportDto reportData)
-            throws Exception {
+    protected void generateReportBody(Document document, BaseReportDto reportData) {
         DeweyReportDto dto = (DeweyReportDto) reportData;
         Paragraph p1 = new Paragraph(getText("administration.reports.title.dewey"));
         p1.setAlignment(Element.ALIGN_CENTER);
