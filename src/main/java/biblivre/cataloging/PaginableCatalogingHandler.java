@@ -162,7 +162,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         String[] idArray = request.getString("id_list").split(",");
 
         Set<Integer> ids =
-                Arrays.stream(idArray).map(id -> Integer.parseInt(id)).collect(Collectors.toSet());
+                Arrays.stream(idArray).map(Integer::parseInt).collect(Collectors.toSet());
 
         int loggedUserId = request.getLoggedUserId();
 
@@ -197,7 +197,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         String[] idArray = idList.split(",");
 
         Set<Integer> ids =
-                Arrays.stream(idArray).map(id -> Integer.parseInt(id)).collect(Collectors.toSet());
+                Arrays.stream(idArray).map(Integer::parseInt).collect(Collectors.toSet());
 
         AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
 
