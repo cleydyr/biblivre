@@ -162,8 +162,7 @@ public class TextUtils {
                 });
 
         List<String> newList = new ArrayList<>();
-        for (int i = 0; i < terms.length; i++) {
-            String term = terms[i];
+        for (String term : terms) {
             if (term.length() > 2) {
                 newList.add(term);
             }

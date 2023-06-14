@@ -694,8 +694,8 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             sql.append("WHERE B.database = ? ");
             sql.append("AND I.indexing_group_id = 1 ");
 
-            for (int i = 0; i < terms.length; i++) {
-                if (StringUtils.isNotBlank(terms[i])) {
+            for (String s : terms) {
+                if (StringUtils.isNotBlank(s)) {
                     sql.append(
                             "AND B.id in (SELECT record_id FROM biblio_idx_fields WHERE word >= ? and word < ?) ");
                 }
@@ -704,10 +704,10 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             PreparedStatement st = con.prepareStatement(sql.toString());
             int index = 1;
             st.setString(index++, database.toString());
-            for (int i = 0; i < terms.length; i++) {
-                if (StringUtils.isNotBlank(terms[i])) {
-                    st.setString(index++, terms[i]);
-                    st.setString(index++, TextUtils.incrementLastChar(terms[i]));
+            for (String term : terms) {
+                if (StringUtils.isNotBlank(term)) {
+                    st.setString(index++, term);
+                    st.setString(index++, TextUtils.incrementLastChar(term));
                 }
             }
 

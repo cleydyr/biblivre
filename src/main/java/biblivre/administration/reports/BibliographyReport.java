@@ -42,8 +42,8 @@ public class BibliographyReport extends BaseBiblivreReport {
 
         List<Integer> idList = new ArrayList<>();
 
-        for (int i = 0; i < idArray.length; i++) {
-            idList.add(Integer.valueOf(idArray[i].trim()));
+        for (String s : idArray) {
+            idList.add(Integer.valueOf(s.trim()));
         }
 
         return ReportsDAOImpl.getInstance()

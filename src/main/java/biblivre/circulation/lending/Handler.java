@@ -311,8 +311,8 @@ public class Handler extends AbstractHandler {
         String[] idArray = idList.split(",");
         List<Integer> ids = new ArrayList<>();
         try {
-            for (int i = 0; i < idArray.length; i++) {
-                ids.add(Integer.valueOf(idArray[i]));
+            for (String s : idArray) {
+                ids.add(Integer.valueOf(s));
             }
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");

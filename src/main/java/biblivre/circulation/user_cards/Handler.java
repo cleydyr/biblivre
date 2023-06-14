@@ -76,8 +76,8 @@ public class Handler extends AbstractHandler {
             String idList = request.getString("id_list");
             String[] idArray = idList.split(",");
             Set<Integer> ids = new HashSet<>();
-            for (int i = 0; i < idArray.length; i++) {
-                ids.add(Integer.valueOf(idArray[i]));
+            for (String s : idArray) {
+                ids.add(Integer.valueOf(s));
             }
             print.setIds(ids);
             print.setOffset(request.getInteger("offset"));

@@ -49,8 +49,8 @@ public class NetworkUtils {
             while (headers.hasMoreElements()) {
                 String nextElement = (String) headers.nextElement();
                 final String[] ips = nextElement.split(",");
-                for (int i = 0; i < ips.length; i++) {
-                    final String proxy = ips[i].trim();
+                for (String ip : ips) {
+                    final String proxy = ip.trim();
                     if (!"unknown".equals(proxy) && !proxy.isEmpty()) {
                         return InetAddress.getByName(proxy);
                     }
