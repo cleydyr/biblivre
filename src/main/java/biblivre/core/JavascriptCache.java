@@ -46,7 +46,6 @@ public class JavascriptCache {
                             new FileWriterWithEncoding(
                                     this.cacheFile, Constants.DEFAULT_CHARSET))) {
                 out.write(this.parent.toJavascriptString());
-                out.close();
             }
 
         } catch (Exception e) {

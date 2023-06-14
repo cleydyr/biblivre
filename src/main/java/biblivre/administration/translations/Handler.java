@@ -156,8 +156,6 @@ public class Handler extends AbstractHandler {
                         break;
                 }
             }
-
-            sc.close();
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.load");
             return;
