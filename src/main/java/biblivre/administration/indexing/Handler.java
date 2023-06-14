@@ -47,15 +47,11 @@ public class Handler extends AbstractHandler {
         long start = 0;
         long end = 0;
 
-        try {
-            start = new Date().getTime();
-            indexingBO.reindex(recordType);
-            end = new Date().getTime();
+        start = new Date().getTime();
+        indexingBO.reindex(recordType);
+        end = new Date().getTime();
 
-            request.setScopedSessionAttribute("system_warning_reindex", false);
-        } finally {
-
-        }
+        request.setScopedSessionAttribute("system_warning_reindex", false);
 
         put("time", (end - start) / 1000.0);
     }
