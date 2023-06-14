@@ -41,7 +41,6 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -694,23 +693,24 @@ public class RestoreBO extends AbstractBO {
     }
 
     private static void _sortRestores(List<RestoreDTO> list) {
-        list.sort((restore1, restore2) -> {
-            if (restore2 == null) {
-                return -1;
-            }
+        list.sort(
+                (restore1, restore2) -> {
+                    if (restore2 == null) {
+                        return -1;
+                    }
 
-            if (restore1.getCreated() != null && restore2.getCreated() != null) {
-                return restore2.getCreated().compareTo(restore1.getCreated()); // Order Desc
-            }
+                    if (restore1.getCreated() != null && restore2.getCreated() != null) {
+                        return restore2.getCreated().compareTo(restore1.getCreated()); // Order Desc
+                    }
 
-            if (restore1.getBackup() != null && restore2.getBackup() != null) {
-                return restore1.getBackup()
-                        .getName()
-                        .compareTo(restore2.getBackup().getName());
-            }
+                    if (restore1.getBackup() != null && restore2.getBackup() != null) {
+                        return restore1.getBackup()
+                                .getName()
+                                .compareTo(restore2.getBackup().getName());
+                    }
 
-            return 0;
-        });
+                    return 0;
+                });
     }
 
     private static boolean _verifyDTO(RestoreDTO dto) {

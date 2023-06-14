@@ -27,7 +27,6 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -57,17 +56,18 @@ public class DeweyReport extends BaseBiblivreReport {
         int totalRecords = 0;
         int totalHoldings = 0;
         List<String[]> dataList = dto.getData();
-        dataList.sort((o1, o2) -> {
-            if (o1 == null || o1[index] == null) {
-                return -1;
-            }
+        dataList.sort(
+                (o1, o2) -> {
+                    if (o1 == null || o1[index] == null) {
+                        return -1;
+                    }
 
-            if (o2 == null || o2[index] == null) {
-                return 1;
-            }
+                    if (o2 == null || o2[index] == null) {
+                        return 1;
+                    }
 
-            return o1[index].compareTo(o2[index]);
-        });
+                    return o1[index].compareTo(o2[index]);
+                });
         for (String[] data : dataList) {
             if (StringUtils.isBlank(data[0])) {
                 data[0] = getText("administration.reports.field.unclassified");

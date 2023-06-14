@@ -245,8 +245,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
                                 tabFieldsBO.getAutocompleteSubFields(recordType));
                 putOpt("data", autocompletion.toJSONObject());
             }
-            default -> {
-            }
+            default -> {}
         }
     }
 

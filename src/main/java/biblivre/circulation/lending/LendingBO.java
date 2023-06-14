@@ -404,8 +404,7 @@ public class LendingBO {
                 case PRINTER_40_COLUMNS -> columns = 40;
                 case PRINTER_80_COLUMNS -> columns = 80;
                 case PRINTER_COMMON -> columns = 0;
-                default -> {
-                }
+                default -> {}
             }
         }
 

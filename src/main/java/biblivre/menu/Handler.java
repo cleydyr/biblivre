@@ -347,9 +347,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void multiSchemaBackup(ExtendedRequest request, ExtendedResponse response) {
-        String backupPath =
-                SchemaThreadLocal.withGlobalSchema(
-                        () -> backupBO.getBackupPath());
+        String backupPath = SchemaThreadLocal.withGlobalSchema(() -> backupBO.getBackupPath());
 
         request.setAttribute("backupPath", backupPath);
 

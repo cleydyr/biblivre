@@ -179,7 +179,6 @@ public class SearchQueryDTO extends AbstractDTO {
 
     public MaterialType getMaterialType() {
         return Objects.requireNonNullElse(this.materialType, MaterialType.ALL);
-
     }
 
     public void setMaterialType(MaterialType materialType) {

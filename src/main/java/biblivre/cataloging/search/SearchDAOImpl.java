@@ -275,7 +275,11 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
                             pst.setString(index++, query.getDatabase().toString());
                             pst.setString(index++, term);
                         }
-                        case "holding_created", "holding_modified", "holding_label_never_printed", "created", "modified" -> {
+                        case "holding_created",
+                                "holding_modified",
+                                "holding_label_never_printed",
+                                "created",
+                                "modified" -> {
                             if (!field.equals("created") && !field.equals("modified")) {
                                 pst.setString(index++, query.getDatabase().toString());
                             }
@@ -495,7 +499,8 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             clause.append("WHERE database = ? AND ");
 
             switch (field) {
-                case "holding_id" -> clause.append(StringUtils.repeat("id = ? ", " OR ", terms.size()));
+                case "holding_id" -> clause.append(
+                        StringUtils.repeat("id = ? ", " OR ", terms.size()));
                 case "holding_created", "holding_modified" -> {
                     clause.append("(");
                     if (searchTerm.getStartDate() != null) {

@@ -153,12 +153,13 @@ public class Handler extends AbstractHandler {
 
             PaginableRecordBO bo = paginableRecordBOs.get(recordType);
 
-            RecordDTO dto = switch (recordType) {
-                case BIBLIO -> new BiblioRecordDTO();
-                case AUTHORITIES -> new AuthorityRecordDTO();
-                case VOCABULARY -> new VocabularyRecordDTO();
-                default -> new RecordDTO();
-            };
+            RecordDTO dto =
+                    switch (recordType) {
+                        case BIBLIO -> new BiblioRecordDTO();
+                        case AUTHORITIES -> new AuthorityRecordDTO();
+                        case VOCABULARY -> new VocabularyRecordDTO();
+                        default -> new RecordDTO();
+                    };
 
             Record record = null;
             try {

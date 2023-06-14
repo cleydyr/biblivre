@@ -37,7 +37,6 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,25 +190,28 @@ public class CustomCountReport extends BaseBiblivreReport {
         createHeader(
                 table,
                 getText("marc.bibliographic.datafield." + datafield + ".subfield." + subfield));
-        dto.getData().sort((o1, o2) -> {
-            if (o1 == null) {
-                return 0;
-            }
+        dto.getData()
+                .sort(
+                        (o1, o2) -> {
+                            if (o1 == null) {
+                                return 0;
+                            }
 
-            if (o2 == null) {
-                return 0;
-            }
+                            if (o2 == null) {
+                                return 0;
+                            }
 
-            if (o1[index] == null && o2[index] == null) {
-                return 0;
-            }
+                            if (o1[index] == null && o2[index] == null) {
+                                return 0;
+                            }
 
-            return switch (index) {
-                case 0 -> o1[index].compareTo(o2[index]);
-                case 1 -> Integer.valueOf(o2[index]).compareTo(Integer.valueOf(o1[index]));
-                default -> o1[index].compareTo(o2[index]);
-            };
-        });
+                            return switch (index) {
+                                case 0 -> o1[index].compareTo(o2[index]);
+                                case 1 -> Integer.valueOf(o2[index])
+                                        .compareTo(Integer.valueOf(o1[index]));
+                                default -> o1[index].compareTo(o2[index]);
+                            };
+                        });
 
         PdfPCell cell;
         int total = 0;

@@ -31,7 +31,6 @@ import com.lowagie.text.pdf.Barcode39;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;

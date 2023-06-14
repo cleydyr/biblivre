@@ -28,7 +28,6 @@ import biblivre.marc.MaterialType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import org.json.JSONObject;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.MarcFactory;

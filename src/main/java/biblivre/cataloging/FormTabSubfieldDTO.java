@@ -21,9 +21,8 @@ package biblivre.cataloging;
 
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.core.AbstractDTO;
-import org.json.JSONObject;
-
 import java.util.Objects;
+import org.json.JSONObject;
 
 public class FormTabSubfieldDTO extends AbstractDTO {
 
@@ -79,7 +78,6 @@ public class FormTabSubfieldDTO extends AbstractDTO {
 
     public AutocompleteType getAutocompleteType() {
         return Objects.requireNonNullElse(this.autocompleteType, AutocompleteType.DISABLED);
-
     }
 
     public void setAutocompleteType(AutocompleteType autocompleteType) {

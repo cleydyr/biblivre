@@ -27,7 +27,6 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import java.util.Collections;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -45,11 +44,11 @@ public class SummaryReport extends BaseBiblivreReport {
         }
         switch (order) {
             case 1 -> index = 6;
-            // dewey
+                // dewey
             case 2 -> index = 0;
-            // title
+                // title
             case 3 -> index = 1;
-            // author
+                // author
             default -> index = 6; // dewey
         }
         return ReportsDAOImpl.getInstance().getSummaryReportData(dto.getDatabase());
@@ -65,17 +64,19 @@ public class SummaryReport extends BaseBiblivreReport {
         PdfPTable table = new PdfPTable(10);
         table.setWidthPercentage(100f);
         createHeader(table);
-        dto.getData().sort((o1, o2) -> {
-            if (o1 == null || o1[index] == null) {
-                return -1;
-            }
+        dto.getData()
+                .sort(
+                        (o1, o2) -> {
+                            if (o1 == null || o1[index] == null) {
+                                return -1;
+                            }
 
-            if (o2 == null || o2[index] == null) {
-                return 1;
-            }
+                            if (o2 == null || o2[index] == null) {
+                                return 1;
+                            }
 
-            return o1[index].compareTo(o2[index]);
-        });
+                            return o1[index].compareTo(o2[index]);
+                        });
         PdfPCell cell;
         for (String[] data : dto.getData()) {
             cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[6])));

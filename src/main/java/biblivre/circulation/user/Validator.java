@@ -100,7 +100,7 @@ public class Validator extends AbstractValidator {
                                     key,
                                     "field.error.date:::"
                                             + request.getLocalizedText(
-                                            "format.date_user_friendly"));
+                                                    "format.date_user_friendly"));
                         }
                     }
                 }
@@ -113,12 +113,11 @@ public class Validator extends AbstractValidator {
                                     key,
                                     "field.error.date:::"
                                             + request.getLocalizedText(
-                                            "format.datetime_user_friendly"));
+                                                    "format.datetime_user_friendly"));
                         }
                     }
                 }
-                default -> {
-                }
+                default -> {}
             }
         }
 

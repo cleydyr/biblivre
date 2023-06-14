@@ -157,13 +157,11 @@ public class SchemaBO {
     }
 
     public boolean deleteSchema(SchemaDTO dto) {
-        return SchemaThreadLocal.withGlobalSchema(
-                () -> schemaDAO.delete(dto));
+        return SchemaThreadLocal.withGlobalSchema(() -> schemaDAO.delete(dto));
     }
 
     public boolean exists(String schema) {
-        return SchemaThreadLocal.withGlobalSchema(
-                () -> schemaDAO.exists(schema));
+        return SchemaThreadLocal.withGlobalSchema(() -> schemaDAO.exists(schema));
     }
 
     public boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {

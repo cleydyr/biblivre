@@ -25,7 +25,6 @@ import biblivre.core.DTOCollection;
 import biblivre.core.enums.SearchMode;
 import java.util.Map;
 import java.util.Objects;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -72,7 +71,6 @@ public class SearchDTO extends DTOCollection<RecordDTO> {
         // This search is not over a datafield group.
         // Using 0 to represent no filtering
         return Objects.requireNonNullElse(this.indexingGroup, 0);
-
     }
 
     public void setIndexingGroup(Integer indexingGroup) {

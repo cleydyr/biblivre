@@ -104,8 +104,7 @@ public class IndexingBO extends AbstractBO {
             case BIBLIO -> this.reindexingBiblioBase = state;
             case AUTHORITIES -> this.reindexingAuthoritiesBase = state;
             case VOCABULARY -> this.reindexingVocabularyBase = state;
-            default -> {
-            }
+            default -> {}
         }
     }
 
