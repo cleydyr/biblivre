@@ -214,7 +214,7 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
         PdfPCell cell;
         for (String[] data : dataList) {
             String name = data[1];
-            int total = Integer.valueOf(data[2]);
+            int total = Integer.parseInt(data[2]);
             if (userTotal.containsKey(name)) {
                 userTotal.put(name, userTotal.get(name) + total);
             } else {

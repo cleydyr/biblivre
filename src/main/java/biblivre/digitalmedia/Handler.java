@@ -96,7 +96,7 @@ public class Handler extends AbstractHandler {
             return null;
         }
 
-        return digitalMediaBO.load(Integer.valueOf(fileId), fileName);
+        return digitalMediaBO.load(Integer.parseInt(fileId), fileName);
     }
 
     private BiblivreFile _tryFetchingDBFileWithWindowsEncoding(

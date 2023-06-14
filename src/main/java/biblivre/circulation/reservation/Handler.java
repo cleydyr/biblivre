@@ -252,7 +252,7 @@ public class Handler extends AbstractHandler {
         UserSearchDTO searchDto = new UserSearchDTO(searchParameters);
 
         try {
-            int userId = Integer.valueOf(searchDto.getQuery());
+            int userId = Integer.parseInt(searchDto.getQuery());
             int loggedUser = request.getLoggedUserId();
             UserDTO readerUser = userBO.getUserByLoginId(loggedUser);
 

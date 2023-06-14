@@ -498,8 +498,8 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                 pstCount.setString(index++, query);
 
                 if (searchId) {
-                    pst.setLong(index, Long.valueOf(query));
-                    pstCount.setLong(index++, Long.valueOf(query));
+                    pst.setLong(index, Long.parseLong(query));
+                    pstCount.setLong(index++, Long.parseLong(query));
                 }
             }
 

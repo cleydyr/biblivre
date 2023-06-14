@@ -225,7 +225,7 @@ public class CustomCountReport extends BaseBiblivreReport {
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             table.addCell(cell);
             if (data[1] != null && StringUtils.isNumeric(data[1])) {
-                total += Integer.valueOf(data[1]);
+                total += Integer.parseInt(data[1]);
             }
             cell = new PdfPCell(new Paragraph(getSmallFontChunk(data[1])));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);

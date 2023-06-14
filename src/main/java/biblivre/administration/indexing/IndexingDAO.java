@@ -144,7 +144,7 @@ public interface IndexingDAO {
 
                         if (indicator >= '1' && indicator <= '9') {
                             sortIndex.setIgnoreCharsCount(
-                                    Integer.valueOf(Character.toString(indicator)));
+                                    Integer.parseInt(Character.toString(indicator)));
                         }
 
                         charsToIgnoreSet = true;

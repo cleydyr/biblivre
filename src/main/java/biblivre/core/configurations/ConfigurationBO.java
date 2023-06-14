@@ -85,7 +85,7 @@ public class ConfigurationBO {
         String schema = SchemaThreadLocal.get();
 
         try {
-            return Integer.valueOf(value);
+            return Integer.parseInt(value);
         } catch (Exception e) {
             logger.warn("Configuration is not an integer: " + schema + "." + key + " = " + value);
             return def;
@@ -98,7 +98,7 @@ public class ConfigurationBO {
         String value = getValue(key);
 
         try {
-            return Float.valueOf(value.replace(',', '.'));
+            return Float.parseFloat(value.replace(',', '.'));
         } catch (Exception e) {
             logger.warn("Configuration is not a float: " + schema + "." + key + " = " + value);
             return 0.0f;

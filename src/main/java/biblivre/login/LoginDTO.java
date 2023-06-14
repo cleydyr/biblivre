@@ -86,7 +86,7 @@ public class LoginDTO extends AbstractDTO {
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
 
-        json.putOpt("employee", Boolean.valueOf(isEmployee()));
+        json.putOpt("employee", isEmployee());
 
         return json;
     }

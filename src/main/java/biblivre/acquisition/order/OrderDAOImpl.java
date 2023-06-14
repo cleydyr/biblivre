@@ -249,7 +249,7 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
             PreparedStatement pst = con.prepareStatement(sql.toString());
             int i = 1;
             if (StringUtils.isNumeric(value)) {
-                pst.setInt(i++, Integer.valueOf(value));
+                pst.setInt(i++, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {
                 pst.setString(i++, "%" + value + "%");
                 pst.setString(i++, "%" + value + "%");
@@ -273,7 +273,7 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
 
             PreparedStatement pstCount = con.prepareStatement(sqlCount.toString());
             if (StringUtils.isNumeric(value)) {
-                pst.setInt(1, Integer.valueOf(value));
+                pst.setInt(1, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {
                 pst.setString(1, "%" + value + "%");
                 pst.setString(2, "%" + value + "%");
