@@ -378,12 +378,7 @@ public class MarcDataReader {
             field = (DataField) obj;
             tag = field.getTag();
 
-            fieldList = hash.get(tag);
-
-            if (fieldList == null) {
-                fieldList = new ArrayList<>();
-                hash.put(tag, fieldList);
-            }
+            fieldList = hash.computeIfAbsent(tag, k -> new ArrayList<>());
 
             fieldList.add(field);
         }

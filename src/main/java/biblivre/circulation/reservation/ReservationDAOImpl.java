@@ -306,11 +306,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 Integer recordId = rs.getInt("record_id");
-                List<ReservationDTO> reservations = map.get(recordId);
-                if (reservations == null) {
-                    reservations = new ArrayList<>();
-                    map.put(recordId, reservations);
-                }
+                List<ReservationDTO> reservations = map.computeIfAbsent(recordId, k -> new ArrayList<>());
                 reservations.add(this.populateDTO(rs));
             }
         } catch (Exception e) {
