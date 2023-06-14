@@ -96,6 +96,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
                 setter.invoke(this, value);
             } catch (Exception e) {
+                logger.error("error while converting to AbstractDAO", e);
             }
         }
     }
