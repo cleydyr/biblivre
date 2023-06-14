@@ -174,7 +174,7 @@ public class CustomCountReport extends BaseBiblivreReport {
     protected void generateReportBody(Document document, BaseReportDto reportData) {
         CustomCountDto dto = (CustomCountDto) reportData;
         StringBuilder text = new StringBuilder();
-        text.append(getText("administration.reports.title.custom_count") + ":\n");
+        text.append(getText("administration.reports.title.custom_count")).append(":\n");
         text.append(datafield).append(" (");
         text.append(getText("marc.bibliographic.datafield." + datafield));
         text.append(")\n$").append(subfield);

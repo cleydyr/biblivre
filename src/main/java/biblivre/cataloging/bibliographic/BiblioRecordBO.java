@@ -85,9 +85,7 @@ public class BiblioRecordBO extends PaginableRecordBO {
         if ((mask & RecordBO.HOLDING_LIST) != 0) {
             Collection<HoldingDTO> holdingsList = holdingBO.list(recordId);
 
-            List<HoldingDTO> list = new ArrayList<>();
-
-            list.addAll(holdingsList);
+            List<HoldingDTO> list = new ArrayList<>(holdingsList);
 
             Collections.sort(list);
 

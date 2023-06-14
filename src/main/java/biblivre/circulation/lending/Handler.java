@@ -260,9 +260,9 @@ public class Handler extends AbstractHandler {
     public void payFine(ExtendedRequest request, ExtendedResponse response) {
 
         Integer fineId = request.getInteger("fine_id");
-        Boolean exempt = request.getBoolean("exempt", false);
+        boolean exempt = request.getBoolean("exempt", false);
 
-        LendingFineDTO dto = lendingFineBO.getById(Integer.valueOf(fineId));
+        LendingFineDTO dto = lendingFineBO.getById(fineId);
         if (exempt) {
             dto.setValue(0f);
         }

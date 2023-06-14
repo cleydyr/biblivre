@@ -49,9 +49,9 @@ public class LendingsByDateReport extends BaseBiblivreReport {
         document.add(new Phrase("\n"));
         StringBuilder header = new StringBuilder();
         header.append(getText("administration.reports.field.date_from"));
-        header.append(" " + dto.getInitialDate() + " ");
+        header.append(" ").append(dto.getInitialDate()).append(" ");
         header.append(getText("administration.reports.field.date_to"));
-        header.append(" " + dto.getFinalDate());
+        header.append(" ").append(dto.getFinalDate());
         Paragraph p2 = new Paragraph(getHeaderChunk(header.toString()));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p2);

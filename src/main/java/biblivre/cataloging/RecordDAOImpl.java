@@ -48,7 +48,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
     @Override
     public boolean save(RecordDTO dto) {
-        Integer id = getNextSerial(dto.getRecordType() + "_records_id_seq");
+        int id = getNextSerial(dto.getRecordType() + "_records_id_seq");
 
         dto.setId(id);
 

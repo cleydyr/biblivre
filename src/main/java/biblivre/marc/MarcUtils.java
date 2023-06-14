@@ -136,7 +136,7 @@ public class MarcUtils {
                 String dataFieldTag = dataFieldsIterator.next();
 
                 try {
-                    Integer dataFieldIntTag = Integer.valueOf(dataFieldTag);
+                    int dataFieldIntTag = Integer.parseInt(dataFieldTag);
 
                     if (dataFieldIntTag == 0) {
                         continue;

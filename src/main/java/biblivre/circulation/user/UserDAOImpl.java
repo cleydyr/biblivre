@@ -285,7 +285,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
             StringBuilder sql = new StringBuilder();
             PreparedStatement pst = null;
-            Boolean newUser = user.getId() == 0;
+            boolean newUser = user.getId() == 0;
 
             if (newUser) {
                 user.setId(this.getNextSerial("users_id_seq"));

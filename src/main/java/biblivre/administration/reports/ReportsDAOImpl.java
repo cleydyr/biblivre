@@ -598,7 +598,9 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             firstSql.append("SELECT count(u.type) as total, t.description, t.id ");
             firstSql.append("FROM users u, users_types t ");
             firstSql.append("WHERE u.type = t.id ");
-            firstSql.append("AND u.status <> '" + UserStatus.INACTIVE.toString() + "' ");
+            firstSql.append("AND u.status <> '")
+                    .append(UserStatus.INACTIVE.toString())
+                    .append("' ");
             firstSql.append("GROUP BY u.type, t.description, t.id ");
             firstSql.append("ORDER BY t.description;");
             ResultSet rs = con.createStatement().executeQuery(firstSql.toString());
@@ -610,7 +612,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
                 StringBuilder secondSql = new StringBuilder();
                 secondSql.append("SELECT name, id, created, modified from users ");
-                secondSql.append("WHERE type = '" + rs.getInt("id") + "' ");
+                secondSql.append("WHERE type = '").append(rs.getInt("id")).append("' ");
                 secondSql.append("ORDER BY name; ");
 
                 ResultSet rs2 = con.createStatement().executeQuery(secondSql.toString());

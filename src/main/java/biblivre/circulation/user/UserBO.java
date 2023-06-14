@@ -140,14 +140,14 @@ public class UserBO extends AbstractBO {
                 }
                 Map<Integer, UserDTO> userMap = this.map(dto.getIds());
                 for (UserDTO user : userMap.values()) {
-                    String userId = String.valueOf(user.getId());
+                    StringBuilder userId = new StringBuilder(String.valueOf(user.getId()));
                     PdfContentByte cb = writer.getDirectContent();
                     Barcode39 code39 = new Barcode39();
                     code39.setExtended(true);
                     while (userId.length() < 10) {
-                        userId = "0" + userId;
+                        userId.insert(0, "0");
                     }
-                    code39.setCode(userId);
+                    code39.setCode(userId.toString());
                     code39.setStartStopText(false);
                     Image image39 = code39.createImageWithBarcode(cb, null, null);
                     image39.scalePercent(110f);

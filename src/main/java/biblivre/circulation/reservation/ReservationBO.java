@@ -177,8 +177,8 @@ public class ReservationBO extends AbstractBO {
     public boolean checkUserReservationLimit(UserDTO user) {
         UserTypeDTO type = userTypeBO.get(user.getType());
 
-        Integer limit = (type != null) ? type.getReservationLimit() : 1;
-        Integer count = this.reservationDAO.count(user, null);
+        int limit = (type != null) ? type.getReservationLimit() : 1;
+        int count = this.reservationDAO.count(user, null);
 
         return count < limit;
     }

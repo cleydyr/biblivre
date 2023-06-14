@@ -79,7 +79,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             con = this.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append(" INSERT INTO " + recordType + "_brief_formats ");
+            sql.append(" INSERT INTO ").append(recordType).append("_brief_formats ");
             sql.append(" (datafield, format, sort_order, created_by) ");
             sql.append(" VALUES (?, ?, ?, ?); ");
 
@@ -108,7 +108,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             con = this.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append(" UPDATE " + recordType + "_brief_formats ");
+            sql.append(" UPDATE ").append(recordType).append("_brief_formats ");
             sql.append(" SET sort_order = ?, ");
             sql.append(" format = ?, ");
             sql.append(" modified = now(), ");
@@ -145,7 +145,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             con = this.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append(" DELETE FROM " + recordType + "_brief_formats ");
+            sql.append(" DELETE FROM ").append(recordType).append("_brief_formats ");
             sql.append(" WHERE datafield = ?; ");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
@@ -171,7 +171,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             con.setAutoCommit(false);
 
             StringBuilder subfieldSql = new StringBuilder();
-            subfieldSql.append(" DELETE FROM " + recordType + "_form_subfields ");
+            subfieldSql.append(" DELETE FROM ").append(recordType).append("_form_subfields ");
             subfieldSql.append(" WHERE datafield = ?; ");
 
             PreparedStatement subfieldPst = con.prepareStatement(subfieldSql.toString());
@@ -180,7 +180,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             subfieldPst.executeUpdate();
 
             StringBuilder datafieldSql = new StringBuilder();
-            datafieldSql.append(" DELETE FROM " + recordType + "_form_datafields ");
+            datafieldSql.append(" DELETE FROM ").append(recordType).append("_form_datafields ");
             datafieldSql.append(" WHERE datafield = ?; ");
 
             PreparedStatement datafieldPst = con.prepareStatement(datafieldSql.toString());

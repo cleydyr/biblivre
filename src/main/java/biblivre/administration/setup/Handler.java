@@ -106,7 +106,7 @@ public class Handler extends AbstractHandler {
     }
 
     public void uploadBiblivre4(ExtendedRequest request, ExtendedResponse response) {
-        Boolean mediaUpload = request.getBoolean("media_upload", false);
+        boolean mediaUpload = request.getBoolean("media_upload", false);
 
         MemoryFile file = request.getFile(mediaUpload ? "biblivre4backupmedia" : "biblivre4backup");
 
@@ -163,7 +163,7 @@ public class Handler extends AbstractHandler {
             RestoreDTO dto, ExtendedRequest request, ExtendedResponse response) {
 
         String mediaFileBackup = request.getString("mediaFileBackup");
-        Boolean skip = request.getBoolean("skip", false);
+        boolean skip = request.getBoolean("skip", false);
 
         try {
             switch (dto.getType()) {

@@ -72,9 +72,9 @@ public class RequestsByDateReport extends BaseBiblivreReport {
         PdfPCell cell;
         String lastQuotationId = "0";
         String requester = null;
-        String title = null;
-        String quantity = null;
-        String unit_value = null;
+        StringBuilder title = null;
+        StringBuilder quantity = null;
+        StringBuilder unit_value = null;
         String total_value = null;
         for (String[] data : dataList) {
             if (!data[0].equals(lastQuotationId)) {
@@ -84,16 +84,16 @@ public class RequestsByDateReport extends BaseBiblivreReport {
                     cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
                     table.addCell(cell);
-                    cell = new PdfPCell(new Paragraph(getNormalChunk(title)));
+                    cell = new PdfPCell(new Paragraph(getNormalChunk(title.toString())));
                     cell.setColspan(2);
                     cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
                     table.addCell(cell);
-                    cell = new PdfPCell(new Paragraph(getNormalChunk(quantity)));
+                    cell = new PdfPCell(new Paragraph(getNormalChunk(quantity.toString())));
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
                     table.addCell(cell);
-                    cell = new PdfPCell(new Paragraph(getNormalChunk(unit_value)));
+                    cell = new PdfPCell(new Paragraph(getNormalChunk(unit_value.toString())));
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
                     table.addCell(cell);
@@ -104,17 +104,17 @@ public class RequestsByDateReport extends BaseBiblivreReport {
                 }
 
                 requester = "";
-                title = "";
-                quantity = "";
-                unit_value = "";
+                title = new StringBuilder();
+                quantity = new StringBuilder();
+                unit_value = new StringBuilder();
                 total_value = "";
             }
 
             lastQuotationId = data[0];
             requester = data[1] + "\n";
-            title += data[2] + "\n";
-            quantity += data[3] + "\n";
-            unit_value += data[4] + "\n";
+            title.append(data[2]).append("\n");
+            quantity.append(data[3]).append("\n");
+            unit_value.append(data[4]).append("\n");
             total_value = (data[5] == null ? "-" : data[5]) + "\n";
         }
 
@@ -124,16 +124,16 @@ public class RequestsByDateReport extends BaseBiblivreReport {
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(getNormalChunk(title)));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(title.toString())));
             cell.setColspan(2);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(getNormalChunk(quantity)));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(quantity.toString())));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
             table.addCell(cell);
-            cell = new PdfPCell(new Paragraph(getNormalChunk(unit_value)));
+            cell = new PdfPCell(new Paragraph(getNormalChunk(unit_value.toString())));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
             table.addCell(cell);

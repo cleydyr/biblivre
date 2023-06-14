@@ -75,7 +75,9 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
 
             if (availableOnly) {
-                sql.append("and availability = '" + HoldingAvailability.AVAILABLE.toString() + "'");
+                sql.append("and availability = '")
+                        .append(HoldingAvailability.AVAILABLE.toString())
+                        .append("'");
             }
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
@@ -195,7 +197,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         try {
             con = this.getConnection();
-            Integer id = this.getNextSerial("biblio_holdings_id_seq");
+            int id = this.getNextSerial("biblio_holdings_id_seq");
             holding.setId(id);
             StringBuilder sql = new StringBuilder();
             sql.append("INSERT INTO biblio_holdings ");

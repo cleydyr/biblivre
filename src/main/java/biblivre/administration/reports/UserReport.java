@@ -58,7 +58,7 @@ public class UserReport extends BaseBiblivreReport {
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
         UserReportDto urdto = new UserReportDto();
-        Integer userId = Integer.valueOf(dto.getUserId());
+        int userId = Integer.parseInt(dto.getUserId());
 
         UserDTO user = userBO.get(userId);
         urdto.setUser(user);

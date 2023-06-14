@@ -109,13 +109,13 @@ public class ITextLabelGenerator implements LabelGenerator {
         PdfPCell cell;
         PdfContentByte cb = writer.getDirectContent();
 
-        String holdingSerial = String.valueOf(ldto.getId());
+        StringBuilder holdingSerial = new StringBuilder(String.valueOf(ldto.getId()));
         while (holdingSerial.length() < 10) {
-            holdingSerial = "0" + holdingSerial;
+            holdingSerial.insert(0, "0");
         }
         Barcode39 code39 = new Barcode39();
         code39.setExtended(true);
-        code39.setCode(holdingSerial);
+        code39.setCode(holdingSerial.toString());
         code39.setStartStopText(false);
 
         Image image39 = code39.createImageWithBarcode(cb, null, null);

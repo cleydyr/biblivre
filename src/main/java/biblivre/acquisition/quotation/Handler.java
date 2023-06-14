@@ -56,7 +56,7 @@ public class Handler extends AbstractHandler {
         Integer limit =
                 request.getInteger(
                         "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-        Integer offset = (request.getInteger("page", 1) - 1) * limit;
+        int offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<QuotationDTO> list = quotationBO.search(query, limit, offset);
 
@@ -176,8 +176,8 @@ public class Handler extends AbstractHandler {
                 continue;
             }
 
-            Integer requestId = searchTerm.optInt("id");
-            Integer quantity = searchTerm.optInt("quantity");
+            int requestId = searchTerm.optInt("id");
+            int quantity = searchTerm.optInt("quantity");
             Float value = Float.valueOf(searchTerm.optString("value"));
 
             RequestQuotationDTO rqdto = new RequestQuotationDTO();

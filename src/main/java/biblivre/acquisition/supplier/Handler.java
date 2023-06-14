@@ -50,7 +50,7 @@ public class Handler extends AbstractHandler {
         Integer limit =
                 request.getInteger(
                         "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-        Integer offset = (request.getInteger("page", 1) - 1) * limit;
+        int offset = (request.getInteger("page", 1) - 1) * limit;
 
         DTOCollection<SupplierDTO> list = supplierBO.search(query, limit, offset);
 

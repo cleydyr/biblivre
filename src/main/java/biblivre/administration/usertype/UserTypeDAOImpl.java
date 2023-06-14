@@ -158,7 +158,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             StringBuilder sql = new StringBuilder();
 
             PreparedStatement pst = null;
-            Boolean newType = dto.getId() == null || dto.getId() == 0;
+            boolean newType = dto.getId() == null || dto.getId() == 0;
             if (newType) {
                 dto.setId(this.getNextSerial("users_types_id_seq"));
                 sql.append(
