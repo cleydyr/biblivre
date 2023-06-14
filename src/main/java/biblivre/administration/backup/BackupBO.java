@@ -114,20 +114,17 @@ public class BackupBO extends AbstractBO {
         int steps = 0;
         int schemasCount = dto.getSchemas().size();
 
-        switch (dto.getType()) {
-            case FULL:
+        steps = switch (dto.getType()) {
+            case FULL ->
                 // schema, data and media for each schema (except media for public) + zip
-                steps = schemasCount * 3;
-                break;
-            case EXCLUDE_DIGITAL_MEDIA:
+                    schemasCount * 3;
+            case EXCLUDE_DIGITAL_MEDIA ->
                 // schema and data for each schema + zip
-                steps = (schemasCount * 2) + 1;
-                break;
-            case DIGITAL_MEDIA_ONLY:
+                    (schemasCount * 2) + 1;
+            case DIGITAL_MEDIA_ONLY ->
                 // media for each schema (except for public) + zip
-                steps = schemasCount;
-                break;
-        }
+                    schemasCount;
+        };
 
         dto.setSteps(steps);
 

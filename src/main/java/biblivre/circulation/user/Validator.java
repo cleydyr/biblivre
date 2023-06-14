@@ -86,46 +86,39 @@ public class Validator extends AbstractValidator {
             }
 
             switch (userField.getType()) {
-                case NUMBER:
-                    {
-                        if (StringUtils.isNotBlank(param) && !NumberUtils.isDigits(param)) {
-                            ex.addError(key, "field.error.digits_only");
-                        }
-                        break;
+                case NUMBER -> {
+                    if (StringUtils.isNotBlank(param) && !NumberUtils.isDigits(param)) {
+                        ex.addError(key, "field.error.digits_only");
                     }
-                case DATE:
-                    {
-                        if (StringUtils.isNotBlank(param)) {
-                            try {
-                                dateFormat.parse(param);
-                            } catch (Exception e) {
-                                ex.addError(
-                                        key,
-                                        "field.error.date:::"
-                                                + request.getLocalizedText(
-                                                        "format.date_user_friendly"));
-                            }
+                }
+                case DATE -> {
+                    if (StringUtils.isNotBlank(param)) {
+                        try {
+                            dateFormat.parse(param);
+                        } catch (Exception e) {
+                            ex.addError(
+                                    key,
+                                    "field.error.date:::"
+                                            + request.getLocalizedText(
+                                            "format.date_user_friendly"));
                         }
-                        break;
                     }
-                case DATETIME:
-                    {
-                        if (StringUtils.isNotBlank(param)) {
-                            try {
-                                dateTimeFormat.parse(param);
-                            } catch (Exception e) {
-                                ex.addError(
-                                        key,
-                                        "field.error.date:::"
-                                                + request.getLocalizedText(
-                                                        "format.datetime_user_friendly"));
-                            }
+                }
+                case DATETIME -> {
+                    if (StringUtils.isNotBlank(param)) {
+                        try {
+                            dateTimeFormat.parse(param);
+                        } catch (Exception e) {
+                            ex.addError(
+                                    key,
+                                    "field.error.date:::"
+                                            + request.getLocalizedText(
+                                            "format.datetime_user_friendly"));
                         }
-                        break;
                     }
-
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
         }
 

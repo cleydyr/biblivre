@@ -101,31 +101,21 @@ public class IndexingBO extends AbstractBO {
 
     private void toggleLockState(RecordType recordType, boolean state) {
         switch (recordType) {
-            case BIBLIO:
-                this.reindexingBiblioBase = state;
-                break;
-            case AUTHORITIES:
-                this.reindexingAuthoritiesBase = state;
-                break;
-            case VOCABULARY:
-                this.reindexingVocabularyBase = state;
-                break;
-            default:
-                break;
+            case BIBLIO -> this.reindexingBiblioBase = state;
+            case AUTHORITIES -> this.reindexingAuthoritiesBase = state;
+            case VOCABULARY -> this.reindexingVocabularyBase = state;
+            default -> {
+            }
         }
     }
 
     private boolean getLockState(RecordType recordType) {
-        switch (recordType) {
-            case BIBLIO:
-                return this.reindexingBiblioBase;
-            case AUTHORITIES:
-                return this.reindexingAuthoritiesBase;
-            case VOCABULARY:
-                return this.reindexingVocabularyBase;
-            default:
-                return false;
-        }
+        return switch (recordType) {
+            case BIBLIO -> this.reindexingBiblioBase;
+            case AUTHORITIES -> this.reindexingAuthoritiesBase;
+            case VOCABULARY -> this.reindexingVocabularyBase;
+            default -> false;
+        };
     }
 
     public int countIndexed(RecordType recordType) {

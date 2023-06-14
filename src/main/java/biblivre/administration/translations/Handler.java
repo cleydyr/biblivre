@@ -120,17 +120,13 @@ public class Handler extends AbstractHandler {
                 if ((eq != -1) && (start == '*' || start == '+' || start == '-')) {
                     if (key != null) {
                         switch (type) {
-                            case '*':
-                                addTranslation.put(key, value);
-                                break;
-                            case '+':
+                            case '*' -> addTranslation.put(key, value);
+                            case '+' -> {
                                 if (loadUserCreated) {
                                     addTranslation.put(key, value);
                                 }
-                                break;
-                            case '-':
-                                removeTranslation.put(key, value);
-                                break;
+                            }
+                            case '-' -> removeTranslation.put(key, value);
                         }
                     }
                     type = start;
@@ -143,17 +139,13 @@ public class Handler extends AbstractHandler {
 
             if (key != null) {
                 switch (type) {
-                    case '*':
-                        addTranslation.put(key, value);
-                        break;
-                    case '+':
+                    case '*' -> addTranslation.put(key, value);
+                    case '+' -> {
                         if (loadUserCreated) {
                             addTranslation.put(key, value);
                         }
-                        break;
-                    case '-':
-                        removeTranslation.put(key, value);
-                        break;
+                    }
+                    case '-' -> removeTranslation.put(key, value);
                 }
             }
         } catch (Exception e) {

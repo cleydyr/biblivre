@@ -401,18 +401,11 @@ public class LendingBO {
 
         if (printerType != null) {
             switch (printerType) {
-                case PRINTER_40_COLUMNS:
-                    columns = 40;
-                    break;
-                case PRINTER_80_COLUMNS:
-                    columns = 80;
-                    break;
-                case PRINTER_COMMON:
-                    columns = 0;
-                    break;
-                case PRINTER_24_COLUMNS:
-                default:
-                    break;
+                case PRINTER_40_COLUMNS -> columns = 40;
+                case PRINTER_80_COLUMNS -> columns = 80;
+                case PRINTER_COMMON -> columns = 0;
+                default -> {
+                }
             }
         }
 

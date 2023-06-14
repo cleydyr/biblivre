@@ -167,45 +167,40 @@ public class Handler extends AbstractHandler {
 
         try {
             switch (dto.getType()) {
-                case FULL:
-                    {
-                        // Full backup User may restore it
+                case FULL -> {
+                    // Full backup User may restore it
+                    return true;
+                }
+                case DIGITAL_MEDIA_ONLY -> {
+                    State.writeLog(
+                            request.getLocalizedText(
+                                    "administration.setup.biblivre4restore.error.digital_media_only_selected"));
+                    put("success", false);
+                    return false;
+                }
+                case EXCLUDE_DIGITAL_MEDIA -> {
+                    if (skip) {
                         return true;
                     }
 
-                case DIGITAL_MEDIA_ONLY:
-                    {
+                    if (StringUtils.isNotBlank(mediaFileBackup)) {
+                        RestoreDTO partialDto = restoreBO.getRestoreDTO(mediaFileBackup);
+
+                        if (partialDto.getType() == BackupType.DIGITAL_MEDIA_ONLY) {
+                            return true;
+                        }
+
                         State.writeLog(
                                 request.getLocalizedText(
-                                        "administration.setup.biblivre4restore.error.digital_media_only_selected"));
+                                        "administration.setup.biblivre4restore.error.digital_media_only_should_be_selected"));
                         put("success", false);
                         return false;
                     }
 
-                case EXCLUDE_DIGITAL_MEDIA:
-                    {
-                        if (skip) {
-                            return true;
-                        }
-
-                        if (StringUtils.isNotBlank(mediaFileBackup)) {
-                            RestoreDTO partialDto = restoreBO.getRestoreDTO(mediaFileBackup);
-
-                            if (partialDto.getType() == BackupType.DIGITAL_MEDIA_ONLY) {
-                                return true;
-                            }
-
-                            State.writeLog(
-                                    request.getLocalizedText(
-                                            "administration.setup.biblivre4restore.error.digital_media_only_should_be_selected"));
-                            put("success", false);
-                            return false;
-                        }
-
-                        put("success", true);
-                        put("ask_for_media_backup", true);
-                        return false;
-                    }
+                    put("success", true);
+                    put("ask_for_media_backup", true);
+                    return false;
+                }
             }
         } catch (Exception e) {
             State.writeLog(ExceptionUtils.getStackTrace(e));

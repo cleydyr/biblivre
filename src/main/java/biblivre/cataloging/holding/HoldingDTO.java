@@ -27,6 +27,8 @@ import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.marc.MaterialType;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
 import org.json.JSONObject;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.MarcFactory;
@@ -79,10 +81,7 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
     }
 
     public HoldingAvailability getAvailability() {
-        if (this.availability == null) {
-            return HoldingAvailability.AVAILABLE;
-        }
-        return this.availability;
+        return Objects.requireNonNullElse(this.availability, HoldingAvailability.AVAILABLE);
     }
 
     public void setAvailability(HoldingAvailability availability) {

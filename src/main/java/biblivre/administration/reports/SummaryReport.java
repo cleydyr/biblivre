@@ -44,17 +44,13 @@ public class SummaryReport extends BaseBiblivreReport {
             order = Integer.valueOf(dto.getOrder().trim());
         }
         switch (order) {
-            case 1:
-                index = 6;
-                break; // dewey
-            case 2:
-                index = 0;
-                break; // title
-            case 3:
-                index = 1;
-                break; // author
-            default:
-                index = 6; // dewey
+            case 1 -> index = 6;
+            // dewey
+            case 2 -> index = 0;
+            // title
+            case 3 -> index = 1;
+            // author
+            default -> index = 6; // dewey
         }
         return ReportsDAOImpl.getInstance().getSummaryReportData(dto.getDatabase());
     }

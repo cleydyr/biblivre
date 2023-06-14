@@ -204,14 +204,11 @@ public class CustomCountReport extends BaseBiblivreReport {
                 return 0;
             }
 
-            switch (index) {
-                case 0:
-                    return o1[index].compareTo(o2[index]);
-                case 1:
-                    return Integer.valueOf(o2[index]).compareTo(Integer.valueOf(o1[index]));
-                default:
-                    return o1[index].compareTo(o2[index]);
-            }
+            return switch (index) {
+                case 0 -> o1[index].compareTo(o2[index]);
+                case 1 -> Integer.valueOf(o2[index]).compareTo(Integer.valueOf(o1[index]));
+                default -> o1[index].compareTo(o2[index]);
+            };
         });
 
         PdfPCell cell;

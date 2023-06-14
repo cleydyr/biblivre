@@ -223,9 +223,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
                 request.getEnum(AutocompleteType.class, "type", AutocompleteType.DISABLED);
 
         switch (type) {
-            case FIXED_TABLE:
-            case FIXED_TABLE_WITH_PREVIOUS_VALUES:
-            case PREVIOUS_VALUES:
+            case FIXED_TABLE, FIXED_TABLE_WITH_PREVIOUS_VALUES, PREVIOUS_VALUES -> {
                 AutocompleteType.GetSuggestionsParameters parameterObject =
                         AutocompleteType.GetSuggestionsParameters.builder()
                                 .withDatafield(datafield)
@@ -233,30 +231,22 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
                                 .withQuery(query)
                                 .withRecordBO(paginableRecordBO)
                                 .build();
-
                 for (String term : type.getSuggestions(parameterObject)) {
                     append("data", term);
                 }
-
-                break;
-            case BIBLIO:
-            case AUTHORITIES:
-            case VOCABULARY:
+            }
+            case BIBLIO, AUTHORITIES, VOCABULARY -> {
                 RecordType recordType = RecordType.fromString(type.toString());
-
                 PaginableRecordBO autocompleteRecordBO = paginableRecordBOs.get(recordType);
-
                 DTOCollection<AutocompleteDTO> autocompletion =
                         type.getAutocompletion(
                                 autocompleteRecordBO,
                                 query,
                                 tabFieldsBO.getAutocompleteSubFields(recordType));
-
                 putOpt("data", autocompletion.toJSONObject());
-
-                break;
-
-            default:
+            }
+            default -> {
+            }
         }
     }
 

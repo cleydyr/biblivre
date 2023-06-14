@@ -82,13 +82,10 @@ public class AbstractHandler {
         }
 
         ActionResult level = message.getLevel();
-        switch (level) {
-            case WARNING:
-            case ERROR:
-                return true;
-            default:
-                return false;
-        }
+        return switch (level) {
+            case WARNING, ERROR -> true;
+            default -> false;
+        };
     }
 
     public BiblivreFile getFile() {

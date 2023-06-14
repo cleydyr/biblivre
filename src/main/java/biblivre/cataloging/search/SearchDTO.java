@@ -24,6 +24,8 @@ import biblivre.cataloging.enums.RecordType;
 import biblivre.core.DTOCollection;
 import biblivre.core.enums.SearchMode;
 import java.util.Map;
+import java.util.Objects;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -67,13 +69,10 @@ public class SearchDTO extends DTOCollection<RecordDTO> {
     }
 
     public Integer getIndexingGroup() {
-        if (this.indexingGroup == null) {
-            // This search is not over a datafield group.
-            // Using 0 to represent no filtering
-            return 0;
-        }
+        // This search is not over a datafield group.
+        // Using 0 to represent no filtering
+        return Objects.requireNonNullElse(this.indexingGroup, 0);
 
-        return this.indexingGroup;
     }
 
     public void setIndexingGroup(Integer indexingGroup) {

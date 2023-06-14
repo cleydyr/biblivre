@@ -23,6 +23,8 @@ import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.core.AbstractDTO;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class FormTabSubfieldDTO extends AbstractDTO {
 
     private static final long serialVersionUID = 1L;
@@ -76,11 +78,8 @@ public class FormTabSubfieldDTO extends AbstractDTO {
     }
 
     public AutocompleteType getAutocompleteType() {
-        if (this.autocompleteType == null) {
-            return AutocompleteType.DISABLED;
-        }
+        return Objects.requireNonNullElse(this.autocompleteType, AutocompleteType.DISABLED);
 
-        return this.autocompleteType;
     }
 
     public void setAutocompleteType(AutocompleteType autocompleteType) {

@@ -158,116 +158,104 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
 
     private State nextState(char c, State currentState) {
         switch (currentState) {
-            case WHITESPACE:
-            case WAITING_SEMICOLON:
+            case WHITESPACE, WAITING_SEMICOLON -> {
                 if (c == DASH) {
                     return State.OPENING_DASH;
                 }
-
                 if (c == SINGLE_QUOTE) {
                     return State.SINGLE_QUOTE_STRING;
                 }
-
                 if (c == DOUBLE_QUOTE) {
                     return State.DOUBLE_QUOTE_STRING;
                 }
-
                 if (c == DOLLAR_SIGN) {
                     return State.OPENING_DOLLAR_QUOTE_TAG;
                 }
-
                 if (Character.isWhitespace(c)) {
                     return State.WHITESPACE;
                 }
-
                 return State.WAITING_SEMICOLON;
-            case OPENING_DASH:
+            }
+            case OPENING_DASH -> {
                 if (c == DASH) {
                     return State.COMMENT;
                 }
-
                 if (c == SINGLE_QUOTE) {
                     return State.SINGLE_QUOTE_STRING;
                 }
-
                 if (c == DOUBLE_QUOTE) {
                     return State.DOUBLE_QUOTE_STRING;
                 }
-
                 if (c == DOLLAR_SIGN) {
                     return State.OPENING_DOLLAR_QUOTE_TAG;
                 }
-
                 if (Character.isWhitespace(c)) {
                     return State.WHITESPACE;
                 }
-
                 return State.WAITING_SEMICOLON;
-            case COMMENT:
+            }
+            case COMMENT -> {
                 if (c == NEW_LINE) {
                     return State.WHITESPACE;
                 }
-
                 return State.COMMENT;
-            case OPENING_DOLLAR_QUOTE_TAG:
+            }
+            case OPENING_DOLLAR_QUOTE_TAG -> {
                 if (c == DOLLAR_SIGN) {
                     return State.DOLLAR_QUOTE_STRING;
                 }
-
                 return State.OPENING_DOLLAR_QUOTE_TAG;
-            case DOLLAR_QUOTE_STRING:
+            }
+            case DOLLAR_QUOTE_STRING -> {
                 if (c == DOLLAR_SIGN) {
                     return State.CLOSING_DOLLAR_QUOTE_TAG;
                 }
-
                 return State.DOLLAR_QUOTE_STRING;
-            case CLOSING_DOLLAR_QUOTE_TAG:
+            }
+            case CLOSING_DOLLAR_QUOTE_TAG -> {
                 String provisionalDollaQuoteStringTag = dollarQuoteStringTagSB.toString();
-
                 if (c == DOLLAR_SIGN
                         && Objects.equals(dollarQuoteStringTag, provisionalDollaQuoteStringTag)) {
                     return State.WAITING_SEMICOLON;
                 }
-
                 if (dollarQuoteStringTag != null
                         && dollarQuoteStringTag.startsWith(provisionalDollaQuoteStringTag + c)) {
                     return State.CLOSING_DOLLAR_QUOTE_TAG;
                 }
-
                 return State.DOLLAR_QUOTE_STRING;
-            case SINGLE_QUOTE_STRING:
+            }
+            case SINGLE_QUOTE_STRING -> {
                 if (c != SINGLE_QUOTE) {
                     return State.SINGLE_QUOTE_STRING;
                 }
-
                 return State.WAITING_SEMICOLON;
-            case DOUBLE_QUOTE_STRING:
+            }
+            case DOUBLE_QUOTE_STRING -> {
                 if (c != DOUBLE_QUOTE) {
                     return State.DOUBLE_QUOTE_STRING;
                 }
-
                 return State.WAITING_SEMICOLON;
-            case ON_COPY:
+            }
+            case ON_COPY -> {
                 if (c == BACKSLASH) {
                     return State.CLOSING_COPY_BACKSLASH;
                 }
-
                 return State.ON_COPY;
-            case CLOSING_COPY_BACKSLASH:
+            }
+            case CLOSING_COPY_BACKSLASH -> {
                 if (c == DOT) {
                     return State.CLOSING_COPY_DOT;
                 }
-
                 return State.ON_COPY;
-            case CLOSING_COPY_DOT:
+            }
+            case CLOSING_COPY_DOT -> {
                 if (c == NEW_LINE) {
                     return State.WAITING_SEMICOLON;
                 }
-
                 return State.ON_COPY;
-            default:
-                throw new UncoveredStateException(
-                        "State from %s receving %c is not covered".formatted(currentState, c));
+            }
+            default -> throw new UncoveredStateException(
+                    "State from %s receving %c is not covered".formatted(currentState, c));
         }
     }
 
