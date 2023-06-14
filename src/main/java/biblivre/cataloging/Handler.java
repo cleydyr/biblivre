@@ -69,8 +69,7 @@ public class Handler extends AbstractHandler {
             List<String> isrcList = new ArrayList<>();
 
             for (RecordDTO dto : list.getRecordList()) {
-                if (dto instanceof BiblioRecordDTO) {
-                    BiblioRecordDTO rdto = (BiblioRecordDTO) dto;
+                if (dto instanceof BiblioRecordDTO rdto) {
 
                     if (StringUtils.isNotBlank(rdto.getIsbn())) {
                         isbnList.add(rdto.getIsbn());

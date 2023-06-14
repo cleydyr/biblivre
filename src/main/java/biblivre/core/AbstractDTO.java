@@ -125,9 +125,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                     if (value != null) {
                         if (value instanceof IFJson) {
                             json.putOpt(name, ((IFJson) value).toJSONObject());
-                        } else if (value instanceof Collection) {
-                            Collection<?> col = (Collection<?>) value;
-
+                        } else if (value instanceof Collection<?> col) {
                             for (Object item : col) {
                                 if (item == null) {
                                     continue;
