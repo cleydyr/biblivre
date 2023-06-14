@@ -3,8 +3,6 @@ package biblivre.menu;
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.core.controllers.Controller;
 import biblivre.login.MenuProvider;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
