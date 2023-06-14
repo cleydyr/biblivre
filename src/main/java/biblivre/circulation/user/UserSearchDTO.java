@@ -23,6 +23,8 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
+
+import java.io.Serial;
 import java.text.ParseException;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserSearchDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private SearchMode searchMode;

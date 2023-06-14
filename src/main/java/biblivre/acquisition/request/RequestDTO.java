@@ -21,7 +21,10 @@ package biblivre.acquisition.request;
 
 import biblivre.core.AbstractDTO;
 
+import java.io.Serial;
+
 public class RequestDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private int id;

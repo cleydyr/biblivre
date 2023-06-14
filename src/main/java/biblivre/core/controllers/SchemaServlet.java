@@ -42,6 +42,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class SchemaServlet extends HttpServlet {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private JspController jspController;

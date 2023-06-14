@@ -22,7 +22,10 @@ package biblivre.cataloging.vocabulary;
 import biblivre.cataloging.RecordDTO;
 import org.json.JSONObject;
 
+import java.io.Serial;
+
 public class VocabularyRecordDTO extends RecordDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // transient fields

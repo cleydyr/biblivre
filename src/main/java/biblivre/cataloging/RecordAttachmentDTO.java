@@ -22,7 +22,10 @@ package biblivre.cataloging;
 import biblivre.core.AbstractDTO;
 import org.json.JSONObject;
 
+import java.io.Serial;
+
 public class RecordAttachmentDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String path;

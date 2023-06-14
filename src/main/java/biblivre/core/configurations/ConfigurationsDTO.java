@@ -22,9 +22,12 @@ package biblivre.core.configurations;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.FileIOUtils;
 import java.io.File;
+import java.io.Serial;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class ConfigurationsDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String key;

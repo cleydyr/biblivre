@@ -22,11 +22,13 @@ package biblivre.administration.backup;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.SchemaUtils;
 import java.io.File;
+import java.io.Serial;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
 public class BackupDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Integer id;

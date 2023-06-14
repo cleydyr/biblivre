@@ -20,12 +20,15 @@
 package biblivre.circulation.user;
 
 import biblivre.core.AbstractDTO;
+
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 public class UserDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private int id;

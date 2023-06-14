@@ -24,7 +24,10 @@ import biblivre.core.utils.StringPool;
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONString;
 
+import java.io.Serial;
+
 public class TranslationDTO extends AbstractDTO implements JSONString {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String language;

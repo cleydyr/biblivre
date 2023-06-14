@@ -20,6 +20,8 @@
 package biblivre.cataloging;
 
 import biblivre.core.AbstractDTO;
+
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +30,7 @@ import org.json.JSONObject;
 
 public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<FormTabDatafieldDTO> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String datafield;

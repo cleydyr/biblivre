@@ -22,11 +22,14 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.ImportEncoding;
 import biblivre.cataloging.enums.ImportFormat;
 import biblivre.core.AbstractDTO;
+
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 
 public class ImportDTO extends AbstractDTO implements Comparable<ImportDTO> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final List<RecordDTO> recordList = new ArrayList<>();

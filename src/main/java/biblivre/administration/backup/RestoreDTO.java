@@ -26,6 +26,7 @@ import static biblivre.core.utils.Constants.DEFAULT_DATE_PRINTER_TIMEZONE;
 import biblivre.core.AbstractDTO;
 import biblivre.core.utils.SchemaUtils;
 import java.io.File;
+import java.io.Serial;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
 public class RestoreDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Map<String, Pair<String, String>> schemas;

@@ -23,6 +23,7 @@ import biblivre.core.IFCacheableJavascript;
 import biblivre.core.JavascriptCache;
 import biblivre.core.utils.Constants;
 import java.io.File;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 public class TranslationsMap extends HashMap<String, TranslationDTO>
         implements IFCacheableJavascript {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String schema;

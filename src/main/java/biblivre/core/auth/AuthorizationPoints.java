@@ -21,6 +21,8 @@ package biblivre.core.auth;
 
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +31,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class AuthorizationPoints implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static AuthorizationPoints notLoggedMultiSchemaInstance;

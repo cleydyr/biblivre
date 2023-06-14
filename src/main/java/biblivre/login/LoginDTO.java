@@ -23,7 +23,10 @@ import biblivre.core.AbstractDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
+import java.io.Serial;
+
 public class LoginDTO extends AbstractDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private int id;

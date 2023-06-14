@@ -19,9 +19,11 @@
  ******************************************************************************/
 package biblivre.core.exceptions;
 
+import java.io.Serial;
 import java.sql.BatchUpdateException;
 
 public class DAOException extends RuntimeException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public DAOException(Exception cause) {

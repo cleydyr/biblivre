@@ -21,11 +21,14 @@ package biblivre.cataloging;
 
 import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.core.AbstractDTO;
+
+import java.io.Serial;
 import java.util.Objects;
 import org.json.JSONObject;
 
 public class FormTabSubfieldDTO extends AbstractDTO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String datafield;

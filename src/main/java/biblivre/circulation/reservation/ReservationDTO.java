@@ -20,10 +20,13 @@
 package biblivre.circulation.reservation;
 
 import biblivre.core.AbstractDTO;
+
+import java.io.Serial;
 import java.util.Date;
 
 public class ReservationDTO extends AbstractDTO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Integer id;
