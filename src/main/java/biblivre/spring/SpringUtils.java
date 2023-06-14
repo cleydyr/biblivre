@@ -11,9 +11,7 @@ public class SpringUtils {
     public static WebApplicationContext getWebApplicationContext(ExtendedRequest extendedRequest) {
         ServletContext servletContext = extendedRequest.getServletContext();
 
-        WebApplicationContext applicationContext =
-                WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-        return applicationContext;
+        return WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
     }
 
     public static WebApplicationContext getWebApplicationContext(ServletContextEvent arg0) {

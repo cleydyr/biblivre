@@ -7,10 +7,8 @@ public class ParagraphAlignmentUtil {
     public static int getHorizontalAlignmentConfigurationValue(
             Supplier<? extends Integer> defaultValue, String configurationValue) {
 
-        int horizontalAlignment =
-                ParagraphAlignment.valueOf(configurationValue)
-                        .getAlignment()
-                        .orElseGet(defaultValue);
-        return horizontalAlignment;
+        return ParagraphAlignment.valueOf(configurationValue)
+                .getAlignment()
+                .orElseGet(defaultValue);
     }
 }

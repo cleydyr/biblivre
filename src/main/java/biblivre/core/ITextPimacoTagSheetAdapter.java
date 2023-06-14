@@ -20,9 +20,8 @@ public class ITextPimacoTagSheetAdapter {
         float width = FROM_CM.apply(sheetSize.getSheetWidth());
         float height = FROM_CM.apply(sheetSize.getSheetHeight());
         final float realHorizontalMargin = horizontalMargin - horizontalPadding;
-        final float realVerticalMargin = verticalMargin - verticalPadding;
 
-        this.verticalMargin = realVerticalMargin;
+        this.verticalMargin = verticalMargin - verticalPadding;
         this.horizontalMargin = realHorizontalMargin;
         this.verticalPadding = verticalPadding;
         this.horizontalPadding = horizontalPadding;

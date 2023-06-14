@@ -41,9 +41,7 @@ public class SchemaThreadLocal {
         try {
             SchemaThreadLocal.setSchema(schema);
 
-            T value = supplier.get();
-
-            return value;
+            return supplier.get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

@@ -333,18 +333,17 @@ public class FileIOUtils {
 
                 if (ranges.isEmpty() || ranges.get(0) == full) {
                     // Return full file.
-                    Range r = full;
                     response.setContentType(contentType);
                     response.setHeader(
-                            "Content-Range", "bytes " + r.start + "-" + r.end + "/" + r.total);
+                            "Content-Range", "bytes " + full.start + "-" + full.end + "/" + full.total);
 
                     if (!headerOnly) {
                         if (!acceptsGzip) {
-                            response.setHeader("Content-Length", String.valueOf(r.length));
+                            response.setHeader("Content-Length", String.valueOf(full.length));
                         }
 
                         // Copy full range.
-                        file.copy(output, r.start, r.length);
+                        file.copy(output, full.start, full.length);
                     }
 
                 } else if (ranges.size() == 1) {

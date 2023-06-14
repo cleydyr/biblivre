@@ -152,9 +152,7 @@ public class SchemaBO {
                 () -> {
                     dto.setDisabled(false);
 
-                    boolean success = schemaDAO.save(dto);
-
-                    return success;
+                    return schemaDAO.save(dto);
                 });
     }
 

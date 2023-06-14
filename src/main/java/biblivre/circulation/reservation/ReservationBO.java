@@ -202,9 +202,7 @@ public class ReservationBO extends AbstractBO {
 
         reservation.setExpires(expires);
 
-        int reservationId = this.reservationDAO.insert(reservation);
-
-        return reservationId;
+        return this.reservationDAO.insert(reservation);
     }
 
     public SearchDTO populateReservationInfoByBiblio(SearchDTO search) {

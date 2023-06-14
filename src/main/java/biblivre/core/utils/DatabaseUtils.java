@@ -159,8 +159,7 @@ public class DatabaseUtils {
     private static ProcessBuilder whichCommand(String filename) {
         String[] commands = new String[] {"/bin/bash", "-c", "which " + filename};
 
-        ProcessBuilder pb = new ProcessBuilder(commands);
-        return pb;
+        return new ProcessBuilder(commands);
     }
 
     private static File getWindows(String filename) {

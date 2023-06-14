@@ -43,9 +43,7 @@ public class ConfigurationBO {
     private SchemaBO schemaBO;
 
     public String getString(String key) {
-        String value = getValue(key);
-
-        return value;
+        return getValue(key);
     }
 
     public String getHtml(String key, String schema) {

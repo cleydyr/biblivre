@@ -265,7 +265,6 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
         BaseFont baseFont =
                 BaseFont.createFont("META-INF/fonts/arialuni.ttf", BaseFont.IDENTITY_H, false);
 
-        Font font = new Font(baseFont, size);
-        return font;
+        return new Font(baseFont, size);
     }
 }

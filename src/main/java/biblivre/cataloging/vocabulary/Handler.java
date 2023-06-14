@@ -36,8 +36,6 @@ public class Handler extends PaginableCatalogingHandler {
 
     @Override
     protected RecordDTO createRecordDTO(ExtendedRequest request) {
-        VocabularyRecordDTO dto = new VocabularyRecordDTO();
-
-        return dto;
+        return new VocabularyRecordDTO();
     }
 }

@@ -126,8 +126,7 @@ public class Handler extends AbstractHandler {
     private MarcDataReader getBibliographicRecordMarcDataReader(HoldingDTO holding) {
         BiblioRecordDTO biblio = (BiblioRecordDTO) biblioRecordBO.get(holding.getRecordId());
         Record biblioRecord = MarcUtils.iso2709ToRecord(biblio.getIso2709());
-        MarcDataReader dataReader = new MarcDataReader(biblioRecord);
-        return dataReader;
+        return new MarcDataReader(biblioRecord);
     }
 
     public void printText(ExtendedRequest request, ExtendedResponse response) {

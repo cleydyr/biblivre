@@ -92,9 +92,7 @@ public class TranslationBO {
         Map<String, Map<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
-        boolean success = TranslationsDAOImpl.getInstance().save(translations, loggedUser);
-
-        return success;
+        return TranslationsDAOImpl.getInstance().save(translations, loggedUser);
     }
 
     public Locale toLocale(String locale) {

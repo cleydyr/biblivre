@@ -49,8 +49,7 @@ public class Handler extends PaginableCatalogingHandler {
 
     @Override
     protected RecordDTO createRecordDTO(ExtendedRequest request) {
-        AuthorityRecordDTO dto = new AuthorityRecordDTO();
-        return dto;
+        return new AuthorityRecordDTO();
     }
 
     public void searchAuthor(ExtendedRequest request, ExtendedResponse response) {
