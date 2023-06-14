@@ -74,7 +74,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         }
 
         if (StringUtils.isEmpty(value)) {
-            if (!isGlobalSchema()) {
+            if (isNotGlobalSchema()) {
                 value = globalTranslationsMap.getText(key);
             } else {
                 this.logger.warn(
@@ -91,8 +91,8 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
         return value;
     }
 
-    private boolean isGlobalSchema() {
-        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
+    private boolean isNotGlobalSchema() {
+        return !this.getSchema().equals(Constants.GLOBAL_SCHEMA);
     }
 
     public String getHtml(Object key) {
@@ -120,7 +120,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
     public Map<String, TranslationDTO> getAll() {
         Map<String, TranslationDTO> translations = new HashMap<>();
 
-        if (!isGlobalSchema()) {
+        if (isNotGlobalSchema()) {
             translations.putAll(globalTranslationsMap);
         }
 

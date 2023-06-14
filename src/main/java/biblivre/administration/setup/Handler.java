@@ -302,7 +302,7 @@ public class Handler extends AbstractHandler {
                             "administration.maintenance.backup.error.invalid_origin_schema");
                 }
 
-                if (StringUtils.isBlank(value) || !SchemaBO.isValidName(value)) {
+                if (StringUtils.isBlank(value) || SchemaBO.isInvalidName(value)) {
                     throw new ValidationException(
                             "administration.maintenance.backup.error.invalid_destination_schema");
                 }

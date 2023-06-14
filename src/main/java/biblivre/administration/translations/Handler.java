@@ -172,7 +172,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        if (!translationBO.isJavaScriptLocaleAvailable(language)) {
+        if (translationBO.isJavaScriptLocaleUnavailable(language)) {
             this.setMessage(
                     ActionResult.WARNING,
                     "administration.translations.error.javascript_locale_not_available");
@@ -281,7 +281,7 @@ public class Handler extends AbstractHandler {
             JSONObject json = new JSONObject(strJson);
             String language = json.getString("language_code");
 
-            if (!translationBO.isJavaScriptLocaleAvailable(language)) {
+            if (translationBO.isJavaScriptLocaleUnavailable(language)) {
                 this.setMessage(
                         ActionResult.WARNING, "administration.translations.error.invalid_language");
                 return;

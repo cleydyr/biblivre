@@ -30,14 +30,12 @@ public class MarcFileReader implements MarcReader {
     private static final Pattern LEADER_PATTERN =
             Pattern.compile("^(000|LDR|LEADER)\\s+", Pattern.CASE_INSENSITIVE);
 
-    private InputStream input;
-    private Scanner scanner;
+    private final Scanner scanner;
     private StringBuilder marc;
     private boolean validStart;
 
     public MarcFileReader(InputStream input, String encoding) {
-        this.input = input;
-        this.scanner = new Scanner(this.input, encoding);
+        this.scanner = new Scanner(input, encoding);
         this.marc = null;
         this.validStart = false;
     }

@@ -1,11 +1,11 @@
 package biblivre.cataloging;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import biblivre.core.RequestParserHelper;
 import biblivre.core.RequestParserHelperImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class RequestParserHelperImplTest {
@@ -26,6 +26,6 @@ public class RequestParserHelperImplTest {
                 requestParserHelper.parseController("DigitalMediaController", ""),
                 "DigitalMediaController");
 
-        assertNotEquals(requestParserHelper.parseController("foobar", ""), "foobar");
+        Assertions.assertNotEquals(requestParserHelper.parseController("foobar", ""), "foobar");
     }
 }

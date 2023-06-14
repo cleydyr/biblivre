@@ -23,7 +23,7 @@ public enum SheetSize {
         return sheetHeight;
     }
 
-    private Quantity<Length> sheetWidth;
+    private final Quantity<Length> sheetWidth;
 
-    private Quantity<Length> sheetHeight;
+    private final Quantity<Length> sheetHeight;
 }

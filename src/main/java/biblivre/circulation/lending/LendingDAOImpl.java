@@ -450,7 +450,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             ppst.setInt(1, recordId);
 
             ResultSet rs = ppst.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 return rs.getInt(1);
             }
 

@@ -50,7 +50,7 @@ public abstract class RecordBO extends AbstractBO {
     private DigitalMediaBO digitalMediaBO;
     protected ConfigurationBO configurationBO;
 
-    public static final int FULL = 1 << 0;
+    public static final int FULL = 1;
     public static final int MARC_INFO = 1 << 1;
     public static final int HOLDING_INFO = 1 << 2;
     public static final int HOLDING_LIST = 1 << 3;

@@ -21,6 +21,6 @@ package biblivre.core;
 
 public class AbstractValidator {
     public boolean checkValidation(final AbstractHandler handler) {
-        return (handler == null) ? true : !handler.hasErrors();
+        return handler == null || !handler.hasErrors();
     }
 }

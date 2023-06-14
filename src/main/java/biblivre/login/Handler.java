@@ -72,13 +72,11 @@ public class Handler extends AbstractHandler {
             _populateSessionAttributes(request, user, atps);
 
             setMessage(ActionResult.NORMAL, "login.welcome");
-            setJspURL("/jsp/index.jsp");
-            return;
         } else {
             setMessage(ActionResult.WARNING, "login.access_denied");
-            setJspURL("/jsp/index.jsp");
-            return;
         }
+
+        setJspURL("/jsp/index.jsp");
     }
 
     public void logout(ExtendedRequest request, ExtendedResponse response) {

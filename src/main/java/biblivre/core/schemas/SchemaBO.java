@@ -122,24 +122,20 @@ public class SchemaBO {
         return false;
     }
 
-    public static boolean isValidName(String name) {
+    public static boolean isInvalidName(String name) {
         if (StringUtils.isBlank(name)) {
-            return false;
+            return true;
         }
 
         if (name.startsWith("pg")) {
-            return false;
+            return true;
         }
 
         if (SCHEMA_BLACKLIST.contains(name)) {
-            return false;
+            return true;
         }
 
-        if (!SCHEMA_VALID.test(name)) {
-            return false;
-        }
-
-        return true;
+        return !SCHEMA_VALID.test(name);
     }
 
     public boolean disable(SchemaDTO dto) {

@@ -92,7 +92,7 @@ public class FileIOUtils {
 
     private static void addFileToZip(String path, File src, ZipOutputStream zip, boolean flag)
             throws IOException {
-        if (flag == true) {
+        if (flag) {
             zip.putNextEntry(new ZipEntry(src.getName() + "/"));
         } else {
             if (src.isDirectory()) {
@@ -339,13 +339,7 @@ public class FileIOUtils {
                             "Content-Range", "bytes " + r.start + "-" + r.end + "/" + r.total);
 
                     if (!headerOnly) {
-                        if (acceptsGzip) {
-                            // The browser accepts GZIP, so GZIP the content.
-                            // response.setHeader("Content-Encoding", "gzip");
-                            // output = new GZIPOutputStream(output, Constants.DEFAULT_BUFFER_SIZE);
-                        } else {
-                            // Content length is not directly predictable in case of GZIP.
-                            // So only add it if there is no means of GZIP, else browser will hang.
+                        if (!acceptsGzip) {
                             response.setHeader("Content-Length", String.valueOf(r.length));
                         }
 

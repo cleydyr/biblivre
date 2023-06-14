@@ -85,9 +85,4 @@ public class UserTypeBO extends AbstractBO {
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
-
-    //	public boolean updateUserType(UserTypeDTO userTypeDTO) {
-    //		return dao.update(userTypeDTO);
-    //	}
-
 }

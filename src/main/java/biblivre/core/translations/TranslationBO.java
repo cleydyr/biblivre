@@ -111,16 +111,16 @@ public class TranslationBO {
         }
     }
 
-    public boolean isJavaScriptLocaleAvailable(String language) {
+    public boolean isJavaScriptLocaleUnavailable(String language) {
         if (language == null) {
-            return false;
-        }
-
-        if (TranslationBO.availableJavascriptLocales.contains(language)) {
             return true;
         }
 
-        return TranslationBO.availableJavascriptLocales.contains(language.split("-")[0]);
+        if (TranslationBO.availableJavascriptLocales.contains(language)) {
+            return false;
+        }
+
+        return !TranslationBO.availableJavascriptLocales.contains(language.split("-")[0]);
     }
 
     public boolean isJavaLocaleAvailable(String language) {

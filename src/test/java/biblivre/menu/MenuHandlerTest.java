@@ -1,13 +1,11 @@
 package biblivre.menu;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.core.controllers.Controller;
 import biblivre.login.MenuProvider;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,11 +24,10 @@ public class MenuHandlerTest extends AbstractContainerDatabaseTest {
                         (module, actions) -> {
                             for (String action : actions) {
                                 try {
-                                    assertNotNull(
-                                            Controller.getMethod(
-                                                    action, null, biblivre.menu.Handler.class));
+                                    Assertions.assertNotNull(
+                                            Controller.getMethod(action, null, Handler.class));
                                 } catch (NoSuchMethodException e) {
-                                    fail();
+                                    Assertions.fail();
                                 }
                             }
                         });

@@ -22,12 +22,9 @@ package biblivre.core.exceptions;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ValidationException extends RuntimeException {
     private static final long serialVersionUID = 1L;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private List<Pair<String, String>> errorList;
 
@@ -37,7 +34,6 @@ public class ValidationException extends RuntimeException {
 
     public ValidationException(String s, Exception cause) {
         super(s, cause);
-        this.logger.error(cause.getMessage(), cause);
     }
 
     public void addError(String key, String value) {

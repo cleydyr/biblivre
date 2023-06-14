@@ -53,9 +53,7 @@ public class RecordDTO extends AbstractDTO {
 
     private static final String _COMPACT_ISO_FORMAT = "yyyyMMddHHmmss.SSS";
 
-    private static final long serialVersionUID = 1L;
-
-    private static String CF001_FORMAT = "0000000";
+    private static final String CF001_FORMAT = "0000000";
 
     private Record record;
     private int id;

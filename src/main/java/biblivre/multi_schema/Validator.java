@@ -53,7 +53,7 @@ public class Validator extends AbstractValidator {
             ex.addError("schema", "field.error.invalid");
         } else if (schemaParam.equals(Constants.GLOBAL_SCHEMA)) {
             ex.addError("schema", "field.error.invalid");
-        } else if (!SchemaBO.isValidName(schemaParam)) {
+        } else if (SchemaBO.isInvalidName(schemaParam)) {
             ex.addError("schema", "field.error.invalid");
         } else if (schemaBO.isLoaded(schemaParam)) {
             ex.addError("schema", "field.error.invalid");

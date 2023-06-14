@@ -91,8 +91,8 @@ public class MarcUtils {
 
         scanner.close();
 
-        String tags[] = new String[text.size()];
-        String values[] = new String[text.size()];
+        String[] tags = new String[text.size()];
+        String[] values = new String[text.size()];
 
         for (int i = 0; i < text.size(); i++) {
             String line = text.get(i).trim();
@@ -213,7 +213,7 @@ public class MarcUtils {
     }
 
     private static Leader createLeader(
-            String[] tags, String values[], MaterialType materialType, RecordStatus status) {
+            String[] tags, String[] values, MaterialType materialType, RecordStatus status) {
         Leader leader = null;
         for (int i = 0; i < tags.length; i++) {
             if (tags[i].equals("000") || tags[i].equals("LDR") || tags[i].equals("LEADER")) {
@@ -309,41 +309,71 @@ public class MarcUtils {
         if (splitter == null) {
             splitter = MarcConstants.DEFAULT_SPLITTER;
         }
-        splitter = "\\" + splitter;
+
+        splitter = "\\\\" + splitter;
 
         MarcFactory factory = MarcFactory.newInstance();
+
         for (int i = 0; i < tags.length; i++) {
             String tag = tags[i];
             String value = values[i];
 
-            if (StringUtils.isNumeric(tag)) {
-                int iTag = Integer.parseInt(tags[i]);
+            if (!StringUtils.isNumeric(tag) || Integer.parseInt(tag) < 10) {
+                continue;
+            }
 
-                if (iTag >= 10) {
-                    char ind1 =
-                            value.charAt(0) != MarcConstants.NO_INDICATOR ? value.charAt(0) : ' ';
-                    char ind2 =
-                            value.charAt(1) != MarcConstants.NO_INDICATOR ? value.charAt(1) : ' ';
-                    DataField dataField = factory.newDataField(tag, ind1, ind2);
-                    record.addVariableField(dataField);
+            DataField dataField = extractDatafield(factory, tag, value);
 
-                    String[] subfs = value.substring(2).trim().split(splitter);
-                    for (String data : subfs) {
-                        if (StringUtils.isNotBlank(data)) {
-                            Subfield subfield =
-                                    factory.newSubfield(data.charAt(0), data.substring(1).trim());
-                            dataField.addSubfield(subfield);
-                        }
-                    }
+            record.addVariableField(dataField);
+
+            String dataFieldValue = value.substring(2).trim();
+
+            String[] subFields = dataFieldValue.split(splitter);
+
+            for (String subField : subFields) {
+                if (StringUtils.isBlank(subField)) {
+                    continue;
                 }
+
+                Subfield subfield = extractSubfield(factory, subField);
+
+                dataField.addSubfield(subfield);
             }
         }
     }
 
-    public static Record setAccessionNumber(Record holding, String accessionNumber) {
+    private static DataField extractDatafield(MarcFactory factory, String tag, String value) {
+        char ind1 = getIndicator1(value);
+        char ind2 = getIndicator2(value);
+
+        return factory.newDataField(tag, ind1, ind2);
+    }
+
+    private static Subfield extractSubfield(MarcFactory factory, String subField) {
+        char code = subField.charAt(0);
+
+        String subFieldValue = subField.substring(1).trim();
+
+        return factory.newSubfield(code, subFieldValue);
+    }
+
+    private static char getIndicator2(String value) {
+        return getIndicator(value, 1);
+    }
+
+    private static char getIndicator1(String value) {
+        return getIndicator(value, 0);
+    }
+
+    private static char getIndicator(String value, int index) {
+        return value.charAt(index) != MarcConstants.NO_INDICATOR ? value.charAt(index) : ' ';
+    }
+
+    public static void setAccessionNumber(Record holding, String accessionNumber) {
         MarcFactory factory = MarcFactory.newInstance();
 
         DataField field = (DataField) holding.getVariableField(MarcConstants.ACCESSION_NUMBER);
+
         if (field == null) {
             field = factory.newDataField(MarcConstants.ACCESSION_NUMBER, ' ', ' ');
             holding.addVariableField(field);
@@ -356,6 +386,5 @@ public class MarcUtils {
         }
 
         subfield.setData(accessionNumber);
-        return holding;
     }
 }

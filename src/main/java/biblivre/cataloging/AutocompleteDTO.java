@@ -31,9 +31,6 @@ public class AutocompleteDTO extends AbstractDTO {
     private String subfield;
     private String word;
     private String phrase;
-    // private AuthorityRecordDTO authority;
-    // private VocabularyRecordDTO vocabulary;
-
     private transient RecordDTO record;
 
     public Integer getId() {
@@ -125,8 +122,7 @@ public class AutocompleteDTO extends AbstractDTO {
         if (getClass() != obj.getClass()) return false;
         AutocompleteDTO other = (AutocompleteDTO) obj;
         if (recordId == null) {
-            if (other.recordId != null) return false;
-        } else if (!recordId.equals(other.recordId)) return false;
-        return true;
+            return other.recordId == null;
+        } else return recordId.equals(other.recordId);
     }
 }

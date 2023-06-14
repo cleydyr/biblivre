@@ -74,7 +74,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        int progress[] = indexingBO.getReindexProgress(recordType);
+        int[] progress = indexingBO.getReindexProgress(recordType);
 
         put("current", progress[0]);
         put("total", progress[1]);

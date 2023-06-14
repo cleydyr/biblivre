@@ -20,6 +20,7 @@
 package biblivre.core.translations;
 
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.utils.StringPool;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,13 +63,16 @@ public class LanguageBO {
     }
 
     public String getDefaultLanguage() {
-        Set<LanguageDTO> languages = getLanguages();
-
-        for (LanguageDTO dto : languages) {
-            return dto.getLanguage();
-        }
-
-        return "";
+        return getLanguages().stream()
+                .findFirst()
+                .orElse(
+                        new LanguageDTO() {
+                            @Override
+                            public String getLanguage() {
+                                return StringPool.BLANK;
+                            }
+                        })
+                .getLanguage();
     }
 
     public LanguageDTO getLanguage(String language) {

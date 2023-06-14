@@ -70,19 +70,8 @@ public class AuthoritiesRecordBO extends PaginableRecordBO {
     @Override
     public boolean delete(RecordDTO dto) {
 
-        //		HoldingBO holdingBo = new HoldingBO();
-        //		LendingBO lendingBo = new LendingBO();
-        //		List<HoldingDTO> holdings = holdingBo.list(record);
-        //		for (HoldingDTO holding : holdings) {
-        //			if (lendingBo.isLent(holding) || lendingBo.wasLent(holding)) {
-        //				throw new RuntimeException("MESSAGE_DELETE_BIBLIO_ERROR");
-        //			}
-        //		}
-
         if (this.recordDAO.delete(dto)) {
             indexingDAO.deleteIndexes(RecordType.AUTHORITIES, dto);
-            //			HoldingBO hbo = new HoldingBO();
-            //			hbo.delete(dto);
         }
         return true;
     }

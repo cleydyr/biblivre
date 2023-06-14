@@ -81,7 +81,7 @@ public class AllUsersReport extends BaseBiblivreReport {
         }
     }
 
-    private final PdfPTable createSummaryTable(Map<String, Integer> tipos) {
+    private PdfPTable createSummaryTable(Map<String, Integer> tipos) {
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(50f);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -120,7 +120,7 @@ public class AllUsersReport extends BaseBiblivreReport {
         return table;
     }
 
-    private final ArrayList<PdfPTable> createListTable(Map<String, List<String>> data) {
+    private ArrayList<PdfPTable> createListTable(Map<String, List<String>> data) {
         try {
             ArrayList<PdfPTable> tabelas = new ArrayList<>();
             PdfPTable table = null;

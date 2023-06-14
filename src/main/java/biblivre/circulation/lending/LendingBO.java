@@ -109,7 +109,7 @@ public class LendingBO {
 
         // The lending limit (total number of materials that can be lent to a
         // specific user) must be preserved
-        if (!this.checkUserLendLimit(user, false)) {
+        if (this.isUserLendingsBeyondLimit(user, false)) {
             throw new ValidationException("cataloging.lending.error.limit_exceeded");
         }
     }
@@ -128,17 +128,17 @@ public class LendingBO {
 
         // The lending limit (total number of materials that can be lent to a
         // specific user) must be preserved
-        if (!this.checkUserLendLimit(user, true)) {
+        if (this.isUserLendingsBeyondLimit(user, true)) {
             throw new ValidationException("cataloging.lending.error.limit_exceeded");
         }
     }
 
-    public boolean checkUserLendLimit(UserDTO user, boolean renew) {
+    public boolean isUserLendingsBeyondLimit(UserDTO user, boolean renew) {
         UserTypeDTO type = userTypeBO.get(user.getType());
         Integer lendingLimit = (type != null) ? type.getLendingLimit() : 1;
         Integer count = this.lendingDAO.getCurrentLendingsCount(user);
 
-        return renew ? (count <= lendingLimit) : (count < lendingLimit);
+        return renew ? (count > lendingLimit) : (count >= lendingLimit);
     }
 
     public Integer getCurrentLendingsCount(UserDTO user) {

@@ -128,11 +128,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     public String getString(String key) {
-        if (!key.equals("action") && !key.equals("controller")) {
-            // Translations.addSingleTranslation(this.schema, this.language, "audit." +
-            // this.controller + "." + this.getString("action") + "." + key, key);
-        }
-
         return this.getString(key, "");
     }
 

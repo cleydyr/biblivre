@@ -20,7 +20,7 @@
 package biblivre.cataloging.bibliographic;
 
 public class BiblioRecordPopulationEnum {
-    public static final int BIBLIO_INFO = 1 << 0;
+    public static final int BIBLIO_INFO = 1;
     public static final int HOLDING_INFO = 1 << 1;
     public static final int LENDING_INFO = 1 << 2;
 }

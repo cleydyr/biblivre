@@ -53,7 +53,6 @@ import org.springframework.stereotype.Component;
 public class CustomCountReport extends BaseBiblivreReport {
 
     private Integer index;
-    private String marcField;
     private String datafield;
     private String subfield;
     private BiblioRecordBO biblioRecordBO;
@@ -63,7 +62,7 @@ public class CustomCountReport extends BaseBiblivreReport {
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
 
-        marcField = dto.getMarcField();
+        String marcField = dto.getMarcField();
         if (StringUtils.isNotBlank(marcField)) {
             datafield = marcField.split("\\_")[0];
             subfield = marcField.split("\\_")[1];

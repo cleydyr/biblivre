@@ -70,11 +70,6 @@ public class IndexingBO extends AbstractBO {
                 int limit = 30;
 
                 for (int offset = 0; offset < recordCount; offset += limit) {
-                    // if (this.logger.isDebugEnabled()) {
-                    // this.logger.debug("Reindexing offsets from " + offset + " to " + (offset +
-                    // limit));
-                    // }
-
                     List<RecordDTO> records = rbo.list(offset, limit);
 
                     List<IndexingDTO> indexes = new ArrayList<>();
@@ -138,7 +133,7 @@ public class IndexingBO extends AbstractBO {
     }
 
     public int[] getReindexProgress(RecordType recordType) {
-        int progress[] = new int[2];
+        int[] progress = new int[2];
 
         RecordBO rbo = paginableRecordBOs.get(recordType);
 

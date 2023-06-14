@@ -184,7 +184,7 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private final AccessCardDTO createCard(
+    private AccessCardDTO createCard(
             ExtendedRequest request, String code, AccessCardStatus status) {
         AccessCardDTO dto = new AccessCardDTO();
         dto.setCode(code);

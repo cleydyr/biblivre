@@ -8,15 +8,13 @@ public class RequestParserHelperImpl implements RequestParserHelper {
 
     @Override
     public boolean isMustRedirectToSchema(String path) {
-        if (StringUtils.isNotBlank(path)) {
-            String[] urlArray = path.split("/");
-
-            if (urlArray.length <= 1 && !path.endsWith("/")) {
-                return true;
-            }
+        if (StringUtils.isBlank(path)) {
+            return false;
         }
 
-        return false;
+        String[] urlArray = path.split("/");
+
+        return urlArray.length <= 1 && !path.endsWith("/");
     }
 
     @Override
