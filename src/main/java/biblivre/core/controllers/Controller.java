@@ -86,11 +86,9 @@ public abstract class Controller {
                     (module.equals("administration.setup")
                             || (module.equals("menu") && action.equals("setup")));
 
-            if (isSetup
-                    && (configurationBO.getBoolean(Constants.CONFIG_NEW_LIBRARY)
-                            || action.equals("progress"))) {
-                // authorize
-            } else {
+            if (!isSetup
+                    || (!configurationBO.getBoolean(Constants.CONFIG_NEW_LIBRARY)
+                            && !action.equals("progress"))) {
                 AuthorizationPoints authPoints =
                         (AuthorizationPoints)
                                 this.xRequest.getScopedSessionAttribute("logged_user_atps");
