@@ -157,38 +157,37 @@ public class SchemaServlet extends HttpServlet {
             controller = "jsp";
         }
 
-        if (controller.equals("jsp")) {
-            jspController.setHeaderOnly(headerOnly);
-            jspController.processRequest();
-
-        } else if (controller.equals("json")) {
-            jsonController.setHeaderOnly(headerOnly);
-            jsonController.processRequest();
-
-        } else if (controller.equals("download")) {
-            downloadController.setHeaderOnly(headerOnly);
-            downloadController.processRequest();
-
-        } else if (controller.equals("media") || controller.equals("DigitalMediaController")) {
-            xRequest.setAttribute("module", "digitalmedia");
-            xRequest.setAttribute("action", "download");
-
-            downloadController.setHeaderOnly(headerOnly);
-            downloadController.processRequest();
-
-        } else if (controller.equals("log")) {
-            xResponse.setContentType("text/html;charset=UTF-8");
-            xRequest.dispatch("/jsp/log.jsp", xResponse);
-        } else {
-            xResponse.setContentType("text/html;charset=UTF-8");
-
-            String page = "/jsp/index.jsp";
-
-            if (State.LOCKED.get()) {
-                page = "/jsp/progress.jsp";
+        switch (controller) {
+            case "jsp" -> {
+                jspController.setHeaderOnly(headerOnly);
+                jspController.processRequest();
             }
-
-            xRequest.dispatch(page, xResponse);
+            case "json" -> {
+                jsonController.setHeaderOnly(headerOnly);
+                jsonController.processRequest();
+            }
+            case "download" -> {
+                downloadController.setHeaderOnly(headerOnly);
+                downloadController.processRequest();
+            }
+            case "media", "DigitalMediaController" -> {
+                xRequest.setAttribute("module", "digitalmedia");
+                xRequest.setAttribute("action", "download");
+                downloadController.setHeaderOnly(headerOnly);
+                downloadController.processRequest();
+            }
+            case "log" -> {
+                xResponse.setContentType("text/html;charset=UTF-8");
+                xRequest.dispatch("/jsp/log.jsp", xResponse);
+            }
+            default -> {
+                xResponse.setContentType("text/html;charset=UTF-8");
+                String page = "/jsp/index.jsp";
+                if (State.LOCKED.get()) {
+                    page = "/jsp/progress.jsp";
+                }
+                xRequest.dispatch(page, xResponse);
+            }
         }
     }
 

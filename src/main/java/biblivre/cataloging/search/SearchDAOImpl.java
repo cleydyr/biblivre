@@ -265,39 +265,32 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
                         continue;
                     }
 
-                    if (field.equals("record_id")) {
-                        pst.setInt(index++, TextUtils.defaultInt(term));
-
-                    } else if (field.equals("holding_id")) {
-                        pst.setString(index++, query.getDatabase().toString());
-                        pst.setInt(index++, TextUtils.defaultInt(term));
-
-                    } else if (field.equals("holding_accession_number")) {
-                        pst.setString(index++, query.getDatabase().toString());
-                        pst.setString(index++, term);
-
-                    } else if (field.equals("holding_created")
-                            || field.equals("holding_modified")
-                            || field.equals("holding_label_never_printed")
-                            || field.equals("created")
-                            || field.equals("modified")) {
-                        if (!field.equals("created") && !field.equals("modified")) {
+                    switch (field) {
+                        case "record_id" -> pst.setInt(index++, TextUtils.defaultInt(term));
+                        case "holding_id" -> {
                             pst.setString(index++, query.getDatabase().toString());
+                            pst.setInt(index++, TextUtils.defaultInt(term));
                         }
-
-                        Date startDate = searchTerm.getStartDate();
-                        Date endDate = searchTerm.getEndDate();
-
-                        if (startDate != null) {
-                            pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(startDate));
+                        case "holding_accession_number" -> {
+                            pst.setString(index++, query.getDatabase().toString());
+                            pst.setString(index++, term);
                         }
-
-                        if (endDate != null) {
-                            if (CalendarUtils.isMidnight(endDate)) {
-                                endDate = DateUtils.addDays(endDate, 1);
+                        case "holding_created", "holding_modified", "holding_label_never_printed", "created", "modified" -> {
+                            if (!field.equals("created") && !field.equals("modified")) {
+                                pst.setString(index++, query.getDatabase().toString());
                             }
+                            Date startDate = searchTerm.getStartDate();
+                            Date endDate = searchTerm.getEndDate();
+                            if (startDate != null) {
+                                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(startDate));
+                            }
+                            if (endDate != null) {
+                                if (CalendarUtils.isMidnight(endDate)) {
+                                    endDate = DateUtils.addDays(endDate, 1);
+                                }
 
-                            pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(endDate));
+                                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(endDate));
+                            }
                         }
                     }
                 }
@@ -501,28 +494,23 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             clause.append("R.id IN (SELECT record_id FROM biblio_holdings ");
             clause.append("WHERE database = ? AND ");
 
-            if (field.equals("holding_id")) {
-                clause.append(StringUtils.repeat("id = ? ", " OR ", terms.size()));
-            } else if (field.equals("holding_created") || field.equals("holding_modified")) {
-                clause.append("(");
-
-                if (searchTerm.getStartDate() != null) {
-                    clause.append(field.substring(8)).append(" >= ? ");
+            switch (field) {
+                case "holding_id" -> clause.append(StringUtils.repeat("id = ? ", " OR ", terms.size()));
+                case "holding_created", "holding_modified" -> {
+                    clause.append("(");
+                    if (searchTerm.getStartDate() != null) {
+                        clause.append(field.substring(8)).append(" >= ? ");
+                    }
+                    if ((searchTerm.getStartDate() != null) && (searchTerm.getEndDate() != null)) {
+                        clause.append("AND ");
+                    }
+                    if (searchTerm.getEndDate() != null) {
+                        clause.append(field.substring(8)).append(" < ? ");
+                    }
+                    clause.append(")");
                 }
-
-                if ((searchTerm.getStartDate() != null) && (searchTerm.getEndDate() != null)) {
-                    clause.append("AND ");
-                }
-
-                if (searchTerm.getEndDate() != null) {
-                    clause.append(field.substring(8)).append(" < ? ");
-                }
-
-                clause.append(")");
-            } else if (field.equals("holding_label_never_printed")) {
-                clause.append("label_printed = false ");
-            } else {
-                clause.append(
+                case "holding_label_never_printed" -> clause.append("label_printed = false ");
+                default -> clause.append(
                         StringUtils.repeat("accession_number ilike ? ", " OR ", terms.size()));
             }
 

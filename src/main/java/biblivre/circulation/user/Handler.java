@@ -228,26 +228,29 @@ public class Handler extends AbstractHandler {
 
         DTOCollection<AbstractDTO> data = new DTOCollection<>();
 
-        if (tab.equals("lendings")) {
-            Collection<LendingInfoDTO> list =
-                    lendingBO.populateLendingInfo(lendingBO.listLendings(user), false);
-            list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
-            data.addAll(list);
-        } else if (tab.equals("reservations")) {
-            List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
-            ReservationListDTO reservationList = new ReservationListDTO();
-            reservationList.setUser(user);
-            reservationList.setId(user.getId());
-            reservationList.setReservationInfoList(infos);
-
-            data.add(reservationList);
-        } else if (tab.equals("fines")) {
-            List<LendingFineDTO> fines = lendingFineBO.listLendingFines(user);
-
-            data.addAll(fines);
-        } else {
-            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return;
+        switch (tab) {
+            case "lendings" -> {
+                Collection<LendingInfoDTO> list =
+                        lendingBO.populateLendingInfo(lendingBO.listLendings(user), false);
+                list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
+                data.addAll(list);
+            }
+            case "reservations" -> {
+                List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
+                ReservationListDTO reservationList = new ReservationListDTO();
+                reservationList.setUser(user);
+                reservationList.setId(user.getId());
+                reservationList.setReservationInfoList(infos);
+                data.add(reservationList);
+            }
+            case "fines" -> {
+                List<LendingFineDTO> fines = lendingFineBO.listLendingFines(user);
+                data.addAll(fines);
+            }
+            default -> {
+                this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+                return;
+            }
         }
 
         try {

@@ -432,74 +432,70 @@ public class MarcDataReader {
                     content = "";
                 }
 
-                if (element.equals("$")) {
-                    subfields = dataField.getSubfields(content.charAt(0));
+                switch (element) {
+                    case "$" -> {
+                        subfields = dataField.getSubfields(content.charAt(0));
+                        subfieldSeparator = (content.length() == 1) ? ", " : content.substring(1);
+                        endsWithSeparator = false;
+                        values = new StringBuilder();
+                        for (Subfield s : subfields) {
+                            value = s.getData();
 
-                    subfieldSeparator = (content.length() == 1) ? ", " : content.substring(1);
-                    endsWithSeparator = false;
+                            if (StringUtils.isNotBlank(value)) {
+                                value = value.trim();
 
-                    values = new StringBuilder();
-                    for (Subfield s : subfields) {
-                        value = s.getData();
+                                values.append(value);
 
-                        if (StringUtils.isNotBlank(value)) {
-                            value = value.trim();
-
-                            values.append(value);
-
-                            if (TextUtils.endsInValidCharacter(value)) {
-                                values.append(subfieldSeparator);
-                                endsWithSeparator = true;
-                            } else {
-                                values.append(" ");
-                                endsWithSeparator = false;
-                            }
-                        }
-                    }
-                    value = values.toString();
-
-                    if (endsWithSeparator) {
-                        value = value.substring(0, value.length() - subfieldSeparator.length());
-                    } else {
-                        value = value.trim();
-                    }
-
-                    if (StringUtils.isNotBlank(value)) {
-                        if (newSeparator) {
-                            newSeparator = false;
-
-                            if (StringUtils.isNotBlank(lastValue)) {
-                                if (TextUtils.endsInValidCharacter(lastValue)) {
-                                    result.append(lastSeparator);
+                                if (TextUtils.endsInValidCharacter(value)) {
+                                    values.append(subfieldSeparator);
+                                    endsWithSeparator = true;
                                 } else {
-                                    result.append(" ");
+                                    values.append(" ");
+                                    endsWithSeparator = false;
                                 }
                             }
                         }
-
-                        lastValue = value.trim();
-
-                        if (shouldAddStartParenthesis) {
-                            shouldAddStartParenthesis = false;
-                            result.append("(");
+                        value = values.toString();
+                        if (endsWithSeparator) {
+                            value = value.substring(0, value.length() - subfieldSeparator.length());
+                        } else {
+                            value = value.trim();
                         }
+                        if (StringUtils.isNotBlank(value)) {
+                            if (newSeparator) {
+                                newSeparator = false;
 
-                        result.append(lastValue);
+                                if (StringUtils.isNotBlank(lastValue)) {
+                                    if (TextUtils.endsInValidCharacter(lastValue)) {
+                                        result.append(lastSeparator);
+                                    } else {
+                                        result.append(" ");
+                                    }
+                                }
+                            }
+
+                            lastValue = value.trim();
+
+                            if (shouldAddStartParenthesis) {
+                                shouldAddStartParenthesis = false;
+                                result.append("(");
+                            }
+
+                            result.append(lastValue);
+                        }
                     }
-
-                } else if (element.equals("_")) {
-                    lastSeparator = content;
-                    newSeparator = true;
-
-                } else if (element.equals("(")) {
-                    shouldAddStartParenthesis = true;
-
-                } else if (element.equals(")")) {
-                    if (result.toString().endsWith("(")) {
-                        result.deleteCharAt(result.length() - 1);
-                    } else if (!shouldAddStartParenthesis) {
-                        result.append(")");
-                        shouldAddStartParenthesis = false;
+                    case "_" -> {
+                        lastSeparator = content;
+                        newSeparator = true;
+                    }
+                    case "(" -> shouldAddStartParenthesis = true;
+                    case ")" -> {
+                        if (result.toString().endsWith("(")) {
+                            result.deleteCharAt(result.length() - 1);
+                        } else if (!shouldAddStartParenthesis) {
+                            result.append(")");
+                            shouldAddStartParenthesis = false;
+                        }
                     }
                 }
             }
