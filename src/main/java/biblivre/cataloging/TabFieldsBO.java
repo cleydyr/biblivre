@@ -134,13 +134,13 @@ public class TabFieldsBO {
                         list =
                                 new JavascriptCacheableList<>(
                                         "CatalogingInput.holdingFields",
-                                        schema + ".cataloging." + recordType.toString(),
+                                        schema + ".cataloging." + recordType,
                                         ".form.js");
                     } else {
                         list =
                                 new JavascriptCacheableList<>(
                                         "CatalogingInput.formFields",
-                                        schema + ".cataloging." + recordType.toString(),
+                                        schema + ".cataloging." + recordType,
                                         ".form.js");
                     }
 

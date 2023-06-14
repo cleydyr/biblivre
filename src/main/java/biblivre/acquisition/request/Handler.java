@@ -91,7 +91,6 @@ public class Handler extends AbstractHandler {
         boolean result = false;
         if (id == 0) {
             dto.setStatus(RequestStatus.PENDING);
-            ;
             dto.setCreatedBy(request.getLoggedUserId());
             result = requestBO.save(dto);
         } else {

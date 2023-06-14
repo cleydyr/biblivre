@@ -111,7 +111,7 @@ public class UpdatesDAO extends AbstractDAO {
     public void create81ArrayAgg() throws SQLException {
 
         try (Connection con = this.getConnection();
-                Statement st = con.createStatement(); ) {
+                Statement st = con.createStatement()) {
 
             String sql =
                     "CREATE AGGREGATE public.array_agg (SFUNC = array_append, BASETYPE = anyelement, STYPE = anyarray, INITCOND = '{}');";

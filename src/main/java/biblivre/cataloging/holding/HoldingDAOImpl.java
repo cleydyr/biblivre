@@ -76,7 +76,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             if (availableOnly) {
                 sql.append("and availability = '")
-                        .append(HoldingAvailability.AVAILABLE.toString())
+                        .append(HoldingAvailability.AVAILABLE)
                         .append("'");
             }
 

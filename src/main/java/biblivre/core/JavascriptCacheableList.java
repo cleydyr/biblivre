@@ -58,7 +58,7 @@ public class JavascriptCacheableList<T extends IFJson>
             array.put(el.toJSONObject());
         }
 
-        return this.variable + " = " + array.toString() + ";";
+        return this.variable + " = " + array + ";";
     }
 
     @Override

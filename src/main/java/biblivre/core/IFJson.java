@@ -22,5 +22,5 @@ package biblivre.core;
 import org.json.JSONObject;
 
 public interface IFJson {
-    public JSONObject toJSONObject();
+    JSONObject toJSONObject();
 }

@@ -66,7 +66,7 @@ public enum MaterialType implements BiblivreEnum {
                 if (!material.equals(MaterialType.ALL)) {
                     tempBibliographicMaterials.add(material);
                     sb.append('\'');
-                    sb.append(material.toString());
+                    sb.append(material);
                     sb.append("\',");
                 }
             }
@@ -84,7 +84,7 @@ public enum MaterialType implements BiblivreEnum {
     private final boolean searchable;
     private final RecordType recordType;
 
-    private MaterialType(char typeOfRecord, String implDef1, boolean searchable) {
+    MaterialType(char typeOfRecord, String implDef1, boolean searchable) {
         this(typeOfRecord, implDef1, searchable, RecordType.BIBLIO);
     }
 

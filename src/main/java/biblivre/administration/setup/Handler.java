@@ -113,7 +113,7 @@ public class Handler extends AbstractHandler {
         String extension = file.getName().endsWith("b4bz") ? "b4bz" : "b5bz";
 
         File path = backupBO.getBackupDestination();
-        String uuid = UUID.randomUUID().toString() + "." + extension;
+        String uuid = UUID.randomUUID() + "." + extension;
         File backup = new File(path, uuid);
 
         boolean success = true;

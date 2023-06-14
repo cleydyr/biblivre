@@ -2,11 +2,11 @@ package biblivre.digitalmedia.migrator;
 
 public interface DigitalMediaStoreMigrator {
 
-    public String from();
+    String from();
 
-    public String to();
+    String to();
 
-    public default String getId() {
+    default String getId() {
         return getClass().getName();
     }
 

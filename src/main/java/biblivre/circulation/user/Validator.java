@@ -81,7 +81,7 @@ public class Validator extends AbstractValidator {
 
             int maxLength = userField.getMaxLength();
             if (maxLength > 0 && param.length() > maxLength) {
-                ex.addError(key, "field.error.max_length:::" + String.valueOf(maxLength));
+                ex.addError(key, "field.error.max_length:::" + maxLength);
                 continue;
             }
 

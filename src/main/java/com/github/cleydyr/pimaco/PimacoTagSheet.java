@@ -138,7 +138,7 @@ public enum PimacoTagSheet {
     A4368(SheetSize.A4, "A4368", 0.51, 0.51, 14.34, 19.99, 14.34, 19.99, 1, 2),
     ;
 
-    private PimacoTagSheet(
+    PimacoTagSheet(
             SheetSize sheetSize,
             String pimacoCode,
             double verticalMargin,

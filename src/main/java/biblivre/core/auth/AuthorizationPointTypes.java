@@ -289,14 +289,14 @@ public enum AuthorizationPointTypes {
     private final boolean _public;
     private final boolean _publicForLoggedUsers;
 
-    private AuthorizationPointTypes(
+    AuthorizationPointTypes(
             AuthorizationSchemaScope schemaScope,
             AuthorizationUserScope userScope,
             AuthorizationPointGroups group) {
         this(schemaScope, userScope, group, false, false);
     }
 
-    private AuthorizationPointTypes(
+    AuthorizationPointTypes(
             AuthorizationSchemaScope schemaScope,
             AuthorizationUserScope userScope,
             AuthorizationPointGroups group,
@@ -304,7 +304,7 @@ public enum AuthorizationPointTypes {
         this(schemaScope, userScope, group, _public, false);
     }
 
-    private AuthorizationPointTypes(
+    AuthorizationPointTypes(
             AuthorizationSchemaScope schemaScope,
             AuthorizationUserScope userScope,
             AuthorizationPointGroups group,

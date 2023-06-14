@@ -78,7 +78,7 @@ public class MarcUtils {
         ByteArrayInputStream is =
                 new ByteArrayInputStream(unescaped.getBytes(Constants.DEFAULT_CHARSET));
 
-        scanner = new Scanner(is, Constants.DEFAULT_CHARSET.name());
+        scanner = new Scanner(is, Constants.DEFAULT_CHARSET);
 
         List<String> text = new ArrayList<>();
         while (scanner.hasNextLine()) {

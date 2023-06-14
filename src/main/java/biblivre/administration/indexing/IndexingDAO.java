@@ -16,9 +16,9 @@ import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
 public interface IndexingDAO {
-    static final List<String> nonfillingCharactersInIndicator1 =
+    List<String> nonfillingCharactersInIndicator1 =
             List.of("130", "630", "730", "740");
-    static final List<String> nonfillingCharactersInIndicator2 =
+    List<String> nonfillingCharactersInIndicator2 =
             List.of("240", "243", "245", "830");
 
     Integer countIndexed(RecordType recordType);

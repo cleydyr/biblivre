@@ -3,15 +3,15 @@ package biblivre.update;
 import java.sql.Connection;
 
 public interface UpdateService {
-    public default void doUpdate(Connection connection) {
+    default void doUpdate(Connection connection) {
         // Do nothing
     }
 
-    public default void doUpdateScopedBySchema(Connection connection) {
+    default void doUpdateScopedBySchema(Connection connection) {
         // Do nothing
     }
 
-    public default void afterUpdate() {
+    default void afterUpdate() {
         // Do nothing
     }
 }

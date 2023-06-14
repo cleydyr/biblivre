@@ -89,7 +89,6 @@ public class RestoreDTO extends AbstractDTO {
 
     public void setSchemas(String schemas) {
         this.schemas = SchemaUtils.buildSchemasMap(schemas);
-        ;
     }
 
     public BackupType getType() {

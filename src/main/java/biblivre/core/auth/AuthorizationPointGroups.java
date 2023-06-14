@@ -27,5 +27,5 @@ public enum AuthorizationPointGroups {
     ACQUISITION,
     ADMIN,
     DIGITALMEDIA,
-    SEARCH;
+    SEARCH
 }

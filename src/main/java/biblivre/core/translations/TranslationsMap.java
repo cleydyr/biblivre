@@ -147,7 +147,7 @@ public class TranslationsMap extends HashMap<String, TranslationDTO>
 
     @Override
     public String toJavascriptString() {
-        return "Translations.translations = " + this.toString() + ";";
+        return "Translations.translations = " + this + ";";
     }
 
     @Override

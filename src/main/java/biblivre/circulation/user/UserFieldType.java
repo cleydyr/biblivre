@@ -33,7 +33,7 @@ public enum UserFieldType implements BiblivreEnum {
 
     private final boolean searchable;
 
-    private UserFieldType(boolean searchable) {
+    UserFieldType(boolean searchable) {
         this.searchable = searchable;
     }
 

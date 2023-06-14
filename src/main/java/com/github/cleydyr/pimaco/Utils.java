@@ -11,8 +11,8 @@ import tech.units.indriya.unit.Units;
 
 public interface Utils {
 
-    public static final Unit<Length> CENTIMETER = MetricPrefix.CENTI(Units.METRE);
+    Unit<Length> CENTIMETER = MetricPrefix.CENTI(Units.METRE);
 
-    public static Function<Double, Quantity<Length>> DOUBLE_TO_CENTIMETER_CONVERTER =
+    Function<Double, Quantity<Length>> DOUBLE_TO_CENTIMETER_CONVERTER =
             quantity -> Quantities.getQuantity(new BigDecimal(quantity), CENTIMETER);
 }

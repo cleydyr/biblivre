@@ -183,9 +183,7 @@ public class PostgreSQLStatementIteratorTest {
                 \\.
                 """;
 
-        String normalized = original;
-
-        assertEqualsAfterNormalization(original, normalized);
+        assertEqualsAfterNormalization(original, original);
     }
 
     @Test

@@ -25,7 +25,7 @@ public enum RecordStatus {
 
     private final char code;
 
-    private RecordStatus(char code) {
+    RecordStatus(char code) {
         this.code = code;
     }
 

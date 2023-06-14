@@ -41,7 +41,7 @@ public enum ReportType {
     private final String name;
     private final boolean timePeriod;
 
-    private ReportType(String id, String name, boolean timePeriod) {
+    ReportType(String id, String name, boolean timePeriod) {
         this.id = id;
         this.name = name;
         this.timePeriod = timePeriod;

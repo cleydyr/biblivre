@@ -29,7 +29,7 @@ public enum SearchOperator implements BiblivreEnum {
 
     private final String operator;
 
-    private SearchOperator(String operator) {
+    SearchOperator(String operator) {
         this.operator = operator;
     }
 

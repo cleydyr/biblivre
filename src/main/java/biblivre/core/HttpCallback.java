@@ -10,5 +10,5 @@ import java.io.IOException;
  */
 @FunctionalInterface
 public interface HttpCallback {
-    public void success() throws IOException;
+    void success() throws IOException;
 }

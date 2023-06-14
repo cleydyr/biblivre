@@ -22,15 +22,15 @@ package biblivre.core;
 import java.io.File;
 
 public interface IFCacheableJavascript {
-    public String getCacheFileNamePrefix();
+    String getCacheFileNamePrefix();
 
-    public String getCacheFileNameSuffix();
+    String getCacheFileNameSuffix();
 
-    public String toJavascriptString();
+    String toJavascriptString();
 
-    public File getCacheFile();
+    File getCacheFile();
 
-    public String getCacheFileName();
+    String getCacheFileName();
 
-    public void invalidateCache();
+    void invalidateCache();
 }

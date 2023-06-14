@@ -8,7 +8,7 @@ public enum SheetSize {
     A4(21.0, 29.7),
     LETTER(21.59, 27.94);
 
-    private SheetSize(double sheetWidth, double sheetHeight) {
+    SheetSize(double sheetWidth, double sheetHeight) {
         Function<Double, Quantity<Length>> converter = Utils.DOUBLE_TO_CENTIMETER_CONVERTER;
 
         this.sheetWidth = converter.apply(sheetWidth);
