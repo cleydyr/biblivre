@@ -142,14 +142,9 @@ public class FileIOUtils {
             if (destination.isDirectory()) {
                 FileUtils.forceMkdir(destination);
             } else {
-                InputStream is = zipFile.getInputStream(entry);
-                FileOutputStream os = FileUtils.openOutputStream(destination);
 
-                try {
+                try (InputStream is = zipFile.getInputStream(entry); FileOutputStream os = FileUtils.openOutputStream(destination)) {
                     IOUtils.copy(is, os);
-                } finally {
-                    os.close();
-                    is.close();
                 }
 
                 destination.setLastModified(entry.getTime());
@@ -329,7 +324,7 @@ public class FileIOUtils {
             response.setDateHeader(
                     "Expires", System.currentTimeMillis() + Constants.DEFAULT_EXPIRE_TIME);
 
-            try (OutputStream output = response.getOutputStream()) {
+            try (file; OutputStream output = response.getOutputStream()) {
 
                 if (ranges.isEmpty() || ranges.get(0) == full) {
                     // Return full file.
@@ -395,8 +390,6 @@ public class FileIOUtils {
                         sos.println("--" + Constants.MULTIPART_BOUNDARY + "--");
                     }
                 }
-            } finally {
-                file.close();
             }
 
             return;
