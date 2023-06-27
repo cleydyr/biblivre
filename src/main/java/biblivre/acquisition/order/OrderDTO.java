@@ -44,6 +44,39 @@ public class OrderDTO extends AbstractDTO {
     private transient Integer deliveryTime;
     private transient List<RequestQuotationDTO> quotationsList;
 
+    public OrderDTO() {}
+
+    public OrderDTO(
+            Integer id,
+            Integer quotationId,
+            String info,
+            String status,
+            String invoiceNumber,
+            Date receiptDate,
+            Float totalValue,
+            Integer deliveredQuantity,
+            String termsOfPayment,
+            Date deadlineDate,
+            Integer supplierId,
+            String supplierName,
+            Integer deliveryTime,
+            List<RequestQuotationDTO> quotationsList) {
+        this.id = id;
+        this.quotationId = quotationId;
+        this.info = info;
+        this.status = status;
+        this.invoiceNumber = invoiceNumber;
+        this.receiptDate = receiptDate;
+        this.totalValue = totalValue;
+        this.deliveredQuantity = deliveredQuantity;
+        this.termsOfPayment = termsOfPayment;
+        this.deadlineDate = deadlineDate;
+        this.supplierId = supplierId;
+        this.supplierName = supplierName;
+        this.deliveryTime = deliveryTime;
+        this.quotationsList = quotationsList;
+    }
+
     public Integer getId() {
         return this.id;
     }

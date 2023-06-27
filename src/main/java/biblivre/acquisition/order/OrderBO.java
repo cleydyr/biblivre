@@ -56,7 +56,7 @@ public class OrderBO extends AbstractBO {
     }
 
     public boolean delete(OrderDTO dto) {
-        return this.orderDAO.delete(dto);
+        return this.orderDAO.delete(dto.getId());
     }
 
     public DTOCollection<OrderDTO> list() {

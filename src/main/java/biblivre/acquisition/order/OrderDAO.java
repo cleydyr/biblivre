@@ -13,7 +13,7 @@ public interface OrderDAO {
 
     boolean update(OrderDTO dto);
 
-    boolean delete(OrderDTO dto);
+    boolean delete(int id);
 
     DTOCollection<OrderDTO> search(String value, int offset, int limit);
 }

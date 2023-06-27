@@ -8,7 +8,7 @@ public interface SupplierDAO {
 
     boolean update(SupplierDTO dto);
 
-    boolean delete(SupplierDTO dto);
+    boolean delete(int id);
 
     SupplierDTO get(int id);
 

@@ -205,13 +205,13 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
     }
 
     @Override
-    public boolean delete(OrderDTO dto) {
+    public boolean delete(int id) {
         Connection con = null;
         try {
             con = this.getConnection();
             String sql = " DELETE FROM orders WHERE id = ?; ";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, dto.getId());
+            pst.setInt(1, id);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);

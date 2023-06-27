@@ -37,10 +37,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     @Override
     public boolean save(SupplierDTO dto) {
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = this.getConnection()) {
             String sql =
                     "INSERT INTO suppliers ( "
                             + "trademark, supplier_name, supplier_number, "
@@ -83,17 +80,13 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return true;
     }
 
     @Override
     public boolean update(SupplierDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = this.getConnection()) {
 
             String sql =
                     "UPDATE suppliers SET "
@@ -136,37 +129,28 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
-    public boolean delete(SupplierDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+    public boolean delete(int id) {
+        try (Connection con = this.getConnection()) {
 
             String sql = "DELETE FROM suppliers " + "WHERE id = ?;";
 
             PreparedStatement pstInsert = con.prepareStatement(sql);
-            pstInsert.setInt(1, dto.getId());
+            pstInsert.setInt(1, id);
 
             return pstInsert.executeUpdate() > 0;
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public SupplierDTO get(int id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = this.getConnection()) {
             String sql = "SELECT * FROM suppliers " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -178,8 +162,6 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
@@ -188,9 +170,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
         DTOCollection<SupplierDTO> list = new DTOCollection<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = this.getConnection()) {
 
             StringBuilder sql = new StringBuilder("SELECT * FROM suppliers ");
             if (StringUtils.isNotBlank(value)) {
@@ -239,8 +219,6 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;

@@ -1,6 +1,7 @@
 package biblivre.administration.report;
 
 import biblivre.AbstractContainerDatabaseTest;
+import biblivre.TestBiblivreApplication;
 import biblivre.administration.reports.ReportType;
 import biblivre.administration.reports.ReportsBO;
 import biblivre.administration.reports.ReportsDTO;
@@ -17,10 +18,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {"spring.datasource.url=jdbc:tc:postgresql:12:///biblivre4"},
+        classes = TestBiblivreApplication.class)
 @Testcontainers
 public class ReportBOTest extends AbstractContainerDatabaseTest {
     @Autowired private ReportsBO reportBO;

@@ -41,7 +41,7 @@ public class SupplierBO extends AbstractBO {
     }
 
     public boolean delete(SupplierDTO dto) {
-        return this.supplierDAO.delete(dto);
+        return this.supplierDAO.delete(dto.getId());
     }
 
     public DTOCollection<SupplierDTO> list() {

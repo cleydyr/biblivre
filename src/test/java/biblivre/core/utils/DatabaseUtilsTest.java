@@ -25,7 +25,11 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
 
     @Test
     void testGetDatabaseName() {
-        execute(() -> assertEquals(container.getDatabaseName(), DatabaseUtils.getDatabaseName()));
+        execute(
+                () ->
+                        assertEquals(
+                                postgreSQLContainer.getDatabaseName(),
+                                DatabaseUtils.getDatabaseName()));
     }
 
     @Test
@@ -33,17 +37,26 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
         execute(
                 () ->
                         assertEquals(
-                                container.getMappedPort(Constants.DEFAULT_POSTGRESQL_PORT),
+                                postgreSQLContainer.getMappedPort(
+                                        Constants.DEFAULT_POSTGRESQL_PORT),
                                 Integer.valueOf(DatabaseUtils.getDatabasePort())));
     }
 
     @Test
     void testGetDatabasePassword() {
-        execute(() -> assertEquals(container.getPassword(), DatabaseUtils.getDatabasePassword()));
+        execute(
+                () ->
+                        assertEquals(
+                                postgreSQLContainer.getPassword(),
+                                DatabaseUtils.getDatabasePassword()));
     }
 
     @Test
     void testGetDatabaseUsername() {
-        execute(() -> assertEquals(container.getUsername(), DatabaseUtils.getDatabaseUsername()));
+        execute(
+                () ->
+                        assertEquals(
+                                postgreSQLContainer.getUsername(),
+                                DatabaseUtils.getDatabaseUsername()));
     }
 }

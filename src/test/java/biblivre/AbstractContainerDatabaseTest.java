@@ -9,65 +9,32 @@ import com.github.stefanbirkner.systemlambda.Statement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.junit.ClassRule;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.utility.MountableFile;
 
 public abstract class AbstractContainerDatabaseTest {
     private static DataSource dataSource;
 
-    protected static final PostgreSQLContainer<?> container =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withDatabaseName(Constants.DEFAULT_DATABASE_NAME)
-                    .withUsername(Constants.DEFAULT_DATABASE_USERNAME)
-                    .withPassword(Constants.DEFAULT_DATABASE_PASSWORD)
-                    .withCopyToContainer(
-                            MountableFile.forClasspathResource("sql/biblivre4.sql"),
-                            "/docker-entrypoint-initdb.d/populate-initial-data.sql");
+    @ClassRule
+    protected final PostgreSQLContainer<?> postgreSQLContainer =
+            SharedPostgreSQLContainer.getInstance();
 
-    private static boolean setup = false;
-
-    private static final Logger logger =
-            LoggerFactory.getLogger(AbstractContainerDatabaseTest.class);
-
-    @BeforeAll
-    static void setUp() {
-        if (!setup) {
-            try {
-                logger.info("Starting container");
-
-                container.start();
-
-                logger.info("Setup complete!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            setup = true;
-        }
+    public AbstractContainerDatabaseTest() {
+        postgreSQLContainer.start();
     }
 
-    @AfterAll
-    static void close() {
-        container.close();
+    protected <T extends AbstractDAO> T getInstance(Class<T> clazz) {
+        return AbstractDAO.getInstance(__ -> getDataSource(), clazz, "single");
     }
 
-    protected static <T extends AbstractDAO> T getInstance(Class<T> clazz) {
-        return AbstractDAO.getInstance(__ -> getDataSource(container), clazz, "single");
-    }
-
-    protected static DataSource getDataSource(JdbcDatabaseContainer<?> container) {
+    protected DataSource getDataSource() {
 
         if (dataSource == null) {
             HikariConfig hikariConfig = new HikariConfig();
-            hikariConfig.setJdbcUrl(container.getJdbcUrl());
-            hikariConfig.setUsername(container.getUsername());
-            hikariConfig.setPassword(container.getPassword());
-            hikariConfig.setDriverClassName(container.getDriverClassName());
+            hikariConfig.setJdbcUrl(postgreSQLContainer.getJdbcUrl());
+            hikariConfig.setUsername(postgreSQLContainer.getUsername());
+            hikariConfig.setPassword(postgreSQLContainer.getPassword());
+            hikariConfig.setDriverClassName(postgreSQLContainer.getDriverClassName());
 
             dataSource = new HikariDataSource(hikariConfig);
         }
@@ -80,10 +47,11 @@ public abstract class AbstractContainerDatabaseTest {
             withEnvironmentVariable(
                             Constants.DATABASE_PORT,
                             String.valueOf(
-                                    container.getMappedPort(Constants.DEFAULT_POSTGRESQL_PORT)))
-                    .and(Constants.DATABASE_NAME, container.getDatabaseName())
-                    .and(Constants.DATABASE_PASSWORD, container.getPassword())
-                    .and(Constants.DATABASE_USERNAME, container.getUsername())
+                                    postgreSQLContainer.getMappedPort(
+                                            Constants.DEFAULT_POSTGRESQL_PORT)))
+                    .and(Constants.DATABASE_NAME, postgreSQLContainer.getDatabaseName())
+                    .and(Constants.DATABASE_PASSWORD, postgreSQLContainer.getPassword())
+                    .and(Constants.DATABASE_USERNAME, postgreSQLContainer.getUsername())
                     .execute(statement);
         } catch (Exception e) {
             fail(e);
