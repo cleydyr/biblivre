@@ -65,10 +65,6 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                 Method setter =
                         clazz.getDeclaredMethod("set" + StringUtils.capitalize(name), fieldClass);
 
-                if (setter == null) {
-                    continue;
-                }
-
                 if (fieldClass.equals(String.class)) {
                     value = jsonObject.has(name) ? jsonObject.getString(name) : null;
                 } else if (fieldClass.equals(Integer.class)) {

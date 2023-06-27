@@ -89,8 +89,6 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
     @Override
     public final long importFile(File file) {
-        Connection con = null;
-
         try (InputStream is = new FileInputStream(file)) {
             long oid = createOID();
 
@@ -98,10 +96,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
             return oid;
         } catch (Exception e) {
-            this.rollback(con);
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -138,7 +133,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
             throw new DAOException(e);
         }
 
-        return file;
+        return null;
     }
 
     @Override

@@ -375,7 +375,7 @@ public class BackupBO extends AbstractBO {
                 isSchemaOnly,
                 isDataOnly,
                 excludeTablePattern,
-                includeTablePattern);
+                null);
     }
 
     private void dumpSchema(BackupDTO dto, File tmpDir, String schema) {
@@ -391,8 +391,8 @@ public class BackupBO extends AbstractBO {
                 schemaBackup,
                 isSchemaOnly,
                 isDataOnly,
-                excludeTablePattern,
-                includeTablePattern);
+                null,
+                null);
     }
 
     private void dumpMedia(BackupDTO dto, File tmpDir, String schema) throws BackupException {
@@ -408,7 +408,7 @@ public class BackupBO extends AbstractBO {
                 mediaBackup,
                 isSchemaOnly,
                 isDataOnly,
-                excludeTablePattern,
+                null,
                 includeTablePattern);
 
         File schemaBackup = new File(tmpDir, schema);

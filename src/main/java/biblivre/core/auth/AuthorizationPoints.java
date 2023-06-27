@@ -866,7 +866,7 @@ public class AuthorizationPoints implements Serializable {
             return true;
         }
 
-        return allowed != null && allowed;
+        return allowed;
     }
 
     public boolean isAllowed(AuthorizationPointTypes type) {
