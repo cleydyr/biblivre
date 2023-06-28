@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserSearchDTO extends AbstractDTO {
+public final class UserSearchDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
     private SearchMode searchMode;

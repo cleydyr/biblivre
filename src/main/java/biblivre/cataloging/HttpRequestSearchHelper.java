@@ -14,7 +14,7 @@ public class HttpRequestSearchHelper {
         SearchDTO search = paginableRecordBO.getSearch(searchId);
 
         if (search == null) {
-            return null;
+            return SearchDTO.EMPTY;
         }
 
         Integer sort = request.getInteger("sort", defaultSortableGroupId);

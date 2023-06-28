@@ -28,7 +28,9 @@ import java.util.Objects;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class SearchDTO extends DTOCollection<RecordDTO> {
+public final class SearchDTO extends DTOCollection<RecordDTO> {
+    public static final SearchDTO EMPTY = new SearchDTO(null);
+
     private RecordType recordType;
 
     private SearchQueryDTO query;

@@ -32,7 +32,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TranslationsMap extends HashMap<String, TranslationDTO>
+public final class TranslationsMap extends HashMap<String, TranslationDTO>
         implements IFCacheableJavascript {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Serial private static final long serialVersionUID = 1L;

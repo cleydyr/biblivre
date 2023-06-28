@@ -25,7 +25,7 @@ import java.io.Serial;
 import java.util.Objects;
 import org.json.JSONObject;
 
-public class FormTabSubfieldDTO extends AbstractDTO {
+public final class FormTabSubfieldDTO extends AbstractDTO {
 
     @Serial private static final long serialVersionUID = 1L;
 

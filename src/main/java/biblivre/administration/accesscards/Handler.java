@@ -58,7 +58,7 @@ public class Handler extends AbstractHandler {
             status = AccessCardStatus.fromString(json.optString("status"));
         } catch (JSONException je) {
             this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return null;
+            return DTOCollection.empty();
         }
 
         Integer limit =

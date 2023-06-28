@@ -26,7 +26,7 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class Message {
+public final class Message {
     private ActionResult level;
     private String text;
     private String stackTrace;

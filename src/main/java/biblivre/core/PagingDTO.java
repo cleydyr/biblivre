@@ -22,7 +22,7 @@ package biblivre.core;
 import java.util.Date;
 import org.json.JSONObject;
 
-public class PagingDTO implements IFJson {
+public final class PagingDTO implements IFJson {
     private int recordCount;
     private int recordOffset;
     private int recordsPerPage;

@@ -35,7 +35,7 @@ import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
-public class MarcDataReader {
+public final class MarcDataReader {
     private final Record record;
     private final Map<String, List<DataField>> cache;
 

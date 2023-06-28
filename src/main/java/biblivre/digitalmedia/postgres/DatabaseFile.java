@@ -27,7 +27,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import org.postgresql.largeobject.LargeObject;
 
-public class DatabaseFile extends BiblivreFile {
+public final class DatabaseFile extends BiblivreFile {
 
     private Connection connection;
     private LargeObject largeObject;

@@ -27,7 +27,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
-public class BackupDTO extends AbstractDTO {
+public final class BackupDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
     private Integer id;

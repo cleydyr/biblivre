@@ -26,6 +26,8 @@ import java.util.List;
 import org.json.JSONObject;
 
 public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> implements IFJson {
+    private static final DTOCollection EMPTY = new DTOCollection();
+
     private Integer id;
 
     private PagingDTO paging;
@@ -86,5 +88,9 @@ public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> 
     @Override
     public boolean add(T e) {
         return list.add(e);
+    }
+
+    public static <T extends AbstractDTO> DTOCollection<T> empty() {
+        return (DTOCollection<T>) EMPTY;
     }
 }

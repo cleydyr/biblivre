@@ -36,7 +36,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class SearchQueryDTO extends AbstractDTO {
+public final class SearchQueryDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
     private SearchMode searchMode;

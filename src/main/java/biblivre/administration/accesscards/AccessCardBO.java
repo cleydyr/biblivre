@@ -22,6 +22,7 @@ package biblivre.administration.accesscards;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +99,7 @@ public class AccessCardBO {
         if (this.accessCardDAO.save(cardList)) {
             return cardList;
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 

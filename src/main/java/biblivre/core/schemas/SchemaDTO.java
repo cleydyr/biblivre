@@ -24,7 +24,7 @@ import java.io.Serial;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
-public class SchemaDTO extends AbstractDTO implements Comparable<SchemaDTO> {
+public final class SchemaDTO extends AbstractDTO implements Comparable<SchemaDTO> {
     @Serial private static final long serialVersionUID = 1L;
 
     private String schema;

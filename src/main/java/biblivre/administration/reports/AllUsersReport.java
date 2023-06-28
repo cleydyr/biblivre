@@ -29,6 +29,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -63,20 +64,18 @@ public class AllUsersReport extends BaseBiblivreReport {
         document.add(summaryTable);
         document.add(new Phrase("\n"));
 
-        ArrayList<PdfPTable> listTable = createListTable(dto.getData());
-        if (listTable != null) {
-            Paragraph p3 =
-                    new Paragraph(
-                            this.getHeaderChunk(
-                                    this.getText(
-                                            "administration.reports.field.user_list_by_type")));
-            p3.setAlignment(Element.ALIGN_LEFT);
-            document.add(p3);
+        List<PdfPTable> listTable = createListTable(dto.getData());
+
+        Paragraph p3 =
+                new Paragraph(
+                        this.getHeaderChunk(
+                                this.getText("administration.reports.field.user_list_by_type")));
+        p3.setAlignment(Element.ALIGN_LEFT);
+        document.add(p3);
+        document.add(new Phrase("\n"));
+        for (PdfPTable tabela : listTable) {
+            document.add(tabela);
             document.add(new Phrase("\n"));
-            for (PdfPTable tabela : listTable) {
-                document.add(tabela);
-                document.add(new Phrase("\n"));
-            }
         }
     }
 
@@ -119,7 +118,7 @@ public class AllUsersReport extends BaseBiblivreReport {
         return table;
     }
 
-    private ArrayList<PdfPTable> createListTable(Map<String, List<String>> data) {
+    private List<PdfPTable> createListTable(Map<String, List<String>> data) {
         try {
             ArrayList<PdfPTable> tabelas = new ArrayList<>();
             PdfPTable table;
@@ -214,7 +213,7 @@ public class AllUsersReport extends BaseBiblivreReport {
             return tabelas;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return null;
+            return Collections.emptyList();
         }
     }
 
