@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface OrderDAO {
 
-    OrderDTO get(Integer orderId);
+    OrderDTO get(int orderId);
 
     Integer save(OrderDTO dto);
 

@@ -38,7 +38,7 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
     }
 
     @Override
-    public OrderDTO get(Integer orderId) {
+    public OrderDTO get(int orderId) {
         Connection con = null;
         try {
             con = this.getConnection();
