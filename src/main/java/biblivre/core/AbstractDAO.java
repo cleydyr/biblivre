@@ -41,14 +41,12 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractDAO {
     private static final Map<String, DataSource> dataSourceMap = new HashMap<>();
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractDAO.class);
     private String dataSourceName;
 
     private DataSourceProvider dataSourceProvider;
 
     private static final Map<String, AbstractDAO> instances = new HashMap<>();
-
-    private static final Logger _logger = LoggerFactory.getLogger(AbstractDAO.class);
 
     protected AbstractDAO() {}
 
@@ -93,7 +91,7 @@ public abstract class AbstractDAO {
 
                 AbstractDAO.instances.put(key, instance);
             } catch (Exception ex) {
-                _logger.error(ex.getMessage(), ex);
+                logger.error(ex.getMessage(), ex);
             }
         }
 
