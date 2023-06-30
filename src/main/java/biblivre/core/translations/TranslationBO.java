@@ -74,7 +74,7 @@ public class TranslationBO {
             Map<String, Map<String, String>> translations,
             Map<String, Map<String, String>> removeTranslations,
             int loggedUser) {
-        TranslationsDAOImpl.getInstance().save(translations, removeTranslations, loggedUser);
+        translationsDAO.save(translations, removeTranslations, loggedUser);
 
         return true;
     }
@@ -91,7 +91,7 @@ public class TranslationBO {
         Map<String, Map<String, String>> translations = new HashMap<>();
         translations.put(language, translation);
 
-        return TranslationsDAOImpl.getInstance().save(translations, loggedUser);
+        return translationsDAO.save(translations, loggedUser);
     }
 
     public Locale toLocale(String locale) {
