@@ -4,9 +4,9 @@ import biblivre.core.DTOCollection;
 
 public interface SupplierDAO {
 
-    boolean save(SupplierDTO dto);
+    int save(SupplierDTO dto);
 
-    boolean update(SupplierDTO dto);
+    void update(SupplierDTO dto);
 
     boolean delete(int id);
 

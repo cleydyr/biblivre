@@ -22,10 +22,12 @@ package biblivre.acquisition.supplier;
 import biblivre.core.AbstractDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import org.apache.commons.lang3.StringUtils;
 
 public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
@@ -35,7 +37,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     }
 
     @Override
-    public boolean save(SupplierDTO dto) {
+    public int save(SupplierDTO dto) {
 
         try (Connection con = this.getConnection()) {
             String sql =
@@ -48,9 +50,10 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
                             + "contact_4, info, url, email, created_by) "
                             + "VALUES ("
                             + StringUtils.repeat("?", ", ", 24)
-                            + ");";
+                            + ")";
 
-            PreparedStatement pstInsert = con.prepareStatement(sql);
+            PreparedStatement pstInsert =
+                    con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstInsert.setString(1, dto.getTrademark());
             pstInsert.setString(2, dto.getName());
             pstInsert.setString(3, dto.getSupplierNumber());
@@ -78,55 +81,69 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
 
             pstInsert.executeUpdate();
 
+            try (ResultSet generatedKeys = pstInsert.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+
+                throw new DAOException(new Exception("Unexpected empty generated key result set"));
+            }
         } catch (Exception e) {
             throw new DAOException(e);
         }
-        return true;
     }
 
     @Override
-    public boolean update(SupplierDTO dto) {
-        try (Connection con = this.getConnection()) {
+    public void update(SupplierDTO dto) {
+        String sql =
+                """
+                UPDATE suppliers
+                SET trademark = ?, supplier_name = ?, supplier_number = ?, vat_registration_number = ?,
+                    address = ?, address_number = ?, address_complement = ?, area = ?, city = ?,
+                    state = ?, country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?,
+                    telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?,
+                    contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?,
+                    modified = now(), modified_by = ?
+                WHERE id = ? RETURNING id
+                """;
+        try (Connection con = this.getConnection();
+                PreparedStatement pstInsert = con.prepareStatement(sql)) {
 
-            String sql =
-                    "UPDATE suppliers SET "
-                            + "trademark = ?, supplier_name = ?, supplier_number = ?, vat_registration_number = ?, "
-                            + "address = ?, address_number = ?, address_complement = ?, area = ?, city = ?, "
-                            + "state = ?, country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?, "
-                            + "telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?, "
-                            + "contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?, "
-                            + "modified = now(), modified_by = ? "
-                            + "WHERE id = ?; ";
+            PreparedStatementUtil.setAllParameters(
+                    pstInsert,
+                    dto.getTrademark(),
+                    dto.getName(),
+                    dto.getSupplierNumber(),
+                    dto.getVatRegistrationNumber(),
+                    dto.getAddress(),
+                    dto.getAddressNumber(),
+                    dto.getComplement(),
+                    dto.getArea(),
+                    dto.getCity(),
+                    dto.getState(),
+                    dto.getCountry(),
+                    dto.getZipCode(),
+                    dto.getTelephone1(),
+                    dto.getTelephone2(),
+                    dto.getTelephone3(),
+                    dto.getTelephone4(),
+                    dto.getContact1(),
+                    dto.getContact2(),
+                    dto.getContact3(),
+                    dto.getContact4(),
+                    dto.getInfo(),
+                    dto.getUrl(),
+                    dto.getEmail(),
+                    dto.getModifiedBy(),
+                    dto.getId());
 
-            PreparedStatement pstInsert = con.prepareStatement(sql);
-            pstInsert.setString(1, dto.getTrademark());
-            pstInsert.setString(2, dto.getName());
-            pstInsert.setString(3, dto.getSupplierNumber());
-            pstInsert.setString(4, dto.getVatRegistrationNumber());
-            pstInsert.setString(5, dto.getAddress());
-            pstInsert.setString(6, dto.getAddressNumber());
-            pstInsert.setString(7, dto.getComplement());
-            pstInsert.setString(8, dto.getArea());
-            pstInsert.setString(9, dto.getCity());
-            pstInsert.setString(10, dto.getState());
-            pstInsert.setString(11, dto.getCountry());
-            pstInsert.setString(12, dto.getZipCode());
-            pstInsert.setString(13, dto.getTelephone1());
-            pstInsert.setString(14, dto.getTelephone2());
-            pstInsert.setString(15, dto.getTelephone3());
-            pstInsert.setString(16, dto.getTelephone4());
-            pstInsert.setString(17, dto.getContact1());
-            pstInsert.setString(18, dto.getContact2());
-            pstInsert.setString(19, dto.getContact3());
-            pstInsert.setString(20, dto.getContact4());
-            pstInsert.setString(21, dto.getInfo());
-            pstInsert.setString(22, dto.getUrl());
-            pstInsert.setString(23, dto.getEmail());
-            pstInsert.setInt(24, dto.getModifiedBy());
-            pstInsert.setInt(25, dto.getId());
+            try (ResultSet resultSet = pstInsert.executeQuery()) {
+                if (resultSet.next()) {
+                    return;
+                }
 
-            return pstInsert.executeUpdate() > 0;
-
+                throw new Exception("Unexpected: No row updated");
+            }
         } catch (Exception e) {
             throw new DAOException(e);
         }

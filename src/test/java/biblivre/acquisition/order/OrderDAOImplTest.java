@@ -1,2 +1,3 @@
-package biblivre.acquisition.order;public class OrderDAOImplTest {
-}
+package biblivre.acquisition.order;
+
+public class OrderDAOImplTest {}

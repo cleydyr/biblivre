@@ -32,12 +32,12 @@ public class SupplierBO extends AbstractBO {
         return this.supplierDAO.get(id);
     }
 
-    public boolean save(SupplierDTO dto) {
+    public int save(SupplierDTO dto) {
         return this.supplierDAO.save(dto);
     }
 
-    public boolean update(SupplierDTO dto) {
-        return this.supplierDAO.update(dto);
+    public void update(SupplierDTO dto) {
+        this.supplierDAO.update(dto);
     }
 
     public boolean delete(SupplierDTO dto) {

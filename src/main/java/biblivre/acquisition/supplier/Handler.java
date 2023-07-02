@@ -86,30 +86,29 @@ public class Handler extends AbstractHandler {
         Integer id = request.getInteger("id");
         SupplierDTO dto = this.populateDTO(request);
 
-        boolean result;
-        if (id == 0) {
-            dto.setCreatedBy(request.getLoggedUserId());
-            result = supplierBO.save(dto);
-        } else {
-            dto.setId(id);
-            dto.setModifiedBy(request.getLoggedUserId());
-            result = supplierBO.update(dto);
-        }
-        if (result) {
+        try {
+            if (id == 0) {
+                dto.setCreatedBy(request.getLoggedUserId());
+                supplierBO.save(dto);
+            } else {
+                dto.setId(id);
+                dto.setModifiedBy(request.getLoggedUserId());
+                supplierBO.update(dto);
+            }
+
             if (id == 0) {
                 this.setMessage(ActionResult.SUCCESS, "acquisition.supplier.success.save");
             } else {
                 this.setMessage(ActionResult.SUCCESS, "acquisition.supplier.success.update");
             }
-        } else {
-            this.setMessage(ActionResult.WARNING, "acquisition.supplier.error.save");
-        }
 
-        try {
             put("data", dto.toJSONObject());
+
             put("full_data", true);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
+        } catch (Exception e) {
+            this.setMessage(ActionResult.WARNING, "acquisition.supplier.error.save");
         }
     }
 
