@@ -24,7 +24,6 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
@@ -37,7 +36,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Handler extends AbstractHandler {
     private OrderBO orderBO;
-    private ConfigurationBO configurationBO;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -170,10 +168,5 @@ public class Handler extends AbstractHandler {
         }
 
         return dto;
-    }
-
-    @Autowired
-    public void setConfigurationBO(ConfigurationBO configurationBO) {
-        this.configurationBO = configurationBO;
     }
 }
