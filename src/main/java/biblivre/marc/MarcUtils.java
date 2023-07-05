@@ -71,7 +71,7 @@ public class MarcUtils {
     }
 
     public static Record marcToRecord(String marc, MaterialType materialType, RecordStatus status) {
-        String splitter = MarcUtils.detectSplitter(marc);
+        char splitter = MarcUtils.detectSplitter(marc);
         String unescaped = StringEscapeUtils.unescapeHtml4(marc);
         Scanner scanner;
 
@@ -110,6 +110,7 @@ public class MarcUtils {
         Record record = factory.newRecord(leader);
         MarcUtils.setControlFields(record, tags, values);
         MarcUtils.setDataFields(record, tags, values, splitter);
+
         return record;
     }
 
@@ -195,22 +196,18 @@ public class MarcUtils {
         return record;
     }
 
-    public static String detectSplitter(String marc) {
-        // Try to detect the first split.
-        if (!StringUtils.isBlank(marc)) {
-            String[] lines = marc.split("\n");
-            for (String line : lines) {
-                line = line.trim();
-                if (line.length() > 7) {
-                    char separator = line.charAt(6);
-                    if (separator == '|' || separator == '$') {
-                        return String.valueOf(separator);
-                    }
-                }
-            }
+    public static char detectSplitter(String marc) {
+        if (StringUtils.isBlank(marc)) {
+            return MarcConstants.DEFAULT_SPLITTER;
         }
 
-        return MarcConstants.DEFAULT_SPLITTER;
+        return marc.lines()
+                .map(String::trim)
+                .filter(line -> line.length() > 7)
+                .map(line -> line.charAt(6))
+                .filter(c -> c == '|' || c == '$')
+                .findFirst()
+                .orElse(MarcConstants.DEFAULT_SPLITTER);
     }
 
     private static Leader createLeader(
@@ -254,6 +251,8 @@ public class MarcUtils {
             leader.setSubfieldCodeLength(2);
             leader.setImplDefined2(pLeader.substring(17, 20).toCharArray());
             leader.setEntryMap(pLeader.substring(20).toCharArray());
+            leader.setRecordLength(Integer.parseInt(pLeader.substring(0, 5)));
+
         } else {
             leader = MarcUtils.createBasicLeader(materialType, status);
         }
@@ -306,13 +305,7 @@ public class MarcUtils {
     }
 
     private static void setDataFields(
-            Record record, String[] tags, String[] values, String splitter) {
-        if (splitter == null) {
-            splitter = MarcConstants.DEFAULT_SPLITTER;
-        }
-
-        splitter = "\\\\" + splitter;
-
+            Record record, String[] tags, String[] values, char splitter) {
         MarcFactory factory = MarcFactory.newInstance();
 
         for (int i = 0; i < tags.length; i++) {
@@ -329,9 +322,9 @@ public class MarcUtils {
 
             String dataFieldValue = value.substring(2).trim();
 
-            String[] subFields = dataFieldValue.split(splitter);
+            SubfieldIterable iterable = new SubfieldIterable(dataFieldValue, splitter);
 
-            for (String subField : subFields) {
+            for (String subField : iterable) {
                 if (StringUtils.isBlank(subField)) {
                     continue;
                 }
@@ -387,5 +380,45 @@ public class MarcUtils {
         }
 
         subfield.setData(accessionNumber);
+    }
+
+    static class SubfieldIterable implements Iterable<String> {
+        private String next;
+        private final char subfieldSplitter;
+        private boolean hasNext;
+        private final String field;
+
+        private int pos;
+
+        SubfieldIterable(String field, char subfieldSplitter) {
+            if (StringUtils.isBlank(field)) {
+                throw new IllegalArgumentException("field can't be blank");
+            }
+
+            this.subfieldSplitter = subfieldSplitter;
+            this.field = field;
+            this.pos = 0;
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return new Iterator<String>() {
+                @Override
+                public boolean hasNext() {
+                    return pos == field.length();
+                }
+
+                @Override
+                public String next() {
+                    int start = pos;
+
+                    while (pos != field.length() && field.charAt(pos) != subfieldSplitter) {
+                        pos++;
+                    }
+
+                    return field.substring(start, pos);
+                }
+            };
+        }
     }
 }

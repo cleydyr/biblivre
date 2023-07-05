@@ -35,6 +35,9 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.HumanReadableMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -60,47 +63,61 @@ public class Handler extends AbstractHandler {
 
         MemoryFile file = request.getFile("file");
 
-        ImportDTO list;
-        list = importBO.loadFromFile(file::getInputStream);
+        InputStream memoryFileInputStream = file.getInputStream();
 
-        if (list != null) {
-            List<String> isbnList = new ArrayList<>();
-            List<String> issnList = new ArrayList<>();
-            List<String> isrcList = new ArrayList<>();
+        try {
+            Path temporaryFilePath = Files.createTempFile("biblivre-import-upload", "tmp");
 
-            for (RecordDTO dto : list.getRecordList()) {
-                if (dto instanceof BiblioRecordDTO rdto) {
+            File tempFile = temporaryFilePath.toFile();
 
-                    if (StringUtils.isNotBlank(rdto.getIsbn())) {
-                        isbnList.add(rdto.getIsbn());
-                    } else if (StringUtils.isNotBlank(rdto.getIssn())) {
-                        issnList.add(rdto.getIssn());
-                    } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-                        isrcList.add(rdto.getIsrc());
+            FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+
+            file.getInputStream().transferTo(fileOutputStream);
+
+            ImportDTO list = importBO.loadFromFile(() -> new FileInputStream(tempFile));
+
+            if (list != null) {
+                List<String> isbnList = new ArrayList<>();
+                List<String> issnList = new ArrayList<>();
+                List<String> isrcList = new ArrayList<>();
+
+                for (RecordDTO dto : list.getRecordList()) {
+                    if (dto instanceof BiblioRecordDTO rdto) {
+
+                        if (StringUtils.isNotBlank(rdto.getIsbn())) {
+                            isbnList.add(rdto.getIsbn());
+                        } else if (StringUtils.isNotBlank(rdto.getIssn())) {
+                            issnList.add(rdto.getIssn());
+                        } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
+                            isrcList.add(rdto.getIsrc());
+                        }
                     }
+                    // TODO: Completar para autoridades e vocabulário
                 }
-                // TODO: Completar para autoridades e vocabulário
+
+                if (isbnList.size() > 0) {
+                    list.setFoundISBN(indexingBO.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
+                }
+
+                if (issnList.size() > 0) {
+                    list.setFoundISSN(indexingBO.searchExactTerms(RecordType.BIBLIO, 6, issnList));
+                }
+
+                if (isrcList.size() > 0) {
+                    list.setFoundISRC(indexingBO.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
+                }
             }
 
-            if (isbnList.size() > 0) {
-                list.setFoundISBN(indexingBO.searchExactTerms(RecordType.BIBLIO, 5, isbnList));
+            if (list == null) {
+                this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
+            } else if (list.getSuccess() == 0) {
+                this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
+            } else {
+                putOpt("data", list.toJSONObject());
             }
 
-            if (issnList.size() > 0) {
-                list.setFoundISSN(indexingBO.searchExactTerms(RecordType.BIBLIO, 6, issnList));
-            }
-
-            if (isrcList.size() > 0) {
-                list.setFoundISRC(indexingBO.searchExactTerms(RecordType.BIBLIO, 7, isrcList));
-            }
-        }
-
-        if (list == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_file");
-        } else if (list.getSuccess() == 0) {
-            this.setMessage(ActionResult.WARNING, "cataloging.import.error.no_record_found");
-        } else {
-            putOpt("data", list.toJSONObject());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

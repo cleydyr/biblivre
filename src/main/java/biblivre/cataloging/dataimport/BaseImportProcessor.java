@@ -14,7 +14,7 @@ public abstract class BaseImportProcessor implements ImportProcessor {
     @Override
     public ImportDTO importData(
             InputStream inputStream, Function<Record, RecordDTO> recordAdapter) {
-        MarcReader marcReader = getMarcReader(inputStream);
+        initMarcReader(inputStream);
 
         ImportDTO importDTO = readFromMarcReader(marcReader, recordAdapter);
 
@@ -45,14 +45,6 @@ public abstract class BaseImportProcessor implements ImportProcessor {
         }
 
         return dto;
-    }
-
-    private MarcReader getMarcReader(InputStream inputStream) {
-        if (marcReader == null) {
-            initMarcReader(inputStream);
-        }
-
-        return marcReader;
     }
 
     protected abstract void initMarcReader(InputStream inputStream);

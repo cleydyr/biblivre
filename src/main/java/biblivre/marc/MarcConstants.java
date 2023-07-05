@@ -22,7 +22,7 @@ package biblivre.marc;
 import java.util.regex.Pattern;
 
 public final class MarcConstants {
-    public static final String DEFAULT_SPLITTER = "|";
+    public static final char DEFAULT_SPLITTER = '|';
     public static final Pattern DATAFIELD_FORMAT_PATTERN =
             Pattern.compile("([\\(\\)])|(.)\\{(.*?)\\}");
 
