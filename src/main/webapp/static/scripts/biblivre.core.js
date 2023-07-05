@@ -811,24 +811,6 @@ Core.getScrollbarWidth = function () {
 	return Core.scrollbarWidth;
 };
 
-// Keep session from expiring
-Core.keepSession = function () {
-	$.ajax({
-		type: 'POST',
-		url: window.location.pathname,
-		dataType: 'json',
-		data: {
-			controller: 'json',
-			module: 'menu',
-			action: 'ping'
-		},
-		complete: function () {
-			setTimeout(Core.keepSession, 300000);
-		}
-	});
-};
-setTimeout(Core.keepSession, 30000);
-
 Core.fixNavigationHeight = function () {
 	var title = $('.page_title');
 	var navigation = $('.page_navigation');
