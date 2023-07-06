@@ -405,18 +405,18 @@ public class MarcUtils {
             return new Iterator<String>() {
                 @Override
                 public boolean hasNext() {
-                    return pos == field.length();
+                    return pos < field.length();
                 }
 
                 @Override
                 public String next() {
                     int start = pos;
 
-                    while (pos != field.length() && field.charAt(pos) != subfieldSplitter) {
+                    while (pos < field.length() && field.charAt(pos) != subfieldSplitter) {
                         pos++;
                     }
 
-                    return field.substring(start, pos);
+                    return field.substring(start, pos++);
                 }
             };
         }
