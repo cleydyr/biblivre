@@ -34,4 +34,31 @@ class MarcUtilsTest {
                 dataField245.getSubfield('b').getData());
         assertEquals("Vincent Terrace.", dataField245.getSubfield('c').getData());
     }
+
+    @Test
+    void detectSplitter() {
+        String humanReadableMarc =
+                """
+                000 00000cam a2200000 a 4500
+                001 0000001
+                245 10|aFifty years of television :|ba guide to series and pilots, 1937-1988 /|cVincent Terrace.
+                """;
+
+        assertEquals('|', MarcUtils.detectSplitter(humanReadableMarc));
+    }
+
+    @Test
+    void recordLength() {
+        String humanReadableMarc =
+                """
+                000 00092cam a2200000 a 4500
+                001 0000001
+                245 10|aFifty years of television :|ba guide to series and pilots, 1937-1988 /|cVincent Terrace.
+                """;
+
+        Record record =
+                MarcUtils.marcToRecord(humanReadableMarc, MaterialType.BOOK, RecordStatus.NEW);
+
+        assertEquals(92, record.getLeader().getRecordLength());
+    }
 }
