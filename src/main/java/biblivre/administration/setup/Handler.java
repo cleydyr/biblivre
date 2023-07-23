@@ -73,11 +73,7 @@ public class Handler extends AbstractHandler {
             State.start();
             State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
 
-            File template =
-                    new File(
-                            request.getSession().getServletContext().getRealPath("/"),
-                            "biblivre_template_6.0.0.sql");
-            success = schemaBO.createSchema(dto, template, false);
+            success = schemaBO.createSchema(dto, false);
 
             if (success) {
                 State.finish();

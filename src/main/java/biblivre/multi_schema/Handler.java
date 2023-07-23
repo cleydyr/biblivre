@@ -29,7 +29,6 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.utils.Constants;
-import java.io.File;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,12 +70,7 @@ public class Handler extends AbstractHandler {
         State.start();
         State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
 
-        File template =
-                new File(
-                        request.getSession().getServletContext().getRealPath("/"),
-                        "biblivre_template_6.0.0.sql");
-
-        boolean success = schemaBO.createSchema(dto, template, true);
+        boolean success = schemaBO.createSchema(dto, true);
 
         if (success) {
             State.finish();

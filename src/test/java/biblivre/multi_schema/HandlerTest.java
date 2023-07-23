@@ -56,19 +56,6 @@ class HandlerTest extends AbstractContainerDatabaseTest {
     private static ExtendedRequest prepareMockRequest(String schemaName) throws IOException {
         ExtendedRequest request = Mockito.mock(ExtendedRequest.class);
 
-        HttpSession session = Mockito.mock(HttpSession.class);
-
-        ServletContext servletContext = Mockito.mock(ServletContext.class);
-
-        Mockito.when(session.getServletContext()).thenReturn(servletContext);
-
-        ClassPathResource classPathResource = new ClassPathResource("/sql");
-
-        Mockito.when(servletContext.getRealPath("/"))
-                .thenReturn(classPathResource.getFile().getAbsolutePath());
-
-        Mockito.when(request.getSession()).thenReturn(session);
-
         Mockito.when(request.getString("title")).thenReturn(schemaName);
         Mockito.when(request.getString("subtitle")).thenReturn(schemaName);
         Mockito.when(request.getString("schema")).thenReturn(schemaName);
@@ -95,6 +82,8 @@ class HandlerTest extends AbstractContainerDatabaseTest {
         Handler handler = new Handler();
 
         SchemaBO schemaBO = new SchemaBO();
+
+        schemaBO.setDatabaseTemplate(new ClassPathResource("/META-INF/sql/biblivre-template.sql"));
 
         SchemaDAO schemaDAO = getInstance(SchemasDAOImpl.class);
 

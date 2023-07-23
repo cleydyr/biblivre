@@ -24,7 +24,6 @@ import biblivre.administration.setup.State;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.UpdatesDAO;
 import biblivre.core.utils.Constants;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -37,11 +36,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SchemaBO {
     private SchemaDAO schemaDAO;
+
+    private Resource databaseTemplate;
 
     protected static final Logger logger = LoggerFactory.getLogger(SchemaBO.class);
 
@@ -161,7 +164,7 @@ public class SchemaBO {
         return SchemaThreadLocal.withGlobalSchema(() -> schemaDAO.exists(schema));
     }
 
-    public boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {
+    public boolean createSchema(SchemaDTO dto, boolean addToGlobal) {
         UpdatesDAO updatesDAO = UpdatesDAO.getInstance();
 
         try (Connection connection = updatesDAO.beginUpdate();
@@ -186,7 +189,7 @@ public class SchemaBO {
                 Statement statement = connection.createStatement()) {
             State.writeLog("Creating schema for '" + dto.getSchema() + "'");
 
-            RestoreBO.processRestore(template);
+            RestoreBO.processRestore(databaseTemplate.getFile());
 
             State.writeLog("Renaming schema bib4template to " + dto.getSchema());
 
@@ -221,5 +224,10 @@ public class SchemaBO {
     @Autowired
     public void setSchemaDAO(SchemaDAO schemaDAO) {
         this.schemaDAO = schemaDAO;
+    }
+
+    @Value("classpath:META-INF/sql/biblivre-template.sql")
+    public void setDatabaseTemplate(Resource databaseTemplate) {
+        this.databaseTemplate = databaseTemplate;
     }
 }
