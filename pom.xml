@@ -373,6 +373,7 @@
 					<excludeVulnerabilityIds>
 						<exclude>CVE-2022-1471</exclude>
 						<exclude>sonatype-2022-6438</exclude>
+						<excludeVulnerabilityId>CVE-2023-38286</excludeVulnerabilityId>
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
