@@ -1,29 +1,27 @@
 package biblivre.multi_schema;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.administration.permissions.PermissionBO;
 import biblivre.administration.permissions.PermissionDAOImpl;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.Updates;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDAO;
 import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDAOImpl;
-import biblivre.update.v6_0_0$3_0_0$alpha.Update;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.core.io.ClassPathResource;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 class HandlerTest extends AbstractContainerDatabaseTest {
@@ -31,39 +29,31 @@ class HandlerTest extends AbstractContainerDatabaseTest {
     @Test
     void create() {
         try {
-            execute(() -> {
-                Updates updateSuite = new Updates();
+            execute(
+                    () -> {
+                        Handler handler = getWiredHandler();
 
-                updateSuite.setUpdateServicesMap(Map.of(
-                        Update.class.getName(), new Update()
-                ));
+                        String schemaName = "test";
 
-                updateSuite.schemaUpdate("single");
+                        ExtendedRequest request = prepareMockRequest(schemaName);
 
-                Handler handler = getWiredHandler();
+                        ExtendedResponse response = Mockito.mock(ExtendedResponse.class);
 
-                String schemaName = "test";
+                        handler.create(request, response);
 
-                ExtendedRequest request = prepareMockRequest(schemaName);
+                        LoginBO loginBO = getWiredLoginBO();
 
-                ExtendedResponse response = Mockito.mock(ExtendedResponse.class);
+                        SchemaThreadLocal.setSchema(schemaName);
 
-                handler.create(request, response);
-
-                LoginBO loginBO = getWiredLoginBO();
-
-                SchemaThreadLocal.setSchema(schemaName);
-
-                assertNotNull(loginBO.login("admin", "abracadabra"));
-            });
-        }
-        catch (Exception e) {
+                        assertNotNull(loginBO.login("admin", "abracadabra"));
+                    });
+        } catch (Exception e) {
             fail(e);
         }
     }
 
     @NotNull
-    private static ExtendedRequest prepareMockRequest(String schemaName) {
+    private static ExtendedRequest prepareMockRequest(String schemaName) throws IOException {
         ExtendedRequest request = Mockito.mock(ExtendedRequest.class);
 
         HttpSession session = Mockito.mock(HttpSession.class);
@@ -72,11 +62,17 @@ class HandlerTest extends AbstractContainerDatabaseTest {
 
         Mockito.when(session.getServletContext()).thenReturn(servletContext);
 
+        ClassPathResource classPathResource = new ClassPathResource("/sql");
+
+        Mockito.when(servletContext.getRealPath("/"))
+                .thenReturn(classPathResource.getFile().getAbsolutePath());
+
         Mockito.when(request.getSession()).thenReturn(session);
 
         Mockito.when(request.getString("title")).thenReturn(schemaName);
         Mockito.when(request.getString("subtitle")).thenReturn(schemaName);
         Mockito.when(request.getString("schema")).thenReturn(schemaName);
+
         return request;
     }
 
