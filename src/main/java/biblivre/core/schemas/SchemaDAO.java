@@ -6,8 +6,6 @@ public interface SchemaDAO {
 
     Set<SchemaDTO> list();
 
-    boolean insert(SchemaDTO dto);
-
     boolean delete(SchemaDTO dto);
 
     boolean save(SchemaDTO dto);

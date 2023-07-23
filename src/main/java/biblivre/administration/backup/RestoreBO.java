@@ -23,6 +23,7 @@ import biblivre.administration.backup.exception.RestoreException;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractBO;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.UpdatesDAO;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
@@ -40,6 +41,9 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -193,7 +197,7 @@ public class RestoreBO extends AbstractBO {
         return dto;
     }
 
-    public static void processRestore(File restore, BufferedWriter bw) throws IOException {
+    public static void processRestore(File restore) throws IOException {
 
         if (restore == null) {
             logger.info("===== Skipping File 'null' =====");
@@ -217,12 +221,10 @@ public class RestoreBO extends AbstractBO {
                     .filter(RestoreBO::notFunctionOrTriggerRelated)
                     .forEach(
                             statement -> {
-                                _writeLine(bw, statement);
+                                _writeLine(statement);
                                 State.incrementCurrentStep();
                             });
         }
-
-        bw.flush();
     }
 
     public static boolean notFunctionOrTriggerRelated(String statement) {
@@ -262,31 +264,31 @@ public class RestoreBO extends AbstractBO {
 
             try (BufferedWriter bw = _getBufferedWriter(p)) {
 
-                _processRenames(context.getPreRenameSchemas(), bw);
+                _processRenames(context.getPreRenameSchemas());
 
                 bw.flush();
 
                 String extension = _getExtension(dto);
 
                 if (restoreSchemas.containsKey(globalSchema)) {
-                    _processGlobalSchema(directory, extension, bw);
+                    _processGlobalSchema(directory, extension);
 
                     bw.flush();
                 }
 
                 for (String schema : restoreSchemas.keySet()) {
                     if (!globalSchema.equals(schema)) {
-                        _processSchemaRestores(directory, extension, schema, bw);
+                        _processSchemaRestores(directory, extension, schema);
 
                         bw.flush();
                     }
                 }
 
-                _processRenames(context.getPostRenameSchemas(), bw);
+                _processRenames(context.getPostRenameSchemas());
 
                 bw.flush();
 
-                _processRenames(context.getRestoreRenamedSchemas(), bw);
+                _processRenames(context.getRestoreRenamedSchemas());
 
                 bw.flush();
 
@@ -296,9 +298,9 @@ public class RestoreBO extends AbstractBO {
 
                 _postProcessRenames(dto, restoreSchemas, bw);
 
-                _writeLine(bw, _DELETE_FROM_SCHEMAS);
+                _writeLine(_DELETE_FROM_SCHEMAS);
 
-                _writeLine(bw, "ANALYZE");
+                _writeLine("ANALYZE");
 
                 bw.close();
 
@@ -319,19 +321,18 @@ public class RestoreBO extends AbstractBO {
         return new BufferedWriter(osw);
     }
 
-    private void _processGlobalSchema(File directory, String extension, BufferedWriter bw)
-            throws IOException {
+    private void _processGlobalSchema(File directory, String extension) throws IOException {
         State.writeLog("Processing schema for 'global'");
 
         File ddlFile = new File(directory, "global.schema." + extension);
 
-        processRestore(ddlFile, bw);
+        processRestore(ddlFile);
 
         State.writeLog("Processing data for 'global'");
 
         File dmlFile = new File(directory, "global.data." + extension);
 
-        processRestore(dmlFile, bw);
+        processRestore(dmlFile);
     }
 
     private static void _postProcessRenames(
@@ -346,9 +347,9 @@ public class RestoreBO extends AbstractBO {
 
                         schemaTitle = schemaTitle.replaceAll("'", "''").replaceAll("\\\\", "\\\\");
 
-                        _writeLine(bw, String.format(_DELETE_SCHEMA_TPL, finalSchemaName));
+                        _writeLine(String.format(_DELETE_SCHEMA_TPL, finalSchemaName));
 
-                        _writeLine(bw, _buildInsertSchemaQuery(finalSchemaName, schemaTitle));
+                        _writeLine(_buildInsertSchemaQuery(finalSchemaName, schemaTitle));
                     }
                 });
     }
@@ -362,13 +363,13 @@ public class RestoreBO extends AbstractBO {
                     String globalSchema = Constants.GLOBAL_SCHEMA;
 
                     if (!globalSchema.equals(originalSchemaName)) {
-                        _writeLine(bw, String.format(_DELETE_DIGITALMDIA_TPL, schemaToBeDeleted));
+                        _writeLine(String.format(_DELETE_DIGITALMDIA_TPL, schemaToBeDeleted));
                     }
 
-                    _writeLine(bw, String.format(_DROP_SCHEMA_TPL, schemaToBeDeleted));
+                    _writeLine(String.format(_DROP_SCHEMA_TPL, schemaToBeDeleted));
 
                     if (!globalSchema.equals(originalSchemaName)) {
-                        _writeLine(bw, String.format(_DELETE_SCHEMA_TPL, originalSchemaName));
+                        _writeLine(String.format(_DELETE_SCHEMA_TPL, originalSchemaName));
                     }
                 });
     }
@@ -378,24 +379,24 @@ public class RestoreBO extends AbstractBO {
         return String.format(_INSERT_SCHEMA_TPL, finalSchemaName, schemaTitle);
     }
 
-    private void _processSchemaRestores(
-            File path, String extension, String schema, BufferedWriter bw) throws IOException {
+    private void _processSchemaRestores(File path, String extension, String schema)
+            throws IOException {
 
         State.writeLog("Processing schema for '" + schema + "'");
 
-        processRestore(new File(path, schema + ".schema." + extension), bw);
+        processRestore(new File(path, schema + ".schema." + extension));
 
         State.writeLog("Processing data for '" + schema + "'");
 
-        processRestore(new File(path, schema + ".data." + extension), bw);
+        processRestore(new File(path, schema + ".data." + extension));
 
         State.writeLog("Processing media for '" + schema + "'");
 
-        this.processMediaRestore(new File(path, schema + ".media." + extension), bw, schema);
-        this.processMediaRestoreFolder(new File(path, schema), bw);
+        this.processMediaRestore(new File(path, schema + ".media." + extension), schema);
+        this.processMediaRestoreFolder(new File(path, schema));
     }
 
-    private static void _processRenames(Map<String, String> preRenameSchemas, BufferedWriter bw) {
+    private static void _processRenames(Map<String, String> preRenameSchemas) {
 
         preRenameSchemas.forEach(
                 (originalSchemaName, finalSchemaName) -> {
@@ -405,7 +406,6 @@ public class RestoreBO extends AbstractBO {
                                     originalSchemaName, finalSchemaName));
 
                     _writeLine(
-                            bw,
                             String.format(_ALTER_SCHEMA_TPL, originalSchemaName, finalSchemaName));
                 });
     }
@@ -472,7 +472,7 @@ public class RestoreBO extends AbstractBO {
         return dto;
     }
 
-    private void processMediaRestoreFolder(File path, BufferedWriter bw) {
+    private void processMediaRestoreFolder(File path) {
         if (path == null) {
             logger.info("===== Skipping File 'null' =====");
             return;
@@ -495,7 +495,7 @@ public class RestoreBO extends AbstractBO {
 
                             String newLine = _buildUpdateDigitalMediaQuery(mediaId, oid);
 
-                            _writeLine(bw, newLine);
+                            _writeLine(newLine);
                         }
                     }
 
@@ -507,8 +507,7 @@ public class RestoreBO extends AbstractBO {
         return String.format(_UPDATE_DIGITALMEDIA_TPL, oid, mediaId);
     }
 
-    private void processMediaRestore(File restore, BufferedWriter bw, String schema)
-            throws RestoreException {
+    private void processMediaRestore(File restore, String schema) throws RestoreException {
 
         if (restore == null) {
             logger.info("===== Skipping File 'null' =====");
@@ -533,42 +532,38 @@ public class RestoreBO extends AbstractBO {
                     line -> {
                         State.incrementCurrentStep();
 
-                        _processLOLine(line, oidMap, bw);
+                        _processLOLine(line, oidMap);
                     });
 
-            bw.flush();
-
-            _writeLine(bw, "SET search_path = \"" + schema + "\", pg_catalog;");
+            _writeLine("SET search_path = \"" + schema + "\", pg_catalog;");
 
             oidMap.forEach(
                     (oid, newOid) -> {
                         String query = _buildUpdateDigitalMediaQuery(oid, newOid);
 
-                        _writeLine(bw, query);
+                        _writeLine(query);
                     });
-
-            bw.flush();
         } catch (Exception e) {
             throw new RestoreException(e);
         }
     }
 
-    private void _processLOLine(String line, Map<Long, Long> oidMap, BufferedWriter bw) {
+    private void _processLOLine(String line, Map<Long, Long> oidMap) {
 
         if (line.startsWith("SELECT pg_catalog.lo_create")) {
             _processNewOid(line, oidMap);
         } else if (line.startsWith("SELECT pg_catalog.lo_open")) {
-            _processsOpenOid(line, oidMap, bw);
+            _processsOpenOid(line, oidMap);
         } else if (!_ignoreLine(line)) {
             if (line.startsWith("COPY")) {
                 logger.info(line);
             }
 
-            _writeLine(bw, line);
+            _writeLine(line);
         }
     }
 
-    private static void _processsOpenOid(String line, Map<Long, Long> oidMap, BufferedWriter bw) {
+    private static void _processsOpenOid(String line, Map<Long, Long> oidMap) {
         Matcher loOpenMatcher = _LO_OPEN.matcher(line);
 
         if (loOpenMatcher.find()) {
@@ -576,7 +571,7 @@ public class RestoreBO extends AbstractBO {
 
             String newLine = loOpenMatcher.replaceFirst("$1" + oidMap.get(oid) + "$3");
 
-            _writeLine(bw, newLine);
+            _writeLine(newLine);
         }
     }
 
@@ -721,12 +716,16 @@ public class RestoreBO extends AbstractBO {
         return dto.getBackup().getPath().endsWith("b5bz") ? "b5b" : "b4b";
     }
 
-    private static void _writeLine(BufferedWriter bw, String newLine) {
-        try {
-            bw.write(newLine);
+    private static void _writeLine(String newLine) {
+        UpdatesDAO updatesDAO = UpdatesDAO.getInstance();
 
-            bw.newLine();
-        } catch (IOException ioe) {
+        try (Connection con = updatesDAO.beginUpdate()) {
+            Statement statement = con.createStatement();
+
+            statement.execute(newLine);
+
+            con.commit();
+        } catch (SQLException ioe) {
             throw new RestoreException(ioe);
         }
     }

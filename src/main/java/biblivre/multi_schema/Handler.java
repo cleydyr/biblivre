@@ -43,41 +43,14 @@ public class Handler extends AbstractHandler {
         String titleParam = request.getString("title");
         String subtitleParam = request.getString("subtitle");
         String schemaParam = request.getString("schema");
+        int loggedUserId = request.getLoggedUserId();
 
         SchemaDTO dto = new SchemaDTO();
         dto.setName(titleParam);
         dto.setSchema(schemaParam);
-        dto.setCreatedBy(request.getLoggedUserId());
+        dto.setCreatedBy(loggedUserId);
 
-        State.start();
-        State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
-
-        File template =
-                new File(
-                        request.getSession().getServletContext().getRealPath("/"),
-                        "biblivre_template_6.0.0.sql");
-
-        boolean success = schemaBO.createSchema(dto, template, true);
-        if (success) {
-            State.finish();
-
-            SchemaThreadLocal.withSchema(
-                    schemaParam,
-                    () -> {
-                        configurationBO.save(
-                                new ConfigurationsDTO(Constants.CONFIG_TITLE, titleParam),
-                                request.getLoggedUserId());
-                        configurationBO.save(
-                                new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
-                                request.getLoggedUserId());
-                    });
-
-            this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
-        } else {
-            State.cancel();
-
-            this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
-        }
+        boolean success = isSuccess(request, subtitleParam, loggedUserId, dto);
 
         try {
             put("success", success);
@@ -91,6 +64,41 @@ public class Handler extends AbstractHandler {
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
+    }
+
+    private boolean isSuccess(
+            ExtendedRequest request, String subtitleParam, int loggedUserId, SchemaDTO dto) {
+        State.start();
+        State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
+
+        File template =
+                new File(
+                        request.getSession().getServletContext().getRealPath("/"),
+                        "biblivre_template_6.0.0.sql");
+
+        boolean success = schemaBO.createSchema(dto, template, true);
+
+        if (success) {
+            State.finish();
+
+            SchemaThreadLocal.withSchema(
+                    dto.getSchema(),
+                    () -> {
+                        configurationBO.save(
+                                new ConfigurationsDTO(Constants.CONFIG_TITLE, dto.getName()),
+                                loggedUserId);
+                        configurationBO.save(
+                                new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
+                                loggedUserId);
+                    });
+
+            this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
+        } else {
+            State.cancel();
+
+            this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
+        }
+        return success;
     }
 
     public void toggle(ExtendedRequest request, ExtendedResponse response) {

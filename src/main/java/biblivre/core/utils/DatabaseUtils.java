@@ -102,7 +102,7 @@ public class DatabaseUtils {
         } else if (os.contains("LINUX")) {
             return DatabaseUtils.getLinux(fileName);
         } else if (os.contains("MAC OS X")) {
-            return DatabaseUtils.getMacOs(fileName);
+            return DatabaseUtils.getLinux(fileName);
         } else {
             return null;
         }
@@ -145,6 +145,8 @@ public class DatabaseUtils {
     private static File getLinux(String filename) {
         ProcessBuilder pb = whichCommand(filename);
 
+        pb.redirectErrorStream(true);
+
         try (BufferedReader reader =
                 new BufferedReader(new InputStreamReader(pb.start().getInputStream()))) {
 
@@ -157,7 +159,7 @@ public class DatabaseUtils {
     }
 
     private static ProcessBuilder whichCommand(String filename) {
-        String[] commands = new String[] {"/bin/bash", "-c", "which " + filename};
+        String[] commands = new String[] {"/bin/sh", "-c", "which " + filename};
 
         return new ProcessBuilder(commands);
     }

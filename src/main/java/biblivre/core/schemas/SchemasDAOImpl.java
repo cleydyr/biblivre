@@ -61,28 +61,6 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
     }
 
     @Override
-    public boolean insert(SchemaDTO dto) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
-            String sql = "INSERT INTO schemas (schema, name) VALUES (?, ?);";
-
-            PreparedStatement pst = con.prepareStatement(sql);
-
-            pst.setString(1, dto.getSchema());
-            pst.setString(2, dto.getName());
-
-            return pst.executeUpdate() > 0;
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-    }
-
-    @Override
     public boolean delete(SchemaDTO dto) {
         Connection con = null;
 

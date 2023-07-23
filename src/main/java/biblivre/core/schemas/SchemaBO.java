@@ -22,15 +22,12 @@ package biblivre.core.schemas;
 import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.exceptions.ValidationException;
+import biblivre.core.UpdatesDAO;
 import biblivre.core.utils.Constants;
-import biblivre.core.utils.DatabaseUtils;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -165,96 +162,57 @@ public class SchemaBO {
     }
 
     public boolean createSchema(SchemaDTO dto, File template, boolean addToGlobal) {
+        UpdatesDAO updatesDAO = UpdatesDAO.getInstance();
 
-        File psql = DatabaseUtils.getPsql();
+        try (Connection connection = updatesDAO.beginUpdate();
+                Statement statement = connection.createStatement()) {
 
-        if (psql == null) {
-            throw new ValidationException("administration.maintenance.backup.error.psql_not_found");
+            if (exists(dto.getSchema())) {
+                State.writeLog("Dropping old schema");
+
+                if (!dto.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
+                    statement.addBatch("DELETE FROM \"" + dto.getSchema() + "\".digital_media;\n");
+                }
+
+                statement.addBatch("DROP SCHEMA \"" + dto.getSchema() + "\" CASCADE;\n");
+            }
+
+            connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
-        String[] commands =
-                new String[] {
-                    psql.getAbsolutePath(), // 0
-                    "--single-transaction", // 1
-                    "--host", // 2
-                    DatabaseUtils.getDatabaseHostName(), // 3
-                    "--port", // 4
-                    DatabaseUtils.getDatabasePort(), // 5
-                    "-v", // 6
-                    "ON_ERROR_STOP=1", // 7
-                    "--file", // 8
-                    "-", // 9
-                };
+        try (Connection connection = updatesDAO.beginUpdate();
+                Statement statement = connection.createStatement()) {
+            State.writeLog("Creating schema for '" + dto.getSchema() + "'");
 
-        ProcessBuilder pb = new ProcessBuilder(commands);
+            RestoreBO.processRestore(template);
 
-        pb.redirectErrorStream(true);
+            State.writeLog("Renaming schema bib4template to " + dto.getSchema());
 
-        try {
-            State.writeLog("Starting psql");
+            statement.addBatch(
+                    "ALTER SCHEMA \"bib4template\" RENAME TO \"" + dto.getSchema() + "\";\n");
 
-            Process p = pb.start();
-
-            InputStreamReader isr =
-                    new InputStreamReader(p.getInputStream(), Constants.DEFAULT_CHARSET);
-
-            OutputStreamWriter osw =
-                    new OutputStreamWriter(p.getOutputStream(), Constants.DEFAULT_CHARSET);
-            try (BufferedWriter bw = new BufferedWriter(osw)) {
-
-                Thread t =
-                        new Thread(
-                                () -> {
-                                    String outputLine;
-                                    try (final BufferedReader br = new BufferedReader(isr)) {
-                                        while ((outputLine = br.readLine()) != null) {
-                                            State.writeLog(outputLine);
-                                        }
-                                    } catch (Exception e) {
-                                        logger.error("error while creating new schema", e);
-                                    }
-                                });
-
-                t.start();
-
-                if (exists(dto.getSchema())) {
-                    State.writeLog("Dropping old schema");
-
-                    if (!dto.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-                        bw.write("DELETE FROM \"" + dto.getSchema() + "\".digital_media;\n");
-                    }
-
-                    bw.write("DROP SCHEMA \"" + dto.getSchema() + "\" CASCADE;\n");
-                }
-
-                State.writeLog("Creating schema for '" + dto.getSchema() + "'");
-
-                RestoreBO.processRestore(template, bw);
-
-                State.writeLog("Renaming schema bib4template to " + dto.getSchema());
-                bw.write("ALTER SCHEMA \"bib4template\" RENAME TO \"" + dto.getSchema() + "\";\n");
-
-                if (addToGlobal) {
-                    bw.write(
-                            "INSERT INTO \""
-                                    + Constants.GLOBAL_SCHEMA
-                                    + "\".schemas (schema, name) VALUES ('"
-                                    + dto.getSchema()
-                                    + "', E'"
-                                    + dto.getName()
-                                    + "');\n");
-                }
-
-                bw.write("ANALYZE;\n");
-
-                bw.close();
-
-                p.waitFor();
-
-                return p.exitValue() == 0;
+            if (addToGlobal) {
+                statement.addBatch(
+                        "INSERT INTO \""
+                                + Constants.GLOBAL_SCHEMA
+                                + "\".schemas (schema, name) VALUES ('"
+                                + dto.getSchema()
+                                + "', E'"
+                                + dto.getName()
+                                + "');\n");
             }
-        } catch (IOException | InterruptedException e) {
-            SchemaBO.logger.error(e.getMessage(), e);
+
+            statement.addBatch("ANALYZE;\n");
+
+            statement.executeBatch();
+
+            connection.commit();
+
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
 
         return false;
