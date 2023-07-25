@@ -40,13 +40,12 @@ import biblivre.login.LoginDAOImpl;
 import com.github.stefanbirkner.systemlambda.Statement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import java.util.List;
 import javax.sql.DataSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.ClassRule;
 import org.springframework.core.io.ClassPathResource;
 import org.testcontainers.containers.PostgreSQLContainer;
-
-import java.util.List;
 
 public abstract class AbstractContainerDatabaseTest {
     private static DataSource dataSource;

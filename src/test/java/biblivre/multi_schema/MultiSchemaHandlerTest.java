@@ -9,7 +9,6 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.login.LoginBO;
-
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
