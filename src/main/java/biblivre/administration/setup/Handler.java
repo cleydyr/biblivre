@@ -35,6 +35,7 @@ import biblivre.core.file.MemoryFile;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.StringPool;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -73,7 +74,7 @@ public class Handler extends AbstractHandler {
             State.start();
             State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
 
-            success = schemaBO.createSchema(dto, false);
+            success = schemaBO.createSchema(dto, false, StringPool.BLANK);
 
             if (success) {
                 State.finish();

@@ -23,6 +23,8 @@ import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.UpdatesDAO;
+import biblivre.core.configurations.ConfigurationBO;
+import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.utils.Constants;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -53,6 +55,7 @@ public class SchemaBO {
 
     private static final Predicate<String> SCHEMA_VALID =
             Pattern.compile("([a-zA-Z0-9_]+)").asMatchPredicate();
+    private ConfigurationBO configurationBO;
 
     public boolean isNotLoaded(String schema) {
         return !isLoaded(schema);
@@ -164,7 +167,9 @@ public class SchemaBO {
         return SchemaThreadLocal.withGlobalSchema(() -> schemaDAO.exists(schema));
     }
 
-    public boolean createSchema(SchemaDTO dto, boolean addToGlobal) {
+    public boolean createSchema(SchemaDTO dto, boolean addToGlobal, String subtitleParam) {
+        boolean success = false;
+
         UpdatesDAO updatesDAO = UpdatesDAO.getInstance();
 
         try (Connection connection = updatesDAO.beginUpdate();
@@ -213,12 +218,27 @@ public class SchemaBO {
 
             connection.commit();
 
-            return true;
+            success = true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
 
-        return false;
+        if (success) {
+            State.finish();
+
+            SchemaThreadLocal.withSchema(
+                    dto.getSchema(),
+                    () -> {
+                        configurationBO.save(
+                                new ConfigurationsDTO(Constants.CONFIG_TITLE, dto.getName()),
+                                dto.getCreatedBy());
+                        configurationBO.save(
+                                new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
+                                dto.getCreatedBy());
+                    });
+        }
+
+        return success;
     }
 
     @Autowired
@@ -229,5 +249,10 @@ public class SchemaBO {
     @Value("classpath:META-INF/sql/biblivre-template.sql")
     public void setDatabaseTemplate(Resource databaseTemplate) {
         this.databaseTemplate = databaseTemplate;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

@@ -14,8 +14,6 @@ import biblivre.core.schemas.SchemaDAO;
 import biblivre.core.schemas.SchemasDAOImpl;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDAOImpl;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -95,7 +93,8 @@ class HandlerTest extends AbstractContainerDatabaseTest {
 
         configurationBO.setSchemaBO(schemaBO);
 
-        handler.setConfigurationBO(configurationBO);
+        schemaBO.setConfigurationBO(configurationBO);
+
         return handler;
     }
 }

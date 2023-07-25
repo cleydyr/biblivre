@@ -23,12 +23,9 @@ import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
-import biblivre.core.utils.Constants;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,7 +46,20 @@ public class Handler extends AbstractHandler {
         dto.setSchema(schemaParam);
         dto.setCreatedBy(loggedUserId);
 
-        boolean success = isSuccess(request, subtitleParam, loggedUserId, dto);
+        State.start();
+        State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
+
+        boolean success = schemaBO.createSchema(dto, true, subtitleParam);
+
+        if (success) {
+            State.finish();
+
+            this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
+        } else {
+            State.cancel();
+
+            this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
+        }
 
         try {
             put("success", success);
@@ -63,36 +73,6 @@ public class Handler extends AbstractHandler {
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, "error.invalid_json");
         }
-    }
-
-    private boolean isSuccess(
-            ExtendedRequest request, String subtitleParam, int loggedUserId, SchemaDTO dto) {
-        State.start();
-        State.writeLog(request.getLocalizedText("multi_schema.manage.log_header"));
-
-        boolean success = schemaBO.createSchema(dto, true);
-
-        if (success) {
-            State.finish();
-
-            SchemaThreadLocal.withSchema(
-                    dto.getSchema(),
-                    () -> {
-                        configurationBO.save(
-                                new ConfigurationsDTO(Constants.CONFIG_TITLE, dto.getName()),
-                                loggedUserId);
-                        configurationBO.save(
-                                new ConfigurationsDTO(Constants.CONFIG_SUBTITLE, subtitleParam),
-                                loggedUserId);
-                    });
-
-            this.setMessage(ActionResult.SUCCESS, "multi_schema.manage.success.create");
-        } else {
-            State.cancel();
-
-            this.setMessage(ActionResult.WARNING, "multi_schema.manage.error.create");
-        }
-        return success;
     }
 
     public void toggle(ExtendedRequest request, ExtendedResponse response) {
@@ -116,6 +96,7 @@ public class Handler extends AbstractHandler {
         }
 
         boolean success = disable ? schemaBO.disable(dto) : schemaBO.enable(dto);
+
         try {
             put("success", success);
         } catch (JSONException e) {

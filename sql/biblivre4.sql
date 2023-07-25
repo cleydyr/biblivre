@@ -2122,8 +2122,8 @@ general.multi_schema	false	boolean	t	2014-06-14 18:32:29.586269	1
 general.psql_path		string	f	2014-06-21 11:40:03.8973	1
 general.pg_dump_path		string	f	2014-06-21 11:40:03.8973	1
 general.backup_path		string	f	2014-06-21 11:40:03.8973	1
-general.subtitle	Versão 5.0 Beta	string	f	2022-12-04 11:05:55.5474	1
-general.title	Biblivre V	string	t	2022-12-04 11:05:55.5474	1
+general.subtitle	Versão 6.0 Alpha	string	f	2022-12-04 11:05:55.5474	1
+general.title	Biblivre 6	string	t	2022-12-04 11:05:55.5474	1
 \.
 
 
