@@ -143,9 +143,7 @@ public final class SearchQueryDTO extends AbstractDTO {
 
             SearchTermDTO dto = new SearchTermDTO();
             dto.setField(field);
-            if (i != 0) {
-                dto.setOperator(SearchOperator.fromString(operator));
-            }
+            dto.setOperator(SearchOperator.fromString(operator));
             dto.setStartDate(startDate);
             dto.setEndDate(endDate);
             dto.addTerms(validTerms);

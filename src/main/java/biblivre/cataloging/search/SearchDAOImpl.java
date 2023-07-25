@@ -436,11 +436,17 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
 
         sql.append(" AND (");
 
-        for (SearchTermDTO searchTerm : searchTerms) {
+        for (int i = 0; i < searchTerms.size(); i++) {
+            SearchTermDTO searchTerm = searchTerms.get(i);
+
             SearchOperator operator = searchTerm.getOperator();
 
             if (operator != null) {
-                sql.append(operator.getSqlOperator());
+                if (i != 0) {
+                    sql.append(operator.getSqlOperator());
+                } else if (operator.equals(SearchOperator.AND_NOT)) {
+                    sql.append(" NOT ");
+                }
             }
 
             sql.append("(");
