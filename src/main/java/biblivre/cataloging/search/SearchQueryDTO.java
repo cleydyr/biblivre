@@ -45,8 +45,8 @@ public final class SearchQueryDTO extends AbstractDTO {
     private MaterialType materialType;
     private List<SearchTermDTO> terms;
     private String parameters;
-    private Boolean holdingSearch;
-    private Boolean reservedOnly;
+    private boolean holdingSearch;
+    private boolean reservedOnly;
     private final Collection<String> DATE_FIELDS =
             List.of("created", "modified", "holding_created", "holding_modified");
 
@@ -184,27 +184,19 @@ public final class SearchQueryDTO extends AbstractDTO {
         this.materialType = materialType;
     }
 
-    public Boolean isHoldingSearch() {
-        return this.holdingSearch != null ? this.holdingSearch : false;
+    public boolean isHoldingSearch() {
+        return this.holdingSearch;
     }
 
-    public void setHoldingSearch(Boolean holdingSearch) {
-        if (holdingSearch == null) {
-            holdingSearch = Boolean.FALSE;
-        }
-
+    public void setHoldingSearch(boolean holdingSearch) {
         this.holdingSearch = holdingSearch;
     }
 
-    public Boolean isReservedOnly() {
-        return this.reservedOnly != null ? this.reservedOnly : false;
+    public boolean isReservedOnly() {
+        return this.reservedOnly;
     }
 
-    public void setReservedOnly(Boolean reservedOnly) {
-        if (reservedOnly == null) {
-            reservedOnly = Boolean.FALSE;
-        }
-
+    public void setReservedOnly(boolean reservedOnly) {
         this.reservedOnly = reservedOnly;
     }
 
