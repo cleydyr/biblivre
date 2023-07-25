@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public final class SearchQueryDTO extends AbstractDTO {
+    public static final Pattern PATTERN = Pattern.compile("\\s*(\"[^\"]+\"|[^\\s\"]+)");
     @Serial private static final long serialVersionUID = 1L;
 
     private SearchMode searchMode;
@@ -110,8 +111,7 @@ public final class SearchQueryDTO extends AbstractDTO {
 
             String sanitizedQuery = TextUtils.preparePhrase(query);
 
-            Pattern pattern = Pattern.compile("\\s*(\"[^\"]+\"|[^\\s\"]+)");
-            Matcher matcher = pattern.matcher(sanitizedQuery);
+            Matcher matcher = PATTERN.matcher(sanitizedQuery);
 
             Set<String> validTerms = new HashSet<>();
             while (matcher.find()) {
