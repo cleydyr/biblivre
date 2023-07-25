@@ -31,6 +31,7 @@ import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
@@ -131,7 +132,7 @@ public abstract class RecordBO extends AbstractBO {
             File file = File.createTempFile("biblivre", ".mrc");
 
             try (FileOutputStream out = new FileOutputStream(file)) {
-                MarcStreamWriter writer = new MarcStreamWriter(out);
+                MarcStreamWriter writer = new MarcStreamWriter(out, StandardCharsets.UTF_8.name());
 
                 for (RecordDTO dto : records.values()) {
                     writer.write(dto.getRecord());
