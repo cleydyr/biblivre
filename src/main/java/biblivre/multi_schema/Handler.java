@@ -87,7 +87,7 @@ public class Handler extends AbstractHandler {
         }
 
         if (disable) {
-            if (schemaBO.countEnabledSchemas() <= 1) {
+            if (schemaBO.countEnabledSchemas() == 1) {
                 this.setMessage(
                         ActionResult.WARNING,
                         "multi_schema.manage.error.cant_disable_last_library");

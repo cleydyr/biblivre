@@ -245,11 +245,7 @@ public class ConfigurationBO {
     }
 
     public void save(ConfigurationsDTO config, int loggedUser) {
-        List<ConfigurationsDTO> configs = new ArrayList<>(1);
-
-        configs.add(config);
-
-        save(configs, loggedUser);
+        save(List.of(config), loggedUser);
     }
 
     private String getValue(String key) {

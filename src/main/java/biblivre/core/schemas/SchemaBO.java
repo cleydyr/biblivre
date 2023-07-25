@@ -71,16 +71,8 @@ public class SchemaBO {
         return null;
     }
 
-    public int countEnabledSchemas() {
-        int count = 0;
-
-        for (SchemaDTO d : getSchemas()) {
-            if (!d.isDisabled()) {
-                count++;
-            }
-        }
-
-        return count;
+    public long countEnabledSchemas() {
+        return getSchemas().stream().filter(Predicate.not(SchemaDTO::isDisabled)).count();
     }
 
     public Set<SchemaDTO> getSchemas() {
