@@ -47,6 +47,8 @@ public final class SearchQueryDTO extends AbstractDTO {
     private String parameters;
     private Boolean holdingSearch;
     private Boolean reservedOnly;
+    private final Collection<String> DATE_FIELDS =
+            List.of("created", "modified", "holding_created", "holding_modified");
 
     public SearchQueryDTO(String jsonString) throws ValidationException {
         this.parameters = jsonString;
@@ -102,10 +104,8 @@ public final class SearchQueryDTO extends AbstractDTO {
             String endDate = searchTerm.optString("end_date");
 
             String f = StringUtils.defaultString(field);
-            if (f.equals("created")
-                    || f.equals("modified")
-                    || f.equals("holding_created")
-                    || f.equals("holding_modified")) {
+
+            if (DATE_FIELDS.stream().anyMatch(f::equals)) {
                 query = "date";
             }
 
