@@ -24,6 +24,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.enums.ActionResult;
+import biblivre.core.schemas.SchemaBO;
 import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Component;
 public class Handler extends AbstractHandler {
 
     private TranslationBO translationBO;
+    private SchemaBO schemaBO;
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
         int loggedUser = request.getLoggedUserId();
@@ -68,7 +70,10 @@ public class Handler extends AbstractHandler {
         boolean multiSchemaBefore = configurationBO.isMultipleSchemasEnabled();
 
         configurationBO.save(
-                configurationBO.validate(configs, configurationBO.isMultipleSchemasEnabled()),
+                configurationBO.validate(
+                        configs,
+                        configurationBO.isMultipleSchemasEnabled(),
+                        schemaBO.countEnabledSchemas()),
                 loggedUser);
 
         boolean multiSchemaAfter = configurationBO.isMultipleSchemasEnabled();
@@ -85,5 +90,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setTranslationsBO(TranslationBO translationBO) {
         this.translationBO = translationBO;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }

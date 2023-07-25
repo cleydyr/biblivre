@@ -21,7 +21,6 @@ package biblivre.core.configurations;
 
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.ValidationException;
-import biblivre.core.schemas.SchemaBO;
 import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
 import java.util.ArrayList;
@@ -33,14 +32,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConfigurationBO {
 
     private static final Logger logger = LoggerFactory.getLogger(TranslationBO.class);
-    private SchemaBO schemaBO;
 
     public String getString(String key) {
         return getValue(key);
@@ -142,7 +139,9 @@ public class ConfigurationBO {
     }
 
     public List<ConfigurationsDTO> validate(
-            List<ConfigurationsDTO> configs, boolean multipleSchemasEnabled)
+            List<ConfigurationsDTO> configs,
+            boolean multipleSchemasEnabled,
+            long countEnabledSchemas)
             throws ValidationException {
         List<ConfigurationsDTO> validConfigs = new ArrayList<>(configs.size());
         ValidationException e = new ValidationException("administration.error.invalid");
@@ -162,7 +161,7 @@ public class ConfigurationBO {
                     continue;
                 }
 
-                if (schemaBO.countEnabledSchemas() > 1) {
+                if (countEnabledSchemas > 1) {
                     errors = true;
                     e.addError(
                             config.getKey(),
@@ -320,10 +319,5 @@ public class ConfigurationBO {
         }
 
         return map;
-    }
-
-    @Autowired
-    public void setSchemaBO(SchemaBO schemaBO) {
-        this.schemaBO = schemaBO;
     }
 }
