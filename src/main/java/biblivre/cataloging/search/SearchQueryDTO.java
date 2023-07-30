@@ -29,8 +29,9 @@ import biblivre.marc.MaterialType;
 import java.io.Serial;
 import java.text.ParseException;
 import java.util.*;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
@@ -47,17 +48,18 @@ public final class SearchQueryDTO extends AbstractDTO {
     private String parameters;
     private boolean holdingSearch;
     private boolean reservedOnly;
-    private final Collection<String> DATE_FIELDS =
+    private static final Collection<String> DATE_FIELDS =
             List.of("created", "modified", "holding_created", "holding_modified");
 
-    public SearchQueryDTO(String jsonString) throws ValidationException {
+    public SearchQueryDTO(String jsonString) {
         this.parameters = jsonString;
+
         this.terms = new ArrayList<>();
 
         try {
             this.fromJson(jsonString);
-        } catch (Exception e) {
-            throw new ValidationException("cataloging.error.invalid_search_parameters");
+        } catch (ParseException e) {
+            throw new ValidationException("cataloging.error.invalid_search_parameters", e);
         }
 
         if (this.getDatabase() == null) {
@@ -76,11 +78,7 @@ public final class SearchQueryDTO extends AbstractDTO {
     private void fromJson(String jsonString) throws ParseException {
         JSONObject json = new JSONObject(jsonString);
 
-        this.setSearchMode(SearchMode.fromString(json.optString("search_mode")));
-        this.setDatabase(RecordDatabase.fromString(json.optString("database")));
-        this.setMaterialType(MaterialType.fromString(json.optString("material_type")));
-        this.setHoldingSearch(json.optBoolean("holding_search"));
-        this.setReservedOnly(json.optBoolean("reserved_only"));
+        setBasicFields(json);
 
         JSONArray searchTerms = json.optJSONArray("search_terms");
 
@@ -90,70 +88,93 @@ public final class SearchQueryDTO extends AbstractDTO {
             return;
         }
 
-        for (int i = 0, imax = searchTerms.length(); i < imax; i++) {
+        for (int i = 0; i < searchTerms.length(); i++) {
             JSONObject searchTerm = searchTerms.optJSONObject(i);
 
-            if (searchTerm == null) {
-                continue;
-            }
-
-            String query = searchTerm.optString("query");
-            String field = searchTerm.optString("field");
-            String operator = searchTerm.optString("operator");
-            String startDate = searchTerm.optString("start_date");
-            String endDate = searchTerm.optString("end_date");
-
-            String f = StringUtils.defaultString(field);
-
-            if (DATE_FIELDS.stream().anyMatch(f::equals)) {
-                query = "date";
-            }
-
-            String sanitizedQuery = TextUtils.preparePhrase(query);
-
-            Matcher matcher = PATTERN.matcher(sanitizedQuery);
-
-            Set<String> validTerms = new HashSet<>();
-            while (matcher.find()) {
-                String group = matcher.group(1);
-                String[] terms;
-
-                if (group.charAt(0) == '"' && group.indexOf(' ') != -1) {
-                    // Multiple terms grouped by quotes
-                    terms = new String[] {group};
-                } else {
-                    // Single term
-                    if (f.equals("holding_accession_number")) {
-                        terms = new String[] {group};
-                    } else {
-                        terms = TextUtils.prepareWords(group);
-                    }
-                }
-
-                for (String term : terms) {
-                    if ((term.length() > 1) || NumberUtils.isDigits(term)) {
-                        validTerms.add(term);
-                    }
-                }
-            }
-
-            if (validTerms.size() == 0) {
-                continue;
-            }
-
-            SearchTermDTO dto = new SearchTermDTO();
-            dto.setField(field);
-            dto.setOperator(SearchOperator.fromString(operator));
-            dto.setStartDate(startDate);
-            dto.setEndDate(endDate);
-            dto.addTerms(validTerms);
-
-            this.addTerm(dto);
+            processSearchTerm(searchTerm);
         }
 
-        if (this.getTerms().size() == 0) {
+        if (this.terms.isEmpty()) {
             throw new ValidationException("cataloging.error.no_valid_terms");
         }
+    }
+
+    private void processSearchTerm(JSONObject searchTerm) throws ParseException {
+        if (searchTerm == null) {
+            return;
+        }
+
+        String field = searchTerm.optString("field");
+
+        String f = StringUtils.defaultString(field);
+
+        String query = getActualQuery(searchTerm, f);
+
+        String sanitizedQuery = TextUtils.preparePhrase(query);
+
+        Set<String> validTerms = getValidTerms(f, sanitizedQuery);
+
+        if (validTerms.isEmpty()) {
+            return;
+        }
+
+        String operator = searchTerm.optString("operator");
+        String endDate = searchTerm.optString("end_date");
+        String startDate = searchTerm.optString("start_date");
+
+        SearchTermDTO dto = buildSearchTermDTO(field, operator, startDate, endDate, validTerms);
+
+        this.addTerm(dto);
+    }
+
+    private String getActualQuery(JSONObject searchTerm, String f) {
+        String query = searchTerm.optString("query");
+
+        if (DATE_FIELDS.stream().anyMatch(f::equals)) {
+            query = "date";
+        }
+        return query;
+    }
+
+    private void setBasicFields(JSONObject json) {
+        this.setSearchMode(SearchMode.fromString(json.optString("search_mode")));
+        this.setDatabase(RecordDatabase.fromString(json.optString("database")));
+        this.setMaterialType(MaterialType.fromString(json.optString("material_type")));
+        this.setHoldingSearch(json.optBoolean("holding_search"));
+        this.setReservedOnly(json.optBoolean("reserved_only"));
+    }
+
+    private static Set<String> getValidTerms(String f, String sanitizedQuery) {
+        return PATTERN.matcher(sanitizedQuery)
+                .results()
+                .map(MatchResult::group)
+                .map(
+                        group ->
+                                isTermsGroupedByQuotes(group)
+                                                || "holding_accession_number".equals(f)
+                                        ? new String[] {group}
+                                        : TextUtils.prepareWords(group))
+                .flatMap(Arrays::stream)
+                .filter(term -> term.length() > 1 || NumberUtils.isDigits(term))
+                .collect(Collectors.toSet());
+    }
+
+    private static boolean isTermsGroupedByQuotes(String group) {
+        return group.charAt(0) == '"' && group.indexOf(' ') != -1;
+    }
+
+    private static SearchTermDTO buildSearchTermDTO(
+            String field, String operator, String startDate, String endDate, Set<String> validTerms)
+            throws ParseException {
+        SearchTermDTO dto = new SearchTermDTO();
+
+        dto.setField(field);
+        dto.setOperator(SearchOperator.fromString(operator));
+        dto.setStartDate(startDate);
+        dto.setEndDate(endDate);
+        dto.addTerms(validTerms);
+
+        return dto;
     }
 
     public String getParameters() {
@@ -205,7 +226,7 @@ public final class SearchQueryDTO extends AbstractDTO {
     }
 
     public Set<String> getSimpleTerms() {
-        if (this.terms == null || this.terms.size() == 0) {
+        if (this.terms == null || this.terms.isEmpty()) {
             return new HashSet<>();
         }
 
