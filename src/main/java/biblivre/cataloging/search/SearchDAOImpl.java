@@ -24,6 +24,7 @@ import biblivre.cataloging.enums.SearchOperator;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
+import biblivre.core.utils.CharPool;
 import biblivre.core.utils.TextUtils;
 import biblivre.marc.MaterialType;
 import java.sql.Connection;
@@ -376,7 +377,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
         sql.append("SELECT I.indexing_group_id, I.record_id FROM ( ");
 
         for (int i = 1; i <= cteCount; i++) {
-            sql.append("SELECT * FROM Query_").append(i).append(" ");
+            sql.append("SELECT * FROM Query_").append(i).append(CharPool.SPACE);
 
             if (i < cteCount) {
                 sql.append(" UNION ");
@@ -385,7 +386,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
 
         sql.append(") I WHERE I.record_id in ( ");
         for (int i = 1; i <= cteCount; i++) {
-            sql.append("SELECT record_id FROM Query_").append(i).append(" ");
+            sql.append("SELECT record_id FROM Query_").append(i).append(CharPool.SPACE);
 
             if (i < cteCount) {
                 sql.append(" INTERSECT ");
@@ -449,12 +450,12 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
                 }
             }
 
-            sql.append("(");
+            sql.append(CharPool.OPEN_PARENTHESIS);
             sql.append(this.createAdvancedFilterClause(searchTerm, search.getRecordType()));
-            sql.append(")");
+            sql.append(CharPool.CLOSE_PARENTHESIS);
         }
 
-        sql.append(");");
+        sql.append(CharPool.CLOSE_PARENTHESIS);
 
         return sql.toString();
     }
@@ -504,7 +505,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
                 case "holding_id" -> clause.append(
                         StringUtils.repeat("id = ? ", " OR ", terms.size()));
                 case "holding_created", "holding_modified" -> {
-                    clause.append("(");
+                    clause.append(CharPool.OPEN_PARENTHESIS);
                     if (searchTerm.getStartDate() != null) {
                         clause.append(field.substring(8)).append(" >= ? ");
                     }
@@ -514,18 +515,18 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
                     if (searchTerm.getEndDate() != null) {
                         clause.append(field.substring(8)).append(" < ? ");
                     }
-                    clause.append(")");
+                    clause.append(CharPool.CLOSE_PARENTHESIS);
                 }
                 case "holding_label_never_printed" -> clause.append("label_printed = false ");
                 default -> clause.append(
                         StringUtils.repeat("accession_number ilike ? ", " OR ", terms.size()));
             }
 
-            clause.append(")");
+            clause.append(CharPool.CLOSE_PARENTHESIS);
 
         } else if (field.equals("created") || field.equals("modified")) {
             // Field is a date
-            clause.append("(");
+            clause.append(CharPool.OPEN_PARENTHESIS);
 
             if (searchTerm.getStartDate() != null) {
                 clause.append("R.").append(field).append(" >= ? ");
@@ -539,7 +540,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
                 clause.append("R.").append(field).append(" < ? ");
             }
 
-            clause.append(")");
+            clause.append(CharPool.CLOSE_PARENTHESIS);
         }
 
         return clause.toString();

@@ -28,6 +28,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AbstractHandler {
+    public static final String ERROR_INVALID_JSON = "error.invalid_json";
+
     protected ConfigurationBO configurationBO;
 
     public AbstractHandler() {}

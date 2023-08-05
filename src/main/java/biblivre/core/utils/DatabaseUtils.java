@@ -24,8 +24,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,56 +168,46 @@ public class DatabaseUtils {
     }
 
     private static File getWindows(String filename) {
-        String[] commands;
+        String postgresServiceName = getPostgresServiceName();
 
-        // Step 1 - Detecting current PostgreSQL service name
-        commands =
-                new String[] {
-                    "tasklist", "/nh", "/svc", "/fi", "imagename eq pg_ctl.exe", "/fo", "csv"
-                };
-
-        String postgresServiceName =
-                DatabaseUtils.processPatternMatcher(commands, "([^\"]+)\"$", 1);
         if (postgresServiceName == null) {
             return null;
         }
 
-        // Step 2 - Detect PostgreSQL Product Code
-        String postgresProductCode = null;
-        String[] regkeys =
-                new String[] {
-                    "HKLM\\SOFTWARE\\PostgreSQL\\Services\\" + postgresServiceName,
-                    "HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Services\\" + postgresServiceName
-                };
-        for (String regkey : regkeys) {
-            postgresProductCode = getRegValue(regkey, "Product Code");
-            if (postgresProductCode != null) {
-                break;
-            }
-        }
-        if (postgresProductCode == null) {
-            return null;
-        }
+        return Stream.of(
+                        "HKLM\\SOFTWARE\\PostgreSQL\\Services\\" + postgresServiceName,
+                        "HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Services\\" + postgresServiceName)
+                .map(key -> getRegValue(key, "Product Code"))
+                .filter(Objects::nonNull)
+                .map(
+                        postgresProductCode ->
+                                Stream.of(
+                                                "HKLM\\SOFTWARE\\PostgreSQL\\Installations\\"
+                                                        + postgresProductCode,
+                                                "HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Installations\\"
+                                                        + postgresProductCode)
+                                        .map(
+                                                registerKey ->
+                                                        getRegValue(registerKey, "Base Directory"))
+                                        .filter(Objects::nonNull))
+                .flatMap(
+                        stringStream ->
+                                stringStream.map(
+                                        postgresBaseDirectory ->
+                                                Paths.get(postgresBaseDirectory, "bin", filename)
+                                                        .toFile()))
+                .filter(File::exists)
+                .findFirst()
+                .orElse(null);
+    }
 
-        // Step 3 - Detect PostgreSQL Base Directory
-        String postgresBaseDirectory = null;
-        regkeys =
+    private static String getPostgresServiceName() {
+        String[] commands =
                 new String[] {
-                    "HKLM\\SOFTWARE\\PostgreSQL\\Installations\\" + postgresProductCode,
-                    "HKLM\\SOFTWARE\\Wow6432Node\\PostgreSQL\\Installations\\" + postgresProductCode
+                    "tasklist", "/nh", "/svc", "/fi", "imagename eq pg_ctl.exe", "/fo", "csv"
                 };
-        for (String regkey : regkeys) {
-            postgresBaseDirectory = getRegValue(regkey, "Base Directory");
-            if (postgresBaseDirectory != null) {
-                break;
-            }
-        }
-        if (postgresBaseDirectory == null) {
-            return null;
-        }
 
-        File file = new File(postgresBaseDirectory + File.separator + "bin", filename);
-        return file.exists() ? file : null;
+        return DatabaseUtils.processPatternMatcher(commands, "([^\"]+)\"$", 1);
     }
 
     private static String getRegValue(String dir, String key) {

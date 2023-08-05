@@ -6,8 +6,8 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -89,7 +89,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
     @Override
     public final long importFile(File file) {
-        try (InputStream is = new FileInputStream(file)) {
+        try (InputStream is = Files.newInputStream(file.toPath())) {
             long oid = createOID();
 
             persist(is, oid, file.length());

@@ -82,7 +82,7 @@ public class Handler extends AbstractHandler {
                 accumulate("indexing_groups", group.toJSONObject());
             }
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -135,7 +135,7 @@ public class Handler extends AbstractHandler {
         try {
             put("search", list.toJSONObject());
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -172,7 +172,7 @@ public class Handler extends AbstractHandler {
                 put("data", info.toJSONObject());
                 put("full_data", true);
             } catch (JSONException e) {
-                this.setMessage(ActionResult.WARNING, "error.invalid_json");
+                this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             }
 
         } else {
@@ -220,7 +220,7 @@ public class Handler extends AbstractHandler {
                 accumulate("indexing_groups", group.toJSONObject());
             }
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -286,7 +286,7 @@ public class Handler extends AbstractHandler {
         try {
             put("search", list.toJSONObject());
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 

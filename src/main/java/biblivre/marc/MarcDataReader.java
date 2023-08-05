@@ -22,6 +22,7 @@ package biblivre.marc;
 import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.BriefTabFieldFormatDTO;
 import biblivre.cataloging.RecordAttachmentDTO;
+import biblivre.core.utils.CharPool;
 import biblivre.core.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -443,7 +444,7 @@ public final class MarcDataReader {
                                     values.append(subfieldSeparator);
                                     endsWithSeparator = true;
                                 } else {
-                                    values.append(" ");
+                                    values.append(CharPool.SPACE);
                                     endsWithSeparator = false;
                                 }
                             }
@@ -462,7 +463,7 @@ public final class MarcDataReader {
                                     if (TextUtils.endsInValidCharacter(lastValue)) {
                                         result.append(lastSeparator);
                                     } else {
-                                        result.append(" ");
+                                        result.append(CharPool.SPACE);
                                     }
                                 }
                             }
@@ -471,7 +472,7 @@ public final class MarcDataReader {
 
                             if (shouldAddStartParenthesis) {
                                 shouldAddStartParenthesis = false;
-                                result.append("(");
+                                result.append(CharPool.OPEN_PARENTHESIS);
                             }
 
                             result.append(lastValue);
@@ -483,18 +484,17 @@ public final class MarcDataReader {
                     }
                     case "(" -> shouldAddStartParenthesis = true;
                     case ")" -> {
-                        if (result.toString().endsWith("(")) {
+                        if (result.charAt(result.length()) == CharPool.OPEN_PARENTHESIS) {
                             result.deleteCharAt(result.length() - 1);
                         } else if (!shouldAddStartParenthesis) {
-                            result.append(")");
-                            shouldAddStartParenthesis = false;
+                            result.append(CharPool.CLOSE_PARENTHESIS);
                         }
                     }
                 }
             }
 
             matcher.reset();
-            result.append("\n");
+            result.append(CharPool.NEW_LINE);
         }
 
         return StringUtils.chomp(result.toString());

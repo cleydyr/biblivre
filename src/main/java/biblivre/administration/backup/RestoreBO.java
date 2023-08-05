@@ -33,7 +33,6 @@ import biblivre.digitalmedia.DigitalMediaDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -211,9 +210,7 @@ public class RestoreBO extends AbstractBO {
 
         logger.info("===== Restoring File '" + restore.getName() + "' =====");
 
-        try (FileReader fileReader = new FileReader(restore);
-                BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-
+        try (BufferedReader bufferedReader = Files.newBufferedReader(restore.toPath())) {
             PostgreSQLStatementIterable postgreSQLStatementIterable =
                     new PostgreSQLStatementIterable(new BufferedReaderIterator(bufferedReader));
 

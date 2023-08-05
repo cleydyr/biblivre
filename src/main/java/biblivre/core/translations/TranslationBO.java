@@ -22,14 +22,16 @@ package biblivre.core.translations;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.Constants;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,13 +59,13 @@ public class TranslationBO {
             Map<String, String> translation,
             Map<String, String> removeTranslation,
             int loggedUser) {
-        Map<String, Map<String, String>> translations = new HashMap<>();
+        Map<String, Map<String, String>> translations = new ConcurrentHashMap<>();
+
         translations.put(language, translation);
 
-        Map<String, Map<String, String>> removeTranslations = null;
+        Map<String, Map<String, String>> removeTranslations = new ConcurrentHashMap<>();
 
         if (removeTranslation != null) {
-            removeTranslations = new HashMap<>();
             removeTranslations.put(language, removeTranslation);
         }
 
@@ -85,10 +87,10 @@ public class TranslationBO {
     }
 
     public boolean addSingleTranslation(String language, String key, String text, int loggedUser) {
-        Map<String, String> translation = new HashMap<>();
+        Map<String, String> translation = new ConcurrentHashMap<>();
         translation.put(key, text);
 
-        Map<String, Map<String, String>> translations = new HashMap<>();
+        Map<String, Map<String, String>> translations = new ConcurrentHashMap<>();
         translations.put(language, translation);
 
         return translationsDAO.save(translations, loggedUser);
@@ -131,34 +133,30 @@ public class TranslationBO {
             return true;
         }
 
-        locale = toLocale(language.split("-")[0]);
+        locale = toLocale(language.substring(0, language.indexOf('-')));
 
         return LocaleUtils.isAvailableLocale(locale);
     }
 
-    public DiskFile createDumpFile(String language, ITemplateEngine templateEngine) {
+    public DiskFile createDumpFile(String language, ITemplateEngine templateEngine)
+            throws IOException {
         Map<String, TranslationDTO> translations = get(language).getAll();
 
         List<String> list = new ArrayList<>(translations.keySet());
 
         list.sort(new NamespaceComparator());
 
-        try {
-            File file = File.createTempFile("biblivre_translations_" + language + "_", ".txt");
+        File file = File.createTempFile("biblivre_translations_" + language + "_", ".txt");
 
-            FileWriter out = new FileWriter(file);
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(file.toPath())) {
 
-            Map<String, Object> root = new HashMap<>();
+            Map<String, Object> root = new ConcurrentHashMap<>();
 
             root.put("translations", translations);
 
             Context context = new Context(toLocale(language), root);
 
-            templateEngine.process("translations_dump", context, out);
-
-            out.flush();
-
-            out.close();
+            templateEngine.process("translations_dump", context, bufferedWriter);
 
             return new DiskFile(file, "x-download");
         } catch (Exception e) {

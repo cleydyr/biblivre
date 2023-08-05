@@ -38,6 +38,7 @@ import biblivre.core.enums.PrinterType;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.CalendarUtils;
+import biblivre.core.utils.CharPool;
 import biblivre.core.utils.Constants;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -428,17 +429,21 @@ public class LendingBO {
 
         StringBuilder receipt = new StringBuilder();
         receipt.append("<pre>\n");
-        receipt.append(StringUtils.repeat('*', columns)).append("\n");
-        receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
+        receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns)).append(CharPool.NEW_LINE);
+        receipt.append(CharPool.ASTERISK)
+                .append(StringUtils.repeat(CharPool.SPACE, columns - 2))
+                .append("*\n");
 
         String libraryName = configurationBO.getString("general.title");
 
         receipt.append("* ").append(StringUtils.center(libraryName, columns - 4)).append(" *\n");
-        receipt.append("*").append(StringUtils.repeat(' ', columns - 2)).append("*\n");
-        receipt.append(StringUtils.repeat('*', columns)).append("\n");
+        receipt.append(CharPool.ASTERISK)
+                .append(StringUtils.repeat(CharPool.SPACE, columns - 2))
+                .append("*\n");
+        receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns)).append(CharPool.NEW_LINE);
         receipt.append(StringUtils.center(receiptDateFormat.format(new Date()), columns))
-                .append("\n");
-        receipt.append("\n");
+                .append(CharPool.NEW_LINE);
+        receipt.append(CharPool.NEW_LINE);
 
         if (lendingInfo.size() > 0) {
 
@@ -451,30 +456,30 @@ public class LendingBO {
             String idLabel = i18n.getText("circulation.user_field.id");
             String enrollment = user.getEnrollment();
 
-            receipt.append(nameLabel).append(":");
+            receipt.append(nameLabel).append(CharPool.COLON);
             if (nameLabel.length() + userName.length() + 2 > columns) {
-                receipt.append("\n");
+                receipt.append(CharPool.NEW_LINE);
                 receipt.append("   ")
                         .append(StringUtils.abbreviate(userName, columns - 3))
-                        .append("\n");
+                        .append(CharPool.NEW_LINE);
             } else {
-                receipt.append(" ")
+                receipt.append(CharPool.SPACE)
                         .append(StringUtils.abbreviate(userName, columns - nameLabel.length() - 3))
-                        .append("\n");
+                        .append(CharPool.NEW_LINE);
             }
 
-            receipt.append(idLabel).append(":");
+            receipt.append(idLabel).append(CharPool.COLON);
             if (idLabel.length() + enrollment.length() + 2 > columns) {
-                receipt.append("\n");
+                receipt.append(CharPool.NEW_LINE);
                 receipt.append("   ")
                         .append(StringUtils.abbreviate(enrollment, columns - 3))
-                        .append("\n");
+                        .append(CharPool.NEW_LINE);
             } else {
-                receipt.append(" ")
+                receipt.append(CharPool.SPACE)
                         .append(StringUtils.abbreviate(enrollment, columns - idLabel.length() - 3))
-                        .append("\n");
+                        .append(CharPool.NEW_LINE);
             }
-            receipt.append("\n");
+            receipt.append(CharPool.NEW_LINE);
 
             List<LendingInfoDTO> currentLendings = new ArrayList<>();
             List<LendingInfoDTO> currentRenews = new ArrayList<>();
@@ -507,132 +512,146 @@ public class LendingBO {
             if (!currentLendings.isEmpty()) {
 
                 String header = "**" + i18n.getText("circulation.lending.receipt.lendings") + "**";
-                receipt.append(StringUtils.center(header, columns)).append("\n");
-                receipt.append("\n");
+                receipt.append(StringUtils.center(header, columns)).append(CharPool.NEW_LINE);
+                receipt.append(CharPool.NEW_LINE);
 
                 for (LendingInfoDTO info : currentLendings) {
-                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
+                            .append(CharPool.NEW_LINE);
                     receipt.append(authorLabel).append(":\n");
                     String author = info.getBiblio().getAuthor();
                     author =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(author, columns - 3));
-                    receipt.append("   ").append(author).append("\n");
+                    receipt.append("   ").append(author).append(CharPool.NEW_LINE);
                     receipt.append(titleLabel).append(":\n");
                     String title = info.getBiblio().getTitle();
                     title =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(title, columns - 3));
-                    receipt.append("   ").append(title).append("\n");
+                    receipt.append("   ").append(title).append(CharPool.NEW_LINE);
                     receipt.append(biblioLabel).append(":\n");
-                    receipt.append("   ").append(info.getHolding().getId()).append("\n");
+                    receipt.append("   ")
+                            .append(info.getHolding().getId())
+                            .append(CharPool.NEW_LINE);
                     receipt.append(holdingLabel).append(":\n");
                     String accessionNumber = info.getHolding().getAccessionNumber();
                     accessionNumber =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(accessionNumber, columns - 3));
-                    receipt.append("   ").append(accessionNumber).append("\n");
+                    receipt.append("   ").append(accessionNumber).append(CharPool.NEW_LINE);
                     receipt.append(lendingDateLabel).append(":\n");
                     Date lendingDate = info.getLending().getCreated();
                     receipt.append("   ")
                             .append(receiptDateFormat.format(lendingDate))
-                            .append("\n");
+                            .append(CharPool.NEW_LINE);
                     receipt.append(expectedDateLabel).append(":\n");
                     Date expectedReturnDate = info.getLending().getExpectedReturnDate();
                     receipt.append("   ")
                             .append(returnDateFormat.format(expectedReturnDate))
-                            .append("\n");
-                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-                    receipt.append("\n");
+                            .append(CharPool.NEW_LINE);
+                    receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
+                            .append(CharPool.NEW_LINE);
+                    receipt.append(CharPool.NEW_LINE);
                 }
             }
 
             if (!currentRenews.isEmpty()) {
 
                 String header = "**" + i18n.getText("circulation.lending.receipt.renews") + "**";
-                receipt.append(StringUtils.center(header, columns)).append("\n");
-                receipt.append("\n");
+                receipt.append(StringUtils.center(header, columns)).append(CharPool.NEW_LINE);
+                receipt.append(CharPool.NEW_LINE);
 
                 for (LendingInfoDTO info : currentRenews) {
-                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
+                            .append(CharPool.NEW_LINE);
                     receipt.append(authorLabel).append(":\n");
                     String author = info.getBiblio().getAuthor();
                     author =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(author, columns - 3));
-                    receipt.append("   ").append(author).append("\n");
+                    receipt.append("   ").append(author).append(CharPool.NEW_LINE);
                     receipt.append(titleLabel).append(":\n");
                     String title = info.getBiblio().getTitle();
                     title =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(title, columns - 3));
-                    receipt.append("   ").append(title).append("\n");
+                    receipt.append("   ").append(title).append(CharPool.NEW_LINE);
                     receipt.append(biblioLabel).append(":\n");
-                    receipt.append("   ").append(info.getHolding().getId()).append("\n");
+                    receipt.append("   ")
+                            .append(info.getHolding().getId())
+                            .append(CharPool.NEW_LINE);
                     receipt.append(holdingLabel).append(":\n");
                     String accessionNumber = info.getHolding().getAccessionNumber();
                     accessionNumber =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(accessionNumber, columns - 3));
-                    receipt.append("   ").append(accessionNumber).append("\n");
+                    receipt.append("   ").append(accessionNumber).append(CharPool.NEW_LINE);
                     receipt.append(lendingDateLabel).append(":\n");
                     Date lendingDate = info.getLending().getCreated();
                     receipt.append("   ")
                             .append(receiptDateFormat.format(lendingDate))
-                            .append("\n");
+                            .append(CharPool.NEW_LINE);
                     receipt.append(expectedDateLabel).append(":\n");
                     Date expectedReturnDate = info.getLending().getExpectedReturnDate();
                     receipt.append("   ")
                             .append(returnDateFormat.format(expectedReturnDate))
-                            .append("\n");
-                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-                    receipt.append("\n");
+                            .append(CharPool.NEW_LINE);
+                    receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
+                            .append(CharPool.NEW_LINE);
+                    receipt.append(CharPool.NEW_LINE);
                 }
             }
 
             if (!currentReturns.isEmpty()) {
 
                 String header = "**" + i18n.getText("circulation.lending.receipt.returns") + "**";
-                receipt.append(StringUtils.center(header, columns)).append("\n");
-                receipt.append("\n");
+                receipt.append(StringUtils.center(header, columns)).append(CharPool.NEW_LINE);
+                receipt.append(CharPool.NEW_LINE);
 
                 for (LendingInfoDTO info : currentReturns) {
-                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
+                    receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
+                            .append(CharPool.NEW_LINE);
                     receipt.append(authorLabel).append(":\n");
                     String author = info.getBiblio().getAuthor();
                     author =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(author, columns - 3));
-                    receipt.append("   ").append(author).append("\n");
+                    receipt.append("   ").append(author).append(CharPool.NEW_LINE);
                     receipt.append(titleLabel).append(":\n");
                     String title = info.getBiblio().getTitle();
                     title =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(title, columns - 3));
-                    receipt.append("   ").append(title).append("\n");
+                    receipt.append("   ").append(title).append(CharPool.NEW_LINE);
                     receipt.append(biblioLabel).append(":\n");
-                    receipt.append("   ").append(info.getHolding().getId()).append("\n");
+                    receipt.append("   ")
+                            .append(info.getHolding().getId())
+                            .append(CharPool.NEW_LINE);
                     receipt.append(holdingLabel).append(":\n");
                     String accessionNumber = info.getHolding().getAccessionNumber();
                     accessionNumber =
                             StringEscapeUtils.escapeHtml4(
                                     StringUtils.abbreviate(accessionNumber, columns - 3));
-                    receipt.append("   ").append(accessionNumber).append("\n");
+                    receipt.append("   ").append(accessionNumber).append(CharPool.NEW_LINE);
                     receipt.append(lendingDateLabel).append(":\n");
                     Date lendingDate = info.getLending().getCreated();
                     receipt.append("   ")
                             .append(receiptDateFormat.format(lendingDate))
-                            .append("\n");
+                            .append(CharPool.NEW_LINE);
                     receipt.append(returnDateLabel).append(":\n");
                     Date returnDate = info.getLending().getReturnDate();
-                    receipt.append("   ").append(receiptDateFormat.format(returnDate)).append("\n");
-                    receipt.append(StringUtils.repeat('*', columns / 2)).append("\n");
-                    receipt.append("\n");
+                    receipt.append("   ")
+                            .append(receiptDateFormat.format(returnDate))
+                            .append(CharPool.NEW_LINE);
+                    receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
+                            .append(CharPool.NEW_LINE);
+                    receipt.append(CharPool.NEW_LINE);
                 }
             }
         }
-        receipt.append("\n");
-        receipt.append(StringUtils.repeat('*', columns)).append("\n");
+        receipt.append(CharPool.NEW_LINE);
+        receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns)).append(CharPool.NEW_LINE);
         receipt.append("</pre>\n");
 
         return receipt.toString();

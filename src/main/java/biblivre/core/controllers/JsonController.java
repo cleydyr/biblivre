@@ -27,12 +27,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 @Component
 @RequestScope
 public class JsonController extends Controller {
+    private static final Logger logger = LoggerFactory.getLogger(JsonController.class);
 
     @Override
     protected void doReturn() throws IOException {
@@ -58,7 +61,7 @@ public class JsonController extends Controller {
 
     @Override
     protected void doError(String error, Throwable e) throws IOException {
-        this.log.error(error, e);
+        logger.error(error, e);
 
         Message message = new Message(ActionResult.ERROR, error, e);
         this.dispatch(null, message);
@@ -66,10 +69,10 @@ public class JsonController extends Controller {
 
     @Override
     protected void doWarning(String warning, Throwable e) throws IOException {
-        if (e != null && this.log.isDebugEnabled()) {
-            this.log.warn(warning, e);
+        if (e != null && logger.isDebugEnabled()) {
+            logger.warn(warning, e);
         } else {
-            this.log.warn(warning);
+            logger.warn(warning);
         }
 
         // e.printStackTrace();
@@ -119,7 +122,7 @@ public class JsonController extends Controller {
         try {
             this.xResponse.print(json.toString());
         } catch (JSONException e) {
-            this.log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 }

@@ -483,7 +483,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             RecordType recordType = search.getRecordType();
 
             if (useSearchResult) {
-
                 sql.append(recordType).append("_records R ");
                 sql.append("INNER JOIN ( ");
                 sql.append("SELECT DISTINCT record_id FROM ")
@@ -503,8 +502,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
                 sql.append(") SR ON SR.record_id = R.id ");
             } else {
-                sql.append("(");
-                sql.append("SELECT * FROM ").append(recordType).append("_records ");
+                sql.append("(SELECT * FROM ").append(recordType).append("_records ");
                 sql.append("WHERE database = ? ");
 
                 if (useMaterialType) {

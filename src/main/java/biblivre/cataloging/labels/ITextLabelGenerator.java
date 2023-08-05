@@ -16,8 +16,8 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,10 +44,10 @@ public class ITextLabelGenerator implements LabelGenerator {
                             adapter.getVerticalMargin(),
                             0);
 
-            File file = File.createTempFile("biblivre_label_", ".pdf");
+            File tempLabelsFile = File.createTempFile("biblivre_label_", ".pdf");
 
-            try (OutputStream fos = new FileOutputStream(file)) {
-                PdfWriter writer = PdfWriter.getInstance(document, fos);
+            try (OutputStream outputStream = Files.newOutputStream(tempLabelsFile.toPath())) {
+                PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
                 PdfPTable table = new PdfPTable(adapter.getColumns());
 
@@ -76,7 +76,7 @@ public class ITextLabelGenerator implements LabelGenerator {
 
                 document.close();
 
-                return new DiskFile(file, "application/pdf");
+                return new DiskFile(tempLabelsFile, "application/pdf");
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -80,7 +80,7 @@ public class Handler extends AbstractHandler {
         try {
             put("uuid", printId);
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 

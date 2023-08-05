@@ -29,12 +29,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 @Component
 @RequestScope
 public class DownloadController extends Controller {
+    private static final Logger logger = LoggerFactory.getLogger(DownloadController.class);
 
     @Override
     protected void doReturn() throws IOException {
@@ -77,10 +80,10 @@ public class DownloadController extends Controller {
 
     @Override
     protected void doError(String error, Throwable e) throws ServletException, IOException {
-        if (e != null && this.log.isDebugEnabled()) {
-            this.log.error(error, e);
+        if (e != null && logger.isDebugEnabled()) {
+            logger.error(error, e);
         } else {
-            this.log.error(error);
+            logger.error(error);
         }
 
         Message message = new Message(ActionResult.ERROR, error);
@@ -90,10 +93,10 @@ public class DownloadController extends Controller {
 
     @Override
     protected void doWarning(String warning, Throwable e) throws ServletException, IOException {
-        if (e != null && this.log.isDebugEnabled()) {
-            this.log.warn(warning, e);
+        if (e != null && logger.isDebugEnabled()) {
+            logger.warn(warning, e);
         } else {
-            this.log.warn(warning);
+            logger.warn(warning);
         }
 
         Message message = new Message(ActionResult.WARNING, warning, e);

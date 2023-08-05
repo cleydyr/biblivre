@@ -71,7 +71,7 @@ public class Handler extends AbstractHandler {
                 put("log", true);
             }
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -100,7 +100,7 @@ public class Handler extends AbstractHandler {
         try {
             put("success", success);
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -114,7 +114,7 @@ public class Handler extends AbstractHandler {
         try {
             put("success", success);
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 

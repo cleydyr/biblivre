@@ -27,6 +27,7 @@ import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDAOImpl;
 import biblivre.core.AbstractDAO;
 import biblivre.core.configurations.ConfigurationBO;
+import biblivre.core.file.DiskFile;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDAO;
 import biblivre.core.schemas.SchemasDAOImpl;
@@ -40,6 +41,9 @@ import biblivre.login.LoginDAOImpl;
 import com.github.stefanbirkner.systemlambda.Statement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import javax.sql.DataSource;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +60,16 @@ public abstract class AbstractContainerDatabaseTest {
 
     public AbstractContainerDatabaseTest() {
         postgreSQLContainer.start();
+    }
+
+    @NotNull
+    protected static ByteArrayInputStream getByteArrayInputStream(DiskFile diskFile)
+            throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        diskFile.copy(byteArrayOutputStream);
+
+        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
     protected <T extends AbstractDAO> T getInstance(Class<T> clazz) {

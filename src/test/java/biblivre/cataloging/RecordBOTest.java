@@ -12,7 +12,6 @@ import biblivre.core.file.DiskFile;
 import biblivre.marc.HumanReadableMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
@@ -137,16 +136,6 @@ class RecordBOTest extends AbstractContainerDatabaseTest {
                                         });
                     }
                 });
-    }
-
-    @NotNull
-    private static ByteArrayInputStream getByteArrayInputStream(DiskFile diskFile)
-            throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        diskFile.copy(byteArrayOutputStream);
-
-        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
     @Test

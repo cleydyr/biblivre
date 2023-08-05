@@ -21,6 +21,7 @@ package biblivre.marc;
 
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.utils.BiblivreEnum;
+import biblivre.core.utils.CharPool;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,21 +59,21 @@ public enum MaterialType implements BiblivreEnum {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("[");
+        sb.append(CharPool.OPEN_BRACKET);
 
         for (MaterialType material : MaterialType.values()) {
             if (material.isSearchable()) {
                 tempSearchableMaterials.add(material);
                 if (!material.equals(MaterialType.ALL)) {
                     tempBibliographicMaterials.add(material);
-                    sb.append('\'');
+                    sb.append(CharPool.QUOTE);
                     sb.append(material);
                     sb.append("',");
                 }
             }
         }
 
-        sb.append("]");
+        sb.append(CharPool.CLOSE_BRACKET);
 
         javascriptArray = sb.toString();
         bibliographicMaterials = Collections.unmodifiableList(tempBibliographicMaterials);

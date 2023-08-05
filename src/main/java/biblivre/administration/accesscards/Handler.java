@@ -42,7 +42,7 @@ public class Handler extends AbstractHandler {
         try {
             put("search", list.toJSONObject());
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -93,7 +93,7 @@ public class Handler extends AbstractHandler {
         try {
             put("card", card.toJSONObject());
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -134,7 +134,7 @@ public class Handler extends AbstractHandler {
             put("data", returnDto.toJSONObject());
             put("full_data", true);
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -178,7 +178,7 @@ public class Handler extends AbstractHandler {
             put("data", dto.toJSONObject());
             put("full_data", true);
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 

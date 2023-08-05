@@ -21,6 +21,7 @@ package biblivre.administration.reports;
 
 import biblivre.administration.reports.dto.BaseReportDto;
 import biblivre.administration.reports.dto.RequestsByDateReportDto;
+import biblivre.core.utils.CharPool;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -47,7 +48,7 @@ public class RequestsByDateReport extends BaseBiblivreReport {
         Paragraph p1 = new Paragraph(getText("administration.reports.title.orders_by_date"));
         p1.setAlignment(Element.ALIGN_CENTER);
         document.add(p1);
-        document.add(new Phrase("\n"));
+        document.add(new Phrase(CharPool.NEW_LINE));
         String header =
                 getText("administration.reports.field.date_from")
                         + " "
@@ -59,11 +60,11 @@ public class RequestsByDateReport extends BaseBiblivreReport {
         Paragraph p2 = new Paragraph(getHeaderChunk(header));
         p2.setAlignment(Element.ALIGN_LEFT);
         document.add(p2);
-        document.add(new Phrase("\n"));
+        document.add(new Phrase(CharPool.NEW_LINE));
         if (dto.getData() != null) {
             PdfPTable table = createTable(dto.getData());
             document.add(table);
-            document.add(new Phrase("\n"));
+            document.add(new Phrase(CharPool.NEW_LINE));
         }
     }
 
@@ -112,11 +113,11 @@ public class RequestsByDateReport extends BaseBiblivreReport {
             }
 
             lastQuotationId = data[0];
-            requester = data[1] + "\n";
-            title.append(data[2]).append("\n");
-            quantity.append(data[3]).append("\n");
-            unit_value.append(data[4]).append("\n");
-            total_value = (data[5] == null ? "-" : data[5]) + "\n";
+            requester = data[1] + CharPool.NEW_LINE;
+            title.append(data[2]).append(CharPool.NEW_LINE);
+            quantity.append(data[3]).append(CharPool.NEW_LINE);
+            unit_value.append(data[4]).append(CharPool.NEW_LINE);
+            total_value = (data[5] == null ? "-" : data[5]) + CharPool.NEW_LINE;
         }
 
         if (!lastQuotationId.equals("0")) {

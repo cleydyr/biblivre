@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core.file;
 
-import biblivre.core.utils.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -55,16 +54,11 @@ public class MemoryFile extends BiblivreFile {
             }
 
             if (start != 0) {
-                throw new IOException(
-                        "MemoryFile doesn't implements seek. Start parameter must be 0");
+                throw new IllegalArgumentException(
+                        "MemoryFile doesn't implement seek. Start parameter must be 0");
             }
 
-            byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
-            int read;
-
-            while ((read = input.read(buffer)) > 0) {
-                out.write(buffer, 0, read);
-            }
+            input.transferTo(out);
         }
     }
 

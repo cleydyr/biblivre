@@ -19,12 +19,8 @@
  ******************************************************************************/
 package biblivre.core.file;
 
-import biblivre.core.utils.Constants;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 
 public class DiskFile extends BiblivreFile {
     private final File file;
@@ -53,21 +49,18 @@ public class DiskFile extends BiblivreFile {
             return;
         }
 
-        try (InputStream input = new FileInputStream(this.file)) {
-            input.skip(start);
+        try (InputStream input = Files.newInputStream(this.file.toPath())) {
+            long skipped = input.skip(start);
 
-            byte[] buffer = new byte[Constants.DEFAULT_BUFFER_SIZE];
-            int read;
-
-            while ((read = input.read(buffer)) > 0) {
-                out.write(buffer, 0, read);
+            if (skipped != start) {
+                throw new IOException("premature end of file when skipping to " + start);
             }
+
+            input.transferTo(out);
         }
     }
 
-    public void delete() {
-        if (this.file != null) {
-            this.file.delete();
-        }
+    public boolean delete() {
+        return this.file != null && this.file.delete();
     }
 }

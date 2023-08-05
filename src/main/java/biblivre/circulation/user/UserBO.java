@@ -41,7 +41,8 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -116,8 +117,8 @@ public class UserBO extends AbstractBO {
         try {
             File file = File.createTempFile("biblivre_user_cards_", ".pdf");
 
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                PdfWriter writer = PdfWriter.getInstance(document, fos);
+            try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
+                PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
                 document.setPageSize(PageSize.A4);
                 document.setMargins(
@@ -194,7 +195,7 @@ public class UserBO extends AbstractBO {
                 document.add(table);
                 writer.flush();
                 document.close();
-                fos.close();
+                outputStream.close();
 
                 return new DiskFile(file, "application/pdf");
             }

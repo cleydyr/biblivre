@@ -37,8 +37,8 @@ import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.StringPool;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -116,7 +116,7 @@ public class Handler extends AbstractHandler {
         boolean success = true;
         RestoreDTO dto = null;
 
-        try (OutputStream os = new FileOutputStream(backup)) {
+        try (OutputStream os = Files.newOutputStream(backup.toPath())) {
             file.copy(os);
 
             dto = restoreBO.getRestoreDTO(backup.getName());

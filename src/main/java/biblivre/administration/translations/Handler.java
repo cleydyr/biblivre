@@ -29,6 +29,7 @@ import biblivre.core.translations.LanguageDTO;
 import biblivre.core.translations.TranslationBO;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -37,6 +38,8 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
@@ -46,6 +49,8 @@ public class Handler extends AbstractHandler {
     private ITemplateEngine templateEngine;
     private LanguageBO languageBO;
     private TranslationBO translationBO;
+
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public void dump(ExtendedRequest request, ExtendedResponse response) {
 
@@ -64,7 +69,7 @@ public class Handler extends AbstractHandler {
         try {
             put("uuid", dumpId);
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -79,13 +84,20 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        final DiskFile exportFile = translationBO.createDumpFile(language, templateEngine);
+        try {
+            final DiskFile exportFile = translationBO.createDumpFile(language, templateEngine);
 
-        exportFile.setName("biblivre_translations_" + System.currentTimeMillis() + "_" + ".txt");
+            exportFile.setName(
+                    "biblivre_translations_" + System.currentTimeMillis() + "_" + ".txt");
 
-        this.setFile(exportFile);
+            this.setFile(exportFile);
 
-        this.setCallback(exportFile::delete);
+            this.setCallback(exportFile::delete);
+        } catch (IOException e) {
+            this.setMessage(ActionResult.ERROR, "error.cannot_create_file");
+
+            logger.error("Can't create temporary file", e);
+        }
     }
 
     public void load(ExtendedRequest request, ExtendedResponse response) {
@@ -205,7 +217,7 @@ public class Handler extends AbstractHandler {
         try {
             put("translations", new JSONObject(translations));
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -218,7 +230,7 @@ public class Handler extends AbstractHandler {
             JSONObject jsonTranslations = json.optJSONObject("translations");
 
             if (jsonTranslations == null) {
-                this.setMessage(ActionResult.WARNING, "error.invalid_json");
+                this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
                 return;
             }
 
@@ -251,7 +263,7 @@ public class Handler extends AbstractHandler {
 
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
         }
@@ -280,7 +292,7 @@ public class Handler extends AbstractHandler {
             this.setMessage(ActionResult.SUCCESS, "administration.translations.success.save");
 
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         } catch (Exception e) {
             this.setMessage(ActionResult.WARNING, "administration.translations.error.save");
         }

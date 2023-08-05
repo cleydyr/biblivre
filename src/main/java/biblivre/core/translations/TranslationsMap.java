@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public final class TranslationsMap extends HashMap<String, TranslationDTO>
         implements IFCacheableJavascript {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(TranslationsMap.class);
     @Serial private static final long serialVersionUID = 1L;
 
     private String schema;

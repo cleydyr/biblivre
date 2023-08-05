@@ -37,8 +37,9 @@ import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -106,7 +107,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
         try {
             File file = File.createTempFile(fileName, ".pdf");
 
-            try (FileOutputStream out = new FileOutputStream(file)) {
+            try (OutputStream out = Files.newOutputStream(file.toPath())) {
                 this.writer = PdfWriter.getInstance(document, out);
                 this.writer.setPageEvent(this);
                 this.writer.setFullCompression();

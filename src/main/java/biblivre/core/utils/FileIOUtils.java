@@ -24,7 +24,6 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +35,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -84,7 +82,7 @@ public class FileIOUtils {
     }
 
     public static void zipFolder(File src, File dest) throws IOException {
-        try (FileOutputStream fileWriter = new FileOutputStream(dest);
+        try (OutputStream fileWriter = Files.newOutputStream(src.toPath());
                 ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
             FileIOUtils.addFolderToZip("", src, zip);
         }
@@ -101,7 +99,7 @@ public class FileIOUtils {
                 byte[] buf = new byte[1024];
                 int len;
 
-                try (FileInputStream in = new FileInputStream(src)) {
+                try (InputStream in = Files.newInputStream(src.toPath())) {
                     if (path.equals("")) {
                         zip.putNextEntry(new ZipEntry(src.getName()));
                     } else {
@@ -155,18 +153,6 @@ public class FileIOUtils {
         ZipFile.closeQuietly(zipFile);
 
         return tmpDir;
-    }
-
-    public static File ungzipBackup(File zip) throws IOException {
-        File output = new File(zip.getParent(), zip.getName() + ".sql");
-
-        try (GZIPInputStream is = new GZIPInputStream(new FileInputStream(zip));
-                OutputStream os = new FileOutputStream(output)) {
-
-            IOUtils.copy(is, os);
-        }
-
-        return output;
     }
 
     public static void sendHttpFile(

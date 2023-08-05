@@ -36,7 +36,8 @@ public class Translations extends SimpleTagSupport {
     private String param2;
     private String param3;
     private boolean escapeHTML;
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final Logger logger = LoggerFactory.getLogger(Translations.class);
 
     @Override
     public void doTag() throws JspException {

@@ -223,25 +223,27 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
     @Override
     public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
         DTOCollection<OrderDTO> list = new DTOCollection<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
+
+        try (Connection con = this.getConnection()) {
             StringBuilder sql =
-                    new StringBuilder(" SELECT O.id, O.info, O.status, O.invoice_number, ");
-            sql.append("O.receipt_date, O.total_value, O.delivered_quantity, O.terms_of_payment, ");
-            sql.append("O.deadline_date, O.created, O.created_by, O.modified, O.modified_by, ");
-            sql.append("O.quotation_id  FROM orders O ");
+                    new StringBuilder(
+                            """
+                SELECT O.id, O.info, O.status, O.invoice_number, O.receipt_date, O.total_value, O.delivered_quantity,
+                O.terms_of_payment, O.deadline_date, O.created, O.created_by, O.modified, O.modified_by, O.quotation_id
+                FROM orders O
+                """);
+
             if (StringUtils.isNumeric(value)) {
                 sql.append("WHERE O.id = ? ");
             } else if (StringUtils.isNotBlank(value)) {
-                sql.append(", quotations Q, suppliers S, request_quotation RQ, requests R ");
-                sql.append("WHERE O.quotation_id = Q.id ");
-                sql.append("AND Q.supplier_id = S.id ");
-                sql.append("AND Q.id = RQ.quotation_id ");
-                sql.append("AND RQ.request_id = R.id ");
                 sql.append(
-                        "AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?)) ");
+                        """
+                    , quotations Q, suppliers S, request_quotation RQ, requests R
+                    WHERE O.quotation_id = Q.id AND Q.supplier_id = S.id AND Q.id = RQ.quotation_id
+                    AND RQ.request_id = R.id AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?))
+                    """);
             }
+
             sql.append("ORDER BY O.created ASC LIMIT ? OFFSET ?;");
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
@@ -260,16 +262,16 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
             if (StringUtils.isNumeric(value)) {
                 sql.append("WHERE O.id = ? ");
             } else if (StringUtils.isNotBlank(value)) {
-                sql.append(", quotations Q, suppliers S, request_quotation RQ, requests R ");
-                sql.append("WHERE O.quotation_id = Q.id ");
-                sql.append("AND Q.supplier_id = S.id ");
-                sql.append("AND Q.id = RQ.quotation_id ");
-                sql.append("AND RQ.request_id = R.id ");
                 sql.append(
-                        "AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?));");
+                        """
+                    , quotations Q, suppliers S, request_quotation RQ, requests R
+                    WHERE O.quotation_id = Q.id AND Q.supplier_id = S.id AND Q.id = RQ.quotation_id
+                    AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?))
+                    """);
             }
 
             PreparedStatement pstCount = con.prepareStatement(sqlCount);
+
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(1, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {
@@ -292,8 +294,6 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }

@@ -86,7 +86,7 @@ public class Handler extends CatalogingHandler {
         try {
             put("data", dto.toJSONObject());
         } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 
@@ -98,7 +98,7 @@ public class Handler extends CatalogingHandler {
         try {
             put("list", list.toJSONObject());
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 

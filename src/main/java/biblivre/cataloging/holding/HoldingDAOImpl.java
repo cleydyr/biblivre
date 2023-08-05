@@ -33,6 +33,7 @@ import biblivre.core.PagingDTO;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
+import biblivre.core.utils.CharPool;
 import biblivre.core.utils.StringPool;
 import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
@@ -77,7 +78,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             if (availableOnly) {
                 sql.append("and availability = '")
                         .append(HoldingAvailability.AVAILABLE)
-                        .append("'");
+                        .append(CharPool.QUOTE);
             }
 
             PreparedStatement pst = con.prepareStatement(sql.toString());

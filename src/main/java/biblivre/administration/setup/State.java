@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.administration.setup;
 
+import biblivre.core.utils.CharPool;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -105,7 +106,7 @@ public class State {
             return;
         }
 
-        State.log.append(message).append("\n");
+        State.log.append(message).append(CharPool.NEW_LINE);
         State.lastMessage = message;
 
         logger.debug(message);

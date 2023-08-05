@@ -32,27 +32,19 @@ public final class ReportUtils {
             return dewey;
         }
 
-        int i = digits;
+        StringBuilder formattedDewey =
+                dewey.chars()
+                        .filter(Character::isDigit)
+                        .limit(digits)
+                        .collect(
+                                StringBuilder::new,
+                                StringBuilder::appendCodePoint,
+                                StringBuilder::append);
 
-        StringBuilder format = new StringBuilder();
-        for (char c : dewey.toCharArray()) {
-            if (i == 0) {
-                break;
-            }
-
-            if (Character.isDigit(c)) {
-                i--;
-            }
-
-            format.append(c);
+        if (digits < 3 && formattedDewey.length() < 3) {
+            formattedDewey.append("0".repeat(Math.max(0, 3 - formattedDewey.length())));
         }
 
-        if (digits < 3) {
-            while (format.length() < 3) {
-                format.append("0");
-            }
-        }
-
-        return format.toString();
+        return formattedDewey.toString();
     }
 }

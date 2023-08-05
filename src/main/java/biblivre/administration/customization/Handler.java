@@ -61,12 +61,12 @@ public class Handler extends AbstractHandler {
                 list.add(new BriefTabFieldFormatDTO(jsonObject));
             }
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 
         if (list.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 
@@ -96,12 +96,12 @@ public class Handler extends AbstractHandler {
                 dto = new BriefTabFieldFormatDTO(jsonObject);
             }
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 
         if (dto == null) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 
@@ -129,12 +129,12 @@ public class Handler extends AbstractHandler {
                 dto = new BriefTabFieldFormatDTO(jsonObject);
             }
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 
         if (dto == null) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 
@@ -186,12 +186,12 @@ public class Handler extends AbstractHandler {
                 }
             }
         } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 
         if (map.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
 

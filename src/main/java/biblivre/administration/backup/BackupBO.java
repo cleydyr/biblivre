@@ -34,12 +34,12 @@ import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDTO;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Formatter;
@@ -283,7 +283,7 @@ public class BackupBO extends AbstractBO {
                             dto.getId()
                                     + "_"
                                     + TextUtils.removeNonLettersOrDigits(dto.getName(), "-"));
-            try (OutputStream writer = new FileOutputStream(destination)) {
+            try (OutputStream writer = Files.newOutputStream(destination.toPath())) {
                 file.copy(writer);
 
                 file.close();

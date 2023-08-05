@@ -65,16 +65,21 @@ public class Handler extends AbstractHandler {
 
         InputStream memoryFileInputStream = file.getInputStream();
 
+        Path tmpFile;
+
         try {
-            Path temporaryFilePath = Files.createTempFile("biblivre-import-upload", "tmp");
+            tmpFile = Files.createTempFile("biblivre-import-upload", "tmp");
+        } catch (IOException e) {
+            setMessage(ActionResult.ERROR, "error.cannot_create_temporary_file");
 
-            File tempFile = temporaryFilePath.toFile();
+            return;
+        }
 
-            FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+        try (OutputStream fileOutputStream = Files.newOutputStream(tmpFile)) {
 
             file.getInputStream().transferTo(fileOutputStream);
 
-            ImportDTO list = importBO.loadFromFile(() -> new FileInputStream(tempFile));
+            ImportDTO list = importBO.loadFromFile(() -> Files.newInputStream(tmpFile));
 
             if (list != null) {
                 List<String> isbnList = new ArrayList<>();
@@ -82,14 +87,14 @@ public class Handler extends AbstractHandler {
                 List<String> isrcList = new ArrayList<>();
 
                 for (RecordDTO dto : list.getRecordList()) {
-                    if (dto instanceof BiblioRecordDTO rdto) {
+                    if (dto instanceof BiblioRecordDTO biblioRecordDTO) {
 
-                        if (StringUtils.isNotBlank(rdto.getIsbn())) {
-                            isbnList.add(rdto.getIsbn());
-                        } else if (StringUtils.isNotBlank(rdto.getIssn())) {
-                            issnList.add(rdto.getIssn());
-                        } else if (StringUtils.isNotBlank(rdto.getIsrc())) {
-                            isrcList.add(rdto.getIsrc());
+                        if (StringUtils.isNotBlank(biblioRecordDTO.getIsbn())) {
+                            isbnList.add(biblioRecordDTO.getIsbn());
+                        } else if (StringUtils.isNotBlank(biblioRecordDTO.getIssn())) {
+                            issnList.add(biblioRecordDTO.getIssn());
+                        } else if (StringUtils.isNotBlank(biblioRecordDTO.getIsrc())) {
+                            isrcList.add(biblioRecordDTO.getIsrc());
                         }
                     }
                     // TODO: Completar para autoridades e vocabulário
@@ -220,7 +225,7 @@ public class Handler extends AbstractHandler {
                 append("failed", id);
             }
         } catch (Exception e) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_json");
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 

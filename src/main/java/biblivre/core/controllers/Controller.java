@@ -43,7 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Controller {
 
-    protected final Logger log = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
     protected ExtendedRequest xRequest;
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
@@ -144,7 +144,7 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            this.log.error(e.getMessage(), e);
+            this.logger.error(e.getMessage(), e);
             return;
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
@@ -168,14 +168,14 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            this.log.error(e.getMessage(), e);
+            this.logger.error(e.getMessage(), e);
             return;
 
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
             // IllegalAccessException, etc.
             this.doError("error.invalid_handler", e);
-            this.log.error(e.getMessage(), e);
+            this.logger.error(e.getMessage(), e);
             return;
         }
 

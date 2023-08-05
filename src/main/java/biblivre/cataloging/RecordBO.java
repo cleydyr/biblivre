@@ -30,8 +30,9 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
@@ -129,9 +130,9 @@ public abstract class RecordBO extends AbstractBO {
         Map<Integer, RecordDTO> records = this.map(ids);
 
         try {
-            File file = File.createTempFile("biblivre", ".mrc");
+            File marcFile = File.createTempFile("biblivre", ".mrc");
 
-            try (FileOutputStream out = new FileOutputStream(file)) {
+            try (OutputStream out = Files.newOutputStream(marcFile.toPath())) {
                 MarcStreamWriter writer = new MarcStreamWriter(out, StandardCharsets.UTF_8.name());
 
                 for (RecordDTO dto : records.values()) {
@@ -140,7 +141,7 @@ public abstract class RecordBO extends AbstractBO {
 
                 writer.close();
 
-                return new DiskFile(file, "x-download");
+                return new DiskFile(marcFile, "x-download");
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -227,7 +228,8 @@ public abstract class RecordBO extends AbstractBO {
             String encodedId = matcher.group(1);
             String fileId = "";
             String fileName = "";
-            String decodedId = new String(Base64.getDecoder().decode(encodedId));
+            String decodedId =
+                    new String(Base64.getDecoder().decode(encodedId), StandardCharsets.UTF_8);
             String[] splitId = decodedId.split(":");
             if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
                 fileId = splitId[0];
