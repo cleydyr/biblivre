@@ -92,7 +92,6 @@ public class Constants {
 
     // The constants below should not be final
     public static final String SINGLE_SCHEMA = "single";
-    public static boolean REINDEXING = false;
 
     // Label print configuration
     public static final String CONFIG_LABEL_PRINT_PARAGRAPH_ALIGNMENT =

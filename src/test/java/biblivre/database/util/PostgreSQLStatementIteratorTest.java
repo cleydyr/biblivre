@@ -2,7 +2,6 @@ package biblivre.database.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Iterator;
 import org.junit.jupiter.api.Test;
 
 public class PostgreSQLStatementIteratorTest {
@@ -219,19 +218,7 @@ public class PostgreSQLStatementIteratorTest {
     private void assertEqualsAfterNormalization(String original, String normalized) {
         PostgreSQLStatementIterable postgreSQLStatementIterable =
                 new PostgreSQLStatementIterable(
-                        new Iterator<>() {
-                            int i = 0;
-
-                            @Override
-                            public Character next() {
-                                return original.charAt(i++);
-                            }
-
-                            @Override
-                            public boolean hasNext() {
-                                return i != original.length();
-                            }
-                        });
+                        original.chars().mapToObj(c -> (char) c).iterator());
 
         StringBuilder sb = new StringBuilder();
 
