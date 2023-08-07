@@ -21,7 +21,3 @@
 [# th:each="entry : ${translations}"]
 [(${entry.value.userCreated} ? '+' : '*')][(${entry.key})] = [(${entry.value.text})]
 [/]
-
-<#list translations as key, translation>
-${translation.userCreated?then('+','*')}${key} = ${translation.text}
-</#list>
