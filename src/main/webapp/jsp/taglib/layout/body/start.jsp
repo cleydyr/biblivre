@@ -192,14 +192,3 @@
 		<div id="content">
 			<div class="px"></div>
 				<div id="content_inner">
-					<noscript>
-						<i18n:text key="text.main.noscript" escapeHTML="true" />
-						<ul>
-							<li>
-								<a href="?action=list_bibliographic">Bibliográfica</a>
-							</li>
-							<%-- TODO: SEO -->
-							<%-- <li><a href=\"?action=list_authorities\">Autoridades</a></li> --%>
-							<%-- <li><a href=\"?action=list_vocabulary\">Vocabulário</a></li> --%>
-						</ul>
-					</noscript>
