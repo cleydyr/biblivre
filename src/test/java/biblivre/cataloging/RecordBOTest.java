@@ -3,18 +3,15 @@ package biblivre.cataloging;
 import static org.junit.jupiter.api.Assertions.*;
 
 import biblivre.AbstractContainerDatabaseTest;
+import biblivre.MarcUtils;
 import biblivre.cataloging.bibliographic.BiblioRecordBO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
-import biblivre.marc.HumanReadableMarcReader;
-import biblivre.marc.MaterialType;
-import biblivre.marc.RecordStatus;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.marc4j.marc.Record;
@@ -86,7 +83,8 @@ class RecordBOTest extends AbstractContainerDatabaseTest {
         execute(
                 () -> {
                     BiblioRecordDTO record =
-                            getBiblioRecordDTOFromHumanReadableMarc(_1822_HUMAN_READABLE_MARC);
+                            MarcUtils.getBiblioRecordDTOFromHumanReadableMarc(
+                                    _1822_HUMAN_READABLE_MARC);
 
                     BiblioRecordBO biblioRecordBO = getWiredBiblioRecordBO();
 
@@ -143,14 +141,14 @@ class RecordBOTest extends AbstractContainerDatabaseTest {
         execute(
                 () -> {
                     BiblioRecordDTO record =
-                            getBiblioRecordDTOFromHumanReadableMarc(
+                            MarcUtils.getBiblioRecordDTOFromHumanReadableMarc(
                                     """
-                    000	00153nam a2200073 a 4500
-                    001	0000383
-                    005	20230725161639.272
-                    008	230725s|||| bl|||||||||||||||||por|u
-                    245	10|aÁgape
-                    """);
+                                            000	00153nam a2200073 a 4500
+                                            001	0000383
+                                            005	20230725161639.272
+                                            008	230725s|||| bl|||||||||||||||||por|u
+                                            245	10|aÁgape
+                                            """);
 
                     BiblioRecordBO biblioRecordBO = getWiredBiblioRecordBO();
 
@@ -181,7 +179,8 @@ class RecordBOTest extends AbstractContainerDatabaseTest {
         execute(
                 () -> {
                     BiblioRecordDTO record =
-                            getBiblioRecordDTOFromHumanReadableMarc(_1822_HUMAN_READABLE_MARC);
+                            MarcUtils.getBiblioRecordDTOFromHumanReadableMarc(
+                                    _1822_HUMAN_READABLE_MARC);
 
                     BiblioRecordBO biblioRecordBO = getWiredBiblioRecordBO();
 
@@ -216,12 +215,14 @@ class RecordBOTest extends AbstractContainerDatabaseTest {
                     BiblioRecordBO biblioRecordBO = getWiredBiblioRecordBO();
 
                     biblioRecordBO.saveOrUpdate(
-                            getBiblioRecordDTOFromHumanReadableMarc(_1822_HUMAN_READABLE_MARC),
+                            MarcUtils.getBiblioRecordDTOFromHumanReadableMarc(
+                                    _1822_HUMAN_READABLE_MARC),
                             0,
                             null);
 
                     biblioRecordBO.saveOrUpdate(
-                            getBiblioRecordDTOFromHumanReadableMarc(_1984_HUMAN_READABLE_MARC),
+                            MarcUtils.getBiblioRecordDTOFromHumanReadableMarc(
+                                    _1984_HUMAN_READABLE_MARC),
                             0,
                             null);
 
@@ -259,12 +260,14 @@ class RecordBOTest extends AbstractContainerDatabaseTest {
                     BiblioRecordBO biblioRecordBO = getWiredBiblioRecordBO();
 
                     biblioRecordBO.saveOrUpdate(
-                            getBiblioRecordDTOFromHumanReadableMarc(_1822_HUMAN_READABLE_MARC),
+                            MarcUtils.getBiblioRecordDTOFromHumanReadableMarc(
+                                    _1822_HUMAN_READABLE_MARC),
                             0,
                             null);
 
                     biblioRecordBO.saveOrUpdate(
-                            getBiblioRecordDTOFromHumanReadableMarc(_1984_HUMAN_READABLE_MARC),
+                            MarcUtils.getBiblioRecordDTOFromHumanReadableMarc(
+                                    _1984_HUMAN_READABLE_MARC),
                             0,
                             null);
 
@@ -297,18 +300,5 @@ class RecordBOTest extends AbstractContainerDatabaseTest {
 
     public SearchDTO search(BiblioRecordBO biblioRecordBO, String queryJson) {
         return biblioRecordBO.search(new SearchQueryDTO(queryJson), null);
-    }
-
-    @NotNull
-    private static BiblioRecordDTO getBiblioRecordDTOFromHumanReadableMarc(
-            String humanReadableMarc) {
-        HumanReadableMarcReader humanReadableMarcReader =
-                new HumanReadableMarcReader(humanReadableMarc, MaterialType.BOOK, RecordStatus.NEW);
-
-        BiblioRecordDTO record = new BiblioRecordDTO();
-
-        record.setRecord(humanReadableMarcReader.next());
-
-        return record;
     }
 }
