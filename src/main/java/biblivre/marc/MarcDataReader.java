@@ -484,7 +484,7 @@ public final class MarcDataReader {
                     }
                     case "(" -> shouldAddStartParenthesis = true;
                     case ")" -> {
-                        if (result.charAt(result.length()) == CharPool.OPEN_PARENTHESIS) {
+                        if (result.charAt(result.length() - 1) == CharPool.OPEN_PARENTHESIS) {
                             result.deleteCharAt(result.length() - 1);
                         } else if (!shouldAddStartParenthesis) {
                             result.append(CharPool.CLOSE_PARENTHESIS);
