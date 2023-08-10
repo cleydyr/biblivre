@@ -82,7 +82,7 @@ public class FileIOUtils {
     }
 
     public static void zipFolder(File src, File dest) throws IOException {
-        try (OutputStream fileWriter = Files.newOutputStream(src.toPath());
+        try (OutputStream fileWriter = Files.newOutputStream(dest.toPath());
                 ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
             FileIOUtils.addFolderToZip("", src, zip);
         }
