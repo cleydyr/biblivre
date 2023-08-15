@@ -102,9 +102,13 @@ public class Handler extends AbstractHandler {
                 "bibliographicSearchableGroupsText",
                 indexingGroupBO.getSearchableGroupsText(RecordType.BIBLIO, language));
 
-        request.setAttribute("biblioCachefilename", tabFieldsBO.getFormFields(RecordType.BIBLIO));
+        request.setAttribute(
+                "biblioCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
 
-        request.setAttribute("holdingCachefilename", tabFieldsBO.getFormFields(RecordType.HOLDING));
+        request.setAttribute(
+                "holdingCacheFileName",
+                tabFieldsBO.getFormFields(RecordType.HOLDING).getCacheFileName());
 
         request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
 
