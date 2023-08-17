@@ -13,6 +13,10 @@ services:
       - "PGPASSWORD=$POSTGRES_PASSWORD"
       - "PGDATABASE=$POSTGRES_DB"
       - "DIGITAL_MEDIA_DAO_IMPL=$DIGITAL_MEDIA_DAO_IMPL"
+      - "SPRING_MAIL_HOST=$SPRING_MAIL_HOST"
+      - "SPRING_MAIL_PORT=$SPRING_MAIL_PORT"
+      - "SPRING_MAIL_USERNAME=$SPRING_MAIL_USERNAME"
+      - "SPRING_MAIL_PASSWORD=$SPRING_MAIL_PASSWORD"
     depends_on:
       - database
     command: sh -c 'wait-for.sh -t 30 database:$POSTGRES_DEFAULT_PORT -- /usr/local/tomcat/bin/catalina.sh run'

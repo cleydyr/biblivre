@@ -54,6 +54,7 @@ import biblivre.digitalmedia.DigitalMediaDAOFactory;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDAO;
 import biblivre.login.LoginDAOImpl;
+import biblivre.mail.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -82,7 +83,8 @@ import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGe
             ReservationBO.class,
             AccessControlBO.class,
             AccessCardBO.class,
-            BackupBO.class
+            BackupBO.class,
+            EmailSender.class
         })
 public class TestBiblivreApplication {
     @Bean
