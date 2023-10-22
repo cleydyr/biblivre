@@ -296,7 +296,7 @@
 			<plugin>
 				<groupId>io.github.cleydyr</groupId>
 				<artifactId>dart-sass-maven-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>1.2.0</version>
 				<configuration>
 					<outputFolder>${project.build.directory}/Biblivre6/static/styles</outputFolder>
 					<style>COMPRESSED</style>
