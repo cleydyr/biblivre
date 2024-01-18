@@ -10,5 +10,4 @@ public class EmailPropertyKeys {
     public static String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
     public static String MAIL_DEBUG = "mail.debug";
     public static String MAIL_SMTP_SSL_TRUST = "mail.smtp.ssl.trust";
-
 }

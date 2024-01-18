@@ -14,8 +14,10 @@ import org.springframework.stereotype.Component;
 public class EmailSenderService implements EmailSender {
 
     @Override
-    public void sendEmail(InternetAddress to, String subject, String body) throws MessagingException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(MailConfiguration.class);
+    public void sendEmail(InternetAddress to, String subject, String body)
+            throws MessagingException {
+        ApplicationContext context =
+                new AnnotationConfigApplicationContext(MailConfiguration.class);
 
         JavaMailSender javaMailSender = context.getBean(JavaMailSender.class);
 
@@ -28,6 +30,5 @@ public class EmailSenderService implements EmailSender {
         mimeMessageHelper.setText(body);
 
         javaMailSender.send(mimeMessageHelper.getMimeMessage());
-
     }
 }

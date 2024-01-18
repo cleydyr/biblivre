@@ -1,12 +1,12 @@
 package biblivre.mail;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import biblivre.TestBiblivreApplication;
 import jakarta.mail.internet.InternetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -16,9 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 public class EmailSenderTest {
     @Autowired private EmailSender emailSender;
 
-//    @Test
+    //    @Test
     public void testEmailIsSent() throws Exception {
-        assertDoesNotThrow(() -> emailSender.sendEmail(new InternetAddress("email@email.com"), "Lorem ipsum", "Lorem ipsum"));
+        assertDoesNotThrow(
+                () ->
+                        emailSender.sendEmail(
+                                new InternetAddress("email@email.com"),
+                                "Lorem ipsum",
+                                "Lorem ipsum"));
     }
-
 }
