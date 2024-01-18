@@ -53,12 +53,9 @@ public class Updates {
                         for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
                             UpdateService updateService = entry.getValue();
 
-                            String version =
-                                    entry.getKey()
-                                            .replaceFirst("biblivre.update.", StringPool.BLANK)
-                                            .replaceFirst(
-                                                    updateService.getClass().getSimpleName(),
-                                                    StringPool.BLANK);
+                            String serviceName = entry.getKey();
+
+                            String version = getVersion(serviceName, updateService);
 
                             if (!installedVersions.contains(version)) {
                                 logger.info("Processing global update service {}.", version);
@@ -85,6 +82,13 @@ public class Updates {
                 });
     }
 
+    private static String getVersion(String serviceName, UpdateService updateService) {
+        String prefix = serviceName.replaceFirst("biblivre.update.", StringPool.BLANK);
+
+        return prefix.substring(
+                0, prefix.lastIndexOf(updateService.getClass().getSimpleName()) - 1);
+    }
+
     public void schemaUpdate(String schema) {
         UpdatesDAO dao = UpdatesDAO.getInstance();
 
@@ -100,9 +104,11 @@ public class Updates {
                         Set<String> installedVersions = dao.getInstalledVersions();
 
                         for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
-                            String version = entry.getKey();
-
                             UpdateService updateService = entry.getValue();
+
+                            String serviceName = entry.getKey();
+
+                            String version = getVersion(serviceName, updateService);
 
                             if (!installedVersions.contains(version)) {
                                 logger.info(

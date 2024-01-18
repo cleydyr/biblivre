@@ -1,49 +1,111 @@
-package biblivre.update.v6_0_0$3_0_1$alpha;
+package biblivre.update.v6_0_0$4_0_0$alpha;
 
-import biblivre.core.translations.TranslationBO;
+import biblivre.cataloging.RecordDAO;
+import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
-import java.util.Map;
+import java.sql.Statement;
+import java.util.List;
+import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Update implements UpdateService {
 
-    private TranslationBO translationBO;
+    @Autowired private RecordDAO recordDAO;
 
-    public void doUpdate(Connection connection) throws UpdateException {
-        _addTranslations(connection);
+    public void doUpdateScopedBySchema(Connection connection) throws UpdateException {
+        _createRecordDataTable(connection);
+        _createRecordDataIndices(connection);
+        _migrateRecordData(connection);
     }
 
-    private void _addTranslations(Connection connection) throws UpdateException {
-        for (Map.Entry<String, Map<String, String>> entry : _TRANSLATIONS.entrySet()) {
-            for (Map.Entry<String, String> entry2 : entry.getValue().entrySet()) {
-                String key = entry.getKey();
+    private void _createRecordDataTable(Connection connection) throws UpdateException {
+        String sql =
+                """
+                CREATE TABLE IF NOT EXISTS record_data (
+                    id SERIAL,
+                    record_id BIGINT NOT NULL,
+                    record_type VARCHAR(20) NOT NULL,
+                    field VARCHAR(3) NOT NULL,
+                    subfield VARCHAR(1) NOT NULL,
+                    value TEXT NOT NULL
+                )
+                """;
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        } catch (Exception e) {
+            throw new UpdateException("failed to create table", e);
+        }
+    }
 
-                String language = entry2.getKey();
+    private void _createRecordDataIndices(Connection connection) throws UpdateException {
+        String sql =
+                """
+                CREATE INDEX IF NOT EXISTS record_data_record_id_idx ON record_data (record_id);
+                CREATE INDEX IF NOT EXISTS record_data_field_idx ON record_data (field, subfield);
+                CREATE INDEX IF NOT EXISTS record_data_record_type_idx ON record_data (record_type);
+                """;
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        } catch (Exception e) {
+            throw new UpdateException("failed to create table", e);
+        }
+    }
 
-                String translation = entry2.getValue();
+    private void _migrateRecordData(Connection connection) throws UpdateException {
+        for (var recordType : RecordType.values()) {
+            if (recordType == RecordType.HOLDING) {
+                continue;
+            }
 
-                translationBO.addSingleTranslation(language, key, translation);
+            int limit = 500;
+
+            for (int offset = 0; ; offset += limit) {
+                List<RecordDTO> records = recordDAO.list(offset, limit, recordType);
+
+                if (records.isEmpty()) {
+                    break;
+                }
+
+                _migrateRecords(connection, records);
             }
         }
     }
 
-    @Autowired
-    public void setTranslationsBO(TranslationBO translationBO) {
-        this.translationBO = translationBO;
+    private void _migrateRecords(Connection connection, List<RecordDTO> records) {
+        for (var record : records) {
+            _migrateRecord(connection, record);
+        }
     }
 
-    private final Map<String, Map<String, String>> _TRANSLATIONS =
-            Map.of(
-                    "error.cannot_create_file",
-                    Map.of(
-                            "en-US",
-                            "Cannot create a temporary file",
-                            "es",
-                            "No se ha podido crear un archivo temporario",
-                            "pt-BR",
-                            "Não foi possível criar um arquivo temporário"));
+    private void _migrateRecord(Connection connection, RecordDTO record) {
+        var sql =
+                """
+                INSERT INTO record_data (record_id, field, subfield, value, record_type)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+
+        Record marcRecord = record.getRecord();
+
+        try (var statement = connection.prepareStatement(sql)) {
+            for (var dataField : marcRecord.getDataFields()) {
+                for (var subfield : dataField.getSubfields()) {
+                    statement.setLong(1, record.getId());
+                    statement.setString(2, dataField.getTag());
+                    statement.setString(3, String.valueOf(subfield.getCode()));
+                    statement.setString(4, subfield.getData());
+                    statement.setString(5, record.getRecordType().toString());
+                    statement.addBatch();
+                }
+            }
+
+            statement.executeBatch();
+        } catch (Exception e) {
+            throw new UpdateException("failed to migrate record", e);
+        }
+    }
 }
