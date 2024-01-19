@@ -3,6 +3,9 @@ package biblivre.update.v6_0_0$4_0_0$alpha;
 import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
+import biblivre.cataloging.holding.HoldingDAO;
+import biblivre.core.PreparedStatementUtil;
+import biblivre.record.RecordDataJDBCDAO;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Component;
 public class Update implements UpdateService {
 
     @Autowired private RecordDAO recordDAO;
+
+    @Autowired private HoldingDAO holdingDAO;
 
     public void doUpdateScopedBySchema(Connection connection) throws UpdateException {
         _createRecordDataTable(connection);
@@ -31,7 +36,7 @@ public class Update implements UpdateService {
                     record_id BIGINT NOT NULL,
                     record_type VARCHAR(20) NOT NULL,
                     field VARCHAR(3) NOT NULL,
-                    subfield VARCHAR(1) NOT NULL,
+                    subfield VARCHAR(1),
                     value TEXT NOT NULL
                 )
                 """;
@@ -57,6 +62,25 @@ public class Update implements UpdateService {
     }
 
     private void _migrateRecordData(Connection connection) throws UpdateException {
+        _migrateHoldingRecords(connection);
+        _migrateOtherRecords(connection);
+    }
+
+    private void _migrateHoldingRecords(Connection connection) {
+        int limit = 500;
+
+        for (int offset = 0; ; offset += limit) {
+            List<RecordDTO> records = holdingDAO.list(offset, limit);
+
+            if (records.isEmpty()) {
+                break;
+            }
+
+            _migrateRecords(connection, records);
+        }
+    }
+
+    private void _migrateOtherRecords(Connection connection) {
         for (var recordType : RecordType.values()) {
             if (recordType == RecordType.HOLDING) {
                 continue;
@@ -83,29 +107,10 @@ public class Update implements UpdateService {
     }
 
     private void _migrateRecord(Connection connection, RecordDTO record) {
-        var sql =
-                """
-                INSERT INTO record_data (record_id, field, subfield, value, record_type)
-                VALUES (?, ?, ?, ?, ?)
-                """;
-
-        Record marcRecord = record.getRecord();
-
-        try (var statement = connection.prepareStatement(sql)) {
-            for (var dataField : marcRecord.getDataFields()) {
-                for (var subfield : dataField.getSubfields()) {
-                    statement.setLong(1, record.getId());
-                    statement.setString(2, dataField.getTag());
-                    statement.setString(3, String.valueOf(subfield.getCode()));
-                    statement.setString(4, subfield.getData());
-                    statement.setString(5, record.getRecordType().toString());
-                    statement.addBatch();
-                }
-            }
-
-            statement.executeBatch();
+        try {
+            RecordDataJDBCDAO.insertRecordData(connection, record);
         } catch (Exception e) {
-            throw new UpdateException("failed to migrate record", e);
+            throw new UpdateException("failed to migrate record " + record.getId(), e);
         }
     }
 }

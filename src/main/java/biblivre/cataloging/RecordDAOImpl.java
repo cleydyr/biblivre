@@ -25,6 +25,7 @@ import biblivre.cataloging.search.SearchDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.marc.MaterialType;
@@ -38,8 +39,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import biblivre.record.RecordDataJDBCDAO;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.marc4j.marc.Record;
 
 public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
     public static RecordDAOImpl getInstance() {
@@ -52,60 +56,76 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
         dto.setId(id);
 
-        Connection con = null;
+        try (Connection con = this.getConnection()) {
+            try {
+                con.setAutoCommit(false);
 
-        try {
-            con = this.getConnection();
+                String sql =
+                        "INSERT INTO "
+                                + dto.getRecordType()
+                                + "_records "
+                                + "(id, iso2709, material, database, created_by) "
+                                + "VALUES (?, ?, ?, ?, ?); ";
 
-            String sql =
-                    "INSERT INTO "
-                            + dto.getRecordType()
-                            + "_records "
-                            + "(id, iso2709, material, database, created_by) "
-                            + "VALUES (?, ?, ?, ?, ?); ";
+                PreparedStatement pst = con.prepareStatement(sql);
 
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, dto.getId());
-            pst.setString(2, dto.getUTF8Iso2709());
-            pst.setString(3, dto.getMaterialType().toString());
-            pst.setString(4, dto.getRecordDatabase().toString());
-            pst.setInt(5, dto.getCreatedBy());
+                PreparedStatementUtil.setAllParameters(
+                        pst,
+                        id,
+                        dto.getUTF8Iso2709(),
+                        dto.getMaterialType().toString(),
+                        dto.getRecordDatabase().toString(),
+                        dto.getCreatedBy());
 
-            return pst.executeUpdate() > 0;
+                pst.executeUpdate();
 
+                RecordDataJDBCDAO.insertRecordData(con, dto);
+
+                con.commit();
+            } catch (Exception e) {
+                this.rollback(con);
+
+                throw e;
+            }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean update(RecordDTO dto) {
-        Connection con = null;
+        try (Connection con = this.getConnection()) {
+            try {
+                con.setAutoCommit(false);
 
-        try {
-            con = this.getConnection();
+                String sql =
+                        "UPDATE "
+                                + dto.getRecordType()
+                                + "_records "
+                                + "SET iso2709 = ?, material = ?, modified = now(), modified_by = ? "
+                                + "WHERE id = ?;";
 
-            String sql =
-                    "UPDATE "
-                            + dto.getRecordType()
-                            + "_records "
-                            + "SET iso2709 = ?, material = ?, modified = now(), modified_by = ? "
-                            + "WHERE id = ?;";
+                PreparedStatement pst = con.prepareStatement(sql);
 
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, dto.getUTF8Iso2709());
-            pst.setString(2, dto.getMaterialType().toString());
-            pst.setInt(3, dto.getModifiedBy());
-            pst.setInt(4, dto.getId());
+                PreparedStatementUtil.setAllParameters(
+                        pst,
+                        dto.getUTF8Iso2709(),
+                        dto.getMaterialType().toString(),
+                        dto.getModifiedBy(),
+                        dto.getId());
 
-            return pst.executeUpdate() > 0;
+                pst.executeUpdate();
 
+                RecordDataJDBCDAO.updateRecordData(con, dto);
+
+                con.commit();
+            } catch (Exception e) {
+                this.rollback(con);
+
+                throw e;
+            }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -208,8 +228,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, dto.getId());
 
-            return pst.executeUpdate() > 0;
+            pst.executeUpdate();
 
+            RecordDataJDBCDAO.deleteRecordData(con, dto);
+
+            return true;
         } catch (Exception e) {
             throw new DAOException(e);
         } finally {

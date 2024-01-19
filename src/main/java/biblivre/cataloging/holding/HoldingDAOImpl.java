@@ -166,7 +166,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         Connection con = null;
         try {
             con = this.getConnection();
-            String sql = "SELECT * biblio_holdings ORDER BY id OFFSET ? LIMIT ?;";
+            String sql = "SELECT * FROM biblio_holdings ORDER BY id OFFSET ? LIMIT ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
