@@ -2,13 +2,13 @@ package biblivre.record;
 
 import biblivre.cataloging.RecordDTO;
 import biblivre.core.PreparedStatementUtil;
-import org.marc4j.marc.Record;
-
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.marc4j.marc.Record;
 
 public class RecordDataJDBCDAO {
-    public static void insertRecordData(Connection connection, RecordDTO record) throws SQLException {
+    public static void insertRecordData(Connection connection, RecordDTO record)
+            throws SQLException {
         var sql =
                 """
                 INSERT INTO record_data (record_id, field, subfield, value, record_type)
@@ -46,14 +46,17 @@ public class RecordDataJDBCDAO {
         }
     }
 
-    public static void updateRecordData(Connection connection, RecordDTO record) throws SQLException {
+    public static void updateRecordData(Connection connection, RecordDTO record)
+            throws SQLException {
         deleteRecordData(connection, record);
 
         insertRecordData(connection, record);
     }
 
-    public static void deleteRecordData(Connection connection, RecordDTO record) throws SQLException {
-        var sql = """
+    public static void deleteRecordData(Connection connection, RecordDTO record)
+            throws SQLException {
+        var sql =
+                """
                 DELETE FROM record_data WHERE record_id = ? AND record_type = ?
                 """;
 

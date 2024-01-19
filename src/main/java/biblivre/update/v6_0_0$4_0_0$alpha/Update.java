@@ -4,14 +4,12 @@ import biblivre.cataloging.RecordDAO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.holding.HoldingDAO;
-import biblivre.core.PreparedStatementUtil;
 import biblivre.record.RecordDataJDBCDAO;
 import biblivre.update.UpdateService;
 import biblivre.update.exception.UpdateException;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
-import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

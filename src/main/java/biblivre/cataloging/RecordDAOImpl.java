@@ -29,6 +29,7 @@ import biblivre.core.PreparedStatementUtil;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.marc.MaterialType;
+import biblivre.record.RecordDataJDBCDAO;
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,11 +40,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import biblivre.record.RecordDataJDBCDAO;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.marc4j.marc.Record;
 
 public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
     public static RecordDAOImpl getInstance() {
