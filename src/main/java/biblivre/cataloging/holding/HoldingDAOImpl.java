@@ -30,6 +30,7 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.enums.SearchMode;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
@@ -39,6 +40,7 @@ import biblivre.login.LoginDTO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
+import biblivre.record.RecordDataJDBCDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -193,35 +195,41 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     @Override
     public boolean save(RecordDTO dto) {
-        Connection con = null;
-        HoldingDTO holding = (HoldingDTO) dto;
+        withTransactionContext(
+                (connection) -> {
+                    HoldingDTO holding = (HoldingDTO) dto;
 
-        try {
-            con = this.getConnection();
-            int id = this.getNextSerial("biblio_holdings_id_seq");
-            holding.setId(id);
-            String sql =
-                    "INSERT INTO biblio_holdings "
-                            + "(id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by) "
-                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ";
+                    int id = this.getNextSerial("biblio_holdings_id_seq");
 
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, holding.getId());
-            pst.setInt(2, holding.getRecordId());
-            pst.setString(3, holding.getUTF8Iso2709());
-            pst.setString(4, holding.getAvailability().toString());
-            pst.setString(5, holding.getRecordDatabase().toString());
-            pst.setString(6, holding.getMaterialType().toString());
-            pst.setString(7, holding.getAccessionNumber());
-            pst.setString(8, holding.getLocationD());
-            pst.setInt(9, holding.getCreatedBy());
+                    holding.setId(id);
 
-            return pst.executeUpdate() > 0;
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    String sql =
+                            """
+                    INSERT INTO biblio_holdings
+                    (id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """;
+
+                    PreparedStatement pst = connection.prepareStatement(sql);
+
+                    PreparedStatementUtil.setAllParameters(
+                            pst,
+                            holding.getId(),
+                            holding.getRecordId(),
+                            holding.getUTF8Iso2709(),
+                            holding.getAvailability().toString(),
+                            holding.getRecordDatabase().toString(),
+                            holding.getMaterialType().toString(),
+                            holding.getAccessionNumber(),
+                            holding.getLocationD(),
+                            holding.getCreatedBy());
+
+                    pst.executeUpdate();
+
+                    RecordDataJDBCDAO.insertRecordData(connection, holding);
+                });
+
+        return true;
     }
 
     @Override
@@ -257,33 +265,33 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     @Override
     public boolean update(RecordDTO dto) {
-        Connection con = null;
-        HoldingDTO holding = (HoldingDTO) dto;
+        withTransactionContext(
+                (connection) -> {
+                    HoldingDTO holding = (HoldingDTO) dto;
 
-        try {
-            con = this.getConnection();
+                    String sql =
+                            """
+                    UPDATE biblio_holdings
+                    SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, modified_by = ?
+                    WHERE id = ?
+                    """;
 
-            String sql =
-                    "UPDATE biblio_holdings "
-                            + "SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, label_printed = ?, modified = now(), modified_by = ? "
-                            + "WHERE id = ?;";
+                    PreparedStatement pst = connection.prepareStatement(sql);
 
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, holding.getRecordId());
-            pst.setString(2, holding.getUTF8Iso2709());
-            pst.setString(3, holding.getAvailability().toString());
-            pst.setString(4, holding.getAccessionNumber());
-            pst.setString(5, holding.getLocationD());
-            pst.setBoolean(6, holding.getLabelPrinted());
-            pst.setInt(7, holding.getModifiedBy());
-            pst.setInt(8, holding.getId());
+                    PreparedStatementUtil.setAllParameters(
+                            pst,
+                            holding.getRecordId(),
+                            holding.getUTF8Iso2709(),
+                            holding.getAvailability().toString(),
+                            holding.getAccessionNumber(),
+                            holding.getLocationD(),
+                            holding.getModifiedBy(),
+                            holding.getId());
 
-            return pst.executeUpdate() > 0;
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    RecordDataJDBCDAO.updateRecordData(connection, holding);
+                });
+
+        return true;
     }
 
     @Override
@@ -315,22 +323,22 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     @Override
     public boolean delete(RecordDTO dto) {
-        Connection con = null;
+        withTransactionContext(
+                (connection) -> {
+                    HoldingDTO holding = (HoldingDTO) dto;
 
-        try {
-            con = this.getConnection();
+                    String sql = "DELETE FROM biblio_holdings WHERE id = ?;";
 
-            PreparedStatement pst =
-                    con.prepareStatement("DELETE FROM biblio_holdings WHERE id = ?;");
-            pst.setInt(1, dto.getId());
+                    PreparedStatement pst = connection.prepareStatement(sql);
 
-            return pst.executeUpdate() > 0;
+                    pst.setInt(1, holding.getId());
 
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    pst.executeUpdate();
+
+                    RecordDataJDBCDAO.deleteRecordData(connection, holding);
+                });
+
+        return true;
     }
 
     @Override

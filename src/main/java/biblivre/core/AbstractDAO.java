@@ -20,6 +20,8 @@
 package biblivre.core;
 
 import biblivre.core.exceptions.DAOException;
+import biblivre.core.function.UnsafeConsumer;
+import biblivre.core.function.UnsafeFunction;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.DatabaseUtils;
 import java.lang.reflect.Constructor;
@@ -256,5 +258,41 @@ public abstract class AbstractDAO {
         Method m = D.getMethod("getInnermostDelegate");
 
         return (PGConnection) m.invoke(o);
+    }
+
+    protected <T> T withTransactionContext(UnsafeFunction<Connection, T> function) {
+        try (Connection connection = getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+
+                T result = function.apply(connection);
+
+                connection.commit();
+
+                return result;
+            } catch (Exception e) {
+                connection.rollback();
+                throw e;
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    protected void withTransactionContext(UnsafeConsumer<Connection> consumer) {
+        try (Connection connection = getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+
+                consumer.accept(connection);
+
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                throw e;
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
 }
