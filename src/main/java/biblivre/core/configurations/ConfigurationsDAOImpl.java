@@ -27,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ConfigurationsDAOImpl extends AbstractDAO implements ConfigurationsDAO {
@@ -35,32 +36,33 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
         return AbstractDAO.getInstance(ConfigurationsDAOImpl.class);
     }
 
+    private List<ConfigurationsDTO> cache = null;
+
     @Override
     public List<ConfigurationsDTO> list() {
-        List<ConfigurationsDTO> list = new ArrayList<>();
-
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            String sql = "SELECT * FROM configurations;";
-
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-
-            while (rs.next()) {
-                try {
-                    list.add(this.populateDTO(rs));
-                } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
-                }
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
+        if (this.cache != null) {
+            return this.cache;
         }
 
-        return list;
+        List<ConfigurationsDTO> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM configurations;";
+
+        try (Connection con = getConnection();
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                list.add(this.populateDTO(rs));
+            }
+
+            cache = Collections.unmodifiableList(list);
+
+            return cache;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new DAOException(e);
+        }
     }
 
     @Override
@@ -102,6 +104,9 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
             }
 
             this.commit(con);
+
+            this.cache = null;
+
             return true;
         } catch (Exception e) {
             this.rollback(con);

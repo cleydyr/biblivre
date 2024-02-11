@@ -23,6 +23,7 @@ import biblivre.core.AbstractDTO;
 import biblivre.core.utils.FileIOUtils;
 import java.io.File;
 import java.io.Serial;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public final class ConfigurationsDTO extends AbstractDTO {
@@ -106,7 +107,7 @@ public final class ConfigurationsDTO extends AbstractDTO {
     }
 
     public String getType() {
-        return StringUtils.defaultString(this.type, "string");
+        return Objects.toString(this.type, "string");
     }
 
     public void setType(String type) {

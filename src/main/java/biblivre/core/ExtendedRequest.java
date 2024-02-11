@@ -31,10 +31,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -134,7 +131,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     public String getString(String key, String defaultValue) {
         String value = this.getRequestParameter(key);
 
-        return StringUtils.defaultString(value, defaultValue);
+        return Objects.toString(value, defaultValue);
     }
 
     public Integer getInteger(String key) {

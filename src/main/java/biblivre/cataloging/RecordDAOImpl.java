@@ -80,6 +80,8 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 RecordDataJDBCDAO.insertRecordData(con, dto);
 
                 con.commit();
+
+                return true;
             } catch (Exception e) {
                 this.rollback(con);
 
@@ -117,6 +119,8 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 RecordDataJDBCDAO.updateRecordData(con, dto);
 
                 con.commit();
+
+                return true;
             } catch (Exception e) {
                 this.rollback(con);
 

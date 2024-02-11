@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import javax.annotation.Nonnull;
 
 public class PostgreSQLStatementIterable implements Iterable<String> {
-    private static final String COPY_PREFIX = "COPY ";
     private static final char DOT = '.';
     private static final char BACKSLASH = '\\';
     private static final char SPACE = ' ';
@@ -24,17 +24,14 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
 
     private StringBuilder dollarQuoteStringTagSB;
 
-    private String next;
-
     public PostgreSQLStatementIterable(Iterator<Character> sourceIterator) {
         this.sourceIterator = sourceIterator;
 
         this.dollarQuoteStringTagSB = new StringBuilder();
-
-        this.next = loadNext();
     }
 
     @Override
+    @Nonnull
     public Iterator<String> iterator() {
         return new Iterator<>() {
 
@@ -55,11 +52,7 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
     }
 
     private String next() {
-        String currentNext = this.next;
-
-        this.next = loadNext();
-
-        return currentNext;
+        return loadNext();
     }
 
     private String loadNext() {
@@ -75,22 +68,10 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
             if (c == SEMICOLON && currentState == State.WAITING_SEMICOLON) {
                 sb.append(SEMICOLON);
 
-                if (sb.indexOf(COPY_PREFIX) != 0) {
-                    break;
-                }
-
-                currentState = State.ON_COPY;
-
-                continue;
+                break;
             }
 
             State newState = nextState(c, currentState);
-
-            if (currentState == State.CLOSING_COPY_DOT && newState == State.WAITING_SEMICOLON) {
-                sb.append(c);
-
-                break;
-            }
 
             if (newState == State.OPENING_DASH) {
                 // don't add it yet
@@ -136,11 +117,11 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
 
             currentState = newState;
 
-            if (sb.length() == 0 && Character.isWhitespace(c)) {
+            if (sb.isEmpty() && Character.isWhitespace(c)) {
                 continue;
             }
 
-            sb.append((Character.isWhitespace(c) && !isKeepWhitespace(currentState)) ? SPACE : c);
+            sb.append((Character.isWhitespace(c) && isDiscardWhitespace(currentState)) ? SPACE : c);
 
             lastChar = c;
         }
@@ -148,12 +129,12 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
         return sb.toString();
     }
 
-    private boolean isKeepWhitespace(State state) {
-        return state == State.DOLLAR_QUOTE_STRING || state == State.ON_COPY;
+    private boolean isDiscardWhitespace(State state) {
+        return state != State.DOLLAR_QUOTE_STRING;
     }
 
     private boolean hasNext() {
-        return !this.next.isBlank();
+        return sourceIterator.hasNext();
     }
 
     private State nextState(char c, State currentState) {
@@ -236,24 +217,6 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
                 }
                 return State.WAITING_SEMICOLON;
             }
-            case ON_COPY -> {
-                if (c == BACKSLASH) {
-                    return State.CLOSING_COPY_BACKSLASH;
-                }
-                return State.ON_COPY;
-            }
-            case CLOSING_COPY_BACKSLASH -> {
-                if (c == DOT) {
-                    return State.CLOSING_COPY_DOT;
-                }
-                return State.ON_COPY;
-            }
-            case CLOSING_COPY_DOT -> {
-                if (c == NEW_LINE) {
-                    return State.WAITING_SEMICOLON;
-                }
-                return State.ON_COPY;
-            }
             default -> throw new UncoveredStateException(
                     "State from %s receving %c is not covered".formatted(currentState, c));
         }
@@ -274,9 +237,5 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
         DOUBLE_QUOTE_STRING,
 
         WAITING_SEMICOLON,
-
-        ON_COPY,
-        CLOSING_COPY_BACKSLASH,
-        CLOSING_COPY_DOT
     }
 }

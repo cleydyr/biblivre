@@ -23,7 +23,8 @@ import biblivre.administration.backup.BackupBO;
 import biblivre.administration.backup.BackupScope;
 import biblivre.administration.backup.BackupType;
 import biblivre.administration.backup.RestoreBO;
-import biblivre.administration.backup.RestoreDTO;
+import biblivre.administration.backup.RestoreOperation;
+import biblivre.administration.backup.exception.RestoreException;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -31,6 +32,7 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.exceptions.ValidationException;
+import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
@@ -91,44 +93,51 @@ public class Handler extends AbstractHandler {
         put("success", success);
     }
 
-    // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=list_restores
     public void listRestores(ExtendedRequest request, ExtendedResponse response) {
-        List<RestoreDTO> list = restoreBO.list();
+        try {
+            List<RestoreOperation> restoreOperations = restoreBO.list();
 
-        put("success", true);
+            put("success", true);
 
-        for (RestoreDTO dto : list) {
-            append("restores", dto.toJSONObject());
+            restoreOperations.forEach(
+                    restoreOperation -> {
+                        put("restores", restoreOperation.toJSONObject());
+                    });
+        } catch (RestoreException e) {
+            put("success", false);
+
+            logger.error(e.getMessage(), e);
         }
     }
 
     public void uploadBiblivre4(ExtendedRequest request, ExtendedResponse response) {
         boolean mediaUpload = request.getBoolean("media_upload", false);
 
-        MemoryFile file = request.getFile(mediaUpload ? "biblivre4backupmedia" : "biblivre4backup");
+        MemoryFile submittedBackupFile =
+                request.getFile(mediaUpload ? "biblivre4backupmedia" : "biblivre4backup");
 
-        String extension = file.getName().endsWith("b4bz") ? "b4bz" : "b5bz";
+        File serverBackupDestination = backupBO.getServerBackupDestination();
 
-        File path = backupBO.getBackupDestination();
-        String uuid = UUID.randomUUID() + "." + extension;
-        File backup = new File(path, uuid);
+        String serverBackupFileName = getServerBackupFileName(submittedBackupFile);
 
-        boolean success = true;
-        RestoreDTO dto = null;
+        File serverBackupFile = new File(serverBackupDestination, serverBackupFileName);
 
-        try (OutputStream os = Files.newOutputStream(backup.toPath())) {
-            file.copy(os);
+        try (OutputStream os = Files.newOutputStream(serverBackupFile.toPath())) {
+            submittedBackupFile.copy(os);
 
-            dto = restoreBO.getRestoreDTO(backup.getName());
+            RestoreOperation restoreOperation = restoreBO.getRestoreOperation(serverBackupFileName);
+
+            put("success", true);
+
+            put("file", serverBackupFileName);
+
+            put("metadata", restoreOperation.toJSONObject());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            success = false;
-        }
-        put("success", success);
-        put("file", uuid);
 
-        if (success && dto != null) {
-            put("metadata", dto.toJSONObject());
+            put("success", false);
+
+            put("message", e.getMessage());
         }
     }
 
@@ -157,7 +166,7 @@ public class Handler extends AbstractHandler {
     }
 
     private boolean checkForPartialBackup(
-            RestoreDTO dto, ExtendedRequest request, ExtendedResponse response) {
+            RestoreOperation dto, ExtendedRequest request, ExtendedResponse response) {
 
         String mediaFileBackup = request.getString("mediaFileBackup");
         boolean skip = request.getBoolean("skip", false);
@@ -181,7 +190,8 @@ public class Handler extends AbstractHandler {
                     }
 
                     if (StringUtils.isNotBlank(mediaFileBackup)) {
-                        RestoreDTO partialDto = restoreBO.getRestoreDTO(mediaFileBackup);
+                        RestoreOperation partialDto =
+                                restoreBO.getRestoreOperation(mediaFileBackup);
 
                         if (partialDto.getType() == BackupType.DIGITAL_MEDIA_ONLY) {
                             return true;
@@ -206,44 +216,42 @@ public class Handler extends AbstractHandler {
         return false;
     }
 
-    // http://localhost:8080/Biblivre5/?controller=json&module=administration.backup&action=restore&filename=Biblivre Backup 2012-09-15 22h56m22s Full.b5bz
     public void restore(ExtendedRequest request, ExtendedResponse response) {
-        String schema = SchemaThreadLocal.get();
+        String currentSchema = SchemaThreadLocal.get();
 
-        String filename = request.getString("filename");
+        String backupFileName = request.getString("filename");
         String mediaFileBackup = request.getString("mediaFileBackup");
         String selectedBackupSchema = request.getString("selected_schema");
         String schemasMap = request.getString("schemas_map");
         String type = request.getString("type", "partial");
 
         boolean success = false;
+
         try {
             State.start();
             State.writeLog(
                     request.getLocalizedText("administration.setup.biblivre4restore.log_header"));
 
-            BackupScope restoreScope = backupBO.getBackupScope();
+            BackupScope restoreScope = backupBO.getBackupScope(currentSchema);
 
-            RestoreDTO dto = restoreBO.getRestoreDTO(filename);
+            RestoreOperation restoreOperation = restoreBO.getRestoreOperation(backupFileName);
 
-            if (!this.checkForPartialBackup(dto, request, response)) {
+            if (!this.checkForPartialBackup(restoreOperation, request, response)) {
                 State.cancel();
                 return;
             }
 
-            BackupScope backupScope = dto.getBackupScope();
+            BackupScope backupScope = restoreOperation.getBackupScope();
 
             State.writeLog(backupScope.toString() + " => " + restoreScope.toString());
 
             Map<String, String> restoreSchemas = new HashMap<>();
 
-            if (restoreScope == BackupScope.SINGLE_SCHEMA) {
+            if (restoreScope == BackupScope.SINGLE_SCHEMA
+                    && restoreOperation.getSchemas().containsKey(Constants.GLOBAL_SCHEMA)) {
                 // Se o backup possui schema global e multi bibliotecas não está habilitado,
                 // restaura o global também
-
-                if (dto.getSchemas().containsKey(Constants.GLOBAL_SCHEMA)) {
-                    restoreSchemas.put(Constants.GLOBAL_SCHEMA, Constants.GLOBAL_SCHEMA);
-                }
+                restoreSchemas.put(Constants.GLOBAL_SCHEMA, Constants.GLOBAL_SCHEMA);
             }
 
             if (restoreScope == BackupScope.SINGLE_SCHEMA
@@ -252,14 +260,14 @@ public class Handler extends AbstractHandler {
                 // selecionado
                 if (StringUtils.isNotBlank(selectedBackupSchema)) {
                     // Se o usuário selecionou, usa o selecionado
-                    restoreSchemas.put(selectedBackupSchema, schema);
+                    restoreSchemas.put(selectedBackupSchema, currentSchema);
                 } else {
                     // Se o usuário não selecionou, use o que encontrar. Geralmente só vai ter um,
                     // já que origem MULTI SCHEMA requer seleção acima
 
-                    for (String s : dto.getSchemas().keySet()) {
+                    for (String s : restoreOperation.getSchemas().keySet()) {
                         if (!s.equals(Constants.GLOBAL_SCHEMA)) {
-                            restoreSchemas.put(s, schema);
+                            restoreSchemas.put(s, currentSchema);
                             break;
                         }
                     }
@@ -268,9 +276,9 @@ public class Handler extends AbstractHandler {
                 // O destino é multi bibliotecas. Usar o que o usuário selecionou na tela.
                 if (type.equals("complete")) {
                     // Marcar para excluir todos os schemas
-                    dto.setPurgeAll(true);
+                    restoreOperation.setPurgeAll(true);
 
-                    for (String s : dto.getSchemas().keySet()) {
+                    for (String s : restoreOperation.getSchemas().keySet()) {
                         restoreSchemas.put(s, s);
                     }
                 } else {
@@ -289,7 +297,7 @@ public class Handler extends AbstractHandler {
                 String key = entry.getKey();
                 String value = entry.getValue();
 
-                if (StringUtils.isBlank(key) || !dto.getSchemas().containsKey(key)) {
+                if (StringUtils.isBlank(key) || !restoreOperation.getSchemas().containsKey(key)) {
                     throw new ValidationException(
                             "administration.maintenance.backup.error.invalid_origin_schema");
                 }
@@ -312,16 +320,16 @@ public class Handler extends AbstractHandler {
                         "administration.maintenance.backup.error.duplicated_destination_schema");
             }
 
-            dto.setRestoreScope(restoreScope);
-            dto.setRestoreSchemas(restoreSchemas);
+            restoreOperation.setRestoreScope(restoreScope);
+            restoreOperation.setRestoreSchemas(restoreSchemas);
 
-            RestoreDTO partialDTO = null;
+            RestoreOperation mediaRestoreOperation = null;
 
             if (StringUtils.isNotBlank(mediaFileBackup)) {
-                partialDTO = restoreBO.getRestoreDTO(mediaFileBackup);
+                mediaRestoreOperation = restoreBO.getRestoreOperation(mediaFileBackup);
             }
 
-            success = restoreBO.restore(dto, partialDTO);
+            success = restoreBO.restore(restoreOperation, mediaRestoreOperation);
 
             if (success) {
                 ConfigurationsDTO cdto =
@@ -356,6 +364,16 @@ public class Handler extends AbstractHandler {
         put("total", State.getSteps());
         put("secondary_current", State.getCurrentSecondaryStep());
         put("complete", !State.LOCKED.get());
+    }
+
+    private static String getServerBackupFileName(BiblivreFile submittedBackupFile) {
+        String extension = getBackupFileExtension(submittedBackupFile);
+
+        return UUID.randomUUID() + "." + extension;
+    }
+
+    private static String getBackupFileExtension(BiblivreFile submittedBackupFile) {
+        return submittedBackupFile.getName().endsWith("b4bz") ? "b4bz" : "b5bz";
     }
 
     @Autowired

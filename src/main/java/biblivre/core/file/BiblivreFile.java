@@ -22,6 +22,7 @@ package biblivre.core.file;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class BiblivreFile implements Closeable {
@@ -54,7 +55,7 @@ public abstract class BiblivreFile implements Closeable {
     }
 
     public String getContentType() {
-        return StringUtils.defaultString(this.contentType, "application/octet-stream");
+        return Objects.toString(this.contentType, "application/octet-stream");
     }
 
     public void setContentType(String contentType) {

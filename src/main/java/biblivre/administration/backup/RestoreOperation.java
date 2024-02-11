@@ -33,7 +33,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
-public final class RestoreDTO extends AbstractDTO {
+public final class RestoreOperation extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
     private Map<String, Pair<String, String>> schemas;
@@ -46,9 +46,9 @@ public final class RestoreDTO extends AbstractDTO {
     private transient BackupScope restoreScope;
     private transient Map<String, String> restoreSchemas;
 
-    public RestoreDTO() {}
+    public RestoreOperation() {}
 
-    public RestoreDTO(BackupDTO dto) {
+    public RestoreOperation(BackupDTO dto) {
         this.setSchemas(dto.getSchemas());
         this.setType(dto.getType());
         this.setBackupScope(dto.getBackupScope());
@@ -56,13 +56,17 @@ public final class RestoreDTO extends AbstractDTO {
         this.setBackup(dto.getBackup());
     }
 
-    public RestoreDTO(JSONObject json) {
-        this.setSchemas(json.get("schemas").toString());
-        this.setType(BackupType.fromString(json.getString("type")));
-        this.setBackupScope(BackupScope.fromString(json.getString("backup_scope")));
+    public RestoreOperation(JSONObject backupMetadataJSON) {
+        this.setSchemas(backupMetadataJSON.get("schemas").toString());
+        this.setType(BackupType.fromString(backupMetadataJSON.getString("type")));
+        this.setBackupScope(BackupScope.fromString(backupMetadataJSON.getString("backup_scope")));
         this.setValid(true);
 
-        String created = json.getString("created");
+        if (!backupMetadataJSON.has("created")) {
+            return;
+        }
+
+        String created = backupMetadataJSON.getString("created");
 
         Date parsedDate = new Date(0);
 

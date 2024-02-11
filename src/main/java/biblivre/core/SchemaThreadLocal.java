@@ -60,4 +60,14 @@ public class SchemaThreadLocal {
                     return null;
                 });
     }
+
+    public static void withGlobalSchema(UnsafeRunnable runnable) {
+        withSchema(
+                Constants.GLOBAL_SCHEMA,
+                () -> {
+                    runnable.run();
+
+                    return null;
+                });
+    }
 }

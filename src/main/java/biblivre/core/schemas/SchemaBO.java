@@ -80,8 +80,8 @@ public class SchemaBO {
                 () -> {
                     Set<SchemaDTO> schemas = schemaDAO.list();
 
-                    if (schemas.size() == 0) {
-                        schemas.add(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
+                    if (schemas.isEmpty()) {
+                        schemas = Set.of(new SchemaDTO(Constants.SINGLE_SCHEMA, "Biblivre V"));
                     }
 
                     return schemas;

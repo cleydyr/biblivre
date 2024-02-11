@@ -26,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.postgresql.core.BaseConnection;
@@ -36,8 +37,14 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
         return AbstractDAO.getInstance(SchemasDAOImpl.class);
     }
 
+    private Set<SchemaDTO> schemas;
+
     @Override
     public Set<SchemaDTO> list() {
+        if (schemas != null) {
+            return schemas;
+        }
+
         Set<SchemaDTO> set = new HashSet<>();
 
         try (Connection con = getConnection();
@@ -47,15 +54,15 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
             ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
-                try {
-                    set.add(this.populateDTO(rs));
-                } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
-                }
+                set.add(this.populateDTO(rs));
             }
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+
             throw new DAOException(e);
         }
+
+        schemas = Collections.unmodifiableSet(set);
 
         return set;
     }

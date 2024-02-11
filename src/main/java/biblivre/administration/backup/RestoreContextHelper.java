@@ -28,26 +28,12 @@ public class RestoreContextHelper {
         return restoreRenamedSchemas;
     }
 
-    public RestoreContextHelper(RestoreDTO restore, Set<String> databaseSchemas) {
+    public RestoreContextHelper(RestoreOperation restore, Set<String> databaseSchemas) {
 
         long currentTimestamp = new Date().getTime();
 
-        Map<String, String> restoreSchemas = restore.getRestoreSchemas();
-
-        restoreSchemas.forEach(
-                (originalSchemaName, finalSchemaName) -> {
-                    if (databaseSchemas.contains(finalSchemaName)) {
-                        String tempSchemaName = "_" + finalSchemaName + "_" + currentTimestamp;
-
-                        preRenameSchemas.put(finalSchemaName, tempSchemaName);
-
-                        deleteSchemas.put(finalSchemaName, tempSchemaName);
-                    }
-
-                    if (!originalSchemaName.equals(finalSchemaName)) {
-                        postRenameSchemas.put(originalSchemaName, finalSchemaName);
-                    }
-                });
+        Map<String, String> restoreSchemas =
+                getSchemasToRestore(restore, databaseSchemas, currentTimestamp);
 
         restoreSchemas
                 .keySet()
@@ -74,6 +60,27 @@ public class RestoreContextHelper {
                 }
             }
         }
+    }
+
+    private Map<String, String> getSchemasToRestore(
+            RestoreOperation restore, Set<String> databaseSchemas, long currentTimestamp) {
+        Map<String, String> restoreSchemas = restore.getRestoreSchemas();
+
+        restoreSchemas.forEach(
+                (originalSchemaName, finalSchemaName) -> {
+                    if (databaseSchemas.contains(finalSchemaName)) {
+                        String tempSchemaName = "_" + finalSchemaName + "_" + currentTimestamp;
+
+                        preRenameSchemas.put(finalSchemaName, tempSchemaName);
+
+                        deleteSchemas.put(finalSchemaName, tempSchemaName);
+                    }
+
+                    if (!originalSchemaName.equals(finalSchemaName)) {
+                        postRenameSchemas.put(originalSchemaName, finalSchemaName);
+                    }
+                });
+        return restoreSchemas;
     }
 
     private boolean _isRelevantSchema(String remainingSchema) {

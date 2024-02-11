@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
@@ -103,7 +104,7 @@ public final class TranslationsMap extends HashMap<String, TranslationDTO>
     }
 
     public String getSchema() {
-        return StringUtils.defaultString(this.schema, Constants.GLOBAL_SCHEMA);
+        return Objects.toString(this.schema, Constants.GLOBAL_SCHEMA);
     }
 
     public void setSchema(String schema) {

@@ -42,8 +42,11 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileIOUtils {
+    private static final Logger logger = LoggerFactory.getLogger(FileIOUtils.class);
 
     public static File createTempDir() throws IOException {
         final File sysTempDir = FileUtils.getTempDirectory();
@@ -136,8 +139,11 @@ public class FileIOUtils {
         while (entries.hasMoreElements()) {
             ZipArchiveEntry entry = entries.nextElement();
 
-            File destination = new File(tmpDir, entry.getName());
-            if (destination.isDirectory()) {
+            String entryName = entry.getName();
+
+            File destination = new File(tmpDir, entryName);
+
+            if (entry.isDirectory()) {
                 FileUtils.forceMkdir(destination);
             } else {
 
@@ -146,7 +152,12 @@ public class FileIOUtils {
                     IOUtils.copy(is, os);
                 }
 
-                destination.setLastModified(entry.getTime());
+                boolean isLastModifiedChanged = destination.setLastModified(entry.getTime());
+
+                if (!isLastModifiedChanged) {
+                    logger.warn(
+                            "Setting last modified date failed for entry %s".formatted(entryName));
+                }
             }
         }
 

@@ -65,7 +65,7 @@ public class BackupBO extends AbstractBO {
 
     public void simpleBackup() {
         BackupType backupType = BackupType.FULL;
-        BackupScope backupScope = this.getBackupScope();
+        BackupScope backupScope = this.getBackupScope(SchemaThreadLocal.get());
 
         ArrayList<String> list = new ArrayList<>();
         list.add(Constants.GLOBAL_SCHEMA);
@@ -94,9 +94,7 @@ public class BackupBO extends AbstractBO {
         this.backup(dto);
     }
 
-    public BackupScope getBackupScope() {
-        String schema = SchemaThreadLocal.get();
-
+    public BackupScope getBackupScope(String schema) {
         if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             return BackupScope.MULTI_SCHEMA;
         } else if (configurationBO.isMultipleSchemasEnabled()) {
@@ -165,7 +163,7 @@ public class BackupBO extends AbstractBO {
             // Writing metadata
             File meta = new File(tmpDir, "backup.meta");
             Writer writer = new FileWriterWithEncoding(meta, Constants.DEFAULT_CHARSET);
-            writer.write(new RestoreDTO(dto).toJSONString());
+            writer.write(new RestoreOperation(dto).toJSONString());
             writer.flush();
             writer.close();
 
@@ -220,7 +218,7 @@ public class BackupBO extends AbstractBO {
     }
 
     public void move(BackupDTO dto) {
-        File destination = this.getBackupDestination();
+        File destination = this.getServerBackupDestination();
         File backup = dto.getBackup();
 
         if (destination == null) {
@@ -266,7 +264,7 @@ public class BackupBO extends AbstractBO {
         return path;
     }
 
-    public File getBackupDestination() {
+    public File getServerBackupDestination() {
         String path = this.getBackupPath();
 
         return FileIOUtils.getWritablePath(path);

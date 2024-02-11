@@ -53,7 +53,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        BackupScope backupScope = backupBO.getBackupScope();
+        BackupScope backupScope = backupBO.getBackupScope(SchemaThreadLocal.get());
 
         String schema = SchemaThreadLocal.get();
 
