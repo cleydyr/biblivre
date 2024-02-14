@@ -8,8 +8,6 @@ import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 
 public class PostgreSQLStatementIterable implements Iterable<String> {
-    private static final char DOT = '.';
-    private static final char BACKSLASH = '\\';
     private static final char SPACE = ' ';
     private static final char DASH = '-';
     private static final char NEW_LINE = '\n';
