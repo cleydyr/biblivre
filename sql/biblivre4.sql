@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 11.16 (Debian 11.16-1.pgdg90+1)
--- Dumped by pg_dump version 11.18 (Ubuntu 11.18-1.pgdg22.04+1)
+-- Dumped by pg_dump version 16.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -24,6 +24,15 @@ CREATE SCHEMA global;
 
 
 ALTER SCHEMA global OWNER TO biblivre;
+
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: biblivre
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO biblivre;
 
 --
 -- Name: single; Type: SCHEMA; Schema: -; Owner: biblivre
@@ -54,7 +63,7 @@ CREATE FUNCTION global.update_translation(character varying, character varying, 
 	v_query_string character varying;
  BEGIN
 	v_schema = current_schema();
-	
+
 	IF v_schema <> 'global' THEN
 		-- Get the global value for this key
 		SELECT INTO v_global_value text FROM global.translations
@@ -72,12 +81,12 @@ CREATE FUNCTION global.update_translation(character varying, character varying, 
 	END IF;
 
 	-- Get the current value for this key
-	
+
 	-- Fix for unqualified schema in functions
 	EXECUTE 'SELECT text FROM ' || pg_catalog.quote_ident(v_schema) || '.translations WHERE language = ' || pg_catalog.quote_literal(p_language) || ' AND key = ' || pg_catalog.quote_literal(p_key) INTO v_current_value;
 	-- The code below will only work with multiple schemas after Postgresql 9.3
 	-- SELECT INTO v_current_value text FROM translations WHERE language = p_language AND key = p_key;
-	
+
 	-- If the new text is the same as the current one,
 	-- return
 	IF v_current_value = p_text THEN
@@ -99,7 +108,7 @@ CREATE FUNCTION global.update_translation(character varying, character varying, 
 		--(language, key, text, created_by, modified_by, user_created)
 		--VALUES
 		--(p_language, p_key, p_text, p_user, p_user, v_user_created);
-		
+
 		RETURN 3;
 	ELSE
 		EXECUTE 'UPDATE ' || pg_catalog.quote_ident(v_schema) || '.translations SET text = ' || pg_catalog.quote_literal(p_text) || ', modified = now(), modified_by = ' || pg_catalog.quote_literal(p_user) || ' WHERE language = ' || pg_catalog.quote_literal(p_language) || ' AND key = ' || pg_catalog.quote_literal(p_key);
@@ -110,7 +119,7 @@ CREATE FUNCTION global.update_translation(character varying, character varying, 
 		--modified = now(),
 		--modified_by = p_user
 		--WHERE language = p_language AND key = p_key;
-		
+
 		RETURN 4;
 	END IF;
  END;
@@ -159,7 +168,7 @@ CREATE FUNCTION global.update_user_value(integer, character varying, character v
 		-- RAISE LOG 'inserting into schema %', v_schema;
 		EXECUTE 'INSERT INTO ' || pg_catalog.quote_ident(v_schema) || '.users_values (user_id, key, value, ascii) VALUES (' || pg_catalog.quote_literal(p_id) || ', ' || pg_catalog.quote_literal(p_key) || ', ' || pg_catalog.quote_literal(p_value) || ', ' || pg_catalog.quote_literal(p_ascii) || ');';
 		--INSERT INTO users_values (user_id, key, value, ascii) VALUES (p_id, p_key, p_value, p_ascii);
-		
+
 		RETURN 3;
 	ELSE
 		EXECUTE 'UPDATE ' || pg_catalog.quote_ident(v_schema) || '.users_values SET value = ' || pg_catalog.quote_literal(p_value) || ', ascii = ' || pg_catalog.quote_literal(p_ascii) || ' WHERE user_id = ' || pg_catalog.quote_literal(p_id) || ' AND key = ' || pg_catalog.quote_literal(p_key);
@@ -212,8 +221,6 @@ ALTER FUNCTION single.clear_record() OWNER TO biblivre;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
-
 --
 -- Name: backups; Type: TABLE; Schema: global; Owner: biblivre
 --
@@ -245,7 +252,7 @@ CREATE SEQUENCE global.backups_id_seq
     CACHE 1;
 
 
-ALTER TABLE global.backups_id_seq OWNER TO biblivre;
+ALTER SEQUENCE global.backups_id_seq OWNER TO biblivre;
 
 --
 -- Name: backups_id_seq; Type: SEQUENCE OWNED BY; Schema: global; Owner: biblivre
@@ -282,7 +289,9 @@ CREATE TABLE global.logins (
     created timestamp without time zone DEFAULT now() NOT NULL,
     created_by integer,
     modified timestamp without time zone DEFAULT now() NOT NULL,
-    modified_by integer
+    modified_by integer,
+    password_salt bytea,
+    salted_password bytea
 );
 
 
@@ -300,7 +309,7 @@ CREATE SEQUENCE global.logins_id_seq
     CACHE 1;
 
 
-ALTER TABLE global.logins_id_seq OWNER TO biblivre;
+ALTER SEQUENCE global.logins_id_seq OWNER TO biblivre;
 
 --
 -- Name: logins_id_seq; Type: SEQUENCE OWNED BY; Schema: global; Owner: biblivre
@@ -363,7 +372,7 @@ CREATE SEQUENCE single.access_cards_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.access_cards_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.access_cards_id_seq OWNER TO biblivre;
 
 --
 -- Name: access_cards; Type: TABLE; Schema: single; Owner: biblivre
@@ -394,7 +403,7 @@ CREATE SEQUENCE single.access_control_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.access_control_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.access_control_id_seq OWNER TO biblivre;
 
 --
 -- Name: access_control; Type: TABLE; Schema: single; Owner: biblivre
@@ -501,7 +510,7 @@ CREATE SEQUENCE single.authorities_idx_autocomplete_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.authorities_idx_autocomplete_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.authorities_idx_autocomplete_id_seq OWNER TO biblivre;
 
 --
 -- Name: authorities_idx_autocomplete_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -569,7 +578,7 @@ CREATE SEQUENCE single.authorities_indexing_groups_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.authorities_indexing_groups_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.authorities_indexing_groups_id_seq OWNER TO biblivre;
 
 --
 -- Name: authorities_indexing_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -608,7 +617,7 @@ CREATE SEQUENCE single.authorities_records_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.authorities_records_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.authorities_records_id_seq OWNER TO biblivre;
 
 --
 -- Name: authorities_records_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -656,7 +665,7 @@ CREATE SEQUENCE single.authorities_searches_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.authorities_searches_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.authorities_searches_id_seq OWNER TO biblivre;
 
 --
 -- Name: authorities_searches_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -696,7 +705,7 @@ CREATE SEQUENCE single.backups_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.backups_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.backups_id_seq OWNER TO biblivre;
 
 --
 -- Name: backups_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -798,7 +807,7 @@ CREATE SEQUENCE single.biblio_holdings_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.biblio_holdings_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.biblio_holdings_id_seq OWNER TO biblivre;
 
 --
 -- Name: biblio_holdings_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -835,7 +844,7 @@ CREATE SEQUENCE single.biblio_idx_autocomplete_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.biblio_idx_autocomplete_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.biblio_idx_autocomplete_id_seq OWNER TO biblivre;
 
 --
 -- Name: biblio_idx_autocomplete_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -903,7 +912,7 @@ CREATE SEQUENCE single.biblio_indexing_groups_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.biblio_indexing_groups_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.biblio_indexing_groups_id_seq OWNER TO biblivre;
 
 --
 -- Name: biblio_indexing_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -942,7 +951,7 @@ CREATE SEQUENCE single.biblio_records_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.biblio_records_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.biblio_records_id_seq OWNER TO biblivre;
 
 --
 -- Name: biblio_records_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -990,7 +999,7 @@ CREATE SEQUENCE single.biblio_searches_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.biblio_searches_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.biblio_searches_id_seq OWNER TO biblivre;
 
 --
 -- Name: biblio_searches_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1044,7 +1053,7 @@ CREATE SEQUENCE single.digital_media_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.digital_media_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.digital_media_id_seq OWNER TO biblivre;
 
 --
 -- Name: digital_media_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1080,7 +1089,7 @@ CREATE SEQUENCE single.holding_creation_counter_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.holding_creation_counter_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.holding_creation_counter_id_seq OWNER TO biblivre;
 
 --
 -- Name: holding_creation_counter_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1159,7 +1168,7 @@ CREATE SEQUENCE single.lending_fines_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.lending_fines_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.lending_fines_id_seq OWNER TO biblivre;
 
 --
 -- Name: lending_fines_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1198,7 +1207,7 @@ CREATE SEQUENCE single.lendings_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.lendings_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.lendings_id_seq OWNER TO biblivre;
 
 --
 -- Name: lendings_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1215,12 +1224,13 @@ CREATE TABLE single.logins (
     id integer NOT NULL,
     login character varying NOT NULL,
     employee boolean DEFAULT false NOT NULL,
-    password text NOT NULL,
+    password text,
     created timestamp without time zone DEFAULT now() NOT NULL,
     created_by integer,
     modified timestamp without time zone DEFAULT now() NOT NULL,
     modified_by integer,
-    password_salt bytea
+    password_salt bytea,
+    salted_password bytea
 );
 
 
@@ -1238,7 +1248,7 @@ CREATE SEQUENCE single.logins_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.logins_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.logins_id_seq OWNER TO biblivre;
 
 --
 -- Name: logins_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1283,7 +1293,7 @@ CREATE SEQUENCE single.orders_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.orders_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.orders_id_seq OWNER TO biblivre;
 
 --
 -- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1316,7 +1326,7 @@ CREATE SEQUENCE single.quotations_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.quotations_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.quotations_id_seq OWNER TO biblivre;
 
 --
 -- Name: quotations; Type: TABLE; Schema: single; Owner: biblivre
@@ -1339,6 +1349,44 @@ CREATE TABLE single.quotations (
 ALTER TABLE single.quotations OWNER TO biblivre;
 
 --
+-- Name: record_data; Type: TABLE; Schema: single; Owner: biblivre
+--
+
+CREATE TABLE single.record_data (
+    id integer NOT NULL,
+    record_id bigint NOT NULL,
+    record_type character varying(20) NOT NULL,
+    field character varying(3) NOT NULL,
+    subfield character varying(1),
+    value text NOT NULL
+);
+
+
+ALTER TABLE single.record_data OWNER TO biblivre;
+
+--
+-- Name: record_data_id_seq; Type: SEQUENCE; Schema: single; Owner: biblivre
+--
+
+CREATE SEQUENCE single.record_data_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE single.record_data_id_seq OWNER TO biblivre;
+
+--
+-- Name: record_data_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
+--
+
+ALTER SEQUENCE single.record_data_id_seq OWNED BY single.record_data.id;
+
+
+--
 -- Name: request_id_seq; Type: SEQUENCE; Schema: single; Owner: biblivre
 --
 
@@ -1350,7 +1398,7 @@ CREATE SEQUENCE single.request_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.request_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.request_id_seq OWNER TO biblivre;
 
 --
 -- Name: request_quotation; Type: TABLE; Schema: single; Owner: biblivre
@@ -1419,7 +1467,7 @@ CREATE SEQUENCE single.reservations_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.reservations_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.reservations_id_seq OWNER TO biblivre;
 
 --
 -- Name: reservations_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1440,7 +1488,7 @@ CREATE SEQUENCE single.supplier_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.supplier_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.supplier_id_seq OWNER TO biblivre;
 
 --
 -- Name: suppliers; Type: TABLE; Schema: single; Owner: biblivre
@@ -1551,7 +1599,7 @@ CREATE SEQUENCE single.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.users_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.users_id_seq OWNER TO biblivre;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1594,7 +1642,7 @@ CREATE SEQUENCE single.users_types_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.users_types_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.users_types_id_seq OWNER TO biblivre;
 
 --
 -- Name: users_types_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1714,7 +1762,7 @@ CREATE SEQUENCE single.vocabulary_idx_autocomplete_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.vocabulary_idx_autocomplete_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.vocabulary_idx_autocomplete_id_seq OWNER TO biblivre;
 
 --
 -- Name: vocabulary_idx_autocomplete_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1782,7 +1830,7 @@ CREATE SEQUENCE single.vocabulary_indexing_groups_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.vocabulary_indexing_groups_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.vocabulary_indexing_groups_id_seq OWNER TO biblivre;
 
 --
 -- Name: vocabulary_indexing_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1821,7 +1869,7 @@ CREATE SEQUENCE single.vocabulary_records_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.vocabulary_records_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.vocabulary_records_id_seq OWNER TO biblivre;
 
 --
 -- Name: vocabulary_records_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1869,7 +1917,7 @@ CREATE SEQUENCE single.vocabulary_searches_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.vocabulary_searches_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.vocabulary_searches_id_seq OWNER TO biblivre;
 
 --
 -- Name: vocabulary_searches_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -1905,7 +1953,7 @@ CREATE SEQUENCE single.z3950_addresses_id_seq
     CACHE 1;
 
 
-ALTER TABLE single.z3950_addresses_id_seq OWNER TO biblivre;
+ALTER SEQUENCE single.z3950_addresses_id_seq OWNER TO biblivre;
 
 --
 -- Name: z3950_addresses_id_seq; Type: SEQUENCE OWNED BY; Schema: single; Owner: biblivre
@@ -2041,6 +2089,13 @@ ALTER TABLE ONLY single.orders ALTER COLUMN id SET DEFAULT nextval('single.order
 
 
 --
+-- Name: record_data id; Type: DEFAULT; Schema: single; Owner: biblivre
+--
+
+ALTER TABLE ONLY single.record_data ALTER COLUMN id SET DEFAULT nextval('single.record_data_id_seq'::regclass);
+
+
+--
 -- Name: reservations id; Type: DEFAULT; Schema: single; Owner: biblivre
 --
 
@@ -2131,8 +2186,8 @@ general.title	Biblivre 6	string	t	2022-12-04 11:05:55.5474	1
 -- Data for Name: logins; Type: TABLE DATA; Schema: global; Owner: biblivre
 --
 
-COPY global.logins (id, login, employee, password, created, created_by, modified, modified_by) FROM stdin;
-1	admin	t	C4wx3TpMHnSwdk1bUQ/V6qwAQmw=	2013-04-13 13:38:46.652058	\N	2014-06-21 11:40:36.422497	1
+COPY global.logins (id, login, employee, password, created, created_by, modified, modified_by, password_salt, salted_password) FROM stdin;
+1	admin	t	C4wx3TpMHnSwdk1bUQ/V6qwAQmw=	2013-04-13 13:38:46.652058	\N	2014-06-21 11:40:36.422497	1	\N	\N
 \.
 
 
@@ -2150,27 +2205,6 @@ single	Biblivre IV	f
 --
 
 COPY global.translations (language, key, text, created, created_by, modified, modified_by, user_created) FROM stdin;
-pt-BR	administration.configuration.title.holding.label_print_paragraph_alignment	Alinhamento de parágrafo	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-es	administration.configuration.title.holding.label_print_paragraph_alignment	Alineación de párrafo	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-en-US	administration.configuration.title.holding.label_print_paragraph_alignment	Paragraph alignment	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-pt-BR	administration.configuration.description.holding.label_print_paragraph_alignment	Alinhamento de parágrafo que será utilizado em cada etiqueta impressa	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-es	administration.configuration.description.holding.label_print_paragraph_alignment	Alineación de párrafo que va a ser usado en cada etiqueta impresa	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-en-US	administration.configuration.description.holding.label_print_paragraph_alignment	Paragraph alignment which will be used in each printed label	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-pt-BR	administration.configuration.label_print.ALIGN_CENTER	Centralizado	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-es	administration.configuration.label_print.ALIGN_CENTER	Centrado	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-en-US	administration.configuration.label_print.ALIGN_CENTER	Center	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-pt-BR	administration.configuration.label_print.ALIGN_JUSTIFIED_ALL	Justificado (tudo)	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-es	administration.configuration.label_print.ALIGN_JUSTIFIED_ALL	Justificado (todo)	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-en-US	administration.configuration.label_print.ALIGN_JUSTIFIED_ALL	Justified (all)	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-pt-BR	administration.configuration.label_print.ALIGN_JUSTIFIED	Justificado	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-es	administration.configuration.label_print.ALIGN_JUSTIFIED	Justificado	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-en-US	administration.configuration.label_print.ALIGN_JUSTIFIED	Justified	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-pt-BR	administration.configuration.label_print.ALIGN_LEFT	À esquerda	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-es	administration.configuration.label_print.ALIGN_LEFT	A la izquierda	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-en-US	administration.configuration.label_print.ALIGN_LEFT	Left	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-pt-BR	administration.configuration.label_print.ALIGN_RIGHT	À direita	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-es	administration.configuration.label_print.ALIGN_RIGHT	A la derecha	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
-en-US	administration.configuration.label_print.ALIGN_RIGHT	Right	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
 pt-BR	multi_schema.configuration.title.general.title	Nome deste Grupo de Bibliotecas	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
 pt-BR	multi_schema.configurations.page_help	A rotina de Configurações de Multi-bibliotecas permite alterar configurações globais do grupo de bibliotecas e configurações padrão que serão usadas pelas bibliotecas cadastradas. Todas as configurações marcadas com um asterisco (*) serão usadas por padrão em novas bibliotecas cadastradas neste grupo, mas podem ser alteradas internamente pelos administradores, através da opção <em>"Administração"</em>, <em>"Configurações"</em>, no menu superior.	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
 pt-BR	menu.multi_schema_translations	Traduções	2014-06-21 11:54:49.572182	1	2014-06-21 11:54:49.572182	1	f
@@ -2413,6 +2447,7 @@ es	marc.vocabulary.datafield.040.subfield.e	Fuentes convencionales de descripcio
 es	administration.configuration.title.logged_in_text	Texto inicial para usuarios logueados	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.vocabulary.datafield.040.subfield.d	Agencia que alteró el registro	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.700.indicator.1.3	nombre de familia	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
+es	search.distributed.subject	Asunto	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.vocabulary.datafield.040.subfield.c	Agencia que transcribió el registro en formato legible por máquina	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.vocabulary.datafield.040.subfield.b	Idioma de la catalogación	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.vocabulary.datafield.040.subfield.a	Código de la Agencia Catalogadora	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2465,6 +2500,7 @@ es	marc.material_type.book	Libro	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46
 es	administration.reports.field.database_count	Total de Registros en las Bases en el Período	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.vocabulary.datafield.913.subfield.a	Código Lugar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.field.acquisition	Fecha de adquisición	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
+es	marc.holding.datafield.852.indicator.1.7	Clasificación específica	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.import.source_file_subtitle	Seleccione un archivo conteniendo los registros a ser importados. El formato de este archivo puede ser <strong>texto</strong>, <strong>XML</strong> o <strong>ISO2709</strong>, desde que la catalogación original sea compatible con MARC.	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.user.confirm_delete_record_question.forever	¿Usted realmente desea excluir este usuario?	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.670	Origen de las informaciones	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2515,7 +2551,7 @@ es	marc.holding.datafield.852.indicator.1.3	Superintendent of Documents classifi
 es	marc.holding.datafield.852.indicator.1.6	En parte separado	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.common.operator.and_not	y no	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.852.indicator.1.5	Título	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	marc.holding.datafield.852.indicator.1.7	Clasificación específica	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
+es	menu.help_faq	Preguntas Frecuentes	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.852.indicator.1.8	Otro esquema	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.material_type.periodic	Periódico	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.830.subfield.a	Título Uniforme	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2573,8 +2609,6 @@ es	cataloging.bibliographic.indexing_groups.all	Cualquier campo	2014-07-19 11:28
 es	marc.bibliographic.datafield.651	Asunto - Nombre geográfico	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.650	Asunto - Tópico	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.accesscards.confirm_delete_record.forever	La Tarjeta será excluida permanentemente del sistema y no podrá ser recuperada	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	menu.help_faq	Preguntas Frecuentes	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	search.distributed.subject	Asunto	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.accesscards.success.save	Tarjeta incluida con éxito	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	warning.download_site	Ir para el sitio de descargas	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	menu.acquisition_order	Pedidos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2741,6 +2775,7 @@ es	administration.accesscards.error.save	Falla al guardar la Tarjeta	2014-07-19 
 es	circulation.custom.user_field.address	Dirección	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.distributed.page_help	<p>La búsqueda distribuida permite recuperar informaciones sobre registros en acervos de otras bibliotecas, que colocan a disposición sus registros para la búsqueda y catalogación colaborativa.</p>\n<p>Para realizar una búsqueda, rellene los términos de la búsqueda, seleccionando el campo de interés. En seguida, seleccione una o más bibliotecas donde se deberán localizar los registros. <span class="warn">Atención: seleccione pocas bibliotecas para evitar que la búsqueda distribuida sea muy lenta, entendiendo que ella depende de la comunicación entre las bibliotecas y el tamaño de cada acervo.</span></p>	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	common.save	Guardar	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
+es	search.common.switch_to	Cambiar para	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.configuration.printer_type.printer_common	Impresora común	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.reports.field.number_of_titles	Número de Títulos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.setup.button.continue_to_biblivre	Ir para el Biblivre	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2853,6 +2888,7 @@ es	acquisition.supplier.success.save	Proveedor incluido con éxito	2014-07-19 11
 es	marc.bibliographic.datafield.045.indicator.1	Tipo de período cronológico	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.permissions.items.administration_backup	Realizar copia de seguridad de la base de datos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.form.hidden_subfields_plural	Exhibir {0} subcampos ocultos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
+es	marc.bibliographic.datafield.246.indicator.1.3	No generar nota, generar entrada secundaria de título	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.reservation.page_help	<p>Para realizar una reserva usted deberá seleccionar el lector para el cual la reserva será realizada y, en seguida, seleccionar el registro que será reservado. La búsqueda por el lector puede hacerse por nombre, matrícula u otro campo previamente registrado. Para encontrar el registro, realice una búsqueda similar a la búsqueda bibliográfica.</p>\n<p>Los cancelamientos pueden hacerse seleccionando el lector que posee la reserva.</p><p>La duración de la reserva se calcula de acuerdo con el tipo de usuario, configurado por el menú <strong>Administración</strong> y definido durante el registro del lector.</p>	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.user.users_with_pending_fines	Listar solo Usuarios con multas pendientes	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.supplier.confirm_delete_record_title	Excluir registro de proveedor	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -2905,8 +2941,6 @@ es	marc.bibliographic.datafield.246.indicator.1.1	Generar nota y entrada secunda
 es	marc.bibliographic.datafield.246.indicator.1.0	Generar nota, no generar entrada secundaria de título	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.usertype.confirm_delete_record_title.forever	Excluir Tipo de Usuario	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.permissions.items.acquisition_quotation_delete	Excluir registro de cotización	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	search.common.switch_to	Cambiar para	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	marc.bibliographic.datafield.246.indicator.1.3	No generar nota, generar entrada secundaria de título	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.246.indicator.1.2	No generar nota ni entrada secundaria de título	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.maintenance.backup.error.psql_not_found	PSQL no encontrado	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	cataloging.common.digital_files	Archivos Digitales	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -3066,6 +3100,7 @@ es	administration.accesscards.status.available	Disponible	2014-07-19 11:28:46.69
 es	circulation.custom.user_field.address_city	Ciudad	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	login.error.empty_new_password	El campo "nueva contraseña" no puede estar vacío	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.lending.return_date	Fecha de la devolución	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
+es	search.distributed.any	Cualquier	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.245.subfield.c	Indicación de responsabilidad de la obra	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.bibliographic.datafield.245.subfield.a	Título principal	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.permissions.items.cataloging_vocabulary_move	Mover registro de vocabulario	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -3405,7 +3440,6 @@ es	administration.setup.clean_install	Nueva Biblioteca	2014-07-19 11:28:46.69376
 es	administration.permissions.items.acquisition_order_list	Listar pedidos	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.migration.groups.access_control	Tarjetas de acceso y Control de acceso	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	search.distributed.query_placeholder	Rellene los términos de la búsqueda	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
-es	search.distributed.any	Cualquier	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.user_type.field.description	Descripción	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	circulation.accesscards.lend.success	Tarjeta vinculada con éxito	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.accesscards.change_status.title.unblock	Desbloquear Tarjeta	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -3744,6 +3778,7 @@ es	marc.bibliographic.datafield.710.indicator.2.2	entrada analítica	2014-07-19 
 es	cataloging.authorities.indexing_groups.other_name	Otras formas del nombre	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	administration.configuration.title.general.currency	Moneda	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.852.subfield.q	Condición física de la parte	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
+pt-BR	circulation.user_field.name	Nome	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 es	marc.holding.datafield.852.subfield.x	Nota interna	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	acquisition.order.field.delivered	Pedido recibido	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
 es	marc.holding.datafield.852.subfield.u	URI	2014-07-19 11:28:46.69376	1	2014-07-19 11:28:46.69376	1	f
@@ -4298,7 +4333,6 @@ pt-BR	marc.holding.datafield.852.indicator.1.8	Outro esquema	2014-06-14 19:34:08
 pt-BR	marc.material_type.periodic	Periódico	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.830.subfield.a	Título Uniforme	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.reports.field.edition	Edição	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	circulation.user_field.name	Nome	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.reports.title.all_users	Relatório Geral de Usuários	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.reports.field.dewey	CDD	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.holding.datafield.949.subfield.a	Tombo Patrimonial	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -4467,6 +4501,7 @@ pt-BR	administration.reports.fieldset.author	Pesquisa por Autor	2014-06-14 19:34
 pt-BR	administration.user_type.field.lending_limit	Limite de empréstimos simultâneos	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	label.username	Usuário	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.246.subfield.a	Título/título abreviado	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
+pt-BR	cataloging.import.import_as	Importar como:	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	circulation.error.delete.user_has_lendings	Este usuário possui empréstimos ativos.  Realize a devolução antes de excluir este usuário.	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	circulation.access_control.user_has_card	Usuário já possui um cartão	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.246.subfield.g	Miscelânea	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -4518,7 +4553,7 @@ pt-BR	marc.bibliographic.datafield.095.subfield.a	Área do conhecimento	2014-06-
 pt-BR	circulation.user.confirm_cancel_editing_title	Cancelar edição de usuáro	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	cataloging.vocabulary.confirm_cancel_editing.2	Todas as alterações serão perdidas	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	cataloging.vocabulary.confirm_cancel_editing.1	Você deseja cancelar a edição deste registro de vocabulário?	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	cataloging.import.import_as	Importar como:	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
+pt-BR	common.yes	Sim	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.permissions.items.cataloging_authorities_save	Salvar registro de autoridade	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	acquisition.order.confirm_delete_record.forever	Ele será excluído permanentemente do sistema e não poderá ser recuperado	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.material_type.thesis	Tese	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -4624,6 +4659,7 @@ pt-BR	circulation.users.success.update	Usuário salvo com sucesso	2014-06-14 19:
 pt-BR	administration.maintenance.backup.title	Cópia de Segurança (Backup)	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	search.user.field	Campo	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	cataloging.import.error.invalid_marc	Falha ao ler o Registro	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
+pt-BR	common.delete	Excluir	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	cataloging.vocabulary.confirm_cancel_editing_title	Cancelar edição de registro de vocabulário	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	circulation.user.no_fines	Este usuário não possui multas	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.authorities.datafield.410	Outra forma do nome	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -4677,7 +4713,6 @@ pt-BR	search.common.in_these_libraries	Nestas bibliotecas	2014-06-14 19:34:08.80
 pt-BR	acquisition.request.field.author	Autor	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	menu.cataloging_import	Importação de Registros	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.590	Notas locais	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	common.yes	Sim	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.595	Notas para inclusão em bibliografias	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.translations.download.title	Baixar arquivo de idioma	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	cataloging.import.button.import_this_record	Importar este registro	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -4735,7 +4770,6 @@ pt-BR	administration.maintenance.backup.last_backup	Último Backup	2014-06-14 19
 pt-BR	common.edit	Editar	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.550	TG (termo genérico)	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	cataloging.tab.record.custom.field_label.biblio_243	Título uniforme coletivo	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	common.delete	Excluir	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.holding.datafield.852.indicator.2.2	Numeração alternada	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.vocabulary.datafield.360	Remissiva VT (ver também) e TA (termo relacionado ou associado)	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	warning.change_password	Você ainda não mudou a senha padrão de administrador	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -5281,6 +5315,8 @@ pt-BR	menu.administration_user_types	Tipos de Usuário	2014-06-14 19:34:08.80525
 pt-BR	cataloging.tab.record.custom.field_label.biblio_611	Assunto evento	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.reports.select_report	Selecione um Relatório	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.vocabulary.datafield.680	Nota de escopo (NE)	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
+pt-BR	administration.reports.select.group.cataloging	Catalogação	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
+pt-BR	marc.bibliographic.datafield.730.indicator.1.2	2 caracteres a desprezar	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.configuration.description.general.business_days	Esta configuração representa os dias de funcionamento da biblioteca e será usada pelos módulos de empréstimo e reserva. O principal uso desta configuração é evitar que a devolução de um exemplar seja agendada para um dia em que a biblioteca está fechada.	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	common.wait	Aguarde	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.vocabulary.datafield.685	Nota de histórico ou glossário (GLOSS)	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -5333,8 +5369,6 @@ pt-BR	marc.vocabulary.datafield.360.subfield.a	Termo tópico adotado	2014-06-14 
 pt-BR	acquisition.supplier.field.area	Bairro	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	acquisition.request.success.save	Requisição incluída com sucesso	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.730.indicator.1.3	3 caracteres a desprezar	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	administration.reports.select.group.cataloging	Catalogação	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	marc.bibliographic.datafield.730.indicator.1.2	2 caracteres a desprezar	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.730.indicator.1.5	5 caracteres a desprezar	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.730.indicator.1.4	4 caracteres a desprezar	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.730.indicator.1.7	7 caracteres a desprezar	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -5668,6 +5702,7 @@ pt-BR	administration.reports.field.marc_field	Campo Marc	2014-06-14 19:34:08.805
 pt-BR	marc.authorities.datafield.100.subfield.d	Datas associadas ao nome	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.authorities.datafield.100.subfield.c	Título e outras palavras associadas ao nome	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.holding.datafield.852.indicator.1	Esquema de classificação	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
+pt-BR	administration.reports.field.amount	Quantidade	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	acquisition.order.field.delivery_time	Prazo de entrega (Prometido)	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	cataloging.tab.record.custom.field_label.authorities_100	Autor	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	administration.reports.biblivre_report_header	Relatórios Biblivre	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -5781,7 +5816,6 @@ pt-BR	administration.permissions.groups.cataloging	Catalogação	2014-06-14 19:3
 pt-BR	search.user.select_item_button	Selecionar cadastro	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	search.bibliographic.advanced_search	Pesquisa Bibliográfica Avançada	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.600.subfield.z	Subdivisão geográfico	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
-pt-BR	administration.reports.field.amount	Quantidade	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.600.subfield.x	Subdivisão geral	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	marc.bibliographic.datafield.600.subfield.y	Subdivisão cronológico	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
 pt-BR	circulation.user.users_without_user_card	Listar apenas usuários que nunca tiveram carteirinha impressa	2014-06-14 19:34:08.805257	1	2014-06-14 19:34:08.805257	1	f
@@ -6220,6 +6254,7 @@ en-US	administration.permissions.items.administration_z3950_save	Save server z39
 en-US	cataloging.bibliographic.confirm_move_record_description_plural	Do you really wish to move these {0} records?	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.labels.button.select_item	Select item	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	search.bibliographic.isbn	ISBN	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
+en-US	administration.setup.upload_popup.processing	Processing...	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.configuration.title.general.backup_path	Destination path for safety copies (backups)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.biblio_300	Physical description	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.user.confirm_cancel_editing.2	All the modifications will be lost	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6272,7 +6307,6 @@ en-US	administration.reports.field.database	Base	2014-07-26 10:56:18.338867	1	20
 en-US	administration.maintenance.backup.description.4	Backup of just digital files is a copy of all the digital media files save in Biblivre, without any other data or information, such as users, catalographic basis, and so on.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.custom.user_field.id_cpf	Taxpayer No.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.z3950.error.delete	Error in deleting Z39.50 Server	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	administration.setup.upload_popup.processing	Processing...	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.610.subfield.c	Venue of the event	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.configuration.description.search.results_per_page	This configuration represents the highest number of results to be exhibited on a single page in the searches of the system. A very high number may lead to slow operating system.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.610.subfield.d	Date of the event	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6324,6 +6358,7 @@ en-US	marc.bibliographic.datafield.685	Historical or glossary note (GLOSS)	2014-
 en-US	marc.bibliographic.datafield.246.indicator.2.0	Part of title	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.z3950.field.port	Port	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.translations.upload.field.upload_file	File	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
+en-US	marc.material_type.thesis	Thesis	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.680	Scope note (SN)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	multi_schema.manage.new_schema.field.subtitle	Library subtitle	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.label.author_count	Number of records	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6437,6 +6472,7 @@ en-US	administration.z3950.confirm_delete_record_question.forever	Do you really 
 en-US	marc.bibliographic.datafield.947.subfield.z	Standard note	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.947.subfield.q	Description of index in multimedia	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.947.subfield.p	Description of collection in multimedia	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
+en-US	common.delete	Delete	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.maintenance.backup.error.invalid_destination_schema	Invalid destination shortcut	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.947.subfield.o	Description of index in microfilm	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.biblio_830	Uniform Title	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6605,7 +6641,6 @@ en-US	cataloging.vocabulary.confirm_cancel_editing.1	Do you wish to cancel editi
 en-US	cataloging.import.import_as	Import as:	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.permissions.items.cataloging_authorities_save	Save authority record	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.order.confirm_delete_record.forever	Record will be deleted forever and cannot be recovered	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	marc.material_type.thesis	Thesis	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.import.import_popup.importing	Importing records, please wait	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.order.fieldset.title.values	Values	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.150	NT	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6662,6 +6697,7 @@ en-US	marc.vocabulary.datafield.750.subfield.x	General subdivision	2014-07-26 10
 en-US	common.block	Block	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.949.subfield.a	Asset cataloging reference	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.vocabulary.datafield.750.subfield.a	Topical term adopted by Thesaurus	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
+en-US	marc.holding.datafield.852.indicator.2.2	Alternate numbering	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.410.subfield.a	Name of entity or name of place	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.vocabulary.datafield.550.subfield.x	General subdivision adopted	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.renew_success	Loan renewed successfully	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6713,6 +6749,7 @@ en-US	circulation.users.success.update	User successfully saved	2014-07-26 10:56:
 en-US	search.user.field	Field	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.maintenance.backup.title	Safety Copy (Backup)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.import.error.invalid_marc	Error reading Record	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
+en-US	cataloging.holding.confirm_delete_record_title	Delete unit record	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.vocabulary.confirm_cancel_editing_title	Cancel editing of vocabulary record	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.user.no_fines	This user has no fines	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.authorities.datafield.410	Another name format	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6826,8 +6863,6 @@ en-US	common.edit	Edit	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1
 en-US	marc.bibliographic.datafield.550	BT (broader term)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	multi_schema.restore.dont_restore	Do not restore this library	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	cataloging.tab.record.custom.field_label.biblio_243	Collective Uniform Title	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	common.delete	Delete	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	marc.holding.datafield.852.indicator.2.2	Alternate numbering	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.vocabulary.datafield.360	Remissive VT (see also) and AT (related or associated term)	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	warning.change_password	You have not changed the standard administrator password yet	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.field.total	Total	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -6994,7 +7029,7 @@ en-US	acquisition.request.error.save	Error when saving Requisition	2014-07-26 10
 en-US	marc.bibliographic.datafield.750.subfield.x	General subdivision	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.505.subfield.a	Content notes	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.750.subfield.y	Chronological subdivision	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	cataloging.holding.confirm_delete_record_title	Delete unit record	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
+en-US	search.common.previous	Previous	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.button.print_lending_receipt	Print lending receipt	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.quotation.field.quotation_date	Quotation requisition date	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.authorities.datafield.100.indicator.1	Entry form	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -7394,7 +7429,6 @@ en-US	cataloging.authorities.confirm_delete_record.forever	It will be deleted fr
 en-US	marc.bibliographic.datafield.111.indicator.1.1	name of jurisdiction	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.111.indicator.1.2	name in direct order	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	marc.bibliographic.datafield.111.indicator.1.0	Inverted name	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
-en-US	search.common.previous	Previous	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	multi_schema.restore.restore_with_new_schema_name	Restore this library using a new address	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.permissions.items.administration_usertype_list	List user types	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.user_cards.button.select_page	Select users in this page	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -8075,6 +8109,8 @@ en-US	cataloging.bibliographic.indexing_groups.title	Title	2014-07-26 10:56:18.3
 en-US	acquisition.quotation.success.save	Quotation successfully included	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.permissions.items.administration_permissions	Manage permissions	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	administration.reports.title.late_lendings	Late Lendings Report	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
+es	multi_schema.backup.schemas.description	Seleccione abajo todas las bibliotecas que formarán parte del backup. Aunque un backup contenga distintas bibliotecas, usted podrá elegir cuál desea restaurar cuando así lo precise.	2014-07-26 10:56:23.669888	1	2014-07-26 10:56:23.669888	1	f
+es	multi_schema.configurations.error.disable_multi_schema_outside_global	No es posible deshabilitar el sistema de multi bibliotecas del interior de una biblioteca.	2014-07-26 10:56:23.669888	1	2014-07-26 10:56:23.669888	1	f
 en-US	administration.configuration.description.general.backup_path	This configuration represents the path on the server where Biblivre is installed, for the file in which Biblivre security copies are to be kept. Should this configuration be empty, security copies will be save on the directory <strong>Biblivre</strong> in the folder of the user of the system.<br> The recommendation is to associate this path to any kind of automatic backup in cloud such as the services <strong>Dropbox</strong>, <strong>SkyDrive</strong> or <strong>Google Drive</strong>. Should Biblivre be unable to keep the files in the specified path, they will be kept in a temporary directory and may not become available. Please remember that a backup is the only way to retrieve data inserted in Biblivre.	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	acquisition.request.field.author_type	Author type	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
 en-US	circulation.lending.lending_count	Copies lent	2014-07-26 10:56:18.338867	1	2014-07-26 10:56:18.338867	1	f
@@ -8118,8 +8154,6 @@ es	administration.maintenance.backup.error.invalid_origin_schema	El Backup no po
 es	multi_schema.restore.restore_partial_backup.description	Para restaurar solo algunas bibliotecas, use el formulario siguiente. En este caso usted podrá elegir qué bibliotecas serán restauradas y si ellas sustituirán a las existentes o si serán restauradas como nuevas bibliotecas. Esto es útil para duplicar bibliotecas o verificar si el backup está correcto.	2014-07-26 10:56:23.669888	1	2014-07-26 10:56:23.669888	1	f
 es	multi_schema.manage.enable	Habilitar biblioteca	2014-07-26 10:56:23.669888	1	2014-07-26 10:56:23.669888	1	f
 es	administration.maintenance.backup.error.duplicated_destination_schema	No es posible restaurar dos bibliotecas para un único atajo.	2014-07-26 10:56:23.669888	1	2014-07-26 10:56:23.669888	1	f
-es	multi_schema.backup.schemas.description	Seleccione abajo todas las bibliotecas que formarán parte del backup. Aunque un backup contenga distintas bibliotecas, usted podrá elegir cuál desea restaurar cuando así lo precise.	2014-07-26 10:56:23.669888	1	2014-07-26 10:56:23.669888	1	f
-es	multi_schema.configurations.error.disable_multi_schema_outside_global	No es posible deshabilitar el sistema de multi bibliotecas del interior de una biblioteca.	2014-07-26 10:56:23.669888	1	2014-07-26 10:56:23.669888	1	f
 pt-BR	multi_schema.restore.restore_partial_backup.description	Para restaurar apenas algumas bibliotecas, use o formulário abaixo. Neste caso você poderá escolher quais bibliotecas serão restauradas e se elas substituirão as existentes ou se serão restauradas como novas bibliotecas. Isto é útil para duplicar bibliotecas ou verificar se o backup está correto.	2014-07-19 13:48:01.039737	1	2014-07-26 10:56:27.710005	1	f
 en-US	cataloging.bibliographic.automatic_holding_help	<p>Use the form below to speed up the Copies creation process. This is an optional step and no holding will be created if the form below is left blank. In that case, you can create your holdings in the <em>Copies</em> tab.</p><p>If you want to create the Copies now, the only mandatory field is "Number of Copies". This field will decide the number of copies created for each volume, so, if the bibliographic record has 3 volumes and you set "Number of Copies" as 2, 6 copies will be created, 2 for each volume. If there's only one volume, fill in the "Volume Number" field, and if there's no volume, leave both fields blank.</p>	2014-07-26 12:01:11.320131	1	2014-07-26 12:01:11.320131	1	f
 en-US	administration.configuration.title.logged_in_text	Greeting message for logged users	2014-07-26 12:01:11.320131	1	2014-07-26 12:01:11.320131	1	f
@@ -8158,14 +8192,12 @@ es	administration.setup.biblivre4restore.error.digital_media_only_selected	La co
 pt-BR	administration.setup.biblivre4restore.error.digital_media_only_should_be_selected	O segundo arquivo de backup selecionado não contém apenas arquivos digitais	2022-12-04 11:05:55.397375	0	2022-12-04 11:05:55.397375	0	f
 en-US	circulation.user_cards.page_help	<p>The module<strong>"Printing User Cards"</strong> allows generating the identification labels of the library readers.</p>\n<p>It is possible to generate the user cards for one or more readers in a single printing, using the search below.</p>\n<p>After finding the reader(s), use the button <strong>"Select user "</strong> to add them to the User Cards printing list. You can do several searches, without missing the previous selection. Once you are satisfied with the selection, press the button <strong>"print user cards "</strong>. You can select the position of the first user card in the label page.</p>	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
 en-US	cataloging.database.trash	Recycle "trash" bin	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
+pt-BR	administration.form_customization.indicator.label_value	Valor	2022-12-04 11:05:55.535248	0	2022-12-04 11:05:55.535248	0	f
 en-US	administration.reports.page_help	<p>The Reports routine allows to create and print several reports made available by Biblivre. Reports available are Split among the Acquisition, Cataloging and Circulation routines.</p>\n<p>Some of the reports available have filters, such as Bibliographic Base, or Term, for example. For others, you just have to select the report and press "Generate Report" ".</p>	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
 en-US	circulation.user.confirm_delete_record_question.inactive	Do you really wish to mark this user as "inactive "?	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
 en-US	administration.accesscards.page_help	<p>Routine for Access Cards allows registration and search of Cards used by Access control routines. Biblivre offers two registration options:</p>\n<ul><li>Register New Card: Use just one access card;</li><li>To Register Card Sequence: use more than just one access card in sequence. Use the field "pre-visualization' to see how card will be numbered.</li></ul>\n<p>When accessing this routine, Biblivre will automatically list all the Access Cards previously registered. You may then filter that list, inserting the <em>Code</em> of the Access Card you wish to find.</p>	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
 en-US	acquisition.supplier.confirm_delete_record.trash	It will be moved to the "trash" database	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
 en-US	circulation.user.confirm_delete_record_title.inactive	Mark user as "inactive"	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
-en-US	circulation.error.invalid_user_name	This user has a name with invalid characters (:)	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
-pt-BR	circulation.error.invalid_user_name	Este usuário possui nome com caracteres inválidos (:)	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
-es	circulation.error.invalid_user_name	Este usuario posee un nombre con caracteres inválidos (:)	2014-07-26 10:56:18.338867	1	2014-07-26 13:41:48.22945	1	f
 pt-BR	administration.reports.title.custom_count	Relatório de contagem pelo campo Marc	2014-05-21 21:47:27.923	1	2022-12-04 11:05:55.358557	0	f
 pt-BR	cataloging.bibliographic.search.holding_accession_number	Tombo patrimonial	2022-12-04 11:05:55.363605	0	2022-12-04 11:05:55.363605	0	f
 pt-BR	cataloging.bibliographic.search.holding_id	Código de barras da etiqueta	2022-12-04 11:05:55.365089	0	2022-12-04 11:05:55.365089	0	f
@@ -8380,7 +8412,6 @@ es	administration.translations.edit.filter	Mostrar sólo los campos sin traducir
 pt-BR	administration.brief_customization.available_fields.description	Os campos abaixo estão configurados no Formulário Catalográfico, porém não serão exibidos no Resumo Catalográfico.	2022-12-04 11:05:55.533983	0	2022-12-04 11:05:55.533983	0	f
 en-US	administration.brief_customization.available_fields.description	Save translations	2022-12-04 11:05:55.534385	0	2022-12-04 11:05:55.534385	0	f
 es	administration.brief_customization.available_fields.description	Guardar traducciones	2022-12-04 11:05:55.534802	0	2022-12-04 11:05:55.534802	0	f
-pt-BR	administration.form_customization.indicator.label_value	Valor	2022-12-04 11:05:55.535248	0	2022-12-04 11:05:55.535248	0	f
 en-US	administration.form_customization.indicator.label_value	Value	2022-12-04 11:05:55.535687	0	2022-12-04 11:05:55.535687	0	f
 es	administration.form_customization.indicator.label_value	Valor	2022-12-04 11:05:55.536141	0	2022-12-04 11:05:55.536141	0	f
 pt-BR	administration.form_customization.indicator.label_text	Texto	2022-12-04 11:05:55.536661	0	2022-12-04 11:05:55.536661	0	f
@@ -8413,6 +8444,7 @@ pt-BR	multi_schema.manage.page_help	A tela de multi-bibliotecas permite cadastra
 pt-BR	administration.maintenance.reinstall.confirm.description	Deseja ir para a tela de restauração e reconfiguração? Você poderá restaurar um backup do BIBLIVRE 5, apagar os dados da sua biblioteca ou refazer uma migração.	2014-06-21 14:25:12.053902	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.setup.cancel.description	Clique no botão abaixo para desistir de restaurar esta instalação do BIBLIVRE 5 e retornar à sua biblioteca.	2014-06-21 14:25:12.053902	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.maintenance.reinstall.description	Use esta opção caso você queira restaurar um backup do BIBLIVRE 5, apagar os dados da sua biblioteca ou refazer a migração do Biblivre 3. Você será enviado à tela inicial de instalação do Biblivre, onde poderá cancelar caso desista de fazer alterações.	2014-06-21 14:25:12.053902	1	2022-12-04 11:05:55.5474	1	f
+en-US	warning.new_version	There's an update for BIBLIVRE 5 available<br/>Current Version: {0}. Latest version: {1}	2014-07-26 12:01:11.320131	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.configuration.description.logged_out_text	Texto que será exibido na tela inicial do Biblivre, para usuários que não tenham entrado com login e senha. Você pode usar tags HTML, mas cuidado para não quebrar o layout do BIBLIVRE 5. Atenção: esta configuração está relacionada com o sistema de traduções. Alterações feitas nesta tela afetarão somente o idioma atual. Para alterar em outros idiomas, use a tela de traduções ou acesse o Biblivre usando o idioma a ser alterado.	2014-07-12 11:21:42.419959	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.configuration.description.logged_in_text	Texto que será exibido na tela inicial do Biblivre, para usuários que tenham entrado com login e senha. Você pode usar tags HTML, mas cuidado para não quebrar o layout do BIBLIVRE 5. O termo {0} será substituído pelo nome do usuário logado. Atenção: esta configuração está relacionada com o sistema de traduções. Alterações feitas nesta tela afetarão somente o idioma atual. Para alterar em outros idiomas, use a tela de traduções ou acesse o Biblivre usando o idioma a ser alterado.	2014-07-12 11:21:42.419959	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	multi_schema.manage.new_schema.description	Para criar uma nova biblioteca, preencha abaixo seu nome e um subtítulo opcional. Você também precisará de um nome reduzido para a biblioteca, chamado de atalho, que será usado no endereço Web de acesso ao BIBLIVRE 5, permitindo diferenciar as diversas bibliotecas instaladas no sistema. Este atalho deve conter apenas letras, números e o caractere _. Para facilitar, o BIBLIVRE 5 irá sugerir um atalho automaticamente, baseado no nome da biblioteca.	2014-06-14 19:50:04.110972	1	2022-12-04 11:05:55.5474	1	f
@@ -8451,6 +8483,9 @@ pt-BR	administration.maintenance.backup.description.2	O Backup completo é uma c
 pt-BR	administration.configuration.description.general.multi_schema	Esta configuração permite que se habilite o sistema de múltiplas bibliotecas nesta instalação do BIBLIVRE 5.	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.configuration.description.multi_schema.enabled	O sistema de multi-bibliotecas já está habilitado para esta instalação do BIBLIVRE 5. O administrador do sistema poderá desabilitar essa opção no menu de configuração de multi-bibliotecas.	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.migration.page_help	<p>O módulo de <strong>"Migração de Dados"</strong> permite importar os dados constantes de uma base de dados do Biblivre 3 existente para a base de dados vazia do BIBLIVRE 5.</p>	2014-06-14 19:34:08.805257	1	2022-12-04 11:05:55.5474	1	f
+en-US	multi_schema.manage.schemas.description	Please see below all the libraries registered in this BIBLIVRE 5. Should you wish to modify a name or subtitle, please go to the configurations screen of the Library.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
+en-US	administration.setup.biblivre4restore.error.description	Regrettably an error occurred when restoring this BIBLIVRE 5  backup. Check next screen through the error log and, if necessary, go to the Biblivre forum for assistance.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
+en-US	multi_schema.configuration.description.general.subtitle	Subtitle shown when the main page in this library broup is accessed. This page will list all the registered libraries in this group (managed by the same BIBLIVRE 5).	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.translations.page_help	<p>O módulo de <strong>"Traduções"</strong> permite adicionar novos idiomas ao BIBLIVRE 5 ou alterar os textos já existentes.</p>\n<p><strong>Atenção: Este módulo realiza configurações avançadas do BIBLIVRE 5, e deve ser utilizado apenas por Usuários avançados, com experiência em informática.</strong>.</p>\n<p>Para adicionar um novo idioma, baixe o arquivo de idioma em Português, faça a tradução dos textos e depois faça o envio do arquivo. Lembre-se que apenas os <strong>textos</strong> (depois do sinal de igual) devem ser alterados.  Não altere as chaves, ou o BIBLIVRE 5 não conseguirá localizar o texto</p>\n<p>Exemplo: digamos que você queira alterar o texto no menu principal de <i>Pesquisa</i> para <i>Busca</i>.  Você deverá então baixar o arquivo do idioma e alterar a seguinte linha:</p>\n<p><strong>*menu.search</strong> = Pesquisa</p>\n<p>Para:</p>\n<p><strong>*menu.search</strong> = Busca</p>\n<p>E então fazer o Envio do arquivo de idiomas. O BIBLIVRE 5 irá processar o arquivo, e alterar o texto do menu.</p>	2014-06-14 19:34:08.805257	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.translations.upload.description	Selecione abaixo o arquivo de idioma que deseja enviar para processamento pelo BIBLIVRE 5.	2014-06-14 19:34:08.805257	1	2022-12-04 11:05:55.5474	1	f
 es	multi_schema.configuration.description.general.subtitle	Subtítulo que será exhibido cuando se accede a la página principal de este grupo de bibliotecas. Esta página listará todas las bibliotecas registradas en este grupo (administradas por el mismo BIBLIVRE 5).	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.5474	1	f
@@ -8472,10 +8507,6 @@ en-US	administration.configuration.description.multi_schema.enabled	The multi-li
 pt-BR	multi_schema.select_restore.description	Use esta opção caso você queira restaurar um backup existente do Biblivre 4. Caso o Biblivre encontre backups salvos em seus documentos, você poderá restaurá-los diretamente da lista abaixo. Caso contrário, você deverá enviar um arquivo de backup (extensão <strong>.b4bz</strong>) através do formulário.	2014-07-19 13:50:48.346587	1	2022-12-04 11:05:55.560476	0	f
 en-US	multi_schema.select_restore.description	Use this option if you wish to restore an existing Biblivre 4 backup. When the Biblivre find backups saved among your documents, you will be able to restore the, directly from the list below. Otherwise, you will have to send a backup file (extension <strong>.b4bz</strong>) through the form.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.561088	0	f
 en-US	administration.setup.biblivre4restore	Restore a Biblivre 4 or Biblivre 5 Backup	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.562589	0	f
-en-US	multi_schema.manage.schemas.description	Please see below all the libraries registered in this BIBLIVRE 5. Should you wish to modify a name or subtitle, please go to the configurations screen of the Library.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
-en-US	administration.setup.biblivre4restore.error.description	Regrettably an error occurred when restoring this BIBLIVRE 5  backup. Check next screen through the error log and, if necessary, go to the Biblivre forum for assistance.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
-en-US	multi_schema.configuration.description.general.subtitle	Subtitle shown when the main page in this library broup is accessed. This page will list all the registered libraries in this group (managed by the same BIBLIVRE 5).	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
-en-US	warning.new_version	There's an update for BIBLIVRE 5 available<br/>Current Version: {0}. Latest version: {1}	2014-07-26 12:01:11.320131	1	2022-12-04 11:05:55.5474	1	f
 en-US	multi_schema.translations.page_help	<p>The module of <strong>"Translations"</strong> for Multilibraries Works similarly to the version corresponding to just one library. However, texts which were modified here will be applied to all the libraries in the group, provided they have not modified the original value of each translation.</p>\n<p>For example, if you modify the translation of the key <strong>"menu.search"</strong> from "Search" to "Trace" through the Translations module for multi-libraries, all the libraries in this group will see the new translation. However, if one of the administrators of one of these libraries modifies, through the <strong>"Translations"</strong> module of his library, the same key to "Search", this in-house translation will have priority just for this library.</p>\n<p>In order to add a new language, you will have to download the language file in Portuguese, do the translation of the texts and then upload the file. Remember that only the <strong>texts</strong> (after the = sign) must be modified.  Do not modify the keys, as otherwise the BIBLIVRE 5 will not be able to trace the text </p>\n<p>Example: Let´s say that you wish to modify the text in the main menu from <i>Search</i> to <i>Trace</i>.  You will have to download the language file and modify this line:</p>\n<p><strong>*menu.search</strong> = Search</p>\n<p>To:</p>\n<p><strong>*menu.search</strong> = Trace</p>\n<p>and then upload the language file. BIBLIVRE 5 will process the file and will modify the menu text.</p>	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 pt-BR	administration.setup.biblivre4restore.select_file	Selecione um arquivo de backup do BIBLIVRE 5	2014-06-14 19:32:35.338749	1	2022-12-04 11:05:55.5474	0	f
 en-US	administration.setup.biblivre4restore.select_file	Select a BIBLIVRE 5 backup file	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	0	f
@@ -8497,12 +8528,10 @@ es	text.main.logged_out	<p>El programa <strong>Biblioteca Libre (Biblivre) vERSI
 en-US	administration.maintenance.backup.description.3	Backup without digital files is a copy of all the BIBLIVRE 5 data and information, <strong>excluding</strong> digital media files. In view of the exclusion of digital media files, the backup and retrieval processes are faster, and the backup file is smaller.	2014-07-26 10:56:18.338867	1	2022-12-04 11:05:55.5474	1	f
 es	administration.setup.biblivre4restore.description	Use esta opción en caso que usted quiera restaurar un backup existente del Biblivre 4. En caso que el Biblivre encuentre backups guardados en sus documentos, usted podrá restaurarlos directamente de la lista abajo. En caso contrario, usted deberá enviar un archivo de backup (extensión <strong>.b4bz</strong> o <strong>.b5bz</strong>) a través del formulario.	2014-07-19 11:28:46.69376	1	2022-12-04 11:05:55.559838	0	f
 es	multi_schema.select_restore.description	Use esta opción en caso de desear restaurar un backup existente del Biblivre 4. En el caso de que el Biblivre encuentre backups guardados en sus documentos, usted podrá restaurarlos directamente de la lista siguiente. De lo contrario, usted deberá enviar un archivo de backup (extensión <strong>.b4bz</strong>) a través del formulario.	2014-07-26 10:56:23.669888	1	2022-12-04 11:05:55.561536	0	f
-en-US	cataloging.reservation.error.limit_exceeded	The selected reader surpassed the limit of authorized loans	2022-12-04 11:05:55.565274	0	2022-12-04 11:05:55.565274	0	f
-pt-BR	cataloging.reservation.error.limit_exceeded	O leitor selecionado ultrapassou o limite de reservas permitidas	2022-12-04 11:05:55.566107	0	2022-12-04 11:05:55.566107	0	f
-es	cataloging.reservation.error.limit_exceeded	El lector seleccionado excedió el límite de reservas permitidas	2022-12-04 11:05:55.566758	0	2022-12-04 11:05:55.566758	0	f
-en-US	cataloging.import.error.file_upload_error	Couldn't upload file. Please contact the administrator to analyze thisproblem.	2022-12-04 11:05:55.567263	0	2022-12-04 11:05:55.567263	0	f
-pt-BR	cataloging.import.error.file_upload_error	Não foi possível fazer upload do arquivo. Por favor, contacte o administrador do sistema para anlizar este problema.	2022-12-04 11:05:55.56766	0	2022-12-04 11:05:55.56766	0	f
-es	cataloging.import.error.file_upload_error	No ha sido posible subir el archivo. Por favor, contacta el administrador del sistema para analizar este problema.	2022-12-04 11:05:55.568049	0	2022-12-04 11:05:55.568049	0	f
+en-US	cataloging.import.error.file_upload_error	Couldn't upload file. Please contact the administrator to analyze this problem.	2022-12-04 11:05:55.567263	0	2024-02-13 14:28:02.069597	0	f
+es	error.cannot_create_file	No se ha podido crear un archivo temporario	2024-02-13 14:28:02.102818	0	2024-02-13 14:28:02.102818	0	f
+pt-BR	error.cannot_create_file	Não foi possível criar um arquivo temporário	2024-02-13 14:28:02.104858	0	2024-02-13 14:28:02.104858	0	f
+en-US	error.cannot_create_file	Cannot create a temporary file	2024-02-13 14:28:02.106094	0	2024-02-13 14:28:02.106094	0	f
 \.
 
 
@@ -8545,6 +8574,13 @@ COPY global.versions (installed_versions) FROM stdin;
 6.0.0-1.0.1-alpha
 6.0.0-1.0.2-alpha
 v6_0_0$1_1_0$alpha
+v6_0_0$1_0_0$alpha
+v6_0_0$1_0_1$alpha
+v6_0_0$1_0_2$alpha
+v6_0_0$2_0_0$alpha
+v6_0_0$3_0_0$alpha
+v6_0_0$3_0_1$alpha
+v6_0_0$4_0_0$alpha
 \.
 
 
@@ -14366,8 +14402,8 @@ COPY single.lendings (id, holding_id, user_id, previous_lending_id, expected_ret
 -- Data for Name: logins; Type: TABLE DATA; Schema: single; Owner: biblivre
 --
 
-COPY single.logins (id, login, employee, password, created, created_by, modified, modified_by) FROM stdin;
-1	admin	t	C4wx3TpMHnSwdk1bUQ/V6qwAQmw=	2014-05-18 15:46:31.632	1	2014-05-18 15:46:31.632	\N
+COPY single.logins (id, login, employee, password, created, created_by, modified, modified_by, password_salt, salted_password) FROM stdin;
+1	admin	t	C4wx3TpMHnSwdk1bUQ/V6qwAQmw=	2014-05-18 15:46:31.632	1	2014-05-18 15:46:31.632	\N	\N	\N
 \.
 
 
@@ -14392,6 +14428,14 @@ COPY single.permissions (login_id, permission) FROM stdin;
 --
 
 COPY single.quotations (id, supplier_id, response_date, expiration_date, delivery_time, info, created, created_by, modified, modified_by) FROM stdin;
+\.
+
+
+--
+-- Data for Name: record_data; Type: TABLE DATA; Schema: single; Owner: biblivre
+--
+
+COPY single.record_data (id, record_id, record_type, field, subfield, value) FROM stdin;
 \.
 
 
@@ -14524,6 +14568,13 @@ COPY single.versions (installed_versions) FROM stdin;
 6.0.0-1.0.1-alpha
 6.0.0-1.0.2-alpha
 v6_0_0$1_1_0$alpha
+v6_0_0$1_0_0$alpha
+v6_0_0$1_0_1$alpha
+v6_0_0$1_0_2$alpha
+v6_0_0$2_0_0$alpha
+v6_0_0$3_0_0$alpha
+v6_0_0$3_0_1$alpha
+v6_0_0$4_0_0$alpha
 \.
 
 
@@ -14824,6 +14875,13 @@ SELECT pg_catalog.setval('single.orders_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('single.quotations_id_seq', 1, false);
+
+
+--
+-- Name: record_data_id_seq; Type: SEQUENCE SET; Schema: single; Owner: biblivre
+--
+
+SELECT pg_catalog.setval('single.record_data_id_seq', 1, false);
 
 
 --
@@ -15542,6 +15600,27 @@ CREATE INDEX ix_access_control_departure_time_user_id ON single.access_control U
 
 
 --
+-- Name: record_data_field_idx; Type: INDEX; Schema: single; Owner: biblivre
+--
+
+CREATE INDEX record_data_field_idx ON single.record_data USING btree (field, subfield);
+
+
+--
+-- Name: record_data_record_id_idx; Type: INDEX; Schema: single; Owner: biblivre
+--
+
+CREATE INDEX record_data_record_id_idx ON single.record_data USING btree (record_id);
+
+
+--
+-- Name: record_data_record_type_idx; Type: INDEX; Schema: single; Owner: biblivre
+--
+
+CREATE INDEX record_data_record_type_idx ON single.record_data USING btree (record_type);
+
+
+--
 -- Name: authorities_indexing_groups TRIGGER_clear_authorities_indexing_type; Type: TRIGGER; Schema: single; Owner: biblivre
 --
 
@@ -15749,6 +15828,14 @@ ALTER TABLE ONLY single.reservations
 
 ALTER TABLE ONLY single.reservations
     ADD CONSTRAINT fk_reservations_biblio_records FOREIGN KEY (record_id) REFERENCES single.biblio_records(id) ON DELETE CASCADE;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: biblivre
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --

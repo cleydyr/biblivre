@@ -1,14 +1,19 @@
 package biblivre.administration.backup;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Iterator;
 
-final class BufferedReaderIterator implements Iterator<Character> {
+public final class BufferedReaderIterator implements Iterator<Character> {
     private final BufferedReader bufferedReader;
     int read;
 
-    BufferedReaderIterator(BufferedReader bufferedReader) throws IOException {
+    private static final Logger logger = LoggerFactory.getLogger(BufferedReaderIterator.class);
+
+    public BufferedReaderIterator(BufferedReader bufferedReader) throws IOException {
         this.bufferedReader = bufferedReader;
 
         read = bufferedReader.read();
@@ -21,7 +26,7 @@ final class BufferedReaderIterator implements Iterator<Character> {
         try {
             read = bufferedReader.read();
         } catch (IOException ioException) {
-            RestoreBO.logger.error("error while reading script", ioException);
+            logger.error("error while reading script", ioException);
 
             read = -1;
         }

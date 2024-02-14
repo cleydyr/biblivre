@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
 public class MailConfiguration {
+    private static final String DEFAULT_SMTP_PORT = "587";
 
     @Bean
     public JavaMailSender getMailSender() {
@@ -20,9 +21,9 @@ public class MailConfiguration {
                 PropertiesUtil.getConfigFromEnv(
                         EmailPropertyKeys.SPRING_MAIL_HOST, StringPool.BLANK));
         javaMailSender.setPort(
-                Integer.valueOf(
+                Integer.parseInt(
                         PropertiesUtil.getConfigFromEnv(
-                                EmailPropertyKeys.SPRING_MAIL_PORT, StringPool.BLANK)));
+                                EmailPropertyKeys.SPRING_MAIL_PORT, DEFAULT_SMTP_PORT)));
         javaMailSender.setUsername(
                 PropertiesUtil.getConfigFromEnv(
                         EmailPropertyKeys.SPRING_MAIL_USERNAME, StringPool.BLANK));
