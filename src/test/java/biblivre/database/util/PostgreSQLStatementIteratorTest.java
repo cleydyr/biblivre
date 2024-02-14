@@ -4,10 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import biblivre.administration.backup.BufferedReaderIterator;
-import org.junit.jupiter.api.Test;
-
 import java.io.BufferedReader;
 import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
 public class PostgreSQLStatementIteratorTest {
     @Test
@@ -148,7 +147,8 @@ public class PostgreSQLStatementIteratorTest {
         try {
             PostgreSQLStatementIterable postgreSQLStatementIterable =
                     new PostgreSQLStatementIterable(
-                            new BufferedReaderIterator(new BufferedReader(new java.io.StringReader(original))));
+                            new BufferedReaderIterator(
+                                    new BufferedReader(new java.io.StringReader(original))));
             StringBuilder sb = new StringBuilder();
 
             for (String statement : postgreSQLStatementIterable) {
