@@ -60,7 +60,9 @@ public class FileIOUtils {
 		do {
 			attemptCount++;
 			if (attemptCount > maxAttempts) {
-				throw new IOException("The highly improbable has occurred! Failed to create a unique temporary directory after " + maxAttempts + " attempts.");
+				throw new IOException(
+						"The highly improbable has occurred! Failed to create a unique temporary directory after "
+								+ maxAttempts + " attempts.");
 			}
 			String dirName = UUID.randomUUID().toString();
 			newTempDir = new File(sysTempDir, dirName);
@@ -81,15 +83,14 @@ public class FileIOUtils {
 			return true;
 		}
 	}
-	
-	public static void zipFolder(File src, File dest) throws IOException	 {
+
+	public static void zipFolder(File src, File dest) throws IOException {
 		ZipOutputStream zip = null;
 		FileOutputStream fileWriter = null;
 
 		fileWriter = new FileOutputStream(dest);
 		zip = new ZipOutputStream(fileWriter);
 
-		
 		FileIOUtils.addFolderToZip("", src, zip);
 
 		zip.flush();
@@ -120,9 +121,9 @@ public class FileIOUtils {
 			}
 		}
 	}
-	
+
 	private static void addFolderToZip(String path, File src, ZipOutputStream zip) throws IOException {
-		//check the empty folder
+		// check the empty folder
 		if (src.list().length == 0) {
 			FileIOUtils.addFileToZip(path, src, zip, true);
 		} else {
@@ -132,7 +133,7 @@ public class FileIOUtils {
 			}
 		}
 	}
-	
+
 	public static File unzip(File zip) throws IOException {
 		File tmpDir = FileIOUtils.createTempDir();
 		ZipFile zipFile = new ZipFile(zip);
@@ -143,25 +144,25 @@ public class FileIOUtils {
 			ZipArchiveEntry entry = entries.nextElement();
 
 			File destination = new File(tmpDir, entry.getName());
-			if (destination.isDirectory()) {
+			if (entry.isDirectory()) {
 				FileUtils.forceMkdir(destination);
 			} else {
 				InputStream is = zipFile.getInputStream(entry);
 				FileOutputStream os = FileUtils.openOutputStream(destination);
-			
+
 				try {
 					IOUtils.copy(is, os);
 				} finally {
 					os.close();
 					is.close();
 				}
-				
+
 				destination.setLastModified(entry.getTime());
 			}
 		}
-		
+
 		ZipFile.closeQuietly(zipFile);
-		
+
 		return tmpDir;
 	}
 
@@ -180,8 +181,9 @@ public class FileIOUtils {
 
 		return output;
 	}
-	
-	public static void sendHttpFile(BiblivreFile file, HttpServletRequest request, HttpServletResponse response, boolean headerOnly) throws IOException {
+
+	public static void sendHttpFile(BiblivreFile file, HttpServletRequest request, HttpServletResponse response,
+			boolean headerOnly) throws IOException {
 		if (file != null) {
 			if (!file.exists()) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -193,7 +195,7 @@ public class FileIOUtils {
 			long size = file.getSize();
 			long lastModified = file.getLastModified();
 			String eTag = fileName + "_" + size + "_" + lastModified;
-			
+
 			// If-None-Match header should contain "*" or ETag. If so, then return 304.
 			String ifNoneMatch = request.getHeader("If-None-Match");
 			if (ifNoneMatch != null && FileIOUtils.matches(ifNoneMatch, eTag)) {
@@ -203,7 +205,8 @@ public class FileIOUtils {
 				return;
 			}
 
-			// If-Modified-Since header should be greater than LastModified. If so, then return 304.
+			// If-Modified-Since header should be greater than LastModified. If so, then
+			// return 304.
 			// This header is ignored if any If-None-Match header is specified.
 			long ifModifiedSince = request.getDateHeader("If-Modified-Since");
 			if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
@@ -221,7 +224,8 @@ public class FileIOUtils {
 				return;
 			}
 
-			// If-Unmodified-Since header should be greater than LastModified. If not, then return 412.
+			// If-Unmodified-Since header should be greater than LastModified. If not, then
+			// return 412.
 			long ifUnmodifiedSince = request.getDateHeader("If-Unmodified-Since");
 			if (ifUnmodifiedSince != -1 && ifUnmodifiedSince + 1000 <= lastModified) {
 				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
@@ -236,7 +240,8 @@ public class FileIOUtils {
 			// Validate and process Range and If-Range headers.
 			String range = request.getHeader("Range");
 			if (range != null) {
-				// Range header should match format "bytes=n-n,n-n,n-n...". If not, then return 416.
+				// Range header should match format "bytes=n-n,n-n,n-n...". If not, then return
+				// 416.
 				if (!range.matches("^bytes=\\d*-\\d*(,\\d*-\\d*)*$")) {
 					response.setHeader("Content-Range", "bytes */" + size); // Required in 416.
 					response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
@@ -244,7 +249,8 @@ public class FileIOUtils {
 					return;
 				}
 
-				// If-Range header should either match ETag or be greater then LastModified. If not,
+				// If-Range header should either match ETag or be greater then LastModified. If
+				// not,
 				// then return full file.
 				String ifRange = request.getHeader("If-Range");
 				if (ifRange != null && !ifRange.equals(eTag)) {
@@ -292,16 +298,20 @@ public class FileIOUtils {
 			String disposition = "inline";
 
 			if (contentType.startsWith("text")) {
-				// If content type is text, then determine whether GZIP content encoding is supported by
-				// the browser and expand content type with the one and right character encoding.
+				// If content type is text, then determine whether GZIP content encoding is
+				// supported by
+				// the browser and expand content type with the one and right character
+				// encoding.
 
 				String acceptEncoding = request.getHeader("Accept-Encoding");
 				acceptsGzip = acceptEncoding != null && FileIOUtils.accepts(acceptEncoding, "gzip");
 				contentType += ";charset=UTF-8";
 				response.setCharacterEncoding("UTF-8");
 			} else if (!contentType.startsWith("image")) {
-				// Else, expect for images, determine content disposition. If content type is supported by
-				// the browser, then set to inline, else attachment which will pop a 'save as' dialogue.
+				// Else, expect for images, determine content disposition. If content type is
+				// supported by
+				// the browser, then set to inline, else attachment which will pop a 'save as'
+				// dialogue.
 
 				String accept = request.getHeader("Accept");
 				disposition = accept != null && FileIOUtils.accepts(accept, contentType) ? "inline" : "attachment";
@@ -329,8 +339,8 @@ public class FileIOUtils {
 					if (!headerOnly) {
 						if (acceptsGzip) {
 							// The browser accepts GZIP, so GZIP the content.
-							//response.setHeader("Content-Encoding", "gzip");
-							//output = new GZIPOutputStream(output, Constants.DEFAULT_BUFFER_SIZE);
+							// response.setHeader("Content-Encoding", "gzip");
+							// output = new GZIPOutputStream(output, Constants.DEFAULT_BUFFER_SIZE);
 						} else {
 							// Content length is not directly predictable in case of GZIP.
 							// So only add it if there is no means of GZIP, else browser will hang.
@@ -387,15 +397,16 @@ public class FileIOUtils {
 
 				IOUtils.closeQuietly(output);
 			}
-			
+
 			return;
 		}
 	}
 
 	/**
 	 * Returns true if the given match header matches the given value.
+	 * 
 	 * @param matchHeader The match header.
-	 * @param toMatch The value to be matched.
+	 * @param toMatch     The value to be matched.
 	 * @return True if the given match header matches the given value.
 	 */
 	private static boolean matches(String matchHeader, String toMatch) {
@@ -405,12 +416,15 @@ public class FileIOUtils {
 	}
 
 	/**
-	 * Returns a substring of the given string value from the given begin index to the given end
+	 * Returns a substring of the given string value from the given begin index to
+	 * the given end
 	 * index as a long. If the substring is empty, then -1 will be returned
-	 * @param value The string value to return a substring as long for.
+	 * 
+	 * @param value      The string value to return a substring as long for.
 	 * @param beginIndex The begin index of the substring to be returned as long.
-	 * @param endIndex The end index of the substring to be returned as long.
-	 * @return A substring of the given string value as long or -1 if substring is empty.
+	 * @param endIndex   The end index of the substring to be returned as long.
+	 * @return A substring of the given string value as long or -1 if substring is
+	 *         empty.
 	 */
 	private static long sublong(String value, int beginIndex, int endIndex) {
 		String substring = value.substring(beginIndex, endIndex);
@@ -419,20 +433,21 @@ public class FileIOUtils {
 
 	/**
 	 * Returns true if the given accept header accepts the given value.
+	 * 
 	 * @param acceptHeader The accept header.
-	 * @param toAccept The value to be accepted.
+	 * @param toAccept     The value to be accepted.
 	 * @return True if the given accept header accepts the given value.
 	 */
 	private static boolean accepts(String acceptHeader, String toAccept) {
 		if (toAccept.equals("x-download")) {
 			return false;
 		}
-		
+
 		String[] acceptValues = acceptHeader.split("\\s*(,|;)\\s*");
 		Arrays.sort(acceptValues);
 		return Arrays.binarySearch(acceptValues, toAccept) > -1
-		|| Arrays.binarySearch(acceptValues, toAccept.replaceAll("/.*$", "/*")) > -1
-		|| Arrays.binarySearch(acceptValues, "*/*") > -1;
+				|| Arrays.binarySearch(acceptValues, toAccept.replaceAll("/.*$", "/*")) > -1
+				|| Arrays.binarySearch(acceptValues, "*/*") > -1;
 	}
 
 	private static class Range {
@@ -443,8 +458,9 @@ public class FileIOUtils {
 
 		/**
 		 * Construct a byte range.
+		 * 
 		 * @param start Start of the byte range.
-		 * @param end End of the byte range.
+		 * @param end   End of the byte range.
 		 * @param total Total length of the byte source.
 		 */
 		public Range(long start, long end, long total) {
@@ -454,7 +470,7 @@ public class FileIOUtils {
 			this.total = total;
 		}
 	}
-	
+
 	public static File getWritablePath(String path) {
 		if (StringUtils.isBlank(path)) {
 			return null;
@@ -465,18 +481,18 @@ public class FileIOUtils {
 		if (!file.isDirectory()) {
 			return null;
 		}
-		
+
 		if (!file.canWrite()) {
 			return null;
 		}
 
 		return file;
 	}
-	
+
 	public static boolean isWritablePath(String path) {
 		return FileIOUtils.getWritablePath(path) != null;
 	}
-	
+
 	public static long countLines(File file) {
 		LineNumberReader reader = null;
 		int count = 1;
@@ -487,17 +503,17 @@ public class FileIOUtils {
 			reader.close();
 		} catch (Exception e) {
 		}
-		
+
 		return count;
 	}
 
 	public static long countFiles(File file) {
 		int count = 1;
-		
+
 		if (file != null && file.isDirectory()) {
-			count =  file.list().length;
+			count = file.list().length;
 		}
-		
+
 		return count;
 	}
 
