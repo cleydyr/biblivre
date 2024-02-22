@@ -34,14 +34,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -136,32 +135,31 @@ public class FileIOUtils {
 
 	public static File unzip(File zip) throws IOException {
 		File tmpDir = FileIOUtils.createTempDir();
-		ZipFile zipFile = new ZipFile(zip);
+		try (ZipFile zipFile = new ZipFile(zip)) {
 
-		Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-		while (entries.hasMoreElements()) {
-			ZipArchiveEntry entry = entries.nextElement();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
 
-			File destination = new File(tmpDir, entry.getName());
-			if (entry.isDirectory()) {
-				FileUtils.forceMkdir(destination);
-			} else {
-				InputStream is = zipFile.getInputStream(entry);
-				FileOutputStream os = FileUtils.openOutputStream(destination);
+				File destination = new File(tmpDir, entry.getName());
+				if (entry.isDirectory()) {
+					FileUtils.forceMkdir(destination);
+				} else {
+					InputStream is = zipFile.getInputStream(entry);
+					FileOutputStream os = FileUtils.openOutputStream(destination);
 
-				try {
-					IOUtils.copy(is, os);
-				} finally {
-					os.close();
-					is.close();
+					try {
+						IOUtils.copy(is, os);
+					} finally {
+						os.close();
+						is.close();
+					}
+
+					destination.setLastModified(entry.getTime());
 				}
-
-				destination.setLastModified(entry.getTime());
 			}
 		}
-
-		ZipFile.closeQuietly(zipFile);
 
 		return tmpDir;
 	}

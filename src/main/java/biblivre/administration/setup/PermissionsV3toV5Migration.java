@@ -9,12 +9,12 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.compress.utils.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,10 +103,15 @@ public class PermissionsV3toV5Migration {
 			props.load(new FileInputStream(MAPPING_FILE));
 
 			props.forEach((key, value) -> {
-				Set<String> values = Collections.unmodifiableSet(
-					Sets.newHashSet(((String) value).split(",")));
+				Set<String> set = new HashSet<>();
 
-				result.put((String) key, values);
+				String[] values = ((String) value).split(",");
+
+				for (String v : values) {
+					set.add(v);
+				}
+
+				result.put((String) key, set);
 			});
 
 			return result;

@@ -37,9 +37,9 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
@@ -638,32 +638,32 @@ public class RestoreBO extends AbstractBO {
 		if (!backup.exists()) {
 			throw new ValidationException("administration.maintenance.backup.error.backup_file_not_found");
 		}
-		
+
 		RestoreDTO dto = this.getRestoreDTO(backup);
 		if (dto == null || !dto.isValid()) {
 			throw new ValidationException("administration.maintenance.backup.error.corrupted_backup_file");
 		}
 
 		return dto;
-	}	
-	
+	}
+
 	private RestoreDTO getRestoreDTO(File file) {
 		ZipFile zip = null;
 		InputStream content = null;
 		RestoreDTO dto = null;
-		
+
 		try {
 			zip = new ZipFile(file);
-			ZipArchiveEntry metadata = zip.getEntry("backup.meta");
-	
-			if (metadata == null || !zip.canReadEntryData(metadata)) {
+			ZipEntry metadata = zip.getEntry("backup.meta");
+
+			if (metadata == null) {
 				return null;
 			}
-			
+
 			StringWriter writer = new StringWriter();
 			content = zip.getInputStream(metadata);
 			IOUtils.copy(content, writer, "UTF-8");
- 
+
 			JSONObject json = new JSONObject(writer.toString());
 			dto = new RestoreDTO(json);
 		} catch (Exception e) {
@@ -674,13 +674,12 @@ public class RestoreBO extends AbstractBO {
 				dto.setBackup(file);
 			}
 
-			ZipFile.closeQuietly(zip);
 			IOUtils.closeQuietly(content);
 		}
-		
+
 		return dto;
 	}
-	
+
 	private void processRestore(File restore, BufferedWriter bw) throws IOException {
 		if (restore == null) {
 			this.logger.info("===== Skipping File 'null' =====");
