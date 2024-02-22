@@ -308,22 +308,22 @@
 			</plugin>
 
 			<plugin>
-				<groupId>com.gitlab.haynes</groupId>
-				<artifactId>libsass-maven-plugin</artifactId>
-				<version>0.2.24</version>
+				<groupId>io.github.cleydyr</groupId>
+				<artifactId>dart-sass-maven-plugin</artifactId>
+				<version>1.2.0</version>
+				<configuration>
+					<outputFolder>${project.build.directory}/Biblivre4/static/styles</outputFolder>
+					<style>COMPRESSED</style>
+					<inputFolder>${project.basedir}/WebContent/static/styles/scss</inputFolder>
+				</configuration>
 				<executions>
 					<execution>
 						<phase>generate-resources</phase>
 						<goals>
-							<goal>compile</goal>
+							<goal>compile-sass</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<outputStyle>${sass.OutputStyle}</outputStyle>
-					<inputPath>${basedir}/WebContent/static/styles/scss</inputPath>
-					<outputPath>${basedir}/target/Biblivre4/static/styles</outputPath>
-				</configuration>
 			</plugin>
 
 			<plugin>
