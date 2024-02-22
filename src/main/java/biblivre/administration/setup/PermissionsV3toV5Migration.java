@@ -32,23 +32,21 @@ public class PermissionsV3toV5Migration {
 	private PermissionBO permissionBO;
 	private DataMigrationDAO dataMigrationDAO;
 
-	private static final Logger _log =
-		LoggerFactory.getLogger(PermissionsV3toV5Migration.class);
+	private static final Logger _log = LoggerFactory.getLogger(PermissionsV3toV5Migration.class);
 
 	static {
 		String encoding = Constants.DEFAULT_CHARSET.name();
 
-		String path =
-			PermissionsV3toV5Migration.class.getClassLoader()
+		String path = PermissionsV3toV5Migration.class.getClassLoader()
 				.getResource(MAPPING_FILE_NAME).getFile();
 
 		try {
-			MAPPING_FILE = new File(URLDecoder.decode(path,	encoding));
+			MAPPING_FILE = new File(URLDecoder.decode(path, encoding));
 
 			V3_TO_V5_PERMISSION_MAPPING = _loadV3ToV5PermissionMapping();
 		} catch (UnsupportedEncodingException e) {
 			_log.error(String.format(
-				"Can't open file %s with encoding %s.", path, encoding), e);
+					"Can't open file %s with encoding %s.", path, encoding), e);
 
 			throw new Error(e);
 		}
@@ -57,22 +55,20 @@ public class PermissionsV3toV5Migration {
 	private static final Map<String, Collection<String>> V3_TO_V5_PERMISSION_MAPPING;
 
 	public PermissionsV3toV5Migration(
-		PermissionBO permissionBO, DataMigrationDAO dataMigrationDAO) {
+			PermissionBO permissionBO, DataMigrationDAO dataMigrationDAO) {
 		this.permissionBO = permissionBO;
 		this.dataMigrationDAO = dataMigrationDAO;
 	}
 
 	public void migrate() throws SQLException {
-		Map<Integer, Collection<String>> v3Permissions =
-			dataMigrationDAO.listPermissions();
+		Map<Integer, Collection<String>> v3Permissions = dataMigrationDAO.listPermissions();
 
 		importFromV3(v3Permissions);
 	}
 
 	public void importFromV3(Map<Integer, Collection<String>> v3Permissions) {
 		v3Permissions.forEach((loginId, oldPermissions) -> {
-			Set<String> newPermissions =
-				_getV5PermissionSetFrom(oldPermissions);
+			Set<String> newPermissions = _getV5PermissionSetFrom(oldPermissions);
 
 			_save(loginId, newPermissions);
 		});
@@ -83,17 +79,14 @@ public class PermissionsV3toV5Migration {
 	}
 
 	private static Set<String> _getV5PermissionSetFrom(
-		Collection<String> oldPermissions) {
+			Collection<String> oldPermissions) {
 
 		return oldPermissions.stream()
-			.flatMap(oldPermission ->
-				V3_TO_V5_PERMISSION_MAPPING.get(oldPermission).stream()
-			)
-			.collect(Collectors.toSet());
+				.flatMap(oldPermission -> V3_TO_V5_PERMISSION_MAPPING.get(oldPermission).stream())
+				.collect(Collectors.toSet());
 	}
 
-	private static Map<String, Collection<String>>
-		_loadV3ToV5PermissionMapping() {
+	private static Map<String, Collection<String>> _loadV3ToV5PermissionMapping() {
 
 		Properties props = new Properties();
 
