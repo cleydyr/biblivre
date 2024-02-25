@@ -20,12 +20,16 @@
 package biblivre.administration.backup;
 
 import static biblivre.core.SchemaThreadLocal.withGlobalSchema;
+import static biblivre.core.SchemaThreadLocal.withSchema;
 
 import biblivre.administration.backup.exception.RestoreException;
 import biblivre.administration.setup.State;
 import biblivre.core.AbstractBO;
+import biblivre.core.Updates;
 import biblivre.core.UpdatesDAO;
 import biblivre.core.exceptions.ValidationException;
+import biblivre.core.schemas.SchemaDAO;
+import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.utils.CharPool;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
@@ -129,6 +133,8 @@ public class RestoreBO extends AbstractBO {
             boolean restoreBackup = restoreBackup(restoreOperation, tempExplodedBackup);
 
             FileUtils.deleteQuietly(tempExplodedBackup);
+
+            tryUpdates();
 
             return restoreBackup;
         } catch (IOException e) {
@@ -270,7 +276,9 @@ public class RestoreBO extends AbstractBO {
                 continue;
             }
 
-            processSchemaRestores(explodedBackupDirectory, extension, schema);
+            withSchema(
+                    schema,
+                    () -> processSchemaRestores(explodedBackupDirectory, extension, schema));
         }
 
         processSchemaRenames(context.getPostRenameSchemas());
@@ -768,5 +776,27 @@ public class RestoreBO extends AbstractBO {
 
             return next;
         }
+    }
+
+    private Updates updatesSuite;
+
+    private SchemaDAO schemaDAO;
+
+    public void tryUpdates() {
+        updatesSuite.globalUpdate();
+
+        for (SchemaDTO schema : schemaDAO.list()) {
+            updatesSuite.schemaUpdate(schema.getSchema());
+        }
+    }
+
+    @Autowired
+    public void setUpdates(Updates updateSuite) {
+        this.updatesSuite = updateSuite;
+    }
+
+    @Autowired
+    public void setSchemaDAO(SchemaDAO schemaDAO) {
+        this.schemaDAO = schemaDAO;
     }
 }
