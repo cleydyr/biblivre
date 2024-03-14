@@ -297,6 +297,7 @@
 				<configuration>
 					<outputFolder>${project.build.directory}/Biblivre6/static/styles</outputFolder>
 					<style>COMPRESSED</style>
+					<version>1.72.0</version>
 				</configuration>
 				<executions>
 					<execution>
