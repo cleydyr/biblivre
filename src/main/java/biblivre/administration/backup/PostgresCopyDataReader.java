@@ -1,9 +1,9 @@
 package biblivre.administration.backup;
 
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
-import javax.annotation.Nonnull;
 
 class PostgresCopyDataReader extends Reader {
     private final Iterator<Character> sourceIterator;

@@ -24,7 +24,6 @@ import static biblivre.core.SchemaThreadLocal.withSchema;
 
 import biblivre.administration.backup.exception.RestoreException;
 import biblivre.administration.setup.State;
-import biblivre.core.AbstractBO;
 import biblivre.core.Updates;
 import biblivre.core.UpdatesDAO;
 import biblivre.core.exceptions.ValidationException;
@@ -59,7 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestoreBO extends AbstractBO {
+public class RestoreBO {
     private static final String[] FILTERED_OUT_STATEMENT_PREFIXES =
             new String[] {"CREATE FUNCTION", "ALTER FUNCTION", "CREATE TRIGGER"};
 

@@ -1,11 +1,11 @@
 package biblivre.database.util;
 
 import biblivre.database.util.exception.UncoveredStateException;
+import jakarta.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
 
 public class PostgreSQLStatementIterable implements Iterable<String> {
     private static final char SPACE = ' ';
