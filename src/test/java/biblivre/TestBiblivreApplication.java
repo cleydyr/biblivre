@@ -40,6 +40,7 @@ import biblivre.circulation.reservation.ReservationBO;
 import biblivre.circulation.reservation.ReservationDAO;
 import biblivre.circulation.reservation.ReservationDAOImpl;
 import biblivre.circulation.user.*;
+import biblivre.core.Updates;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.ConfigurationsDAO;
 import biblivre.core.configurations.ConfigurationsDAOImpl;
@@ -65,7 +66,6 @@ import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGe
 @SpringBootApplication(
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class,
         scanBasePackageClasses = {
-            ReportsBO.class,
             BiblioRecordBO.class,
             DigitalMediaBO.class,
             IndexingGroupBO.class,
@@ -84,7 +84,17 @@ import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGe
             AccessControlBO.class,
             AccessCardBO.class,
             BackupBO.class,
-            EmailSender.class
+            EmailSender.class,
+            Updates.class,
+            ReportsBO.class,
+            biblivre.update.v6_0_0$1_0_0$alpha.Update.class,
+            biblivre.update.v6_0_0$1_0_1$alpha.Update.class,
+            biblivre.update.v6_0_0$1_0_2$alpha.Update.class,
+            biblivre.update.v6_0_0$1_1_0$alpha.Update.class,
+            biblivre.update.v6_0_0$2_0_0$alpha.Update.class,
+            biblivre.update.v6_0_0$3_0_0$alpha.Update.class,
+            biblivre.update.v6_0_0$3_0_1$alpha.Update.class,
+            biblivre.update.v6_0_0$4_0_0$alpha.Update.class,
         })
 public class TestBiblivreApplication {
     @Bean

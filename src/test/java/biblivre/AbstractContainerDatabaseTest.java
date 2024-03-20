@@ -55,7 +55,7 @@ public abstract class AbstractContainerDatabaseTest {
     private static DataSource dataSource;
 
     @ClassRule
-    protected final PostgreSQLContainer<?> postgreSQLContainer =
+    public static final PostgreSQLContainer<?> postgreSQLContainer =
             SharedPostgreSQLContainer.getInstance();
 
     public AbstractContainerDatabaseTest() {

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(
@@ -27,6 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
         properties = {"spring.datasource.url=jdbc:tc:postgresql:12:///biblivre4"},
         classes = TestBiblivreApplication.class)
 @Testcontainers
+@ActiveProfiles("test")
 public class SupplierDAOImplTest extends AbstractContainerDatabaseTest {
     Faker faker = new Faker();
 
