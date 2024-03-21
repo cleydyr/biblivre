@@ -23,6 +23,7 @@ import biblivre.core.utils.exception.PasswordEncodingException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.text.Normalizer;
@@ -84,8 +85,8 @@ public class TextUtils {
             byte[] pass = Base64.getEncoder().encode(md.digest());
 
             return new String(pass);
-        } catch (Exception e) {
-            return "";
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA algorithm not found", e);
         }
     }
 

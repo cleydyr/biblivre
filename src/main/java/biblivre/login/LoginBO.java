@@ -35,6 +35,10 @@ public class LoginBO extends AbstractBO {
     public final LoginDTO login(String login, String password) {
         LoginDTO loginDTO = loginDAO.getByLogin(login);
 
+        if (loginDTO == null) {
+            return null;
+        }
+
         if (loginDTO.getPasswordSalt() == null) {
             String encodedPassword = TextUtils.encodePasswordSHA(password);
 

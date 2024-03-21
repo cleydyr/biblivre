@@ -104,7 +104,7 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
             String sql =
                     """
                         UPDATE logins SET employee = ?, modified = now(), modified_by = ?,
-                            password_salt = ?, salted_password = ?, password = ? WHERE id = ?""";
+                            password_salt = ?, salted_password = ?, password = null WHERE id = ?""";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -114,7 +114,6 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
                     login.getModifiedBy(),
                     login.getPasswordSalt(),
                     login.getSaltedPassword(),
-                    login.getEncPassword(),
                     login.getId());
 
             return pst.executeUpdate() > 0;
