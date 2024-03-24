@@ -23,14 +23,8 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.*;
 import java.io.IOException;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SchemaFilter implements Filter {
@@ -40,7 +34,14 @@ public class SchemaFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String schema = extractSchema(request);
+        String schema = SchemaUtil.extractSchema(request);
+
+        if (schemaBO.isNotLoaded(schema)) {
+            schema =
+                    configurationBO.isMultipleSchemasEnabled()
+                            ? Constants.GLOBAL_SCHEMA
+                            : Constants.SINGLE_SCHEMA;
+        }
 
         SchemaThreadLocal.setSchema(schema);
 
@@ -53,38 +54,6 @@ public class SchemaFilter implements Filter {
         } finally {
             SchemaThreadLocal.remove();
         }
-    }
-
-    private String extractSchema(ServletRequest request) {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-
-        String requestURI = httpServletRequest.getRequestURI();
-
-        String contextPath = httpServletRequest.getContextPath();
-
-        String url = requestURI.substring(contextPath.length() + 1);
-
-        String schema = null;
-
-        if (StringUtils.isNotBlank(url)) {
-            String[] urlArray = url.split("/");
-
-            if (!"DigitalMediaController".equals(urlArray[0])) {
-                schema = urlArray[0];
-            }
-        }
-
-        if (schemaBO.isNotLoaded(schema)) {
-            boolean isMultipleSchemasEnabled = configurationBO.isMultipleSchemasEnabled();
-
-            if (isMultipleSchemasEnabled) {
-                schema = Constants.GLOBAL_SCHEMA;
-            } else {
-                schema = Constants.SINGLE_SCHEMA;
-            }
-        }
-
-        return schema;
     }
 
     @Autowired

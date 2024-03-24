@@ -104,8 +104,6 @@ public class Constants {
 
     public static final String JSON_EMPTY_OBJECT_STR = "{}";
 
-    public static final String POSTGRES_PASSWORD_ENV = "PGPASSWORD";
-    public static final String DEAFULT_POSTGRES_PASSWORD = "abracadabra";
     public static final String DATABASE_HOST_NAME = "DATABASE_HOST_NAME";
     public static final String DATABASE_PORT = "DATABASE_PORT";
     public static final String DATABASE_NAME = "PGDATABASE";

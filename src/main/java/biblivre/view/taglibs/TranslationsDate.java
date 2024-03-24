@@ -28,7 +28,9 @@ import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import lombok.Setter;
 
+@Setter
 public class TranslationsDate extends SimpleTagSupport {
 
     private Date date = new Date();
@@ -56,13 +58,5 @@ public class TranslationsDate extends SimpleTagSupport {
         } catch (Exception e) {
             throw new JspException(e.getMessage());
         }
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setTime(Boolean time) {
-        this.time = time;
     }
 }

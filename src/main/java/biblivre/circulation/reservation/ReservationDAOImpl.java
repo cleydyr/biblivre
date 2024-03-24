@@ -24,30 +24,19 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
-
-    public static ReservationDAO getInstance() {
-        return AbstractDAO.getInstance(ReservationDAOImpl.class);
-    }
 
     @Override
     public ReservationDTO get(Integer id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM reservations WHERE id = ?;";
 
             PreparedStatement ppst = con.prepareStatement(sql);
@@ -59,8 +48,6 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
@@ -73,24 +60,8 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     @Override
     public List<ReservationDTO> list(UserDTO user, RecordDTO record, int defaultSortableGroupId) {
         List<ReservationDTO> list = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT R.* FROM reservations R INNER JOIN biblio_idx_sort S ");
-            sql.append("ON S.record_id = R.record_id WHERE R.expires > localtimestamp ");
-            sql.append("AND S.indexing_group_id = ? ");
-
-            if (user != null) {
-                sql.append("AND R.user_id = ? ");
-            }
-
-            if (record != null) {
-                sql.append("AND R.record_id = ? ");
-            }
-
-            sql.append("ORDER BY S.phrase ASC;");
+        try (Connection con = datasource.getConnection()) {
+            StringBuilder sql = getStringBuilder(user, record);
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
 
@@ -102,7 +73,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             }
 
             if (record != null) {
-                pst.setInt(index++, record.getId());
+                pst.setInt(index, record.getId());
             }
 
             ResultSet rs = pst.executeQuery();
@@ -112,10 +83,26 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
+    }
+
+    private static StringBuilder getStringBuilder(UserDTO user, RecordDTO record) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT R.* FROM reservations R INNER JOIN biblio_idx_sort S ");
+        sql.append("ON S.record_id = R.record_id WHERE R.expires > localtimestamp ");
+        sql.append("AND S.indexing_group_id = ? ");
+
+        if (user != null) {
+            sql.append("AND R.user_id = ? ");
+        }
+
+        if (record != null) {
+            sql.append("AND R.record_id = ? ");
+        }
+
+        sql.append("ORDER BY S.phrase ASC;");
+        return sql;
     }
 
     @Override
@@ -125,10 +112,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
 
     @Override
     public int count(UserDTO user, RecordDTO record) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append(
                     "SELECT count(*) as total FROM reservations WHERE expires > localtimestamp ");
@@ -150,7 +134,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             }
 
             if (record != null) {
-                pst.setInt(index++, record.getId());
+                pst.setInt(index, record.getId());
             }
 
             ResultSet rs = pst.executeQuery();
@@ -160,8 +144,6 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return 0;
@@ -169,9 +151,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
 
     @Override
     public boolean deleteExpired() {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "DELETE FROM reservations WHERE expires < localtimestamp;";
 
@@ -180,8 +160,6 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             return st.executeUpdate(sql) > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -191,10 +169,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             return false;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql = "DELETE FROM reservations WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -203,8 +178,6 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -214,10 +187,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             return false;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "DELETE FROM reservations WHERE id IN "
                             + "(SELECT id FROM reservations WHERE user_id = ? AND record_id = ? AND expires > localtimestamp "
@@ -232,17 +202,12 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public int insert(ReservationDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "INSERT INTO reservations (record_id, user_id, expires, created_by) "
                             + "VALUES (?, ?, ?, ?) ";
@@ -263,8 +228,6 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             return dto.getId();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -286,10 +249,7 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
     public Map<Integer, List<ReservationDTO>> getReservationsMap(Set<Integer> recordIds) {
         Map<Integer, List<ReservationDTO>> map = new LinkedHashMap<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM reservations WHERE "
                             + "record_id in ("
@@ -311,10 +271,13 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return map;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

@@ -20,7 +20,7 @@
 package biblivre.circulation.user;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum UserStatus implements BiblivreEnum {
     ACTIVE,
@@ -29,19 +29,7 @@ public enum UserStatus implements BiblivreEnum {
     BLOCKED;
 
     public static UserStatus fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (UserStatus status : UserStatus.values()) {
-            if (str.equals(status.toString())) {
-                return status;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(UserStatus.class, str.toUpperCase(), null);
     }
 
     @Override

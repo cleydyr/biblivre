@@ -34,14 +34,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
-    public static SearchDAOImpl getInstance() {
-        return AbstractDAO.getInstance(SearchDAOImpl.class);
-    }
-
     @Override
     public SearchDTO getSearch(Integer searchId, RecordType recordType) {
         SearchDTO search = new SearchDTO(recordType);
@@ -50,9 +50,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             return search;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "SELECT * FROM " + recordType + "_searches " + "WHERE id = ?;";
 
@@ -71,8 +69,6 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             return search;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -82,9 +78,7 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             return false;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             RecordType recordType = search.getRecordType();
@@ -94,8 +88,9 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
 
-            Integer id = this.getNextSerial(recordType + "_searches_id_seq");
-            if (id == null || id == 0) {
+            int id = this.getNextSerial(recordType + "_searches_id_seq");
+
+            if (id == 0) {
                 return false;
             }
 
@@ -107,8 +102,6 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -146,66 +139,50 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             return false;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        return withTransactionContext(
+                con -> {
+                    if (deleteOldResults) {
+                        String deleteSql =
+                                "DELETE FROM "
+                                        + search.getRecordType()
+                                        + "_search_results "
+                                        + "WHERE search_id = ?;";
 
-            if (deleteOldResults) {
-                con.setAutoCommit(false);
-
-                String deleteSql =
-                        "DELETE FROM "
-                                + search.getRecordType()
-                                + "_search_results "
-                                + "WHERE search_id = ?;";
-
-                PreparedStatement deletePst = con.prepareStatement(deleteSql);
-                deletePst.setInt(1, search.getId());
-                deletePst.executeUpdate();
-            }
-
-            PreparedStatement pst = con.prepareStatement(sql);
-            int index = 1;
-
-            // With statement
-            int j = 0;
-            for (int i = 0; i < sqlTerms.size(); i++) {
-                String term = sqlTerms.get(i);
-                String operator = sqlOperators.get(i);
-
-                pst.setString(index++, term);
-
-                if (operator.equals("~")) {
-                    String[] eTerms = exactTerms.get(j++);
-
-                    for (String eTerm : eTerms) {
-                        pst.setString(index++, eTerm);
+                        PreparedStatement deletePst = con.prepareStatement(deleteSql);
+                        deletePst.setInt(1, search.getId());
+                        deletePst.executeUpdate();
                     }
-                }
-            }
 
-            pst.setString(index++, query.getDatabase().toString());
+                    PreparedStatement pst = con.prepareStatement(sql);
+                    int index = 1;
 
-            if (query.getMaterialType() != MaterialType.ALL) {
-                pst.setString(index++, query.getMaterialType().toString());
-            }
+                    // With statement
+                    int j = 0;
+                    for (int i = 0; i < sqlTerms.size(); i++) {
+                        String term = sqlTerms.get(i);
+                        String operator = sqlOperators.get(i);
 
-            int records = pst.executeUpdate();
+                        pst.setString(index++, term);
 
-            if (deleteOldResults) {
-                this.commit(con);
-            }
+                        if (operator.equals("~")) {
+                            String[] eTerms = exactTerms.get(j++);
 
-            return records > 0;
-        } catch (Exception e) {
-            if (deleteOldResults) {
-                this.rollback(con);
-            }
+                            for (String eTerm : eTerms) {
+                                pst.setString(index++, eTerm);
+                            }
+                        }
+                    }
 
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    pst.setString(index++, query.getDatabase().toString());
+
+                    if (query.getMaterialType() != MaterialType.ALL) {
+                        pst.setString(index, query.getMaterialType().toString());
+                    }
+
+                    int records = pst.executeUpdate();
+
+                    return records > 0;
+                });
     }
 
     @Override
@@ -217,109 +194,95 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             return false;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        return withTransactionContext(
+                con -> {
+                    if (deleteOld) {
+                        String deleteSql =
+                                "DELETE FROM "
+                                        + search.getRecordType()
+                                        + "_search_results "
+                                        + "WHERE search_id = ?;";
 
-            if (deleteOld) {
-                con.setAutoCommit(false);
-
-                String deleteSql =
-                        "DELETE FROM "
-                                + search.getRecordType()
-                                + "_search_results "
-                                + "WHERE search_id = ?;";
-
-                PreparedStatement deletePst = con.prepareStatement(deleteSql);
-                deletePst.setInt(1, search.getId());
-                deletePst.executeUpdate();
-            }
-
-            PreparedStatement pst = con.prepareStatement(sql);
-            int index = 1;
-
-            pst.setString(index++, query.getDatabase().toString());
-
-            if (query.getMaterialType() != MaterialType.ALL) {
-                pst.setString(index++, query.getMaterialType().toString());
-            }
-
-            List<SearchTermDTO> searchTerms = search.getQuery().getTerms();
-            for (SearchTermDTO searchTerm : searchTerms) {
-                String field = searchTerm.getField();
-
-                for (String term : searchTerm.getTerms()) {
-                    // See: createAdvancedFilterClause();
-
-                    if (StringUtils.isNumeric(field)) {
-                        // Field is a indexing_group_id
-                        pst.setString(index++, term);
-
-                        if (!field.equals("0")) {
-                            pst.setInt(index++, TextUtils.defaultInt(field));
-                        }
-
-                        continue;
+                        PreparedStatement deletePst = con.prepareStatement(deleteSql);
+                        deletePst.setInt(1, search.getId());
+                        deletePst.executeUpdate();
                     }
 
-                    switch (field) {
-                        case "record_id" -> pst.setInt(index++, TextUtils.defaultInt(term));
-                        case "holding_id" -> {
-                            pst.setString(index++, query.getDatabase().toString());
-                            pst.setInt(index++, TextUtils.defaultInt(term));
-                        }
-                        case "holding_accession_number" -> {
-                            pst.setString(index++, query.getDatabase().toString());
-                            pst.setString(index++, term);
-                        }
-                        case "holding_created",
-                                "holding_modified",
-                                "holding_label_never_printed",
-                                "created",
-                                "modified" -> {
-                            if (!field.equals("created") && !field.equals("modified")) {
-                                pst.setString(index++, query.getDatabase().toString());
-                            }
-                            Date startDate = searchTerm.getStartDate();
-                            Date endDate = searchTerm.getEndDate();
-                            if (startDate != null) {
-                                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(startDate));
-                            }
-                            if (endDate != null) {
-                                if (CalendarUtils.isMidnight(endDate)) {
-                                    endDate = DateUtils.addDays(endDate, 1);
+                    PreparedStatement pst = con.prepareStatement(sql);
+                    int index = 1;
+
+                    pst.setString(index++, query.getDatabase().toString());
+
+                    if (query.getMaterialType() != MaterialType.ALL) {
+                        pst.setString(index++, query.getMaterialType().toString());
+                    }
+
+                    List<SearchTermDTO> searchTerms = search.getQuery().getTerms();
+                    for (SearchTermDTO searchTerm : searchTerms) {
+                        String field = searchTerm.getField();
+
+                        for (String term : searchTerm.getTerms()) {
+                            // See: createAdvancedFilterClause();
+
+                            if (StringUtils.isNumeric(field)) {
+                                // Field is a indexing_group_id
+                                pst.setString(index++, term);
+
+                                if (!field.equals("0")) {
+                                    pst.setInt(index++, TextUtils.defaultInt(field));
                                 }
 
-                                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(endDate));
+                                continue;
+                            }
+
+                            switch (field) {
+                                case "record_id" -> pst.setInt(index++, TextUtils.defaultInt(term));
+                                case "holding_id" -> {
+                                    pst.setString(index++, query.getDatabase().toString());
+                                    pst.setInt(index++, TextUtils.defaultInt(term));
+                                }
+                                case "holding_accession_number" -> {
+                                    pst.setString(index++, query.getDatabase().toString());
+                                    pst.setString(index++, term);
+                                }
+                                case "holding_created",
+                                        "holding_modified",
+                                        "holding_label_never_printed",
+                                        "created",
+                                        "modified" -> {
+                                    if (!field.equals("created") && !field.equals("modified")) {
+                                        pst.setString(index++, query.getDatabase().toString());
+                                    }
+                                    Date startDate = searchTerm.getStartDate();
+                                    Date endDate = searchTerm.getEndDate();
+                                    if (startDate != null) {
+                                        pst.setTimestamp(
+                                                index++, CalendarUtils.toSqlTimestamp(startDate));
+                                    }
+                                    if (endDate != null) {
+                                        if (CalendarUtils.isMidnight(endDate)) {
+                                            endDate = DateUtils.addDays(endDate, 1);
+                                        }
+
+                                        pst.setTimestamp(
+                                                index++, CalendarUtils.toSqlTimestamp(endDate));
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
 
-            int records = pst.executeUpdate();
+                    int records = pst.executeUpdate();
 
-            if (deleteOld) {
-                this.commit(con);
-            }
-
-            return records > 0;
-        } catch (Exception e) {
-            if (deleteOld) {
-                this.rollback(con);
-            }
-
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return records > 0;
+                });
     }
 
     private String createSimpleSelectClause(
             SearchDTO search, List<String> operators, List<String[]> exactTerms) {
         SearchQueryDTO query = search.getQuery();
 
-        if (operators == null || operators.size() == 0) {
+        if (operators == null || operators.isEmpty()) {
             return null;
         }
 
@@ -502,8 +465,8 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
             clause.append("WHERE database = ? AND ");
 
             switch (field) {
-                case "holding_id" -> clause.append(
-                        StringUtils.repeat("id = ? ", " OR ", terms.size()));
+                case "holding_id" ->
+                        clause.append(StringUtils.repeat("id = ? ", " OR ", terms.size()));
                 case "holding_created", "holding_modified" -> {
                     clause.append(CharPool.OPEN_PARENTHESIS);
                     if (searchTerm.getStartDate() != null) {
@@ -518,8 +481,10 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
                     clause.append(CharPool.CLOSE_PARENTHESIS);
                 }
                 case "holding_label_never_printed" -> clause.append("label_printed = false ");
-                default -> clause.append(
-                        StringUtils.repeat("accession_number ilike ? ", " OR ", terms.size()));
+                default ->
+                        clause.append(
+                                StringUtils.repeat(
+                                        "accession_number ilike ? ", " OR ", terms.size()));
             }
 
             clause.append(CharPool.CLOSE_PARENTHESIS);
@@ -544,5 +509,10 @@ public class SearchDAOImpl extends AbstractDAO implements SearchDAO {
         }
 
         return clause.toString();
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

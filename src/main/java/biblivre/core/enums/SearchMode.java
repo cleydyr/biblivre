@@ -20,7 +20,7 @@
 package biblivre.core.enums;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum SearchMode implements BiblivreEnum {
     LIST_ALL,
@@ -28,25 +28,7 @@ public enum SearchMode implements BiblivreEnum {
     ADVANCED;
 
     public static SearchMode fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (SearchMode type : SearchMode.values()) {
-            if (str.equals(type.name().toLowerCase())) {
-                return type;
-            }
-        }
-
-        return null;
-    }
-
-    public static SearchMode fromString(String str, SearchMode def) {
-        SearchMode mode = SearchMode.fromString(str);
-
-        return (mode == null) ? def : mode;
+        return EnumUtils.getEnum(SearchMode.class, str.toUpperCase(), null);
     }
 
     @Override

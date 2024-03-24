@@ -19,6 +19,11 @@
  ******************************************************************************/
 package biblivre.core.auth;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum AuthorizationPointTypes {
     LOGIN(
             AuthorizationSchemaScope.ANY,
@@ -283,11 +288,11 @@ public enum AuthorizationPointTypes {
             AuthorizationPointGroups.DIGITALMEDIA,
             true);
 
-    private final AuthorizationPointGroups group;
     private final AuthorizationSchemaScope schemaScope;
     private final AuthorizationUserScope userScope;
-    private final boolean _public;
-    private final boolean _publicForLoggedUsers;
+    private final AuthorizationPointGroups group;
+    private final boolean isPublic;
+    private final boolean isPublicForLoggedUsers;
 
     AuthorizationPointTypes(
             AuthorizationSchemaScope schemaScope,
@@ -300,40 +305,7 @@ public enum AuthorizationPointTypes {
             AuthorizationSchemaScope schemaScope,
             AuthorizationUserScope userScope,
             AuthorizationPointGroups group,
-            boolean _public) {
-        this(schemaScope, userScope, group, _public, false);
-    }
-
-    AuthorizationPointTypes(
-            AuthorizationSchemaScope schemaScope,
-            AuthorizationUserScope userScope,
-            AuthorizationPointGroups group,
-            boolean _public,
-            boolean _publicForLoggedUsers) {
-        this.schemaScope = schemaScope;
-        this.userScope = userScope;
-        this.group = group;
-        this._public = _public;
-        this._publicForLoggedUsers = _publicForLoggedUsers;
-    }
-
-    public AuthorizationPointGroups getGroup() {
-        return this.group;
-    }
-
-    public boolean isPublic() {
-        return this._public;
-    }
-
-    public boolean isPublicForLoggedUsers() {
-        return this._publicForLoggedUsers;
-    }
-
-    public AuthorizationSchemaScope getSchemaScope() {
-        return this.schemaScope;
-    }
-
-    public AuthorizationUserScope getUserScope() {
-        return this.userScope;
+            boolean isPublic) {
+        this(schemaScope, userScope, group, isPublic, false);
     }
 }

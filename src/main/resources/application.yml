@@ -1,0 +1,25 @@
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          devtools: DEBUG
+server:
+  port: 8090
+
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true

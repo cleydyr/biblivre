@@ -20,7 +20,7 @@
 package biblivre.administration.backup;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum BackupType implements BiblivreEnum {
     FULL,
@@ -28,19 +28,7 @@ public enum BackupType implements BiblivreEnum {
     EXCLUDE_DIGITAL_MEDIA;
 
     public static BackupType fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (BackupType type : BackupType.values()) {
-            if (str.equals(type.toString())) {
-                return type;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(BackupType.class, str.toUpperCase(), null);
     }
 
     @Override

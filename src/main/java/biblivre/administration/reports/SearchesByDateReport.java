@@ -27,16 +27,18 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SearchesByDateReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
         String initialDate = dateFormat.format(dto.getInitialDate());
         String finalDate = dateFormat.format(dto.getFinalDate());
-        return ReportsDAOImpl.getInstance().getSearchesByDateReportData(initialDate, finalDate);
+        return reportsDAO.getSearchesByDateReportData(initialDate, finalDate);
     }
 
     @Override
@@ -106,5 +108,10 @@ public class SearchesByDateReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.SEARCHES_BY_DATE;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

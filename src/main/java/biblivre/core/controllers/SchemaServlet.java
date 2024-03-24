@@ -73,6 +73,16 @@ public class SchemaServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Detour to the MVC controllers, i.e., Spring's DispatcherServlet if the request path
+        // starts with /api
+        if (request.getServletPath().startsWith("/api")) {
+            RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
+
+            rd.forward(request, response);
+
+            return;
+        }
+
         wireUpControllers(request, response);
 
         super.service(request, response);
@@ -179,13 +189,13 @@ public class SchemaServlet extends HttpServlet {
             }
             case "log" -> {
                 xResponse.setContentType("text/html;charset=UTF-8");
-                xRequest.dispatch("/jsp/log.jsp", xResponse);
+                xRequest.dispatch("/WEB-INF/jsp/log.jsp", xResponse);
             }
             default -> {
                 xResponse.setContentType("text/html;charset=UTF-8");
-                String page = "/jsp/index.jsp";
+                String page = "/WEB-INF/jsp/index.jsp";
                 if (State.LOCKED.get()) {
-                    page = "/jsp/progress.jsp";
+                    page = "/WEB-INF/jsp/progress.jsp";
                 }
                 xRequest.dispatch(page, xResponse);
             }

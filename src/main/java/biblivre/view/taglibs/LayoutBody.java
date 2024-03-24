@@ -32,7 +32,6 @@ import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.io.Serial;
-import org.apache.commons.lang3.StringUtils;
 
 public class LayoutBody extends TagSupport {
     @Serial private static final long serialVersionUID = 1L;
@@ -124,38 +123,21 @@ public class LayoutBody extends TagSupport {
         request.setAttribute("isEmployee", this.isEmployee());
         request.setAttribute("languages", languageBO.getLanguages());
 
-        String updateWarning =
-                (String)
-                        this.pageContext
-                                .getSession()
-                                .getAttribute(getSchema() + ".system_warning_new_version");
-
-        if (StringUtils.isNotBlank(updateWarning)) {
-
-            String message = translationsMap.getText("warning.new_version");
-            message = message.replace("{0}", Constants.BIBLIVRE_VERSION);
-            message = message.replace("{1}", updateWarning);
-
-            request.setAttribute("message", message); // TODO: custom tag?
-        }
-
-        String path = "/jsp/taglib/layout/body/start.jsp";
+        String path = "/WEB-INF/jsp/taglib/layout/body/start.jsp";
 
         try {
             this.pageContext.include(path);
         } catch (ServletException | IOException e) {
-            e.printStackTrace();
             throw new JspException(e);
         }
     }
 
     @Override
     public int doEndTag() throws JspException {
-        String path = "/jsp/taglib/layout/body/end.jsp";
+        String path = "/WEB-INF/jsp/taglib/layout/body/end.jsp";
         try {
             this.pageContext.include(path);
         } catch (ServletException | IOException e) {
-            e.printStackTrace();
             throw new JspException(e);
         }
         return Tag.EVAL_PAGE;

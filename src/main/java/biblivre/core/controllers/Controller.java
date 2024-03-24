@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +49,7 @@ public abstract class Controller {
     protected ExtendedRequest xRequest;
     protected ExtendedResponse xResponse;
     protected AbstractHandler handler;
-    protected boolean headerOnly;
+    @Getter @Setter protected boolean headerOnly;
     private PermissionBO permissionBO;
 
     private Map<String, AbstractHandler> handlersMap;
@@ -73,7 +75,7 @@ public abstract class Controller {
 
             // In case of invalid pack and method, send user to index page
             if (StringUtils.isBlank(module) || StringUtils.isBlank(action)) {
-                this.doError("error.void");
+                this.doError();
                 return;
             }
 
@@ -144,7 +146,7 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return;
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
@@ -168,26 +170,18 @@ public abstract class Controller {
             } else {
                 this.doError("error.runtime_error", handlerException);
             }
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return;
 
         } catch (Exception e) {
             // ClassNotFoundException, NoSuchMethodException, InstantiationException,
             // IllegalAccessException, etc.
             this.doError("error.invalid_handler", e);
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return;
         }
 
         this.doReturn();
-    }
-
-    public boolean isHeaderOnly() {
-        return this.headerOnly;
-    }
-
-    public void setHeaderOnly(boolean headerOnly) {
-        this.headerOnly = headerOnly;
     }
 
     protected abstract void doReturn() throws ServletException, IOException;
@@ -201,20 +195,20 @@ public abstract class Controller {
     protected abstract void doWarning(String warning, Throwable e)
             throws ServletException, IOException;
 
-    protected void doError(String error) throws ServletException, IOException {
-        this.doError(error, null);
+    protected void doError() throws ServletException, IOException {
+        this.doError("error.void", null);
     }
 
     private Method _getMethodFromHandler(String action) throws NoSuchMethodException {
-        Method method = null;
-
         Class<?> lookupClass = this.handler.getClass();
 
-        return getMethod(action, method, lookupClass);
+        return getMethod(action, lookupClass);
     }
 
-    public static Method getMethod(String action, Method method, Class<?> lookupClass)
+    public static Method getMethod(String action, Class<?> lookupClass)
             throws NoSuchMethodException {
+        Method method = null;
+
         while (method == null && !lookupClass.equals(AbstractHandler.class)) {
             try {
                 method =

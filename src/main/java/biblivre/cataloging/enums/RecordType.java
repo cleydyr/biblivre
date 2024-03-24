@@ -25,7 +25,7 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum RecordType implements BiblivreEnum {
     BIBLIO(BiblioRecordDTO.class),
@@ -40,19 +40,7 @@ public enum RecordType implements BiblivreEnum {
     }
 
     public static RecordType fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (RecordType recordType : RecordType.values()) {
-            if (str.equals(recordType.name().toLowerCase())) {
-                return recordType;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(RecordType.class, str.toUpperCase(), null);
     }
 
     @Override

@@ -20,7 +20,7 @@
 package biblivre.circulation.user;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum UserFieldType implements BiblivreEnum {
     STRING(true),
@@ -38,19 +38,7 @@ public enum UserFieldType implements BiblivreEnum {
     }
 
     public static UserFieldType fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (UserFieldType type : UserFieldType.values()) {
-            if (str.equals(type.toString())) {
-                return type;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(UserFieldType.class, str.toUpperCase(), null);
     }
 
     @Override

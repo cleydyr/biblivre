@@ -40,7 +40,7 @@ public class Validator extends AbstractValidator {
         String end = request.getString("end");
         String suffix = request.getString("suffix");
 
-        ValidationException ex = new ValidationException("error.form_invalid_values");
+        ValidationException ex = new ValidationException(ERROR_FORM_INVALID_VALUES);
 
         boolean single = StringUtils.isNotBlank(code);
         boolean multiple =

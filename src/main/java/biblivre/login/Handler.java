@@ -31,13 +31,24 @@ import biblivre.core.auth.AuthorizationPointTypes;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.CalendarUtils;
-import biblivre.core.utils.Constants;
 import biblivre.core.utils.TextUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -49,6 +60,9 @@ public class Handler extends AbstractHandler {
 
     @Autowired MenuProvider menuProvider;
 
+    private final SecurityContextRepository securityContextRepository =
+            new HttpSessionSecurityContextRepository();
+
     public void login(ExtendedRequest request, ExtendedResponse response) {
 
         String username = request.getString("username");
@@ -56,7 +70,7 @@ public class Handler extends AbstractHandler {
 
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             setMessage(ActionResult.WARNING, "login.access_denied");
-            setJspURL("/jsp/index.jsp");
+            setJspURL("/WEB-INF/jsp/index.jsp");
             return;
         }
 
@@ -67,16 +81,38 @@ public class Handler extends AbstractHandler {
 
             _setAdmin(user, atps);
 
-            _performChecks(request, password, user, atps);
+            _performChecks(request, password, atps);
 
             _populateSessionAttributes(request, user, atps);
+
+            authenticateWithSpringSecurity(user, request, response);
 
             setMessage(ActionResult.NORMAL, "login.welcome");
         } else {
             setMessage(ActionResult.WARNING, "login.access_denied");
         }
 
-        setJspURL("/jsp/index.jsp");
+        setJspURL("/WEB-INF/jsp/index.jsp");
+    }
+
+    private void authenticateWithSpringSecurity(
+            LoginDTO user, HttpServletRequest request, HttpServletResponse response) {
+        Collection<? extends GrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(user.getLogin(), null, authorities);
+
+        SecurityContextHolderStrategy securityContextHolderStrategy =
+                SecurityContextHolder.getContextHolderStrategy();
+
+        SecurityContext context = securityContextHolderStrategy.createEmptyContext();
+
+        context.setAuthentication(authentication);
+
+        securityContextHolderStrategy.setContext(context);
+
+        securityContextRepository.saveContext(context, request, response);
     }
 
     public void logout(ExtendedRequest request, ExtendedResponse response) {
@@ -97,7 +133,7 @@ public class Handler extends AbstractHandler {
         request.setScopedSessionAttribute("language", language);
 
         setMessage(ActionResult.NORMAL, "login.goodbye");
-        setJspURL("/jsp/index.jsp");
+        setJspURL("/WEB-INF/jsp/index.jsp");
     }
 
     public void changePassword(ExtendedRequest request, ExtendedResponse response) {
@@ -123,11 +159,11 @@ public class Handler extends AbstractHandler {
         request.setScopedSessionAttribute("system_warning_password", warningPassword);
 
         setMessage(ActionResult.SUCCESS, "login.password.success");
-        setJspURL("/jsp/administration/password.jsp");
+        setJspURL("/WEB-INF/jsp/administration/password.jsp");
     }
 
     private void _performChecks(
-            ExtendedRequest request, String password, LoginDTO user, AuthorizationPoints atps) {
+            ExtendedRequest request, String password, AuthorizationPoints atps) {
 
         if (atps.isAdmin()) {
             _checkDefaultPassword(request, password);
@@ -155,7 +191,7 @@ public class Handler extends AbstractHandler {
 
     private void _setAdmin(LoginDTO user, AuthorizationPoints atps) {
 
-        if ((user.getId() == 1) || SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
+        if ((user.getId() == 1) || SchemaThreadLocal.isGlobalSchema()) {
             atps.setAdmin(true);
         }
     }

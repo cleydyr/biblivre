@@ -29,18 +29,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
-
-    public static LoginDAO getInstance() {
-        return AbstractDAO.getInstance(LoginDAOImpl.class);
-    }
 
     @Override
     public LoginDTO get(Integer loginId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT id, login, employee, password, password_salt, salted_password FROM logins WHERE id = ?;";
             PreparedStatement st = con.prepareStatement(sql);
@@ -53,8 +51,6 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
             return null;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -65,21 +61,21 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
         if (SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
             sql =
                     """
-                    SELECT id, login, employee, login as name, password, password_salt,
-                            salted_password
-                    FROM logins
-                    WHERE login = ? and password = ?""";
+                            SELECT id, login, employee, login as name, password, password_salt,
+                                    salted_password
+                            FROM logins
+                            WHERE login = ? and password = ?""";
         } else {
             sql =
                     """
-                    SELECT L.id, L.login, L.employee, coalesce(U.name, L.login) as name, password,
-                        password_salt, salted_password
-                    FROM logins L
-                    LEFT JOIN users U ON U.login_id = L.id
-                    WHERE L.login = ? and L.password = ?""";
+                            SELECT L.id, L.login, L.employee, coalesce(U.name, L.login) as name, password,
+                                password_salt, salted_password
+                            FROM logins L
+                            LEFT JOIN users U ON U.login_id = L.id
+                            WHERE L.login = ? and L.password = ?""";
         }
 
-        try (Connection con = getConnection();
+        try (Connection con = datasource.getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
             PreparedStatementUtil.setAllParameters(pst, login, password);
 
@@ -97,14 +93,12 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
 
     @Override
     public boolean update(LoginDTO login) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     """
-                        UPDATE logins SET employee = ?, modified = now(), modified_by = ?,
-                            password_salt = ?, salted_password = ?, password = null WHERE id = ?""";
+                            UPDATE logins SET employee = ?, modified = now(), modified_by = ?,
+                                password_salt = ?, salted_password = ?, password = null WHERE id = ?""";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -119,16 +113,12 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public LoginDTO getByLogin(String loginName) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sqlSelectLogin =
                     "SELECT id, login, employee, password, password_salt, salted_password FROM logins WHERE login = ?;";
 
@@ -141,17 +131,13 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
 
     @Override
     public boolean delete(UserDTO userDTO) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             con.setAutoCommit(false);
 
             String sql;
@@ -182,59 +168,46 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public synchronized boolean save(LoginDTO dto, UserDTO udto) {
-        Connection con = null;
-        int loginId;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+        return withTransactionContext(
+                con -> {
+                    int loginId = this.getNextSerial("logins_id_seq");
 
-            loginId = this.getNextSerial("logins_id_seq");
+                    if (loginId != 0) {
+                        dto.setId(loginId);
+                        String sqlInsertLogin =
+                                "INSERT INTO logins (id, login, employee, created_by, password_salt, salted_password) VALUES (?, ?, ?, ?, ?, ?);";
+                        PreparedStatement pstInsertLogin = con.prepareStatement(sqlInsertLogin);
 
-            if (loginId != 0) {
-                dto.setId(loginId);
-                String sqlInsertLogin =
-                        "INSERT INTO logins (id, login, employee, created_by, password_salt, salted_password) VALUES (?, ?, ?, ?, ?, ?);";
-                PreparedStatement pstInsertLogin = con.prepareStatement(sqlInsertLogin);
+                        PreparedStatementUtil.setAllParameters(
+                                pstInsertLogin,
+                                dto.getId(),
+                                dto.getLogin(),
+                                dto.isEmployee(),
+                                dto.getCreatedBy(),
+                                dto.getPasswordSalt(),
+                                dto.getSaltedPassword());
 
-                PreparedStatementUtil.setAllParameters(
-                        pstInsertLogin,
-                        dto.getId(),
-                        dto.getLogin(),
-                        dto.isEmployee(),
-                        dto.getCreatedBy(),
-                        dto.getPasswordSalt(),
-                        dto.getSaltedPassword());
+                        pstInsertLogin.executeUpdate();
 
-                pstInsertLogin.executeUpdate();
+                        String sqlUpdateUser =
+                                "UPDATE users SET login_id = ?, modified = now(), modified_by = ? WHERE id = ?;";
+                        PreparedStatement pstUpdateUser = con.prepareStatement(sqlUpdateUser);
 
-                String sqlUpdateUser =
-                        "UPDATE users SET login_id = ?, modified = now(), modified_by = ? WHERE id = ?;";
-                PreparedStatement pstUpdateUser = con.prepareStatement(sqlUpdateUser);
+                        PreparedStatementUtil.setAllParameters(
+                                pstUpdateUser, dto.getId(), dto.getCreatedBy(), udto.getId());
 
-                PreparedStatementUtil.setAllParameters(
-                        pstUpdateUser, dto.getId(), dto.getCreatedBy(), udto.getId());
+                        pstUpdateUser.executeUpdate();
 
-                pstUpdateUser.executeUpdate();
+                        udto.setLoginId(dto.getId());
+                    }
 
-                udto.setLoginId(dto.getId());
-            }
-
-            this.commit(con);
-
-            return true;
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return true;
+                });
     }
 
     @Override
@@ -244,21 +217,21 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
         if (SchemaThreadLocal.get().equals(Constants.GLOBAL_SCHEMA)) {
             sql =
                     """
-                    SELECT id, login, employee, login as name, password_salt, salted_password,
-                            password
-                    FROM logins
-                    WHERE login = ? and salted_password = ?""";
+                            SELECT id, login, employee, login as name, password_salt, salted_password,
+                                    password
+                            FROM logins
+                            WHERE login = ? and salted_password = ?""";
         } else {
             sql =
                     """
-                    SELECT L.id, L.login, L.employee, coalesce(U.name, L.login) as name,
-                            password_salt, salted_password, password
-                    FROM logins L
-                    LEFT JOIN users U ON U.login_id = L.id
-                    WHERE L.login = ? and L.salted_password = ?""";
+                            SELECT L.id, L.login, L.employee, coalesce(U.name, L.login) as name,
+                                    password_salt, salted_password, password
+                            FROM logins L
+                            LEFT JOIN users U ON U.login_id = L.id
+                            WHERE L.login = ? and L.salted_password = ?""";
         }
 
-        try (Connection con = getConnection();
+        try (Connection con = datasource.getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
             PreparedStatementUtil.setAllParameters(pst, login, saltedPassword);
 
@@ -281,9 +254,13 @@ public class LoginDAOImpl extends AbstractDAO implements LoginDAO {
         dto.setLogin(rs.getString("login"));
         dto.setEmployee(rs.getBoolean("employee"));
         dto.setPasswordSalt(rs.getBytes("password_salt"));
-        dto.setEncPassword(rs.getString("password"));
         dto.setSaltedPassword(rs.getBytes("salted_password"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

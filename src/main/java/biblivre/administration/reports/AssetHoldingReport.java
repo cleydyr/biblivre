@@ -21,22 +21,25 @@ package biblivre.administration.reports;
 
 import biblivre.administration.reports.dto.AssetHoldingDto;
 import biblivre.administration.reports.dto.BaseReportDto;
-import biblivre.core.utils.NaturalOrderComparator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import java.util.Comparator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AssetHoldingReport extends BaseBiblivreReport {
 
+    private ReportsDAO reportsDAO;
+
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAOImpl.getInstance().getAssetHoldingReportData();
+        return reportsDAO.getAssetHoldingReportData();
     }
 
     @Override
@@ -53,8 +56,8 @@ public class AssetHoldingReport extends BaseBiblivreReport {
         List<String[]> dataList = dto.getData();
         dataList.sort(
                 (o1, o2) -> {
-                    if (o1 == null && o2 == null) return 0;
-                    return NaturalOrderComparator.NUMERICAL_ORDER.compare(o1[0], o2[0]);
+                    if (o1 == null || o2 == null || o1[0] == null || o2[0] == null) return 0;
+                    return Comparator.<String>naturalOrder().compare(o1[0], o2[0]);
                 });
         for (String[] data : dataList) {
             cell = new PdfPCell(new Paragraph(data[0], SMALL_FONT));
@@ -143,5 +146,10 @@ public class AssetHoldingReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.ASSET_HOLDING;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

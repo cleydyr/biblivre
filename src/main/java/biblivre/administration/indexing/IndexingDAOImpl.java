@@ -34,18 +34,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
-    public static IndexingDAO getInstance() {
-        return AbstractDAO.getInstance(IndexingDAOImpl.class);
-    }
 
     @Override
     public Integer countIndexed(RecordType recordType) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT count(DISTINCT record_id) as total FROM " + recordType + "_idx_sort";
 
@@ -57,8 +56,6 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return 0;
@@ -66,9 +63,7 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
 
     @Override
     public void clearIndexes(RecordType recordType) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "TRUNCATE TABLE " + recordType + "_idx_fields";
             String sql2 = "TRUNCATE TABLE " + recordType + "_idx_sort";
@@ -81,8 +76,6 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             st.execute(sql3);
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -97,9 +90,7 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             return;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "INSERT INTO "
                             + recordType
@@ -129,8 +120,6 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             pst.executeBatch();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -142,9 +131,7 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             return;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "INSERT INTO "
                             + recordType
@@ -164,8 +151,6 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             pst.executeBatch();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -178,9 +163,7 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
 
         boolean batched = false;
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "INSERT INTO "
                             + recordType
@@ -216,8 +199,6 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -226,9 +207,7 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             RecordType recordType, String datafield, String subfield, List<String> phrases) {
         boolean batched = false;
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             con.setAutoCommit(false);
 
             StringBuilder sql = new StringBuilder();
@@ -271,58 +250,44 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             con.commit();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean deleteIndexes(RecordType recordType, RecordDTO dto) {
-        Connection con = null;
+        return withTransactionContext(
+                con -> {
+                    StringBuilder sql = new StringBuilder();
+                    sql.append("DELETE FROM ").append(recordType).append("_idx_fields ");
+                    sql.append("WHERE record_id = ?;");
 
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+                    PreparedStatement pst = con.prepareStatement(sql.toString());
+                    pst.setInt(1, dto.getId());
+                    pst.executeUpdate();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM ").append(recordType).append("_idx_fields ");
-            sql.append("WHERE record_id = ?;");
+                    sql = new StringBuilder();
+                    sql.append("DELETE FROM ").append(recordType).append("_idx_sort ");
+                    sql.append("WHERE record_id = ?;");
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-            pst.setInt(1, dto.getId());
-            pst.executeUpdate();
+                    pst = con.prepareStatement(sql.toString());
+                    pst.setInt(1, dto.getId());
+                    pst.executeUpdate();
 
-            sql = new StringBuilder();
-            sql.append("DELETE FROM ").append(recordType).append("_idx_sort ");
-            sql.append("WHERE record_id = ?;");
+                    sql = new StringBuilder();
+                    sql.append("DELETE FROM ").append(recordType).append("_idx_autocomplete ");
+                    sql.append("WHERE record_id = ?;");
 
-            pst = con.prepareStatement(sql.toString());
-            pst.setInt(1, dto.getId());
-            pst.executeUpdate();
+                    pst = con.prepareStatement(sql.toString());
+                    pst.setInt(1, dto.getId());
+                    pst.executeUpdate();
 
-            sql = new StringBuilder();
-            sql.append("DELETE FROM ").append(recordType).append("_idx_autocomplete ");
-            sql.append("WHERE record_id = ?;");
-
-            pst = con.prepareStatement(sql.toString());
-            pst.setInt(1, dto.getId());
-            pst.executeUpdate();
-
-            this.commit(con);
-            return true;
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return true;
+                });
     }
 
     @Override
     public void reindexDatabase(RecordType recordType) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             Statement st = con.createStatement();
 
@@ -332,8 +297,6 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             st.execute("ANALYZE " + recordType + "_idx_sort");
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -342,9 +305,7 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             RecordType recordType, int indexingGroupId, List<String> terms) {
         List<String> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT phrase FROM "
@@ -369,10 +330,13 @@ public class IndexingDAOImpl extends AbstractDAO implements IndexingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

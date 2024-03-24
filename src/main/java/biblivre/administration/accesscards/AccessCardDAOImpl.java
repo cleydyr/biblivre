@@ -23,20 +23,16 @@ import biblivre.core.AbstractDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
-
-    public static AccessCardDAO getInstance() {
-        return AbstractDAO.getInstance(AccessCardDAOImpl.class);
-    }
 
     @Override
     public AccessCardDTO get(String code) {
@@ -58,9 +54,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
         boolean hasCodes = (codes != null && codes.size() > 0);
         boolean hasStatus = (status != null && status.size() > 0);
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM access_cards WHERE 1 = 1 ");
@@ -97,17 +91,13 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
 
     @Override
     public AccessCardDTO get(int id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             PreparedStatement pst =
                     con.prepareStatement("SELECT * FROM access_cards WHERE id = ?; ");
             pst.setInt(1, id);
@@ -117,8 +107,6 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
@@ -127,9 +115,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     public DTOCollection<AccessCardDTO> search(
             String code, AccessCardStatus status, int limit, int offset) {
         DTOCollection<AccessCardDTO> list = new DTOCollection<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder();
             StringBuilder sqlCount = new StringBuilder();
@@ -170,7 +156,7 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
             }
 
             pst.setInt(idx++, limit);
-            pst.setInt(idx++, offset);
+            pst.setInt(idx, offset);
 
             ResultSet rs = pst.executeQuery();
             ResultSet rsCount = pstCount.executeQuery();
@@ -187,17 +173,13 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
 
     @Override
     public boolean save(AccessCardDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "INSERT INTO access_cards(code, status, created_by) " + "VALUES (?, ?, ?);";
             PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -215,16 +197,12 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean save(ArrayList<AccessCardDTO> cardList) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "INSERT INTO access_cards(code, status, created_by) " + "VALUES (?, ?, ?);";
@@ -247,17 +225,13 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return true;
     }
 
     @Override
     public boolean update(AccessCardDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "UPDATE access_cards SET status = ?, "
                             + "modified = now(), modified_by = ? "
@@ -269,24 +243,18 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean delete(int id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql = " DELETE FROM access_cards WHERE id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, id);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -338,4 +306,8 @@ public class AccessCardDAOImpl extends AbstractDAO implements AccessCardDAO {
     //		return null;
     //	}
 
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
+    }
 }

@@ -19,16 +19,11 @@
  ******************************************************************************/
 package biblivre.core.schemas;
 
-import biblivre.administration.backup.RestoreBO;
 import biblivre.administration.setup.State;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.core.UpdatesDAO;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.ConfigurationsDTO;
 import biblivre.core.utils.Constants;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -160,60 +155,9 @@ public class SchemaBO {
     }
 
     public boolean createSchema(SchemaDTO dto, boolean addToGlobal, String subtitleParam) {
-        boolean success = false;
-
-        UpdatesDAO updatesDAO = UpdatesDAO.getInstance();
-
-        try (Connection connection = updatesDAO.beginUpdate();
-                Statement statement = connection.createStatement()) {
-
-            if (exists(dto.getSchema())) {
-                State.writeLog("Dropping old schema");
-
-                if (!dto.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
-                    statement.addBatch("DELETE FROM \"" + dto.getSchema() + "\".digital_media;\n");
-                }
-
-                statement.addBatch("DROP SCHEMA \"" + dto.getSchema() + "\" CASCADE;\n");
-            }
-
-            connection.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try (Connection connection = updatesDAO.beginUpdate();
-                Statement statement = connection.createStatement()) {
-            State.writeLog("Creating schema for '" + dto.getSchema() + "'");
-
-            RestoreBO.processRestore(databaseTemplate.getFile());
-
-            State.writeLog("Renaming schema bib4template to " + dto.getSchema());
-
-            statement.addBatch(
-                    "ALTER SCHEMA \"bib4template\" RENAME TO \"" + dto.getSchema() + "\";\n");
-
-            if (addToGlobal) {
-                statement.addBatch(
-                        "INSERT INTO \""
-                                + Constants.GLOBAL_SCHEMA
-                                + "\".schemas (schema, name) VALUES ('"
-                                + dto.getSchema()
-                                + "', E'"
-                                + dto.getName()
-                                + "');\n");
-            }
-
-            statement.addBatch("ANALYZE;\n");
-
-            statement.executeBatch();
-
-            connection.commit();
-
-            success = true;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        boolean success =
+                SchemaThreadLocal.withGlobalSchema(
+                        () -> schemaDAO.createSchema(dto, addToGlobal, databaseTemplate));
 
         if (success) {
             State.finish();

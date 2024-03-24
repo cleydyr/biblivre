@@ -1,26 +1,31 @@
 package biblivre.mail;
 
-import biblivre.mail.config.MailConfiguration;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EmailSenderService implements EmailSender {
+    private final JavaMailSender javaMailSender;
+
+    @Autowired
+    public EmailSenderService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     @Override
-    public void sendEmail(InternetAddress to, String subject, String body)
+    public void sendEmail(
+            InternetAddress[] to,
+            String subject,
+            String body,
+            InternetAddress replyTo,
+            InternetAddress[] cc,
+            InternetAddress[] bcc)
             throws MessagingException {
-        ApplicationContext context =
-                new AnnotationConfigApplicationContext(MailConfiguration.class);
-
-        JavaMailSender javaMailSender = context.getBean(JavaMailSender.class);
-
         MimeMessage message = javaMailSender.createMimeMessage();
 
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true);

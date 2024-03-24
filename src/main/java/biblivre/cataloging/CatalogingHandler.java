@@ -102,6 +102,11 @@ public abstract class CatalogingHandler extends AbstractHandler {
             MarcReader marcReader =
                     from.getReader(data, materialType, RecordStatus.fromNewStatus(isNew));
 
+            if (marcReader == null) {
+                this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+                return;
+            }
+
             record = marcReader.next();
 
             dto.setRecord(record);
@@ -140,6 +145,12 @@ public abstract class CatalogingHandler extends AbstractHandler {
         RecordStatus recordStatus = RecordStatus.fromNewStatus(isNew);
 
         MarcReader marcReader = recordConvertion.getReader(recordData, materialType, recordStatus);
+
+        if (marcReader == null) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+
+            return;
+        }
 
         recordDTO.setRecord(marcReader.next());
 

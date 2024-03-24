@@ -19,6 +19,8 @@
  ******************************************************************************/
 package biblivre.core.auth;
 
+import static biblivre.core.auth.AuthorizationPointTypes.*;
+
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.utils.Constants;
 import java.io.Serial;
@@ -27,6 +29,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class AuthorizationPoints implements Serializable {
@@ -37,16 +41,16 @@ public class AuthorizationPoints implements Serializable {
 
     private final Map<Pair<String, String>, Boolean> points;
     private Collection<String> permissions;
-    private boolean admin;
-    private boolean logged;
+    @Getter @Setter private boolean admin;
+    @Setter @Getter private boolean logged;
 
-    private boolean employee;
-    private String schema;
+    @Setter @Getter private boolean employee;
+    @Setter @Getter private String schema;
 
     public static AuthorizationPoints getNotLoggedInstance() {
         String schema = SchemaThreadLocal.get();
 
-        if (schema.equals(Constants.GLOBAL_SCHEMA)) {
+        if (Constants.GLOBAL_SCHEMA.equals(schema)) {
             if (AuthorizationPoints.notLoggedMultiSchemaInstance == null) {
                 AuthorizationPoints.notLoggedMultiSchemaInstance =
                         new AuthorizationPoints(Constants.GLOBAL_SCHEMA, false, false, null);
@@ -77,714 +81,380 @@ public class AuthorizationPoints implements Serializable {
 
         this.points = new HashMap<>();
 
-        this.addAuthPoint("login", "login", AuthorizationPointTypes.LOGIN);
-        this.addAuthPoint("login", "logout", AuthorizationPointTypes.LOGIN);
-        this.addAuthPoint(
-                "login", "change_password", AuthorizationPointTypes.LOGIN_CHANGE_PASSWORD);
+        setupLoginAuthorizations();
 
-        this.addAuthPoint("menu", "list_bibliographic", AuthorizationPointTypes.MENU_SEARCH);
-        this.addAuthPoint("menu", "search_bibliographic", AuthorizationPointTypes.MENU_SEARCH);
-        this.addAuthPoint("menu", "search_authorities", AuthorizationPointTypes.MENU_SEARCH);
-        this.addAuthPoint("menu", "search_vocabulary", AuthorizationPointTypes.MENU_SEARCH);
+        setupMenuModuleAuthorizations();
+
+        setupBibliographicCatalogingAuthorizations();
+
+        setupHoldingCatalogingAuthorizations();
+
+        setupCatalogingAuthorizations();
+
+        setupAuthorityCatalogingAuthorizations();
+
+        setupVocabularyCatalogingAuthorizations();
+
+        setupLabelAuthorizations();
+
+        setupCirculationAuthorizations();
+
+        setupAcquisitionAuthorizations();
+
+        setupAdministrationAuthorizations();
+
+        setupMultiSchemaAuthorization();
+
+        setupDigitalMediaAuthorization();
+    }
+
+    private void setupDigitalMediaAuthorization() {
+        this.addAuthPoint("digitalmedia", "upload", DIGITALMEDIA_UPLOAD);
+        this.addAuthPoint("digitalmedia", "download", DIGITALMEDIA_DOWNLOAD);
+    }
+
+    private void setupLoginAuthorizations() {
+        this.addAuthPoint("login", "login", LOGIN);
+        this.addAuthPoint("login", "logout", LOGIN);
+        this.addAuthPoint("login", "change_password", LOGIN_CHANGE_PASSWORD);
+    }
+
+    private void setupCatalogingAuthorizations() {
+        this.addAuthPoint(
+                "cataloging",
+                "import_upload",
+                CATALOGING_BIBLIOGRAPHIC_SAVE,
+                CATALOGING_AUTHORITIES_SAVE,
+                CATALOGING_VOCABULARY_SAVE);
+        this.addAuthPoint(
+                "cataloging",
+                "save_import",
+                CATALOGING_BIBLIOGRAPHIC_SAVE,
+                CATALOGING_AUTHORITIES_SAVE,
+                CATALOGING_VOCABULARY_SAVE);
+        this.addAuthPoint(
+                "cataloging",
+                "parse_marc",
+                CATALOGING_BIBLIOGRAPHIC_SAVE,
+                CATALOGING_AUTHORITIES_SAVE,
+                CATALOGING_VOCABULARY_SAVE);
+        this.addAuthPoint(
+                "cataloging",
+                "import_search",
+                CATALOGING_BIBLIOGRAPHIC_SAVE,
+                CATALOGING_AUTHORITIES_SAVE,
+                CATALOGING_VOCABULARY_SAVE);
+    }
+
+    private void setupMultiSchemaAuthorization() {
+        this.addAuthPoint("multi_schema", "create", ADMINISTRATION_MULTI_SCHEMA);
+        this.addAuthPoint("multi_schema", "toggle", ADMINISTRATION_MULTI_SCHEMA);
+        this.addAuthPoint("multi_schema", "delete_schema", ADMINISTRATION_MULTI_SCHEMA);
+    }
+
+    private void setupAdministrationAuthorizations() {
+        this.addAuthPoint("administration.configurations", "save", ADMINISTRATION_CONFIGURATIONS);
+        this.addAuthPoint("administration.configurations", "ignore_update", MENU_OTHER);
+
+        this.addAuthPoint("administration.indexing", "reindex", ADMINISTRATION_INDEXING);
+        this.addAuthPoint("administration.indexing", "progress", ADMINISTRATION_INDEXING);
+
+        this.addAuthPoint("administration.translations", "dump", ADMINISTRATION_TRANSLATIONS);
+        this.addAuthPoint(
+                "administration.translations", "download_dump", ADMINISTRATION_TRANSLATIONS);
+        this.addAuthPoint("administration.translations", "load", ADMINISTRATION_TRANSLATIONS);
+        this.addAuthPoint("administration.translations", "save", ADMINISTRATION_TRANSLATIONS);
+        this.addAuthPoint(
+                "administration.translations",
+                "save_language_translations",
+                ADMINISTRATION_TRANSLATIONS);
+        this.addAuthPoint("administration.translations", "list", ADMINISTRATION_TRANSLATIONS);
+
+        this.addAuthPoint("administration.backup", "list", ADMINISTRATION_BACKUP);
+        this.addAuthPoint("administration.backup", "prepare", ADMINISTRATION_BACKUP);
+        this.addAuthPoint("administration.backup", "backup", ADMINISTRATION_BACKUP);
+        this.addAuthPoint("administration.backup", "download", ADMINISTRATION_BACKUP);
+        this.addAuthPoint("administration.backup", "progress", ADMINISTRATION_BACKUP);
+
+        this.addAuthPoint("administration.usertype", "search", ADMINISTRATION_USERTYPE_LIST);
+        this.addAuthPoint("administration.usertype", "paginate", ADMINISTRATION_USERTYPE_LIST);
+        this.addAuthPoint("administration.usertype", "save", ADMINISTRATION_USERTYPE_SAVE);
+        this.addAuthPoint("administration.usertype", "delete", ADMINISTRATION_USERTYPE_DELETE);
+
+        this.addAuthPoint("administration.accesscards", "search", ADMINISTRATION_ACCESSCARDS_LIST);
+        this.addAuthPoint(
+                "administration.accesscards", "paginate", ADMINISTRATION_ACCESSCARDS_LIST);
+        this.addAuthPoint("administration.accesscards", "save", ADMINISTRATION_ACCESSCARDS_SAVE);
+        this.addAuthPoint(
+                "administration.accesscards", "change_status", ADMINISTRATION_ACCESSCARDS_SAVE);
+        this.addAuthPoint(
+                "administration.accesscards", "delete", ADMINISTRATION_ACCESSCARDS_DELETE);
+
+        this.addAuthPoint("administration.permissions", "search", ADMINISTRATION_PERMISSIONS);
+        this.addAuthPoint("administration.permissions", "open", ADMINISTRATION_PERMISSIONS);
+        this.addAuthPoint("administration.permissions", "save", ADMINISTRATION_PERMISSIONS);
+        this.addAuthPoint("administration.permissions", "delete", ADMINISTRATION_PERMISSIONS);
+
+        this.addAuthPoint("administration.reports", "user_search", ADMINISTRATION_REPORTS);
+        this.addAuthPoint("administration.reports", "author_search", ADMINISTRATION_REPORTS);
+        this.addAuthPoint("administration.reports", "generate", ADMINISTRATION_REPORTS);
+        this.addAuthPoint("administration.reports", "download_report", ADMINISTRATION_REPORTS);
+    }
+
+    private void setupAcquisitionAuthorizations() {
+        this.addAuthPoint("acquisition.supplier", "search", ACQUISITION_SUPPLIER_LIST);
+        this.addAuthPoint("acquisition.supplier", "paginate", ACQUISITION_SUPPLIER_LIST);
+        this.addAuthPoint("acquisition.supplier", "save", ACQUISITION_SUPPLIER_SAVE);
+        this.addAuthPoint("acquisition.supplier", "delete", ACQUISITION_SUPPLIER_DELETE);
+
+        this.addAuthPoint("acquisition.request", "search", ACQUISITION_REQUEST_LIST);
+        this.addAuthPoint("acquisition.request", "paginate", ACQUISITION_REQUEST_LIST);
+        this.addAuthPoint("acquisition.request", "open", ACQUISITION_REQUEST_LIST);
+        this.addAuthPoint("acquisition.request", "save", ACQUISITION_REQUEST_SAVE);
+        this.addAuthPoint("acquisition.request", "delete", ACQUISITION_REQUEST_DELETE);
+
+        this.addAuthPoint("acquisition.quotation", "search", ACQUISITION_QUOTATION_LIST);
+        this.addAuthPoint("acquisition.quotation", "list", ACQUISITION_QUOTATION_LIST);
+        this.addAuthPoint("acquisition.quotation", "paginate", ACQUISITION_QUOTATION_LIST);
+        this.addAuthPoint("acquisition.quotation", "save", ACQUISITION_QUOTATION_SAVE);
+        this.addAuthPoint("acquisition.quotation", "delete", ACQUISITION_QUOTATION_DELETE);
+
+        this.addAuthPoint("acquisition.order", "search", ACQUISITION_ORDER_LIST);
+        this.addAuthPoint("acquisition.order", "paginate", ACQUISITION_ORDER_LIST);
+        this.addAuthPoint("acquisition.order", "save", ACQUISITION_ORDER_SAVE);
+        this.addAuthPoint("acquisition.order", "delete", ACQUISITION_ORDER_DELETE);
+    }
+
+    private void setupLabelAuthorizations() {
+        this.addAuthPoint("cataloging.labels", "create_pdf", CATALOGING_PRINT_LABELS);
+        this.addAuthPoint("cataloging.labels", "download_pdf", CATALOGING_PRINT_LABELS);
+    }
+
+    private void setupCirculationAuthorizations() {
+        this.addAuthPoint("circulation.user", "search", CIRCULATION_LIST);
+        this.addAuthPoint("circulation.user", "paginate", CIRCULATION_LIST);
+        this.addAuthPoint("circulation.user", "save", CIRCULATION_SAVE);
+        this.addAuthPoint("circulation.user", "delete", CIRCULATION_DELETE);
+        this.addAuthPoint(
+                "circulation.user",
+                "load_tab_data",
+                CIRCULATION_LENDING_LIST,
+                CIRCULATION_RESERVATION_LIST);
+        this.addAuthPoint("circulation.user", "block", CIRCULATION_SAVE);
+        this.addAuthPoint("circulation.user", "unblock", CIRCULATION_SAVE);
+
+        this.addAuthPoint("circulation.user_cards", "create_pdf", CIRCULATION_PRINT_USER_CARDS);
+        this.addAuthPoint("circulation.user_cards", "download_pdf", CIRCULATION_PRINT_USER_CARDS);
+
+        this.addAuthPoint("circulation.lending", "search", CIRCULATION_LENDING_LIST);
+        this.addAuthPoint("circulation.lending", "user_search", CIRCULATION_LENDING_LIST);
+        this.addAuthPoint("circulation.lending", "list", CIRCULATION_LENDING_LIST);
+        this.addAuthPoint("circulation.lending", "lend", CIRCULATION_LENDING_LEND);
+        this.addAuthPoint("circulation.lending", "renew_lending", CIRCULATION_LENDING_LEND);
+        this.addAuthPoint("circulation.lending", "return_lending", CIRCULATION_LENDING_RETURN);
+        this.addAuthPoint(
+                "circulation.lending",
+                "print_receipt",
+                CIRCULATION_LENDING_LEND,
+                CIRCULATION_LENDING_RETURN);
+        this.addAuthPoint("circulation.lending", "pay_fine", CIRCULATION_SAVE);
+
+        this.addAuthPoint("circulation.reservation", "search", CIRCULATION_RESERVATION_LIST);
+        this.addAuthPoint("circulation.reservation", "paginate", CIRCULATION_RESERVATION_LIST);
+        this.addAuthPoint("circulation.reservation", "user_search", CIRCULATION_RESERVATION_LIST);
+        this.addAuthPoint("circulation.reservation", "reserve", CIRCULATION_RESERVATION_RESERVE);
+        this.addAuthPoint("circulation.reservation", "delete", CIRCULATION_RESERVATION_RESERVE);
+
+        this.addAuthPoint("circulation.reservation", "self_open", CIRCULATION_USER_RESERVATION);
+        this.addAuthPoint("circulation.reservation", "self_search", CIRCULATION_USER_RESERVATION);
+        this.addAuthPoint("circulation.reservation", "self_reserve", CIRCULATION_USER_RESERVATION);
+        this.addAuthPoint("circulation.reservation", "self_delete", CIRCULATION_USER_RESERVATION);
 
         this.addAuthPoint(
-                "menu",
-                "cataloging_bibliographic",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE,
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_DELETE);
+                "circulation.accesscontrol", "card_search", CIRCULATION_ACCESS_CONTROL_LIST);
         this.addAuthPoint(
-                "menu",
-                "cataloging_authorities",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE,
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_DELETE);
-        this.addAuthPoint(
-                "menu",
-                "cataloging_vocabulary",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE,
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_DELETE);
-        this.addAuthPoint(
-                "menu",
-                "cataloging_import",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE,
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE,
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
-        this.addAuthPoint(
-                "menu", "cataloging_labels", AuthorizationPointTypes.CATALOGING_PRINT_LABELS);
+                "circulation.accesscontrol", "user_search", CIRCULATION_ACCESS_CONTROL_LIST);
+        this.addAuthPoint("circulation.accesscontrol", "bind", CIRCULATION_ACCESS_CONTROL_BIND);
+        this.addAuthPoint("circulation.accesscontrol", "unbind", CIRCULATION_ACCESS_CONTROL_BIND);
+    }
 
+    private void setupVocabularyCatalogingAuthorizations() {
+        this.addAuthPoint("cataloging.vocabulary", "search", CATALOGING_VOCABULARY_LIST);
+        this.addAuthPoint("cataloging.vocabulary", "paginate", CATALOGING_VOCABULARY_LIST);
+        this.addAuthPoint("cataloging.vocabulary", "open", CATALOGING_VOCABULARY_LIST);
+        this.addAuthPoint("cataloging.vocabulary", "item_count", CATALOGING_VOCABULARY_LIST);
+        this.addAuthPoint("cataloging.vocabulary", "autocomplete", CATALOGING_VOCABULARY_LIST);
+        this.addAuthPoint("cataloging.vocabulary", "convert", CATALOGING_VOCABULARY_SAVE);
+        this.addAuthPoint("cataloging.vocabulary", "save", CATALOGING_VOCABULARY_SAVE);
+        this.addAuthPoint("cataloging.vocabulary", "delete", CATALOGING_VOCABULARY_DELETE);
+        this.addAuthPoint("cataloging.vocabulary", "move_records", CATALOGING_VOCABULARY_MOVE);
+        this.addAuthPoint("cataloging.vocabulary", "export_records", CATALOGING_VOCABULARY_LIST);
+        this.addAuthPoint("cataloging.vocabulary", "download_export", CATALOGING_VOCABULARY_LIST);
         this.addAuthPoint(
-                "menu",
-                "circulation_user",
-                AuthorizationPointTypes.CIRCULATION_LIST,
-                AuthorizationPointTypes.CIRCULATION_SAVE,
-                AuthorizationPointTypes.CIRCULATION_DELETE);
-        this.addAuthPoint(
-                "menu",
-                "circulation_lending",
-                AuthorizationPointTypes.CIRCULATION_LENDING_LIST,
-                AuthorizationPointTypes.CIRCULATION_LENDING_LEND,
-                AuthorizationPointTypes.CIRCULATION_LENDING_RETURN);
-        this.addAuthPoint(
-                "menu",
-                "circulation_reservation",
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST,
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_RESERVE);
-        this.addAuthPoint("menu", "circulation_access", AuthorizationPointTypes.CIRCULATION_LIST);
-        this.addAuthPoint(
-                "menu",
-                "circulation_user_cards",
-                AuthorizationPointTypes.CIRCULATION_PRINT_USER_CARDS);
+                "cataloging.vocabulary", "list_brief_formats", ADMINISTRATION_CUSTOMIZATION);
+    }
 
+    private void setupAuthorityCatalogingAuthorizations() {
+        this.addAuthPoint("cataloging.authorities", "search", CATALOGING_AUTHORITIES_LIST);
+        this.addAuthPoint("cataloging.authorities", "paginate", CATALOGING_AUTHORITIES_LIST);
+        this.addAuthPoint("cataloging.authorities", "open", CATALOGING_AUTHORITIES_LIST);
+        this.addAuthPoint("cataloging.authorities", "item_count", CATALOGING_AUTHORITIES_LIST);
+        this.addAuthPoint("cataloging.authorities", "autocomplete", CATALOGING_AUTHORITIES_LIST);
+        this.addAuthPoint("cataloging.authorities", "convert", CATALOGING_AUTHORITIES_SAVE);
+        this.addAuthPoint("cataloging.authorities", "save", CATALOGING_AUTHORITIES_SAVE);
+        this.addAuthPoint("cataloging.authorities", "delete", CATALOGING_AUTHORITIES_DELETE);
+        this.addAuthPoint("cataloging.authorities", "move_records", CATALOGING_AUTHORITIES_MOVE);
+        this.addAuthPoint("cataloging.authorities", "export_records", CATALOGING_AUTHORITIES_LIST);
+        this.addAuthPoint("cataloging.authorities", "download_export", CATALOGING_AUTHORITIES_LIST);
+        this.addAuthPoint("cataloging.authorities", "search_author", ADMINISTRATION_REPORTS);
         this.addAuthPoint(
-                "menu",
-                "circulation_user_reservation",
-                AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
+                "cataloging.authorities", "list_brief_formats", ADMINISTRATION_CUSTOMIZATION);
+    }
 
+    private void setupHoldingCatalogingAuthorizations() {
+        this.addAuthPoint("cataloging.holding", "list", CATALOGING_BIBLIOGRAPHIC_LIST);
+        this.addAuthPoint("cataloging.holding", "open", CATALOGING_BIBLIOGRAPHIC_LIST);
+        this.addAuthPoint("cataloging.holding", "convert", CATALOGING_BIBLIOGRAPHIC_SAVE);
+        this.addAuthPoint("cataloging.holding", "save", CATALOGING_BIBLIOGRAPHIC_SAVE);
+        this.addAuthPoint("cataloging.holding", "delete", CATALOGING_BIBLIOGRAPHIC_DELETE);
         this.addAuthPoint(
-                "menu",
-                "acquisition_order",
-                AuthorizationPointTypes.ACQUISITION_ORDER_LIST,
-                AuthorizationPointTypes.ACQUISITION_ORDER_SAVE,
-                AuthorizationPointTypes.ACQUISITION_ORDER_DELETE);
-        this.addAuthPoint(
-                "menu",
-                "acquisition_quotation",
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_LIST,
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_SAVE,
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_DELETE);
-        this.addAuthPoint(
-                "menu",
-                "acquisition_request",
-                AuthorizationPointTypes.ACQUISITION_REQUEST_LIST,
-                AuthorizationPointTypes.ACQUISITION_REQUEST_SAVE,
-                AuthorizationPointTypes.ACQUISITION_REQUEST_DELETE);
-        this.addAuthPoint(
-                "menu",
-                "acquisition_supplier",
-                AuthorizationPointTypes.ACQUISITION_SUPPLIER_LIST,
-                AuthorizationPointTypes.ACQUISITION_SUPPLIER_SAVE,
-                AuthorizationPointTypes.ACQUISITION_SUPPLIER_DELETE);
+                "cataloging.holding", "create_automatic_holding", CATALOGING_BIBLIOGRAPHIC_SAVE);
+    }
 
+    private void setupBibliographicCatalogingAuthorizations() {
+        this.addAuthPoint("cataloging.bibliographic", "search", CATALOGING_BIBLIOGRAPHIC_LIST);
+        this.addAuthPoint("cataloging.bibliographic", "paginate", CATALOGING_BIBLIOGRAPHIC_LIST);
+        this.addAuthPoint("cataloging.bibliographic", "open", CATALOGING_BIBLIOGRAPHIC_LIST);
+        this.addAuthPoint("cataloging.bibliographic", "item_count", CATALOGING_BIBLIOGRAPHIC_LIST);
         this.addAuthPoint(
-                "menu", "administration_password", AuthorizationPointTypes.LOGIN_CHANGE_PASSWORD);
+                "cataloging.bibliographic", "autocomplete", CATALOGING_BIBLIOGRAPHIC_LIST);
+        this.addAuthPoint("cataloging.bibliographic", "convert", CATALOGING_BIBLIOGRAPHIC_SAVE);
+        this.addAuthPoint("cataloging.bibliographic", "save", CATALOGING_BIBLIOGRAPHIC_SAVE);
+        this.addAuthPoint("cataloging.bibliographic", "delete", CATALOGING_BIBLIOGRAPHIC_DELETE);
         this.addAuthPoint(
-                "menu",
-                "administration_maintenance",
-                AuthorizationPointTypes.ADMINISTRATION_INDEXING);
+                "cataloging.bibliographic", "move_records", CATALOGING_BIBLIOGRAPHIC_MOVE);
         this.addAuthPoint(
-                "menu",
-                "administration_user_types",
-                AuthorizationPointTypes.ADMINISTRATION_USERTYPE_LIST,
-                AuthorizationPointTypes.ADMINISTRATION_USERTYPE_SAVE,
-                AuthorizationPointTypes.ADMINISTRATION_USERTYPE_DELETE);
+                "cataloging.bibliographic", "export_records", CATALOGING_BIBLIOGRAPHIC_MOVE);
         this.addAuthPoint(
-                "menu",
-                "administration_access_cards",
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_LIST,
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_SAVE,
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_DELETE);
+                "cataloging.bibliographic", "download_export", CATALOGING_BIBLIOGRAPHIC_LIST);
         this.addAuthPoint(
-                "menu",
-                "administration_configurations",
-                AuthorizationPointTypes.ADMINISTRATION_CONFIGURATIONS);
+                "cataloging.bibliographic", "add_attachment", CATALOGING_BIBLIOGRAPHIC_SAVE);
         this.addAuthPoint(
-                "menu",
-                "administration_permissions",
-                AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
+                "cataloging.bibliographic", "remove_attachment", CATALOGING_BIBLIOGRAPHIC_SAVE);
         this.addAuthPoint(
-                "menu", "administration_reports", AuthorizationPointTypes.ADMINISTRATION_REPORTS);
-        this.addAuthPoint(
-                "menu",
-                "administration_translations",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-        this.addAuthPoint(
-                "menu",
-                "administration_brief_customization",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-        this.addAuthPoint(
-                "menu",
-                "administration_form_customization",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-
-        this.addAuthPoint(
-                "menu", "multi_schema_manage", AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-        this.addAuthPoint(
-                "menu",
-                "multi_schema_configurations",
-                AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-        this.addAuthPoint(
-                "menu",
-                "multi_schema_translations",
-                AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-        this.addAuthPoint(
-                "menu", "multi_schema_backup", AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-
-        this.addAuthPoint("menu", "help_about_biblivre", AuthorizationPointTypes.MENU_HELP);
-        this.addAuthPoint("menu", "ping", AuthorizationPointTypes.MENU_OTHER);
-        this.addAuthPoint("menu", "i18n", AuthorizationPointTypes.MENU_OTHER);
-        this.addAuthPoint("menu", "test", AuthorizationPointTypes.MENU_OTHER);
-        this.addAuthPoint("menu", "setup", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "search",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "paginate",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "open",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "item_count",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "autocomplete",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "convert",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "save",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "delete",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_DELETE);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "move_records",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_MOVE);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "export_records",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_MOVE);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "download_export",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "add_attachment",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "remove_attachment",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
-        this.addAuthPoint(
-                "cataloging.bibliographic",
-                "list_brief_formats",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
+                "cataloging.bibliographic", "list_brief_formats", ADMINISTRATION_CUSTOMIZATION);
 
         this.addAuthPoint(
                 "cataloging.bibliographic",
                 "private_database_access",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_PRIVATE_DATABASE_ACCESS);
+                CATALOGING_BIBLIOGRAPHIC_PRIVATE_DATABASE_ACCESS);
+    }
+
+    private void setupMenuModuleAuthorizations() {
+        this.addAuthPoint("menu", "list_bibliographic", MENU_SEARCH);
+        this.addAuthPoint("menu", "search_bibliographic", MENU_SEARCH);
+        this.addAuthPoint("menu", "search_authorities", MENU_SEARCH);
+        this.addAuthPoint("menu", "search_vocabulary", MENU_SEARCH);
+        this.addAuthPoint(
+                "menu",
+                "cataloging_bibliographic",
+                CATALOGING_BIBLIOGRAPHIC_SAVE,
+                CATALOGING_BIBLIOGRAPHIC_DELETE);
+        this.addAuthPoint(
+                "menu",
+                "cataloging_authorities",
+                CATALOGING_AUTHORITIES_SAVE,
+                CATALOGING_AUTHORITIES_DELETE);
+        this.addAuthPoint(
+                "menu",
+                "cataloging_vocabulary",
+                CATALOGING_VOCABULARY_SAVE,
+                CATALOGING_VOCABULARY_DELETE);
+        this.addAuthPoint(
+                "menu",
+                "cataloging_import",
+                CATALOGING_BIBLIOGRAPHIC_SAVE,
+                CATALOGING_AUTHORITIES_SAVE,
+                CATALOGING_VOCABULARY_SAVE);
+        this.addAuthPoint("menu", "cataloging_labels", CATALOGING_PRINT_LABELS);
 
         this.addAuthPoint(
-                "cataloging.holding",
-                "list",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
+                "menu", "circulation_user", CIRCULATION_LIST, CIRCULATION_SAVE, CIRCULATION_DELETE);
         this.addAuthPoint(
-                "cataloging.holding",
-                "open",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_LIST);
+                "menu",
+                "circulation_lending",
+                CIRCULATION_LENDING_LIST,
+                CIRCULATION_LENDING_LEND,
+                CIRCULATION_LENDING_RETURN);
         this.addAuthPoint(
-                "cataloging.holding",
-                "convert",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
-        this.addAuthPoint(
-                "cataloging.holding",
-                "save",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
-        this.addAuthPoint(
-                "cataloging.holding",
-                "delete",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_DELETE);
-        this.addAuthPoint(
-                "cataloging.holding",
-                "create_automatic_holding",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE);
+                "menu",
+                "circulation_reservation",
+                CIRCULATION_RESERVATION_LIST,
+                CIRCULATION_RESERVATION_RESERVE);
+        this.addAuthPoint("menu", "circulation_access", CIRCULATION_LIST);
+        this.addAuthPoint("menu", "circulation_user_cards", CIRCULATION_PRINT_USER_CARDS);
+
+        this.addAuthPoint("menu", "circulation_user_reservation", CIRCULATION_USER_RESERVATION);
 
         this.addAuthPoint(
-                "cataloging",
-                "import_upload",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE,
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE,
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
+                "menu",
+                "acquisition_order",
+                ACQUISITION_ORDER_LIST,
+                ACQUISITION_ORDER_SAVE,
+                ACQUISITION_ORDER_DELETE);
         this.addAuthPoint(
-                "cataloging",
-                "save_import",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE,
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE,
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
+                "menu",
+                "acquisition_quotation",
+                ACQUISITION_QUOTATION_LIST,
+                ACQUISITION_QUOTATION_SAVE,
+                ACQUISITION_QUOTATION_DELETE);
         this.addAuthPoint(
-                "cataloging",
-                "parse_marc",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE,
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE,
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
+                "menu",
+                "acquisition_request",
+                ACQUISITION_REQUEST_LIST,
+                ACQUISITION_REQUEST_SAVE,
+                ACQUISITION_REQUEST_DELETE);
         this.addAuthPoint(
-                "cataloging",
-                "import_search",
-                AuthorizationPointTypes.CATALOGING_BIBLIOGRAPHIC_SAVE,
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE,
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
+                "menu",
+                "acquisition_supplier",
+                ACQUISITION_SUPPLIER_LIST,
+                ACQUISITION_SUPPLIER_SAVE,
+                ACQUISITION_SUPPLIER_DELETE);
 
+        this.addAuthPoint("menu", "administration_password", LOGIN_CHANGE_PASSWORD);
+        this.addAuthPoint("menu", "administration_maintenance", ADMINISTRATION_INDEXING);
         this.addAuthPoint(
-                "cataloging.authorities",
-                "search",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_LIST);
+                "menu",
+                "administration_user_types",
+                ADMINISTRATION_USERTYPE_LIST,
+                ADMINISTRATION_USERTYPE_SAVE,
+                ADMINISTRATION_USERTYPE_DELETE);
         this.addAuthPoint(
-                "cataloging.authorities",
-                "paginate",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_LIST);
+                "menu",
+                "administration_access_cards",
+                ADMINISTRATION_ACCESSCARDS_LIST,
+                ADMINISTRATION_ACCESSCARDS_SAVE,
+                ADMINISTRATION_ACCESSCARDS_DELETE);
+        this.addAuthPoint("menu", "administration_configurations", ADMINISTRATION_CONFIGURATIONS);
+        this.addAuthPoint("menu", "administration_permissions", ADMINISTRATION_PERMISSIONS);
+        this.addAuthPoint("menu", "administration_reports", ADMINISTRATION_REPORTS);
+        this.addAuthPoint("menu", "administration_custom_reports", ADMINISTRATION_REPORTS);
+        this.addAuthPoint("menu", "administration_translations", ADMINISTRATION_TRANSLATIONS);
         this.addAuthPoint(
-                "cataloging.authorities",
-                "open",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_LIST);
+                "menu", "administration_brief_customization", ADMINISTRATION_TRANSLATIONS);
         this.addAuthPoint(
-                "cataloging.authorities",
-                "item_count",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_LIST);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "autocomplete",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_LIST);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "convert",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "save",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_SAVE);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "delete",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_DELETE);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "move_records",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_MOVE);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "export_records",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_LIST);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "download_export",
-                AuthorizationPointTypes.CATALOGING_AUTHORITIES_LIST);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "search_author",
-                AuthorizationPointTypes.ADMINISTRATION_REPORTS);
-        this.addAuthPoint(
-                "cataloging.authorities",
-                "list_brief_formats",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
+                "menu", "administration_form_customization", ADMINISTRATION_CUSTOMIZATION);
 
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "search",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "paginate",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "open",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "item_count",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "autocomplete",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "convert",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "save",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_SAVE);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "delete",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_DELETE);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "move_records",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_MOVE);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "export_records",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "download_export",
-                AuthorizationPointTypes.CATALOGING_VOCABULARY_LIST);
-        this.addAuthPoint(
-                "cataloging.vocabulary",
-                "list_brief_formats",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
+        this.addAuthPoint("menu", "multi_schema_manage", ADMINISTRATION_MULTI_SCHEMA);
+        this.addAuthPoint("menu", "multi_schema_configurations", ADMINISTRATION_MULTI_SCHEMA);
+        this.addAuthPoint("menu", "multi_schema_translations", ADMINISTRATION_MULTI_SCHEMA);
+        this.addAuthPoint("menu", "multi_schema_backup", ADMINISTRATION_MULTI_SCHEMA);
 
-        this.addAuthPoint(
-                "cataloging.labels", "create_pdf", AuthorizationPointTypes.CATALOGING_PRINT_LABELS);
-        this.addAuthPoint(
-                "cataloging.labels",
-                "download_pdf",
-                AuthorizationPointTypes.CATALOGING_PRINT_LABELS);
-
-        this.addAuthPoint("circulation.user", "search", AuthorizationPointTypes.CIRCULATION_LIST);
-        this.addAuthPoint("circulation.user", "paginate", AuthorizationPointTypes.CIRCULATION_LIST);
-        this.addAuthPoint("circulation.user", "save", AuthorizationPointTypes.CIRCULATION_SAVE);
-        this.addAuthPoint("circulation.user", "delete", AuthorizationPointTypes.CIRCULATION_DELETE);
-        this.addAuthPoint(
-                "circulation.user",
-                "load_tab_data",
-                AuthorizationPointTypes.CIRCULATION_LENDING_LIST,
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST);
-        this.addAuthPoint("circulation.user", "block", AuthorizationPointTypes.CIRCULATION_SAVE);
-        this.addAuthPoint("circulation.user", "unblock", AuthorizationPointTypes.CIRCULATION_SAVE);
-
-        this.addAuthPoint(
-                "circulation.user_cards",
-                "create_pdf",
-                AuthorizationPointTypes.CIRCULATION_PRINT_USER_CARDS);
-        this.addAuthPoint(
-                "circulation.user_cards",
-                "download_pdf",
-                AuthorizationPointTypes.CIRCULATION_PRINT_USER_CARDS);
-
-        this.addAuthPoint(
-                "circulation.lending", "search", AuthorizationPointTypes.CIRCULATION_LENDING_LIST);
-        this.addAuthPoint(
-                "circulation.lending",
-                "user_search",
-                AuthorizationPointTypes.CIRCULATION_LENDING_LIST);
-        this.addAuthPoint(
-                "circulation.lending", "list", AuthorizationPointTypes.CIRCULATION_LENDING_LIST);
-        this.addAuthPoint(
-                "circulation.lending", "lend", AuthorizationPointTypes.CIRCULATION_LENDING_LEND);
-        this.addAuthPoint(
-                "circulation.lending",
-                "renew_lending",
-                AuthorizationPointTypes.CIRCULATION_LENDING_LEND);
-        this.addAuthPoint(
-                "circulation.lending",
-                "return_lending",
-                AuthorizationPointTypes.CIRCULATION_LENDING_RETURN);
-        this.addAuthPoint(
-                "circulation.lending",
-                "print_receipt",
-                AuthorizationPointTypes.CIRCULATION_LENDING_LEND,
-                AuthorizationPointTypes.CIRCULATION_LENDING_RETURN);
-        this.addAuthPoint(
-                "circulation.lending", "pay_fine", AuthorizationPointTypes.CIRCULATION_SAVE);
-
-        this.addAuthPoint(
-                "circulation.reservation",
-                "search",
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST);
-        this.addAuthPoint(
-                "circulation.reservation",
-                "paginate",
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST);
-        this.addAuthPoint(
-                "circulation.reservation",
-                "user_search",
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_LIST);
-        this.addAuthPoint(
-                "circulation.reservation",
-                "reserve",
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_RESERVE);
-        this.addAuthPoint(
-                "circulation.reservation",
-                "delete",
-                AuthorizationPointTypes.CIRCULATION_RESERVATION_RESERVE);
-
-        this.addAuthPoint(
-                "circulation.reservation",
-                "self_open",
-                AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
-        this.addAuthPoint(
-                "circulation.reservation",
-                "self_search",
-                AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
-        this.addAuthPoint(
-                "circulation.reservation",
-                "self_reserve",
-                AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
-        this.addAuthPoint(
-                "circulation.reservation",
-                "self_delete",
-                AuthorizationPointTypes.CIRCULATION_USER_RESERVATION);
-
-        this.addAuthPoint(
-                "circulation.accesscontrol",
-                "card_search",
-                AuthorizationPointTypes.CIRCULATION_ACCESS_CONTROL_LIST);
-        this.addAuthPoint(
-                "circulation.accesscontrol",
-                "user_search",
-                AuthorizationPointTypes.CIRCULATION_ACCESS_CONTROL_LIST);
-        this.addAuthPoint(
-                "circulation.accesscontrol",
-                "bind",
-                AuthorizationPointTypes.CIRCULATION_ACCESS_CONTROL_BIND);
-        this.addAuthPoint(
-                "circulation.accesscontrol",
-                "unbind",
-                AuthorizationPointTypes.CIRCULATION_ACCESS_CONTROL_BIND);
-
-        this.addAuthPoint(
-                "acquisition.supplier",
-                "search",
-                AuthorizationPointTypes.ACQUISITION_SUPPLIER_LIST);
-        this.addAuthPoint(
-                "acquisition.supplier",
-                "paginate",
-                AuthorizationPointTypes.ACQUISITION_SUPPLIER_LIST);
-        this.addAuthPoint(
-                "acquisition.supplier", "save", AuthorizationPointTypes.ACQUISITION_SUPPLIER_SAVE);
-        this.addAuthPoint(
-                "acquisition.supplier",
-                "delete",
-                AuthorizationPointTypes.ACQUISITION_SUPPLIER_DELETE);
-
-        this.addAuthPoint(
-                "acquisition.request", "search", AuthorizationPointTypes.ACQUISITION_REQUEST_LIST);
-        this.addAuthPoint(
-                "acquisition.request",
-                "paginate",
-                AuthorizationPointTypes.ACQUISITION_REQUEST_LIST);
-        this.addAuthPoint(
-                "acquisition.request", "open", AuthorizationPointTypes.ACQUISITION_REQUEST_LIST);
-        this.addAuthPoint(
-                "acquisition.request", "save", AuthorizationPointTypes.ACQUISITION_REQUEST_SAVE);
-        this.addAuthPoint(
-                "acquisition.request",
-                "delete",
-                AuthorizationPointTypes.ACQUISITION_REQUEST_DELETE);
-
-        this.addAuthPoint(
-                "acquisition.quotation",
-                "search",
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_LIST);
-        this.addAuthPoint(
-                "acquisition.quotation",
-                "list",
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_LIST);
-        this.addAuthPoint(
-                "acquisition.quotation",
-                "paginate",
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_LIST);
-        this.addAuthPoint(
-                "acquisition.quotation",
-                "save",
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_SAVE);
-        this.addAuthPoint(
-                "acquisition.quotation",
-                "delete",
-                AuthorizationPointTypes.ACQUISITION_QUOTATION_DELETE);
-
-        this.addAuthPoint(
-                "acquisition.order", "search", AuthorizationPointTypes.ACQUISITION_ORDER_LIST);
-        this.addAuthPoint(
-                "acquisition.order", "paginate", AuthorizationPointTypes.ACQUISITION_ORDER_LIST);
-        this.addAuthPoint(
-                "acquisition.order", "save", AuthorizationPointTypes.ACQUISITION_ORDER_SAVE);
-        this.addAuthPoint(
-                "acquisition.order", "delete", AuthorizationPointTypes.ACQUISITION_ORDER_DELETE);
-
-        this.addAuthPoint(
-                "administration.configurations",
-                "save",
-                AuthorizationPointTypes.ADMINISTRATION_CONFIGURATIONS);
-        this.addAuthPoint(
-                "administration.configurations",
-                "ignore_update",
-                AuthorizationPointTypes.MENU_OTHER);
-
-        this.addAuthPoint(
-                "administration.indexing",
-                "reindex",
-                AuthorizationPointTypes.ADMINISTRATION_INDEXING);
-        this.addAuthPoint(
-                "administration.indexing",
-                "progress",
-                AuthorizationPointTypes.ADMINISTRATION_INDEXING);
-
-        this.addAuthPoint(
-                "administration.translations",
-                "dump",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-        this.addAuthPoint(
-                "administration.translations",
-                "download_dump",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-        this.addAuthPoint(
-                "administration.translations",
-                "load",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-        this.addAuthPoint(
-                "administration.translations",
-                "save",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-        this.addAuthPoint(
-                "administration.translations",
-                "save_language_translations",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-        this.addAuthPoint(
-                "administration.translations",
-                "list",
-                AuthorizationPointTypes.ADMINISTRATION_TRANSLATIONS);
-
-        this.addAuthPoint(
-                "administration.backup", "list", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
-        this.addAuthPoint(
-                "administration.backup", "prepare", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
-        this.addAuthPoint(
-                "administration.backup", "backup", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
-        this.addAuthPoint(
-                "administration.backup", "download", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
-        this.addAuthPoint(
-                "administration.backup", "progress", AuthorizationPointTypes.ADMINISTRATION_BACKUP);
-
-        this.addAuthPoint(
-                "administration.usertype",
-                "search",
-                AuthorizationPointTypes.ADMINISTRATION_USERTYPE_LIST);
-        this.addAuthPoint(
-                "administration.usertype",
-                "paginate",
-                AuthorizationPointTypes.ADMINISTRATION_USERTYPE_LIST);
-        this.addAuthPoint(
-                "administration.usertype",
-                "save",
-                AuthorizationPointTypes.ADMINISTRATION_USERTYPE_SAVE);
-        this.addAuthPoint(
-                "administration.usertype",
-                "delete",
-                AuthorizationPointTypes.ADMINISTRATION_USERTYPE_DELETE);
-
-        this.addAuthPoint(
-                "administration.accesscards",
-                "search",
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_LIST);
-        this.addAuthPoint(
-                "administration.accesscards",
-                "paginate",
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_LIST);
-        this.addAuthPoint(
-                "administration.accesscards",
-                "save",
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_SAVE);
-        this.addAuthPoint(
-                "administration.accesscards",
-                "change_status",
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_SAVE);
-        this.addAuthPoint(
-                "administration.accesscards",
-                "delete",
-                AuthorizationPointTypes.ADMINISTRATION_ACCESSCARDS_DELETE);
-
-        this.addAuthPoint(
-                "administration.permissions",
-                "search",
-                AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
-        this.addAuthPoint(
-                "administration.permissions",
-                "open",
-                AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
-        this.addAuthPoint(
-                "administration.permissions",
-                "save",
-                AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
-        this.addAuthPoint(
-                "administration.permissions",
-                "delete",
-                AuthorizationPointTypes.ADMINISTRATION_PERMISSIONS);
-
-        this.addAuthPoint(
-                "administration.reports",
-                "user_search",
-                AuthorizationPointTypes.ADMINISTRATION_REPORTS);
-        this.addAuthPoint(
-                "administration.reports",
-                "author_search",
-                AuthorizationPointTypes.ADMINISTRATION_REPORTS);
-        this.addAuthPoint(
-                "administration.reports",
-                "generate",
-                AuthorizationPointTypes.ADMINISTRATION_REPORTS);
-        this.addAuthPoint(
-                "administration.reports",
-                "download_report",
-                AuthorizationPointTypes.ADMINISTRATION_REPORTS);
-
-        this.addAuthPoint(
-                "multi_schema", "create", AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-        this.addAuthPoint(
-                "multi_schema", "toggle", AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-        this.addAuthPoint(
-                "multi_schema",
-                "delete_schema",
-                AuthorizationPointTypes.ADMINISTRATION_MULTI_SCHEMA);
-
-        this.addAuthPoint(
-                "administration.setup",
-                "clean_install",
-                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-        this.addAuthPoint(
-                "administration.setup",
-                "list_restores",
-                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-        this.addAuthPoint(
-                "administration.setup",
-                "upload_biblivre4",
-                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-        this.addAuthPoint(
-                "administration.setup", "restore", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
-        this.addAuthPoint(
-                "administration.customization",
-                "save_brief_formats",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-        this.addAuthPoint(
-                "administration.customization",
-                "insert_brief_format",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-        this.addAuthPoint(
-                "administration.customization",
-                "delete_brief_format",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-
-        this.addAuthPoint(
-                "administration.customization",
-                "save_form_datafields",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-        this.addAuthPoint(
-                "administration.customization",
-                "insert_form_datafield",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-        this.addAuthPoint(
-                "administration.customization",
-                "delete_form_datafield",
-                AuthorizationPointTypes.ADMINISTRATION_CUSTOMIZATION);
-
-        this.addAuthPoint("digitalmedia", "upload", AuthorizationPointTypes.DIGITALMEDIA_UPLOAD);
-        this.addAuthPoint(
-                "digitalmedia", "download", AuthorizationPointTypes.DIGITALMEDIA_DOWNLOAD);
+        this.addAuthPoint("menu", "help_about_biblivre", MENU_HELP);
+        this.addAuthPoint("menu", "ping", MENU_OTHER);
+        this.addAuthPoint("menu", "i18n", MENU_OTHER);
+        this.addAuthPoint("menu", "test", MENU_OTHER);
+        this.addAuthPoint("menu", "setup", ADMINISTRATION_RESTORE);
     }
 
     private void addAuthPoint(String module, String action, AuthorizationPointTypes... types) {
@@ -871,37 +541,5 @@ public class AuthorizationPoints implements Serializable {
 
     public boolean isAllowed(AuthorizationPointTypes type) {
         return this.admin || this.permissions.contains(type.name());
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
-    public boolean isAdmin() {
-        return this.admin;
-    }
-
-    public boolean isLogged() {
-        return this.logged;
-    }
-
-    public void setLogged(boolean logged) {
-        this.logged = logged;
-    }
-
-    public boolean isEmployee() {
-        return this.employee;
-    }
-
-    public void setEmployee(boolean employee) {
-        this.employee = employee;
-    }
-
-    public String getSchema() {
-        return this.schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
     }
 }

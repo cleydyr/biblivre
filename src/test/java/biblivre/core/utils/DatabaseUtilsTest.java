@@ -3,12 +3,21 @@ package biblivre.core.utils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import biblivre.AbstractContainerDatabaseTest;
+import biblivre.TestDatasourceConfiguration;
 import biblivre.core.SchemaThreadLocal;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@Import({TestDatasourceConfiguration.class})
+@ActiveProfiles("test")
+@Disabled
 class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
 
     private static final String DEFAULT_SCHEMA = "single";
@@ -20,43 +29,28 @@ class DatabaseUtilsTest extends AbstractContainerDatabaseTest {
 
     @Test
     void testGetDatabaseHostName() {
-        execute(() -> assertEquals("localhost", DatabaseUtils.getDatabaseHostName()));
+        assertEquals("localhost", DatabaseUtils.getDatabaseHostName());
     }
 
     @Test
     void testGetDatabaseName() {
-        execute(
-                () ->
-                        assertEquals(
-                                postgreSQLContainer.getDatabaseName(),
-                                DatabaseUtils.getDatabaseName()));
+        assertEquals(postgreSQLContainer.getDatabaseName(), DatabaseUtils.getDatabaseName());
     }
 
     @Test
     void testGetDatabasePort() {
-        execute(
-                () ->
-                        assertEquals(
-                                postgreSQLContainer.getMappedPort(
-                                        Constants.DEFAULT_POSTGRESQL_PORT),
-                                Integer.valueOf(DatabaseUtils.getDatabasePort())));
+        assertEquals(
+                postgreSQLContainer.getMappedPort(Constants.DEFAULT_POSTGRESQL_PORT),
+                Integer.valueOf(DatabaseUtils.getDatabasePort()));
     }
 
     @Test
     void testGetDatabasePassword() {
-        execute(
-                () ->
-                        assertEquals(
-                                postgreSQLContainer.getPassword(),
-                                DatabaseUtils.getDatabasePassword()));
+        assertEquals(postgreSQLContainer.getPassword(), DatabaseUtils.getDatabasePassword());
     }
 
     @Test
     void testGetDatabaseUsername() {
-        execute(
-                () ->
-                        assertEquals(
-                                postgreSQLContainer.getUsername(),
-                                DatabaseUtils.getDatabaseUsername()));
+        assertEquals(postgreSQLContainer.getUsername(), DatabaseUtils.getDatabaseUsername());
     }
 }

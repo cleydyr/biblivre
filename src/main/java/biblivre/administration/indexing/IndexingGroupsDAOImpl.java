@@ -28,19 +28,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class IndexingGroupsDAOImpl extends AbstractDAO implements IndexingGroupsDAO {
-
-    public static IndexingGroupsDAOImpl getInstance() {
-        return AbstractDAO.getInstance(IndexingGroupsDAOImpl.class);
-    }
 
     public List<IndexingGroupDTO> list(RecordType recordType) {
         List<IndexingGroupDTO> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM " + recordType + "_indexing_groups ORDER BY id;";
 
             Statement st = con.createStatement();
@@ -50,13 +50,11 @@ public class IndexingGroupsDAOImpl extends AbstractDAO implements IndexingGroups
                 try {
                     list.add(this.populateDTO(rs));
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -77,5 +75,10 @@ public class IndexingGroupsDAOImpl extends AbstractDAO implements IndexingGroups
         dto.setModifiedBy(rs.getInt("modified_by"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

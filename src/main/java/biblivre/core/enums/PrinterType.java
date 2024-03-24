@@ -20,7 +20,7 @@
 package biblivre.core.enums;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum PrinterType implements BiblivreEnum {
     PRINTER_24_COLUMNS,
@@ -29,19 +29,7 @@ public enum PrinterType implements BiblivreEnum {
     PRINTER_COMMON;
 
     public static PrinterType fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (PrinterType printerType : PrinterType.values()) {
-            if (str.equals(printerType.name().toLowerCase())) {
-                return printerType;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(PrinterType.class, str.toUpperCase(), null);
     }
 
     @Override

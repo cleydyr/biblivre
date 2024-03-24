@@ -20,25 +20,16 @@
 package biblivre.core.utils;
 
 import biblivre.core.file.BiblivreFile;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
+import java.util.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -103,7 +94,7 @@ public class FileIOUtils {
                 int len;
 
                 try (InputStream in = Files.newInputStream(src.toPath())) {
-                    if (path.equals("")) {
+                    if (path.isEmpty()) {
                         zip.putNextEntry(new ZipEntry(src.getName()));
                     } else {
                         zip.putNextEntry(new ZipEntry(path + "/" + src.getName()));
@@ -117,14 +108,22 @@ public class FileIOUtils {
         }
     }
 
-    private static void addFolderToZip(String path, File src, ZipOutputStream zip)
+    private static void addFolderToZip(
+            @Nonnull String path, @Nonnull File src, @Nonnull ZipOutputStream zip)
             throws IOException {
         // check the empty folder
-        if (src.list().length == 0) {
+
+        String[] list = src.list();
+
+        if (!src.isDirectory() || list == null) {
+            throw new IllegalArgumentException("The file %s is not a folder.".formatted(src));
+        }
+
+        if (list.length == 0) {
             FileIOUtils.addFileToZip(path, src, zip, true);
         } else {
             // list the files in the folder
-            for (String fileName : src.list()) {
+            for (String fileName : list) {
                 FileIOUtils.addFileToZip(path, new File(src, fileName), zip, false);
             }
         }
@@ -132,36 +131,35 @@ public class FileIOUtils {
 
     public static File unzip(File zip) throws IOException {
         File tmpDir = FileIOUtils.createTempDir();
-        ZipFile zipFile = new ZipFile(zip);
+        try (ZipFile zipFile = new ZipFile(zip)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-        Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
 
-        while (entries.hasMoreElements()) {
-            ZipArchiveEntry entry = entries.nextElement();
+                String entryName = entry.getName();
 
-            String entryName = entry.getName();
+                File destination = new File(tmpDir, entryName);
 
-            File destination = new File(tmpDir, entryName);
+                if (entry.isDirectory()) {
+                    FileUtils.forceMkdir(destination);
+                } else {
 
-            if (entry.isDirectory()) {
-                FileUtils.forceMkdir(destination);
-            } else {
+                    try (InputStream is = zipFile.getInputStream(entry);
+                            FileOutputStream os = FileUtils.openOutputStream(destination)) {
+                        IOUtils.copy(is, os);
+                    }
 
-                try (InputStream is = zipFile.getInputStream(entry);
-                        FileOutputStream os = FileUtils.openOutputStream(destination)) {
-                    IOUtils.copy(is, os);
-                }
+                    boolean isLastModifiedChanged = destination.setLastModified(entry.getTime());
 
-                boolean isLastModifiedChanged = destination.setLastModified(entry.getTime());
-
-                if (!isLastModifiedChanged) {
-                    logger.warn(
-                            "Setting last modified date failed for entry %s".formatted(entryName));
+                    if (!isLastModifiedChanged) {
+                        logger.warn(
+                                "Setting last modified date failed for entry %s"
+                                        .formatted(entryName));
+                    }
                 }
             }
         }
-
-        ZipFile.closeQuietly(zipFile);
 
         return tmpDir;
     }
@@ -431,7 +429,7 @@ public class FileIOUtils {
             return false;
         }
 
-        String[] acceptValues = acceptHeader.split("\\s*(,|;)\\s*");
+        String[] acceptValues = acceptHeader.split("\\s*[,;]\\s*");
         Arrays.sort(acceptValues);
         return Arrays.binarySearch(acceptValues, toAccept) > -1
                 || Arrays.binarySearch(acceptValues, toAccept.replaceAll("/.*$", "/*")) > -1
@@ -479,21 +477,5 @@ public class FileIOUtils {
 
     public static boolean isWritablePath(String path) {
         return FileIOUtils.getWritablePath(path) != null;
-    }
-
-    public static long countLines(File file) throws IOException {
-        try (Stream<String> lines = Files.lines(file.toPath())) {
-            return lines.count();
-        }
-    }
-
-    public static long countFiles(File file) {
-        int count = 1;
-
-        if (file != null && file.isDirectory()) {
-            count = file.list().length;
-        }
-
-        return count;
     }
 }

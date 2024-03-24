@@ -21,7 +21,7 @@ services:
       - database
     command: sh -c 'wait-for.sh -t 30 database:$POSTGRES_DEFAULT_PORT -- /usr/local/tomcat/bin/catalina.sh run'
   database:
-    image: postgres:11
+    image: postgres:12-alpine
     ports:
       - "$DATABASE_HOST_PORT:$POSTGRES_DEFAULT_PORT"
     volumes:

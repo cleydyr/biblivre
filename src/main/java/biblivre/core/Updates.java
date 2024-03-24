@@ -26,60 +26,58 @@ import java.sql.Connection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class Updates {
     private Map<String, UpdateService> updateServicesMap;
 
-    private static final Logger logger = LoggerFactory.getLogger(Updates.class);
+    private UpdatesDAO updatesDAO;
 
     public static String getVersion() {
         return Constants.BIBLIVRE_VERSION;
     }
 
     public void globalUpdate() {
-        SchemaThreadLocal.withGlobalSchema(
-                () -> {
-                    UpdatesDAO dao = UpdatesDAO.getInstance();
+        SchemaThreadLocal.withGlobalSchema(this::processGlobalUpdate);
+    }
 
-                    Connection con = null;
-                    try {
-                        Set<String> installedVersions = dao.getInstalledVersions();
+    private void processGlobalUpdate() {
+        Connection con = null;
 
-                        for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
-                            UpdateService updateService = entry.getValue();
+        try {
+            Set<String> installedVersions = updatesDAO.getInstalledVersions();
 
-                            String serviceName = entry.getKey();
+            for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
+                UpdateService updateService = entry.getValue();
 
-                            String version = getVersion(serviceName, updateService);
+                String serviceName = entry.getKey();
 
-                            if (!installedVersions.contains(version)) {
-                                logger.info("Processing global update service {}.", version);
+                String version = getVersion(serviceName, updateService);
 
-                                con = dao.beginUpdate();
+                if (installedVersions.contains(version)) {
+                    log.info("Skipping global update service {}.", version);
 
-                                updateService.doUpdate(con);
+                    continue;
+                }
 
-                                dao.commitUpdate(version, con);
+                log.info("Processing global update service {}.", version);
 
-                                updateService.afterUpdate();
-                            } else {
-                                logger.info("Skipping global update service {}.", version);
-                            }
-                        }
+                con = updatesDAO.beginUpdate();
 
-                        return true;
-                    } catch (Exception e) {
-                        dao.rollbackUpdate(con);
-                        e.printStackTrace();
-                    }
+                updateService.doUpdate(con);
 
-                    return false;
-                });
+                updatesDAO.commitUpdate(version, con);
+
+                updateService.afterUpdate();
+            }
+        } catch (Exception e) {
+            updatesDAO.rollbackUpdate(con);
+            log.error("Error updating global schema", e);
+        }
     }
 
     private static String getVersion(String serviceName, UpdateService updateService) {
@@ -90,59 +88,54 @@ public class Updates {
     }
 
     public void schemaUpdate(String schema) {
-        UpdatesDAO dao = UpdatesDAO.getInstance();
+        SchemaThreadLocal.withSchema(schema, this::processSchemaUpdate);
+    }
 
-        SchemaThreadLocal.withSchema(
-                schema,
-                () -> {
-                    Connection con = null;
-                    try {
-                        if (!dao.checkTableExistance("versions")) {
-                            dao.fixVersionsTable();
-                        }
+    private void processSchemaUpdate() {
+        String schema = SchemaThreadLocal.get();
 
-                        Set<String> installedVersions = dao.getInstalledVersions();
+        Connection con = null;
 
-                        for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
-                            UpdateService updateService = entry.getValue();
+        try {
+            Set<String> installedVersions = updatesDAO.getInstalledVersions();
 
-                            String serviceName = entry.getKey();
+            for (Entry<String, UpdateService> entry : updateServicesMap.entrySet()) {
+                UpdateService updateService = entry.getValue();
 
-                            String version = getVersion(serviceName, updateService);
+                String serviceName = entry.getKey();
 
-                            if (!installedVersions.contains(version)) {
-                                logger.info(
-                                        "Processing update service {} for schema {}.",
-                                        version,
-                                        schema);
+                String version = getVersion(serviceName, updateService);
 
-                                con = dao.beginUpdate();
+                if (installedVersions.contains(version)) {
+                    log.info("Skipping update service {} for schema {}.", version, schema);
 
-                                updateService.doUpdateScopedBySchema(con);
+                    continue;
+                }
 
-                                dao.commitUpdate(version, con);
+                log.info("Processing update service {} for schema {}.", version, schema);
 
-                                updateService.afterUpdate();
-                            } else {
-                                logger.info(
-                                        "Skipping update service {} for schema {}.",
-                                        version,
-                                        schema);
-                            }
-                        }
+                con = updatesDAO.beginUpdate();
 
-                        return true;
-                    } catch (Exception e) {
-                        dao.rollbackUpdate(con);
-                        e.printStackTrace();
-                    }
+                updateService.doUpdateScopedBySchema(con);
 
-                    return false;
-                });
+                updatesDAO.commitUpdate(version, con);
+
+                updateService.afterUpdate();
+            }
+
+        } catch (Exception e) {
+            updatesDAO.rollbackUpdate(con);
+            log.error("Error updating schema {}", schema, e);
+        }
     }
 
     @Autowired
     public void setUpdateServicesMap(Map<String, UpdateService> updateServiceMap) {
         this.updateServicesMap = updateServiceMap;
+    }
+
+    @Autowired
+    public void setUpdatesDAO(UpdatesDAO updatesDAO) {
+        this.updatesDAO = updatesDAO;
     }
 }

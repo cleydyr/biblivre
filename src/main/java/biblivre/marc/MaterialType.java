@@ -25,10 +25,12 @@ import biblivre.core.utils.CharPool;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+import lombok.Getter;
+import org.apache.commons.lang3.EnumUtils;
 import org.marc4j.marc.Leader;
 import org.marc4j.marc.Record;
 
+@Getter
 public enum MaterialType implements BiblivreEnum {
     ALL('a', "m ", true),
     BOOK('a', "m ", true),
@@ -97,32 +99,8 @@ public enum MaterialType implements BiblivreEnum {
         this.recordType = recordType;
     }
 
-    public char getTypeOfRecord() {
-        return this.typeOfRecord;
-    }
-
-    public String getImplDefined1() {
-        return this.implDefined1;
-    }
-
-    public boolean isSearchable() {
-        return this.searchable;
-    }
-
     public static MaterialType fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (MaterialType type : MaterialType.values()) {
-            if (str.equals(type.name().toLowerCase())) {
-                return type;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(MaterialType.class, str.toUpperCase(), null);
     }
 
     public static MaterialType fromTypeAndImplDef(char typeOfRecord, char[] implDef1) {
@@ -169,9 +147,5 @@ public enum MaterialType implements BiblivreEnum {
 
     public String getString() {
         return this.toString();
-    }
-
-    public RecordType getRecordType() {
-        return recordType;
     }
 }

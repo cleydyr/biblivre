@@ -42,13 +42,10 @@ public class Handler extends AbstractHandler {
 
         String id = request.getString("id").replaceAll("_", "\\\\");
 
-        String fileId = null;
-        String fileName = null;
-
-        BiblivreFile file = _tryFetchingDBFileWithWindowsEncoding(id, fileId, fileName);
+        BiblivreFile file = _tryFetchingDBFileWithWindowsEncoding(id);
 
         if (file == null) {
-            file = _tryFetchingDBFileWithEncoding(id, fileId, fileName, Constants.DEFAULT_CHARSET);
+            file = _tryFetchingDBFileWithEncoding(id, Constants.DEFAULT_CHARSET);
         }
 
         if (file == null) {
@@ -81,11 +78,15 @@ public class Handler extends AbstractHandler {
         }
     }
 
-    private BiblivreFile _tryFetchingDBFileWithEncoding(
-            String id, String fileId, String fileName, Charset charset) {
+    private BiblivreFile _tryFetchingDBFileWithEncoding(String id, Charset charset) {
         String decodedId = new String(Base64.getDecoder().decode(id), charset);
 
+        String fileId = null;
+
+        String fileName = null;
+
         String[] splitId = decodedId.split(":");
+
         if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
             fileId = splitId[0];
             fileName = splitId[1];
@@ -99,9 +100,8 @@ public class Handler extends AbstractHandler {
         return digitalMediaBO.load(Integer.parseInt(fileId), fileName);
     }
 
-    private BiblivreFile _tryFetchingDBFileWithWindowsEncoding(
-            String id, String fileId, String fileName) {
-        return _tryFetchingDBFileWithEncoding(id, fileId, fileName, Constants.WINDOWS_CHARSET);
+    private BiblivreFile _tryFetchingDBFileWithWindowsEncoding(String id) {
+        return _tryFetchingDBFileWithEncoding(id, Constants.WINDOWS_CHARSET);
     }
 
     @Autowired

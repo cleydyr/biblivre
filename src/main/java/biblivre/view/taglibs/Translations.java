@@ -67,7 +67,7 @@ public class Translations extends SimpleTagSupport {
 
             out.print(translation);
         } catch (Exception e) {
-            this.logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             throw new JspException(e.getMessage());
         }
     }

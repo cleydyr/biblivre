@@ -27,7 +27,6 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchTermDTO;
 import biblivre.circulation.user.UserDTO;
-import biblivre.core.AbstractDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.PreparedStatementUtil;
@@ -41,35 +40,24 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.record.RecordDataJDBCDAO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.marc4j.marc.Record;
+import org.springframework.stereotype.Service;
 
+@Service("holdingDAO")
+@Slf4j
 public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     private static final int ADMIN_OR_REMOVED_LOGIN_ID = 0;
 
-    public static HoldingDAOImpl getInstance() {
-        return AbstractDAO.getInstance(HoldingDAOImpl.class);
-    }
-
     @Override
     public Integer count(int recordId, boolean availableOnly) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT count(*) as total FROM biblio_holdings WHERE 1 = 1 ");
 
@@ -87,7 +75,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             int index = 1;
             if (recordId != 0) {
-                pst.setInt(index++, recordId);
+                pst.setInt(index, recordId);
             }
 
             ResultSet rs = pst.executeQuery();
@@ -97,8 +85,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return 0;
@@ -107,9 +93,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
     @Override
     public HoldingDTO getByAccessionNumber(String accessionNumber) {
         HoldingDTO dto = null;
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM biblio_holdings WHERE accession_number = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -121,8 +105,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return dto;
@@ -132,9 +114,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
     public Map<Integer, RecordDTO> map(Set<Integer> ids) {
         Map<Integer, RecordDTO> map = new HashMap<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM biblio_holdings "
                             + "WHERE id in ("
@@ -154,8 +134,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return map;
@@ -165,9 +143,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
     public List<RecordDTO> list(int offset, int limit) {
         List<RecordDTO> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM biblio_holdings ORDER BY id OFFSET ? LIMIT ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -181,13 +157,11 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                 try {
                     list.add(this.populateDTO(rs));
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -205,10 +179,10 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
                     String sql =
                             """
-                    INSERT INTO biblio_holdings
-                    (id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """;
+                                    INSERT INTO biblio_holdings
+                                    (id, record_id, iso2709, availability, database, material, accession_number, location_d, created_by)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                    """;
 
                     PreparedStatement pst = connection.prepareStatement(sql);
 
@@ -234,9 +208,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     @Override
     public void updateHoldingCreationCounter(UserDTO dto, LoginDTO ldto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "INSERT INTO holding_creation_counter "
@@ -258,8 +230,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             pst.executeUpdate();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -271,10 +241,10 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
                     String sql =
                             """
-                    UPDATE biblio_holdings
-                    SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, modified_by = ?
-                    WHERE id = ?
-                    """;
+                                    UPDATE biblio_holdings
+                                    SET record_id = ?, iso2709 = ?, availability = ?, accession_number = ?, location_d = ?, modified_by = ?
+                                    WHERE id = ?
+                                    """;
 
                     PreparedStatement pst = connection.prepareStatement(sql);
 
@@ -296,11 +266,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     @Override
     public void markAsPrinted(Set<Integer> ids) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "UPDATE biblio_holdings SET label_printed = true "
                             + "WHERE id in ("
@@ -316,8 +282,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             pst.executeUpdate();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -343,10 +307,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     @Override
     public final int getNextAccessionNumber(String accessionPrefix) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT max(COALESCE(CAST(SUBSTRING(accession_number FROM '([0-9]{1,10})$') AS INTEGER), 0)) as accession "
                             + "FROM biblio_holdings WHERE accession_number > ? and accession_number < ?;";
@@ -363,8 +324,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return 0;
@@ -372,10 +331,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
     @Override
     public boolean isAccessionNumberAvailable(String accessionNumber, int holdingId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT count(*) FROM biblio_holdings WHERE accession_number = ? ");
 
@@ -398,8 +354,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return false;
@@ -409,9 +363,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
     public DTOCollection<HoldingDTO> list(int recordId) {
         DTOCollection<HoldingDTO> list = new DTOCollection<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             PreparedStatement pst =
                     con.prepareStatement("SELECT * FROM biblio_holdings WHERE record_id = ?;");
@@ -424,8 +376,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -435,8 +385,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
     public DTOCollection<HoldingDTO> search(
             String query, RecordDatabase database, boolean lentOnly, int offset, int limit) {
         DTOCollection<HoldingDTO> list = new DTOCollection<>();
-        Connection con = null;
-        try {
+        try (Connection con = datasource.getConnection()) {
             boolean searchId = StringUtils.isNumeric(query);
             try {
                 Long.valueOf(query);
@@ -445,7 +394,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
             boolean listAll = StringUtils.isBlank(query);
 
-            con = this.getConnection();
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM biblio_holdings WHERE 1 = 1 ");
 
@@ -509,7 +457,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
 
             pst.setInt(index++, limit);
-            pst.setInt(index++, offset);
+            pst.setInt(index, offset);
 
             ResultSet rs = pst.executeQuery();
             ResultSet rsCount = pstCount.executeQuery();
@@ -527,8 +475,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
@@ -603,6 +549,8 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             return index;
         }
 
+        int delta = 0;
+
         SearchTermDTO created = null;
         SearchTermDTO modified = null;
 
@@ -619,7 +567,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             Date endDate = created.getEndDate();
 
             if (startDate != null) {
-                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(startDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(startDate));
             }
 
             if (endDate != null) {
@@ -627,7 +575,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                     endDate = DateUtils.addDays(endDate, 1);
                 }
 
-                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(endDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(endDate));
             }
         }
 
@@ -637,7 +585,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             Date endDate = modified.getEndDate();
 
             if (startDate != null) {
-                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(startDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(startDate));
             }
 
             if (endDate != null) {
@@ -645,17 +593,15 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                     endDate = DateUtils.addDays(endDate, 1);
                 }
 
-                pst.setTimestamp(index++, CalendarUtils.toSqlTimestamp(endDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(endDate));
             }
         }
 
-        return index;
+        return index + delta;
     }
 
     @Override
     public Integer count(SearchDTO search) {
-        Connection con = null;
-
         boolean useDatabase = false;
         boolean useMaterialType = false;
 
@@ -664,9 +610,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             useMaterialType = search.getQuery().getMaterialType() != MaterialType.ALL;
         }
 
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT count(H.id) as total FROM biblio_holdings H ");
             sql.append("INNER JOIN biblio_records B ON H.record_id = B.id WHERE 1 = 1 ");
@@ -683,16 +627,14 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
             PreparedStatement pst = con.prepareStatement(sql.toString());
 
-            int index = 1;
+            int index = this.populatePreparedStatement(pst, 1, search);
 
-            index = this.populatePreparedStatement(pst, index, search);
-
-            if (useDatabase && search != null) {
+            if (useDatabase) {
                 pst.setString(index++, search.getQuery().getDatabase().toString());
             }
 
-            if (useMaterialType && search != null) {
-                pst.setString(index++, search.getQuery().getMaterialType().toString());
+            if (useMaterialType) {
+                pst.setString(index, search.getQuery().getMaterialType().toString());
             }
 
             ResultSet rs = pst.executeQuery();
@@ -702,8 +644,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return 0;
@@ -721,10 +661,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             return count;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H "
                             + "INNER JOIN biblio_search_results B ON H.record_id = B.record_id "
@@ -743,7 +680,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             pst.setInt(index++, search.getId());
             index = this.populatePreparedStatement(pst, index, search);
             pst.setInt(index++, search.getId());
-            index = this.populatePreparedStatement(pst, index, search);
+            this.populatePreparedStatement(pst, index, search);
 
             ResultSet rs = pst.executeQuery();
 
@@ -754,8 +691,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             return count;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -778,9 +713,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         boolean useMaterialType = (search.getQuery().getMaterialType() != MaterialType.ALL);
         boolean useLimit = (paging.getRecordLimit() > 0);
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             sql.append(
@@ -857,7 +790,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             pst.setInt(index++, search.getSort());
 
             pst.setInt(index++, paging.getRecordOffset());
-            pst.setInt(index++, paging.getRecordsPerPage());
+            pst.setInt(index, paging.getRecordsPerPage());
 
             ResultSet rs = pst.executeQuery();
 
@@ -868,8 +801,6 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             return list;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -918,8 +849,8 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         dto.setModifiedBy(rs.getInt("modified_by"));
 
         dto.setRecordId(rs.getInt("record_id"));
-        dto.setRecordDatabase(rs.getString("database"));
-        dto.setMaterialType(rs.getString("material"));
+        dto.setRecordDatabase(RecordDatabase.fromString(rs.getString("database")));
+        dto.setMaterialType(MaterialType.fromString(rs.getString("material")));
         dto.setAvailability(rs.getString("availability"));
 
         dto.setAccessionNumber(rs.getString("accession_number"));
@@ -927,5 +858,16 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
         dto.setLabelPrinted(rs.getBoolean("label_printed"));
 
         return dto;
+    }
+
+    protected final boolean hasBiblioColumn(ResultSet rs) throws SQLException {
+        ResultSetMetaData metadata = rs.getMetaData();
+        int columns = metadata.getColumnCount();
+        for (int x = 1; x <= columns; x++) {
+            if ("biblio".equals(metadata.getColumnName(x))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -28,7 +28,7 @@ public class ReportsBO extends AbstractBO {
         return reports.stream()
                 .filter(report -> report.getReportType().equals(type))
                 .findFirst()
-                .get();
+                .orElseThrow();
     }
 
     public TreeMap<String, Set<Integer>> searchAuthors(String author, RecordDatabase database) {

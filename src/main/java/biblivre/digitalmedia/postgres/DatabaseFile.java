@@ -107,7 +107,7 @@ public final class DatabaseFile extends BiblivreFile {
                 largeObject.close();
             }
 
-            Connection con = this.getConnection();
+            Connection con = getConnection();
 
             if (con != null) {
                 this.setConnection(null);

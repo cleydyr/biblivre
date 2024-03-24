@@ -20,28 +20,17 @@
 package biblivre.administration.backup;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum BackupScope implements BiblivreEnum {
     SINGLE_SCHEMA, // general.multi_schema is false
     MULTI_SCHEMA, // general.multi_schema is true and backup was made from public schema
     SINGLE_SCHEMA_FROM_MULTI_SCHEMA; // general.multi_schema is true but backup was made from single
+
     // schema
 
     public static BackupScope fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (BackupScope scope : BackupScope.values()) {
-            if (str.equals(scope.toString())) {
-                return scope;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(BackupScope.class, str.toUpperCase(), null);
     }
 
     @Override

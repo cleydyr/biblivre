@@ -43,28 +43,28 @@ public class Validator extends AbstractValidator {
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
         if (StringUtils.isBlank(quotationId)) {
-            ex.addError("quotation_id", "field.error.required");
+            ex.addError("quotation_id", FIELD_ERROR_REQUIRED);
         } else if (!StringUtils.isNumeric(quotationId)) {
             ex.addError("quotation_id", "field.error.digits_only");
         }
 
         if (StringUtils.isBlank(orderDate)) {
-            ex.addError("created", "field.error.required");
+            ex.addError("created", FIELD_ERROR_REQUIRED);
         } else {
             try {
                 TextUtils.parseDate(orderDate);
             } catch (Exception e) {
-                ex.addError("created", "field.error.invalid");
+                ex.addError("created", FIELD_ERROR_INVALID);
             }
         }
 
         if (StringUtils.isBlank(deadlineDate)) {
-            ex.addError("deadline_date", "field.error.required");
+            ex.addError("deadline_date", FIELD_ERROR_REQUIRED);
         } else {
             try {
                 TextUtils.parseDate(deadlineDate);
             } catch (Exception e) {
-                ex.addError("deadline_date", "field.error.invalid");
+                ex.addError("deadline_date", FIELD_ERROR_INVALID);
             }
         }
 
@@ -78,31 +78,31 @@ public class Validator extends AbstractValidator {
             String termsOfPayment = request.getString("terms_of_payment");
 
             if (StringUtils.isBlank(invoiceNumber)) {
-                ex.addError("invoice_number", "field.error.required");
+                ex.addError("invoice_number", FIELD_ERROR_REQUIRED);
             }
 
             if (StringUtils.isBlank(receiptDate)) {
-                ex.addError("receipt_date", "field.error.required");
+                ex.addError("receipt_date", FIELD_ERROR_REQUIRED);
             } else {
                 try {
                     TextUtils.parseDate(receiptDate);
                 } catch (Exception e) {
-                    ex.addError("receipt_date", "field.error.invalid");
+                    ex.addError("receipt_date", FIELD_ERROR_INVALID);
                 }
             }
 
             if (totalValue == null || totalValue == 0.00) {
-                ex.addError("total_value", "field.error.invalid");
+                ex.addError("total_value", FIELD_ERROR_INVALID);
             }
 
             if (StringUtils.isBlank(deliveredQuantity)) {
-                ex.addError("delivered_quantity", "field.error.required");
+                ex.addError("delivered_quantity", FIELD_ERROR_REQUIRED);
             } else if (!StringUtils.isNumeric(deliveredQuantity)) {
                 ex.addError("delivered_quantity", "field.error.digits_only");
             }
 
             if (StringUtils.isBlank(termsOfPayment)) {
-                ex.addError("terms_of_payment", "field.error.required");
+                ex.addError("terms_of_payment", FIELD_ERROR_REQUIRED);
             }
         }
 

@@ -51,6 +51,7 @@
                 "administration_user_types",
                 "administration_access_cards",
                 "administration_reports",
+                "administration_custom_reports",
                 "administration_maintenance",
                 "administration_configurations",
                 "administration_translations",

@@ -22,22 +22,18 @@ package biblivre.administration.backup;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
-    public static BackupDAO getInstance() {
-        return AbstractDAO.getInstance(BackupDAOImpl.class);
-    }
 
     @Override
     public boolean save(BackupDTO dto) {
@@ -45,9 +41,7 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
             return false;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder();
 
@@ -107,8 +101,6 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -120,9 +112,7 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
 
         BackupDTO dto = null;
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             PreparedStatement pst = con.prepareStatement("SELECT * FROM backups WHERE id = ?;");
 
@@ -135,8 +125,6 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return dto;
@@ -146,9 +134,7 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     public Set<String> listDatabaseSchemas() {
         Set<String> set = new HashSet<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT schema_name FROM information_schema.schemata WHERE schema_name <> 'information_schema' AND schema_name !~ E'^pg_';";
 
@@ -160,8 +146,6 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return set;
@@ -176,9 +160,7 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
     public List<BackupDTO> list(int limit) {
         ArrayList<BackupDTO> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             sql.append("SELECT * FROM backups ORDER BY created DESC ");
@@ -199,8 +181,6 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -226,5 +206,10 @@ public class BackupDAOImpl extends AbstractDAO implements BackupDAO {
         dto.setCurrentStep(rs.getInt("current_step"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

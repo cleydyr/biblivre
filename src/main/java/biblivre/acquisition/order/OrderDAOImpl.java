@@ -22,6 +22,7 @@ package biblivre.acquisition.order;
 import biblivre.core.AbstractDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,22 +30,20 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
-
-    public static OrderDAO getInstance() {
-        return AbstractDAO.getInstance(OrderDAOImpl.class);
-    }
 
     @Override
     public OrderDTO get(int orderId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst =
+                        con.prepareStatement(" SELECT * FROM orders WHERE id = ?; ")) {
 
-            String sql = " SELECT * FROM orders WHERE id = ?; ";
-            PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, orderId);
 
             ResultSet rs = pst.executeQuery();
@@ -55,28 +54,26 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
 
     @Override
     public Integer save(OrderDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        String sqlInsert =
+                """
+                INSERT INTO orders (quotation_id, created
+                        created_by, info, status, invoice_number,
+                        receipt_date, total_value, delivered_quantity,
+                        terms_of_payment, deadline_date, id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = con.prepareStatement(sqlInsert)) {
 
             int orderId = this.getNextSerial("orders_id_seq");
 
-            String sqlInsert =
-                    " INSERT INTO orders (quotation_id, created, "
-                            + " created_by, info, status, invoice_number, "
-                            + " receipt_date, total_value, delivered_quantity, "
-                            + " terms_of_payment, deadline_date, id) "
-                            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ";
-
-            PreparedStatement pst = con.prepareStatement(sqlInsert);
             pst.setInt(1, dto.getQuotationId());
             pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
             pst.setInt(3, dto.getCreatedBy());
@@ -111,60 +108,86 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
             return pst.executeUpdate() > 0 ? orderId : 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public List<OrderDTO> listBuyOrders(String status, int offset, int limit) {
         ArrayList<OrderDTO> requestList = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            boolean setStatus =
-                    StringUtils.isNotBlank(status) && (status.equals("0") || status.equals("1"));
-            StringBuilder sql = new StringBuilder(" SELECT * FROM orders ");
-            if (setStatus) {
-                sql.append(" WHERE status = ? ");
-            }
-            sql.append(" ORDER BY created ASC offset ? limit ?;");
 
-            PreparedStatement pst = con.prepareStatement(sql.toString());
-            int i = 1;
-            if (setStatus) {
-                pst.setString(i++, status);
-            }
-            pst.setInt(i++, offset);
-            pst.setInt(i++, limit);
+        boolean setStatus =
+                StringUtils.isNotBlank(status) && (status.equals("0") || status.equals("1"));
+
+        return setStatus
+                ? this.doListBuyOrders(status, offset, limit, requestList)
+                : this.doListBuyOrders(offset, limit, requestList);
+    }
+
+    private List<OrderDTO> doListBuyOrders(
+            String status, int offset, int limit, ArrayList<OrderDTO> requestList) {
+        String sql =
+                """
+                SELECT * FROM orders
+                WHERE status = ?
+                ORDER BY created ASC offset ? limit ?;
+                """;
+
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
+
+            PreparedStatementUtil.setAllParameters(pst, status, offset, limit);
 
             ResultSet rs = pst.executeQuery();
+
             while (rs.next()) {
                 OrderDTO dto = this.populateDto(rs);
                 requestList.add(dto);
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
+        }
+        return requestList;
+    }
+
+    private List<OrderDTO> doListBuyOrders(int offset, int limit, ArrayList<OrderDTO> requestList) {
+        String sql =
+                """
+                SELECT * FROM orders
+                ORDER BY created ASC offset ? limit ?;
+                """;
+
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
+
+            PreparedStatementUtil.setAllParameters(pst, offset, limit);
+
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                OrderDTO dto = this.populateDto(rs);
+                requestList.add(dto);
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
         }
         return requestList;
     }
 
     @Override
     public boolean update(OrderDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            String sqlInsert =
-                    " UPDATE orders "
-                            + " SET quotation_id = ?, created = ?, "
-                            + " created_by = ?, info = ?, status = ?, "
-                            + " invoice_number = ?, receipt_date = ?, total_value = ?, "
-                            + " delivered_quantity = ?, terms_of_payment = ?, deadline_date= ? "
-                            + " WHERE id = ?;";
+        String sqlInsert =
+                """
+                UPDATE orders
+                SET quotation_id = ?, created = ?
+                    created_by = ?, info = ?, status = ?
+                    invoice_number = ?, receipt_date = ?, total_value = ?
+                    delivered_quantity = ?, terms_of_payment = ?, deadline_date= ?
+                WHERE id = ?
+                        """;
 
-            PreparedStatement pst = con.prepareStatement(sqlInsert);
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = con.prepareStatement(sqlInsert)) {
+
             pst.setInt(1, dto.getQuotationId());
             pst.setDate(2, new java.sql.Date(dto.getCreated().getTime()));
             pst.setInt(3, dto.getCreatedBy());
@@ -199,85 +222,49 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean delete(int id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            String sql = " DELETE FROM orders WHERE id = ?; ";
-            PreparedStatement pst = con.prepareStatement(sql);
+        String sql = "DELETE FROM orders WHERE id = ?";
+
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setInt(1, id);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public DTOCollection<OrderDTO> search(String value, int offset, int limit) {
         DTOCollection<OrderDTO> list = new DTOCollection<>();
+        String sql = getSearchSQL(value);
 
-        try (Connection con = this.getConnection()) {
-            StringBuilder sql =
-                    new StringBuilder(
-                            """
-                SELECT O.id, O.info, O.status, O.invoice_number, O.receipt_date, O.total_value, O.delivered_quantity,
-                O.terms_of_payment, O.deadline_date, O.created, O.created_by, O.modified, O.modified_by, O.quotation_id
-                FROM orders O
-                """);
-
-            if (StringUtils.isNumeric(value)) {
-                sql.append("WHERE O.id = ? ");
-            } else if (StringUtils.isNotBlank(value)) {
-                sql.append(
-                        """
-                    , quotations Q, suppliers S, request_quotation RQ, requests R
-                    WHERE O.quotation_id = Q.id AND Q.supplier_id = S.id AND Q.id = RQ.quotation_id
-                    AND RQ.request_id = R.id AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?))
-                    """);
-            }
-
-            sql.append("ORDER BY O.created ASC LIMIT ? OFFSET ?;");
-
-            PreparedStatement pst = con.prepareStatement(sql.toString());
+        String sqlCount = getSearchCounterSQL(value);
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
             int i = 1;
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(i++, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {
-                pst.setString(i++, "%" + value + "%");
-                pst.setString(i++, "%" + value + "%");
-                pst.setString(i++, "%" + value + "%");
+                pst.setString(i++, STR."%\{value}%");
+                pst.setString(i++, STR."%\{value}%");
+                pst.setString(i++, STR."%\{value}%");
             }
             pst.setInt(i++, offset);
-            pst.setInt(i++, limit);
-
-            String sqlCount = "SELECT count(*) as total FROM orders O ";
-            if (StringUtils.isNumeric(value)) {
-                sql.append("WHERE O.id = ? ");
-            } else if (StringUtils.isNotBlank(value)) {
-                sql.append(
-                        """
-                    , quotations Q, suppliers S, request_quotation RQ, requests R
-                    WHERE O.quotation_id = Q.id AND Q.supplier_id = S.id AND Q.id = RQ.quotation_id
-                    AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?))
-                    """);
-            }
+            pst.setInt(i, limit);
 
             PreparedStatement pstCount = con.prepareStatement(sqlCount);
 
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(1, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {
-                pst.setString(1, "%" + value + "%");
-                pst.setString(2, "%" + value + "%");
-                pst.setString(3, "%" + value + "%");
+                pst.setString(1, STR."%\{value}%");
+                pst.setString(2, STR."%\{value}%");
+                pst.setString(3, STR."%\{value}%");
             }
 
             ResultSet rs = pst.executeQuery();
@@ -298,6 +285,46 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
         return list;
     }
 
+    private static String getSearchCounterSQL(String value) {
+        StringBuilder sqlCount = new StringBuilder("SELECT count(*) as total FROM orders O ");
+
+        if (StringUtils.isNumeric(value)) {
+            sqlCount.append("WHERE O.id = ? ");
+        } else if (StringUtils.isNotBlank(value)) {
+            sqlCount.append(
+                    """
+                            , quotations Q, suppliers S, request_quotation RQ, requests R
+                            WHERE O.quotation_id = Q.id AND Q.supplier_id = S.id AND Q.id = RQ.quotation_id
+                            AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?))
+                            """);
+        }
+        return sqlCount.toString();
+    }
+
+    private static String getSearchSQL(String value) {
+        StringBuilder sql =
+                new StringBuilder(
+                        """
+                        SELECT O.id, O.info, O.status, O.invoice_number, O.receipt_date, O.total_value, O.delivered_quantity,
+                        O.terms_of_payment, O.deadline_date, O.created, O.created_by, O.modified, O.modified_by, O.quotation_id
+                        FROM orders O
+                                """);
+
+        if (StringUtils.isNumeric(value)) {
+            sql.append("WHERE O.id = ? ");
+        } else if (StringUtils.isNotBlank(value)) {
+            sql.append(
+                    """
+                            , quotations Q, suppliers S, request_quotation RQ, requests R
+                            WHERE O.quotation_id = Q.id AND Q.supplier_id = S.id AND Q.id = RQ.quotation_id
+                            AND RQ.request_id = R.id AND ((S.trademark ilike ?) OR (R.author ilike ?) OR (R.item_title ilike ?))
+                            """);
+        }
+
+        sql.append("ORDER BY O.created ASC LIMIT ? OFFSET ?;");
+        return sql.toString();
+    }
+
     private OrderDTO populateDto(ResultSet rs) throws Exception {
         OrderDTO dto = new OrderDTO();
         dto.setId(rs.getInt("id"));
@@ -316,5 +343,10 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
         dto.setModified(rs.getDate("modified"));
         dto.setModifiedBy(rs.getInt("modified_by"));
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

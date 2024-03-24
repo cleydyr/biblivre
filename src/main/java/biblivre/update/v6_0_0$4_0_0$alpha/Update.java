@@ -11,14 +11,19 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Update implements UpdateService {
 
-    @Autowired private RecordDAO recordDAO;
+    @Autowired
+    @Qualifier("recordDAO")
+    private RecordDAO recordDAO;
 
-    @Autowired private HoldingDAO holdingDAO;
+    @Autowired
+    @Qualifier("holdingDAO")
+    private HoldingDAO holdingDAO;
 
     public void doUpdateScopedBySchema(Connection connection) throws UpdateException {
         _createRecordDataTable(connection);
@@ -29,15 +34,15 @@ public class Update implements UpdateService {
     private void _createRecordDataTable(Connection connection) throws UpdateException {
         String sql =
                 """
-                CREATE TABLE IF NOT EXISTS record_data (
-                    id SERIAL,
-                    record_id BIGINT NOT NULL,
-                    record_type VARCHAR(20) NOT NULL,
-                    field VARCHAR(3) NOT NULL,
-                    subfield VARCHAR(1),
-                    value TEXT NOT NULL
-                )
-                """;
+                        CREATE TABLE IF NOT EXISTS record_data (
+                            id SERIAL,
+                            record_id BIGINT NOT NULL,
+                            record_type VARCHAR(20) NOT NULL,
+                            field VARCHAR(3) NOT NULL,
+                            subfield VARCHAR(1),
+                            value TEXT NOT NULL
+                        )
+                        """;
         try (Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (Exception e) {
@@ -48,10 +53,10 @@ public class Update implements UpdateService {
     private void _createRecordDataIndices(Connection connection) throws UpdateException {
         String sql =
                 """
-                CREATE INDEX IF NOT EXISTS record_data_record_id_idx ON record_data (record_id);
-                CREATE INDEX IF NOT EXISTS record_data_field_idx ON record_data (field, subfield);
-                CREATE INDEX IF NOT EXISTS record_data_record_type_idx ON record_data (record_type);
-                """;
+                        CREATE INDEX IF NOT EXISTS record_data_record_id_idx ON record_data (record_id);
+                        CREATE INDEX IF NOT EXISTS record_data_field_idx ON record_data (field, subfield);
+                        CREATE INDEX IF NOT EXISTS record_data_record_type_idx ON record_data (record_type);
+                        """;
         try (Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (Exception e) {

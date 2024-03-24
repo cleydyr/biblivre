@@ -35,196 +35,150 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service("recordDAO")
+@Slf4j
 public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
-    public static RecordDAOImpl getInstance() {
-        return AbstractDAO.getInstance(RecordDAOImpl.class);
-    }
-
     @Override
     public boolean save(RecordDTO dto) {
-        int id = getNextSerial(dto.getRecordType() + "_records_id_seq");
+        return withTransactionContext(
+                con -> {
+                    int id = getNextSerial(dto.getRecordType() + "_records_id_seq");
 
-        dto.setId(id);
+                    dto.setId(id);
 
-        try (Connection con = this.getConnection()) {
-            try {
-                con.setAutoCommit(false);
+                    String sql =
+                            "INSERT INTO "
+                                    + dto.getRecordType()
+                                    + "_records "
+                                    + "(id, iso2709, material, database, created_by) "
+                                    + "VALUES (?, ?, ?, ?, ?); ";
 
-                String sql =
-                        "INSERT INTO "
-                                + dto.getRecordType()
-                                + "_records "
-                                + "(id, iso2709, material, database, created_by) "
-                                + "VALUES (?, ?, ?, ?, ?); ";
+                    PreparedStatement pst = con.prepareStatement(sql);
 
-                PreparedStatement pst = con.prepareStatement(sql);
+                    PreparedStatementUtil.setAllParameters(
+                            pst,
+                            id,
+                            dto.getUTF8Iso2709(),
+                            dto.getMaterialType().toString(),
+                            dto.getRecordDatabase().toString(),
+                            dto.getCreatedBy());
 
-                PreparedStatementUtil.setAllParameters(
-                        pst,
-                        id,
-                        dto.getUTF8Iso2709(),
-                        dto.getMaterialType().toString(),
-                        dto.getRecordDatabase().toString(),
-                        dto.getCreatedBy());
+                    pst.executeUpdate();
 
-                pst.executeUpdate();
+                    RecordDataJDBCDAO.insertRecordData(con, dto);
 
-                RecordDataJDBCDAO.insertRecordData(con, dto);
-
-                con.commit();
-
-                return true;
-            } catch (Exception e) {
-                this.rollback(con);
-
-                throw e;
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+                    return true;
+                });
     }
 
     @Override
     public boolean update(RecordDTO dto) {
-        try (Connection con = this.getConnection()) {
-            try {
-                con.setAutoCommit(false);
+        return withTransactionContext(
+                con -> {
+                    String sql =
+                            "UPDATE "
+                                    + dto.getRecordType()
+                                    + "_records "
+                                    + "SET iso2709 = ?, material = ?, modified = now(), modified_by = ? "
+                                    + "WHERE id = ?;";
 
-                String sql =
-                        "UPDATE "
-                                + dto.getRecordType()
-                                + "_records "
-                                + "SET iso2709 = ?, material = ?, modified = now(), modified_by = ? "
-                                + "WHERE id = ?;";
+                    PreparedStatement pst = con.prepareStatement(sql);
 
-                PreparedStatement pst = con.prepareStatement(sql);
+                    PreparedStatementUtil.setAllParameters(
+                            pst,
+                            dto.getUTF8Iso2709(),
+                            dto.getMaterialType().toString(),
+                            dto.getModifiedBy(),
+                            dto.getId());
 
-                PreparedStatementUtil.setAllParameters(
-                        pst,
-                        dto.getUTF8Iso2709(),
-                        dto.getMaterialType().toString(),
-                        dto.getModifiedBy(),
-                        dto.getId());
+                    pst.executeUpdate();
 
-                pst.executeUpdate();
+                    RecordDataJDBCDAO.updateRecordData(con, dto);
 
-                RecordDataJDBCDAO.updateRecordData(con, dto);
-
-                con.commit();
-
-                return true;
-            } catch (Exception e) {
-                this.rollback(con);
-
-                throw e;
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+                    return true;
+                });
     }
 
     @Override
     public boolean listContainsPrivateRecord(Set<Integer> ids, RecordType recordType) {
-        Connection con = null;
+        return withTransactionContext(
+                con -> {
+                    String sql =
+                            "SELECT count(*) as total FROM "
+                                    + recordType
+                                    + "_records "
+                                    + "WHERE database = ? AND id IN ("
+                                    + StringUtils.repeat("?", ", ", ids.size())
+                                    + ");";
 
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+                    int i = 1;
+                    PreparedStatement pst = con.prepareStatement(sql);
+                    pst.setString(i++, RecordDatabase.PRIVATE.toString());
 
-            String sql =
-                    "SELECT count(*) as total FROM "
-                            + recordType
-                            + "_records "
-                            + "WHERE database = ? AND id IN ("
-                            + StringUtils.repeat("?", ", ", ids.size())
-                            + ");";
+                    for (Integer id : ids) {
+                        pst.setInt(i++, id);
+                    }
 
-            int i = 1;
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(i++, RecordDatabase.PRIVATE.toString());
+                    ResultSet rs = pst.executeQuery();
+                    if (rs.next()) {
+                        return rs.getInt("total") > 0;
+                    }
 
-            for (Integer id : ids) {
-                pst.setInt(i++, id);
-            }
-
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("total") > 0;
-            }
-
-            return false;
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return false;
+                });
     }
 
     @Override
     public boolean moveRecords(
             Set<Integer> ids, int modifiedBy, RecordDatabase database, RecordType recordType) {
-        Connection con = null;
+        return withTransactionContext(
+                con -> {
+                    String sql =
+                            "UPDATE "
+                                    + recordType
+                                    + "_records "
+                                    + "SET database = ?, modified = now(), modified_by = ? "
+                                    + "WHERE id IN ("
+                                    + StringUtils.repeat("?", ", ", ids.size())
+                                    + ");";
 
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+                    int i = 1;
+                    PreparedStatement pst = con.prepareStatement(sql);
+                    pst.setString(i++, database.toString());
+                    pst.setInt(i++, modifiedBy);
 
-            String sql =
-                    "UPDATE "
-                            + recordType
-                            + "_records "
-                            + "SET database = ?, modified = now(), modified_by = ? "
-                            + "WHERE id IN ("
-                            + StringUtils.repeat("?", ", ", ids.size())
-                            + ");";
+                    for (Integer id : ids) {
+                        pst.setInt(i++, id);
+                    }
 
-            int i = 1;
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(i++, database.toString());
-            pst.setInt(i++, modifiedBy);
+                    pst.executeUpdate();
 
-            for (Integer id : ids) {
-                pst.setInt(i++, id);
-            }
+                    if (recordType == RecordType.BIBLIO) {
+                        String holdingSQL =
+                                """
+                                        UPDATE biblio_holdings SET database = B.database
+                                        FROM biblio_records B
+                                        WHERE biblio_holdings.record_id = B.id
+                                        AND biblio_holdings.database <> B.database""";
 
-            pst.executeUpdate();
+                        con.createStatement().executeUpdate(holdingSQL);
+                    }
 
-            if (recordType == RecordType.BIBLIO) {
-                String holdingSQL =
-                        """
-                        UPDATE biblio_holdings SET database = B.database
-                        FROM biblio_records B
-                        WHERE biblio_holdings.record_id = B.id
-                        AND biblio_holdings.database <> B.database""";
-
-                con.createStatement().executeUpdate(holdingSQL);
-            }
-
-            con.commit();
-            return true;
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return true;
+                });
     }
 
     @Override
     public boolean delete(RecordDTO dto) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql = "DELETE FROM " + dto.getRecordType() + "_records " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -237,28 +191,28 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public Integer count(SearchDTO search) {
-        Connection con = null;
+        if (search == null) {
+            log.warn("SearchDTO is null");
+
+            return 0;
+        }
 
         boolean useDatabase = false;
         boolean useMaterialType = false;
         boolean reservedOnly = false;
 
-        if (search != null && search.getQuery() != null) {
+        if (search.getQuery() != null) {
             useDatabase = search.getQuery().getDatabase() != null;
             useMaterialType = search.getQuery().getMaterialType() != MaterialType.ALL;
             reservedOnly = search.getQuery().isReservedOnly();
         }
 
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT count(*) as total FROM ")
                     .append(search.getRecordType())
@@ -281,12 +235,12 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
 
             int index = 1;
 
-            if (useDatabase && search != null) {
+            if (useDatabase) {
                 pst.setString(index++, search.getQuery().getDatabase().toString());
             }
 
-            if (useMaterialType && search != null) {
-                pst.setString(index++, search.getQuery().getMaterialType().toString());
+            if (useMaterialType) {
+                pst.setString(index, search.getQuery().getMaterialType().toString());
             }
 
             ResultSet rs = pst.executeQuery();
@@ -296,8 +250,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return 0;
@@ -307,9 +259,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
     public Map<Integer, RecordDTO> map(Set<Integer> ids, RecordType recordType) {
         Map<Integer, RecordDTO> map = new HashMap<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM "
                             + recordType
@@ -331,8 +281,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return map;
@@ -348,9 +296,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             int offset, int limit, RecordDatabase database, RecordType recordType) {
         List<RecordDTO> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM ").append(recordType).append("_records ");
 
@@ -370,7 +316,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             }
 
             pst.setInt(index++, offset);
-            pst.setInt(index++, limit);
+            pst.setInt(index, limit);
 
             ResultSet rs = pst.executeQuery();
 
@@ -378,13 +324,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 try {
                     list.add(this.populateDTO(rs, recordType.getRecordClass()));
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -394,9 +338,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
     public List<RecordDTO> listByLetter(char letter, int order, RecordType recordType) {
         List<RecordDTO> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM "
                             + recordType
@@ -422,13 +364,11 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 try {
                     list.add(this.populateDTO(rs, recordType.getRecordClass()));
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -446,9 +386,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return count;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             sql.append("SELECT 0 as indexing_group_id, COUNT(DISTINCT record_id) as total FROM ");
@@ -473,8 +411,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return count;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -498,9 +434,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         boolean useLimit = (paging.getRecordLimit() > 0);
         boolean reservedOnly = search.getQuery().isReservedOnly();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             sql.append("SELECT R.*, trim(substr(S.phrase, ignore_chars_count + 1)) as sort FROM ");
@@ -578,7 +512,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             pst.setInt(index++, search.getSort());
 
             pst.setInt(index++, paging.getRecordOffset());
-            pst.setInt(index++, paging.getRecordsPerPage());
+            pst.setInt(index, paging.getRecordsPerPage());
 
             ResultSet rs = pst.executeQuery();
 
@@ -589,8 +523,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return list;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -608,9 +540,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return list;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             sql.append("SELECT phrase FROM ").append(recordType).append("_idx_autocomplete ");
@@ -638,7 +568,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 pst.setString(index++, terms[0] + "%");
             }
 
-            pst.setInt(index++, limit);
+            pst.setInt(index, limit);
 
             ResultSet rs = pst.executeQuery();
 
@@ -649,8 +579,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return list;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -668,9 +596,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return list;
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             sql.append("SELECT record_id, phrase FROM ")
@@ -704,7 +630,7 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
                 pst.setString(index++, terms[0] + "%");
             }
 
-            pst.setInt(index++, limit);
+            pst.setInt(index, limit);
 
             ResultSet rs = pst.executeQuery();
 
@@ -715,8 +641,6 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             return list;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -731,8 +655,8 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         dto.setCreatedBy(rs.getInt("created_by"));
         dto.setModified(rs.getTimestamp("modified"));
         dto.setModifiedBy(rs.getInt("modified_by"));
-        dto.setMaterialType(rs.getString("material"));
-        dto.setRecordDatabase(rs.getString("database"));
+        dto.setMaterialType(MaterialType.fromString(rs.getString("material")));
+        dto.setRecordDatabase(RecordDatabase.fromString(rs.getString("database")));
         dto.setId(rs.getInt("id"));
 
         return dto;
@@ -750,5 +674,10 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
         dto.setRecordId(rdto.getId());
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

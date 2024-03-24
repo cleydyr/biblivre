@@ -29,10 +29,12 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BibliographyReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
@@ -46,8 +48,8 @@ public class BibliographyReport extends BaseBiblivreReport {
             idList.add(Integer.valueOf(s.trim()));
         }
 
-        return ReportsDAOImpl.getInstance()
-                .getBibliographyReportData(dto.getAuthorName(), idList.toArray(new Integer[] {}));
+        return reportsDAO.getBibliographyReportData(
+                dto.getAuthorName(), idList.toArray(new Integer[] {}));
     }
 
     @Override
@@ -154,5 +156,10 @@ public class BibliographyReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.AUTHOR_BIBLIOGRAPHY;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

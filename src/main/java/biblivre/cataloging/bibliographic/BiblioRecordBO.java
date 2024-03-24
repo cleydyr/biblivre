@@ -29,12 +29,7 @@ import biblivre.circulation.lending.LendingDAO;
 import biblivre.circulation.reservation.ReservationDAO;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +54,9 @@ public class BiblioRecordBO extends PaginableRecordBO {
 
         BiblioRecordDTO biblioRecordDTO = (BiblioRecordDTO) recordDTO;
 
-        Integer recordId = biblioRecordDTO.getId();
+        int recordId = biblioRecordDTO.getId();
 
-        if (recordId == null || recordId <= 0) {
+        if (recordId <= 0) {
             return;
         }
 

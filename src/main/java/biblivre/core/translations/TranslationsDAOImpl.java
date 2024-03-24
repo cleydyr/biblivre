@@ -35,17 +35,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO {
     private final Map<String, TranslationsMap> translationsMapCache = new ConcurrentHashMap<>();
 
     private final Map<String, List<TranslationDTO>> translationsListCache =
             new ConcurrentHashMap<>();
-
-    public static TranslationsDAOImpl getInstance() {
-        return AbstractDAO.getInstance(TranslationsDAOImpl.class);
-    }
 
     @Override
     public List<TranslationDTO> list(String language) {
@@ -59,31 +59,31 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
                     List<TranslationDTO> list = new ArrayList<>();
 
                     String sql =
-                            """
-                    SELECT K.language, K.key, coalesce(T.text, '') as text, T.created, T.created_by, T.modified, T.modified_by, T.user_created
-                    FROM (
-                        SELECT DISTINCT B.language, A.key
-                        FROM (
-                            SELECT DISTINCT key
-                            FROM translations
-                                UNION SELECT DISTINCT key FROM global.translations
-                        ) A
-                        CROSS JOIN (
-                            SELECT DISTINCT language
-                                FROM translations
-                                    UNION SELECT DISTINCT language FROM global.translations
-                        ) B
-                    ) K
-                    LEFT JOIN translations T ON T.key = K.key AND T.language = K.language
-                    %s
-                    ORDER BY K.language, K.key
-                    """
+                                    """
+                                    SELECT K.language, K.key, coalesce(T.text, '') as text, T.created, T.created_by, T.modified, T.modified_by, T.user_created
+                                    FROM (
+                                        SELECT DISTINCT B.language, A.key
+                                        FROM (
+                                            SELECT DISTINCT key
+                                            FROM translations
+                                                UNION SELECT DISTINCT key FROM global.translations
+                                        ) A
+                                        CROSS JOIN (
+                                            SELECT DISTINCT language
+                                                FROM translations
+                                                    UNION SELECT DISTINCT language FROM global.translations
+                                        ) B
+                                    ) K
+                                    LEFT JOIN translations T ON T.key = K.key AND T.language = K.language
+                                    %s
+                                    ORDER BY K.language, K.key
+                                    """
                                     .formatted(
                                             StringUtils.isNotBlank(language)
                                                     ? "WHERE K.language = ? "
                                                     : StringPool.BLANK);
 
-                    try (Connection con = this.getConnection();
+                    try (Connection con = datasource.getConnection();
                             PreparedStatement pst = con.prepareStatement(sql)) {
 
                         if (StringUtils.isNotBlank(language)) {
@@ -115,55 +115,51 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             int loggedUser) {
         String schema = SchemaThreadLocal.get();
 
-        try (Connection con = getConnection()) {
-            con.setAutoCommit(false);
+        return withTransactionContext(
+                con -> {
+                    if (translationsToAdd != null) {
+                        for (Entry<String, Map<String, String>> entry :
+                                translationsToAdd.entrySet()) {
+                            String language = entry.getKey();
 
-            if (translationsToAdd != null) {
-                for (Entry<String, Map<String, String>> entry : translationsToAdd.entrySet()) {
-                    String language = entry.getKey();
+                            Map<String, String> translation = entry.getValue();
 
-                    Map<String, String> translation = entry.getValue();
-
-                    for (Entry<String, String> translationEntry : translation.entrySet()) {
-                        updateTranslation(
-                                language,
-                                translationEntry.getKey(),
-                                translationEntry.getValue(),
-                                loggedUser,
-                                con::prepareStatement);
-                    }
-                }
-            }
-
-            if (translationsToRemove != null) {
-                String sql = "DELETE FROM translations WHERE language = ? AND key = ?";
-                try (PreparedStatement pst = con.prepareStatement(sql)) {
-
-                    for (Entry<String, Map<String, String>> entry :
-                            translationsToRemove.entrySet()) {
-                        String language = entry.getKey();
-
-                        clearCache(schema, language);
-
-                        Map<String, String> translation = entry.getValue();
-
-                        for (String key : translation.keySet()) {
-                            pst.setString(1, language);
-                            pst.setString(2, key);
-                            pst.addBatch();
+                            for (Entry<String, String> translationEntry : translation.entrySet()) {
+                                updateTranslation(
+                                        language,
+                                        translationEntry.getKey(),
+                                        translationEntry.getValue(),
+                                        loggedUser,
+                                        con::prepareStatement);
+                            }
                         }
                     }
 
-                    pst.executeBatch();
-                }
-            }
+                    if (translationsToRemove != null) {
+                        String sql = "DELETE FROM translations WHERE language = ? AND key = ?";
+                        try (PreparedStatement pst = con.prepareStatement(sql)) {
 
-            this.commit(con);
+                            for (Entry<String, Map<String, String>> entry :
+                                    translationsToRemove.entrySet()) {
+                                String language = entry.getKey();
 
-            return true;
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+                                clearCache(schema, language);
+
+                                Map<String, String> translation = entry.getValue();
+
+                                for (String key : translation.keySet()) {
+                                    pst.setString(1, language);
+                                    pst.setString(2, key);
+                                    pst.addBatch();
+                                }
+                            }
+
+                            pst.executeBatch();
+                        }
+                    }
+
+                    return true;
+                });
     }
 
     private void clearCache(String schema, String language) {
@@ -213,10 +209,10 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             throws Exception {
         String sql =
                 """
-                UPDATE translations
-                SET text = ?, modified = now(), modified_by = ?
-                WHERE language = ? and key = ?
-                """;
+                        UPDATE translations
+                        SET text = ?, modified = now(), modified_by = ?
+                        WHERE language = ? and key = ?
+                        """;
 
         try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
 
@@ -239,9 +235,9 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
             throws Exception {
         String sql =
                 """
-                INSERT INTO translations (language, key, text, created_by, modified_by, user_created)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """;
+                        INSERT INTO translations (language, key, text, created_by, modified_by, user_created)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                        """;
 
         try (PreparedStatement preparedStatement = preparedStatementGenerator.apply(sql)) {
 
@@ -360,5 +356,10 @@ public class TranslationsDAOImpl extends AbstractDAO implements TranslationsDAO 
 
     private String getTranslationListCacheKey(String schema, String language) {
         return "%s#%s".formatted(schema, language);
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

@@ -215,8 +215,9 @@ public class PostgreSQLStatementIterable implements Iterable<String> {
                 }
                 return State.WAITING_SEMICOLON;
             }
-            default -> throw new UncoveredStateException(
-                    "State from %s receving %c is not covered".formatted(currentState, c));
+            default ->
+                    throw new UncoveredStateException(
+                            "State from %s receving %c is not covered".formatted(currentState, c));
         }
     }
 

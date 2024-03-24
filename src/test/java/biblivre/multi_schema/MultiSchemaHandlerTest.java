@@ -1,44 +1,48 @@
 package biblivre.multi_schema;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import biblivre.AbstractContainerDatabaseTest;
+import biblivre.TestDatasourceConfiguration;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
-import biblivre.core.schemas.SchemaBO;
 import biblivre.login.LoginBO;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@Import({TestDatasourceConfiguration.class})
+@ActiveProfiles("test")
 class MultiSchemaHandlerTest extends AbstractContainerDatabaseTest {
+    @Autowired LoginBO loginBO;
+    @Autowired private ConfigurationBO configurationBO;
+    @Autowired private Handler multiSchemaHandler;
 
     @Test
     void create() {
         try {
-            execute(
-                    () -> {
-                        Handler multiSchemaHandler = getWiredHandler();
+            String schemaName = "test";
 
-                        String schemaName = "test";
+            ExtendedRequest request = prepareMockRequest(schemaName);
 
-                        ExtendedRequest request = prepareMockRequest(schemaName);
+            ExtendedResponse response = Mockito.mock(ExtendedResponse.class);
 
-                        ExtendedResponse response = Mockito.mock(ExtendedResponse.class);
+            multiSchemaHandler.create(request, response);
 
-                        multiSchemaHandler.create(request, response);
+            SchemaThreadLocal.setSchema(schemaName);
 
-                        LoginBO loginBO = getWiredLoginBO();
-
-                        SchemaThreadLocal.setSchema(schemaName);
-
-                        assertNotNull(loginBO.login("admin", "abracadabra"));
-                    });
+            assertNotNull(loginBO.login("admin", "abracadabra"));
         } catch (Exception e) {
             fail(e);
         }
@@ -53,20 +57,5 @@ class MultiSchemaHandlerTest extends AbstractContainerDatabaseTest {
         Mockito.when(request.getString("schema")).thenReturn(schemaName);
 
         return request;
-    }
-
-    @NotNull
-    private Handler getWiredHandler() {
-        Handler handler = new Handler();
-
-        SchemaBO schemaBO = getWiredSchemaBO();
-
-        handler.setSchemaBO(schemaBO);
-
-        ConfigurationBO configurationBO = getWiredConfigurationBO();
-
-        schemaBO.setConfigurationBO(configurationBO);
-
-        return handler;
     }
 }

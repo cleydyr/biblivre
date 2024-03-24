@@ -1,4 +1,4 @@
-FROM tomcat:10-jdk17
+FROM tomcat:10-jdk21
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
 	&& apt-get install -y \
@@ -14,5 +14,5 @@ RUN rm -rf "${CATALINA_HOME}/webapps/ROOT"
 COPY scripts/wait-for.sh /usr/local/bin/wait-for.sh
 RUN chmod +x /usr/local/bin/wait-for.sh
 COPY target/Biblivre6/ ${CATALINA_HOME}/webapps/Biblivre6/
-
+ENV JAVA_OPTS="-XX:+UnlockExperimentalVMOptions --enable-preview"
 EXPOSE 8080

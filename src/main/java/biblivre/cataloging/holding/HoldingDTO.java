@@ -23,10 +23,10 @@ import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.RecordDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.HoldingAvailability;
-import biblivre.core.utils.NaturalOrderComparator;
 import biblivre.marc.MaterialType;
 import java.io.Serial;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import org.json.JSONObject;
@@ -145,8 +145,8 @@ public class HoldingDTO extends RecordDTO implements Comparable<HoldingDTO> {
             return 0;
         }
 
-        return NaturalOrderComparator.NUMERICAL_ORDER.compare(
-                this.getAccessionNumber(), o.getAccessionNumber());
+        return Comparator.<String>naturalOrder()
+                .compare(this.getAccessionNumber(), o.getAccessionNumber());
     }
 
     private void _setCF004(int biblioRecordId) {

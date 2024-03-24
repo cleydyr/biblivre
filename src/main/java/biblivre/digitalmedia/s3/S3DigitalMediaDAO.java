@@ -7,6 +7,8 @@ import java.util.Collections;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -16,6 +18,10 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+@Service
+@ConditionalOnProperty(
+        value = "DIGITAL_MEDIA_DAO_IMPL",
+        havingValue = "biblivre.digitalmedia.s3.S3DigitalMediaDAO")
 public class S3DigitalMediaDAO extends BaseDigitalMediaDAO {
     private final S3Client s3;
     private final String bucketName;

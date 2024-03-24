@@ -46,7 +46,7 @@ public class MarcFileReader implements MarcReader {
             return true;
         }
 
-        if (this.marc == null && this.validStart) {
+        if (this.validStart) {
             return false;
         }
 

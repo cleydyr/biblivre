@@ -47,19 +47,19 @@ public class Validator extends AbstractValidator {
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
         if (supplierId == 0) {
-            ex.addError("supplier", "field.error.required");
+            ex.addError("supplier", FIELD_ERROR_REQUIRED);
         }
 
         if (StringUtils.isBlank(quotationList)) {
             if (requestId == 0) {
-                ex.addError("request", "field.error.required");
+                ex.addError("request", FIELD_ERROR_REQUIRED);
             } else {
-                ex.addError("quotation_list", "field.error.required");
+                ex.addError("quotation_list", FIELD_ERROR_REQUIRED);
             }
         }
 
         if (StringUtils.isBlank(quotationDate)) {
-            ex.addError("quotation_date", "field.error.required");
+            ex.addError("quotation_date", FIELD_ERROR_REQUIRED);
         } else {
             try {
                 TextUtils.parseDate(quotationDate);
@@ -69,7 +69,7 @@ public class Validator extends AbstractValidator {
         }
 
         if (StringUtils.isBlank(responseDate)) {
-            ex.addError("response_date", "field.error.required");
+            ex.addError("response_date", FIELD_ERROR_REQUIRED);
         } else {
             try {
                 TextUtils.parseDate(responseDate);
@@ -79,7 +79,7 @@ public class Validator extends AbstractValidator {
         }
 
         if (StringUtils.isBlank(expirationDate)) {
-            ex.addError("expiration_date", "field.error.required");
+            ex.addError("expiration_date", FIELD_ERROR_REQUIRED);
         } else {
             try {
                 TextUtils.parseDate(expirationDate);
@@ -89,7 +89,7 @@ public class Validator extends AbstractValidator {
         }
 
         if (StringUtils.isBlank(deliveryTime)) {
-            ex.addError("delivery_time", "field.error.required");
+            ex.addError("delivery_time", FIELD_ERROR_REQUIRED);
         } else if (!StringUtils.isNumeric(deliveryTime)) {
             ex.addError("delivery_time", "field.error.digits_only");
         }

@@ -19,11 +19,7 @@
  ******************************************************************************/
 package biblivre.circulation.user;
 
-import biblivre.core.AbstractDAO;
-import biblivre.core.DTOCollection;
-import biblivre.core.PagingDTO;
-import biblivre.core.PreparedStatementUtil;
-import biblivre.core.SchemaThreadLocal;
+import biblivre.core.*;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.function.UnsafeFunction;
 import biblivre.core.utils.CalendarUtils;
@@ -37,23 +33,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class UserDAOImpl extends AbstractDAO implements UserDAO {
-
-    public static UserDAO getInstance() {
-        return AbstractDAO.getInstance(UserDAOImpl.class);
-    }
 
     @Override
     public Map<Integer, UserDTO> map(Set<Integer> ids) {
         Map<Integer, UserDTO> map = new HashMap<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed, array_agg(V.key) as keys, array_agg(V.value) as values "
                             + "FROM users U LEFT JOIN users_values V on V.user_id = U.id "
@@ -75,8 +70,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return map;
@@ -91,10 +84,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             query = TextUtils.removeDiacriticals(query);
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append(
                     "SELECT U.id, U.name, U.type, U.photo_id, U.status, U.login_id, U.created, U.created_by, U.modified, U.modified_by, U.user_card_printed, array_agg(V.key) as keys, array_agg(V.value) as values FROM users U ");
@@ -251,7 +241,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             }
 
             pst.setInt(psIndex++, limit);
-            pst.setInt(psIndex++, offset);
+            pst.setInt(psIndex, offset);
 
             ResultSet rs = pst.executeQuery();
             ResultSet rsCount = pstCount.executeQuery();
@@ -269,8 +259,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -278,7 +266,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     public boolean save(UserDTO user) {
-        try (Connection con = this.getConnection()) {
+        try (Connection con = datasource.getConnection()) {
             con.setAutoCommit(false);
 
             StringBuilder sql = new StringBuilder();
@@ -332,54 +320,61 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     public boolean delete(UserDTO user) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+        return withTransactionContext(
+                (UnsafeFunction<Connection, Boolean>) connection -> doDelete(connection, user));
+    }
 
-            StringBuilder sql;
-            PreparedStatement pst;
+    private boolean doDelete(Connection connection, UserDTO user) throws Exception {
+        try (PreparedStatement pst =
+                connection.prepareStatement(
+                        "DELETE FROM users WHERE id = ? AND status = 'inactive'")) {
 
-            sql = new StringBuilder();
-            sql.append("DELETE FROM users ");
-            sql.append("WHERE id = ? AND status = '" + UserStatus.INACTIVE + "';");
-            pst = con.prepareStatement(sql.toString());
             pst.setInt(1, user.getId());
 
             if (pst.executeUpdate() > 0) {
-                // Delete from logins table
-                String loginSql = "SELECT login_id FROM users WHERE id = ?;";
-                PreparedStatement loginPst = con.prepareStatement(loginSql);
-
-                loginPst.setInt(1, user.getId());
-                ResultSet rs = loginPst.executeQuery();
-                int loginId = 0;
-                if (rs.next()) {
-                    loginId = rs.getInt("login_id");
-                }
-                if (loginId != 0) {
-                    loginSql = "DELETE FROM logins WHERE id = ?;";
-                    loginPst = con.prepareStatement(loginSql);
-                    loginPst.setInt(1, loginId);
-                    loginPst.executeUpdate();
-                }
-
+                deleteLogin(user, connection);
             } else {
-                sql = new StringBuilder();
-                sql.append("UPDATE users SET status = '" + UserStatus.INACTIVE + "' ");
-                sql.append("WHERE id = ? ;");
-                pst = con.prepareStatement(sql.toString());
+                deactivate(user, connection);
+
                 pst.setInt(1, user.getId());
+
                 pst.executeUpdate();
             }
-
-            con.commit();
         } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
+            log.error("Error deleting user", e);
+
+            return false;
         }
+
         return true;
+    }
+
+    private static void deactivate(UserDTO user, Connection con) throws SQLException {
+        try (var updateUserPST =
+                con.prepareStatement("UPDATE users SET status = 'inactive' WHERE id = ?")) {
+            updateUserPST.setInt(1, user.getId());
+            updateUserPST.executeUpdate();
+        }
+    }
+
+    private static void deleteLogin(UserDTO user, Connection con) throws SQLException {
+        try (PreparedStatement loginPst =
+                con.prepareStatement("SELECT login_id FROM users WHERE id = ?")) {
+            loginPst.setInt(1, user.getId());
+
+            ResultSet rs = loginPst.executeQuery();
+
+            if (rs.next()) {
+                int loginId = rs.getInt("login_id");
+
+                try (var deleteFromLoginsPst =
+                        con.prepareStatement("DELETE FROM logins WHERE id = ?;")) {
+                    loginPst.setInt(1, loginId);
+
+                    loginPst.executeUpdate();
+                }
+            }
+        }
     }
 
     private UserDTO populateDTO(ResultSet rs) throws SQLException {
@@ -411,11 +406,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     public void markAsPrinted(Set<Integer> ids) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "UPDATE users SET user_card_printed = true "
                             + "WHERE id in ("
@@ -431,18 +422,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             pst.executeUpdate();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean updateUserStatus(Integer userId, UserStatus status) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql = "UPDATE users SET status = ? " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -452,8 +437,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             pst.executeUpdate();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return true;
     }
@@ -463,10 +446,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
         if (loginId == null) return null;
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             PreparedStatement pst =
                     con.prepareStatement("SELECT id FROM users WHERE login_id = ?;");
             pst.setInt(1, loginId);
@@ -478,8 +458,6 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return null;
@@ -571,5 +549,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
 
         return null;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

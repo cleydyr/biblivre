@@ -23,19 +23,17 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConfigurationBO {
+    private ConfigurationsDAO configurationsDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(TranslationBO.class);
 
@@ -78,6 +76,12 @@ public class ConfigurationBO {
 
     public int getInt(String key, int def) {
         String value = getValue(key);
+
+        if (StringUtils.isBlank(value)) {
+            logger.debug("Configuration is empty: " + key);
+
+            return def;
+        }
 
         String schema = SchemaThreadLocal.get();
 
@@ -217,13 +221,11 @@ public class ConfigurationBO {
 
             SchemaThreadLocal.withGlobalSchema(
                     () -> {
-                        ConfigurationsDAOImpl globalDao = ConfigurationsDAOImpl.getInstance();
-
                         List<ConfigurationsDTO> multiSchemaList = new ArrayList<>();
 
                         multiSchemaList.add(finalMultiSchemaConfig);
 
-                        globalDao.save(multiSchemaList, loggedUser);
+                        configurationsDAO.save(multiSchemaList, loggedUser);
 
                         Map<String, ConfigurationsDTO> map = getMap();
 
@@ -233,9 +235,7 @@ public class ConfigurationBO {
                     });
         }
 
-        ConfigurationsDAO dao = ConfigurationsDAOImpl.getInstance();
-
-        if (dao.save(configs, loggedUser)) {
+        if (configurationsDAO.save(configs, loggedUser)) {
             Map<String, ConfigurationsDTO> map = getMap();
 
             for (ConfigurationsDTO config : configs) {
@@ -304,9 +304,7 @@ public class ConfigurationBO {
     }
 
     private Map<String, ConfigurationsDTO> getMap() {
-        ConfigurationsDAO dao = ConfigurationsDAOImpl.getInstance();
-
-        List<ConfigurationsDTO> configs = dao.list();
+        List<ConfigurationsDTO> configs = configurationsDAO.list();
 
         Map<String, ConfigurationsDTO> map = new HashMap<>(configs.size());
 
@@ -315,5 +313,10 @@ public class ConfigurationBO {
         }
 
         return map;
+    }
+
+    @Autowired
+    public void setConfigurationsDAO(ConfigurationsDAO configurationsDAO) {
+        this.configurationsDAO = configurationsDAO;
     }
 }

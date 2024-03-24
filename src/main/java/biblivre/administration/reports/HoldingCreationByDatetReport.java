@@ -31,16 +31,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HoldingCreationByDatetReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     private static Map<String, Integer> userTotal;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        ReportsDAO dao = ReportsDAOImpl.getInstance();
+        ReportsDAO dao = reportsDAO;
         String initialDate = dateFormat.format(dto.getInitialDate());
         String finalDate = dateFormat.format(dto.getFinalDate());
         return dao.getHoldingCreationByDateReportData(initialDate, finalDate);
@@ -272,5 +274,10 @@ public class HoldingCreationByDatetReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.HOLDING_CREATION_BY_DATE;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

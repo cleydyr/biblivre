@@ -63,9 +63,9 @@ public class Handler extends AbstractHandler {
 
     public void i18n(ExtendedRequest request, ExtendedResponse response) {
         if (request.getBoolean("from_translations")) {
-            setJspURL("/jsp/administration/translations.jsp");
+            setJspURL("/WEB-INF/jsp/administration/translations.jsp");
         } else {
-            setJspURL("/jsp/index.jsp");
+            setJspURL("/WEB-INF/jsp/index.jsp");
         }
     }
 
@@ -84,15 +84,15 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("records", records);
 
-        setJspURL("/jsp/list/bibliographic.jsp");
+        setJspURL("/WEB-INF/jsp/list/bibliographic.jsp");
     }
 
     public void listAuthorities(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/list/authorities.jsp");
+        setJspURL("/WEB-INF/jsp/list/authorities.jsp");
     }
 
     public void listVocabulary(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/list/vocabulary.jsp");
+        setJspURL("/WEB-INF/jsp/list/vocabulary.jsp");
     }
 
     public void searchBibliographic(ExtendedRequest request, ExtendedResponse response) {
@@ -112,7 +112,7 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
 
-        setJspURL("/jsp/search/bibliographic.jsp");
+        setJspURL("/WEB-INF/jsp/search/bibliographic.jsp");
     }
 
     public void searchAuthorities(ExtendedRequest request, ExtendedResponse response) {
@@ -126,7 +126,7 @@ public class Handler extends AbstractHandler {
                 "authoritiesSearchableGroupsText",
                 indexingGroupBO.getSearchableGroupsText(RecordType.AUTHORITIES, language));
 
-        setJspURL("/jsp/search/authorities.jsp");
+        setJspURL("/WEB-INF/jsp/search/authorities.jsp");
     }
 
     public void searchVocabulary(ExtendedRequest request, ExtendedResponse response) {
@@ -140,7 +140,7 @@ public class Handler extends AbstractHandler {
                 "vocabulariesSearchableGroupsText",
                 indexingGroupBO.getSearchableGroupsText(RecordType.VOCABULARY, language));
 
-        setJspURL("/jsp/search/vocabulary.jsp");
+        setJspURL("/WEB-INF/jsp/search/vocabulary.jsp");
     }
 
     public void catalogingBibliographic(ExtendedRequest request, ExtendedResponse response) {
@@ -152,7 +152,7 @@ public class Handler extends AbstractHandler {
                 tabFieldsBO.getFormFields(RecordType.HOLDING).getCacheFileName());
         request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
 
-        setJspURL("/jsp/cataloging/bibliographic.jsp");
+        setJspURL("/WEB-INF/jsp/cataloging/bibliographic.jsp");
     }
 
     public void catalogingAuthorities(ExtendedRequest request, ExtendedResponse response) {
@@ -160,7 +160,7 @@ public class Handler extends AbstractHandler {
                 "authoritiesCacheFileName",
                 tabFieldsBO.getFormFields(RecordType.AUTHORITIES).getCacheFileName());
 
-        setJspURL("/jsp/cataloging/authorities.jsp");
+        setJspURL("/WEB-INF/jsp/cataloging/authorities.jsp");
     }
 
     public void catalogingVocabulary(ExtendedRequest request, ExtendedResponse response) {
@@ -168,13 +168,13 @@ public class Handler extends AbstractHandler {
                 "vocabulariesCacheFileName",
                 tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
 
-        setJspURL("/jsp/cataloging/vocabulary.jsp");
+        setJspURL("/WEB-INF/jsp/cataloging/vocabulary.jsp");
     }
 
     public void catalogingLabels(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("biblioIndexingGroups", indexingGroupBO.getGroups(RecordType.BIBLIO));
 
-        setJspURL("/jsp/cataloging/labels.jsp");
+        setJspURL("/WEB-INF/jsp/cataloging/labels.jsp");
     }
 
     public void circulationUser(ExtendedRequest request, ExtendedResponse response) {
@@ -184,25 +184,26 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("cacheFileName", userFieldBO.getFields().getCacheFileName());
 
-        setJspURL("/jsp/circulation/user.jsp");
+        setJspURL("/WEB-INF/jsp/circulation/user.jsp");
     }
 
     public void circulationLending(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
 
-        setJspURL("/jsp/circulation/lending.jsp");
+        setJspURL("/WEB-INF/jsp/circulation/lending.jsp");
     }
 
     public void circulationReservation(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
 
-        setJspURL("/jsp/circulation/reservation.jsp");
+        setJspURL("/WEB-INF/jsp/circulation/reservation.jsp");
     }
 
     public void circulationUserReservation(ExtendedRequest request, ExtendedResponse response) {
-        Integer loggedUser = request.getLoggedUserId();
-        if (loggedUser == null || loggedUser == 0) {
-            setJspURL("/jsp/index.jsp");
+        int loggedUser = request.getLoggedUserId();
+
+        if (loggedUser == 0) {
+            setJspURL("/WEB-INF/jsp/index.jsp");
         } else {
             UserDTO user = userBO.getUserByLoginId(loggedUser);
             if (user != null) {
@@ -213,14 +214,14 @@ public class Handler extends AbstractHandler {
 
             request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
 
-            setJspURL("/jsp/circulation/user_reservation.jsp");
+            setJspURL("/WEB-INF/jsp/circulation/user_reservation.jsp");
         }
     }
 
     public void circulationAccess(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
 
-        setJspURL("/jsp/circulation/access_control.jsp");
+        setJspURL("/WEB-INF/jsp/circulation/access_control.jsp");
     }
 
     public void circulationUserCards(ExtendedRequest request, ExtendedResponse response) {
@@ -228,15 +229,15 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("cacheFileName", userFieldBO.getFields().getCacheFileName());
 
-        setJspURL("/jsp/circulation/user_cards.jsp");
+        setJspURL("/WEB-INF/jsp/circulation/user_cards.jsp");
     }
 
     public void acquisitionSupplier(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/acquisition/suppliers.jsp");
+        setJspURL("/WEB-INF/jsp/acquisition/suppliers.jsp");
     }
 
     public void acquisitionRequest(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/acquisition/requests.jsp");
+        setJspURL("/WEB-INF/jsp/acquisition/requests.jsp");
     }
 
     public void acquisitionQuotation(ExtendedRequest request, ExtendedResponse response) {
@@ -246,28 +247,28 @@ public class Handler extends AbstractHandler {
         Collection<RequestDTO> requests = requestBO.list();
         request.setAttribute("requests", requests);
 
-        setJspURL("/jsp/acquisition/quotations.jsp");
+        setJspURL("/WEB-INF/jsp/acquisition/quotations.jsp");
     }
 
     public void acquisitionOrder(ExtendedRequest request, ExtendedResponse response) {
         Collection<SupplierDTO> suppliers = supplierBO.list();
         request.setAttribute("suppliers", suppliers);
 
-        setJspURL("/jsp/acquisition/orders.jsp");
+        setJspURL("/WEB-INF/jsp/acquisition/orders.jsp");
     }
 
     public void administrationPassword(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/administration/password.jsp");
+        setJspURL("/WEB-INF/jsp/administration/password.jsp");
     }
 
     public void administrationMaintenance(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/administration/maintenance.jsp");
+        setJspURL("/WEB-INF/jsp/administration/maintenance.jsp");
     }
 
     public void administrationPermissions(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
 
-        setJspURL("/jsp/administration/permissions.jsp");
+        setJspURL("/WEB-INF/jsp/administration/permissions.jsp");
     }
 
     public void administrationConfigurations(ExtendedRequest request, ExtendedResponse response) {
@@ -286,7 +287,7 @@ public class Handler extends AbstractHandler {
         request.setAttribute(
                 "isMultipleSchemasEnabled", configurationBO.isMultipleSchemasEnabled());
 
-        setJspURL("/jsp/administration/configurations.jsp");
+        setJspURL("/WEB-INF/jsp/administration/configurations.jsp");
     }
 
     public void administrationReports(ExtendedRequest request, ExtendedResponse response) {
@@ -294,25 +295,29 @@ public class Handler extends AbstractHandler {
                 "biblioCacheFileName",
                 tabFieldsBO.getFormFields(RecordType.BIBLIO).getCacheFileName());
 
-        setJspURL("/jsp/administration/reports.jsp");
+        setJspURL("/WEB-INF/jsp/administration/reports.jsp");
+    }
+
+    public void administrationCustomReports(ExtendedRequest request, ExtendedResponse response) {
+        setJspURL("/WEB-INF/jsp/administration/custom_reports.jsp");
     }
 
     public void administrationUserTypes(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/administration/user_types.jsp");
+        setJspURL("/WEB-INF/jsp/administration/user_types.jsp");
     }
 
     public void administrationAccessCards(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/administration/access_cards.jsp");
+        setJspURL("/WEB-INF/jsp/administration/access_cards.jsp");
     }
 
     public void administrationDatamigration(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/administration/migration.jsp");
+        setJspURL("/WEB-INF/jsp/administration/migration.jsp");
     }
 
     public void administrationTranslations(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("languages", languageBO.getLanguages());
 
-        setJspURL("/jsp/administration/translations.jsp");
+        setJspURL("/WEB-INF/jsp/administration/translations.jsp");
     }
 
     public void administrationBriefCustomization(
@@ -327,7 +332,7 @@ public class Handler extends AbstractHandler {
                 "vocabulariesCacheFileName",
                 tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
 
-        setJspURL("/jsp/administration/brief_customization.jsp");
+        setJspURL("/WEB-INF/jsp/administration/brief_customization.jsp");
     }
 
     public void administrationFormCustomization(
@@ -342,11 +347,11 @@ public class Handler extends AbstractHandler {
                 "vocabulariesCacheFileName",
                 tabFieldsBO.getFormFields(RecordType.VOCABULARY).getCacheFileName());
 
-        setJspURL("/jsp/administration/form_customization.jsp");
+        setJspURL("/WEB-INF/jsp/administration/form_customization.jsp");
     }
 
     public void multiSchemaTranslations(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/multi_schema/translations.jsp");
+        setJspURL("/WEB-INF/jsp/multi_schema/translations.jsp");
     }
 
     public void multiSchemaBackup(ExtendedRequest request, ExtendedResponse response) {
@@ -356,7 +361,7 @@ public class Handler extends AbstractHandler {
 
         request.setAttribute("enabledSchemas", schemaBO.getEnabledSchemasList());
 
-        setJspURL("/jsp/multi_schema/backup.jsp");
+        setJspURL("/WEB-INF/jsp/multi_schema/backup.jsp");
     }
 
     public void multiSchemaConfigurations(ExtendedRequest request, ExtendedResponse response) {
@@ -377,23 +382,23 @@ public class Handler extends AbstractHandler {
         request.setAttribute(
                 "isMultipleSchemasEnabled", configurationBO.isMultipleSchemasEnabled());
 
-        setJspURL("/jsp/multi_schema/configurations.jsp");
+        setJspURL("/WEB-INF/jsp/multi_schema/configurations.jsp");
     }
 
     public void multiSchemaManage(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/multi_schema/manage.jsp");
+        setJspURL("/WEB-INF/jsp/multi_schema/manage.jsp");
     }
 
     public void helpAboutBiblivre(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/help/about_biblivre.jsp");
+        setJspURL("/WEB-INF/jsp/help/about_biblivre.jsp");
     }
 
     public void setup(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/setup.jsp");
+        setJspURL("/WEB-INF/jsp/setup.jsp");
     }
 
     public void catalogingImport(ExtendedRequest request, ExtendedResponse response) {
-        setJspURL("/jsp/cataloging/import.jsp");
+        setJspURL("/WEB-INF/jsp/cataloging/import.jsp");
     }
 
     @Autowired

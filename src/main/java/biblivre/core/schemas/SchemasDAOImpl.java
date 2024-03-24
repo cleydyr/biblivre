@@ -19,25 +19,28 @@
  ******************************************************************************/
 package biblivre.core.schemas;
 
+import biblivre.administration.backup.RestoreService;
+import biblivre.administration.setup.State;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import biblivre.core.utils.Constants;
+import java.sql.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.postgresql.core.BaseConnection;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.postgresql.PGConnection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
 
-    public static SchemasDAOImpl getInstance() {
-        return AbstractDAO.getInstance(SchemasDAOImpl.class);
-    }
-
     private Set<SchemaDTO> schemas;
+    private RestoreService restoreService;
 
     @Override
     public Set<SchemaDTO> list() {
@@ -47,7 +50,7 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
 
         Set<SchemaDTO> set = new HashSet<>();
 
-        try (Connection con = getConnection();
+        try (Connection con = datasource.getConnection();
                 Statement st = con.createStatement()) {
             String sql = "SELECT * FROM global.schemas";
 
@@ -57,7 +60,7 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
                 set.add(this.populateDTO(rs));
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
 
             throw new DAOException(e);
         }
@@ -69,48 +72,38 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
 
     @Override
     public boolean delete(SchemaDTO dto) {
-        Connection con = null;
+        return withTransactionContext(
+                con -> {
+                    con.setAutoCommit(false);
 
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+                    String sql = "DELETE FROM schemas WHERE schema = ? AND name = ?;";
 
-            String sql = "DELETE FROM schemas WHERE schema = ? AND name = ?;";
+                    PreparedStatement pst = con.prepareStatement(sql);
 
-            PreparedStatement pst = con.prepareStatement(sql);
+                    pst.setString(1, dto.getSchema());
+                    pst.setString(2, dto.getName());
 
-            pst.setString(1, dto.getSchema());
-            pst.setString(2, dto.getName());
+                    boolean success = pst.executeUpdate() > 0;
 
-            boolean success = pst.executeUpdate() > 0;
+                    if (success) {
+                        PGConnection unwrap = con.unwrap(PGConnection.class);
 
-            if (success) {
-                String escaped =
-                        ((BaseConnection) this.getPGConnection(con)).escapeString(dto.getSchema());
-                String dropSql = "DROP SCHEMA \"" + escaped + "\" CASCADE;";
-                Statement dropSt = con.createStatement();
+                        String dropSql = "DROP SCHEMA ? CASCADE;";
 
-                dropSt.executeUpdate(dropSql);
-            }
+                        PreparedStatement dropSt = con.prepareStatement(dropSql);
 
-            this.commit(con);
+                        dropSt.setString(1, dto.getSchema());
 
-            return success;
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                        dropSt.executeUpdate();
+                    }
+
+                    return success;
+                });
     }
 
     @Override
     public boolean save(SchemaDTO dto) {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql = "UPDATE schemas SET name = ?, disabled = ? WHERE schema = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -122,16 +115,12 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean exists(String schema) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM schemas WHERE schema = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -142,9 +131,67 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
             return rs.next();
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
+    }
+
+    @Override
+    public boolean createSchema(SchemaDTO dto, boolean addToGlobal, Resource databaseTemplate) {
+        boolean success = false;
+
+        try (Connection connection = datasource.getConnection();
+                Statement statement = connection.createStatement()) {
+            connection.setAutoCommit(false);
+
+            if (exists(dto.getSchema())) {
+                State.writeLog("Dropping old schema");
+
+                if (!dto.getSchema().equals(Constants.GLOBAL_SCHEMA)) {
+                    statement.addBatch("DELETE FROM \"" + dto.getSchema() + "\".digital_media;\n");
+                }
+
+                statement.addBatch("DROP SCHEMA \"" + dto.getSchema() + "\" CASCADE;\n");
+            }
+
+            connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (Connection connection = datasource.getConnection();
+                Statement statement = connection.createStatement()) {
+            connection.setAutoCommit(false);
+
+            State.writeLog("Creating schema for '" + dto.getSchema() + "'");
+
+            restoreService.processRestore(databaseTemplate.getFile());
+
+            State.writeLog("Renaming schema bib4template to " + dto.getSchema());
+
+            statement.addBatch(
+                    "ALTER SCHEMA \"bib4template\" RENAME TO \"" + dto.getSchema() + "\";\n");
+
+            if (addToGlobal) {
+                statement.addBatch(
+                        "INSERT INTO \""
+                                + Constants.GLOBAL_SCHEMA
+                                + "\".schemas (schema, name) VALUES ('"
+                                + dto.getSchema()
+                                + "', E'"
+                                + dto.getName()
+                                + "');\n");
+            }
+
+            statement.addBatch("ANALYZE;\n");
+
+            statement.executeBatch();
+
+            connection.commit();
+
+            success = true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return success;
     }
 
     private SchemaDTO populateDTO(ResultSet rs) throws SQLException {
@@ -155,5 +202,15 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
         dto.setDisabled(rs.getBoolean("disabled"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
+    }
+
+    @Autowired
+    public void setRestoreService(RestoreService restoreService) {
+        this.restoreService = restoreService;
     }
 }

@@ -25,7 +25,7 @@ import biblivre.core.utils.TextUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum ImportEncoding implements BiblivreEnum {
     AUTO_DETECT,
@@ -33,19 +33,7 @@ public enum ImportEncoding implements BiblivreEnum {
     MARC8;
 
     public static ImportEncoding fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (ImportEncoding importEncoding : ImportEncoding.values()) {
-            if (str.equals(importEncoding.name().toLowerCase())) {
-                return importEncoding;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(ImportEncoding.class, str.toUpperCase(), null);
     }
 
     @Override

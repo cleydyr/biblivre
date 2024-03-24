@@ -2,12 +2,12 @@ package biblivre.marc;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import biblivre.MarcUtils;
 import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.BriefTabFieldFormatDTO;
 import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import utils.MarcUtils;
 
 class MarcDataReaderTest {
     public static final String _1822_HUMAN_READABLE_MARC =

@@ -1,6 +1,5 @@
 package biblivre.digitalmedia.migrator;
 
-import biblivre.core.AbstractDAO;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.schemas.SchemaBO;
@@ -13,12 +12,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -27,11 +25,13 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Component
-public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMediaStoreMigrator {
+@Slf4j
+public class PGToS3DigitalMediaMigrator implements DigitalMediaStoreMigrator {
     private S3Client s3;
     private String bucketName;
     private SchemaBO schemaBO;
-    private static final Logger logger = LoggerFactory.getLogger(PGToS3DigitalMediaMigrator.class);
+
+    private PostgresLargeObjectDigitalMediaDAO digitalMediaDAO;
 
     @Override
     public void init() {
@@ -61,10 +61,7 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
     }
 
     private void _doMigrate(String schemaName) {
-        logger.info("Migrating {}.", schemaName);
-
-        PostgresLargeObjectDigitalMediaDAO digitalMediaDAO =
-                AbstractDAO.getInstance(PostgresLargeObjectDigitalMediaDAO.class);
+        log.info("Migrating {}.", schemaName);
 
         SchemaThreadLocal.withSchema(
                 schemaName,
@@ -77,7 +74,16 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
                                     (DatabaseFile)
                                             digitalMediaDAO.load(media.getId(), media.getName());
 
-                            logger.info(
+                            if (databaseFile == null) {
+                                log.warn(
+                                        "Could not load {}, (id: {})",
+                                        media.getName(),
+                                        media.getId());
+
+                                continue;
+                            }
+
+                            log.info(
                                     "Uploading {}, (id: {}, size: {})",
                                     media.getId(),
                                     media.getName(),
@@ -85,7 +91,7 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
 
                             _uploadToS3(databaseFile);
 
-                            logger.info("Removing {}, (id: {})", media.getName(), media.getId());
+                            log.info("Removing {}, (id: {})", media.getName(), media.getId());
 
                             _delete(databaseFile);
 
@@ -110,7 +116,7 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
 
         Connection connection = databaseFile.getConnection();
 
-        PGConnection con = getPGConnection(connection);
+        PGConnection con = connection.unwrap(PGConnection.class);
 
         LargeObjectManager largeObjectAPI = con.getLargeObjectAPI();
 
@@ -138,5 +144,10 @@ public class PGToS3DigitalMediaMigrator extends AbstractDAO implements DigitalMe
     @Autowired
     public void setSchemaBO(SchemaBO schemaBO) {
         this.schemaBO = schemaBO;
+    }
+
+    @Autowired
+    public void setDigitalMediaDAO(PostgresLargeObjectDigitalMediaDAO digitalMediaDAO) {
+        this.digitalMediaDAO = digitalMediaDAO;
     }
 }

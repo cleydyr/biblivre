@@ -33,6 +33,8 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +43,12 @@ import org.springframework.http.MediaType;
 public class ExtendedRequest extends HttpServletRequestWrapper {
     private static final Logger logger = LoggerFactory.getLogger(ExtendedRequest.class);
 
-    private TranslationsMap translationsMap;
+    @Getter private TranslationsMap translationsMap;
 
-    private String controller;
+    @Setter private String controller;
     private String language;
     private boolean mustRedirectToSchema;
-    private boolean multiPart;
+    @Getter private boolean multiPart;
     private Map<String, String> multiPartParameters;
     private Map<String, MemoryFile> multiPartFiles;
 
@@ -117,18 +119,18 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     public Object getScopedSessionAttribute(String key) {
         String schema = SchemaThreadLocal.get();
 
-        return this.getSessionAttribute(schema + "." + key);
+        return this.getSessionAttribute(STR."\{schema}.\{key}");
     }
 
     public boolean hasParameter(String key) {
         return this.getParameterMap().containsKey(key);
     }
 
-    public String getString(String key) {
+    public final String getString(String key) {
         return this.getString(key, "");
     }
 
-    public String getString(String key, String defaultValue) {
+    public final String getString(String key, String defaultValue) {
         String value = this.getRequestParameter(key);
 
         return Objects.toString(value, defaultValue);
@@ -161,11 +163,11 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     public Float getFloat(String key, Float defaultValue) {
-        Float retValue;
-
-        retValue = Float.valueOf(this.getRequestParameter(key));
-
-        return retValue;
+        try {
+            return Float.parseFloat(this.getRequestParameter(key));
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     public boolean getBoolean(String key) {
@@ -173,17 +175,11 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     }
 
     public boolean getBoolean(String key, boolean defaultValue) {
-        String value = this.getRequestParameter(key);
-
-        if (StringUtils.isBlank(value)) {
+        try {
+            return Boolean.parseBoolean(this.getRequestParameter(key));
+        } catch (NumberFormatException e) {
             return defaultValue;
-        } else if (value.equalsIgnoreCase("true")) {
-            return true;
-        } else if (value.equalsIgnoreCase("false")) {
-            return false;
         }
-
-        return defaultValue;
     }
 
     public <T extends Enum<T>> T getEnum(Class<T> type, String key) {
@@ -192,10 +188,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
     public <T extends Enum<T>> T getEnum(Class<T> type, String key, T defaultValue) {
         String value = this.getString(key);
-
-        if (StringUtils.isBlank(value)) {
-            return defaultValue;
-        }
 
         try {
             return Enum.valueOf(type, value.trim().toUpperCase());
@@ -210,10 +202,6 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
 
     public String getRequestParameter(String key) {
         return this.multiPart ? this.multiPartParameters.get(key) : super.getParameter(key);
-    }
-
-    public void setController(String controller) {
-        this.controller = controller;
     }
 
     public String getController() {
@@ -248,25 +236,17 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
         this.setAttribute("translationsMap", translationsMap);
     }
 
-    public TranslationsMap getTranslationsMap() {
-        return this.translationsMap;
-    }
-
-    public boolean isMultiPart() {
-        return this.multiPart;
-    }
-
     public int getLoggedUserId() {
         Object user = this.getScopedSessionAttribute("logged_user");
 
-        if (user instanceof LoginDTO) {
-            return ((LoginDTO) user).getId();
+        if (user instanceof LoginDTO login) {
+            return login.getId();
         }
 
         return 0;
     }
 
-    private void loadMultiPart(HttpServletRequest httpServletRequest)
+    private final void loadMultiPart(HttpServletRequest httpServletRequest)
             throws IOException, ServletException {
         String contentType = httpServletRequest.getContentType();
 

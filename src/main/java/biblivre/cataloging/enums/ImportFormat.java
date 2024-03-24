@@ -20,7 +20,7 @@
 package biblivre.cataloging.enums;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum ImportFormat implements BiblivreEnum {
     AUTO_DETECT,
@@ -29,19 +29,7 @@ public enum ImportFormat implements BiblivreEnum {
     ISO2709;
 
     public static ImportFormat fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (ImportFormat importFormat : ImportFormat.values()) {
-            if (str.equals(importFormat.name().toLowerCase())) {
-                return importFormat;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(ImportFormat.class, str.toUpperCase(), null);
     }
 
     @Override

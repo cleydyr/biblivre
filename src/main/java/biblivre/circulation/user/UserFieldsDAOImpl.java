@@ -27,20 +27,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserFieldsDAOImpl extends AbstractDAO implements UserFieldsDAO {
-
-    public static UserFieldsDAO getInstance() {
-        return AbstractDAO.getInstance(UserFieldsDAOImpl.class);
-    }
 
     @Override
     public List<UserFieldDTO> listFields() {
         List<UserFieldDTO> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sqlDatafields = "SELECT * FROM users_fields ORDER BY \"sort_order\";";
 
             Statement pst = con.createStatement();
@@ -56,8 +54,6 @@ public class UserFieldsDAOImpl extends AbstractDAO implements UserFieldsDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -73,5 +69,10 @@ public class UserFieldsDAOImpl extends AbstractDAO implements UserFieldsDAO {
         dto.setSortOrder(rs.getInt("sort_order"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

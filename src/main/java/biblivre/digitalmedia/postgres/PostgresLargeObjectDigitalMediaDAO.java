@@ -19,68 +19,65 @@
  ******************************************************************************/
 package biblivre.digitalmedia.postgres;
 
-import biblivre.core.exceptions.DAOException;
 import biblivre.core.file.BiblivreFile;
 import biblivre.digitalmedia.BaseDigitalMediaDAO;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
 
+@Service
+@ConditionalOnProperty(
+        value = "DIGITAL_MEDIA_DAO_IMPL",
+        havingValue = "biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO",
+        matchIfMissing = true)
+@Slf4j
 public class PostgresLargeObjectDigitalMediaDAO extends BaseDigitalMediaDAO {
 
     @Override
     public void persist(InputStream is, long oid, long size) throws SQLException, IOException {
+        withTransactionContext(
+                con -> {
+                    PGConnection pgcon = con.unwrap(PGConnection.class);
 
-        try (Connection con = this.getConnection()) {
+                    LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
-            con.setAutoCommit(false);
+                    LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
 
-            PGConnection pgcon = this.getPGConnection(con);
+                    IOUtils.copy(is, obj.getOutputStream());
 
-            LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
-            LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-
-            IOUtils.copy(is, obj.getOutputStream());
-
-            obj.close();
-
-            this.commit(con);
-        }
+                    obj.close();
+                });
     }
 
     @Override
     protected void deleteBlob(long oid) {
-        try (Connection con = this.getConnection()) {
+        withTransactionContext(
+                con -> {
+                    PGConnection pgcon = con.unwrap(PGConnection.class);
 
-            con.setAutoCommit(false);
+                    LargeObjectManager lobj = pgcon.getLargeObjectAPI();
 
-            PGConnection pgcon = this.getPGConnection(con);
-
-            LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-
-            lobj.delete(oid);
-
-            this.commit(con);
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-            throw new DAOException(e);
-        }
+                    lobj.delete(oid);
+                });
     }
 
     @Override
     protected BiblivreFile getFile(long oid) throws Exception {
-        Connection con = this.getConnection();
+        Connection con = datasource.getConnection();
 
         con.setAutoCommit(false);
 
-        PGConnection pgcon = this.getPGConnection(con);
+        PGConnection pgcon = con.unwrap(PGConnection.class);
 
         if (pgcon == null) {
             throw new Exception("Invalid Delegating Connection");
@@ -91,5 +88,10 @@ public class PostgresLargeObjectDigitalMediaDAO extends BaseDigitalMediaDAO {
         LargeObject obj = lobj.open(oid);
 
         return new DatabaseFile(con, obj);
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

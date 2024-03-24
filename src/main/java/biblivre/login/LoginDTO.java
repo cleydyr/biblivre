@@ -67,14 +67,6 @@ public class LoginDTO extends AbstractDTO {
         this.login = login;
     }
 
-    public String getEncPassword() {
-        return this.encPassword;
-    }
-
-    public void setEncPassword(String encPassword) {
-        this.encPassword = encPassword;
-    }
-
     public boolean isEmployee() {
         return this.employee;
     }

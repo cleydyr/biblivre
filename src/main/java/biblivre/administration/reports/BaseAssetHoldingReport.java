@@ -21,12 +21,7 @@ package biblivre.administration.reports;
 
 import biblivre.administration.reports.dto.AssetHoldingDto;
 import biblivre.administration.reports.dto.BaseReportDto;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Image;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.Barcode39;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
@@ -34,14 +29,16 @@ import com.lowagie.text.pdf.PdfPTable;
 import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAOImpl.getInstance().getAssetHoldingFullReportData();
+        return reportsDAO.getAssetHoldingFullReportData();
     }
 
     @Override
@@ -155,5 +152,10 @@ public abstract class BaseAssetHoldingReport extends BaseBiblivreReport {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell(cell);
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

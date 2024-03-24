@@ -19,67 +19,8 @@
  ******************************************************************************/
 package biblivre;
 
-import biblivre.acquisition.order.OrderDAO;
-import biblivre.acquisition.order.OrderDAOImpl;
-import biblivre.acquisition.quotation.QuotationDAO;
-import biblivre.acquisition.quotation.QuotationDAOImpl;
-import biblivre.acquisition.request.RequestDAO;
-import biblivre.acquisition.request.RequestDAOImpl;
-import biblivre.acquisition.supplier.SupplierDAO;
-import biblivre.acquisition.supplier.SupplierDAOImpl;
-import biblivre.administration.accesscards.AccessCardDAO;
-import biblivre.administration.accesscards.AccessCardDAOImpl;
-import biblivre.administration.backup.BackupDAO;
-import biblivre.administration.backup.BackupDAOImpl;
-import biblivre.administration.indexing.IndexingDAO;
-import biblivre.administration.indexing.IndexingDAOImpl;
-import biblivre.administration.indexing.IndexingGroupsDAO;
-import biblivre.administration.indexing.IndexingGroupsDAOImpl;
-import biblivre.administration.permissions.PermissionDAO;
-import biblivre.administration.permissions.PermissionDAOImpl;
-import biblivre.administration.reports.ReportsDAO;
-import biblivre.administration.reports.ReportsDAOImpl;
-import biblivre.administration.usertype.UserTypeDAO;
-import biblivre.administration.usertype.UserTypeDAOImpl;
-import biblivre.cataloging.RecordDAO;
-import biblivre.cataloging.RecordDAOImpl;
-import biblivre.cataloging.TabFieldsDAO;
-import biblivre.cataloging.TabFieldsDAOImpl;
-import biblivre.cataloging.holding.HoldingDAO;
-import biblivre.cataloging.holding.HoldingDAOImpl;
-import biblivre.cataloging.search.SearchDAO;
-import biblivre.cataloging.search.SearchDAOImpl;
-import biblivre.circulation.accesscontrol.AccessControlDAO;
-import biblivre.circulation.accesscontrol.AccessControlDAOImpl;
-import biblivre.circulation.lending.LendingDAO;
-import biblivre.circulation.lending.LendingDAOImpl;
-import biblivre.circulation.lending.LendingFineDAO;
-import biblivre.circulation.lending.LendingFineDAOImpl;
-import biblivre.circulation.reservation.ReservationDAO;
-import biblivre.circulation.reservation.ReservationDAOImpl;
-import biblivre.circulation.user.UserDAO;
-import biblivre.circulation.user.UserDAOImpl;
-import biblivre.circulation.user.UserFieldsDAO;
-import biblivre.circulation.user.UserFieldsDAOImpl;
-import biblivre.core.configurations.ConfigurationsDAO;
-import biblivre.core.configurations.ConfigurationsDAOImpl;
-import biblivre.core.controllers.ExtendedRequestResponseFilter;
-import biblivre.core.controllers.HandlerContextFilter;
-import biblivre.core.controllers.SchemaFilter;
-import biblivre.core.controllers.SchemaRedirectFilter;
-import biblivre.core.controllers.SchemaServlet;
-import biblivre.core.controllers.StatusFilter;
-import biblivre.core.schemas.SchemaDAO;
-import biblivre.core.schemas.SchemasDAOImpl;
-import biblivre.core.translations.LanguageDAO;
-import biblivre.core.translations.LanguageDAOImpl;
-import biblivre.core.translations.TranslationsDAO;
-import biblivre.core.translations.TranslationsDAOImpl;
+import biblivre.core.controllers.*;
 import biblivre.core.utils.StringPool;
-import biblivre.digitalmedia.DigitalMediaDAO;
-import biblivre.digitalmedia.DigitalMediaDAOFactory;
-import biblivre.login.LoginDAO;
-import biblivre.login.LoginDAOImpl;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
@@ -88,169 +29,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
-@SpringBootApplication(
-        exclude = {
-            DataSourceAutoConfiguration.class,
-            DataSourceTransactionManagerAutoConfiguration.class,
-            HibernateJpaAutoConfiguration.class
-        },
-        nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
+@SpringBootApplication(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
 public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("/static/");
-    }
-
-    @Bean
-    public AccessControlDAO accessControlDAO() {
-        return AccessControlDAOImpl.getInstance();
-    }
-
-    @Bean
-    public BackupDAO backupDAO() {
-        return BackupDAOImpl.getInstance();
-    }
-
-    @Bean
-    public DigitalMediaDAO digitalMediaDAO() {
-        return DigitalMediaDAOFactory.getDigitalMediaDAOImpl();
-    }
-
-    @Bean
-    public HoldingDAO holdingDAO() {
-        return HoldingDAOImpl.getInstance();
-    }
-
-    @Bean
-    public IndexingDAO indexingDAO() {
-        return IndexingDAOImpl.getInstance();
-    }
-
-    @Bean
-    public IndexingGroupsDAO indexingGroupsDAO() {
-        return IndexingGroupsDAOImpl.getInstance();
-    }
-
-    @Bean
-    public LendingDAO lendingDAO() {
-        return LendingDAOImpl.getInstance();
-    }
-
-    @Bean
-    public LendingFineDAO lendingFineDAO() {
-        return LendingFineDAOImpl.getInstance();
-    }
-
-    @Bean
-    public LoginDAO loginDAO() {
-        return LoginDAOImpl.getInstance();
-    }
-
-    @Bean
-    public OrderDAO orderDAO() {
-        return OrderDAOImpl.getInstance();
-    }
-
-    @Bean
-    public PermissionDAO permissionDAO() {
-        return PermissionDAOImpl.getInstance();
-    }
-
-    @Bean
-    public QuotationDAO quotationDAO() {
-        return QuotationDAOImpl.getInstance();
-    }
-
-    @Bean
-    public RecordDAO recordDAO() {
-        return RecordDAOImpl.getInstance();
-    }
-
-    @Bean
-    public ReportsDAO reportsDAO() {
-        return ReportsDAOImpl.getInstance();
-    }
-
-    @Bean
-    public RequestDAO requestDAO() {
-        return RequestDAOImpl.getInstance();
-    }
-
-    @Bean
-    public ReservationDAO reservationDAO() {
-        return ReservationDAOImpl.getInstance();
-    }
-
-    @Bean
-    public SearchDAO searchDAO() {
-        return SearchDAOImpl.getInstance();
-    }
-
-    @Bean
-    public SupplierDAO supplierDAO() {
-        return SupplierDAOImpl.getInstance();
-    }
-
-    @Bean
-    public UserDAO userDAO() {
-        return UserDAOImpl.getInstance();
-    }
-
-    @Bean
-    public UserTypeDAO userTypeDAO() {
-        return UserTypeDAOImpl.getInstance();
-    }
-
-    @Bean
-    public AccessCardDAO accessCardDAO() {
-        return AccessCardDAOImpl.getInstance();
-    }
-
-    @Bean
-    public UserFieldsDAO userFieldsDAO() {
-        return UserFieldsDAOImpl.getInstance();
-    }
-
-    @Bean
-    public TabFieldsDAO tabFieldsDAO() {
-        return TabFieldsDAOImpl.getInstance();
-    }
-
-    @Bean
-    public LanguageDAO languagesDAO() {
-        return LanguageDAOImpl.getInstance();
-    }
-
-    @Bean
-    public SchemaDAO schemasDAO() {
-        return SchemasDAOImpl.getInstance();
-    }
-
-    @Bean
-    public ConfigurationsDAO configurationsDAO() {
-        return ConfigurationsDAOImpl.getInstance();
-    }
-
-    @Bean
-    public TranslationsDAO translationsDAO() {
-        return TranslationsDAOImpl.getInstance();
-    }
-
     @Autowired private ApplicationContext applicationContext;
 
     @Autowired private AutowireCapableBeanFactory autowireCapableBeanFactory;
@@ -281,7 +73,10 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Bean
     public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
         return createFilterRegistration(
-                SchemaFilter.class, 1, DispatcherType.REQUEST, DispatcherType.ERROR);
+                SchemaFilter.class,
+                SecurityProperties.DEFAULT_FILTER_ORDER - 1,
+                DispatcherType.REQUEST,
+                DispatcherType.ERROR);
     }
 
     @Bean

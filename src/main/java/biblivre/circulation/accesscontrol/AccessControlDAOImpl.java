@@ -24,18 +24,16 @@ import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDAO {
-
-    public static AccessControlDAO getInstance() {
-        return AbstractDAO.getInstance(AccessControlDAOImpl.class);
-    }
 
     @Override
     public boolean save(AccessControlDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "INSERT INTO access_control "
@@ -51,17 +49,12 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean update(AccessControlDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "UPDATE access_control "
                             + "SET departure_time = now(), "
@@ -77,17 +70,12 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public AccessControlDTO getByCardId(Integer cardId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM access_control "
                             + "WHERE access_card_id = ? AND "
@@ -103,8 +91,6 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return null;
@@ -112,10 +98,7 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
 
     @Override
     public AccessControlDTO getByUserId(Integer userId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM access_control "
                             + "WHERE user_id = ? and "
@@ -130,8 +113,6 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
@@ -148,5 +129,10 @@ public class AccessControlDAOImpl extends AbstractDAO implements AccessControlDA
         dto.setModified(rs.getTimestamp("modified"));
         dto.setModifiedBy(rs.getInt("modified_by"));
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

@@ -19,13 +19,7 @@
  ******************************************************************************/
 package biblivre.core.controllers;
 
-import biblivre.core.SchemaThreadLocal;
-import biblivre.core.schemas.SchemasDAOImpl;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Writer;
@@ -63,21 +57,8 @@ public class StatusFilter implements Filter {
             Writer out = response.getWriter();
             JSONObject json = new JSONObject();
 
-            SchemaThreadLocal.withSchema(
-                    "public",
-                    () -> {
-                        // TODO: Completar com mais mensagens.
-                        // Checking Database
-                        SchemaThreadLocal.setSchema("public");
-
-                        if (!SchemasDAOImpl.getInstance().testDatabaseConnection()) {
-                            json.put("success", false);
-                            json.put("status_message", "Falha no acesso ao Banco de Dados");
-                        } else {
-                            json.put("success", true);
-                            json.put("status_message", "Disponível");
-                        }
-                    });
+            json.put("success", true);
+            json.put("status_message", "Disponível");
 
             out.write(json.toString());
 

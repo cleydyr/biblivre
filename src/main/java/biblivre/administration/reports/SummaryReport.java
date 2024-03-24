@@ -28,10 +28,12 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SummaryReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     private Integer index;
 
@@ -51,7 +53,7 @@ public class SummaryReport extends BaseBiblivreReport {
                 // author
             default -> index = 6; // dewey
         }
-        return ReportsDAOImpl.getInstance().getSummaryReportData(dto.getDatabase());
+        return reportsDAO.getSummaryReportData(dto.getDatabase());
     }
 
     @Override
@@ -195,5 +197,10 @@ public class SummaryReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.SUMMARY;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

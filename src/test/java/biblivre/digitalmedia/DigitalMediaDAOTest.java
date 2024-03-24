@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import biblivre.AbstractContainerDatabaseTest;
+import biblivre.TestDatasourceConfiguration;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
-import biblivre.digitalmedia.postgres.PostgresLargeObjectDigitalMediaDAO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,12 +17,19 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.google.common.io.Files;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
+@Import({TestDatasourceConfiguration.class})
+@ActiveProfiles("test")
 public class DigitalMediaDAOTest extends AbstractContainerDatabaseTest {
-    private final BaseDigitalMediaDAO dao = getInstance(PostgresLargeObjectDigitalMediaDAO.class);
+    @Autowired private BaseDigitalMediaDAO dao;
 
     private static final String DEFAULT_SCHEMA = "single";
 

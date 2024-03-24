@@ -2,30 +2,25 @@ package biblivre.cataloging;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import biblivre.cataloging.dataimport.impl.ISO2709ImportProcessor;
-import biblivre.cataloging.dataimport.impl.MarcFileImportProcessor;
-import biblivre.cataloging.dataimport.impl.MarcXMLImportProcessor;
+import biblivre.AbstractContainerDatabaseTest;
+import biblivre.TestDatasourceConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-public class ImportBOTest {
-    ImportBO importBO;
-
-    @BeforeEach
-    void setUp() {
-        importBO = new ImportBO();
-
-        importBO.setImportProcessors(
-                List.of(
-                        new ISO2709ImportProcessor(),
-                        new MarcXMLImportProcessor(),
-                        new MarcFileImportProcessor()));
-    }
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("test")
+@Testcontainers
+@Import({TestDatasourceConfiguration.class})
+public class ImportBOTest extends AbstractContainerDatabaseTest {
+    @Autowired ImportBO importBO;
 
     @Test
     void testImportBO() {

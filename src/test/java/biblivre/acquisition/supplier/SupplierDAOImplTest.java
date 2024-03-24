@@ -3,7 +3,7 @@ package biblivre.acquisition.supplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 import biblivre.AbstractContainerDatabaseTest;
-import biblivre.TestBiblivreApplication;
+import biblivre.TestDatasourceConfiguration;
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import java.lang.reflect.InvocationTargetException;
@@ -20,14 +20,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.datasource.url=jdbc:tc:postgresql:12:///biblivre4"},
-        classes = TestBiblivreApplication.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
+@Import({TestDatasourceConfiguration.class})
 @ActiveProfiles("test")
 public class SupplierDAOImplTest extends AbstractContainerDatabaseTest {
     Faker faker = new Faker();
@@ -36,125 +35,97 @@ public class SupplierDAOImplTest extends AbstractContainerDatabaseTest {
 
     @BeforeEach
     void setUp() {
-        execute(
-                () -> {
-                    SchemaThreadLocal.setSchema("single");
-                    Assertions.assertEquals(
-                            supplierDAO.search(null, Integer.MAX_VALUE, 0).size(), 0);
-                });
+        SchemaThreadLocal.setSchema("single");
+        Assertions.assertEquals(supplierDAO.search(null, Integer.MAX_VALUE, 0).size(), 0);
     }
 
     @AfterEach
     void tearDown() {
-        execute(
-                () -> {
-                    SchemaThreadLocal.setSchema("single");
+        SchemaThreadLocal.setSchema("single");
 
-                    supplierDAO
-                            .search(null, Integer.MAX_VALUE, 0)
-                            .forEach(supplier -> supplierDAO.delete(supplier.getId()));
-                });
+        supplierDAO
+                .search(null, Integer.MAX_VALUE, 0)
+                .forEach(supplier -> supplierDAO.delete(supplier.getId()));
     }
 
     @Test
     public void save() {
-        execute(
-                () -> {
-                    SupplierDTO savedSupplier = generateRandomSupplierDTO();
+        SupplierDTO savedSupplier = generateRandomSupplierDTO();
 
-                    int id = supplierDAO.save(savedSupplier);
+        int id = supplierDAO.save(savedSupplier);
 
-                    savedSupplier.setId(id);
+        savedSupplier.setId(id);
 
-                    SupplierDTO retrievedSupplier = supplierDAO.get(id);
+        SupplierDTO retrievedSupplier = supplierDAO.get(id);
 
-                    equalsGetters(savedSupplier, retrievedSupplier);
-                });
+        equalsGetters(savedSupplier, retrievedSupplier);
     }
 
     @Test
     public void updateWithInexistentIdThrows() {
-        execute(
-                () -> {
-                    SupplierDTO supplierWithDefaultId = generateRandomSupplierDTO();
+        SupplierDTO supplierWithDefaultId = generateRandomSupplierDTO();
 
-                    assertThrows(
-                            DAOException.class,
-                            () -> {
-                                supplierDAO.update(supplierWithDefaultId);
-                            });
+        assertThrows(
+                DAOException.class,
+                () -> {
+                    supplierDAO.update(supplierWithDefaultId);
                 });
     }
 
     @Test
     public void update() {
-        execute(
+        SupplierDTO savedSupplier = generateRandomSupplierDTO();
+
+        int id = supplierDAO.save(savedSupplier);
+
+        SupplierDTO replacing = generateRandomSupplierDTO();
+
+        replacing.setId(-1);
+
+        assertThrows(
+                DAOException.class,
                 () -> {
-                    SupplierDTO savedSupplier = generateRandomSupplierDTO();
-
-                    int id = supplierDAO.save(savedSupplier);
-
-                    SupplierDTO replacing = generateRandomSupplierDTO();
-
-                    replacing.setId(-1);
-
-                    assertThrows(
-                            DAOException.class,
-                            () -> {
-                                supplierDAO.update(replacing);
-                            });
-
-                    replacing.setId(id);
-
                     supplierDAO.update(replacing);
-
-                    SupplierDTO retrievedSupplier = supplierDAO.get(id);
-
-                    equalsGetters(retrievedSupplier, replacing);
                 });
+
+        replacing.setId(id);
+
+        supplierDAO.update(replacing);
+
+        SupplierDTO retrievedSupplier = supplierDAO.get(id);
+
+        equalsGetters(retrievedSupplier, replacing);
     }
 
     @Test
     public void delete() {
-        execute(
-                () -> {
-                    SupplierDTO savedSupplier = generateRandomSupplierDTO();
+        SupplierDTO savedSupplier = generateRandomSupplierDTO();
 
-                    int id = supplierDAO.save(savedSupplier);
+        int id = supplierDAO.save(savedSupplier);
 
-                    assertEquals(1, supplierDAO.search(null, Integer.MAX_VALUE, 0).size());
+        assertEquals(1, supplierDAO.search(null, Integer.MAX_VALUE, 0).size());
 
-                    savedSupplier.setId(id);
+        savedSupplier.setId(id);
 
-                    supplierDAO.delete(savedSupplier.getId());
+        supplierDAO.delete(savedSupplier.getId());
 
-                    assertEquals(0, supplierDAO.search(null, Integer.MAX_VALUE, 0).size());
-                });
+        assertEquals(0, supplierDAO.search(null, Integer.MAX_VALUE, 0).size());
     }
 
     @Test
     public void search() {
-        execute(
-                () -> {
-                    SupplierDTO savedSupplier = generateRandomSupplierDTO();
+        SupplierDTO savedSupplier = generateRandomSupplierDTO();
 
-                    supplierDAO.save(savedSupplier);
+        supplierDAO.save(savedSupplier);
 
-                    assertEquals(
-                            1,
-                            supplierDAO
-                                    .search(savedSupplier.getTrademark(), Integer.MAX_VALUE, 0)
-                                    .size());
+        assertEquals(
+                1, supplierDAO.search(savedSupplier.getTrademark(), Integer.MAX_VALUE, 0).size());
 
-                    assertEquals(
-                            0,
-                            supplierDAO
-                                    .search(
-                                            savedSupplier.getTrademark() + "suffix",
-                                            Integer.MAX_VALUE,
-                                            0)
-                                    .size());
-                });
+        assertEquals(
+                0,
+                supplierDAO
+                        .search(savedSupplier.getTrademark() + "suffix", Integer.MAX_VALUE, 0)
+                        .size());
     }
 
     private static void equalsGetters(SupplierDTO savedSupplier, SupplierDTO retrievedSupplier) {

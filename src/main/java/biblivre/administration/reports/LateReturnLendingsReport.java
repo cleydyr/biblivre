@@ -28,14 +28,16 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LateReturnLendingsReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAOImpl.getInstance().getLateReturnLendingsReportData();
+        return reportsDAO.getLateReturnLendingsReportData();
     }
 
     @Override
@@ -140,5 +142,10 @@ public class LateReturnLendingsReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.LATE_LENDINGS;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

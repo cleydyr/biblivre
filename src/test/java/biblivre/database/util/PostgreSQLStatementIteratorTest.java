@@ -80,7 +80,7 @@ public class PostgreSQLStatementIteratorTest {
         String tagName = "Mdeqe6H91y";
 
         String original =
-                """
+                        """
                 --
                 -- Name: unlink(); Type: FUNCTION; Schema: global; Owner: biblivre
                 --
@@ -99,7 +99,7 @@ public class PostgreSQLStatementIteratorTest {
                         .formatted(tagName, tagName);
 
         String normalized =
-                """
+                        """
                 CREATE FUNCTION unlink() RETURNS trigger LANGUAGE plpgsql AS $%s$
                 BEGIN
                     PERFORM pg_catalog.lo_unlink(OLD.blob);
@@ -118,7 +118,7 @@ public class PostgreSQLStatementIteratorTest {
         String tagName = "BjoUqrPZzj";
 
         String original =
-                """
+                        """
                 SELECT $%s$foobar$%s$;
                 """
                         .formatted(tagName, tagName);
@@ -133,7 +133,7 @@ public class PostgreSQLStatementIteratorTest {
         String tagName = "rTjqaWKJrA";
 
         String original =
-                """
+                        """
                 SELECT $%s$a$b$%s$;
                 """
                         .formatted(tagName, tagName);

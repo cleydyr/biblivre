@@ -19,29 +19,22 @@
  ******************************************************************************/
 package biblivre.core;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import biblivre.core.exceptions.DAOException;
+import jakarta.annotation.Nonnull;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UpdatesDAO extends AbstractDAO {
-
-    public static UpdatesDAO getInstance() {
-        return AbstractDAO.getInstance(UpdatesDAO.class);
-    }
-
     public Set<String> getInstalledVersions() throws SQLException {
-        Connection con = null;
+        String sql = "SELECT installed_versions FROM versions;";
 
-        try {
-            con = this.getConnection();
-
-            String sql = "SELECT installed_versions FROM versions;";
-
-            Statement st = con.createStatement();
+        try (Connection connection = datasource.getConnection();
+                Statement st = connection.createStatement()) {
             ResultSet rs = st.executeQuery(sql);
 
             Set<String> set = new HashSet<>();
@@ -49,13 +42,11 @@ public class UpdatesDAO extends AbstractDAO {
                 set.add(rs.getString("installed_versions"));
             }
             return set;
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     public Connection beginUpdate() throws SQLException {
-        Connection con = this.getConnection();
+        Connection con = datasource.getConnection();
         con.setAutoCommit(false);
 
         return con;
@@ -66,7 +57,7 @@ public class UpdatesDAO extends AbstractDAO {
     }
 
     public void commitUpdate(String version, Connection con, boolean insert) throws SQLException {
-        try {
+        try (con) {
             if (insert) {
                 try (PreparedStatement insertIntoVersions =
                         con.prepareStatement(
@@ -79,38 +70,30 @@ public class UpdatesDAO extends AbstractDAO {
 
                 this.commit(con);
             }
-        } finally {
-            this.closeConnection(con);
         }
     }
 
-    public void rollbackUpdate(Connection con) {
-        try {
+    public void rollbackUpdate(@Nonnull Connection con) {
+        try (con) {
             this.rollback(con);
-        } finally {
-            this.closeConnection(con);
+        } catch (SQLException e) {
+            throw new DAOException(e);
         }
     }
 
     public void createArrayAgg() throws SQLException {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "CREATE AGGREGATE public.array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND=’{}’);";
 
             Statement st = con.createStatement();
             st.execute(sql);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     public void create81ArrayAgg() throws SQLException {
 
-        try (Connection con = this.getConnection();
+        try (Connection con = datasource.getConnection();
                 Statement st = con.createStatement()) {
 
             String sql =
@@ -120,24 +103,8 @@ public class UpdatesDAO extends AbstractDAO {
         }
     }
 
-    public void fixVersionsTable() throws SQLException {
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
-            String sql =
-                    "CREATE TABLE versions ("
-                            + "installed_versions character varying NOT NULL, CONSTRAINT \"PK_versions\" PRIMARY KEY (installed_versions))"
-                            + "WITH (OIDS=FALSE);";
-
-            String sql2 = "ALTER TABLE backups OWNER TO biblivre;";
-
-            Statement st = con.createStatement();
-            st.execute(sql);
-            st.execute(sql2);
-        } finally {
-            this.closeConnection(con);
-        }
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

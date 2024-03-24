@@ -5,11 +5,13 @@ import static biblivre.core.utils.Constants.FROM_CM;
 import com.github.cleydyr.pimaco.PimacoTagSheet;
 import com.github.cleydyr.pimaco.SheetSize;
 import com.lowagie.text.RectangleReadOnly;
+import lombok.Getter;
 
+@Getter
 public class ITextPimacoTagSheetAdapter {
 
     public ITextPimacoTagSheetAdapter(String model) {
-        PimacoTagSheet sheet = PimacoTagSheet.fromPimacoCode(model).get();
+        PimacoTagSheet sheet = PimacoTagSheet.fromPimacoCode(model).orElseThrow();
         float verticalMargin = FROM_CM.apply(sheet.getVerticalMargin());
         float horizontalPadding = FROM_CM.apply(sheet.getHoriziontalSpacing().divide(2));
         float horizontalMargin = FROM_CM.apply(sheet.getHorizontalMargin());
@@ -29,38 +31,6 @@ public class ITextPimacoTagSheetAdapter {
         this.rows = sheet.getRows();
         this.pageSize = new RectangleReadOnly(width, height);
         this.cellHeight = cellHeight;
-    }
-
-    public float getVerticalMargin() {
-        return verticalMargin;
-    }
-
-    public float getHorizontalMargin() {
-        return horizontalMargin;
-    }
-
-    public float getVerticalPadding() {
-        return verticalPadding;
-    }
-
-    public float getHorizontalPadding() {
-        return horizontalPadding;
-    }
-
-    public RectangleReadOnly getPageSize() {
-        return pageSize;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public float getCellHeight() {
-        return cellHeight;
     }
 
     private final float verticalMargin;

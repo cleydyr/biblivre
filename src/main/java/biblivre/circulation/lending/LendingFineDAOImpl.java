@@ -23,25 +23,19 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
-
-    public static LendingFineDAO getInstance() {
-        return AbstractDAO.getInstance(LendingFineDAOImpl.class);
-    }
 
     @Override
     public void insert(LendingFineDTO fine) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "INSERT INTO lending_fines "
@@ -63,16 +57,12 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public LendingFineDTO get(Integer lendingFineId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "SELECT * FROM lending_fines WHERE id = ?;";
 
@@ -86,17 +76,13 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
 
     @Override
     public LendingFineDTO getByLendingId(Integer lendingId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "SELECT * FROM lending_fines WHERE lending_id = ?;";
 
@@ -110,8 +96,6 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
@@ -119,9 +103,7 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
     @Override
     public List<LendingFineDTO> list(UserDTO user, boolean pendingOnly) {
         List<LendingFineDTO> list = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM lending_fines WHERE user_id = ? ");
@@ -140,17 +122,13 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
 
     @Override
     public boolean update(LendingFineDTO fine) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "UPDATE lending_fines SET payment_date = now(), "
@@ -163,8 +141,6 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -181,5 +157,10 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         dto.setCreatedBy(rs.getInt("created_by"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

@@ -41,11 +41,11 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
                 persist(is, oid, file.getSize());
 
-                try (Connection con2 = this.getConnection()) {
+                try (Connection con = datasource.getConnection()) {
                     String sql =
                             "INSERT INTO digital_media (id, name, blob, content_type, size) VALUES (?, ?, ?, ?, ?);";
 
-                    PreparedStatement pst = con2.prepareStatement(sql);
+                    PreparedStatement pst = con.prepareStatement(sql);
                     pst.setInt(1, serial);
                     pst.setString(2, file.getName());
                     pst.setLong(3, oid);
@@ -66,25 +66,19 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
     @Override
     public long createOID() {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+        return withTransactionContext(
+                con -> {
+                    con.setAutoCommit(false);
 
-            PGConnection pgcon = getPGConnection(con);
+                    PGConnection pgcon = con.unwrap(PGConnection.class);
 
-            LargeObjectManager lobj = pgcon.getLargeObjectAPI();
-            long oid = lobj.createLO();
+                    LargeObjectManager lobj = pgcon.getLargeObjectAPI();
+                    long oid = lobj.createLO();
 
-            this.commit(con);
+                    this.commit(con);
 
-            return oid;
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return oid;
+                });
     }
 
     @Override
@@ -102,9 +96,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
     @Override
     public final BiblivreFile load(int id, String name) {
-        BiblivreFile file = null;
-
-        try (Connection con = this.getConnection()) {
+        try (Connection con = datasource.getConnection()) {
             // We check both ID and FILE_NAME for security reasons, so users can't "guess"
             // id's and get the files.
             String sql =
@@ -120,7 +112,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
             if (rs.next()) {
                 long oid = rs.getLong("blob");
 
-                file = getFile(oid);
+                BiblivreFile file = getFile(oid);
 
                 file.setName(rs.getString("name"));
                 file.setContentType(rs.getString("content_type"));
@@ -138,10 +130,7 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
     @Override
     public boolean delete(int id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             PreparedStatement preparedStatement =
                     con.prepareStatement(
                             "SELECT id, blob, name " + "FROM digital_media WHERE id = ?");
@@ -174,8 +163,6 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
             return false;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
@@ -183,10 +170,8 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
 
     @Override
     public List<DigitalMediaDTO> list() {
-        Connection con = null;
         List<DigitalMediaDTO> list = new ArrayList<>();
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery("SELECT id, blob, name FROM digital_media;");
 
@@ -201,8 +186,6 @@ public abstract class BaseDigitalMediaDAO extends AbstractDAO implements Digital
             return list;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 }

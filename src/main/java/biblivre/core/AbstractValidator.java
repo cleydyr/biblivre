@@ -20,6 +20,10 @@
 package biblivre.core;
 
 public class AbstractValidator {
+    public static final String FIELD_ERROR_REQUIRED = "field.error.required";
+    public static final String FIELD_ERROR_INVALID = "field.error.invalid";
+    public static final String ERROR_FORM_INVALID_VALUES = "error.form_invalid_values";
+
     public boolean checkValidation(final AbstractHandler handler) {
         return handler == null || !handler.hasErrors();
     }

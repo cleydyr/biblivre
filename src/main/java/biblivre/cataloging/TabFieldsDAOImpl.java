@@ -22,30 +22,26 @@ package biblivre.cataloging;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
-
-    public static TabFieldsDAO getInstance() {
-        return AbstractDAO.getInstance(TabFieldsDAOImpl.class);
-    }
 
     @Override
     public List<BriefTabFieldFormatDTO> listBriefFormats(RecordType recordType) {
         List<BriefTabFieldFormatDTO> list = new ArrayList<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM "
                             + recordType
@@ -58,13 +54,11 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
                 try {
                     list.add(this.populateFormatsDTO(rs));
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -74,9 +68,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
     public boolean insertBriefFormat(
             BriefTabFieldFormatDTO dto, RecordType recordType, int loggedUser) {
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     " INSERT INTO "
@@ -94,8 +86,6 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return true;
@@ -105,9 +95,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
     public boolean updateBriefFormats(
             List<BriefTabFieldFormatDTO> briefFormats, RecordType recordType, int loggedUser) {
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     " UPDATE "
@@ -134,8 +122,6 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return true;
@@ -144,9 +130,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
     @Override
     public boolean deleteBriefFormat(String datafield, RecordType recordType) {
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     " DELETE FROM " + recordType + "_brief_formats " + " WHERE datafield = ?; ";
@@ -158,8 +142,6 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return true;
@@ -167,37 +149,32 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
 
     @Override
     public boolean deleteFormTabDatafield(String datafield, RecordType recordType) {
+        return withTransactionContext(
+                con -> {
+                    String subfieldSql =
+                            " DELETE FROM "
+                                    + recordType
+                                    + "_form_subfields "
+                                    + " WHERE datafield = ?; ";
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+                    PreparedStatement subfieldPst = con.prepareStatement(subfieldSql);
+                    subfieldPst.setString(1, datafield);
 
-            String subfieldSql =
-                    " DELETE FROM " + recordType + "_form_subfields " + " WHERE datafield = ?; ";
+                    subfieldPst.executeUpdate();
 
-            PreparedStatement subfieldPst = con.prepareStatement(subfieldSql);
-            subfieldPst.setString(1, datafield);
+                    String datafieldSql =
+                            " DELETE FROM "
+                                    + recordType
+                                    + "_form_datafields "
+                                    + " WHERE datafield = ?; ";
 
-            subfieldPst.executeUpdate();
+                    PreparedStatement datafieldPst = con.prepareStatement(datafieldSql);
+                    datafieldPst.setString(1, datafield);
 
-            String datafieldSql =
-                    " DELETE FROM " + recordType + "_form_datafields " + " WHERE datafield = ?; ";
+                    datafieldPst.executeUpdate();
 
-            PreparedStatement datafieldPst = con.prepareStatement(datafieldSql);
-            datafieldPst.setString(1, datafield);
-
-            datafieldPst.executeUpdate();
-
-            con.commit();
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-
-        return true;
+                    return true;
+                });
     }
 
     @Override
@@ -205,9 +182,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
         List<FormTabDatafieldDTO> list = new ArrayList<>();
         Map<String, FormTabDatafieldDTO> hash = new HashMap<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sqlDatafields =
                     "SELECT * FROM "
                             + recordType
@@ -222,7 +197,7 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
                     hash.put(datafield.getDatafield(), datafield);
                     list.add(datafield);
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
 
@@ -243,14 +218,12 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
                         datafield.addSubfield(subfield);
                     }
                 } catch (Exception e) {
-                    this.logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -298,117 +271,116 @@ public class TabFieldsDAOImpl extends AbstractDAO implements TabFieldsDAO {
             Map<String, FormTabDatafieldDTO> formDatafields,
             RecordType recordType,
             int loggedUser) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        return withTransactionContext(
+                con -> {
+                    boolean insert = false;
+                    boolean delete = false;
 
-            boolean insert = false;
-            boolean delete = false;
+                    PreparedStatement deleteSubfieldsPST =
+                            con.prepareStatement(
+                                    "DELETE FROM "
+                                            + recordType
+                                            + "_form_subfields WHERE datafield = ?");
 
-            PreparedStatement deleteSubfieldsPST =
-                    con.prepareStatement(
-                            "DELETE FROM " + recordType + "_form_subfields WHERE datafield = ?");
+                    PreparedStatement insertSubfieldsPST =
+                            con.prepareStatement(
+                                    "INSERT INTO "
+                                            + recordType
+                                            + "_form_subfields "
+                                            + "(datafield, subfield, collapsed, repeatable, created, created_by,"
+                                            + "	modified, modified_by, autocomplete_type, sort_order) "
+                                            + "VALUES (?, ?, ?, ?, now(), ?, now(), ?, ?, ?); ");
 
-            PreparedStatement insertSubfieldsPST =
-                    con.prepareStatement(
-                            "INSERT INTO "
-                                    + recordType
-                                    + "_form_subfields "
-                                    + "(datafield, subfield, collapsed, repeatable, created, created_by,"
-                                    + "	modified, modified_by, autocomplete_type, sort_order) "
-                                    + "VALUES (?, ?, ?, ?, now(), ?, now(), ?, ?, ?); ");
+                    PreparedStatement updateDataFieldsPST =
+                            con.prepareStatement(
+                                    "UPDATE "
+                                            + recordType
+                                            + "_form_datafields "
+                                            + "SET sort_order = ?, datafield = ?, collapsed = ?, repeatable = ?, "
+                                            + "indicator_1 = ?, indicator_2 = ?, material_type = ?, "
+                                            + "modified = now(), modified_by = ? "
+                                            + "WHERE datafield = ?");
+                    PreparedStatement insertDataFieldsPST =
+                            con.prepareStatement(
+                                    "INSERT INTO "
+                                            + recordType
+                                            + "_form_datafields"
+                                            + "(sort_order, datafield, collapsed, repeatable, indicator_1, "
+                                            + "indicator_2, material_type, created_by, modified_by) "
+                                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING");
 
-            PreparedStatement updateDataFieldsPST =
-                    con.prepareStatement(
-                            "UPDATE "
-                                    + recordType
-                                    + "_form_datafields "
-                                    + "SET sort_order = ?, datafield = ?, collapsed = ?, repeatable = ?, "
-                                    + "indicator_1 = ?, indicator_2 = ?, material_type = ?, "
-                                    + "modified = now(), modified_by = ? "
-                                    + "WHERE datafield = ?");
-            PreparedStatement insertDataFieldsPST =
-                    con.prepareStatement(
-                            "INSERT INTO "
-                                    + recordType
-                                    + "_form_datafields"
-                                    + "(sort_order, datafield, collapsed, repeatable, indicator_1, "
-                                    + "indicator_2, material_type, created_by, modified_by) "
-                                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING");
+                    for (Entry<String, FormTabDatafieldDTO> entry : formDatafields.entrySet()) {
+                        String tag = entry.getKey();
 
-            for (Entry<String, FormTabDatafieldDTO> entry : formDatafields.entrySet()) {
-                String tag = entry.getKey();
+                        FormTabDatafieldDTO datafield = entry.getValue();
 
-                FormTabDatafieldDTO datafield = entry.getValue();
+                        delete |=
+                                datafield.getSubfields() != null
+                                        && !datafield.getSubfields().isEmpty();
 
-                delete |= datafield.getSubfields() != null && datafield.getSubfields().size() > 0;
+                        if (delete) {
+                            deleteSubfieldsPST.setString(1, tag);
 
-                if (delete) {
-                    deleteSubfieldsPST.setString(1, tag);
+                            deleteSubfieldsPST.addBatch();
 
-                    deleteSubfieldsPST.addBatch();
+                            for (FormTabSubfieldDTO sub : datafield.getSubfields()) {
+                                insert = true;
 
-                    for (FormTabSubfieldDTO sub : datafield.getSubfields()) {
-                        insert = true;
+                                insertSubfieldsPST.setString(1, sub.getDatafield());
+                                insertSubfieldsPST.setString(2, sub.getSubfield());
+                                insertSubfieldsPST.setBoolean(3, sub.isCollapsed());
+                                insertSubfieldsPST.setBoolean(4, sub.isRepeatable());
+                                insertSubfieldsPST.setInt(5, loggedUser);
+                                insertSubfieldsPST.setInt(6, loggedUser);
+                                insertSubfieldsPST.setString(
+                                        7, sub.getAutocompleteType().toString());
+                                insertSubfieldsPST.setInt(8, sub.getSortOrder());
 
-                        insertSubfieldsPST.setString(1, sub.getDatafield());
-                        insertSubfieldsPST.setString(2, sub.getSubfield());
-                        insertSubfieldsPST.setBoolean(3, sub.isCollapsed());
-                        insertSubfieldsPST.setBoolean(4, sub.isRepeatable());
-                        insertSubfieldsPST.setInt(5, loggedUser);
-                        insertSubfieldsPST.setInt(6, loggedUser);
-                        insertSubfieldsPST.setString(7, sub.getAutocompleteType().toString());
-                        insertSubfieldsPST.setInt(8, sub.getSortOrder());
+                                insertSubfieldsPST.addBatch();
+                            }
+                        }
 
-                        insertSubfieldsPST.addBatch();
+                        updateDataFieldsPST.setInt(1, datafield.getSortOrder());
+                        updateDataFieldsPST.setString(2, datafield.getDatafield());
+                        updateDataFieldsPST.setBoolean(3, datafield.isCollapsed());
+                        updateDataFieldsPST.setBoolean(4, datafield.isRepeatable());
+                        updateDataFieldsPST.setString(5, datafield.getIndicator1());
+                        updateDataFieldsPST.setString(6, datafield.getIndicator2());
+                        updateDataFieldsPST.setString(7, datafield.getMaterialType());
+                        updateDataFieldsPST.setInt(8, loggedUser);
+                        updateDataFieldsPST.setString(9, datafield.getDatafield());
+
+                        updateDataFieldsPST.addBatch();
+
+                        insertDataFieldsPST.setInt(1, datafield.getSortOrder());
+                        insertDataFieldsPST.setString(2, datafield.getDatafield());
+                        insertDataFieldsPST.setBoolean(3, datafield.isCollapsed());
+                        insertDataFieldsPST.setBoolean(4, datafield.isRepeatable());
+                        insertDataFieldsPST.setString(5, datafield.getIndicator1());
+                        insertDataFieldsPST.setString(6, datafield.getIndicator2());
+                        insertDataFieldsPST.setString(7, datafield.getMaterialType());
+                        insertDataFieldsPST.setInt(8, loggedUser);
+                        insertDataFieldsPST.setInt(9, loggedUser);
+
+                        insertDataFieldsPST.execute();
                     }
-                }
 
-                updateDataFieldsPST.setInt(1, datafield.getSortOrder());
-                updateDataFieldsPST.setString(2, datafield.getDatafield());
-                updateDataFieldsPST.setBoolean(3, datafield.isCollapsed());
-                updateDataFieldsPST.setBoolean(4, datafield.isRepeatable());
-                updateDataFieldsPST.setString(5, datafield.getIndicator1());
-                updateDataFieldsPST.setString(6, datafield.getIndicator2());
-                updateDataFieldsPST.setString(7, datafield.getMaterialType());
-                updateDataFieldsPST.setInt(8, loggedUser);
-                updateDataFieldsPST.setString(9, datafield.getDatafield());
+                    if (delete) {
+                        deleteSubfieldsPST.executeBatch();
+                    }
 
-                updateDataFieldsPST.addBatch();
+                    updateDataFieldsPST.executeBatch();
 
-                insertDataFieldsPST.setInt(1, datafield.getSortOrder());
-                insertDataFieldsPST.setString(2, datafield.getDatafield());
-                insertDataFieldsPST.setBoolean(3, datafield.isCollapsed());
-                insertDataFieldsPST.setBoolean(4, datafield.isRepeatable());
-                insertDataFieldsPST.setString(5, datafield.getIndicator1());
-                insertDataFieldsPST.setString(6, datafield.getIndicator2());
-                insertDataFieldsPST.setString(7, datafield.getMaterialType());
-                insertDataFieldsPST.setInt(8, loggedUser);
-                insertDataFieldsPST.setInt(9, loggedUser);
+                    if (insert) {
+                        insertSubfieldsPST.executeBatch();
+                    }
 
-                insertDataFieldsPST.execute();
-            }
+                    return true;
+                });
+    }
 
-            if (delete) {
-                deleteSubfieldsPST.executeBatch();
-            }
-
-            con.setAutoCommit(false);
-
-            updateDataFieldsPST.executeBatch();
-
-            if (insert) {
-                insertSubfieldsPST.executeBatch();
-            }
-
-            this.commit(con);
-
-        } catch (Exception e) {
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
-
-        return true;
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

@@ -21,21 +21,18 @@ package biblivre.core.configurations;
 
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class ConfigurationsDAOImpl extends AbstractDAO implements ConfigurationsDAO {
-
-    public static ConfigurationsDAOImpl getInstance() {
-        return AbstractDAO.getInstance(ConfigurationsDAOImpl.class);
-    }
-
     private List<ConfigurationsDTO> cache = null;
 
     @Override
@@ -48,7 +45,7 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
 
         String sql = "SELECT * FROM configurations;";
 
-        try (Connection con = getConnection();
+        try (Connection con = datasource.getConnection();
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(sql)) {
 
@@ -60,60 +57,50 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
 
             return cache;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             throw new DAOException(e);
         }
     }
 
     @Override
     public boolean save(List<ConfigurationsDTO> configs, int loggedUser) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            String update =
-                    "UPDATE configurations SET value = ?, modified = now(), modified_by = ? WHERE key = ?;";
-            String insert =
-                    "INSERT INTO configurations (key, value, type, required, modified_by) VALUES (?, ?, ?, ?, ?);";
+        String update =
+                "UPDATE configurations SET value = ?, modified = now(), modified_by = ? WHERE key = ?;";
+        String insert =
+                "INSERT INTO configurations (key, value, type, required, modified_by) VALUES (?, ?, ?, ?, ?);";
 
-            con.setAutoCommit(false);
+        return withTransactionContext(
+                con -> {
+                    PreparedStatement updatePst = con.prepareStatement(update);
+                    PreparedStatement insertPst = con.prepareStatement(insert);
 
-            PreparedStatement updatePst = con.prepareStatement(update);
-            PreparedStatement insertPst = con.prepareStatement(insert);
+                    for (ConfigurationsDTO config : configs) {
+                        updatePst.clearParameters();
 
-            for (ConfigurationsDTO config : configs) {
-                updatePst.clearParameters();
+                        updatePst.setString(1, config.getValue());
+                        updatePst.setInt(2, loggedUser);
+                        updatePst.setString(3, config.getKey());
 
-                updatePst.setString(1, config.getValue());
-                updatePst.setInt(2, loggedUser);
-                updatePst.setString(3, config.getKey());
+                        if (updatePst.executeUpdate() == 0) {
+                            insertPst.clearParameters();
 
-                if (updatePst.executeUpdate() == 0) {
-                    insertPst.clearParameters();
+                            insertPst.setString(1, config.getKey());
+                            insertPst.setString(2, config.getValue());
+                            insertPst.setString(3, config.getType());
+                            insertPst.setBoolean(4, config.isRequired());
+                            insertPst.setInt(5, loggedUser);
 
-                    insertPst.setString(1, config.getKey());
-                    insertPst.setString(2, config.getValue());
-                    insertPst.setString(3, config.getType());
-                    insertPst.setBoolean(4, config.isRequired());
-                    insertPst.setInt(5, loggedUser);
-
-                    if (insertPst.executeUpdate() == 0) {
-                        con.rollback();
-                        return false;
+                            if (insertPst.executeUpdate() == 0) {
+                                con.rollback();
+                                return false;
+                            }
+                        }
                     }
-                }
-            }
 
-            this.commit(con);
+                    this.cache = null;
 
-            this.cache = null;
-
-            return true;
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return true;
+                });
     }
 
     private ConfigurationsDTO populateDTO(ResultSet rs) throws SQLException {
@@ -127,5 +114,10 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
         dto.setModifiedBy(rs.getInt("modified_by"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

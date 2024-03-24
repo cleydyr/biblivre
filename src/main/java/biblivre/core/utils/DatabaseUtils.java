@@ -141,7 +141,7 @@ public class DatabaseUtils {
                     "\"/bin/ps axwwww -o comm | grep -v grep | grep postgres$ | sed 's/postgres$//'\""
                 };
 
-        String path = DatabaseUtils.processPatternMatcher(commands, "(.*)", 1);
+        String path = DatabaseUtils.processPatternMatcher(commands, "(.*)");
         return new File(path, filename);
     }
 
@@ -207,25 +207,17 @@ public class DatabaseUtils {
                     "tasklist", "/nh", "/svc", "/fi", "imagename eq pg_ctl.exe", "/fo", "csv"
                 };
 
-        return DatabaseUtils.processPatternMatcher(commands, "([^\"]+)\"$", 1);
+        return DatabaseUtils.processPatternMatcher(commands, "([^\"]+)\"$");
     }
 
     private static String getRegValue(String dir, String key) {
         String[] commands = new String[] {"reg", "query", dir, "/V", key};
 
-        return DatabaseUtils.processPatternMatcher(commands, "REG_SZ\\s+(.+)$", 1);
+        return DatabaseUtils.processPatternMatcher(commands, "REG_SZ\\s+(.+)$");
     }
 
-    private static String processPatternMatcher(String[] commands, String regex, int group) {
-        return DatabaseUtils.processPatternMatcher(commands, regex, group, null);
-    }
-
-    private static String processPatternMatcher(
-            String[] commands, String regex, int group, String directory) {
+    private static String processPatternMatcher(String[] commands, String regex) {
         ProcessBuilder pb = new ProcessBuilder(commands);
-        if (directory != null) {
-            pb.directory(new File(directory));
-        }
 
         pb.redirectErrorStream(true);
 

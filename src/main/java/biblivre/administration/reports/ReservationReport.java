@@ -29,14 +29,16 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.Date;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ReservationReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAOImpl.getInstance().getReservationReportData();
+        return reportsDAO.getReservationReportData();
     }
 
     @Override
@@ -192,5 +194,10 @@ public class ReservationReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.RESERVATION;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

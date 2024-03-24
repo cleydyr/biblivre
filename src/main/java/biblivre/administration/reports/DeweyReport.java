@@ -29,17 +29,19 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeweyReport extends BaseBiblivreReport {
+    private ReportsDAO reportsDAO;
 
     private final Integer index = 0;
 
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        return ReportsDAOImpl.getInstance()
-                .getDeweyReportData(dto.getDatabase(), dto.getDatafield(), dto.getDigits());
+        return reportsDAO.getDeweyReportData(
+                dto.getDatabase(), dto.getDatafield(), dto.getDigits());
     }
 
     @Override
@@ -144,5 +146,10 @@ public class DeweyReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.DEWEY;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

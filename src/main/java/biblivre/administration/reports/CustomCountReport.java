@@ -35,11 +35,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.DataField;
@@ -87,7 +83,7 @@ public class CustomCountReport extends BaseBiblivreReport {
 
         int page = 0;
         int limit = 100;
-        int offset = limit * page;
+        int offset = 0;
 
         String marcField = reportsDto.getMarcField();
         String field = marcField.split("_")[0];
@@ -105,7 +101,7 @@ public class CustomCountReport extends BaseBiblivreReport {
                 search.getPaging().setPage(++page);
                 biblioRecordBO.paginateSearch(search);
 
-                if (search == null || search.size() == 0) {
+                if (search.isEmpty()) {
                     hasMore = false;
                 } else {
                     countSubfieldValue(search, subfieldCounter, field, subfield);
@@ -121,7 +117,7 @@ public class CustomCountReport extends BaseBiblivreReport {
             boolean hasMore = true;
             while (hasMore) {
                 List<RecordDTO> records = biblioRecordBO.list(offset, limit, database);
-                if (records == null || records.size() == 0) {
+                if (records == null || records.isEmpty()) {
                     hasMore = false;
                 } else {
                     offset = limit * ++page;

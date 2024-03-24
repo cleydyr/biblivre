@@ -79,7 +79,7 @@ public final class TranslationsMap extends HashMap<String, TranslationDTO>
             if (isNotGlobalSchema()) {
                 value = globalTranslationsMap.getText(key);
             } else {
-                this.logger.warn(
+                logger.warn(
                         "Translation key not found: "
                                 + this.schema
                                 + "."

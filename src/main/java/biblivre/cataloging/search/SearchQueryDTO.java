@@ -32,6 +32,8 @@ import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
@@ -41,13 +43,13 @@ public final class SearchQueryDTO extends AbstractDTO {
     public static final Pattern PATTERN = Pattern.compile("\\s*(\"[^\"]+\"|[^\\s\"]+)");
     @Serial private static final long serialVersionUID = 1L;
 
-    private SearchMode searchMode;
-    private RecordDatabase database;
-    private MaterialType materialType;
-    private List<SearchTermDTO> terms;
-    private String parameters;
-    private boolean holdingSearch;
-    private boolean reservedOnly;
+    @Getter @Setter private SearchMode searchMode;
+    @Setter @Getter private RecordDatabase database;
+    @Setter private MaterialType materialType;
+    @Getter private List<SearchTermDTO> terms;
+    @Getter private String parameters;
+    @Setter @Getter private boolean holdingSearch;
+    @Setter @Getter private boolean reservedOnly;
     private static final Collection<String> DATE_FIELDS =
             List.of("created", "modified", "holding_created", "holding_modified");
 
@@ -82,7 +84,7 @@ public final class SearchQueryDTO extends AbstractDTO {
 
         JSONArray searchTerms = json.optJSONArray("search_terms");
 
-        if (searchTerms == null || searchTerms.length() == 0) {
+        if (searchTerms == null || searchTerms.isEmpty()) {
             // If no search terms were specified, force a "list all" search
             this.setSearchMode(SearchMode.LIST_ALL);
             return;
@@ -177,60 +179,16 @@ public final class SearchQueryDTO extends AbstractDTO {
         return dto;
     }
 
-    public String getParameters() {
-        return this.parameters;
-    }
-
-    public SearchMode getSearchMode() {
-        return this.searchMode;
-    }
-
-    public void setSearchMode(SearchMode searchMode) {
-        this.searchMode = searchMode;
-    }
-
-    public RecordDatabase getDatabase() {
-        return this.database;
-    }
-
-    public void setDatabase(RecordDatabase database) {
-        this.database = database;
-    }
-
     public MaterialType getMaterialType() {
         return Objects.requireNonNullElse(this.materialType, MaterialType.ALL);
     }
 
-    public void setMaterialType(MaterialType materialType) {
-        this.materialType = materialType;
-    }
-
-    public boolean isHoldingSearch() {
-        return this.holdingSearch;
-    }
-
-    public void setHoldingSearch(boolean holdingSearch) {
-        this.holdingSearch = holdingSearch;
-    }
-
-    public boolean isReservedOnly() {
-        return this.reservedOnly;
-    }
-
-    public void setReservedOnly(boolean reservedOnly) {
-        this.reservedOnly = reservedOnly;
-    }
-
-    public List<SearchTermDTO> getTerms() {
-        return this.terms;
-    }
-
     public Set<String> getSimpleTerms() {
         if (this.terms == null || this.terms.isEmpty()) {
-            return new HashSet<>();
+            return Collections.emptySet();
         }
 
-        return this.terms.get(0).getTerms();
+        return this.terms.getFirst().getTerms();
     }
 
     public void addTerm(SearchTermDTO dto) {

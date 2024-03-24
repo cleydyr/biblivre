@@ -24,11 +24,7 @@ import biblivre.cataloging.BriefTabFieldFormatDTO;
 import biblivre.cataloging.RecordAttachmentDTO;
 import biblivre.core.utils.CharPool;
 import biblivre.core.utils.TextUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.ControlField;
@@ -299,16 +295,6 @@ public final class MarcDataReader {
             if (obj.getTag().equals(tag)) {
                 return obj;
             }
-        }
-
-        return null;
-    }
-
-    public DataField getFirstDataField(String tag) {
-        List<DataField> list = this.getDataFields(tag);
-
-        if (list != null && list.size() > 0) {
-            return list.get(0);
         }
 
         return null;

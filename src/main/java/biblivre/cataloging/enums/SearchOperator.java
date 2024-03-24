@@ -20,7 +20,7 @@
 package biblivre.cataloging.enums;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum SearchOperator implements BiblivreEnum {
     AND(" AND "),
@@ -34,19 +34,7 @@ public enum SearchOperator implements BiblivreEnum {
     }
 
     public static SearchOperator fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (SearchOperator searchOperator : SearchOperator.values()) {
-            if (str.equals(searchOperator.name().toLowerCase())) {
-                return searchOperator;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(SearchOperator.class, str.toUpperCase(), null);
     }
 
     @Override

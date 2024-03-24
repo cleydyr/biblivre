@@ -2,7 +2,6 @@ package utils;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.random.RandomGenerator;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +13,7 @@ public class TestUtils {
     public static Date getRandomDate() {
         return Date.from(
                 LocalDate.now()
-                        .plus(randomGenerator.nextInt(1000 * 365), ChronoUnit.DAYS)
+                        .plusDays(randomGenerator.nextInt(1000 * 365))
                         .atStartOfDay(ZoneId.systemDefault())
                         .toInstant());
     }

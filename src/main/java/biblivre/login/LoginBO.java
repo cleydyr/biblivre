@@ -22,7 +22,6 @@ package biblivre.login;
 import biblivre.administration.permissions.PermissionBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractBO;
-import biblivre.core.utils.StringPool;
 import biblivre.core.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,8 +44,6 @@ public class LoginBO extends AbstractBO {
             loginDTO = this.loginDAO.login(login, encodedPassword);
 
             if (loginDTO != null) {
-                loginDTO.setEncPassword(StringPool.BLANK);
-
                 updatePasswordAlgorithm(password, loginDTO);
             }
         } else {
@@ -60,8 +57,6 @@ public class LoginBO extends AbstractBO {
                 loginDTO = this.loginDAO.login(login, utf8Password);
 
                 if (loginDTO != null) {
-                    loginDTO.setEncPassword(StringPool.BLANK);
-
                     loginDTO.setSaltedPassword(saltedPassword);
 
                     loginDAO.update(loginDTO);

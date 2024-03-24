@@ -33,6 +33,8 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.marc4j.MarcStreamWriter;
@@ -55,15 +57,15 @@ public class RecordDTO extends AbstractDTO {
 
     private static final String CF001_FORMAT = "0000000";
 
-    private Record record;
+    @Getter private Record record;
     private int id;
     private byte[] iso2709;
-    private MaterialType materialType;
-    private RecordDatabase recordDatabase;
+    @Setter private MaterialType materialType;
+    @Setter private RecordDatabase recordDatabase;
     private Boolean isNew;
 
     private transient List<RecordAttachmentDTO> attachments;
-    private transient List<BriefTabFieldDTO> fields;
+    @Setter private transient List<BriefTabFieldDTO> fields;
     private transient JSONObject json;
     private transient String humanReadableMarc;
 
@@ -83,24 +85,8 @@ public class RecordDTO extends AbstractDTO {
         return this.materialType;
     }
 
-    public void setMaterialType(String materialType) {
-        this.materialType = MaterialType.fromString(materialType);
-    }
-
-    public void setMaterialType(MaterialType materialType) {
-        this.materialType = materialType;
-    }
-
     public RecordDatabase getRecordDatabase() {
         return this.recordDatabase == null ? RecordDatabase.MAIN : this.recordDatabase;
-    }
-
-    public void setRecordDatabase(String recordDatabase) {
-        this.recordDatabase = RecordDatabase.fromString(recordDatabase);
-    }
-
-    public void setRecordDatabase(RecordDatabase recordDatabase) {
-        this.recordDatabase = recordDatabase;
     }
 
     public int getId() {
@@ -214,7 +200,7 @@ public class RecordDTO extends AbstractDTO {
             return;
         }
 
-        RecordAttachmentDTO attachmentToRemove = this.attachments.remove(index);
+        this.attachments.remove(index);
 
         _removeEletronicResourceField(uri, name);
 
@@ -280,10 +266,6 @@ public class RecordDTO extends AbstractDTO {
 
     public RecordType getRecordType() {
         return getMaterialType().getRecordType();
-    }
-
-    public void setFields(List<BriefTabFieldDTO> fields) {
-        this.fields = fields;
     }
 
     public JSONObject getJson() {
@@ -357,10 +339,6 @@ public class RecordDTO extends AbstractDTO {
         }
 
         this.humanReadableMarc = sb.toString();
-    }
-
-    public Record getRecord() {
-        return this.record;
     }
 
     public void setRecord(Record record) {
@@ -443,11 +421,8 @@ public class RecordDTO extends AbstractDTO {
 
             Format cf008Format = new SimpleDateFormat(_CF008_FORMAT);
 
-            String data =
-                    cf008Format.format(new Date())
-                            +
-                            // From 07 to 40
-                            "s||||     bl|||||||||||||||||por|u";
+            // From 07 to 40
+            String data = STR."\{cf008Format.format(new Date())}s||||     bl|||||||||||||||||por|u";
 
             field.setData(data);
 

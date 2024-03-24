@@ -103,7 +103,7 @@ public class Handler extends AbstractHandler {
         ReportType type = ReportType.getById(reportId);
         dto.setType(type);
 
-        if (type.isTimePeriod()) {
+        if (type != null && type.isTimePeriod()) {
             dto.setInitialDate(TextUtils.parseDate(request.getString("start")));
             dto.setFinalDate(TextUtils.parseDate(request.getString("end")));
         }

@@ -20,26 +20,14 @@
 package biblivre.cataloging.enums;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum HoldingAvailability implements BiblivreEnum {
     AVAILABLE,
     UNAVAILABLE;
 
     public static HoldingAvailability fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (HoldingAvailability availability : HoldingAvailability.values()) {
-            if (str.equals(availability.name().toLowerCase())) {
-                return availability;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(HoldingAvailability.class, str.toUpperCase(), null);
     }
 
     @Override

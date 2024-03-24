@@ -124,10 +124,12 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        if (success) {
+        if (success && returnDto != null) {
             this.setMessage(ActionResult.SUCCESS, "administration.accesscards.success.save");
         } else {
             this.setMessage(ActionResult.WARNING, "administration.accesscards.error.save");
+
+            return;
         }
 
         try {

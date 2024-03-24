@@ -25,50 +25,35 @@ import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
-
-    private static final String SELECT_PERMISSION_BY_LOGIN =
-            "SELECT permission FROM permissions WHERE login_id = ?;";
-
-    public static PermissionDAO getInstance() {
-        return AbstractDAO.getInstance(PermissionDAOImpl.class);
-    }
 
     @Override
     public boolean delete(UserDTO user) {
-        Connection con = null;
+        return withTransactionContext(
+                con -> {
+                    PreparedStatement pst =
+                            con.prepareStatement("DELETE FROM permissions WHERE login_id = ?;");
+                    pst.setInt(1, user.getLoginId());
+                    pst.executeUpdate();
 
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
-
-            PreparedStatement pst =
-                    con.prepareStatement("DELETE FROM permissions WHERE login_id = ?;");
-            pst.setInt(1, user.getLoginId());
-            pst.executeUpdate();
-
-            con.commit();
-            return true;
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
-        }
+                    return true;
+                });
     }
 
     @Override
     public Collection<String> getByLoginId(Integer loginId) {
         Set<String> permissions = new HashSet<>();
 
-        try (Connection con = this.getConnection();
-                PreparedStatement pst = con.prepareStatement(SELECT_PERMISSION_BY_LOGIN)) {
+        try (Connection con = datasource.getConnection();
+                PreparedStatement pst =
+                        con.prepareStatement(
+                                "SELECT permission FROM permissions WHERE login_id = ?;")) {
 
             pst.setInt(1, loginId);
 
@@ -86,9 +71,7 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
 
     @Override
     public boolean save(int loginid, String permission) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sqlInsert = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
 
             PreparedStatement pstInsert = con.prepareStatement(sqlInsert);
@@ -97,16 +80,12 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
             return pstInsert.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public boolean save(int loginId, List<String> permissions) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql = "INSERT INTO permissions (login_id, permission) VALUES (?, ?); ";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -121,8 +100,11 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

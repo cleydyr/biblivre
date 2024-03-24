@@ -57,7 +57,7 @@ public class LayoutHead extends TagSupport {
         pageContext.getRequest().setAttribute("schema", schema);
 
         try {
-            this.pageContext.include("/jsp/taglib/layout/head/start.jsp");
+            this.pageContext.include("/WEB-INF/jsp/taglib/layout/head/start.jsp");
         } catch (Exception e) {
             logger.error("can't do start tag", e);
         }
@@ -68,7 +68,7 @@ public class LayoutHead extends TagSupport {
     @Override
     public int doEndTag() {
         try {
-            this.pageContext.include("/jsp/taglib/layout/head/end.jsp");
+            this.pageContext.include("/WEB-INF/jsp/taglib/layout/head/end.jsp");
         } catch (Exception e) {
             logger.error("can't do end tag", e);
         }

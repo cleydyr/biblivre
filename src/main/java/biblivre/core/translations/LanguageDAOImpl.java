@@ -30,13 +30,15 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
     private Set<LanguageDTO> languages;
-
-    public static LanguageDAO getInstance() {
-        return AbstractDAO.getInstance(LanguageDAOImpl.class);
-    }
 
     @Override
     public Set<LanguageDTO> list() {
@@ -48,7 +50,7 @@ public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
 
         StringBuilder sql = getStringBuilder();
 
-        try (Connection con = getConnection();
+        try (Connection con = datasource.getConnection();
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(sql.toString())) {
 
@@ -56,7 +58,7 @@ public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
                 set.add(this.populateDTO(rs));
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
 
             throw new DAOException(e);
         }
@@ -91,5 +93,10 @@ public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
         dto.setName(rs.getString("name"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

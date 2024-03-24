@@ -28,18 +28,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
-
-    public static SupplierDAO getInstance() {
-        return AbstractDAO.getInstance(SupplierDAOImpl.class);
-    }
 
     @Override
     public int save(SupplierDTO dto) {
 
-        try (Connection con = this.getConnection()) {
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "INSERT INTO suppliers ( "
                             + "trademark, supplier_name, supplier_number, "
@@ -97,16 +97,16 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     public void update(SupplierDTO dto) {
         String sql =
                 """
-                UPDATE suppliers
-                SET trademark = ?, supplier_name = ?, supplier_number = ?, vat_registration_number = ?,
-                    address = ?, address_number = ?, address_complement = ?, area = ?, city = ?,
-                    state = ?, country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?,
-                    telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?,
-                    contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?,
-                    modified = now(), modified_by = ?
-                WHERE id = ? RETURNING id
-                """;
-        try (Connection con = this.getConnection();
+                        UPDATE suppliers
+                        SET trademark = ?, supplier_name = ?, supplier_number = ?, vat_registration_number = ?,
+                            address = ?, address_number = ?, address_complement = ?, area = ?, city = ?,
+                            state = ?, country = ?, zip_code = ?, telephone_1 = ?, telephone_2 = ?,
+                            telephone_3 = ?, telephone_4 = ?, contact_1 = ?, contact_2 = ?,
+                            contact_3 = ?, contact_4 = ?, info = ?, url = ?, email = ?,
+                            modified = now(), modified_by = ?
+                        WHERE id = ? RETURNING id
+                        """;
+        try (Connection con = datasource.getConnection();
                 PreparedStatement pstInsert = con.prepareStatement(sql)) {
 
             PreparedStatementUtil.setAllParameters(
@@ -151,7 +151,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
 
     @Override
     public boolean delete(int id) {
-        try (Connection con = this.getConnection()) {
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "DELETE FROM suppliers " + "WHERE id = ?;";
 
@@ -167,7 +167,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
 
     @Override
     public SupplierDTO get(int id) {
-        try (Connection con = this.getConnection()) {
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM suppliers " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -187,7 +187,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
     public DTOCollection<SupplierDTO> search(String value, int limit, int offset) {
         DTOCollection<SupplierDTO> list = new DTOCollection<>();
 
-        try (Connection con = this.getConnection()) {
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder("SELECT * FROM suppliers ");
             if (StringUtils.isNotBlank(value)) {
@@ -205,7 +205,7 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
                 pst.setString(i++, value);
             }
             pst.setInt(i++, limit);
-            pst.setInt(i++, offset);
+            pst.setInt(i, offset);
 
             StringBuilder sqlCount = new StringBuilder("SELECT count(*) as total FROM suppliers ");
             if (StringUtils.isNotBlank(value)) {
@@ -272,5 +272,10 @@ public class SupplierDAOImpl extends AbstractDAO implements SupplierDAO {
         dto.setModified(rs.getTimestamp("modified"));
         dto.setModifiedBy(rs.getInt("modified_by"));
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

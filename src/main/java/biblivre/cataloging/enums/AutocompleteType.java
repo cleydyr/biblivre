@@ -27,7 +27,7 @@ import biblivre.core.utils.BiblivreEnum;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum AutocompleteType implements BiblivreEnum {
     DISABLED,
@@ -39,19 +39,7 @@ public enum AutocompleteType implements BiblivreEnum {
     VOCABULARY;
 
     public static AutocompleteType fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return AutocompleteType.DISABLED;
-        }
-
-        str = str.toLowerCase();
-
-        for (AutocompleteType type : AutocompleteType.values()) {
-            if (str.equals(type.name().toLowerCase())) {
-                return type;
-            }
-        }
-
-        return AutocompleteType.DISABLED;
+        return EnumUtils.getEnum(AutocompleteType.class, str.toUpperCase(), null);
     }
 
     @Override

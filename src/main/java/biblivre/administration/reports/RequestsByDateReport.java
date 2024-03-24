@@ -29,14 +29,17 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RequestsByDateReport extends BaseBiblivreReport {
 
+    private ReportsDAO reportsDAO;
+
     @Override
     protected BaseReportDto getReportData(ReportsDTO dto) {
-        ReportsDAO dao = ReportsDAOImpl.getInstance();
+        ReportsDAO dao = reportsDAO;
         String initialDate = dateFormat.format(dto.getInitialDate());
         String finalDate = dateFormat.format(dto.getFinalDate());
         return dao.getRequestsByDateReportData(initialDate, finalDate);
@@ -76,9 +79,12 @@ public class RequestsByDateReport extends BaseBiblivreReport {
         PdfPCell cell;
         String lastQuotationId = "0";
         String requester = null;
-        StringBuilder title = null;
-        StringBuilder quantity = null;
-        StringBuilder unit_value = null;
+        StringBuilder title = new StringBuilder();
+        ;
+        StringBuilder quantity = new StringBuilder();
+        ;
+        StringBuilder unit_value = new StringBuilder();
+        ;
         String total_value = null;
         for (String[] data : dataList) {
             if (!data[0].equals(lastQuotationId)) {
@@ -106,10 +112,6 @@ public class RequestsByDateReport extends BaseBiblivreReport {
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
                     table.addCell(cell);
                 }
-
-                title = new StringBuilder();
-                quantity = new StringBuilder();
-                unit_value = new StringBuilder();
             }
 
             lastQuotationId = data[0];
@@ -203,5 +205,10 @@ public class RequestsByDateReport extends BaseBiblivreReport {
     @Override
     public ReportType getReportType() {
         return ReportType.ACQUISITION;
+    }
+
+    @Autowired
+    public void setReportsDAO(ReportsDAO reportsDAO) {
+        this.reportsDAO = reportsDAO;
     }
 }

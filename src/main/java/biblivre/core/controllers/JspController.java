@@ -41,7 +41,7 @@ public class JspController extends Controller {
         Message message = this.handler.getMessage();
 
         if (StringUtils.isBlank(jsp)) {
-            jsp = "/jsp/error.jsp";
+            jsp = "/WEB-INF/jsp/error.jsp";
         }
 
         this.dispatch(jsp, message);
@@ -51,14 +51,14 @@ public class JspController extends Controller {
     protected void doAuthorizationError() throws ServletException, IOException {
         Message message = new Message(ActionResult.WARNING, "error.no_permission");
 
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     @Override
     protected void doLockedStateError() throws ServletException, IOException {
         Message message = new Message(ActionResult.WARNING, "error.biblivre_is_locked_please_wait");
 
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class JspController extends Controller {
         logger.error(error, e);
 
         Message message = new Message(ActionResult.ERROR, error, e);
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class JspController extends Controller {
         }
 
         Message message = new Message(ActionResult.WARNING, warning, e);
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     private void dispatch(String jsp, Message message) throws ServletException, IOException {

@@ -19,7 +19,6 @@
  ******************************************************************************/
 package biblivre.core;
 
-import biblivre.core.HandlerContextThreadLocal.HandlerContext;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;

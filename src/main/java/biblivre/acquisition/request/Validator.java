@@ -44,27 +44,27 @@ public class Validator extends AbstractValidator {
         ValidationException ex = new ValidationException("error.form_invalid_values");
 
         if (StringUtils.isBlank(requester)) {
-            ex.addError("requester", "field.error.required");
+            ex.addError("requester", FIELD_ERROR_REQUIRED);
         }
 
         if (StringUtils.isBlank(author)) {
-            ex.addError("author", "field.error.required");
+            ex.addError("author", FIELD_ERROR_REQUIRED);
         }
 
         if (StringUtils.isBlank(title)) {
-            ex.addError("title", "field.error.required");
+            ex.addError("title", FIELD_ERROR_REQUIRED);
         }
 
         if (StringUtils.isBlank(edition)) {
-            ex.addError("edition", "field.error.required");
+            ex.addError("edition", FIELD_ERROR_REQUIRED);
         }
 
         if (StringUtils.isBlank(publisher)) {
-            ex.addError("publisher", "field.error.required");
+            ex.addError("publisher", FIELD_ERROR_REQUIRED);
         }
 
         if (StringUtils.isBlank(quantity)) {
-            ex.addError("quantity", "field.error.required");
+            ex.addError("quantity", FIELD_ERROR_REQUIRED);
         } else if (!StringUtils.isNumeric(quantity)) {
             ex.addError("quantity", "field.error.digits_only");
         }

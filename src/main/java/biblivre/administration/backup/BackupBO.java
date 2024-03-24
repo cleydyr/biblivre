@@ -24,29 +24,14 @@ import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.schemas.SchemaBO;
-import biblivre.core.utils.Constants;
-import biblivre.core.utils.DatabaseUtils;
-import biblivre.core.utils.FileIOUtils;
-import biblivre.core.utils.PgDumpCommand;
+import biblivre.core.utils.*;
 import biblivre.core.utils.PgDumpCommand.Format;
-import biblivre.core.utils.TextUtils;
 import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaDTO;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Writer;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
@@ -115,14 +100,15 @@ public class BackupBO extends AbstractBO {
         steps =
                 switch (dto.getType()) {
                     case FULL ->
-                    // schema, data and media for each schema (except media for public) + zip
-                    schemasCount * 3;
+                            // schema, data and media for each schema (except media for public) +
+                            // zip
+                            schemasCount * 3;
                     case EXCLUDE_DIGITAL_MEDIA ->
-                    // schema and data for each schema + zip
-                    (schemasCount * 2) + 1;
+                            // schema and data for each schema + zip
+                            (schemasCount * 2) + 1;
                     case DIGITAL_MEDIA_ONLY ->
-                    // media for each schema (except for public) + zip
-                    schemasCount;
+                            // media for each schema (except for public) + zip
+                            schemasCount;
                 };
 
         dto.setSteps(steps);
@@ -153,37 +139,31 @@ public class BackupBO extends AbstractBO {
             return;
         }
 
-        File tmpDir = null;
         try {
-            tmpDir = FileIOUtils.createTempDir();
+            File tmpDir = Files.createTempDirectory("biblivre_backup").toFile();
 
             Map<String, Pair<String, String>> schemas = dto.getSchemas();
             BackupType type = dto.getType();
 
             // Writing metadata
-            File meta = new File(tmpDir, "backup.meta");
-            Writer writer = new FileWriterWithEncoding(meta, Constants.DEFAULT_CHARSET);
-            writer.write(new RestoreOperation(dto).toJSONString());
-            writer.flush();
-            writer.close();
+            writeBackupMetadata(dto, tmpDir);
 
             for (String schema : schemas.keySet()) {
-                if (type == BackupType.FULL || type == BackupType.EXCLUDE_DIGITAL_MEDIA) {
+                if (type != BackupType.DIGITAL_MEDIA_ONLY) {
                     dumpSchema(dto, tmpDir, schema);
 
                     dumpData(dto, tmpDir, schema);
                 }
 
-                if (!schema.equals(Constants.GLOBAL_SCHEMA)) {
-                    if (type == BackupType.FULL || type == BackupType.DIGITAL_MEDIA_ONLY) {
-                        dumpMedia(dto, tmpDir, schema);
-                    }
+                if (shouldDumpMedia(schema, type)) {
+                    dumpMedia(dto, tmpDir, schema);
                 }
             }
 
             File tmpZip = new File(tmpDir.getAbsolutePath() + ".b5bz");
 
             FileIOUtils.zipFolder(tmpDir, tmpZip);
+
             FileUtils.deleteQuietly(tmpDir);
 
             dto.increaseCurrentStep();
@@ -192,6 +172,24 @@ public class BackupBO extends AbstractBO {
             dto.setBackup(tmpZip);
         } catch (IOException e) {
             throw new BackupException("can't create temp dir", e);
+        }
+    }
+
+    private static boolean shouldDumpMedia(String schema, BackupType type) {
+        return !Constants.GLOBAL_SCHEMA.equals(schema) && type == BackupType.FULL
+                || type == BackupType.DIGITAL_MEDIA_ONLY;
+    }
+
+    private static void writeBackupMetadata(BackupDTO dto, File tmpDir) throws IOException {
+        File meta = new File(tmpDir, "backup.meta");
+
+        try (Writer writer =
+                FileWriterWithEncoding.builder()
+                        .setFile(meta)
+                        .setCharset(Constants.DEFAULT_CHARSET)
+                        .get()) {
+
+            writer.write(new RestoreOperation(dto).toJSONString());
         }
     }
 
@@ -391,8 +389,7 @@ public class BackupBO extends AbstractBO {
         File schemaBackup = new File(tmpDir, schema);
 
         if (!schemaBackup.mkdir()) {
-            throw new BackupException(
-                    "can't create schema backup directory " + schemaBackup.toString());
+            throw new BackupException("can't create schema backup directory " + schemaBackup);
         }
 
         this.exportDigitalMedia(schema, schemaBackup);

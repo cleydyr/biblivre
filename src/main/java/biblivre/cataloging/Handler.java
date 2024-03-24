@@ -35,14 +35,12 @@ import biblivre.core.utils.Constants;
 import biblivre.marc.HumanReadableMarcReader;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
@@ -149,11 +147,7 @@ public class Handler extends AbstractHandler {
             putOpt("isrc", !search.isEmpty());
         }
 
-        if (dto == null) {
-            this.setMessage(ActionResult.WARNING, "cataloging.import.error.invalid_marc");
-        } else {
-            putOpt("data", dto.toJSONObject());
-        }
+        putOpt("data", dto.toJSONObject());
     }
 
     public void saveImport(ExtendedRequest request, ExtendedResponse response) {

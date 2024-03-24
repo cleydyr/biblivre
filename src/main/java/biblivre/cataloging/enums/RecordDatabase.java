@@ -20,7 +20,7 @@
 package biblivre.cataloging.enums;
 
 import biblivre.core.utils.BiblivreEnum;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 public enum RecordDatabase implements BiblivreEnum {
     MAIN,
@@ -29,19 +29,7 @@ public enum RecordDatabase implements BiblivreEnum {
     TRASH;
 
     public static RecordDatabase fromString(String str) {
-        if (StringUtils.isBlank(str)) {
-            return null;
-        }
-
-        str = str.toLowerCase();
-
-        for (RecordDatabase database : RecordDatabase.values()) {
-            if (str.equals(database.name().toLowerCase())) {
-                return database;
-            }
-        }
-
-        return null;
+        return EnumUtils.getEnum(RecordDatabase.class, str.toUpperCase(), null);
     }
 
     @Override

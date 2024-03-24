@@ -24,30 +24,21 @@ import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDAO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
+import jakarta.annotation.Nonnull;
+import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
-
-    public static LendingDAO getInstance() {
-        return AbstractDAO.getInstance(LendingDAOImpl.class);
-    }
 
     @Override
     public LendingDTO get(Integer id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM lendings WHERE id = ?;";
             PreparedStatement ppst = con.prepareStatement(sql);
             ppst.setInt(1, id);
@@ -57,17 +48,13 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
 
     @Override
     public LendingDTO getCurrentLending(HoldingDTO holding) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT * FROM lendings WHERE "
@@ -82,8 +69,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return null;
@@ -93,9 +78,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
         Map<Integer, LendingDTO> map = new LinkedHashMap<>();
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT * FROM lendings WHERE "
@@ -115,8 +98,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return map;
@@ -125,9 +106,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     @Override
     public List<LendingDTO> listHistory(HoldingDTO holding) {
         List<LendingDTO> list = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT * FROM lendings WHERE holding_id = ? "
@@ -142,8 +121,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
@@ -160,9 +137,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
     private List<LendingDTO> list(UserDTO user, boolean history) {
         List<LendingDTO> list = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM lendings WHERE user_id = ? ");
@@ -182,8 +157,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
@@ -199,9 +172,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     }
 
     private Integer count(UserDTO user, boolean history) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT COUNT(*) AS total FROM lendings WHERE user_id = ? ");
@@ -221,8 +192,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return 0;
     }
@@ -230,9 +199,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     @Override
     public List<LendingDTO> listByRecordId(int recordId) {
         List<LendingDTO> list = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT * FROM lendings l "
@@ -250,8 +217,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
@@ -259,9 +224,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     @Override
     public List<LendingDTO> listLendings(int offset, int limit) {
         List<LendingDTO> list = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             String sql =
                     "SELECT * FROM lendings "
                             + "WHERE return_date IS null "
@@ -280,17 +243,13 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
 
     @Override
     public Integer countLendings() {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String countSql =
                     "SELECT count(*) as total FROM lendings " + "WHERE return_date IS null;";
@@ -306,16 +265,12 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             return total;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
     }
 
     @Override
     public Integer getCurrentLendingsCount(UserDTO user) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT COUNT(*) FROM lendings "
@@ -332,25 +287,22 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return 0;
     }
 
     @Override
     public boolean doLend(LendingDTO lending) {
-        return this.doLend(lending, null);
+        try (Connection con = datasource.getConnection()) {
+            return this.doLend(lending, con);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
 
     @Override
     public boolean doLend(LendingDTO lending, Connection con) {
-        boolean externalCall = (con == null);
         try {
-            if (externalCall) {
-                con = this.getConnection();
-            }
-
             String sql =
                     "INSERT INTO lendings (holding_id, user_id, previous_lending_id, "
                             + "expected_return_date, created_by) VALUES (?, ?, ?, ?, ?) ";
@@ -369,26 +321,21 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            if (externalCall) {
-                this.closeConnection(con);
-            }
         }
     }
 
     @Override
     public void doReturn(int lendingId) {
-        this.doReturn(lendingId, null);
+        try (Connection con = datasource.getConnection()) {
+            this.doReturn(lendingId, con);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
 
     @Override
-    public boolean doReturn(int lendingId, Connection con) {
-        boolean externalCall = (con == null);
+    public boolean doReturn(int lendingId, @Nonnull Connection con) {
         try {
-            if (externalCall) {
-                con = this.getConnection();
-            }
-
             String sql = "UPDATE lendings " + "SET return_date = now() " + "WHERE id = ?;";
 
             PreparedStatement pst = con.prepareStatement(sql);
@@ -397,44 +344,28 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            if (externalCall) {
-                this.closeConnection(con);
-            }
         }
     }
 
     @Override
     public boolean doRenew(int lendingId, Date expectedReturnDate, int createdBy) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
-            con.setAutoCommit(false);
+        return withTransactionContext(
+                con -> {
+                    this.doReturn(lendingId, con);
 
-            this.doReturn(lendingId, con);
+                    LendingDTO oldLending = this.get(lendingId);
+                    oldLending.setPreviousLendingId(lendingId);
+                    oldLending.setExpectedReturnDate(expectedReturnDate);
+                    oldLending.setCreatedBy(createdBy);
+                    this.doLend(oldLending, con);
 
-            LendingDTO oldLending = this.get(lendingId);
-            oldLending.setPreviousLendingId(lendingId);
-            oldLending.setExpectedReturnDate(expectedReturnDate);
-            oldLending.setCreatedBy(createdBy);
-            this.doLend(oldLending, con);
-
-            this.commit(con);
-
-        } catch (Exception e) {
-            this.rollback(con);
-            throw new DAOException(e);
-        } finally {
-            closeConnection(con);
-        }
-        return true;
+                    return true;
+                });
     }
 
     @Override
     public Integer countLentHoldings(int recordId) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT COUNT(*) FROM lendings L INNER JOIN biblio_holdings H "
@@ -451,8 +382,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
@@ -460,9 +389,7 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     @Override
     public LendingDTO getLatest(int holdingSerial, int userId) {
         LendingDTO dto = null;
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql =
                     "SELECT * FROM lendings "
@@ -480,8 +407,6 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
 
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return dto;
     }
@@ -500,5 +425,10 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         dto.setCreatedBy(rs.getInt("created_by"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

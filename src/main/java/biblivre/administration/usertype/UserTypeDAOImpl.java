@@ -24,25 +24,20 @@ import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.TextUtils;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
-    public static UserTypeDAO getInstance() {
-        return AbstractDAO.getInstance(UserTypeDAOImpl.class);
-    }
 
     @Override
     public UserTypeDTO get(int id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "SELECT * FROM users_types " + "WHERE id = ? ";
 
@@ -55,8 +50,6 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return null;
     }
@@ -69,9 +62,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             value = TextUtils.removeDiacriticals(value);
         }
 
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM users_types ");
@@ -98,7 +89,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             }
 
             pst.setInt(psIndex++, limit);
-            pst.setInt(psIndex++, offset);
+            pst.setInt(psIndex, offset);
 
             ResultSet rs = pst.executeQuery();
             ResultSet rsCount = pstCount.executeQuery();
@@ -116,8 +107,6 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
         return list;
     }
@@ -126,11 +115,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
     public List<UserTypeDTO> list() {
         List<UserTypeDTO> list = new ArrayList<>();
 
-        Connection con = null;
-
-        try {
-            con = this.getConnection();
-
+        try (Connection con = datasource.getConnection()) {
             String sql = "SELECT * FROM users_types ORDER BY name, id;";
 
             Statement st = con.createStatement();
@@ -141,8 +126,6 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             }
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            this.closeConnection(con);
         }
 
         return list;
@@ -150,9 +133,7 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
 
     @Override
     public boolean save(UserTypeDTO dto) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
             StringBuilder sql = new StringBuilder();
 
             PreparedStatement pst;
@@ -199,16 +180,12 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             return true;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            closeConnection(con);
         }
     }
 
     @Override
     public boolean delete(int id) {
-        Connection con = null;
-        try {
-            con = this.getConnection();
+        try (Connection con = datasource.getConnection()) {
 
             String sql = "DELETE FROM users_types WHERE id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
@@ -218,8 +195,6 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             throw new DAOException(e);
-        } finally {
-            closeConnection(con);
         }
     }
 
@@ -241,5 +216,10 @@ public class UserTypeDAOImpl extends AbstractDAO implements UserTypeDAO {
         dto.setFineValue(rs.getFloat("fine_value"));
 
         return dto;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

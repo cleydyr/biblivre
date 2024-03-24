@@ -68,14 +68,14 @@ public class DownloadController extends Controller {
     protected void doAuthorizationError() throws ServletException, IOException {
         Message message = new Message(ActionResult.WARNING, "error.no_permission");
 
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     @Override
     protected void doLockedStateError() throws ServletException, IOException {
         Message message = new Message(ActionResult.WARNING, "error.biblivre_is_locked_please_wait");
 
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DownloadController extends Controller {
 
         Message message = new Message(ActionResult.ERROR, error);
 
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class DownloadController extends Controller {
         }
 
         Message message = new Message(ActionResult.WARNING, warning, e);
-        this.dispatch("/jsp/error.jsp", message);
+        this.dispatch("/WEB-INF/jsp/error.jsp", message);
     }
 
     private void dispatch(String jsp, Message message) throws ServletException, IOException {
