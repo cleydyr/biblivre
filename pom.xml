@@ -30,7 +30,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
 		<debug>false</debug>
-		<sass.OutputStyle>compressed</sass.OutputStyle>
 	</properties>
 
 	<repositories>
@@ -314,22 +313,23 @@
 			</plugin>
 
 			<plugin>
-				<groupId>com.gitlab.haynes</groupId>
-				<artifactId>libsass-maven-plugin</artifactId>
-				<version>0.2.24</version>
+				<groupId>io.github.cleydyr</groupId>
+				<artifactId>dart-sass-maven-plugin</artifactId>
+				<version>1.3.1</version>
+				<configuration>
+					<inputFolder>${basedir}/WebContent/static/styles/scss</inputFolder>
+					<outputFolder>${basedir}/WebContent/static/styles</outputFolder>
+					<style>COMPRESSED</style>
+					<version>1.72.0</version>
+				</configuration>
 				<executions>
 					<execution>
 						<phase>generate-resources</phase>
 						<goals>
-							<goal>compile</goal>
+							<goal>compile-sass</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<outputStyle>${sass.OutputStyle}</outputStyle>
-					<inputPath>${basedir}/WebContent/static/styles/scss</inputPath>
-					<outputPath>${basedir}/target/Biblivre4/static/styles</outputPath>
-				</configuration>
 			</plugin>
 
 			<plugin>
