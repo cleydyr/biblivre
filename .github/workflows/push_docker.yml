@@ -34,6 +34,13 @@ jobs:
           java-version: "21"
           cache: 'maven'
       - name: Build with Maven
+
+        env:
+          NODE_ENV: production
+          BABEL_ENV: production
+          BUILD_PATH: ../resources/META-INF/resources/static/
+          PUBLIC_URL: /static/
+
         run: mvn clean test package
 
       - name: Build and push
