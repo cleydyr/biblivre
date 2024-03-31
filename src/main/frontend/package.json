@@ -27,7 +27,6 @@
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.2.0",
-    "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
     "eslint": "^8.3.0",
     "eslint-config-react-app": "^7.0.1",
@@ -70,6 +69,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "dotenv -e .env.production.local node scripts/build.js",
+    "build:ci": "node scripts/build.js",
     "test": "node scripts/test.js",
     "build:dev": "dotenv -e .env.development.local node scripts/build.js",
     "build:watch": "WATCH=true dotenv -e .env.development.local node scripts/build.js"
@@ -155,6 +155,7 @@
     "@testing-library/react": "^14.2.2",
     "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^14.5.2",
+    "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.1"
   }
 }
