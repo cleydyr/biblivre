@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@babel/core": "^7.16.0",
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "^93.5.0",
     "@emotion/css": "^11.11.2",
@@ -64,7 +63,16 @@
     "webpack": "^5.64.4",
     "webpack-dev-server": "^4.6.0",
     "webpack-manifest-plugin": "^4.0.2",
-    "workbox-webpack-plugin": "^6.4.1"
+    "workbox-webpack-plugin": "^6.4.1",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/core": "^7.24.3",
+    "@testing-library/dom": "^9.3.4",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.2",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.1"
   },
   "scripts": {
     "start": "node scripts/start.js",
@@ -147,15 +155,5 @@
     "presets": [
       "react-app"
     ]
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@testing-library/dom": "^9.3.4",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^14.2.2",
-    "@testing-library/react-hooks": "^8.0.1",
-    "@testing-library/user-event": "^14.5.2",
-    "dotenv": "^16.4.5",
-    "dotenv-cli": "^7.4.1"
   }
 }
