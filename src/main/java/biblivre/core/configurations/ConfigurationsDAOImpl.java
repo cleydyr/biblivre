@@ -104,7 +104,7 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
                         }
                     }
 
-                    this.cache.put(SchemaThreadLocal.get(), null);
+                    this.cache.remove(SchemaThreadLocal.get());
 
                     return true;
                 });
