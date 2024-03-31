@@ -6,9 +6,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnProperty(name = "DIGITAL_MEDIA_MIGRATOR")
 public class DigitalMediaStoreMigratorInitializingBean implements InitializingBean {
     private Map<String, DigitalMediaStoreMigrator> digitalMediaMigratorMap;
 

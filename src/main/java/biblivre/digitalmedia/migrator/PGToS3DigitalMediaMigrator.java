@@ -18,6 +18,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.largeobject.LargeObject;
 import org.postgresql.largeobject.LargeObjectManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -25,6 +26,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Component
+@ConditionalOnProperty(name = "DIGITAL_MEDIA_MIGRATOR")
 @Slf4j
 public class PGToS3DigitalMediaMigrator implements DigitalMediaStoreMigrator {
     private S3Client s3;
