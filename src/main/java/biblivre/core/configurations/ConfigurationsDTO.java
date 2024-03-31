@@ -24,15 +24,18 @@ import biblivre.core.utils.FileIOUtils;
 import java.io.File;
 import java.io.Serial;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
+@Setter
 public final class ConfigurationsDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
-    private String key;
+    @Getter private String key;
     private String value;
     private String type;
-    private boolean required;
+    @Getter private boolean required;
 
     public ConfigurationsDTO() {
         super();
@@ -90,35 +93,11 @@ public final class ConfigurationsDTO extends AbstractDTO {
         return null;
     }
 
-    public String getKey() {
-        return this.key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public String getValue() {
         return StringUtils.defaultString(this.value);
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public String getType() {
         return Objects.toString(this.type, "string");
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public boolean isRequired() {
-        return this.required;
-    }
-
-    public void setRequired(boolean required) {
-        this.required = required;
     }
 }

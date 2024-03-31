@@ -20,11 +20,14 @@
 package biblivre.core.configurations;
 
 import biblivre.core.AbstractDAO;
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.exceptions.DAOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +36,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ConfigurationsDAOImpl extends AbstractDAO implements ConfigurationsDAO {
-    private List<ConfigurationsDTO> cache = null;
+    private final Map<String, List<ConfigurationsDTO>> cache = new ConcurrentHashMap<>();
 
     @Override
     public List<ConfigurationsDTO> list() {
-        if (this.cache != null) {
-            return this.cache;
+        String schema = SchemaThreadLocal.get();
+
+        if (this.cache.get(schema) != null) {
+            return this.cache.get(schema);
         }
 
         List<ConfigurationsDTO> list = new ArrayList<>();
@@ -53,9 +58,11 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
                 list.add(this.populateDTO(rs));
             }
 
-            cache = Collections.unmodifiableList(list);
+            List<ConfigurationsDTO> configurations = Collections.unmodifiableList(list);
 
-            return cache;
+            cache.put(schema, configurations);
+
+            return configurations;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new DAOException(e);
@@ -97,7 +104,7 @@ public class ConfigurationsDAOImpl extends AbstractDAO implements Configurations
                         }
                     }
 
-                    this.cache = null;
+                    this.cache.put(SchemaThreadLocal.get(), null);
 
                     return true;
                 });

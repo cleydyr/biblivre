@@ -53,8 +53,7 @@ public class SchemaAwareDatasourceDecorator implements DataSource {
 
         connection
                 .createStatement()
-                .execute(
-                        "SET search_path = '" + SchemaThreadLocal.get() + "', public, pg_catalog;");
+                .execute(STR."SET search_path = '\{SchemaThreadLocal.get()}', public, pg_catalog;");
     }
 
     @Override

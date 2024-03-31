@@ -32,46 +32,24 @@ import jakarta.servlet.jsp.tagext.Tag;
 import jakarta.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.io.Serial;
+import lombok.Getter;
+import lombok.Setter;
 
 public class LayoutBody extends TagSupport {
     @Serial private static final long serialVersionUID = 1L;
 
     private TranslationsMap translationsMap;
-    private boolean multiPart;
-    private boolean banner;
-    private boolean disableMenu;
+    @Setter @Getter private boolean multiPart;
+    @Setter @Getter private boolean banner;
+    @Setter @Getter private boolean disableMenu;
     private LanguageBO languageBO;
 
-    public boolean isMultiPart() {
-        return this.multiPart;
-    }
-
-    public void setMultiPart(boolean multiPart) {
-        this.multiPart = multiPart;
-    }
-
-    public boolean isBanner() {
-        return this.banner;
-    }
-
-    public void setBanner(boolean banner) {
-        this.banner = banner;
-    }
-
-    public boolean isDisableMenu() {
-        return this.disableMenu;
-    }
-
-    public void setDisableMenu(boolean menu) {
-        this.disableMenu = menu;
-    }
-
     public boolean isSchemaSelection() {
-        return this.getSchema().equals(Constants.GLOBAL_SCHEMA);
+        return Constants.GLOBAL_SCHEMA.equals(this.getSchema());
     }
 
     private boolean isLogged() {
-        return (this.pageContext.getSession().getAttribute(this.getSchema() + ".logged_user")
+        return (this.pageContext.getSession().getAttribute(STR."\{this.getSchema()}.logged_user")
                 != null);
     }
 
@@ -80,7 +58,7 @@ public class LayoutBody extends TagSupport {
                 (LoginDTO)
                         this.pageContext
                                 .getSession()
-                                .getAttribute(this.getSchema() + ".logged_user");
+                                .getAttribute(STR."\{this.getSchema()}.logged_user");
 
         if (dto != null) {
             return dto.isEmployee();
