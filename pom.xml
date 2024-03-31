@@ -527,7 +527,6 @@
                             <source>${jdk.version}</source>
                             <target>${jdk.version}</target>
                             <debug>true</debug>
-                            <optimize>false</optimize>
                             <showWarnings>true</showWarnings>
                             <showDeprecation>true</showDeprecation>
                         </configuration>
