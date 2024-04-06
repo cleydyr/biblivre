@@ -105,7 +105,7 @@ components:
     500ApiError:
       description: Unexpected errors on the server side
       content:
-        appplication/json:
+        application/json:
           schema:
             type: object
             properties:
@@ -131,4 +131,3 @@ components:
                   message:
                     type: string
                     example: Report with id 42 can't be found
-          
