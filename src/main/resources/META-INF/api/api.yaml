@@ -129,6 +129,18 @@ paths:
           $ref: '#/components/responses/404ApiError'
         500:
           $ref: '#/components/responses/500ApiError'
+    delete:
+      description: Deletes a filled report
+      parameters:
+        - $ref: '#/components/parameters/ReportId'
+        - $ref: '#/components/parameters/ReportFillId'
+      responses:
+        204:
+          description: Filled report deleted successfully
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
 components:
   parameters:
     ReportId:
