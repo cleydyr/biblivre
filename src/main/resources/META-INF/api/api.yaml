@@ -16,7 +16,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Report'
-      operationId: getReport
+      operationId: getReports
     post:
       description: Creates a new report template
       requestBody:
@@ -55,6 +55,7 @@ paths:
           $ref: '#/components/responses/404ApiError'
         500:
           $ref: '#/components/responses/500ApiError'
+      operationId: getReport
     delete:
       description: Deletes a report from the server
       parameters:
@@ -62,6 +63,7 @@ paths:
       responses:
         204:
           description: The resource has been deleted
+      operationId: deleteReport
     put:
       description: Updates a report on the server
       parameters:
@@ -81,6 +83,7 @@ paths:
                 $ref: '#/components/schemas/Report'
         500:
           $ref: '#/components/responses/500ApiError'
+      operationId: updateReport
   /report/{reportId}/fill:
     post:
       description: Fills a report template with the provided parameters
@@ -110,6 +113,8 @@ paths:
                       $ref: '#/components/schemas/Report'
         500:
           $ref: '#/components/responses/500ApiError'
+
+      operationId: fillReport
   /report/{reportId}/fill/{reportFillId}:
     get:
       description: Returns a specific filled report
@@ -129,6 +134,7 @@ paths:
           $ref: '#/components/responses/404ApiError'
         500:
           $ref: '#/components/responses/500ApiError'
+      operationId: getReportFill
     delete:
       description: Deletes a filled report
       parameters:
@@ -141,6 +147,7 @@ paths:
           $ref: '#/components/responses/404ApiError'
         500:
           $ref: '#/components/responses/500ApiError'
+      operationId: deleteReportFill
 components:
   parameters:
     ReportId:
