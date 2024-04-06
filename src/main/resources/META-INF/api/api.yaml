@@ -94,23 +94,16 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                fillParameters:
-                  type: object
-                  example: { "dataFim": "2021-12-31" }
+              type: array
+              items:
+                $ref: '#/components/schemas/ReportFillParameter'
       responses:
         200:
           description: The filled report
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  report:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Report'
+                $ref: '#/components/schemas/ReportFill'
         500:
           $ref: '#/components/responses/500ApiError'
 
@@ -167,8 +160,6 @@ components:
   schemas:
     Report:
       type: object
-      required:
-        - name
       properties:
         id:
           type: integer
@@ -183,6 +174,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ReportParameter'
+      required:
+        - name
     ReportParameter:
       type: object
       required:
@@ -195,6 +188,17 @@ components:
         type:
           type: string
           example: java.time.LocalDate
+    ReportFillParameter:
+      description: Parameters needed to generate a report fill
+      type: object
+      properties:
+        parameterName:
+          type: string
+        parameterValue:
+          type: string
+      required:
+        - parameterName
+        - parameterValue
     ReportNameAndDescription:
       type: object
       required:
@@ -207,15 +211,19 @@ components:
           type: string
     ReportFill:
       type: object
-      required:
-        - fillParameters
       properties:
         reportId:
           type: integer
           example: 42
         fillParameters:
-          type: object
-          example: { "dataFim": "2021-12-31" }
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportFillParameter'
+          example:
+            - parameterName: "dataInicio"
+              parameterValue: "1986-03-12"
+      required:
+        - fillParameters
   responses:
     500ApiError:
       description: Unexpected errors on the server side
