@@ -93,7 +93,7 @@ paths:
             schema:
               type: object
               properties:
-                parameters:
+                fillParameters:
                   type: object
                   example: { "dataFim": "2021-12-31" }
       responses:
@@ -191,12 +191,12 @@ components:
     ReportFill:
       type: object
       required:
-        - parameters
+        - fillParameters
       properties:
         reportId:
           type: integer
           example: 42
-        parameters:
+        fillParameters:
           type: object
           example: { "dataFim": "2021-12-31" }
   responses:
