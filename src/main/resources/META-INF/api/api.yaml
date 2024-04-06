@@ -57,7 +57,7 @@ paths:
           $ref: '#/components/responses/500ApiError'
       operationId: getReport
     delete:
-      description: Deletes a report from the server
+      description: Deletes a report and all of its fills from the server
       parameters:
         - $ref: '#/components/parameters/ReportId'
       responses:
@@ -73,7 +73,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Report'
+              $ref: '#/components/schemas/ReportNameAndDescription'
       responses:
         201:
           description: The resource has been created or updated
@@ -195,6 +195,16 @@ components:
         type:
           type: string
           example: java.time.LocalDate
+    ReportNameAndDescription:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
     ReportFill:
       type: object
       required:
