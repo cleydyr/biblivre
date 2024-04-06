@@ -16,16 +16,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Report'
+      operationId: getReport
+    post:
+      description: Creates a new report template
+      requestBody:
+        description: The report to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Report'
+
+      responses:
+        201:
+          description: The resource has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: addReport
   /report/{reportId}:
     get:
       description: Returns a specific report template
       parameters:
-        - name: reportId
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 42
+        - $ref: '#/components/parameters/ReportId'
       responses:
         200:
           description: The specific report with the provided id
@@ -42,24 +58,20 @@ paths:
     delete:
       description: Deletes a report from the server
       parameters:
-        - name: reportId
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 42
+        - $ref: '#/components/parameters/ReportId'
       responses:
         204:
           description: The resource has been deleted
     put:
-      description: Creates or updates a report on the server
+      description: Updates a report on the server
       parameters:
-        - name: reportId
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 42
+        - $ref: '#/components/parameters/ReportId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Report'
       responses:
         201:
           description: The resource has been created or updated
@@ -69,7 +81,70 @@ paths:
                 $ref: '#/components/schemas/Report'
         500:
           $ref: '#/components/responses/500ApiError'
+  /report/{reportId}/fill:
+    post:
+      description: Fills a report template with the provided parameters
+      parameters:
+        - $ref: '#/components/parameters/ReportId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  example: { "dataFim": "2021-12-31" }
+      responses:
+        200:
+          description: The filled report
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  report:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Report'
+        500:
+          $ref: '#/components/responses/500ApiError'
+  /report/{reportId}/fill/{reportFillId}:
+    get:
+      description: Returns a specific filled report
+      parameters:
+        - $ref: '#/components/parameters/ReportId'
+        - $ref: '#/components/parameters/ReportFillId'
+      responses:
+        200:
+          description: The specific filled report with the provided id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
 components:
+  parameters:
+    ReportId:
+      name: reportId
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 42
+    ReportFillId:
+      name: reportFillId
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 314
   schemas:
     Report:
       type: object
@@ -101,6 +176,17 @@ components:
         type:
           type: string
           example: java.time.LocalDate
+    ReportFill:
+      type: object
+      required:
+        - parameters
+      properties:
+        reportId:
+          type: integer
+          example: 42
+        parameters:
+          type: object
+          example: { "dataFim": "2021-12-31" }
   responses:
     500ApiError:
       description: Unexpected errors on the server side

@@ -616,31 +616,21 @@
                             <execution>
                                 <id>install node and npm</id>
                                 <goals>
-                                    <goal>install-node-and-npm</goal>
+                                    <goal>install-node-and-yarn</goal>
                                 </goals>
                                 <configuration>
                                     <nodeVersion>v21.7.1</nodeVersion>
-                                    <npmVersion>10.5.0</npmVersion>
+                                    <yarnVersion>v1.22.22</yarnVersion>
                                     <installDirectory>${project.basedir}/src/main/frontend</installDirectory>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>npm install</id>
+                                <id>yarn install</id>
                                 <goals>
-                                    <goal>npm</goal>
+                                    <goal>yarn</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>install --legacy-peer-deps</arguments>
-                                    <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>webpack build</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>run build</arguments>
+                                    <arguments>build</arguments>
                                     <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
                                 </configuration>
                             </execution>
