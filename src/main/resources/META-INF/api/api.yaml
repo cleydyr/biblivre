@@ -1,0 +1,134 @@
+openapi: 3.0.3
+info:
+  title: Biblivre REST API
+  description: |-
+
+  version: 0.0.1
+paths:
+  /report:
+    get:
+      responses:
+        200:
+          description: The list of report templates available at the instance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report'
+  /report/{reportId}:
+    get:
+      description: Returns a specific report template
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      responses:
+        200:
+          description: The specific report with the provided id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+    delete:
+      description: Deletes a report from the server
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      responses:
+        204:
+          description: The resource has been deleted
+    put:
+      description: Creates or updates a report on the server
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 42
+      responses:
+        201:
+          description: The resource has been created or updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        500:
+          $ref: '#/components/responses/500ApiError'
+components:
+  schemas:
+    Report:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: Relatório completo de localização
+        description:
+          type: string
+          example: Lista todos os exemplares com sua localização e título
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportParameter'
+    ReportParameter:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          example: dataFim
+        type:
+          type: string
+          example: java.time.LocalDate
+  responses:
+    500ApiError:
+      description: Unexpected errors on the server side
+      content:
+        appplication/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: An unexpected error occurred on the server. Please contact support.
+    404ApiError:
+      description: The requested object couldn't be found in the server
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 404
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Report with id 42 can't be found
+          
