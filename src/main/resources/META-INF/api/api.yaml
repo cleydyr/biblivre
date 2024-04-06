@@ -25,10 +25,9 @@ paths:
         description: The report to be created
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Report'
-
+              $ref: '#/components/schemas/ReportUpload'
       responses:
         201:
           description: The resource has been created
@@ -81,7 +80,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportNameAndDescription'
+              $ref: '#/components/schemas/NameAndDescription'
       responses:
         201:
           description: The resource has been created or updated
@@ -150,7 +149,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Report'
+                  allOf:
+                    - $ref: '#/components/schemas/ReportFill'
+                    - $ref: '#/components/schemas/ReportFillResource'
         404:
           $ref: '#/components/responses/404ApiError'
         500:
@@ -190,24 +191,32 @@ components:
         type: integer
         example: 314
   schemas:
-    Report:
+    Identifiable:
       type: object
       properties:
         id:
           type: integer
           example: 42
-        name:
-          type: string
-          example: Relatório completo de localização
-        description:
-          type: string
-          example: Lista todos os exemplares com sua localização e título
-        parameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReportParameter'
+    Report:
+      allOf:
+        - $ref: '#/components/schemas/Identifiable'
+        - $ref: '#/components/schemas/NameAndDescription'
+        - type: object
+          properties:
+            parameters:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReportParameter'
       required:
         - name
+    ReportUpload:
+      allOf:
+        - $ref: '#/components/schemas/Report'
+        - type: object
+          properties:
+            file:
+              type: string
+              format: binary
     ReportParameter:
       type: object
       required:
@@ -231,11 +240,10 @@ components:
       required:
         - parameterName
         - parameterValue
-    ReportNameAndDescription:
+    NameAndDescription:
       type: object
       required:
         - name
-        - description
       properties:
         name:
           type: string
@@ -256,6 +264,12 @@ components:
               parameterValue: "1986-03-12"
       required:
         - fillParameters
+    ReportFillResource:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
   responses:
     500ApiError:
       description: Unexpected errors on the server side
