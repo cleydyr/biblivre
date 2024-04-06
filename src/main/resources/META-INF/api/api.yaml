@@ -17,6 +17,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Report'
       operationId: getReports
+      tags:
+        - Report
     post:
       description: Creates a new report template
       requestBody:
@@ -37,6 +39,8 @@ paths:
         500:
           $ref: '#/components/responses/500ApiError'
       operationId: addReport
+      tags:
+        - Report
   /report/{reportId}:
     get:
       description: Returns a specific report template
@@ -56,6 +60,8 @@ paths:
         500:
           $ref: '#/components/responses/500ApiError'
       operationId: getReport
+      tags:
+        - Report
     delete:
       description: Deletes a report and all of its fills from the server
       parameters:
@@ -64,6 +70,8 @@ paths:
         204:
           description: The resource has been deleted
       operationId: deleteReport
+      tags:
+        - Report
     put:
       description: Updates a report on the server
       parameters:
@@ -84,6 +92,8 @@ paths:
         500:
           $ref: '#/components/responses/500ApiError'
       operationId: updateReport
+      tags:
+        - Report
   /report/{reportId}/fill:
     post:
       description: Fills a report template with the provided parameters
@@ -108,6 +118,24 @@ paths:
           $ref: '#/components/responses/500ApiError'
 
       operationId: fillReport
+      tags:
+        - Report
+    delete:
+      description: Deletes all fills of a given report
+      parameters:
+        - $ref: '#/components/parameters/ReportId'
+      responses:
+        204:
+          description: The fills have been deleted
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/404ApiError'
+      operationId:
+        deleteFills
+      tags:
+        - ReportFill
+        - Report
   /report/{reportId}/fill/{reportFillId}:
     get:
       description: Returns a specific filled report
@@ -128,6 +156,8 @@ paths:
         500:
           $ref: '#/components/responses/500ApiError'
       operationId: getReportFill
+      tags:
+        - ReportFill
     delete:
       description: Deletes a filled report
       parameters:
@@ -141,6 +171,8 @@ paths:
         500:
           $ref: '#/components/responses/500ApiError'
       operationId: deleteReportFill
+      tags:
+        - ReportFill
 components:
   parameters:
     ReportId:
@@ -253,4 +285,4 @@ components:
                 properties:
                   message:
                     type: string
-                    example: Report with id 42 can't be found
+                    example: Resource with id 42 can't be found
