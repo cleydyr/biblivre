@@ -7,6 +7,7 @@ import biblivre.administration.reports.v2.model.ReportParameter;
 import biblivre.administration.reports.v2.persistence.JasperReportPersistence;
 import biblivre.administration.reports.v2.persistence.ReportRepository;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.swagger.model.NameAndDescription;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -64,8 +65,7 @@ public class ReportService {
         return StreamSupport.stream(reportRepository.findAll().spliterator(), false).toList();
     }
 
-    public Report updateReport(
-            long reportId, biblivre.swagger.model.NameAndDescription nameAndDescription) {
+    public Report updateReport(long reportId, NameAndDescription nameAndDescription) {
         Report report = reportRepository.findById(reportId).orElseThrow();
 
         Report updatedReport =
