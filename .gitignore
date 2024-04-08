@@ -17,3 +17,4 @@ src/main/resources/META-INF/resources/static/scripts/*bundle.js*
 src/main/resources/META-INF/resources/static/scripts/*chunk.js*
 src/main/resources/META-INF/resources/static/styles/biblivre.*
 src/main/resources/META-INF/resources/static/asset-manifest.json
+src/main/resources/META-INF/resources/static/index.html
