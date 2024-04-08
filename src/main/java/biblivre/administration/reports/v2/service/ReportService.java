@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 import javax.sql.DataSource;
 import net.sf.jasperreports.engine.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class ReportService {
             throws ReportException {
         Report report = reportRepository.findById(reportId).orElseThrow();
 
-        long digitalMediaId = report.getDigitalMediaId();
+        long digitalMediaId = 0; // report.getDigitalMediaId();
 
         JasperReportImpl jasperReport = jasperReportPersistence.getById(digitalMediaId);
 
@@ -59,8 +60,24 @@ public class ReportService {
         }
     }
 
-    public Iterable<Report> listReports() throws Exception {
-        return reportRepository.findAll();
+    public List<Report> listReports() {
+        return StreamSupport.stream(reportRepository.findAll().spliterator(), false).toList();
+    }
+
+    public Report updateReport(
+            long reportId, biblivre.swagger.model.NameAndDescription nameAndDescription) {
+        Report report = reportRepository.findById(reportId).orElseThrow();
+
+        Report updatedReport =
+                new Report(
+                        reportId,
+                        nameAndDescription.getName(),
+                        nameAndDescription.getDescription(),
+                        report.getParameters(),
+                        report.getSchema(),
+                        report.getDigitalMediaId());
+
+        return reportRepository.save(updatedReport);
     }
 
     public long persistReport(
@@ -85,9 +102,9 @@ public class ReportService {
 
         reportParameters.forEach(reportParameter -> reportParameter.setReport(toBeSaved));
 
-        Report saved = reportRepository.save(toBeSaved);
+        //        Report saved = reportRepository.save(toBeSaved);
 
-        return saved.getId();
+        return 0;
     }
 
     private static ReportParameter toReportParameter(JRParameter jrParameter) {

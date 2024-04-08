@@ -1,21 +1,18 @@
 import {
+  EuiBasicTable,
+  EuiButton,
+  EuiFieldText,
+  EuiForm,
+  EuiFormRow,
   EuiGlobalToastList,
-  EuiSpacer,
-  EuiTab,
-  EuiTabs,
-  EuiText,
-  EuiTitle,
+  EuiPageTemplate,
 } from "@elastic/eui";
 import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { getSchemaFromURL } from "../../util";
-import { GenerateReportForm } from "./GenerateReportForm";
-import UploadReportForm, { UploadReportFormData } from "./UploadReportForm";
-import { generateReport, listReports } from "./api";
-import { Report, ReportStatus } from "./types";
+import { Report, ReportApi } from "./api";
 
-const REPORT_QUERY = "reports";
+const REPORT_QUERY = "getReports";
 
 const GENERATE_REPORT_QUERY = "generateReport";
 
@@ -34,118 +31,111 @@ export default function ReportApp() {
 
   const queryClient = useQueryClient();
 
-  const reportQuery = useQuery({
+  const api = new ReportApi({}, "http://localhost:8090/api/v2");
+
+  const getReportsQuery = useQuery({
     queryKey: [REPORT_QUERY],
-    queryFn: () => listReports(getSchemaFromURL()),
+    queryFn: () =>
+      api.getReports({
+        headers: {
+          "X-Biblivre-Schema": "bcuniaodosaber",
+          Accept: "application/json",
+        },
+      }),
   });
 
-  const { mutate: uploadReportMutation } = useMutation({
-    mutationFn: uploadReport,
-    onSuccess: handleAddNewReportSuccess,
-    onError: handleAddNewReportError,
+  const { mutate: updateReport } = useMutation({
+    mutationKey: [REPORT_QUERY],
+    mutationFn: (report: Report) =>
+      api.updateReport(report, report.id ?? 0, {
+        headers: {
+          "X-Biblivre-Schema": "bcuniaodosaber",
+          Accept: "application/json",
+        },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [REPORT_QUERY] });
+    },
   });
 
-  const { data: reports, isFetching } = reportQuery;
+  const { data: reports, isFetching } = getReportsQuery;
 
-  const {
-    data: pdfBlob,
-    isFetching: isFetchingGeneratedReport,
-    isSuccess: isSuccessGeneratedReport,
-    isError: isErrorGeneratedReport,
-  } = useGenerateReportQuery(submitingReport);
-
-  const reportStatus = isSuccessGeneratedReport
-    ? ReportStatus.READY
-    : isFetchingGeneratedReport
-    ? ReportStatus.GENERATING
-    : ReportStatus.PENDING;
-
-  const pdfUrl = isSuccessGeneratedReport
-    ? URL.createObjectURL(pdfBlob)
-    : undefined;
-
-  if (isErrorGeneratedReport) {
-    setToasts([
-      {
-        id: new Date().getTime().toString(),
-        title: "Erro ao gerar relatório",
-        color: "danger",
-        text: "Ocorreu um erro ao gerar o relatório",
-        toastLifeTimeMs: 6000,
-      },
-    ]);
-  }
-
-  const tabs = [
-    {
-      id: "generateReport",
-      name: "Gerar relatório",
-      content: (
-        <GenerateReportForm
-          reports={reports}
-          isLoading={isFetching}
-          reportStatus={reportStatus}
-          pdfUrl={pdfUrl}
-          onSubmit={(report: Report) => setSubmitingReport(report)}
-        />
-      ),
-    },
-    {
-      id: "uploadReport",
-      name: "Criar modelo",
-      content: <UploadReportForm onSubmit={uploadReportMutation} />,
-    },
-  ];
-
-  function handleAddNewReportError(
-    error: Error,
-    variables: UploadReportFormData,
-    context: unknown
-  ) {
-    setToasts([
-      {
-        id: new Date().getTime().toString(),
-        title: "Erro ao criar novo modelo de relatório",
-        color: "danger",
-        text: error.message,
-        toastLifeTimeMs: 6000,
-      },
-    ]);
-  }
-
-  function handleAddNewReportSuccess() {
-    // Invalidate and refetch
-    queryClient.invalidateQueries({ queryKey: [REPORT_QUERY] });
-
-    setToasts([
-      {
-        id: new Date().getTime().toString(),
-        title: "Relatório criado com sucesso",
-        color: "success",
-        toastLifeTimeMs: 6000,
-      },
-    ]);
-  }
+  const [editingReport, setEditingReport] = useState(
+    undefined as Report | undefined
+  );
 
   return (
     <>
-      <EuiTitle>
-        <EuiText>Relatórios personalizados</EuiText>
-      </EuiTitle>
-      <EuiSpacer />
-      <EuiTabs>
-        {tabs.map((tab) => (
-          <EuiTab
-            key={tab.id}
-            onClick={() => setSelectedTabId(tab.id)}
-            isSelected={tab.id === selectedTabId}
-          >
-            {tab.name}
-          </EuiTab>
-        ))}
-      </EuiTabs>
-      <EuiSpacer size="xl" />
-      {tabs.find((tab) => tab.id === selectedTabId)?.content}
+      <EuiPageTemplate>
+        <EuiPageTemplate.Header
+          pageTitle="Relatórios personalizados"
+          description="Crie e gere relatórios personalizados"
+          rightSideItems={[<EuiButton fill>Novo modelo</EuiButton>]}
+        />
+        <EuiPageTemplate.Section>
+          {editingReport ? (
+            <EditReportForm
+              report={editingReport}
+              onSubmit={(report) => {
+                setEditingReport(undefined);
+                updateReport(report);
+              }}
+            />
+          ) : (
+            <EuiBasicTable
+              tableCaption="Demo of EuiBasicTable"
+              items={reports ?? []}
+              rowHeader="firstName"
+              columns={[
+                {
+                  field: "name",
+                  name: "Título",
+                  sortable: true,
+                },
+                {
+                  field: "description",
+                  name: "Descrição",
+                },
+                {
+                  name: "Ações",
+                  actions: [
+                    {
+                      name: "Editar",
+                      description: "Editar este modelo de relatório",
+                      type: "icon",
+                      icon: "pencil",
+                      onClick: setEditingReport,
+                    },
+                    {
+                      name: "Excluir",
+                      description: "Excluir este modelo de relatório",
+                      type: "icon",
+                      icon: "trash",
+                      onClick: () => {},
+                    },
+                    {
+                      name: "Preencher",
+                      description: "Preencher com tooltip",
+                      type: "icon",
+                      icon: "playFilled",
+                      onClick: () => {},
+                      isPrimary: true,
+                    },
+                    {
+                      name: "Histórico",
+                      description: "Baixar relatórios gerados anteriormente",
+                      type: "icon",
+                      icon: "tableOfContents",
+                      onClick: () => {},
+                    },
+                  ],
+                },
+              ]}
+              loading={isFetching}
+            />
+          )}
+        </EuiPageTemplate.Section>
+      </EuiPageTemplate>
       <EuiGlobalToastList
         toasts={toasts}
         dismissToast={removeToast}
@@ -155,38 +145,44 @@ export default function ReportApp() {
   );
 }
 
-function useGenerateReportQuery(report: Report | undefined) {
-  const reportId = report?.id || 0;
+type ReportFormProps = {
+  report: Report | undefined;
+  onSubmit: (report: Report) => void;
+};
 
-  return useQuery({
-    queryKey: [GENERATE_REPORT_QUERY, reportId],
-    queryFn: () => generateReport(reportId, getSchemaFromURL()),
-    enabled: report !== undefined,
-  });
-}
+const EditReportForm = ({ report, onSubmit }: ReportFormProps) => {
+  const [name, setName] = useState(report?.name ?? "");
 
-/**
- * Uploads the file using the /api/v2/reports/add endpoint
- * It accepts a multipart form with a file field and POST method
- * @param file jrxml file to be uploaded
- */
-async function uploadReport({
-  file,
-  title,
-  description,
-}: UploadReportFormData) {
-  const schema = getSchemaFromURL();
+  const [description, setDescription] = useState(report?.description);
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("title", title);
-  formData.append("description", description);
-
-  return fetch("/api/v2/reports/add", {
-    method: "POST",
-    headers: {
-      "X-Biblivre-Schema": schema,
-    },
-    body: formData,
-  });
-}
+  return (
+    <EuiForm>
+      <EuiFormRow
+        label="Nome"
+        isInvalid={name.length === 0}
+        error={["O nome do relatório é obrigatório"]}
+      >
+        <EuiFieldText
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          aria-required={true}
+          required={true}
+        />
+      </EuiFormRow>
+      <EuiFormRow label="Descrição">
+        <EuiFieldText
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </EuiFormRow>
+      <EuiButton
+        fill
+        onClick={() => {
+          onSubmit({ ...report, name, description });
+        }}
+      >
+        Salvar
+      </EuiButton>
+    </EuiForm>
+  );
+};

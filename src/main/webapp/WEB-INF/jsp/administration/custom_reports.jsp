@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/static/styles/main.css">
 </layout:head>
 <layout:body>
-    <div id="root">
+    <div id="biblivre-root">
     </div>
     <script src="/static/scripts/bundle.js"></script>
 </layout:body>
