@@ -31,4 +31,17 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./src/index.html",
+    }),
+  ],
+  devtool: "inline-source-map",
+  devServer: {
+    static: path.join(__dirname, "../resources/META-INF/resources/static"),
+    port: 3000,
+  },
+  // optimization: {
+  //   runtimeChunk: "single",
+  // },
 };
