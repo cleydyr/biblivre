@@ -190,7 +190,7 @@ export interface Report extends Identifiable {
  * @export
  * @interface ReportFill
  */
-export interface ReportFill {
+export interface ReportFill extends Identifiable {
     /**
      * 
      * @type {number}
