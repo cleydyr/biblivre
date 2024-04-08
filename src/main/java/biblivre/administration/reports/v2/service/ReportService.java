@@ -28,126 +28,129 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ReportService {
-  private DataSource datasource;
+    private DataSource datasource;
 
-  private JasperReportPersistence jasperReportPersistence;
+    private JasperReportPersistence jasperReportPersistence;
 
-  private ReportRepository reportRepository;
+    private ReportRepository reportRepository;
 
-  public void generateReport(
-      long reportId, Map<String, String> params, OutputStream consumerOutputStream)
-      throws ReportException {
-    Report report = reportRepository.findById(reportId).orElseThrow();
+    public void generateReport(
+            long reportId, Map<String, String> params, OutputStream consumerOutputStream)
+            throws ReportException {
+        Report report = reportRepository.findById(reportId).orElseThrow();
 
-    long digitalMediaId = 0; // report.getDigitalMediaId();
+        long digitalMediaId = 0; // report.getDigitalMediaId();
 
-    JasperReportImpl jasperReport = jasperReportPersistence.getById(digitalMediaId);
+        JasperReportImpl jasperReport = jasperReportPersistence.getById(digitalMediaId);
 
-    try (Connection connection = datasource.getConnection()) {
-      setSchemaSearchPath(connection);
+        try (Connection connection = datasource.getConnection()) {
+            setSchemaSearchPath(connection);
 
-      Map<String, Object> actualParameters = transformParameters(jasperReport, params);
+            Map<String, Object> actualParameters = transformParameters(jasperReport, params);
 
-      JasperPrint jasperPrint =
-          JasperFillManager.fillReport(
-              jasperReport.getJasperReport(), actualParameters, connection);
+            JasperPrint jasperPrint =
+                    JasperFillManager.fillReport(
+                            jasperReport.getJasperReport(), actualParameters, connection);
 
-      JasperExportManager.exportReportToPdfStream(jasperPrint, consumerOutputStream);
-    } catch (JRException e) {
-      throw new ReportException("can't fill report", e);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public List<Report> listReports() {
-    return StreamSupport.stream(reportRepository.findAll().spliterator(), false).toList();
-  }
-
-  public Report updateReport(
-      long reportId, biblivre.swagger.model.NameAndDescription nameAndDescription) {
-    Report report = reportRepository.findById(reportId).orElseThrow();
-
-    Report updatedReport =
-        new Report(
-            reportId,
-            nameAndDescription.getName(),
-            nameAndDescription.getDescription(),
-            report.getParameters(),
-            report.getSchema(),
-            report.getDigitalMediaId());
-
-    return reportRepository.save(updatedReport);
-  }
-
-  public long persistReport(
-      InputStream reportJRXMLDefinition, String title, String description, long size)
-      throws ReportException {
-    long digitalMediaId = jasperReportPersistence.persist(reportJRXMLDefinition, size);
-
-    String schema = SchemaThreadLocal.get();
-
-    JasperReportImpl compiledReport = jasperReportPersistence.getById(digitalMediaId);
-
-    Collection<JRParameter> jrParameters = compiledReport.getParameters();
-
-    List<ReportParameter> reportParameters =
-        jrParameters.stream()
-            .filter(Predicate.not(JRParameter::isSystemDefined))
-            .map(ReportService::toReportParameter)
-            .toList();
-
-    Report toBeSaved = new Report(0, title, description, reportParameters, schema, digitalMediaId);
-
-    reportParameters.forEach(reportParameter -> reportParameter.setReport(toBeSaved));
-
-    //        Report saved = reportRepository.save(toBeSaved);
-
-    return 0;
-  }
-
-  private static ReportParameter toReportParameter(JRParameter jrParameter) {
-    return new ReportParameter(
-        0,
-        jrParameter.getName(),
-        jrParameter.getValueClassName(),
-        jrParameter.getDescription(),
-        null);
-  }
-
-  private static Map<String, Object> transformParameters(
-      JasperReportImpl report, Map<String, String> params) {
-    Map<String, Object> actualParameters = new HashMap<>();
-
-    for (JRParameter parameter : report.getParameters()) {
-      String parameterName = parameter.getName();
-      String parameterValue = params.get(parameterName);
-      actualParameters.put(parameterName, parameterValue);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, consumerOutputStream);
+        } catch (JRException e) {
+            throw new ReportException("can't fill report", e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    return actualParameters;
-  }
+    public List<Report> listReports() {
+        return StreamSupport.stream(reportRepository.findAll().spliterator(), false).toList();
+    }
 
-  private static void setSchemaSearchPath(Connection connection) throws SQLException {
-    connection.createStatement().execute("SET search_path = '" + SchemaThreadLocal.get() + "';");
-  }
+    public Report updateReport(
+            long reportId, biblivre.swagger.model.NameAndDescription nameAndDescription) {
+        Report report = reportRepository.findById(reportId).orElseThrow();
 
-  @Autowired
-  public void setReportPersistence(JasperReportPersistence jasperReportPersistence) {
-    this.jasperReportPersistence = jasperReportPersistence;
-  }
+        Report updatedReport =
+                new Report(
+                        reportId,
+                        nameAndDescription.getName(),
+                        nameAndDescription.getDescription(),
+                        report.getParameters(),
+                        report.getSchema(),
+                        report.getDigitalMediaId());
 
-  @Autowired
-  public void setReportRepository(ReportRepository reportRepository) {
-    this.reportRepository = reportRepository;
-  }
+        return reportRepository.save(updatedReport);
+    }
 
-  @Autowired
-  public void setDataSource(DataSource datasource) {
-    this.datasource = datasource;
-  }
+    public long persistReport(
+            InputStream reportJRXMLDefinition, String title, String description, long size)
+            throws ReportException {
+        long digitalMediaId = jasperReportPersistence.persist(reportJRXMLDefinition, size);
 
-  public void deleteReport(Long reportId) {
-    this.reportRepository.deleteById(reportId);
-  }
+        String schema = SchemaThreadLocal.get();
+
+        JasperReportImpl compiledReport = jasperReportPersistence.getById(digitalMediaId);
+
+        Collection<JRParameter> jrParameters = compiledReport.getParameters();
+
+        List<ReportParameter> reportParameters =
+                jrParameters.stream()
+                        .filter(Predicate.not(JRParameter::isSystemDefined))
+                        .map(ReportService::toReportParameter)
+                        .toList();
+
+        Report toBeSaved =
+                new Report(0, title, description, reportParameters, schema, digitalMediaId);
+
+        reportParameters.forEach(reportParameter -> reportParameter.setReport(toBeSaved));
+
+        //        Report saved = reportRepository.save(toBeSaved);
+
+        return 0;
+    }
+
+    private static ReportParameter toReportParameter(JRParameter jrParameter) {
+        return new ReportParameter(
+                0,
+                jrParameter.getName(),
+                jrParameter.getValueClassName(),
+                jrParameter.getDescription(),
+                null);
+    }
+
+    private static Map<String, Object> transformParameters(
+            JasperReportImpl report, Map<String, String> params) {
+        Map<String, Object> actualParameters = new HashMap<>();
+
+        for (JRParameter parameter : report.getParameters()) {
+            String parameterName = parameter.getName();
+            String parameterValue = params.get(parameterName);
+            actualParameters.put(parameterName, parameterValue);
+        }
+
+        return actualParameters;
+    }
+
+    private static void setSchemaSearchPath(Connection connection) throws SQLException {
+        connection
+                .createStatement()
+                .execute("SET search_path = '" + SchemaThreadLocal.get() + "';");
+    }
+
+    @Autowired
+    public void setReportPersistence(JasperReportPersistence jasperReportPersistence) {
+        this.jasperReportPersistence = jasperReportPersistence;
+    }
+
+    @Autowired
+    public void setReportRepository(ReportRepository reportRepository) {
+        this.reportRepository = reportRepository;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource datasource) {
+        this.datasource = datasource;
+    }
+
+    public void deleteReport(Long reportId) {
+        this.reportRepository.deleteById(reportId);
+    }
 }
