@@ -28,311 +28,280 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @jakarta.annotation.Generated(
-        value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
-        date = "2024-04-07T11:01:49.151127865Z[GMT]")
+    value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
+    date = "2024-04-07T11:01:49.151127865Z[GMT]")
 @Validated
 public interface ReportApi {
 
-    @Operation(
-            summary = "",
-            description = "Creates a new report template",
-            tags = {"Report"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "201",
-                        description = "The resource has been created",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = Report.class))),
-                @ApiResponse(
-                        responseCode = "500",
-                        description = "Unexpected errors on the server side",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = InlineResponse500.class)))
-            })
-    @RequestMapping(
-            value = "/report",
-            produces = {"application/json"},
-            consumes = {"multipart/form-data"},
-            method = RequestMethod.POST)
-    ResponseEntity<Report> addReport();
+  @Operation(
+      summary = "",
+      description = "Creates a new report template",
+      tags = {"Report"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "The resource has been created",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Report.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected errors on the server side",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse500.class)))
+      })
+  @RequestMapping(
+      value = "/report",
+      produces = {"application/json"},
+      consumes = {"multipart/form-data"},
+      method = RequestMethod.POST)
+  ResponseEntity<Report> addReport();
 
-    @Operation(
-            summary = "",
-            description = "Deletes all fills of a given report",
-            tags = {"ReportFill", "Report"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(responseCode = "204", description = "The fills have been deleted"),
-                @ApiResponse(
-                        responseCode = "404",
-                        description = "The requested object couldn't be found in the server",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema =
-                                                @Schema(implementation = InlineResponse404.class))),
-                @ApiResponse(
-                        responseCode = "500",
-                        description = "The requested object couldn't be found in the server",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = InlineResponse404.class)))
-            })
-    @RequestMapping(
-            value = "/report/{reportId}/fill",
-            produces = {"application/json"},
-            method = RequestMethod.DELETE)
-    ResponseEntity<Void> deleteFills(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportId")
-                    Integer reportId);
+  @Operation(
+      summary = "",
+      description = "Deletes all fills of a given report",
+      tags = {"ReportFill", "Report"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "The fills have been deleted"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "The requested object couldn't be found in the server",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse404.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "The requested object couldn't be found in the server",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse404.class)))
+      })
+  @RequestMapping(
+      value = "/report/{reportId}/fill",
+      produces = {"application/json"},
+      method = RequestMethod.DELETE)
+  ResponseEntity<Void> deleteFills(
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportId")
+          Long reportId);
 
-    @Operation(
-            summary = "",
-            description = "Deletes a report and all of its fills from the server",
-            tags = {"Report"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(responseCode = "204", description = "The resource has been deleted")
-            })
-    @RequestMapping(value = "/report/{reportId}", method = RequestMethod.DELETE)
-    ResponseEntity<Void> deleteReport(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportId")
-                    Integer reportId);
+  @Operation(
+      summary = "",
+      description = "Deletes a report and all of its fills from the server",
+      tags = {"Report"})
+  @ApiResponses(
+      value = {@ApiResponse(responseCode = "204", description = "The resource has been deleted")})
+  @RequestMapping(value = "/report/{reportId}", method = RequestMethod.DELETE)
+  ResponseEntity<Void> deleteReport(
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportId")
+          Long reportId);
 
-    @Operation(
-            summary = "",
-            description = "Deletes a filled report",
-            tags = {"ReportFill"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "204",
-                        description = "Filled report deleted successfully"),
-                @ApiResponse(
-                        responseCode = "404",
-                        description = "The requested object couldn't be found in the server",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema =
-                                                @Schema(implementation = InlineResponse404.class))),
-                @ApiResponse(
-                        responseCode = "500",
-                        description = "Unexpected errors on the server side",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = InlineResponse500.class)))
-            })
-    @RequestMapping(
-            value = "/report/{reportId}/fill/{reportFillId}",
-            produces = {"application/json"},
-            method = RequestMethod.DELETE)
-    ResponseEntity<Void> deleteReportFill(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportId")
-                    Integer reportId,
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportFillId")
-                    Integer reportFillId);
+  @Operation(
+      summary = "",
+      description = "Deletes a filled report",
+      tags = {"ReportFill"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Filled report deleted successfully"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "The requested object couldn't be found in the server",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse404.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected errors on the server side",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse500.class)))
+      })
+  @RequestMapping(
+      value = "/report/{reportId}/fill/{reportFillId}",
+      produces = {"application/json"},
+      method = RequestMethod.DELETE)
+  ResponseEntity<Void> deleteReportFill(
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportId")
+          Long reportId,
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportFillId")
+          Integer reportFillId);
 
-    @Operation(
-            summary = "",
-            description = "Fills a report template with the provided parameters",
-            tags = {"Report"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "The filled report",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = ReportFill.class))),
-                @ApiResponse(
-                        responseCode = "500",
-                        description = "Unexpected errors on the server side",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = InlineResponse500.class)))
-            })
-    @RequestMapping(
-            value = "/report/{reportId}/fill",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    ResponseEntity<ReportFill> fillReport(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportId")
-                    Integer reportId,
-            @Parameter(
-                            in = ParameterIn.DEFAULT,
-                            description = "",
-                            required = true,
-                            schema = @Schema())
-                    @Valid
-                    @RequestBody
-                    List<ReportFillParameter> body);
+  @Operation(
+      summary = "",
+      description = "Fills a report template with the provided parameters",
+      tags = {"Report"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The filled report",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ReportFill.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected errors on the server side",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse500.class)))
+      })
+  @RequestMapping(
+      value = "/report/{reportId}/fill",
+      produces = {"application/json"},
+      consumes = {"application/json"},
+      method = RequestMethod.POST)
+  ResponseEntity<ReportFill> fillReport(
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportId")
+          Integer reportId,
+      @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
+          @Valid
+          @RequestBody
+          List<ReportFillParameter> body);
 
-    @Operation(
-            summary = "",
-            description = "Returns a specific report template",
-            tags = {"Report"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "The specific report with the provided id",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        array =
-                                                @ArraySchema(
-                                                        schema =
-                                                                @Schema(
-                                                                        implementation =
-                                                                                Report.class)))),
-                @ApiResponse(
-                        responseCode = "404",
-                        description = "The requested object couldn't be found in the server",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema =
-                                                @Schema(implementation = InlineResponse404.class))),
-                @ApiResponse(
-                        responseCode = "500",
-                        description = "Unexpected errors on the server side",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = InlineResponse500.class)))
-            })
-    @RequestMapping(
-            value = "/report/{reportId}",
-            produces = {"application/json"},
-            method = RequestMethod.GET)
-    ResponseEntity<List<Report>> getReport(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportId")
-                    Integer reportId);
+  @Operation(
+      summary = "",
+      description = "Returns a specific report template",
+      tags = {"Report"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The specific report with the provided id",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = Report.class)))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "The requested object couldn't be found in the server",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse404.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected errors on the server side",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse500.class)))
+      })
+  @RequestMapping(
+      value = "/report/{reportId}",
+      produces = {"application/json"},
+      method = RequestMethod.GET)
+  ResponseEntity<List<Report>> getReport(
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportId")
+          Integer reportId);
 
-    @Operation(
-            summary = "",
-            description = "Returns a specific filled report",
-            tags = {"ReportFill"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "The specific filled report with the provided id",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        array =
-                                                @ArraySchema(
-                                                        schema =
-                                                                @Schema(
-                                                                        implementation =
-                                                                                Object.class)))),
-                @ApiResponse(
-                        responseCode = "404",
-                        description = "The requested object couldn't be found in the server",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema =
-                                                @Schema(implementation = InlineResponse404.class))),
-                @ApiResponse(
-                        responseCode = "500",
-                        description = "Unexpected errors on the server side",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = InlineResponse500.class)))
-            })
-    @RequestMapping(
-            value = "/report/{reportId}/fill/{reportFillId}",
-            produces = {"application/json"},
-            method = RequestMethod.GET)
-    ResponseEntity<List<Object>> getReportFill(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportId")
-                    Integer reportId,
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportFillId")
-                    Integer reportFillId);
+  @Operation(
+      summary = "",
+      description = "Returns a specific filled report",
+      tags = {"ReportFill"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The specific filled report with the provided id",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = Object.class)))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "The requested object couldn't be found in the server",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse404.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected errors on the server side",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse500.class)))
+      })
+  @RequestMapping(
+      value = "/report/{reportId}/fill/{reportFillId}",
+      produces = {"application/json"},
+      method = RequestMethod.GET)
+  ResponseEntity<List<Object>> getReportFill(
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportId")
+          Integer reportId,
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportFillId")
+          Integer reportFillId);
 
-    @Operation(
-            summary = "",
-            description = "",
-            tags = {"Report"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "The list of report templates available at the instance",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        array =
-                                                @ArraySchema(
-                                                        schema =
-                                                                @Schema(
-                                                                        implementation =
-                                                                                Report.class))))
-            })
-    @RequestMapping(
-            value = "/report",
-            produces = {"application/json"},
-            method = RequestMethod.GET)
-    ResponseEntity<List<Report>> getReports();
+  @Operation(
+      summary = "",
+      description = "",
+      tags = {"Report"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The list of report templates available at the instance",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = Report.class))))
+      })
+  @RequestMapping(
+      value = "/report",
+      produces = {"application/json"},
+      method = RequestMethod.GET)
+  ResponseEntity<List<Report>> getReports();
 
-    @Operation(
-            summary = "",
-            description = "Updates a report on the server",
-            tags = {"Report"})
-    @ApiResponses(
-            value = {
-                @ApiResponse(
-                        responseCode = "201",
-                        description = "The resource has been created or updated",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = Report.class))),
-                @ApiResponse(
-                        responseCode = "500",
-                        description = "Unexpected errors on the server side",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = InlineResponse500.class)))
-            })
-    @RequestMapping(
-            value = "/report/{reportId}",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.PUT)
-    ResponseEntity<Report> updateReport(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
-                    @PathVariable("reportId")
-                    Integer reportId,
-            @Parameter(
-                            in = ParameterIn.DEFAULT,
-                            description = "",
-                            required = true,
-                            schema = @Schema())
-                    @Valid
-                    @RequestBody
-                    NameAndDescription body);
+  @Operation(
+      summary = "",
+      description = "Updates a report on the server",
+      tags = {"Report"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "The resource has been created or updated",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Report.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected errors on the server side",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = InlineResponse500.class)))
+      })
+  @RequestMapping(
+      value = "/report/{reportId}",
+      produces = {"application/json"},
+      consumes = {"application/json"},
+      method = RequestMethod.PUT)
+  ResponseEntity<Report> updateReport(
+      @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
+          @PathVariable("reportId")
+          Integer reportId,
+      @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
+          @Valid
+          @RequestBody
+          NameAndDescription body);
 }
