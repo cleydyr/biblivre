@@ -22,18 +22,17 @@ public class ReportApiDelegateImpl implements ReportApiDelegate {
         List<biblivre.administration.reports.v2.model.Report> reports = reportService.listReports();
 
         List<Report> reportsResponse =
-                reports.stream()
-                        .map(
-                                report -> {
-                                    Report reportResponse = new Report();
-                                    reportResponse.setId(report.getId());
-                                    reportResponse.setName(report.getName());
-                                    reportResponse.setDescription(report.getDescription());
-                                    return reportResponse;
-                                })
-                        .toList();
+                reports.stream().map(ReportApiDelegateImpl::getReport).toList();
 
         return ResponseEntity.ok(reportsResponse);
+    }
+
+    private static Report getReport(biblivre.administration.reports.v2.model.Report report) {
+        Report reportResponse = new Report();
+        reportResponse.setId(report.getId());
+        reportResponse.setName(report.getName());
+        reportResponse.setDescription(report.getDescription());
+        return reportResponse;
     }
 
     @Autowired
