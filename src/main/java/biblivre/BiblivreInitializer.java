@@ -21,7 +21,6 @@ package biblivre;
 
 import biblivre.core.controllers.*;
 import biblivre.core.utils.StringPool;
-import biblivre.swagger.configuration.SwaggerUiConfiguration;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
@@ -44,7 +43,7 @@ import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 @SpringBootApplication(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
-@Import(SwaggerUiConfiguration.class)
+@Import(OpenApiGeneratorConfig.class)
 public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
     @Autowired private ApplicationContext applicationContext;
 
