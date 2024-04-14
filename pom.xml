@@ -108,6 +108,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.1.6</version>
+        </dependency>
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <version>1.19.6</version>
@@ -332,13 +337,6 @@
             <version>1.7.0</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.github.joschi.jackson</groupId>
-            <artifactId>jackson-datatype-threetenbp</artifactId>
-            <version>2.15.2</version>
-        </dependency>
-
         <!-- Bean Validation API support -->
         <dependency>
             <groupId>javax.validation</groupId>
@@ -350,6 +348,12 @@
             <groupId>org.springframework.plugin</groupId>
             <artifactId>spring-plugin-core</artifactId>
             <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.3</version>
         </dependency>
     </dependencies>
     <build>
@@ -378,7 +382,7 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>${spotless.version}</version>
                 <configuration>
-                    <ratchetFrom>origin/cloud</ratchetFrom>
+                    <ratchetFrom>origin/master</ratchetFrom>
                     <formats>
                         <format>
                             <includes>
@@ -501,6 +505,36 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.3.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api/report.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <templateResourcePath>${project.basedir}/src/templates/openapi-generator/spring
+                            </templateResourcePath>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <openApiNullable>false</openApiNullable>
+                                <delegatePattern>true</delegatePattern>
+                                <apiPackage>biblivre.reports.generated.api</apiPackage>
+                                <modelPackage>biblivre.reports.generated.api.model</modelPackage>
+                                <documentationProvider>source</documentationProvider>
+                                <useJakartaValidation>true</useJakartaValidation>
+                                <useJakartaEE8>true</useJakartaEE8>
+                                <useSpringBoot3>true</useSpringBoot3>
+                            </configOptions>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
