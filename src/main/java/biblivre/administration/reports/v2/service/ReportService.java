@@ -7,7 +7,7 @@ import biblivre.administration.reports.v2.model.ReportParameter;
 import biblivre.administration.reports.v2.persistence.JasperReportPersistence;
 import biblivre.administration.reports.v2.persistence.ReportRepository;
 import biblivre.core.SchemaThreadLocal;
-import biblivre.swagger.model.NameAndDescription;
+import biblivre.reports.generated.api.model.NameAndDescription;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
