@@ -9,13 +9,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ReportFill {
-  public ReportFill() {}
+    public ReportFill() {}
 
-  @GeneratedValue @Id long id;
+    @GeneratedValue @Id long id;
 
-  long reportId;
+    long reportId;
 
-  String fillParameters;
+    String fillParameters;
 
-  String url;
+    String url;
 }
