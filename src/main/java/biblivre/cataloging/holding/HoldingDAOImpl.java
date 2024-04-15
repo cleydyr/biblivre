@@ -549,7 +549,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             return index;
         }
 
-        int delta = 0;
+        int delta = 1;
 
         SearchTermDTO created = null;
         SearchTermDTO modified = null;
