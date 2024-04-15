@@ -514,26 +514,71 @@
                 <version>7.3.0</version>
                 <executions>
                     <execution>
+                        <phase>generate-sources</phase>
+                        <id>generate-spring</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/api/report.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <templateResourcePath>${project.basedir}/src/templates/openapi-generator/spring
-                            </templateResourcePath>
                             <configOptions>
                                 <dateLibrary>java8</dateLibrary>
                                 <openApiNullable>false</openApiNullable>
+                                <documentationProvider>source</documentationProvider>
                                 <delegatePattern>true</delegatePattern>
                                 <apiPackage>biblivre.reports.generated.api</apiPackage>
                                 <modelPackage>biblivre.reports.generated.api.model</modelPackage>
-                                <documentationProvider>source</documentationProvider>
-                                <useJakartaValidation>true</useJakartaValidation>
-                                <useJakartaEE8>true</useJakartaEE8>
                                 <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
+                            <generateModelTests>false</generateModelTests>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateApiTests>false</generateApiTests>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <modelNamePrefix>Rest</modelNamePrefix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-typescript</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api/report.yaml</inputSpec>
+                            <generatorName>typescript-fetch</generatorName>
+                            <output>src/main/frontend/src/generated-sources</output>
+                            <configOptions>
+                                <supportsES6>true</supportsES6>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.12.0</version>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v21.7.1</nodeVersion>
+                            <yarnVersion>v1.22.22</yarnVersion>
+                            <installDirectory>${project.basedir}/src/main/frontend</installDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>build</arguments>
+                            <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -672,34 +717,6 @@
                                 --enable-preview
                             </argLine>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <version>1.12.0</version>
-                        <executions>
-                            <execution>
-                                <id>install node and npm</id>
-                                <goals>
-                                    <goal>install-node-and-yarn</goal>
-                                </goals>
-                                <configuration>
-                                    <nodeVersion>v21.7.1</nodeVersion>
-                                    <yarnVersion>v1.22.22</yarnVersion>
-                                    <installDirectory>${project.basedir}/src/main/frontend</installDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>yarn install</id>
-                                <goals>
-                                    <goal>yarn</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>build</arguments>
-                                    <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

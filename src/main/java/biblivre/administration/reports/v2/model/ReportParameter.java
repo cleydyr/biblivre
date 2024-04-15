@@ -14,17 +14,17 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 public class ReportParameter {
-    @GeneratedValue @Id long id;
+  @GeneratedValue @Id long id;
 
-    String title;
+  String name;
 
-    String type;
+  String type;
 
-    String description;
+  String description;
 
-    @ManyToOne
-    @JoinColumn(name = "report_id", nullable = false)
-    @JsonBackReference
-    @Setter
-    Report report;
+  @ManyToOne
+  @JoinColumn(name = "report_id", nullable = false)
+  @JsonBackReference
+  @Setter
+  Report report;
 }

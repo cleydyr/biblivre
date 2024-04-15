@@ -1,23 +1,51 @@
 import {
   EuiBasicTable,
   EuiButton,
+  EuiButtonEmpty,
+  EuiCallOut,
+  EuiConfirmModal,
   EuiFieldText,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiForm,
   EuiFormRow,
   EuiGlobalToastList,
+  EuiIcon,
+  EuiLink,
   EuiPageTemplate,
 } from "@elastic/eui";
 import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Report, ReportApi } from "./api";
+import {
+  Configuration,
+  InitOverrideFunction,
+  Report,
+  ReportApi,
+} from "../../generated-sources";
+import { getSchemaFromURL } from "../../util";
+import UploadReportForm, { UploadReportFormData } from "./UploadReportForm";
 
 const REPORT_QUERY = "getReports";
 
 const GENERATE_REPORT_QUERY = "generateReport";
 
+type Screen = "list" | "edit" | "upload";
+
+const DEFAULT_FETCH_OPTIONS: InitOverrideFunction = async ({
+  init,
+  context,
+}) => ({
+  ...init,
+  headers: {
+    ...init.headers,
+    "X-Biblivre-Schema": getSchemaFromURL(),
+    Accept: "application/json",
+  },
+});
+
 export default function ReportApp() {
-  const [selectedTabId, setSelectedTabId] = useState("generateReport");
+  const [screen, setScreen] = useState("list" as Screen);
 
   const [toasts, setToasts] = useState([] as Toast[]);
 
@@ -31,38 +59,151 @@ export default function ReportApp() {
 
   const queryClient = useQueryClient();
 
-  const api = new ReportApi({}, "http://localhost:8090/api/v2");
+  const apiConfiguration = new Configuration({
+    basePath: "http://localhost:8090/api/v2",
+  });
+
+  const api = new ReportApi(apiConfiguration);
 
   const getReportsQuery = useQuery({
     queryKey: [REPORT_QUERY],
-    queryFn: () =>
-      api.getReports({
-        headers: {
-          "X-Biblivre-Schema": "bcuniaodosaber",
-          Accept: "application/json",
-        },
-      }),
+    queryFn: () => api.getReports(DEFAULT_FETCH_OPTIONS),
   });
 
   const { mutate: updateReport } = useMutation({
     mutationKey: [REPORT_QUERY],
     mutationFn: (report: Report) =>
-      api.updateReport(report, report.id ?? 0, {
-        headers: {
-          "X-Biblivre-Schema": "bcuniaodosaber",
-          Accept: "application/json",
+      api.updateReport(
+        {
+          report: report,
+          reportId: report.id ?? 0,
         },
-      }),
+        DEFAULT_FETCH_OPTIONS
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [REPORT_QUERY] });
+      setScreen("list");
+      setToasts([
+        {
+          id: "report-updated",
+          title: "Modelo de relatório atualizado",
+          color: "success",
+          iconType: "check",
+        },
+      ]);
+    },
+  });
+
+  const { mutate: deleteReport } = useMutation({
+    mutationKey: ["delete"],
+    mutationFn: (report: Report) =>
+      api.deleteReport(
+        {
+          reportId: report.id ?? 0,
+        },
+        DEFAULT_FETCH_OPTIONS
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [REPORT_QUERY] });
+      setDeletingReport(undefined);
+      setToasts([
+        {
+          id: "report-deleted",
+          title: "Modelo de relatório excluído",
+          color: "success",
+          iconType: "check",
+        },
+      ]);
+    },
+    onError: (error: Error) => {
+      setErrors((errors) => [...errors, error.message]);
+      setDeletingReport(undefined);
     },
   });
 
   const { data: reports, isFetching } = getReportsQuery;
 
+  const { mutate: addReport } = useMutation({
+    mutationKey: ["upload"],
+    mutationFn: ({ title, description, file }: UploadReportFormData) =>
+      api.addReport(
+        {
+          name: title,
+          description,
+          file,
+        },
+        DEFAULT_FETCH_OPTIONS
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [REPORT_QUERY] });
+      setScreen("list");
+      setToasts([
+        {
+          id: "report-uploaded",
+          title: "Modelo de relatório criado",
+          color: "success",
+          iconType: "check",
+        },
+      ]);
+    },
+    onError: (error: Error) => {
+      setErrors((errors) => [...errors, error.message]);
+    },
+  });
+
   const [editingReport, setEditingReport] = useState(
     undefined as Report | undefined
   );
+
+  const [deletingReport, setDeletingReport] = useState(
+    undefined as Report | undefined
+  );
+
+  const [errors, setErrors] = useState([] as string[]);
+
+  let section;
+
+  switch (screen) {
+    case "list":
+      section = renderReportList();
+      break;
+    case "edit":
+      section = (
+        <EuiFlexGroup direction="column" gutterSize="xl">
+          <div>
+            <EuiButtonEmpty
+              iconType="arrowLeft"
+              onClick={() => setScreen("list")}
+            >
+              Voltar
+            </EuiButtonEmpty>
+          </div>
+          <EditReportForm
+            report={editingReport}
+            onSubmit={(report) => {
+              updateReport(report);
+              setEditingReport(undefined);
+            }}
+          />
+        </EuiFlexGroup>
+      );
+      break;
+    case "upload":
+      section = (
+        <EuiFlexGroup direction="column" gutterSize="xl">
+          <div>
+            <EuiButtonEmpty
+              iconType="arrowLeft"
+              onClick={() => setScreen("list")}
+            >
+              Voltar
+            </EuiButtonEmpty>
+          </div>
+          <UploadReportForm onSubmit={addReport} />
+        </EuiFlexGroup>
+      );
+      break;
+  }
 
   return (
     <>
@@ -70,70 +211,26 @@ export default function ReportApp() {
         <EuiPageTemplate.Header
           pageTitle="Relatórios personalizados"
           description="Crie e gere relatórios personalizados"
-          rightSideItems={[<EuiButton fill>Novo modelo</EuiButton>]}
+          rightSideItems={[
+            screen !== "upload" && (
+              <EuiButton fill onClick={handleUploadNewReport}>
+                Novo modelo
+              </EuiButton>
+            ),
+          ]}
         />
         <EuiPageTemplate.Section>
-          {editingReport ? (
-            <EditReportForm
-              report={editingReport}
-              onSubmit={(report) => {
-                setEditingReport(undefined);
-                updateReport(report);
-              }}
-            />
-          ) : (
-            <EuiBasicTable
-              tableCaption="Demo of EuiBasicTable"
-              items={reports ?? []}
-              rowHeader="firstName"
-              columns={[
-                {
-                  field: "name",
-                  name: "Título",
-                  sortable: true,
-                },
-                {
-                  field: "description",
-                  name: "Descrição",
-                },
-                {
-                  name: "Ações",
-                  actions: [
-                    {
-                      name: "Editar",
-                      description: "Editar este modelo de relatório",
-                      type: "icon",
-                      icon: "pencil",
-                      onClick: setEditingReport,
-                    },
-                    {
-                      name: "Excluir",
-                      description: "Excluir este modelo de relatório",
-                      type: "icon",
-                      icon: "trash",
-                      onClick: () => {},
-                    },
-                    {
-                      name: "Preencher",
-                      description: "Preencher com tooltip",
-                      type: "icon",
-                      icon: "playFilled",
-                      onClick: () => {},
-                      isPrimary: true,
-                    },
-                    {
-                      name: "Histórico",
-                      description: "Baixar relatórios gerados anteriormente",
-                      type: "icon",
-                      icon: "tableOfContents",
-                      onClick: () => {},
-                    },
-                  ],
-                },
-              ]}
-              loading={isFetching}
-            />
-          )}
+          {errors.map((error) => (
+            <EuiCallOut
+              title="Desculpe. Aconteceu um erro."
+              color="danger"
+              iconType="error"
+              key={error}
+            >
+              <p>{error}</p>
+            </EuiCallOut>
+          ))}
+          {section}
         </EuiPageTemplate.Section>
       </EuiPageTemplate>
       <EuiGlobalToastList
@@ -141,8 +238,92 @@ export default function ReportApp() {
         dismissToast={removeToast}
         toastLifeTimeMs={6000}
       />
+      {deletingReport && (
+        <EuiConfirmModal
+          title="Excluir modelo de relatório"
+          onCancel={() => setDeletingReport(undefined)}
+          onConfirm={() => {
+            deleteReport(deletingReport);
+          }}
+          cancelButtonText="Cancelar"
+          confirmButtonText="Excluir"
+          buttonColor="danger"
+        >
+          <p>
+            Você tem certeza que deseja excluir o modelo de relatório
+            {` ${deletingReport.name}`}?
+          </p>
+        </EuiConfirmModal>
+      )}
     </>
   );
+
+  function handleUploadNewReport() {
+    setScreen("upload");
+  }
+
+  function handleDeleteReportClicked(report: Report) {
+    setDeletingReport(report);
+  }
+
+  function renderReportList() {
+    return (
+      <EuiBasicTable
+        tableCaption="Demo of EuiBasicTable"
+        items={reports ?? []}
+        rowHeader="firstName"
+        columns={[
+          {
+            field: "name",
+            name: "Título",
+            sortable: true,
+          },
+          {
+            field: "description",
+            name: "Descrição",
+          },
+          {
+            name: "Ações",
+            actions: [
+              {
+                name: "Editar",
+                description: "Editar este modelo de relatório",
+                type: "icon",
+                icon: "pencil",
+                onClick: (report: Report) => {
+                  setEditingReport(report);
+                  setScreen("edit");
+                },
+              },
+              {
+                name: "Excluir",
+                description: "Excluir este modelo de relatório",
+                type: "icon",
+                icon: "trash",
+                onClick: handleDeleteReportClicked,
+              },
+              {
+                name: "Preencher",
+                description: "Preencher com tooltip",
+                type: "icon",
+                icon: "playFilled",
+                onClick: () => {},
+                isPrimary: true,
+              },
+              {
+                name: "Histórico",
+                description: "Baixar relatórios gerados anteriormente",
+                type: "icon",
+                icon: "tableOfContents",
+                onClick: () => {},
+              },
+            ],
+          },
+        ]}
+        loading={isFetching}
+      />
+    );
+  }
 }
 
 type ReportFormProps = {
