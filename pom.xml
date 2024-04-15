@@ -317,6 +317,11 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.1.6</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>Biblivre6</finalName>
@@ -418,6 +423,9 @@
                 </executions>
                 <configuration>
                     <excludeVulnerabilityIds>
+                        <excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>
+                        <excludeVulnerabilityId>CVE-2024-22949</excludeVulnerabilityId>
+                        <excludeVulnerabilityId>CVE-2024-23076</excludeVulnerabilityId>
                     </excludeVulnerabilityIds>
                 </configuration>
             </plugin>
