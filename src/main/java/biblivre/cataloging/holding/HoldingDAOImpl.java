@@ -549,9 +549,10 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             return index;
         }
 
-        int delta = 1;
+        int delta = 0;
 
         SearchTermDTO created = null;
+
         SearchTermDTO modified = null;
 
         for (SearchTermDTO dto : search.getQuery().getTerms()) {
@@ -567,7 +568,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             Date endDate = created.getEndDate();
 
             if (startDate != null) {
-                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(startDate));
+                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(startDate));
             }
 
             if (endDate != null) {
@@ -575,7 +576,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                     endDate = DateUtils.addDays(endDate, 1);
                 }
 
-                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(endDate));
+                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(endDate));
             }
         }
 
@@ -585,7 +586,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             Date endDate = modified.getEndDate();
 
             if (startDate != null) {
-                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(startDate));
+                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(startDate));
             }
 
             if (endDate != null) {
@@ -593,7 +594,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                     endDate = DateUtils.addDays(endDate, 1);
                 }
 
-                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(endDate));
+                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(endDate));
             }
         }
 
