@@ -25,19 +25,20 @@ import biblivre.core.DTOCollection;
 import biblivre.core.enums.SearchMode;
 import java.util.Map;
 import java.util.Objects;
+import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public final class SearchDTO extends DTOCollection<RecordDTO> {
     public static final SearchDTO EMPTY = new SearchDTO(null);
 
-    private RecordType recordType;
+    @Getter private RecordType recordType;
 
-    private SearchQueryDTO query;
+    @Getter private SearchQueryDTO query;
 
-    private transient Integer sort;
+    @Getter private transient Integer sort;
     private transient Integer indexingGroup;
-    private transient Map<Integer, Integer> indexingGroupCount;
+    @Getter private transient Map<Integer, Integer> indexingGroupCount;
 
     public SearchDTO(RecordType recordType) {
         super();
@@ -53,16 +54,8 @@ public final class SearchDTO extends DTOCollection<RecordDTO> {
         return this.getQuery().getSearchMode();
     }
 
-    public RecordType getRecordType() {
-        return this.recordType;
-    }
-
     public void setRecordType(RecordType recordType) {
         this.recordType = recordType;
-    }
-
-    public SearchQueryDTO getQuery() {
-        return this.query;
     }
 
     public void setQuery(SearchQueryDTO query) {
@@ -79,10 +72,6 @@ public final class SearchDTO extends DTOCollection<RecordDTO> {
         this.indexingGroup = indexingGroup;
     }
 
-    public Integer getSort() {
-        return this.sort;
-    }
-
     public void setSort(Integer sort) {
         this.sort = sort;
     }
@@ -93,10 +82,6 @@ public final class SearchDTO extends DTOCollection<RecordDTO> {
         }
 
         return this.getQuery().getParameters();
-    }
-
-    public Map<Integer, Integer> getIndexingGroupCount() {
-        return this.indexingGroupCount;
     }
 
     public void setIndexingGroupCount(Map<Integer, Integer> indexingGroupCount) {
