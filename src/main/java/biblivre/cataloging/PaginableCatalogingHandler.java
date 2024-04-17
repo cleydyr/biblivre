@@ -71,7 +71,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
         SearchDTO search = paginableRecordBO.search(searchQuery, request.getAuthorizationPoints());
 
-        if (search.size() == 0) {
+        if (search.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
         }
 
