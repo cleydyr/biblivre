@@ -663,16 +663,21 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                    "SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H "
-                            + "INNER JOIN biblio_search_results B ON H.record_id = B.record_id "
-                            + "WHERE B.search_id = ? "
-                            + this.createAdvancedWhereClause(search)
-                            + "UNION "
-                            + "SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H "
-                            + "INNER JOIN biblio_search_results B ON H.record_id = B.record_id "
-                            + "WHERE B.search_id = ? "
-                            + this.createAdvancedWhereClause(search)
-                            + "and B.indexing_group_id <> 0 GROUP BY B.indexing_group_id";
+                    STR."""
+                        SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H
+                            INNER JOIN biblio_search_results B ON H.record_id = B.record_id
+                            WHERE B.search_id = ?
+                            \{
+                            this.createAdvancedWhereClause(
+                                    search)}
+                            UNION
+                                SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H
+                                INNER JOIN biblio_search_results B ON H.record_id = B.record_id
+                                WHERE B.search_id = ?
+                            \{
+                            this.createAdvancedWhereClause(
+                                    search)}
+                            AND B.indexing_group_id <> 0 GROUP BY B.indexing_group_id""";
 
             PreparedStatement pst = con.prepareStatement(sql);
 
