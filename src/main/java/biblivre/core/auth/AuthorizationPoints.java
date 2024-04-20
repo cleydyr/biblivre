@@ -199,6 +199,32 @@ public class AuthorizationPoints implements Serializable {
         this.addAuthPoint("administration.reports", "author_search", ADMINISTRATION_REPORTS);
         this.addAuthPoint("administration.reports", "generate", ADMINISTRATION_REPORTS);
         this.addAuthPoint("administration.reports", "download_report", ADMINISTRATION_REPORTS);
+
+        this.addAuthPoint(
+                "administration.customization", "save_brief_formats", ADMINISTRATION_CUSTOMIZATION);
+        this.addAuthPoint(
+                "administration.customization",
+                "insert_brief_formats",
+                ADMINISTRATION_CUSTOMIZATION);
+        this.addAuthPoint(
+                "administration.customization",
+                "delete_brief_formats",
+                ADMINISTRATION_CUSTOMIZATION);
+
+        this.addAuthPoint(
+                "administration.customization",
+                "save_form_datafields",
+                ADMINISTRATION_CUSTOMIZATION);
+
+        this.addAuthPoint(
+                "administration.customization",
+                "insert_form_datafields",
+                ADMINISTRATION_CUSTOMIZATION);
+
+        this.addAuthPoint(
+                "administration.customization",
+                "delete_form_datafields",
+                ADMINISTRATION_CUSTOMIZATION);
     }
 
     private void setupAcquisitionAuthorizations() {
@@ -441,7 +467,7 @@ public class AuthorizationPoints implements Serializable {
         this.addAuthPoint("menu", "administration_custom_reports", ADMINISTRATION_REPORTS);
         this.addAuthPoint("menu", "administration_translations", ADMINISTRATION_TRANSLATIONS);
         this.addAuthPoint(
-                "menu", "administration_brief_customization", ADMINISTRATION_TRANSLATIONS);
+                "menu", "administration_brief_customization", ADMINISTRATION_CUSTOMIZATION);
         this.addAuthPoint(
                 "menu", "administration_form_customization", ADMINISTRATION_CUSTOMIZATION);
 
