@@ -21,8 +21,14 @@ package biblivre.cataloging;
 
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
+@Setter
+@Getter
+@AllArgsConstructor
 public class RecordAttachmentDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
@@ -30,38 +36,6 @@ public class RecordAttachmentDTO extends AbstractDTO {
     private String file;
     private String name;
     private String uri;
-
-    public String getPath() {
-        return this.path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getFile() {
-        return this.file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUri() {
-        return this.uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
 
     @Override
     public JSONObject toJSONObject() {
