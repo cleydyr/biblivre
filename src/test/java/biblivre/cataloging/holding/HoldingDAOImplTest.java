@@ -41,7 +41,7 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
 
         // Given that I have a holding with a creation date of 2023-04-12
         String bibliographicRecordCreationFormData =
-                "action=save&oldId=+&id=+&from=form&data=%7B%7D&material_type=book&database=main";
+                "oldId=+&id=+&from=form&data=%7B%7D&material_type=book&database=main";
 
         ExtendedRequest request1 = getFormDataMockRequest(bibliographicRecordCreationFormData);
 
