@@ -62,8 +62,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
 
                 Object value = null;
 
-                Method setter =
-                        clazz.getDeclaredMethod("set" + StringUtils.capitalize(name), fieldClass);
+                Method setter = clazz.getDeclaredMethod(setter(name), fieldClass);
 
                 if (fieldClass.equals(String.class)) {
                     value = jsonObject.has(name) ? jsonObject.getString(name) : null;
@@ -97,7 +96,10 @@ public abstract class AbstractDTO implements IFJson, Serializable {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    private static String setter(String name) {
+        return STR."set\{StringUtils.capitalize(name)}";
+    }
+
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
@@ -112,7 +114,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                     Method getter;
 
                     try {
-                        getter = clazz.getDeclaredMethod("get" + StringUtils.capitalize(name));
+                        getter = clazz.getDeclaredMethod(getter(name));
                     } catch (NoSuchMethodException e) {
                         continue;
                     }
@@ -154,15 +156,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
                     }
                 }
 
-                for (Entry<String, IFJson> e : this._extraData.entrySet()) {
-                    IFJson value = e.getValue();
-
-                    if (value instanceof DTOCollection) {
-                        json.put(e.getKey(), this.toJSONArray((DTOCollection<AbstractDTO>) value));
-                    } else {
-                        json.put(e.getKey(), value.toJSONObject());
-                    }
-                }
+                populateExtraData(json);
 
                 clazz = clazz.getSuperclass();
             }
@@ -171,6 +165,10 @@ public abstract class AbstractDTO implements IFJson, Serializable {
         }
 
         return json;
+    }
+
+    private static String getter(String name) {
+        return STR."get\{StringUtils.capitalize(name)}";
     }
 
     public void addExtraData(String key, IFJson data) {
