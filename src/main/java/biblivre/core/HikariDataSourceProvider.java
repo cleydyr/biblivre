@@ -5,14 +5,25 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.io.PrintWriter;
 import java.util.Properties;
-import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.postgresql.ds.PGSimpleDataSource;
 
+@Slf4j
 public class HikariDataSourceProvider implements DataSourceProvider {
     private static final String JDBC_URL_TEMPLATE = "jdbc:postgresql://%s:%s/%s";
 
+    private HikariDataSource hikariDataSource;
+
     @Override
-    public DataSource getDataSource(String databaseName) {
+    public HikariDataSource getDataSource(String databaseName) {
+        if (this.hikariDataSource != null) {
+            if (log.isInfoEnabled()) {
+                log.info("Returning existing HikariDataSource");
+            }
+
+            return this.hikariDataSource;
+        }
+
         Properties props = new Properties();
 
         props.setProperty("dataSourceClassName", PGSimpleDataSource.class.getName());
@@ -35,6 +46,8 @@ public class HikariDataSourceProvider implements DataSourceProvider {
 
         props.put("dataSource.logWriter", new PrintWriter(System.out));
 
-        return new HikariDataSource(new HikariConfig(props));
+        this.hikariDataSource = new HikariDataSource(new HikariConfig(props));
+
+        return this.hikariDataSource;
     }
 }
