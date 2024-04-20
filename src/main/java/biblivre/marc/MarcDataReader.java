@@ -23,15 +23,15 @@ import biblivre.cataloging.BriefTabFieldDTO;
 import biblivre.cataloging.BriefTabFieldFormatDTO;
 import biblivre.cataloging.RecordAttachmentDTO;
 import biblivre.core.utils.CharPool;
-import biblivre.core.utils.TextUtils;
+import biblivre.core.utils.StringPool;
 import java.util.*;
-import java.util.regex.Matcher;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 
+@Getter
 public final class MarcDataReader {
     private final Record record;
     private final Map<String, List<DataField>> cache;
@@ -41,25 +41,20 @@ public final class MarcDataReader {
         this.cache = this.readDataFieldMap();
     }
 
-    public Record getRecord() {
-        return this.record;
-    }
-
-    public Map<String, List<DataField>> getCache() {
-        return this.cache;
-    }
-
     public List<BriefTabFieldDTO> getFieldList(List<BriefTabFieldFormatDTO> dataFieldFormats) {
         List<BriefTabFieldDTO> list = new ArrayList<>();
 
-        for (BriefTabFieldFormatDTO dto : dataFieldFormats) {
-            String tag = dto.getDatafieldTag();
+        for (BriefTabFieldFormatDTO briefTabFieldFormatDTO : dataFieldFormats) {
+            String tag = briefTabFieldFormatDTO.getDatafieldTag();
             List<DataField> fields = this.getDataFields(tag);
 
-            String formattedField = this.formatDataField(dto.getFormat(), fields);
+            String formattedField =
+                    this.formatDataField(briefTabFieldFormatDTO.getFormat(), fields);
 
             if (StringUtils.isNotBlank(formattedField)) {
-                list.add(new BriefTabFieldDTO(dto.getDatafieldTag(), formattedField));
+                list.add(
+                        new BriefTabFieldDTO(
+                                briefTabFieldFormatDTO.getDatafieldTag(), formattedField));
             }
         }
 
@@ -95,51 +90,21 @@ public final class MarcDataReader {
             }
         }
 
-        return formattedFields.size() > 0 ? StringUtils.join(formattedFields, separator) : null;
+        return !formattedFields.isEmpty() ? StringUtils.join(formattedFields, separator) : null;
     }
 
     public List<RecordAttachmentDTO> getAttachments() {
         List<DataField> fields = this.getDataFields(MarcConstants.ELECTRONIC_LOCATION);
-        List<RecordAttachmentDTO> attachments = new ArrayList<>();
 
-        String file;
-        String name;
-        String path;
-        String uri;
-
-        for (DataField field : fields) {
-            file = this.getFirstSubfieldData(field, 'f');
-            name = this.getFirstSubfieldData(field, 'y');
-            path = this.getFirstSubfieldData(field, 'd');
-            uri = this.getFirstSubfieldData(field, 'u');
-
-            if (StringUtils.isBlank(file)) {
-                file = name;
-            }
-
-            if (StringUtils.isBlank(file)) {
-                file = uri;
-            }
-
-            if (StringUtils.isBlank(file)) {
-                continue;
-            }
-
-            if (StringUtils.isBlank(name)) {
-                name = file;
-            }
-
-            RecordAttachmentDTO attachment = new RecordAttachmentDTO();
-
-            attachment.setPath(path);
-            attachment.setFile(file);
-            attachment.setName(name);
-            attachment.setUri(uri);
-
-            attachments.add(attachment);
-        }
-
-        return attachments;
+        return fields.stream()
+                .map(
+                        field ->
+                                new RecordAttachmentDTO(
+                                        getFirstSubfieldData(field, 'f'),
+                                        getFirstSubfieldData(field, 'y'),
+                                        getFirstSubfieldData(field, 'd'),
+                                        getFirstSubfieldData(field, 'u')))
+                .toList();
     }
 
     public String getAuthor(boolean listAll) {
@@ -284,22 +249,6 @@ public final class MarcDataReader {
                 false, new BriefTabFieldFormatDTO(MarcConstants.ACCESSION_NUMBER, "${a}"));
     }
 
-    public ControlField getControlField(String tag) {
-        Record record = this.getRecord();
-
-        if (record == null || StringUtils.isBlank(tag)) {
-            return null;
-        }
-
-        for (ControlField obj : record.getControlFields()) {
-            if (obj.getTag().equals(tag)) {
-                return obj;
-            }
-        }
-
-        return null;
-    }
-
     public List<DataField> getDataFields(String tag) {
         Record record = this.getRecord();
 
@@ -358,7 +307,7 @@ public final class MarcDataReader {
         for (DataField field : record.getDataFields()) {
             String tag = field.getTag();
 
-            List<DataField> fieldList = hash.computeIfAbsent(tag, k -> new ArrayList<>());
+            List<DataField> fieldList = hash.computeIfAbsent(tag, _ -> new ArrayList<>());
 
             fieldList.add(field);
         }
@@ -374,115 +323,129 @@ public final class MarcDataReader {
 
     private String formatDataField(String format, List<DataField> dataFieldList) {
         if (dataFieldList == null || dataFieldList.isEmpty()) {
-            return "";
+            return StringPool.BLANK;
         }
 
-        Matcher matcher = MarcConstants.DATAFIELD_FORMAT_PATTERN.matcher(format);
+        List<String> formatItems = new ArrayList<>();
 
-        StringBuilder result = new StringBuilder();
-        StringBuilder values;
+        Deque<List<String>> stack = new ArrayDeque<>();
 
-        String specialGroup;
-        String element;
-        String content;
-        String value;
-        String subfieldSeparator;
+        State state = State.F;
 
-        List<Subfield> subfields;
+        for (int i = 0; i < format.length(); i++) {
+            char c = format.charAt(i);
 
-        for (DataField dataField : dataFieldList) {
-            if (dataField == null) {
-                continue;
+            switch (state) {
+                case F:
+                    if (c == CharPool.DOLLAR_SIGN) {
+                        state = State.V0;
+                    } else if (c == CharPool.UNDERSCORE) {
+                        state = State.S0;
+                    } else if (c == CharPool.OPEN_PARENTHESIS) {
+                        stack.push(formatItems);
+
+                        formatItems = new ArrayList<>();
+                    } else if (c == CharPool.CLOSE_PARENTHESIS) {
+                        if (stack.isEmpty()) {
+                            throwException(format);
+                        }
+
+                        List<String> popped = stack.pop();
+
+                        String aggregatedFormat = StringUtils.join(formatItems, StringPool.BLANK);
+
+                        if (StringUtils.isNotBlank(aggregatedFormat)) {
+                            popped.add(String.valueOf(CharPool.OPEN_PARENTHESIS));
+                            popped.add(aggregatedFormat);
+                            popped.add(String.valueOf(CharPool.CLOSE_PARENTHESIS));
+                        }
+
+                        formatItems = popped;
+                    } else {
+                        throwException(format);
+                    }
+
+                    break;
+                case S0:
+                    if (c == CharPool.OPEN_BRACE) {
+                        state = State.S1;
+                    } else {
+                        throwException(format);
+                    }
+                    break;
+                case S1:
+                    int j = i;
+
+                    while (j < format.length() && format.charAt(j) != CharPool.CLOSE_BRACE) {
+                        j++;
+                    }
+
+                    if (j == format.length()) {
+                        throwException(format);
+                    }
+
+                    String plainText = format.substring(i, j);
+
+                    formatItems.add(plainText);
+
+                    i = j;
+
+                    state = State.F;
+                    break;
+                case V0:
+                    if (c == CharPool.OPEN_BRACE) {
+                        state = State.V1;
+                    } else {
+                        throwException(format);
+                    }
+                    break;
+                case V1:
+                    String result = processSubfield(c, dataFieldList);
+
+                    if (result != null) {
+                        formatItems.add(result);
+                    } else if (!formatItems.isEmpty()) {
+                        formatItems.removeLast();
+                    }
+
+                    state = State.V2;
+                    break;
+                case V2:
+                    if (c == CharPool.CLOSE_BRACE) {
+                        state = State.F;
+                    } else {
+                        throwException(format);
+                    }
+                    break;
+                default:
+                    break;
             }
-
-            String lastSeparator = null;
-            String lastValue = null;
-            boolean newSeparator = false;
-            boolean endsWithSeparator;
-            boolean shouldAddStartParenthesis = false;
-
-            while (matcher.find()) {
-                specialGroup = matcher.group(1);
-
-                if (specialGroup == null) {
-                    element = matcher.group(2);
-                    content = matcher.group(3);
-                } else {
-                    element = specialGroup;
-                    content = "";
-                }
-
-                switch (element) {
-                    case "$" -> {
-                        subfields = dataField.getSubfields(content.charAt(0));
-                        subfieldSeparator = (content.length() == 1) ? ", " : content.substring(1);
-                        endsWithSeparator = false;
-                        values = new StringBuilder();
-                        for (Subfield s : subfields) {
-                            value = s.getData();
-
-                            if (StringUtils.isNotBlank(value)) {
-                                value = value.trim();
-
-                                values.append(value);
-
-                                if (TextUtils.endsInValidCharacter(value)) {
-                                    values.append(subfieldSeparator);
-                                    endsWithSeparator = true;
-                                } else {
-                                    values.append(CharPool.SPACE);
-                                    endsWithSeparator = false;
-                                }
-                            }
-                        }
-                        value = values.toString();
-                        if (endsWithSeparator) {
-                            value = value.substring(0, value.length() - subfieldSeparator.length());
-                        } else {
-                            value = value.trim();
-                        }
-                        if (StringUtils.isNotBlank(value)) {
-                            if (newSeparator) {
-                                newSeparator = false;
-
-                                if (StringUtils.isNotBlank(lastValue)) {
-                                    if (TextUtils.endsInValidCharacter(lastValue)) {
-                                        result.append(lastSeparator);
-                                    } else {
-                                        result.append(CharPool.SPACE);
-                                    }
-                                }
-                            }
-
-                            lastValue = value.trim();
-
-                            if (shouldAddStartParenthesis) {
-                                shouldAddStartParenthesis = false;
-                                result.append(CharPool.OPEN_PARENTHESIS);
-                            }
-
-                            result.append(lastValue);
-                        }
-                    }
-                    case "_" -> {
-                        lastSeparator = content;
-                        newSeparator = true;
-                    }
-                    case "(" -> shouldAddStartParenthesis = true;
-                    case ")" -> {
-                        if (result.charAt(result.length() - 1) == CharPool.OPEN_PARENTHESIS) {
-                            result.deleteCharAt(result.length() - 1);
-                        } else if (!shouldAddStartParenthesis) {
-                            result.append(CharPool.CLOSE_PARENTHESIS);
-                        }
-                    }
-                }
-            }
-
-            matcher.reset();
-            result.append(CharPool.NEW_LINE);
         }
 
-        return StringUtils.chomp(result.toString());
+        return StringUtils.join(formatItems, StringPool.BLANK);
+    }
+
+    private String processSubfield(char c, List<DataField> dataFieldList) {
+        return dataFieldList.stream()
+                .map(dataField -> dataField.getSubfields(c))
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .map(Subfield::getData)
+                .filter(StringUtils::isNotBlank)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static void throwException(String format) {
+        throw new IllegalArgumentException(STR."Invalid format string: \{format}");
+    }
+
+    private enum State {
+        F,
+        S0,
+        S1,
+        V0,
+        V1,
+        V2
     }
 }

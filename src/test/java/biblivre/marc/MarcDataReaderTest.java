@@ -10,27 +10,6 @@ import org.junit.jupiter.api.Test;
 import utils.MarcUtils;
 
 class MarcDataReaderTest {
-    public static final String _1822_HUMAN_READABLE_MARC =
-            """
-            000	01258nam a2200217 a 4500
-            001	0000251
-            005	20230413141548.880
-            008	230413s|||| bl|||||||||||||||||por|u
-            082	__|221|a981
-            090	__|a981|bG633m
-            100	__|aGomes, Laurentino|d1956-|eautor
-            245	0_|a1822|bcomo um homem sábio, uma princesa triste e um escocês louco por dinheiro ajudaram D. Pedro a criar o Brasil : um país que tinha tudo para dar errado|cLaurentino Gomes
-            246	__|aMil oitocentos e vinte e dois
-            260	__|aRio de Janeiro (RJ)|bNova Fronteira|c2010
-            300	__|a351 p., [20] p. de lâms.|bil.|c23 cm
-            504	__|aBibliografia
-            505	__|aContém notas.
-            505	__|aÍndice onomástico.
-            520	__|aEsta obra apresenta 22 capítulos intercalados por ilustrações de fatos e personagens da época da independência. Resultado de três anos de pesquisas, a obra cobre um período de quatorze anos, entre 1821, data do retorno da corte portuguesa de D. João VI a Lisboa, e 1834, ano da morte do imperador D. Pedro I. O livro procura explicar como o Brasil conseguiu manter a integridade do seu território e se firmar como nação independente em 1822.
-            600	__|aPedro|bI,|cImperador do Brasil|d1798-1834
-            651	__|aBrasil|xHistória|yImpério, 1822-1889
-            """;
-
     public static final String _1984_HUMAN_READABLE_MARC =
             """
             000	03404nam a2200181 a 4500
