@@ -64,7 +64,7 @@ class DigitalMediaJasperReportPersistenceTest extends AbstractContainerDatabaseT
         digitalMediaReportPersistence.setDigitalMediaDAO(dao);
 
         long id =
-                digitalMediaReportPersistence.persist(
+                digitalMediaReportPersistence.compile(
                         new ByteArrayInputStream(minimalJrxmlReport.getBytes()),
                         minimalJrxmlReport.length());
 
@@ -93,7 +93,7 @@ class DigitalMediaJasperReportPersistenceTest extends AbstractContainerDatabaseT
         digitalMediaReportPersistence.setDigitalMediaDAO(dao);
 
         long id =
-                digitalMediaReportPersistence.persist(
+                digitalMediaReportPersistence.compile(
                         new ByteArrayInputStream(minimalJrxmlReport.getBytes()),
                         minimalJrxmlReport.length());
 

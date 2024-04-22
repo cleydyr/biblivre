@@ -18,27 +18,6 @@ paths:
       operationId: getReportTemplates
       tags:
         - Report Template
-    post:
-      description: Creates a new report template
-      requestBody:
-        description: The report template to be created
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReportTemplate'
-      responses:
-        201:
-          description: A new report template has been created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportTemplate'
-        500:
-          $ref: '#/components/responses/500ApiError'
-      operationId: createReportTemplate
-      tags:
-        - Report Template
   /report_template/{reportTemplateId}:
     get:
       description: Retrieves a specific report template
@@ -92,11 +71,9 @@ paths:
       operationId: updateReport
       tags:
         - Report Template
-  "/report_template/{reportTemplateId}:compile":
+  "/report_template/:compile":
     post:
       description: Uploads a report template file to the server
-      parameters:
-        - $ref: '#/components/parameters/ReportTemplateId'
       requestBody:
         required: true
         content:
@@ -108,7 +85,7 @@ paths:
           description: The file has been uploaded and compiled successfully
         500:
           $ref: '#/components/responses/500ApiError'
-      operationId: updateReport
+      operationId: compileReportTemplate
       tags:
         - Report Template
 components:
@@ -133,8 +110,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/Identifiable'
         - type: object
-          required:
-            - name
           properties:
             name:
               type: string
@@ -144,8 +119,8 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/ReportTemplateParameter'
-      required:
-        - name
+          required:
+            - id
     ReportTemplateParameter:
       type: object
       properties:
@@ -157,7 +132,14 @@ components:
           example: java.time.LocalDate
     ReportTemplateCompileRequest:
       type: object
+      required:
+        - name
+        - file
       properties:
+        name:
+          type: string
+        description:
+          type: string
         file:
           type: string
           format: binary

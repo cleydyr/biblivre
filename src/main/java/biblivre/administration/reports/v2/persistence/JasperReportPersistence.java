@@ -10,5 +10,5 @@ public interface JasperReportPersistence {
 
     Collection<JasperReportImpl> listReports() throws Exception;
 
-    long persist(InputStream reportJRXMLDefinition, long size) throws ReportException;
+    long compile(InputStream reportJRXMLDefinition, long size) throws ReportException;
 }

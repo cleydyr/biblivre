@@ -8,15 +8,10 @@ import biblivre.administration.reports.v2.persistence.JasperReportPersistence;
 import biblivre.administration.reports.v2.persistence.ReportRepository;
 import biblivre.core.SchemaThreadLocal;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
 import javax.sql.DataSource;
 import net.sf.jasperreports.engine.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,61 +29,10 @@ public class ReportService {
 
     private ReportRepository reportRepository;
 
-    public void generateReport(
-            long reportId, Map<String, String> params, OutputStream consumerOutputStream)
+    public void compileReportTemplate(
+            String name, String description, InputStream reportJRXMLDefinition, long fileSize)
             throws ReportException {
-        Report report = reportRepository.findById(reportId).orElseThrow();
-
-        long digitalMediaId = 0; // report.getDigitalMediaId();
-
-        JasperReportImpl jasperReport = jasperReportPersistence.getById(digitalMediaId);
-
-        try (Connection connection = datasource.getConnection()) {
-            setSchemaSearchPath(connection);
-
-            Map<String, Object> actualParameters = transformParameters(jasperReport, params);
-
-            JasperPrint jasperPrint =
-                    JasperFillManager.fillReport(
-                            jasperReport.getJasperReport(), actualParameters, connection);
-
-            JasperExportManager.exportReportToPdfStream(jasperPrint, consumerOutputStream);
-        } catch (JRException e) {
-            throw new ReportException("can't fill report", e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<Report> getReports() {
-        return StreamSupport.stream(reportRepository.findAll().spliterator(), false).toList();
-    }
-
-    public Report updateReport(Long reportId, String title, String description) {
-        Report report = reportRepository.findById(reportId).orElseThrow();
-
-        Report updatee =
-                new Report(
-                        reportId,
-                        title,
-                        description,
-                        report.getParameters(),
-                        report.getSchema(),
-                        report.getDigitalMediaId());
-
-        return reportRepository.save(updatee);
-    }
-
-    public Report deleteReport(Long reportId) {
-        Report report = reportRepository.findById(reportId).orElseThrow();
-        reportRepository.deleteById(reportId);
-        return report;
-    }
-
-    public Report addReport(
-            InputStream reportJRXMLDefinition, String title, String description, long size)
-            throws ReportException {
-        long digitalMediaId = jasperReportPersistence.persist(reportJRXMLDefinition, size);
+        long digitalMediaId = jasperReportPersistence.compile(reportJRXMLDefinition, fileSize);
 
         JasperReportImpl compiledReport = jasperReportPersistence.getById(digitalMediaId);
 
@@ -100,18 +44,51 @@ public class ReportService {
                         .map(ReportService::toReportParameter)
                         .toList();
 
-        Report toBeSaved =
+        Report report =
                 new Report(
                         0,
-                        title,
+                        name,
                         description,
                         reportParameters,
                         SchemaThreadLocal.get(),
                         digitalMediaId);
 
-        reportParameters.forEach(reportParameter -> reportParameter.setReport(toBeSaved));
+        reportParameters.forEach(reportParameter -> reportParameter.setReport(report));
 
-        return reportRepository.save(toBeSaved);
+        reportRepository.save(report);
+    }
+
+    public List<Report> getReportTemplates() {
+        List<Report> list = new ArrayList<>();
+
+        for (Report report : reportRepository.findAll()) {
+            list.add(report);
+        }
+
+        return list;
+    }
+
+    public Report updateReport(Long reportTemplateId, String name, String description)
+            throws ReportException {
+        Report existingReport =
+                reportRepository
+                        .findById(reportTemplateId)
+                        .orElseThrow(() -> new ReportException("Report not found"));
+
+        Report newReport =
+                new Report(
+                        reportTemplateId,
+                        name,
+                        description,
+                        existingReport.getParameters(),
+                        existingReport.getSchema(),
+                        existingReport.getDigitalMediaId());
+
+        return reportRepository.save(newReport);
+    }
+
+    public void deleteReport(Long reportTemplateId) throws ReportException {
+        reportRepository.deleteById(reportTemplateId);
     }
 
     private static ReportParameter toReportParameter(JRParameter jrParameter) {
@@ -121,25 +98,6 @@ public class ReportService {
                 jrParameter.getValueClassName(),
                 jrParameter.getDescription(),
                 null);
-    }
-
-    private static Map<String, Object> transformParameters(
-            JasperReportImpl report, Map<String, String> params) {
-        Map<String, Object> actualParameters = new HashMap<>();
-
-        for (JRParameter parameter : report.getParameters()) {
-            String parameterName = parameter.getName();
-            String parameterValue = params.get(parameterName);
-            actualParameters.put(parameterName, parameterValue);
-        }
-
-        return actualParameters;
-    }
-
-    private static void setSchemaSearchPath(Connection connection) throws SQLException {
-        connection
-                .createStatement()
-                .execute("SET search_path = '" + SchemaThreadLocal.get() + "';");
     }
 
     @Autowired
