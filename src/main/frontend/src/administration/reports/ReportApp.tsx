@@ -20,8 +20,8 @@ import { useState } from "react";
 import {
   Configuration,
   InitOverrideFunction,
-  Report,
-  ReportApi,
+  ReportTemplate,
+  ReportTemplateApi,
 } from "../../generated-sources";
 import { getSchemaFromURL } from "../../util";
 import UploadReportForm, { UploadReportFormData } from "./UploadReportForm";
@@ -63,20 +63,20 @@ export default function ReportApp() {
     basePath: "http://localhost:8090/api/v2",
   });
 
-  const api = new ReportApi(apiConfiguration);
+  const api = new ReportTemplateApi(apiConfiguration);
 
   const getReportsQuery = useQuery({
     queryKey: [REPORT_QUERY],
-    queryFn: () => api.getReports(DEFAULT_FETCH_OPTIONS),
+    queryFn: () => api.getReportTemplates(DEFAULT_FETCH_OPTIONS),
   });
 
   const { mutate: updateReport } = useMutation({
     mutationKey: [REPORT_QUERY],
-    mutationFn: (report: Report) =>
+    mutationFn: (reportTemplate: ReportTemplate) =>
       api.updateReport(
         {
-          report: report,
-          reportId: report.id ?? 0,
+          reportTemplateId: reportTemplate.id ?? 0,
+          reportTemplate,
         },
         DEFAULT_FETCH_OPTIONS
       ),
@@ -96,10 +96,10 @@ export default function ReportApp() {
 
   const { mutate: deleteReport } = useMutation({
     mutationKey: ["delete"],
-    mutationFn: (report: Report) =>
+    mutationFn: (report: ReportTemplate) =>
       api.deleteReport(
         {
-          reportId: report.id ?? 0,
+          reportTemplateId: report.id,
         },
         DEFAULT_FETCH_OPTIONS
       ),
@@ -126,7 +126,7 @@ export default function ReportApp() {
   const { mutate: addReport } = useMutation({
     mutationKey: ["upload"],
     mutationFn: ({ title, description, file }: UploadReportFormData) =>
-      api.addReport(
+      api.compileReportTemplate(
         {
           name: title,
           description,
@@ -152,11 +152,11 @@ export default function ReportApp() {
   });
 
   const [editingReport, setEditingReport] = useState(
-    undefined as Report | undefined
+    undefined as ReportTemplate | undefined
   );
 
   const [deletingReport, setDeletingReport] = useState(
-    undefined as Report | undefined
+    undefined as ReportTemplate | undefined
   );
 
   const [errors, setErrors] = useState([] as string[]);
@@ -262,7 +262,7 @@ export default function ReportApp() {
     setScreen("upload");
   }
 
-  function handleDeleteReportClicked(report: Report) {
+  function handleDeleteReportClicked(report: ReportTemplate) {
     setDeletingReport(report);
   }
 
@@ -290,7 +290,7 @@ export default function ReportApp() {
                 description: "Editar este modelo de relatório",
                 type: "icon",
                 icon: "pencil",
-                onClick: (report: Report) => {
+                onClick: (report: ReportTemplate) => {
                   setEditingReport(report);
                   setScreen("edit");
                 },
@@ -327,14 +327,18 @@ export default function ReportApp() {
 }
 
 type ReportFormProps = {
-  report: Report | undefined;
-  onSubmit: (report: Report) => void;
+  report: ReportTemplate | undefined;
+  onSubmit: (report: ReportTemplate) => void;
 };
 
 const EditReportForm = ({ report, onSubmit }: ReportFormProps) => {
   const [name, setName] = useState(report?.name ?? "");
 
   const [description, setDescription] = useState(report?.description);
+
+  if (report === undefined) {
+    return null;
+  }
 
   return (
     <EuiForm>
