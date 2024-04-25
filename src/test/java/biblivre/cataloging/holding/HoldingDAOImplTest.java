@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import biblivre.AbstractContainerDatabaseTest;
 import biblivre.TestDatasourceConfiguration;
+import biblivre.cataloging.enums.RecordType;
 import biblivre.core.*;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -14,9 +15,11 @@ import java.util.Map;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,6 +34,21 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
     @Autowired biblivre.cataloging.bibliographic.Handler bibliographicHandler;
 
     @Autowired biblivre.cataloging.holding.Handler holdingHandler;
+
+    @Autowired biblivre.cataloging.holding.HoldingDAOImpl holdingDAO;
+
+    @Autowired
+    @Qualifier("recordDAO")
+    biblivre.cataloging.RecordDAOImpl bibliographicDAO;
+
+    @AfterEach
+    void setUp() {
+        holdingDAO.list(0, Integer.MAX_VALUE).forEach(holdingDAO::delete);
+
+        bibliographicDAO
+                .list(0, Integer.MAX_VALUE, RecordType.BIBLIO)
+                .forEach(bibliographicDAO::delete);
+    }
 
     @Test
     void countSearchResults() throws IOException {
@@ -60,6 +78,55 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
 
         holdingHandler.createAutomaticHolding(
                 automaticHoldingCreationRequest, Mockito.mock(ExtendedResponse.class));
+
+        // When I search for holdings created between yesterday and tomorrow
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+
+        String holdingSearchFormData =
+                STR."search_parameters=%7B%22database%22%3A%22main%22%2C%22material_type%22%3A%22all%22%2C%22search_mode%22%3A%22advanced%22%2C%22holding_search%22%3Atrue%2C%22search_terms%22%3A%5B%7B%22field%22%3A%22holding_created%22%2C%22operator%22%3A%22AND%22%2C%22start_date%22%3A%22\{
+                        yesterday}T00%3A00%3A00%22%2C%22end_date%22%3A%22\{
+                        tomorrow}T00%3A00%3A00%22%7D%2C%7B%22query%22%3A%22true%22%2C%22field%22%3A%22holding_label_never_printed%22%2C%22operator%22%3A%22AND%22%7D%5D%7D";
+
+        ExtendedRequest holdingSearchRequest = getFormDataMockRequest(holdingSearchFormData);
+
+        JSONObject holdingSearchResponseBody = jsonPayloadGenerator.get();
+
+        bibliographicHandler.search(holdingSearchRequest, Mockito.mock(ExtendedResponse.class));
+
+        // Then I should get a count of one on the search results
+        assertEquals(1, holdingSearchResponseBody.getJSONObject("search").getInt("record_count"));
+    }
+
+    @Test
+    void save() throws IOException {
+        // Setup
+        SchemaThreadLocal.setSchema("single");
+
+        Supplier<JSONObject> jsonPayloadGenerator = handlerJsonPayloadGenerator();
+
+        // Given that I create a bibliographic record
+        String bibliographicRecordCreationFormData =
+                "oldId=+&id=+&from=form&data=%7B%7D&material_type=book&database=main";
+
+        ExtendedRequest request1 = getFormDataMockRequest(bibliographicRecordCreationFormData);
+
+        JSONObject bibliographicRecordCreationResponseBody = jsonPayloadGenerator.get();
+
+        bibliographicHandler.save(request1, Mockito.mock(ExtendedResponse.class));
+
+        int recordId = bibliographicRecordCreationResponseBody.getJSONObject("data").getInt("id");
+
+        // When I create a holding for the bibliographic record
+
+        String saveHoldingFormData =
+                STR."oldId=+&id=+&record_id=\{
+                        recordId}&availability=available&from=holding_form&data=%7B%7D";
+
+        ExtendedRequest saveHoldingRequest = getFormDataMockRequest(saveHoldingFormData);
+
+        holdingHandler.save(saveHoldingRequest, Mockito.mock(ExtendedResponse.class));
 
         // When I search for holdings created between yesterday and tomorrow
         LocalDate yesterday = LocalDate.now().minusDays(1);
