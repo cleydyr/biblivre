@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Update implements UpdateService {
 
-    public void doUpdate(Connection connection) throws UpdateException {
+    public void doUpdateScopedBySchema(Connection connection) throws UpdateException {
         fixBiblioBriefTabFormats(connection);
     }
 
