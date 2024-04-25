@@ -11,6 +11,12 @@ public class PreparedStatementUtil {
         int position = FIRST_POSITION;
 
         for (Object parameter : parameters) {
+            if (parameter == null) {
+                preparedStatement.setNull(position++, java.sql.Types.NULL);
+
+                continue;
+            }
+
             ParameterSetter parameterSetter =
                     ParameterSetterFactory.getParameterSetter(parameter.getClass());
 
