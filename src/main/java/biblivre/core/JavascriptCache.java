@@ -37,14 +37,16 @@ public class JavascriptCache {
         try {
             this.cacheFile =
                     File.createTempFile(
-                            this.parent.getCacheFileNamePrefix() + ".",
+                            STR."\{this.parent.getCacheFileNamePrefix()}.",
                             this.parent.getCacheFileNameSuffix());
             this.cacheFile.deleteOnExit();
 
             try (BufferedWriter out =
                     new BufferedWriter(
-                            new FileWriterWithEncoding(
-                                    this.cacheFile, Constants.DEFAULT_CHARSET))) {
+                            FileWriterWithEncoding.builder()
+                                    .setCharset(Constants.DEFAULT_CHARSET)
+                                    .setFile(this.cacheFile)
+                                    .get())) {
                 out.write(this.parent.toJavascriptString());
             }
 

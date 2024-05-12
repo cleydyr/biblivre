@@ -22,8 +22,12 @@ package biblivre.digitalmedia;
 import biblivre.core.AbstractBO;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
+import biblivre.core.utils.Constants;
+import jakarta.annotation.Nonnull;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +53,21 @@ public class DigitalMediaBO extends AbstractBO {
 
     public long importFile(File file) {
         return this.digitalMediaDAO.importFile(file);
+    }
+
+    public Optional<BiblivreFile> parseFromBase64(String base64) {
+        return fetchDBFileWithWindowsEncoding(base64)
+                .or(() -> fetchDBFileWithEncoding(base64, Constants.DEFAULT_CHARSET));
+    }
+
+    private @Nonnull Optional<BiblivreFile> fetchDBFileWithEncoding(String id, Charset charset) {
+        var decodedId = DigitalMediaEncodingUtil.decode(id, charset);
+
+        return decodedId.map(pair -> digitalMediaDAO.load(pair.getLeft(), pair.getRight()));
+    }
+
+    private Optional<BiblivreFile> fetchDBFileWithWindowsEncoding(String id) {
+        return fetchDBFileWithEncoding(id, Constants.WINDOWS_CHARSET);
     }
 
     @Autowired

@@ -10,9 +10,9 @@ import biblivre.core.SchemaThreadLocal;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.sql.DataSource;
 import net.sf.jasperreports.engine.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ReportService {
-    private DataSource datasource;
-
     private JasperReportPersistence jasperReportPersistence;
 
     private ReportRepository reportRepository;
@@ -50,6 +48,7 @@ public class ReportService {
                         name,
                         description,
                         reportParameters,
+                        Collections.emptyList(),
                         SchemaThreadLocal.get(),
                         digitalMediaId);
 
@@ -81,6 +80,7 @@ public class ReportService {
                         name,
                         description,
                         existingReport.getParameters(),
+                        existingReport.getFills(),
                         existingReport.getSchema(),
                         existingReport.getDigitalMediaId());
 
@@ -108,10 +108,5 @@ public class ReportService {
     @Autowired
     public void setReportRepository(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

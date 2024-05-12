@@ -23,6 +23,10 @@ public class Report {
     @JsonManagedReference
     Collection<ReportParameter> parameters;
 
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    Collection<ReportFill> fills;
+
     String schema;
 
     long digitalMediaId;
