@@ -88,10 +88,83 @@ paths:
       operationId: compileReportTemplate
       tags:
         - Report Template
+  /report_fill:
+    get:
+      responses:
+        200:
+          description: The list of report fills available at the instance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportFill'
+      operationId: getReportFills
+      tags:
+        - Report Fill
+    post:
+      description: Creates a new report fill on the server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportFillRequest'
+      responses:
+        201:
+          description: The resource has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportFill'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: createReportFill
+      tags:
+        - Report Fill
+  /report_fill/{reportFillId}:
+    get:
+      description: Retrieves a specific report fill
+      parameters:
+        - $ref: '#/components/parameters/ReportFillId'
+      responses:
+        200:
+          description: The specific report fill with the provided id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportFill'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: getReportFill
+      tags:
+        - Report Fill
+    delete:
+      description: Deletes a report fill from the server
+      parameters:
+        - $ref: '#/components/parameters/ReportFillId'
+      responses:
+        204:
+          description: The resource has been deleted
+      operationId: deleteReportFill
+      tags:
+        - Report Fill
 components:
   parameters:
     ReportTemplateId:
       name: reportTemplateId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 42
+    ReportFillId:
+      name: reportFillId
       in: path
       required: true
       schema:
@@ -143,6 +216,41 @@ components:
         file:
           type: string
           format: binary
+    ReportFill:
+      allOf:
+        - $ref: '#/components/schemas/Identifiable'
+        - type: object
+          properties:
+            reportTemplateId:
+              type: integer
+              format: int64
+              example: 42
+            parameters:
+              type: object
+              additionalProperties:
+                type: string
+            uri:
+              type: string
+              format: uri
+          required:
+            - id
+            - reportTemplate
+            - parameters
+            - uri
+    ReportFillRequest:
+      type: object
+      required:
+        - reportTemplateId
+        - parameters
+      properties:
+        reportTemplateId:
+          type: integer
+          format: int64
+          example: 42
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
   responses:
     500ApiError:
       description: Unexpected errors on the server side
