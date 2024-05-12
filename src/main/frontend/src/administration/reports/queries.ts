@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Configuration,
   InitOverrideFunction,
+  ReportFill,
+  ReportFillApi,
+  ReportFillRequest,
   ReportTemplate,
   ReportTemplateApi,
 } from "../../generated-sources";
@@ -21,10 +24,43 @@ const DEFAULT_FETCH_OPTIONS: InitOverrideFunction = async ({ init }) => ({
   },
 });
 
+type UseMutationOptions<TVariables, TData, TError = Error> = Parameters<
+  typeof useMutation<TData, TError, TVariables, unknown>
+>[0];
+
+export const useFillReportMutation = (
+  options: UseMutationOptions<ReportFillRequest, ReportFill>
+) => {
+  const queryClient = useQueryClient();
+
+  const apiConfiguration = new Configuration({
+    basePath: "http://localhost:8090/api/v2",
+  });
+
+  const api = new ReportFillApi(apiConfiguration);
+
+  return useMutation({
+    mutationKey: [GENERATE_REPORT_QUERY],
+    mutationFn: (request: ReportFillRequest) =>
+      api.createReportFill(
+        {
+          reportFillRequest: {
+            reportTemplateId: request.reportTemplateId,
+            parameters: request.parameters,
+          },
+        },
+        DEFAULT_FETCH_OPTIONS
+      ),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: [GENERATE_REPORT_QUERY] });
+      options.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
 const useUpdateReportMutation = (
-  options: Parameters<
-    typeof useMutation<ReportTemplate, Error, ReportTemplate, unknown>
-  >[0]
+  options: UseMutationOptions<ReportTemplate, ReportTemplate, Error>
 ) => {
   const queryClient = useQueryClient();
 
@@ -53,9 +89,7 @@ const useUpdateReportMutation = (
 };
 
 const useDeleteReportMutation = (
-  options: Parameters<
-    typeof useMutation<void, Error, ReportTemplate, unknown>
-  >[0]
+  options: UseMutationOptions<ReportTemplate, void, Error> = {}
 ) => {
   const queryClient = useQueryClient();
 

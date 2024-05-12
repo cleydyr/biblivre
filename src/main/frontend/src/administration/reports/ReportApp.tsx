@@ -4,20 +4,32 @@ import {
   EuiButtonEmpty,
   EuiCallOut,
   EuiConfirmModal,
+  EuiDescribedFormGroup,
   EuiFieldText,
   EuiFlexGroup,
+  EuiFlyout,
+  EuiFlyoutBody,
+  EuiFlyoutHeader,
   EuiForm,
   EuiFormRow,
   EuiGlobalToastList,
   EuiPageTemplate,
+  EuiPanel,
+  EuiTitle,
+  useGeneratedHtmlId,
 } from "@elastic/eui";
 import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
-import { useCallback, useState } from "react";
-import { ReportTemplate } from "../../generated-sources";
+import { Fragment, useCallback, useState } from "react";
+import {
+  ReportFill,
+  ReportFillRequest,
+  ReportTemplate,
+} from "../../generated-sources";
 import UploadReportForm from "./UploadReportForm";
 import {
   useAddReportMutation,
   useDeleteReportMutation,
+  useFillReportMutation,
   useListReportsQuery,
   useUpdateReportMutation,
 } from "./queries";
@@ -34,6 +46,18 @@ const toasts: Toast[] = [
   {
     id: "report-updated",
     title: "Modelo de relatório atualizado",
+    color: "success",
+    iconType: "check",
+  },
+  {
+    id: "report-uploaded",
+    title: "Modelo de relatório criado",
+    color: "success",
+    iconType: "check",
+  },
+  {
+    id: "report-filled",
+    title: "Relatório gerado",
     color: "success",
     iconType: "check",
   },
@@ -70,14 +94,7 @@ export default function ReportApp() {
 
   const handleAddReportSuccess = useCallback(() => {
     setScreen("list");
-    setToasts([
-      {
-        id: "report-uploaded",
-        title: "Modelo de relatório criado",
-        color: "success",
-        iconType: "check",
-      },
-    ]);
+    setToasts([toastsById["report-uploaded"]]);
   }, []);
 
   const getReportsQuery = useListReportsQuery();
@@ -100,6 +117,15 @@ export default function ReportApp() {
     },
   });
 
+  const { mutate: fillReport } = useFillReportMutation({
+    onSuccess: (reportFill: ReportFill) => {
+      setReportFill(reportFill);
+    },
+    onError: (error: Error) => {
+      setErrors((errors) => [...errors, error.message]);
+    },
+  });
+
   const [editingReport, setEditingReport] = useState(
     undefined as ReportTemplate | undefined
   );
@@ -110,11 +136,64 @@ export default function ReportApp() {
 
   const [errors, setErrors] = useState([] as string[]);
 
+  const [reportTemplateToFill, setReportTemplateToFill] = useState<
+    ReportTemplate | undefined
+  >(undefined);
+
+  const [reportFill, setReportFill] = useState<ReportFill | undefined>(
+    undefined
+  );
+
+  const reportFillFlyoutId = useGeneratedHtmlId();
+
   let section;
+
+  let reportFillFlyout;
+
+  if (reportTemplateToFill) {
+    const downloadReportFillBanner = reportFill && (
+      <EuiCallOut>
+        <p>
+          O relatório foi gerado com sucesso.{" "}
+          <a href={reportFill.uri}>Clique para baixar o relatório gerado.</a>
+        </p>
+      </EuiCallOut>
+    );
+    reportFillFlyout = (
+      <EuiFlyout
+        ownFocus
+        onClose={() => setReportTemplateToFill(undefined)}
+        aria-labelledby={reportFillFlyoutId}
+      >
+        <EuiFlyoutHeader hasBorder>
+          <EuiTitle size="m">
+            <h2 id={reportFillFlyoutId}>Preencher relatório</h2>
+          </EuiTitle>
+        </EuiFlyoutHeader>
+        <EuiFlyoutBody banner={downloadReportFillBanner}>
+          <ReportFillForm report={reportTemplateToFill} onSubmit={fillReport} />
+        </EuiFlyoutBody>
+      </EuiFlyout>
+    );
+  }
 
   switch (screen) {
     case "list":
-      section = renderReportList();
+      section = (
+        <ReportTemplateTable
+          reports={reports ?? []}
+          onEdit={(report) => {
+            setEditingReport(report);
+            setScreen("edit");
+          }}
+          onDelete={(report) => {
+            setDeletingReport(report);
+          }}
+          onFill={(report) => {
+            setReportTemplateToFill(report);
+          }}
+        />
+      );
       break;
     case "edit":
       section = (
@@ -180,6 +259,7 @@ export default function ReportApp() {
             </EuiCallOut>
           ))}
           {section}
+          {reportFillFlyout}
         </EuiPageTemplate.Section>
       </EuiPageTemplate>
       <EuiGlobalToastList
@@ -210,70 +290,103 @@ export default function ReportApp() {
   function handleUploadNewReport() {
     setScreen("upload");
   }
-
-  function handleDeleteReportClicked(report: ReportTemplate) {
-    setDeletingReport(report);
-  }
-
-  function renderReportList() {
-    return (
-      <EuiBasicTable
-        tableCaption="Demo of EuiBasicTable"
-        items={reports ?? []}
-        rowHeader="firstName"
-        columns={[
-          {
-            field: "name",
-            name: "Título",
-            sortable: true,
-          },
-          {
-            field: "description",
-            name: "Descrição",
-          },
-          {
-            name: "Ações",
-            actions: [
-              {
-                name: "Editar",
-                description: "Editar este modelo de relatório",
-                type: "icon",
-                icon: "pencil",
-                onClick: (report: ReportTemplate) => {
-                  setEditingReport(report);
-                  setScreen("edit");
-                },
-              },
-              {
-                name: "Excluir",
-                description: "Excluir este modelo de relatório",
-                type: "icon",
-                icon: "trash",
-                onClick: handleDeleteReportClicked,
-              },
-              {
-                name: "Preencher",
-                description: "Gerar um relatório",
-                type: "icon",
-                icon: "playFilled",
-                onClick: () => {},
-                isPrimary: true,
-              },
-              {
-                name: "Histórico",
-                description: "Baixar relatórios gerados anteriormente",
-                type: "icon",
-                icon: "tableOfContents",
-                onClick: () => {},
-              },
-            ],
-          },
-        ]}
-        loading={isFetching}
-      />
-    );
-  }
 }
+
+const ReportFillForm = ({
+  report,
+  onSubmit,
+}: {
+  report: ReportTemplate;
+  onSubmit: (report: ReportFillRequest) => void;
+}) => {
+  return (
+    <EuiFlexGroup direction="column">
+      <EuiCallOut iconType="iInCircle">
+        <p>Este relatório não aceita parâmetros.</p>
+      </EuiCallOut>
+      <EuiForm
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit({ reportTemplateId: report.id, parameters: {} });
+        }}
+      >
+        <EuiButton
+          fill
+          onClick={() => {
+            onSubmit({ reportTemplateId: report.id, parameters: {} });
+          }}
+        >
+          Gerar relatório
+        </EuiButton>
+      </EuiForm>
+    </EuiFlexGroup>
+  );
+};
+
+const ReportTemplateTable = ({
+  reports,
+  onEdit,
+  onDelete,
+  onFill,
+}: {
+  reports: ReportTemplate[];
+  onEdit: (report: ReportTemplate) => void;
+  onDelete: (report: ReportTemplate) => void;
+  onFill: (report: ReportTemplate) => void;
+}) => {
+  return (
+    <EuiBasicTable
+      tableCaption="Demo of EuiBasicTable"
+      items={reports}
+      rowHeader="firstName"
+      columns={[
+        {
+          field: "name",
+          name: "Título",
+          sortable: true,
+        },
+        {
+          field: "description",
+          name: "Descrição",
+        },
+        {
+          name: "Ações",
+          actions: [
+            {
+              name: "Editar",
+              description: "Editar este modelo de relatório",
+              type: "icon",
+              icon: "pencil",
+              onClick: onEdit,
+            },
+            {
+              name: "Excluir",
+              description: "Excluir este modelo de relatório",
+              type: "icon",
+              icon: "trash",
+              onClick: onDelete,
+            },
+            {
+              name: "Preencher",
+              description: "Gerar um relatório",
+              type: "icon",
+              icon: "playFilled",
+              onClick: onFill,
+              isPrimary: true,
+            },
+            {
+              name: "Histórico",
+              description: "Baixar relatórios gerados anteriormente",
+              type: "icon",
+              icon: "tableOfContents",
+              onClick: () => {},
+            },
+          ],
+        },
+      ]}
+    />
+  );
+};
 
 type ReportFormProps = {
   report: ReportTemplate | undefined;
