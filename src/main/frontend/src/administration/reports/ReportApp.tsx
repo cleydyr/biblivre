@@ -6,25 +6,15 @@ import {
   EuiConfirmModal,
   EuiFieldText,
   EuiFlexGroup,
-  EuiFlexItem,
   EuiForm,
   EuiFormRow,
   EuiGlobalToastList,
-  EuiIcon,
-  EuiLink,
   EuiPageTemplate,
 } from "@elastic/eui";
 import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
-import {
-  Configuration,
-  InitOverrideFunction,
-  ReportTemplate,
-  ReportTemplateApi,
-} from "../../generated-sources";
-import { getSchemaFromURL } from "../../util";
-import UploadReportForm, { UploadReportFormData } from "./UploadReportForm";
+import { ReportTemplate } from "../../generated-sources";
+import UploadReportForm from "./UploadReportForm";
 import {
   useAddReportMutation,
   useDeleteReportMutation,
