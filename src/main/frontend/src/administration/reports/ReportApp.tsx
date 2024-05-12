@@ -304,7 +304,7 @@ export default function ReportApp() {
               },
               {
                 name: "Preencher",
-                description: "Preencher com tooltip",
+                description: "Gerar um relatório",
                 type: "icon",
                 icon: "playFilled",
                 onClick: () => {},
