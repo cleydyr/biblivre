@@ -115,14 +115,15 @@ export default function ReportApp() {
     },
   });
 
-  const { mutate: fillReport } = useFillReportMutation({
-    onSuccess: (reportFill: ReportFill) => {
-      setReportFill(reportFill);
-    },
-    onError: (error: Error) => {
-      setErrors((errors) => [...errors, error.message]);
-    },
-  });
+  const { mutate: fillReport, isPending: isFillReportPending } =
+    useFillReportMutation({
+      onSuccess: (reportFill: ReportFill) => {
+        setReportFill(reportFill);
+      },
+      onError: (error: Error) => {
+        setErrors((errors) => [...errors, error.message]);
+      },
+    });
 
   const [editingReport, setEditingReport] = useState(
     undefined as ReportTemplate | undefined
@@ -169,7 +170,11 @@ export default function ReportApp() {
           </EuiTitle>
         </EuiFlyoutHeader>
         <EuiFlyoutBody banner={downloadReportFillBanner}>
-          <ReportFillForm report={reportTemplateToFill} onSubmit={fillReport} />
+          <ReportFillForm
+            report={reportTemplateToFill}
+            onSubmit={fillReport}
+            pending={isFillReportPending}
+          />
         </EuiFlyoutBody>
       </EuiFlyout>
     );
@@ -293,9 +298,11 @@ export default function ReportApp() {
 const ReportFillForm = ({
   report,
   onSubmit,
+  pending,
 }: {
   report: ReportTemplate;
   onSubmit: (report: ReportFillRequest) => void;
+  pending: boolean;
 }) => {
   return (
     <EuiFlexGroup direction="column">
@@ -310,6 +317,7 @@ const ReportFillForm = ({
       >
         <EuiButton
           fill
+          isLoading={pending}
           onClick={() => {
             onSubmit({ reportTemplateId: report.id, parameters: {} });
           }}
