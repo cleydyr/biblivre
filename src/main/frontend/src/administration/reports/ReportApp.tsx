@@ -31,8 +31,10 @@ import {
   useListReportsQuery,
   useUpdateReportMutation,
 } from "./queries";
+import ReportTemplateTable from "./ReportTemplateTable";
+import ReportFillForm from "./ReportFillForm";
 
-type Screen = "list" | "edit" | "upload";
+type Screen = "list" | "edit" | "upload" | "fill";
 
 const toasts: Toast[] = [
   {
@@ -143,95 +145,88 @@ export default function ReportApp() {
     undefined
   );
 
-  const reportFillFlyoutId = useGeneratedHtmlId();
+  const screenFlyoutId = useGeneratedHtmlId({
+    prefix: screen,
+  });
 
-  let section;
-
-  let reportFillFlyout;
-
-  if (reportTemplateToFill) {
-    const downloadReportFillBanner = reportFill && (
-      <EuiCallOut>
-        <p>
-          O relatório foi gerado com sucesso.{" "}
-          <a href={reportFill.uri}>Clique para baixar o relatório gerado.</a>
-        </p>
-      </EuiCallOut>
-    );
-    reportFillFlyout = (
-      <EuiFlyout
-        ownFocus
-        onClose={() => setReportTemplateToFill(undefined)}
-        aria-labelledby={reportFillFlyoutId}
-      >
-        <EuiFlyoutHeader hasBorder>
-          <EuiTitle size="m">
-            <h2 id={reportFillFlyoutId}>Preencher relatório</h2>
-          </EuiTitle>
-        </EuiFlyoutHeader>
-        <EuiFlyoutBody banner={downloadReportFillBanner}>
-          <ReportFillForm
-            report={reportTemplateToFill}
-            onSubmit={fillReport}
-            pending={isFillReportPending}
-          />
-        </EuiFlyoutBody>
-      </EuiFlyout>
-    );
-  }
+  let flyout;
 
   switch (screen) {
-    case "list":
-      section = (
-        <ReportTemplateTable
-          reports={reports ?? []}
-          onEdit={(report) => {
-            setEditingReport(report);
-            setScreen("edit");
+    case "fill":
+      const downloadReportFillBanner = reportFill && (
+        <EuiCallOut>
+          <p>
+            O relatório foi gerado com sucesso.{" "}
+            <a href={reportFill.uri}>Clique para baixar o relatório gerado.</a>
+          </p>
+        </EuiCallOut>
+      );
+
+      flyout = reportTemplateToFill && (
+        <EuiFlyout
+          ownFocus
+          onClose={() => {
+            setReportTemplateToFill(undefined);
+            setReportFill(undefined);
           }}
-          onDelete={(report) => {
-            setDeletingReport(report);
-          }}
-          onFill={(report) => {
-            setReportTemplateToFill(report);
-          }}
-        />
+          aria-labelledby={screenFlyoutId}
+        >
+          <EuiFlyoutHeader hasBorder>
+            <EuiTitle size="m">
+              <h2 id={screenFlyoutId}>Preencher relatório</h2>
+            </EuiTitle>
+          </EuiFlyoutHeader>
+          <EuiFlyoutBody banner={downloadReportFillBanner}>
+            <ReportFillForm
+              report={reportTemplateToFill}
+              onSubmit={fillReport}
+              pending={isFillReportPending}
+            />
+          </EuiFlyoutBody>
+        </EuiFlyout>
       );
       break;
     case "edit":
-      section = (
-        <EuiFlexGroup direction="column" gutterSize="xl">
-          <div>
-            <EuiButtonEmpty
-              iconType="arrowLeft"
-              onClick={() => setScreen("list")}
-            >
-              Voltar
-            </EuiButtonEmpty>
-          </div>
-          <EditReportForm
-            report={editingReport}
-            onSubmit={(report) => {
-              updateReport(report);
-              setEditingReport(undefined);
-            }}
-          />
-        </EuiFlexGroup>
+      flyout = (
+        <EuiFlyout
+          onClose={() => setScreen("list")}
+          ownFocus
+          aria-labelledby={screenFlyoutId}
+        >
+          <EuiFlyoutHeader hasBorder>
+            <EuiTitle size="m">
+              <h2 id={screenFlyoutId}>Editar modelo de relatório</h2>
+            </EuiTitle>
+          </EuiFlyoutHeader>
+          <EuiFlyoutBody>
+            <EditReportForm
+              report={editingReport}
+              onSubmit={(report) => {
+                updateReport(report);
+                setEditingReport(undefined);
+                setScreen("list");
+              }}
+            />
+          </EuiFlyoutBody>
+        </EuiFlyout>
       );
       break;
     case "upload":
-      section = (
-        <EuiFlexGroup direction="column" gutterSize="xl">
-          <div>
-            <EuiButtonEmpty
-              iconType="arrowLeft"
-              onClick={() => setScreen("list")}
-            >
-              Voltar
-            </EuiButtonEmpty>
-          </div>
-          <UploadReportForm onSubmit={addReport} />
-        </EuiFlexGroup>
+      flyout = (
+        <EuiFlyout
+          onClose={() => setScreen("list")}
+          ownFocus
+          aria-labelledby={screenFlyoutId}
+        >
+          <EuiFlyoutHeader hasBorder>
+            <EuiTitle size="m">
+              <h2 id={screenFlyoutId}>Novo modelo de relatório</h2>
+            </EuiTitle>
+          </EuiFlyoutHeader>
+          <EuiFlyoutBody>
+            <UploadReportForm onSubmit={addReport} />
+          </EuiFlyoutBody>
+        </EuiFlyout>
       );
       break;
   }
@@ -244,7 +239,7 @@ export default function ReportApp() {
           description="Crie e gere relatórios personalizados"
           rightSideItems={[
             screen !== "upload" && (
-              <EuiButton fill onClick={handleUploadNewReport}>
+              <EuiButton fill onClick={() => setScreen("upload")}>
                 Novo modelo
               </EuiButton>
             ),
@@ -261,8 +256,21 @@ export default function ReportApp() {
               <p>{error}</p>
             </EuiCallOut>
           ))}
-          {section}
-          {reportFillFlyout}
+          <ReportTemplateTable
+            reports={reports ?? []}
+            onEdit={(report) => {
+              setEditingReport(report);
+              setScreen("edit");
+            }}
+            onDelete={(report) => {
+              setDeletingReport(report);
+            }}
+            onFill={(report) => {
+              setReportTemplateToFill(report);
+              setScreen("fill");
+            }}
+          />
+          {flyout}
         </EuiPageTemplate.Section>
       </EuiPageTemplate>
       <EuiGlobalToastList
@@ -289,112 +297,7 @@ export default function ReportApp() {
       )}
     </>
   );
-
-  function handleUploadNewReport() {
-    setScreen("upload");
-  }
 }
-
-const ReportFillForm = ({
-  report,
-  onSubmit,
-  pending,
-}: {
-  report: ReportTemplate;
-  onSubmit: (report: ReportFillRequest) => void;
-  pending: boolean;
-}) => {
-  return (
-    <EuiFlexGroup direction="column">
-      <EuiCallOut
-        iconType="iInCircle"
-        title="Este modelo de relatório não aceita parâmetros"
-        size="s"
-      />
-      <EuiForm
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit({ reportTemplateId: report.id, parameters: {} });
-        }}
-      >
-        <EuiButton
-          fill
-          isLoading={pending}
-          onClick={() => {
-            onSubmit({ reportTemplateId: report.id, parameters: {} });
-          }}
-        >
-          Gerar relatório
-        </EuiButton>
-      </EuiForm>
-    </EuiFlexGroup>
-  );
-};
-
-const ReportTemplateTable = ({
-  reports,
-  onEdit,
-  onDelete,
-  onFill,
-}: {
-  reports: ReportTemplate[];
-  onEdit: (report: ReportTemplate) => void;
-  onDelete: (report: ReportTemplate) => void;
-  onFill: (report: ReportTemplate) => void;
-}) => {
-  return (
-    <EuiBasicTable
-      tableCaption="Demo of EuiBasicTable"
-      items={reports}
-      rowHeader="firstName"
-      columns={[
-        {
-          field: "name",
-          name: "Título",
-          sortable: true,
-        },
-        {
-          field: "description",
-          name: "Descrição",
-        },
-        {
-          name: "Ações",
-          actions: [
-            {
-              name: "Editar",
-              description: "Editar este modelo de relatório",
-              type: "icon",
-              icon: "pencil",
-              onClick: onEdit,
-            },
-            {
-              name: "Excluir",
-              description: "Excluir este modelo de relatório",
-              type: "icon",
-              icon: "trash",
-              onClick: onDelete,
-            },
-            {
-              name: "Preencher",
-              description: "Gerar um relatório",
-              type: "icon",
-              icon: "playFilled",
-              onClick: onFill,
-              isPrimary: true,
-            },
-            // {
-            //   name: "Histórico",
-            //   description: "Baixar relatórios gerados anteriormente",
-            //   type: "icon",
-            //   icon: "tableOfContents",
-            //   onClick: () => {},
-            // },
-          ],
-        },
-      ]}
-    />
-  );
-};
 
 type ReportFormProps = {
   report: ReportTemplate | undefined;

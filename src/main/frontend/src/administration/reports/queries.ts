@@ -11,9 +11,7 @@ import {
 import { getSchemaFromURL } from "../../util";
 import { UploadReportFormData } from "./UploadReportForm";
 
-const REPORT_QUERY = "getReports";
-
-const GENERATE_REPORT_QUERY = "generateReport";
+const LIST_REPORTS = "listReports";
 
 const DEFAULT_FETCH_OPTIONS: InitOverrideFunction = async ({ init }) => ({
   ...init,
@@ -25,7 +23,7 @@ const DEFAULT_FETCH_OPTIONS: InitOverrideFunction = async ({ init }) => ({
 });
 
 function apiHost() {
-  return `/api/v2`;
+  return `http://localhost:8090/api/v2`;
 }
 
 type UseMutationOptions<TVariables, TData, TError = Error> = Parameters<
@@ -33,7 +31,7 @@ type UseMutationOptions<TVariables, TData, TError = Error> = Parameters<
 >[0];
 
 export const useFillReportMutation = (
-  options: UseMutationOptions<ReportFillRequest, ReportFill>
+  options: UseMutationOptions<ReportFillRequest, ReportFill> = {}
 ) => {
   const queryClient = useQueryClient();
 
@@ -44,7 +42,7 @@ export const useFillReportMutation = (
   const api = new ReportFillApi(apiConfiguration);
 
   return useMutation({
-    mutationKey: [GENERATE_REPORT_QUERY],
+    ...options,
     mutationFn: (request: ReportFillRequest) =>
       api.createReportFill(
         {
@@ -56,15 +54,13 @@ export const useFillReportMutation = (
         DEFAULT_FETCH_OPTIONS
       ),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: [GENERATE_REPORT_QUERY] });
       options.onSuccess?.(data, variables, context);
     },
-    ...options,
   });
 };
 
 const useUpdateReportMutation = (
-  options: UseMutationOptions<ReportTemplate, ReportTemplate, Error>
+  options: UseMutationOptions<ReportTemplate, ReportTemplate> = {}
 ) => {
   const queryClient = useQueryClient();
 
@@ -75,7 +71,7 @@ const useUpdateReportMutation = (
   const api = new ReportTemplateApi(apiConfiguration);
 
   return useMutation({
-    mutationKey: [REPORT_QUERY],
+    ...options,
     mutationFn: (reportTemplate: ReportTemplate) =>
       api.updateReport(
         {
@@ -85,15 +81,14 @@ const useUpdateReportMutation = (
         DEFAULT_FETCH_OPTIONS
       ),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: [REPORT_QUERY] });
+      queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] });
       options.onSuccess?.(data, variables, context);
     },
-    ...options,
   });
 };
 
 const useDeleteReportMutation = (
-  options: UseMutationOptions<ReportTemplate, void, Error> = {}
+  options: UseMutationOptions<ReportTemplate, void> = {}
 ) => {
   const queryClient = useQueryClient();
 
@@ -104,7 +99,7 @@ const useDeleteReportMutation = (
   const api = new ReportTemplateApi(apiConfiguration);
 
   return useMutation({
-    mutationKey: ["delete"],
+    ...options,
     mutationFn: (report: ReportTemplate) =>
       api.deleteReport(
         {
@@ -113,10 +108,9 @@ const useDeleteReportMutation = (
         DEFAULT_FETCH_OPTIONS
       ),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: [REPORT_QUERY] });
+      queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] });
       options.onSuccess?.(data, variables, context);
     },
-    ...options,
   });
 };
 
@@ -128,16 +122,16 @@ const useListReportsQuery = () => {
   const api = new ReportTemplateApi(apiConfiguration);
 
   return useQuery({
-    queryKey: [REPORT_QUERY],
+    queryKey: [LIST_REPORTS],
     queryFn: () => api.getReportTemplates(DEFAULT_FETCH_OPTIONS),
   });
 };
 
 const useAddReportMutation = (
-  options: Parameters<
-    typeof useMutation<void, Error, ReportTemplate, unknown>
-  >[0]
+  options: UseMutationOptions<UploadReportFormData, void> = {}
 ) => {
+  const queryClient = useQueryClient();
+
   const apiConfiguration = new Configuration({
     basePath: apiHost(),
   });
@@ -145,7 +139,7 @@ const useAddReportMutation = (
   const api = new ReportTemplateApi(apiConfiguration);
 
   return useMutation({
-    mutationKey: ["upload"],
+    ...options,
     mutationFn: ({ title, description, file }: UploadReportFormData) =>
       api.compileReportTemplate(
         {
@@ -155,6 +149,10 @@ const useAddReportMutation = (
         },
         DEFAULT_FETCH_OPTIONS
       ),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] });
+      options.onSuccess?.(data, variables, context);
+    },
   });
 };
 
