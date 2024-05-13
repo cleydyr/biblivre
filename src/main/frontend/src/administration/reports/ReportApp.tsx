@@ -306,9 +306,11 @@ const ReportFillForm = ({
 }) => {
   return (
     <EuiFlexGroup direction="column">
-      <EuiCallOut iconType="iInCircle">
-        <p>Este relatório não aceita parâmetros.</p>
-      </EuiCallOut>
+      <EuiCallOut
+        iconType="iInCircle"
+        title="Este modelo de relatório não aceita parâmetros"
+        size="s"
+      />
       <EuiForm
         onSubmit={(e) => {
           e.preventDefault();
