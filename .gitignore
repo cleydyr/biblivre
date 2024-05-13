@@ -11,9 +11,12 @@ logs/
 .svn/
 /target/
 
+src/main/frontend/index.html
 src/main/frontend/node_modules/
 src/main/frontend/node/
 src/main/resources/META-INF/resources/static/scripts/*bundle.js*
 src/main/resources/META-INF/resources/static/scripts/*chunk.js*
 src/main/resources/META-INF/resources/static/styles/biblivre.*
 src/main/resources/META-INF/resources/static/asset-manifest.json
+src/main/resources/META-INF/resources/static/index.html
+src/main/resources/META-INF/resources/static/scripts/index.html
