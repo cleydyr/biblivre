@@ -1,0 +1,283 @@
+openapi: 3.0.3
+info:
+  title: Biblivre REST API
+  description: |-
+  version: 0.0.1
+paths:
+  /report_template:
+    get:
+      responses:
+        200:
+          description: The list of report templates available at the instance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportTemplate'
+      operationId: getReportTemplates
+      tags:
+        - Report Template
+  /report_template/{reportTemplateId}:
+    get:
+      description: Retrieves a specific report template
+      parameters:
+        - $ref: '#/components/parameters/ReportTemplateId'
+      responses:
+        200:
+          description: The specific report template with the provided id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportTemplate'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: getReportTemplate
+      tags:
+        - Report Template
+    delete:
+      description: Deletes a report template and all of its fills from the server
+      parameters:
+        - $ref: '#/components/parameters/ReportTemplateId'
+      responses:
+        204:
+          description: The resource has been deleted
+      operationId: deleteReport
+      tags:
+        - Report Template
+    patch:
+      description: Replaces a report on the server
+      parameters:
+        - $ref: '#/components/parameters/ReportTemplateId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportTemplate"
+      responses:
+        201:
+          description: The resource has been created or updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplate'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: updateReport
+      tags:
+        - Report Template
+  "/report_template/:compile":
+    post:
+      description: Uploads a report template file to the server
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportTemplateCompileRequest'
+      responses:
+        201:
+          description: The file has been uploaded and compiled successfully
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: compileReportTemplate
+      tags:
+        - Report Template
+  /report_fill:
+    get:
+      responses:
+        200:
+          description: The list of report fills available at the instance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportFill'
+      operationId: getReportFills
+      tags:
+        - Report Fill
+    post:
+      description: Creates a new report fill on the server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportFillRequest'
+      responses:
+        201:
+          description: The resource has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportFill'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: createReportFill
+      tags:
+        - Report Fill
+  /report_fill/{reportFillId}:
+    get:
+      description: Retrieves a specific report fill
+      parameters:
+        - $ref: '#/components/parameters/ReportFillId'
+      responses:
+        200:
+          description: The specific report fill with the provided id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportFill'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: getReportFill
+      tags:
+        - Report Fill
+    delete:
+      description: Deletes a report fill from the server
+      parameters:
+        - $ref: '#/components/parameters/ReportFillId'
+      responses:
+        204:
+          description: The resource has been deleted
+      operationId: deleteReportFill
+      tags:
+        - Report Fill
+components:
+  parameters:
+    ReportTemplateId:
+      name: reportTemplateId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 42
+    ReportFillId:
+      name: reportFillId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 42
+  schemas:
+    Identifiable:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 42
+    ReportTemplate:
+      allOf:
+        - $ref: '#/components/schemas/Identifiable'
+        - type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            parameters:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReportTemplateParameter'
+          required:
+            - id
+    ReportTemplateParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          example: datafim
+        type:
+          type: string
+          example: java.time.LocalDate
+    ReportTemplateCompileRequest:
+      type: object
+      required:
+        - name
+        - file
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        file:
+          type: string
+          format: binary
+    ReportFill:
+      allOf:
+        - $ref: '#/components/schemas/Identifiable'
+        - type: object
+          properties:
+            reportTemplateId:
+              type: integer
+              format: int64
+              example: 42
+            parameters:
+              type: object
+              additionalProperties:
+                type: string
+            uri:
+              type: string
+              format: uri
+          required:
+            - id
+            - reportTemplate
+            - parameters
+            - uri
+    ReportFillRequest:
+      type: object
+      required:
+        - reportTemplateId
+        - parameters
+      properties:
+        reportTemplateId:
+          type: integer
+          format: int64
+          example: 42
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+  responses:
+    500ApiError:
+      description: Unexpected errors on the server side
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: An unexpected error occurred on the server. Please contact support.
+    404ApiError:
+      description: The requested object couldn't be found in the server
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 404
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Resource with id 42 can't be found
