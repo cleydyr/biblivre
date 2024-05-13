@@ -8,15 +8,11 @@ import biblivre.administration.reports.v2.persistence.JasperReportPersistence;
 import biblivre.administration.reports.v2.persistence.ReportRepository;
 import biblivre.core.SchemaThreadLocal;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
-import javax.sql.DataSource;
 import net.sf.jasperreports.engine.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,48 +23,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ReportService {
-    private DataSource datasource;
-
     private JasperReportPersistence jasperReportPersistence;
 
     private ReportRepository reportRepository;
 
-    public void generateReport(
-            long reportId, Map<String, String> params, OutputStream consumerOutputStream)
+    public void compileReportTemplate(
+            String name, String description, InputStream reportJRXMLDefinition, long fileSize)
             throws ReportException {
-        Report report = reportRepository.findById(reportId).orElseThrow();
-
-        long digitalMediaId = report.getDigitalMediaId();
-
-        JasperReportImpl jasperReport = jasperReportPersistence.getById(digitalMediaId);
-
-        try (Connection connection = datasource.getConnection()) {
-            setSchemaSearchPath(connection);
-
-            Map<String, Object> actualParameters = transformParameters(jasperReport, params);
-
-            JasperPrint jasperPrint =
-                    JasperFillManager.fillReport(
-                            jasperReport.getJasperReport(), actualParameters, connection);
-
-            JasperExportManager.exportReportToPdfStream(jasperPrint, consumerOutputStream);
-        } catch (JRException e) {
-            throw new ReportException("can't fill report", e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Iterable<Report> listReports() throws Exception {
-        return reportRepository.findAll();
-    }
-
-    public long persistReport(
-            InputStream reportJRXMLDefinition, String title, String description, long size)
-            throws ReportException {
-        long digitalMediaId = jasperReportPersistence.persist(reportJRXMLDefinition, size);
-
-        String schema = SchemaThreadLocal.get();
+        long digitalMediaId = jasperReportPersistence.compile(reportJRXMLDefinition, fileSize);
 
         JasperReportImpl compiledReport = jasperReportPersistence.getById(digitalMediaId);
 
@@ -80,14 +42,53 @@ public class ReportService {
                         .map(ReportService::toReportParameter)
                         .toList();
 
-        Report toBeSaved =
-                new Report(0, title, description, reportParameters, schema, digitalMediaId);
+        Report report =
+                new Report(
+                        0,
+                        name,
+                        description,
+                        reportParameters,
+                        Collections.emptyList(),
+                        SchemaThreadLocal.get(),
+                        digitalMediaId);
 
-        reportParameters.forEach(reportParameter -> reportParameter.setReport(toBeSaved));
+        reportParameters.forEach(reportParameter -> reportParameter.setReport(report));
 
-        Report saved = reportRepository.save(toBeSaved);
+        reportRepository.save(report);
+    }
 
-        return saved.getId();
+    public List<Report> getReportTemplates() {
+        List<Report> list = new ArrayList<>();
+
+        for (Report report : reportRepository.findAll()) {
+            list.add(report);
+        }
+
+        return list;
+    }
+
+    public Report updateReport(Long reportTemplateId, String name, String description)
+            throws ReportException {
+        Report existingReport =
+                reportRepository
+                        .findById(reportTemplateId)
+                        .orElseThrow(() -> new ReportException("Report not found"));
+
+        Report newReport =
+                new Report(
+                        reportTemplateId,
+                        name,
+                        description,
+                        existingReport.getParameters(),
+                        existingReport.getFills(),
+                        existingReport.getSchema(),
+                        existingReport.getDigitalMediaId());
+
+        return reportRepository.save(newReport);
+    }
+
+    public void deleteReport(Long reportTemplateId) throws ReportException {
+        reportRepository.deleteById(reportTemplateId);
     }
 
     private static ReportParameter toReportParameter(JRParameter jrParameter) {
@@ -99,25 +100,6 @@ public class ReportService {
                 null);
     }
 
-    private static Map<String, Object> transformParameters(
-            JasperReportImpl report, Map<String, String> params) {
-        Map<String, Object> actualParameters = new HashMap<>();
-
-        for (JRParameter parameter : report.getParameters()) {
-            String parameterName = parameter.getName();
-            String parameterValue = params.get(parameterName);
-            actualParameters.put(parameterName, parameterValue);
-        }
-
-        return actualParameters;
-    }
-
-    private static void setSchemaSearchPath(Connection connection) throws SQLException {
-        connection
-                .createStatement()
-                .execute("SET search_path = '" + SchemaThreadLocal.get() + "';");
-    }
-
     @Autowired
     public void setReportPersistence(JasperReportPersistence jasperReportPersistence) {
         this.jasperReportPersistence = jasperReportPersistence;
@@ -126,10 +108,5 @@ public class ReportService {
     @Autowired
     public void setReportRepository(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

@@ -549,10 +549,9 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             return index;
         }
 
-        int delta = 0;
+        int delta = 1;
 
         SearchTermDTO created = null;
-
         SearchTermDTO modified = null;
 
         for (SearchTermDTO dto : search.getQuery().getTerms()) {
@@ -568,7 +567,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             Date endDate = created.getEndDate();
 
             if (startDate != null) {
-                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(startDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(startDate));
             }
 
             if (endDate != null) {
@@ -576,7 +575,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                     endDate = DateUtils.addDays(endDate, 1);
                 }
 
-                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(endDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(endDate));
             }
         }
 
@@ -586,7 +585,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
             Date endDate = modified.getEndDate();
 
             if (startDate != null) {
-                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(startDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(startDate));
             }
 
             if (endDate != null) {
@@ -594,7 +593,7 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                     endDate = DateUtils.addDays(endDate, 1);
                 }
 
-                pst.setTimestamp(index + delta++, CalendarUtils.toSqlTimestamp(endDate));
+                pst.setTimestamp(delta++, CalendarUtils.toSqlTimestamp(endDate));
             }
         }
 
@@ -664,16 +663,21 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                    "SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H "
-                            + "INNER JOIN biblio_search_results B ON H.record_id = B.record_id "
-                            + "WHERE B.search_id = ? "
-                            + this.createAdvancedWhereClause(search)
-                            + "UNION "
-                            + "SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H "
-                            + "INNER JOIN biblio_search_results B ON H.record_id = B.record_id "
-                            + "WHERE B.search_id = ? "
-                            + this.createAdvancedWhereClause(search)
-                            + "and B.indexing_group_id <> 0 GROUP BY B.indexing_group_id";
+                    STR."""
+                        SELECT 0 as indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H
+                            INNER JOIN biblio_search_results B ON H.record_id = B.record_id
+                            WHERE B.search_id = ?
+                            \{
+                            this.createAdvancedWhereClause(
+                                    search)}
+                            UNION
+                                SELECT B.indexing_group_id, COUNT(DISTINCT H.id) as total FROM biblio_holdings H
+                                INNER JOIN biblio_search_results B ON H.record_id = B.record_id
+                                WHERE B.search_id = ?
+                            \{
+                            this.createAdvancedWhereClause(
+                                    search)}
+                            AND B.indexing_group_id <> 0 GROUP BY B.indexing_group_id""";
 
             PreparedStatement pst = con.prepareStatement(sql);
 

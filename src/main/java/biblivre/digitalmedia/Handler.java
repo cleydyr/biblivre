@@ -25,10 +25,8 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.BiblivreFile;
 import biblivre.core.file.MemoryFile;
-import biblivre.core.utils.Constants;
 import jakarta.servlet.http.HttpServletResponse;
-import java.nio.charset.Charset;
-import java.util.Base64;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,20 +40,22 @@ public class Handler extends AbstractHandler {
 
         String id = request.getString("id").replaceAll("_", "\\\\");
 
-        BiblivreFile file = _tryFetchingDBFileWithWindowsEncoding(id);
+        Optional<BiblivreFile> file = digitalMediaBO.parseFromBase64(id);
 
-        if (file == null) {
-            file = _tryFetchingDBFileWithEncoding(id, Constants.DEFAULT_CHARSET);
-        }
-
-        if (file == null) {
+        if (file.isEmpty()) {
             this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        this.setFile(file);
+        file.ifPresentOrElse(
+                f -> {
+                    this.setFile(f);
 
-        this.setCallback(file::close);
+                    this.setCallback(f::close);
+                },
+                () -> {
+                    this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
+                });
     }
 
     public void upload(ExtendedRequest request, ExtendedResponse response) {
@@ -76,32 +76,6 @@ public class Handler extends AbstractHandler {
         } else {
             this.setMessage(ActionResult.WARNING, "digitalmedia.error.file_could_not_be_saved");
         }
-    }
-
-    private BiblivreFile _tryFetchingDBFileWithEncoding(String id, Charset charset) {
-        String decodedId = new String(Base64.getDecoder().decode(id), charset);
-
-        String fileId = null;
-
-        String fileName = null;
-
-        String[] splitId = decodedId.split(":");
-
-        if (splitId.length == 2 && StringUtils.isNumeric(splitId[0])) {
-            fileId = splitId[0];
-            fileName = splitId[1];
-        }
-
-        if (!StringUtils.isNumeric(fileId) || StringUtils.isBlank(fileName)) {
-            this.setReturnCode(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-
-        return digitalMediaBO.load(Integer.parseInt(fileId), fileName);
-    }
-
-    private BiblivreFile _tryFetchingDBFileWithWindowsEncoding(String id) {
-        return _tryFetchingDBFileWithEncoding(id, Constants.WINDOWS_CHARSET);
     }
 
     @Autowired

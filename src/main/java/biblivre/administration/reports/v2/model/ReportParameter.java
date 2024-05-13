@@ -16,7 +16,7 @@ import lombok.*;
 public class ReportParameter {
     @GeneratedValue @Id long id;
 
-    String title;
+    String name;
 
     String type;
 

@@ -36,12 +36,15 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 @SpringBootApplication(nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class)
+@Import(OpenApiGeneratorConfig.class)
 public class BiblivreInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
     @Autowired private ApplicationContext applicationContext;
 
@@ -144,6 +147,14 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         servletRegistration.setMultipartConfig(multipartConfig);
 
         return servletRegistration;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+                .allowedHeaders("*");
     }
 
     public static void main(String[] args) {

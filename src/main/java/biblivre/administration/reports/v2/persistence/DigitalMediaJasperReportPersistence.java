@@ -63,7 +63,7 @@ public class DigitalMediaJasperReportPersistence implements JasperReportPersiste
     }
 
     @Override
-    public long persist(InputStream reportJRXMLDefinition, long size) throws ReportException {
+    public long compile(InputStream reportJRXMLDefinition, long size) throws ReportException {
         ByteArrayOutputStream compiledReportOutputStream = new ByteArrayOutputStream();
 
         try {
