@@ -258,6 +258,8 @@ public class HoldingDAOImpl extends RecordDAOImpl implements HoldingDAO {
                             holding.getModifiedBy(),
                             holding.getId());
 
+                    pst.executeUpdate();
+
                     RecordDataJDBCDAO.updateRecordData(connection, holding);
                 });
 
