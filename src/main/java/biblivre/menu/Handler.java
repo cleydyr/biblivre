@@ -37,6 +37,7 @@ import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.properties.MenuPropertiesService;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.translations.LanguageBO;
 import biblivre.core.translations.LanguageDTO;
@@ -60,6 +61,8 @@ public class Handler extends AbstractHandler {
     private TabFieldsBO tabFieldsBO;
     private LanguageBO languageBO;
     private SchemaBO schemaBO;
+
+    @Autowired private MenuPropertiesService menuPropertiesService;
 
     public void i18n(ExtendedRequest request, ExtendedResponse response) {
         if (request.getBoolean("from_translations")) {
@@ -299,6 +302,10 @@ public class Handler extends AbstractHandler {
     }
 
     public void administrationCustomReports(ExtendedRequest request, ExtendedResponse response) {
+        if (menuPropertiesService.getDisabled().contains("administration_custom_reports")) {
+            throw new IllegalArgumentException("Custom reports are not enabled.");
+        }
+
         setJspURL("/WEB-INF/jsp/administration/custom_reports.jsp");
     }
 
