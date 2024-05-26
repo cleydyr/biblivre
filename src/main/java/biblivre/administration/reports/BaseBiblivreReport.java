@@ -53,9 +53,6 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
     protected static final Logger logger = LoggerFactory.getLogger(BaseBiblivreReport.class);
 
     protected static final Float HEADER_BORDER_WIDTH = 0.8f;
-    protected static final Float smallFontSize = 8f;
-    protected static final Float reportFontSize = 10f;
-    protected static final Float pageNumberFontSize = 8f;
     protected static final Color HEADER_BG_COLOR = new Color(239, 239, 239);
     protected static final Font SMALL_FONT;
     protected static final Font TEXT_FONT;
@@ -67,8 +64,6 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
     private PdfWriter writer;
     private Date generationDate;
     protected DateFormat dateFormat;
-
-    protected ReportsBO reportsBO;
 
     static {
         try {
@@ -249,10 +244,6 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
         return this.writer;
     }
 
-    public void setReportsBO(ReportsBO reportsBO) {
-        this.reportsBO = reportsBO;
-    }
-
     private static Font getFont(int size, int style) throws IOException {
         Font font = getFont(size);
 
@@ -262,8 +253,7 @@ public abstract class BaseBiblivreReport extends PdfPageEventHelper implements I
     }
 
     private static Font getFont(int size) throws IOException {
-        BaseFont baseFont =
-                BaseFont.createFont("META-INF/fonts/arialuni.ttf", BaseFont.IDENTITY_H, false);
+        BaseFont baseFont = BaseFont.createFont();
 
         return new Font(baseFont, size);
     }
