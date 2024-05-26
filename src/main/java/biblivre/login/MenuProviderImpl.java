@@ -44,9 +44,7 @@ public class MenuProviderImpl implements MenuProvider {
                                         String item = obj.toString();
 
                                         if (filter.test(item)
-                                                && !menuPropertiesService
-                                                        .getDisabled()
-                                                        .contains(item)) {
+                                                && menuPropertiesService.isEnabled(item)) {
                                             allowedModules
                                                     .computeIfAbsent(name, __ -> new ArrayList<>())
                                                     .add(item);

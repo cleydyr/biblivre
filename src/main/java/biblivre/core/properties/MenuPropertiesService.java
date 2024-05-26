@@ -12,4 +12,12 @@ import org.springframework.stereotype.Service;
 @Setter
 public class MenuPropertiesService {
     private Collection<String> disabled;
+
+    public boolean isEnabled(String item) {
+        if (disabled == null) {
+            return true;
+        }
+
+        return !disabled.contains(item);
+    }
 }
