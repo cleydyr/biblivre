@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports = {
   entry: "./src/index.tsx",
-  mode: "development",
+  mode: "production",
   output: {
     path: path.resolve(
       __dirname,
@@ -36,20 +36,4 @@ module.exports = {
       template: "index.html",
     }),
   ],
-  devtool: "inline-source-map",
-  devServer: {
-    static: path.join(__dirname, "../resources/META-INF/resources/static"),
-    port: 3000,
-    proxy: [
-      {
-        context: ["/api/v2"],
-        target: "http://localhost:8090/api/v2",
-        secure: false,
-        changeOrigin: true,
-      },
-    ],
-  },
-  // optimization: {
-  //   runtimeChunk: "single",
-  // },
 };
