@@ -32,9 +32,9 @@ import org.json.JSONObject;
 public class RecordAttachmentDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
-    private String path;
     private String file;
     private String name;
+    private String path;
     private String uri;
 
     @Override
