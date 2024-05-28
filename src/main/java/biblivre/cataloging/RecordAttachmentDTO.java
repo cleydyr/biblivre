@@ -24,6 +24,7 @@ import java.io.Serial;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 @Setter
@@ -36,6 +37,20 @@ public class RecordAttachmentDTO extends AbstractDTO {
     private String name;
     private String path;
     private String uri;
+
+    public void normalizeFileAndName() {
+        if (StringUtils.isBlank(file)) {
+            file = name;
+        }
+
+        if (StringUtils.isBlank(file)) {
+            file = uri;
+        }
+
+        if (StringUtils.isBlank(name)) {
+            name = file;
+        }
+    }
 
     @Override
     public JSONObject toJSONObject() {

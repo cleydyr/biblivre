@@ -98,12 +98,18 @@ public final class MarcDataReader {
 
         return fields.stream()
                 .map(
-                        field ->
-                                new RecordAttachmentDTO(
-                                        getFirstSubfieldData(field, 'f'),
-                                        getFirstSubfieldData(field, 'y'),
-                                        getFirstSubfieldData(field, 'd'),
-                                        getFirstSubfieldData(field, 'u')))
+                        field -> {
+                            RecordAttachmentDTO recordAttachmentDTO =
+                                    new RecordAttachmentDTO(
+                                            getFirstSubfieldData(field, 'f'),
+                                            getFirstSubfieldData(field, 'y'),
+                                            getFirstSubfieldData(field, 'd'),
+                                            getFirstSubfieldData(field, 'u'));
+
+                            recordAttachmentDTO.normalizeFileAndName();
+
+                            return recordAttachmentDTO;
+                        })
                 .toList();
     }
 
