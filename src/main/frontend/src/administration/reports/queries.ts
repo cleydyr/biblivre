@@ -22,8 +22,8 @@ const DEFAULT_FETCH_OPTIONS: InitOverrideFunction = async ({ init }) => ({
   },
 });
 
-function apiHost() {
-  return `http://localhost:8090/api/v2`;
+function baseEndpointPath() {
+  return `${window.location.origin}/api/v2`;
 }
 
 type UseMutationOptions<TVariables, TData, TError = Error> = Parameters<
@@ -36,7 +36,7 @@ export const useFillReportMutation = (
   const queryClient = useQueryClient();
 
   const apiConfiguration = new Configuration({
-    basePath: apiHost(),
+    basePath: baseEndpointPath(),
   });
 
   const api = new ReportFillApi(apiConfiguration);
@@ -65,7 +65,7 @@ const useUpdateReportMutation = (
   const queryClient = useQueryClient();
 
   const apiConfiguration = new Configuration({
-    basePath: apiHost(),
+    basePath: baseEndpointPath(),
   });
 
   const api = new ReportTemplateApi(apiConfiguration);
@@ -93,7 +93,7 @@ const useDeleteReportMutation = (
   const queryClient = useQueryClient();
 
   const apiConfiguration = new Configuration({
-    basePath: apiHost(),
+    basePath: baseEndpointPath(),
   });
 
   const api = new ReportTemplateApi(apiConfiguration);
@@ -116,7 +116,7 @@ const useDeleteReportMutation = (
 
 const useListReportsQuery = () => {
   const apiConfiguration = new Configuration({
-    basePath: apiHost(),
+    basePath: baseEndpointPath(),
   });
 
   const api = new ReportTemplateApi(apiConfiguration);
@@ -133,7 +133,7 @@ const useAddReportMutation = (
   const queryClient = useQueryClient();
 
   const apiConfiguration = new Configuration({
-    basePath: apiHost(),
+    basePath: baseEndpointPath(),
   });
 
   const api = new ReportTemplateApi(apiConfiguration);
