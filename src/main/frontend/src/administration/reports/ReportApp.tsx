@@ -1,11 +1,8 @@
 import {
-  EuiBasicTable,
   EuiButton,
-  EuiButtonEmpty,
   EuiCallOut,
   EuiConfirmModal,
   EuiFieldText,
-  EuiFlexGroup,
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
@@ -18,11 +15,9 @@ import {
 } from "@elastic/eui";
 import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
 import { useCallback, useState } from "react";
-import {
-  ReportFill,
-  ReportFillRequest,
-  ReportTemplate,
-} from "../../generated-sources";
+import { ReportFill, ReportTemplate } from "../../generated-sources";
+import ReportFillForm from "./ReportFillForm";
+import ReportTemplateTable from "./ReportTemplateTable";
 import UploadReportForm from "./UploadReportForm";
 import {
   useAddReportMutation,
@@ -31,8 +26,6 @@ import {
   useListReportsQuery,
   useUpdateReportMutation,
 } from "./queries";
-import ReportTemplateTable from "./ReportTemplateTable";
-import ReportFillForm from "./ReportFillForm";
 
 type Screen = "list" | "edit" | "upload" | "fill";
 
