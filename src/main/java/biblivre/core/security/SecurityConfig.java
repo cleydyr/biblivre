@@ -29,7 +29,6 @@ public class SecurityConfig {
                                         .anyRequest()
                                         .permitAll())
                 .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
