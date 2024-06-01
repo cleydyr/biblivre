@@ -1,22 +1,25 @@
 package biblivre.circulation.user;
 
 import biblivre.core.DTOCollection;
+import biblivre.search.SearchException;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 public interface UserDAO {
 
-    Map<Integer, UserDTO> map(Set<Integer> ids);
+    Map<Integer, UserDTO> map(Collection<Integer> ids);
 
-    DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset);
+    DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) throws SearchException;
 
-    boolean save(UserDTO user);
+    UserDTO save(UserDTO user) throws SearchException;
 
-    boolean delete(UserDTO user);
+    boolean delete(UserDTO user) throws SearchException;
 
-    void markAsPrinted(Set<Integer> ids);
+    void markAsPrinted(Collection<Integer> ids) throws SearchException;
 
-    boolean updateUserStatus(Integer userId, UserStatus status);
+    boolean updateUserStatus(Integer userId, UserStatus status) throws SearchException;
 
     Integer getUserIdByLoginId(Integer loginId);
+
+    default void reindexAll() throws SearchException {}
 }

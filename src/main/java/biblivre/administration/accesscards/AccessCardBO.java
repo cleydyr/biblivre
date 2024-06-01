@@ -44,6 +44,14 @@ public class AccessCardBO {
         return false;
     }
 
+    public DTOCollection<AccessCardDTO> search(PagedAccessCardSearchDTO pagedAccessCardSearchDTO) {
+        return this.accessCardDAO.search(
+                pagedAccessCardSearchDTO.code(),
+                pagedAccessCardSearchDTO.status(),
+                pagedAccessCardSearchDTO.limit(),
+                pagedAccessCardSearchDTO.offset());
+    }
+
     public DTOCollection<AccessCardDTO> search(
             String code, AccessCardStatus status, int limit, int offset) {
         return this.accessCardDAO.search(code, status, limit, offset);

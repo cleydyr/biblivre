@@ -411,6 +411,36 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         return dto;
     }
 
+    @Override
+    public boolean hasLateLendings(int userId) {
+        String sql =
+                """
+                SELECT CASE
+                    WHEN EXISTS (
+                        SELECT 1 FROM lendings
+                        WHERE user_id = ? AND return_date IS NULL
+                        AND expected_return_date < now()
+                    ) THEN true
+                    ELSE false
+                """;
+
+        try (Connection con = datasource.getConnection();
+                PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, userId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (!rs.next()) {
+                throw new RuntimeException("Should never happen");
+            }
+
+            return rs.getBoolean(1);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
     private LendingDTO populateDTO(ResultSet rs) throws SQLException {
         LendingDTO dto = new LendingDTO();
 

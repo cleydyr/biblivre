@@ -25,6 +25,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
+import biblivre.search.SearchException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,10 +121,14 @@ public class Handler extends AbstractHandler {
     public void delete(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
 
-        if (userTypeBO.delete(id)) {
-            this.setMessage(ActionResult.SUCCESS, "administration.user_type.success.delete");
-        } else {
-            this.setMessage(ActionResult.WARNING, "administration.user_type.error.delete");
+        try {
+            if (userTypeBO.delete(id)) {
+                this.setMessage(ActionResult.SUCCESS, "administration.user_type.success.delete");
+            } else {
+                this.setMessage(ActionResult.WARNING, "administration.user_type.error.delete");
+            }
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 

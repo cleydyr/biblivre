@@ -27,6 +27,7 @@ import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.labels.print.LabelPrintDTO;
+import biblivre.search.SearchException;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -40,6 +41,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import jakarta.annotation.Nonnull;
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -56,7 +58,16 @@ public class UserBO extends AbstractBO {
     private UserDAO userDAO;
     private UserTypeBO userTypeBO;
 
-    public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
+    public @Nonnull DTOCollection<UserDTO> search(PagedUserSearchDTO pagedUserSearchDTO)
+            throws SearchException {
+        return this.search(
+                pagedUserSearchDTO.userSearchDTO(),
+                pagedUserSearchDTO.limit(),
+                pagedUserSearchDTO.offset());
+    }
+
+    public @Nonnull DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset)
+            throws SearchException {
         DTOCollection<UserDTO> list = this.userDAO.search(dto, limit, offset);
 
         Map<Integer, UserTypeDTO> map = userTypeBO.map();
@@ -99,15 +110,15 @@ public class UserBO extends AbstractBO {
         return this.get(userId);
     }
 
-    public boolean save(UserDTO user) {
+    public UserDTO save(UserDTO user) throws SearchException {
         return this.userDAO.save(user);
     }
 
-    public boolean updateUserStatus(Integer userId, UserStatus status) {
+    public boolean updateUserStatus(Integer userId, UserStatus status) throws SearchException {
         return this.userDAO.updateUserStatus(userId, status);
     }
 
-    public boolean delete(UserDTO user) {
+    public boolean delete(UserDTO user) throws SearchException {
         return this.userDAO.delete(user);
     }
 
@@ -221,7 +232,7 @@ public class UserBO extends AbstractBO {
         return text;
     }
 
-    public void markAsPrinted(Set<Integer> ids) {
+    public void markAsPrinted(Set<Integer> ids) throws SearchException {
         this.userDAO.markAsPrinted(ids);
     }
 

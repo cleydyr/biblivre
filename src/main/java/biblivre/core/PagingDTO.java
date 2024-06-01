@@ -20,15 +20,17 @@
 package biblivre.core;
 
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
 public final class PagingDTO implements IFJson {
-    private int recordCount;
-    private int recordOffset;
-    private int recordsPerPage;
-    private int recordLimit;
+    @Getter @Setter private long recordCount;
+    @Getter @Setter private long recordOffset;
+    @Setter @Getter private long recordsPerPage;
+    @Setter @Getter private long recordLimit;
 
-    private transient double time;
+    @Setter @Getter private transient double time;
     private transient long startTime;
     private transient long endTime;
 
@@ -36,7 +38,7 @@ public final class PagingDTO implements IFJson {
         this.startTimer();
     }
 
-    public PagingDTO(int recordCount, int recordsPerPage, int recordOffset) {
+    public PagingDTO(long recordCount, int recordsPerPage, int recordOffset) {
         this.startTimer();
 
         this.recordCount = recordCount;
@@ -44,47 +46,7 @@ public final class PagingDTO implements IFJson {
         this.recordOffset = recordOffset;
     }
 
-    public int getRecordCount() {
-        return this.recordCount;
-    }
-
-    public void setRecordCount(int recordCount) {
-        this.recordCount = recordCount;
-    }
-
-    public int getRecordsPerPage() {
-        return this.recordsPerPage;
-    }
-
-    public void setRecordsPerPage(int recordsPerPage) {
-        this.recordsPerPage = recordsPerPage;
-    }
-
-    public void setRecordsPerPage(String recordsPerPage) {
-        try {
-            this.recordsPerPage = Integer.parseInt(recordsPerPage);
-        } catch (Exception e) {
-            this.recordsPerPage = 20;
-        }
-    }
-
-    public int getRecordOffset() {
-        return this.recordOffset;
-    }
-
-    public void setRecordOffset(int recordOffset) {
-        this.recordOffset = recordOffset;
-    }
-
-    public int getRecordLimit() {
-        return this.recordLimit;
-    }
-
-    public void setRecordLimit(int recordLimit) {
-        this.recordLimit = recordLimit;
-    }
-
-    public int getPage() {
+    public long getPage() {
         if (this.getRecordsPerPage() == 0) {
             return 1;
         }
@@ -96,7 +58,7 @@ public final class PagingDTO implements IFJson {
         this.recordOffset = (page - 1) * this.getRecordsPerPage();
     }
 
-    public int getPageCount() {
+    public long getPageCount() {
         if (this.getRecordCount() == 0) {
             return 0;
         }
@@ -112,14 +74,6 @@ public final class PagingDTO implements IFJson {
         }
 
         return (int) Math.ceil(count / this.getRecordsPerPage());
-    }
-
-    public double getTime() {
-        return this.time;
-    }
-
-    public void setTime(double time) {
-        this.time = time;
     }
 
     public void setTime(long start, long end) {
