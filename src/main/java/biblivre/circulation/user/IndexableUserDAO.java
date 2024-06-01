@@ -5,6 +5,8 @@ import biblivre.circulation.lending.LendingFineDAO;
 import biblivre.core.DTOCollection;
 import biblivre.core.PagingDTO;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.schemas.SchemaBO;
+import biblivre.search.Reindexable;
 import biblivre.search.SearchException;
 import biblivre.search.user.IndexableUser;
 import biblivre.search.user.IndexableUserQueryParameters;
@@ -29,7 +31,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("elasticsearch")
 @Primary
-public class IndexableUserDAO extends UserDAOImpl {
+public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO> {
     @Autowired private IndexableUserRepository indexableUserRepository;
 
     @Value(value = "${biblivre.cloud.tentant:localhost}")
@@ -40,6 +42,8 @@ public class IndexableUserDAO extends UserDAOImpl {
     @Autowired private LendingDAO lendingDAO;
 
     @Autowired private ElasticsearchOperations elasticsearchOperations;
+
+    @Autowired private SchemaBO schemaBO;
 
     @Override
     public @Nonnull DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset)
@@ -70,6 +74,22 @@ public class IndexableUserDAO extends UserDAOImpl {
         result.setPaging(new PagingDTO(searchHits.getTotalHits(), limit, offset));
 
         return result;
+    }
+
+    @Override
+    public void reindexAllSchemas() throws SearchException {
+        for (var schema : schemaBO.getSchemas()) {
+            SchemaThreadLocal.withSchema(schema.getSchema(), () -> reindex(schema.getSchema()));
+        }
+    }
+
+    @Override
+    public void reindex(String schema) throws SearchException {
+        indexableUserRepository.deleteBySchemaAndTenant(schema, tenant);
+
+        DTOCollection<UserDTO> allUsers = super.search(new UserSearchDTO(), Integer.MAX_VALUE, 0);
+
+        bulkIndex(allUsers.stream().map(this::getEsUser).toList());
     }
 
     private List<Query> getFilterQueries(UserSearchDTO dto) {
@@ -238,15 +258,6 @@ public class IndexableUserDAO extends UserDAOImpl {
         reindex(Set.of(userId));
 
         return true;
-    }
-
-    @Override
-    public void reindexAll() throws SearchException {
-        indexableUserRepository.deleteBySchemaAndTenant(SchemaThreadLocal.get(), tenant);
-
-        DTOCollection<UserDTO> allUsers = super.search(new UserSearchDTO(), Integer.MAX_VALUE, 0);
-
-        bulkIndex(allUsers.stream().map(this::getEsUser).toList());
     }
 
     private void reindex(Collection<Integer> ids) throws SearchException {

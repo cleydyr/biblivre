@@ -20,7 +20,6 @@
 package biblivre.administration.indexing;
 
 import biblivre.cataloging.enums.RecordType;
-import biblivre.circulation.user.UserDAO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -33,8 +32,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Handler extends AbstractHandler {
     private IndexingBO indexingBO;
-
-    @Autowired private UserDAO userDAO;
 
     public void reindex(ExtendedRequest request, ExtendedResponse response) throws SearchException {
         String strRecordType = request.getString("record_type", "biblio");
@@ -51,7 +48,6 @@ public class Handler extends AbstractHandler {
         long end;
 
         start = new Date().getTime();
-        userDAO.reindexAll();
         indexingBO.reindex(recordType);
         end = new Date().getTime();
 
