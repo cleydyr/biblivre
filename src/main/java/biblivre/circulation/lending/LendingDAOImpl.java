@@ -415,13 +415,11 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
     public boolean hasLateLendings(int userId) {
         String sql =
                 """
-                SELECT CASE
-                    WHEN EXISTS (
+                SELECT EXISTS (
                         SELECT 1 FROM lendings
                         WHERE user_id = ? AND return_date IS NULL
                         AND expected_return_date < now()
-                    ) THEN true
-                    ELSE false
+                    )
                 """;
 
         try (Connection con = datasource.getConnection();
