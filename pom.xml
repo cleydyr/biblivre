@@ -586,6 +586,7 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
+                            <arguments>install --production=false</arguments>
                             <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
                         </configuration>
                     </execution>
