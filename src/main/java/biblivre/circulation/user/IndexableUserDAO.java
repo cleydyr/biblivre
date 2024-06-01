@@ -73,13 +73,43 @@ public class IndexableUserDAO extends UserDAOImpl {
     }
 
     private List<Query> getFilterQueries(UserSearchDTO dto) {
-        List<Query> baseFilterQuries = buildBaseQueries(dto);
+        var baseFilterTermQueries = buildBaseQueries(dto);
 
-        if (dto.isSimpleSearch()) {
-            return baseFilterQuries;
+        var textQueries = buildTextQueries(dto);
+
+        var advancedOptionsQueries = buildAdvancedOptionsQueries(dto);
+
+        var filterTermQueries = new ArrayList<>(baseFilterTermQueries);
+
+        filterTermQueries.addAll(textQueries);
+
+        filterTermQueries.addAll(advancedOptionsQueries);
+
+        return Collections.unmodifiableList(filterTermQueries);
+    }
+
+    private List<Query> buildTextQueries(UserSearchDTO dto) {
+        if (dto.isSearchById()) {
+            return Collections.singletonList(buildLongTermQuery(dto));
         }
 
-        List<Query> filterQueries = new ArrayList<>(baseFilterQuries);
+        return Collections.emptyList();
+    }
+
+    private List<Query> buildBaseQueries(UserSearchDTO dto) {
+        Query schemaQ = buildStringTermQuery("schema", SchemaThreadLocal.get());
+
+        Query tenantQ = buildStringTermQuery("tenant", tenant);
+
+        return List.of(schemaQ, tenantQ);
+    }
+
+    private static List<Query> buildAdvancedOptionsQueries(UserSearchDTO dto) {
+        if (dto.isSimpleSearch()) {
+            return Collections.emptyList();
+        }
+
+        List<Query> filterQueries = new ArrayList<>();
 
         if (dto.isUserCardNeverPrinted()) {
             filterQueries.add(buildBooleanTermQuery("userCardPrinted", false));
@@ -117,19 +147,7 @@ public class IndexableUserDAO extends UserDAOImpl {
             filterQueries.add(buildRangeLteQuery("modified", dto.getModifiedEndDate()));
         }
 
-        if (dto.isSearchById()) {
-            filterQueries.add(buildLongTermQuery(dto));
-        }
-
         return Collections.unmodifiableList(filterQueries);
-    }
-
-    private List<Query> buildBaseQueries(UserSearchDTO dto) {
-        Query schemaQ = buildStringTermQuery("schema", SchemaThreadLocal.get());
-
-        Query tenantQ = buildStringTermQuery("tenant", tenant);
-
-        return List.of(schemaQ, tenantQ);
     }
 
     private static List<Query> getMustQueries(UserSearchDTO dto) {
