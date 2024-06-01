@@ -24,28 +24,25 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.function.UnsafeFunction;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.TextUtils;
+import biblivre.search.SearchException;
+import jakarta.annotation.Nonnull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 @Slf4j
-public class UserDAOImpl extends AbstractDAO implements UserDAO {
+public abstract class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
-    public Map<Integer, UserDTO> map(Set<Integer> ids) {
+    public Map<Integer, UserDTO> map(Collection<Integer> ids) {
         Map<Integer, UserDTO> map = new HashMap<>();
 
         try (Connection con = datasource.getConnection()) {
@@ -76,7 +73,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset) {
+    public @Nonnull DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset)
+            throws SearchException {
         DTOCollection<UserDTO> list = new DTOCollection<>();
         String query = dto.getQuery();
 
@@ -265,7 +263,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public boolean save(UserDTO user) {
+    public UserDTO save(UserDTO user) throws SearchException {
         try (Connection con = datasource.getConnection()) {
             con.setAutoCommit(false);
 
@@ -276,8 +274,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             if (newUser) {
                 user.setId(this.getNextSerial("users_id_seq"));
                 sql.append(
-                        "INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii) ");
-                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?);");
+                        "INSERT INTO users (id, name, type, photo_id, status, created_by, name_ascii, created) ");
+                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, now());");
                 pst = con.prepareStatement(sql.toString());
                 pst.setInt(1, user.getId());
                 pst.setString(2, user.getName());
@@ -297,7 +295,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
                 pst.setString(3, user.getStatus().toString());
                 pst.setString(4, user.getName());
                 pst.setInt(5, user.getCreatedBy());
-                pst.setBoolean(6, user.getUserCardPrinted());
+                pst.setBoolean(6, user.isUserCardPrinted());
                 pst.setString(7, TextUtils.removeDiacriticals(user.getName()));
                 pst.setInt(8, user.getId());
             }
@@ -312,14 +310,14 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
             con.commit();
 
-            return true;
+            return map(Set.of(user.getId())).get(user.getId());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
 
     @Override
-    public boolean delete(UserDTO user) {
+    public boolean delete(UserDTO user) throws SearchException {
         return withTransactionContext(
                 (UnsafeFunction<Connection, Boolean>) connection -> doDelete(connection, user));
     }
@@ -384,7 +382,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         dto.setName(rs.getString("name"));
         dto.setType(rs.getInt("type"));
         dto.setPhotoId(rs.getString("photo_id"));
-        dto.setStatus(rs.getString("status"));
+        dto.setStatus(UserStatus.fromString(rs.getString("status")));
         dto.setLoginId(rs.getInt("login_id"));
         dto.setCreated(rs.getTimestamp("created"));
         dto.setCreatedBy(rs.getInt("created_by"));
@@ -405,7 +403,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public void markAsPrinted(Set<Integer> ids) {
+    public void markAsPrinted(Collection<Integer> ids) throws SearchException {
         try (Connection con = datasource.getConnection()) {
             String sql =
                     "UPDATE users SET user_card_printed = true "
@@ -426,7 +424,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public boolean updateUserStatus(Integer userId, UserStatus status) {
+    public boolean updateUserStatus(Integer userId, UserStatus status) throws SearchException {
         try (Connection con = datasource.getConnection()) {
             String sql = "UPDATE users SET status = ? " + "WHERE id = ?;";
 

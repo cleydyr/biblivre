@@ -25,6 +25,7 @@ import biblivre.circulation.user.UserSearchDTO;
 import biblivre.core.AbstractBO;
 import biblivre.core.DTOCollection;
 import biblivre.core.exceptions.ValidationException;
+import biblivre.search.SearchException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -61,13 +62,13 @@ public class UserTypeBO extends AbstractBO {
         return this.userTypeDAO.save(userTypeDTO);
     }
 
-    public boolean delete(int id) {
+    public boolean delete(int id) throws SearchException {
         // Check if there's any user for this user_type
         UserSearchDTO dto = new UserSearchDTO();
         dto.setType(id);
 
         DTOCollection<UserDTO> userList = userDAO.search(dto, 1, 0);
-        boolean existingUser = userList.size() > 0;
+        boolean existingUser = !userList.isEmpty();
 
         if (existingUser) {
             throw new ValidationException("administration.user_type.error.type_has_users");

@@ -42,7 +42,7 @@ public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> 
         this.paging = paging;
     }
 
-    public int getRecordLimit() {
+    public long getRecordLimit() {
         if (this.paging == null) {
             return 0;
         }

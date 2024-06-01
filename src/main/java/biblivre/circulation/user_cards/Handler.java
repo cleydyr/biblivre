@@ -26,6 +26,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.labels.print.LabelPrintDTO;
+import biblivre.search.SearchException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -62,7 +63,12 @@ public class Handler extends AbstractHandler {
         LabelPrintDTO dto = (LabelPrintDTO) request.getScopedSessionAttribute(printId);
         final DiskFile exportFile = userBO.printUserCardsToPDF(dto, request.getTranslationsMap());
 
-        userBO.markAsPrinted(dto.getIds());
+        try {
+            userBO.markAsPrinted(dto.getIds());
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
+            return;
+        }
 
         this.setFile(exportFile);
 

@@ -21,6 +21,8 @@ package biblivre.circulation.accesscontrol;
 
 import biblivre.administration.accesscards.AccessCardBO;
 import biblivre.administration.accesscards.AccessCardDTO;
+import biblivre.administration.accesscards.PagedAccessCardSearchWebHelper;
+import biblivre.circulation.user.PagedUserSearchWebHelper;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -28,6 +30,7 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
+import biblivre.search.SearchException;
 import java.util.Date;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,50 +41,54 @@ public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
     private AccessControlBO accessControlBO;
     private UserBO userBO;
-    private biblivre.circulation.user.Handler userHandler;
-    private biblivre.administration.accesscards.Handler cardHandler;
+    @Autowired private PagedUserSearchWebHelper pagedUserSearchWebHelper;
+    @Autowired private PagedAccessCardSearchWebHelper pagedAccessCardSearchWebHelper;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
-
-        if (userList == null) {
-            return;
-        }
-
-        DTOCollection<AccessControlDTO> list = new DTOCollection<>();
-        list.setPaging(userList.getPaging());
-
-        for (UserDTO user : userList) {
-            AccessControlDTO dto = accessControlBO.getByUserId(user.getId());
-            if (dto == null) {
-                dto = new AccessControlDTO();
-                dto.setUserId(user.getId());
-            }
-
-            dto.setId(user.getId());
-            dto.setUser(user);
-
-            if (dto.getAccessCardId() != null) {
-                dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()));
-            }
-
-            list.add(dto);
-        }
-
-        if (list.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
-            return;
-        }
+        var pagedSearchDTO = pagedUserSearchWebHelper.getPagedUserSearchDTO(request);
 
         try {
+            DTOCollection<UserDTO> userList = userBO.search(pagedSearchDTO);
+
+            DTOCollection<AccessControlDTO> list = new DTOCollection<>();
+
+            list.setPaging(userList.getPaging());
+
+            for (UserDTO user : userList) {
+                AccessControlDTO dto = accessControlBO.getByUserId(user.getId());
+                if (dto == null) {
+                    dto = new AccessControlDTO();
+                    dto.setUserId(user.getId());
+                }
+
+                dto.setId(user.getId());
+                dto.setUser(user);
+
+                if (dto.getAccessCardId() != null) {
+                    dto.setAccessCard(accessCardBO.get(dto.getAccessCardId()));
+                }
+
+                list.add(dto);
+            }
+
+            if (list.isEmpty()) {
+                this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+                return;
+            }
+
             put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
     public void cardSearch(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<AccessCardDTO> cardList = cardHandler.searchHelper(request, response, this);
+        var pagedAccessCardSearchDTO =
+                pagedAccessCardSearchWebHelper.getPagedAccessCardSearchDTO(request);
+
+        DTOCollection<AccessCardDTO> cardList = accessCardBO.search(pagedAccessCardSearchDTO);
 
         if (cardList == null) {
             return;
@@ -107,7 +114,7 @@ public class Handler extends AbstractHandler {
             list.add(dto);
         }
 
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
             return;
         }
@@ -183,15 +190,5 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setUserBO(UserBO userBO) {
         this.userBO = userBO;
-    }
-
-    @Autowired
-    public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
-        this.userHandler = userHandler;
-    }
-
-    @Autowired
-    public void setCardHandler(biblivre.administration.accesscards.Handler cardHandler) {
-        this.cardHandler = cardHandler;
     }
 }

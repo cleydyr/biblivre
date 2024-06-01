@@ -506,13 +506,13 @@ public class RecordDAOImpl extends AbstractDAO implements RecordDAO {
             }
 
             if (useLimit) {
-                pst.setInt(index++, search.getRecordLimit());
+                pst.setLong(index++, search.getRecordLimit());
             }
 
             pst.setInt(index++, search.getSort());
 
-            pst.setInt(index++, paging.getRecordOffset());
-            pst.setInt(index, paging.getRecordsPerPage());
+            pst.setLong(index++, paging.getRecordOffset());
+            pst.setLong(index, paging.getRecordsPerPage());
 
             ResultSet rs = pst.executeQuery();
 

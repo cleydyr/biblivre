@@ -28,6 +28,7 @@ import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.cataloging.holding.HoldingBO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.reservation.ReservationBO;
+import biblivre.circulation.user.PagedUserSearchWebHelper;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -37,6 +38,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.PagingDTO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.Constants;
+import biblivre.search.SearchException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,7 +57,7 @@ public class Handler extends AbstractHandler {
     private UserTypeBO userTypeBO;
     private LendingFineBO lendingFineBO;
     private ReservationBO reservationBO;
-    private biblivre.circulation.user.Handler userHandler;
+    @Autowired private PagedUserSearchWebHelper pagedUserSearchWebHelper;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
 
@@ -96,37 +98,38 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
-
-        if (userList == null || userList.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
-            return;
-        }
-
-        DTOCollection<LendingListDTO> list = new DTOCollection<>();
-        list.setPaging(userList.getPaging());
-
-        for (UserDTO user : userList) {
-            list.add(this.populateLendingList(user, false));
-        }
-
         try {
+            var pagedSearchDTO = pagedUserSearchWebHelper.getPagedUserSearchDTO(request);
+
+            DTOCollection<UserDTO> userList = userBO.search(pagedSearchDTO);
+
+            if (userList.isEmpty()) {
+                this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+                return;
+            }
+
+            DTOCollection<LendingListDTO> list = new DTOCollection<>();
+            list.setPaging(userList.getPaging());
+
+            for (UserDTO user : userList) {
+                list.add(this.populateLendingList(user));
+            }
+
             put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
-    private LendingListDTO populateLendingList(UserDTO user, boolean history) {
+    private LendingListDTO populateLendingList(UserDTO user) {
         LendingListDTO lendingList = new LendingListDTO();
 
         lendingList.setUser(user);
         lendingList.setId(user.getId());
 
         List<LendingDTO> lendings = lendingBO.listUserLendings(user);
-        if (history) {
-            lendings.addAll(lendingBO.listHistory(user));
-        }
 
         List<LendingInfoDTO> infos = new ArrayList<>();
 
@@ -287,7 +290,7 @@ public class Handler extends AbstractHandler {
         PagingDTO paging = new PagingDTO(lendingBO.countLendings(), limit, offset);
         list.setPaging(paging);
 
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "circulation.lending.no_lending_found");
             return;
         }
@@ -318,8 +321,6 @@ public class Handler extends AbstractHandler {
 
             put("receipt", receipt);
         } catch (JSONException e) {
-            e.printStackTrace();
-
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
@@ -357,10 +358,5 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setReservationBO(ReservationBO reservationBO) {
         this.reservationBO = reservationBO;
-    }
-
-    @Autowired
-    public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
-        this.userHandler = userHandler;
     }
 }

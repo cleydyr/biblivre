@@ -1,0 +1,296 @@
+package biblivre.circulation.user;
+
+import biblivre.circulation.lending.LendingDAO;
+import biblivre.circulation.lending.LendingFineDAO;
+import biblivre.core.DTOCollection;
+import biblivre.core.PagingDTO;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.search.SearchException;
+import biblivre.search.user.IndexableUser;
+import biblivre.search.user.IndexableUserQueryParameters;
+import biblivre.search.user.IndexableUserRepository;
+import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.json.JsonData;
+import co.elastic.clients.util.ObjectBuilder;
+import jakarta.annotation.Nonnull;
+import java.util.*;
+import java.util.function.Function;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.stereotype.Service;
+
+@Service
+@ConditionalOnProperty(value = "elasticsearch.server.url")
+public class IndexableUserDAO extends UserDAOImpl {
+    @Autowired private IndexableUserRepository indexableUserRepository;
+
+    @Value(value = "${biblivre.cloud.tentant:localhost}")
+    private String tenant;
+
+    @Autowired private LendingFineDAO lendingFineDAO;
+
+    @Autowired private LendingDAO lendingDAO;
+
+    @Autowired private ElasticsearchOperations elasticsearchOperations;
+
+    @Override
+    public @Nonnull DTOCollection<UserDTO> search(UserSearchDTO dto, int limit, int offset)
+            throws SearchException {
+        List<Query> filterQueries = getFilterQueries(dto);
+
+        List<Query> mustQueries = getMustQueries(dto);
+
+        NativeQuery nativeQuery =
+                NativeQuery.builder()
+                        .withQuery(
+                                query ->
+                                        query.bool(
+                                                bool ->
+                                                        bool.filter(filterQueries)
+                                                                .must(mustQueries)))
+                        .withPageable(PageRequest.of(offset / limit, limit))
+                        .build();
+
+        SearchHits<IndexableUser> searchHits =
+                elasticsearchOperations.search(nativeQuery, IndexableUser.class);
+
+        DTOCollection<UserDTO> result =
+                searchHits.getSearchHits().stream()
+                        .map(hit -> getUserDTO(hit.getContent()))
+                        .collect(DTOCollection::new, DTOCollection::add, DTOCollection::addAll);
+
+        result.setPaging(new PagingDTO(searchHits.getTotalHits(), limit, offset));
+
+        return result;
+    }
+
+    private List<Query> getFilterQueries(UserSearchDTO dto) {
+        List<Query> baseFilterQuries = buildBaseQueries(dto);
+
+        if (dto.isSimpleSearch()) {
+            return baseFilterQuries;
+        }
+
+        List<Query> filterQueries = new ArrayList<>(baseFilterQuries);
+
+        if (dto.isUserCardNeverPrinted()) {
+            filterQueries.add(buildBooleanTermQuery("userCardPrinted", false));
+        }
+
+        if (dto.isPendingFines()) {
+            filterQueries.add(buildBooleanTermQuery("hasPendingFines", true));
+        }
+
+        if (dto.isInactiveOnly()) {
+            filterQueries.add(buildBooleanTermQuery("isInactive", true));
+        }
+
+        if (dto.isLateLendings()) {
+            filterQueries.add(buildBooleanTermQuery("hasPendingLoans", true));
+        }
+
+        if (dto.isLoginAccess()) {
+            filterQueries.add(buildBooleanTermQuery("hasLogin", true));
+        }
+
+        if (dto.getCreatedStartDate() != null) {
+            filterQueries.add(buildRangeGteQuery("created", dto.getCreatedStartDate()));
+        }
+
+        if (dto.getCreatedEndDate() != null) {
+            filterQueries.add(buildRangeLteQuery("created", dto.getCreatedEndDate()));
+        }
+
+        if (dto.getModifiedStartDate() != null) {
+            filterQueries.add(buildRangeGteQuery("modified", dto.getModifiedStartDate()));
+        }
+
+        if (dto.getModifiedEndDate() != null) {
+            filterQueries.add(buildRangeLteQuery("modified", dto.getModifiedEndDate()));
+        }
+
+        if (dto.isSearchById()) {
+            filterQueries.add(buildLongTermQuery(dto));
+        }
+
+        return Collections.unmodifiableList(filterQueries);
+    }
+
+    private List<Query> buildBaseQueries(UserSearchDTO dto) {
+        Query schemaQ = buildStringTermQuery("schema", SchemaThreadLocal.get());
+
+        Query tenantQ = buildStringTermQuery("tenant", tenant);
+
+        return List.of(schemaQ, tenantQ);
+    }
+
+    private static List<Query> getMustQueries(UserSearchDTO dto) {
+        return dto.isListAll() ? Collections.emptyList() : List.of(getMustQueryForName(dto));
+    }
+
+    private static Query getMustQueryForName(UserSearchDTO dto) {
+        return new Query.Builder()
+                .match(match -> match.field("name").query(dto.getQuery()).fuzziness("AUTO"))
+                .build();
+    }
+
+    private static Query buildLongTermQuery(UserSearchDTO dto) {
+        return buildTermQuery("id", value -> value.longValue(Long.parseLong(dto.getQuery())));
+    }
+
+    private static Query buildRangeGteQuery(String field, Date value) {
+        return new Query.Builder()
+                .range(range -> range.field(field).gte(JsonData.of(value)))
+                .build();
+    }
+
+    private static Query buildRangeLteQuery(String field, Date value) {
+        return new Query.Builder()
+                .range(range -> range.field(field).lte(JsonData.of(value)))
+                .build();
+    }
+
+    private static Query buildBooleanTermQuery(String field, boolean value) {
+        return buildTermQuery(field, v -> v.booleanValue(value));
+    }
+
+    private static Query buildStringTermQuery(String field, String value) {
+        return buildTermQuery(field, v -> v.stringValue(value));
+    }
+
+    private static Query buildTermQuery(
+            String field, Function<FieldValue.Builder, ObjectBuilder<FieldValue>> valueFunction) {
+        return new Query.Builder().term(term -> term.field(field).value(valueFunction)).build();
+    }
+
+    private IndexableUserQueryParameters getIndexableUserQueryParameters(UserSearchDTO userSearch) {
+        return new IndexableUserQueryParameters(
+                parseInt(userSearch.getQuery()).orElse(-1),
+                userSearch.getQuery(),
+                SchemaThreadLocal.get(),
+                tenant,
+                userSearch.isLoginAccess(),
+                userSearch.isPendingFines(),
+                userSearch.isLateLendings(),
+                userSearch.isUserCardNeverPrinted(),
+                userSearch.isInactiveOnly());
+    }
+
+    @Override
+    public UserDTO save(UserDTO user) throws SearchException {
+        UserDTO saved = super.save(user);
+
+        index(user);
+
+        return saved;
+    }
+
+    private void index(UserDTO user) throws SearchException {
+        indexableUserRepository.save(getEsUser(user));
+    }
+
+    @Override
+    public boolean delete(UserDTO user) throws SearchException {
+        super.delete(user);
+
+        indexableUserRepository.delete(getEsUser(user));
+
+        return true;
+    }
+
+    @Override
+    public void markAsPrinted(Collection<Integer> ids) throws SearchException {
+        super.markAsPrinted(ids);
+
+        reindex(ids);
+    }
+
+    @Override
+    public boolean updateUserStatus(Integer userId, UserStatus status) throws SearchException {
+        super.updateUserStatus(userId, status);
+
+        reindex(Set.of(userId));
+
+        return true;
+    }
+
+    @Override
+    public void reindexAll() throws SearchException {
+        indexableUserRepository.deleteBySchemaAndTenant(SchemaThreadLocal.get(), tenant);
+
+        DTOCollection<UserDTO> allUsers = super.search(new UserSearchDTO(), Integer.MAX_VALUE, 0);
+
+        bulkIndex(allUsers.stream().map(this::getEsUser).toList());
+    }
+
+    private void reindex(Collection<Integer> ids) throws SearchException {
+        Map<Integer, UserDTO> usersMap = super.map(ids);
+
+        bulkIndex(usersMap.values().stream().map(this::getEsUser).toList());
+    }
+
+    private void bulkIndex(Collection<IndexableUser> users) {
+        indexableUserRepository.saveAll(users);
+    }
+
+    private IndexableUser getEsUser(UserDTO user) {
+        int userId = user.getId();
+
+        boolean userHasPendingFines = lendingFineDAO.hasPendingFine(userId);
+
+        boolean userHasPendingLoans = lendingDAO.hasLateLendings(userId);
+
+        return new IndexableUser(
+                userId,
+                user.getName(),
+                user.getType(),
+                user.getPhotoId(),
+                user.getStatus().toString(),
+                user.getLoginId() == null ? -1 : user.getLoginId(),
+                user.getCreated(),
+                user.getCreatedBy(),
+                user.getModified(),
+                user.getModifiedBy(),
+                user.isUserCardPrinted(),
+                user.getFields(),
+                userHasPendingFines,
+                userHasPendingLoans,
+                user.hasLogin(),
+                user.isInactive(),
+                SchemaThreadLocal.get(),
+                tenant);
+    }
+
+    private static UserDTO getUserDTO(IndexableUser indexableUser) {
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setId(indexableUser.getId());
+        userDTO.setName(indexableUser.getName());
+        userDTO.setType(indexableUser.getType());
+        userDTO.setPhotoId(indexableUser.getPhotoId());
+        userDTO.setStatus(UserStatus.fromString(indexableUser.getStatus()));
+        userDTO.setLoginId(indexableUser.getLoginId() == -1 ? null : indexableUser.getLoginId());
+        userDTO.setCreatedBy(indexableUser.getCreatedBy());
+        userDTO.setCreated(indexableUser.getCreated());
+        userDTO.setModifiedBy(indexableUser.getModifiedBy());
+        userDTO.setModified(indexableUser.getModified());
+        userDTO.setUserCardPrinted(indexableUser.isUserCardPrinted());
+        userDTO.setFields(indexableUser.getFields());
+
+        return userDTO;
+    }
+
+    private static OptionalInt parseInt(String query) {
+        try {
+            return OptionalInt.of(Integer.parseInt(query));
+        } catch (NumberFormatException e) {
+            return OptionalInt.empty();
+        }
+    }
+}

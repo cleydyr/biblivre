@@ -33,9 +33,9 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.MemoryFile;
-import biblivre.core.utils.Constants;
 import biblivre.digitalmedia.DigitalMediaBO;
 import biblivre.digitalmedia.DigitalMediaEncodingUtil;
+import biblivre.search.SearchException;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.Collection;
@@ -54,6 +54,7 @@ public class Handler extends AbstractHandler {
     private ReservationBO reservationBO;
     private DigitalMediaBO digitalMediaBO;
     private UserFieldBO userFieldBO;
+    private PagedUserSearchWebHelper pagedUserSearchWebHelper;
 
     public void open(ExtendedRequest request, ExtendedResponse response) {
         Integer id = request.getInteger("id");
@@ -73,43 +74,26 @@ public class Handler extends AbstractHandler {
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<UserDTO> list = this.searchHelper(request, response, this);
-
         try {
-            put("search", list.toJSONObject());
+
+            var pagedSearchDTO = pagedUserSearchWebHelper.getPagedUserSearchDTO(request);
+
+            DTOCollection<UserDTO> userList = userBO.search(pagedSearchDTO);
+
+            if (userList.isEmpty()) {
+                setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+            }
+
+            put("search", userList.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "circulation.error.search_error");
         }
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {
         this.search(request, response);
-    }
-
-    public DTOCollection<UserDTO> searchHelper(
-            ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-
-        String searchParameters = request.getString("search_parameters");
-
-        UserSearchDTO searchDto = new UserSearchDTO(searchParameters);
-
-        Integer limit =
-                request.getInteger(
-                        "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-        Integer offset = request.getInteger("offset", 0);
-
-        Integer page = request.getInteger("page", 1);
-        if (page > 1) {
-            offset = limit * (page - 1);
-        }
-
-        DTOCollection<UserDTO> list = userBO.search(searchDto, limit, offset);
-
-        if (list.size() == 0) {
-            handler.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
-        }
-
-        return list;
     }
 
     public void save(ExtendedRequest request, ExtendedResponse response) {
@@ -178,21 +162,25 @@ public class Handler extends AbstractHandler {
             }
         }
 
-        if (userBO.save(user)) {
-            if (id == 0) {
-                this.setMessage(ActionResult.SUCCESS, "circulation.users.success.save");
-            } else {
-                this.setMessage(ActionResult.SUCCESS, "circulation.users.success.update");
-            }
-        } else {
-            this.setMessage(ActionResult.WARNING, "circulation.users.error.save");
-        }
-
         try {
-            put("data", user.toJSONObject());
-            put("full_data", true);
+            UserDTO saved = userBO.save(user);
+
+            if (saved != null) {
+                if (id == 0) {
+                    this.setMessage(ActionResult.SUCCESS, "circulation.users.success.saved");
+                } else {
+                    this.setMessage(ActionResult.SUCCESS, "circulation.users.success.update");
+                }
+
+                put("data", saved.toJSONObject());
+                put("full_data", true);
+            } else {
+                this.setMessage(ActionResult.WARNING, "circulation.users.error.saved");
+            }
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
@@ -201,14 +189,24 @@ public class Handler extends AbstractHandler {
 
         UserDTO user = userBO.get(id);
 
-        String act = (user.getStatus() == UserStatus.INACTIVE) ? "delete" : "disable";
+        String action = (user.getStatus() == UserStatus.INACTIVE) ? "delete" : "disable";
 
-        boolean success = userBO.delete(user);
+        try {
+            boolean success = false;
 
-        if (success) {
-            this.setMessage(ActionResult.SUCCESS, "circulation.users.success." + act);
-        } else {
-            this.setMessage(ActionResult.WARNING, "circulation.users.failure." + act);
+            if ("delete".equals(action)) {
+                success = userBO.delete(user);
+            } else {
+                success = userBO.updateUserStatus(id, UserStatus.INACTIVE);
+            }
+
+            if (success) {
+                this.setMessage(ActionResult.SUCCESS, "circulation.users.success." + action);
+            } else {
+                this.setMessage(ActionResult.WARNING, "circulation.users.failure." + action);
+            }
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "circulation.users.failure." + action);
         }
     }
 
@@ -260,22 +258,30 @@ public class Handler extends AbstractHandler {
     public void block(ExtendedRequest request, ExtendedResponse response) {
         Integer userId = request.getInteger("user_id");
 
-        boolean success = userBO.updateUserStatus(userId, UserStatus.BLOCKED);
-        if (success) {
-            this.setMessage(ActionResult.SUCCESS, "circulation.users.success.block");
-        } else {
-            this.setMessage(ActionResult.WARNING, "circulation.users.failure.block");
+        try {
+            boolean success = userBO.updateUserStatus(userId, UserStatus.BLOCKED);
+            if (success) {
+                this.setMessage(ActionResult.SUCCESS, "circulation.users.success.block");
+            } else {
+                this.setMessage(ActionResult.WARNING, "circulation.users.failure.block");
+            }
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
     public void unblock(ExtendedRequest request, ExtendedResponse response) {
         Integer userId = request.getInteger("user_id");
 
-        boolean success = userBO.updateUserStatus(userId, UserStatus.ACTIVE);
-        if (success) {
-            this.setMessage(ActionResult.SUCCESS, "circulation.users.success.unblock");
-        } else {
-            this.setMessage(ActionResult.WARNING, "circulation.users.failure.unblock");
+        try {
+            boolean success = userBO.updateUserStatus(userId, UserStatus.ACTIVE);
+            if (success) {
+                this.setMessage(ActionResult.SUCCESS, "circulation.users.success.unblock");
+            } else {
+                this.setMessage(ActionResult.WARNING, "circulation.users.failure.unblock");
+            }
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
@@ -307,5 +313,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setUserFieldBO(UserFieldBO userFieldBO) {
         this.userFieldBO = userFieldBO;
+    }
+
+    @Autowired
+    public void setPagedUserSearchWebHelper(PagedUserSearchWebHelper pagedUserSearchWebHelper) {
+        this.pagedUserSearchWebHelper = pagedUserSearchWebHelper;
     }
 }

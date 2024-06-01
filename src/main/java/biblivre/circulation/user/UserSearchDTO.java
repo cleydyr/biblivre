@@ -26,22 +26,25 @@ import biblivre.core.utils.TextUtils;
 import java.io.Serial;
 import java.text.ParseException;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Getter
 public final class UserSearchDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
-    private SearchMode searchMode;
-    private String field;
-    private String query;
-    private Integer type;
-    private boolean pendingFines;
-    private boolean lateLendings;
-    private boolean loginAccess;
-    private boolean userCardNeverPrinted;
-    private boolean inactiveOnly;
+    @Setter private SearchMode searchMode;
+    @Setter private String field;
+    @Setter private String query;
+    @Setter private Integer type;
+    @Setter private boolean isPendingFines;
+    @Setter private boolean isLateLendings;
+    @Setter private boolean isLoginAccess;
+    @Setter private boolean isUserCardNeverPrinted;
+    @Setter private boolean isInactiveOnly;
     private Date createdStartDate;
     private Date createdEndDate;
     private Date modifiedStartDate;
@@ -60,7 +63,7 @@ public final class UserSearchDTO extends AbstractDTO {
     private void fromJson(String jsonString) throws JSONException, ParseException {
         JSONObject json = new JSONObject(jsonString);
 
-        this.setSearchMode(SearchMode.fromString(json.optString("search_mode")));
+        this.setSearchMode(SearchMode.fromString(json.optString("mode")));
         this.setField(json.optString("field"));
         this.setQuery(json.optString("query"));
         this.setType(json.optInt("type"));
@@ -75,91 +78,11 @@ public final class UserSearchDTO extends AbstractDTO {
         this.setModifiedEndDate(json.optString("modified_end"));
     }
 
-    public SearchMode getSearchMode() {
-        return this.searchMode;
-    }
-
-    public void setSearchMode(SearchMode searchMode) {
-        this.searchMode = searchMode;
-    }
-
-    public String getField() {
-        return this.field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    public String getQuery() {
-        return this.query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public Integer getType() {
-        return this.type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public boolean isPendingFines() {
-        return this.pendingFines;
-    }
-
-    public void setPendingFines(boolean pendingFines) {
-        this.pendingFines = pendingFines;
-    }
-
-    public boolean isLateLendings() {
-        return this.lateLendings;
-    }
-
-    public void setLateLendings(boolean lateLendings) {
-        this.lateLendings = lateLendings;
-    }
-
-    public boolean isLoginAccess() {
-        return this.loginAccess;
-    }
-
-    public void setLoginAccess(boolean loginAccess) {
-        this.loginAccess = loginAccess;
-    }
-
-    public boolean isUserCardNeverPrinted() {
-        return this.userCardNeverPrinted;
-    }
-
-    public void setUserCardNeverPrinted(boolean userCardNeverPrinted) {
-        this.userCardNeverPrinted = userCardNeverPrinted;
-    }
-
-    public boolean isInactiveOnly() {
-        return this.inactiveOnly;
-    }
-
-    public void setInactiveOnly(boolean inactiveOnly) {
-        this.inactiveOnly = inactiveOnly;
-    }
-
-    public Date getCreatedStartDate() {
-        return this.createdStartDate;
-    }
-
     public void setCreatedStartDate(String createdStartDate) throws ParseException {
         this.createdStartDate = null;
         if (StringUtils.isNotBlank(createdStartDate)) {
             this.createdStartDate = TextUtils.parseDate(createdStartDate);
         }
-    }
-
-    public Date getCreatedEndDate() {
-        return this.createdEndDate;
     }
 
     public void setCreatedEndDate(String createdEndDate) throws ParseException {
@@ -169,10 +92,6 @@ public final class UserSearchDTO extends AbstractDTO {
         }
     }
 
-    public Date getModifiedStartDate() {
-        return this.modifiedStartDate;
-    }
-
     public void setModifiedStartDate(String modifiedStartDate) throws ParseException {
         this.modifiedStartDate = null;
         if (StringUtils.isNotBlank(modifiedStartDate)) {
@@ -180,14 +99,22 @@ public final class UserSearchDTO extends AbstractDTO {
         }
     }
 
-    public Date getModifiedEndDate() {
-        return this.modifiedEndDate;
-    }
-
     public void setModifiedEndDate(String modifiedEndDate) throws ParseException {
         this.modifiedEndDate = null;
         if (StringUtils.isNotBlank(modifiedEndDate)) {
             this.modifiedEndDate = TextUtils.parseDate(modifiedEndDate);
         }
+    }
+
+    public boolean isSimpleSearch() {
+        return this.searchMode == SearchMode.SIMPLE;
+    }
+
+    public boolean isListAll() {
+        return this.query.isEmpty();
+    }
+
+    public boolean isSearchById() {
+        return StringUtils.isNumeric(query);
     }
 }

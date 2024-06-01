@@ -14,6 +14,7 @@ import biblivre.core.translations.TranslationBO;
 import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.StringPool;
+import biblivre.search.SearchException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class JasperReportBOTest extends AbstractContainerDatabaseTest {
     @Autowired private TranslationBO translationBO;
 
     @Test
-    public void testAllReportsInjected() {
+    public void testAllReportsInjected() throws SearchException {
         SchemaThreadLocal.setSchema(Constants.SINGLE_SCHEMA);
 
         UserDTO user = newReaderUser();

@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre.administration.permissions;
 
+import biblivre.circulation.user.PagedUserSearchWebHelper;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
@@ -29,6 +30,7 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.utils.TextUtils;
 import biblivre.login.LoginBO;
 import biblivre.login.LoginDTO;
+import biblivre.search.SearchException;
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
@@ -44,25 +46,31 @@ public class Handler extends AbstractHandler {
 
     biblivre.circulation.user.Handler userHandler;
 
+    @Autowired private PagedUserSearchWebHelper pagedUserSearchWebHelper;
+
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
-
-        if (userList == null || userList.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
-            return;
-        }
-
-        DTOCollection<PermissionDTO> list = new DTOCollection<>();
-        list.setPaging(userList.getPaging());
-
-        for (UserDTO user : userList) {
-            list.add(this.populatePermission(user));
-        }
+        var pagedSearchDTO = pagedUserSearchWebHelper.getPagedUserSearchDTO(request);
 
         try {
+            DTOCollection<UserDTO> userList = userBO.search(pagedSearchDTO);
+
+            if (userList.isEmpty()) {
+                this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+                return;
+            }
+
+            DTOCollection<PermissionDTO> list = new DTOCollection<>();
+            list.setPaging(userList.getPaging());
+
+            for (UserDTO user : userList) {
+                list.add(this.populatePermission(user));
+            }
+
             put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 

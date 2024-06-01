@@ -144,6 +144,38 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         }
     }
 
+    @Override
+    public boolean hasPendingFine(int userID) {
+        try (Connection con = datasource.getConnection()) {
+
+            String sql =
+                    """
+                    SELECT CASE
+                        WHEN EXISTS (
+                            SELECT 1 FROM lending_fines
+                            WHERE user_id = ? AND payment_date IS NULL
+                        ) THEN true
+                        ELSE false
+                    END
+                    """;
+
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            pst.setInt(1, userID);
+
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getBoolean(1);
+            }
+
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+
+        return false;
+    }
+
     private LendingFineDTO populateDTO(ResultSet rs) throws SQLException {
         LendingFineDTO dto = new LendingFineDTO();
 

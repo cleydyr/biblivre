@@ -23,9 +23,14 @@ import biblivre.core.AbstractDTO;
 import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.JSONObject;
 
+@Setter
+@Getter
 public class UserDTO extends AbstractDTO {
     @Serial private static final long serialVersionUID = 1L;
 
@@ -35,7 +40,7 @@ public class UserDTO extends AbstractDTO {
     private String photoId;
     private UserStatus status;
     private Integer loginId;
-    private Boolean userCardPrinted;
+    private boolean isUserCardPrinted;
 
     private Map<String, String> fields;
 
@@ -46,96 +51,20 @@ public class UserDTO extends AbstractDTO {
         this.fields = new HashMap<>();
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getEnrollment() {
         return StringUtils.leftPad(String.valueOf(this.getId()), 5, "0");
-    }
-
-    public int getType() {
-        return this.type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getPhotoId() {
-        return this.photoId;
-    }
-
-    public void setPhotoId(String photoId) {
-        this.photoId = photoId;
-    }
-
-    public UserStatus getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
-
-    public void setStatus(String status) {
-        this.status = UserStatus.fromString(status);
-    }
-
-    public Integer getLoginId() {
-        return this.loginId;
-    }
-
-    public void setLoginId(Integer loginId) {
-        this.loginId = loginId;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Map<String, String> getFields() {
-        return this.fields;
-    }
-
-    public void setFields(HashMap<String, String> fields) {
-        this.fields = fields;
     }
 
     public void addField(String key, String value) {
         this.fields.put(key, value);
     }
 
-    public Integer getCurrentLendings() {
-        return this.currentLendings;
+    public boolean isInactive() {
+        return this.getStatus() == UserStatus.INACTIVE;
     }
 
-    public void setCurrentLendings(Integer currentLendings) {
-        this.currentLendings = currentLendings;
-    }
-
-    public Boolean getUserCardPrinted() {
-        return this.userCardPrinted == null ? Boolean.FALSE : this.userCardPrinted;
-    }
-
-    public void setUserCardPrinted(Boolean userCardPrinted) {
-        this.userCardPrinted = userCardPrinted;
-    }
-
-    public String getUsertypeName() {
-        return this.usertypeName;
-    }
-
-    public void setUsertypeName(String usertypeName) {
-        this.usertypeName = usertypeName;
+    public boolean hasLogin() {
+        return loginId != null && loginId > 0;
     }
 
     @Override
@@ -153,8 +82,11 @@ public class UserDTO extends AbstractDTO {
         json.putOpt("fields", this.getFields());
         json.putOpt("current_lendings", this.getCurrentLendings());
 
-        json.putOpt("created", this.getCreated());
-        json.putOpt("modified", this.getModified());
+        json.putOpt(
+                "created", DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(getCreated()));
+        json.putOpt(
+                "modified",
+                DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(getModified()));
 
         return json;
     }

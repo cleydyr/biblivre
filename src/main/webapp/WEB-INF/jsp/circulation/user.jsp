@@ -44,7 +44,7 @@
 		$(document).ready(function() {
 			var global = Globalize.culture().calendars.standard;
 
-			$('#search_box input.datepicker').Zebra_DatePicker({
+			$('input.datepicker').Zebra_DatePicker({
 				days: global.days.names,
 				days_abbr: global.days.namesAbbr,
 				months: global.months.names,

@@ -14,4 +14,6 @@ public interface LendingFineDAO {
     List<LendingFineDTO> list(UserDTO user, boolean pendingOnly);
 
     boolean update(LendingFineDTO fine);
+
+    boolean hasPendingFine(int userID);
 }

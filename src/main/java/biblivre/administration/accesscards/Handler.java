@@ -24,55 +24,32 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
-import biblivre.core.utils.Constants;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Handler extends AbstractHandler {
     private AccessCardBO accessCardBO;
+    @Autowired private PagedAccessCardSearchWebHelper pagedAccessCardSearchWebHelper;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<AccessCardDTO> list = this.searchHelper(request, response, this);
+        var pagedAccessCardSearchDTO =
+                pagedAccessCardSearchWebHelper.getPagedAccessCardSearchDTO(request);
 
-        try {
-            put("search", list.toJSONObject());
-        } catch (JSONException e) {
-            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
-        }
-    }
+        DTOCollection<AccessCardDTO> accessCards = accessCardBO.search(pagedAccessCardSearchDTO);
 
-    public DTOCollection<AccessCardDTO> searchHelper(
-            ExtendedRequest request, ExtendedResponse response, AbstractHandler handler) {
-        String searchParameters = request.getString("search_parameters");
-
-        String query;
-        AccessCardStatus status;
-        try {
-            JSONObject json = new JSONObject(searchParameters);
-            query = json.optString("query");
-            status = AccessCardStatus.fromString(json.optString("status"));
-        } catch (JSONException je) {
-            this.setMessage(ActionResult.WARNING, "error.invalid_parameters");
-            return DTOCollection.empty();
-        }
-
-        Integer limit =
-                request.getInteger(
-                        "limit", configurationBO.getInt(Constants.CONFIG_SEARCH_RESULTS_PER_PAGE));
-        int offset = (request.getInteger("page", 1) - 1) * limit;
-
-        DTOCollection<AccessCardDTO> list = accessCardBO.search(query, status, limit, offset);
-
-        if (list.size() == 0) {
+        if (accessCards.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "administration.accesscards.error.no_card_found");
         }
 
-        return list;
+        try {
+            put("search", accessCards.toJSONObject());
+        } catch (JSONException e) {
+            this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        }
     }
 
     public void paginate(ExtendedRequest request, ExtendedResponse response) {

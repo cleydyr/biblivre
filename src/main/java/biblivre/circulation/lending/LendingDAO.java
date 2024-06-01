@@ -47,4 +47,6 @@ public interface LendingDAO {
     Integer countLentHoldings(int recordId);
 
     LendingDTO getLatest(int holdingSerial, int userId);
+
+    boolean hasLateLendings(int userId);
 }

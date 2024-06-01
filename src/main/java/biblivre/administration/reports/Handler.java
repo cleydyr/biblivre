@@ -21,6 +21,8 @@ package biblivre.administration.reports;
 
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.circulation.lending.LendingListDTO;
+import biblivre.circulation.user.PagedUserSearchWebHelper;
+import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractHandler;
 import biblivre.core.DTOCollection;
@@ -29,6 +31,7 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.file.DiskFile;
 import biblivre.core.utils.TextUtils;
+import biblivre.search.SearchException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,23 +39,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class Handler extends AbstractHandler {
     private ReportsBO reportsBO;
-    private biblivre.circulation.user.Handler userHandler;
+    @Autowired private PagedUserSearchWebHelper pagedUserSearchWebHelper;
+    @Autowired private UserBO userBO;
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
-
-        if (userList == null || userList.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
-            return;
-        }
-
-        DTOCollection<LendingListDTO> list = new DTOCollection<>();
-        list.setPaging(userList.getPaging());
-
         try {
+            var pagedSearchDTO = pagedUserSearchWebHelper.getPagedUserSearchDTO(request);
+
+            DTOCollection<UserDTO> userList = userBO.search(pagedSearchDTO);
+
+            if (userList.isEmpty()) {
+                this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+                return;
+            }
+
+            DTOCollection<LendingListDTO> list = new DTOCollection<>();
+            list.setPaging(userList.getPaging());
+
             put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
@@ -125,10 +133,5 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setReportsBO(ReportsBO reportsBO) {
         this.reportsBO = reportsBO;
-    }
-
-    @Autowired
-    public void setUserHandler(biblivre.circulation.user.Handler userHandler) {
-        this.userHandler = userHandler;
     }
 }

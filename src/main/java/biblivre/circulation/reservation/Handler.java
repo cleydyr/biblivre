@@ -28,6 +28,7 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.cataloging.search.SearchDTO;
 import biblivre.cataloging.search.SearchQueryDTO;
+import biblivre.circulation.user.PagedUserSearchWebHelper;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserSearchDTO;
@@ -37,6 +38,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.enums.ActionResult;
+import biblivre.search.SearchException;
 import java.util.List;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ public class Handler extends AbstractHandler {
     private ReservationBO reservationBO;
     private biblivre.circulation.user.Handler userHandler;
     private IndexingGroupBO indexingGroupBO;
+    @Autowired private PagedUserSearchWebHelper pagedUserSearchWebHelper;
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
         String searchParameters = request.getString("search_parameters");
@@ -62,7 +65,7 @@ public class Handler extends AbstractHandler {
 
         SearchDTO search = biblioRecordBO.search(searchQuery, authorizationPoints);
 
-        if (search.size() == 0) {
+        if (search.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
         }
 
@@ -118,24 +121,28 @@ public class Handler extends AbstractHandler {
     }
 
     public void userSearch(ExtendedRequest request, ExtendedResponse response) {
-        DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
-
-        if (userList == null || userList.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
-            return;
-        }
-
-        DTOCollection<ReservationListDTO> list = new DTOCollection<>();
-        list.setPaging(userList.getPaging());
-
-        for (UserDTO user : userList) {
-            list.add(this.populateReservationList(user));
-        }
+        var pagedSearchDTO = pagedUserSearchWebHelper.getPagedUserSearchDTO(request);
 
         try {
+            DTOCollection<UserDTO> userList = userBO.search(pagedSearchDTO);
+
+            if (userList.isEmpty()) {
+                this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+                return;
+            }
+
+            DTOCollection<ReservationListDTO> list = new DTOCollection<>();
+            list.setPaging(userList.getPaging());
+
+            for (UserDTO user : userList) {
+                list.add(this.populateReservationList(user));
+            }
+
             put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
@@ -202,7 +209,7 @@ public class Handler extends AbstractHandler {
 
         SearchDTO search = biblioRecordBO.search(searchQuery, authorizationPoints);
 
-        if (search.size() == 0) {
+        if (search.isEmpty()) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
         }
 
@@ -269,24 +276,28 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        DTOCollection<UserDTO> userList = userHandler.searchHelper(request, response, this);
-
-        if (userList == null || userList.size() == 0) {
-            this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
-            return;
-        }
-
-        DTOCollection<ReservationListDTO> list = new DTOCollection<>();
-        list.setPaging(userList.getPaging());
-
-        for (UserDTO user : userList) {
-            list.add(this.populateReservationList(user));
-        }
+        var pagedSearchDTO = pagedUserSearchWebHelper.getPagedUserSearchDTO(request);
 
         try {
+            DTOCollection<UserDTO> userList = userBO.search(pagedSearchDTO);
+
+            if (userList.isEmpty()) {
+                this.setMessage(ActionResult.WARNING, "circulation.error.no_users_found");
+                return;
+            }
+
+            DTOCollection<ReservationListDTO> list = new DTOCollection<>();
+            list.setPaging(userList.getPaging());
+
+            for (UserDTO user : userList) {
+                list.add(this.populateReservationList(user));
+            }
+
             put("search", list.toJSONObject());
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        } catch (SearchException e) {
+            this.setMessage(ActionResult.ERROR, "error.internal_error");
         }
     }
 
