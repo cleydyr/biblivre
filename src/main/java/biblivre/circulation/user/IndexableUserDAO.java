@@ -18,7 +18,8 @@ import java.util.*;
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -26,7 +27,8 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
 @Service
-@ConditionalOnProperty(value = "elasticsearch.server.url")
+@Profile("elasticsearch")
+@Primary
 public class IndexableUserDAO extends UserDAOImpl {
     @Autowired private IndexableUserRepository indexableUserRepository;
 

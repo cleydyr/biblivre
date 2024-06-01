@@ -8,11 +8,11 @@ import org.springframework.data.elasticsearch.support.HttpHeaders;
 
 @Configuration
 public class ElasticsearchClientConfiguration extends ElasticsearchConfiguration {
-    @Value("${elasticsearch.server.url}")
-    String serverUrl;
+    @Value("${elasticsearch.server.url:}")
+    private String serverUrl;
 
-    @Value("${elasticsearch.api.key}")
-    String apiKey;
+    @Value("${elasticsearch.api.key:}")
+    private String apiKey;
 
     @Override
     public ClientConfiguration clientConfiguration() {

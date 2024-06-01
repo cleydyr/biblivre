@@ -37,9 +37,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-public abstract class UserDAOImpl extends AbstractDAO implements UserDAO {
+@Service
+public class UserDAOImpl extends AbstractDAO implements UserDAO {
 
     @Override
     public Map<Integer, UserDTO> map(Collection<Integer> ids) {
