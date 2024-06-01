@@ -63,7 +63,7 @@ public final class UserSearchDTO extends AbstractDTO {
     private void fromJson(String jsonString) throws JSONException, ParseException {
         JSONObject json = new JSONObject(jsonString);
 
-        this.setSearchMode(SearchMode.fromString(json.optString("search_mode")));
+        this.setSearchMode(SearchMode.fromString(json.optString("mode")));
         this.setField(json.optString("field"));
         this.setQuery(json.optString("query"));
         this.setType(json.optInt("type"));
@@ -111,7 +111,7 @@ public final class UserSearchDTO extends AbstractDTO {
     }
 
     public boolean isListAll() {
-        return this.searchMode == SearchMode.LIST_ALL;
+        return this.query.isEmpty();
     }
 
     public boolean isSearchById() {
