@@ -93,7 +93,7 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
 
         Collection<UserDTO> allUsers = super.listAllUsers();
 
-        bulkIndex(allUsers.stream().map(this::getEsUser).toList());
+        bulkIndex(allUsers.stream().map(this::getIndexableUser).toList());
     }
 
     private List<Query> getFilterQueries(UserSearchDTO dto) {
@@ -114,7 +114,7 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
 
     private List<Query> buildTextQueries(UserSearchDTO dto) {
         if (dto.isSearchById()) {
-            return Collections.singletonList(buildLongTermQuery(dto));
+            return Collections.singletonList(buildUserIdTermQuery(dto));
         }
 
         if (dto.getField().isBlank()) {
@@ -125,13 +125,13 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     }
 
     private static List<Query> buildWildcardQuery(UserSearchDTO dto) {
+        String query = STR."*\{dto.getQuery()}*";
+
+        String fieldToSearch = STR."fields.\{dto.getField()}";
+
         return List.of(
                 new Query.Builder()
-                        .queryString(
-                                queryString ->
-                                        queryString
-                                                .query(STR."*\{dto.getQuery()}*")
-                                                .fields(STR."fields.\{dto.getField()}"))
+                        .queryString(queryString -> queryString.query(query).fields(fieldToSearch))
                         .build());
     }
 
@@ -255,14 +255,14 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     }
 
     private void index(UserDTO user) throws SearchException {
-        indexableUserRepository.save(getEsUser(user));
+        indexableUserRepository.save(getIndexableUser(user));
     }
 
     @Override
     public boolean delete(UserDTO user) throws SearchException {
         super.delete(user);
 
-        indexableUserRepository.delete(getEsUser(user));
+        indexableUserRepository.delete(getIndexableUser(user));
 
         return true;
     }
@@ -286,14 +286,14 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     private void reindex(Collection<Integer> ids) throws SearchException {
         Map<Integer, UserDTO> usersMap = super.map(ids);
 
-        bulkIndex(usersMap.values().stream().map(this::getEsUser).toList());
+        bulkIndex(usersMap.values().stream().map(this::getIndexableUser).toList());
     }
 
     private void bulkIndex(Collection<IndexableUser> users) {
         indexableUserRepository.saveAll(users);
     }
 
-    private IndexableUser getEsUser(UserDTO user) {
+    private IndexableUser getIndexableUser(UserDTO user) {
         int userId = user.getId();
 
         boolean userHasPendingFines = lendingFineDAO.hasPendingFine(userId);
