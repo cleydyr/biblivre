@@ -47,6 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 public class SchemaServlet extends HttpServlet {
 
@@ -69,6 +70,24 @@ public class SchemaServlet extends HttpServlet {
     private ConfigurationBO configurationBO;
 
     private RequestParserHelper requestParserHelper;
+
+    @Value("${biblivre.logo.href:https://biblivre.org.br}")
+    private String logoHref;
+
+    @Value("${biblivre.logo.image.src:/static/images/logo.png}")
+    private String logoImageSrc;
+
+    @Value("${biblivre.logo.image.alt:Biblivre}")
+    private String logoImageAlt;
+
+    @Value("${biblivre.footer.copyright.pre:Copyright ©}")
+    private String footerPre;
+
+    @Value("${biblivre.footer.copyright.href:https://biblivre.org.br}")
+    private String footerHref;
+
+    @Value("${biblivre.footer.copyright.text}")
+    private String footerText;
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -167,6 +186,13 @@ public class SchemaServlet extends HttpServlet {
             xRequest.setAttribute("action", "setup");
             controller = "jsp";
         }
+
+        request.setAttribute("logoHref", logoHref);
+        request.setAttribute("logoImageSrc", logoImageSrc);
+        request.setAttribute("logoImageAlt", logoImageAlt);
+        request.setAttribute("footerHref", footerHref);
+        request.setAttribute("footerText", footerText);
+        request.setAttribute("footerPre", footerPre);
 
         switch (controller) {
             case "jsp" -> {

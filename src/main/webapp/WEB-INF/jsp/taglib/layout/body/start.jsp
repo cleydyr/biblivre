@@ -36,10 +36,10 @@
 		<input type="hidden" name="module" id="module" value="login">
 		<input type="hidden" name="action" id="action" value='${isLogged ? "logout" : "login"}'>
 
-		<div id="header">
+		<header id="header">
 			<div id="logo_biblivre">
-				<a href="http://biblivre.org.br/" target="_blank">
-					<img src="/static/images/logo_biblivre.png" width="117" height="66" alt="Biblivre V">
+				<a href="${logoHref}" target="_blank">
+					<img src="${logoImageSrc}" height="66" alt="Logo">
 				</a>
 			</div>
 
@@ -114,7 +114,7 @@
 					<div id=slider ></div>
 				</div>
 			</div>
-		</div>
+		</header>
 
 		<div id=notifications>
 			<div id=messages>
