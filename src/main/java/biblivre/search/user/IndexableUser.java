@@ -15,8 +15,11 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @AllArgsConstructor
 @Document(indexName = "users")
 @Setting(settingPath = "/META-INF/elasticsearch/users.index.settings.json")
-public class IndexableUser implements Persistable<Integer> {
-    @Id private int id;
+public class IndexableUser implements Persistable<String> {
+    @Id private String id;
+
+    @Field(type = FieldType.Integer)
+    private int userId;
 
     @Field(type = FieldType.Text, analyzer = "name")
     private String name;
@@ -47,7 +50,7 @@ public class IndexableUser implements Persistable<Integer> {
     @Field(type = FieldType.Boolean)
     private boolean userCardPrinted;
 
-    @Field(type = FieldType.Flattened)
+    @Field(type = FieldType.Object)
     private Map<String, String> fields;
 
     @Field(type = FieldType.Boolean)
@@ -70,11 +73,11 @@ public class IndexableUser implements Persistable<Integer> {
 
     @Override
     public boolean isNew() {
-        return id > 0;
+        return userId > 0;
     }
 
     @Override
-    public Integer getId() {
-        return id;
+    public String getId() {
+        return STR."\{schema}:\{userId}";
     }
 }

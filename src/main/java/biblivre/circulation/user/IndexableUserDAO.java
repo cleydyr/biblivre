@@ -117,7 +117,22 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
             return Collections.singletonList(buildLongTermQuery(dto));
         }
 
-        return Collections.emptyList();
+        if (dto.getField().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return buildWildcardQuery(dto);
+    }
+
+    private static List<Query> buildWildcardQuery(UserSearchDTO dto) {
+        return List.of(
+                new Query.Builder()
+                        .queryString(
+                                queryString ->
+                                        queryString
+                                                .query(STR."*\{dto.getQuery()}*")
+                                                .fields(STR."fields.\{dto.getField()}"))
+                        .build());
     }
 
     private List<Query> buildBaseQueries(UserSearchDTO dto) {
@@ -175,7 +190,11 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     }
 
     private static List<Query> getMustQueries(UserSearchDTO dto) {
-        return dto.isListAll() ? Collections.emptyList() : List.of(getMustQueryForName(dto));
+        if (dto.isNameOrIdSearch() && !dto.isListAll()) {
+            return List.of(getMustQueryForName(dto));
+        }
+
+        return Collections.emptyList();
     }
 
     private static Query getMustQueryForName(UserSearchDTO dto) {
@@ -281,7 +300,10 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
 
         boolean userHasPendingLoans = lendingDAO.hasLateLendings(userId);
 
+        String schema = SchemaThreadLocal.get();
+
         return new IndexableUser(
+                STR."\{schema}:\{userId}",
                 userId,
                 user.getName(),
                 user.getType(),
@@ -298,14 +320,14 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
                 userHasPendingLoans,
                 user.hasLogin(),
                 user.isInactive(),
-                SchemaThreadLocal.get(),
+                schema,
                 tenant);
     }
 
     private static UserDTO getUserDTO(IndexableUser indexableUser) {
         UserDTO userDTO = new UserDTO();
 
-        userDTO.setId(indexableUser.getId());
+        userDTO.setId(indexableUser.getUserId());
         userDTO.setName(indexableUser.getName());
         userDTO.setType(indexableUser.getType());
         userDTO.setPhotoId(indexableUser.getPhotoId());

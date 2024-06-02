@@ -114,7 +114,11 @@ public final class UserSearchDTO extends AbstractDTO {
         return this.query.isEmpty();
     }
 
+    public boolean isNameOrIdSearch() {
+        return field.isEmpty();
+    }
+
     public boolean isSearchById() {
-        return StringUtils.isNumeric(query);
+        return StringUtils.isNumeric(query) && field.isEmpty();
     }
 }
