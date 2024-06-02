@@ -78,6 +78,6 @@ public class IndexableUser implements Persistable<String> {
 
     @Override
     public String getId() {
-        return STR."\{schema}:\{userId}";
+        return id;
     }
 }

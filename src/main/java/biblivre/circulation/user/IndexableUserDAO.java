@@ -190,11 +190,11 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     }
 
     private static List<Query> getMustQueries(UserSearchDTO dto) {
-        if (dto.isNameOrIdSearch() && !dto.isListAll()) {
-            return List.of(getMustQueryForName(dto));
+        if (dto.isSearchById() || dto.isListAll()) {
+            return Collections.emptyList();
         }
 
-        return Collections.emptyList();
+        return List.of(getMustQueryForName(dto));
     }
 
     private static Query getMustQueryForName(UserSearchDTO dto) {
@@ -203,8 +203,8 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
                 .build();
     }
 
-    private static Query buildLongTermQuery(UserSearchDTO dto) {
-        return buildTermQuery("id", value -> value.longValue(Long.parseLong(dto.getQuery())));
+    private static Query buildUserIdTermQuery(UserSearchDTO dto) {
+        return buildTermQuery("userId", value -> value.longValue(Long.parseLong(dto.getQuery())));
     }
 
     private static Query buildRangeGteQuery(String field, Date value) {
@@ -303,7 +303,7 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
         String schema = SchemaThreadLocal.get();
 
         return new IndexableUser(
-                STR."\{schema}:\{userId}",
+                STR."\{tenant}:\{schema}:\{userId}",
                 userId,
                 user.getName(),
                 user.getType(),
