@@ -18,6 +18,7 @@ import co.elastic.clients.util.ObjectBuilder;
 import jakarta.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("elasticsearch")
 @Primary
+@Slf4j
 public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO> {
     @Autowired private IndexableUserRepository indexableUserRepository;
 
@@ -79,6 +81,8 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     @Override
     public void reindexAllSchemas() throws SearchException {
         for (var schema : schemaBO.getSchemas()) {
+            log.info("Reindexing schema: {}", schema.getSchema());
+
             SchemaThreadLocal.withSchema(schema.getSchema(), () -> reindex(schema.getSchema()));
         }
     }
