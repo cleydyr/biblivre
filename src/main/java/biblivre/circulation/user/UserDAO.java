@@ -20,4 +20,6 @@ public interface UserDAO {
     boolean updateUserStatus(Integer userId, UserStatus status) throws SearchException;
 
     Integer getUserIdByLoginId(Integer loginId);
+
+    Collection<UserDTO> listAllUsers();
 }

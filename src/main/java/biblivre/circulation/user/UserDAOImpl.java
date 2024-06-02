@@ -463,6 +463,33 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         return null;
     }
 
+    @Override
+    public Collection<UserDTO> listAllUsers() {
+        try (var connection = datasource.getConnection()) {
+            var sql = "SELECT id FROM users";
+
+            var pst = connection.prepareStatement(sql);
+            var rs = pst.executeQuery();
+
+            var users = new ArrayList<UserDTO>();
+
+            Collection<Integer> ids = new ArrayList<>();
+
+            while (rs.next()) {
+                var id = rs.getInt("id");
+                ids.add(id);
+            }
+
+            if (!ids.isEmpty()) {
+                users.addAll(map(ids).values());
+            }
+
+            return users;
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
     private void updateUserValue(
             UserDTO user,
             String key,

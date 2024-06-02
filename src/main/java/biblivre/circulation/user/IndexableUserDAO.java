@@ -91,7 +91,7 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     public void reindex(String schema) throws SearchException {
         indexableUserRepository.deleteBySchemaAndTenant(schema, tenant);
 
-        DTOCollection<UserDTO> allUsers = super.search(new UserSearchDTO(), Integer.MAX_VALUE, 0);
+        Collection<UserDTO> allUsers = super.listAllUsers();
 
         bulkIndex(allUsers.stream().map(this::getEsUser).toList());
     }
