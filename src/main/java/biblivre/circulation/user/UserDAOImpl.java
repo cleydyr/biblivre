@@ -32,11 +32,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -576,10 +574,5 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
 
         return null;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

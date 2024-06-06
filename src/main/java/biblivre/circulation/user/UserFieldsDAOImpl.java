@@ -27,8 +27,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -69,10 +67,5 @@ public class UserFieldsDAOImpl extends AbstractDAO implements UserFieldsDAO {
         dto.setSortOrder(rs.getInt("sort_order"));
 
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

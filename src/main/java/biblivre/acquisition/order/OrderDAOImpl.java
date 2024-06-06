@@ -30,9 +30,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -343,10 +341,5 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
         dto.setModified(rs.getDate("modified"));
         dto.setModifiedBy(rs.getInt("modified_by"));
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

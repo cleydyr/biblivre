@@ -36,10 +36,8 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.marc.Record;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -789,10 +787,5 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
             throw new DAOException(e);
         }
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

@@ -28,9 +28,7 @@ import jakarta.annotation.Nonnull;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
-import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -453,10 +451,5 @@ public class LendingDAOImpl extends AbstractDAO implements LendingDAO {
         dto.setCreatedBy(rs.getInt("created_by"));
 
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

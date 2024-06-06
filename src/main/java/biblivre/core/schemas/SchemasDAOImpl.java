@@ -28,7 +28,6 @@ import java.sql.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.postgresql.PGConnection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,11 +201,6 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
         dto.setDisabled(rs.getBoolean("disabled"));
 
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 
     @Autowired

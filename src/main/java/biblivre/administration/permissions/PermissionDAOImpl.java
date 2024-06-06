@@ -26,8 +26,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -101,10 +99,5 @@ public class PermissionDAOImpl extends AbstractDAO implements PermissionDAO {
         } catch (Exception e) {
             throw new DAOException(e);
         }
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

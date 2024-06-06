@@ -26,9 +26,7 @@ import biblivre.core.exceptions.DAOException;
 import biblivre.core.utils.CalendarUtils;
 import java.sql.*;
 import java.util.*;
-import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -274,10 +272,5 @@ public class ReservationDAOImpl extends AbstractDAO implements ReservationDAO {
         }
 
         return map;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

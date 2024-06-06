@@ -30,9 +30,7 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -93,10 +91,5 @@ public class LanguageDAOImpl extends AbstractDAO implements LanguageDAO {
         dto.setName(rs.getString("name"));
 
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

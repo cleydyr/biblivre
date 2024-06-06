@@ -26,8 +26,6 @@ import biblivre.core.utils.CalendarUtils;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -185,10 +183,5 @@ public class LendingFineDAOImpl extends AbstractDAO implements LendingFineDAO {
         dto.setCreatedBy(rs.getInt("created_by"));
 
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

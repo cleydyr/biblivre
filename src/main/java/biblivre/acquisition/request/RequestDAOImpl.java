@@ -26,9 +26,7 @@ import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -228,10 +226,5 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
         dto.setModified(rs.getTimestamp("modified"));
         dto.setModifiedBy(rs.getInt("modified_by"));
         return dto;
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

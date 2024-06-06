@@ -24,8 +24,6 @@ import jakarta.annotation.Nonnull;
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -101,10 +99,5 @@ public class UpdatesDAO extends AbstractDAO {
 
             st.execute(sql);
         }
-    }
-
-    @Autowired
-    public void setDataSource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

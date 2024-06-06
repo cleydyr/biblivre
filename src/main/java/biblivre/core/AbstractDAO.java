@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractDAO {
     protected final void rollback(Connection con) {
@@ -102,4 +103,9 @@ public abstract class AbstractDAO {
     }
 
     protected DataSource datasource;
+
+    @Autowired
+    public final void setDataSource(DataSource dataSource) {
+        this.datasource = dataSource;
+    }
 }
