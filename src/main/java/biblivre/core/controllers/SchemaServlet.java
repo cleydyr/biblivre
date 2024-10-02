@@ -86,7 +86,7 @@ public class SchemaServlet extends HttpServlet {
     @Value("${biblivre.footer.copyright.href:https://biblivre.org.br}")
     private String footerHref;
 
-    @Value("${biblivre.footer.copyright.text}")
+    @Value("${biblivre.footer.copyright.text:Biblivre}")
     private String footerText;
 
     @Override
