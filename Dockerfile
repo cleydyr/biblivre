@@ -7,8 +7,6 @@ RUN apt-get update \
 	postgresql-client-16 \
 	&& rm -rf /var/cache/apk/*
 RUN rm -rf "${CATALINA_HOME}/webapps/ROOT"
-COPY scripts/wait-for.sh /usr/local/bin/wait-for.sh
-RUN chmod +x /usr/local/bin/wait-for.sh
 COPY target/Biblivre6/WEB-INF/tags ${CATALINA_HOME}/webapps/Biblivre6/WEB-INF/tags
 COPY target/Biblivre6/WEB-INF/templates ${CATALINA_HOME}/webapps/Biblivre6/WEB-INF/templates
 COPY target/Biblivre6/WEB-INF/tlds ${CATALINA_HOME}/webapps/Biblivre6/WEB-INF/tlds
