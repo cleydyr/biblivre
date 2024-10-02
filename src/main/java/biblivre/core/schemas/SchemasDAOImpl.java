@@ -186,6 +186,8 @@ public class SchemasDAOImpl extends AbstractDAO implements SchemaDAO {
 
             connection.commit();
 
+            schemas = null;
+
             success = true;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
