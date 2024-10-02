@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   app:
     build: .
@@ -6,7 +6,7 @@ services:
       - "$APP_HTTP_HOST_PORT:8080"
       - "$APP_DEBUG_HOST_PORT:8000"
     environment:
-      - "JAVA_OPTS=\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\" -XX:+UnlockExperimentalVMOptions --enable-preview"
+      - 'JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n" -XX:+UnlockExperimentalVMOptions --enable-preview'
       - "DATABASE_HOST_NAME=$DATABASE_HOST_NAME"
       - "DATABASE_PORT=$DATABASE_HOST_PORT"
       - "PGUSER=biblivre"
