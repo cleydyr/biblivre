@@ -1,14 +1,10 @@
 FROM tomcat:10-jdk21
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
-	&& apt-get install -y \
-	netcat \
-	gnupg \
-	&& wget -q -O- "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | apt-key add - \
-	&& sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
-	&& apt update \
+	&& apt install -y postgresql-common \
+	&& /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y \
 	&& apt install -y \
-	postgresql-client-11 \
+	postgresql-client-16 \
 	&& rm -rf /var/cache/apk/*
 RUN rm -rf "${CATALINA_HOME}/webapps/ROOT"
 COPY scripts/wait-for.sh /usr/local/bin/wait-for.sh
