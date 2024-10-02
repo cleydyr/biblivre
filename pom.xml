@@ -683,9 +683,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.dkanejs.maven.plugins</groupId>
+                        <groupId>io.brachu</groupId>
                         <artifactId>docker-compose-maven-plugin</artifactId>
-                        <version>2.5.1</version>
+                        <version>1.0.0</version>
                         <executions>
                             <execution>
                                 <id>up</id>
@@ -694,9 +694,8 @@
                                     <goal>up</goal>
                                 </goals>
                                 <configuration>
-                                    <composeFile>${project.basedir}/docker-compose.yml</composeFile>
-                                    <detachedMode>true</detachedMode>
-                                    <build>true</build>
+                                    <file>docker-compose.yml</file>
+                                    <executablePath>./scripts/docker-compose.sh</executablePath>
                                 </configuration>
                             </execution>
                         </executions>
