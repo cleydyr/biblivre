@@ -481,6 +481,20 @@ public class AuthorizationPoints implements Serializable {
         this.addAuthPoint("menu", "i18n", MENU_OTHER);
         this.addAuthPoint("menu", "test", MENU_OTHER);
         this.addAuthPoint("menu", "setup", ADMINISTRATION_RESTORE);
+        this.addAuthPoint(
+                "administration.setup",
+                "clean_install",
+                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
+        this.addAuthPoint(
+                "administration.setup",
+                "list_restores",
+                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
+        this.addAuthPoint(
+                "administration.setup",
+                "upload_biblivre4",
+                AuthorizationPointTypes.ADMINISTRATION_RESTORE);
+        this.addAuthPoint(
+                "administration.setup", "restore", AuthorizationPointTypes.ADMINISTRATION_RESTORE);
     }
 
     private void addAuthPoint(String module, String action, AuthorizationPointTypes... types) {
