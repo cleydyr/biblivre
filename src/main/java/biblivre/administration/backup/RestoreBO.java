@@ -429,4 +429,9 @@ public class RestoreBO {
     public void setSchemaDAO(SchemaDAO schemaDAO) {
         this.schemaDAO = schemaDAO;
     }
+
+    @Autowired
+    public void setRestoreService(RestoreService restoreService) {
+        this.restoreService = restoreService;
+    }
 }
