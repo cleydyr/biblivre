@@ -369,7 +369,14 @@
             <version>2.10.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>6.1.14</version>
+        </dependency>
     </dependencies>
+
     <build>
         <finalName>Biblivre6</finalName>
         <plugins>
