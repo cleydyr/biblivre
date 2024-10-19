@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.about.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.about.css" />
 </layout:head>
 
 <layout:body>

@@ -15,14 +15,14 @@
 %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.circulation.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.cataloging.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.holding.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.lending.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.holding.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.lending.js"></script>
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {
 			type: 'circulation.lending',
@@ -83,7 +83,7 @@
 					{#if $T.user.photo_id}
 						<img class="user_photo" style="margin: 0; float: none; display: inline-block; width: 106px;" src="DigitalMediaController/?id={$T.user.photo_id}"/>
 					{#else}
-						<img class="user_photo" style="margin: -15px 0 -30px 0; float: none; display: inline-block; width: 106px;" src="static/images/photo.png"/>
+						<img class="user_photo" style="margin: -15px 0 -30px 0; float: none; display: inline-block; width: 106px;" src="/static/images/photo.png"/>
 					{#/if}
 					<div class="ncspacer"></div>
 					<a class="button center disabled" onclick="CirculationSearch.printReceipt();" id="lending_receipt_button"><i18n:text key="circulation.lending.button.print_receipt" /></a>
@@ -128,8 +128,8 @@
 									<div class="ncspacer"></div>
 
 									<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.info.lending.daysLate || 0) }</span><br/>
-									<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
-									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"> <%= Configurations.getString(Constants.CONFIG_CURRENCY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
+									<label><i18n:text key="circulation.lending.daily_fine" /></label>:Configurations.getString(Constants.CONFIG_CURRENCY)CY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
+									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"Configurations.getString(Constants.CONFIG_CURRENCY)CY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
 								{#/if}
 							</div>
 							<div class="lending_buttons">

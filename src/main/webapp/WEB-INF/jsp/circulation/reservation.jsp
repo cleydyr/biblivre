@@ -11,14 +11,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.circulation.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.cataloging.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.reservation.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.cataloging.search.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.circulation.reservation.js"></script>
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {
 			type: 'circulation.reservation',
@@ -77,7 +77,7 @@
 					{#if $T.user.photo_id}
 						<img class="user_photo" style="margin: 0; float: none; display: inline-block; width: 106px;" src="DigitalMediaController/?id={$T.user.photo_id}"/>
 					{#else}
-						<img class="user_photo" style="margin: -15px 0 -30px 0; float: none; display: inline-block; width: 106px;" src="static/images/photo.png"/>
+						<img class="user_photo" style="margin: -15px 0 -30px 0; float: none; display: inline-block; width: 106px;" src="/static/images/photo.png"/>
 					{#/if}
 					<div class="ncspacer"></div>
 					<a class="button center disabled" onclick="CirculationSearch.printReceipt();" id="lending_receipt_button"><i18n:text key="circulation.lending.button.print_receipt" /></a>

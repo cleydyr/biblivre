@@ -18,7 +18,7 @@
 %>
 
 <layout:head>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.configurations.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.administration.configurations.js"></script>
 
 	<script>
 		Configurations.businessDays = '<%= Constants.CONFIG_BUSINESS_DAYS %>';

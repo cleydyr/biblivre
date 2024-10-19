@@ -7,11 +7,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.setup.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.administration.css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.administration.setup.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.administration.progress.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.setup.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.administration.progress.js"></script>
+	<script type="text/javascript" src="/static/scripts/biblivre.administration.setup.js"></script>
 </layout:head>
 
 <layout:body disableMenu="true" multiPart="true">
