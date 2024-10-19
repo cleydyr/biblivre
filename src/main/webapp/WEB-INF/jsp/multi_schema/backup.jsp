@@ -15,14 +15,14 @@
 %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.administration.css" />
-	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.multi_schema.css" />
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.multi_schema.css" />
 
-	<script type="text/javascript" src="/static/scripts/biblivre.administration.maintenance.js"></script>
-	<script type="text/javascript" src="/static/scripts/biblivre.administration.progress.js"></script>
-	<script type="text/javascript" src="/static/scripts/biblivre.administration.setup.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.administration.maintenance.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.administration.progress.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.administration.setup.js"></script>
 
-	<script type="text/javascript" src="/static/scripts/biblivre.multi_schema.js"></script>
+	<script type="text/javascript" src="static/scripts/biblivre.multi_schema.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
