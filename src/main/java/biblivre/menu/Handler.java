@@ -193,6 +193,9 @@ public class Handler extends AbstractHandler {
     public void circulationLending(ExtendedRequest request, ExtendedResponse response) {
         request.setAttribute("searchableFields", userFieldBO.getSearchableFields());
 
+        request.setAttribute(
+                "currencySymbol", configurationBO.getString(Constants.CONFIG_CURRENCY));
+
         setJspURL("/WEB-INF/jsp/circulation/lending.jsp");
     }
 

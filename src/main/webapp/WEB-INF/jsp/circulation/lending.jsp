@@ -1,4 +1,3 @@
-<%@page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@page import="biblivre.marc.MaterialType"%>
 <%@page import="biblivre.circulation.user.UserStatus"%>
 <%@page import="java.util.List"%>
@@ -9,10 +8,6 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%
-	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
-%>
 
 <layout:head>
 	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.search.css" />
@@ -128,8 +123,8 @@
 									<div class="ncspacer"></div>
 
 									<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.info.lending.daysLate || 0) }</span><br/>
-									<label><i18n:text key="circulation.lending.daily_fine" /></label>:Configurations.getString(Constants.CONFIG_CURRENCY)CY) %> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
-									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"Configurations.getString(Constants.CONFIG_CURRENCY)CY) %> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
+									<label><i18n:text key="circulation.lending.daily_fine" /></label>: <c:out value="${currencySymbol}" /> {_f($T.info.lending.dailyFine || 0, 'n2') }<br/>
+									<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><c:out value="${currencySymbol}" /> {_f($T.info.lending.estimatedFine || 0, 'n2') }</span><br/>
 								{#/if}
 							</div>
 							<div class="lending_buttons">
@@ -338,8 +333,8 @@
 											<div class="ncspacer"></div>
 
 											<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="value_error">{ _f($T.record.lending.daysLate || 0) }</span><br/>
-											<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.dailyFine || 0, 'n2') }<br/>
-											<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> {_f($T.record.lending.estimatedFine || 0, 'n2') }</span><br/>
+											<label><i18n:text key="circulation.lending.daily_fine" /></label>: <c:out value="${currencySymbol}" /> {_f($T.record.lending.dailyFine || 0, 'n2') }<br/>
+											<label><i18n:text key="circulation.lending.estimated_fine" /></label>: <span class="value_error"><c:out value="${currencySymbol}" /> {_f($T.record.lending.estimatedFine || 0, 'n2') }</span><br/>
 										{#/if}
 									</div>
 								{#/if}
@@ -364,8 +359,8 @@
 			<div class="description">
 				<p><i18n:text key="circulation.lending.fine_popup.description" /></p>
 				<label><i18n:text key="circulation.lending.days_late" /></label>: <span class="days_late"></span><br/>
-				<label><i18n:text key="circulation.lending.daily_fine" /></label>: <%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> <span class="daily_fine"></span><br/>
-				<label><i18n:text key="circulation.lending.fine_value" /></label>: <%= configurationBO.getString(Constants.CONFIG_CURRENCY) %> <input type="text" name="fine_value" /><br/>
+				<label><i18n:text key="circulation.lending.daily_fine" /></label>: <c:out value="${currencySymbol}" /> <span class="daily_fine"></span><br/>
+				<label><i18n:text key="circulation.lending.fine_value" /></label>: <c:out value="${currencySymbol}" /> <input type="text" name="fine_value" /><br/>
 			</div>
 
 			<div class="buttons">
