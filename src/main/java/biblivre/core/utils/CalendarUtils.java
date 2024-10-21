@@ -60,7 +60,7 @@ public class CalendarUtils {
             isBusinessDay[businessDay] = true;
         }
 
-        while (remaningDays > 0) {
+        while (remaningDays > 0 || !isBusinessDay[expectedReturnDate.getDayOfWeek().getValue()]) {
             int expectedReturnDateDayOfWeek = expectedReturnDate.getDayOfWeek().getValue();
 
             if (isBusinessDay[expectedReturnDateDayOfWeek]) {
