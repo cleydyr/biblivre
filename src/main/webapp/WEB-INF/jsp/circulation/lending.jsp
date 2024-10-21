@@ -115,8 +115,8 @@
 								<div class="ncspacer"></div>
 
 								<label><i18n:text key="search.holding.accession_number" /></label>: {$T.info.holding.accession_number}<br/>
-								<label><i18n:text key="circulation.lending.lending_date" /></label>: {_d($T.info.lending.created,'f')}<br/>
-								{#if $T.info.lending.expectedReturnDate}<label><i18n:text key="circulation.lending.expected_return_date" /></label>: {_d($T.info.lending.expectedReturnDate, 'D')}<br/>{#/if}
+								<label><i18n:text key="circulation.lending.lending_date" /></label>: {__d($T.info.lending.created,'f')}<br/>
+								{#if $T.info.lending.expectedReturnDate}<label><i18n:text key="circulation.lending.expected_return_date" /></label>: {__d($T.info.lending.expectedReturnDate, 'D')}<br/>{#/if}
 
 								{#if $T.info.lending.daysLate > 0}
 									<div class="ncspacer"></div>
@@ -325,8 +325,8 @@
 										<div class="ncspacer"></div>
 										<div class="ncspacer"></div>
 
-										<label><i18n:text key="circulation.lending.lending_date" /></label>: {_d($T.record.lending.created,'f')}<br/>
-										{#if $T.record.lending.expectedReturnDate}<label><i18n:text key="circulation.lending.expected_return_date" /></label>: {_d($T.record.lending.expectedReturnDate, 'D')}<br/>{#/if}
+										<label><i18n:text key="circulation.lending.lending_date" /></label>: {__d($T.record.lending.created,'f')}<br/>
+										{#if $T.record.lending.expectedReturnDate}<label><i18n:text key="circulation.lending.expected_return_date" /></label>: {__d($T.record.lending.expectedReturnDate, 'D')}<br/>{#/if}
 
 										{#if $T.record.lending.daysLate > 0}
 											<div class="ncspacer"></div>

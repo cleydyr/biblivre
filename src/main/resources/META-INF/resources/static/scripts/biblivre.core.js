@@ -50,6 +50,26 @@ var _f = function (elem, param) {
 	return Globalize.format(elem, param || 'n0');
 };
 
+/**
+ * Formats a date without hour using the current locale
+ */
+var __d = function (dateStr) {
+    const locale = Globalize.culture().name
+
+    if (dateStr.includes('T')) {
+        dateStr = dateStr.split('T')[0]
+    }
+
+    return new Date(dateStr).toLocaleDateString(
+        locale,
+        {
+             year: 'numeric',
+             month: 'long',
+             day: 'numeric',
+        }
+    )
+}
+
 var _d = function (date, param) {
 	var myDate = new Date(date);
 
