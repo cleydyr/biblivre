@@ -979,20 +979,6 @@ PageHelp.show = function () {
 	$.jStorage.set(Core.qs('action') + '_help', true);
 };
 
-var Header = {};
-
-Header.animateLogos = function () {
-	$('#logo_support div:last').fadeOut(2000, function () {
-		var logo = $(this);
-		logo.parent().prepend(this);
-		logo.show();
-	});
-};
-
-Header.setTime = function () {
-	$('#clock').text(_d(new Date(), 't'));
-};
-
 (function ($) {
 	$.fn.anyChange = function (handler) {
 		this.bind("change propertychange keyup input paste", handler);
@@ -1503,11 +1489,6 @@ $(document).ready(function () {
 	//Core.setTime();
 	Core.fixResize();
 	Core.fixNavigationHeight();
-
-	setInterval(Header.animateLogos, 6000);
-
-	Header.setTime();
-	setInterval(Header.setTime, 1000);
 
 	var msg = Core.qs('msg');
 	var level = Core.qs('level') || 'normal';
