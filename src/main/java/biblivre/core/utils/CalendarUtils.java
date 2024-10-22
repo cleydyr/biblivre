@@ -19,13 +19,11 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 public class CalendarUtils {
 
@@ -52,25 +50,50 @@ public class CalendarUtils {
             Date lendingDate, int days, List<Integer> businessDays) {
         LocalDate expectedReturnDate = toLocalDateInDefaultZone(lendingDate);
 
-        int remaningDays = days;
+        int remainingDays = days;
 
         boolean[] isBusinessDay = new boolean[8];
 
         for (int businessDay : businessDays) {
-            isBusinessDay[businessDay] = true;
+            isBusinessDay[businessDay - 1] = true;
         }
 
-        while (remaningDays > 0 || !isBusinessDay[expectedReturnDate.getDayOfWeek().getValue()]) {
-            int expectedReturnDateDayOfWeek = expectedReturnDate.getDayOfWeek().getValue();
+        int daysToAdd = 0;
 
-            if (isBusinessDay[expectedReturnDateDayOfWeek]) {
-                remaningDays--;
+        for (int i = expectedReturnDate.getDayOfWeek().getValue();
+                i <= DayOfWeek.SUNDAY.getValue() && remainingDays > 0;
+                i++) {
+            daysToAdd++;
+
+            if (isBusinessDay[i]) {
+                remainingDays--;
             }
-
-            expectedReturnDate = expectedReturnDate.plusDays(1);
         }
 
-        return toDateInDefaultZone(expectedReturnDate);
+        if (remainingDays > 0) {
+            int businessDaysPerWeek = businessDays.size();
+
+            int weeks = remainingDays / businessDaysPerWeek;
+
+            remainingDays -= weeks * businessDaysPerWeek;
+
+            daysToAdd += weeks * 7;
+        }
+
+        for (int i = DayOfWeek.MONDAY.getValue();
+                (remainingDays > 0 || !isBusinessDay[i]) && i <= DayOfWeek.SUNDAY.getValue();
+                i++) {
+
+            daysToAdd++;
+
+            if (isBusinessDay[i]) {
+                remainingDays--;
+            }
+        }
+
+        assert remainingDays == 0;
+
+        return toDateInDefaultZone(expectedReturnDate.plusDays(daysToAdd));
     }
 
     public static Date toDateInDefaultZone(java.time.LocalDate expectedReturnDate) {
