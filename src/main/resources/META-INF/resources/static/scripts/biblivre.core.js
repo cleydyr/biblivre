@@ -51,9 +51,9 @@ var _f = function (elem, param) {
 };
 
 /**
- * Formats a date without hour using the current locale
+ * Formats a date without time using the current locale
  */
-var __d = function (dateStr) {
+var __formatDate = function (dateStr) {
     const locale = Globalize.culture().name
 
     if (dateStr.includes('T')) {
@@ -66,6 +66,7 @@ var __d = function (dateStr) {
              year: 'numeric',
              month: 'long',
              day: 'numeric',
+             timeZone: 'UTC'
         }
     )
 }
