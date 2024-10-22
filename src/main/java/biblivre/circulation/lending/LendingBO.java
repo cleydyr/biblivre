@@ -40,19 +40,13 @@ import biblivre.core.translations.TranslationsMap;
 import biblivre.core.utils.CalendarUtils;
 import biblivre.core.utils.CharPool;
 import biblivre.core.utils.Constants;
+import biblivre.core.utils.StringPool;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -418,13 +412,20 @@ public class LendingBO {
             List<Integer> lendingsIds, TranslationsMap i18n, int columns) {
         DateFormat receiptDateFormat = new SimpleDateFormat(i18n.getText("format.datetime"));
 
+        // Sets the time zone of the formatter to the one configured for the JVM through the TZ
+        // environment variable
+        receiptDateFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
+
         Collection<LendingDTO> lendings = this.listLendings(lendingsIds);
+
         if (lendings == null || lendings.isEmpty()) {
-            return "";
+            return StringPool.BLANK;
         }
+
         Collection<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+
         if (lendingInfo == null || lendingInfo.isEmpty()) {
-            return "";
+            return StringPool.BLANK;
         }
 
         StringBuilder receipt = new StringBuilder();
@@ -445,7 +446,7 @@ public class LendingBO {
                 .append(CharPool.NEW_LINE);
         receipt.append(CharPool.NEW_LINE);
 
-        if (lendingInfo.size() > 0) {
+        if (!lendingInfo.isEmpty()) {
 
             LendingInfoDTO firstEntry = lendingInfo.iterator().next();
 
@@ -547,6 +548,7 @@ public class LendingBO {
                             .append(CharPool.NEW_LINE);
                     receipt.append(expectedDateLabel).append(":\n");
                     Date expectedReturnDate = info.getLending().getExpectedReturnDate();
+
                     receipt.append("   ")
                             .append(returnDateFormat.format(expectedReturnDate))
                             .append(CharPool.NEW_LINE);
