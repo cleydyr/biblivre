@@ -80,11 +80,8 @@ public class RequestsByDateReport extends BaseBiblivreReport {
         String lastQuotationId = "0";
         String requester = null;
         StringBuilder title = new StringBuilder();
-        ;
         StringBuilder quantity = new StringBuilder();
-        ;
         StringBuilder unit_value = new StringBuilder();
-        ;
         String total_value = null;
         for (String[] data : dataList) {
             if (!data[0].equals(lastQuotationId)) {

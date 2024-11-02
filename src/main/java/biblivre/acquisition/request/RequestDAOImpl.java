@@ -101,7 +101,7 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 
         try (Connection con = datasource.getConnection();
                 PreparedStatement pst = con.prepareStatement(sql.toString());
-                PreparedStatement pstCount = con.prepareStatement(sqlCount.toString()); ) {
+                PreparedStatement pstCount = con.prepareStatement(sqlCount.toString())) {
 
             int i = 1;
             if (StringUtils.isNotBlank(value)) {

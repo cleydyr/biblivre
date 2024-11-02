@@ -22,7 +22,11 @@ package biblivre.circulation.reservation;
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class ReservationDTO extends AbstractDTO {
 
     @Serial private static final long serialVersionUID = 1L;
@@ -35,52 +39,4 @@ public class ReservationDTO extends AbstractDTO {
     private transient String title;
 
     private transient String author;
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getRecordId() {
-        return this.recordId;
-    }
-
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
-
-    public Integer getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Date getExpires() {
-        return this.expires;
-    }
-
-    public void setExpires(Date expires) {
-        this.expires = expires;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return this.author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
 }

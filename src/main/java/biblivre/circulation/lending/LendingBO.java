@@ -76,7 +76,7 @@ public class LendingBO {
 
     public boolean wasEverLent(HoldingDTO holding) {
         List<LendingDTO> history = this.lendingDAO.listHistory(holding);
-        return history.size() > 0;
+        return !history.isEmpty();
     }
 
     public Map<Integer, LendingDTO> getCurrentLendingMap(Set<Integer> ids) {
