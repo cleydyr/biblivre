@@ -119,7 +119,7 @@ public class ExtendedRequest extends HttpServletRequestWrapper {
     public Object getScopedSessionAttribute(String key) {
         String schema = SchemaThreadLocal.get();
 
-        return this.getSessionAttribute(STR."\{schema}.\{key}");
+        return this.getSessionAttribute(schema + "." + key);
     }
 
     public boolean hasParameter(String key) {

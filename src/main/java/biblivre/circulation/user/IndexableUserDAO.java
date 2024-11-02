@@ -125,9 +125,9 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
     }
 
     private static List<Query> buildWildcardQuery(UserSearchDTO dto) {
-        String query = STR."*\{dto.getQuery()}*";
+        String query = "*%s*".formatted(dto.getQuery());
 
-        String fieldToSearch = STR."fields.\{dto.getField()}";
+        String fieldToSearch = "fields.%s".formatted(dto.getField());
 
         return List.of(
                 new Query.Builder()
@@ -303,7 +303,7 @@ public class IndexableUserDAO extends UserDAOImpl implements Reindexable<UserDTO
         String schema = SchemaThreadLocal.get();
 
         return new IndexableUser(
-                STR."\{tenant}:\{schema}:\{userId}",
+                tenant + ":" + schema + ":" + userId,
                 userId,
                 user.getName(),
                 user.getType(),

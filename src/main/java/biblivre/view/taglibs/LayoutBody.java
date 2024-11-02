@@ -49,7 +49,7 @@ public class LayoutBody extends TagSupport {
     }
 
     private boolean isLogged() {
-        return (this.pageContext.getSession().getAttribute(STR."\{this.getSchema()}.logged_user")
+        return (this.pageContext.getSession().getAttribute(this.getSchema() + ".logged_user")
                 != null);
     }
 
@@ -58,7 +58,7 @@ public class LayoutBody extends TagSupport {
                 (LoginDTO)
                         this.pageContext
                                 .getSession()
-                                .getAttribute(STR."\{this.getSchema()}.logged_user");
+                                .getAttribute(this.getSchema() + ".logged_user");
 
         if (dto != null) {
             return dto.isEmployee();

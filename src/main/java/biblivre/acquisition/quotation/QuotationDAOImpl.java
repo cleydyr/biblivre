@@ -203,7 +203,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(i++, Integer.parseInt(value));
             } else {
-                pst.setString(i++, STR."%\{value}%");
+                pst.setString(i++, "%" + value + "%");
             }
             pst.setInt(i++, limit);
             pst.setInt(i, offset);
@@ -211,7 +211,7 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(1, Integer.parseInt(value));
             } else {
-                pst.setString(1, STR."%\{value}%");
+                pst.setString(1, "%" + value + "%");
             }
 
             ResultSet rs = pst.executeQuery();
@@ -235,24 +235,28 @@ public class QuotationDAOImpl extends AbstractDAO implements QuotationDAO {
     }
 
     private static String getSearchSQLCount(String value) {
-        return STR."""
+        return
+                """
             SELECT count(*) as total FROM quotations q
-            \{
-                StringUtils.isNumeric(value)
-                        ? "WHERE id = ?"
-                        : "INNER JOIN suppliers s ON q.supplier_id = s.id WHERE trademark ilike ?"};
-            """;
+            %s;
+            """
+                .formatted(
+                        StringUtils.isNumeric(value)
+                                ? "WHERE id = ?"
+                                : "INNER JOIN suppliers s ON q.supplier_id = s.id WHERE trademark ilike ?");
     }
 
     private static String getSearchSQL(String value) {
-        return STR."""
+        return
+                """
             SELECT * FROM quotations q
-            \{
-                StringUtils.isNumeric(value)
-                        ? "WHERE id = ?"
-                        : "INNER JOIN suppliers s ON q.supplier_id = s.id WHERE trademark ilike ?"};
+            %s;
             ORDER BY q.id ASC LIMIT ? OFFSET ?;
-            """;
+            """
+                .formatted(
+                        StringUtils.isNumeric(value)
+                                ? "WHERE id = ?"
+                                : "INNER JOIN suppliers s ON q.supplier_id = s.id WHERE trademark ilike ?");
     }
 
     @Override

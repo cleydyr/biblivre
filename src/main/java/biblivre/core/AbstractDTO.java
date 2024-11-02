@@ -97,7 +97,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
     }
 
     private static String setter(String name) {
-        return STR."set\{StringUtils.capitalize(name)}";
+        return "set%s".formatted(StringUtils.capitalize(name));
     }
 
     @Override
@@ -168,7 +168,7 @@ public abstract class AbstractDTO implements IFJson, Serializable {
     }
 
     private static String getter(String name) {
-        return STR."get\{StringUtils.capitalize(name)}";
+        return "get%s".formatted(StringUtils.capitalize(name));
     }
 
     public void addExtraData(String key, IFJson data) {

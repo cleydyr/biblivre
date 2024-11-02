@@ -6,8 +6,8 @@ import biblivre.AbstractContainerDatabaseTest;
 import biblivre.TestDatasourceConfiguration;
 import biblivre.cataloging.enums.RecordType;
 import biblivre.core.*;
-import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
     }
 
     @Test
-    void countSearchResults() throws IOException {
+    void countSearchResults() {
         // Setup
         SchemaThreadLocal.setSchema("single");
 
@@ -70,8 +70,8 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
         int recordId = bibliographicRecordCreationResponseBody.getJSONObject("data").getInt("id");
 
         String automaticHoldingCreationFormData =
-                STR."holding_count=1&holding_volume_number=&holding_volume_count=&holding_acquisition_date=&holding_library=&holding_acquisition_type=&record_id=\{
-                        recordId}&database=main";
+                "holding_count=1&holding_volume_number=&holding_volume_count=&holding_acquisition_date=&holding_library=&holding_acquisition_type=&record_id=%s&database=main"
+                        .formatted(recordId);
 
         ExtendedRequest automaticHoldingCreationRequest =
                 getFormDataMockRequest(automaticHoldingCreationFormData);
@@ -85,9 +85,31 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
 
         String holdingSearchFormData =
-                STR."search_parameters=%7B%22database%22%3A%22main%22%2C%22material_type%22%3A%22all%22%2C%22search_mode%22%3A%22advanced%22%2C%22holding_search%22%3Atrue%2C%22search_terms%22%3A%5B%7B%22field%22%3A%22holding_created%22%2C%22operator%22%3A%22AND%22%2C%22start_date%22%3A%22\{
-                        yesterday}T00%3A00%3A00%22%2C%22end_date%22%3A%22\{
-                        tomorrow}T00%3A00%3A00%22%7D%2C%7B%22query%22%3A%22true%22%2C%22field%22%3A%22holding_label_never_printed%22%2C%22operator%22%3A%22AND%22%7D%5D%7D";
+                "search_parameters=%s."
+                        .formatted(
+                                encodeToURL(
+                                                """
+                            {
+                            "database": "main",
+                            "material_type": "all",
+                            "search_mode": "advanced",
+                            "holding_search": true,
+                            "search_terms": [
+                              {
+                                "field": "holding_created",
+                                "operator": "AND",
+                                "start_date": "%sT00:00:00",
+                                "end_date": "%sT00:00:00"
+                              },
+                              {
+                                "query": "true",
+                                "field": "holding_label_never_printed",
+                                "operator": "AND"
+                              }
+                            ]
+                          }
+                          """
+                                                .formatted(yesterday, tomorrow)));
 
         ExtendedRequest holdingSearchRequest = getFormDataMockRequest(holdingSearchFormData);
 
@@ -100,7 +122,7 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
     }
 
     @Test
-    void save() throws IOException {
+    void save() {
         // Setup
         SchemaThreadLocal.setSchema("single");
 
@@ -121,8 +143,8 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
         // When I create a holding for the bibliographic record
 
         String saveHoldingFormData =
-                STR."oldId=+&id=+&record_id=\{
-                        recordId}&availability=available&from=holding_form&data=%7B%7D";
+                "oldId=+&id=+&record_id=%s&availability=available&from=holding_form&data=%%7B%%7D"
+                        .formatted(recordId);
 
         ExtendedRequest saveHoldingRequest = getFormDataMockRequest(saveHoldingFormData);
 
@@ -134,9 +156,33 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
 
         String holdingSearchFormData =
-                STR."search_parameters=%7B%22database%22%3A%22main%22%2C%22material_type%22%3A%22all%22%2C%22search_mode%22%3A%22advanced%22%2C%22holding_search%22%3Atrue%2C%22search_terms%22%3A%5B%7B%22field%22%3A%22holding_created%22%2C%22operator%22%3A%22AND%22%2C%22start_date%22%3A%22\{
-                        yesterday}T00%3A00%3A00%22%2C%22end_date%22%3A%22\{
-                        tomorrow}T00%3A00%3A00%22%7D%2C%7B%22query%22%3A%22true%22%2C%22field%22%3A%22holding_label_never_printed%22%2C%22operator%22%3A%22AND%22%7D%5D%7D";
+                        """
+                search_parameters=%s
+                """
+                        .formatted(
+                                encodeToURL(
+                                                """
+                                            {
+                                            "database": "main",
+                                            "material_type": "all",
+                                            "search_mode": "advanced",
+                                            "holding_search": true,
+                                            "search_terms": [
+                                              {
+                                                "field": "holding_created",
+                                                "operator": "AND",
+                                                "start_date": "%sT00:00:00",
+                                                "end_date": "%sT00:00:00"
+                                              },
+                                              {
+                                                "query": "true",
+                                                "field": "holding_label_never_printed",
+                                                "operator": "AND"
+                                              }
+                                            ]
+                                          }
+                      """
+                                                .formatted(yesterday, tomorrow)));
 
         ExtendedRequest holdingSearchRequest = getFormDataMockRequest(holdingSearchFormData);
 
@@ -180,6 +226,10 @@ class HoldingDAOImplTest extends AbstractContainerDatabaseTest {
         }
 
         return parameters;
+    }
+
+    private static String encodeToURL(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
     private static @NotNull ExtendedRequest mockExtendedRequest(Map<String, String> parameters) {

@@ -304,7 +304,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                             SELECT COUNT(id) FROM biblio_records
                             WHERE database = 'main' AND created >= to_date(?, 'DD-MM-YYYY')
                                 AND created <= to_date(?, 'DD-MM-YYYY')
-                                    """;
+                            """;
 
             st = con.prepareStatement(sqlBiblioMain);
             st.setString(1, initialDate);
@@ -319,7 +319,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                             SELECT COUNT(id) FROM biblio_records
                             WHERE database = 'work' AND created >= to_date(?, 'DD-MM-YYYY')
                                 AND created <= to_date(?, 'DD-MM-YYYY')
-                                    """;
+                            """;
 
             st = con.prepareStatement(sqlBiblioWork);
             st.setString(1, initialDate);
@@ -334,7 +334,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                             SELECT COUNT(id) FROM biblio_holdings
                             WHERE database = 'main' AND created >= to_date(?, 'DD-MM-YYYY')
                                 AND created <= to_date(?, 'DD-MM-YYYY')
-                                    """;
+                            """;
             st = con.prepareStatement(sqlHoldingMain);
             st.setString(1, initialDate);
             st.setString(2, finalDate);
@@ -348,7 +348,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                             SELECT COUNT(id) FROM biblio_holdings
                             WHERE database = 'work' AND created >= to_date(?, 'DD-MM-YYYY')
                                 AND created <= to_date(?, 'DD-MM-YYYY')
-                                    """;
+                            """;
 
             st = con.prepareStatement(sqlHoldingWork);
             st.setString(1, initialDate);
@@ -384,7 +384,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                             WHERE created >= to_date(?, 'DD-MM-YYYY')
                                 AND created <= to_date(?, 'DD-MM-YYYY')
                                 AND return_date IS NULL
-                                    """;
+                            """;
             st = con.prepareStatement(sqlLent);
             st.setString(1, initialDate);
             st.setString(2, finalDate);
@@ -401,7 +401,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                             WHERE created >= to_date(?, 'DD-MM-YYYY')
                                 AND created <= to_date(?, 'DD-MM-YYYY')
                                 AND return_date IS NOT NULL
-                                    """;
+                            """;
 
             st = con.prepareStatement(sqlHistory);
             st.setString(1, initialDate);
@@ -420,7 +420,7 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                                 AND created <= to_date(?, 'DD-MM-YYYY')
                                 AND expected_return_date < to_date(?, 'DD-MM-YYYY')
                                 AND return_date IS NULL
-                                    """;
+                            """;
 
             st = con.prepareStatement(sqlLate);
             st.setString(1, initialDate);
@@ -556,16 +556,15 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
         try (Connection con = datasource.getConnection()) {
 
             String firstSql =
-                    STR."""
+                            """
                     SELECT count(u.type) as total, t.description, t.id
                     FROM users u, users_types t
                     WHERE u.type = t.id
-                        AND u.status <> '\{
-                            UserStatus
-                                    .INACTIVE}'
+                        AND u.status <> '%s'
                     GROUP BY u.type, t.description, t.id
                     ORDER BY t.description;
-                    """;
+                    """
+                            .formatted(UserStatus.INACTIVE);
 
             ResultSet rs = con.createStatement().executeQuery(firstSql);
 
@@ -575,14 +574,13 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
                 dto.getTypesMap().put(description, count);
 
                 String secondSql =
-                        STR."""
+                                """
                         SELECT name, id, created, modified
                         FROM users
-                        WHERE type = '\{
-                                rs.getInt(
-                                        "id")}'
+                        WHERE type = '%s'
                         ORDER BY name
-                        """;
+                        """
+                                .formatted(rs.getInt("id"));
 
                 ResultSet rs2 = con.createStatement().executeQuery(secondSql);
                 List<String> dataList = new ArrayList<>();
@@ -655,19 +653,20 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                    STR."""
+                            """
                     SELECT DISTINCT B.id, B.iso2709 FROM biblio_records B
                     INNER JOIN biblio_idx_fields I ON I.record_id = B.id
                     WHERE B.database = ?
                         AND I.indexing_group_id = 1
-                        \{
-                            "AND B.id in (SELECT record_id FROM biblio_idx_fields WHERE word >= ? and word < ?) "
-                                    .repeat(
-                                            (int)
-                                                    Arrays.stream(terms)
-                                                            .filter(StringUtils::isNotBlank)
-                                                            .count())}
-                    """;
+                        %s
+                    """
+                            .formatted(
+                                    "AND B.id in (SELECT record_id FROM biblio_idx_fields WHERE word >= ? and word < ?) "
+                                            .repeat(
+                                                    (int)
+                                                            Arrays.stream(terms)
+                                                                    .filter(StringUtils::isNotBlank)
+                                                                    .count()));
 
             PreparedStatement st = con.prepareStatement(sql);
             int index = 1;
@@ -713,16 +712,12 @@ public class ReportsDAOImpl extends AbstractDAO implements ReportsDAO {
 
         try (Connection con = datasource.getConnection()) {
             String sql =
-                    STR."""
+                            """
                     SELECT iso2709 FROM biblio_records
-                    WHERE id IN (\{
-                            StringUtils.repeat(
-                                    "?",
-                                    ",",
-                                    recordIdArray
-                                            .length)})
+                    WHERE id IN (%s)
                     ORDER BY id ASC;
-                    """;
+                    """
+                            .formatted(StringUtils.repeat("?", ",", recordIdArray.length));
 
             PreparedStatement st = con.prepareStatement(sql);
             for (int i = 0; i < recordIdArray.length; i++) {

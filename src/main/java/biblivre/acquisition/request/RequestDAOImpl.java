@@ -105,16 +105,16 @@ public class RequestDAOImpl extends AbstractDAO implements RequestDAO {
 
             int i = 1;
             if (StringUtils.isNotBlank(value)) {
-                pst.setString(i++, STR."%\{value}%");
-                pst.setString(i++, STR."%\{value}%");
+                pst.setString(i++, "%" + value + "%");
+                pst.setString(i++, "%" + value + "%");
                 pst.setString(i++, value);
             }
             pst.setInt(i++, limit);
             pst.setInt(i, offset);
 
             if (StringUtils.isNotBlank(value)) {
-                pstCount.setString(1, STR."%\{value}%");
-                pstCount.setString(2, STR."%\{value}%");
+                pstCount.setString(1, "%" + value + "%");
+                pstCount.setString(2, "%" + value + "%");
                 pstCount.setString(3, value);
             }
 

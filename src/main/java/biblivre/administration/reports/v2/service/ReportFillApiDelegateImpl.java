@@ -42,7 +42,7 @@ public class ReportFillApiDelegateImpl implements ReportFillApiDelegate {
         String digitalMediaId =
                 DigitalMediaEncodingUtil.getEncodedId(reportFill.getDigitalMediaId(), "report.pdf");
 
-        restReportFill.setUri(new URI(STR."DigitalMediaController?id=\{digitalMediaId}"));
+        restReportFill.setUri(new URI("DigitalMediaController?id=" + digitalMediaId));
 
         return restReportFill;
     }

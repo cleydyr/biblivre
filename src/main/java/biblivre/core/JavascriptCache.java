@@ -37,7 +37,7 @@ public class JavascriptCache {
         try {
             this.cacheFile =
                     File.createTempFile(
-                            STR."\{this.parent.getCacheFileNamePrefix()}.",
+                            this.parent.getCacheFileNamePrefix() + ".",
                             this.parent.getCacheFileNameSuffix());
             this.cacheFile.deleteOnExit();
 

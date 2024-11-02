@@ -422,7 +422,7 @@ public class RecordDTO extends AbstractDTO {
             Format cf008Format = new SimpleDateFormat(_CF008_FORMAT);
 
             // From 07 to 40
-            String data = STR."\{cf008Format.format(new Date())}s||||     bl|||||||||||||||||por|u";
+            String data = cf008Format.format(new Date()) + "s||||     bl|||||||||||||||||por|u";
 
             field.setData(data);
 

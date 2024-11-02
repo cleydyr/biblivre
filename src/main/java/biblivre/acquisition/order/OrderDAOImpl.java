@@ -245,12 +245,15 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
         try (Connection con = datasource.getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
             int i = 1;
+
+            String likeValue = "%" + value + "%";
+
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(i++, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {
-                pst.setString(i++, STR."%\{value}%");
-                pst.setString(i++, STR."%\{value}%");
-                pst.setString(i++, STR."%\{value}%");
+                pst.setString(i++, likeValue);
+                pst.setString(i++, likeValue);
+                pst.setString(i++, likeValue);
             }
             pst.setInt(i++, offset);
             pst.setInt(i, limit);
@@ -260,9 +263,9 @@ public class OrderDAOImpl extends AbstractDAO implements OrderDAO {
             if (StringUtils.isNumeric(value)) {
                 pst.setInt(1, Integer.parseInt(value));
             } else if (StringUtils.isNotBlank(value)) {
-                pst.setString(1, STR."%\{value}%");
-                pst.setString(2, STR."%\{value}%");
-                pst.setString(3, STR."%\{value}%");
+                pst.setString(1, likeValue);
+                pst.setString(2, likeValue);
+                pst.setString(3, likeValue);
             }
 
             ResultSet rs = pst.executeQuery();

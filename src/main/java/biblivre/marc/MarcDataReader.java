@@ -313,7 +313,7 @@ public final class MarcDataReader {
         for (DataField field : record.getDataFields()) {
             String tag = field.getTag();
 
-            List<DataField> fieldList = hash.computeIfAbsent(tag, _ -> new ArrayList<>());
+            List<DataField> fieldList = hash.computeIfAbsent(tag, ignored -> new ArrayList<>());
 
             fieldList.add(field);
         }
@@ -443,7 +443,7 @@ public final class MarcDataReader {
     }
 
     private static void throwException(String format) {
-        throw new IllegalArgumentException(STR."Invalid format string: \{format}");
+        throw new IllegalArgumentException("Invalid format string: " + format);
     }
 
     private enum State {

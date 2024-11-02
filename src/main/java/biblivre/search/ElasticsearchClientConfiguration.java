@@ -22,7 +22,7 @@ public class ElasticsearchClientConfiguration extends ElasticsearchConfiguration
                 .withHeaders(
                         () -> {
                             var headers = new HttpHeaders();
-                            headers.add("Authorization", STR."ApiKey \{apiKey}");
+                            headers.add("Authorization", "ApiKey " + apiKey);
 
                             return headers;
                         })

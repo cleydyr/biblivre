@@ -83,7 +83,7 @@ public class ReportFillService {
 
                                     if (parameter.isEmpty()) {
                                         throw new IllegalArgumentException(
-                                                STR."Parameter not found: \{entry.getKey()}");
+                                                "Parameter not found: " + entry.getKey());
                                     }
 
                                     return convert(
@@ -103,7 +103,7 @@ public class ReportFillService {
             case "java.time.LocalDateTime" -> clazz.cast(java.time.LocalDateTime.parse(value));
             default ->
                     throw new IllegalArgumentException(
-                            STR."Unsupported parameter type: \{clazz.getName()}");
+                            "Unsupported parameter type: " + clazz.getName());
         };
     }
 
