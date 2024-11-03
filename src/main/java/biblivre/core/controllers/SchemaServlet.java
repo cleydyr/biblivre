@@ -74,7 +74,7 @@ public class SchemaServlet extends HttpServlet {
     @Value("${biblivre.logo.href:https://biblivre.org.br}")
     private String logoHref;
 
-    @Value("${biblivre.logo.image.src:/static/images/logo.png}")
+    @Value("${biblivre.logo.image.src:/static/images/logo_biblivre.png}")
     private String logoImageSrc;
 
     @Value("${biblivre.logo.image.alt:Biblivre}")
