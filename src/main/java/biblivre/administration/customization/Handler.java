@@ -65,7 +65,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
@@ -190,7 +190,7 @@ public class Handler extends AbstractHandler {
             return;
         }
 
-        if (map.size() == 0) {
+        if (map.isEmpty()) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
             return;
         }
