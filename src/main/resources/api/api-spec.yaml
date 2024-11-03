@@ -153,8 +153,15 @@ paths:
       operationId: deleteReportFill
       tags:
         - Report Fill
-  /form_data:
+  /form_data/{record_type}:
     get:
+      description: Retrieves the form data fields available at the instance
+      parameters:
+        - name: record_type
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/RecordType'
       responses:
         200:
           description: The list of form data fields available at the instance
@@ -271,7 +278,7 @@ components:
         datafield:
           type: string
           example: datafim
-        collapse:
+        collapsed:
           type: boolean
           example: false
         repeatable:
@@ -280,7 +287,7 @@ components:
         material_type:
           type: array
           items:
-            $ref: '#/components/schemas/MaterialType'
+            type: string
         sortOrder:
           type: integer
           example: 1
@@ -312,6 +319,7 @@ components:
           type: boolean
           example: false
         autocomplete_type:
+          $ref: '#/components/schemas/AutocompleteType'
           example: biblio
         sortOrder:
           type: integer
@@ -333,7 +341,6 @@ components:
         - music
         - nonmusical_sound
         - object_3d
-
     AutocompleteType:
       type: string
       enum:
@@ -344,6 +351,13 @@ components:
         - previous_values
         - fixed_table
         - fixed_table_with_previous_values
+    RecordType:
+      type: string
+      enum:
+        - biblio
+        - holding
+        - authorities
+        - vocabulary
   responses:
     500ApiError:
       description: Unexpected errors on the server side
