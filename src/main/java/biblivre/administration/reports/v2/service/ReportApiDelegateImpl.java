@@ -2,8 +2,8 @@ package biblivre.administration.reports.v2.service;
 
 import biblivre.administration.reports.v2.exception.ReportException;
 import biblivre.administration.reports.v2.model.Report;
-import biblivre.reports.generated.api.ReportTemplateApiDelegate;
-import biblivre.reports.generated.api.model.RestReportTemplate;
+import biblivre.generated.api.ReportTemplateApiDelegate;
+import biblivre.generated.api.model.RestReportTemplate;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

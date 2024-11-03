@@ -2,9 +2,9 @@ package biblivre.administration.reports.v2.service;
 
 import biblivre.administration.reports.v2.model.ReportFill;
 import biblivre.digitalmedia.DigitalMediaEncodingUtil;
-import biblivre.reports.generated.api.ReportFillApiDelegate;
-import biblivre.reports.generated.api.model.RestReportFill;
-import biblivre.reports.generated.api.model.RestReportFillRequest;
+import biblivre.generated.api.ReportFillApiDelegate;
+import biblivre.generated.api.model.RestReportFill;
+import biblivre.generated.api.model.RestReportFillRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
