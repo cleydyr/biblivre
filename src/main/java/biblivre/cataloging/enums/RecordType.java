@@ -25,8 +25,10 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.cataloging.vocabulary.VocabularyRecordDTO;
 import biblivre.core.utils.BiblivreEnum;
+import lombok.Getter;
 import org.apache.commons.lang3.EnumUtils;
 
+@Getter
 public enum RecordType implements BiblivreEnum {
     BIBLIO(BiblioRecordDTO.class),
     AUTHORITIES(AuthorityRecordDTO.class),
@@ -50,9 +52,5 @@ public enum RecordType implements BiblivreEnum {
 
     public String getString() {
         return this.toString();
-    }
-
-    public Class<? extends RecordDTO> getRecordClass() {
-        return recordClass;
     }
 }
