@@ -153,6 +153,20 @@ paths:
       operationId: deleteReportFill
       tags:
         - Report Fill
+  /form_data:
+    get:
+      responses:
+        200:
+          description: The list of form data fields available at the instance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FormData'
+      operationId: getFormData
+      tags:
+        - Form Data
 components:
   parameters:
     ReportTemplateId:
@@ -251,6 +265,85 @@ components:
           type: object
           additionalProperties:
             type: string
+    FormData:
+      type: object
+      properties:
+        datafield:
+          type: string
+          example: datafim
+        collapse:
+          type: boolean
+          example: false
+        repeatable:
+          type: boolean
+          example: false
+        material_type:
+          type: array
+          items:
+            $ref: '#/components/schemas/MaterialType'
+        sortOrder:
+          type: integer
+          example: 1
+        indicator1:
+          type: array
+          items:
+            type: string
+        indicator2:
+          type: array
+          items:
+            type: string
+        subfields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subfield'
+    Subfield:
+      type: object
+      properties:
+        datafield:
+          type: string
+          example: 090
+        subfield:
+          type: string
+          example: datafim
+        collapsed:
+          type: boolean
+          example: false
+        repeatable:
+          type: boolean
+          example: false
+        autocomplete_type:
+          example: biblio
+        sortOrder:
+          type: integer
+          example: 1
+    MaterialType:
+      type: string
+      enum:
+        - book
+        - pamphlet
+        - manuscript
+        - thesis
+        - periodic
+        - articles
+        - computer_legible
+        - map
+        - photo
+        - movie
+        - score
+        - music
+        - nonmusical_sound
+        - object_3d
+
+    AutocompleteType:
+      type: string
+      enum:
+        - biblio
+        - authorities
+        - vocabulary
+        - disabled
+        - previous_values
+        - fixed_table
+        - fixed_table_with_previous_values
   responses:
     500ApiError:
       description: Unexpected errors on the server side
