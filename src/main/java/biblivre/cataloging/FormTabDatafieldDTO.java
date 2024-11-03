@@ -23,22 +23,25 @@ import biblivre.core.AbstractDTO;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+@Getter
 public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<FormTabDatafieldDTO> {
 
     @Serial private static final long serialVersionUID = 1L;
 
-    private String datafield;
-    private boolean collapsed;
-    private boolean repeatable;
-    private String indicator1;
-    private String indicator2;
-    private String materialType;
+    @Setter private String datafield;
+    @Setter private boolean collapsed;
+    @Setter private boolean repeatable;
+    @Setter private String indicator1;
+    @Setter private String indicator2;
+    @Setter private String materialType;
+    @Setter private Integer sortOrder;
     private final List<FormTabSubfieldDTO> subfields;
-    private Integer sortOrder;
 
     public FormTabDatafieldDTO(JSONObject jsonObject) {
         super(jsonObject);
@@ -58,80 +61,20 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<FormT
         this.subfields = new ArrayList<>();
     }
 
-    public String getDatafield() {
-        return this.datafield;
-    }
-
-    public void setDatafield(String datafield) {
-        this.datafield = datafield;
-    }
-
-    public List<FormTabSubfieldDTO> getSubfields() {
-        return this.subfields;
-    }
-
     public void addSubfield(FormTabSubfieldDTO subfield) {
         this.subfields.add(subfield);
-    }
-
-    public boolean isCollapsed() {
-        return this.collapsed;
-    }
-
-    public void setCollapsed(boolean collapsed) {
-        this.collapsed = collapsed;
-    }
-
-    public boolean isRepeatable() {
-        return this.repeatable;
-    }
-
-    public void setRepeatable(boolean repeatable) {
-        this.repeatable = repeatable;
-    }
-
-    public String getIndicator1() {
-        return this.indicator1;
     }
 
     public String[] getIndicator1Values() {
         return StringUtils.split(this.getIndicator1(), ",");
     }
 
-    public void setIndicator1(String indicator1) {
-        this.indicator1 = indicator1;
-    }
-
-    public String getIndicator2() {
-        return this.indicator2;
-    }
-
     public String[] getIndicator2Values() {
         return StringUtils.split(this.getIndicator2(), ",");
     }
 
-    public void setIndicator2(String indicator2) {
-        this.indicator2 = indicator2;
-    }
-
-    public String getMaterialType() {
-        return this.materialType;
-    }
-
     public String[] getMaterialTypeValues() {
         return StringUtils.split(this.getMaterialType(), ",");
-    }
-
-    public void setMaterialType(String materialType) {
-        this.materialType = materialType;
-    }
-
-    public Integer getSortOrder() {
-        return this.sortOrder;
-    }
-
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
     }
 
     @Override
@@ -141,7 +84,6 @@ public class FormTabDatafieldDTO extends AbstractDTO implements Comparable<FormT
         json.putOpt("datafield", this.getDatafield());
         json.putOpt("collapsed", this.isCollapsed());
         json.putOpt("repeatable", this.isRepeatable());
-        json.putOpt("material_type", this.getMaterialType());
         json.putOpt("sortOrder", this.getSortOrder());
 
         if (StringUtils.isNotBlank(this.getIndicator1())) {
