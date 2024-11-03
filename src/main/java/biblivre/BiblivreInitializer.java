@@ -19,6 +19,7 @@
  ******************************************************************************/
 package biblivre;
 
+import biblivre.administration.customization.v2.StringToRecordTypeConverter;
 import biblivre.core.controllers.*;
 import biblivre.core.utils.StringPool;
 import jakarta.servlet.DispatcherType;
@@ -37,6 +38,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.context.annotation.Import;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -155,6 +157,11 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("*");
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToRecordTypeConverter());
     }
 
     public static void main(String[] args) {

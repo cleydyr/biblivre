@@ -4,18 +4,18 @@ import { EuiProvider } from "@elastic/eui";
 import React from "react";
 
 import "@elastic/eui/dist/eui_theme_light.css";
-import ReportApp from "./administration/reports/ReportApp";
+import FormCustomization from "./FormCustomization";
 
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <EuiProvider colorMode="light">
-        <ReportApp />
-      </EuiProvider>
-    </QueryClientProvider>
-  );
+    return (
+        <QueryClientProvider client={queryClient}>
+            <EuiProvider colorMode="light">
+                <FormCustomization />
+            </EuiProvider>
+        </QueryClientProvider>
+    );
 };
 
 export default App;

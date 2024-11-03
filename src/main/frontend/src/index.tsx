@@ -1,13 +1,32 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import ReportApp from "./administration/reports/App";
+import FormCustomization from './administration/customization/App';
 
-const root = ReactDOM.createRoot(
-  document.getElementById("biblivre-root") as HTMLElement
-);
+const reportRoot = document.getElementById("biblivre-root");
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+if (reportRoot) {
+    const root = ReactDOM.createRoot(
+        reportRoot
+    );
+
+    root.render(
+        <React.StrictMode>
+            <ReportApp />
+        </React.StrictMode>
+    );
+}
+
+const formCustomizationRoot = document.getElementById("form-customization-app");
+
+if (formCustomizationRoot) {
+    const root = ReactDOM.createRoot(
+        formCustomizationRoot
+    );
+
+    root.render(
+        <React.StrictMode>
+            <FormCustomization />
+        </React.StrictMode>
+    );
+}

@@ -10,7 +10,7 @@
 </layout:head>
 
 <layout:body multiPart="true">
-
+    <div id="form-customization-app"></div>
 	<div class="page_help"><i18n:text key="administration.form_customization.page_help" /></div>
 	<div id="form_customization">
 		<fieldset class="block">
@@ -187,4 +187,5 @@
 	<script type="text/javascript" src="/static/scripts/${requestScope.vocabulariesCacheFileName}"></script>
 	<script>FormCustomization.formFields['vocabulary'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
 	<script>FormCustomization.materialTypes = <%= MaterialType.toJavascriptArray()%>;</script>
+	<script src="/static/scripts/bundle.js"></script>
 </layout:body>
