@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.org.biblivre</groupId>
     <artifactId>biblivre</artifactId>
@@ -412,8 +412,8 @@
                                 <include>.gitignore</include>
                                 <include>.xml</include>
                             </includes>
-                            <trimTrailingWhitespace />
-                            <endWithNewline />
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
                             <indent>
                                 <tabs>true</tabs>
                                 <spacesPerTab>4</spacesPerTab>
@@ -538,15 +538,15 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/api/report.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/api/api-spec.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <configOptions>
                                 <dateLibrary>java8</dateLibrary>
                                 <openApiNullable>false</openApiNullable>
                                 <documentationProvider>source</documentationProvider>
                                 <delegatePattern>true</delegatePattern>
-                                <apiPackage>biblivre.reports.generated.api</apiPackage>
-                                <modelPackage>biblivre.reports.generated.api.model</modelPackage>
+                                <apiPackage>biblivre.generated.api</apiPackage>
+                                <modelPackage>biblivre.generated.api.model</modelPackage>
                                 <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
                             <generateModelTests>false</generateModelTests>
