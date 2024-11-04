@@ -27,6 +27,7 @@ import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
@@ -38,8 +39,8 @@ public final class TranslationsMap extends HashMap<String, TranslationDTO>
     private static final Logger logger = LoggerFactory.getLogger(TranslationsMap.class);
     @Serial private static final long serialVersionUID = 1L;
 
-    private String schema;
-    private String language;
+    @Setter private String schema;
+    @Setter private String language;
     private JavascriptCache cache;
     private final TranslationsMap globalTranslationsMap;
 
@@ -107,16 +108,8 @@ public final class TranslationsMap extends HashMap<String, TranslationDTO>
         return Objects.toString(this.schema, Constants.GLOBAL_SCHEMA);
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
     public String getLanguage() {
         return StringUtils.defaultString(this.language);
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public Map<String, TranslationDTO> getAll() {
