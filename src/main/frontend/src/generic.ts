@@ -1,12 +1,11 @@
-import {Configuration} from "../../generated-sources";
-import {baseEndpointPath, DEFAULT_FETCH_OPTIONS} from "../../util";
+import {Configuration} from "./generated-sources";
+import {baseEndpointPath, DEFAULT_FETCH_OPTIONS} from "./util";
 import {useQuery, UseQueryOptions, UseQueryResult} from "@tanstack/react-query";
 
 type ApiConstructor<T> = new (configuration: Configuration) => T;
 
-type ApiFunction<TParams, TResponse> = (
-    params: TParams,
-    options: typeof DEFAULT_FETCH_OPTIONS
+type ApiFunction<TParams extends unknown[], TResponse> = (
+    ...params: [...TParams, typeof DEFAULT_FETCH_OPTIONS]
 ) => Promise<TResponse>;
 
 function createApiInstance<T>(ApiClass: ApiConstructor<T>): T {
@@ -19,7 +18,7 @@ function createApiInstance<T>(ApiClass: ApiConstructor<T>): T {
 
 export function useGenericQuery<
     TApiClass,
-    TParams,
+    TParams extends unknown[],
     TResponse,
     TError = unknown
 >(
@@ -39,7 +38,7 @@ export function useGenericQuery<
 
             const boundFn = apiFn(api).bind(api);
 
-            return boundFn(params, DEFAULT_FETCH_OPTIONS);
+            return boundFn(...params, DEFAULT_FETCH_OPTIONS);
         },
         ...options,
     });

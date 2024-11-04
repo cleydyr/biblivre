@@ -1,5 +1,5 @@
 import { DefaultApi, FormDataApi, RecordType} from "../../generated-sources";
-import {useGenericQuery} from "./generic";
+import {useGenericQuery} from "../../generic";
 
 export function useTranslationQuery(language: string) {
     return useGenericQuery(
