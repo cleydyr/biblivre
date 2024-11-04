@@ -10,7 +10,7 @@ import {
     EuiFlexItem,
     euiDragDropReorder
 } from "@elastic/eui";
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, useState} from "react";
 
 import "@elastic/eui/dist/eui_theme_light.css";
 import {RecordType} from "../../generated-sources";

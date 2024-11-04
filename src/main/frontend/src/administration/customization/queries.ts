@@ -6,7 +6,7 @@ export function useTranslationQuery(language: string) {
         DefaultApi,
         ['TRANSLATIONS', language],
         (api) => api.getTranslations,
-        { language }
+        [{ language }]
     );
 }
 
@@ -15,6 +15,6 @@ export function useFormDataQuery(recordType: RecordType) {
         FormDataApi,
         ['FORM_DATA', recordType],
         (api) => api.getFormData,
-        { recordType }
+        [{ recordType }]
     );
 }
