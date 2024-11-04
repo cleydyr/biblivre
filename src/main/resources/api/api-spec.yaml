@@ -320,6 +320,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Subfield'
+      required:
+        - datafield
+        - collapsed
+        - repeatable
+        - material_type
+        - sortOrder
+        - subfields
     Subfield:
       type: object
       properties:
