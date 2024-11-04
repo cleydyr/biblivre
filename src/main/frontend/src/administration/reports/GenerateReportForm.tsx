@@ -24,15 +24,15 @@ export const GenerateReportForm = ({
   onSubmit,
 }: GenerateReportFormProps) => {
   const [selectedReport, setSelectedReport] = useState(
-    undefined as Report | undefined
+    undefined as Report | undefined,
   );
 
   function getGenerateReportButtonLabel(): string {
     return reportStatus === ReportStatus.GENERATING
       ? "Gerando relatório"
       : reportStatus === ReportStatus.PENDING
-      ? "Gerar relatório"
-      : "Baixar relatório";
+        ? "Gerar relatório"
+        : "Baixar relatório";
   }
 
   function getCurrentDateAndHour() {
@@ -71,7 +71,7 @@ export const GenerateReportForm = ({
           isLoading={isLoading}
           onChange={(e) => {
             setSelectedReport(
-              reports.find((report) => report.id.toString() === e.target.value)
+              reports.find((report) => report.id.toString() === e.target.value),
             );
           }}
           value={selectedReport?.id.toString()}
@@ -86,8 +86,8 @@ export const GenerateReportForm = ({
             reportStatus === ReportStatus.PENDING
               ? () => onSubmit(selectedReport as Report)
               : reportStatus === ReportStatus.READY
-              ? downloadPDFFile
-              : () => {}
+                ? downloadPDFFile
+                : () => {}
           }
           aria-disabled={
             !selectedReport || reportStatus === ReportStatus.GENERATING

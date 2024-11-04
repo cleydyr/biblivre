@@ -3,7 +3,6 @@
  * Do not make direct changes to the file.
  */
 
-
 /** WithRequired type helpers */
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
@@ -43,9 +42,13 @@ export interface components {
       /** @example 42 */
       id?: number;
     };
-    Report: WithRequired<components["schemas"]["Identifiable"] & components["schemas"]["NameAndDescription"] & {
-      parameters?: components["schemas"]["ReportParameter"][];
-    }, "name">;
+    Report: WithRequired<
+      components["schemas"]["Identifiable"] &
+        components["schemas"]["NameAndDescription"] & {
+          parameters?: components["schemas"]["ReportParameter"][];
+        },
+      "name"
+    >;
     ReportUpload: components["schemas"]["Report"] & {
       /** Format: binary */
       file?: string;
@@ -123,7 +126,6 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-
   getReports: {
     responses: {
       /** @description The list of report templates available at the instance */
@@ -256,7 +258,8 @@ export interface operations {
       /** @description The specific filled report with the provided id */
       200: {
         content: {
-          "application/json": (components["schemas"]["ReportFill"] & components["schemas"]["ReportFillResource"])[];
+          "application/json": (components["schemas"]["ReportFill"] &
+            components["schemas"]["ReportFillResource"])[];
         };
       };
       404: components["responses"]["404ApiError"];

@@ -56,10 +56,13 @@ const toasts: Toast[] = [
   },
 ] as const;
 
-const toastsById = toasts.reduce((acc, toast) => {
-  acc[toast.id] = toast;
-  return acc;
-}, {} as Record<(typeof toasts)[number]["id"], Toast>);
+const toastsById = toasts.reduce(
+  (acc, toast) => {
+    acc[toast.id] = toast;
+    return acc;
+  },
+  {} as Record<(typeof toasts)[number]["id"], Toast>,
+);
 
 export default function ReportApp() {
   const [screen, setScreen] = useState("list" as Screen);
@@ -121,11 +124,11 @@ export default function ReportApp() {
     });
 
   const [editingReport, setEditingReport] = useState(
-    undefined as ReportTemplate | undefined
+    undefined as ReportTemplate | undefined,
   );
 
   const [deletingReport, setDeletingReport] = useState(
-    undefined as ReportTemplate | undefined
+    undefined as ReportTemplate | undefined,
   );
 
   const [errors, setErrors] = useState([] as string[]);
@@ -135,7 +138,7 @@ export default function ReportApp() {
   >(undefined);
 
   const [reportFill, setReportFill] = useState<ReportFill | undefined>(
-    undefined
+    undefined,
   );
 
   const screenFlyoutId = useGeneratedHtmlId({

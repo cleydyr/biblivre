@@ -9,13 +9,13 @@ import FormCustomization from "./FormCustomization";
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-    return (
-        <QueryClientProvider client={queryClient}>
-            <EuiProvider colorMode="light">
-                <FormCustomization />
-            </EuiProvider>
-        </QueryClientProvider>
-    );
+  return (
+    <QueryClientProvider client={queryClient}>
+      <EuiProvider colorMode="light">
+        <FormCustomization />
+      </EuiProvider>
+    </QueryClientProvider>
+  );
 };
 
 export default App;

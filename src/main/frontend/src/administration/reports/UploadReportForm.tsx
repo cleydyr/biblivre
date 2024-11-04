@@ -25,7 +25,7 @@ type UploadReportFormProps = {
 
 const UploadReportForm = ({ onSubmit }: UploadReportFormProps) => {
   const [fileToUpload, setFileToUpload] = useState(
-    undefined as File | undefined
+    undefined as File | undefined,
   );
 
   const [title, setTitle] = useState("");

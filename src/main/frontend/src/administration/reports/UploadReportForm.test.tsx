@@ -12,7 +12,7 @@ describe("UploadReportForm", () => {
 
     // Assert that the file picker is rendered
     expect(
-      screen.getByLabelText("Selecionador de arquivo para upload de relatório")
+      screen.getByLabelText("Selecionador de arquivo para upload de relatório"),
     ).toBeInTheDocument();
   });
 
@@ -30,7 +30,7 @@ describe("UploadReportForm", () => {
 
     await user.upload(
       screen.getByLabelText("Selecionador de arquivo para upload de relatório"),
-      file
+      file,
     );
 
     // Click the "Enviar" button
@@ -48,7 +48,7 @@ describe("UploadReportForm", () => {
     render(<UploadReportForm onSubmit={onSubmitMock} />);
 
     expect(
-      screen.queryByLabelText("Clear selected files")
+      screen.queryByLabelText("Clear selected files"),
     ).not.toBeInTheDocument();
 
     // Select a file using the file picker
@@ -58,15 +58,15 @@ describe("UploadReportForm", () => {
 
     await user.upload(
       screen.getByLabelText("Selecionador de arquivo para upload de relatório"),
-      file
+      file,
     );
 
     expect(
       (
         screen.getByLabelText(
-          "Selecionador de arquivo para upload de relatório"
+          "Selecionador de arquivo para upload de relatório",
         ) as HTMLInputElement
-      ).files?.length
+      ).files?.length,
     ).toEqual(1);
 
     expect(screen.getByLabelText("Clear selected files")).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe("UploadReportForm", () => {
     await user.click(screen.getByText("Enviar"));
 
     expect(
-      screen.queryByLabelText("Clear selected files")
+      screen.queryByLabelText("Clear selected files"),
     ).not.toBeInTheDocument();
 
     expect(onSubmitMock).toHaveBeenCalledWith(file);
@@ -84,9 +84,9 @@ describe("UploadReportForm", () => {
     expect(
       (
         screen.getByLabelText(
-          "Selecionador de arquivo para upload de relatório"
+          "Selecionador de arquivo para upload de relatório",
         ) as HTMLInputElement
-      ).files?.length
+      ).files?.length,
     ).toEqual(0);
   });
 });

@@ -12,7 +12,7 @@ export async function listReports(schema: string): Promise<Report[]> {
 
 export async function generateReport(
   reportId: number,
-  schema: string
+  schema: string,
 ): Promise<Blob> {
   const response = await fetch(`/api/v2/reports/generate/${reportId}`, {
     headers: {
