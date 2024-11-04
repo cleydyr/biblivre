@@ -1,6 +1,8 @@
 import { EuiBasicTable } from "@elastic/eui";
 import { ReportTemplate } from "../../generated-sources";
 
+import React from "react";
+
 const ReportTemplateTable = ({
   reports,
   onEdit,

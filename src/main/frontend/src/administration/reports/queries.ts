@@ -1,14 +1,13 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {
     Configuration,
-    InitOverrideFunction,
     ReportFill,
     ReportFillApi,
     ReportFillRequest,
     ReportTemplate,
     ReportTemplateApi,
 } from "../../generated-sources";
-import {baseEndpointPath, DEFAULT_FETCH_OPTIONS, getSchemaFromURL} from "../../util";
+import {baseEndpointPath, DEFAULT_FETCH_OPTIONS} from "../../util";
 import {UploadReportFormData} from "./UploadReportForm";
 import {useGenericQuery} from "../../generic";
 
@@ -21,8 +20,6 @@ type UseMutationOptions<TVariables, TData, TError = Error> = Parameters<
 export const useFillReportMutation = (
     options: UseMutationOptions<ReportFillRequest, ReportFill> = {}
 ) => {
-    const queryClient = useQueryClient();
-
     const apiConfiguration = new Configuration({
         basePath: baseEndpointPath(),
     });

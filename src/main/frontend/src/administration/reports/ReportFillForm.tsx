@@ -1,6 +1,8 @@
 import { EuiButton, EuiCallOut, EuiFlexGroup, EuiForm } from "@elastic/eui";
 import { ReportFillRequest, ReportTemplate } from "../../generated-sources";
 
+import React from "react";
+
 type ReportFillFormProps = {
   report: ReportTemplate;
   onSubmit: (report: ReportFillRequest) => void;

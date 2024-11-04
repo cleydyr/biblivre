@@ -1,0 +1,78 @@
+{
+  "root": true,
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:prettier/recommended" // Add this if you're using prettier so it plays well with ESLint
+  ],
+  "ignorePatterns": [], // Add your ignores here like `"coverage/*"` or `"build/*"`
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    // Ordering of imports
+    "import/order": [
+      "warn",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object"
+        ],
+        "alphabetize": {
+          "order": "asc"
+        },
+        "warnOnUnassignedImports": true
+      }
+    ],
+    // Add this if you're using React 17+ with support for the new JSX Transform
+    "react/react-in-jsx-scope": "off",
+    // Extend airbnb config to allow default arguments in addition to defaultProps
+    "react/require-default-props": [
+      "error",
+      {
+        "forbidDefaultForRequired": true,
+        "functions": "defaultArguments"
+      }
+    ],
+    // Prefer type imports
+    "@typescript-eslint/consistent-type-imports": "error",
+    // Defaulted to warn but we want it strict
+    "@typescript-eslint/no-unused-vars": "error",
+    // Allow void for statements. Helpful for @typescript-eslint/no-floating-promises
+    "no-void": [
+      "error",
+      {
+        "allowAsStatement": true
+      }
+    ],
+    // Restrict the use of React.FC and React.VFC (including the longer aliases)
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "React.FC": "React.FC is unnecessary: it provides next to no benefits and has a few downsides. (see https://github.com/facebook/create-react-app/pull/8177)",
+          "React.FunctionComponent": "React.FunctionComponent is unnecessary: it provides next to no benefits and has a few downsides. (see https://github.com/facebook/create-react-app/pull/8177)",
+          "React.VFC": "React.VFC and React.VoidFunctionComponent were deprecated in React 18",
+          "React.VoidFunctionComponent": "React.VFC and React.VoidFunctionComponent were deprecated in React 18"
+        }
+      }
+    ]
+    // Uncomment the rules below if you find @typescript-eslint/no-unsafe-* overly strict:
+    //
+    // It's quite difficult to comply with @typescript-eslint/no-unsafe-* rules especially when
+    // importing packages that are not typed correctly so we'll show warnings instead
+    // "@typescript-eslint/no-unsafe-argument": "warn",
+    // "@typescript-eslint/no-unsafe-assignment": "warn",
+    // "@typescript-eslint/no-unsafe-call": "warn",
+    // "@typescript-eslint/no-unsafe-member-access": "warn",
+    // "@typescript-eslint/no-unsafe-return": "warn"
+  }
+}

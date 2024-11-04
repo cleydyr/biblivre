@@ -30,7 +30,7 @@ const App: React.FC = () => {
     }
 
     return isSuccess &&
-        <DataFieldsDragAndDrop datafields={data} />
+        <DataFieldsDragAndDrop datafields={data}/>
 };
 
 type DataFieldsDragAndDropProps = {

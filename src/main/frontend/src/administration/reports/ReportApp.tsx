@@ -14,7 +14,7 @@ import {
   useGeneratedHtmlId,
 } from "@elastic/eui";
 import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ReportFill, ReportTemplate } from "../../generated-sources";
 import ReportFillForm from "./ReportFillForm";
 import ReportTemplateTable from "./ReportTemplateTable";
@@ -101,7 +101,7 @@ export default function ReportApp() {
     onError: handleDeleteReportFailure,
   });
 
-  const { data: reports, isFetching } = getReportsQuery;
+  const { data: reports } = getReportsQuery;
 
   const { mutate: addReport } = useAddReportMutation({
     onSuccess: handleAddReportSuccess,
