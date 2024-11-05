@@ -23,14 +23,17 @@ import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.utils.TextUtils;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Setter
 public final class Message {
-    private ActionResult level;
-    private String text;
+    @Getter private ActionResult level;
+    @Getter private String text;
     private String stackTrace;
-    private List<Pair<String, String>> errorList;
+    @Getter private List<Pair<String, String>> errorList;
 
     public Message(ActionResult level, String text) {
         super();
@@ -63,22 +66,6 @@ public final class Message {
                 || ActionResult.SUCCESS.equals(this.getLevel());
     }
 
-    public ActionResult getLevel() {
-        return this.level;
-    }
-
-    public void setLevel(ActionResult level) {
-        this.level = level;
-    }
-
-    public String getText() {
-        return this.text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public String getStackTrace(boolean encode) {
         if (!encode || this.stackTrace == null) {
             return this.stackTrace;
@@ -88,20 +75,8 @@ public final class Message {
         }
     }
 
-    public void setStackTrace(String stackTrace) {
-        this.stackTrace = stackTrace;
-    }
-
     public void setText(ActionResult level, String text) {
         this.setLevel(level);
         this.setText(text);
-    }
-
-    public List<Pair<String, String>> getErrorList() {
-        return this.errorList;
-    }
-
-    public void setErrorList(List<Pair<String, String>> errorList) {
-        this.errorList = errorList;
     }
 }
