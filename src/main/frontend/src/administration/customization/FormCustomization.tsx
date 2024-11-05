@@ -10,13 +10,18 @@ import {
   EuiFlexItem,
   euiDragDropReorder,
 } from "@elastic/eui";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 import "@elastic/eui/dist/eui_theme_light.css";
 import { RecordType } from "../../generated-sources";
-import { useFormDataQuery, useTranslationQuery } from "./queries";
+import {
+  useFormDataQuery,
+  useSaveFormDataFieldsMutation,
+  useTranslationQuery,
+} from "./queries";
 import { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FormData } from "../../generated-sources";
+import { getAffectedItems, getItemsAfterMove } from "./lib";
 
 const App: React.FC = () => {
   const { isLoading, isSuccess, data } = useFormDataQuery(RecordType.Biblio);
@@ -43,13 +48,26 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
 
   const [items, setItems] = useState(datafields);
 
+  const mutation = useSaveFormDataFieldsMutation();
+
   if (isLoading) {
     return <EuiLoadingSpinner />;
   }
 
   const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
     if (source && destination) {
-      setItems(euiDragDropReorder(items, source.index, destination.index));
+      const reorderedItems = euiDragDropReorder(
+        items,
+        source.index,
+        destination.index,
+      );
+
+      setItems(reorderedItems);
+
+      mutation.mutate({
+        fields: getAffectedItems(items, source.index, destination.index),
+        recordType: RecordType.Biblio,
+      });
     }
   };
 
@@ -80,12 +98,7 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
                     </EuiFlexItem>
                     <EuiTitle size="xs">
                       <h2>
-                        {datafield} -{" "}
-                        {
-                          translations?.[
-                            `marc.bibliographic.datafield.${datafield}`
-                          ]
-                        }
+                        {`${datafield} - ${translations[`marc.bibliographic.datafield.${datafield}`]}`}
                       </h2>
                     </EuiTitle>
                   </EuiFlexGroup>
