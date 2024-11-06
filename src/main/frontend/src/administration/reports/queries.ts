@@ -1,14 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type {
+  ReportFill,
+  ReportFillRequest,
+  ReportTemplate} from "../../generated-sources";
 import {
   Configuration,
-  ReportFill,
   ReportFillApi,
-  ReportFillRequest,
-  ReportTemplate,
   ReportTemplateApi,
 } from "../../generated-sources";
 import { baseEndpointPath, DEFAULT_FETCH_OPTIONS } from "../../util";
-import { UploadReportFormData } from "./UploadReportForm";
+import type { UploadReportFormData } from "./UploadReportForm";
 import { useGenericQuery } from "../../generic";
 
 const LIST_REPORTS = "listReports";

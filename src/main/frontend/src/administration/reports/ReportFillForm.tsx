@@ -1,5 +1,5 @@
 import { EuiButton, EuiCallOut, EuiFlexGroup, EuiForm } from "@elastic/eui";
-import { ReportFillRequest, ReportTemplate } from "../../generated-sources";
+import type { ReportFillRequest, ReportTemplate } from "../../generated-sources";
 
 import React from "react";
 

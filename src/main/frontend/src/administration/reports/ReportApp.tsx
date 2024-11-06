@@ -13,9 +13,9 @@ import {
   EuiTitle,
   useGeneratedHtmlId,
 } from "@elastic/eui";
-import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
+import type { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
 import React, { useCallback, useState } from "react";
-import { ReportFill, ReportTemplate } from "../../generated-sources";
+import type { ReportFill, ReportTemplate } from "../../generated-sources";
 import ReportFillForm from "./ReportFillForm";
 import ReportTemplateTable from "./ReportTemplateTable";
 import UploadReportForm from "./UploadReportForm";
@@ -148,7 +148,7 @@ export default function ReportApp() {
   let flyout;
 
   switch (screen) {
-    case "fill":
+    case "fill": {
       const downloadReportFillBanner = reportFill && (
         <EuiCallOut>
           <p>
@@ -182,6 +182,7 @@ export default function ReportApp() {
         </EuiFlyout>
       );
       break;
+    }
     case "edit":
       flyout = (
         <EuiFlyout

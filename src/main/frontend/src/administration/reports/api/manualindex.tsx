@@ -1,4 +1,4 @@
-import { Report } from "../types";
+import type { Report } from "../types";
 
 export async function listReports(schema: string): Promise<Report[]> {
   const response = await fetch("/api/v2/reports/list", {

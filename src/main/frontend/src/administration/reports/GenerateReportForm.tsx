@@ -6,7 +6,7 @@ import {
   EuiSpacer,
 } from "@elastic/eui";
 import React, { useState } from "react";
-import { Report, ReportStatus } from "./types";
+import type { Report, ReportStatus } from "./types";
 
 type GenerateReportFormProps = {
   reports: Report[] | undefined;
@@ -28,9 +28,9 @@ export const GenerateReportForm = ({
   );
 
   function getGenerateReportButtonLabel(): string {
-    return reportStatus === ReportStatus.GENERATING
+    return reportStatus === "generating"
       ? "Gerando relatório"
-      : reportStatus === ReportStatus.PENDING
+      : reportStatus === "pending"
         ? "Gerar relatório"
         : "Baixar relatório";
   }
@@ -83,17 +83,15 @@ export const GenerateReportForm = ({
         <EuiButton
           fill
           onClick={
-            reportStatus === ReportStatus.PENDING
+            reportStatus === "pending"
               ? () => onSubmit(selectedReport as Report)
-              : reportStatus === ReportStatus.READY
+              : reportStatus === "ready"
                 ? downloadPDFFile
                 : () => {}
           }
-          aria-disabled={
-            !selectedReport || reportStatus === ReportStatus.GENERATING
-          }
+          aria-disabled={!selectedReport || reportStatus === "generating"}
           aria-label={getGenerateReportButtonLabel()}
-          isLoading={reportStatus === ReportStatus.GENERATING}
+          isLoading={reportStatus === "generating"}
         >
           {getGenerateReportButtonLabel()}
         </EuiButton>
