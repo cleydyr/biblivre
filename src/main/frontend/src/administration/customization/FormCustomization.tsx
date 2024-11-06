@@ -76,6 +76,17 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
     }
   };
 
+  function onFormDataDelete({ datafield }: FormData) {
+    return () => {
+      setItems(items.filter((item) => item.datafield !== datafield));
+
+      deleteFormDataFieldMtn({
+        datafield,
+        recordType: RecordType.Biblio,
+      });
+    };
+  }
+
   return (
     isSuccess && (
       <EuiDragDropContext onDragEnd={onDragEnd}>
@@ -110,17 +121,7 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
                       <EuiButtonIcon
                         iconType="trash"
                         aria-label={`Apagar campo ${item.datafield}`}
-                        onClick={() => {
-                          setItems(
-                            items.filter(
-                              (_item) => _item.datafield !== item.datafield,
-                            ),
-                          );
-                          deleteFormDataFieldMtn({
-                            datafield: item.datafield,
-                            recordType: RecordType.Biblio,
-                          });
-                        }}
+                        onClick={onFormDataDelete(item)}
                       />
                       <EuiButtonIcon
                         iconType="pencil"
