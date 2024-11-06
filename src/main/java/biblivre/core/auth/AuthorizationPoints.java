@@ -218,12 +218,12 @@ public class AuthorizationPoints implements Serializable {
 
         this.addAuthPoint(
                 "administration.customization",
-                "insert_form_datafields",
+                "insert_form_datafield",
                 ADMINISTRATION_CUSTOMIZATION);
 
         this.addAuthPoint(
                 "administration.customization",
-                "delete_form_datafields",
+                "delete_form_datafield",
                 ADMINISTRATION_CUSTOMIZATION);
     }
 
