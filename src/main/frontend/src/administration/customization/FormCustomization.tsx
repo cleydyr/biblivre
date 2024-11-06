@@ -1,27 +1,30 @@
 import {
-  EuiTitle,
-  EuiPanel,
-  EuiLoadingSpinner,
+  EuiButtonIcon,
   EuiDragDropContext,
-  EuiDroppable,
+  euiDragDropReorder,
   EuiDraggable,
-  EuiIcon,
+  EuiDroppable,
   EuiFlexGroup,
   EuiFlexItem,
-  euiDragDropReorder,
+  EuiIcon,
+  EuiLoadingSpinner,
+  EuiPanel,
+  EuiTitle,
 } from "@elastic/eui";
-import React, { FC, useEffect, useState } from "react";
+import type { FC } from "react";
+import React, { useState } from "react";
 
 import "@elastic/eui/dist/eui_theme_light.css";
+import type { FormData } from "../../generated-sources";
 import { RecordType } from "../../generated-sources";
 import {
+  useDeleteFormDataFieldMutation,
   useFormDataQuery,
   useSaveFormDataFieldsMutation,
-  useTranslationQuery,
+  useTranslationsQuery,
 } from "./queries";
-import { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { FormData } from "../../generated-sources";
-import { getAffectedItems, getItemsAfterMove } from "./lib";
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { getAffectedItems } from "./lib";
 
 const App: React.FC = () => {
   const { isLoading, isSuccess, data } = useFormDataQuery(RecordType.Biblio);
@@ -44,11 +47,13 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
     data: translations,
     isLoading,
     isSuccess,
-  } = useTranslationQuery("pt-BR");
+  } = useTranslationsQuery("pt-BR");
 
   const [items, setItems] = useState(datafields);
 
-  const mutation = useSaveFormDataFieldsMutation();
+  const { mutate: saveFormDataFieldsMtn } = useSaveFormDataFieldsMutation();
+
+  const { mutate: deleteFormDataFieldMtn } = useDeleteFormDataFieldMutation();
 
   if (isLoading) {
     return <EuiLoadingSpinner />;
@@ -64,7 +69,7 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
 
       setItems(reorderedItems);
 
-      mutation.mutate({
+      saveFormDataFieldsMtn({
         fields: getAffectedItems(items, source.index, destination.index),
         recordType: RecordType.Biblio,
       });
@@ -79,12 +84,12 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
           spacing="m"
           withPanel
         >
-          {items.map(({ datafield }, idx) => (
+          {items.map((item, idx) => (
             <EuiDraggable
               spacing="m"
-              key={datafield}
+              key={item.datafield}
               index={idx}
-              draggableId={datafield}
+              draggableId={item.datafield}
               customDragHandle={true}
               hasInteractiveChildren={true}
             >
@@ -98,9 +103,30 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
                     </EuiFlexItem>
                     <EuiTitle size="xs">
                       <h2>
-                        {`${datafield} - ${translations[`marc.bibliographic.datafield.${datafield}`]}`}
+                        {`${item.datafield} - ${translations[`marc.bibliographic.datafield.${item.datafield}`]}`}
                       </h2>
                     </EuiTitle>
+                    <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
+                      <EuiButtonIcon
+                        iconType="trash"
+                        aria-label={`Apagar campo ${item.datafield}`}
+                        onClick={() => {
+                          setItems(
+                            items.filter(
+                              (_item) => _item.datafield !== item.datafield,
+                            ),
+                          );
+                          deleteFormDataFieldMtn({
+                            datafield: item.datafield,
+                            recordType: RecordType.Biblio,
+                          });
+                        }}
+                      />
+                      <EuiButtonIcon
+                        iconType="pencil"
+                        aria-label={`Editar campo ${item.datafield}`}
+                      />
+                    </EuiFlexGroup>
                   </EuiFlexGroup>
                 </EuiPanel>
               )}

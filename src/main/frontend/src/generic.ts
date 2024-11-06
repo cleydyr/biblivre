@@ -1,10 +1,7 @@
 import { Configuration } from "./generated-sources";
 import { baseEndpointPath, DEFAULT_FETCH_OPTIONS } from "./util";
-import {
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+import type { UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 type ApiConstructor<T> = new (configuration: Configuration) => T;
 

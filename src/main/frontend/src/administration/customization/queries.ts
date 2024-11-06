@@ -1,76 +1,48 @@
+import type { FormData, RecordType } from "../../generated-sources";
 import {
   DefaultApi,
   FormDataApi,
-  RecordType,
-  FormData,
-  ReportFillRequest,
-  ReportFill,
-  Configuration,
-  ReportFillApi,
   SubfieldToJSON,
 } from "../../generated-sources";
 import { useGenericQuery } from "../../generic";
-import {
-  useMutation,
-  UseMutationOptions,
-  UseMutationResult,
-} from "@tanstack/react-query";
-import { baseEndpointPath, DEFAULT_FETCH_OPTIONS } from "../../util";
+import type { UseMutationResult } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type {
+  DeleteDatafieldPayload,
+  FormDataLegacy,
+  FormDataPayload,
+  NonSuccessMessage,
+  SuccessMessage,
+} from "./types";
+import { fetchJSONFromServer } from "../../api/legacy/helpers";
 
-export function useTranslationQuery(language: string) {
+const TRANSLATIONS_QUERY_KEY = "TRANSLATIONS";
+
+function getTranslationsQueryKey(language: string) {
+  return [TRANSLATIONS_QUERY_KEY, language];
+}
+
+export function useTranslationsQuery(language: string) {
   return useGenericQuery(
     DefaultApi,
-    ["TRANSLATIONS", language],
+    getTranslationsQueryKey(language),
     (api) => api.getTranslations,
     [{ language }],
   );
 }
 
+function getFormDataQueryKey(recordType: RecordType) {
+  return ["FORM_DATA", recordType];
+}
+
 export function useFormDataQuery(recordType: RecordType) {
   return useGenericQuery(
     FormDataApi,
-    ["FORM_DATA", recordType],
+    getFormDataQueryKey(recordType),
     (api) => api.getFormData,
     [{ recordType }],
   );
 }
-
-async function fetchJSONFromServer(
-  module: string,
-  action: string,
-  otherParams: object,
-) {
-  const response = await fetch("/", {
-    method: "POST",
-    headers: {
-      "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-    },
-    body: new URLSearchParams({
-      controller: "json",
-      module,
-      action,
-      ...otherParams,
-    }).toString(),
-  });
-
-  return response.json();
-}
-
-type FormDataLegacy = Omit<
-  FormData,
-  "materialType" | "indicator1" | "indicator2"
-> & {
-  materialType: string;
-  indicator1: string;
-  indicator2: string;
-};
-
-interface FormDataItem {
-  formtab: FormDataLegacy;
-  translations: Record<string, string>;
-}
-
-type FormDataPayload = Record<string, FormDataItem>;
 
 async function upsertFormDatafields(
   fields: FormDataPayload,
@@ -86,19 +58,16 @@ async function upsertFormDatafields(
   );
 }
 
-type ActionResult = "success" | "warning" | "error" | "normal";
-
-type SuccessMessage = {
-  success: true;
-  message: string;
-  message_level: "success";
-};
-
-type NonSuccessMessage = {
-  success: false;
-  message: string;
-  message_level: Exclude<ActionResult, "success" | "normal">;
-};
+async function deleteFormDatafield(datafield: string, recordType: RecordType) {
+  return fetchJSONFromServer(
+    "administration.customization",
+    "delete_form_datafield",
+    {
+      datafield,
+      record_type: recordType,
+    },
+  );
+}
 
 export function useSaveFormDataFieldsMutation(): UseMutationResult<
   SuccessMessage,
@@ -108,9 +77,34 @@ export function useSaveFormDataFieldsMutation(): UseMutationResult<
     recordType: RecordType;
   }
 > {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ fields, recordType }) =>
       upsertFormDatafields(toFormDataPayload(fields), recordType),
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: getFormDataQueryKey(variables.recordType),
+      });
+    },
+  });
+}
+
+export function useDeleteFormDataFieldMutation(): UseMutationResult<
+  SuccessMessage,
+  NonSuccessMessage,
+  DeleteDatafieldPayload
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ datafield, recordType }) =>
+      deleteFormDatafield(datafield, recordType),
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: getFormDataQueryKey(variables.recordType),
+      });
+    },
   });
 }
 

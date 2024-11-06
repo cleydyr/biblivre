@@ -1,4 +1,4 @@
-import { InitOverrideFunction } from "./generated-sources";
+import type { InitOverrideFunction } from "./generated-sources";
 
 export function getSchemaFromURL() {
   return window.location.pathname.split("/")[1] || "bcuniaodosaber";
