@@ -1,4 +1,5 @@
 import type { FormData, RecordType } from "../../generated-sources";
+import type { Digit } from "../../types";
 
 export type SuccessMessage = {
   success: true;
@@ -30,7 +31,13 @@ export interface FormDataItem {
 
 export type FormDataPayload = Record<string, FormDataItem>;
 
+type DatafieldTag = `${Digit}${Digit}${Digit}`;
+
 export type DeleteDatafieldPayload = {
-  datafield: string;
+  datafield: DatafieldTag;
   recordType: RecordType;
 };
+
+export function isDatafieldTag(s: string): s is DatafieldTag {
+  return /^[0-9]{3}$/.test(s);
+}

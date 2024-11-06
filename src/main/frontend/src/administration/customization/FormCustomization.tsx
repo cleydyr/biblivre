@@ -25,6 +25,7 @@ import {
 } from "./queries";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { getAffectedItems } from "./lib";
+import { isDatafieldTag } from "./types";
 
 const App: React.FC = () => {
   const { isLoading, isSuccess, data } = useFormDataQuery(RecordType.Biblio);
@@ -79,6 +80,10 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
   function onFormDataDelete({ datafield }: FormData) {
     return () => {
       setItems(items.filter((item) => item.datafield !== datafield));
+
+      if (!isDatafieldTag(datafield)) {
+        throw new Error(`datafield ${datafield} is not a valid datafield`);
+      }
 
       deleteFormDataFieldMtn({
         datafield,
