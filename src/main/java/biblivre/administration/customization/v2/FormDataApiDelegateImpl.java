@@ -7,6 +7,7 @@ import biblivre.cataloging.enums.AutocompleteType;
 import biblivre.generated.api.FormDataApiDelegate;
 import biblivre.generated.api.model.*;
 import java.util.List;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,9 @@ public class FormDataApiDelegateImpl implements FormDataApiDelegate {
         String[] materialTypeValues = formTabDatafieldDTO.getMaterialTypeValues();
 
         restFormData.setMaterialType(
-                materialTypeValues == null ? null : List.of(materialTypeValues));
+                materialTypeValues == null
+                        ? null
+                        : Stream.of(materialTypeValues).map(RestMaterialType::fromValue).toList());
 
         restFormData.setSortOrder(formTabDatafieldDTO.getSortOrder());
 
@@ -53,6 +56,10 @@ public class FormDataApiDelegateImpl implements FormDataApiDelegate {
                         .toList());
 
         return restFormData;
+    }
+
+    private static RestMaterialType toMaterialType(String s) {
+        return RestMaterialType.fromValue(s);
     }
 
     public static RestSubfield toRestSubfield(FormTabSubfieldDTO formTabSubfieldDTO) {

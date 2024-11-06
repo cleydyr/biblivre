@@ -293,8 +293,7 @@ components:
       type: object
       properties:
         datafield:
-          type: string
-          example: datafim
+          $ref: '#/components/schemas/DatafieldTag'
         collapsed:
           type: boolean
           example: false
@@ -304,18 +303,18 @@ components:
         material_type:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/MaterialType'
         sortOrder:
           type: integer
           example: 1
         indicator1:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Indicator'
         indicator2:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Indicator'
         subfields:
           type: array
           items:
@@ -331,11 +330,9 @@ components:
       type: object
       properties:
         datafield:
-          type: string
-          example: 090
+          $ref: '#/components/schemas/DatafieldTag'
         subfield:
-          type: string
-          example: datafim
+          $ref: '#/components/schemas/SubfieldTag'
         collapsed:
           type: boolean
           example: false
@@ -386,6 +383,20 @@ components:
       type: object
       additionalProperties:
         type: string
+    DatafieldTag:
+      type: string
+      example: 090
+      pattern: '^[0-9]{3}$'
+    Indicator:
+      type: string
+      example: 1
+      minLength: 0
+      maxLength: 1
+    SubfieldTag:
+      type: string
+      example: a
+      minLength: 1
+      maxLength: 1
   responses:
     500ApiError:
       description: Unexpected errors on the server side
