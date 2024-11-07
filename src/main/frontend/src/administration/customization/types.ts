@@ -31,7 +31,7 @@ export interface FormDataItem {
 
 export type FormDataPayload = Record<string, FormDataItem>;
 
-type DatafieldTag = `${Digit}${Digit}${Digit}`;
+export type DatafieldTag = `${Digit}${Digit}${Digit}`;
 
 export type DeleteDatafieldPayload = {
   datafield: DatafieldTag;
@@ -41,3 +41,5 @@ export type DeleteDatafieldPayload = {
 export function isDatafieldTag(s: string): s is DatafieldTag {
   return /^[0-9]{3}$/.test(s);
 }
+
+export * from "../../types";

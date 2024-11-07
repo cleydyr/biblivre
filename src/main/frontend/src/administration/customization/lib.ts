@@ -1,3 +1,5 @@
+import { isDatafieldTag } from "./types";
+
 type Ordered = {
   sortOrder: number;
 };
@@ -30,4 +32,15 @@ export function getAffectedItems<T extends Ordered>(
   };
 
   return movedUpwards ? [movedItem, ...displaced] : [...displaced, movedItem];
+}
+
+export function getFieldNameTranslation(
+  translations: Record<string, string>,
+  tag: string,
+) {
+  if (!isDatafieldTag(tag)) {
+    throw new Error(`tag ${tag} is not a valid tag`);
+  }
+
+  return translations[`marc.bibliographic.datafield.${tag}`];
 }
