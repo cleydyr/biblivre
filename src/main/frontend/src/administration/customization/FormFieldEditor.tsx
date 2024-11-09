@@ -12,7 +12,7 @@ import {
   EuiSwitch,
 } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
-import type { FormData, MaterialType } from "../../generated-sources";
+import type { FormData, MaterialType, Subfield } from "../../generated-sources";
 import { MaterialType as MaterialTypeEnum } from "../../generated-sources";
 import type { FormFieldEditorState } from "./queries";
 import { useFormFieldEditorState, useTranslationsQuery } from "./queries";
@@ -288,8 +288,75 @@ const MaterialTypeSection: FC<FormFieldEditorState & WithOnChange> = ({
   );
 };
 
-const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = () => {
-  return null;
+function yesOrNoMessage(value: boolean) {
+  return value ? (
+    <FormattedMessage id="yes" defaultMessage="Sim" />
+  ) : (
+    <FormattedMessage id="no" defaultMessage="Não" />
+  );
+}
+
+const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
+  subfields,
+}) => {
+  const columns: Array<EuiBasicTableColumn<Subfield>> = [
+    {
+      field: "code",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.code"
+          defaultMessage="Código"
+        />
+      ),
+    },
+    {
+      field: "name",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.description"
+          defaultMessage="Descrição"
+        />
+      ),
+    },
+    {
+      field: "repeatable",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.repeatable"
+          defaultMessage="Repetível"
+        />
+      ),
+      render: yesOrNoMessage,
+    },
+    {
+      field: "collapsed",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.collapsed"
+          defaultMessage="Recolhido"
+        />
+      ),
+      render: yesOrNoMessage,
+    },
+    {
+      field: "autocompleteType",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.autocomplete_type"
+          defaultMessage="Tipo de auto-completar"
+        />
+      ),
+    },
+  ];
+
+  return (
+    <EuiBasicTable<Subfield>
+      tableCaption="Subcampos"
+      items={subfields}
+      rowHeader="code"
+      columns={columns}
+    />
+  );
 };
 
 type FormFieldEditorProps = {

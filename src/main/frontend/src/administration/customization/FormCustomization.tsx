@@ -110,7 +110,7 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
         >
           <Fragment>
             <FormFieldEditor
-              field={items.find((item) => item.datafield === "245")!}
+              field={items.find((item) => item.datafield === "100")!}
             />
             {items.slice(0, 5).map((item, idx) => (
               <EuiDraggable
