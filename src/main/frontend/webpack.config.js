@@ -10,6 +10,10 @@ module.exports = {
     ),
     filename: "bundle.js",
   },
+  devServer: {
+    static: "../resources/META-INF/resources/static/scripts",
+    hot: true,
+  },
   resolve: {
     modules: [__dirname, "src", "node_modules"],
     extensions: [".js", ".jsx", ".tsx", ".ts"],
