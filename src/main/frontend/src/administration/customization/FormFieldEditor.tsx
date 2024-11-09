@@ -10,10 +10,19 @@ import {
   EuiSelectable,
   EuiSpacer,
   EuiSwitch,
+  EuiCode,
 } from "@elastic/eui";
-import { FormattedMessage } from "react-intl";
-import type { FormData, MaterialType, Subfield } from "../../generated-sources";
-import { MaterialType as MaterialTypeEnum } from "../../generated-sources";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import type {
+  AutocompleteType,
+  FormData,
+  MaterialType,
+  Subfield,
+} from "../../generated-sources";
+import {
+  MaterialType as MaterialTypeEnum,
+  AutocompleteType as AutocompleteTypeEnum,
+} from "../../generated-sources";
 import type { FormFieldEditorState } from "./queries";
 import { useFormFieldEditorState, useTranslationsQuery } from "./queries";
 import type { Singleton } from "./types";
@@ -24,6 +33,45 @@ type WithOnChange = {
 };
 
 type OnChangeParams = Singleton<FormFieldEditorState>;
+
+/**
+ * Valores anteirores
+ * Tabela fixa
+ * Bibliográfico
+ * Autoridades
+ * Vocabulário
+ * Tabela e valores
+ */
+const messages = defineMessages<AutocompleteType>({
+  [AutocompleteTypeEnum.Disabled]: {
+    id: "subfield.autocomplete.type.disabled",
+    defaultMessage: "Desabilitado",
+  },
+  [AutocompleteTypeEnum.PreviousValues]: {
+    id: "subfield.autocomplete.type.previous_values",
+    defaultMessage: "Valores anteriores",
+  },
+  [AutocompleteTypeEnum.FixedTable]: {
+    id: "subfield.autocomplete.type.fixed_table",
+    defaultMessage: "Tabela fixa",
+  },
+  [AutocompleteTypeEnum.Authorities]: {
+    id: "subfield.autocomplete.type.fixed_table",
+    defaultMessage: "Tabela fixa",
+  },
+  [AutocompleteTypeEnum.Biblio]: {
+    id: "subfield.autocomplete.type.fixed_table",
+    defaultMessage: "Tabela fixa",
+  },
+  [AutocompleteTypeEnum.Vocabulary]: {
+    id: "subfield.autocomplete.type.fixed_table",
+    defaultMessage: "Tabela fixa",
+  },
+  [AutocompleteTypeEnum.FixedTableWithPreviousValues]: {
+    id: "subfield.autocomplete.type.fixed_table",
+    defaultMessage: "Tabela fixa",
+  },
+});
 
 const DatafieldTagFormField: FC<FormFieldEditorState & WithOnChange> = ({
   tag,
@@ -299,6 +347,8 @@ function yesOrNoMessage(value: boolean) {
 const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
   subfields,
 }) => {
+  const { formatMessage } = useIntl();
+
   const columns: Array<EuiBasicTableColumn<Subfield>> = [
     {
       field: "code",
@@ -308,6 +358,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
           defaultMessage="Código"
         />
       ),
+      render: (code: string) => <EuiCode>{code}</EuiCode>,
     },
     {
       field: "name",
@@ -346,6 +397,8 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
           defaultMessage="Tipo de auto-completar"
         />
       ),
+      render: (autoCompleteType: AutocompleteType) =>
+        formatMessage(messages[autoCompleteType]),
     },
   ];
 
