@@ -3,6 +3,7 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import unusedImports from "eslint-plugin-unused-imports";
+import reactHooksDependencies from "eslint-plugin-react-hooks";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -42,6 +43,15 @@ export default [
   {
     rules: {
       "@typescript-eslint/consistent-type-imports": "error",
+    },
+  },
+  {
+    plugins: {
+      "react-hooks": reactHooksDependencies,
+    },
+    rules: {
+      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/rules-of-hooks": "error",
     },
   },
 ];
