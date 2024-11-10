@@ -2,15 +2,19 @@ import type { FC } from "react";
 import React, { Fragment, useEffect, useState } from "react";
 
 import type { EuiSelectableOption } from "@elastic/eui";
-import { EuiBasicTable } from "@elastic/eui";
 import {
+  EuiBasicTable,
+  EuiCode,
   EuiFieldText,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiForm,
   EuiFormRow,
   EuiSelectable,
   EuiSpacer,
   EuiSwitch,
-  EuiCode,
+  EuiTabs,
+  EuiTab,
 } from "@elastic/eui";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import type {
@@ -20,8 +24,8 @@ import type {
   Subfield,
 } from "../../generated-sources";
 import {
-  MaterialType as MaterialTypeEnum,
   AutocompleteType as AutocompleteTypeEnum,
+  MaterialType as MaterialTypeEnum,
 } from "../../generated-sources";
 import type { FormFieldEditorState } from "./queries";
 import { useFormFieldEditorState, useTranslationsQuery } from "./queries";
@@ -240,30 +244,6 @@ const IndicatorsFormSection: FC<FormFieldEditorState & WithOnChange> = ({
       <EuiFormRow
         label={
           <FormattedMessage
-            id="administration.customization.indicator1.defined"
-            defaultMessage="Indicador 1 definido"
-          />
-        }
-      >
-        <EuiSwitch
-          label={
-            <FormattedMessage
-              id="administration.customization.indicator1.defined"
-              defaultMessage="Indicador 1 definido"
-            />
-          }
-          showLabel={false}
-          checked={indicator1Defined}
-          onChange={() => {
-            onChange({
-              indicator1Defined: !indicator1Defined,
-            });
-          }}
-        />
-      </EuiFormRow>
-      <EuiFormRow
-        label={
-          <FormattedMessage
             id="administration.customization.indicator.1.name"
             defaultMessage="Nome do indicador 1"
           />
@@ -416,6 +396,38 @@ type FormFieldEditorProps = {
   field: FormData;
 };
 
+const IndicatorsFormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
+  indicator1Defined,
+  onChange,
+}) => {
+  return (
+    <EuiFormRow
+      label={
+        <FormattedMessage
+          id="administration.customization.indicator1.defined"
+          defaultMessage="Indicador 1 definido"
+        />
+      }
+    >
+      <EuiSwitch
+        label={
+          <FormattedMessage
+            id="administration.customization.indicator1.defined"
+            defaultMessage="Indicador 1 definido"
+          />
+        }
+        showLabel={false}
+        checked={indicator1Defined}
+        onChange={() => {
+          onChange({
+            indicator1Defined: !indicator1Defined,
+          });
+        }}
+      />
+    </EuiFormRow>
+  );
+};
+
 const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
   const { data: formFieldEditorState, isSuccess } = useFormFieldEditorState(
     "pt-BR",
@@ -430,31 +442,109 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
     }
   }, [formFieldEditorState]);
 
-  if (!isSuccess || state === undefined) {
-    return null;
-  }
+  const [selectedTabId, setSelectedTabId] = useState<string>("general");
 
   const onChange = (data: OnChangeParams) => {
+    if (!state) {
+      return;
+    }
+
     setState({
       ...state,
       ...data,
     });
   };
 
+  if (!isSuccess || state === undefined) {
+    return null;
+  }
+
   const props = {
     ...state,
     onChange,
   };
 
+  const tabs = state
+    ? [
+        {
+          id: "general",
+          name: (
+            <FormattedMessage
+              id="administration.customization.indicator.general"
+              defaultMessage="Geral"
+            />
+          ),
+          content: (
+            <EuiFlexGroup direction="column">
+              <EuiFlexGroup>
+                <EuiFlexItem grow={false}>
+                  <DatafieldTagFormField {...props} />
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <DatafieldNameFormField {...props} />
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <RepeatableSwitchFormField {...props} />
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <CollapsedSwitchFormField {...props} />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <MaterialTypeSection {...props} />
+            </EuiFlexGroup>
+          ),
+        },
+        {
+          id: "indicator1",
+          name: (
+            <FormattedMessage
+              id="administration.customization.indicator.1"
+              defaultMessage="Indicador 1"
+            />
+          ),
+          content: (
+            <EuiFlexGroup direction="column">
+              <IndicatorsFormSwitch {...props} />
+              {state.indicator1Defined && <IndicatorsFormSection {...props} />}
+            </EuiFlexGroup>
+          ),
+        },
+        {
+          id: "subfields",
+          name: (
+            <FormattedMessage
+              id="administration.customization.indicator.1"
+              defaultMessage="Subcampos"
+            />
+          ),
+          content: <SubfieldSection {...props} />,
+        },
+      ]
+    : undefined;
+
+  const onSelectedTabChange = (tabId: string) => {
+    setSelectedTabId(tabId);
+  };
+
+  const selectedTabContent = tabs?.find(
+    (tab) => tab.id === selectedTabId,
+  )?.content;
+
   return (
     <EuiForm component="form">
-      <DatafieldTagFormField {...props} />
-      <DatafieldNameFormField {...props} />
-      <RepeatableSwitchFormField {...props} />
-      <CollapsedSwitchFormField {...props} />
-      <IndicatorsFormSection {...props} />
-      <MaterialTypeSection {...props} />
-      <SubfieldSection {...props} />
+      <EuiTabs>
+        {tabs?.map((tab, index) => (
+          <EuiTab
+            key={index}
+            onClick={() => onSelectedTabChange(tab.id)}
+            isSelected={tab.id === selectedTabId}
+          >
+            {tab.name}
+          </EuiTab>
+        ))}
+      </EuiTabs>
+      {selectedTabContent}
+
       <EuiSpacer size="xxl" />
     </EuiForm>
   );
