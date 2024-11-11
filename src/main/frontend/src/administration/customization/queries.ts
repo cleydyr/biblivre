@@ -22,6 +22,7 @@ import type {
 } from "./types";
 import { fetchJSONFromServer } from "../../api/legacy/helpers";
 import { getFieldNameTranslation } from "./lib";
+import type { IndicatorCode } from "./components/types";
 
 const TRANSLATIONS_QUERY_KEY = "TRANSLATIONS";
 
@@ -184,17 +185,18 @@ function getSubfieldTranslation(
   ];
 }
 
+export interface IndicatorEditorState {
+  defined: boolean;
+  description: string;
+  translations: Record<IndicatorCode, string>;
+}
+
 export interface FormFieldEditorState {
   name: string;
   tag: string;
   repeatable: boolean;
   collapsed: boolean;
-  indicator1Defined: boolean;
-  indicator2Defined: boolean;
-  indicator1Name: string;
-  indicator2Name: string;
-  indicator1ValueTranslations: Record<number, string>;
-  indicator2ValueTranslations: Record<number, string>;
+  indicatorsState: [IndicatorEditorState, IndicatorEditorState];
   materialTypes: MaterialType[];
   subfields: SubfieldState[];
 }
@@ -227,21 +229,27 @@ function toFormFieldEditorState(
   return {
     name: getFieldNameTranslation(translations, field.datafield),
     materialTypes: field.materialType,
-    indicator1Defined: (field.indicator1?.length ?? 0) > 0,
-    indicator2Defined: (field.indicator2?.length ?? 0) > 0,
+    indicatorsState: [
+      {
+        defined: (field.indicator1?.length ?? 0) > 0,
+        description:
+          translations[
+            `marc.bibliographic.datafield.${field.datafield}.indicator.1`
+          ],
+        translations: getIndicator1Translations(field, translations),
+      },
+      {
+        defined: (field.indicator2?.length ?? 0) > 0,
+        description:
+          translations[
+            `marc.bibliographic.datafield.${field.datafield}.indicator.2`
+          ],
+        translations: getIndicator2Translations(field, translations),
+      },
+    ],
     repeatable: field.repeatable,
     collapsed: field.collapsed,
     tag: field.datafield,
-    indicator1Name:
-      translations[
-        `marc.bibliographic.datafield.${field.datafield}.indicator.1`
-      ],
-    indicator2Name:
-      translations[
-        `marc.bibliographic.datafield.${field.datafield}.indicator.2`
-      ],
-    indicator1ValueTranslations: getIndicator1Translations(field, translations),
-    indicator2ValueTranslations: getIndicator2Translations(field, translations),
     subfields: field.subfields.map((subfield) =>
       toSubfieldState(translations, subfield),
     ),

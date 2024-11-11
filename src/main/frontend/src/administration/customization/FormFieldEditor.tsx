@@ -1,11 +1,10 @@
 import type { FC } from "react";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import type { EuiSelectableOption } from "@elastic/eui";
+import type { EuiSelectableOption, EuiBasicTableColumn } from "@elastic/eui";
 import {
   EuiBasicTable,
   EuiCode,
-  EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
   EuiForm,
@@ -16,254 +15,23 @@ import {
   EuiTabs,
   EuiTab,
 } from "@elastic/eui";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import type {
   AutocompleteType,
   FormData,
   MaterialType,
   Subfield,
 } from "../../generated-sources";
-import {
-  AutocompleteType as AutocompleteTypeEnum,
-  MaterialType as MaterialTypeEnum,
-} from "../../generated-sources";
+import { MaterialType as MaterialTypeEnum } from "../../generated-sources";
 import type { FormFieldEditorState } from "./queries";
 import { useFormFieldEditorState, useTranslationsQuery } from "./queries";
-import type { Singleton } from "./types";
-import type { EuiBasicTableColumn } from "@elastic/eui/src/components/basic_table/basic_table";
-
-type WithOnChange = {
-  onChange: (state: OnChangeParams) => void;
-};
-
-type OnChangeParams = Singleton<FormFieldEditorState>;
-
-/**
- * Valores anteirores
- * Tabela fixa
- * Bibliográfico
- * Autoridades
- * Vocabulário
- * Tabela e valores
- */
-const messages = defineMessages<AutocompleteType>({
-  [AutocompleteTypeEnum.Disabled]: {
-    id: "subfield.autocomplete.type.disabled",
-    defaultMessage: "Desabilitado",
-  },
-  [AutocompleteTypeEnum.PreviousValues]: {
-    id: "subfield.autocomplete.type.previous_values",
-    defaultMessage: "Valores anteriores",
-  },
-  [AutocompleteTypeEnum.FixedTable]: {
-    id: "subfield.autocomplete.type.fixed_table",
-    defaultMessage: "Tabela fixa",
-  },
-  [AutocompleteTypeEnum.Authorities]: {
-    id: "subfield.autocomplete.type.fixed_table",
-    defaultMessage: "Tabela fixa",
-  },
-  [AutocompleteTypeEnum.Biblio]: {
-    id: "subfield.autocomplete.type.fixed_table",
-    defaultMessage: "Tabela fixa",
-  },
-  [AutocompleteTypeEnum.Vocabulary]: {
-    id: "subfield.autocomplete.type.fixed_table",
-    defaultMessage: "Tabela fixa",
-  },
-  [AutocompleteTypeEnum.FixedTableWithPreviousValues]: {
-    id: "subfield.autocomplete.type.fixed_table",
-    defaultMessage: "Tabela fixa",
-  },
-});
-
-const DatafieldTagFormField: FC<FormFieldEditorState & WithOnChange> = ({
-  tag,
-  onChange,
-}) => {
-  return (
-    <EuiFormRow
-      label={
-        <FormattedMessage
-          id="administration.customization.marc.datafield.tag"
-          defaultMessage="Campo MARC"
-        />
-      }
-    >
-      <EuiFieldText
-        name="datafield"
-        maxLength={3}
-        minLength={3}
-        value={tag}
-        onChange={(event) => {
-          onChange({
-            tag: event.target.value,
-          });
-        }}
-      />
-    </EuiFormRow>
-  );
-};
-
-const DatafieldNameFormField: FC<FormFieldEditorState & WithOnChange> = (
-  props,
-) => {
-  const { name, onChange } = props;
-
-  return (
-    <EuiFormRow
-      label={
-        <FormattedMessage
-          id="administration.customization.marc.datafield.name"
-          defaultMessage="Nome do Campo"
-        />
-      }
-    >
-      <EuiFieldText
-        name="name"
-        value={name}
-        onChange={(event) => {
-          onChange({
-            name: event.target.value,
-          });
-        }}
-      />
-    </EuiFormRow>
-  );
-};
-
-const RepeatableSwitchFormField: FC<FormFieldEditorState & WithOnChange> = (
-  props,
-) => {
-  const { repeatable, onChange } = props;
-
-  return (
-    <EuiFormRow
-      label={
-        <FormattedMessage
-          id="administration.customization.marc.datafield.repeatable"
-          defaultMessage="Repetível"
-        />
-      }
-      hasChildLabel={false}
-    >
-      <EuiSwitch
-        showLabel={false}
-        label={
-          <FormattedMessage
-            id="administration.customization.marc.datafield.repeatable"
-            defaultMessage="Repetível"
-          />
-        }
-        checked={repeatable}
-        onChange={() =>
-          onChange({
-            repeatable: !repeatable,
-          })
-        }
-      />
-    </EuiFormRow>
-  );
-};
-
-const CollapsedSwitchFormField: FC<FormFieldEditorState & WithOnChange> = (
-  props,
-) => {
-  const { collapsed, onChange } = props;
-
-  return (
-    <EuiFormRow
-      label={
-        <FormattedMessage
-          id="administration.customization.marc.datafield.collapsed"
-          defaultMessage="Recolhido"
-        />
-      }
-      hasChildLabel={false}
-    >
-      <EuiSwitch
-        showLabel={false}
-        label={
-          <FormattedMessage
-            id="administration.customization.datafield.collapsed"
-            defaultMessage="Recolhido"
-          />
-        }
-        checked={collapsed}
-        onChange={() => {
-          onChange({
-            collapsed: !collapsed,
-          });
-        }}
-      />
-    </EuiFormRow>
-  );
-};
-
-const IndicatorsFormSection: FC<FormFieldEditorState & WithOnChange> = ({
-  indicator1Name,
-  indicator1Defined,
-  indicator1ValueTranslations,
-  onChange,
-}) => {
-  type IndicatorValueNameInfo = {
-    code: string;
-    description: string;
-  };
-
-  const items: IndicatorValueNameInfo[] = Object.entries(
-    indicator1ValueTranslations,
-  ).map(([code, description]) => ({
-    code,
-    description,
-  }));
-
-  const columns: Array<EuiBasicTableColumn<IndicatorValueNameInfo>> = [
-    {
-      field: "code",
-      name: (
-        <FormattedMessage
-          id="administration.customization.indicator.code"
-          defaultMessage="Código"
-        />
-      ),
-    },
-    {
-      field: "description",
-      name: (
-        <FormattedMessage
-          id="administration.customization.indicator.description"
-          defaultMessage="Descrição"
-        />
-      ),
-    },
-  ];
-
-  return (
-    <Fragment>
-      <EuiFormRow
-        label={
-          <FormattedMessage
-            id="administration.customization.indicator.1.name"
-            defaultMessage="Nome do indicador 1"
-          />
-        }
-      >
-        <EuiFieldText
-          disabled={!indicator1Defined}
-          name="indicator1_name"
-          value={indicator1Name}
-        ></EuiFieldText>
-      </EuiFormRow>
-      <EuiBasicTable<IndicatorValueNameInfo>
-        tableCaption="Valores do indicador 1"
-        items={items}
-        rowHeader="code"
-        columns={columns}
-      />
-    </Fragment>
-  );
-};
+import { autocompleteTypeMessageDescriptors } from "./messages";
+import type { OnChangeParams, WithOnChange } from "./components/types";
+import DatafieldTagFormField from "./components/DatafieldTagFormField";
+import DatafieldNameFormField from "./components/DatafieldNameFormField";
+import RepeatableSwitchFormField from "./components/RepeatableSwitchFormField";
+import CollapsedSwitchFormField from "./components/CollapsedSwitchFormField";
+import IndicatorFormSection from "./components/IndicatorFormSection";
 
 const MaterialTypeSection: FC<FormFieldEditorState & WithOnChange> = ({
   materialTypes,
@@ -378,7 +146,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
         />
       ),
       render: (autoCompleteType: AutocompleteType) =>
-        formatMessage(messages[autoCompleteType]),
+        formatMessage(autocompleteTypeMessageDescriptors[autoCompleteType]),
     },
   ];
 
@@ -396,10 +164,12 @@ type FormFieldEditorProps = {
   field: FormData;
 };
 
-const IndicatorsFormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
-  indicator1Defined,
+const Indicator1FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
+  indicatorsState,
   onChange,
 }) => {
+  const [{ defined }] = indicatorsState;
+
   return (
     <EuiFormRow
       label={
@@ -417,10 +187,56 @@ const IndicatorsFormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
           />
         }
         showLabel={false}
-        checked={indicator1Defined}
+        checked={defined}
         onChange={() => {
           onChange({
-            indicator1Defined: !indicator1Defined,
+            indicatorsState: [
+              {
+                ...indicatorsState[0],
+                defined: !defined,
+              },
+              indicatorsState[1],
+            ],
+          });
+        }}
+      />
+    </EuiFormRow>
+  );
+};
+
+const Indicator2FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
+  indicatorsState,
+  onChange,
+}) => {
+  const [, { defined }] = indicatorsState;
+
+  return (
+    <EuiFormRow
+      label={
+        <FormattedMessage
+          id="administration.customization.indicator1.defined"
+          defaultMessage="Indicador 2 definido"
+        />
+      }
+    >
+      <EuiSwitch
+        label={
+          <FormattedMessage
+            id="administration.customization.indicator1.defined"
+            defaultMessage="Indicador 2 definido"
+          />
+        }
+        showLabel={false}
+        checked={defined}
+        onChange={() => {
+          onChange({
+            indicatorsState: [
+              indicatorsState[0],
+              {
+                ...indicatorsState[1],
+                defined: !defined,
+              },
+            ],
           });
         }}
       />
@@ -504,8 +320,27 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
           ),
           content: (
             <EuiFlexGroup direction="column">
-              <IndicatorsFormSwitch {...props} />
-              {state.indicator1Defined && <IndicatorsFormSection {...props} />}
+              <Indicator1FormSwitch {...props} />
+              {state.indicatorsState[0].defined && (
+                <IndicatorFormSection {...props} order={0} />
+              )}
+            </EuiFlexGroup>
+          ),
+        },
+        {
+          id: "indicator2",
+          name: (
+            <FormattedMessage
+              id="administration.customization.indicator.1"
+              defaultMessage="Indicador 2"
+            />
+          ),
+          content: (
+            <EuiFlexGroup direction="column">
+              <Indicator2FormSwitch {...props} />
+              {state.indicatorsState[1].defined && (
+                <IndicatorFormSection {...props} order={1} />
+              )}
             </EuiFlexGroup>
           ),
         },
@@ -543,6 +378,7 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
           </EuiTab>
         ))}
       </EuiTabs>
+      <EuiSpacer />
       {selectedTabContent}
 
       <EuiSpacer size="xxl" />
