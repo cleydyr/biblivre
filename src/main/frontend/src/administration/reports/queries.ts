@@ -2,7 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
   ReportFill,
   ReportFillRequest,
-  ReportTemplate} from "../../generated-sources";
+  ReportTemplate,
+} from "../../generated-sources";
 import {
   Configuration,
   ReportFillApi,
