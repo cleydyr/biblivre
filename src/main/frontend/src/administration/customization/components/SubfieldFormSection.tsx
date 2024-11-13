@@ -1,0 +1,172 @@
+import type { FC } from "react";
+import { Fragment } from "react";
+import { useState } from "react";
+import React from "react";
+import type { FormFieldEditorState, SubfieldFormEditorState } from "../queries";
+import type { WithOnChange } from "./types";
+import { FormattedMessage, useIntl } from "react-intl";
+import type { EuiBasicTableColumn } from "@elastic/eui";
+import { EuiBasicTable, EuiCode } from "@elastic/eui";
+import type { AutocompleteType } from "../../../generated-sources";
+import messages, { autocompleteTypeMessageDescriptors } from "../messages";
+import SubfieldEditModal from "./SubfieldEditModal";
+
+const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
+  subfields,
+  onChange,
+}) => {
+  const { formatMessage } = useIntl();
+
+  const [editingSubfield, setEditingSubfield] = useState<
+    SubfieldFormEditorState | undefined
+  >(undefined);
+
+  const handleDeleteSubfield =
+    (subfieldFormEditorState: SubfieldFormEditorState) => () => {
+      onChange({
+        subfields: subfields.filter(
+          (subfield) => subfieldFormEditorState.code !== subfield.code,
+        ),
+      });
+    };
+
+  const columns: Array<EuiBasicTableColumn<SubfieldFormEditorState>> = [
+    {
+      field: "code",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.code"
+          defaultMessage="Código"
+        />
+      ),
+      render: (code: string) => <EuiCode>{code}</EuiCode>,
+    },
+    {
+      field: "name",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.description"
+          defaultMessage="Descrição"
+        />
+      ),
+    },
+    {
+      field: "repeatable",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.repeatable"
+          defaultMessage="Repetível"
+        />
+      ),
+      render: yesOrNoMessage,
+    },
+    {
+      field: "collapsed",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.collapsed"
+          defaultMessage="Recolhido"
+        />
+      ),
+      render: yesOrNoMessage,
+    },
+    {
+      field: "autocompleteType",
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.autocomplete_type"
+          defaultMessage="Tipo de auto-completar"
+        />
+      ),
+      render: (autoCompleteType: AutocompleteType) =>
+        formatMessage(autocompleteTypeMessageDescriptors[autoCompleteType]),
+    },
+    {
+      name: (
+        <FormattedMessage
+          id="administration.customization.indicator.actions"
+          defaultMessage="Ações"
+        />
+      ),
+      actions: [
+        {
+          icon: "pencil",
+          type: "icon",
+          name: (
+            <FormattedMessage
+              id="administration.customization.subfield.action.edit"
+              defaultMessage="Editar"
+            />
+          ),
+          description: (item: SubfieldFormEditorState) =>
+            formatMessage(messages.editSubfieldValueDescription, {
+              value: item.code,
+            }),
+          onClick: (item) => setEditingSubfield(item),
+        },
+        {
+          icon: "trash",
+          type: "icon",
+          name: (
+            <FormattedMessage
+              id="administration.customization.indicator.action.delete"
+              defaultMessage="Remover"
+            />
+          ),
+          description: (item: SubfieldFormEditorState) =>
+            formatMessage(messages.removeSubfieldValueDescription, {
+              value: item.code,
+            }),
+          onClick: handleDeleteSubfield,
+        },
+      ],
+    },
+  ];
+
+  const handleSaveSubfield =
+    (currentSubfieldFormState: SubfieldFormEditorState) =>
+    (newSubfieldFormEditorState: SubfieldFormEditorState) => {
+      onChange({
+        subfields: subfields.map((subfield) => {
+          if (subfield.code === currentSubfieldFormState.code) {
+            return newSubfieldFormEditorState;
+          }
+
+          return subfield;
+        }),
+      });
+
+      setEditingSubfield(undefined);
+    };
+
+  const disabledCodes = new Set(subfields.map((subfield) => subfield.code));
+
+  return (
+    <Fragment>
+      {editingSubfield && (
+        <SubfieldEditModal
+          subfieldFormEditorState={editingSubfield}
+          disabledCodes={disabledCodes}
+          onConfirm={handleSaveSubfield}
+          onCloseModal={() => setEditingSubfield(undefined)}
+        />
+      )}
+      <EuiBasicTable<SubfieldFormEditorState>
+        tableCaption="Subcampos"
+        items={subfields}
+        rowHeader="code"
+        columns={columns}
+      />
+    </Fragment>
+  );
+};
+
+function yesOrNoMessage(value: boolean) {
+  return value ? (
+    <FormattedMessage id="yes" defaultMessage="Sim" />
+  ) : (
+    <FormattedMessage id="no" defaultMessage="Não" />
+  );
+}
+
+export default SubfieldSection;

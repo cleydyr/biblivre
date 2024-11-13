@@ -5,7 +5,8 @@ export function getSchemaFromURL() {
 }
 
 export function baseEndpointPath() {
-  return `${window.location.origin}/api/v2`;
+  // return `${window.location.origin}/api/v2`;
+  return `http://localhost:8090/api/v2`;
 }
 
 export const DEFAULT_FETCH_OPTIONS: InitOverrideFunction = async ({

@@ -1,5 +1,7 @@
+import type { SubfieldCode } from "./types";
 import { isDatafieldTag } from "./types";
 import type { IndicatorCode } from "./components/types";
+import { AutocompleteType } from "../../generated-sources";
 
 type Ordered = {
   sortOrder: number;
@@ -71,4 +73,22 @@ export function toIndicatorCode(value: string): IndicatorCode {
     default:
       throw new Error(`Invalid value for ${value}`);
   }
+}
+
+export function toSubfieldCode(value: string): SubfieldCode {
+  if (/^[a-z0-9]$/i.test(value)) {
+    return value as SubfieldCode;
+  }
+
+  throw new Error(`Invalid value for ${value}`);
+}
+
+export const AUTOCOMPLETE_VALUES = Object.values(AutocompleteType);
+
+export function toAutoCompleteType(value: string): AutocompleteType {
+  if (AUTOCOMPLETE_VALUES.includes(value as AutocompleteType)) {
+    return value as AutocompleteType;
+  }
+
+  throw new Error(`Invalid autocomplete type: ${value}`);
 }

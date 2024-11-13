@@ -1,5 +1,6 @@
 import type { FormData, RecordType } from "../../generated-sources";
 import type { Digit } from "../../types";
+import type { AlphaNumericCharacter } from "./components/types";
 
 export type SuccessMessage = {
   success: true;
@@ -37,6 +38,8 @@ export type DeleteDatafieldPayload = {
   datafield: DatafieldTag;
   recordType: RecordType;
 };
+
+export type SubfieldCode = AlphaNumericCharacter;
 
 export function isDatafieldTag(s: string): s is DatafieldTag {
   return /^[0-9]{3}$/.test(s);

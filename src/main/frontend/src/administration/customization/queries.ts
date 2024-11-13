@@ -18,10 +18,11 @@ import type {
   FormDataLegacy,
   FormDataPayload,
   NonSuccessMessage,
+  SubfieldCode,
   SuccessMessage,
 } from "./types";
 import { fetchJSONFromServer } from "../../api/legacy/helpers";
-import { getFieldNameTranslation } from "./lib";
+import { getFieldNameTranslation, toSubfieldCode } from "./lib";
 import type { IndicatorCode } from "./components/types";
 
 const TRANSLATIONS_QUERY_KEY = "TRANSLATIONS";
@@ -198,12 +199,12 @@ export interface FormFieldEditorState {
   collapsed: boolean;
   indicatorsState: [IndicatorEditorState, IndicatorEditorState];
   materialTypes: MaterialType[];
-  subfields: SubfieldState[];
+  subfields: SubfieldFormEditorState[];
 }
 
-interface SubfieldState {
-  code: string;
-  name: string;
+export interface SubfieldFormEditorState {
+  code: SubfieldCode;
+  description: string;
   repeatable: boolean;
   collapsed: boolean;
   autocompleteType: AutocompleteType;
@@ -212,11 +213,11 @@ interface SubfieldState {
 function toSubfieldState(
   translations: Record<string, string>,
   subfield: Subfield,
-): SubfieldState {
+): SubfieldFormEditorState {
   return {
-    code: subfield.subfield ?? "",
+    code: toSubfieldCode(subfield.subfield),
     collapsed: subfield.collapsed ?? false,
-    name: getSubfieldTranslation(translations, subfield),
+    description: getSubfieldTranslation(translations, subfield),
     repeatable: subfield.repeatable ?? false,
     autocompleteType: subfield.autocompleteType ?? "disabled",
   };
