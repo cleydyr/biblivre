@@ -21,14 +21,15 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
     SubfieldFormEditorState | undefined
   >(undefined);
 
-  const handleDeleteSubfield =
-    (subfieldFormEditorState: SubfieldFormEditorState) => () => {
-      onChange({
-        subfields: subfields.filter(
-          (subfield) => subfieldFormEditorState.code !== subfield.code,
-        ),
-      });
-    };
+  const handleDeleteSubfield = (
+    subfieldFormEditorState: SubfieldFormEditorState,
+  ) => {
+    onChange({
+      subfields: subfields.filter(
+        (subfield) => subfieldFormEditorState.code !== subfield.code,
+      ),
+    });
+  };
 
   const columns: Array<EuiBasicTableColumn<SubfieldFormEditorState>> = [
     {
@@ -117,7 +118,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
             formatMessage(messages.removeSubfieldValueDescription, {
               value: item.code,
             }),
-          onClick: handleDeleteSubfield,
+          onClick: (item) => handleDeleteSubfield(item),
         },
       ],
     },
