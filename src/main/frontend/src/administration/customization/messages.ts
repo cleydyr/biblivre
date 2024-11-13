@@ -43,14 +43,6 @@ const messages = defineMessages({
     id: "administration.customization.indicator.action.remove.description",
     defaultMessage: "Remover valor {value} do indicador {indicator}",
   },
-  editSubfieldValueDescription: {
-    id: "administration.customization.subfield.action.edit.description",
-    defaultMessage: "Editar valor do subcampo {value}",
-  },
-  removeSubfieldValueDescription: {
-    id: "administration.customization.subfield.action.remove.description",
-    defaultMessage: "Remover valor do subcampo {value}",
-  },
 });
 
 export default messages;

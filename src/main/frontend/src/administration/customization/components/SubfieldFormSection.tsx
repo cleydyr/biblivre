@@ -4,13 +4,33 @@ import { useState } from "react";
 import React from "react";
 import type { FormFieldEditorState, SubfieldFormEditorState } from "../queries";
 import type { WithOnChange } from "./types";
-import { FormattedMessage, useIntl } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import type { EuiBasicTableColumn } from "@elastic/eui";
 import { EuiBasicTable, EuiCode } from "@elastic/eui";
 import type { AutocompleteType } from "../../../generated-sources";
-import messages, { autocompleteTypeMessageDescriptors } from "../messages";
+import { autocompleteTypeMessageDescriptors } from "../messages";
 import SubfieldEditModal from "./SubfieldEditModal";
+import SubfieldConfirmDeleteModal from "./SubfieldConfirmDeleteModal";
 
+const messages = defineMessages({
+  editSubfieldValueDescription: {
+    id: "administration.customization.subfield.action.edit.description",
+    defaultMessage: "Editar valor do subcampo {value}",
+  },
+  removeSubfieldValueDescription: {
+    id: "administration.customization.subfield.action.remove.description",
+    defaultMessage: "Remover valor do subcampo {value}",
+  },
+  deleteSubfieldValueModalTitle: {
+    id: "administration.customization.subfield.action.delete.title",
+    defaultMessage: "Remover valor do subcampo {value}",
+  },
+  deleteSubfieldValueModalBody: {
+    id: "administration.customization.subfield.action.delete.body",
+    defaultMessage:
+      "Tem certeza que deseja remover o valor do subcampo {value}? Esta operação é irreversível, e o campo só será apresentado na aba Marc.",
+  },
+});
 const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
   subfields,
   onChange,
@@ -18,6 +38,10 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
   const { formatMessage } = useIntl();
 
   const [editingSubfield, setEditingSubfield] = useState<
+    SubfieldFormEditorState | undefined
+  >(undefined);
+
+  const [deletingSubfield, setDeletingSubfield] = useState<
     SubfieldFormEditorState | undefined
   >(undefined);
 
@@ -118,7 +142,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
             formatMessage(messages.removeSubfieldValueDescription, {
               value: item.code,
             }),
-          onClick: (item) => handleDeleteSubfield(item),
+          onClick: setDeletingSubfield,
         },
       ],
     },
@@ -129,7 +153,6 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
     (newSubfieldFormEditorState: SubfieldFormEditorState) => {
       onChange({
         subfields: subfields.map((subfield) => {
-          debugger;
           if (subfield.code === currentSubfieldFormState.code) {
             return newSubfieldFormEditorState;
           }
@@ -145,6 +168,16 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
 
   return (
     <Fragment>
+      {deletingSubfield && (
+        <SubfieldConfirmDeleteModal
+          code={deletingSubfield.code}
+          onConfirm={() => {
+            handleDeleteSubfield(deletingSubfield);
+            setDeletingSubfield(undefined);
+          }}
+          onClose={() => setDeletingSubfield(undefined)}
+        />
+      )}
       {editingSubfield && (
         <SubfieldEditModal
           subfieldFormEditorState={editingSubfield}

@@ -12,6 +12,7 @@ import {
 import messages from "../messages";
 import IndicatorValueEditModal from "./IndicatorValueEditModal";
 import { toIndicatorCode } from "../lib";
+import IndicatorConfirmDeleteModal from "./IndicatorConfirmDeleteModal";
 
 type IndicatorValueNameInfo = {
   order: IndicatorOrder;
@@ -34,6 +35,10 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
   const { formatMessage } = useIntl();
 
   const [editingIndicator, setEditingIndicator] = useState<
+    IndicatorValueNameInfo | undefined
+  >(undefined);
+
+  const [deletingIndicatorValue, setDeletingIndicatorValue] = useState<
     IndicatorValueNameInfo | undefined
   >(undefined);
 
@@ -145,7 +150,7 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
               value: item.code,
               indicator: order + 1,
             }),
-          onClick: handleDeleteIndicadorValue,
+          onClick: setDeletingIndicatorValue,
         },
       ],
     },
@@ -153,6 +158,19 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
 
   return (
     <Fragment>
+      {deletingIndicatorValue && (
+        <IndicatorConfirmDeleteModal
+          order={order}
+          code={deletingIndicatorValue.code}
+          onClose={() => {
+            setDeletingIndicatorValue(undefined);
+          }}
+          onConfirm={() => {
+            handleDeleteIndicadorValue(deletingIndicatorValue);
+            setDeletingIndicatorValue(undefined);
+          }}
+        />
+      )}
       {editingIndicator && (
         <IndicatorValueEditModal
           indicatorCode={editingIndicator.code}
