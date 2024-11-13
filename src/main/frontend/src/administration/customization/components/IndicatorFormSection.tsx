@@ -12,7 +12,7 @@ import {
 import messages from "../messages";
 import IndicatorValueEditModal from "./IndicatorValueEditModal";
 import { toIndicatorCode } from "../lib";
-import IndicatorConfirmDeleteModal from "./IndicatorConfirmDeleteModal";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 type IndicatorValueNameInfo = {
   order: IndicatorOrder;
@@ -159,9 +159,18 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
   return (
     <Fragment>
       {deletingIndicatorValue && (
-        <IndicatorConfirmDeleteModal
-          order={order}
-          code={deletingIndicatorValue.code}
+        <ConfirmDeleteModal
+          title={
+            <FormattedMessage
+              id="administration.customization.indicator.confirm_delete"
+              defaultMessage="Excluir informação do valor {code} do indicador {humanReadableOrder}?"
+              values={{
+                code: deletingIndicatorValue.code,
+                humanReadableOrder: order + 1,
+              }}
+            />
+          }
+          value={deletingIndicatorValue.code}
           onClose={() => {
             setDeletingIndicatorValue(undefined);
           }}
@@ -169,6 +178,34 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
             handleDeleteIndicadorValue(deletingIndicatorValue);
             setDeletingIndicatorValue(undefined);
           }}
+          modalBody={
+            <FormattedMessage
+              id="administration.customization.indicator.confirm_delete_message"
+              defaultMessage="Esta operação é irreversível. A informação a ser deletada só pode ser recriada manualmente."
+            />
+          }
+          confirmButtonText={
+            <FormattedMessage
+              id="administration.customization.indicator.confirm_delete"
+              defaultMessage="Entendo os riscos, excluir assim mesmo"
+            />
+          }
+          cancelButtonText={
+            <FormattedMessage
+              id="administration.customization.indicator.cancel_delete"
+              defaultMessage="Cancelar remoção"
+            />
+          }
+          formRowLabel={
+            <FormattedMessage
+              id="administration.customization.indicator.confirm_delete_input"
+              defaultMessage="Digite <strong>{code}</strong> para habilitar o botão de confirmar a exclusão"
+              values={{
+                code: deletingIndicatorValue.code,
+                strong: (msg) => <strong>{msg}</strong>,
+              }}
+            />
+          }
         />
       )}
       {editingIndicator && (

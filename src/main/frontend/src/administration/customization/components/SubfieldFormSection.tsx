@@ -10,7 +10,7 @@ import { EuiBasicTable, EuiCode } from "@elastic/eui";
 import type { AutocompleteType } from "../../../generated-sources";
 import { autocompleteTypeMessageDescriptors } from "../messages";
 import SubfieldEditModal from "./SubfieldEditModal";
-import SubfieldConfirmDeleteModal from "./SubfieldConfirmDeleteModal";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 const messages = defineMessages({
   editSubfieldValueDescription: {
@@ -169,8 +169,50 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
   return (
     <Fragment>
       {deletingSubfield && (
-        <SubfieldConfirmDeleteModal
-          code={deletingSubfield.code}
+        <ConfirmDeleteModal
+          title={
+            <FormattedMessage
+              id="administration.customization.subfield.confirm_delete"
+              defaultMessage="Excluir subcampo {code}?"
+              values={{
+                code: deletingSubfield.code,
+              }}
+            />
+          }
+          value={deletingSubfield.code}
+          cancelButtonText={
+            <FormattedMessage
+              id="administration.customization.subfield.cancel_delete"
+              defaultMessage="Cancelar remoção"
+            />
+          }
+          confirmButtonText={
+            <FormattedMessage
+              id="administration.customization.subfield.confirm_delete"
+              defaultMessage="Entendo os riscos, excluir assim mesmo"
+            />
+          }
+          modalBody={
+            <FormattedMessage
+              id="administration.customization.subfield.confirm_delete_message"
+              defaultMessage="Esta operação é irreversível, e o campo só será apresentado na aba Marc.
+          A informação a ser deletada só pode ser recriada manualmente."
+              values={{
+                code: deletingSubfield.code,
+                monospace: (msg) => <EuiCode>{msg}</EuiCode>,
+              }}
+            />
+          }
+          formRowLabel={
+            <FormattedMessage
+              id="administration.customization.subfield.confirm_delete_input"
+              defaultMessage="Digite <strong>{code}</strong> para habilitar o botão de confirmar a exclusão"
+              values={{
+                code: deletingSubfield.code,
+                strong: (msg) => <strong>{msg}</strong>,
+              }}
+            />
+          }
           onConfirm={() => {
             handleDeleteSubfield(deletingSubfield);
             setDeletingSubfield(undefined);

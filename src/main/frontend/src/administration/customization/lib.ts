@@ -1,4 +1,4 @@
-import type { SubfieldCode } from "./types";
+import type { DatafieldTag, SubfieldCode } from "./types";
 import { isDatafieldTag } from "./types";
 import type { IndicatorCode } from "./components/types";
 import { AutocompleteType } from "../../generated-sources";
@@ -81,6 +81,14 @@ export function toSubfieldCode(value: string): SubfieldCode {
   }
 
   throw new Error(`Invalid value for ${value}`);
+}
+
+export function toDatafieldTag(value: string): DatafieldTag {
+  if (/^[0-9]{3}$/.test(value)) {
+    return value as DatafieldTag;
+  }
+
+  throw new Error(`Invalid tag value: ${value}`);
 }
 
 export const AUTOCOMPLETE_VALUES = Object.values(AutocompleteType);
