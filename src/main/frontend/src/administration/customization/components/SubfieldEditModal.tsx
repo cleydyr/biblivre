@@ -210,7 +210,6 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
           type="submit"
           form={modalFormId}
           onClick={() => {
-            debugger;
             onConfirm(editedSubfield);
 
             onCloseModal();
