@@ -345,6 +345,13 @@ components:
         sortOrder:
           type: integer
           example: 1
+      required:
+        - datafield
+        - subfield
+        - collapsed
+        - repeatable
+        - autocomplete_type
+        - sortOrder
     MaterialType:
       type: string
       enum:
