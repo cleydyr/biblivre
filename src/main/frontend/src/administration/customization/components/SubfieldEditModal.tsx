@@ -15,16 +15,19 @@ import {
   EuiModalHeader,
   EuiModalHeaderTitle,
   EuiSelect,
-  EuiSelectable,
   EuiSwitch,
   useGeneratedHtmlId,
 } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
 import type { SubfieldCode } from "../types";
 import { ALPHANUMERIC_CHARACTERS_VALUES } from "./types";
-import { AUTOCOMPLETE_VALUES, toAutoCompleteType } from "../lib";
+import {
+  AUTOCOMPLETE_VALUES,
+  toAutoCompleteType,
+  toSubfieldCode,
+} from "../lib";
 import type { SubfieldFormEditorState } from "../queries";
-import type { EuiSelectableOption } from "@elastic/eui/src/components/selectable/selectable_option";
+import type { EuiSelectOption } from "@elastic/eui/src/components/form/select/select";
 
 type SubfieldEditModalProps = {
   subfieldFormEditorState: SubfieldFormEditorState;
@@ -50,17 +53,12 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
     text: value,
   }));
 
-  type WrappedSubfieldCode = {
-    code: SubfieldCode;
-  };
-
-  const options: EuiSelectableOption<WrappedSubfieldCode>[] =
-    ALPHANUMERIC_CHARACTERS_VALUES.map((value) => ({
-      code: value,
-      label: value,
-      checked: editedSubfield.code === value ? "on" : undefined,
+  const options: EuiSelectOption[] = ALPHANUMERIC_CHARACTERS_VALUES.map(
+    (value) => ({
       disabled: disabledCodes.has(value),
-    }));
+      text: value,
+    }),
+  );
 
   return (
     <EuiModal
@@ -70,55 +68,60 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
     >
       <EuiModalHeader>
         <EuiModalHeaderTitle id={modalTitleId}>
-          Editar valor do indicador
+          <FormattedMessage
+            id="administration.customization.subfield.edit.modal.title"
+            defaultMessage="Editar valor do subcampo"
+          />
         </EuiModalHeaderTitle>
       </EuiModalHeader>
 
       <EuiModalBody>
         <EuiForm>
           <EuiFlexGroup direction="column">
-            <EuiFlexItem grow={false}>
-              <EuiFormRow
-                label={
-                  <FormattedMessage
-                    id="administration.customization.subfield.code"
-                    defaultMessage="Código"
-                  />
-                }
-              >
-                <EuiSelectable<WrappedSubfieldCode>
-                  singleSelection="always"
-                  options={options}
-                  onChange={(_1, _2, changedOption) => {
-                    setEditedSubfield({
-                      ...editedSubfield,
-                      code: changedOption.code,
-                    });
-                  }}
-                />
-              </EuiFormRow>
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormRow
-                label={
-                  <FormattedMessage
-                    id="administration.customization.subfield.description"
-                    defaultMessage="Descrição"
-                  />
-                }
-              >
-                <EuiFieldText
-                  name="description"
-                  value={subfieldFormEditorState.description}
-                  onChange={(event) =>
-                    setEditedSubfield({
-                      ...subfieldFormEditorState,
-                      description: event.target.value,
-                    })
+            <EuiFlexGroup>
+              <EuiFlexItem grow={false}>
+                <EuiFormRow
+                  label={
+                    <FormattedMessage
+                      id="administration.customization.subfield.code"
+                      defaultMessage="Código"
+                    />
                   }
-                ></EuiFieldText>
-              </EuiFormRow>
-            </EuiFlexItem>
+                >
+                  <EuiSelect
+                    options={options}
+                    value={editedSubfield.code}
+                    onChange={(event) => {
+                      setEditedSubfield({
+                        ...editedSubfield,
+                        code: toSubfieldCode(event.target.value),
+                      });
+                    }}
+                  />
+                </EuiFormRow>
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiFormRow
+                  label={
+                    <FormattedMessage
+                      id="administration.customization.subfield.description"
+                      defaultMessage="Descrição"
+                    />
+                  }
+                >
+                  <EuiFieldText
+                    name="description"
+                    value={subfieldFormEditorState.description}
+                    onChange={(event) =>
+                      setEditedSubfield({
+                        ...subfieldFormEditorState,
+                        description: event.target.value,
+                      })
+                    }
+                  ></EuiFieldText>
+                </EuiFormRow>
+              </EuiFlexItem>
+            </EuiFlexGroup>
             <EuiFlexGroup>
               <EuiFlexItem grow={false}>
                 <EuiFormRow
@@ -207,6 +210,7 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
           type="submit"
           form={modalFormId}
           onClick={() => {
+            debugger;
             onConfirm(editedSubfield);
 
             onCloseModal();

@@ -53,7 +53,7 @@ const MaterialTypeFormSection: FC<FormFieldEditorState & WithOnChange> = ({
             });
           }}
         >
-          {(list) => "foobar"}
+          {(list) => list}
         </EuiSelectable>
       </EuiFormRow>
     )

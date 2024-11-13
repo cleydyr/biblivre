@@ -195,7 +195,7 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
           id: "indicator2",
           name: (
             <FormattedMessage
-              id="administration.customization.indicator.1"
+              id="administration.customization.indicator.2"
               defaultMessage="Indicador 2"
             />
           ),
@@ -212,7 +212,7 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
           id: "subfields",
           name: (
             <FormattedMessage
-              id="administration.customization.indicator.1"
+              id="administration.customization.subfields"
               defaultMessage="Subcampos"
             />
           ),

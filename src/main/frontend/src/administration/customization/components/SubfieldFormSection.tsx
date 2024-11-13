@@ -35,17 +35,17 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
       field: "code",
       name: (
         <FormattedMessage
-          id="administration.customization.indicator.code"
+          id="administration.customization.subfield.code"
           defaultMessage="Código"
         />
       ),
       render: (code: string) => <EuiCode>{code}</EuiCode>,
     },
     {
-      field: "name",
+      field: "description",
       name: (
         <FormattedMessage
-          id="administration.customization.indicator.description"
+          id="administration.customization.subfield.description"
           defaultMessage="Descrição"
         />
       ),
@@ -54,7 +54,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
       field: "repeatable",
       name: (
         <FormattedMessage
-          id="administration.customization.indicator.repeatable"
+          id="administration.customization.subfield.repeatable"
           defaultMessage="Repetível"
         />
       ),
@@ -64,7 +64,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
       field: "collapsed",
       name: (
         <FormattedMessage
-          id="administration.customization.indicator.collapsed"
+          id="administration.customization.subfield.collapsed"
           defaultMessage="Recolhido"
         />
       ),
@@ -74,7 +74,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
       field: "autocompleteType",
       name: (
         <FormattedMessage
-          id="administration.customization.indicator.autocomplete_type"
+          id="administration.customization.subfield.autocomplete_type"
           defaultMessage="Tipo de auto-completar"
         />
       ),
@@ -84,7 +84,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
     {
       name: (
         <FormattedMessage
-          id="administration.customization.indicator.actions"
+          id="administration.customization.subfield.actions"
           defaultMessage="Ações"
         />
       ),
@@ -109,7 +109,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
           type: "icon",
           name: (
             <FormattedMessage
-              id="administration.customization.indicator.action.delete"
+              id="administration.customization.subfield.action.delete"
               defaultMessage="Remover"
             />
           ),
@@ -128,6 +128,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
     (newSubfieldFormEditorState: SubfieldFormEditorState) => {
       onChange({
         subfields: subfields.map((subfield) => {
+          debugger;
           if (subfield.code === currentSubfieldFormState.code) {
             return newSubfieldFormEditorState;
           }
@@ -147,7 +148,7 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
         <SubfieldEditModal
           subfieldFormEditorState={editingSubfield}
           disabledCodes={disabledCodes}
-          onConfirm={handleSaveSubfield}
+          onConfirm={handleSaveSubfield(editingSubfield)}
           onCloseModal={() => setEditingSubfield(undefined)}
         />
       )}
