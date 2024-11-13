@@ -4,6 +4,7 @@ import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import unusedImports from "eslint-plugin-unused-imports";
 import reactHooksDependencies from "eslint-plugin-react-hooks";
+import formatjs from "eslint-plugin-formatjs";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -52,6 +53,14 @@ export default [
     rules: {
       "react-hooks/exhaustive-deps": "warn",
       "react-hooks/rules-of-hooks": "error",
+    },
+  },
+  {
+    plugins: {
+      formatjs,
+    },
+    rules: {
+      "formatjs/no-offset": "error",
     },
   },
 ];
