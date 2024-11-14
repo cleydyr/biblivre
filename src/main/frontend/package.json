@@ -12,7 +12,7 @@
     "extract": "formatjs extract",
     "compile": "formatjs compile",
     "translations:extract:pt-BR": "yarn extract 'src/**/*.ts*' --ignore='**/*.d.ts' --out-file lang/pt-BR.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
-    "translations:compile:pt-BR": "yarn compile 'lang/pt-BR.json' --out-file lang/pt-BR.json",
+    "translations:compile:pt-BR": "yarn compile 'lang/pt-BR.json' --out-file compile-lang/pt-BR.json",
     "translations:rebuild:pt-BR": "yarn translations:extract:pt-BR && yarn translations:compile:pt-BR"
   },
   "keywords": [],
