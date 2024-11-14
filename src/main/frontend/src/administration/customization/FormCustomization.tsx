@@ -6,10 +6,16 @@ import {
   EuiDroppable,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiFlyout,
+  EuiFlyoutBody,
+  EuiFlyoutHeader,
   EuiIcon,
   EuiLoadingSpinner,
   EuiPanel,
   EuiTitle,
+  useGeneratedHtmlId,
+  EuiFlyoutFooter,
+  EuiButton,
 } from "@elastic/eui";
 import type { FC } from "react";
 import React, { Fragment, useState } from "react";
@@ -29,11 +35,11 @@ import {
   getFieldNameTranslation,
   toDatafieldTag,
 } from "./lib";
-import FormFieldEditor from "./FormFieldEditor";
 import { FormattedMessage } from "react-intl";
 import ConfirmDeleteModal from "./components/ConfirmDeleteModal";
+import FormFieldEditor from "./FormFieldEditor";
 
-const App: React.FC = () => {
+const FormCustomization: React.FC = () => {
   const { isLoading, isSuccess, data } = useFormDataQuery(RecordType.Biblio);
 
   if (isLoading) {
@@ -73,6 +79,14 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
     FormData | undefined
   >(undefined);
 
+  const [datafieldToEdit, setDatafieldToEdit] = useState<FormData | undefined>(
+    undefined,
+  );
+
+  const simpleFlyoutTitleId = useGeneratedHtmlId({
+    prefix: "simpleFlyoutTitle",
+  });
+
   if (isLoading) {
     return <EuiLoadingSpinner />;
   }
@@ -105,6 +119,63 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
 
   return (
     <Fragment>
+      {datafieldToEdit && (
+        <EuiFlyout
+          ownFocus
+          onClose={() => setDatafieldToEdit(undefined)}
+          aria-labelledby={simpleFlyoutTitleId}
+        >
+          <EuiFlyoutHeader>
+            <EuiTitle size="m">
+              <h2 id={simpleFlyoutTitleId}>
+                <FormattedMessage
+                  id="administration.customization.datafield.edit"
+                  defaultMessage="Editar campo {tag}"
+                  values={{
+                    tag: datafieldToEdit.datafield,
+                  }}
+                />
+              </h2>
+            </EuiTitle>
+          </EuiFlyoutHeader>
+          <EuiFlyoutBody>
+            <FormFieldEditor field={datafieldToEdit} onSave={() => {}} />
+          </EuiFlyoutBody>
+          <EuiFlyoutFooter>
+            <EuiFlexGroup justifyContent="flexEnd">
+              <EuiFlexItem grow={false}>
+                <EuiButton
+                  onClick={() => {
+                    setDatafieldToEdit(undefined);
+                  }}
+                >
+                  <FormattedMessage
+                    id="administration.customization.form.cancel"
+                    defaultMessage="Cancelar"
+                  />
+                </EuiButton>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton
+                  fill
+                  onClick={() => {
+                    saveFormDataFieldsMtn({
+                      fields: [datafieldToEdit],
+                      recordType: RecordType.Biblio,
+                    });
+                    setDatafieldToEdit(undefined);
+                  }}
+                >
+                  <FormattedMessage
+                    id="administration.customization.form.save"
+                    defaultMessage="Salvar"
+                  />
+                </EuiButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiFlyoutFooter>
+        </EuiFlyout>
+      )}
       {datafieldToDelete && (
         <ConfirmDeleteModal
           value={datafieldToDelete.datafield}
@@ -133,6 +204,27 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
               }}
             />
           }
+          title={
+            <FormattedMessage
+              id="administration.customization.datafield.confirm_delete"
+              defaultMessage="Excluir campo {tag}?"
+              values={{
+                tag: datafieldToDelete.datafield,
+              }}
+            />
+          }
+          confirmButtonText={
+            <FormattedMessage
+              id="administration.customization.datafield.confirm_delete"
+              defaultMessage="Entendo os riscos, excluir assim mesmo"
+            />
+          }
+          cancelButtonText={
+            <FormattedMessage
+              id="administration.customization.datafield.cancel_delete"
+              defaultMessage="Cancelar remoção"
+            />
+          }
         />
       )}
       {isSuccess && (
@@ -143,10 +235,7 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
             withPanel
           >
             <Fragment>
-              <FormFieldEditor
-                field={items.find((item) => item.datafield === "100")!}
-              />
-              {items.slice(0, 5).map((item, idx) => (
+              {items.map((item, idx) => (
                 <EuiDraggable
                   spacing="m"
                   key={item.datafield}
@@ -181,6 +270,7 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
                             <EuiButtonIcon
                               iconType="pencil"
                               aria-label={`Editar campo ${item.datafield}`}
+                              onClick={() => setDatafieldToEdit({ ...item })}
                             />
                           </EuiFlexGroup>
                         </EuiFlexGroup>
@@ -197,4 +287,4 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
   );
 };
 
-export default App;
+export default FormCustomization;

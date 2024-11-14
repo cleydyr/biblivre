@@ -21,16 +21,13 @@ const MaterialTypeFormSection: FC<FormFieldEditorState & WithOnChange> = ({
 
   const allMaterialTypes: MaterialType[] = Object.values(MaterialTypeEnum);
 
-  type WrappedMaterialType = {
-    materialType: MaterialTypeEnum;
-  };
-
-  const options: EuiSelectableOption<WrappedMaterialType>[] =
-    allMaterialTypes.map((materialType) => ({
-      materialType,
+  const options: EuiSelectableOption[] = allMaterialTypes.map(
+    (materialType) => ({
       label: translations[`marc.material_type.${materialType}`],
       checked: materialTypes.includes(materialType) ? "on" : undefined,
-    }));
+      key: materialType,
+    }),
+  );
 
   return (
     isSuccess && (
@@ -42,18 +39,23 @@ const MaterialTypeFormSection: FC<FormFieldEditorState & WithOnChange> = ({
           />
         }
       >
-        <EuiSelectable<WrappedMaterialType>
+        <EuiSelectable
           options={options}
           listProps={{ bordered: true }}
           onChange={(options) => {
             onChange({
               materialTypes: options
-                .filter((option) => option.checked === "on")
-                .map(({ materialType }) => materialType),
+                .filter(
+                  (option) =>
+                    option.checked === "on" && option.key !== undefined,
+                )
+                .map((option) => option.key as MaterialType),
             });
           }}
         >
-          {(list) => list}
+          {(list) => {
+            return list;
+          }}
         </EuiSelectable>
       </EuiFormRow>
     )

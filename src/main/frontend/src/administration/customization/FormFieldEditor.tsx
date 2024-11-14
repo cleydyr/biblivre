@@ -26,6 +26,7 @@ import SubfieldFormSection from "./components/SubfieldFormSection";
 
 type FormFieldEditorProps = {
   field: FormData;
+  onSave: () => void;
 };
 
 const Indicator1FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
@@ -78,7 +79,7 @@ const Indicator2FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
     <EuiFormRow
       label={
         <FormattedMessage
-          id="administration.customization.indicator1.defined"
+          id="administration.customization.indicator2.defined"
           defaultMessage="Indicador 2 definido"
         />
       }
@@ -86,7 +87,7 @@ const Indicator2FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
       <EuiSwitch
         label={
           <FormattedMessage
-            id="administration.customization.indicator1.defined"
+            id="administration.customization.indicator2.defined"
             defaultMessage="Indicador 2 definido"
           />
         }
@@ -244,8 +245,6 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
       </EuiTabs>
       <EuiSpacer />
       {selectedTabContent}
-
-      <EuiSpacer size="xxl" />
     </EuiForm>
   );
 };

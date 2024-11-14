@@ -19,6 +19,7 @@ const DatafieldTagFormField: FC<FormFieldEditorState & WithOnChange> = ({
       }
     >
       <EuiFieldText
+        readOnly
         name="datafield"
         maxLength={3}
         minLength={3}

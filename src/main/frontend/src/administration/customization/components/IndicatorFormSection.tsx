@@ -32,6 +32,9 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
 }) => {
   const { description, translations } = indicatorsState[order];
 
+  const [editingIndicatorDescription, setEditingIndicatorDescription] =
+    useState<string>(description);
+
   const { formatMessage } = useIntl();
 
   const [editingIndicator, setEditingIndicator] = useState<
@@ -225,7 +228,25 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
           />
         }
       >
-        <EuiFieldText name="indicator1_name" value={description}></EuiFieldText>
+        <EuiFieldText
+          name="indicator1_name"
+          value={editingIndicatorDescription}
+          onChange={(event) => {
+            setEditingIndicatorDescription(event.target.value);
+
+            const newIndicatorState = {
+              ...indicatorsState[order],
+              description: event.target.value,
+            };
+
+            onChange({
+              indicatorsState:
+                order === 0
+                  ? [newIndicatorState, indicatorsState[1]]
+                  : [indicatorsState[0], newIndicatorState],
+            });
+          }}
+        ></EuiFieldText>
       </EuiFormRow>
       <EuiBasicTable<IndicatorValueNameInfo>
         tableCaption="Valores do indicador 1"

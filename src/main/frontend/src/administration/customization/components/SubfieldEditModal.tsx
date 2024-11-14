@@ -204,7 +204,12 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
       </EuiModalBody>
 
       <EuiModalFooter>
-        <EuiButtonEmpty onClick={onCloseModal}>Cancel</EuiButtonEmpty>
+        <EuiButtonEmpty onClick={onCloseModal}>
+          <FormattedMessage
+            id="administration.customization.subfield.edit.modal.cancel"
+            defaultMessage="Cancelar"
+          />
+        </EuiButtonEmpty>
 
         <EuiButton
           type="submit"
@@ -216,7 +221,10 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
           }}
           fill
         >
-          Save
+          <FormattedMessage
+            id="administration.customization.subfield.edit.modal.confirm"
+            defaultMessage="Confirmar"
+          />
         </EuiButton>
       </EuiModalFooter>
     </EuiModal>

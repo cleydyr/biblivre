@@ -3,31 +3,21 @@ import React from "react";
 import type { FormFieldEditorState } from "../queries";
 import type { WithOnChange } from "./types";
 import { EuiFormRow, EuiSwitch } from "@elastic/eui";
-import { FormattedMessage } from "react-intl";
+import { useIntl } from "react-intl";
+import messages from "./messages";
 
 const CollapsedSwitchFormField: FC<FormFieldEditorState & WithOnChange> = (
   props,
 ) => {
+  const { formatMessage } = useIntl();
+
   const { collapsed, onChange } = props;
 
   return (
-    <EuiFormRow
-      label={
-        <FormattedMessage
-          id="administration.customization.marc.datafield.collapsed"
-          defaultMessage="Recolhido"
-        />
-      }
-      hasChildLabel={false}
-    >
+    <EuiFormRow label={formatMessage(messages.collapsed)} hasChildLabel={false}>
       <EuiSwitch
         showLabel={false}
-        label={
-          <FormattedMessage
-            id="administration.customization.datafield.collapsed"
-            defaultMessage="Recolhido"
-          />
-        }
+        label={formatMessage(messages.collapsed)}
         checked={collapsed}
         onChange={() => {
           onChange({

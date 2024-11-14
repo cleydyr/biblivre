@@ -14,9 +14,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     async function loadLocaleData() {
-      const compiledMessages = await import(
-        "../../../compiled-lang/pt-BR.json"
-      );
+      const compiledMessages = await import("../../../compile-lang/pt-BR.json");
 
       setMessages(compiledMessages);
     }
