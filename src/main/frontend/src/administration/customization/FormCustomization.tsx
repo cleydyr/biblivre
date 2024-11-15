@@ -1,35 +1,32 @@
-import type { DraggableProvidedDragHandleProps } from "@elastic/eui";
 import {
-  EuiButtonIcon,
   EuiDragDropContext,
-  euiDragDropReorder,
   EuiDraggable,
   EuiDroppable,
   EuiFlexGroup,
-  EuiFlexItem,
-  EuiIcon,
-  EuiPanel,
-  EuiTitle,
   EuiLoadingLogo,
   EuiImage,
+  euiDragDropReorder,
 } from "@elastic/eui";
 import type { FC } from "react";
-import React, { Fragment, useState } from "react";
-
-import "@elastic/eui/dist/eui_theme_light.css";
+import React, { Fragment, useState, useEffect } from "react";
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FormData } from "../../generated-sources";
 import { RecordType } from "../../generated-sources";
 import {
   useDeleteFormDataFieldMutation,
   useFormDataQuery,
   useSaveFormDataFieldsMutation,
+  useSaveFormDatafieldsUsingEditorStateMutation,
   useTranslationsQuery,
 } from "./queries";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { getAffectedItems, toDatafieldTag } from "./lib";
 import EditDatafieldFlyout from "./EditDatafieldFlyout";
 import ConfirmDeleteDatafieldModal from "./ConfirmDeleteDatafieldModal";
-import FormFieldTitle from "./components/FormFieldTitle";
+import { toFormFieldEditorState } from "./components/lib";
+import type { FormFieldEditorState } from "./components/types";
+import DatafieldPanel from "./components/DatafieldPanel";
+import type { DatafieldTag } from "./types";
+import { getTranslations } from "./components/translations_helpers";
 
 function BiblivreLoadingIcon() {
   return (
@@ -48,103 +45,84 @@ function BiblivreLoadingIcon() {
   );
 }
 
+function toPartialFormData(
+  formFieldEditorState: FormFieldEditorState,
+): Partial<FormData> {
+  return {
+    indicator1: formFieldEditorState.indicatorsState[0].defined
+      ? Object.keys(formFieldEditorState.indicatorsState[0].translations)
+      : [],
+    indicator2: formFieldEditorState.indicatorsState[1].defined
+      ? Object.keys(formFieldEditorState.indicatorsState[1].translations)
+      : [],
+    materialType: formFieldEditorState.materialTypes,
+    subfields: formFieldEditorState.subfields.map(
+      ({ code, sortOrder, autocompleteType, repeatable, collapsed }) => ({
+        datafield: formFieldEditorState.tag,
+        subfield: code,
+        sortOrder,
+        autocompleteType,
+        repeatable,
+        collapsed,
+      }),
+    ),
+    repeatable: formFieldEditorState.repeatable,
+    collapsed: formFieldEditorState.collapsed,
+  };
+}
+
 const FormCustomization: React.FC = () => {
   const {
     isLoading: isLoadingFormData,
     isSuccess: isSucessFormData,
-    data,
+    data: datafields,
   } = useFormDataQuery(RecordType.Biblio);
 
   const {
-    data: translations,
+    data: fetchedTranslations,
     isLoading: isLoadingTranslations,
     isSuccess: isSuccessTranslations,
   } = useTranslationsQuery("pt-BR");
 
-  if (isLoadingFormData || isLoadingTranslations) {
-    return <BiblivreLoadingIcon />;
-  }
+  const [items, setItems] = useState<FormData[] | undefined>(datafields);
 
-  return (
-    isSucessFormData &&
-    isSuccessTranslations && (
-      <DatafieldsDragAndDrop datafields={data} translations={translations} />
-    )
-  );
-};
+  const [translations, setTranslations] = useState<
+    Record<string, string> | undefined
+  >(fetchedTranslations);
 
-type DatafieldsDragAndDropProps = {
-  datafields: FormData[];
-  translations: Record<string, string>;
-};
+  useEffect(() => {
+    setTranslations(fetchedTranslations);
+  }, [fetchedTranslations]);
 
-type DatafieldPanelProps = {
-  datafield: string;
-  dragHandleProps: DraggableProvidedDragHandleProps | null;
-  translations: Record<string, string>;
-  onClickDelete: () => void;
-  onClickEdit: () => void;
-};
+  useEffect(() => {
+    setItems(datafields);
+  }, [datafields]);
 
-const DatafieldPanel: FC<DatafieldPanelProps> = ({
-  datafield,
-  translations,
-  dragHandleProps,
-  onClickDelete,
-  onClickEdit,
-}) => {
-  return (
-    <EuiPanel hasBorder={true} {...dragHandleProps}>
-      <EuiFlexGroup gutterSize="m">
-        <EuiFlexItem grow={false}>
-          <EuiFlexGroup alignItems="center">
-            <EuiIcon type="grab" />
-          </EuiFlexGroup>
-        </EuiFlexItem>
-        <EuiTitle size="xs">
-          <h2>
-            <FormFieldTitle
-              tag={toDatafieldTag(datafield)}
-              translations={translations}
-            />
-          </h2>
-        </EuiTitle>
-        <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
-          <EuiButtonIcon
-            iconType="trash"
-            aria-label={`Apagar campo ${datafield}`}
-            onClick={onClickDelete}
-          />
-          <EuiButtonIcon
-            iconType="pencil"
-            aria-label={`Editar campo ${datafield}`}
-            onClick={onClickEdit}
-          />
-        </EuiFlexGroup>
-      </EuiFlexGroup>
-    </EuiPanel>
-  );
-};
+  const { mutate: saveFormDatafieldsUsingEditorState } =
+    useSaveFormDatafieldsUsingEditorStateMutation();
 
-const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
-  datafields,
-  translations,
-}) => {
-  const [items, setItems] = useState<FormData[]>(datafields);
-
-  const { mutate: saveFormDataFieldsMtn } = useSaveFormDataFieldsMutation();
+  const { mutate: saveFormDataFieldsReorderMtn } =
+    useSaveFormDataFieldsMutation();
 
   const { mutate: deleteFormDataFieldMtn } = useDeleteFormDataFieldMutation();
-
-  const [datafieldToDelete, setDatafieldToDelete] = useState<
-    FormData | undefined
-  >(undefined);
 
   const [datafieldToEdit, setDatafieldToEdit] = useState<FormData | undefined>(
     undefined,
   );
 
+  const [datafieldToDelete, setDatafieldToDelete] = useState<
+    DatafieldTag | undefined
+  >(undefined);
+
+  if (isLoadingFormData || isLoadingTranslations) {
+    return <BiblivreLoadingIcon />;
+  }
+
   const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
+    if (items === undefined) {
+      return;
+    }
+
     if (source && destination) {
       const reorderedItems = euiDragDropReorder(
         items,
@@ -154,43 +132,103 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
 
       setItems(reorderedItems);
 
-      saveFormDataFieldsMtn({
+      saveFormDataFieldsReorderMtn({
         fields: getAffectedItems(items, source.index, destination.index),
         recordType: RecordType.Biblio,
       });
     }
   };
 
-  function onFormDataDelete({ datafield }: FormData) {
-    setItems(items.filter((item) => item.datafield !== datafield));
+  function handleDatafieldSave(formFieldEditorState: FormFieldEditorState) {
+    saveFormDatafieldsUsingEditorState({
+      formFieldEditorState,
+      recordType: "biblio",
+    });
+
+    const updatedItems = items?.map((item) =>
+      item.datafield === formFieldEditorState.tag
+        ? {
+            ...item,
+            ...toPartialFormData(formFieldEditorState),
+          }
+        : item,
+    );
+
+    setItems(updatedItems);
+
+    setDatafieldToEdit(undefined);
+
+    setTranslations({
+      ...translations,
+      ...getTranslations(formFieldEditorState),
+    });
+  }
+
+  function handleFormDataDelete(tag: DatafieldTag) {
+    setItems(items?.filter((item) => item.datafield !== tag));
 
     deleteFormDataFieldMtn({
-      datafield: toDatafieldTag(datafield),
+      datafield: tag,
       recordType: RecordType.Biblio,
     });
   }
 
-  function handleDatafieldSave() {}
+  function handleFormDataEdit(tag: DatafieldTag) {
+    setDatafieldToEdit(items?.find((item) => item.datafield === tag));
+  }
 
   return (
+    isSucessFormData &&
+    isSuccessTranslations && (
+      <Fragment>
+        {datafieldToEdit && translations && (
+          <EditDatafieldFlyout
+            editorState={toFormFieldEditorState(translations, datafieldToEdit)}
+            onClose={() => setDatafieldToEdit(undefined)}
+            onSave={handleDatafieldSave}
+          />
+        )}
+        {datafieldToDelete && (
+          <ConfirmDeleteDatafieldModal
+            tag={datafieldToDelete}
+            onConfirm={() => {
+              handleFormDataDelete(datafieldToDelete);
+              setDatafieldToDelete(undefined);
+            }}
+            onClose={() => setDatafieldToDelete(undefined)}
+          />
+        )}
+        {translations && (
+          <DatafieldsDragAndDrop
+            datafields={datafields}
+            translations={translations}
+            onClickDeleteDatafield={setDatafieldToDelete}
+            onClickEditDatafield={handleFormDataEdit}
+            onDragEnd={onDragEnd}
+          />
+        )}
+      </Fragment>
+    )
+  );
+};
+
+type DatafieldsDragAndDropProps = {
+  datafields: FormData[];
+  translations: Record<string, string>;
+  onDragEnd: OnDragEndResponder;
+  onClickDeleteDatafield: (tag: DatafieldTag) => void;
+  onClickEditDatafield: (tag: DatafieldTag) => void;
+};
+
+const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
+  datafields,
+  translations,
+  onDragEnd,
+  onClickDeleteDatafield,
+  onClickEditDatafield,
+}) => {
+  return (
     <Fragment>
-      {datafieldToEdit && (
-        <EditDatafieldFlyout
-          datafield={datafieldToEdit}
-          onClose={() => setDatafieldToEdit(undefined)}
-          onSave={handleDatafieldSave}
-        />
-      )}
-      {datafieldToDelete && (
-        <ConfirmDeleteDatafieldModal
-          datafieldToDelete={datafieldToDelete}
-          onConfirm={() => {
-            onFormDataDelete(datafieldToDelete);
-            setDatafieldToDelete(undefined);
-          }}
-          onClose={() => setDatafieldToDelete(undefined)}
-        />
-      )}
       <EuiDragDropContext onDragEnd={onDragEnd}>
         <EuiDroppable
           droppableId="CUSTOM_HANDLE_DROPPABLE_AREA"
@@ -198,7 +236,7 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
           withPanel
         >
           <Fragment>
-            {items.map((item, idx) => {
+            {datafields.map((item, idx) => {
               const { datafield } = item;
 
               return (
@@ -214,10 +252,12 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
                     return (
                       <DatafieldPanel
                         dragHandleProps={dragHandleProps}
-                        datafield={datafield}
+                        tag={toDatafieldTag(datafield)}
                         translations={translations}
-                        onClickDelete={() => setDatafieldToDelete(item)}
-                        onClickEdit={() => setDatafieldToEdit({ ...item })}
+                        // onClickDelete={() => setDatafieldToDelete(item)}
+                        // onClickEdit={() => setDatafieldToEdit({ ...item })}
+                        onClickDelete={onClickDeleteDatafield}
+                        onClickEdit={onClickEditDatafield}
                       />
                     );
                   }}

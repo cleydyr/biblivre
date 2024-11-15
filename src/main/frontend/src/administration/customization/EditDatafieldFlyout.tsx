@@ -1,4 +1,3 @@
-import type { FormData } from "../../generated-sources";
 import type { FC } from "react";
 import { useState } from "react";
 import React from "react";
@@ -15,40 +14,25 @@ import {
 } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
 import FormFieldEditor from "./FormFieldEditor";
-import { useTranslationsQuery } from "./queries";
-import { useSaveFormDataFieldsMutation2 } from "./queries";
-import { toFormFieldEditorState } from "./components/lib";
 import type { FormFieldEditorState } from "./components/types";
 
 type EditDataFieldFlyoutProps = {
-  datafield: FormData;
+  editorState: FormFieldEditorState;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (formFieldEditorState: FormFieldEditorState) => void;
 };
 
 const EditDatafieldFlyout: FC<EditDataFieldFlyoutProps> = ({
-  datafield,
+  editorState,
   onClose,
+  onSave,
 }) => {
-  const { mutate: saveFormDataFieldsMtn } = useSaveFormDataFieldsMutation2();
-
   const simpleFlyoutTitleId = useGeneratedHtmlId({
     prefix: "simpleFlyoutTitle",
   });
 
-  const { data: translations, isSuccess } = useTranslationsQuery("pt-BR");
-
-  const editorState = isSuccess
-    ? toFormFieldEditorState(translations, datafield)
-    : undefined;
-
-  const [formFieldEditorState, setFormFieldEditorState] = useState<
-    FormFieldEditorState | undefined
-  >(editorState);
-
-  if (!isSuccess || formFieldEditorState === undefined) {
-    return null;
-  }
+  const [formFieldEditorState, setFormFieldEditorState] =
+    useState<FormFieldEditorState>(editorState);
 
   return (
     <EuiFlyout ownFocus onClose={onClose} aria-labelledby={simpleFlyoutTitleId}>
@@ -59,7 +43,7 @@ const EditDatafieldFlyout: FC<EditDataFieldFlyoutProps> = ({
               id="administration.customization.datafield.edit"
               defaultMessage="Editar campo {tag}"
               values={{
-                tag: datafield.datafield,
+                tag: formFieldEditorState.tag,
               }}
             />
           </h2>
@@ -82,19 +66,7 @@ const EditDatafieldFlyout: FC<EditDataFieldFlyoutProps> = ({
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton
-              fill
-              onClick={() => {
-                if (formFieldEditorState) {
-                  saveFormDataFieldsMtn({
-                    formFieldEditorState,
-                    recordType: "biblio",
-                  });
-
-                  onClose();
-                }
-              }}
-            >
+            <EuiButton fill onClick={() => onSave(formFieldEditorState)}>
               <FormattedMessage
                 id="administration.customization.form.save"
                 defaultMessage="Salvar"

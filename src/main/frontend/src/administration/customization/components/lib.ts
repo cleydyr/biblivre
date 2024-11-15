@@ -2,57 +2,19 @@ import type { FormData, Subfield } from "../../../generated-sources";
 import { SubfieldToJSON } from "../../../generated-sources";
 import type {
   FormFieldEditorState,
-  IndicatorCode,
   IndicatorOrder,
   SubfieldFormEditorState,
 } from "./types";
 import { toDatafieldTag, toIndicatorCode, toSubfieldCode } from "../lib";
 
-import type { DatafieldTag, FormDataLegacy, FormDataPayload } from "../types";
-
-const TRANSLATION_KEY_PREFIX = `marc.bibliographic.datafield`;
-
-export function getTranslationKeyPrefix(tag: string): string {
-  return `${TRANSLATION_KEY_PREFIX}.${tag}`;
-}
-
-function getSubfieldTranslationKeyPrefix(
-  datafieldTag: string,
-  subfieldCode: string,
-) {
-  return `${getTranslationKeyPrefix(datafieldTag)}.subfield.${subfieldCode}`;
-}
-
-function getIndicatorTranslationKey(
-  datafieldTag: string,
-  order: IndicatorOrder,
-) {
-  return `${getTranslationKeyPrefix(datafieldTag)}.indicator.${order + 1}`;
-}
-
-function getIndicatorCodeTranslationKey(
-  datafieldTag: string,
-  order: IndicatorOrder,
-  code: IndicatorCode,
-) {
-  return `${getTranslationKeyPrefix(datafieldTag)}.indicator.${order + 1}.${code}`;
-}
-
-export function getFieldNameTranslation(
-  translations: Record<string, string>,
-  tag: DatafieldTag,
-) {
-  return translations[getTranslationKeyPrefix(tag)];
-}
-
-function getSubfieldTranslation(
-  translations: Record<string, string>,
-  subfield: Subfield,
-): string {
-  return translations[
-    getSubfieldTranslationKeyPrefix(subfield.datafield, subfield.subfield)
-  ];
-}
+import type { FormDataLegacy, FormDataPayload } from "../types";
+import {
+  getFieldNameTranslation,
+  getIndicatorCodeTranslationKey,
+  getIndicatorTranslationKey,
+  getSubfieldTranslation,
+  getTranslations,
+} from "./translations_helpers";
 
 function toSubfieldState(
   translations: Record<string, string>,
@@ -185,60 +147,8 @@ export function fromFormFieldEditorStateToFormDataPayload(
     },
   ]);
 
-  const subfieldCodesTranslations = formFieldEditorState.subfields.reduce(
-    (acc, subfield) => ({
-      ...acc,
-      [getSubfieldTranslationKeyPrefix(
-        formFieldEditorState.tag,
-        subfield.code,
-      )]: subfield.description,
-    }),
-    {},
-  );
-
-  const indicator1Translations = Object.entries(
-    formFieldEditorState.indicatorsState[0].translations,
-  ).reduce(
-    (acc, [code, translation]) => {
-      return {
-        ...acc,
-        [getIndicatorCodeTranslationKey(
-          formFieldEditorState.tag,
-          0,
-          toIndicatorCode(code),
-        )]: translation,
-      };
-    },
-    {} as Record<string, string>,
-  );
-
-  const indicator2Translations = Object.entries(
-    formFieldEditorState.indicatorsState[1].translations,
-  ).reduce(
-    (acc, [code, translation]) => {
-      return {
-        ...acc,
-        [getIndicatorCodeTranslationKey(
-          formFieldEditorState.tag,
-          1,
-          toIndicatorCode(code),
-        )]: translation,
-      };
-    },
-    {} as Record<string, string>,
-  );
-
-  partialPayload[formFieldEditorState.tag].translations = {
-    [getTranslationKeyPrefix(formFieldEditorState.tag)]:
-      formFieldEditorState.name,
-    [getIndicatorTranslationKey(formFieldEditorState.tag, 0)]:
-      formFieldEditorState.indicatorsState[0].description,
-    [getIndicatorTranslationKey(formFieldEditorState.tag, 1)]:
-      formFieldEditorState.indicatorsState[1].description,
-    ...subfieldCodesTranslations,
-    ...indicator1Translations,
-    ...indicator2Translations,
-  };
+  partialPayload[formFieldEditorState.tag].translations =
+    getTranslations(formFieldEditorState);
 
   return partialPayload;
 }

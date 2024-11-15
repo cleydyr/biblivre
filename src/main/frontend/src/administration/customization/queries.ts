@@ -44,7 +44,7 @@ export function useFormDataQuery(recordType: RecordType) {
   );
 }
 
-export function useSaveFormDataFieldsMutation2(): UseMutationResult<
+export function useSaveFormDatafieldsUsingEditorStateMutation(): UseMutationResult<
   SuccessMessage,
   NonSuccessMessage,
   {
@@ -62,7 +62,10 @@ export function useSaveFormDataFieldsMutation2(): UseMutationResult<
       ),
     onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries({
-        queryKey: getFormDataQueryKey(variables.recordType),
+        queryKey: [
+          getFormDataQueryKey(variables.recordType),
+          getTranslationsQueryKey("pt-BR"),
+        ],
       });
     },
   });

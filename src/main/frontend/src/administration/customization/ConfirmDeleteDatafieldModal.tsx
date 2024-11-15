@@ -1,23 +1,23 @@
-import type { FormData } from "../../generated-sources";
 import type { FC } from "react";
 import React from "react";
 import ConfirmDeleteModal from "./components/ConfirmDeleteModal";
 import { FormattedMessage } from "react-intl";
+import type { DatafieldTag } from "./types";
 
 type ConfirmDeleteDataFieldModalProps = {
-  datafieldToDelete: FormData;
+  tag: DatafieldTag;
   onConfirm: () => void;
   onClose: () => void;
 };
 
 const ConfirmDeleteDatafieldModal: FC<ConfirmDeleteDataFieldModalProps> = ({
-  datafieldToDelete,
+  tag,
   onConfirm,
   onClose,
 }) => {
   return (
     <ConfirmDeleteModal
-      value={datafieldToDelete.datafield}
+      value={tag}
       onClose={onClose}
       onConfirm={onConfirm}
       modalBody={
@@ -32,7 +32,7 @@ const ConfirmDeleteDatafieldModal: FC<ConfirmDeleteDataFieldModalProps> = ({
           id="administration.customization.datafield.confirm_delete"
           defaultMessage="Excluir campo {tag}?"
           values={{
-            tag: datafieldToDelete.datafield,
+            tag,
           }}
         />
       }

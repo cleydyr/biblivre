@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { EuiProvider } from "@elastic/eui";
 import React, { useEffect, useState } from "react";
 
-import "@elastic/eui/dist/eui_theme_light.css";
 import FormCustomization from "./FormCustomization";
 import { IntlProvider } from "react-intl";
 

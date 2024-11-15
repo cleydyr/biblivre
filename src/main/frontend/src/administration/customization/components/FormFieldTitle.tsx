@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import { getFieldNameTranslation } from "./lib";
 import type { DatafieldTag } from "../types";
+import { getFieldNameTranslation } from "./translations_helpers";
 
 const FormFieldTitle: FC<{
   tag: DatafieldTag;

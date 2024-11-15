@@ -1,5 +1,5 @@
 import type { DatafieldTag, SubfieldCode } from "./types";
-import type { IndicatorCode, IndicatorOrder } from "./components/types";
+import type { IndicatorCode } from "./components/types";
 import { AutocompleteType } from "../../generated-sources";
 
 type Ordered = {
@@ -87,12 +87,4 @@ export function toAutoCompleteType(value: string): AutocompleteType {
   }
 
   throw new Error(`Invalid autocomplete type: ${value}`);
-}
-
-export function getIndicatorTranslationKey(
-  datafield: string,
-  order: IndicatorOrder,
-  code: IndicatorCode,
-) {
-  return `marc.bibliographic.datafield.${datafield}.indicator.${order}.${code}`;
 }
