@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   EuiFlexGroup,
@@ -11,11 +11,12 @@ import {
   EuiTabs,
   EuiTab,
 } from "@elastic/eui";
-import { FormattedMessage } from "react-intl";
-import type { FormData } from "../../generated-sources";
-import type { FormFieldEditorState } from "./queries";
-import { useFormFieldEditorState } from "./queries";
-import type { OnChangeParams, WithOnChange } from "./components/types";
+import { defineMessages, useIntl } from "react-intl";
+import type {
+  FormFieldEditorState,
+  OnChangeParams,
+  WithOnChange,
+} from "./components/types";
 import DatafieldTagFormField from "./components/DatafieldTagFormField";
 import DatafieldNameFormField from "./components/DatafieldNameFormField";
 import RepeatableSwitchFormField from "./components/RepeatableSwitchFormField";
@@ -25,9 +26,28 @@ import MaterialTypeFormSection from "./components/MaterialTypeFormSection";
 import SubfieldFormSection from "./components/SubfieldFormSection";
 
 type FormFieldEditorProps = {
-  field: FormData;
-  onSave: () => void;
+  editorState: FormFieldEditorState;
+  onChange: (changedFormData: FormFieldEditorState) => void;
 };
+
+const messages = defineMessages({
+  general: {
+    id: "administration.customization.indicator.general",
+    defaultMessage: "Geral",
+  },
+  indicator: {
+    id: "administration.customization.indicator",
+    defaultMessage: "Indicador {order}",
+  },
+  subfields: {
+    id: "administration.customization.subfields",
+    defaultMessage: "Subcampos",
+  },
+  defined: {
+    id: "administration.customization.indicator.defined",
+    defaultMessage: "Indicador {order} definido",
+  },
+});
 
 const Indicator1FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
   indicatorsState,
@@ -35,22 +55,18 @@ const Indicator1FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
 }) => {
   const [{ defined }] = indicatorsState;
 
+  const { formatMessage } = useIntl();
+
   return (
     <EuiFormRow
-      label={
-        <FormattedMessage
-          id="administration.customization.indicator1.defined"
-          defaultMessage="Indicador 1 definido"
-        />
-      }
+      label={formatMessage(messages.defined, {
+        order: 1,
+      })}
     >
       <EuiSwitch
-        label={
-          <FormattedMessage
-            id="administration.customization.indicator1.defined"
-            defaultMessage="Indicador 1 definido"
-          />
-        }
+        label={formatMessage(messages.defined, {
+          order: 1,
+        })}
         showLabel={false}
         checked={defined}
         onChange={() => {
@@ -75,22 +91,18 @@ const Indicator2FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
 }) => {
   const [, { defined }] = indicatorsState;
 
+  const { formatMessage } = useIntl();
+
   return (
     <EuiFormRow
-      label={
-        <FormattedMessage
-          id="administration.customization.indicator2.defined"
-          defaultMessage="Indicador 2 definido"
-        />
-      }
+      label={formatMessage(messages.defined, {
+        order: 2,
+      })}
     >
       <EuiSwitch
-        label={
-          <FormattedMessage
-            id="administration.customization.indicator2.defined"
-            defaultMessage="Indicador 2 definido"
-          />
-        }
+        label={formatMessage(messages.defined, {
+          order: 2,
+        })}
         showLabel={false}
         checked={defined}
         onChange={() => {
@@ -109,52 +121,33 @@ const Indicator2FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
   );
 };
 
-const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
-  const { data: formFieldEditorState, isSuccess } = useFormFieldEditorState(
-    "pt-BR",
-    field,
-  );
-
-  const [state, setState] = useState(formFieldEditorState);
-
-  useEffect(() => {
-    if (formFieldEditorState !== undefined) {
-      setState(formFieldEditorState);
-    }
-  }, [formFieldEditorState]);
+const FormFieldEditor: FC<FormFieldEditorProps> = ({
+  editorState,
+  onChange,
+}) => {
+  const { formatMessage } = useIntl();
 
   const [selectedTabId, setSelectedTabId] = useState<string>("general");
 
-  const onChange = (data: OnChangeParams) => {
-    if (!state) {
-      return;
-    }
-
-    setState({
-      ...state,
+  const handleFormFieldEditorState = (data: OnChangeParams) => {
+    const newState = {
+      ...editorState,
       ...data,
-    });
-  };
+    };
 
-  if (!isSuccess || state === undefined) {
-    return null;
-  }
+    onChange(newState);
+  };
 
   const props = {
-    ...state,
-    onChange,
+    ...editorState,
+    onChange: handleFormFieldEditorState,
   };
 
-  const tabs = state
+  const tabs = editorState
     ? [
         {
           id: "general",
-          name: (
-            <FormattedMessage
-              id="administration.customization.indicator.general"
-              defaultMessage="Geral"
-            />
-          ),
+          name: formatMessage(messages.general),
           content: (
             <EuiFlexGroup direction="column">
               <EuiFlexGroup>
@@ -177,16 +170,11 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
         },
         {
           id: "indicator1",
-          name: (
-            <FormattedMessage
-              id="administration.customization.indicator.1"
-              defaultMessage="Indicador 1"
-            />
-          ),
+          name: formatMessage(messages.indicator, { order: 1 }),
           content: (
             <EuiFlexGroup direction="column">
               <Indicator1FormSwitch {...props} />
-              {state.indicatorsState[0].defined && (
+              {editorState.indicatorsState[0].defined && (
                 <IndicatorFormSection {...props} order={0} />
               )}
             </EuiFlexGroup>
@@ -194,16 +182,11 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
         },
         {
           id: "indicator2",
-          name: (
-            <FormattedMessage
-              id="administration.customization.indicator.2"
-              defaultMessage="Indicador 2"
-            />
-          ),
+          name: formatMessage(messages.indicator, { order: 2 }),
           content: (
             <EuiFlexGroup direction="column">
               <Indicator2FormSwitch {...props} />
-              {state.indicatorsState[1].defined && (
+              {editorState.indicatorsState[1].defined && (
                 <IndicatorFormSection {...props} order={1} />
               )}
             </EuiFlexGroup>
@@ -211,12 +194,7 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({ field }) => {
         },
         {
           id: "subfields",
-          name: (
-            <FormattedMessage
-              id="administration.customization.subfields"
-              defaultMessage="Subcampos"
-            />
-          ),
+          name: formatMessage(messages.subfields),
           content: <SubfieldFormSection {...props} />,
         },
       ]

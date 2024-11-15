@@ -2,8 +2,11 @@ import type { FC } from "react";
 import { Fragment } from "react";
 import { useState } from "react";
 import React from "react";
-import type { FormFieldEditorState, SubfieldFormEditorState } from "../queries";
-import type { WithOnChange } from "./types";
+import type {
+  FormFieldEditorState,
+  SubfieldFormEditorState,
+  WithOnChange,
+} from "./types";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import type { EuiBasicTableColumn } from "@elastic/eui";
 import { EuiBasicTable, EuiCode } from "@elastic/eui";

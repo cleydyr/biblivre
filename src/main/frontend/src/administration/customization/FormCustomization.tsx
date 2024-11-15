@@ -6,16 +6,10 @@ import {
   EuiDroppable,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFlyout,
-  EuiFlyoutBody,
-  EuiFlyoutHeader,
   EuiIcon,
   EuiLoadingSpinner,
   EuiPanel,
   EuiTitle,
-  useGeneratedHtmlId,
-  EuiFlyoutFooter,
-  EuiButton,
 } from "@elastic/eui";
 import type { FC } from "react";
 import React, { Fragment, useState } from "react";
@@ -35,9 +29,8 @@ import {
   getFieldNameTranslation,
   toDatafieldTag,
 } from "./lib";
-import { FormattedMessage } from "react-intl";
-import ConfirmDeleteModal from "./components/ConfirmDeleteModal";
-import FormFieldEditor from "./FormFieldEditor";
+import EditDatafieldFlyout from "./EditDatafieldFlyout";
+import ConfirmDeleteDatafieldModal from "./ConfirmDeleteDatafieldModal";
 
 const FormCustomization: React.FC = () => {
   const { isLoading, isSuccess, data } = useFormDataQuery(RecordType.Biblio);
@@ -46,10 +39,10 @@ const FormCustomization: React.FC = () => {
     return <EuiLoadingSpinner />;
   }
 
-  return isSuccess && <DataFieldsDragAndDrop datafields={data} />;
+  return isSuccess && <DatafieldsDragAndDrop datafields={data} />;
 };
 
-type DataFieldsDragAndDropProps = {
+type DatafieldsDragAndDropProps = {
   datafields: FormData[];
 };
 
@@ -60,7 +53,7 @@ const FormFieldTitle: FC<{
   return <>{`${tag} - ${getFieldNameTranslation(translations, tag)}`}</>;
 };
 
-const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
+const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
   datafields,
 }) => {
   const {
@@ -82,10 +75,6 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
   const [datafieldToEdit, setDatafieldToEdit] = useState<FormData | undefined>(
     undefined,
   );
-
-  const simpleFlyoutTitleId = useGeneratedHtmlId({
-    prefix: "simpleFlyoutTitle",
-  });
 
   if (isLoading) {
     return <EuiLoadingSpinner />;
@@ -117,114 +106,25 @@ const DataFieldsDragAndDrop: FC<DataFieldsDragAndDropProps> = ({
     });
   }
 
+  function handleDatafieldSave() {}
+
   return (
     <Fragment>
       {datafieldToEdit && (
-        <EuiFlyout
-          ownFocus
+        <EditDatafieldFlyout
+          datafield={datafieldToEdit}
           onClose={() => setDatafieldToEdit(undefined)}
-          aria-labelledby={simpleFlyoutTitleId}
-        >
-          <EuiFlyoutHeader>
-            <EuiTitle size="m">
-              <h2 id={simpleFlyoutTitleId}>
-                <FormattedMessage
-                  id="administration.customization.datafield.edit"
-                  defaultMessage="Editar campo {tag}"
-                  values={{
-                    tag: datafieldToEdit.datafield,
-                  }}
-                />
-              </h2>
-            </EuiTitle>
-          </EuiFlyoutHeader>
-          <EuiFlyoutBody>
-            <FormFieldEditor field={datafieldToEdit} onSave={() => {}} />
-          </EuiFlyoutBody>
-          <EuiFlyoutFooter>
-            <EuiFlexGroup justifyContent="flexEnd">
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  onClick={() => {
-                    setDatafieldToEdit(undefined);
-                  }}
-                >
-                  <FormattedMessage
-                    id="administration.customization.form.cancel"
-                    defaultMessage="Cancelar"
-                  />
-                </EuiButton>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiButton
-                  fill
-                  onClick={() => {
-                    saveFormDataFieldsMtn({
-                      fields: [datafieldToEdit],
-                      recordType: RecordType.Biblio,
-                    });
-                    setDatafieldToEdit(undefined);
-                  }}
-                >
-                  <FormattedMessage
-                    id="administration.customization.form.save"
-                    defaultMessage="Salvar"
-                  />
-                </EuiButton>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFlyoutFooter>
-        </EuiFlyout>
+          onSave={handleDatafieldSave}
+        />
       )}
       {datafieldToDelete && (
-        <ConfirmDeleteModal
-          value={datafieldToDelete.datafield}
-          onClose={() => {
-            setDatafieldToDelete(undefined);
-          }}
+        <ConfirmDeleteDatafieldModal
+          datafieldToDelete={datafieldToDelete}
           onConfirm={() => {
             onFormDataDelete(datafieldToDelete);
-
             setDatafieldToDelete(undefined);
           }}
-          modalBody={
-            <FormattedMessage
-              id="administration.customization.datafield.confirm_delete_message"
-              defaultMessage="Esta operação é irreversível, e o campo só será apresentado na aba Marc.
-          A informação a ser deletada só pode ser recriada manualmente."
-            />
-          }
-          formRowLabel={
-            <FormattedMessage
-              id="administration.customization.datafield.confirm_delete_input"
-              defaultMessage="Digite <strong>{tag}</strong> para habilitar o botão de confirmar a exclusão"
-              values={{
-                tag: datafieldToDelete.datafield,
-                strong: (msg) => <strong>{msg}</strong>,
-              }}
-            />
-          }
-          title={
-            <FormattedMessage
-              id="administration.customization.datafield.confirm_delete"
-              defaultMessage="Excluir campo {tag}?"
-              values={{
-                tag: datafieldToDelete.datafield,
-              }}
-            />
-          }
-          confirmButtonText={
-            <FormattedMessage
-              id="administration.customization.datafield.confirm_delete"
-              defaultMessage="Entendo os riscos, excluir assim mesmo"
-            />
-          }
-          cancelButtonText={
-            <FormattedMessage
-              id="administration.customization.datafield.cancel_delete"
-              defaultMessage="Cancelar remoção"
-            />
-          }
+          onClose={() => setDatafieldToDelete(undefined)}
         />
       )}
       {isSuccess && (

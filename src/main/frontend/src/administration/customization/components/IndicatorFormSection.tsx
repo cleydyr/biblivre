@@ -1,7 +1,11 @@
 import type { FC } from "react";
 import React, { Fragment, useState } from "react";
-import type { FormFieldEditorState } from "../queries";
-import type { IndicatorCode, IndicatorOrder, WithOnChange } from "./types";
+import type {
+  FormFieldEditorState,
+  IndicatorCode,
+  IndicatorOrder,
+  WithOnChange,
+} from "./types";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   EuiBasicTable,

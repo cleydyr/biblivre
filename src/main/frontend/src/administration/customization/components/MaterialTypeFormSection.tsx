@@ -1,8 +1,7 @@
 import type { FC } from "react";
 import React from "react";
-import type { FormFieldEditorState } from "../queries";
 import { useTranslationsQuery } from "../queries";
-import type { WithOnChange } from "./types";
+import type { FormFieldEditorState, WithOnChange } from "./types";
 import type { MaterialType } from "../../../generated-sources";
 import { MaterialType as MaterialTypeEnum } from "../../../generated-sources";
 import type { EuiSelectableOption } from "@elastic/eui";

@@ -1,5 +1,9 @@
 import type { Singleton } from "../../../types";
-import type { FormFieldEditorState } from "../queries";
+import type {
+  AutocompleteType,
+  MaterialType,
+} from "../../../generated-sources";
+import type { SubfieldCode } from "../types";
 
 export type WithOnChange = {
   onChange: (state: OnChangeParams) => void;
@@ -54,3 +58,28 @@ export const ALPHANUMERIC_CHARACTERS_VALUES = [
 
 export type AlphaNumericCharacter =
   (typeof ALPHANUMERIC_CHARACTERS_VALUES)[number];
+
+export interface IndicatorEditorState {
+  defined: boolean;
+  description: string;
+  translations: Record<IndicatorCode, string>;
+}
+
+export interface FormFieldEditorState {
+  name: string;
+  tag: string;
+  repeatable: boolean;
+  collapsed: boolean;
+  indicatorsState: [IndicatorEditorState, IndicatorEditorState];
+  materialTypes: MaterialType[];
+  subfields: SubfieldFormEditorState[];
+}
+
+export interface SubfieldFormEditorState {
+  code: SubfieldCode;
+  description: string;
+  repeatable: boolean;
+  collapsed: boolean;
+  autocompleteType: AutocompleteType;
+  sortOrder: number;
+}

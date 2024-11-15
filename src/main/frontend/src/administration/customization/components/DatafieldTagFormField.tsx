@@ -1,9 +1,8 @@
 import type { FC } from "react";
 import React from "react";
-import type { FormFieldEditorState } from "../queries";
 import { EuiFieldText, EuiFormRow } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
-import type { WithOnChange } from "./types";
+import type { FormFieldEditorState, WithOnChange } from "./types";
 
 const DatafieldTagFormField: FC<FormFieldEditorState & WithOnChange> = ({
   tag,

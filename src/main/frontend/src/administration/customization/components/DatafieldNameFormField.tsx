@@ -1,7 +1,6 @@
 import type { FC } from "react";
 import React from "react";
-import type { FormFieldEditorState } from "../queries";
-import type { WithOnChange } from "./types";
+import type { FormFieldEditorState, WithOnChange } from "./types";
 import { EuiFieldText, EuiFormRow } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
 

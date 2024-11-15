@@ -20,13 +20,13 @@ import {
 } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
 import type { SubfieldCode } from "../types";
+import type { SubfieldFormEditorState } from "./types";
 import { ALPHANUMERIC_CHARACTERS_VALUES } from "./types";
 import {
   AUTOCOMPLETE_VALUES,
   toAutoCompleteType,
   toSubfieldCode,
 } from "../lib";
-import type { SubfieldFormEditorState } from "../queries";
 import type { EuiSelectOption } from "@elastic/eui/src/components/form/select/select";
 
 type SubfieldEditModalProps = {
