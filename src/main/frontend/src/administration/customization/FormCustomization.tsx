@@ -8,9 +8,10 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiIcon,
-  EuiLoadingSpinner,
   EuiPanel,
   EuiTitle,
+  EuiLoadingLogo,
+  EuiImage,
 } from "@elastic/eui";
 import type { FC } from "react";
 import React, { Fragment, useState } from "react";
@@ -30,18 +31,51 @@ import EditDatafieldFlyout from "./EditDatafieldFlyout";
 import ConfirmDeleteDatafieldModal from "./ConfirmDeleteDatafieldModal";
 import FormFieldTitle from "./components/FormFieldTitle";
 
-const FormCustomization: React.FC = () => {
-  const { isLoading, isSuccess, data } = useFormDataQuery(RecordType.Biblio);
+function BiblivreLoadingIcon() {
+  return (
+    <EuiFlexGroup justifyContent="center" alignItems="center">
+      <EuiLoadingLogo
+        size="xl"
+        logo={() => (
+          <EuiImage
+            size="original"
+            src="/static/images/logo_biblivre_small_original.png"
+            alt="Bredo logo"
+          />
+        )}
+      />
+    </EuiFlexGroup>
+  );
+}
 
-  if (isLoading) {
-    return <EuiLoadingSpinner />;
+const FormCustomization: React.FC = () => {
+  const {
+    isLoading: isLoadingFormData,
+    isSuccess: isSucessFormData,
+    data,
+  } = useFormDataQuery(RecordType.Biblio);
+
+  const {
+    data: translations,
+    isLoading: isLoadingTranslations,
+    isSuccess: isSuccessTranslations,
+  } = useTranslationsQuery("pt-BR");
+
+  if (isLoadingFormData || isLoadingTranslations) {
+    return <BiblivreLoadingIcon />;
   }
 
-  return isSuccess && <DatafieldsDragAndDrop datafields={data} />;
+  return (
+    isSucessFormData &&
+    isSuccessTranslations && (
+      <DatafieldsDragAndDrop datafields={data} translations={translations} />
+    )
+  );
 };
 
 type DatafieldsDragAndDropProps = {
   datafields: FormData[];
+  translations: Record<string, string>;
 };
 
 type DatafieldPanelProps = {
@@ -94,13 +128,8 @@ const DatafieldPanel: FC<DatafieldPanelProps> = ({
 
 const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
   datafields,
+  translations,
 }) => {
-  const {
-    data: translations,
-    isLoading,
-    isSuccess,
-  } = useTranslationsQuery("pt-BR");
-
   const [items, setItems] = useState<FormData[]>(datafields);
 
   const { mutate: saveFormDataFieldsMtn } = useSaveFormDataFieldsMutation();
@@ -114,10 +143,6 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
   const [datafieldToEdit, setDatafieldToEdit] = useState<FormData | undefined>(
     undefined,
   );
-
-  if (isLoading) {
-    return <EuiLoadingSpinner />;
-  }
 
   const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
     if (source && destination) {
@@ -166,44 +191,42 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
           onClose={() => setDatafieldToDelete(undefined)}
         />
       )}
-      {isSuccess && (
-        <EuiDragDropContext onDragEnd={onDragEnd}>
-          <EuiDroppable
-            droppableId="CUSTOM_HANDLE_DROPPABLE_AREA"
-            spacing="m"
-            withPanel
-          >
-            <Fragment>
-              {items.map((item, idx) => {
-                const { datafield } = item;
+      <EuiDragDropContext onDragEnd={onDragEnd}>
+        <EuiDroppable
+          droppableId="CUSTOM_HANDLE_DROPPABLE_AREA"
+          spacing="m"
+          withPanel
+        >
+          <Fragment>
+            {items.map((item, idx) => {
+              const { datafield } = item;
 
-                return (
-                  <EuiDraggable
-                    spacing="m"
-                    key={datafield}
-                    index={idx}
-                    draggableId={datafield}
-                    customDragHandle={true}
-                    hasInteractiveChildren={true}
-                  >
-                    {({ dragHandleProps }) => {
-                      return (
-                        <DatafieldPanel
-                          dragHandleProps={dragHandleProps}
-                          datafield={datafield}
-                          translations={translations}
-                          onClickDelete={() => setDatafieldToDelete(item)}
-                          onClickEdit={() => setDatafieldToEdit({ ...item })}
-                        />
-                      );
-                    }}
-                  </EuiDraggable>
-                );
-              })}
-            </Fragment>
-          </EuiDroppable>
-        </EuiDragDropContext>
-      )}
+              return (
+                <EuiDraggable
+                  spacing="m"
+                  key={datafield}
+                  index={idx}
+                  draggableId={datafield}
+                  customDragHandle={true}
+                  hasInteractiveChildren={true}
+                >
+                  {({ dragHandleProps }) => {
+                    return (
+                      <DatafieldPanel
+                        dragHandleProps={dragHandleProps}
+                        datafield={datafield}
+                        translations={translations}
+                        onClickDelete={() => setDatafieldToDelete(item)}
+                        onClickEdit={() => setDatafieldToEdit({ ...item })}
+                      />
+                    );
+                  }}
+                </EuiDraggable>
+              );
+            })}
+          </Fragment>
+        </EuiDroppable>
+      </EuiDragDropContext>
     </Fragment>
   );
 };

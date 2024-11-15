@@ -90,6 +90,8 @@ const EditDatafieldFlyout: FC<EditDataFieldFlyoutProps> = ({
                     formFieldEditorState,
                     recordType: "biblio",
                   });
+
+                  onClose();
                 }
               }}
             >
