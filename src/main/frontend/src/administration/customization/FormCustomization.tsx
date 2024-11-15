@@ -183,6 +183,7 @@ const FormCustomization: React.FC = () => {
       <Fragment>
         {datafieldToEdit && translations && (
           <EditDatafieldFlyout
+            mode={"edit"}
             editorState={toFormFieldEditorState(translations, datafieldToEdit)}
             onClose={() => setDatafieldToEdit(undefined)}
             onSave={handleDatafieldSave}

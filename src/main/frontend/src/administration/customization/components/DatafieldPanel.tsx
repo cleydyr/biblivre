@@ -12,6 +12,18 @@ import React from "react";
 import FormFieldTitle from "./FormFieldTitle";
 import { toDatafieldTag } from "../lib";
 import type { DatafieldTag } from "../types";
+import { defineMessages, useIntl } from "react-intl";
+
+const messages = defineMessages({
+  delete: {
+    id: "administration.customization.datafield.delete",
+    defaultMessage: "Apagar campo {tag}",
+  },
+  edit: {
+    id: "administration.customization.datafield.edit",
+    defaultMessage: "Editar campo {tag}",
+  },
+});
 
 type DatafieldPanelProps = {
   tag: DatafieldTag;
@@ -28,6 +40,8 @@ const DatafieldPanel: FC<DatafieldPanelProps> = ({
   onClickDelete,
   onClickEdit,
 }) => {
+  const { formatMessage } = useIntl();
+
   return (
     <EuiPanel hasBorder={true} {...dragHandleProps}>
       <EuiFlexGroup gutterSize="m">
@@ -47,12 +61,12 @@ const DatafieldPanel: FC<DatafieldPanelProps> = ({
         <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
           <EuiButtonIcon
             iconType="trash"
-            aria-label={`Apagar campo ${tag}`}
+            aria-label={formatMessage(messages.delete, { tag })}
             onClick={() => onClickDelete(tag)}
           />
           <EuiButtonIcon
             iconType="pencil"
-            aria-label={`Editar campo ${tag}`}
+            aria-label={formatMessage(messages.edit, { tag })}
             onClick={() => onClickEdit(tag)}
           />
         </EuiFlexGroup>

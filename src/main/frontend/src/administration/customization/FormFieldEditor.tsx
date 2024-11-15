@@ -28,6 +28,7 @@ import SubfieldFormSection from "./components/SubfieldFormSection";
 type FormFieldEditorProps = {
   editorState: FormFieldEditorState;
   onChange: (changedFormData: FormFieldEditorState) => void;
+  mode: "edit" | "create";
 };
 
 const messages = defineMessages({
@@ -124,6 +125,7 @@ const Indicator2FormSwitch: FC<FormFieldEditorState & WithOnChange> = ({
 const FormFieldEditor: FC<FormFieldEditorProps> = ({
   editorState,
   onChange,
+  mode,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -152,7 +154,7 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({
             <EuiFlexGroup direction="column">
               <EuiFlexGroup>
                 <EuiFlexItem grow={false}>
-                  <DatafieldTagFormField {...props} />
+                  <DatafieldTagFormField mode={mode} {...props} />
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <DatafieldNameFormField {...props} />

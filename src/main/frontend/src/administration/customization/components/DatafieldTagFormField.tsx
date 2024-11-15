@@ -4,10 +4,12 @@ import { EuiFieldText, EuiFormRow } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
 import type { FormFieldEditorState, WithOnChange } from "./types";
 
-const DatafieldTagFormField: FC<FormFieldEditorState & WithOnChange> = ({
-  tag,
-  onChange,
-}) => {
+const DatafieldTagFormField: FC<
+  FormFieldEditorState &
+    WithOnChange & {
+      mode: "edit" | "create";
+    }
+> = ({ tag, mode, onChange }) => {
   return (
     <EuiFormRow
       label={
@@ -18,7 +20,7 @@ const DatafieldTagFormField: FC<FormFieldEditorState & WithOnChange> = ({
       }
     >
       <EuiFieldText
-        readOnly
+        readOnly={mode === "edit"}
         name="datafield"
         maxLength={3}
         minLength={3}

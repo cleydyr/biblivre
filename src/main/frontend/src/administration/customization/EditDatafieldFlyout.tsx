@@ -18,6 +18,7 @@ import type { FormFieldEditorState } from "./components/types";
 
 type EditDataFieldFlyoutProps = {
   editorState: FormFieldEditorState;
+  mode: "edit" | "create";
   onClose: () => void;
   onSave: (formFieldEditorState: FormFieldEditorState) => void;
 };
@@ -26,6 +27,7 @@ const EditDatafieldFlyout: FC<EditDataFieldFlyoutProps> = ({
   editorState,
   onClose,
   onSave,
+  mode,
 }) => {
   const simpleFlyoutTitleId = useGeneratedHtmlId({
     prefix: "simpleFlyoutTitle",
@@ -51,6 +53,7 @@ const EditDatafieldFlyout: FC<EditDataFieldFlyoutProps> = ({
       </EuiFlyoutHeader>
       <EuiFlyoutBody>
         <FormFieldEditor
+          mode={mode}
           editorState={formFieldEditorState}
           onChange={setFormFieldEditorState}
         />
