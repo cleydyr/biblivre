@@ -224,12 +224,14 @@ const SubfieldFormSection: FC<FormFieldEditorState & WithOnChange> = ({
         />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiButtonEmpty onClick={() => toggleAddingSubfield()}>
-            <EuiFlexGroup gutterSize="s" alignItems="baseline">
-              <EuiIcon type="plus" />
-              <FormattedMessage
-                id="administration.customization.subfield.add"
-                defaultMessage="Adicionar subcampo"
-              />
+            <EuiFlexGroup gutterSize="s">
+              <p>
+                <EuiIcon type="plus" className="eui-alignMiddle" />
+                <FormattedMessage
+                  id="administration.customization.subfield.add"
+                  defaultMessage="Adicionar subcampo"
+                />
+              </p>
             </EuiFlexGroup>
           </EuiButtonEmpty>
         </EuiFlexGroup>

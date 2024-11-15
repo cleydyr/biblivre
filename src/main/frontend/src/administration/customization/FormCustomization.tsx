@@ -1,3 +1,4 @@
+import type { DraggableProvidedDragHandleProps } from "@elastic/eui";
 import {
   EuiButtonIcon,
   EuiDragDropContext,
@@ -51,6 +52,51 @@ const FormFieldTitle: FC<{
   translations: Record<string, string>;
 }> = ({ tag, translations }) => {
   return <>{`${tag} - ${getFieldNameTranslation(translations, tag)}`}</>;
+};
+
+type DatafieldPanelProps = {
+  datafield: string;
+  dragHandleProps: DraggableProvidedDragHandleProps | null;
+  translations: Record<string, string>;
+  onClickDelete: () => void;
+  onClickEdit: () => void;
+};
+
+const DatafieldPanel: FC<DatafieldPanelProps> = ({
+  datafield,
+  translations,
+  dragHandleProps,
+  onClickDelete,
+  onClickEdit,
+}) => {
+  return (
+    <EuiPanel hasBorder={true} {...dragHandleProps}>
+      <EuiFlexGroup gutterSize="m">
+        <EuiFlexItem grow={false}>
+          <EuiFlexGroup alignItems="center">
+            <EuiIcon type="grab" />
+          </EuiFlexGroup>
+        </EuiFlexItem>
+        <EuiTitle size="xs">
+          <h2>
+            <FormFieldTitle tag={datafield} translations={translations} />
+          </h2>
+        </EuiTitle>
+        <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
+          <EuiButtonIcon
+            iconType="trash"
+            aria-label={`Apagar campo ${datafield}`}
+            onClick={onClickDelete}
+          />
+          <EuiButtonIcon
+            iconType="pencil"
+            aria-label={`Editar campo ${datafield}`}
+            onClick={onClickEdit}
+          />
+        </EuiFlexGroup>
+      </EuiFlexGroup>
+    </EuiPanel>
+  );
 };
 
 const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
@@ -135,50 +181,32 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
             withPanel
           >
             <Fragment>
-              {items.map((item, idx) => (
-                <EuiDraggable
-                  spacing="m"
-                  key={item.datafield}
-                  index={idx}
-                  draggableId={item.datafield}
-                  customDragHandle={true}
-                  hasInteractiveChildren={true}
-                >
-                  {({ dragHandleProps }) => {
-                    return (
-                      <EuiPanel hasBorder={true} {...dragHandleProps}>
-                        <EuiFlexGroup gutterSize="m">
-                          <EuiFlexItem grow={false}>
-                            <EuiFlexGroup alignItems="center">
-                              <EuiIcon type="grab" />
-                            </EuiFlexGroup>
-                          </EuiFlexItem>
-                          <EuiTitle size="xs">
-                            <h2>
-                              <FormFieldTitle
-                                tag={item.datafield}
-                                translations={translations}
-                              />
-                            </h2>
-                          </EuiTitle>
-                          <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
-                            <EuiButtonIcon
-                              iconType="trash"
-                              aria-label={`Apagar campo ${item.datafield}`}
-                              onClick={() => setDatafieldToDelete(item)}
-                            />
-                            <EuiButtonIcon
-                              iconType="pencil"
-                              aria-label={`Editar campo ${item.datafield}`}
-                              onClick={() => setDatafieldToEdit({ ...item })}
-                            />
-                          </EuiFlexGroup>
-                        </EuiFlexGroup>
-                      </EuiPanel>
-                    );
-                  }}
-                </EuiDraggable>
-              ))}
+              {items.map((item, idx) => {
+                const { datafield } = item;
+
+                return (
+                  <EuiDraggable
+                    spacing="m"
+                    key={datafield}
+                    index={idx}
+                    draggableId={datafield}
+                    customDragHandle={true}
+                    hasInteractiveChildren={true}
+                  >
+                    {({ dragHandleProps }) => {
+                      return (
+                        <DatafieldPanel
+                          dragHandleProps={dragHandleProps}
+                          datafield={datafield}
+                          translations={translations}
+                          onClickDelete={() => setDatafieldToDelete(item)}
+                          onClickEdit={() => setDatafieldToEdit({ ...item })}
+                        />
+                      );
+                    }}
+                  </EuiDraggable>
+                );
+              })}
             </Fragment>
           </EuiDroppable>
         </EuiDragDropContext>

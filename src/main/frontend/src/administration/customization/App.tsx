@@ -21,6 +21,7 @@ const App: React.FC = () => {
 
     loadLocaleData();
   }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <EuiProvider colorMode="light">
