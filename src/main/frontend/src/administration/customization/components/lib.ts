@@ -6,17 +6,13 @@ import type {
   IndicatorOrder,
   SubfieldFormEditorState,
 } from "./types";
-import {
-  getFieldNameTranslation,
-  toIndicatorCode,
-  toSubfieldCode,
-} from "../lib";
+import { toDatafieldTag, toIndicatorCode, toSubfieldCode } from "../lib";
 
-import type { FormDataLegacy, FormDataPayload } from "../types";
+import type { DatafieldTag, FormDataLegacy, FormDataPayload } from "../types";
 
 const TRANSLATION_KEY_PREFIX = `marc.bibliographic.datafield`;
 
-function getTranslationKeyPrefix(tag: string): string {
+export function getTranslationKeyPrefix(tag: string): string {
   return `${TRANSLATION_KEY_PREFIX}.${tag}`;
 }
 
@@ -40,6 +36,13 @@ function getIndicatorCodeTranslationKey(
   code: IndicatorCode,
 ) {
   return `${getTranslationKeyPrefix(datafieldTag)}.indicator.${order + 1}.${code}`;
+}
+
+export function getFieldNameTranslation(
+  translations: Record<string, string>,
+  tag: DatafieldTag,
+) {
+  return translations[getTranslationKeyPrefix(tag)];
 }
 
 function getSubfieldTranslation(
@@ -70,7 +73,10 @@ export function toFormFieldEditorState(
   field: FormData,
 ): FormFieldEditorState {
   return {
-    name: getFieldNameTranslation(translations, field.datafield),
+    name: getFieldNameTranslation(
+      translations,
+      toDatafieldTag(field.datafield),
+    ),
     materialTypes: field.materialType,
     indicatorsState: [
       {

@@ -5,17 +5,16 @@ import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
   DeleteDatafieldPayload,
-  FormDataPayload,
   NonSuccessMessage,
   SuccessMessage,
 } from "./types";
-import { fetchJSONFromServer } from "../../api/legacy/helpers";
 
 import type { FormFieldEditorState } from "./components/types";
 import {
   fromFormDataToFormDataPayload,
   fromFormFieldEditorStateToFormDataPayload,
 } from "./components/lib";
+import { deleteFormDatafield, upsertFormDatafields } from "./legacy-api";
 
 const TRANSLATIONS_QUERY_KEY = "TRANSLATIONS";
 
@@ -42,31 +41,6 @@ export function useFormDataQuery(recordType: RecordType) {
     getFormDataQueryKey(recordType),
     (api) => api.getFormData,
     [{ recordType }],
-  );
-}
-
-async function upsertFormDatafields(
-  fields: FormDataPayload,
-  recordType: RecordType,
-) {
-  return fetchJSONFromServer(
-    "administration.customization",
-    "save_form_datafields",
-    {
-      fields: JSON.stringify(fields),
-      record_type: recordType,
-    },
-  );
-}
-
-async function deleteFormDatafield(datafield: string, recordType: RecordType) {
-  return fetchJSONFromServer(
-    "administration.customization",
-    "delete_form_datafield",
-    {
-      datafield,
-      record_type: recordType,
-    },
   );
 }
 

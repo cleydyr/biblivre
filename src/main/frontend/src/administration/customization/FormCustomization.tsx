@@ -25,13 +25,10 @@ import {
   useTranslationsQuery,
 } from "./queries";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import {
-  getAffectedItems,
-  getFieldNameTranslation,
-  toDatafieldTag,
-} from "./lib";
+import { getAffectedItems, toDatafieldTag } from "./lib";
 import EditDatafieldFlyout from "./EditDatafieldFlyout";
 import ConfirmDeleteDatafieldModal from "./ConfirmDeleteDatafieldModal";
+import FormFieldTitle from "./components/FormFieldTitle";
 
 const FormCustomization: React.FC = () => {
   const { isLoading, isSuccess, data } = useFormDataQuery(RecordType.Biblio);
@@ -45,13 +42,6 @@ const FormCustomization: React.FC = () => {
 
 type DatafieldsDragAndDropProps = {
   datafields: FormData[];
-};
-
-const FormFieldTitle: FC<{
-  tag: string;
-  translations: Record<string, string>;
-}> = ({ tag, translations }) => {
-  return <>{`${tag} - ${getFieldNameTranslation(translations, tag)}`}</>;
 };
 
 type DatafieldPanelProps = {
@@ -79,7 +69,10 @@ const DatafieldPanel: FC<DatafieldPanelProps> = ({
         </EuiFlexItem>
         <EuiTitle size="xs">
           <h2>
-            <FormFieldTitle tag={datafield} translations={translations} />
+            <FormFieldTitle
+              tag={toDatafieldTag(datafield)}
+              translations={translations}
+            />
           </h2>
         </EuiTitle>
         <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
