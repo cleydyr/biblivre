@@ -19,24 +19,29 @@ import {
   useGeneratedHtmlId,
 } from "@elastic/eui";
 import { FormattedMessage, useIntl } from "react-intl";
+import type { SubfieldCode } from "../types";
 import type { SubfieldFormEditorState } from "./types";
-import { AUTOCOMPLETE_VALUES, toAutoCompleteType } from "../lib";
+import { ALPHANUMERIC_CHARACTERS_VALUES } from "./types";
+import {
+  AUTOCOMPLETE_VALUES,
+  toAutoCompleteType,
+  toSubfieldCode,
+} from "../lib";
+import type { EuiSelectOption } from "@elastic/eui/src/components/form/select/select";
 import { autocompleteTypeMessageDescriptors } from "../messages";
 
-type SubfieldEditModalProps = {
-  subfieldFormEditorState: SubfieldFormEditorState;
+type SubfieldCreateModalProps = {
+  disabledCodes: Set<SubfieldCode>;
   onCloseModal: () => void;
   onConfirm: (subfield: SubfieldFormEditorState) => void;
 };
 
-const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
-  subfieldFormEditorState,
+const SubfieldCreateModal: FC<SubfieldCreateModalProps> = ({
+  disabledCodes,
   onCloseModal,
   onConfirm,
 }) => {
   const { formatMessage } = useIntl();
-
-  const [editedSubfield, setEditedSubfield] = useState(subfieldFormEditorState);
 
   const modalTitleId = useGeneratedHtmlId();
 
@@ -46,6 +51,32 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
     value,
     text: formatMessage(autocompleteTypeMessageDescriptors[value]),
   }));
+
+  const options: EuiSelectOption[] = ALPHANUMERIC_CHARACTERS_VALUES.map(
+    (value) => ({
+      disabled: disabledCodes.has(value),
+      text: value,
+    }),
+  );
+
+  const firstEnabledCode = ALPHANUMERIC_CHARACTERS_VALUES.find(
+    (value) => !disabledCodes.has(value),
+  );
+
+  if (firstEnabledCode === undefined) {
+    throw new Error("All subfield codes are disabled");
+  }
+
+  const [editedSubfield, setEditedSubfield] = useState<SubfieldFormEditorState>(
+    {
+      code: firstEnabledCode,
+      description: "",
+      repeatable: false,
+      collapsed: false,
+      autocompleteType: "disabled",
+      sortOrder: 0,
+    },
+  );
 
   const { code, description, collapsed, repeatable, autocompleteType } =
     editedSubfield;
@@ -60,8 +91,7 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
         <EuiModalHeaderTitle id={modalTitleId}>
           <FormattedMessage
             id="administration.customization.subfield.edit.modal.title"
-            defaultMessage="Editar valor do subcampo ${code}"
-            values={{ code }}
+            defaultMessage="Editar valor do subcampo"
           />
         </EuiModalHeaderTitle>
       </EuiModalHeader>
@@ -70,6 +100,27 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
         <EuiForm>
           <EuiFlexGroup direction="column">
             <EuiFlexGroup>
+              <EuiFlexItem grow={false}>
+                <EuiFormRow
+                  label={
+                    <FormattedMessage
+                      id="administration.customization.subfield.code"
+                      defaultMessage="Código"
+                    />
+                  }
+                >
+                  <EuiSelect
+                    options={options}
+                    value={code}
+                    onChange={(event) => {
+                      setEditedSubfield({
+                        ...editedSubfield,
+                        code: toSubfieldCode(event.target.value),
+                      });
+                    }}
+                  />
+                </EuiFormRow>
+              </EuiFlexItem>
               <EuiFlexItem>
                 <EuiFormRow
                   label={
@@ -96,7 +147,7 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
                         description: event.target.value,
                       })
                     }
-                    isInvalid={description === ""}
+                    minLength={1}
                   ></EuiFieldText>
                 </EuiFormRow>
               </EuiFlexItem>
@@ -199,7 +250,6 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
             onCloseModal();
           }}
           fill
-          disabled={description === ""}
         >
           <FormattedMessage
             id="administration.customization.subfield.edit.modal.confirm"
@@ -211,4 +261,4 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
   );
 };
 
-export default SubfieldEditModal;
+export default SubfieldCreateModal;

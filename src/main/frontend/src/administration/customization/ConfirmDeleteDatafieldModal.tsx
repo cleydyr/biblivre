@@ -27,16 +27,6 @@ const ConfirmDeleteDatafieldModal: FC<ConfirmDeleteDataFieldModalProps> = ({
           A informação a ser deletada só pode ser recriada manualmente."
         />
       }
-      formRowLabel={
-        <FormattedMessage
-          id="administration.customization.datafield.confirm_delete_input"
-          defaultMessage="Digite <strong>{tag}</strong> para habilitar o botão de confirmar a exclusão"
-          values={{
-            tag: datafieldToDelete.datafield,
-            strong: (msg) => <strong>{msg}</strong>,
-          }}
-        />
-      }
       title={
         <FormattedMessage
           id="administration.customization.datafield.confirm_delete"
@@ -44,18 +34,6 @@ const ConfirmDeleteDatafieldModal: FC<ConfirmDeleteDataFieldModalProps> = ({
           values={{
             tag: datafieldToDelete.datafield,
           }}
-        />
-      }
-      confirmButtonText={
-        <FormattedMessage
-          id="administration.customization.datafield.confirm_delete"
-          defaultMessage="Entendo os riscos, excluir assim mesmo"
-        />
-      }
-      cancelButtonText={
-        <FormattedMessage
-          id="administration.customization.datafield.cancel_delete"
-          defaultMessage="Cancelar remoção"
         />
       }
     />

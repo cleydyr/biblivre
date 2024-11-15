@@ -177,7 +177,7 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
               }}
             />
           }
-          value={deletingIndicatorValue.code}
+          value={deletingIndicatorValue.code.toString()}
           onClose={() => {
             setDeletingIndicatorValue(undefined);
           }}
@@ -189,28 +189,6 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
             <FormattedMessage
               id="administration.customization.indicator.confirm_delete_message"
               defaultMessage="Esta operação é irreversível. A informação a ser deletada só pode ser recriada manualmente."
-            />
-          }
-          confirmButtonText={
-            <FormattedMessage
-              id="administration.customization.indicator.confirm_delete"
-              defaultMessage="Entendo os riscos, excluir assim mesmo"
-            />
-          }
-          cancelButtonText={
-            <FormattedMessage
-              id="administration.customization.indicator.cancel_delete"
-              defaultMessage="Cancelar remoção"
-            />
-          }
-          formRowLabel={
-            <FormattedMessage
-              id="administration.customization.indicator.confirm_delete_input"
-              defaultMessage="Digite <strong>{code}</strong> para habilitar o botão de confirmar a exclusão"
-              values={{
-                code: deletingIndicatorValue.code,
-                strong: (msg) => <strong>{msg}</strong>,
-              }}
             />
           }
         />

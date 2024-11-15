@@ -9,11 +9,16 @@ import type {
 } from "./types";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import type { EuiBasicTableColumn } from "@elastic/eui";
+import { EuiIcon } from "@elastic/eui";
+import { EuiButtonEmpty } from "@elastic/eui";
+import { EuiFlexGroup } from "@elastic/eui";
 import { EuiBasicTable, EuiCode } from "@elastic/eui";
 import type { AutocompleteType } from "../../../generated-sources";
 import { autocompleteTypeMessageDescriptors } from "../messages";
 import SubfieldEditModal from "./SubfieldEditModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import SubfieldCreateModal from "./SubfieldCreateModal";
+import { useToggle } from "@uidotdev/usehooks";
 
 const messages = defineMessages({
   editSubfieldValueDescription: {
@@ -31,10 +36,12 @@ const messages = defineMessages({
   deleteSubfieldValueModalBody: {
     id: "administration.customization.subfield.action.delete.body",
     defaultMessage:
-      "Tem certeza que deseja remover o valor do subcampo {value}? Esta operação é irreversível, e o campo só será apresentado na aba Marc.",
+      "Tem certeza que deseja remover o valor do subcampo <code>{value}</code>?" +
+      "Esta operação é irreversível, e o campo só será apresentado na aba Marc.",
   },
 });
-const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
+
+const SubfieldFormSection: FC<FormFieldEditorState & WithOnChange> = ({
   subfields,
   onChange,
 }) => {
@@ -47,6 +54,8 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
   const [deletingSubfield, setDeletingSubfield] = useState<
     SubfieldFormEditorState | undefined
   >(undefined);
+
+  const [addingSubfield, toggleAddingSubfield] = useToggle(false);
 
   const handleDeleteSubfield = (
     subfieldFormEditorState: SubfieldFormEditorState,
@@ -173,49 +182,14 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
     <Fragment>
       {deletingSubfield && (
         <ConfirmDeleteModal
-          title={
-            <FormattedMessage
-              id="administration.customization.subfield.confirm_delete"
-              defaultMessage="Excluir subcampo {code}?"
-              values={{
-                code: deletingSubfield.code,
-              }}
-            />
-          }
+          title={formatMessage(messages.deleteSubfieldValueModalTitle, {
+            value: deletingSubfield.code,
+          })}
           value={deletingSubfield.code}
-          cancelButtonText={
-            <FormattedMessage
-              id="administration.customization.subfield.cancel_delete"
-              defaultMessage="Cancelar remoção"
-            />
-          }
-          confirmButtonText={
-            <FormattedMessage
-              id="administration.customization.subfield.confirm_delete"
-              defaultMessage="Entendo os riscos, excluir assim mesmo"
-            />
-          }
-          modalBody={
-            <FormattedMessage
-              id="administration.customization.subfield.confirm_delete_message"
-              defaultMessage="Esta operação é irreversível, e o campo só será apresentado na aba Marc.
-          A informação a ser deletada só pode ser recriada manualmente."
-              values={{
-                code: deletingSubfield.code,
-                monospace: (msg) => <EuiCode>{msg}</EuiCode>,
-              }}
-            />
-          }
-          formRowLabel={
-            <FormattedMessage
-              id="administration.customization.subfield.confirm_delete_input"
-              defaultMessage="Digite <strong>{code}</strong> para habilitar o botão de confirmar a exclusão"
-              values={{
-                code: deletingSubfield.code,
-                strong: (msg) => <strong>{msg}</strong>,
-              }}
-            />
-          }
+          modalBody={formatMessage(messages.deleteSubfieldValueModalBody, {
+            value: deletingSubfield.code,
+            code: (msg) => <EuiCode>{msg}</EuiCode>,
+          })}
           onConfirm={() => {
             handleDeleteSubfield(deletingSubfield);
             setDeletingSubfield(undefined);
@@ -226,17 +200,42 @@ const SubfieldSection: FC<FormFieldEditorState & WithOnChange> = ({
       {editingSubfield && (
         <SubfieldEditModal
           subfieldFormEditorState={editingSubfield}
-          disabledCodes={disabledCodes}
           onConfirm={handleSaveSubfield(editingSubfield)}
           onCloseModal={() => setEditingSubfield(undefined)}
         />
       )}
-      <EuiBasicTable<SubfieldFormEditorState>
-        tableCaption="Subcampos"
-        items={subfields}
-        rowHeader="code"
-        columns={columns}
-      />
+      {addingSubfield && (
+        <SubfieldCreateModal
+          disabledCodes={disabledCodes}
+          onCloseModal={toggleAddingSubfield}
+          onConfirm={(value) => {
+            onChange({
+              subfields: [...subfields, value],
+            });
+
+            toggleAddingSubfield(false);
+          }}
+        />
+      )}
+      <EuiFlexGroup direction="column">
+        <EuiBasicTable<SubfieldFormEditorState>
+          tableCaption="Subcampos"
+          items={subfields}
+          rowHeader="code"
+          columns={columns}
+        />
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiButtonEmpty onClick={() => toggleAddingSubfield()}>
+            <EuiFlexGroup gutterSize="s" alignItems="baseline">
+              <EuiIcon type="plus" />
+              <FormattedMessage
+                id="administration.customization.subfield.add"
+                defaultMessage="Adicionar subcampo"
+              />
+            </EuiFlexGroup>
+          </EuiButtonEmpty>
+        </EuiFlexGroup>
+      </EuiFlexGroup>
     </Fragment>
   );
 };
@@ -249,4 +248,4 @@ function yesOrNoMessage(value: boolean) {
   );
 }
 
-export default SubfieldSection;
+export default SubfieldFormSection;

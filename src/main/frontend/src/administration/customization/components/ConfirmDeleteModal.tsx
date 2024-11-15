@@ -4,27 +4,21 @@ import { EuiConfirmModal, EuiFieldText, EuiFormRow } from "@elastic/eui";
 import React from "react";
 import { useToggle } from "@uidotdev/usehooks";
 import type { EuiConfirmModalProps } from "@elastic/eui/src/components/modal/confirm_modal";
+import { FormattedMessage } from "react-intl";
 
 type ConfirmDeleteModalProps<T> = {
   value: T;
   onClose: () => void;
   onConfirm: () => void;
   modalBody: ReactNode;
-  formRowLabel: ReactNode;
-} & Pick<
-  EuiConfirmModalProps,
-  "title" | "cancelButtonText" | "confirmButtonText"
->;
+} & Pick<EuiConfirmModalProps, "title">;
 
-function ConfirmDeleteModal<T>({
+function ConfirmDeleteModal<T extends string>({
   value,
   title,
   onClose,
   onConfirm,
   modalBody,
-  formRowLabel,
-  confirmButtonText,
-  cancelButtonText,
 }: ConfirmDeleteModalProps<T>) {
   const [confirmationInputText, setConfirmationInputText] = useState("");
 
@@ -36,13 +30,34 @@ function ConfirmDeleteModal<T>({
       title={title}
       onCancel={onClose}
       onConfirm={onConfirm}
-      confirmButtonText={confirmButtonText}
-      cancelButtonText={cancelButtonText}
+      cancelButtonText={
+        <FormattedMessage
+          id="administration.customization.subfield.cancel_delete"
+          defaultMessage="Cancelar exclusão"
+        />
+      }
+      confirmButtonText={
+        <FormattedMessage
+          id="administration.customization.subfield.confirm_delete"
+          defaultMessage="Entendo os riscos, excluir assim mesmo"
+        />
+      }
       confirmButtonDisabled={!isConfirmationInputValid}
       buttonColor="danger"
     >
       <p>{modalBody}</p>
-      <EuiFormRow label={formRowLabel}>
+      <EuiFormRow
+        label={
+          <FormattedMessage
+            id="administration.customization.subfield.confirm_delete_input"
+            defaultMessage="Digite <strong>{code}</strong> para habilitar o botão de confirmar a exclusão"
+            values={{
+              code: value,
+              strong: (msg) => <strong>{msg}</strong>,
+            }}
+          />
+        }
+      >
         <EuiFieldText
           value={confirmationInputText}
           onChange={(e) => {

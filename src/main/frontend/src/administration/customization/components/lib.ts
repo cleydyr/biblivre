@@ -2,23 +2,52 @@ import type { FormData, Subfield } from "../../../generated-sources";
 import { SubfieldToJSON } from "../../../generated-sources";
 import type {
   FormFieldEditorState,
+  IndicatorCode,
   IndicatorOrder,
   SubfieldFormEditorState,
 } from "./types";
 import {
   getFieldNameTranslation,
-  getIndicatorTranslationKey,
   toIndicatorCode,
   toSubfieldCode,
 } from "../lib";
+
 import type { FormDataLegacy, FormDataPayload } from "../types";
+
+const TRANSLATION_KEY_PREFIX = `marc.bibliographic.datafield`;
+
+function getTranslationKeyPrefix(tag: string): string {
+  return `${TRANSLATION_KEY_PREFIX}.${tag}`;
+}
+
+function getSubfieldTranslationKeyPrefix(
+  datafieldTag: string,
+  subfieldCode: string,
+) {
+  return `${getTranslationKeyPrefix(datafieldTag)}.subfield.${subfieldCode}`;
+}
+
+function getIndicatorTranslationKey(
+  datafieldTag: string,
+  order: IndicatorOrder,
+) {
+  return `${getTranslationKeyPrefix(datafieldTag)}.indicator.${order + 1}`;
+}
+
+function getIndicatorCodeTranslationKey(
+  datafieldTag: string,
+  order: IndicatorOrder,
+  code: IndicatorCode,
+) {
+  return `${getTranslationKeyPrefix(datafieldTag)}.indicator.${order + 1}.${code}`;
+}
 
 function getSubfieldTranslation(
   translations: Record<string, string>,
   subfield: Subfield,
 ): string {
   return translations[
-    `marc.bibliographic.datafield.${subfield.datafield}.subfield.${subfield.subfield}`
+    getSubfieldTranslationKeyPrefix(subfield.datafield, subfield.subfield)
   ];
 }
 
@@ -47,17 +76,13 @@ export function toFormFieldEditorState(
       {
         defined: (field.indicator1?.length ?? 0) > 0,
         description:
-          translations[
-            `marc.bibliographic.datafield.${field.datafield}.indicator.1`
-          ],
+          translations[getIndicatorTranslationKey(field.datafield, 0)],
         translations: getIndicator1Translations(field, translations),
       },
       {
         defined: (field.indicator2?.length ?? 0) > 0,
         description:
-          translations[
-            `marc.bibliographic.datafield.${field.datafield}.indicator.2`
-          ],
+          translations[getIndicatorTranslationKey(field.datafield, 1)],
         translations: getIndicator2Translations(field, translations),
       },
     ],
@@ -100,7 +125,11 @@ function getIndicatorTranslations(
         ...acc,
         [Number(code)]:
           translations[
-            getIndicatorTranslationKey(datafield, order, toIndicatorCode(code))
+            getIndicatorCodeTranslationKey(
+              datafield,
+              order,
+              toIndicatorCode(code),
+            )
           ],
       }),
       {} as Record<number, string>,
@@ -153,8 +182,10 @@ export function fromFormFieldEditorStateToFormDataPayload(
   const subfieldCodesTranslations = formFieldEditorState.subfields.reduce(
     (acc, subfield) => ({
       ...acc,
-      [`marc.bibliographic.datafield.${formFieldEditorState.tag}.subfield.${subfield.code}`]:
-        subfield.description,
+      [getSubfieldTranslationKeyPrefix(
+        formFieldEditorState.tag,
+        subfield.code,
+      )]: subfield.description,
     }),
     {},
   );
@@ -165,7 +196,7 @@ export function fromFormFieldEditorStateToFormDataPayload(
     (acc, [code, translation]) => {
       return {
         ...acc,
-        [getIndicatorTranslationKey(
+        [getIndicatorCodeTranslationKey(
           formFieldEditorState.tag,
           0,
           toIndicatorCode(code),
@@ -181,7 +212,7 @@ export function fromFormFieldEditorStateToFormDataPayload(
     (acc, [code, translation]) => {
       return {
         ...acc,
-        [getIndicatorTranslationKey(
+        [getIndicatorCodeTranslationKey(
           formFieldEditorState.tag,
           1,
           toIndicatorCode(code),
@@ -192,11 +223,11 @@ export function fromFormFieldEditorStateToFormDataPayload(
   );
 
   partialPayload[formFieldEditorState.tag].translations = {
-    [`marc.bibliographic.datafield.${formFieldEditorState.tag}`]:
+    [getTranslationKeyPrefix(formFieldEditorState.tag)]:
       formFieldEditorState.name,
-    [`marc.bibliographic.datafield.${formFieldEditorState.tag}.indicator.1`]:
+    [getIndicatorTranslationKey(formFieldEditorState.tag, 0)]:
       formFieldEditorState.indicatorsState[0].description,
-    [`marc.bibliographic.datafield.${formFieldEditorState.tag}.indicator.2`]:
+    [getIndicatorTranslationKey(formFieldEditorState.tag, 1)]:
       formFieldEditorState.indicatorsState[1].description,
     ...subfieldCodesTranslations,
     ...indicator1Translations,

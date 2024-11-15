@@ -17,20 +17,20 @@ export const autocompleteTypeMessageDescriptors =
       defaultMessage: "Tabela fixa",
     },
     [AutocompleteTypeEnum.Authorities]: {
-      id: "subfield.autocomplete.type.fixed_table",
-      defaultMessage: "Tabela fixa",
+      id: "subfield.autocomplete.type.authorities",
+      defaultMessage: "Autoridades",
     },
     [AutocompleteTypeEnum.Biblio]: {
-      id: "subfield.autocomplete.type.fixed_table",
-      defaultMessage: "Tabela fixa",
+      id: "subfield.autocomplete.type.biblio",
+      defaultMessage: "Bibliográfico",
     },
     [AutocompleteTypeEnum.Vocabulary]: {
-      id: "subfield.autocomplete.type.fixed_table",
-      defaultMessage: "Tabela fixa",
+      id: "subfield.autocomplete.type.vocabulary",
+      defaultMessage: "Vocabulário",
     },
     [AutocompleteTypeEnum.FixedTableWithPreviousValues]: {
-      id: "subfield.autocomplete.type.fixed_table",
-      defaultMessage: "Tabela fixa",
+      id: "subfield.autocomplete.type.fixed_table_with_previous_values",
+      defaultMessage: "Tabela e valores",
     },
   });
 
