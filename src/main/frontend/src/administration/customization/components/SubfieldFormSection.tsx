@@ -207,13 +207,11 @@ const SubfieldFormSection: FC<FormFieldEditorState & WithOnChange> = ({
       {addingSubfield && (
         <SubfieldCreateModal
           disabledCodes={disabledCodes}
-          onCloseModal={toggleAddingSubfield}
+          onCloseModal={() => toggleAddingSubfield()}
           onConfirm={(value) => {
             onChange({
               subfields: [...subfields, value],
             });
-
-            toggleAddingSubfield(false);
           }}
         />
       )}

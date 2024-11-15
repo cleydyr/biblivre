@@ -1,33 +1,22 @@
 import type { FC } from "react";
-import { useState } from "react";
 import React from "react";
-import {
-  EuiButton,
-  EuiButtonEmpty,
-  EuiFieldText,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiForm,
-  EuiFormRow,
-  EuiModal,
-  EuiModalBody,
-  EuiModalFooter,
-  EuiModalHeader,
-  EuiModalHeaderTitle,
-  EuiSelect,
-  EuiSwitch,
-  useGeneratedHtmlId,
-} from "@elastic/eui";
-import { FormattedMessage, useIntl } from "react-intl";
+
+import { defineMessages, useIntl } from "react-intl";
 import type { SubfieldFormEditorState } from "./types";
-import { AUTOCOMPLETE_VALUES, toAutoCompleteType } from "../lib";
-import { autocompleteTypeMessageDescriptors } from "../messages";
+import SubfieldModal from "./SubfieldModal";
 
 type SubfieldEditModalProps = {
   subfieldFormEditorState: SubfieldFormEditorState;
   onCloseModal: () => void;
   onConfirm: (subfield: SubfieldFormEditorState) => void;
 };
+
+const messages = defineMessages({
+  title: {
+    id: "administration.customization.subfield.edit.modal.title",
+    defaultMessage: "Editar valor do subcampo ${code}",
+  },
+});
 
 const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
   subfieldFormEditorState,
@@ -36,178 +25,16 @@ const SubfieldEditModal: FC<SubfieldEditModalProps> = ({
 }) => {
   const { formatMessage } = useIntl();
 
-  const [editedSubfield, setEditedSubfield] = useState(subfieldFormEditorState);
-
-  const modalTitleId = useGeneratedHtmlId();
-
-  const modalFormId = useGeneratedHtmlId({ prefix: "modalForm" });
-
-  const autoCompleteOptions = AUTOCOMPLETE_VALUES.map((value) => ({
-    value,
-    text: formatMessage(autocompleteTypeMessageDescriptors[value]),
-  }));
-
-  const { code, description, collapsed, repeatable, autocompleteType } =
-    editedSubfield;
-
   return (
-    <EuiModal
-      aria-labelledby={modalTitleId}
-      onClose={onCloseModal}
-      initialFocus="[name=popswitch]"
-    >
-      <EuiModalHeader>
-        <EuiModalHeaderTitle id={modalTitleId}>
-          <FormattedMessage
-            id="administration.customization.subfield.edit.modal.title"
-            defaultMessage="Editar valor do subcampo ${code}"
-            values={{ code }}
-          />
-        </EuiModalHeaderTitle>
-      </EuiModalHeader>
-
-      <EuiModalBody>
-        <EuiForm>
-          <EuiFlexGroup direction="column">
-            <EuiFlexGroup>
-              <EuiFlexItem>
-                <EuiFormRow
-                  label={
-                    <FormattedMessage
-                      id="administration.customization.subfield.description"
-                      defaultMessage="Descrição"
-                    />
-                  }
-                  error={[
-                    <FormattedMessage
-                      key={0}
-                      id="administration.customization.subfield.description.error"
-                      defaultMessage="A descrição é obrigatória"
-                    />,
-                  ]}
-                  isInvalid={description === ""}
-                >
-                  <EuiFieldText
-                    name="description"
-                    value={description}
-                    onChange={(event) =>
-                      setEditedSubfield({
-                        ...editedSubfield,
-                        description: event.target.value,
-                      })
-                    }
-                    isInvalid={description === ""}
-                  ></EuiFieldText>
-                </EuiFormRow>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-            <EuiFlexGroup>
-              <EuiFlexItem grow={false}>
-                <EuiFormRow
-                  label={
-                    <FormattedMessage
-                      id="administration.customization.subfield.repeatable"
-                      defaultMessage="Repetível"
-                    />
-                  }
-                >
-                  <EuiSwitch
-                    label={
-                      <FormattedMessage
-                        id="administration.customization.subfield.repeatable"
-                        defaultMessage="Repetível"
-                      />
-                    }
-                    onChange={() => {
-                      setEditedSubfield({
-                        ...editedSubfield,
-                        repeatable: !repeatable,
-                      });
-                    }}
-                    checked={repeatable}
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiFormRow
-                  label={
-                    <FormattedMessage
-                      id="administration.customization.subfield.collapsed"
-                      defaultMessage="Recolhido"
-                    />
-                  }
-                >
-                  <EuiSwitch
-                    label={
-                      <FormattedMessage
-                        id="administration.customization.subfield.collapsed"
-                        defaultMessage="Recolhido"
-                      />
-                    }
-                    onChange={() => {
-                      setEditedSubfield({
-                        ...editedSubfield,
-                        collapsed: !collapsed,
-                      });
-                    }}
-                    checked={collapsed}
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiFormRow
-                  label={
-                    <FormattedMessage
-                      id="administration.customization.subfield.autocomplete_type"
-                      defaultMessage="Tipo de auto-completar"
-                    />
-                  }
-                >
-                  <EuiSelect
-                    options={autoCompleteOptions}
-                    value={autocompleteType}
-                    onChange={(event) => {
-                      setEditedSubfield({
-                        ...editedSubfield,
-                        autocompleteType: toAutoCompleteType(
-                          event.target.value,
-                        ),
-                      });
-                    }}
-                  />
-                </EuiFormRow>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFlexGroup>
-        </EuiForm>
-      </EuiModalBody>
-
-      <EuiModalFooter>
-        <EuiButtonEmpty onClick={onCloseModal}>
-          <FormattedMessage
-            id="administration.customization.subfield.edit.modal.cancel"
-            defaultMessage="Cancelar"
-          />
-        </EuiButtonEmpty>
-
-        <EuiButton
-          type="submit"
-          form={modalFormId}
-          onClick={() => {
-            onConfirm(editedSubfield);
-
-            onCloseModal();
-          }}
-          fill
-          disabled={description === ""}
-        >
-          <FormattedMessage
-            id="administration.customization.subfield.edit.modal.confirm"
-            defaultMessage="Confirmar"
-          />
-        </EuiButton>
-      </EuiModalFooter>
-    </EuiModal>
+    <SubfieldModal
+      title={formatMessage(messages.title, {
+        code: subfieldFormEditorState.code,
+      })}
+      subfieldFormEditorState={subfieldFormEditorState}
+      onCloseModal={onCloseModal}
+      onConfirm={onConfirm}
+      mode="edit"
+    />
   );
 };
 
