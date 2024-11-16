@@ -269,7 +269,6 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
         ></EuiFieldText>
       </EuiFormRow>
       <EuiBasicTable<IndicatorValueNameInfo>
-        tableCaption="Valores do indicador 1"
         items={items}
         rowHeader="code"
         columns={columns}

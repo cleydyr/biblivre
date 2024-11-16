@@ -282,7 +282,7 @@ export default function ReportApp() {
           onConfirm={() => {
             deleteReport(deletingReport);
           }}
-          cancelButtonText="Cancelar"
+          cancelButtonText={formatMes}
           confirmButtonText={`Excluir ${deletingReport.name}`}
           buttonColor="danger"
         >

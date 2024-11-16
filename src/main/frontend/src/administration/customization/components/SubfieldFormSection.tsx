@@ -19,8 +19,9 @@ import SubfieldEditModal from "./SubfieldEditModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import SubfieldCreateModal from "./SubfieldCreateModal";
 import { useToggle } from "@uidotdev/usehooks";
+import messages from "./messages";
 
-const messages = defineMessages({
+const componentMessages = defineMessages({
   editSubfieldValueDescription: {
     id: "administration.customization.subfield.action.edit.description",
     defaultMessage: "Editar valor do subcampo {value}",
@@ -89,32 +90,17 @@ const SubfieldFormSection: FC<FormFieldEditorState & WithOnChange> = ({
     },
     {
       field: "repeatable",
-      name: (
-        <FormattedMessage
-          id="administration.customization.subfield.repeatable"
-          defaultMessage="Repetível"
-        />
-      ),
+      name: formatMessage(messages.repeatable),
       render: yesOrNoMessage,
     },
     {
       field: "collapsed",
-      name: (
-        <FormattedMessage
-          id="administration.customization.subfield.collapsed"
-          defaultMessage="Recolhido"
-        />
-      ),
+      name: formatMessage(messages.collapsed),
       render: yesOrNoMessage,
     },
     {
       field: "autocompleteType",
-      name: (
-        <FormattedMessage
-          id="administration.customization.subfield.autocomplete_type"
-          defaultMessage="Tipo de auto-completar"
-        />
-      ),
+      name: formatMessage(messages.autocompleteType),
       render: (autoCompleteType: AutocompleteType) =>
         formatMessage(autocompleteTypeMessageDescriptors[autoCompleteType]),
     },
@@ -136,7 +122,7 @@ const SubfieldFormSection: FC<FormFieldEditorState & WithOnChange> = ({
             />
           ),
           description: (item: SubfieldFormEditorState) =>
-            formatMessage(messages.editSubfieldValueDescription, {
+            formatMessage(componentMessages.editSubfieldValueDescription, {
               value: item.code,
             }),
           onClick: (item) => setEditingSubfield(item),
@@ -151,7 +137,7 @@ const SubfieldFormSection: FC<FormFieldEditorState & WithOnChange> = ({
             />
           ),
           description: (item: SubfieldFormEditorState) =>
-            formatMessage(messages.removeSubfieldValueDescription, {
+            formatMessage(componentMessages.removeSubfieldValueDescription, {
               value: item.code,
             }),
           onClick: setDeletingSubfield,
@@ -182,14 +168,20 @@ const SubfieldFormSection: FC<FormFieldEditorState & WithOnChange> = ({
     <Fragment>
       {deletingSubfield && (
         <ConfirmDeleteModal
-          title={formatMessage(messages.deleteSubfieldValueModalTitle, {
-            value: deletingSubfield.code,
-          })}
+          title={formatMessage(
+            componentMessages.deleteSubfieldValueModalTitle,
+            {
+              value: deletingSubfield.code,
+            },
+          )}
           value={deletingSubfield.code}
-          modalBody={formatMessage(messages.deleteSubfieldValueModalBody, {
-            value: deletingSubfield.code,
-            code: (msg) => <EuiCode>{msg}</EuiCode>,
-          })}
+          modalBody={formatMessage(
+            componentMessages.deleteSubfieldValueModalBody,
+            {
+              value: deletingSubfield.code,
+              code: (msg) => <EuiCode>{msg}</EuiCode>,
+            },
+          )}
           onConfirm={() => {
             handleDeleteSubfield(deletingSubfield);
             setDeletingSubfield(undefined);

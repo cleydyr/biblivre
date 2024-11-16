@@ -27,6 +27,7 @@ import {
   toSubfieldCode,
 } from "../lib";
 import { autocompleteTypeMessageDescriptors } from "../messages";
+import messages from "./messages";
 
 type SubfieldEditModalBaseProps = {
   title: string;
@@ -140,21 +141,9 @@ const SubfieldModal: FC<SubfieldModalProps> = (props) => {
             </EuiFlexGroup>
             <EuiFlexGroup>
               <EuiFlexItem grow={false}>
-                <EuiFormRow
-                  label={
-                    <FormattedMessage
-                      id="administration.customization.subfield.repeatable"
-                      defaultMessage="Repetível"
-                    />
-                  }
-                >
+                <EuiFormRow label={formatMessage(messages.repeatable)}>
                   <EuiSwitch
-                    label={
-                      <FormattedMessage
-                        id="administration.customization.subfield.repeatable"
-                        defaultMessage="Repetível"
-                      />
-                    }
+                    label={formatMessage(messages.repeatable)}
                     onChange={() => {
                       setEditedSubfield({
                         ...editedSubfield,
@@ -166,21 +155,9 @@ const SubfieldModal: FC<SubfieldModalProps> = (props) => {
                 </EuiFormRow>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiFormRow
-                  label={
-                    <FormattedMessage
-                      id="administration.customization.subfield.collapsed"
-                      defaultMessage="Recolhido"
-                    />
-                  }
-                >
+                <EuiFormRow label={formatMessage(messages.collapsed)}>
                   <EuiSwitch
-                    label={
-                      <FormattedMessage
-                        id="administration.customization.subfield.collapsed"
-                        defaultMessage="Recolhido"
-                      />
-                    }
+                    label={formatMessage(messages.collapsed)}
                     onChange={() => {
                       setEditedSubfield({
                         ...editedSubfield,
@@ -192,14 +169,7 @@ const SubfieldModal: FC<SubfieldModalProps> = (props) => {
                 </EuiFormRow>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiFormRow
-                  label={
-                    <FormattedMessage
-                      id="administration.customization.subfield.autocomplete_type"
-                      defaultMessage="Tipo de auto-completar"
-                    />
-                  }
-                >
+                <EuiFormRow label={formatMessage(messages.autocompleteType)}>
                   <EuiSelect
                     options={autoCompleteOptions}
                     value={autocompleteType}
@@ -221,10 +191,7 @@ const SubfieldModal: FC<SubfieldModalProps> = (props) => {
 
       <EuiModalFooter>
         <EuiButtonEmpty onClick={onCloseModal}>
-          <FormattedMessage
-            id="administration.customization.subfield.edit.modal.cancel"
-            defaultMessage="Cancelar"
-          />
+          {formatMessage(messages.cancel)}
         </EuiButtonEmpty>
 
         <EuiButton
@@ -238,10 +205,7 @@ const SubfieldModal: FC<SubfieldModalProps> = (props) => {
           fill
           disabled={description === ""}
         >
-          <FormattedMessage
-            id="administration.customization.subfield.edit.modal.confirm"
-            defaultMessage="Confirmar"
-          />
+          {formatMessage(messages.save)}
         </EuiButton>
       </EuiModalFooter>
     </EuiModal>
