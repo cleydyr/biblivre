@@ -62,7 +62,7 @@ export type AlphaNumericCharacter =
 export interface IndicatorEditorState {
   defined: boolean;
   description: string;
-  translations: Record<IndicatorCode, string>;
+  translations: Partial<Record<IndicatorCode, string>>;
 }
 
 export interface FormFieldEditorState {

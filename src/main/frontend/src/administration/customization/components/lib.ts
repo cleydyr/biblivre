@@ -122,28 +122,40 @@ export function fromFormDataToFormDataPayload(
 
 export function fromFormFieldEditorStateToFormDataPayload(
   formFieldEditorState: FormFieldEditorState,
+  sortOrder: number,
 ): FormDataPayload {
+  const {
+    tag,
+    materialTypes,
+    indicatorsState: [indicator1State, indicator2State],
+    subfields,
+    repeatable,
+    collapsed,
+  } = formFieldEditorState;
+
   const partialPayload = fromFormDataToFormDataPayload([
     {
-      datafield: formFieldEditorState.tag,
-      materialType: formFieldEditorState.materialTypes,
-      indicator1: formFieldEditorState.indicatorsState[0].defined
-        ? Object.keys(formFieldEditorState.indicatorsState[0].translations)
+      datafield: tag,
+      materialType: materialTypes,
+      indicator1: indicator1State.defined
+        ? Object.keys(indicator1State.translations)
         : [],
-      indicator2: formFieldEditorState.indicatorsState[1].defined
-        ? Object.keys(formFieldEditorState.indicatorsState[1].translations)
+      indicator2: indicator2State.defined
+        ? Object.keys(indicator2State.translations)
         : [],
-      subfields: formFieldEditorState.subfields.map((subfield) => ({
-        datafield: formFieldEditorState.tag,
-        subfield: subfield.code,
-        repeatable: subfield.repeatable,
-        collapsed: subfield.collapsed,
-        sortOrder: subfield.sortOrder,
-        autocompleteType: subfield.autocompleteType,
-      })),
-      repeatable: formFieldEditorState.repeatable,
-      collapsed: formFieldEditorState.collapsed,
-      sortOrder: formFieldEditorState.subfields[0].sortOrder,
+      subfields: subfields.map(
+        ({ code, repeatable, collapsed, sortOrder, autocompleteType }) => ({
+          datafield: formFieldEditorState.tag,
+          subfield: code,
+          repeatable,
+          collapsed,
+          sortOrder,
+          autocompleteType,
+        }),
+      ),
+      repeatable,
+      collapsed,
+      sortOrder,
     },
   ]);
 

@@ -50,14 +50,18 @@ export function useSaveFormDatafieldsUsingEditorStateMutation(): UseMutationResu
   {
     formFieldEditorState: FormFieldEditorState;
     recordType: RecordType;
+    sortOrder: number;
   }
 > {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ formFieldEditorState, recordType }) =>
+    mutationFn: ({ formFieldEditorState, recordType, sortOrder }) =>
       upsertFormDatafields(
-        fromFormFieldEditorStateToFormDataPayload(formFieldEditorState),
+        fromFormFieldEditorStateToFormDataPayload(
+          formFieldEditorState,
+          sortOrder,
+        ),
         recordType,
       ),
     onSuccess: async (_, variables) => {

@@ -6,6 +6,7 @@ import {
   EuiLoadingLogo,
   EuiImage,
   euiDragDropReorder,
+  EuiButton,
 } from "@elastic/eui";
 import type { FC } from "react";
 import React, { Fragment, useState, useEffect } from "react";
@@ -27,6 +28,7 @@ import type { FormFieldEditorState } from "./components/types";
 import DatafieldPanel from "./components/DatafieldPanel";
 import type { DatafieldTag } from "./types";
 import { getTranslations } from "./components/translations_helpers";
+import { FormattedMessage } from "react-intl";
 
 function BiblivreLoadingIcon() {
   return (
@@ -47,8 +49,9 @@ function BiblivreLoadingIcon() {
 
 function toPartialFormData(
   formFieldEditorState: FormFieldEditorState,
-): Partial<FormData> {
+): Omit<FormData, "sortOrder"> {
   return {
+    datafield: formFieldEditorState.tag,
     indicator1: formFieldEditorState.indicatorsState[0].defined
       ? Object.keys(formFieldEditorState.indicatorsState[0].translations)
       : [],
@@ -71,11 +74,34 @@ function toPartialFormData(
   };
 }
 
+function getInitialEditorState(): FormFieldEditorState {
+  return {
+    tag: "",
+    name: "",
+    indicatorsState: [
+      {
+        defined: false,
+        description: "",
+        translations: {},
+      },
+      {
+        defined: false,
+        description: "",
+        translations: {},
+      },
+    ],
+    materialTypes: [],
+    subfields: [],
+    repeatable: false,
+    collapsed: false,
+  };
+}
+
 const FormCustomization: React.FC = () => {
   const {
     isLoading: isLoadingFormData,
     isSuccess: isSucessFormData,
-    data: datafields,
+    data: fetchedDatafields,
   } = useFormDataQuery(RecordType.Biblio);
 
   const {
@@ -84,7 +110,9 @@ const FormCustomization: React.FC = () => {
     isSuccess: isSuccessTranslations,
   } = useTranslationsQuery("pt-BR");
 
-  const [items, setItems] = useState<FormData[] | undefined>(datafields);
+  const [datafields, setDatafields] = useState<FormData[] | undefined>(
+    fetchedDatafields,
+  );
 
   const [translations, setTranslations] = useState<
     Record<string, string> | undefined
@@ -95,8 +123,8 @@ const FormCustomization: React.FC = () => {
   }, [fetchedTranslations]);
 
   useEffect(() => {
-    setItems(datafields);
-  }, [datafields]);
+    setDatafields(fetchedDatafields);
+  }, [fetchedDatafields]);
 
   const { mutate: saveFormDatafieldsUsingEditorState } =
     useSaveFormDatafieldsUsingEditorStateMutation();
@@ -114,58 +142,67 @@ const FormCustomization: React.FC = () => {
     DatafieldTag | undefined
   >(undefined);
 
+  const [creatingDatafield, setCreatingDatafield] = useState<boolean>(false);
+
   if (isLoadingFormData || isLoadingTranslations) {
     return <BiblivreLoadingIcon />;
   }
 
   const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
-    if (items === undefined) {
+    if (datafields === undefined) {
       return;
     }
 
     if (source && destination) {
       const reorderedItems = euiDragDropReorder(
-        items,
+        datafields,
         source.index,
         destination.index,
       );
 
-      setItems(reorderedItems);
+      setDatafields(reorderedItems);
 
       saveFormDataFieldsReorderMtn({
-        fields: getAffectedItems(items, source.index, destination.index),
+        fields: getAffectedItems(datafields, source.index, destination.index),
         recordType: RecordType.Biblio,
       });
     }
   };
 
   function handleDatafieldSave(formFieldEditorState: FormFieldEditorState) {
+    if (datafields === undefined) {
+      return; // should never happen
+    }
+
     saveFormDatafieldsUsingEditorState({
       formFieldEditorState,
       recordType: "biblio",
+      sortOrder: datafieldToEdit?.sortOrder ?? 0,
     });
 
-    const updatedItems = items?.map((item) =>
-      item.datafield === formFieldEditorState.tag
+    const updatedDatafields = datafields.map((datafield) =>
+      datafield.datafield === formFieldEditorState.tag
         ? {
-            ...item,
+            ...datafield,
             ...toPartialFormData(formFieldEditorState),
           }
-        : item,
+        : datafield,
     );
 
-    setItems(updatedItems);
+    setDatafields(updatedDatafields);
 
-    setDatafieldToEdit(undefined);
-
-    setTranslations({
+    const updateTranslations = {
       ...translations,
       ...getTranslations(formFieldEditorState),
-    });
+    };
+
+    setTranslations(updateTranslations);
+
+    setDatafieldToEdit(undefined);
   }
 
   function handleFormDataDelete(tag: DatafieldTag) {
-    setItems(items?.filter((item) => item.datafield !== tag));
+    setDatafields(datafields?.filter((item) => item.datafield !== tag));
 
     deleteFormDataFieldMtn({
       datafield: tag,
@@ -174,7 +211,40 @@ const FormCustomization: React.FC = () => {
   }
 
   function handleFormDataEdit(tag: DatafieldTag) {
-    setDatafieldToEdit(items?.find((item) => item.datafield === tag));
+    setDatafieldToEdit(datafields?.find((item) => item.datafield === tag));
+  }
+
+  function handleCreateFormData(formFieldEditorState: FormFieldEditorState) {
+    if (datafields === undefined) {
+      return; // should never happen
+    }
+
+    const largestSortOrder = datafields.reduce(
+      (acc, cur) => Math.max(acc, cur.sortOrder),
+      0,
+    );
+
+    saveFormDatafieldsUsingEditorState({
+      formFieldEditorState,
+      recordType: "biblio",
+      sortOrder: largestSortOrder,
+    });
+
+    const newFormData: FormData = {
+      ...toPartialFormData(formFieldEditorState),
+      sortOrder: largestSortOrder + 1,
+    };
+
+    setDatafields([...datafields, newFormData]);
+
+    const updateTranslations = {
+      ...translations,
+      ...getTranslations(formFieldEditorState),
+    };
+
+    setTranslations(updateTranslations);
+
+    setCreatingDatafield(false);
   }
 
   return (
@@ -189,6 +259,14 @@ const FormCustomization: React.FC = () => {
             onSave={handleDatafieldSave}
           />
         )}
+        {creatingDatafield && (
+          <EditDatafieldFlyout
+            mode="create"
+            editorState={getInitialEditorState()}
+            onClose={() => setCreatingDatafield(false)}
+            onSave={handleCreateFormData}
+          />
+        )}
         {datafieldToDelete && (
           <ConfirmDeleteDatafieldModal
             tag={datafieldToDelete}
@@ -199,14 +277,29 @@ const FormCustomization: React.FC = () => {
             onClose={() => setDatafieldToDelete(undefined)}
           />
         )}
-        {translations && (
-          <DatafieldsDragAndDrop
-            datafields={datafields}
-            translations={translations}
-            onClickDeleteDatafield={setDatafieldToDelete}
-            onClickEditDatafield={handleFormDataEdit}
-            onDragEnd={onDragEnd}
-          />
+
+        {translations && datafields && (
+          <EuiFlexGroup direction="column">
+            <DatafieldsDragAndDrop
+              datafields={datafields}
+              translations={translations}
+              onClickDeleteDatafield={setDatafieldToDelete}
+              onClickEditDatafield={handleFormDataEdit}
+              onDragEnd={onDragEnd}
+            />
+            <EuiFlexGroup justifyContent="center">
+              <EuiButton
+                fill
+                onClick={() => setCreatingDatafield(true)}
+                iconType="plusInCircle"
+              >
+                <FormattedMessage
+                  id="administration.customization.form.create"
+                  defaultMessage="Criar campo"
+                />
+              </EuiButton>
+            </EuiFlexGroup>
+          </EuiFlexGroup>
         )}
       </Fragment>
     )
