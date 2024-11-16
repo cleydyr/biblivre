@@ -6,12 +6,16 @@ import type {
   IndicatorOrder,
   WithOnChange,
 } from "./types";
+import { INDICATOR_CODE_VALUES } from "./types";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
   EuiBasicTable,
   type EuiBasicTableColumn,
+  EuiButtonEmpty,
   EuiFieldText,
+  EuiFlexGroup,
   EuiFormRow,
+  EuiIcon,
 } from "@elastic/eui";
 import messages from "../messages";
 import IndicatorValueEditModal from "./IndicatorValueEditModal";
@@ -36,10 +40,12 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
 }) => {
   const { description, translations } = indicatorsState[order];
 
+  const { formatMessage } = useIntl();
+
   const [editingIndicatorDescription, setEditingIndicatorDescription] =
     useState<string>(description);
 
-  const { formatMessage } = useIntl();
+  const [creatingIndicator, setCreatingIndicator] = useState<boolean>(false);
 
   const [editingIndicator, setEditingIndicator] = useState<
     IndicatorValueNameInfo | undefined
@@ -202,6 +208,38 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
           onConfirm={handleConfirmIndicatorValueEdit(editingIndicator.code)}
         />
       )}
+      {creatingIndicator && (
+        <IndicatorValueEditModal
+          indicatorCode={
+            INDICATOR_CODE_VALUES.find((value) => !disabledCodes.has(value)) ??
+            0
+          }
+          indicatorCodeTranslation=""
+          disabledCodes={disabledCodes}
+          onCloseModal={() => setCreatingIndicator(false)}
+          onConfirm={(code, description) => {
+            const newTranslations = {
+              ...indicatorsState[order].translations,
+            };
+
+            newTranslations[code] = description;
+
+            const newState = {
+              ...indicatorsState[order],
+              translations: newTranslations,
+            };
+
+            onChange({
+              indicatorsState:
+                order === 0
+                  ? [newState, indicatorsState[1]]
+                  : [indicatorsState[0], newState],
+            });
+
+            setCreatingIndicator(false);
+          }}
+        />
+      )}
       <EuiFormRow
         label={
           <FormattedMessage
@@ -236,6 +274,17 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
         rowHeader="code"
         columns={columns}
       />
+      <EuiFlexGroup justifyContent={"flexEnd"}>
+        <EuiButtonEmpty onClick={() => setCreatingIndicator(true)}>
+          <p>
+            <EuiIcon type="plus" className="eui-alignMiddle" />
+            <FormattedMessage
+              id="administration.customization.indicator.add_value"
+              defaultMessage="Adicionar valor"
+            />
+          </p>
+        </EuiButtonEmpty>
+      </EuiFlexGroup>
     </Fragment>
   );
 };
