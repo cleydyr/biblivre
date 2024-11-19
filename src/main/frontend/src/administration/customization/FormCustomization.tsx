@@ -20,10 +20,9 @@ import {
   useSaveFormDatafieldsUsingEditorStateMutation,
   useTranslationsQuery,
 } from "./queries";
-import { getAffectedItems, toDatafieldTag } from "./lib";
+import { getAffectedItems } from "./lib";
 import EditDatafieldFlyout from "./EditDatafieldFlyout";
 import ConfirmDeleteDatafieldModal from "./ConfirmDeleteDatafieldModal";
-import { toFormFieldEditorState } from "./components/lib";
 import type { FormFieldEditorState } from "./components/types";
 import DatafieldPanel from "./components/DatafieldPanel";
 import type { DatafieldTag } from "./types";
@@ -210,7 +209,7 @@ const FormCustomization: React.FC = () => {
     });
   }
 
-  function handleFormDataEdit(tag: DatafieldTag) {
+  function onClickEditDatafield(tag: DatafieldTag) {
     setDatafieldToEdit(datafields?.find((item) => item.datafield === tag));
   }
 
@@ -251,14 +250,6 @@ const FormCustomization: React.FC = () => {
     isSucessFormData &&
     isSuccessTranslations && (
       <Fragment>
-        {datafieldToEdit && translations && (
-          <EditDatafieldFlyout
-            mode={"edit"}
-            editorState={toFormFieldEditorState(translations, datafieldToEdit)}
-            onClose={() => setDatafieldToEdit(undefined)}
-            onSave={handleDatafieldSave}
-          />
-        )}
         {creatingDatafield && (
           <EditDatafieldFlyout
             mode="create"
@@ -284,8 +275,9 @@ const FormCustomization: React.FC = () => {
               datafields={datafields}
               translations={translations}
               onClickDeleteDatafield={setDatafieldToDelete}
-              onClickEditDatafield={handleFormDataEdit}
+              onClickEditDatafield={onClickEditDatafield}
               onDragEnd={onDragEnd}
+              onDatafieldSave={handleDatafieldSave}
             />
             <EuiFlexGroup justifyContent="center">
               <EuiButton
@@ -312,6 +304,7 @@ type DatafieldsDragAndDropProps = {
   onDragEnd: OnDragEndResponder;
   onClickDeleteDatafield: (tag: DatafieldTag) => void;
   onClickEditDatafield: (tag: DatafieldTag) => void;
+  onDatafieldSave: (datafield: FormFieldEditorState) => void;
 };
 
 const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
@@ -320,6 +313,7 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
   onDragEnd,
   onClickDeleteDatafield,
   onClickEditDatafield,
+  onDatafieldSave,
 }) => {
   return (
     <Fragment>
@@ -346,12 +340,11 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
                     return (
                       <DatafieldPanel
                         dragHandleProps={dragHandleProps}
-                        tag={toDatafieldTag(datafield)}
+                        datafield={item}
                         translations={translations}
-                        // onClickDelete={() => setDatafieldToDelete(item)}
-                        // onClickEdit={() => setDatafieldToEdit({ ...item })}
                         onClickDelete={onClickDeleteDatafield}
                         onClickEdit={onClickEditDatafield}
+                        handleDatafieldSave={onDatafieldSave}
                       />
                     );
                   }}

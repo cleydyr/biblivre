@@ -8,11 +8,16 @@ import {
   EuiTitle,
 } from "@elastic/eui";
 import type { FC } from "react";
+import { Fragment, useState } from "react";
 import React from "react";
 import FormFieldTitle from "./FormFieldTitle";
 import { toDatafieldTag } from "../lib";
 import type { DatafieldTag } from "../types";
 import { defineMessages, useIntl } from "react-intl";
+import EditDatafieldFlyout from "../EditDatafieldFlyout";
+import { toFormFieldEditorState } from "./lib";
+import type { FormData } from "../../../generated-sources";
+import type { FormFieldEditorState } from "./types";
 
 const messages = defineMessages({
   delete: {
@@ -26,52 +31,67 @@ const messages = defineMessages({
 });
 
 type DatafieldPanelProps = {
-  tag: DatafieldTag;
+  datafield: FormData;
   dragHandleProps: DraggableProvidedDragHandleProps | null;
   translations: Record<string, string>;
   onClickDelete: (tag: DatafieldTag) => void;
   onClickEdit: (tag: DatafieldTag) => void;
+  handleDatafieldSave: (datafield: FormFieldEditorState) => void;
 };
 
 const DatafieldPanel: FC<DatafieldPanelProps> = ({
-  tag,
+  datafield,
   translations,
   dragHandleProps,
   onClickDelete,
-  onClickEdit,
+  handleDatafieldSave,
 }) => {
   const { formatMessage } = useIntl();
 
+  const [editing, setEditing] = useState(false);
+
+  const { datafield: tag } = datafield;
+
   return (
-    <EuiPanel hasBorder={true} {...dragHandleProps}>
-      <EuiFlexGroup gutterSize="m">
-        <EuiFlexItem grow={false}>
-          <EuiFlexGroup alignItems="center">
-            <EuiIcon type="grab" />
-          </EuiFlexGroup>
-        </EuiFlexItem>
-        <EuiTitle size="xs">
-          <h2>
-            <FormFieldTitle
-              tag={toDatafieldTag(tag)}
-              translations={translations}
+    <Fragment>
+      {editing && (
+        <EditDatafieldFlyout
+          mode={"edit"}
+          editorState={toFormFieldEditorState(translations, datafield)}
+          onClose={() => setEditing(false)}
+          onSave={handleDatafieldSave}
+        />
+      )}
+      <EuiPanel hasBorder={true} {...dragHandleProps}>
+        <EuiFlexGroup gutterSize="m">
+          <EuiFlexItem grow={false}>
+            <EuiFlexGroup alignItems="center">
+              <EuiIcon type="grab" />
+            </EuiFlexGroup>
+          </EuiFlexItem>
+          <EuiTitle size="xs">
+            <h2>
+              <FormFieldTitle
+                tag={toDatafieldTag(tag)}
+                translations={translations}
+              />
+            </h2>
+          </EuiTitle>
+          <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
+            <EuiButtonIcon
+              iconType="trash"
+              aria-label={formatMessage(messages.delete, { tag })}
+              onClick={() => onClickDelete(toDatafieldTag(tag))}
             />
-          </h2>
-        </EuiTitle>
-        <EuiFlexGroup justifyContent="flexEnd" gutterSize="s">
-          <EuiButtonIcon
-            iconType="trash"
-            aria-label={formatMessage(messages.delete, { tag })}
-            onClick={() => onClickDelete(tag)}
-          />
-          <EuiButtonIcon
-            iconType="pencil"
-            aria-label={formatMessage(messages.edit, { tag })}
-            onClick={() => onClickEdit(tag)}
-          />
+            <EuiButtonIcon
+              iconType="pencil"
+              aria-label={formatMessage(messages.edit, { tag })}
+              onClick={() => setEditing(true)}
+            />
+          </EuiFlexGroup>
         </EuiFlexGroup>
-      </EuiFlexGroup>
-    </EuiPanel>
+      </EuiPanel>
+    </Fragment>
   );
 };
 
