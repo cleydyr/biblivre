@@ -18,6 +18,7 @@ import EditDatafieldFlyout from "../EditDatafieldFlyout";
 import { toFormFieldEditorState } from "./lib";
 import type { FormData } from "../../../generated-sources";
 import type { FormFieldEditorState } from "./types";
+import ConfirmDeleteDatafieldModal from "../ConfirmDeleteDatafieldModal";
 
 const messages = defineMessages({
   delete: {
@@ -34,32 +35,44 @@ type DatafieldPanelProps = {
   datafield: FormData;
   dragHandleProps: DraggableProvidedDragHandleProps | null;
   translations: Record<string, string>;
-  onClickDelete: (tag: DatafieldTag) => void;
-  onClickEdit: (tag: DatafieldTag) => void;
-  handleDatafieldSave: (datafield: FormFieldEditorState) => void;
+  onDatafieldUpdate: (datafield: FormFieldEditorState) => void;
+  onDatafieldDelete: (tag: DatafieldTag) => void;
 };
 
 const DatafieldPanel: FC<DatafieldPanelProps> = ({
   datafield,
   translations,
   dragHandleProps,
-  onClickDelete,
-  handleDatafieldSave,
+  onDatafieldUpdate,
+  onDatafieldDelete,
 }) => {
   const { formatMessage } = useIntl();
 
   const [editing, setEditing] = useState(false);
 
+  const [deleting, setDeleting] = useState(false);
+
   const { datafield: tag } = datafield;
 
   return (
     <Fragment>
+      {deleting && (
+        <ConfirmDeleteDatafieldModal
+          tag={toDatafieldTag(tag)}
+          onConfirm={() => {
+            onDatafieldDelete(toDatafieldTag(tag));
+
+            setDeleting(false);
+          }}
+          onClose={() => setDeleting(false)}
+        />
+      )}
       {editing && (
         <EditDatafieldFlyout
           mode={"edit"}
           editorState={toFormFieldEditorState(translations, datafield)}
           onClose={() => setEditing(false)}
-          onSave={handleDatafieldSave}
+          onSave={onDatafieldUpdate}
         />
       )}
       <EuiPanel hasBorder={true} {...dragHandleProps}>
@@ -81,7 +94,7 @@ const DatafieldPanel: FC<DatafieldPanelProps> = ({
             <EuiButtonIcon
               iconType="trash"
               aria-label={formatMessage(messages.delete, { tag })}
-              onClick={() => onClickDelete(toDatafieldTag(tag))}
+              onClick={() => setDeleting(true)}
             />
             <EuiButtonIcon
               iconType="pencil"

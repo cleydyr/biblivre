@@ -22,7 +22,6 @@ import {
 } from "./queries";
 import { getAffectedItems } from "./lib";
 import EditDatafieldFlyout from "./EditDatafieldFlyout";
-import ConfirmDeleteDatafieldModal from "./ConfirmDeleteDatafieldModal";
 import type { FormFieldEditorState } from "./components/types";
 import DatafieldPanel from "./components/DatafieldPanel";
 import type { DatafieldTag } from "./types";
@@ -137,10 +136,6 @@ const FormCustomization: React.FC = () => {
     undefined,
   );
 
-  const [datafieldToDelete, setDatafieldToDelete] = useState<
-    DatafieldTag | undefined
-  >(undefined);
-
   const [creatingDatafield, setCreatingDatafield] = useState<boolean>(false);
 
   if (isLoadingFormData || isLoadingTranslations) {
@@ -209,10 +204,6 @@ const FormCustomization: React.FC = () => {
     });
   }
 
-  function onClickEditDatafield(tag: DatafieldTag) {
-    setDatafieldToEdit(datafields?.find((item) => item.datafield === tag));
-  }
-
   function handleCreateFormData(formFieldEditorState: FormFieldEditorState) {
     if (datafields === undefined) {
       return; // should never happen
@@ -258,26 +249,14 @@ const FormCustomization: React.FC = () => {
             onSave={handleCreateFormData}
           />
         )}
-        {datafieldToDelete && (
-          <ConfirmDeleteDatafieldModal
-            tag={datafieldToDelete}
-            onConfirm={() => {
-              handleFormDataDelete(datafieldToDelete);
-              setDatafieldToDelete(undefined);
-            }}
-            onClose={() => setDatafieldToDelete(undefined)}
-          />
-        )}
-
         {translations && datafields && (
           <EuiFlexGroup direction="column">
             <DatafieldsDragAndDrop
               datafields={datafields}
               translations={translations}
-              onClickDeleteDatafield={setDatafieldToDelete}
-              onClickEditDatafield={onClickEditDatafield}
               onDragEnd={onDragEnd}
-              onDatafieldSave={handleDatafieldSave}
+              onDatafieldUpdate={handleDatafieldSave}
+              onDataFieldDelete={handleFormDataDelete}
             />
             <EuiFlexGroup justifyContent="center">
               <EuiButton
@@ -302,18 +281,16 @@ type DatafieldsDragAndDropProps = {
   datafields: FormData[];
   translations: Record<string, string>;
   onDragEnd: OnDragEndResponder;
-  onClickDeleteDatafield: (tag: DatafieldTag) => void;
-  onClickEditDatafield: (tag: DatafieldTag) => void;
-  onDatafieldSave: (datafield: FormFieldEditorState) => void;
+  onDatafieldUpdate: (datafield: FormFieldEditorState) => void;
+  onDataFieldDelete: (tag: DatafieldTag) => void;
 };
 
 const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
   datafields,
   translations,
   onDragEnd,
-  onClickDeleteDatafield,
-  onClickEditDatafield,
-  onDatafieldSave,
+  onDatafieldUpdate,
+  onDataFieldDelete,
 }) => {
   return (
     <Fragment>
@@ -342,9 +319,8 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
                         dragHandleProps={dragHandleProps}
                         datafield={item}
                         translations={translations}
-                        onClickDelete={onClickDeleteDatafield}
-                        onClickEdit={onClickEditDatafield}
-                        handleDatafieldSave={onDatafieldSave}
+                        onDatafieldUpdate={onDatafieldUpdate}
+                        onDatafieldDelete={onDataFieldDelete}
                       />
                     );
                   }}
