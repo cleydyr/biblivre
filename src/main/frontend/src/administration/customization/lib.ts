@@ -1,6 +1,6 @@
 import type { DatafieldTag, SubfieldCode } from "./types";
-import type { IndicatorCode } from "./components/types";
-import { AutocompleteType } from "../../generated-sources";
+import type { FormFieldEditorState, IndicatorCode } from "./components/types";
+import { AutocompleteType, type FormData } from "../../generated-sources";
 
 type Ordered = {
   sortOrder: number;
@@ -87,4 +87,31 @@ export function toAutoCompleteType(value: string): AutocompleteType {
   }
 
   throw new Error(`Invalid autocomplete type: ${value}`);
+}
+
+export function toPartialFormData(
+  formFieldEditorState: FormFieldEditorState,
+): Omit<FormData, "sortOrder"> {
+  return {
+    datafield: formFieldEditorState.tag,
+    indicator1: formFieldEditorState.indicatorsState[0].defined
+      ? Object.keys(formFieldEditorState.indicatorsState[0].translations)
+      : [],
+    indicator2: formFieldEditorState.indicatorsState[1].defined
+      ? Object.keys(formFieldEditorState.indicatorsState[1].translations)
+      : [],
+    materialType: formFieldEditorState.materialTypes,
+    subfields: formFieldEditorState.subfields.map(
+      ({ code, sortOrder, autocompleteType, repeatable, collapsed }) => ({
+        datafield: formFieldEditorState.tag,
+        subfield: code,
+        sortOrder,
+        autocompleteType,
+        repeatable,
+        collapsed,
+      }),
+    ),
+    repeatable: formFieldEditorState.repeatable,
+    collapsed: formFieldEditorState.collapsed,
+  };
 }

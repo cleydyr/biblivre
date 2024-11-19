@@ -3,10 +3,7 @@ import {
   EuiDraggable,
   EuiDroppable,
   EuiFlexGroup,
-  EuiLoadingLogo,
-  EuiImage,
   euiDragDropReorder,
-  EuiButton,
 } from "@elastic/eui";
 import type { FC } from "react";
 import React, { Fragment, useState, useEffect } from "react";
@@ -20,80 +17,13 @@ import {
   useSaveFormDatafieldsUsingEditorStateMutation,
   useTranslationsQuery,
 } from "./queries";
-import { getAffectedItems } from "./lib";
-import EditDatafieldFlyout from "./EditDatafieldFlyout";
+import { getAffectedItems, toPartialFormData } from "./lib";
 import type { FormFieldEditorState } from "./components/types";
 import DatafieldPanel from "./components/DatafieldPanel";
 import type { DatafieldTag } from "./types";
 import { getTranslations } from "./components/translations_helpers";
-import { FormattedMessage } from "react-intl";
-
-function BiblivreLoadingIcon() {
-  return (
-    <EuiFlexGroup justifyContent="center" alignItems="center">
-      <EuiLoadingLogo
-        size="xl"
-        logo={() => (
-          <EuiImage
-            size="original"
-            src="/static/images/logo_biblivre_small_original.png"
-            alt="Bredo logo"
-          />
-        )}
-      />
-    </EuiFlexGroup>
-  );
-}
-
-function toPartialFormData(
-  formFieldEditorState: FormFieldEditorState,
-): Omit<FormData, "sortOrder"> {
-  return {
-    datafield: formFieldEditorState.tag,
-    indicator1: formFieldEditorState.indicatorsState[0].defined
-      ? Object.keys(formFieldEditorState.indicatorsState[0].translations)
-      : [],
-    indicator2: formFieldEditorState.indicatorsState[1].defined
-      ? Object.keys(formFieldEditorState.indicatorsState[1].translations)
-      : [],
-    materialType: formFieldEditorState.materialTypes,
-    subfields: formFieldEditorState.subfields.map(
-      ({ code, sortOrder, autocompleteType, repeatable, collapsed }) => ({
-        datafield: formFieldEditorState.tag,
-        subfield: code,
-        sortOrder,
-        autocompleteType,
-        repeatable,
-        collapsed,
-      }),
-    ),
-    repeatable: formFieldEditorState.repeatable,
-    collapsed: formFieldEditorState.collapsed,
-  };
-}
-
-function getInitialEditorState(): FormFieldEditorState {
-  return {
-    tag: "",
-    name: "",
-    indicatorsState: [
-      {
-        defined: false,
-        description: "",
-        translations: {},
-      },
-      {
-        defined: false,
-        description: "",
-        translations: {},
-      },
-    ],
-    materialTypes: [],
-    subfields: [],
-    repeatable: false,
-    collapsed: false,
-  };
-}
+import BiblivreLoadingIcon from "./components/BiblivreLoadingIcon";
+import CreateDatafieldAffordance from "./components/CreateDatafieldAffordance";
 
 const FormCustomization: React.FC = () => {
   const {
@@ -131,8 +61,6 @@ const FormCustomization: React.FC = () => {
     useSaveFormDataFieldsMutation();
 
   const { mutate: deleteFormDataFieldMtn } = useDeleteFormDataFieldMutation();
-
-  const [creatingDatafield, setCreatingDatafield] = useState<boolean>(false);
 
   if (isLoadingFormData || isLoadingTranslations) {
     return <BiblivreLoadingIcon />;
@@ -228,46 +156,25 @@ const FormCustomization: React.FC = () => {
     };
 
     setTranslations(updateTranslations);
-
-    setCreatingDatafield(false);
   }
 
+  const appReady =
+    isSucessFormData && isSuccessTranslations && translations && datafields;
+
   return (
-    isSucessFormData &&
-    isSuccessTranslations && (
-      <Fragment>
-        {creatingDatafield && (
-          <EditDatafieldFlyout
-            mode="create"
-            editorState={getInitialEditorState()}
-            onClose={() => setCreatingDatafield(false)}
-            onSave={handleCreateFormData}
-          />
-        )}
-        {translations && datafields && (
-          <EuiFlexGroup direction="column">
-            <DatafieldsDragAndDrop
-              datafields={datafields}
-              translations={translations}
-              onDragEnd={onDragEnd}
-              onDatafieldUpdate={handleDatafieldSave}
-              onDataFieldDelete={handleFormDataDelete}
-            />
-            <EuiFlexGroup justifyContent="center">
-              <EuiButton
-                fill
-                onClick={() => setCreatingDatafield(true)}
-                iconType="plusInCircle"
-              >
-                <FormattedMessage
-                  id="administration.customization.form.create"
-                  defaultMessage="Criar campo"
-                />
-              </EuiButton>
-            </EuiFlexGroup>
-          </EuiFlexGroup>
-        )}
-      </Fragment>
+    appReady && (
+      <EuiFlexGroup direction="column">
+        <DatafieldsDragAndDrop
+          datafields={datafields}
+          translations={translations}
+          onDragEnd={onDragEnd}
+          onDatafieldUpdate={handleDatafieldSave}
+          onDataFieldDelete={handleFormDataDelete}
+        />
+        <EuiFlexGroup justifyContent="center">
+          <CreateDatafieldAffordance onCreateFormData={handleCreateFormData} />
+        </EuiFlexGroup>
+      </EuiFlexGroup>
     )
   );
 };
