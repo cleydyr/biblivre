@@ -132,10 +132,6 @@ const FormCustomization: React.FC = () => {
 
   const { mutate: deleteFormDataFieldMtn } = useDeleteFormDataFieldMutation();
 
-  const [datafieldToEdit, setDatafieldToEdit] = useState<FormData | undefined>(
-    undefined,
-  );
-
   const [creatingDatafield, setCreatingDatafield] = useState<boolean>(false);
 
   if (isLoadingFormData || isLoadingTranslations) {
@@ -163,37 +159,36 @@ const FormCustomization: React.FC = () => {
     }
   };
 
-  function handleDatafieldSave(formFieldEditorState: FormFieldEditorState) {
-    if (datafields === undefined) {
-      return; // should never happen
-    }
+  const handleDatafieldSave =
+    (sortOrder: number) => (formFieldEditorState: FormFieldEditorState) => {
+      if (datafields === undefined) {
+        return; // should never happen
+      }
 
-    saveFormDatafieldsUsingEditorState({
-      formFieldEditorState,
-      recordType: "biblio",
-      sortOrder: datafieldToEdit?.sortOrder ?? 0,
-    });
+      saveFormDatafieldsUsingEditorState({
+        formFieldEditorState,
+        recordType: "biblio",
+        sortOrder,
+      });
 
-    const updatedDatafields = datafields.map((datafield) =>
-      datafield.datafield === formFieldEditorState.tag
-        ? {
-            ...datafield,
-            ...toPartialFormData(formFieldEditorState),
-          }
-        : datafield,
-    );
+      const updatedDatafields = datafields.map((datafield) =>
+        datafield.datafield === formFieldEditorState.tag
+          ? {
+              ...datafield,
+              ...toPartialFormData(formFieldEditorState),
+            }
+          : datafield,
+      );
 
-    setDatafields(updatedDatafields);
+      setDatafields(updatedDatafields);
 
-    const updateTranslations = {
-      ...translations,
-      ...getTranslations(formFieldEditorState),
+      const updateTranslations = {
+        ...translations,
+        ...getTranslations(formFieldEditorState),
+      };
+
+      setTranslations(updateTranslations);
     };
-
-    setTranslations(updateTranslations);
-
-    setDatafieldToEdit(undefined);
-  }
 
   function handleFormDataDelete(tag: DatafieldTag) {
     setDatafields(datafields?.filter((item) => item.datafield !== tag));
@@ -281,7 +276,9 @@ type DatafieldsDragAndDropProps = {
   datafields: FormData[];
   translations: Record<string, string>;
   onDragEnd: OnDragEndResponder;
-  onDatafieldUpdate: (datafield: FormFieldEditorState) => void;
+  onDatafieldUpdate: (
+    sortOrder: number,
+  ) => (datafield: FormFieldEditorState) => void;
   onDataFieldDelete: (tag: DatafieldTag) => void;
 };
 
@@ -319,7 +316,7 @@ const DatafieldsDragAndDrop: FC<DatafieldsDragAndDropProps> = ({
                         dragHandleProps={dragHandleProps}
                         datafield={item}
                         translations={translations}
-                        onDatafieldUpdate={onDatafieldUpdate}
+                        onDatafieldUpdate={onDatafieldUpdate(item.sortOrder)}
                         onDatafieldDelete={onDataFieldDelete}
                       />
                     );
