@@ -1014,10 +1014,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^94.5.0":
-  version "94.6.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-94.6.0.tgz#fd56be1dbdcdea259cdb3504085c8479fa35bcef"
-  integrity sha512-lYXVcylXn4Iz2WumBuOEkc1PRFoUby7CTnNhTS/gVrbTP7Mn0ombcoPFUSiZcA7VuN2mHfPmTUdBQptC/apTzA==
+"@elastic/eui@^97.3.1":
+  version "97.3.1"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-97.3.1.tgz#b0f07c603042bd359544b41829507e65f4fa3cd2"
+  integrity sha512-zJs3aaO6qjTdxJM2mPahcqaC6FfaC34yTc3qpQq7+Cbhw2xGrwx8bAfIzhttLU87mwgr59Sqv9Ojvwk8c3js7A==
   dependencies:
     "@hello-pangea/dnd" "^16.6.0"
     "@types/lodash" "^4.14.202"
@@ -1081,7 +1081,7 @@
     "@emotion/weak-memoize" "^0.4.0"
     stylis "4.2.0"
 
-"@emotion/css@^11.11.2":
+"@emotion/css@^11.13.4":
   version "11.13.4"
   resolved "https://registry.yarnpkg.com/@emotion/css/-/css-11.13.4.tgz#a5128e34a23f5e2c891970b8ec98a60c5a2395e1"
   integrity sha512-CthbOD5EBw+iN0rfM96Tuv5kaZN4nxPyYDvGUs0bc7wZBBiU/0mse+l+0O9RshW2d+v5HH1cme+BAbLJ/3Folw==
@@ -1102,7 +1102,7 @@
   resolved "https://registry.yarnpkg.com/@emotion/memoize/-/memoize-0.9.0.tgz#745969d649977776b43fc7648c556aaa462b4102"
   integrity sha512-30FAj7/EoJ5mwVPOWhAyCX+FPfMDrVecJAM+Iw9NRoSl4BBAQeqj4cApHHUXOVvIPgLVDsCFoz/hGD+5QQD1GQ==
 
-"@emotion/react@^11.11.4":
+"@emotion/react@^11.13.3":
   version "11.13.3"
   resolved "https://registry.yarnpkg.com/@emotion/react/-/react-11.13.3.tgz#a69d0de2a23f5b48e0acf210416638010e4bd2e4"
   integrity sha512-lIsdU6JNrmYfJ5EbUCf4xW1ovy5wKQ2CkPRM4xogziOxH1nXxBSjpC9YqbFAP7circxMfYp+6x676BqWcEiixg==
@@ -2654,9 +2654,9 @@ asynckit@^0.4.0:
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
 attr-accept@^2.2.2:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.4.tgz#e28749d5975732586aea03c8912e2d0f1d1d77e7"
-  integrity sha512-2pA6xFIbdTUDCAwjN8nQwI+842VwzbDUXO2IYlpPXQIORgKnavorcr4Ce3rwh+zsNg9zK7QPsdvDj3Lum4WX4w==
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.5.tgz#d7061d958e6d4f97bf8665c68b75851a0713ab5e"
+  integrity sha512-0bDNnY/u6pPwHDMoF0FieU354oBi0a8rD9FcsLwzcGWbc8KS8KPIi7y+s13OlVY+gMWc/9xEMUgNE6Qm8ZllYQ==
 
 available-typed-arrays@^1.0.7:
   version "1.0.7"
