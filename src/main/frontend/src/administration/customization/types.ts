@@ -16,7 +16,7 @@ export type NonSuccessMessage = {
   message_level: Exclude<ActionResult, "success" | "normal">;
 };
 
-export type FormDataLegacy = Omit<
+export type LegacyFormData = Omit<
   FormData,
   "materialType" | "indicator1" | "indicator2"
 > & {
@@ -25,8 +25,8 @@ export type FormDataLegacy = Omit<
   indicator2: string;
 };
 
-export interface FormDataItem {
-  formtab: FormDataLegacy;
+interface FormDataItem {
+  formtab: LegacyFormData;
   translations: Record<string, string>;
 }
 
@@ -40,9 +40,5 @@ export type DeleteDatafieldPayload = {
 };
 
 export type SubfieldCode = AlphaNumericCharacter;
-
-export function isDatafieldTag(s: string): s is DatafieldTag {
-  return /^[0-9]{3}$/.test(s);
-}
 
 export * from "../../types";

@@ -7,7 +7,7 @@ import type {
 } from "./types";
 import { toDatafieldTag, toIndicatorCode, toSubfieldCode } from "../lib";
 
-import type { FormDataLegacy, FormDataPayload } from "../types";
+import type { LegacyFormData, FormDataPayload } from "../types";
 import {
   getFieldNameTranslation,
   getIndicatorCodeTranslationKey,
@@ -165,7 +165,7 @@ export function fromFormFieldEditorStateToFormDataPayload(
   return partialPayload;
 }
 
-function formDataToFormDataLegacyAdapter(formData: FormData): FormDataLegacy {
+function formDataToFormDataLegacyAdapter(formData: FormData): LegacyFormData {
   return {
     ...formData,
     indicator1: stringJoiner(formData.indicator1),
