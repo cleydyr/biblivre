@@ -1,12 +1,12 @@
 import type { FC } from "react";
 import type { DatafieldTag } from "../types";
-import { getFieldNameTranslation } from "./translations_helpers";
+import { getDatafieldNameTranslation } from "./translations_helpers";
 
 const FormFieldTitle: FC<{
   tag: DatafieldTag;
-  translations: Record<string, string>;
+  translations: TranslationTable;
 }> = ({ tag, translations }) => {
-  return `${tag} - ${getFieldNameTranslation(translations, tag)}`;
+  return `${tag} - ${getDatafieldNameTranslation(translations, tag)}`;
 };
 
 export default FormFieldTitle;

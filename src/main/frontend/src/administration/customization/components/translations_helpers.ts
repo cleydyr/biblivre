@@ -3,7 +3,7 @@ import type {
   IndicatorCode,
   IndicatorOrder,
 } from "./types";
-import type { DatafieldTag } from "../types";
+import type { DatafieldTag, TranslationTable } from "../types";
 import type { Subfield } from "../../../generated-sources";
 import { toIndicatorCode } from "../lib";
 
@@ -32,18 +32,18 @@ export function getIndicatorCodeTranslationKey(
   order: IndicatorOrder,
   code: IndicatorCode,
 ) {
-  return `${getTranslationKeyPrefix(datafieldTag)}.indicator.${order + 1}.${code}`;
+  return `${getIndicatorTranslationKey(datafieldTag, order)}.${code}`;
 }
 
-export function getFieldNameTranslation(
-  translations: Record<string, string>,
+export function getDatafieldNameTranslation(
+  translations: TranslationTable,
   tag: DatafieldTag,
 ) {
   return translations[getTranslationKeyPrefix(tag)];
 }
 
-export function getSubfieldTranslation(
-  translations: Record<string, string>,
+export function getSubfieldNameTranslation(
+  translations: TranslationTable,
   subfield: Subfield,
 ): string {
   return translations[
@@ -51,9 +51,9 @@ export function getSubfieldTranslation(
   ];
 }
 
-export function getTranslations(
+export function extractTranslations(
   formFieldEditorState: FormFieldEditorState,
-): Record<string, string> {
+): TranslationTable {
   const subfieldCodesTranslations = formFieldEditorState.subfields.reduce(
     (acc, subfield) => ({
       ...acc,
@@ -67,35 +67,29 @@ export function getTranslations(
 
   const indicator1Translations = Object.entries(
     formFieldEditorState.indicatorsState[0].translations,
-  ).reduce(
-    (acc, [code, translation]) => {
-      return {
-        ...acc,
-        [getIndicatorCodeTranslationKey(
-          formFieldEditorState.tag,
-          0,
-          toIndicatorCode(code),
-        )]: translation,
-      };
-    },
-    {} as Record<string, string>,
-  );
+  ).reduce((acc, [code, translation]) => {
+    return {
+      ...acc,
+      [getIndicatorCodeTranslationKey(
+        formFieldEditorState.tag,
+        0,
+        toIndicatorCode(code),
+      )]: translation,
+    };
+  }, {} as TranslationTable);
 
   const indicator2Translations = Object.entries(
     formFieldEditorState.indicatorsState[1].translations,
-  ).reduce(
-    (acc, [code, translation]) => {
-      return {
-        ...acc,
-        [getIndicatorCodeTranslationKey(
-          formFieldEditorState.tag,
-          1,
-          toIndicatorCode(code),
-        )]: translation,
-      };
-    },
-    {} as Record<string, string>,
-  );
+  ).reduce((acc, [code, translation]) => {
+    return {
+      ...acc,
+      [getIndicatorCodeTranslationKey(
+        formFieldEditorState.tag,
+        1,
+        toIndicatorCode(code),
+      )]: translation,
+    };
+  }, {} as TranslationTable);
 
   return {
     [getTranslationKeyPrefix(formFieldEditorState.tag)]:

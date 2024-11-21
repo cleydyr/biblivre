@@ -27,7 +27,7 @@ export type LegacyFormData = Omit<
 
 interface FormDataItem {
   formtab: LegacyFormData;
-  translations: Record<string, string>;
+  translations: TranslationTable;
 }
 
 export type FormDataPayload = Record<string, FormDataItem>;
@@ -40,5 +40,7 @@ export type DeleteDatafieldPayload = {
 };
 
 export type SubfieldCode = AlphaNumericCharacter;
+
+export type TranslationTable = Record<string, string>;
 
 export * from "../../types";

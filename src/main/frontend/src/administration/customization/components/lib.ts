@@ -7,23 +7,27 @@ import type {
 } from "./types";
 import { toDatafieldTag, toIndicatorCode, toSubfieldCode } from "../lib";
 
-import type { LegacyFormData, FormDataPayload } from "../types";
+import type {
+  LegacyFormData,
+  FormDataPayload,
+  TranslationTable,
+} from "../types";
 import {
-  getFieldNameTranslation,
+  getDatafieldNameTranslation,
   getIndicatorCodeTranslationKey,
   getIndicatorTranslationKey,
-  getSubfieldTranslation,
-  getTranslations,
+  getSubfieldNameTranslation,
+  extractTranslations,
 } from "./translations_helpers";
 
 function toSubfieldState(
-  translations: Record<string, string>,
+  translations: TranslationTable,
   subfield: Subfield,
 ): SubfieldFormEditorState {
   return {
     code: toSubfieldCode(subfield.subfield),
     collapsed: subfield.collapsed ?? false,
-    description: getSubfieldTranslation(translations, subfield),
+    description: getSubfieldNameTranslation(translations, subfield),
     repeatable: subfield.repeatable ?? false,
     autocompleteType: subfield.autocompleteType ?? "disabled",
     sortOrder: subfield.sortOrder,
@@ -31,11 +35,11 @@ function toSubfieldState(
 }
 
 export function toFormFieldEditorState(
-  translations: Record<string, string>,
+  translations: TranslationTable,
   field: FormData,
 ): FormFieldEditorState {
   return {
-    name: getFieldNameTranslation(
+    name: getDatafieldNameTranslation(
       translations,
       toDatafieldTag(field.datafield),
     ),
@@ -69,14 +73,14 @@ function stringJoiner<T>(array: T[] | undefined): string {
 
 function getIndicator1Translations(
   { indicator1, datafield }: FormData,
-  translations: Record<string, string>,
+  translations: TranslationTable,
 ) {
   return getIndicatorTranslations(0, indicator1, datafield, translations);
 }
 
 function getIndicator2Translations(
   { indicator2, datafield }: FormData,
-  translations: Record<string, string>,
+  translations: TranslationTable,
 ) {
   return getIndicatorTranslations(1, indicator2, datafield, translations);
 }
@@ -85,7 +89,7 @@ function getIndicatorTranslations(
   order: IndicatorOrder,
   indicator: string[] | undefined,
   datafield: string,
-  translations: Record<string, string>,
+  translations: TranslationTable,
 ) {
   return (
     indicator?.reduce(
@@ -160,7 +164,7 @@ export function fromFormFieldEditorStateToFormDataPayload(
   ]);
 
   partialPayload[formFieldEditorState.tag].translations =
-    getTranslations(formFieldEditorState);
+    extractTranslations(formFieldEditorState);
 
   return partialPayload;
 }

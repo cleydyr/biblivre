@@ -12,7 +12,7 @@ import { Fragment, useState } from "react";
 import React from "react";
 import FormFieldTitle from "./FormFieldTitle";
 import { toDatafieldTag } from "../lib";
-import type { DatafieldTag } from "../types";
+import type { DatafieldTag, TranslationTable } from "../types";
 import { defineMessages, useIntl } from "react-intl";
 import EditDatafieldFlyout from "../EditDatafieldFlyout";
 import { toFormFieldEditorState } from "./lib";
@@ -34,7 +34,7 @@ const messages = defineMessages({
 type DatafieldPanelProps = {
   datafield: FormData;
   dragHandleProps: DraggableProvidedDragHandleProps | null;
-  translations: Record<string, string>;
+  translations: TranslationTable;
   onDatafieldUpdate: (datafield: FormFieldEditorState) => void;
   onDatafieldDelete: (tag: DatafieldTag) => void;
 };

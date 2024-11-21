@@ -20,12 +20,12 @@ import {
 import { getAffectedItems, toPartialFormData } from "./lib";
 import type { FormFieldEditorState } from "./components/types";
 import DatafieldPanel from "./components/DatafieldPanel";
-import type { DatafieldTag } from "./types";
-import { getTranslations } from "./components/translations_helpers";
+import type { DatafieldTag, TranslationTable } from "./types";
+import { extractTranslations } from "./components/translations_helpers";
 import BiblivreLoadingIcon from "./components/BiblivreLoadingIcon";
 import CreateDatafieldAffordance from "./components/CreateDatafieldAffordance";
 
-const FormCustomization: React.FC = () => {
+const FormCustomization: FC = () => {
   const {
     isLoading: isLoadingFormData,
     isSuccess: isSucessFormData,
@@ -43,7 +43,7 @@ const FormCustomization: React.FC = () => {
   );
 
   const [translations, setTranslations] = useState<
-    Record<string, string> | undefined
+    TranslationTable | undefined
   >(fetchedTranslations);
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const FormCustomization: React.FC = () => {
 
       const updateTranslations = {
         ...translations,
-        ...getTranslations(formFieldEditorState),
+        ...extractTranslations(formFieldEditorState),
       };
 
       setTranslations(updateTranslations);
@@ -152,7 +152,7 @@ const FormCustomization: React.FC = () => {
 
     const updateTranslations = {
       ...translations,
-      ...getTranslations(formFieldEditorState),
+      ...extractTranslations(formFieldEditorState),
     };
 
     setTranslations(updateTranslations);
@@ -181,7 +181,7 @@ const FormCustomization: React.FC = () => {
 
 type DatafieldsDragAndDropProps = {
   datafields: FormData[];
-  translations: Record<string, string>;
+  translations: TranslationTable;
   onDragEnd: OnDragEndResponder;
   onDatafieldUpdate: (
     sortOrder: number,
