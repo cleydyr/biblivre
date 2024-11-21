@@ -65,7 +65,7 @@ export function extractTranslations(
     {},
   );
 
-  const indicator1Translations = Object.entries(
+  const indicator1Translations: TranslationTable = Object.entries(
     formFieldEditorState.indicatorsState[0].translations,
   ).reduce((acc, [code, translation]) => {
     return {
@@ -78,7 +78,7 @@ export function extractTranslations(
     };
   }, {} as TranslationTable);
 
-  const indicator2Translations = Object.entries(
+  const indicator2Translations: TranslationTable = Object.entries(
     formFieldEditorState.indicatorsState[1].translations,
   ).reduce((acc, [code, translation]) => {
     return {
