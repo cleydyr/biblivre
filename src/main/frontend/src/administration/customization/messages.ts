@@ -43,6 +43,18 @@ const messages = defineMessages({
     id: "administration.customization.indicator.action.remove.description",
     defaultMessage: "Remover valor {value} do indicador {indicator}",
   },
+  edit: {
+    id: "action.edit",
+    defaultMessage: "Editar",
+  },
+  delete: {
+    id: "action.delete",
+    defaultMessage: "Remover",
+  },
+  indicatorCode: {
+    id: "indicator.code",
+    defaultMessage: "Código",
+  },
 });
 
 export default messages;

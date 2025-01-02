@@ -17,10 +17,18 @@ const DatafieldNameFormField: FC<FormFieldEditorState & WithOnChange> = (
           defaultMessage="Nome do Campo"
         />
       }
+      isInvalid={name.length === 0}
+      error={
+        <FormattedMessage
+          id="administration.customization.marc.datafield.error.invalid.name"
+          defaultMessage="O campo não pode ser vazio"
+        />
+      }
     >
       <EuiFieldText
         name="name"
         value={name}
+        isInvalid={name.length === 0}
         onChange={(event) => {
           onChange({
             name: event.target.value,

@@ -3,6 +3,7 @@ import React from "react";
 import { EuiFieldText, EuiFormRow } from "@elastic/eui";
 import { FormattedMessage } from "react-intl";
 import type { FormFieldEditorState, WithOnChange } from "./types";
+import { isValidDatafieldTag } from "../lib";
 
 const DatafieldTagFormField: FC<
   FormFieldEditorState &
@@ -18,8 +19,16 @@ const DatafieldTagFormField: FC<
           defaultMessage="Campo MARC"
         />
       }
+      isInvalid={!isValidDatafieldTag(tag)}
+      error={
+        <FormattedMessage
+          id="administration.customization.marc.datafield.error.invalid.tag"
+          defaultMessage="O valor do campo Marc deve conter exatamente três digitos"
+        />
+      }
     >
       <EuiFieldText
+        isInvalid={!isValidDatafieldTag(tag)}
         readOnly={mode === "edit"}
         name="datafield"
         maxLength={3}

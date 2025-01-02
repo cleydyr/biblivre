@@ -145,62 +145,60 @@ const FormFieldEditor: FC<FormFieldEditorProps> = ({
     onChange: handleFormFieldEditorState,
   };
 
-  const tabs = editorState
-    ? [
-        {
-          id: "general",
-          name: formatMessage(messages.general),
-          content: (
-            <EuiFlexGroup direction="column">
-              <EuiFlexGroup>
-                <EuiFlexItem grow={false}>
-                  <DatafieldTagFormField mode={mode} {...props} />
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <DatafieldNameFormField {...props} />
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <RepeatableSwitchFormField {...props} />
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <CollapsedSwitchFormField {...props} />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-              <MaterialTypeFormSection {...props} />
-            </EuiFlexGroup>
-          ),
-        },
-        {
-          id: "indicator1",
-          name: formatMessage(messages.indicator, { order: 1 }),
-          content: (
-            <EuiFlexGroup direction="column">
-              <Indicator1FormSwitch {...props} />
-              {editorState.indicatorsState[0].defined && (
-                <IndicatorFormSection {...props} order={0} />
-              )}
-            </EuiFlexGroup>
-          ),
-        },
-        {
-          id: "indicator2",
-          name: formatMessage(messages.indicator, { order: 2 }),
-          content: (
-            <EuiFlexGroup direction="column">
-              <Indicator2FormSwitch {...props} />
-              {editorState.indicatorsState[1].defined && (
-                <IndicatorFormSection {...props} order={1} />
-              )}
-            </EuiFlexGroup>
-          ),
-        },
-        {
-          id: "subfields",
-          name: formatMessage(messages.subfields),
-          content: <SubfieldFormSection {...props} />,
-        },
-      ]
-    : undefined;
+  const tabs = [
+    {
+      id: "general",
+      name: formatMessage(messages.general),
+      content: (
+        <EuiFlexGroup direction="column">
+          <EuiFlexGroup>
+            <EuiFlexItem grow={false}>
+              <DatafieldTagFormField mode={mode} {...props} />
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <DatafieldNameFormField {...props} />
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <RepeatableSwitchFormField {...props} />
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <CollapsedSwitchFormField {...props} />
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <MaterialTypeFormSection {...props} />
+        </EuiFlexGroup>
+      ),
+    },
+    {
+      id: "indicator1",
+      name: formatMessage(messages.indicator, { order: 1 }),
+      content: (
+        <EuiFlexGroup direction="column">
+          <Indicator1FormSwitch {...props} />
+          {editorState.indicatorsState[0].defined && (
+            <IndicatorFormSection {...props} order={0} />
+          )}
+        </EuiFlexGroup>
+      ),
+    },
+    {
+      id: "indicator2",
+      name: formatMessage(messages.indicator, { order: 2 }),
+      content: (
+        <EuiFlexGroup direction="column">
+          <Indicator2FormSwitch {...props} />
+          {editorState.indicatorsState[1].defined && (
+            <IndicatorFormSection {...props} order={1} />
+          )}
+        </EuiFlexGroup>
+      ),
+    },
+    {
+      id: "subfields",
+      name: formatMessage(messages.subfields),
+      content: <SubfieldFormSection {...props} />,
+    },
+  ];
 
   const onSelectedTabChange = (tabId: string) => {
     setSelectedTabId(tabId);

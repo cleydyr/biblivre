@@ -6,6 +6,8 @@ type Ordered = {
   sortOrder: number;
 };
 
+const DATAFIELD_TAG_REGEXP = /^[0-9]{3}$/;
+
 export function getAffectedItems<T extends Ordered>(
   items: T[],
   source: number,
@@ -71,8 +73,12 @@ export function toSubfieldCode(value: string): SubfieldCode {
   throw new Error(`Invalid value for ${value}`);
 }
 
+export function isValidDatafieldTag(value: string) {
+  return DATAFIELD_TAG_REGEXP.test(value);
+}
+
 export function toDatafieldTag(value: string): DatafieldTag {
-  if (/^[0-9]{3}$/.test(value)) {
+  if (isValidDatafieldTag(value)) {
     return value as DatafieldTag;
   }
 

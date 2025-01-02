@@ -136,12 +136,7 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
         {
           icon: "pencil",
           type: "icon",
-          name: (
-            <FormattedMessage
-              id="administration.customization.indicator.action.edit"
-              defaultMessage="Editar"
-            />
-          ),
+          name: formatMessage(messages.edit),
           description: (item: IndicatorValueNameInfo) =>
             formatMessage(messages.editIndicatorValueDescription, {
               value: item.code,
@@ -152,12 +147,7 @@ const IndicatorFormSection: FC<IndicatorFormSectionProps> = ({
         {
           icon: "trash",
           type: "icon",
-          name: (
-            <FormattedMessage
-              id="administration.customization.indicator.action.delete"
-              defaultMessage="Remover"
-            />
-          ),
+          name: formatMessage(messages.delete),
           description: (item: IndicatorValueNameInfo) =>
             formatMessage(messages.removeIndicatorValueDescription, {
               value: item.code,

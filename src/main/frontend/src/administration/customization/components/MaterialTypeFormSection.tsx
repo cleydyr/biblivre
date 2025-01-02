@@ -37,6 +37,13 @@ const MaterialTypeFormSection: FC<FormFieldEditorState & WithOnChange> = ({
             defaultMessage="Tipos de Material"
           />
         }
+        isInvalid={materialTypes.length === 0}
+        error={
+          <FormattedMessage
+            id="administration.customization.material_type.error.invalid"
+            defaultMessage="Selecione pelo menos um tipo de material"
+          />
+        }
       >
         <EuiSelectable
           options={options}
