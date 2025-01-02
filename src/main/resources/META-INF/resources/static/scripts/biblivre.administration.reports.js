@@ -18,6 +18,9 @@
  *  @author Danniel Willian <danniel@biblivre.org.br>
  *
  */
+
+const OPEN_TARGET = "_top"
+
 var Reports = Reports || {};
 var CatalogingSearch = CatalogingSearch || {};
 
@@ -188,7 +191,7 @@ Reports.generateReport = function() {
 		if (response.success) {
 			Core.msg(response);
 			if (response.file_name) {
-				window.open(window.location.pathname + '?controller=download&module=administration.reports&action=download_report&file_name=' + response.file_name);
+				window.open(window.location.pathname + '?controller=download&module=administration.reports&action=download_report&file_name=' + response.file_name, OPEN_TARGET);
 			}
 		} else {
 			Core.msg(response);
@@ -228,7 +231,7 @@ Reports.generateAuthorReport = function(authorRecord) {
 		if (response.success) {
 			Core.msg(response);
 			if (response.file_name) {
-				window.open(window.location.pathname + '?controller=download&module=administration.reports&action=download_report&file_name=' + response.file_name);
+				window.open(window.location.pathname + '?controller=download&module=administration.reports&action=download_report&file_name=' + response.file_name, OPEN_TARGET);
 			}
 		} else {
 			Core.msg(response);
@@ -267,7 +270,7 @@ Reports.generateUserReport = function(userId) {
 		if (response.success) {
 			Core.msg(response);
 			if (response.file_name) {
-				window.open(window.location.pathname + '?controller=download&module=administration.reports&action=download_report&file_name=' + response.file_name);
+				window.open(window.location.pathname + '?controller=download&module=administration.reports&action=download_report&file_name=' + response.file_name, OPEN_TARGET);
 			}
 		} else {
 			Core.msg(response);
