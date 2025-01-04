@@ -36,4 +36,4 @@ jobs:
           java-version: "21"
           cache: 'maven'
       - name: Build with Maven
-        run: mvn clean test package
+        run: mvn clean test package -Pgithub-ci

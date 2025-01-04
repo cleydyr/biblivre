@@ -41,7 +41,7 @@ jobs:
           BUILD_PATH: ../resources/META-INF/resources/static/
           PUBLIC_URL: /static/
 
-        run: mvn clean test package
+        run: mvn clean test package -Pgithub-ci
 
       - name: Build and push
         uses: docker/build-push-action@v3
