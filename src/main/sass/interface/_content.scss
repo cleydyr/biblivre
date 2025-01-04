@@ -1,3 +1,5 @@
+@use "../biblivre";
+
 #content_outer {
 	position: relative;
 	
@@ -8,7 +10,7 @@
 }
 
 #content {
-	width: $content-width;
+	width: biblivre.$content-width;
 	margin: 0 auto;	
 }
 
@@ -18,14 +20,14 @@
 }
 
 #copyright {
-	width: $content-width - 20px;
+	width: biblivre.$content-width - 20px;
 	margin: 0 auto;
 
 	text-align: right;
 	font-size: 12px;
 
 	line-height: 24px;
-	color: $aux-text-color;
+	color: biblivre.$aux-text-color;
 }
 
 .search_icon {
@@ -100,7 +102,7 @@
 	font-size: 14px;
 	line-height: 18px;
 	text-align: justify;
-	color: $main-text-color;	
+	color: biblivre.$main-text-color;	
 
 	p, ul  {
 		margin-bottom: 10px;

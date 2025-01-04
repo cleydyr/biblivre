@@ -1,4 +1,4 @@
-@import "biblivre";
+@use "biblivre";
 
 .multischema {
 	.enable, .disable {
@@ -87,7 +87,7 @@
 	}
 
 	.subtitle {
-		color: $weak-text-color;
+		color: biblivre.$weak-text-color;
 		padding-left: 20px;
 	}
 

@@ -1,4 +1,5 @@
-@import "biblivre";
+@use "biblivre";
+@use "mixins";
 
 @media print {
 	body {
@@ -45,7 +46,7 @@
 	
 	.search_box {
 		.big_input, .filter_search input {
-			@include border-radius(2);
+			@include mixins.border-radius(2);
 			background: #FFF;
 			border: 1px solid #EBE7E0;
 		}
@@ -75,7 +76,7 @@
 	}
 	
 	.combo_wrap {
-		@include border-radius(2);
+		@include mixins.border-radius(2);
 		background: #FFF;
 		border: 1px solid #EBE7E0;
 		

@@ -1,65 +1,68 @@
+@use "../biblivre";
+@use "../mixins";
+
 .tabs {
 }
 
 ul.tabs_head {
-	li {
-		float: left;
-		padding: 0 15px;
-		margin-right: 10px;
-	
-		font-size: 14px;
-		line-height: 26px;
-		color: $main-text-color;
-		
-		@include linear-gradient($aux-border-color, #A3A19B);
-	
-		border-top: 3px solid $aux-border-color;
-		border-left: 1px solid $aux-border-color;
-		border-right: 1px solid $aux-border-color;
-	
-		@include border-radius-side(2px, top);
-		
-		cursor: pointer;
-	
-		position: relative;
-		z-index: 20;
-		
-		&:hover {
-			color: $aux-text-color !important;
-		}
+  li {
+    float: left;
+    padding: 0 15px;
+    margin-right: 10px;
 
-		&.tab_selected {
-			background: $aux-background !important;
-			color: $main-text-color !important;
-			cursor: default !important;
-		}
-	}
+    font-size: 14px;
+    line-height: 26px;
+    color: biblivre.$main-text-color;
+
+    @include mixins.linear-gradient(biblivre.$aux-border-color, #a3a19b);
+
+    border-top: 3px solid biblivre.$aux-border-color;
+    border-left: 1px solid biblivre.$aux-border-color;
+    border-right: 1px solid biblivre.$aux-border-color;
+
+    @include mixins.border-radius-side(2px, top);
+
+    cursor: pointer;
+
+    position: relative;
+    z-index: 20;
+
+    &:hover {
+      color: biblivre.$aux-text-color !important;
+    }
+
+    &.tab_selected {
+      background: biblivre.$aux-background !important;
+      color: biblivre.$main-text-color !important;
+      cursor: default !important;
+    }
+  }
 }
 
 .tabs_body {
-	clear: both;
-	padding: 15px;
+  clear: both;
+  padding: 15px;
 
-	position: relative;
-	z-index: 18;
-	top: -1px;
+  position: relative;
+  z-index: 18;
+  top: -1px;
 
-	border: 1px solid $aux-border-color;
-	background: $aux-background;
-	
-	.tab_body {
-		display: none;
-		
-		&.tab_selected {
-			display: block;
-		}
-	}
+  border: 1px solid biblivre.$aux-border-color;
+  background: biblivre.$aux-background;
+
+  .tab_body {
+    display: none;
+
+    &.tab_selected {
+      display: block;
+    }
+  }
 }
 
 .tab_extra_content {
-	display: none;
+  display: none;
 
-	&.tab_selected {
-		display: block;
-	}
+  &.tab_selected {
+    display: block;
+  }
 }

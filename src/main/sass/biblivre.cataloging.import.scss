@@ -1,4 +1,4 @@
-@import "biblivre";
+@use "biblivre";
 
 .page_title {
 	.text {
@@ -80,7 +80,7 @@
 .search_input_div {
 	input {
 		margin: 0;
-		width: $content-width - 62px;
+		width: biblivre.$content-width - 62px;
 		height: 14px !important;
 	}
 }
@@ -93,7 +93,7 @@
 
 .search_server_div {
 	float: left;
-	min-width: $content-width - 302px;
+	min-width: biblivre.$content-width - 302px;
 }
 
 .search_button_div {
@@ -122,7 +122,7 @@
 }
 
 #marc_popup {
-	width: $content-width - 100;
+	width: biblivre.$content-width - 100;
 	
 	fieldset {
 		margin-top: 20px;
@@ -132,7 +132,7 @@
 			text-align: center;
 		
 			textarea {
-				width: $content-width - 200;
+				width: biblivre.$content-width - 200;
 				height: 200px;
 				font-size: 14px;
 				font-family: monospace;

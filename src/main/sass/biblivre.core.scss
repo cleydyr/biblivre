@@ -1,166 +1,177 @@
-@import "biblivre";
-@import "reset";
+@use "sass:meta";
+@use "biblivre";
+@use "reset";
+@use "mixins";
 
-html, body {
-	overflow: hidden;
+html,
+body {
+  overflow: hidden;
 }
 
 body {
-	font: normal 14px/18px "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font: normal 14px/18px "HelveticaNeue-Light", "Helvetica Neue Light",
+    "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 
-	background: $body-background;
-	color: $main-text-color;
+  background: biblivre.$body-background;
+  color: biblivre.$main-text-color;
 }
 
 a {
-	@include link-colors($link-text-color, $link-hover-text-color);
-	@include hover-link;
+  @include mixins.link-colors(
+    biblivre.$link-text-color,
+    biblivre.$link-hover-text-color
+  );
+  @include mixins.hover-link;
 }
 
-b, strong {
-	font-weight: bold;
+b,
+strong {
+  font-weight: bold;
 }
 
-@import "interface/extras";
-@import "interface/buttons";
-@import "interface/combo";
-@import "interface/icons";
-@import "interface/paging";
-@import "interface/tabs";
-@import "interface/forms";
+@include meta.load-css("interface/extras");
+@include meta.load-css("interface/buttons");
+@include meta.load-css("interface/combo");
+@include meta.load-css("interface/icons");
+@include meta.load-css("interface/paging");
+@include meta.load-css("interface/tabs");
+@include meta.load-css("interface/forms");
 
-@import "interface/menu";
-@import "interface/content";
-@import "interface/layout";
+@include meta.load-css("interface/menu");
+@include meta.load-css("interface/content");
+@include meta.load-css("interface/layout");
 
+.big_input,
+.small_input {
+  height: 22px;
 
-.big_input, .small_input {
-	height: 22px;
+  font-size: 15px;
+  outline: none;
 
-	font-size: 15px;
-	outline: none;
+  border: 2px solid #d4cfc6;
 
-	border: 2px solid #D4CFC6;
-
-	@include linear-gradient(#EDEDED, #FFFFFF, 0%, 26%);
-	@include border-radius(6px);
+  @include mixins.linear-gradient(#ededed, #ffffff, 0%, 26%);
+  @include mixins.border-radius(6px);
 }
-
 
 .big_input {
-	padding: 5px 8px;
+  padding: 5px 8px;
 }
 
 .small_input {
-	padding: 2px 4px;
+  padding: 2px 4px;
 }
 
 #stacktrace {
-	padding: 10px;
-	font-family: "Courier New", Courier, monospace;
-	font-size: 14px;
-	word-wrap: break-word;
+  padding: 10px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  word-wrap: break-word;
 }
 
 #log_textarea {
-	padding: 10px;
-	margin-top: 10px;
-	font-family: "Courier New", Courier, monospace;
-	font-size: 14px;
-	word-wrap: break-word;
-	
-	width: $content-width - 20;
-	height: 300px;
+  padding: 10px;
+  margin-top: 10px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  word-wrap: break-word;
+
+  width: biblivre.$content-width - 20;
+  height: 300px;
 }
 
 .xclose {
-	font-family: Helvetica;
-	float: right;
-	font-size: 21px;
-	font-weight: bold;
-	line-height: 1;
-	color: #000;
-	text-shadow: 0 1px 0 #FFF;	
-	@include opacity(.2);
+  font-family: Helvetica;
+  float: right;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  @include mixins.opacity(0.2);
 
-	&:hover, &:focus {
-		color: #000;
-		text-decoration: none;
-		cursor: pointer;
-		@include opacity(.5);
-	}
+  &:hover,
+  &:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    @include mixins.opacity(0.5);
+  }
 }
 
 button.xclose {
-	padding: 0;
-	border: 0;
-	cursor: pointer;
-	-webkit-appearance: none;
-	background: transparent;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  background: transparent;
 }
 
-#progress_popup, #upload_popup, #import_popup {
-	fieldset {
-		margin-top: 20px;
-		margin-bottom: 40px;
-	}
+#progress_popup,
+#upload_popup,
+#import_popup {
+  fieldset {
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
 }
 
 noscript {
-	border: 1px solid $aux-border-color;
-	background: $aux-background;
-	display: none;
-    margin-bottom: 20px;
-    padding: 10px 20px;
-    
-    ul {
-	    margin-top: 10px;
-	    
-	    li {
-	    	list-style: circle inside none;
-	    }
+  border: 1px solid biblivre.$aux-border-color;
+  background: biblivre.$aux-background;
+  display: none;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+
+  ul {
+    margin-top: 10px;
+
+    li {
+      list-style: circle inside none;
     }
+  }
 }
 
 .noscript {
-	overflow: visible;
-	
-	body {
-		overflow: visible;
-	}
-	
-	noscript {
-		display: block;
-	}
-	
-	#menu, #language_selection {
-		display: none;
-	}
-	
-	#title {
-		padding-top: 33px;
-	}
-	
-	#content_outer {
-		overflow-y: visible;
-	}
+  overflow: visible;
+
+  body {
+    overflow: visible;
+  }
+
+  noscript {
+    display: block;
+  }
+
+  #menu,
+  #language_selection {
+    display: none;
+  }
+
+  #title {
+    padding-top: 33px;
+  }
+
+  #content_outer {
+    overflow-y: visible;
+  }
 }
 
 .footer_buttons {
-	text-align: right;
-	margin-top: 10px;
-	
-	a {
-		min-width: 130px;
-		display: inline-block;
-		margin-right: 10px;
+  text-align: right;
+  margin-top: 10px;
 
-		&:last-child {
-			margin-right: 0;	
-		}
-	}
+  a {
+    min-width: 130px;
+    display: inline-block;
+    margin-right: 10px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
 fieldset > legend {
-	white-space: nowrap;
+  white-space: nowrap;
 }

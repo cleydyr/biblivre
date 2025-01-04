@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "sass:math";
+@use "sass:string";
 @mixin border-radius($radius, $clip: padding-box) {
 	-webkit-border-radius: $radius;
 	-moz-border-radius: $radius;
@@ -13,7 +16,7 @@
 }
 
 @mixin opacity($opacity) {
-	filter: unquote("progid:DXImageTransform.Microsoft.Alpha(Opacity=#{round($opacity * 100)})");
+	filter: string.unquote("progid:DXImageTransform.Microsoft.Alpha(Opacity=#{math.round($opacity * 100)})");
 	opacity: $opacity;
 }
 
@@ -35,7 +38,7 @@
 }
 
 @mixin linear-gradient($from, $to, $fromPercent: 0%, $toPercent: 100%) {
-	background-color: mix($from, $to);
+	background-color: color.mix($from, $to);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$from}', endColorstr='#{$to}', GradientType=0);
 	background-image: -moz-linear-gradient($from $fromPercent, $to $toPercent);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop($fromPercent, $from), color-stop($toPercent, $to));

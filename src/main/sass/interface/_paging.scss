@@ -1,61 +1,65 @@
+@use "../biblivre";
+@use "../mixins";
+
 .paging_bar {
-	margin: 10px 0;
+  margin: 10px 0;
 }
 
-a.paging, span.paging {
-	display: inline-block;
+a.paging,
+span.paging {
+  display: inline-block;
 
-	font-size: 12px;
-	line-height: 12px;
-	padding: 5px 7px;
-	text-align: center;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 5px 7px;
+  text-align: center;
 
-	color: $paging-text-color;
-	text-shadow: 0px 1px #FFFFFF;
-	
-	&.actual_page {
-		color: #FFFFFF;
-		text-shadow: 0px 1px $paging-text-color;
+  color: biblivre.$paging-text-color;
+  text-shadow: 0px 1px #ffffff;
 
-		border: 1px solid $paging-text-color;
-		@include border-radius(2px);
-	
-		@include radial-gradient(#919191, #707070, 52%, 100%);
-	}
+  &.actual_page {
+    color: #ffffff;
+    text-shadow: 0px 1px biblivre.$paging-text-color;
+
+    border: 1px solid biblivre.$paging-text-color;
+    @include mixins.border-radius(2px);
+
+    @include mixins.radial-gradient(#919191, #707070, 52%, 100%);
+  }
 }
 
 a.paging_button {
-	color: $paging-text-color;
-	text-shadow: 1px 1px #FFFFFF;
+  color: biblivre.$paging-text-color;
+  text-shadow: 1px 1px #ffffff;
 
-	border: 1px solid #C4C4C4;	
-	@include border-radius(3px);
-	@include linear-gradient(#FAF9F7, #ECE8E1, 1%, 100%);
+  border: 1px solid #c4c4c4;
+  @include mixins.border-radius(3px);
+  @include mixins.linear-gradient(#faf9f7, #ece8e1, 1%, 100%);
 
-	line-height: 14px;
-	height: 14px;
+  line-height: 14px;
+  height: 14px;
 }
 
 a.paging_arrow_prev:before {
-	content: url('../images/paging_arrow_prev.png');
-	vertical-align: middle;
+  content: url("../images/paging_arrow_prev.png");
+  vertical-align: middle;
 }
 
 a.paging_button_prev:before {
-	content: url('../images/paging_button_prev.png');
-	vertical-align: middle;
-	padding-right: 5px !important;
+  content: url("../images/paging_button_prev.png");
+  vertical-align: middle;
+  padding-right: 5px !important;
 }
 
 a.paging_arrow_next:after {
-	content: url('../images/paging_arrow_next.png');
-	vertical-align: middle;
+  content: url("../images/paging_arrow_next.png");
+  vertical-align: middle;
 }
 
 a.paging_button_next:after {
-	content: url('../images/paging_button_next.png');
-	vertical-align: middle;
-	padding-left: 5px !important;
+  content: url("../images/paging_button_next.png");
+  vertical-align: middle;
+  padding-left: 5px !important;
 }
 
 /*

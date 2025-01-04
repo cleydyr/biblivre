@@ -1,14 +1,14 @@
-@import "biblivre";
+@use "biblivre";
 
 #biblivre_record_textarea {
 	display: none;
 }
 
 #biblivre_marc_textarea, #biblivre_holding_marc_textarea {
-	width: $content-width - 36;
+	width: biblivre.$content-width - 36;
 	height: 400px;
 	padding: 2px;
-	border: 1px solid $form-border-color;
+	border: 1px solid biblivre.$form-border-color;
 	
 	font-family: "Courier New", Courier, monospace;
 	font-size: 15px;
@@ -36,7 +36,7 @@
 		font-size: 14px;
 		font-weight: bold;
 		text-shadow: 1px 1px #FFFFFF;
-		color: $weak-text-color;
+		color: biblivre.$weak-text-color;
 		
 		&.loading strong {
 			padding-right: 20px;
@@ -44,7 +44,7 @@
 		}
 		
 		strong {
-			color: $link-text-color;
+			color: biblivre.$link-text-color;
 		}
 	}
 	
@@ -61,8 +61,8 @@
 		padding: 2px 0 2px 8px;
 
 		&.active {
-			background-color: $ui-hover-background-color;
-			border-color: $ui-hover-border-color;
+			background-color: biblivre.$ui-hover-background-color;
+			border-color: biblivre.$ui-hover-border-color;
 		}
 
 		.combo_text {

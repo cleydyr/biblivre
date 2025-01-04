@@ -1,3 +1,5 @@
+@use "../biblivre";
+
 .biblivre_record_extra, .biblivre_form, .biblivre_form_body, .biblivre_marc, .biblivre_marc_body,
 .biblivre_holding_form, .biblivre_holding_form_body, .biblivre_holding_marc, .biblivre_holding_marc_body {
 	fieldset {
@@ -5,9 +7,9 @@
 		margin-top: 10px;
 		min-height: 20px;
 		
-		background: $aux-background;
-		border: 1px solid $aux-border-color;
-		border-top: 2px solid $aux-text-color;
+		background: biblivre.$aux-background;
+		border: 1px solid biblivre.$aux-border-color;
+		border-top: 2px solid biblivre.$aux-text-color;
 	}
 
 	legend {
@@ -92,7 +94,7 @@
 			width: 376px;
 
 			padding: 2px;
-			border: 1px solid $form-border-color;
+			border: 1px solid biblivre.$form-border-color;
 		}
 		
 		
