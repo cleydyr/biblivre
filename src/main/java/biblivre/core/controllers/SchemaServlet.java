@@ -294,6 +294,10 @@ public class SchemaServlet extends HttpServlet {
     }
 
     private String servletContextAwareStaticPath(String path) {
+        if (path.contains("://")) { // this contains a protocol, do nothing
+            return path;
+        }
+
         ServletContext servletContext = getServletContext();
 
         return servletContext.getContextPath() + path;
