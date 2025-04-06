@@ -15,8 +15,8 @@ ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("config
 %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.index.css" />
-	<link rel="stylesheet" type="text/css" href="/static/styles/biblivre.multi_schema.css" />
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.index.css" />
+	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.multi_schema.css" />
 </layout:head>
 
 <layout:body>

@@ -3,9 +3,9 @@
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="/static/styles/admin.css" />
-    <script type="text/javascript" src="/static/scripts/jquery.ui.js"></script>
-    <script type="text/javascript" src="/static/scripts/admin.js"></script>
+	<link rel="stylesheet" type="text/css" href="static/styles/admin.css" />
+    <script type="text/javascript" src="static/scripts/jquery.ui.js"></script>
+    <script type="text/javascript" src="static/scripts/admin.js"></script>
 </layout:head>
 
 <layout:body>
