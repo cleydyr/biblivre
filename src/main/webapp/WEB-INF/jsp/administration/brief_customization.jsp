@@ -2,10 +2,11 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.customization.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
+	<static:stylesheet fileName="biblivre.administration.customization.css" />
+	<static:stylesheet fileName="font-awesome.min.css" />
 </layout:head>
 
 <layout:body multiPart="true">
@@ -81,12 +82,12 @@
 			{#/for}
 		--></textarea>
 	</div>
-	<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.brief_customization.js"></script>
-	<script type="text/javascript" src="static/scripts/${requestScope.biblioCacheFileName}"></script>
+	<static:script fileName="jquery-ui.js" />
+	<static:script fileName="biblivre.administration.brief_customization.js" />
+	<static:script fileName="${requestScope.biblioCacheFileName}" />
 	<script>Customization.formFields['bibliographic'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	<script type="text/javascript" src="static/scripts/${requestScope.authoritiesCacheFileName}"></script>
+	<static:script fileName="${requestScope.authoritiesCacheFileName}" />
 	<script>Customization.formFields['authorities'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
-	<script type="text/javascript" src="static/scripts/${requestScope.vocabulariesCacheFileName}"></script>
+	<static:script fileName="${requestScope.vocabulariesCacheFileName}" />
 	<script>Customization.formFields['vocabulary'] = _.keyBy(CatalogingInput.formFields, 'datafield');</script>
 </layout:body>

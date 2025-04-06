@@ -14,6 +14,7 @@
 
 <%
 	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
+	String contextPath = request.getContextPath();
 %>
 
 <jsp:useBean id="isMultiPart" type="java.lang.Boolean" scope="request" />
@@ -46,7 +47,7 @@
 			<div id="title">
 				<div id="logo_biblivre_small">
 					<a href="http://biblivre.org.br/" target="_blank">
-						<img src="static/images/logo_biblivre_small.png" width="43" height="36" alt="Biblivre V">
+						<img src="<%= contextPath %>/static/images/logo_biblivre_small.png" width="43" height="36" alt="Biblivre V">
 					</a>
 				</div>
 				<h1><a href="?"><%= configurationBO.getString(Constants.CONFIG_TITLE) %></a></h1>

@@ -12,13 +12,14 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <%
 	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
 %>
 
 <layout:head>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.configurations.js"></script>
+	<static:script fileName="biblivre.administration.configurations.js" />
 
 	<script>
 		Configurations.businessDays = '<%= Constants.CONFIG_BUSINESS_DAYS %>';

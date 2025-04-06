@@ -8,14 +8,15 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <%
 	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
 %>
 
 <layout:head>
-	<script type="text/javascript" src="static/scripts/biblivre.multi_schema.js"></script>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.multi_schema.css" />
+	<static:script fileName="biblivre.multi_schema.js" />
+	<static:stylesheet fileName="biblivre.multi_schema.css" />
 </layout:head>
 
 <layout:body multiPart="true">

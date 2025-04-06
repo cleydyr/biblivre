@@ -2,11 +2,12 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
+	<static:stylesheet fileName="biblivre.administration.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.administration.maintenance.js"></script>
+	<static:script fileName="biblivre.administration.maintenance.js" />
 </layout:head>
 
 <layout:body>

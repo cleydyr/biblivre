@@ -7,10 +7,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="menu" tagdir="/WEB-INF/tags/menu" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <%
 	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
 	String schema = SchemaThreadLocal.get();
+	String contextPath = request.getContextPath();
 %>
 
 <!doctype html>
@@ -20,21 +22,19 @@
 				<meta name="google" content="notranslate" />
 				<title><%= configurationBO.getString(Constants.CONFIG_TITLE) %></title>
 
-				<link rel="shortcut icon" type="image/x-icon" href="static/images/favicon.ico" />
-				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.core.css" />
-				<link rel="stylesheet" type="text/css" media="print" href="static/styles/biblivre.print.css" />
+				<link rel="shortcut icon" type="image/x-icon" href="<%= contextPath %>/static/images/favicon.ico" />
+				<static:stylesheet fileName="biblivre.core.css" />
+				<static:stylesheet media="print" fileName="biblivre.print.css" />
 
-				<script type="text/javascript" src="static/scripts/jquery.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery.extras.js"></script>
-				<script type="text/javascript" src="static/scripts/lodash.js"></script>
+				<static:script fileName="jquery.js" />
+				<static:script fileName="jquery.extras.js" />
+				<static:script fileName="lodash.js" />
 
-				<script type="text/javascript" src="static/scripts/globalize.js"></script>
-				<script type="text/javascript" src="static/scripts/cultures/globalize.culture.<i18n:text key='language_code' />.js"></script>
-				<script type="text/javascript" >Globalize.culture('<i18n:text key="language_code" />'); </script>
-				<script type="text/javascript" >Globalize.culture().numberFormat.currency.symbol = '<%= configurationBO.getString(Constants.CONFIG_CURRENCY) %>';</script>
+				<static:script fileName="globalize.js" />
+				<static:culture_script />
 
-				<script type="text/javascript" src="static/scripts/biblivre.core.js"></script>
-				<script type="text/javascript" src="static/scripts/${requestScope.translationsMap.getCacheFileName()}"></script>
+				<static:script fileName="biblivre.core.js" />
+				<static:script fileName="${requestScope.translationsMap.getCacheFileName()}" />
 
 				<c:set var="translateError" value="false" />
 				<c:if test="${response.getStatus() == 404}">

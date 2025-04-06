@@ -8,15 +8,16 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
+	<static:stylesheet fileName="biblivre.search.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.accesscards.search.js"></script>
+	<static:script fileName="biblivre.search.js" />
+	<static:script fileName="biblivre.circulation.search.js" />
+	<static:script fileName="biblivre.administration.accesscards.search.js" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.access_control.js"></script>
+	<static:script fileName="biblivre.circulation.access_control.js" />
 
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {

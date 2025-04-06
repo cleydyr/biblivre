@@ -9,20 +9,21 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <%
 	ConfigurationBO configurationBO = (ConfigurationBO) request.getAttribute("configurations");
 %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.multi_schema.css" />
+	<static:stylesheet fileName="biblivre.administration.css" />
+	<static:stylesheet fileName="biblivre.multi_schema.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.administration.maintenance.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.progress.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.administration.setup.js"></script>
+	<static:script fileName="biblivre.administration.maintenance.js" />
+	<static:script fileName="biblivre.administration.progress.js" />
+	<static:script fileName="biblivre.administration.setup.js" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.multi_schema.js"></script>
+	<static:script fileName="biblivre.multi_schema.js" />
 
 	<script type="text/javascript">
 		$(document).ready(function() {

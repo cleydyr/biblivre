@@ -2,6 +2,11 @@
 <%@ page import="biblivre.core.exceptions.DAOException" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page isErrorPage="true" import="java.io.*" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
+
+<%
+    String contextPath = request.getContextPath();
+%>
 
 <!doctype html>
 <html class="noscript">
@@ -9,14 +14,14 @@
 	<meta charset="utf-8">
 	<meta name="google" content="notranslate" />
 	<title>Biblivre IV</title>
-	<link rel="shortcut icon" type="image/x-icon" href="static/images/favicon.ico" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.core.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="<%= contextPath %>/static/images/favicon.ico" />
+	<static:stylesheet fileName="biblivre.core.css" />
 </head>
 
 <body>
 	<div id="header">
 		<div id="logo_biblivre">
-			<a href="http://biblivre.org.br/" target="_blank"> <img src="static/images/logo_biblivre.png" width="117" height="66" alt="Biblivre V"></a>
+			<a href="http://biblivre.org.br/" target="_blank"> <img src="<%= contextPath %>/static/images/logo_biblivre.png" width="117" height="66" alt="Biblivre V"></a>
 		</div>
 	</div>
 	<div id="notifications">

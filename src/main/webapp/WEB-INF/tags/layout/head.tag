@@ -2,6 +2,11 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
+
+<%
+    String contextPath = request.getContextPath();
+%>
 
 <!doctype html>
 	<html class="noscript">
@@ -10,25 +15,25 @@
 				<meta name="google" content="notranslate" />
 				<title>${Configurations.getString(schema, Constants.CONFIG_TITLE)}"</title>
 
-				<link rel="shortcut icon" type="image/x-icon" href="static/images/favicon.ico" />
-				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.core.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/biblivre.print.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/jquery-ui.css" />
-				<link rel="stylesheet" type="text/css" href="static/styles/font-awesome.min.css" />
+				<link rel="shortcut icon" type="image/x-icon" href="<%= contextPath %>/static/images/favicon.ico" />
+				<static:stylesheet fileName="biblivre.core.css" />
+				<static:stylesheet fileName="biblivre.print.css" />
+				<static:stylesheet fileName="jquery-ui.css" />
+				<static:stylesheet fileName="font-awesome.min.css" />
 
-				<script type="text/javascript" src="static/scripts/json.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery-ui.js"></script>
-				<script type="text/javascript" src="static/scripts/jquery.extras.js"></script>
-				<script type="text/javascript" src="static/scripts/lodash.js"></script>
+				<static:script fileName="json.js" />
+				<static:script fileName="jquery.js" />
+				<static:script fileName="jquery-ui.js" />
+				<static:script fileName="jquery.extras.js" />
+				<static:script fileName="lodash.js" />
 
-				<script type="text/javascript" src="static/scripts/globalize.js"></script>
-				<script type="text/javascript" src="static/scripts/cultures/globalize.culture.<i18n:text key='language_code' />.js"></script>
+				<static:script fileName="globalize.js" />
+				<static:script fileName="cultures/globalize.culture.<i18n:text key='language_code' />.js" />
 				<script type="text/javascript" >Globalize.culture('<i18n:text key="language_code" />'); </script>
 				<script type="text/javascript" >Globalize.culture().numberFormat.currency.symbol = '${Configurations.getString(schema, Constants.CONFIG_CURRENCY)}';</script>
 
-				<script type="text/javascript" src="static/scripts/biblivre.core.js"></script>
-				<script type="text/javascript" src="static/scripts/${requestScope.translationMap.cacheFileName}"></script>
+				<static:script fileName="biblivre.core.js" />
+				<static:script fileName="${requestScope.translationMap.cacheFileName}" />
 	
 				<c:set var="translateError" value="false" />
 				<c:if test="${response.status eq 404}">

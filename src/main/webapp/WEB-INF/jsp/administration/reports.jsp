@@ -5,25 +5,26 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.administration.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.circulation.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
+	<static:stylesheet fileName="biblivre.administration.css" />
+	<static:stylesheet fileName="biblivre.search.css" />
+	<static:stylesheet fileName="biblivre.circulation.css" />
+	<static:stylesheet fileName="biblivre.cataloging.css" />
 
-	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
-	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
+	<static:script fileName="zebra_datepicker.js" />
+	<static:stylesheet fileName="zebra.bootstrap.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
-	<script type="text/javascript" src="static/scripts/${requestScope.biblioCacheFileName}"></script>
+	<static:script fileName="biblivre.search.js" />
+	<static:script fileName="biblivre.cataloging.search.js" />
+	<static:script fileName="biblivre.input.js" />
+	<static:script fileName="biblivre.cataloging.input.js" />
+	<static:script fileName="${requestScope.biblioCacheFileName}" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.circulation.search.js"></script>
+	<static:script fileName="biblivre.circulation.search.js" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.administration.reports.js"></script>
+	<static:script fileName="biblivre.administration.reports.js" />
 
 	<script type="text/javascript">
 		var CirculationSearch = CreateSearch(CirculationSearchClass, {

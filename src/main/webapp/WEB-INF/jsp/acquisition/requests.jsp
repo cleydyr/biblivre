@@ -2,14 +2,15 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
+	<static:stylesheet fileName="biblivre.search.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.acquisition.request.input.js"></script>
+	<static:script fileName="biblivre.search.js" />
+	<static:script fileName="biblivre.acquisition.request.search.js" />
+	<static:script fileName="biblivre.input.js" />
+	<static:script fileName="biblivre.acquisition.request.input.js" />
 	<script type="text/javascript">
 		var RequestSearch = CreateSearch(RequestSearchClass, {
 			type: 'acquisition.request',

@@ -4,21 +4,22 @@
 <%@ taglib prefix="layout" uri="/WEB-INF/tlds/layout.tld" %>
 <%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="static" uri="/WEB-INF/tlds/static.tld" %>
 
 <layout:head>
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.search.css" />
-	<link rel="stylesheet" type="text/css" href="static/styles/biblivre.cataloging.css" />
+	<static:stylesheet fileName="biblivre.search.css" />
+	<static:stylesheet fileName="biblivre.cataloging.css" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.search.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.search.js"></script>
+	<static:script fileName="biblivre.search.js" />
+	<static:script fileName="biblivre.cataloging.search.js" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.input.js"></script>
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.input.js"></script>
+	<static:script fileName="biblivre.input.js" />
+	<static:script fileName="biblivre.cataloging.input.js" />
 
-	<script type="text/javascript" src="static/scripts/biblivre.cataloging.labels.js"></script>
+	<static:script fileName="biblivre.cataloging.labels.js" />
 
-	<script type="text/javascript" src="static/scripts/zebra_datepicker.js"></script>
-	<link rel="stylesheet" type="text/css" href="static/styles/zebra.bootstrap.css">
+	<static:script fileName="zebra_datepicker.js" />
+	<static:stylesheet fileName="zebra.bootstrap.css" />
 
 	<script type="text/javascript">
 		var CatalogingSearch = CreateSearch(CatalogingSearchClass, {

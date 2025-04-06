@@ -25,10 +25,12 @@ import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
+import lombok.Setter;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Setter
 public class Translations extends SimpleTagSupport {
 
     private String key;
@@ -70,25 +72,5 @@ public class Translations extends SimpleTagSupport {
             logger.error(e.getMessage(), e);
             throw new JspException(e.getMessage());
         }
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public void setParam1(String param1) {
-        this.param1 = param1;
-    }
-
-    public void setParam2(String param2) {
-        this.param2 = param2;
-    }
-
-    public void setParam3(String param3) {
-        this.param3 = param3;
-    }
-
-    public void setEscapeHTML(boolean escapeHTML) {
-        this.escapeHTML = escapeHTML;
     }
 }

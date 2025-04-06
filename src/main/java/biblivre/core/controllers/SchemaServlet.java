@@ -36,6 +36,7 @@ import biblivre.core.translations.TranslationBO;
 import biblivre.core.utils.Constants;
 import biblivre.core.utils.FileIOUtils;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,7 +75,7 @@ public class SchemaServlet extends HttpServlet {
     @Value("${biblivre.logo.href:https://biblivre.org.br}")
     private String logoHref;
 
-    @Value("${biblivre.logo.image.src:static/images/logo_biblivre.png}")
+    @Value("${biblivre.logo.image.src:/static/images/logo_biblivre.png}")
     private String logoImageSrc;
 
     @Value("${biblivre.logo.image.alt:Biblivre}")
@@ -187,8 +188,12 @@ public class SchemaServlet extends HttpServlet {
             controller = "jsp";
         }
 
-        request.setAttribute("logoHref", logoHref);
-        request.setAttribute("logoImageSrc", logoImageSrc);
+        ServletContext servletContext = getServletContext();
+
+        servletContext.getContextPath();
+
+        request.setAttribute("logoHref", servletContextAwareStaticPath(logoHref));
+        request.setAttribute("logoImageSrc", servletContextAwareStaticPath(logoImageSrc));
         request.setAttribute("logoImageAlt", logoImageAlt);
         request.setAttribute("footerHref", footerHref);
         request.setAttribute("footerText", footerText);
@@ -286,6 +291,12 @@ public class SchemaServlet extends HttpServlet {
                 };
 
         rd.forward(wrapped, response);
+    }
+
+    private String servletContextAwareStaticPath(String path) {
+        ServletContext servletContext = getServletContext();
+
+        return servletContext.getContextPath() + path;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
