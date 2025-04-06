@@ -20,7 +20,7 @@ services:
     depends_on:
       - database
   database:
-    image: postgres:12-alpine
+    image: postgres:16-alpine
     ports:
       - "$DATABASE_HOST_PORT:$POSTGRES_DEFAULT_PORT"
     volumes:
