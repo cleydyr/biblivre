@@ -521,7 +521,7 @@
 								{#if $T.record.accession_number}<label><i18n:text key="search.holding.accession_number" /></label>: {$T.record.accession_number}<br/>{#/if}
 								{#if $T.record.availability}<label><i18n:text key="search.holding.availability" /></label>: {Translations.get('cataloging.holding.availability.' + $T.record.availability)}<br/>{#/if}
 								{#if $T.record.shelf_location}<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.record.shelf_location}<br/>{#/if}
-								<label><i18n:text key="search.bibliographic.id" /></label>: {$T.record.id}<br/>
+								<label><i18n:text key="search.holding.id" /></label>: {$T.record.id}<br/>
 							</div>
 							<div class="clear"></div>
 						</div>
