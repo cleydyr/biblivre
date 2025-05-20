@@ -18,5 +18,5 @@ public class Update extends TranslationCreatorUpdate {
             Set.of(
                     new TranslationModel("search.holding.id", "en-US", "Holding ID"),
                     new TranslationModel("search.holding.id", "es", "N&ordm; de ejemplar"),
-                    new TranslationModel("search.holding.id", "pt-BR", "N&ordm; do  exemplar"));
+                    new TranslationModel("search.holding.id", "pt-BR", "N&ordm; do exemplar"));
 }
