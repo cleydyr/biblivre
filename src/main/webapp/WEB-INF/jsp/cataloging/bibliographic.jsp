@@ -672,7 +672,7 @@
 									<label><i18n:text key="search.holding.shelf_location" /></label>: {$T.record.shelf_location || ''} {$T.record.location_d || ''}<br/>
 								{#/if}
 
-								<label><i18n:text key="search.bibliographic.id" /></label>: {$T.record.id}<br/>
+								<label><i18n:text key="search.holding.id" /></label>: {$T.record.id}<br/>
 
 								{#if $T.record.attachments && $T.record.attachments.length > 0}
 									<div class="ncspacer"></div>
