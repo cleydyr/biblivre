@@ -14,7 +14,7 @@ public class Update extends TranslationCreatorUpdate {
         return ADDITIONAL_TRANSLATIONS;
     }
 
-    Collection<TranslationModel> ADDITIONAL_TRANSLATIONS =
+    private static final Collection<TranslationModel> ADDITIONAL_TRANSLATIONS =
             Set.of(
                     new TranslationModel("search.holding.id", "en-US", "Holding ID"),
                     new TranslationModel("search.holding.id", "es", "N&ordm; de ejemplar"),
