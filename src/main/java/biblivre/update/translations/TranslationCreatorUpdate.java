@@ -17,12 +17,12 @@ public abstract class TranslationCreatorUpdate implements UpdateService {
     }
 
     private void addTranslations(Connection connection) throws UpdateException {
-        for (TranslationModel entry : getAdditionalTranlsations()) {
+        for (TranslationModel entry : getAdditionalTranslations()) {
             translationBO.addSingleTranslation(entry.language(), entry.key(), entry.text());
         }
     }
 
-    public abstract Collection<TranslationModel> getAdditionalTranlsations();
+    public abstract Collection<TranslationModel> getAdditionalTranslations();
 
     private TranslationBO translationBO;
 

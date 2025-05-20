@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class Update extends TranslationCreatorUpdate {
 
     @Override
-    public Collection<TranslationModel> getAdditionalTranlsations() {
+    public Collection<TranslationModel> getAdditionalTranslations() {
         return ADDITIONAL_TRANSLATIONS;
     }
 
