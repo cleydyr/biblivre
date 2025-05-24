@@ -23,38 +23,25 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.json.JSONObject;
 
 public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> implements IFJson {
-    private static final DTOCollection EMPTY = new DTOCollection();
+    private static final DTOCollection<?> EMPTY = new DTOCollection<>();
 
-    private Integer id;
+    @Setter @Getter private Integer id;
 
-    private PagingDTO paging;
+    @Setter @Getter private PagingDTO paging;
 
     private final List<T> list = new ArrayList<>();
-
-    public PagingDTO getPaging() {
-        return this.paging;
-    }
-
-    public void setPaging(PagingDTO paging) {
-        this.paging = paging;
-    }
 
     public long getRecordLimit() {
         if (this.paging == null) {
             return 0;
         }
         return this.paging.getRecordLimit();
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     @Override
@@ -76,6 +63,7 @@ public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> 
     }
 
     @Override
+    @NonNull
     public Iterator<T> iterator() {
         return list.iterator();
     }
@@ -90,7 +78,7 @@ public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> 
         return list.add(e);
     }
 
-    public static <T extends AbstractDTO> DTOCollection<T> empty() {
-        return (DTOCollection<T>) EMPTY;
+    public static DTOCollection<?> empty() {
+        return EMPTY;
     }
 }
