@@ -4,7 +4,7 @@ const config: Config = {
   verbose: true,
   testEnvironment: "jsdom",
   transform: {
-    "\\.[jt]sx?$": "babel-jest",
+    "\\.[jt]sx?$": "@swc-jest",
   },
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   moduleDirectories: ["node_modules", "src"],
