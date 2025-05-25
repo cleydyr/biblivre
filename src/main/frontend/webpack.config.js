@@ -18,7 +18,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|ts)x?$/,
-        use: ["babel-loader"],
+        use: ["swc-loader"],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
