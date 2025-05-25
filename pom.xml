@@ -33,10 +33,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>21</jdk.version>
         <debug>false</debug>
-        <dockerfile.version>1.4.1</dockerfile.version>
+        <dockerfile.version>1.4.13</dockerfile.version>
         <docker.image.prefix>cleydyr</docker.image.prefix>
         <aws.java.sdk.version>2.17.100</aws.java.sdk.version>
-        <spotless.version>2.43.0</spotless.version>
+        <spotless.version>2.44.4</spotless.version>
         <webapp.dir>${basedir}/src/main/webapp</webapp.dir>
         <error-prone.version>2.26.1</error-prone.version>
         <maven.compiler.release>21</maven.compiler.release>
@@ -101,6 +101,7 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
+            <!--            <version>11.0.6</version>-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -305,6 +306,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
+            <version>6.5.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -385,7 +387,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.5.15</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -478,7 +479,7 @@
             <plugin>
                 <groupId>org.sonatype.ossindex.maven</groupId>
                 <artifactId>ossindex-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>audit-dependencies</id>
@@ -508,7 +509,7 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.7.0.0</version>
+                <version>4.9.3.0</version>
                 <configuration>
                     <includeFilterFile>spotbugs.xml</includeFilterFile>
                 </configuration>
@@ -524,7 +525,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.19.0</version>
+                <version>3.26.0</version>
                 <configuration>
                     <failOnViolation>true</failOnViolation> <!-- this is actually true by default,
 					but can be disabled -->
@@ -541,7 +542,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.3.0</version>
+                <version>7.13.0</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -588,7 +589,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.12.0</version>
+                <version>1.15.1</version>
                 <executions>
                     <execution>
                         <id>install node and npm</id>
@@ -619,6 +620,26 @@
                         <configuration>
                             <arguments>build</arguments>
                             <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.3</version>
+                                </requireMavenVersion>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
@@ -654,7 +675,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>9.0.9</version>
+                        <version>12.1.1</version>
                     </plugin>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>

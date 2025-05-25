@@ -250,10 +250,8 @@ public class BackupBO extends AbstractBO {
             File home = new File(System.getProperty("user.home"));
             File biblivre = new File(home, "Biblivre");
 
-            if (!biblivre.exists() && home.isDirectory() && home.canWrite()) {
-                if (!biblivre.mkdir()) {
-                    return null;
-                }
+            if (createBiblivreDirectoryIfNeeded(biblivre, home)) {
+                return null;
             }
 
             path = biblivre.getAbsolutePath();
@@ -394,6 +392,10 @@ public class BackupBO extends AbstractBO {
 
         this.exportDigitalMedia(schema, schemaBackup);
         this.save(dto);
+    }
+
+    private static boolean createBiblivreDirectoryIfNeeded(File biblivre, File home) {
+        return !biblivre.exists() && home.isDirectory() && home.canWrite() && !biblivre.mkdir();
     }
 
     protected static final Logger logger = LoggerFactory.getLogger(BackupBO.class);
