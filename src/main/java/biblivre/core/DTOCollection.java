@@ -29,7 +29,7 @@ import lombok.Setter;
 import org.json.JSONObject;
 
 public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> implements IFJson {
-    private static final DTOCollection<?> EMPTY = new DTOCollection<>();
+    private static final DTOCollection<? extends AbstractDTO> EMPTY = new DTOCollection<>();
 
     @Setter @Getter private Integer id;
 
@@ -78,7 +78,7 @@ public class DTOCollection<T extends AbstractDTO> extends AbstractCollection<T> 
         return list.add(e);
     }
 
-    public static DTOCollection<?> empty() {
+    public static DTOCollection<? extends AbstractDTO> empty() {
         return EMPTY;
     }
 }
