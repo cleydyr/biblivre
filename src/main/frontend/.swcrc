@@ -1,0 +1,22 @@
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",          // Para TS/JS
+      "tsx": true,                     // Para TSX/JSX
+      "decorators": false              // Habilite se usar decorators
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic",        // Equivalente a preset-react runtime: "automatic"
+        "importSource": "react"        // Só mude se usa outro (ex: "preact")
+      }
+    },
+    "target": "es2017"                 // Ou outro, equivalente ao preset-env
+  },
+  "module": {
+    "type": "es6",                     // Ou "commonjs" se precisar
+    "strict": true,
+    "noInterop": false
+  }
+}
+
