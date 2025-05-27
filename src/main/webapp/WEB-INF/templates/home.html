@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${#request.getAttribute('title', 'Biblivre')}"/>
+    <link rel="stylesheet" th:href="@{/static/css/biblivre.index.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/biblivre.multi_schema.css}"/>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img th:src="${@configurationBO.getLogoImageSrc()}" th:alt="${@configurationBO.getLogoImageAlt()}"/>
+        </div>
+
+        <div class="content">
+            <div th:if="${!#request.getAttribute('isGlobalSchema')}" class="text">
+                <div th:if="${#session.getAttribute(#request.getAttribute('schema') + '.logged_user') == null}">
+                    <p th:text="${#request.getAttribute('translations').getText('text.main.logged_out')}"/>
+                </div>
+                <div th:if="${#session.getAttribute(#request.getAttribute('schema') + '.logged_user') != null}">
+                    <p th:text="${#request.getAttribute('translations').getText('text.main.logged_in', #session.getAttribute(#request.getAttribute('schema') + '.logged_user').firstName)}"/>
+                </div>
+            </div>
+
+            <div th:if="${#request.getAttribute('isGlobalSchema')}" class="multischema biblivre_form">
+                <fieldset>
+                    <legend th:text="${#request.getAttribute('translations').getText('text.multi_schema.select_library')}"/>
+                    <div class="schemas">
+                        <div th:each="schema : ${#request.getAttribute('schemas')}">
+                            <button type="button" 
+                                    th:text="${schema.name}" 
+                                    th:onclick="|window.location.href='/schema/' + ${schema.name}|">
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p th:text="${#request.getAttribute('translations').getText('text.footer.copyright', @configurationBO.getFooterPre(), @configurationBO.getFooterHref(), @configurationBO.getFooterText())}"/>
+        </div>
+    </div>
+</body>
+</html>
