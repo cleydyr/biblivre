@@ -1,15 +1,15 @@
-import type { LegacyEndpointPayload } from './types'
+import { DEFAULT_HEADERS } from './constants'
 
-export async function fetchFromLegacyEndpoint({
+import type { FileDownload, LegacyEndpointPayload } from './types'
+
+export async function fetchJSONFromLegacyEndpoint({
   module,
   action,
   ...otherParams
 }: LegacyEndpointPayload) {
   const response = await fetch(import.meta.env.VITE_BIBLIVRE_ENDPOINT, {
     method: 'POST',
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
+    headers: DEFAULT_HEADERS,
     body: new URLSearchParams({
       controller: 'json',
       module,
@@ -25,7 +25,7 @@ export async function downloadFromLegacyEndpoint({
   module,
   action,
   ...otherParams
-}: LegacyEndpointPayload) {
+}: LegacyEndpointPayload): Promise<FileDownload> {
   const queryParams = new URLSearchParams({
     controller: 'download',
     module,
@@ -36,11 +36,20 @@ export async function downloadFromLegacyEndpoint({
   const response = await fetch(
     `${import.meta.env.VITE_BIBLIVRE_ENDPOINT}?${queryParams}`,
     {
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
+      headers: DEFAULT_HEADERS,
     },
   )
 
-  return response.blob()
+  return {
+    blob: await response.blob(),
+    filename: getDownloadFileName(response),
+  }
+}
+
+function getDownloadFileName(response: Response) {
+  return (
+    response.headers
+      .get('Content-Disposition')
+      ?.match(/filename="(.+)"/)?.[1] ?? 'biblivre_download'
+  )
 }

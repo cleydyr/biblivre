@@ -8,4 +8,17 @@ export default defineConfig({
       jsxImportSource: '@emotion/react',
     }),
   ],
+  build: {
+    outDir: '../resources/META-INF/resources/static/spa',
+    emptyOutDir: true,
+    manifest: true,
+    rollupOptions: {
+      output: {
+        // Create predictable entry point filename
+        entryFileNames: 'assets/index-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
+  },
 })

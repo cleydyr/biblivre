@@ -2,12 +2,10 @@ import { EuiButton } from '@elastic/eui'
 import { type FC, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
 
-import {
-  useDownloadExportMutation,
-  useExportBibliographicRecordsMutation,
-} from './hooks'
+import { useExportAndDownloadMutation } from './hooks'
 
 import type { BibliographicRecord } from '../api-helpers/search/response-types'
+import type { FileDownload } from '../api-helpers/types'
 
 type Props = {
   selectedRecords: BibliographicRecord[]
@@ -19,27 +17,17 @@ export const ExportSelectedRecordsButton: FC<Props> = ({
   onExportSuccess,
 }) => {
   const {
+    data: downloadExportResponse,
     mutate: exportBibliographicRecords,
-    data: exportResponse,
-    isSuccess: isExportSuccess,
     isPending: isExportPending,
-  } = useExportBibliographicRecordsMutation()
-
-  const { data: downloadExportResponse, mutate: downloadExport } =
-    useDownloadExportMutation()
-
-  useEffect(() => {
-    if (isExportSuccess && exportResponse.success) {
-      downloadExport(exportResponse.uuid)
-      onExportSuccess()
-    }
-  }, [exportResponse, isExportSuccess, onExportSuccess, downloadExport])
+  } = useExportAndDownloadMutation()
 
   useEffect(() => {
     if (downloadExportResponse) {
       downloadFile(downloadExportResponse)
+      onExportSuccess()
     }
-  }, [downloadExportResponse])
+  }, [downloadExportResponse, onExportSuccess])
 
   return (
     <EuiButton
@@ -59,12 +47,14 @@ export const ExportSelectedRecordsButton: FC<Props> = ({
   )
 }
 
-function downloadFile(blob: Blob) {
+function downloadFile({ blob, filename }: FileDownload) {
   const link = document.createElement('a')
 
   const objectURL = URL.createObjectURL(blob)
 
   link.href = objectURL
+
+  link.download = filename ?? 'biblivre_download'
 
   link.click()
 

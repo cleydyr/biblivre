@@ -92,14 +92,16 @@ export function useOpenBibliographicRecord(
   })
 }
 
-export function useExportBibliographicRecordsMutation() {
+export function useExportAndDownloadMutation() {
   return useMutation({
-    mutationFn: (recordIds: number[]) => exportBibliographicRecords(recordIds),
-  })
-}
+    mutationFn: async (recordIds: number[]) => {
+      const exportResponse = await exportBibliographicRecords(recordIds)
 
-export function useDownloadExportMutation() {
-  return useMutation({
-    mutationFn: downloadExport,
+      if (exportResponse.success) {
+        return downloadExport(exportResponse.uuid)
+      }
+
+      throw new Error(exportResponse.message)
+    },
   })
 }

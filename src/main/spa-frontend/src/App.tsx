@@ -15,8 +15,13 @@ const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
     <EuiFlexGroup direction='column' gutterSize='none'>
       <AppHeader isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
       <Routes>
-        <Route element={<BibliographicSearchPage />} path='/search' />
-        <Route element={<BibliographicRecordPage />} path='/record/:recordId' />
+        <Route path='/spa'>
+          <Route element={<BibliographicSearchPage />} path='search' />
+          <Route
+            element={<BibliographicRecordPage />}
+            path='record/:recordId'
+          />
+        </Route>
       </Routes>
     </EuiFlexGroup>
   )

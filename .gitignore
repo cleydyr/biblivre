@@ -20,4 +20,11 @@ src/main/resources/META-INF/resources/static/asset-manifest.json
 src/main/resources/META-INF/resources/static/index.html
 src/main/resources/META-INF/resources/static/scripts/index.html
 
+# SPA Frontend build artifacts
+src/main/spa-frontend/node_modules/
+src/main/spa-frontend/node/
+src/main/spa-frontend/dist/
+src/main/resources/META-INF/resources/static/spa/
+src/main/webapp/WEB-INF/templates/spa.template
+
 CLAUDE.local.md

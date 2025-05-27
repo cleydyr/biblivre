@@ -48,3 +48,8 @@ export type PaginateSearchParams = {
   searchId: string
   page: number
 }
+
+export type FileDownload = {
+  blob: Blob
+  filename: string
+}

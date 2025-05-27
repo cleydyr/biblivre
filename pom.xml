@@ -590,6 +590,93 @@
                             <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>install node and npm spa-frontend</id>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v22.12.0</nodeVersion>
+                            <yarnVersion>v1.22.22</yarnVersion>
+                            <installDirectory>${project.basedir}/src/main/spa-frontend</installDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install spa-frontend</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install --production=false</arguments>
+                            <workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn build spa-frontend</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>build</arguments>
+                            <workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>1.0b3</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>update-spa-template</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+                                <!-- Extract the script src from the built index.html and update the template -->
+                                <loadfile property="spa.index.html" srcFile="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html"/>
+                                <propertyregex property="spa.js.file" input="${spa.index.html}" regexp="src=&quot;(/assets/[^&quot;]+\.js)&quot;" select="\1" casesensitive="false" />
+                                <!-- Copy the built index.html content to template with corrected paths -->
+                                <copy file="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html" tofile="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" overwrite="true"/>
+                                <replace file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" token='src="/assets/' value='src="/spa/assets/'/>
+                                <replace file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" token='href="/vite.svg"' value='href="/spa/vite.svg"'/>
+                                <replace file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" token='Vite + React + TS' value='Biblivre SPA'/>
+                                <!-- Move script from body to head by using a custom template approach -->
+                                <loadfile property="built.content" srcFile="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html"/>
+                                <propertyregex property="js.bundle" input="${built.content}" regexp="assets/index-[^&quot;]+\.js" select="\0" casesensitive="false"/>
+                                <echo file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template">&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;link rel="icon" type="image/svg+xml" href="/static/spa/vite.svg" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Biblivre SPA&lt;/title&gt;
+    &lt;script type="module" crossorigin src="/static/spa/${js.bundle}"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="root"&gt;&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</echo>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
