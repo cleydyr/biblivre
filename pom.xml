@@ -96,11 +96,12 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
-            <version>10.1.25</version>
+            <version>10.1.41</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
+            <version>10.1.41</version>
             <!--            <version>11.0.6</version>-->
         </dependency>
         <dependency>
@@ -272,6 +273,12 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>6.21.4</version>
+        </dependency>
+        <!-- Skip CVE-2025-48734 -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.11.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
