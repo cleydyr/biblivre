@@ -1,0 +1,284 @@
+openapi: 3.0.3
+info:
+  title: Biblivre User Fields API
+  description: |-
+    API for managing custom user fields in Biblivre library management system.
+    Allows creation, retrieval, and management of custom user fields with multi-language support.
+  version: 1.0.0
+paths:
+  /user_fields:
+    get:
+      summary: List all user fields
+      description: Retrieves all custom user fields configured in the system
+      responses:
+        200:
+          description: List of user fields
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserField"
+        500:
+          $ref: "#/components/responses/500ApiError"
+      operationId: getUserFields
+      tags:
+        - User Fields
+    post:
+      summary: Create a new user field
+      description: Creates a new custom user field with translations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserFieldRequest"
+      responses:
+        201:
+          description: User field created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserField"
+        400:
+          $ref: "#/components/responses/400ApiError"
+        409:
+          $ref: "#/components/responses/409ApiError"
+        500:
+          $ref: "#/components/responses/500ApiError"
+      operationId: createUserField
+      tags:
+        - User Fields
+  /user_fields/{fieldKey}:
+    get:
+      summary: Get a specific user field
+      description: Retrieves a specific user field by its key
+      parameters:
+        - $ref: "#/components/parameters/FieldKey"
+      responses:
+        200:
+          description: The user field details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserField"
+        404:
+          $ref: "#/components/responses/404ApiError"
+        500:
+          $ref: "#/components/responses/500ApiError"
+      operationId: getUserField
+      tags:
+        - User Fields
+    patch:
+      summary: Update user field translations
+      description: Updates the translations for an existing user field
+      parameters:
+        - $ref: "#/components/parameters/FieldKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserFieldTranslationsRequest"
+      responses:
+        200:
+          description: Translations updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserField"
+        400:
+          $ref: "#/components/responses/400ApiError"
+        404:
+          $ref: "#/components/responses/404ApiError"
+        500:
+          $ref: "#/components/responses/500ApiError"
+      operationId: updateUserFieldTranslations
+      tags:
+        - User Fields
+components:
+  parameters:
+    FieldKey:
+      name: fieldKey
+      in: path
+      required: true
+      description: The unique key identifier for the user field
+      schema:
+        type: string
+        pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+        example: department
+  schemas:
+    UserField:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Unique identifier for the field
+          pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+          example: department
+        type:
+          $ref: "#/components/schemas/UserFieldType"
+        required:
+          type: boolean
+          description: Whether this field is required for user registration
+          example: false
+        maxLength:
+          type: integer
+          description: Maximum length for text fields (0 for unlimited)
+          minimum: 0
+          maximum: 65535
+          example: 100
+        sortOrder:
+          type: integer
+          description: Display order of the field in forms
+          minimum: 0
+          example: 10
+        translations:
+          type: object
+          description: Field name translations by language code
+          additionalProperties:
+            type: string
+          example:
+            pt-BR: Departamento
+            en-US: Department
+            es-ES: Departamento
+      required:
+        - key
+        - type
+        - required
+        - maxLength
+        - sortOrder
+    CreateUserFieldRequest:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Unique identifier for the field
+          pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+          example: department
+        type:
+          $ref: "#/components/schemas/UserFieldType"
+        required:
+          type: boolean
+          description: Whether this field is required for user registration
+          default: false
+          example: false
+        maxLength:
+          type: integer
+          description: Maximum length for text fields (0 for unlimited)
+          minimum: 0
+          maximum: 65535
+          default: 0
+          example: 100
+        sortOrder:
+          type: integer
+          description: Display order of the field in forms
+          minimum: 0
+          default: 0
+          example: 10
+        translations:
+          type: object
+          description: Field name translations by language code
+          additionalProperties:
+            type: string
+          minProperties: 1
+          example:
+            pt-BR: Departamento
+            en-US: Department
+            es-ES: Departamento
+      required:
+        - key
+        - type
+        - translations
+    UpdateUserFieldTranslationsRequest:
+      type: object
+      properties:
+        translations:
+          type: object
+          description: Field name translations by language code
+          additionalProperties:
+            type: string
+          minProperties: 1
+          example:
+            pt-BR: Setor
+            en-US: Department
+            fr-FR: Département
+      required:
+        - translations
+    UserFieldType:
+      type: string
+      description: Type of the user field
+      enum:
+        - string
+        - text
+        - number
+        - date
+        - datetime
+        - boolean
+        - list
+      example: string
+  responses:
+    400ApiError:
+      description: Bad request - invalid input data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 400
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid field key format. Must start with a letter and contain only letters, numbers, and underscores.
+                  field:
+                    type: string
+                    example: key
+    404ApiError:
+      description: The requested user field couldn't be found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 404
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User field with key 'department' not found
+    409ApiError:
+      description: Conflict - user field already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 409
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User field with key 'department' already exists
+    500ApiError:
+      description: Unexpected errors on the server side
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: An unexpected error occurred on the server. Please contact support.
