@@ -20,6 +20,7 @@
 package biblivre.circulation.user;
 
 import biblivre.core.AbstractDAO;
+import biblivre.core.PreparedStatementUtil;
 import biblivre.core.exceptions.DAOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -55,6 +56,29 @@ public class UserFieldsDAOImpl extends AbstractDAO implements UserFieldsDAO {
         }
 
         return list;
+    }
+
+    public UserFieldDTO persistField(UserFieldDTO userField) {
+        try (Connection con = datasource.getConnection()) {
+            var sql =
+                    "INSERT INTO users_fields (\"key\", \"type\", \"required\", \"max_length\", \"sort_order\") VALUES (?, ?, ?, ?, ?);";
+
+            var pst = con.prepareStatement(sql);
+
+            PreparedStatementUtil.setAllParameters(
+                    pst,
+                    userField.getKey(),
+                    userField.getType().toString(),
+                    userField.isRequired(),
+                    userField.getMaxLength(),
+                    userField.getSortOrder());
+
+            pst.executeUpdate();
+
+            return userField;
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
 
     private UserFieldDTO populateUserFieldDTO(ResultSet rs) throws SQLException {
