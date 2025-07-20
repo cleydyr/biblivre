@@ -605,7 +605,7 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/api/user-fields.yaml</inputSpec>
                             <generatorName>typescript-fetch</generatorName>
-                            <o>src/main/frontend/src/generated-sources</o>
+                            <output>src/main/frontend/src/generated-sources/user-fields</output>
                             <configOptions>
                                 <supportsES6>true</supportsES6>
                             </configOptions>
