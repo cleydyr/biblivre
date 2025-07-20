@@ -51,7 +51,22 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     @Autowired private AutowireCapableBeanFactory autowireCapableBeanFactory;
 
     @Bean
-    public SpringResourceTemplateResolver templateResolver() {
+    public SpringResourceTemplateResolver htmlTemplateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+
+        templateResolver.setApplicationContext(applicationContext);
+        templateResolver.setPrefix("classpath:/templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCacheable(true);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setOrder(1);
+
+        return templateResolver;
+    }
+
+    @Bean
+    public SpringResourceTemplateResolver textTemplateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 
         templateResolver.setApplicationContext(applicationContext);
@@ -59,6 +74,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
         templateResolver.setSuffix(".template");
         templateResolver.setTemplateMode(TemplateMode.TEXT);
         templateResolver.setCacheable(true);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setOrder(2);
 
         return templateResolver;
     }
@@ -67,7 +84,8 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
 
-        templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.addTemplateResolver(htmlTemplateResolver());
+        templateEngine.addTemplateResolver(textTemplateResolver());
         templateEngine.setEnableSpringELCompiler(true);
 
         return templateEngine;
