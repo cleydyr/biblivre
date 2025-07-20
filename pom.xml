@@ -571,6 +571,46 @@
                             </configOptions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <id>generate-user-fields-spring</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api/user-fields.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <openApiNullable>false</openApiNullable>
+                                <documentationProvider>source</documentationProvider>
+                                <delegatePattern>true</delegatePattern>
+                                <apiPackage>biblivre.circulation.user.generated.api</apiPackage>
+                                <modelPackage>biblivre.circulation.user.generated.api.model</modelPackage>
+                                <useSpringBoot3>true</useSpringBoot3>
+                            </configOptions>
+                            <generateModelTests>false</generateModelTests>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateApiTests>false</generateApiTests>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <modelNamePrefix>Rest</modelNamePrefix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-user-fields-typescript</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api/user-fields.yaml</inputSpec>
+                            <generatorName>typescript-fetch</generatorName>
+                            <o>src/main/frontend/src/generated-sources</o>
+                            <configOptions>
+                                <supportsES6>true</supportsES6>
+                            </configOptions>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
