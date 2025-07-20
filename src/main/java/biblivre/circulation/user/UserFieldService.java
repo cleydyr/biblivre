@@ -91,7 +91,6 @@ public class UserFieldService {
 
             translationBO.addSingleTranslation(language, translationKey, translatedName);
         }
-        return null;
     }
 
     /**
