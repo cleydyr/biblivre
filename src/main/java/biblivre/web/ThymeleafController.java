@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ThymeleafController {
 
-    @GetMapping("/view/thymeleaf-test")
+    @GetMapping("/view/custom-user-fields")
     public String index(Model model) {
         model.addAttribute("message", "Thymeleaf is working correctly!");
-        return "index";
+        return "custom-user-fields";
     }
 }
