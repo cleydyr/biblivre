@@ -1,0 +1,25 @@
+version: "3"
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: biblivre-dev-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./sql/biblivre4.sql:/docker-entrypoint-initdb.d/populate-initial-data.sql"
+      - "biblivre_dev_db_data:/var/lib/postgresql/data"
+    environment:
+      - "POSTGRES_USER=biblivre"
+      - "POSTGRES_PASSWORD=abracadabra"
+      - "POSTGRES_DB=biblivre4"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U biblivre -d biblivre4"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  biblivre_dev_db_data:
+    name: biblivre_dev_db_data
