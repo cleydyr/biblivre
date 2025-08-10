@@ -93,9 +93,11 @@ public class SchemaServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Detour to the MVC controllers, i.e., Spring's DispatcherServlet if the request path
-        // starts with /api
-        if (request.getServletPath().startsWith("/api")) {
+        // Detour to the MVC controllers, i.e., Spring's DispatcherServlet if the
+        // request path
+        // starts with /api or /view
+        if (request.getServletPath().startsWith("/api")
+                || request.getServletPath().startsWith("/view")) {
             RequestDispatcher rd = this.getServletContext().getNamedDispatcher("dispatcherServlet");
 
             rd.forward(request, response);
