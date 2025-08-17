@@ -19,3 +19,5 @@ src/main/resources/META-INF/resources/static/styles/biblivre.*
 src/main/resources/META-INF/resources/static/asset-manifest.json
 src/main/resources/META-INF/resources/static/index.html
 src/main/resources/META-INF/resources/static/scripts/index.html
+
+CLAUDE.local.md
