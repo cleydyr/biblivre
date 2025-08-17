@@ -5,6 +5,7 @@ import prettier from 'eslint-plugin-prettier'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
@@ -29,30 +30,39 @@ export default tseslint.config([
     plugins: {
       import: importPlugin,
       prettier,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
       // Prettier integration
       'prettier/prettier': 'error',
 
-      // Import rules
-      'import/order': [
+      // Import rules - using simple-import-sort for better type separation
+      'simple-import-sort/imports': [
         'error',
         {
           groups: [
-            'builtin',
-            'external',
-            'internal',
-            'parent',
-            'sibling',
-            'index',
+            // Side effect imports
+            ['^\\u0000'],
+            // Node.js builtins prefixed with `node:`
+            ['^node:'],
+            // Packages - things that start with a letter (or digit or underscore), or `@` followed by a letter
+            ['^@?\\w'],
+            // Internal packages - adjust this pattern to match your internal packages
+            ['^(@|components|utils|hooks|types|constants|api|lib)(/.*|$)'],
+            // Parent imports - put `..` last
+            ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
+            // Other relative imports - put same-folder imports and `.` last
+            ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+            // Style imports
+            ['^.+\\.s?css$'],
+            // Type imports - separate from regular imports
+            ['^.*\\u0000$'],
           ],
-          'newlines-between': 'always',
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
         },
       ],
+      'simple-import-sort/exports': 'error',
+      'import/first': 'error',
+      'import/newline-after-import': 'error',
       'import/no-unresolved': 'off',
       'import/no-duplicates': 'error',
 
@@ -73,8 +83,13 @@ export default tseslint.config([
       '@typescript-eslint/no-var-requires': 'error',
       '@typescript-eslint/consistent-type-imports': [
         'error',
-        { prefer: 'type-imports' },
+        {
+          prefer: 'type-imports',
+          disallowTypeAnnotations: false,
+          fixStyle: 'separate-type-imports',
+        },
       ],
+      '@typescript-eslint/no-import-type-side-effects': 'error',
 
       // General code quality
       'no-console': 'warn',
