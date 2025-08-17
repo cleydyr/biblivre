@@ -27,19 +27,19 @@ help: ## Show this help message
 dev: ## Run Spring Boot application with hot reload
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot application with hot reload...$(NC)"
-	@export MAVEN_OPTS="$(MAVEN_OPTS)" && mvn spring-boot:run -Dspring-boot.run.profiles=developer
+	@export MAVEN_OPTS="$(MAVEN_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer
 
 debug: ## Run Spring Boot application with debug port 5005 exposed
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot application with debug on port 5005...$(NC)"
 	@echo "$(YELLOW)Connect your IDE debugger to localhost:5005$(NC)"
-	@export MAVEN_OPTS="$(MAVEN_OPTS) $(DEBUG_OPTS)" && mvn spring-boot:run -Dspring-boot.run.profiles=developer
+	@export MAVEN_OPTS="$(MAVEN_OPTS) $(DEBUG_OPTS)" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer -Dskip.yarn
 
 debug-suspend: ## Run Spring Boot application with debug port 5005, suspend until debugger connects
 	@$(MAKE) db-start
 	@echo "$(GREEN)Starting Spring Boot application with debug (suspended) on port 5005...$(NC)"
 	@echo "$(YELLOW)Application will wait for debugger connection on localhost:5005$(NC)"
-	@export MAVEN_OPTS="$(MAVEN_OPTS) -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005" && mvn spring-boot:run -Dspring-boot.run.profiles=developer
+	@export MAVEN_OPTS="$(MAVEN_OPTS) -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005" BIBLIVRE_CORS_ENABLED=true && mvn spring-boot:run -Dspring-boot.run.profiles=developer
 
 # Build Commands
 build: ## Clean build the entire project
@@ -48,7 +48,7 @@ build: ## Clean build the entire project
 
 build-fast: ## Fast build without tests and checks
 	@echo "$(GREEN)Fast build without tests...$(NC)"
-	@mvn clean package -DskipTests -Dspotless.check.skip=true -Dspotbugs.skip=true -Dpmd.skip=true
+	@mvn clean package -DskipTests -Dspotless.check.skip=true -Dspotbugs.skip=true -Dpmd.skip=true -Dskip.yarn=true
 
 build-docker: ## Build with Docker Compose profile
 	@echo "$(GREEN)Building for Docker Compose...$(NC)"
@@ -193,3 +193,9 @@ full-dev: ## Full development start (clean build + frontend + debug)
 	@$(MAKE) frontend-setup
 	@$(MAKE) build
 	@$(MAKE) debug
+
+prod: ## Run Spring Boot application in production mode (no CORS)
+	@$(MAKE) db-start
+	@echo "$(GREEN)Starting Spring Boot application in production mode...$(NC)"
+	@echo "$(YELLOW)CORS is disabled for security$(NC)"
+	@export MAVEN_OPTS="$(MAVEN_OPTS)" && mvn spring-boot:run
