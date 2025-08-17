@@ -1,16 +1,15 @@
-import { fetchFromLegacyEndpoint } from '..'
 import { MODULES } from '../constants'
+import { fetchFromLegacyEndpoint } from '..'
 
 import { ACTIONS } from './constants'
-import type { SearchQuery } from './types'
+
+import type { SearchQuery, SearchResponse } from './types'
 
 export async function getCatalographicSearchResults(
-  host: string,
-  query: SearchQuery
-) {
+  query?: SearchQuery
+): Promise<SearchResponse> {
   const result = fetchFromLegacyEndpoint(
-    host,
-    'cataloging.bibliographic',
+    MODULES.CATALOGING_BIBLIOGRAPHIC,
     ACTIONS.SEARCH,
     {
       search_parameters: JSON.stringify({
@@ -26,12 +25,10 @@ export async function getCatalographicSearchResults(
 }
 
 export async function paginateCatalographicSearchResults(
-  host: string,
   search_id: string,
   page: number
-) {
+): Promise<SearchResponse> {
   const result = fetchFromLegacyEndpoint(
-    host,
     MODULES.CATALOGING_BIBLIOGRAPHIC,
     ACTIONS.PAGINATE,
     {
@@ -43,13 +40,12 @@ export async function paginateCatalographicSearchResults(
   return result
 }
 
-export async function openBibliographicRecord(host: string, recordId: number) {
+export async function openBibliographicRecord(recordId: string) {
   return await fetchFromLegacyEndpoint(
-    host,
     MODULES.CATALOGING_BIBLIOGRAPHIC,
     ACTIONS.OPEN,
     {
-      id: String(recordId),
+      id: recordId,
     }
   )
 }

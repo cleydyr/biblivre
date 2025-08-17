@@ -14,3 +14,12 @@ export type AdvancedQuery = SimpleQuery & {
 }
 
 export type SearchQuery = SimpleQuery | AdvancedQuery
+
+// Re-export response types
+export type {
+  BibliographicRecord,
+  IndexingGroup,
+  IndexingGroupCount,
+  MarcField,
+  SearchResponse,
+} from './response-types'
