@@ -56,10 +56,16 @@ export default tseslint.config([
       'import/no-unresolved': 'off',
       'import/no-duplicates': 'error',
 
-      // TypeScript specific rules
+      // Unused variables rules
+      'no-unused-vars': 'off', // Turn off base rule
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+        {
+          argsIgnorePattern: '^_.*$',
+          varsIgnorePattern: '^_.*$',
+          destructuredArrayIgnorePattern: '^_.*$',
+          caughtErrorsIgnorePattern: '^_.*$',
+        },
       ],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
