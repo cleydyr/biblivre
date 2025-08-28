@@ -5,7 +5,7 @@ export async function fetchFromLegacyEndpoint(
   action: string,
   otherParams: Record<string, string> = {}
 ) {
-  const response = await fetch('http://localhost:8090', {
+  const response = await fetch(import.meta.env.VITE_BIBLIVRE_ENDPOINT, {
     method: 'POST',
     headers: {
       'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
