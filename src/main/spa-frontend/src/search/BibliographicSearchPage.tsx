@@ -1,11 +1,12 @@
 import { EuiButton, EuiFlexGroup, EuiSwitch } from '@elastic/eui'
+import { useToggle } from '@uidotdev/usehooks'
 import { Fragment, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
+
 import BibliographicSearchResultsTable from './BibliographicSearchResultsTable'
 import { useSearchCatalographic } from './hooks'
-import { useToggle } from '@uidotdev/usehooks'
 
 import type { BibliographicRecord } from '../api-helpers/search/response-types'
-import { FormattedMessage } from 'react-intl'
 
 const ConnectedBibliographicSearchPage = () => {
   const {
@@ -34,19 +35,19 @@ const ConnectedBibliographicSearchPage = () => {
           }}
         >
           <FormattedMessage
-            id='search.bibliographic.search_all'
             defaultMessage='Listar todos'
+            id='search.bibliographic.search_all'
           />
         </EuiButton>
         <EuiSwitch
           checked={isAdvancedSearch}
-          onChange={() => toggleAdvancedSearch()}
           label={
             <FormattedMessage
-              id='search.bibliographic.advanced_search'
               defaultMessage='Pesquisa avançada'
+              id='search.bibliographic.advanced_search'
             />
           }
+          onChange={() => toggleAdvancedSearch()}
         />
       </EuiFlexGroup>
       {isSuccess && (
