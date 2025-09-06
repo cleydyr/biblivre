@@ -67,20 +67,22 @@ export interface IndexingGroup {
   datafields?: string
 }
 
+type SearchResult = {
+  record_count: number
+  record_limit: number
+  records_per_page: number
+  indexing_group_count: IndexingGroupCount[]
+  data: BibliographicRecord[]
+  page: number
+  time: number
+  id: number
+  page_count: number
+  record_type: string
+}
+
 // Main search response structure
 export interface SuccessfulSearchResponse {
-  search: {
-    record_count: number
-    record_limit: number
-    records_per_page: number
-    indexing_group_count: IndexingGroupCount[]
-    data: BibliographicRecord[]
-    page: number
-    time: number
-    id: number
-    page_count: number
-    record_type: string
-  }
+  search: SearchResult
   indexing_groups: IndexingGroup[]
   success: true
 }
