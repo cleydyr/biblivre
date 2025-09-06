@@ -26,10 +26,6 @@ const ConnectedBibliographicSearchPage = () => {
     return <div>Error</div>
   }
 
-  if (isPending) {
-    return <div>Loading...</div>
-  }
-
   const selection: EuiTableSelectionType<BibliographicRecord> = {
     onSelectionChange: (records: BibliographicRecord[]) => {
       setSelectedRecords(records)
@@ -52,6 +48,7 @@ const ConnectedBibliographicSearchPage = () => {
         items={
           isSuccess && searchResults.success ? searchResults.search.data : []
         }
+        loading={isPending}
         noItemsMessage={
           <FormattedMessage
             defaultMessage='Nenhum resultado encontrado'
