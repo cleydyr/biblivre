@@ -1,3 +1,5 @@
+import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
+import { icon as empty } from '@elastic/eui/es/components/icon/assets/empty'
 import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo_elastic'
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
 import { icon as stopFilled } from '@elastic/eui/es/components/icon/assets/stop_filled'
@@ -13,6 +15,8 @@ const cachedIcons: IconComponentCacheType = {
   logoElasticsearch,
   logoElastic,
   stopFilled,
+  empty,
+  check,
 }
 
 appendIconComponentCache(cachedIcons)
