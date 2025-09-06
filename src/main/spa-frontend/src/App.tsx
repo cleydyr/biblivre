@@ -1,7 +1,7 @@
-import ConnectedBibliographicSearchPage from './search/ConnectedBibliographicSearchPage'
+import BibliographicSearchPage from './search/BibliographicSearchPage'
 
 const App = () => {
-  return <ConnectedBibliographicSearchPage />
+  return <BibliographicSearchPage />
 }
 
 export default App
