@@ -1679,6 +1679,11 @@ es-to-primitive@^1.3.0:
     is-date-object "^1.0.5"
     is-symbol "^1.0.4"
 
+es-toolkit@^1.39.10:
+  version "1.39.10"
+  resolved "https://registry.yarnpkg.com/es-toolkit/-/es-toolkit-1.39.10.tgz#513407af73e79f9940e7ec7650f2e6dceeaf1d81"
+  integrity sha512-E0iGnTtbDhkeczB0T+mxmoVlT4YNweEKBLq7oaU4p11mecdsZpNWOglI4895Vh4usbQ+LsJiuLuI2L0Vdmfm2w==
+
 esbuild@^0.25.0:
   version "0.25.9"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.25.9.tgz#15ab8e39ae6cdc64c24ff8a2c0aef5b3fd9fa976"
