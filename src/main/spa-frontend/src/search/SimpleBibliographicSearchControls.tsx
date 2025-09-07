@@ -1,4 +1,9 @@
-import { EuiButton, EuiFieldSearch, EuiFlexGroup } from '@elastic/eui'
+import {
+  EuiButton,
+  EuiFieldSearch,
+  EuiFlexGroup,
+  EuiFormRow,
+} from '@elastic/eui'
 import { debounce } from 'es-toolkit'
 import { useRef } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -41,22 +46,28 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
           />
         )}
       </EuiButton>
-      <EuiFieldSearch
-        placeholder={formatMessage({
-          defaultMessage: 'Preencha os termos da pesquisa',
-          id: 'search.bibliographic.search_placeholder',
-        })}
-        onChange={debounce((e) => {
-          const searchTerm = e.target.value
+      <EuiFormRow>
+        <EuiFieldSearch
+          aria-label={formatMessage({
+            defaultMessage: 'Termos da pesquisa simples',
+            id: 'search.bibliographic.search_label',
+          })}
+          placeholder={formatMessage({
+            defaultMessage: 'Preencha os termos da pesquisa',
+            id: 'search.bibliographic.search_placeholder',
+          })}
+          onChange={debounce((e) => {
+            const searchTerm = e.target.value
 
-          query.current = searchTerm
-        }, SEARCH_FIELD_DEBOUNCE_MS)}
-        onSearch={(searchTerm) => {
-          onQuerySubmited({
-            query: searchTerm,
-          })
-        }}
-      />
+            query.current = searchTerm
+          }, SEARCH_FIELD_DEBOUNCE_MS)}
+          onSearch={(searchTerm) => {
+            onQuerySubmited({
+              query: searchTerm,
+            })
+          }}
+        />
+      </EuiFormRow>
     </EuiFlexGroup>
   )
 }
