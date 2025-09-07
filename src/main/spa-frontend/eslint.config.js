@@ -99,6 +99,7 @@ export default tseslint.config([
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-template': 'error',
+      'no-else-return': 'warn',
     },
   },
 
