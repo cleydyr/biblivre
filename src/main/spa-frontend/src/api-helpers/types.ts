@@ -1,3 +1,35 @@
 import type { MODULES } from './constants'
+import type { ACTIONS } from './search/constants'
 
 export type LegacyModule = (typeof MODULES)[keyof typeof MODULES]
+
+export type LegacyEndpointPayload =
+  | ParametrizedLegacyEndpointPayload<
+      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
+      typeof ACTIONS.SEARCH,
+      'search_parameters'
+    >
+  | ParametrizedLegacyEndpointPayload<
+      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
+      typeof ACTIONS.PAGINATE,
+      'search_id' | 'page'
+    >
+  | ParametrizedLegacyEndpointPayload<
+      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
+      typeof ACTIONS.OPEN,
+      'id'
+    >
+
+type ParametrizedLegacyEndpointPayload<
+  M extends string,
+  A extends string,
+  P extends string,
+> = { [key in P]: string } & {
+  module: M
+  action: A
+}
+
+export type PaginateSearchParams = {
+  searchId: string
+  page: number
+}
