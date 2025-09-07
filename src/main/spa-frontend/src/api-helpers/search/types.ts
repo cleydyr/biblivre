@@ -1,4 +1,4 @@
-import type { FIELDS, SEARCHABLE_FIELDS } from './constants'
+import type { FIELDS } from './constants'
 
 export type SimpleQuery = {
   query: string
@@ -6,7 +6,7 @@ export type SimpleQuery = {
 
 export type HumanReadableQueryField = keyof typeof FIELDS
 
-export type EncodedQueryField = (typeof SEARCHABLE_FIELDS)[number]
+export type EncodedQueryField = (typeof FIELDS)[keyof typeof FIELDS]
 
 export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
 

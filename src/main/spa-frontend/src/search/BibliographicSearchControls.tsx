@@ -2,6 +2,7 @@ import { EuiFlexGroup, EuiSwitch } from '@elastic/eui'
 import { useToggle } from '@uidotdev/usehooks'
 import { FormattedMessage } from 'react-intl'
 
+import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
 import SimpleBibliographicSearchControls from './SimpleBibliographicSearchControls'
 
 import type { SearchQuery } from '../api-helpers/search/types'
@@ -30,10 +31,17 @@ const BibliographicSearchControls: FC<Props> = ({
         }
         onChange={() => toggleAdvancedSearch()}
       />
-      <SimpleBibliographicSearchControls
-        isLoading={isLoading}
-        onQuerySubmited={onQuerySubmited}
-      />
+      {isAdvancedSearch ? (
+        <AdvancedBibliographicSearchControls
+          isLoading={isLoading}
+          onQuerySubmited={onQuerySubmited}
+        />
+      ) : (
+        <SimpleBibliographicSearchControls
+          isLoading={isLoading}
+          onQuerySubmited={onQuerySubmited}
+        />
+      )}
     </EuiFlexGroup>
   )
 }

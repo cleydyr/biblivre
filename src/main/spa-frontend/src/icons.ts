@@ -8,6 +8,7 @@ import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
 import { icon as search } from '@elastic/eui/es/components/icon/assets/search'
 import { icon as stopFilled } from '@elastic/eui/es/components/icon/assets/stop_filled'
+import { icon as trash } from '@elastic/eui/es/components/icon/assets/trash'
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon'
 
 import type { ICON_TYPES } from '@elastic/eui'
@@ -27,6 +28,7 @@ const cachedIcons: IconComponentCacheType = {
   arrowLeft,
   arrowDown,
   search,
+  trash,
 }
 
 appendIconComponentCache(cachedIcons)
