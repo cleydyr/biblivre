@@ -66,6 +66,13 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
             setListAll(searchTerm === '')
           }, SEARCH_FIELD_DEBOUNCE_MS)}
           onSearch={(searchTerm) => {
+            if (searchTerm === '') {
+              // We don't want the clean button to trigger a search submission
+              setListAll(true)
+
+              return
+            }
+
             onQuerySubmited({
               query: searchTerm,
             })
