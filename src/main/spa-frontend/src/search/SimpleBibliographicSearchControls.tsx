@@ -5,7 +5,7 @@ import {
   EuiFormRow,
 } from '@elastic/eui'
 import { debounce } from 'es-toolkit'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import type { SearchQuery } from '../api-helpers/search/types'
@@ -26,6 +26,8 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
 
   const query = useRef<string>('')
 
+  const [isListAll, setListAll] = useState<boolean>(false)
+
   return (
     <EuiFlexGroup>
       <EuiButton
@@ -34,15 +36,15 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
           onQuerySubmited(getSearchQuery(query))
         }}
       >
-        {query ? (
-          <FormattedMessage
-            defaultMessage='Pesquisar'
-            id='search.bibliographic.search'
-          />
-        ) : (
+        {isListAll ? (
           <FormattedMessage
             defaultMessage='Listar todos'
             id='search.bibliographic.search_all'
+          />
+        ) : (
+          <FormattedMessage
+            defaultMessage='Pesquisar'
+            id='search.bibliographic.search'
           />
         )}
       </EuiButton>
@@ -60,6 +62,8 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
             const searchTerm = e.target.value
 
             query.current = searchTerm
+
+            setListAll(searchTerm === '')
           }, SEARCH_FIELD_DEBOUNCE_MS)}
           onSearch={(searchTerm) => {
             onQuerySubmited({
