@@ -8,6 +8,8 @@ export const FIELDS = {
   ISSN: '6',
   PUBLISHER: '7',
   SERIES: '8',
+  CREATED: 'created',
+  MODIFIED: 'modified',
 } as const
 
 export const SEARCHABLE_FIELDS = [
@@ -20,10 +22,12 @@ export const SEARCHABLE_FIELDS = [
   FIELDS.ISSN,
   FIELDS.PUBLISHER,
   FIELDS.SERIES,
+  FIELDS.CREATED,
+  FIELDS.MODIFIED,
 ] as const
 
 export const ACTIONS = {
   SEARCH: 'search',
   PAGINATE: 'paginate',
   OPEN: 'open',
-}
+} as const
