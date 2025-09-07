@@ -59,6 +59,11 @@ const BibliographicSearchControls: FC<Props> = ({
 
           query.current = searchTerm
         }, SEARCH_FIELD_DEBOUNCE_MS)}
+        onSearch={(searchTerm) => {
+          onQuerySubmited({
+            query: searchTerm,
+          })
+        }}
       />
       <EuiSwitch
         checked={isAdvancedSearch}
