@@ -1,4 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+} from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 
 import {
   getCatalographicSearchResults,
@@ -11,6 +18,7 @@ import type {
   SearchQuery,
   SearchResponse,
 } from '../api-helpers/search/types'
+import type { PaginateSearchParams } from '../api-helpers/types'
 
 // Query keys for cache management
 export const searchQueryKeys = {
@@ -23,46 +31,72 @@ export const searchQueryKeys = {
     [...searchQueryKeys.all, 'record', recordId] as const,
 }
 
-type PaginateSearchParams = {
-  searchId: string
-  page: number
-}
-
 // Hook for performing catalogographic search
-export function useSearchCatalographic() {
-  const queryClient = useQueryClient()
-
-  const mutation = useMutation({
-    mutationFn: (query: SearchQuery | undefined) =>
-      getCatalographicSearchResults(query),
-    onSuccess: (data: SearchResponse, variables: SearchQuery | undefined) => {
-      // Cache the search results
-      queryClient.setQueryData(searchQueryKeys.results(variables), data)
+export function useSearchCatalographic(
+  query?: SearchQuery,
+  options?: Omit<UseQueryOptions<SearchResponse>, 'queryKey'>
+) {
+  return useQuery({
+    queryKey: searchQueryKeys.results(),
+    queryFn: () => {
+      return getCatalographicSearchResults(query)
     },
+    ...options,
   })
-
-  return {
-    ...mutation,
-    mutate: (query?: SearchQuery) => mutation.mutate(query),
-    mutateAsync: (query?: SearchQuery) => mutation.mutateAsync(query),
-  }
 }
 
 // Hook for paginating search results
-export function usePaginateSearchResults() {
-  const queryClient = useQueryClient()
-
-  return useMutation<SearchResponse, unknown, PaginateSearchParams>({
-    mutationFn: ({ searchId, page }: PaginateSearchParams) =>
-      paginateCatalographicSearchResults(searchId, page),
-    onSuccess: (data, variables) => {
-      // Cache the paginated results
-      queryClient.setQueryData(
-        searchQueryKeys.pagination(variables.searchId, variables.page),
-        data
-      )
-    },
+export function usePaginateSearchResults(
+  { searchId, page }: PaginateSearchParams,
+  options?: Omit<UseQueryOptions<SearchResponse>, 'queryKey'>
+) {
+  return useQuery({
+    queryKey: searchQueryKeys.pagination(searchId, page),
+    queryFn: () => paginateCatalographicSearchResults(searchId, page),
+    ...options,
   })
+}
+
+export function usePaginatedSearch(
+  query: SearchQuery | undefined,
+  page: number,
+  options?: Omit<
+    UseQueryOptions<SearchResponse>,
+    'queryKey' | 'queryFn' | 'placeholderData'
+  >
+) {
+  const [searchId, setSearchId] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    setSearchId(undefined)
+  }, [query])
+
+  const initialQuery = useQuery({
+    ...options,
+    queryKey: searchQueryKeys.results(query),
+    queryFn: () => getCatalographicSearchResults(query),
+    enabled: options?.enabled && searchId === undefined,
+  })
+
+  useEffect(() => {
+    if (
+      initialQuery.isSuccess &&
+      initialQuery.data.success &&
+      initialQuery.data.search.page_count > 0
+    ) {
+      setSearchId(String(initialQuery.data.search.id))
+    }
+  }, [initialQuery.isSuccess, initialQuery.data])
+
+  const paginatedSearchQuery = useQuery({
+    ...options,
+    queryKey: searchQueryKeys.pagination(searchId ?? '', page),
+    queryFn: () => paginateCatalographicSearchResults(searchId ?? '', page),
+    enabled: options?.enabled && searchId !== undefined,
+    placeholderData: keepPreviousData,
+  })
+
+  return searchId ? paginatedSearchQuery : initialQuery
 }
 
 // Hook for opening a bibliographic record

@@ -1,19 +1,38 @@
-import type { SEARCHABLE_FIELDS } from './constants'
+import type { FIELDS, SEARCHABLE_FIELDS } from './constants'
 
 export type SimpleQuery = {
   query: string
 }
 
-export type QueryField = (typeof SEARCHABLE_FIELDS)[number]
+export type HumanReadableQueryField = keyof typeof FIELDS
+
+export type EncodedQueryField = (typeof SEARCHABLE_FIELDS)[number]
 
 export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
 
 export type AdvancedQuery = SimpleQuery & {
   operator: QueryOperator
-  field: QueryField
+  field: HumanReadableQueryField
 }
 
-export type SearchQuery = SimpleQuery | AdvancedQuery
+export type EncodedAdvancedQuery = SimpleQuery & {
+  operator: QueryOperator
+  field: EncodedQueryField
+}
+
+export type SearchQuery = SimpleQuery | AdvancedQuery[]
+
+export type SearchMode = 'list_all' | 'simple' | 'advanced'
+
+type SimpleSearchTerms = {
+  search_terms: [SimpleQuery]
+}
+
+type AdvancedSearchTerms = {
+  search_terms: EncodedAdvancedQuery[]
+}
+
+export type SearchTerms = SimpleSearchTerms | AdvancedSearchTerms
 
 // Re-export response types
 export type {

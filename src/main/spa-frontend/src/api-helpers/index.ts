@@ -1,10 +1,10 @@
-import type { LegacyModule } from './types'
+import type { LegacyEndpointPayload } from './types'
 
-export async function fetchFromLegacyEndpoint(
-  module: LegacyModule,
-  action: string,
-  otherParams: Record<string, string> = {}
-) {
+export async function fetchFromLegacyEndpoint({
+  module,
+  action,
+  ...otherParams
+}: LegacyEndpointPayload) {
   const response = await fetch(import.meta.env.VITE_BIBLIVRE_ENDPOINT, {
     method: 'POST',
     headers: {

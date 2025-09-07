@@ -1,59 +1,56 @@
-import { EuiButton, EuiFlexGroup, EuiSwitch } from '@elastic/eui'
-import { useToggle } from '@uidotdev/usehooks'
 import { Fragment, useState } from 'react'
-import { FormattedMessage } from 'react-intl'
 
+import BibliographicSearchControls from './BibliographicSearchControls'
 import BibliographicSearchResultsTable from './BibliographicSearchResultsTable'
-import { useSearchCatalographic } from './hooks'
+import { usePaginatedSearch } from './hooks'
 
-import type { BibliographicRecord } from '../api-helpers/search/response-types'
+import type {
+  BibliographicRecord,
+  SearchResponse,
+} from '../api-helpers/search/response-types'
+import type { SearchQuery } from '../api-helpers/search/types'
+import type { Pagination } from '@elastic/eui'
 
-const ConnectedBibliographicSearchPage = () => {
+const BibliographicSearchPage = () => {
+  const [query, setQuery] = useState<SearchQuery | undefined>()
+
+  const [page, setPage] = useState<number>(0)
+
+  const [isQuerySubmittedOnce, setQuerySubmittedOnce] = useState<boolean>(false)
+
   const {
-    mutate: search,
-    isSuccess,
-    isPending,
-    isError,
     data: searchResults,
-  } = useSearchCatalographic()
+    isSuccess: isSearchSuccess,
+    isError: isSearchError,
+    isFetching: isSearchFetching,
+  } = usePaginatedSearch(query, page, {
+    enabled: isQuerySubmittedOnce,
+  })
 
   const [_, setSelectedRecords] = useState<BibliographicRecord[]>([])
 
-  const [isAdvancedSearch, toggleAdvancedSearch] = useToggle(false)
-
-  if (isError) {
+  if (isSearchError) {
     return <div>Error</div>
   }
 
   return (
     <Fragment>
-      <EuiFlexGroup>
-        <EuiButton
-          isLoading={isPending}
-          onClick={() => {
-            search()
-          }}
-        >
-          <FormattedMessage
-            defaultMessage='Listar todos'
-            id='search.bibliographic.search_all'
-          />
-        </EuiButton>
-        <EuiSwitch
-          checked={isAdvancedSearch}
-          label={
-            <FormattedMessage
-              defaultMessage='Pesquisa avançada'
-              id='search.bibliographic.advanced_search'
-            />
-          }
-          onChange={() => toggleAdvancedSearch()}
-        />
-      </EuiFlexGroup>
-      {isSuccess && (
+      <BibliographicSearchControls
+        isLoading={isSearchFetching}
+        onQuerySubmited={(query) => {
+          setQuery(query)
+          setPage(0)
+          setQuerySubmittedOnce(true)
+        }}
+      />
+      {isSearchSuccess && (
         <BibliographicSearchResultsTable
-          isPending={isPending}
+          isLoading={isSearchFetching}
           items={searchResults.success ? searchResults.search.data : []}
+          pagination={getPagination(searchResults, page)}
+          onChange={(criteria) => {
+            setPage(criteria.page?.index ?? 0)
+          }}
           onSelectItems={setSelectedRecords}
         />
       )}
@@ -61,4 +58,20 @@ const ConnectedBibliographicSearchPage = () => {
   )
 }
 
-export default ConnectedBibliographicSearchPage
+function getPagination(
+  searchResults: SearchResponse,
+  page: number
+): Pagination | undefined {
+  if (searchResults.success) {
+    return {
+      pageIndex: page,
+      totalItemCount: searchResults.search.record_count,
+      pageSize: searchResults.search.records_per_page,
+      showPerPageOptions: false,
+    }
+  }
+
+  return undefined
+}
+
+export default BibliographicSearchPage

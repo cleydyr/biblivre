@@ -2,19 +2,28 @@ import { EuiBasicTable } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 
 import type { BibliographicRecord } from '../api-helpers/search/response-types'
-import type { EuiBasicTableColumn, EuiTableSelectionType } from '@elastic/eui'
+import type {
+  Criteria,
+  EuiBasicTableColumn,
+  EuiTableSelectionType,
+  Pagination,
+} from '@elastic/eui'
 import type { FC } from 'react'
 
 type Props = {
   items: BibliographicRecord[]
-  isPending: boolean
+  isLoading: boolean
   onSelectItems: (items: BibliographicRecord[]) => void
+  pagination: Pagination | undefined
+  onChange: (criteria: Criteria<BibliographicRecord>) => void
 }
 
 export const BibliographicSearchResultsTable: FC<Props> = ({
   items,
-  isPending,
+  isLoading,
   onSelectItems,
+  pagination,
+  onChange,
 }) => {
   const selection: EuiTableSelectionType<BibliographicRecord> = {
     onSelectionChange: onSelectItems,
@@ -25,14 +34,16 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
       columns={getBibliographicSearchColumns()}
       itemId='id'
       items={items}
-      loading={isPending}
+      loading={isLoading}
       noItemsMessage={
         <FormattedMessage
           defaultMessage='Nenhum resultado encontrado'
           id='search.bibliographic.no_results'
         />
       }
+      pagination={pagination}
       selection={selection}
+      onChange={onChange}
     />
   )
 }
