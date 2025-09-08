@@ -7,7 +7,7 @@ import { FIELDS } from '../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
 
-import type { AdvancedQuery } from '../api-helpers/search/types'
+import type { AdvancedQueryTerm } from '../api-helpers/search/types'
 
 // Mock the field component to simplify testing
 // vi.mock('./AdvancedBibliographicSearchControlsField', () => ({
@@ -50,7 +50,7 @@ import type { AdvancedQuery } from '../api-helpers/search/types'
 // }))
 
 const renderComponent = (props: {
-  onQuerySubmited?: (query: AdvancedQuery[]) => void
+  onQuerySubmited?: (query: AdvancedQueryTerm[]) => void
   isLoading?: boolean
 }) => {
   const defaultProps = {

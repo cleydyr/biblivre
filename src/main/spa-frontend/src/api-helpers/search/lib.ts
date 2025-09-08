@@ -1,33 +1,45 @@
 import type {
-  AdvancedQuery,
+  AdvancedQueryTerm,
   SearchMode,
-  SearchQuery,
-  SearchTerms,
+  SearchQueryTerms,
+  SimpleQueryTerm,
 } from './types'
 
-export function isAdvancedQuery(query: SearchQuery): query is AdvancedQuery[] {
-  return Array.isArray(query)
+type SimpleSearchTerms = {
+  search_terms: [SimpleQueryTerm]
+}
+
+type AdvancedSearchTerms = {
+  search_terms: AdvancedQueryTerm[]
+}
+
+type SearchTerms = SimpleSearchTerms | AdvancedSearchTerms
+
+export function isAdvancedQuery(
+  terms: SearchQueryTerms
+): terms is AdvancedQueryTerm[] {
+  return Array.isArray(terms)
 }
 
 export function getSearchTerms(
-  query: SearchQuery | undefined
+  terms: SearchQueryTerms | undefined
 ): SearchTerms | undefined {
-  if (query === undefined) {
+  if (terms === undefined) {
     return undefined
   }
 
-  if (isAdvancedQuery(query)) {
+  if (isAdvancedQuery(terms)) {
     return {
-      search_terms: query,
+      search_terms: terms,
     }
   }
 
   return {
-    search_terms: [query],
+    search_terms: [terms],
   }
 }
 
-export function getSearchMode(query: SearchQuery | undefined): SearchMode {
+export function getSearchMode(query: SearchQueryTerms | undefined): SearchMode {
   if (query === undefined) {
     return 'list_all'
   }

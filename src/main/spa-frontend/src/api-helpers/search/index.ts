@@ -4,10 +4,10 @@ import { fetchFromLegacyEndpoint } from '..'
 import { ACTIONS, FIELDS } from './constants'
 import { getSearchMode, getSearchTerms } from './lib'
 
-import type { SearchQuery, SearchResponse } from './types'
+import type { SearchQueryTerms, SearchResponse } from './types'
 
 export async function getCatalographicSearchResults(
-  queries?: SearchQuery
+  terms?: SearchQueryTerms
 ): Promise<SearchResponse> {
   return fetchFromLegacyEndpoint({
     module: MODULES.CATALOGING_BIBLIOGRAPHIC,
@@ -15,8 +15,8 @@ export async function getCatalographicSearchResults(
     search_parameters: JSON.stringify({
       database: 'main',
       material_type: 'all',
-      search_mode: getSearchMode(queries),
-      ...getSearchTerms(queries),
+      search_mode: getSearchMode(terms),
+      ...getSearchTerms(terms),
     }),
   })
 }

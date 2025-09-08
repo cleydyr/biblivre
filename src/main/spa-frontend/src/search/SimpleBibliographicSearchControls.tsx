@@ -9,10 +9,10 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import type { FC, RefObject } from 'react'
 
-import type { SearchQuery } from '../api-helpers/search/types'
+import type { SearchQueryTerms } from '../api-helpers/search/types'
 
 type Props = {
-  onQuerySubmited: (query?: SearchQuery) => void
+  onQuerySubmited: (terms?: SearchQueryTerms) => void
   isLoading: boolean
 }
 
@@ -81,7 +81,9 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
   )
 }
 
-function getSearchQuery(query: RefObject<string>): SearchQuery | undefined {
+function getSearchQuery(
+  query: RefObject<string>
+): SearchQueryTerms | undefined {
   if (query.current === '') {
     return undefined
   }

@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import SimpleBibliographicSearchControls from './SimpleBibliographicSearchControls'
 
-import type { SearchQuery } from '../api-helpers/search/types'
+import type { SearchQueryTerms } from '../api-helpers/search/types'
 
 const mockMessages = {
   'search.bibliographic.search_all': 'Listar todos',
@@ -15,7 +15,7 @@ const mockMessages = {
 }
 
 const renderComponent = (props: {
-  onQuerySubmited?: (query?: SearchQuery) => void
+  onQuerySubmited?: (terms?: SearchQueryTerms) => void
   isLoading?: boolean
 }) => {
   const defaultProps = {

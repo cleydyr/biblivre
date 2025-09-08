@@ -11,10 +11,10 @@ import AdvancedBibliographicSearchControlsField, {
 
 import type { FC } from 'react'
 
-import type { AdvancedQuery } from '../api-helpers/search/types'
+import type { AdvancedQueryTerm } from '../api-helpers/search/types'
 
 type Props = {
-  onQuerySubmited: (query: AdvancedQuery[]) => void
+  onQuerySubmited: (terms: AdvancedQueryTerm[]) => void
   isLoading: boolean
 }
 

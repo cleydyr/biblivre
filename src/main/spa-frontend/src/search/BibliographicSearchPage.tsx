@@ -11,10 +11,10 @@ import type {
   BibliographicRecord,
   SearchResponse,
 } from '../api-helpers/search/response-types'
-import type { SearchQuery } from '../api-helpers/search/types'
+import type { SearchQueryTerms } from '../api-helpers/search/types'
 
 const BibliographicSearchPage = () => {
-  const [query, setQuery] = useState<SearchQuery | undefined>()
+  const [terms, setTerms] = useState<SearchQueryTerms | undefined>()
 
   const [page, setPage] = useState<number>(0)
 
@@ -27,7 +27,7 @@ const BibliographicSearchPage = () => {
     isSuccess: isSearchSuccess,
     isError: isSearchError,
     isFetching: isSearchFetching,
-  } = usePaginatedSearch(query, page, sort, {
+  } = usePaginatedSearch(terms, page, sort, {
     enabled: isQuerySubmittedOnce,
   })
 
@@ -42,7 +42,7 @@ const BibliographicSearchPage = () => {
       <BibliographicSearchControls
         isLoading={isSearchFetching}
         onQuerySubmited={(query) => {
-          setQuery(query)
+          setTerms(query)
           setPage(0)
           setQuerySubmittedOnce(true)
         }}

@@ -15,12 +15,12 @@ import type { ChangeEvent, ComponentProps, EventHandler, FC } from 'react'
 import type { Omit } from 'utility-types'
 
 import type {
-  AdvancedQuery,
+  AdvancedQueryTerm,
   EncodedQueryField,
   QueryOperator,
 } from '../api-helpers/search/types'
 
-export type AdvancedQueryFieldState = AdvancedQuery & {
+export type AdvancedQueryFieldState = AdvancedQueryTerm & {
   termFieldId: string
 }
 

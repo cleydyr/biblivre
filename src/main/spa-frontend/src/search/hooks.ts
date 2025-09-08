@@ -15,7 +15,7 @@ import {
 
 import type {
   BibliographicRecord,
-  SearchQuery,
+  SearchQueryTerms,
   SearchResponse,
 } from '../api-helpers/search/types'
 import type { PaginateSearchParams } from '../api-helpers/types'
@@ -23,8 +23,8 @@ import type { PaginateSearchParams } from '../api-helpers/types'
 // Query keys for cache management
 export const searchQueryKeys = {
   all: ['search'] as const,
-  results: (query?: SearchQuery) =>
-    [...searchQueryKeys.all, 'results', query] as const,
+  results: (terms?: SearchQueryTerms) =>
+    [...searchQueryKeys.all, 'results', terms] as const,
   pagination: (searchId: string, page: number, sort?: number) =>
     [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
   record: (recordId: string) =>
@@ -33,7 +33,7 @@ export const searchQueryKeys = {
 
 // Hook for performing catalogographic search
 export function useSearchCatalographic(
-  query?: SearchQuery,
+  query?: SearchQueryTerms,
   options?: Omit<UseQueryOptions<SearchResponse>, 'queryKey'>
 ) {
   return useQuery({
@@ -58,7 +58,7 @@ export function usePaginateSearchResults(
 }
 
 export function usePaginatedSearch(
-  query: SearchQuery | undefined,
+  terms: SearchQueryTerms | undefined,
   page: number,
   sort?: number,
   options?: Omit<
@@ -70,12 +70,12 @@ export function usePaginatedSearch(
 
   useEffect(() => {
     setSearchId(undefined)
-  }, [query])
+  }, [terms])
 
   const initialQuery = useQuery({
     ...options,
-    queryKey: searchQueryKeys.results(query),
-    queryFn: () => getCatalographicSearchResults(query),
+    queryKey: searchQueryKeys.results(terms),
+    queryFn: () => getCatalographicSearchResults(terms),
     enabled: options?.enabled && searchId === undefined,
   })
 

@@ -7,10 +7,10 @@ import SimpleBibliographicSearchControls from './SimpleBibliographicSearchContro
 
 import type { FC } from 'react'
 
-import type { SearchQuery } from '../api-helpers/search/types'
+import type { SearchQueryTerms } from '../api-helpers/search/types'
 
 type Props = {
-  onQuerySubmited: (query?: SearchQuery) => void
+  onQuerySubmited: (terms?: SearchQueryTerms) => void
   isLoading: boolean
 }
 
