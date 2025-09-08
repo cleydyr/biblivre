@@ -5,18 +5,20 @@ import {
   EuiFlexItem,
   EuiFormRow,
   EuiSelect,
-  type EuiSelectOption,
 } from '@elastic/eui'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { FIELDS } from '../api-helpers/search/constants'
 
+import type { EuiSelectOption } from '@elastic/eui'
+import type { ChangeEvent, ComponentProps, EventHandler, FC } from 'react'
+import type { Omit } from 'utility-types'
+
 import type {
   AdvancedQuery,
-  HumanReadableQueryField,
+  EncodedQueryField,
   QueryOperator,
 } from '../api-helpers/search/types'
-import type { FC } from 'react'
 
 export type AdvancedQueryFieldState = AdvancedQuery & {
   termFieldId: string
@@ -35,6 +37,8 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
   onRemove,
   order,
 }) => {
+  const { formatMessage } = useIntl()
+
   const afterFirst = order > 0
 
   const fieldOptions = useFieldOptions()
@@ -51,13 +55,13 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
               />
             }
           >
-            <EuiSelect
+            <TypedEuiSelect<QueryOperator>
               options={operatorOptions}
               value={query.operator}
               onChange={(e) =>
                 onChange({
                   ...query,
-                  operator: e.target.value as QueryOperator,
+                  operator: e.target.value,
                 })
               }
             />
@@ -73,13 +77,13 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
             />
           }
         >
-          <EuiSelect
+          <TypedEuiSelect<EncodedQueryField>
             options={fieldOptions}
             value={query.field}
             onChange={(e) =>
               onChange({
                 ...query,
-                field: e.target.value as HumanReadableQueryField,
+                field: e.target.value as EncodedQueryField,
               })
             }
           />
@@ -111,7 +115,10 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
       {afterFirst && (
         <EuiFlexItem grow={false}>
           <EuiButtonIcon
-            aria-label='Remove search field'
+            aria-label={formatMessage({
+              defaultMessage: 'Remover termo',
+              id: 'search.bibliographic.remove_field',
+            })}
             color='danger'
             iconType='trash'
             onClick={onRemove}
@@ -122,7 +129,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
   )
 }
 
-function useFieldOptions(): EuiSelectOption[] {
+function useFieldOptions(): TypedEuiSelectOption<EncodedQueryField>[] {
   return [
     {
       value: FIELDS.ANY,
@@ -200,7 +207,26 @@ function useFieldOptions(): EuiSelectOption[] {
   ]
 }
 
-const operatorOptions: EuiSelectOption[] = [
+type TypedEuiSelectOption<T extends string> = Omit<EuiSelectOption, 'value'> & {
+  value: T
+}
+
+function TypedEuiSelect<T extends string>(
+  props: Omit<
+    ComponentProps<typeof EuiSelect>,
+    'value' | 'options' | 'onChange'
+  > & {
+    value: T
+    options: TypedEuiSelectOption<T>[]
+    onChange: EventHandler<
+      ChangeEvent<Omit<HTMLSelectElement, 'value'> & { value: T }>
+    >
+  }
+) {
+  return <EuiSelect {...props} />
+}
+
+const operatorOptions: TypedEuiSelectOption<QueryOperator>[] = [
   {
     value: 'AND',
     text: (

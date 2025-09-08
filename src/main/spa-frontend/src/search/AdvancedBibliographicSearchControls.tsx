@@ -3,12 +3,15 @@ import { omit } from 'es-toolkit'
 import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
+import { FIELDS } from '../api-helpers/search/constants'
+
 import AdvancedBibliographicSearchControlsField, {
   type AdvancedQueryFieldState,
 } from './AdvancedBibliographicSearchControlsField'
 
-import type { AdvancedQuery } from '../api-helpers/search/types'
 import type { FC } from 'react'
+
+import type { AdvancedQuery } from '../api-helpers/search/types'
 
 type Props = {
   onQuerySubmited: (query: AdvancedQuery[]) => void
@@ -24,7 +27,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
       termFieldId: crypto.randomUUID(),
       query: '',
       operator: 'AND',
-      field: 'ANY',
+      field: FIELDS.ANY,
     },
   ])
 
@@ -35,7 +38,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
         termFieldId: crypto.randomUUID(),
         query: '',
         operator: 'AND',
-        field: 'ANY',
+        field: FIELDS.ANY,
       },
     ])
   }

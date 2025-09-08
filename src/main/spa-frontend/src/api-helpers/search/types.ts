@@ -4,15 +4,13 @@ export type SimpleQuery = {
   query: string
 }
 
-export type HumanReadableQueryField = keyof typeof FIELDS
-
 export type EncodedQueryField = (typeof FIELDS)[keyof typeof FIELDS]
 
 export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
 
 export type AdvancedQuery = SimpleQuery & {
   operator: QueryOperator
-  field: HumanReadableQueryField
+  field: EncodedQueryField
 }
 
 export type EncodedAdvancedQuery = SimpleQuery & {
