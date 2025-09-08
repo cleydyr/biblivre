@@ -163,6 +163,102 @@ export default tseslint.config([
     },
   },
 
+  // Test files configuration
+  {
+    files: ['**/*.{test,spec}.{js,jsx,ts,tsx}', '**/test/**/*.{js,jsx,ts,tsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.es2022,
+        // Vitest globals
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        vi: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+      },
+    },
+    rules: {
+      // Prevent skipped and exclusive tests from being committed
+      // These rules help ensure all tests run in CI/CD and prevent accidental test exclusions
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'describe',
+          property: 'skip',
+          message:
+            'Skipped test suites should not be committed. Use describe() instead of describe.skip().',
+        },
+        {
+          object: 'it',
+          property: 'skip',
+          message:
+            'Skipped tests should not be committed. Use it() instead of it.skip().',
+        },
+        {
+          object: 'test',
+          property: 'skip',
+          message:
+            'Skipped tests should not be committed. Use test() instead of test.skip().',
+        },
+        {
+          object: 'describe',
+          property: 'only',
+          message:
+            'Exclusive test suites should not be committed. Use describe() instead of describe.only().',
+        },
+        {
+          object: 'it',
+          property: 'only',
+          message:
+            'Exclusive tests should not be committed. Use it() instead of it.only().',
+        },
+        {
+          object: 'test',
+          property: 'only',
+          message:
+            'Exclusive tests should not be committed. Use test() instead of test.only().',
+        },
+      ],
+      'no-restricted-globals': [
+        'error',
+        {
+          name: 'fdescribe',
+          message:
+            'Exclusive test suites should not be committed. Use describe() instead of fdescribe().',
+        },
+        {
+          name: 'fit',
+          message:
+            'Exclusive tests should not be committed. Use it() instead of fit().',
+        },
+        {
+          name: 'xdescribe',
+          message:
+            'Skipped test suites should not be committed. Use describe() instead of xdescribe().',
+        },
+        {
+          name: 'xit',
+          message:
+            'Skipped tests should not be committed. Use it() instead of xit().',
+        },
+        {
+          name: 'xtest',
+          message:
+            'Skipped tests should not be committed. Use test() instead of xtest().',
+        },
+      ],
+      // Allow console.log in tests for debugging
+      'no-console': 'off',
+      // Allow any type in tests for mocking
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+
   // Configuration files
   {
     files: ['**/*.config.{js,ts}', 'vite.config.ts', 'eslint.config.js'],
