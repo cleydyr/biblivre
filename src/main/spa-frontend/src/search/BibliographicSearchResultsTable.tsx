@@ -44,6 +44,7 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
       }
       pagination={pagination}
       selection={selection}
+      tableLayout='auto'
       onChange={onChange}
     />
   )
