@@ -16,6 +16,11 @@ export type LegacyEndpointPayload =
     >
   | ParametrizedLegacyEndpointPayload<
       typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
+      typeof ACTIONS.PAGINATE,
+      'search_id' | 'page' | 'sort'
+    >
+  | ParametrizedLegacyEndpointPayload<
+      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
       typeof ACTIONS.OPEN,
       'id'
     >

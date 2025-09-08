@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 
 import BibliographicSearchControls from './BibliographicSearchControls'
+import BibliographicSearchResultSort from './BibliographicSearchResultSort'
 import BibliographicSearchResultsTable from './BibliographicSearchResultsTable'
 import { usePaginatedSearch } from './hooks'
 
@@ -17,6 +18,8 @@ const BibliographicSearchPage = () => {
 
   const [page, setPage] = useState<number>(0)
 
+  const [sort, setSort] = useState<number | undefined>(undefined)
+
   const [isQuerySubmittedOnce, setQuerySubmittedOnce] = useState<boolean>(false)
 
   const {
@@ -24,7 +27,7 @@ const BibliographicSearchPage = () => {
     isSuccess: isSearchSuccess,
     isError: isSearchError,
     isFetching: isSearchFetching,
-  } = usePaginatedSearch(query, page, {
+  } = usePaginatedSearch(query, page, sort, {
     enabled: isQuerySubmittedOnce,
   })
 
@@ -45,15 +48,23 @@ const BibliographicSearchPage = () => {
         }}
       />
       {isSearchSuccess && (
-        <BibliographicSearchResultsTable
-          isLoading={isSearchFetching}
-          items={searchResults.success ? searchResults.search.data : []}
-          pagination={getPagination(searchResults, page)}
-          onChange={(criteria) => {
-            setPage(criteria.page?.index ?? 0)
-          }}
-          onSelectItems={setSelectedRecords}
-        />
+        <Fragment>
+          <BibliographicSearchResultSort
+            onSortChange={(sort: number) => {
+              setSort(sort)
+              setPage(0)
+            }}
+          />
+          <BibliographicSearchResultsTable
+            isLoading={isSearchFetching}
+            items={searchResults.success ? searchResults.search.data : []}
+            pagination={getPagination(searchResults, page)}
+            onChange={(criteria) => {
+              setPage(criteria.page?.index ?? 0)
+            }}
+            onSelectItems={setSelectedRecords}
+          />
+        </Fragment>
       )}
     </Fragment>
   )

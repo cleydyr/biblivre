@@ -25,8 +25,8 @@ export const searchQueryKeys = {
   all: ['search'] as const,
   results: (query?: SearchQuery) =>
     [...searchQueryKeys.all, 'results', query] as const,
-  pagination: (searchId: string, page: number) =>
-    [...searchQueryKeys.all, 'pagination', searchId, page] as const,
+  pagination: (searchId: string, page: number, sort?: number) =>
+    [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
   record: (recordId: string) =>
     [...searchQueryKeys.all, 'record', recordId] as const,
 }
@@ -60,6 +60,7 @@ export function usePaginateSearchResults(
 export function usePaginatedSearch(
   query: SearchQuery | undefined,
   page: number,
+  sort?: number,
   options?: Omit<
     UseQueryOptions<SearchResponse>,
     'queryKey' | 'queryFn' | 'placeholderData'
@@ -90,8 +91,9 @@ export function usePaginatedSearch(
 
   const paginatedSearchQuery = useQuery({
     ...options,
-    queryKey: searchQueryKeys.pagination(searchId ?? '', page),
-    queryFn: () => paginateCatalographicSearchResults(searchId ?? '', page),
+    queryKey: searchQueryKeys.pagination(searchId ?? '', page, sort),
+    queryFn: () =>
+      paginateCatalographicSearchResults(searchId ?? '', page, sort),
     enabled: options?.enabled && searchId !== undefined,
     placeholderData: keepPreviousData,
   })
