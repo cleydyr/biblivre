@@ -13,11 +13,6 @@ export type AdvancedQuery = SimpleQuery & {
   field: EncodedQueryField
 }
 
-export type EncodedAdvancedQuery = SimpleQuery & {
-  operator: QueryOperator
-  field: EncodedQueryField
-}
-
 export type SearchQuery = SimpleQuery | AdvancedQuery[]
 
 export type SearchMode = 'list_all' | 'simple' | 'advanced'
@@ -27,7 +22,7 @@ type SimpleSearchTerms = {
 }
 
 type AdvancedSearchTerms = {
-  search_terms: EncodedAdvancedQuery[]
+  search_terms: AdvancedQuery[]
 }
 
 export type SearchTerms = SimpleSearchTerms | AdvancedSearchTerms
