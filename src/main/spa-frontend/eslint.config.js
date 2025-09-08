@@ -45,7 +45,7 @@ export default tseslint.config([
             ['^\\u0000'],
             // Node.js builtins prefixed with `node:`
             ['^node:'],
-            // Packages - things that start with a letter (or digit or underscore), or `@` followed by a letter
+            // External packages - things that start with a letter (or digit or underscore), or `@` followed by a letter
             ['^@?\\w'],
             // Internal packages - adjust this pattern to match your internal packages
             ['^(@|components|utils|hooks|types|constants|api|lib)(/.*|$)'],
@@ -55,8 +55,16 @@ export default tseslint.config([
             ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
             // Style imports
             ['^.+\\.s?css$'],
-            // Type imports - separate from regular imports
-            ['^.*\\u0000$'],
+            // Type-only imports from external packages
+            ['^@?\\w.*\\u0000$'],
+            // Type-only imports from internal packages
+            [
+              '^(@|components|utils|hooks|types|constants|api|lib)(/.*|$).*\\u0000$',
+            ],
+            // Type-only imports from parent directories
+            ['^\\.\\..*\\u0000$'],
+            // Type-only imports from current directory
+            ['^\\./.*\\u0000$'],
           ],
         },
       ],
