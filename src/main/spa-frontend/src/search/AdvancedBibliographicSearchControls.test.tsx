@@ -238,6 +238,20 @@ describe('AdvancedBibliographicSearchControls', () => {
     expect(remainingQueryInputs[0]).toHaveValue('persistent query')
     expect(remainingQueryInputs).toHaveLength(2)
   })
+
+  it('sends an undefined query by default', async () => {
+    const user = userEvent.setup()
+
+    const onQuerySubmited = vi.fn()
+
+    renderComponent({ onQuerySubmited })
+
+    // Submit the search
+    const searchButton = screen.getByRole('button', { name: /pesquisar/i })
+    await user.click(searchButton)
+
+    expect(onQuerySubmited).toHaveBeenCalledWith(undefined)
+  })
 })
 
 async function addQueryTermField(quantity = 1) {
