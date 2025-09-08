@@ -4,7 +4,6 @@ import {
   EuiFlexGroup,
   EuiFormRow,
 } from '@elastic/eui'
-import { debounce } from 'es-toolkit'
 import { useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -17,8 +16,6 @@ type Props = {
   isLoading: boolean
 }
 
-const SEARCH_FIELD_DEBOUNCE_MS = 500
-
 const SimpleBibliographicSearchControls: FC<Props> = ({
   onQuerySubmited,
   isLoading,
@@ -27,7 +24,7 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
 
   const query = useRef<string>('')
 
-  const [isListAll, setListAll] = useState<boolean>(false)
+  const [isListAll, setListAll] = useState<boolean>(true)
 
   return (
     <EuiFlexGroup>
@@ -59,13 +56,13 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
             defaultMessage: 'Preencha os termos da pesquisa',
             id: 'search.bibliographic.search_placeholder',
           })}
-          onChange={debounce((e) => {
+          onChange={(e) => {
             const searchTerm = e.target.value
 
             query.current = searchTerm
 
             setListAll(searchTerm === '')
-          }, SEARCH_FIELD_DEBOUNCE_MS)}
+          }}
           onSearch={(searchTerm) => {
             if (searchTerm === '') {
               // We don't want the clean button to trigger a search submission
