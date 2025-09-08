@@ -1,8 +1,5 @@
-import { FIELDS } from './constants'
-
 import type {
   AdvancedQuery,
-  EncodedAdvancedQuery,
   SearchMode,
   SearchQuery,
   SearchTerms,
@@ -10,13 +7,6 @@ import type {
 
 export function isAdvancedQuery(query: SearchQuery): query is AdvancedQuery[] {
   return Array.isArray(query)
-}
-
-export function adaptAdvancedQuery(query: AdvancedQuery): EncodedAdvancedQuery {
-  return {
-    ...query,
-    field: FIELDS[query.field],
-  }
 }
 
 export function getSearchTerms(
@@ -28,7 +18,7 @@ export function getSearchTerms(
 
   if (isAdvancedQuery(query)) {
     return {
-      search_terms: query.map(adaptAdvancedQuery),
+      search_terms: query,
     }
   }
 
