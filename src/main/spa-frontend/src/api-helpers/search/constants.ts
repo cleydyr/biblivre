@@ -12,20 +12,6 @@ export const FIELDS = {
   MODIFIED: 'modified',
 } as const
 
-export const SEARCHABLE_FIELDS = [
-  FIELDS.ANY,
-  FIELDS.AUTHOR,
-  FIELDS.YEAR,
-  FIELDS.TITLE,
-  FIELDS.SUBJECT,
-  FIELDS.ISBN,
-  FIELDS.ISSN,
-  FIELDS.PUBLISHER,
-  FIELDS.SERIES,
-  FIELDS.CREATED,
-  FIELDS.MODIFIED,
-] as const
-
 export const ACTIONS = {
   SEARCH: 'search',
   PAGINATE: 'paginate',
