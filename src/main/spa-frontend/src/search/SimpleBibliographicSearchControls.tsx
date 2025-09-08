@@ -8,8 +8,9 @@ import { debounce } from 'es-toolkit'
 import { useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import type { SearchQuery } from '../api-helpers/search/types'
 import type { FC, RefObject } from 'react'
+
+import type { SearchQuery } from '../api-helpers/search/types'
 
 type Props = {
   onQuerySubmited: (query?: SearchQuery) => void

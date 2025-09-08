@@ -5,8 +5,9 @@ import { FormattedMessage } from 'react-intl'
 import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
 import SimpleBibliographicSearchControls from './SimpleBibliographicSearchControls'
 
-import type { SearchQuery } from '../api-helpers/search/types'
 import type { FC } from 'react'
+
+import type { SearchQuery } from '../api-helpers/search/types'
 
 type Props = {
   onQuerySubmited: (query?: SearchQuery) => void

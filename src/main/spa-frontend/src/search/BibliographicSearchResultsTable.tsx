@@ -1,7 +1,6 @@
 import { EuiBasicTable } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 
-import type { BibliographicRecord } from '../api-helpers/search/response-types'
 import type {
   Criteria,
   EuiBasicTableColumn,
@@ -9,6 +8,8 @@ import type {
   Pagination,
 } from '@elastic/eui'
 import type { FC } from 'react'
+
+import type { BibliographicRecord } from '../api-helpers/search/response-types'
 
 type Props = {
   items: BibliographicRecord[]

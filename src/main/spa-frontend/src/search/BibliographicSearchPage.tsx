@@ -4,12 +4,13 @@ import BibliographicSearchControls from './BibliographicSearchControls'
 import BibliographicSearchResultsTable from './BibliographicSearchResultsTable'
 import { usePaginatedSearch } from './hooks'
 
+import type { Pagination } from '@elastic/eui'
+
 import type {
   BibliographicRecord,
   SearchResponse,
 } from '../api-helpers/search/response-types'
 import type { SearchQuery } from '../api-helpers/search/types'
-import type { Pagination } from '@elastic/eui'
 
 const BibliographicSearchPage = () => {
   const [query, setQuery] = useState<SearchQuery | undefined>()
