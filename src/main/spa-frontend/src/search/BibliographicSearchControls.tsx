@@ -1,6 +1,7 @@
 import { EuiFlexGroup, EuiSwitch } from '@elastic/eui'
-import { useToggle } from '@uidotdev/usehooks'
 import { FormattedMessage } from 'react-intl'
+
+import useToggle from '../hooks/useToggle'
 
 import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
 import SimpleBibliographicSearchControls from './SimpleBibliographicSearchControls'
