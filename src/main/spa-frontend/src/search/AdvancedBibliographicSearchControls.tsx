@@ -21,7 +21,7 @@ const DUMMY_ADVANCED_QUERY_TERM: AdvancedQueryTerm = {
   field: FIELDS.ANY,
   operator: 'AND',
   query: '',
-}
+} as const
 
 const AdvancedBibliographicSearchControls: FC<Props> = ({
   onQuerySubmited,
