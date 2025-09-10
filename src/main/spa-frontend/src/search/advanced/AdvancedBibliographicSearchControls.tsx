@@ -5,7 +5,7 @@ import { FIELDS } from '../../api-helpers/search/constants'
 import useMap from '../../hooks/useMap'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
-import { hasValidQuery } from './lib'
+import { getValidQueries } from './lib'
 
 import type { FC } from 'react'
 
@@ -67,13 +67,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
               fill
               isLoading={isLoading}
               onClick={() => {
-                const validQueryTerms = [...termFieldsMap.entries()]
-                  .filter(hasValidQuery)
-                  .map(([, term]) => term)
-
-                onQuerySubmited(
-                  validQueryTerms.length > 0 ? validQueryTerms : undefined
-                )
+                onQuerySubmited(getValidQueries(termFieldsMap))
               }}
             >
               <FormattedMessage

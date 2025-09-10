@@ -7,12 +7,12 @@ import {
 import { useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import type { FC, RefObject } from 'react'
+import type { FC } from 'react'
 
-import type { SearchQueryTerms } from '../../api-helpers/search/types'
+import type { SimpleQueryTerm } from '../../api-helpers/search/types'
 
 type Props = {
-  onQuerySubmited: (terms?: SearchQueryTerms) => void
+  onQuerySubmited: (terms?: SimpleQueryTerm) => void
   isLoading: boolean
 }
 
@@ -31,7 +31,7 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
       <EuiButton
         isLoading={isLoading}
         onClick={() => {
-          onQuerySubmited(getSearchQuery(query))
+          onQuerySubmited(getSearchQuery(query.current))
         }}
       >
         {isListAll ? (
@@ -81,15 +81,13 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
   )
 }
 
-function getSearchQuery(
-  query: RefObject<string>
-): SearchQueryTerms | undefined {
-  if (query.current === '') {
+function getSearchQuery(query: string): SimpleQueryTerm | undefined {
+  if (query === '') {
     return undefined
   }
 
   return {
-    query: query.current,
+    query,
   }
 }
 

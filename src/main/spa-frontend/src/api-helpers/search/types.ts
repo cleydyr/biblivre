@@ -1,14 +1,16 @@
 import type { FIELDS } from './constants'
 
-export type SimpleQueryTerm = {
+export type BaseQueryTerm = {
   query: string
 }
+
+export type SimpleQueryTerm = BaseQueryTerm
 
 export type EncodedQueryField = (typeof FIELDS)[keyof typeof FIELDS]
 
 export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
 
-export type AdvancedQueryTerm = SimpleQueryTerm & {
+export type AdvancedQueryTerm = BaseQueryTerm & {
   operator: QueryOperator
   field: EncodedQueryField
 }
