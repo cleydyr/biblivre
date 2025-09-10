@@ -3,13 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { IntlProvider } from 'react-intl'
 import { describe, expect, it, vi } from 'vitest'
 
-import { FIELDS } from '../api-helpers/search/constants'
+import { FIELDS } from '../../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
 
 import type { ComponentProps } from 'react'
 
-import type { AdvancedQueryTerm } from '../api-helpers/search/types'
+import type { AdvancedQueryTerm } from '../../api-helpers/search/types'
 
 const mockMessages = {
   'search.bibliographic.operator': 'Operador',

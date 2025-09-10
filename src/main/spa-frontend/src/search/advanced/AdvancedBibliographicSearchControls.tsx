@@ -1,21 +1,22 @@
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 
-import { FIELDS } from '../api-helpers/search/constants'
-import useMap from '../hooks/useMap'
+import { FIELDS } from '../../api-helpers/search/constants'
+import useMap from '../../hooks/useMap'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
+import { hasValidQuery } from './lib'
 
 import type { FC } from 'react'
 
-import type { AdvancedQueryTerm } from '../api-helpers/search/types'
+import type { AdvancedQueryTerm } from '../../api-helpers/search/types'
 
 type Props = {
   onQuerySubmited: (terms: AdvancedQueryTerm[] | undefined) => void
   isLoading: boolean
 }
 
-type UUID = ReturnType<(typeof crypto)['randomUUID']>
+export type UUID = ReturnType<(typeof crypto)['randomUUID']>
 
 const DUMMY_ADVANCED_QUERY_TERM: AdvancedQueryTerm = {
   field: FIELDS.ANY,
@@ -88,7 +89,3 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
 }
 
 export default AdvancedBibliographicSearchControls
-
-function hasValidQuery([_, term]: [UUID, AdvancedQueryTerm]): boolean {
-  return term.query !== ''
-}

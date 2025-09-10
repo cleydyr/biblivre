@@ -18,7 +18,6 @@ import type {
   SearchQueryTerms,
   SearchResponse,
 } from '../api-helpers/search/types'
-import type { PaginateSearchParams } from '../api-helpers/types'
 
 // Query keys for cache management
 export const searchQueryKeys = {
@@ -29,32 +28,6 @@ export const searchQueryKeys = {
     [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
   record: (recordId: string) =>
     [...searchQueryKeys.all, 'record', recordId] as const,
-}
-
-// Hook for performing catalogographic search
-export function useSearchCatalographic(
-  query?: SearchQueryTerms,
-  options?: Omit<UseQueryOptions<SearchResponse>, 'queryKey'>
-) {
-  return useQuery({
-    queryKey: searchQueryKeys.results(),
-    queryFn: () => {
-      return getCatalographicSearchResults(query)
-    },
-    ...options,
-  })
-}
-
-// Hook for paginating search results
-export function usePaginateSearchResults(
-  { searchId, page }: PaginateSearchParams,
-  options?: Omit<UseQueryOptions<SearchResponse>, 'queryKey'>
-) {
-  return useQuery({
-    queryKey: searchQueryKeys.pagination(searchId, page),
-    queryFn: () => paginateCatalographicSearchResults(searchId, page),
-    ...options,
-  })
 }
 
 export function usePaginatedSearch(

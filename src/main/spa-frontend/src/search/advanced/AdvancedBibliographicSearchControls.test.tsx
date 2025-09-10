@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { IntlProvider } from 'react-intl'
 import { describe, expect, it, vi } from 'vitest'
 
-import { FIELDS } from '../api-helpers/search/constants'
+import { FIELDS } from '../../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
 

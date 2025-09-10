@@ -8,7 +8,7 @@ import {
 } from '@elastic/eui'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { FIELDS } from '../api-helpers/search/constants'
+import { FIELDS } from '../../api-helpers/search/constants'
 
 import type { EuiSelectOption } from '@elastic/eui'
 import type { ChangeEvent, ComponentProps, EventHandler, FC } from 'react'
@@ -18,7 +18,7 @@ import type {
   AdvancedQueryTerm,
   EncodedQueryField,
   QueryOperator,
-} from '../api-helpers/search/types'
+} from '../../api-helpers/search/types'
 
 type Props = {
   term: AdvancedQueryTerm
