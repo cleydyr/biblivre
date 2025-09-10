@@ -30,10 +30,6 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
     termFieldsMap.set(crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM)
   }
 
-  const removeQuery = (termFieldId: UUID) => {
-    termFieldsMap.delete(termFieldId)
-  }
-
   return (
     <EuiFlexGroup direction='column' gutterSize='m'>
       {[...termFieldsMap.entries()].map(([termFieldId, term], index) => (
@@ -42,7 +38,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
             order={index}
             term={term}
             onChange={(term) => termFieldsMap.set(termFieldId, term)}
-            onRemove={() => removeQuery(termFieldId)}
+            onRemove={() => termFieldsMap.delete(termFieldId)}
           />
         </EuiFlexItem>
       ))}
