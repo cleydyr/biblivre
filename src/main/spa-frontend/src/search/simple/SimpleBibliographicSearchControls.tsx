@@ -9,7 +9,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import type { FC, RefObject } from 'react'
 
-import type { SearchQueryTerms } from '../api-helpers/search/types'
+import type { SearchQueryTerms } from '../../api-helpers/search/types'
 
 type Props = {
   onQuerySubmited: (terms?: SearchQueryTerms) => void

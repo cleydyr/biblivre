@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl'
 import useToggle from '../hooks/useToggle'
 
 import AdvancedBibliographicSearchControls from './advanced/AdvancedBibliographicSearchControls'
-import SimpleBibliographicSearchControls from './SimpleBibliographicSearchControls'
+import SimpleBibliographicSearchControls from './simple/SimpleBibliographicSearchControls'
 
 import type { FC } from 'react'
 

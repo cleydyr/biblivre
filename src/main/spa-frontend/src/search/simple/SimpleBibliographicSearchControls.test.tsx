@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import SimpleBibliographicSearchControls from './SimpleBibliographicSearchControls'
 
-import type { SearchQueryTerms } from '../api-helpers/search/types'
+import type { SearchQueryTerms } from '../../api-helpers/search/types'
 
 const mockMessages = {
   'search.bibliographic.search_all': 'Listar todos',
