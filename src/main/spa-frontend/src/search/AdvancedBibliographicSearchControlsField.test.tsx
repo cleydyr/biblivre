@@ -5,9 +5,11 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { FIELDS } from '../api-helpers/search/constants'
 
-import AdvancedBibliographicSearchControlsField, {
-  type AdvancedQueryFieldState,
-} from './AdvancedBibliographicSearchControlsField'
+import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
+
+import type { ComponentProps } from 'react'
+
+import type { AdvancedQueryTerm } from '../api-helpers/search/types'
 
 const mockMessages = {
   'search.bibliographic.operator': 'Operador',
@@ -26,24 +28,24 @@ const mockMessages = {
   'search_query_operator.and_not': 'e não',
 }
 
-const createMockQuery = (
-  overrides?: Partial<AdvancedQueryFieldState>
-): AdvancedQueryFieldState => ({
-  termFieldId: 'test-id',
+const createMockTerm = (
+  overrides?: Partial<AdvancedQueryTerm>
+): AdvancedQueryTerm => ({
   query: '',
   operator: 'AND',
   field: FIELDS.ANY,
   ...overrides,
 })
 
-const renderComponent = (props: {
-  query?: AdvancedQueryFieldState
-  onChange?: (query: AdvancedQueryFieldState) => void
-  onRemove?: () => void
-  order?: number
-}) => {
-  const defaultProps = {
-    query: createMockQuery(),
+const renderComponent = (
+  props: Partial<
+    ComponentProps<typeof AdvancedBibliographicSearchControlsField>
+  >
+) => {
+  const defaultProps: ComponentProps<
+    typeof AdvancedBibliographicSearchControlsField
+  > = {
+    term: createMockTerm(),
     onChange: vi.fn(),
     onRemove: vi.fn(),
     order: 0,
@@ -109,9 +111,9 @@ describe('AdvancedBibliographicSearchControlsField', () => {
     it('calls onChange when term input changes', async () => {
       const user = userEvent.setup()
       const onChange = vi.fn()
-      const query = createMockQuery()
+      const term = createMockTerm()
 
-      renderComponent({ query, onChange })
+      renderComponent({ term, onChange })
 
       const termInput = screen.getByLabelText('Termo')
       await user.type(termInput, 'test')
@@ -121,7 +123,6 @@ describe('AdvancedBibliographicSearchControlsField', () => {
       // Check that onChange was called with the expected structure
       expect(onChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          termFieldId: 'test-id',
           operator: 'AND',
           field: FIELDS.ANY,
           query: expect.any(String),
@@ -132,9 +133,9 @@ describe('AdvancedBibliographicSearchControlsField', () => {
     it('calls onChange when field selector changes', async () => {
       const user = userEvent.setup()
       const onChange = vi.fn()
-      const query = createMockQuery()
+      const term = createMockTerm()
 
-      renderComponent({ query, onChange, order: 1 })
+      renderComponent({ term, onChange, order: 1 })
 
       const fieldSelect = screen.getByLabelText('Campo')
       await user.selectOptions(fieldSelect, '1') // AUTHOR field value
@@ -147,15 +148,15 @@ describe('AdvancedBibliographicSearchControlsField', () => {
     it('calls onChange when operator changes', async () => {
       const user = userEvent.setup()
       const onChange = vi.fn()
-      const query = createMockQuery()
+      const term = createMockTerm()
 
-      renderComponent({ query, onChange, order: 1 })
+      renderComponent({ term, onChange, order: 1 })
 
       const operatorSelect = screen.getByLabelText('Operador')
       await user.selectOptions(operatorSelect, 'OR')
 
       expect(onChange).toHaveBeenCalledWith({
-        ...query,
+        ...term,
         operator: 'OR',
       })
     })
@@ -207,17 +208,17 @@ describe('AdvancedBibliographicSearchControlsField', () => {
   })
 
   describe('controlled values', () => {
-    it('displays the current query value', () => {
-      const query = createMockQuery({ query: 'test search term' })
-      renderComponent({ query })
+    it('displays the current term value', () => {
+      const term = createMockTerm({ query: 'test search term' })
+      renderComponent({ term })
 
       const termInput = screen.getByLabelText('Termo')
       expect(termInput).toHaveValue('test search term')
     })
 
     it('displays the current field value', () => {
-      const query = createMockQuery({ field: FIELDS.ANY })
-      renderComponent({ query })
+      const term = createMockTerm({ field: FIELDS.ANY })
+      renderComponent({ term })
 
       const fieldSelect = screen.getByLabelText('Campo')
       // The component should render the select field
@@ -227,8 +228,8 @@ describe('AdvancedBibliographicSearchControlsField', () => {
     })
 
     it('displays the current operator value', () => {
-      const query = createMockQuery({ operator: 'OR' })
-      renderComponent({ query, order: 1 })
+      const term = createMockTerm({ operator: 'OR' })
+      renderComponent({ term, order: 1 })
 
       const operatorSelect = screen.getByLabelText('Operador')
       expect(operatorSelect).toHaveValue('OR')

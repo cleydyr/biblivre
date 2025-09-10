@@ -7,53 +7,14 @@ import { FIELDS } from '../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
 
-import type { AdvancedQueryTerm } from '../api-helpers/search/types'
+import type { ComponentProps } from 'react'
 
-// Mock the field component to simplify testing
-// vi.mock('./AdvancedBibliographicSearchControlsField', () => ({
-//   default: ({ query, onChange, onRemove, order }: any) => (
-//     <div data-testid={`search-field-${query.termFieldId}`}>
-//       <input
-//         data-testid={`query-input-${query.termFieldId}`}
-//         value={query.query}
-//         onChange={(e) => onChange({ ...query, query: e.target.value })}
-//       />
-//       <select
-//         data-testid={`operator-select-${query.termFieldId}`}
-//         value={query.operator}
-//         onChange={(e) => onChange({ ...query, operator: e.target.value })}
-//       >
-//         <option value='AND'>AND</option>
-//         <option value='OR'>OR</option>
-//         <option value='AND_NOT'>AND_NOT</option>
-//       </select>
-//       <select
-//         data-testid={`field-type-select-${query.termFieldId}`}
-//         value={query.field}
-//         onChange={(e) => onChange({ ...query, field: e.target.value })}
-//       >
-//         <option value='ANY'>ANY</option>
-//         <option value=FIELDS.AUTHOR>AUTHOR</option>
-//         <option value='TITLE'>TITLE</option>
-//       </select>
-//       {order > 0 && (
-//         <button
-//           data-testid={`remove-button-${query.termFieldId}`}
-//           onClick={onRemove}
-//         >
-//           Remove
-//         </button>
-//       )}
-//       <span data-testid={`order-${query.termFieldId}`}>{order}</span>
-//     </div>
-//   ),
-// }))
-
-const renderComponent = (props: {
-  onQuerySubmited?: (query: AdvancedQueryTerm[]) => void
-  isLoading?: boolean
-}) => {
-  const defaultProps = {
+const renderComponent = (
+  props: Partial<ComponentProps<typeof AdvancedBibliographicSearchControls>>
+) => {
+  const defaultProps: ComponentProps<
+    typeof AdvancedBibliographicSearchControls
+  > = {
     onQuerySubmited: vi.fn(),
     isLoading: false,
     ...props,

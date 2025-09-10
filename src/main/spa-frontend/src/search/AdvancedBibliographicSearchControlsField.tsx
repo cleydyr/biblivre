@@ -20,19 +20,15 @@ import type {
   QueryOperator,
 } from '../api-helpers/search/types'
 
-export type AdvancedQueryFieldState = AdvancedQueryTerm & {
-  termFieldId: string
-}
-
 type Props = {
-  query: AdvancedQueryFieldState
-  onChange: (query: AdvancedQueryFieldState) => void
+  term: AdvancedQueryTerm
+  onChange: (term: AdvancedQueryTerm) => void
   onRemove: () => void
   order: number
 }
 
 const AdvancedBibliographicSearchControlsField: FC<Props> = ({
-  query,
+  term,
   onChange,
   onRemove,
   order,
@@ -57,13 +53,13 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
           >
             <TypedEuiSelect<QueryOperator>
               options={operatorOptions}
-              value={query.operator}
-              onChange={(e) =>
+              value={term?.operator || 'AND'}
+              onChange={(e) => {
                 onChange({
-                  ...query,
+                  ...term,
                   operator: e.target.value,
                 })
-              }
+              }}
             />
           </EuiFormRow>
         </EuiFlexItem>
@@ -79,11 +75,11 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
         >
           <TypedEuiSelect<EncodedQueryField>
             options={fieldOptions}
-            value={query.field}
+            value={term?.field ?? FIELDS.TITLE}
             onChange={(e) =>
               onChange({
-                ...query,
-                field: e.target.value as EncodedQueryField,
+                ...term,
+                field: e.target.value,
               })
             }
           />
@@ -102,10 +98,10 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
             css={{
               minWidth: '28rem',
             }}
-            value={query.query}
+            value={term.query}
             onChange={(e) =>
               onChange({
-                ...query,
+                ...term,
                 query: e.target.value,
               })
             }

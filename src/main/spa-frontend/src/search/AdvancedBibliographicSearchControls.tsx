@@ -1,69 +1,51 @@
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui'
-import { omit } from 'es-toolkit'
-import { useState } from 'react'
+import { type FC, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import { FIELDS } from '../api-helpers/search/constants'
 
-import AdvancedBibliographicSearchControlsField, {
-  type AdvancedQueryFieldState,
-} from './AdvancedBibliographicSearchControlsField'
-
-import type { FC } from 'react'
+import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
 
 import type { AdvancedQueryTerm } from '../api-helpers/search/types'
 
 type Props = {
-  onQuerySubmited: (terms: AdvancedQueryTerm[]) => void
+  onQuerySubmited: (terms: AdvancedQueryTerm[] | undefined) => void
   isLoading: boolean
+}
+
+type UUID = ReturnType<(typeof crypto)['randomUUID']>
+
+const DUMMY_ADVANCED_QUERY_TERM: AdvancedQueryTerm = {
+  field: FIELDS.ANY,
+  operator: 'AND',
+  query: '',
 }
 
 const AdvancedBibliographicSearchControls: FC<Props> = ({
   onQuerySubmited,
   isLoading,
 }) => {
-  const [queries, setQueries] = useState<AdvancedQueryFieldState[]>([
-    {
-      termFieldId: crypto.randomUUID(),
-      query: '',
-      operator: 'AND',
-      field: FIELDS.ANY,
-    },
+  const termFieldsMap = useMap<UUID, AdvancedQueryTerm>([
+    [crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM],
   ])
 
   const addQuery = () => {
-    setQueries([
-      ...queries,
-      {
-        termFieldId: crypto.randomUUID(),
-        query: '',
-        operator: 'AND',
-        field: FIELDS.ANY,
-      },
-    ])
+    termFieldsMap.set(crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM)
   }
 
-  const removeQuery = (termFieldId: string) => {
-    if (queries.length > 1) {
-      setQueries(queries.filter((q) => q.termFieldId !== termFieldId))
-    }
+  const removeQuery = (termFieldId: UUID) => {
+    termFieldsMap.delete(termFieldId)
   }
 
   return (
     <EuiFlexGroup direction='column' gutterSize='m'>
-      {queries.map((query, index) => (
-        <EuiFlexItem key={query.termFieldId}>
+      {[...termFieldsMap.entries()].map(([termFieldId, term], index) => (
+        <EuiFlexItem key={termFieldId}>
           <AdvancedBibliographicSearchControlsField
             order={index}
-            query={query}
-            onChange={(updatedQuery: AdvancedQueryFieldState) =>
-              setQueries(
-                queries.map((q) =>
-                  q.termFieldId === updatedQuery.termFieldId ? updatedQuery : q
-                )
-              )
-            }
-            onRemove={() => removeQuery(query.termFieldId)}
+            term={term}
+            onChange={(term) => termFieldsMap.set(termFieldId, term)}
+            onRemove={() => removeQuery(termFieldId)}
           />
         </EuiFlexItem>
       ))}
@@ -82,8 +64,12 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
               fill
               isLoading={isLoading}
               onClick={() => {
+                const validQueryTerms = [...termFieldsMap.entries()]
+                  .filter(hasValidQuery)
+                  .map(([, term]) => term)
+
                 onQuerySubmited(
-                  queries.map((query) => omit(query, ['termFieldId']))
+                  validQueryTerms.length > 0 ? validQueryTerms : undefined
                 )
               }}
             >
@@ -100,3 +86,51 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
 }
 
 export default AdvancedBibliographicSearchControls
+
+function hasValidQuery([_, term]: [UUID, AdvancedQueryTerm]): boolean {
+  return term.query !== ''
+}
+
+class ObservableMap<K, V> extends Map<K, V> {
+  observer: (map: Map<K, V>) => void
+
+  constructor(initialMap: Map<K, V>, observer: (map: Map<K, V>) => void) {
+    super()
+
+    this.observer = observer
+
+    initialMap.forEach((value, key) => {
+      super.set(key, value)
+    })
+  }
+
+  set(key: K, value: V): this {
+    const result = super.set(key, value)
+
+    this.observer(this)
+
+    return result
+  }
+
+  clear(): void {
+    super.clear()
+
+    this.observer(this)
+  }
+
+  delete(key: K): boolean {
+    const result = super.delete(key)
+
+    this.observer(this)
+
+    return result
+  }
+}
+
+function useMap<K, V>(
+  args: ConstructorParameters<typeof Map<K, V>>[0] = []
+): InstanceType<typeof Map<K, V>> {
+  const [map, setMap] = useState(new Map<K, V>(args))
+
+  return new ObservableMap<K, V>(map, setMap)
+}
