@@ -86,7 +86,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
             >
               <EuiFieldText
                 css={{
-                  minWidth: '28rem',
+                  minWidth: '20rem',
                 }}
                 value={term.query}
                 onChange={(e) =>
@@ -101,7 +101,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
         </EuiFlexGroup>
       </EuiFlexItem>
       <EuiFlexItem grow={5}>
-        <EuiFlexGroup alignItems='center'>
+        <EuiFlexGroup>
           <EuiFlexItem grow={false}>
             <EuiFormRow
               label={
@@ -125,25 +125,27 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
           </EuiFlexItem>
           {afterFirst && (
             <EuiFlexItem grow={false}>
-              <EuiSpacer size='m' />
-              {/* to compensate for the form row label */}
-              <EuiToolTip
-                content={formatMessage({
-                  defaultMessage: 'Remover termo',
-                  id: 'search.bibliographic.remove_field',
-                })}
-                position='top'
-              >
-                <EuiButtonIcon
-                  aria-label={formatMessage({
+              <EuiFlexGroup alignItems='center'>
+                <EuiSpacer size='l' />
+                {/* to compensate for the form row label */}
+                <EuiToolTip
+                  content={formatMessage({
                     defaultMessage: 'Remover termo',
                     id: 'search.bibliographic.remove_field',
                   })}
-                  color='danger'
-                  iconType='trash'
-                  onClick={onRemove}
-                />
-              </EuiToolTip>
+                  position='top'
+                >
+                  <EuiButtonIcon
+                    aria-label={formatMessage({
+                      defaultMessage: 'Remover termo',
+                      id: 'search.bibliographic.remove_field',
+                    })}
+                    color='danger'
+                    iconType='trash'
+                    onClick={onRemove}
+                  />
+                </EuiToolTip>
+              </EuiFlexGroup>
             </EuiFlexItem>
           )}
         </EuiFlexGroup>
