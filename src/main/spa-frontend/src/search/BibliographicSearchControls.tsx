@@ -23,21 +23,33 @@ const BibliographicSearchControls: FC<Props> = ({
 
   return (
     <EuiFlexGroup direction='column'>
-      <EuiTitle size='s'>
-        <h2>
-          {isAdvancedSearch ? (
+      <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
+        <EuiTitle size='s'>
+          <h2>
+            {isAdvancedSearch ? (
+              <FormattedMessage
+                defaultMessage='Pesquisa Bibliográfica Avançada'
+                id='search.bibliographic.header.2.advanced'
+              />
+            ) : (
+              <FormattedMessage
+                defaultMessage='Pesquisa Bibliográfica'
+                id='search.bibliographic.header.2.simple'
+              />
+            )}
+          </h2>
+        </EuiTitle>
+        <EuiSwitch
+          checked={isAdvancedSearch}
+          label={
             <FormattedMessage
-              defaultMessage='Pesquisa Bibliográfica Avançada'
-              id='search.bibliographic.header.2.advanced'
+              defaultMessage='Pesquisa avançada'
+              id='search.bibliographic.advanced_search'
             />
-          ) : (
-            <FormattedMessage
-              defaultMessage='Pesquisa Bibliográfica'
-              id='search.bibliographic.header.2.simple'
-            />
-          )}
-        </h2>
-      </EuiTitle>
+          }
+          onChange={() => toggleAdvancedSearch()}
+        />
+      </EuiFlexGroup>
       {isAdvancedSearch ? (
         <AdvancedBibliographicSearchControls
           isLoading={isLoading}
@@ -49,16 +61,6 @@ const BibliographicSearchControls: FC<Props> = ({
           onQuerySubmited={onQuerySubmited}
         />
       )}
-      <EuiSwitch
-        checked={isAdvancedSearch}
-        label={
-          <FormattedMessage
-            defaultMessage='Pesquisa avançada'
-            id='search.bibliographic.advanced_search'
-          />
-        }
-        onChange={() => toggleAdvancedSearch()}
-      />
     </EuiFlexGroup>
   )
 }
