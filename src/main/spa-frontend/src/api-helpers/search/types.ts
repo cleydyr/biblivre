@@ -8,12 +8,30 @@ export type SimpleQueryTerm = BaseQueryTerm
 
 export type EncodedQueryField = (typeof FIELDS)[keyof typeof FIELDS]
 
+export type EncodedTextQueryField = Exclude<
+  EncodedQueryField,
+  DateTermQueryField
+>
+
 export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
 
-export type AdvancedQueryTerm = BaseQueryTerm & {
+type ISO8601Date = string & { __brand: 'iso8601' }
+
+type DateTermQueryField = typeof FIELDS.MODIFIED | typeof FIELDS.CREATED
+
+export type AdvancedTextQueryTerm = BaseQueryTerm & {
   operator: QueryOperator
-  field: EncodedQueryField
+  field: EncodedTextQueryField
 }
+
+export type AdvancedDateQueryTerm = BaseQueryTerm & {
+  operator: 'AND'
+  field: DateTermQueryField
+  start_date: ISO8601Date
+  end_date: ISO8601Date
+}
+
+export type AdvancedQueryTerm = AdvancedTextQueryTerm | AdvancedDateQueryTerm
 
 export type SearchQueryTerms = SimpleQueryTerm | AdvancedQueryTerm[]
 

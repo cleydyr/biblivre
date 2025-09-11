@@ -17,14 +17,14 @@ import type { ChangeEvent, ComponentProps, EventHandler, FC } from 'react'
 import type { Omit } from 'utility-types'
 
 import type {
-  AdvancedQueryTerm,
-  EncodedQueryField,
+  AdvancedTextQueryTerm,
+  EncodedTextQueryField,
   QueryOperator,
 } from '../../api-helpers/search/types'
 
 type Props = {
-  term: AdvancedQueryTerm
-  onChange: (term: AdvancedQueryTerm) => void
+  term: AdvancedTextQueryTerm
+  onChange: (term: AdvancedTextQueryTerm) => void
   onRemove: () => void
   order: number
 }
@@ -111,7 +111,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
                 />
               }
             >
-              <TypedEuiSelect<EncodedQueryField>
+              <TypedEuiSelect<EncodedTextQueryField>
                 options={fieldOptions}
                 value={term?.field ?? FIELDS.TITLE}
                 onChange={(e) =>
@@ -154,7 +154,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
   )
 }
 
-function useFieldOptions(): TypedEuiSelectOption<EncodedQueryField>[] {
+function useFieldOptions(): TypedEuiSelectOption<EncodedTextQueryField>[] {
   return [
     {
       value: FIELDS.ANY,

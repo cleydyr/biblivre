@@ -2,6 +2,7 @@ import { FIELDS } from '../../api-helpers/search/constants'
 
 import type {
   AdvancedQueryTerm,
+  AdvancedTextQueryTerm,
   BaseQueryTerm,
 } from '../../api-helpers/search/types'
 
@@ -12,7 +13,7 @@ function hasValidQuery([_, term]: [UUID, BaseQueryTerm]): boolean {
 }
 
 export function getValidQueries(
-  termField: Map<UUID, AdvancedQueryTerm>
+  termField: Map<UUID, AdvancedTextQueryTerm>
 ): AdvancedQueryTerm[] | undefined {
   const validQueries = [...termField.entries()]
     .filter(hasValidQuery)
@@ -25,12 +26,12 @@ export function getValidQueries(
   return undefined
 }
 
-const DUMMY_ADVANCED_QUERY_TERM: AdvancedQueryTerm = {
+const DUMMY_ADVANCED_QUERY_TERM: AdvancedTextQueryTerm = {
   field: FIELDS.ANY,
   operator: 'AND',
   query: '',
 } as const
 
-export function generateTermField(): [UUID, AdvancedQueryTerm] {
+export function generateTermField(): [UUID, AdvancedTextQueryTerm] {
   return [crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM]
 }

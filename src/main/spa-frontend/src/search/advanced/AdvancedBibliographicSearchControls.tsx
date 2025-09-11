@@ -1,8 +1,11 @@
 import {
   EuiButton,
   EuiButtonEmpty,
+  EuiDatePicker,
+  EuiDatePickerRange,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiFormRow,
 } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 
@@ -13,7 +16,10 @@ import { generateTermField, getValidQueries } from './lib'
 
 import type { FC } from 'react'
 
-import type { AdvancedQueryTerm } from '../../api-helpers/search/types'
+import type {
+  AdvancedQueryTerm,
+  AdvancedTextQueryTerm,
+} from '../../api-helpers/search/types'
 
 import type { UUID } from './types'
 
@@ -26,7 +32,9 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
   onQuerySubmited,
   isLoading,
 }) => {
-  const termFieldsMap = useMap<UUID, AdvancedQueryTerm>([generateTermField()])
+  const termFieldsMap = useMap<UUID, AdvancedTextQueryTerm>([
+    generateTermField(),
+  ])
 
   const addTerm = () => {
     termFieldsMap.set(...generateTermField())
@@ -59,6 +67,20 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
         </EuiFlexGroup>
       </EuiFlexItem>
       <EuiFlexGroup justifyContent='flexEnd'>
+        <EuiFormRow
+          label={
+            <FormattedMessage
+              defaultMessage='Data de publicação'
+              id='search.bibliographic.publication-date'
+            />
+          }
+        >
+          <EuiDatePickerRange
+            endDateControl={<EuiDatePicker />}
+            startDateControl={<EuiDatePicker />}
+          />
+        </EuiFormRow>
+
         <EuiButtonEmpty
           color='neutral'
           iconType='cross'
