@@ -9,30 +9,27 @@ import { FormattedMessage } from 'react-intl'
 import useMap from '../../hooks/useMap'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
-import { DUMMY_ADVANCED_QUERY_TERM } from './constants'
-import { getValidQueries } from './lib'
+import { generateTermField, getValidQueries } from './lib'
 
 import type { FC } from 'react'
 
 import type { AdvancedQueryTerm } from '../../api-helpers/search/types'
+
+import type { UUID } from './types'
 
 type Props = {
   onQuerySubmited: (terms: AdvancedQueryTerm[] | undefined) => void
   isLoading: boolean
 }
 
-export type UUID = ReturnType<(typeof crypto)['randomUUID']>
-
 const AdvancedBibliographicSearchControls: FC<Props> = ({
   onQuerySubmited,
   isLoading,
 }) => {
-  const termFieldsMap = useMap<UUID, AdvancedQueryTerm>([
-    [crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM],
-  ])
+  const termFieldsMap = useMap<UUID, AdvancedQueryTerm>([generateTermField()])
 
   const addTerm = () => {
-    termFieldsMap.set(crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM)
+    termFieldsMap.set(...generateTermField())
   }
 
   return (
