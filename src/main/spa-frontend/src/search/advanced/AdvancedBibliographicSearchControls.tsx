@@ -59,8 +59,22 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
         </EuiFlexGroup>
       </EuiFlexItem>
       <EuiFlexGroup justifyContent='flexEnd'>
+        <EuiButtonEmpty
+          color='neutral'
+          iconType='cross'
+          onClick={() => {
+            termFieldsMap.clear()
+            termFieldsMap.set(...generateTermField())
+          }}
+        >
+          <FormattedMessage
+            defaultMessage='Limpar todos os campos'
+            id='search.bibliographic.clear-all'
+          />
+        </EuiButtonEmpty>
         <EuiButton
           fill
+          iconType='search'
           isLoading={isLoading}
           onClick={() => {
             onQuerySubmited(getValidQueries(termFieldsMap))
