@@ -5,6 +5,8 @@ import {
   EuiFlexItem,
   EuiFormRow,
   EuiSelect,
+  EuiSpacer,
+  EuiToolTip,
 } from '@elastic/eui'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -93,7 +95,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
         </EuiFlexGroup>
       </EuiFlexItem>
       <EuiFlexItem grow={5}>
-        <EuiFlexGroup>
+        <EuiFlexGroup alignItems='center'>
           <EuiFlexItem grow={false}>
             <EuiFormRow
               label={
@@ -117,15 +119,25 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
           </EuiFlexItem>
           {afterFirst && (
             <EuiFlexItem grow={false}>
-              <EuiButtonIcon
-                aria-label={formatMessage({
+              <EuiSpacer size='m' />
+              {/* to compensate for the form row label */}
+              <EuiToolTip
+                content={formatMessage({
                   defaultMessage: 'Remover termo',
                   id: 'search.bibliographic.remove_field',
                 })}
-                color='danger'
-                iconType='trash'
-                onClick={onRemove}
-              />
+                position='top'
+              >
+                <EuiButtonIcon
+                  aria-label={formatMessage({
+                    defaultMessage: 'Remover termo',
+                    id: 'search.bibliographic.remove_field',
+                  })}
+                  color='danger'
+                  iconType='trash'
+                  onClick={onRemove}
+                />
+              </EuiToolTip>
             </EuiFlexItem>
           )}
         </EuiFlexGroup>
