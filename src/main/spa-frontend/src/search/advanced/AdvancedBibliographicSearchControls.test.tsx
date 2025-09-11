@@ -218,7 +218,7 @@ describe('AdvancedBibliographicSearchControls', () => {
 async function addQueryTermField(quantity = 1) {
   const user = userEvent.setup()
 
-  const addButton = screen.getByRole('button', { name: /adicionar campo/i })
+  const addButton = screen.getByRole('button', { name: /adicionar termo/i })
 
   for (let i = 0; i < quantity; i++) {
     await user.click(addButton)
