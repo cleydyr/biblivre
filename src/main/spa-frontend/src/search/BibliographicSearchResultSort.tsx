@@ -1,4 +1,4 @@
-import { EuiSelect, type EuiSelectOption } from '@elastic/eui'
+import { EuiFormRow, EuiSelect, type EuiSelectOption } from '@elastic/eui'
 import { type FC, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
@@ -14,17 +14,27 @@ const BibliographicSearchResultSort: FC<Props> = ({ onSortChange }) => {
   const [sort, setSort] = useState<string>(FIELDS.TITLE)
 
   return (
-    <EuiSelect
-      options={options}
-      value={sort}
-      onChange={(e) => {
-        const changedValue = e.target.value
+    <EuiFormRow
+      label={
+        <FormattedMessage
+          defaultMessage='Ordenar por'
+          id='bibliographic-search-result-sort.label'
+        />
+      }
+    >
+      <EuiSelect
+        compressed
+        options={options}
+        value={sort}
+        onChange={(e) => {
+          const changedValue = e.target.value
 
-        setSort(changedValue)
+          setSort(changedValue)
 
-        onSortChange(parseInt(changedValue))
-      }}
-    />
+          onSortChange(parseInt(changedValue))
+        }}
+      />
+    </EuiFormRow>
   )
 }
 

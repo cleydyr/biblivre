@@ -40,87 +40,96 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
   const fieldOptions = useFieldOptions()
 
   return (
-    <EuiFlexGroup alignItems='flexEnd' gutterSize='s'>
-      {afterFirst && (
-        <EuiFlexItem grow={false}>
-          <EuiFormRow
-            label={
-              <FormattedMessage
-                defaultMessage='Operador'
-                id='search.bibliographic.operator'
+    <EuiFlexGroup>
+      <EuiFlexItem grow={8}>
+        <EuiFlexGroup>
+          {afterFirst && (
+            <EuiFlexItem grow={false}>
+              <EuiFormRow
+                label={
+                  <FormattedMessage
+                    defaultMessage='Operador'
+                    id='search.bibliographic.operator'
+                  />
+                }
+              >
+                <TypedEuiSelect<QueryOperator>
+                  options={operatorOptions}
+                  value={term?.operator || 'AND'}
+                  onChange={(e) => {
+                    onChange({
+                      ...term,
+                      operator: e.target.value,
+                    })
+                  }}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+          )}
+
+          <EuiFlexItem>
+            <EuiFormRow
+              label={
+                <FormattedMessage
+                  defaultMessage='Termo'
+                  id='search.bibliographic.term'
+                />
+              }
+            >
+              <EuiFieldText
+                css={{
+                  minWidth: '28rem',
+                }}
+                value={term.query}
+                onChange={(e) =>
+                  onChange({
+                    ...term,
+                    query: e.target.value,
+                  })
+                }
               />
-            }
-          >
-            <TypedEuiSelect<QueryOperator>
-              options={operatorOptions}
-              value={term?.operator || 'AND'}
-              onChange={(e) => {
-                onChange({
-                  ...term,
-                  operator: e.target.value,
-                })
-              }}
-            />
-          </EuiFormRow>
-        </EuiFlexItem>
-      )}
-      <EuiFlexItem grow={false}>
-        <EuiFormRow
-          label={
-            <FormattedMessage
-              defaultMessage='Campo'
-              id='search.bibliographic.field'
-            />
-          }
-        >
-          <TypedEuiSelect<EncodedQueryField>
-            options={fieldOptions}
-            value={term?.field ?? FIELDS.TITLE}
-            onChange={(e) =>
-              onChange({
-                ...term,
-                field: e.target.value,
-              })
-            }
-          />
-        </EuiFormRow>
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </EuiFlexItem>
-      <EuiFlexItem grow={false}>
-        <EuiFormRow
-          label={
-            <FormattedMessage
-              defaultMessage='Termo'
-              id='search.bibliographic.term'
-            />
-          }
-        >
-          <EuiFieldText
-            css={{
-              minWidth: '28rem',
-            }}
-            value={term.query}
-            onChange={(e) =>
-              onChange({
-                ...term,
-                query: e.target.value,
-              })
-            }
-          />
-        </EuiFormRow>
+      <EuiFlexItem grow={5}>
+        <EuiFlexGroup>
+          <EuiFlexItem grow={false}>
+            <EuiFormRow
+              label={
+                <FormattedMessage
+                  defaultMessage='Campo'
+                  id='search.bibliographic.field'
+                />
+              }
+            >
+              <TypedEuiSelect<EncodedQueryField>
+                options={fieldOptions}
+                value={term?.field ?? FIELDS.TITLE}
+                onChange={(e) =>
+                  onChange({
+                    ...term,
+                    field: e.target.value,
+                  })
+                }
+              />
+            </EuiFormRow>
+          </EuiFlexItem>
+          {afterFirst && (
+            <EuiFlexItem grow={false}>
+              <EuiButtonIcon
+                aria-label={formatMessage({
+                  defaultMessage: 'Remover termo',
+                  id: 'search.bibliographic.remove_field',
+                })}
+                color='danger'
+                iconType='trash'
+                onClick={onRemove}
+              />
+            </EuiFlexItem>
+          )}
+        </EuiFlexGroup>
       </EuiFlexItem>
-      {afterFirst && (
-        <EuiFlexItem grow={false}>
-          <EuiButtonIcon
-            aria-label={formatMessage({
-              defaultMessage: 'Remover termo',
-              id: 'search.bibliographic.remove_field',
-            })}
-            color='danger'
-            iconType='trash'
-            onClick={onRemove}
-          />
-        </EuiFlexItem>
-      )}
     </EuiFlexGroup>
   )
 }

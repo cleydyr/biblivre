@@ -2,6 +2,7 @@ import {
   EuiButton,
   EuiFieldSearch,
   EuiFlexGroup,
+  EuiFlexItem,
   EuiFormRow,
 } from '@elastic/eui'
 import { useRef, useState } from 'react'
@@ -27,56 +28,61 @@ const SimpleBibliographicSearchControls: FC<Props> = ({
   const [isListAll, setListAll] = useState<boolean>(true)
 
   return (
-    <EuiFlexGroup>
-      <EuiButton
-        isLoading={isLoading}
-        onClick={() => {
-          onQuerySubmited(getSearchQuery(query.current))
-        }}
-      >
-        {isListAll ? (
-          <FormattedMessage
-            defaultMessage='Listar todos'
-            id='search.bibliographic.search_all'
+    <EuiFlexGroup alignItems='center' justifyContent='flexStart'>
+      <EuiFlexItem grow={false}>
+        <EuiFormRow>
+          <EuiFieldSearch
+            aria-label={formatMessage({
+              defaultMessage: 'Termos da pesquisa simples',
+              id: 'search.bibliographic.search_label',
+            })}
+            placeholder={formatMessage({
+              defaultMessage: 'Preencha os termos da pesquisa',
+              id: 'search.bibliographic.search_placeholder',
+            })}
+            size={32}
+            onChange={(e) => {
+              const searchTerm = e.target.value
+
+              query.current = searchTerm
+
+              setListAll(searchTerm === '')
+            }}
+            onSearch={(searchTerm) => {
+              if (searchTerm === '') {
+                // We don't want the clean button to trigger a search submission
+                setListAll(true)
+
+                return
+              }
+
+              onQuerySubmited({
+                query: searchTerm,
+              })
+            }}
           />
-        ) : (
-          <FormattedMessage
-            defaultMessage='Pesquisar'
-            id='search.bibliographic.search'
-          />
-        )}
-      </EuiButton>
-      <EuiFormRow>
-        <EuiFieldSearch
-          aria-label={formatMessage({
-            defaultMessage: 'Termos da pesquisa simples',
-            id: 'search.bibliographic.search_label',
-          })}
-          placeholder={formatMessage({
-            defaultMessage: 'Preencha os termos da pesquisa',
-            id: 'search.bibliographic.search_placeholder',
-          })}
-          onChange={(e) => {
-            const searchTerm = e.target.value
-
-            query.current = searchTerm
-
-            setListAll(searchTerm === '')
+        </EuiFormRow>
+      </EuiFlexItem>
+      <EuiFlexItem grow={false}>
+        <EuiButton
+          isLoading={isLoading}
+          onClick={() => {
+            onQuerySubmited(getSearchQuery(query.current))
           }}
-          onSearch={(searchTerm) => {
-            if (searchTerm === '') {
-              // We don't want the clean button to trigger a search submission
-              setListAll(true)
-
-              return
-            }
-
-            onQuerySubmited({
-              query: searchTerm,
-            })
-          }}
-        />
-      </EuiFormRow>
+        >
+          {isListAll ? (
+            <FormattedMessage
+              defaultMessage='Listar todos'
+              id='search.bibliographic.search_all'
+            />
+          ) : (
+            <FormattedMessage
+              defaultMessage='Pesquisar'
+              id='search.bibliographic.search'
+            />
+          )}
+        </EuiButton>
+      </EuiFlexItem>
     </EuiFlexGroup>
   )
 }
