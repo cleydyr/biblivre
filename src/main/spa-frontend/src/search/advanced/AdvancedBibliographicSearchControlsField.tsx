@@ -71,6 +71,12 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
 
           <EuiFlexItem>
             <EuiFormRow
+              helpText={
+                <FormattedMessage
+                  defaultMessage='Termos vazios não serão nos resultados da busca'
+                  id='search.bibliographic.term_help'
+                />
+              }
               label={
                 <FormattedMessage
                   defaultMessage='Termo'
