@@ -15,7 +15,7 @@ export type EncodedTextQueryField = Exclude<
 
 export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
 
-type ISO8601Date = string & { __brand: 'iso8601' }
+export type ISO8601Date = string & { __brand: 'iso8601' }
 
 type DateTermQueryField = typeof FIELDS.MODIFIED | typeof FIELDS.CREATED
 
@@ -24,11 +24,11 @@ export type AdvancedTextQueryTerm = BaseQueryTerm & {
   field: EncodedTextQueryField
 }
 
-export type AdvancedDateQueryTerm = BaseQueryTerm & {
+export type AdvancedDateQueryTerm = {
   operator: 'AND'
   field: DateTermQueryField
-  start_date: ISO8601Date
-  end_date: ISO8601Date
+  start_date: ISO8601Date | null
+  end_date: ISO8601Date | null
 }
 
 export type AdvancedQueryTerm = AdvancedTextQueryTerm | AdvancedDateQueryTerm
