@@ -11,7 +11,7 @@ import useMap from '../../hooks/useMap'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
 import AdvancedBibliographicSearchDateFilters from './AdvancedBibliographicSearchDateFilters'
-import { generateTermField, getValidQueries } from './lib'
+import { generateTermField, getEmptyDateRange, getValidQueries } from './lib'
 
 import type {
   AdvancedQueryTerm,
@@ -33,15 +33,11 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
     generateTermField(),
   ])
 
-  const [createdFilter, setCreatedFilter] = useState<DateRange>({
-    from: null,
-    to: null,
-  })
+  const [createdFilter, setCreatedFilter] =
+    useState<DateRange>(getEmptyDateRange())
 
-  const [modifiedFilter, setModifiedFilter] = useState<DateRange>({
-    from: null,
-    to: null,
-  })
+  const [modifiedFilter, setModifiedFilter] =
+    useState<DateRange>(getEmptyDateRange())
 
   return (
     <EuiFlexGroup direction='column' gutterSize='l'>
@@ -89,6 +85,8 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
             onClick={() => {
               termFieldsMap.clear()
               termFieldsMap.set(...generateTermField())
+              setCreatedFilter(getEmptyDateRange())
+              setModifiedFilter(getEmptyDateRange())
             }}
           >
             <FormattedMessage

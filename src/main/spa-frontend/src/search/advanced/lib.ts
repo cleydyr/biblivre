@@ -74,3 +74,10 @@ function getISO8601Date(date: Moment | null): ISO8601Date | null {
 export function generateTermField(): [UUID, AdvancedTextQueryTerm] {
   return [crypto.randomUUID(), DUMMY_ADVANCED_QUERY_TERM]
 }
+
+export function getEmptyDateRange() {
+  return {
+    from: null,
+    to: null,
+  }
+}
