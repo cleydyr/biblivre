@@ -85,13 +85,15 @@ const BibliographicSearchPage = () => {
               <EuiFlexGroup alignItems='flexEnd' justifyContent='flexEnd'>
                 <EuiFlexItem grow={false}>
                   <EuiStat
+                    reverse
                     description={
                       <FormattedMessage
-                        defaultMessage='Total de registros'
+                        defaultMessage='Resultados encontrados'
                         id='search.bibliographic.results'
                       />
                     }
                     title={searchResults.search.record_count}
+                    titleSize='s'
                   />
                 </EuiFlexItem>
                 <EuiFlexItem>
