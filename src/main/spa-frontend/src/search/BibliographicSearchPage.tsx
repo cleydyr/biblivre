@@ -20,7 +20,10 @@ import type {
   BibliographicRecord,
   SuccessfulSearchResponse,
 } from '../api-helpers/search/response-types'
-import type { SearchQueryTerms } from '../api-helpers/search/types'
+import type {
+  BibliographicMaterial,
+  SearchQueryTerms,
+} from '../api-helpers/search/types'
 
 const BibliographicSearchPage = () => {
   const { euiTheme } = useEuiTheme()
@@ -31,6 +34,8 @@ const BibliographicSearchPage = () => {
 
   const [sort, setSort] = useState<number | undefined>(undefined)
 
+  const [materialType, setMaterialType] = useState<BibliographicMaterial>('all')
+
   const [isQuerySubmittedOnce, setQuerySubmittedOnce] = useState<boolean>(false)
 
   const {
@@ -38,7 +43,7 @@ const BibliographicSearchPage = () => {
     isSuccess: isSearchSuccess,
     isError: isSearchError,
     isFetching: isSearchFetching,
-  } = usePaginatedSearch(terms, page, sort, {
+  } = usePaginatedSearch(terms, page, materialType, sort, {
     enabled: isQuerySubmittedOnce,
   })
 
@@ -64,9 +69,10 @@ const BibliographicSearchPage = () => {
           <EuiPanel hasBorder paddingSize='l'>
             <BibliographicSearchControls
               isLoading={isSearchFetching}
-              onQuerySubmited={(query) => {
+              onQuerySubmited={(materialType, query) => {
                 setTerms(query)
                 setPage(0)
+                setMaterialType(materialType)
                 setQuerySubmittedOnce(true)
               }}
             />

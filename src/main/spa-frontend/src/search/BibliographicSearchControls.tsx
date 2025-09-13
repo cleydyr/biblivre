@@ -24,7 +24,10 @@ import type {
 } from '../api-helpers/search/types'
 
 type Props = {
-  onQuerySubmited: (terms?: SearchQueryTerms) => void
+  onQuerySubmited: (
+    materialType: BibliographicMaterial,
+    terms?: SearchQueryTerms,
+  ) => void
   isLoading: boolean
 }
 
@@ -95,12 +98,12 @@ const BibliographicSearchControls: FC<Props> = ({
       {isAdvancedSearch ? (
         <AdvancedBibliographicSearchControls
           isLoading={isLoading}
-          onQuerySubmited={onQuerySubmited}
+          onQuerySubmited={(terms) => onQuerySubmited(materialType, terms)}
         />
       ) : (
         <SimpleBibliographicSearchControls
           isLoading={isLoading}
-          onQuerySubmited={onQuerySubmited}
+          onQuerySubmited={(terms) => onQuerySubmited(materialType, terms)}
         />
       )}
     </EuiFlexGroup>

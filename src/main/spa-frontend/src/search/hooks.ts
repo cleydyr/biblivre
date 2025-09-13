@@ -47,8 +47,8 @@ export function usePaginatedSearch(
 
   const initialQuery = useQuery({
     ...options,
-    queryKey: searchQueryKeys.results(terms),
-    queryFn: () => getCatalographicSearchResults(terms),
+    queryKey: searchQueryKeys.results(materialType, terms),
+    queryFn: () => getCatalographicSearchResults(materialType, terms),
     enabled: options?.enabled && searchId === undefined,
   })
 

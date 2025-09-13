@@ -4,9 +4,14 @@ import { fetchFromLegacyEndpoint } from '..'
 import { ACTIONS, FIELDS } from './constants'
 import { getSearchMode, getSearchTerms } from './lib'
 
-import type { SearchQueryTerms, SearchResponse } from './types'
+import type {
+  BibliographicMaterial,
+  SearchQueryTerms,
+  SearchResponse,
+} from './types'
 
 export async function getCatalographicSearchResults(
+  materialType: BibliographicMaterial,
   terms?: SearchQueryTerms
 ): Promise<SearchResponse> {
   return fetchFromLegacyEndpoint({
@@ -14,7 +19,7 @@ export async function getCatalographicSearchResults(
     action: ACTIONS.SEARCH,
     search_parameters: JSON.stringify({
       database: 'main',
-      material_type: 'all',
+      material_type: materialType,
       search_mode: getSearchMode(terms),
       ...getSearchTerms(terms),
     }),
