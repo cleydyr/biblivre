@@ -1,19 +1,16 @@
 import {
   EuiButton,
   EuiButtonEmpty,
-  EuiDatePicker,
-  EuiDatePickerRange,
   EuiFlexGroup,
   EuiFlexItem,
-  EuiFormRow,
 } from '@elastic/eui'
-import moment from 'moment'
 import { type FC, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import useMap from '../../hooks/useMap'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
+import AdvancedBibliographicSearchDateFilters from './AdvancedBibliographicSearchDateFilters'
 import { generateTermField, getValidQueries } from './lib'
 
 import type {
@@ -45,8 +42,6 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
     from: null,
     to: null,
   })
-
-  const today = moment()
 
   return (
     <EuiFlexGroup direction='column' gutterSize='l'>
@@ -80,111 +75,45 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlexItem>
-      <EuiFlexGroup justifyContent='flexEnd'>
-        <EuiFormRow
-          label={
+      <EuiFlexGroup alignItems='flexEnd' justifyContent='flexEnd'>
+        <AdvancedBibliographicSearchDateFilters
+          createdFilter={createdFilter}
+          modifiedFilter={modifiedFilter}
+          onCreatedFilterChanged={setCreatedFilter}
+          onModifiedFilterChanged={setModifiedFilter}
+        />
+        <EuiFlexItem grow={false}>
+          <EuiButtonEmpty
+            color='neutral'
+            iconType='cross'
+            onClick={() => {
+              termFieldsMap.clear()
+              termFieldsMap.set(...generateTermField())
+            }}
+          >
             <FormattedMessage
-              defaultMessage='Data de criação'
-              id='search.bibliographic.created-date'
+              defaultMessage='Limpar campos'
+              id='search.bibliographic.clear-all'
             />
-          }
-        >
-          <EuiDatePickerRange
-            compressed
-            endDateControl={
-              <EuiDatePicker
-                compressed
-                maxDate={today}
-                selected={createdFilter?.to}
-                onChange={(date) => {
-                  setCreatedFilter((prev) => ({
-                    ...prev,
-                    to: date,
-                  }))
-                }}
-              />
-            }
-            startDateControl={
-              <EuiDatePicker
-                compressed
-                maxDate={today}
-                selected={createdFilter?.from}
-                onChange={(date) => {
-                  setCreatedFilter((prev) => ({
-                    ...prev,
-                    from: date,
-                  }))
-                }}
-              />
-            }
-          />
-        </EuiFormRow>
-        <EuiFormRow
-          label={
+          </EuiButtonEmpty>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiButton
+            fill
+            iconType='search'
+            isLoading={isLoading}
+            onClick={() => {
+              onQuerySubmited(
+                getValidQueries(termFieldsMap, createdFilter, modifiedFilter)
+              )
+            }}
+          >
             <FormattedMessage
-              defaultMessage='Data de modificação'
-              id='search.bibliographic.modified-date'
+              defaultMessage='Pesquisar'
+              id='search.bibliographic.search'
             />
-          }
-        >
-          <EuiDatePickerRange
-            compressed
-            endDateControl={
-              <EuiDatePicker
-                maxDate={today}
-                selected={modifiedFilter?.to}
-                onChange={(date) => {
-                  setModifiedFilter((prev) => ({
-                    ...prev,
-                    to: date,
-                  }))
-                }}
-              />
-            }
-            startDateControl={
-              <EuiDatePicker
-                compressed
-                maxDate={today}
-                selected={modifiedFilter?.from}
-                onChange={(date) => {
-                  setModifiedFilter((prev) => ({
-                    ...prev,
-                    from: date,
-                  }))
-                }}
-              />
-            }
-          />
-        </EuiFormRow>
-
-        <EuiButtonEmpty
-          color='neutral'
-          iconType='cross'
-          onClick={() => {
-            termFieldsMap.clear()
-            termFieldsMap.set(...generateTermField())
-          }}
-        >
-          <FormattedMessage
-            defaultMessage='Limpar todos os campos'
-            id='search.bibliographic.clear-all'
-          />
-        </EuiButtonEmpty>
-        <EuiButton
-          fill
-          iconType='search'
-          isLoading={isLoading}
-          onClick={() => {
-            onQuerySubmited(
-              getValidQueries(termFieldsMap, createdFilter, modifiedFilter)
-            )
-          }}
-        >
-          <FormattedMessage
-            defaultMessage='Pesquisar'
-            id='search.bibliographic.search'
-          />
-        </EuiButton>
+          </EuiButton>
+        </EuiFlexItem>
       </EuiFlexGroup>
     </EuiFlexGroup>
   )
