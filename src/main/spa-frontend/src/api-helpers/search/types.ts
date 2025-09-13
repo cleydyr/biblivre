@@ -37,6 +37,23 @@ export type SearchQueryTerms = SimpleQueryTerm | AdvancedQueryTerm[]
 
 export type SearchMode = 'list_all' | 'simple' | 'advanced'
 
+export type BibliographicMaterial =
+  | 'all'
+  | 'book'
+  | 'pamphlet'
+  | 'manuscript'
+  | 'thesis'
+  | 'periodic'
+  | 'articles'
+  | 'computer_legible'
+  | 'map'
+  | 'photo'
+  | 'movie'
+  | 'score'
+  | 'music'
+  | 'nonmusical_sound'
+  | 'object_3d'
+
 // Re-export response types
 export type {
   BibliographicRecord,

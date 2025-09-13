@@ -4,23 +4,22 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormRow,
-  EuiSelect,
   EuiSpacer,
   EuiToolTip,
 } from '@elastic/eui'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { FIELDS } from '../../api-helpers/search/constants'
+import TypedEuiSelect from '../../components/TypedEuiSelect'
 
-import type { EuiSelectOption } from '@elastic/eui'
-import type { ChangeEvent, ComponentProps, EventHandler, FC } from 'react'
-import type { Omit } from 'utility-types'
+import type { FC } from 'react'
 
 import type {
   AdvancedTextQueryTerm,
   EncodedTextQueryField,
   QueryOperator,
 } from '../../api-helpers/search/types'
+import type { TypedEuiSelectOption } from '../../components/TypedEuiSelect'
 
 type Props = {
   term: AdvancedTextQueryTerm
@@ -230,25 +229,6 @@ function useFieldOptions(): TypedEuiSelectOption<EncodedTextQueryField>[] {
       ),
     },
   ]
-}
-
-type TypedEuiSelectOption<T extends string> = Omit<EuiSelectOption, 'value'> & {
-  value: T
-}
-
-function TypedEuiSelect<T extends string>(
-  props: Omit<
-    ComponentProps<typeof EuiSelect>,
-    'value' | 'options' | 'onChange'
-  > & {
-    value: T
-    options: TypedEuiSelectOption<T>[]
-    onChange: EventHandler<
-      ChangeEvent<Omit<HTMLSelectElement, 'value'> & { value: T }>
-    >
-  }
-) {
-  return <EuiSelect {...props} />
 }
 
 const operatorOptions: TypedEuiSelectOption<QueryOperator>[] = [
