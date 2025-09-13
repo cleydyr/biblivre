@@ -6,6 +6,7 @@ import {
   EuiPanel,
   EuiStat,
   type Pagination,
+  useEuiTheme,
 } from '@elastic/eui'
 import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -22,6 +23,8 @@ import type {
 import type { SearchQueryTerms } from '../api-helpers/search/types'
 
 const BibliographicSearchPage = () => {
+  const { euiTheme } = useEuiTheme()
+
   const [terms, setTerms] = useState<SearchQueryTerms | undefined>()
 
   const [page, setPage] = useState<number>(0)
@@ -41,12 +44,12 @@ const BibliographicSearchPage = () => {
 
   const [_, setSelectedRecords] = useState<BibliographicRecord[]>([])
 
-  if (isSearchError) {
-    return <div>Error</div>
-  }
-
   return (
-    <EuiPageTemplate grow={false} paddingSize='l' restrictWidth={920}>
+    <EuiPageTemplate
+      grow={false}
+      paddingSize='xl'
+      restrictWidth={euiTheme.breakpoint.l}
+    >
       <EuiPageTemplate.Header
         pageTitle={
           <FormattedMessage
@@ -68,6 +71,18 @@ const BibliographicSearchPage = () => {
               }}
             />
           </EuiPanel>
+          {isSearchError && (
+            <EuiEmptyPrompt
+              body={
+                <FormattedMessage
+                  defaultMessage='Ocorreu um erro ao realizar a pesquisa'
+                  id='search.bibliographic.error'
+                />
+              }
+              color='danger'
+              iconType='error'
+            />
+          )}
           {isSearchSuccess && searchResults.success === false && (
             <EuiEmptyPrompt
               body={

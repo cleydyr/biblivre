@@ -6,6 +6,7 @@ import { icon as calendar } from '@elastic/eui/es/components/icon/assets/calenda
 import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
 import { icon as cross } from '@elastic/eui/es/components/icon/assets/cross'
 import { icon as empty } from '@elastic/eui/es/components/icon/assets/empty'
+import { icon as error } from '@elastic/eui/es/components/icon/assets/error'
 import { icon as help } from '@elastic/eui/es/components/icon/assets/help'
 import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo_elastic'
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
@@ -43,6 +44,7 @@ const cachedIcons: IconComponentCacheType = {
   sortLeft,
   sortRight,
   warning,
+  error,
 }
 
 appendIconComponentCache(cachedIcons)
