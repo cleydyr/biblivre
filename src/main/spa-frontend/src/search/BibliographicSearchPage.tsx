@@ -131,7 +131,7 @@ const BibliographicSearchPage = () => {
               <BibliographicSearchResultsTable
                 isLoading={isSearchFetching}
                 items={searchResults.search.data}
-                pagination={getPagination(searchResults, page)}
+                pagination={getPagination(searchResults)}
                 onChange={(criteria) => {
                   setPage(criteria.page?.index ?? 0)
                 }}
@@ -147,11 +147,10 @@ const BibliographicSearchPage = () => {
 
 function getPagination(
   searchResults: SuccessfulSearchResponse,
-  page: number
 ): Pagination | undefined {
   if (searchResults.search.page_count > 1) {
     return {
-      pageIndex: page,
+      pageIndex: searchResults.search.page - 1,
       totalItemCount: searchResults.search.record_count,
       pageSize: searchResults.search.records_per_page,
       showPerPageOptions: false,
