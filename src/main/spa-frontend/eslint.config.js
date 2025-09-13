@@ -99,6 +99,18 @@ export default tseslint.config([
       ],
       '@typescript-eslint/no-import-type-side-effects': 'error',
 
+      // Comma rules
+      '@typescript-eslint/comma-dangle': [
+        'error',
+        {
+          arrays: 'always-multiline',
+          objects: 'always-multiline',
+          imports: 'always-multiline',
+          exports: 'always-multiline',
+          functions: 'always-multiline',
+        },
+      ],
+
       // General code quality
       'no-console': 'warn',
       'no-debugger': 'error',
