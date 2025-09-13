@@ -80,6 +80,7 @@ function getBibliographicSearchColumns(): Array<
           id='search.bibliographic.publication_year'
         />
       ),
+      align: 'right',
     },
     {
       field: 'shelf_location',
@@ -112,10 +113,11 @@ function getBibliographicSearchColumns(): Array<
       field: 'holdings_count',
       name: (
         <FormattedMessage
-          defaultMessage='Exemplares disponíveis'
+          defaultMessage='Ex. disponíveis'
           id='search.bibliographic.holdings_count'
         />
       ),
+      align: 'right',
     },
   ]
 }

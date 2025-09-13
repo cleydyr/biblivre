@@ -1,6 +1,8 @@
 import { icon as arrowDown } from '@elastic/eui/es/components/icon/assets/arrow_down'
 import { icon as arrowLeft } from '@elastic/eui/es/components/icon/assets/arrow_left'
 import { icon as arrowRight } from '@elastic/eui/es/components/icon/assets/arrow_right'
+import { icon as arrowEnd } from '@elastic/eui/es/components/icon/assets/arrowEnd'
+import { icon as arrowStart } from '@elastic/eui/es/components/icon/assets/arrowStart'
 import { icon as brush } from '@elastic/eui/es/components/icon/assets/brush'
 import { icon as calendar } from '@elastic/eui/es/components/icon/assets/calendar'
 import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
@@ -45,6 +47,8 @@ const cachedIcons: IconComponentCacheType = {
   sortRight,
   warning,
   error,
+  arrowStart,
+  arrowEnd,
 }
 
 appendIconComponentCache(cachedIcons)
