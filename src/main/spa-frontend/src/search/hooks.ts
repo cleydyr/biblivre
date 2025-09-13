@@ -14,6 +14,7 @@ import {
 } from '../api-helpers/search'
 
 import type {
+  BibliographicMaterial,
   BibliographicRecord,
   SearchQueryTerms,
   SearchResponse,
@@ -22,9 +23,9 @@ import type {
 // Query keys for cache management
 export const searchQueryKeys = {
   all: ['search'] as const,
-  results: (terms?: SearchQueryTerms) =>
-    [...searchQueryKeys.all, 'results', terms] as const,
-  pagination: (searchId: string, page: number, sort?: number) =>
+  results: (materiaType: BibliographicMaterial, terms?: SearchQueryTerms) =>
+    [...searchQueryKeys.all, 'results', materiaType, terms] as const,
+  pagination: (searchId?: string, page?: number, sort?: number) =>
     [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
   record: (recordId: string) =>
     [...searchQueryKeys.all, 'record', recordId] as const,
@@ -33,23 +34,25 @@ export const searchQueryKeys = {
 export function usePaginatedSearch(
   terms: SearchQueryTerms | undefined,
   page: number,
+  materialType: BibliographicMaterial,
   sort?: number,
   options?: Omit<
     UseQueryOptions<SearchResponse>,
     'queryKey' | 'queryFn' | 'placeholderData'
-  >
+  >,
 ) {
   const [searchId, setSearchId] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     setSearchId(undefined)
-  }, [terms])
+  }, [terms, materialType])
 
   const initialQuery = useQuery({
     ...options,
     queryKey: searchQueryKeys.results(materialType, terms),
     queryFn: () => getCatalographicSearchResults(materialType, terms),
     enabled: options?.enabled && searchId === undefined,
+    placeholderData: keepPreviousData,
   })
 
   useEffect(() => {
@@ -64,14 +67,15 @@ export function usePaginatedSearch(
 
   const paginatedSearchQuery = useQuery({
     ...options,
-    queryKey: searchQueryKeys.pagination(searchId ?? '', page, sort),
+    queryKey: searchQueryKeys.pagination(searchId, page, sort),
     queryFn: () =>
       paginateCatalographicSearchResults(searchId ?? '', page, sort),
-    enabled: options?.enabled && searchId !== undefined,
+    enabled: options?.enabled && searchId !== undefined && page > 0,
     placeholderData: keepPreviousData,
+    staleTime: 60 * 1000,
   })
 
-  return searchId ? paginatedSearchQuery : initialQuery
+  return page > 0 ? paginatedSearchQuery : initialQuery
 }
 
 // Hook for opening a bibliographic record
