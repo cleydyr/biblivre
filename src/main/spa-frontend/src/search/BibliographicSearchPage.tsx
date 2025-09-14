@@ -16,10 +16,7 @@ import BibliographicSearchResultSort from './BibliographicSearchResultSort'
 import BibliographicSearchResultsTable from './BibliographicSearchResultsTable'
 import { usePaginatedSearch } from './hooks'
 
-import type {
-  BibliographicRecord,
-  SuccessfulSearchResponse,
-} from '../api-helpers/search/response-types'
+import type { SuccessfulSearchResponse } from '../api-helpers/search/response-types'
 import type {
   BibliographicMaterial,
   SearchQueryTerms,
@@ -46,8 +43,6 @@ const BibliographicSearchPage = () => {
   } = usePaginatedSearch(terms, page, materialType, sort, {
     enabled: isQuerySubmittedOnce,
   })
-
-  const [_, setSelectedRecords] = useState<BibliographicRecord[]>([])
 
   return (
     <EuiPageTemplate
@@ -135,7 +130,6 @@ const BibliographicSearchPage = () => {
                 onChange={(criteria) => {
                   setPage(criteria.page?.index ?? 0)
                 }}
-                onSelectItems={setSelectedRecords}
               />
             </EuiFlexGroup>
           )}

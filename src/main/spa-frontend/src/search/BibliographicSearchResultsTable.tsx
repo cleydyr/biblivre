@@ -1,5 +1,5 @@
 import { EuiBasicTable } from '@elastic/eui'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import type {
   Criteria,
@@ -7,14 +7,13 @@ import type {
   EuiTableSelectionType,
   Pagination,
 } from '@elastic/eui'
-import type { FC } from 'react'
+import { useState, type FC } from 'react'
 
 import type { BibliographicRecord } from '../api-helpers/search/response-types'
 
 type Props = {
   items: BibliographicRecord[]
   isLoading: boolean
-  onSelectItems: (items: BibliographicRecord[]) => void
   pagination: Pagination | undefined
   onChange: (criteria: Criteria<BibliographicRecord>) => void
 }
@@ -22,17 +21,23 @@ type Props = {
 export const BibliographicSearchResultsTable: FC<Props> = ({
   items,
   isLoading,
-  onSelectItems,
   pagination,
   onChange,
 }) => {
+  const [selectedRecords, setSelectedRecords] = useState<BibliographicRecord[]>(
+    [],
+  )
+
   const selection: EuiTableSelectionType<BibliographicRecord> = {
-    onSelectionChange: onSelectItems,
+    onSelectionChange: setSelectedRecords,
+    selected: selectedRecords,
   }
+
+  const columns = useBibliographicSearchColumns()
 
   return (
     <EuiBasicTable
-      columns={getBibliographicSearchColumns()}
+      columns={columns}
       itemId='id'
       items={items}
       loading={isLoading}
@@ -50,9 +55,11 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
   )
 }
 
-function getBibliographicSearchColumns(): Array<
+function useBibliographicSearchColumns(): Array<
   EuiBasicTableColumn<BibliographicRecord>
 > {
+  const { formatMessage } = useIntl()
+
   return [
     {
       field: 'title',
@@ -118,6 +125,33 @@ function getBibliographicSearchColumns(): Array<
         />
       ),
       align: 'right',
+    },
+    {
+      name: (
+        <FormattedMessage
+          defaultMessage='Ações'
+          id='search.bibliographic.actions'
+        />
+      ),
+      actions: [
+        {
+          name: (
+            <FormattedMessage
+              defaultMessage='Ver detalhes'
+              id='search.bibliographic.actions.details'
+            />
+          ),
+          icon: 'folderOpen',
+          type: 'icon',
+          onClick: (item: BibliographicRecord) => {
+            // TODO: show book details flyout
+          },
+          description: formatMessage({
+            defaultMessage: 'Ver detalhes do registro',
+            id: 'search.bibliographic.actions.details.description',
+          }),
+        },
+      ],
     },
   ]
 }

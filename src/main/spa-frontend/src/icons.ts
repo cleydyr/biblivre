@@ -19,6 +19,7 @@ import { icon as sortRight } from '@elastic/eui/es/components/icon/assets/sortRi
 import { icon as stopFilled } from '@elastic/eui/es/components/icon/assets/stop_filled'
 import { icon as trash } from '@elastic/eui/es/components/icon/assets/trash'
 import { icon as warning } from '@elastic/eui/es/components/icon/assets/warning'
+import { icon as folderOpen } from '@elastic/eui/es/components/icon/assets/folder_open'
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon'
 
 import type { ICON_TYPES } from '@elastic/eui'
@@ -49,6 +50,7 @@ const cachedIcons: IconComponentCacheType = {
   error,
   arrowStart,
   arrowEnd,
+  folderOpen,
 }
 
 appendIconComponentCache(cachedIcons)
