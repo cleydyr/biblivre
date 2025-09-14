@@ -9,7 +9,7 @@ import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSea
 
 import type { ComponentProps } from 'react'
 
-import type { AdvancedQueryTerm } from '../../api-helpers/search/types'
+import type { AdvancedTextQueryTerm } from '../../api-helpers/search/types'
 
 const mockMessages = {
   'search.bibliographic.operator': 'Operador',
@@ -29,8 +29,8 @@ const mockMessages = {
 }
 
 const createMockTerm = (
-  overrides?: Partial<AdvancedQueryTerm>,
-): AdvancedQueryTerm => ({
+  overrides?: Partial<AdvancedTextQueryTerm>,
+): AdvancedTextQueryTerm => ({
   query: '',
   operator: 'AND',
   field: FIELDS.ANY,
