@@ -42,8 +42,8 @@ const AdvancedBibliographicSearchDateFilters: FC<Props> = ({
             compressed
             endDateControl={
               <EuiDatePicker
-                locale='pt-br'
                 compressed
+                locale='pt-br'
                 maxDate={today}
                 selected={createdFilter?.to}
                 onChange={(date) => {
@@ -56,8 +56,8 @@ const AdvancedBibliographicSearchDateFilters: FC<Props> = ({
             }
             startDateControl={
               <EuiDatePicker
-                locale='pt-br'
                 compressed
+                locale='pt-br'
                 maxDate={today}
                 selected={createdFilter?.from}
                 onChange={(date) => {
@@ -97,8 +97,8 @@ const AdvancedBibliographicSearchDateFilters: FC<Props> = ({
             }
             startDateControl={
               <EuiDatePicker
-                locale='pt-br'
                 compressed
+                locale='pt-br'
                 maxDate={today}
                 selected={modifiedFilter?.from}
                 onChange={(date) => {

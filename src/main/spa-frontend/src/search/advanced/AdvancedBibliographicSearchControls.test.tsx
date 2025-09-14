@@ -10,7 +10,7 @@ import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchCo
 import type { ComponentProps } from 'react'
 
 const renderComponent = (
-  props: Partial<ComponentProps<typeof AdvancedBibliographicSearchControls>>
+  props: Partial<ComponentProps<typeof AdvancedBibliographicSearchControls>>,
 ) => {
   const defaultProps: ComponentProps<
     typeof AdvancedBibliographicSearchControls
@@ -23,7 +23,7 @@ const renderComponent = (
   return render(
     <IntlProvider locale='en' messages={{}}>
       <AdvancedBibliographicSearchControls {...defaultProps} />
-    </IntlProvider>
+    </IntlProvider>,
   )
 }
 
@@ -34,7 +34,7 @@ describe('AdvancedBibliographicSearchControls', () => {
     expect(screen.getByRole('textbox', { name: /termo/i })).toBeInTheDocument()
     expect(screen.getByLabelText('Termo')).toHaveValue('')
     expect(screen.getByRole('combobox', { name: 'Campo' })).toHaveValue(
-      FIELDS.ANY
+      FIELDS.ANY,
     )
   })
 
@@ -42,7 +42,7 @@ describe('AdvancedBibliographicSearchControls', () => {
     renderComponent({})
 
     expect(
-      screen.queryByRole('button', { name: /remover termo/i })
+      screen.queryByRole('button', { name: /remover termo/i }),
     ).not.toBeInTheDocument()
   })
 
@@ -55,7 +55,7 @@ describe('AdvancedBibliographicSearchControls', () => {
     expect(fields).toHaveLength(2)
 
     expect(
-      screen.getByRole('button', { name: /remover termo/i })
+      screen.getByRole('button', { name: /remover termo/i }),
     ).toBeInTheDocument()
   })
 
@@ -90,7 +90,7 @@ describe('AdvancedBibliographicSearchControls', () => {
 
     // Try to remove the first field (should not be possible)
     expect(
-      screen.queryByRole('button', { name: /remover termo/i })
+      screen.queryByRole('button', { name: /remover termo/i }),
     ).not.toBeInTheDocument()
     expect(screen.getAllByRole('textbox', { name: /termo/i })).toHaveLength(1)
   })

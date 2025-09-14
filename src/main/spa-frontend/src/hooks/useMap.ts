@@ -37,7 +37,7 @@ class ObservableMap<K, V> extends Map<K, V> {
 }
 
 function useMap<K, V>(
-  args: ConstructorParameters<typeof Map<K, V>>[0] = []
+  args: ConstructorParameters<typeof Map<K, V>>[0] = [],
 ): InstanceType<typeof Map<K, V>> {
   const [map, setMap] = useState(new Map<K, V>(args))
 

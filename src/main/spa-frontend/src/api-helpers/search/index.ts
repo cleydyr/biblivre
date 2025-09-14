@@ -12,7 +12,7 @@ import type {
 
 export async function getCatalographicSearchResults(
   materialType: BibliographicMaterial,
-  terms?: SearchQueryTerms
+  terms?: SearchQueryTerms,
 ): Promise<SearchResponse> {
   return fetchFromLegacyEndpoint({
     module: MODULES.CATALOGING_BIBLIOGRAPHIC,
@@ -29,7 +29,7 @@ export async function getCatalographicSearchResults(
 export async function paginateCatalographicSearchResults(
   search_id: string,
   page: number,
-  sort?: number
+  sort?: number,
 ): Promise<SearchResponse> {
   const result = fetchFromLegacyEndpoint({
     module: MODULES.CATALOGING_BIBLIOGRAPHIC,

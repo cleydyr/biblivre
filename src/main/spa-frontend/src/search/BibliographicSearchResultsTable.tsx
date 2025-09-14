@@ -1,4 +1,5 @@
 import { EuiBasicTable } from '@elastic/eui'
+import { type FC, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import type {
@@ -7,7 +8,6 @@ import type {
   EuiTableSelectionType,
   Pagination,
 } from '@elastic/eui'
-import { useState, type FC } from 'react'
 
 import type { BibliographicRecord } from '../api-helpers/search/response-types'
 
@@ -143,7 +143,7 @@ function useBibliographicSearchColumns(): Array<
           ),
           icon: 'folderOpen',
           type: 'icon',
-          onClick: (item: BibliographicRecord) => {
+          onClick: () => {
             // TODO: show book details flyout
           },
           description: formatMessage({

@@ -1,7 +1,9 @@
 import './icons.ts'
+import './moment/locale/pt-br'
 
 import { EuiContext, EuiProvider } from '@elastic/eui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { IntlProvider } from 'react-intl'
@@ -9,9 +11,6 @@ import { BrowserRouter } from 'react-router-dom'
 
 import App from './App.tsx'
 import { i18n } from './i18n.ts'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-
-import './moment/locale/pt-br'
 
 // Create a client
 const queryClient = new QueryClient()

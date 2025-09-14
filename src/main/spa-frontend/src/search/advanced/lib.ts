@@ -19,7 +19,7 @@ function hasValidQuery([_, term]: [UUID, BaseQueryTerm]): boolean {
 export function getValidQueries(
   termField: Map<UUID, AdvancedTextQueryTerm>,
   createdFilter: DateRange,
-  modifiedFilter: DateRange
+  modifiedFilter: DateRange,
 ): AdvancedQueryTerm[] | undefined {
   const validTerms: AdvancedQueryTerm[] = [...termField.entries()]
     .filter(hasValidQuery)

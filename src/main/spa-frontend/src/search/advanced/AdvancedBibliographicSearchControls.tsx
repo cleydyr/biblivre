@@ -47,7 +47,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
             <AdvancedBibliographicSearchControlsField
               order={index}
               term={term}
-              onChange={(term) => termFieldsMap.set(termFieldId, term)}
+              onChange={(newTerm) => termFieldsMap.set(termFieldId, newTerm)}
               onRemove={() => termFieldsMap.delete(termFieldId)}
             />
           </EuiFlexItem>
@@ -102,7 +102,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
             isLoading={isLoading}
             onClick={() => {
               onQuerySubmited(
-                getValidQueries(termFieldsMap, createdFilter, modifiedFilter)
+                getValidQueries(termFieldsMap, createdFilter, modifiedFilter),
               )
             }}
           >

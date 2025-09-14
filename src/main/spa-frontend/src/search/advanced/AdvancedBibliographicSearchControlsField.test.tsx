@@ -29,7 +29,7 @@ const mockMessages = {
 }
 
 const createMockTerm = (
-  overrides?: Partial<AdvancedQueryTerm>
+  overrides?: Partial<AdvancedQueryTerm>,
 ): AdvancedQueryTerm => ({
   query: '',
   operator: 'AND',
@@ -40,7 +40,7 @@ const createMockTerm = (
 const renderComponent = (
   props: Partial<
     ComponentProps<typeof AdvancedBibliographicSearchControlsField>
-  >
+  >,
 ) => {
   const defaultProps: ComponentProps<
     typeof AdvancedBibliographicSearchControlsField
@@ -55,7 +55,7 @@ const renderComponent = (
   return render(
     <IntlProvider locale='en' messages={mockMessages}>
       <AdvancedBibliographicSearchControlsField {...defaultProps} />
-    </IntlProvider>
+    </IntlProvider>,
   )
 }
 
@@ -71,7 +71,7 @@ describe('AdvancedBibliographicSearchControlsField', () => {
       renderComponent({ order: 0 })
 
       expect(
-        screen.queryByRole('button', { name: /remove/i })
+        screen.queryByRole('button', { name: /remove/i }),
       ).not.toBeInTheDocument()
     })
 
@@ -94,7 +94,7 @@ describe('AdvancedBibliographicSearchControlsField', () => {
       renderComponent({ order: 1 })
 
       expect(
-        screen.getByRole('button', { name: /Remover termo/i })
+        screen.getByRole('button', { name: /Remover termo/i }),
       ).toBeInTheDocument()
     })
 
@@ -126,7 +126,7 @@ describe('AdvancedBibliographicSearchControlsField', () => {
           operator: 'AND',
           field: FIELDS.ANY,
           query: expect.any(String),
-        })
+        }),
       )
     })
 
@@ -181,19 +181,19 @@ describe('AdvancedBibliographicSearchControlsField', () => {
       renderComponent({})
 
       expect(
-        screen.getByRole('option', { name: 'Qualquer campo' })
+        screen.getByRole('option', { name: 'Qualquer campo' }),
       ).toBeInTheDocument()
       expect(screen.getByRole('option', { name: 'Autor' })).toBeInTheDocument()
       expect(
-        screen.getByRole('option', { name: 'Ano de publicação' })
+        screen.getByRole('option', { name: 'Ano de publicação' }),
       ).toBeInTheDocument()
       expect(screen.getByRole('option', { name: 'Título' })).toBeInTheDocument()
       expect(
-        screen.getByRole('option', { name: 'Assunto' })
+        screen.getByRole('option', { name: 'Assunto' }),
       ).toBeInTheDocument()
       expect(screen.getByRole('option', { name: 'ISBN' })).toBeInTheDocument()
       expect(
-        screen.getByRole('option', { name: 'Editora' })
+        screen.getByRole('option', { name: 'Editora' }),
       ).toBeInTheDocument()
       expect(screen.getByRole('option', { name: 'Série' })).toBeInTheDocument()
     })

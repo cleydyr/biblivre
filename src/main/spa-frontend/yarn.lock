@@ -143,6 +143,11 @@
   dependencies:
     tslib "^1.9.3"
 
+"@elastic/eslint-plugin-eui@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eslint-plugin-eui/-/eslint-plugin-eui-2.3.0.tgz#3d65189b84f55440145eeb01dff9a77fb8036830"
+  integrity sha512-rimxG9D/jCT/UvrZvet69kTHYMIpBqPwl+iR+aA9Ay5QaP7LFEPnEj6TMb1wk64vfzrTeV95eOLMAElJmXo4wA==
+
 "@elastic/eui-theme-borealis@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@elastic/eui-theme-borealis/-/eui-theme-borealis-3.3.1.tgz#cbc1bcdf68277235e0ab1e1a19ec3a5511258dd6"
@@ -779,6 +784,18 @@
   resolved "https://registry.yarnpkg.com/@rtsao/scc/-/scc-1.1.0.tgz#927dd2fae9bc3361403ac2c7a00c32ddce9ad7e8"
   integrity sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==
 
+"@stylistic/eslint-plugin@^5.3.1":
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/@stylistic/eslint-plugin/-/eslint-plugin-5.3.1.tgz#1aead935023b708ca6a27d079b1a96b726a38fe2"
+  integrity sha512-Ykums1VYonM0TgkD0VteVq9mrlO2FhF48MDJnPyv3MktIB2ydtuhlO0AfWm7xnW1kyf5bjOqA6xc7JjviuVTxg==
+  dependencies:
+    "@eslint-community/eslint-utils" "^4.7.0"
+    "@typescript-eslint/types" "^8.41.0"
+    eslint-visitor-keys "^4.2.1"
+    espree "^10.4.0"
+    estraverse "^5.3.0"
+    picomatch "^4.0.3"
+
 "@swc/core-darwin-arm64@1.13.5":
   version "1.13.5"
   resolved "https://registry.yarnpkg.com/@swc/core-darwin-arm64/-/core-darwin-arm64-1.13.5.tgz#7638c073946f9297753ed9a2eb198d07b2336a24"
@@ -1114,6 +1131,11 @@
   version "8.39.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-8.39.1.tgz#f0ab996c8ab2c3b046bbf86bb1990b03529869a1"
   integrity sha512-7sPDKQQp+S11laqTrhHqeAbsCfMkwJMrV7oTDvtDds4mEofJYir414bYKUEb8YPUm9QL3U+8f6L6YExSoAGdQw==
+
+"@typescript-eslint/types@^8.41.0":
+  version "8.43.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-8.43.0.tgz#00d34a5099504eb1b263e022cc17c4243ff2302e"
+  integrity sha512-vQ2FZaxJpydjSZJKiSW/LJsabFFvV7KgLC5DiLhkBcykhQj8iK9BOaDmQt74nnKdLvceM5xmhaTF+pLekrxEkw==
 
 "@typescript-eslint/typescript-estree@8.39.1":
   version "8.39.1"

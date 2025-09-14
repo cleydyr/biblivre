@@ -27,7 +27,7 @@ const renderComponent = (props: {
   return render(
     <IntlProvider locale='en' messages={mockMessages}>
       <SimpleBibliographicSearchControls {...defaultProps} />
-    </IntlProvider>
+    </IntlProvider>,
   )
 }
 
@@ -38,7 +38,7 @@ describe('SimpleBibliographicSearchControls', () => {
 
       expect(screen.getByRole('searchbox')).toBeInTheDocument()
       expect(
-        screen.getByRole('button', { name: /Listar todos/i })
+        screen.getByRole('button', { name: /Listar todos/i }),
       ).toBeInTheDocument()
     })
 
@@ -48,7 +48,7 @@ describe('SimpleBibliographicSearchControls', () => {
       const searchInput = screen.getByRole('searchbox')
       expect(searchInput).toHaveAttribute(
         'placeholder',
-        'Preencha os termos da pesquisa'
+        'Preencha os termos da pesquisa',
       )
     })
 
@@ -58,7 +58,7 @@ describe('SimpleBibliographicSearchControls', () => {
       const searchInput = screen.getByRole('searchbox')
       expect(searchInput).toHaveAttribute(
         'aria-label',
-        'Termos da pesquisa simples'
+        'Termos da pesquisa simples',
       )
     })
 
@@ -66,10 +66,10 @@ describe('SimpleBibliographicSearchControls', () => {
       renderComponent({})
 
       expect(
-        screen.getByRole('button', { name: /Listar todos/i })
+        screen.getByRole('button', { name: /Listar todos/i }),
       ).toBeInTheDocument()
       expect(
-        screen.queryByRole('button', { name: /Pesquisar/i })
+        screen.queryByRole('button', { name: /Pesquisar/i }),
       ).not.toBeInTheDocument()
     })
   })
@@ -86,7 +86,7 @@ describe('SimpleBibliographicSearchControls', () => {
 
       // Button should still show "Pesquisar"
       expect(
-        screen.getByRole('button', { name: /pesquisar/i })
+        screen.getByRole('button', { name: /pesquisar/i }),
       ).toBeInTheDocument()
 
       // Clear the input
@@ -94,10 +94,10 @@ describe('SimpleBibliographicSearchControls', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('button', { name: /listar todos/i })
+          screen.getByRole('button', { name: /listar todos/i }),
         ).toBeInTheDocument()
         expect(
-          screen.queryByRole('button', { name: /pesquisar/i })
+          screen.queryByRole('button', { name: /pesquisar/i }),
         ).not.toBeInTheDocument()
       })
     })
@@ -114,7 +114,7 @@ describe('SimpleBibliographicSearchControls', () => {
       await user.clear(searchInput)
 
       expect(
-        screen.getByRole('button', { name: /Listar todos/i })
+        screen.getByRole('button', { name: /Listar todos/i }),
       ).toBeInTheDocument()
 
       const button = screen.getByRole('button', { name: /listar todos/i })
@@ -258,7 +258,7 @@ describe('SimpleBibliographicSearchControls', () => {
       const searchInput = screen.getByRole('searchbox')
       expect(searchInput).toHaveAttribute(
         'aria-label',
-        'Termos da pesquisa simples'
+        'Termos da pesquisa simples',
       )
     })
 

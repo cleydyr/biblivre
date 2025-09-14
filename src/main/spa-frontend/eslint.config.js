@@ -1,4 +1,6 @@
+import elasticEuiPlugin from '@elastic/eslint-plugin-eui'
 import js from '@eslint/js'
+import stylistic from '@stylistic/eslint-plugin'
 import importPlugin from 'eslint-plugin-import'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import prettier from 'eslint-plugin-prettier'
@@ -31,6 +33,8 @@ export default tseslint.config([
       import: importPlugin,
       prettier,
       'simple-import-sort': simpleImportSort,
+      eui: elasticEuiPlugin,
+      '@stylistic': stylistic,
     },
     rules: {
       // Prettier integration
@@ -112,7 +116,7 @@ export default tseslint.config([
       '@typescript-eslint/no-import-type-side-effects': 'error',
 
       // Comma rules
-      '@typescript-eslint/comma-dangle': [
+      '@stylistic/comma-dangle': [
         'error',
         {
           arrays: 'always-multiline',
@@ -120,6 +124,7 @@ export default tseslint.config([
           imports: 'always-multiline',
           exports: 'always-multiline',
           functions: 'always-multiline',
+          generics: 'ignore',
         },
       ],
 

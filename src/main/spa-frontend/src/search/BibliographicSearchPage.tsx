@@ -64,10 +64,10 @@ const BibliographicSearchPage = () => {
           <EuiPanel hasBorder paddingSize='l'>
             <BibliographicSearchControls
               isLoading={isSearchFetching}
-              onQuerySubmited={(materialType, query) => {
-                setTerms(query)
+              onQuerySubmited={(queryMaterialType, newTerms) => {
+                setTerms(newTerms)
                 setPage(0)
-                setMaterialType(materialType)
+                setMaterialType(queryMaterialType)
                 setQuerySubmittedOnce(true)
               }}
             />
@@ -115,8 +115,8 @@ const BibliographicSearchPage = () => {
                 <EuiFlexItem>
                   <EuiFlexGroup alignItems='flexEnd' justifyContent='flexEnd'>
                     <BibliographicSearchResultSort
-                      onSortChange={(sort: number) => {
-                        setSort(sort)
+                      onSortChange={(newSort: number) => {
+                        setSort(newSort)
                         setPage(0)
                       }}
                     />

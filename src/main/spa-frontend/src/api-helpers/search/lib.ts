@@ -16,13 +16,13 @@ type AdvancedSearchTerms = {
 type SearchTerms = SimpleSearchTerms | AdvancedSearchTerms
 
 export function isAdvancedQuery(
-  terms: SearchQueryTerms
+  terms: SearchQueryTerms,
 ): terms is AdvancedQueryTerm[] {
   return Array.isArray(terms)
 }
 
 export function getSearchTerms(
-  terms: SearchQueryTerms | undefined
+  terms: SearchQueryTerms | undefined,
 ): SearchTerms | undefined {
   if (terms === undefined) {
     return undefined
