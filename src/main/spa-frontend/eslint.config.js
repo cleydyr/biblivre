@@ -85,6 +85,18 @@ export default tseslint.config([
           caughtErrorsIgnorePattern: '^_.*$',
         },
       ],
+
+      // Variable shadowing rules
+      'no-shadow': 'off', // Turn off base rule
+      '@typescript-eslint/no-shadow': [
+        'warn',
+        {
+          builtinGlobals: false,
+          hoist: 'functions',
+          allow: [],
+        },
+      ],
+
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
