@@ -121,7 +121,7 @@ export interface Holding {
 }
 
 export interface Field {
-  datafield: string
+  datafield: MarcField
   value: string
 }
 
