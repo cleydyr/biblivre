@@ -13,6 +13,7 @@ import { FormattedMessage } from 'react-intl'
 
 import { useOpenBibliographicRecord } from '../hooks'
 
+import RecordBrief from './RecordBrief'
 import RecordForm from './RecordForm'
 import RecordHoldings from './RecordHoldings'
 import RecordMarc from './RecordMarc'
@@ -58,7 +59,7 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
                   tabs={[
                     {
                       id: 'summary',
-                      content: <RecordSummaryPanel record={record.data} />,
+                      content: <RecordBrief record={record.data} />,
                       name: (
                         <FormattedMessage
                           defaultMessage='Resumo catalográfico'
