@@ -6,6 +6,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 import prettier from 'eslint-plugin-prettier'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
+import reactIntl from 'eslint-plugin-react-intl'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
@@ -35,6 +36,7 @@ export default tseslint.config([
       'simple-import-sort': simpleImportSort,
       eui: elasticEuiPlugin,
       '@stylistic': stylistic,
+      reactIntl,
     },
     rules: {
       // Prettier integration
