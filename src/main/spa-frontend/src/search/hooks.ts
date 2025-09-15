@@ -80,5 +80,6 @@ export function useOpenBibliographicRecord(recordId: number) {
   return useQuery({
     queryKey: searchQueryKeys.record(recordId),
     queryFn: () => openBibliographicRecord(String(recordId)),
+    staleTime: 60 * 1000,
   })
 }
