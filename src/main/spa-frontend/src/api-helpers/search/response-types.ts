@@ -138,6 +138,8 @@ export interface OpenResult {
   holdings_reserved: number
   id: number
   isbn: string
+  issn: string
+  isrc: string
   json: {
     [field in MarcField]?: MarcFieldData[] | string
   }

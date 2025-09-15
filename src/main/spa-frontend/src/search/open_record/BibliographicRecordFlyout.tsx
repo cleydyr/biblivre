@@ -8,7 +8,9 @@ import {
 } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 
-import { useOpenBibliographicRecord } from './hooks'
+import { useOpenBibliographicRecord } from '../hooks'
+
+import BibliographicRecordFlyoutHeader from './BibliographicRecordFlyoutHeader'
 
 import type { FC } from 'react'
 
@@ -30,14 +32,15 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
           <EuiTitle size='m'>
             <h2 id={flyoutTitleId}>
               <FormattedMessage
-                defaultMessage='Registro {id}'
+                defaultMessage='Detalhes do registro bibliográfico'
                 id='bibliographic-record.flyout.title'
-                values={{ id: data.success && data.data.id }}
               />
             </h2>
           </EuiTitle>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
+          <BibliographicRecordFlyoutHeader record={data.data} />
+
           <EuiCodeBlock language='html'>{data.data.marc}</EuiCodeBlock>
         </EuiFlyoutBody>
       </EuiFlyout>
