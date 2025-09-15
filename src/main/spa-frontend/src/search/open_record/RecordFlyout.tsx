@@ -13,10 +13,10 @@ import { FormattedMessage } from 'react-intl'
 
 import { useOpenBibliographicRecord } from '../hooks'
 
-import BibliographicRecordFormPanel from './BibliographicRecordFormPanel'
-import BibliographicRecordHoldingsTab from './BibliographicRecordHoldingsTab'
-import BibliographicRecordMarcPanel from './BibliographicRecordMarcPanel'
-import BibliographicRecordSummaryPanel from './BibliographicRecordSummaryPanel'
+import RecordForm from './RecordForm'
+import RecordHoldings from './RecordHoldings'
+import RecordMarc from './RecordMarc'
+import RecordSummaryPanel from './RecordSummaryPanel'
 
 import type { FC } from 'react'
 
@@ -53,14 +53,12 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
             isSuccess &&
             record.success && (
               <EuiFlexGroup direction='column'>
-                <BibliographicRecordSummaryPanel record={record.data} />
+                <RecordSummaryPanel record={record.data} />
                 <EuiTabbedContent
                   tabs={[
                     {
                       id: 'summary',
-                      content: (
-                        <BibliographicRecordSummaryPanel record={record.data} />
-                      ),
+                      content: <RecordSummaryPanel record={record.data} />,
                       name: (
                         <FormattedMessage
                           defaultMessage='Resumo catalográfico'
@@ -70,9 +68,7 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
                     },
                     {
                       id: 'form',
-                      content: (
-                        <BibliographicRecordFormPanel record={record.data} />
-                      ),
+                      content: <RecordForm record={record.data} />,
                       name: (
                         <FormattedMessage
                           defaultMessage='Formulário'
@@ -82,9 +78,7 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
                     },
                     {
                       id: 'marc',
-                      content: (
-                        <BibliographicRecordMarcPanel marc={record.data.marc} />
-                      ),
+                      content: <RecordMarc marc={record.data.marc} />,
                       name: (
                         <FormattedMessage
                           defaultMessage='MARC'
@@ -94,9 +88,7 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
                     },
                     {
                       id: 'holdings',
-                      content: (
-                        <BibliographicRecordHoldingsTab record={record.data} />
-                      ),
+                      content: <RecordHoldings record={record.data} />,
                       name: (
                         <FormattedMessage
                           defaultMessage='Exemplares'

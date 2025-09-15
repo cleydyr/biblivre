@@ -2,7 +2,7 @@ import { EuiBasicTable } from '@elastic/eui'
 import { type FC, Fragment, type ReactNode, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import BibliographicRecordFlyout from './open_record/BibliographicRecordFlyout'
+import BibliographicRecordFlyout from './open_record/RecordFlyout'
 
 import type {
   Criteria,
