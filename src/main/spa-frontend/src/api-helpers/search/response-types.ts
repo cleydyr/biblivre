@@ -105,7 +105,7 @@ export type SearchResponse = SuccessfulSearchResponse | NoResultsSearchResponse
 export interface Holding {
   attachments: unknown[]
   created: string
-  availability: string
+  availability: 'available' | 'unavailable'
   shelf_location: string
   material_type: string
   accession_number: string
