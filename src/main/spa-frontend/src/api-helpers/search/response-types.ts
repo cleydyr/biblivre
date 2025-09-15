@@ -125,31 +125,44 @@ export interface Field {
   value: string
 }
 
+export type Lending = {
+  id: number
+  holding_id: number
+  user_id: number
+  previous_lending_id: number
+  expected_return_date: string
+  return_date: string
+  daily_fine: number
+  days_late: number
+  estimated_fine: number
+}
+
 export interface OpenResult {
   attachments: BibliographicRecordAttachment[]
-  author: string
+  author?: string
   created: string
-  database: string
+  database?: string
   fields: Field[]
-  holdings: Holding[]
+  holdings?: Holding[]
   holdings_available: number
   holdings_count: number
   holdings_lent: number
   holdings_reserved: number
   id: number
-  isbn: string
-  issn: string
-  isrc: string
+  isbn?: string
+  issn?: string
+  isrc?: string
   json: {
     [field in MarcField]?: MarcFieldData[] | string
   }
   marc: string
   material_type: string
   modified: string
-  publication_year: string
-  shelf_location: string
-  subject: string
-  title: string
+  publication_year?: string
+  shelf_location?: string
+  subject?: string
+  title?: string
+  lendings?: Record<string, Lending>
 }
 
 export interface SuccessfulOpenResponse {
