@@ -1,8 +1,6 @@
 import {
   keepPreviousData,
-  useMutation,
   useQuery,
-  useQueryClient,
   type UseQueryOptions,
 } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
@@ -15,7 +13,6 @@ import {
 
 import type {
   BibliographicMaterial,
-  BibliographicRecord,
   SearchQueryTerms,
   SearchResponse,
 } from '../api-helpers/search/types'
@@ -27,7 +24,7 @@ export const searchQueryKeys = {
     [...searchQueryKeys.all, 'results', materiaType, terms] as const,
   pagination: (searchId?: string, page?: number, sort?: number) =>
     [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
-  record: (recordId: string) =>
+  record: (recordId: number) =>
     [...searchQueryKeys.all, 'record', recordId] as const,
 }
 
@@ -79,14 +76,9 @@ export function usePaginatedSearch(
 }
 
 // Hook for opening a bibliographic record
-export function useOpenBibliographicRecord() {
-  const queryClient = useQueryClient()
-
-  return useMutation<BibliographicRecord, unknown, string>({
-    mutationFn: (recordId: string) => openBibliographicRecord(recordId),
-    onSuccess: (data, recordId) => {
-      // Cache the opened record
-      queryClient.setQueryData(searchQueryKeys.record(recordId), data)
-    },
+export function useOpenBibliographicRecord(recordId: number) {
+  return useQuery({
+    queryKey: searchQueryKeys.record(recordId),
+    queryFn: () => openBibliographicRecord(String(recordId)),
   })
 }

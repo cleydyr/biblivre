@@ -30,6 +30,13 @@ export type MarcFieldData = {
   [subfield in MarcSubfield]: MarcSubfieldData
 }
 
+export type BibliographicRecordAttachment = {
+  file: string
+  name: string
+  path: string
+  uri: string
+}
+
 // Individual bibliographic record
 export interface BibliographicRecord {
   id: number
@@ -37,7 +44,7 @@ export interface BibliographicRecord {
   holdings_lent: number
   holdings_reserved: number
   holdings_available: number
-  attachments: unknown[]
+  attachments: BibliographicRecordAttachment[]
   created: string
   modified: string
   author: string
@@ -87,10 +94,71 @@ export interface SuccessfulSearchResponse {
   success: true
 }
 
-export interface NoResultsSearchResponse {
+export type NoResultsSearchResponse = {
   success: false
   message_level: 'warning'
   message: string
 }
 
 export type SearchResponse = SuccessfulSearchResponse | NoResultsSearchResponse
+
+export interface Holding {
+  attachments: unknown[]
+  created: string
+  availability: string
+  shelf_location: string
+  material_type: string
+  accession_number: string
+  record_id: number
+  database: string
+  marc: string
+  modified: string
+  json: {
+    [field in MarcField]?: MarcFieldData[] | string
+  }
+  id: number
+  location_d: string
+}
+
+export interface Field {
+  datafield: string
+  value: string
+}
+
+export interface OpenResult {
+  attachments: BibliographicRecordAttachment[]
+  author: string
+  created: string
+  database: string
+  fields: Field[]
+  holdings: Holding[]
+  holdings_available: number
+  holdings_count: number
+  holdings_lent: number
+  holdings_reserved: number
+  id: number
+  isbn: string
+  json: {
+    [field in MarcField]?: MarcFieldData[] | string
+  }
+  marc: string
+  material_type: string
+  modified: string
+  publication_year: string
+  shelf_location: string
+  subject: string
+  title: string
+}
+
+export interface SuccessfulOpenResponse {
+  data: OpenResult
+  success: true
+}
+
+export interface NoResultsOpenResponse {
+  success: false
+  message_level: 'warning'
+  message: string
+}
+
+export type OpenResponse = SuccessfulOpenResponse | NoResultsOpenResponse

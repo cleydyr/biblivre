@@ -4,6 +4,7 @@ import { fetchFromLegacyEndpoint } from '..'
 import { ACTIONS, FIELDS } from './constants'
 import { getSearchMode, getSearchTerms } from './lib'
 
+import type { OpenResponse } from './response-types'
 import type {
   BibliographicMaterial,
   SearchQueryTerms,
@@ -42,7 +43,9 @@ export async function paginateCatalographicSearchResults(
   return result
 }
 
-export async function openBibliographicRecord(recordId: string) {
+export async function openBibliographicRecord(
+  recordId: string,
+): Promise<OpenResponse> {
   return await fetchFromLegacyEndpoint({
     module: MODULES.CATALOGING_BIBLIOGRAPHIC,
     action: ACTIONS.OPEN,
