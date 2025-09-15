@@ -10,7 +10,7 @@ import { FormattedMessage } from 'react-intl'
 
 import { useOpenBibliographicRecord } from '../hooks'
 
-import BibliographicRecordFlyoutHeader from './BibliographicRecordFlyoutHeader'
+import BibliographicRecordSummaryPanel from './BibliographicRecordSummaryPanel'
 
 import type { FC } from 'react'
 
@@ -39,7 +39,7 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
           </EuiTitle>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
-          <BibliographicRecordFlyoutHeader record={data.data} />
+          <BibliographicRecordSummaryPanel record={data.data} />
 
           <EuiCodeBlock language='html'>{data.data.marc}</EuiCodeBlock>
         </EuiFlyoutBody>

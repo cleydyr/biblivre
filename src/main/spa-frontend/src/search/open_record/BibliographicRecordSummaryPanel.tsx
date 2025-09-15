@@ -9,7 +9,7 @@ type Props = {
   record: OpenResult
 }
 
-const BibliographicRecordFlyoutHeader: FC<Props> = ({ record }) => {
+const BibliographicRecordSummaryPanel: FC<Props> = ({ record }) => {
   return (
     <EuiDescriptionList
       compressed
@@ -92,4 +92,4 @@ const BibliographicRecordFlyoutHeader: FC<Props> = ({ record }) => {
   )
 }
 
-export default BibliographicRecordFlyoutHeader
+export default BibliographicRecordSummaryPanel
