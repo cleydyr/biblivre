@@ -57,15 +57,6 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
       <EuiInMemoryTable
         columns={[
           {
-            field: 'accession_number',
-            name: (
-              <FormattedMessage
-                defaultMessage='Tombo patrimonial'
-                id='bibliographic-record.holdings-tab.accession_number'
-              />
-            ),
-          },
-          {
             name: (
               <FormattedMessage
                 defaultMessage='Disponibilidade'
@@ -94,6 +85,16 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
               )
             },
           },
+          {
+            field: 'accession_number',
+            name: (
+              <FormattedMessage
+                defaultMessage='Tombo patrimonial'
+                id='bibliographic-record.holdings-tab.accession_number'
+              />
+            ),
+          },
+
           {
             field: 'shelf_location',
             name: (
