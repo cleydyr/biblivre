@@ -197,7 +197,7 @@ function useFieldOptions(): TypedEuiSelectOption<EncodedTextQueryField>[] {
       text: (
         <FormattedMessage
           defaultMessage='Assunto'
-          id='search.bibliographic.shelf_location'
+          id='search.bibliographic.subject'
         />
       ),
     },

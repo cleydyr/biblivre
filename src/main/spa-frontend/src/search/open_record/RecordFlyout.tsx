@@ -73,7 +73,7 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
                       name: (
                         <FormattedMessage
                           defaultMessage='Formulário'
-                          id='bibliographic-record.flyout.marc'
+                          id='bibliographic-record.flyout.form'
                         />
                       ),
                     },
