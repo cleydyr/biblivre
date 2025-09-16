@@ -15,7 +15,7 @@ const RecordBrief: FC<Props> = ({ record }) => {
     <EuiFlexGroup direction='column'>
       <div />
       <EuiDescriptionList
-        compressed
+        columnGutterSize='m'
         listItems={usePanelDescriptionListItems(record)}
         type='column'
       />
