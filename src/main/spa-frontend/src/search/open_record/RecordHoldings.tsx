@@ -16,12 +16,12 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
   return (
     <EuiFlexGroup direction='column'>
       <div />
-      <EuiFlexGroup>
+      <EuiFlexGroup gutterSize='xl'>
         <EuiStat
           description={
             <FormattedMessage
               defaultMessage='Total de exemplares'
-              id='bibliographic-record.holdings-tab.total'
+              id='bibliographic-record.holdings-tab.holdings_count'
             />
           }
           title={record.holdings_count}
@@ -30,7 +30,7 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
           description={
             <FormattedMessage
               defaultMessage='Exemplares disponíveis'
-              id='bibliographic-record.holdings-tab.available'
+              id='bibliographic-record.holdings-tab.holdings_available'
             />
           }
           title={record.holdings_available}
@@ -39,7 +39,7 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
           description={
             <FormattedMessage
               defaultMessage='Exemplares emprestados'
-              id='bibliographic-record.holdings-tab.lent'
+              id='bibliographic-record.holdings-tab.holdings_lent'
             />
           }
           title={record.holdings_lent}
@@ -48,7 +48,7 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
           description={
             <FormattedMessage
               defaultMessage='Reservas'
-              id='bibliographic-record.holdings-tab.reserved'
+              id='bibliographic-record.holdings-tab.holdings_reserved'
             />
           }
           title={record.holdings_reserved}
@@ -60,7 +60,7 @@ const BibliographicRecordHoldingsTab: FC<Props> = ({ record }) => {
             name: (
               <FormattedMessage
                 defaultMessage='Disponibilidade'
-                id='bibliographic-record.holdings-tab.availability'
+                id='bibliographic-record.holdings-tab.holdings_availability'
               />
             ),
             render: (value: Holding) => {
