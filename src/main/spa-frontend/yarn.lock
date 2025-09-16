@@ -503,6 +503,11 @@
     "@eslint/core" "^0.15.2"
     levn "^0.4.1"
 
+"@formatjs/cli@^6.7.2":
+  version "6.7.2"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.7.2.tgz#8d1a3225dee98cadbc5331b1971f1b79dead4253"
+  integrity sha512-714/ifbtq7CmOtcLVGjYZp5EX0vKclQt3XZ+4Oiz0lhrHWU1ObFTtX9sLS9dADGta1pgDtS4+A3YpjWMY26Spg==
+
 "@formatjs/ecma402-abstract@2.2.4":
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/@formatjs/ecma402-abstract/-/ecma402-abstract-2.2.4.tgz#355e42d375678229d46dc8ad7a7139520dd03e7b"

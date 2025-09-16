@@ -9,16 +9,17 @@ import { createRoot } from 'react-dom/client'
 import { IntlProvider } from 'react-intl'
 import { BrowserRouter } from 'react-router-dom'
 
+import messages from '../lang-compiled.json'
+
 import App from './App.tsx'
 import { i18n } from './i18n.ts'
-
 // Create a client
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <IntlProvider locale='pt-BR'>
+      <IntlProvider locale='pt-BR' messages={messages}>
         <EuiProvider colorMode='light'>
           <EuiContext i18n={i18n}>
             <QueryClientProvider client={queryClient}>

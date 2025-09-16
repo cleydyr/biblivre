@@ -1,0 +1,239 @@
+{
+  "bibliographic-record.flyout.form": {
+    "defaultMessage": "Formulário"
+  },
+  "bibliographic-record.flyout.holdings": {
+    "defaultMessage": "Exemplares"
+  },
+  "bibliographic-record.flyout.marc": {
+    "defaultMessage": "MARC"
+  },
+  "bibliographic-record.flyout.summary": {
+    "defaultMessage": "Resumo catalográfico"
+  },
+  "bibliographic-record.flyout.title": {
+    "defaultMessage": "Detalhes do registro bibliográfico"
+  },
+  "bibliographic-record.form-panel.description": {
+    "defaultMessage": "Visualização do formulário MARC para o registro bibliográfico."
+  },
+  "bibliographic-record.form-panel.placeholder": {
+    "defaultMessage": "Componente em desenvolvimento - ID do registro: {recordId}"
+  },
+  "bibliographic-record.holdings-tab.accession_number": {
+    "defaultMessage": "Tombo patrimonial"
+  },
+  "bibliographic-record.holdings-tab.available": {
+    "defaultMessage": "Disponível"
+  },
+  "bibliographic-record.holdings-tab.holdings_availability": {
+    "defaultMessage": "Disponibilidade"
+  },
+  "bibliographic-record.holdings-tab.holdings_available": {
+    "defaultMessage": "Exemplares disponíveis"
+  },
+  "bibliographic-record.holdings-tab.holdings_count": {
+    "defaultMessage": "Total de exemplares"
+  },
+  "bibliographic-record.holdings-tab.holdings_lent": {
+    "defaultMessage": "Exemplares emprestados"
+  },
+  "bibliographic-record.holdings-tab.holdings_reserved": {
+    "defaultMessage": "Reservas"
+  },
+  "bibliographic-record.holdings-tab.id": {
+    "defaultMessage": "Nº do exemplar"
+  },
+  "bibliographic-record.holdings-tab.shelf_location": {
+    "defaultMessage": "Localização"
+  },
+  "bibliographic-record.holdings-tab.unavailable": {
+    "defaultMessage": "Indisponível"
+  },
+  "bibliographic-search-result-sort.ano": {
+    "defaultMessage": "Ano"
+  },
+  "bibliographic-search-result-sort.author": {
+    "defaultMessage": "Autor"
+  },
+  "bibliographic-search-result-sort.label": {
+    "defaultMessage": "Ordenar por"
+  },
+  "bibliographic-search-result-sort.publisher": {
+    "defaultMessage": "Editora"
+  },
+  "bibliographic-search-result-sort.series": {
+    "defaultMessage": "Série"
+  },
+  "bibliographic-search-result-sort.title": {
+    "defaultMessage": "Título"
+  },
+  "material-type.all": {
+    "defaultMessage": "Todos"
+  },
+  "material-type.articles": {
+    "defaultMessage": "Artigo"
+  },
+  "material-type.book": {
+    "defaultMessage": "Livro"
+  },
+  "material-type.computer_legible": {
+    "defaultMessage": "Arquivo de Computador"
+  },
+  "material-type.manuscript": {
+    "defaultMessage": "Manuscrito"
+  },
+  "material-type.map": {
+    "defaultMessage": "Mapa"
+  },
+  "material-type.movie": {
+    "defaultMessage": "Filme"
+  },
+  "material-type.music": {
+    "defaultMessage": "Música"
+  },
+  "material-type.nonmusical_sound": {
+    "defaultMessage": "Som não musical"
+  },
+  "material-type.object_3d": {
+    "defaultMessage": "Objeto 3D"
+  },
+  "material-type.pamphlet": {
+    "defaultMessage": "Panfleto"
+  },
+  "material-type.periodic": {
+    "defaultMessage": "Periódico"
+  },
+  "material-type.photo": {
+    "defaultMessage": "Foto"
+  },
+  "material-type.score": {
+    "defaultMessage": "Partitura"
+  },
+  "material-type.thesis": {
+    "defaultMessage": "Tese"
+  },
+  "search.bibliographic.actions": {
+    "defaultMessage": "Ações"
+  },
+  "search.bibliographic.actions.details": {
+    "defaultMessage": "Ver detalhes"
+  },
+  "search.bibliographic.actions.details.description": {
+    "defaultMessage": "Ver detalhes do registro"
+  },
+  "search.bibliographic.add-term": {
+    "defaultMessage": "Adicionar termo"
+  },
+  "search.bibliographic.advanced_search": {
+    "defaultMessage": "Pesquisa avançada"
+  },
+  "search.bibliographic.any": {
+    "defaultMessage": "Qualquer campo"
+  },
+  "search.bibliographic.author": {
+    "defaultMessage": "Autor"
+  },
+  "search.bibliographic.clear-all": {
+    "defaultMessage": "Limpar campos"
+  },
+  "search.bibliographic.created-date": {
+    "defaultMessage": "Data de criação"
+  },
+  "search.bibliographic.error": {
+    "defaultMessage": "Ocorreu um erro ao realizar a pesquisa"
+  },
+  "search.bibliographic.field": {
+    "defaultMessage": "Campo"
+  },
+  "search.bibliographic.header.1": {
+    "defaultMessage": "Pesquisa Bibliográfica"
+  },
+  "search.bibliographic.header.2.advanced": {
+    "defaultMessage": "Pesquisa Bibliográfica Avançada"
+  },
+  "search.bibliographic.header.2.simple": {
+    "defaultMessage": "Pesquisa Bibliográfica"
+  },
+  "search.bibliographic.holdings_count": {
+    "defaultMessage": "Ex. disponíveis"
+  },
+  "search.bibliographic.id": {
+    "defaultMessage": "Nº do registro"
+  },
+  "search.bibliographic.isbn": {
+    "defaultMessage": "ISBN"
+  },
+  "search.bibliographic.isrc": {
+    "defaultMessage": "ISRC"
+  },
+  "search.bibliographic.issn": {
+    "defaultMessage": "ISSN"
+  },
+  "search.bibliographic.material_type": {
+    "defaultMessage": "Tipo de material"
+  },
+  "search.bibliographic.modified-date": {
+    "defaultMessage": "Data de modificação"
+  },
+  "search.bibliographic.no-results": {
+    "defaultMessage": "A pesquisa não retornou nenhum resultado"
+  },
+  "search.bibliographic.no_results": {
+    "defaultMessage": "Nenhum resultado encontrado"
+  },
+  "search.bibliographic.operator": {
+    "defaultMessage": "Operador"
+  },
+  "search.bibliographic.publication_year": {
+    "defaultMessage": "Ano de publicação"
+  },
+  "search.bibliographic.publisher": {
+    "defaultMessage": "Editora"
+  },
+  "search.bibliographic.remove_field": {
+    "defaultMessage": "Remover termo"
+  },
+  "search.bibliographic.results": {
+    "defaultMessage": "Resultados encontrados"
+  },
+  "search.bibliographic.search": {
+    "defaultMessage": "Pesquisar"
+  },
+  "search.bibliographic.search_all": {
+    "defaultMessage": "Listar todos"
+  },
+  "search.bibliographic.search_label": {
+    "defaultMessage": "Termos da pesquisa simples"
+  },
+  "search.bibliographic.search_placeholder": {
+    "defaultMessage": "Preencha os termos da pesquisa"
+  },
+  "search.bibliographic.series": {
+    "defaultMessage": "Série"
+  },
+  "search.bibliographic.shelf_location": {
+    "defaultMessage": "Localização"
+  },
+  "search.bibliographic.subject": {
+    "defaultMessage": "Assunto"
+  },
+  "search.bibliographic.term": {
+    "defaultMessage": "Termo"
+  },
+  "search.bibliographic.term_help": {
+    "defaultMessage": "Termos vazios não serão nos resultados da busca"
+  },
+  "search.bibliographic.title": {
+    "defaultMessage": "Título"
+  },
+  "search_query_operator.and": {
+    "defaultMessage": "e"
+  },
+  "search_query_operator.and_not": {
+    "defaultMessage": "e não"
+  },
+  "search_query_operator.or": {
+    "defaultMessage": "ou"
+  }
+}

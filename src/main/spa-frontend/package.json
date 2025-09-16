@@ -14,7 +14,10 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "extract": "formatjs extract",
+    "compile": "formatjs compile",
+    "i18n:extract-compile": "yarn extract \"src/search/**/*.{ts,tsx}\" --out-file lang.json --ignore \"src/**/*.d.ts\" && yarn compile lang.json --out-file lang-compiled.json"
   },
   "dependencies": {
     "@elastic/datemath": "^5.0.3",
@@ -34,6 +37,7 @@
   "devDependencies": {
     "@elastic/eslint-plugin-eui": "^2.3.0",
     "@eslint/js": "^9.33.0",
+    "@formatjs/cli": "^6.7.2",
     "@stylistic/eslint-plugin": "^5.3.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
