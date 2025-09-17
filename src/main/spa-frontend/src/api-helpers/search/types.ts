@@ -59,6 +59,6 @@ export type {
   BibliographicRecord,
   IndexingGroup,
   IndexingGroupCount,
-  MarcField,
+  MarcDatafield,
   SearchResponse,
 } from './response-types'

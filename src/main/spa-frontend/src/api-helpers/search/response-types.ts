@@ -1,5 +1,7 @@
+import type { DIGITS, INDICATORS } from './constants'
+
 // MARC field structure for bibliographic records
-export type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+export type Digit = (typeof DIGITS)[number]
 
 export type MarcSubfield =
   | 'a'
@@ -18,16 +20,29 @@ export type MarcSubfield =
   | 'z'
   | Digit
 
-export type FieldIndicator = 'ind1' | 'ind2'
+export type FieldIndicatorIndex = (typeof INDICATORS)[number]
 
-export type MarcField = `${Digit}${Digit}${Digit}`
+export type FieldIndicator = `ind${FieldIndicatorIndex}`
 
-export type MarcSubfieldData = string | string[]
+export type MarcControlField = `00${Digit}`
 
-export type MarcFieldData = {
-  [indicator in FieldIndicator]: string
+export type MarcDatafield = Exclude<
+  `${Digit}${Digit}${Digit}`,
+  MarcControlField
+>
+
+export type MarcField = MarcDatafield | MarcControlField
+
+export type MarcDatafieldValue = {
+  [indicator in FieldIndicator]?: Digit | ' '
 } & {
-  [subfield in MarcSubfield]: MarcSubfieldData
+  [subfield in MarcSubfield]?: string[]
+}
+
+export type MarcJson = {
+  [field in MarcDatafield]?: MarcDatafieldValue[]
+} & {
+  [field in MarcControlField]?: string
 }
 
 export type BibliographicRecordAttachment = {
@@ -56,7 +71,7 @@ export interface BibliographicRecord {
   database: string
   publication_year: string
   marc: string
-  json: MarcFieldData
+  json: MarcJson
 }
 
 // Indexing group count
@@ -113,15 +128,13 @@ export interface Holding {
   database: string
   marc: string
   modified: string
-  json: {
-    [field in MarcField]?: MarcFieldData[] | string
-  }
+  json: MarcJson
   id: number
   location_d: string
 }
 
 export interface Field {
-  datafield: MarcField
+  datafield: MarcDatafield
   value: string
 }
 
@@ -152,9 +165,7 @@ export interface OpenResult {
   isbn?: string
   issn?: string
   isrc?: string
-  json: {
-    [field in MarcField]?: MarcFieldData[] | string
-  }
+  json: MarcJson
   marc: string
   material_type: string
   modified: string

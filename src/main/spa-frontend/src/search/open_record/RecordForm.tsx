@@ -1,34 +1,46 @@
-import { EuiSpacer, EuiText } from '@elastic/eui'
-import { FormattedMessage } from 'react-intl'
+import { EuiFlexGroup } from '@elastic/eui'
+
+import { isMarcDatafield } from '../../api-helpers/search/lib'
+import { useCataloguingFormFields } from '../../cataloguing-form-fields/useCataloguingFormFields'
+
+import RecordFormFieldPanel from './RecordFormFieldPanel'
 
 import type { FC } from 'react'
 
-import type { OpenResult } from '../../api-helpers/search/response-types'
+import type {
+  MarcDatafield,
+  MarcField,
+  OpenResult,
+} from '../../api-helpers/search/response-types'
 
 type Props = {
   record: OpenResult
 }
 
 const BibliographicRecordFormPanel: FC<Props> = ({ record }) => {
+  const { data: cataloguingFormFields, isSuccess } = useCataloguingFormFields()
+
   return (
-    <div>
-      <EuiText color='subdued' size='s'>
-        <FormattedMessage
-          defaultMessage='Visualização do formulário MARC para o registro bibliográfico.'
-          id='bibliographic-record.form-panel.description'
-        />
-      </EuiText>
-      <EuiSpacer size='m' />
-      <EuiText>
-        <p>
-          <FormattedMessage
-            defaultMessage='Componente em desenvolvimento - ID do registro: {recordId}'
-            id='bibliographic-record.form-panel.placeholder'
-            values={{ recordId: record.id }}
-          />
-        </p>
-      </EuiText>
-    </div>
+    <EuiFlexGroup direction='column'>
+      <div />
+      {isSuccess &&
+        cataloguingFormFields
+          .filter((field) => field.datafield in record.json)
+          .filter((field) => isMarcDatafield(field.datafield as MarcField))
+          .map((field) => ({
+            datafield: field.datafield as MarcDatafield,
+            values: record.json[field.datafield as MarcDatafield],
+          }))
+          .map(({ datafield, values }) =>
+            values?.map((value, index) => (
+              <RecordFormFieldPanel
+                key={`${datafield}-${index}`}
+                datafield={datafield}
+                datafieldValue={value}
+              />
+            )),
+          )}
+    </EuiFlexGroup>
   )
 }
 

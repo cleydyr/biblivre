@@ -1,5 +1,9 @@
+import { DIGITS } from './constants'
+
+import type { Digit, MarcField } from './response-types'
 import type {
   AdvancedQueryTerm,
+  MarcDatafield,
   SearchMode,
   SearchQueryTerms,
   SimpleQueryTerm,
@@ -49,4 +53,12 @@ export function getSearchMode(query: SearchQueryTerms | undefined): SearchMode {
   }
 
   return 'simple'
+}
+
+export function isMarcDatafield(value: MarcField): value is MarcDatafield {
+  return /^00\d$/.test(value) === false
+}
+
+export function isDigit(value: unknown): value is Digit {
+  return DIGITS.includes(value as Digit)
 }
