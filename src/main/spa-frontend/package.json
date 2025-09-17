@@ -17,7 +17,7 @@
     "test:run": "vitest run",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
-    "i18n:extract-compile": "yarn extract \"src/search/**/*.{ts,tsx}\" --out-file lang.json --ignore \"src/**/*.d.ts\" && yarn compile lang.json --out-file lang-compiled.json"
+    "i18n:extract-compile": "yarn extract \"src/**/*.{ts,tsx}\" --out-file lang.json --ignore \"src/**/*.d.ts\" && yarn compile lang.json --out-file lang-compiled.json"
   },
   "dependencies": {
     "@elastic/datemath": "^5.0.3",
