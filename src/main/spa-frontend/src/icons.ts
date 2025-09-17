@@ -13,11 +13,13 @@ import { icon as folderOpen } from '@elastic/eui/es/components/icon/assets/folde
 import { icon as help } from '@elastic/eui/es/components/icon/assets/help'
 import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo_elastic'
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
+import { icon as moon } from '@elastic/eui/es/components/icon/assets/moon'
 import { icon as plusInCircle } from '@elastic/eui/es/components/icon/assets/plus_in_circle'
 import { icon as search } from '@elastic/eui/es/components/icon/assets/search'
 import { icon as sortLeft } from '@elastic/eui/es/components/icon/assets/sortLeft'
 import { icon as sortRight } from '@elastic/eui/es/components/icon/assets/sortRight'
 import { icon as stopFilled } from '@elastic/eui/es/components/icon/assets/stop_filled'
+import { icon as sun } from '@elastic/eui/es/components/icon/assets/sun'
 import { icon as trash } from '@elastic/eui/es/components/icon/assets/trash'
 import { icon as warning } from '@elastic/eui/es/components/icon/assets/warning'
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon'
@@ -51,6 +53,8 @@ const cachedIcons: IconComponentCacheType = {
   arrowStart,
   arrowEnd,
   folderOpen,
+  moon,
+  sun,
 }
 
 appendIconComponentCache(cachedIcons)
