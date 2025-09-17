@@ -21,7 +21,7 @@ const BibliographicRecordFormPanel: FC<Props> = ({ record }) => {
   const { data: cataloguingFormFields, isSuccess } = useCataloguingFormFields()
 
   return (
-    <EuiFlexGroup direction='column'>
+    <EuiFlexGroup direction='column' gutterSize='s'>
       <div />
       {isSuccess &&
         cataloguingFormFields
@@ -30,11 +30,13 @@ const BibliographicRecordFormPanel: FC<Props> = ({ record }) => {
           .map((field) => ({
             datafield: field.datafield as MarcDatafield,
             values: record.json[field.datafield as MarcDatafield],
+            collapsed: field.collapsed,
           }))
-          .map(({ datafield, values }) =>
+          .map(({ datafield, values, collapsed }) =>
             values?.map((value, index) => (
               <RecordFormFieldPanel
                 key={`${datafield}-${index}`}
+                collapsed={collapsed}
                 datafield={datafield}
                 datafieldValue={value}
               />

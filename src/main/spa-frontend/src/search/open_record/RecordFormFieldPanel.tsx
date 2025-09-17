@@ -3,7 +3,7 @@ import { EuiFlexGroup, EuiPanel, EuiTitle } from '@elastic/eui'
 import { isMarcDatafield } from '../../api-helpers/search/lib'
 import { getLegacyMarcDatafieldTranslation } from '../../legacy_translations/lib'
 
-import { FormFieldIndicators } from './FormFieldIndicators'
+import Datafield from './Datafield'
 
 import type { FC } from 'react'
 
@@ -15,22 +15,20 @@ import type {
 type Props = {
   datafield: MarcDatafield
   datafieldValue: MarcDatafieldValue
+  collapsed: boolean
 }
 
 const RecordFormFieldPanel: FC<Props> = ({ datafield, datafieldValue }) => {
   return (
     <EuiPanel>
       <EuiFlexGroup direction='column'>
-        <EuiTitle size='xxs'>
+        <EuiTitle size='s'>
           <h3>
             {`${getLegacyMarcDatafieldTranslation(datafield)} (${datafield})`}
           </h3>
         </EuiTitle>
         {isMarcDatafield(datafield) && (
-          <FormFieldIndicators
-            datafield={datafield}
-            datafieldValue={datafieldValue}
-          />
+          <Datafield datafield={datafield} datafieldValue={datafieldValue} />
         )}
       </EuiFlexGroup>
     </EuiPanel>

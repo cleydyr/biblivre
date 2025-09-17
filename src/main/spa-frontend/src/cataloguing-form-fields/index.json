@@ -1,0 +1,3516 @@
+[
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "013",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "013",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 110
+            },
+            {
+                "subfield": "b",
+                "datafield": "013",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 111
+            },
+            {
+                "subfield": "c",
+                "datafield": "013",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 112
+            },
+            {
+                "subfield": "d",
+                "datafield": "013",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 113
+            },
+            {
+                "subfield": "e",
+                "datafield": "013",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 114
+            },
+            {
+                "subfield": "f",
+                "datafield": "013",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 115
+            }
+        ],
+        "sortOrder": 13
+    },
+    {
+        "material_type": [
+            "book"
+        ],
+        "datafield": "020",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "020",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 117
+            }
+        ],
+        "sortOrder": 20
+    },
+    {
+        "material_type": [
+            "book",
+            "periodic",
+            "articles"
+        ],
+        "datafield": "022",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "022",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 119
+            }
+        ],
+        "sortOrder": 22
+    },
+    {
+        "material_type": [
+            "score",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "029",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "029",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 126
+            }
+        ],
+        "sortOrder": 29
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "040",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "040",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 137
+            },
+            {
+                "subfield": "b",
+                "datafield": "040",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 138
+            }
+        ],
+        "sortOrder": 40
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "041",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "041",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 138
+            },
+            {
+                "subfield": "b",
+                "datafield": "041",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 139
+            },
+            {
+                "subfield": "h",
+                "datafield": "041",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 145
+            }
+        ],
+        "sortOrder": 41,
+        "indicator1": [
+            "0",
+            "1"
+        ]
+    },
+    {
+        "material_type": [
+            "map",
+            "periodic"
+        ],
+        "datafield": "043",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "043",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 140
+            }
+        ],
+        "sortOrder": 43
+    },
+    {
+        "material_type": [
+            "map"
+        ],
+        "datafield": "045",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "045",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 142
+            },
+            {
+                "subfield": "b",
+                "datafield": "045",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 143
+            },
+            {
+                "subfield": "c",
+                "datafield": "045",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 144
+            }
+        ],
+        "sortOrder": 45,
+        "indicator1": [
+            "_",
+            "0",
+            "1",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "080",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "2",
+                "datafield": "080",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 130
+            },
+            {
+                "subfield": "a",
+                "datafield": "080",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 177
+            }
+        ],
+        "sortOrder": 80
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "082",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "2",
+                "datafield": "082",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 132
+            },
+            {
+                "subfield": "a",
+                "datafield": "082",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 179
+            }
+        ],
+        "sortOrder": 82
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "090",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "090",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 187
+            },
+            {
+                "subfield": "b",
+                "datafield": "090",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 188
+            },
+            {
+                "subfield": "c",
+                "datafield": "090",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 189
+            }
+        ],
+        "sortOrder": 90
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "095",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "095",
+                "autocomplete_type": "fixed_table",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 192
+            }
+        ],
+        "sortOrder": 95
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "100",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "100",
+                "autocomplete_type": "authorities",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 197
+            },
+            {
+                "subfield": "b",
+                "datafield": "100",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 198
+            },
+            {
+                "subfield": "c",
+                "datafield": "100",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 199
+            },
+            {
+                "subfield": "d",
+                "datafield": "100",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 200
+            },
+            {
+                "subfield": "q",
+                "datafield": "100",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 213
+            }
+        ],
+        "sortOrder": 100,
+        "indicator1": [
+            "1",
+            "0",
+            "2",
+            "3"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "110",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "110",
+                "autocomplete_type": "authorities",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 207
+            },
+            {
+                "subfield": "b",
+                "datafield": "110",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 208
+            },
+            {
+                "subfield": "c",
+                "datafield": "110",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 209
+            },
+            {
+                "subfield": "d",
+                "datafield": "110",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 210
+            },
+            {
+                "subfield": "l",
+                "datafield": "110",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 218
+            },
+            {
+                "subfield": "n",
+                "datafield": "110",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 220
+            }
+        ],
+        "sortOrder": 110,
+        "indicator1": [
+            "0",
+            "1",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "111",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "111",
+                "autocomplete_type": "authorities",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 208
+            },
+            {
+                "subfield": "c",
+                "datafield": "111",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 210
+            },
+            {
+                "subfield": "d",
+                "datafield": "111",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 211
+            },
+            {
+                "subfield": "e",
+                "datafield": "111",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 212
+            },
+            {
+                "subfield": "g",
+                "datafield": "111",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 214
+            },
+            {
+                "subfield": "k",
+                "datafield": "111",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 218
+            },
+            {
+                "subfield": "n",
+                "datafield": "111",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 221
+            }
+        ],
+        "sortOrder": 111,
+        "indicator1": [
+            "0",
+            "1",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "130",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "130",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 227
+            },
+            {
+                "subfield": "d",
+                "datafield": "130",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 230
+            },
+            {
+                "subfield": "f",
+                "datafield": "130",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 232
+            },
+            {
+                "subfield": "g",
+                "datafield": "130",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 233
+            },
+            {
+                "subfield": "k",
+                "datafield": "130",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 237
+            },
+            {
+                "subfield": "l",
+                "datafield": "130",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 238
+            },
+            {
+                "subfield": "p",
+                "datafield": "130",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 242
+            }
+        ],
+        "sortOrder": 130,
+        "indicator1": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ]
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "210",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "210",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 307
+            },
+            {
+                "subfield": "b",
+                "datafield": "210",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 308
+            }
+        ],
+        "sortOrder": 210,
+        "indicator1": [
+            "0",
+            "1"
+        ],
+        "indicator2": [
+            "_",
+            "0"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "240",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 337
+            },
+            {
+                "subfield": "b",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 338
+            },
+            {
+                "subfield": "f",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 342
+            },
+            {
+                "subfield": "g",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 343
+            },
+            {
+                "subfield": "k",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 347
+            },
+            {
+                "subfield": "l",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 348
+            },
+            {
+                "subfield": "n",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 350
+            },
+            {
+                "subfield": "p",
+                "datafield": "240",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 352
+            }
+        ],
+        "sortOrder": 240,
+        "indicator1": [
+            "1",
+            "0"
+        ],
+        "indicator2": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "243",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "243",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 340
+            },
+            {
+                "subfield": "f",
+                "datafield": "243",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 345
+            },
+            {
+                "subfield": "g",
+                "datafield": "243",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 346
+            },
+            {
+                "subfield": "k",
+                "datafield": "243",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 350
+            },
+            {
+                "subfield": "l",
+                "datafield": "243",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 351
+            }
+        ],
+        "sortOrder": 243,
+        "indicator1": [
+            "1",
+            "0"
+        ],
+        "indicator2": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "245",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "245",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 342
+            },
+            {
+                "subfield": "b",
+                "datafield": "245",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 343
+            },
+            {
+                "subfield": "c",
+                "datafield": "245",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 344
+            },
+            {
+                "subfield": "h",
+                "datafield": "245",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 349
+            },
+            {
+                "subfield": "n",
+                "datafield": "245",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 355
+            },
+            {
+                "subfield": "p",
+                "datafield": "245",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 357
+            }
+        ],
+        "sortOrder": 245,
+        "indicator1": [
+            "1",
+            "0"
+        ],
+        "indicator2": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ]
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "246",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 343
+            },
+            {
+                "subfield": "b",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 344
+            },
+            {
+                "subfield": "f",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 348
+            },
+            {
+                "subfield": "g",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 349
+            },
+            {
+                "subfield": "h",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 350
+            },
+            {
+                "subfield": "i",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 351
+            },
+            {
+                "subfield": "n",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 356
+            },
+            {
+                "subfield": "p",
+                "datafield": "246",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 358
+            }
+        ],
+        "sortOrder": 246,
+        "indicator1": [
+            "0",
+            "1",
+            "2",
+            "3"
+        ],
+        "indicator2": [
+            "_",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "thesis"
+        ],
+        "datafield": "250",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "250",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 347
+            },
+            {
+                "subfield": "b",
+                "datafield": "250",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 348
+            }
+        ],
+        "sortOrder": 250
+    },
+    {
+        "material_type": [
+            "map"
+        ],
+        "datafield": "255",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "255",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 352
+            }
+        ],
+        "sortOrder": 255
+    },
+    {
+        "material_type": [
+            "computer_legible"
+        ],
+        "datafield": "256",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "256",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 353
+            }
+        ],
+        "sortOrder": 256
+    },
+    {
+        "material_type": [
+            "movie"
+        ],
+        "datafield": "257",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "257",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 354
+            }
+        ],
+        "sortOrder": 257
+    },
+    {
+        "material_type": [
+            "photo"
+        ],
+        "datafield": "258",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "258",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 355
+            },
+            {
+                "subfield": "b",
+                "datafield": "258",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 356
+            }
+        ],
+        "sortOrder": 258
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "260",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "260",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 357
+            },
+            {
+                "subfield": "b",
+                "datafield": "260",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 358
+            },
+            {
+                "subfield": "c",
+                "datafield": "260",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 359
+            },
+            {
+                "subfield": "e",
+                "datafield": "260",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 361
+            },
+            {
+                "subfield": "f",
+                "datafield": "260",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 362
+            },
+            {
+                "subfield": "g",
+                "datafield": "260",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 363
+            }
+        ],
+        "sortOrder": 260
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "300",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "300",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 397
+            },
+            {
+                "subfield": "b",
+                "datafield": "300",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 398
+            },
+            {
+                "subfield": "c",
+                "datafield": "300",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 399
+            },
+            {
+                "subfield": "e",
+                "datafield": "300",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 401
+            }
+        ],
+        "sortOrder": 300
+    },
+    {
+        "material_type": [
+            "movie",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "306",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "306",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 403
+            }
+        ],
+        "sortOrder": 306
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "310",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "310",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 407
+            },
+            {
+                "subfield": "b",
+                "datafield": "310",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 408
+            }
+        ],
+        "sortOrder": 310
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "321",
+        "collapsed": false,
+        "repeatable": false,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "321",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 418
+            },
+            {
+                "subfield": "b",
+                "datafield": "321",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 419
+            }
+        ],
+        "sortOrder": 321
+    },
+    {
+        "material_type": [
+            "map"
+        ],
+        "datafield": "340",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "340",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 437
+            },
+            {
+                "subfield": "b",
+                "datafield": "340",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 438
+            },
+            {
+                "subfield": "c",
+                "datafield": "340",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 439
+            },
+            {
+                "subfield": "d",
+                "datafield": "340",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 440
+            },
+            {
+                "subfield": "e",
+                "datafield": "340",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 441
+            }
+        ],
+        "sortOrder": 340
+    },
+    {
+        "material_type": [
+            "map"
+        ],
+        "datafield": "342",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "342",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 439
+            },
+            {
+                "subfield": "b",
+                "datafield": "342",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 440
+            },
+            {
+                "subfield": "c",
+                "datafield": "342",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 441
+            },
+            {
+                "subfield": "d",
+                "datafield": "342",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 442
+            }
+        ],
+        "sortOrder": 342,
+        "indicator1": [
+            "0",
+            "1"
+        ],
+        "indicator2": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+        ]
+    },
+    {
+        "material_type": [
+            "map"
+        ],
+        "datafield": "343",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "343",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 440
+            },
+            {
+                "subfield": "b",
+                "datafield": "343",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 441
+            }
+        ],
+        "sortOrder": 343
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "362",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "362",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 459
+            },
+            {
+                "subfield": "z",
+                "datafield": "362",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 484
+            }
+        ],
+        "sortOrder": 362,
+        "indicator1": [
+            "0",
+            "1"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "490",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "490",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 587
+            },
+            {
+                "subfield": "v",
+                "datafield": "490",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 608
+            }
+        ],
+        "sortOrder": 490,
+        "indicator1": [
+            "0",
+            "1"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "500",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "500",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 597
+            }
+        ],
+        "sortOrder": 500
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "501",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "501",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 598
+            }
+        ],
+        "sortOrder": 501
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "502",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "502",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 599
+            }
+        ],
+        "sortOrder": 502
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "504",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "504",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 601
+            }
+        ],
+        "sortOrder": 504
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "505",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "505",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 602
+            }
+        ],
+        "sortOrder": 505
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "515",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "515",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 612
+            }
+        ],
+        "sortOrder": 515
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "520",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "520",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 617
+            },
+            {
+                "subfield": "u",
+                "datafield": "520",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 637
+            }
+        ],
+        "sortOrder": 520
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "521",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "521",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 618
+            }
+        ],
+        "sortOrder": 521
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "525",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "525",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 622
+            }
+        ],
+        "sortOrder": 525
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "530",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "530",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 627
+            }
+        ],
+        "sortOrder": 530
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "534",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "534",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 631
+            }
+        ],
+        "sortOrder": 534
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "550",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "550",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 647
+            }
+        ],
+        "sortOrder": 550
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "555",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "3",
+                "datafield": "555",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 606
+            },
+            {
+                "subfield": "a",
+                "datafield": "555",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 652
+            },
+            {
+                "subfield": "b",
+                "datafield": "555",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 653
+            },
+            {
+                "subfield": "c",
+                "datafield": "555",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 654
+            },
+            {
+                "subfield": "d",
+                "datafield": "555",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 655
+            },
+            {
+                "subfield": "u",
+                "datafield": "555",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 672
+            }
+        ],
+        "sortOrder": 555,
+        "indicator1": [
+            "_",
+            "0",
+            "8"
+        ]
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "580",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "580",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 677
+            }
+        ],
+        "sortOrder": 580
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "590",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "590",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 687
+            }
+        ],
+        "sortOrder": 590
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "595",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "595",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 692
+            },
+            {
+                "subfield": "b",
+                "datafield": "595",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 693
+            }
+        ],
+        "sortOrder": 595
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "600",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "600",
+                "autocomplete_type": "vocabulary",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 697
+            },
+            {
+                "subfield": "b",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 698
+            },
+            {
+                "subfield": "c",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 699
+            },
+            {
+                "subfield": "d",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 700
+            },
+            {
+                "subfield": "k",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 707
+            },
+            {
+                "subfield": "q",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 713
+            },
+            {
+                "subfield": "t",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 716
+            },
+            {
+                "subfield": "x",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 720
+            },
+            {
+                "subfield": "y",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 721
+            },
+            {
+                "subfield": "z",
+                "datafield": "600",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 722
+            }
+        ],
+        "sortOrder": 600,
+        "indicator1": [
+            "0",
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "610",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "610",
+                "autocomplete_type": "vocabulary",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 707
+            },
+            {
+                "subfield": "b",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 708
+            },
+            {
+                "subfield": "c",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 709
+            },
+            {
+                "subfield": "d",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 710
+            },
+            {
+                "subfield": "g",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 713
+            },
+            {
+                "subfield": "k",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 717
+            },
+            {
+                "subfield": "l",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 718
+            },
+            {
+                "subfield": "n",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 720
+            },
+            {
+                "subfield": "t",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 726
+            },
+            {
+                "subfield": "x",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 730
+            },
+            {
+                "subfield": "y",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 731
+            },
+            {
+                "subfield": "z",
+                "datafield": "610",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 732
+            }
+        ],
+        "sortOrder": 610,
+        "indicator1": [
+            "0",
+            "1",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "611",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "611",
+                "autocomplete_type": "vocabulary",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 708
+            },
+            {
+                "subfield": "c",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 710
+            },
+            {
+                "subfield": "d",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 711
+            },
+            {
+                "subfield": "e",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 712
+            },
+            {
+                "subfield": "n",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 721
+            },
+            {
+                "subfield": "t",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 727
+            },
+            {
+                "subfield": "x",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 731
+            },
+            {
+                "subfield": "y",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 732
+            },
+            {
+                "subfield": "z",
+                "datafield": "611",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 733
+            }
+        ],
+        "sortOrder": 611,
+        "indicator1": [
+            "0",
+            "1",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "630",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "630",
+                "autocomplete_type": "vocabulary",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 727
+            },
+            {
+                "subfield": "d",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 730
+            },
+            {
+                "subfield": "f",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 732
+            },
+            {
+                "subfield": "g",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 733
+            },
+            {
+                "subfield": "k",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 737
+            },
+            {
+                "subfield": "l",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 738
+            },
+            {
+                "subfield": "p",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 742
+            },
+            {
+                "subfield": "x",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 750
+            },
+            {
+                "subfield": "y",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 751
+            },
+            {
+                "subfield": "z",
+                "datafield": "630",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 752
+            }
+        ],
+        "sortOrder": 630,
+        "indicator1": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "650",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "650",
+                "autocomplete_type": "vocabulary",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 747
+            },
+            {
+                "subfield": "x",
+                "datafield": "650",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 770
+            },
+            {
+                "subfield": "y",
+                "datafield": "650",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 771
+            },
+            {
+                "subfield": "z",
+                "datafield": "650",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 772
+            }
+        ],
+        "sortOrder": 650
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "651",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "651",
+                "autocomplete_type": "vocabulary",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 748
+            },
+            {
+                "subfield": "x",
+                "datafield": "651",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 771
+            },
+            {
+                "subfield": "y",
+                "datafield": "651",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 772
+            },
+            {
+                "subfield": "z",
+                "datafield": "651",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 773
+            }
+        ],
+        "sortOrder": 651
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "700",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 797
+            },
+            {
+                "subfield": "b",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 798
+            },
+            {
+                "subfield": "c",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 799
+            },
+            {
+                "subfield": "d",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 800
+            },
+            {
+                "subfield": "e",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 801
+            },
+            {
+                "subfield": "l",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 808
+            },
+            {
+                "subfield": "q",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 813
+            },
+            {
+                "subfield": "t",
+                "datafield": "700",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 816
+            }
+        ],
+        "sortOrder": 700,
+        "indicator1": [
+            "1",
+            "0",
+            "2",
+            "3"
+        ],
+        "indicator2": [
+            "_",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "710",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 807
+            },
+            {
+                "subfield": "b",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 808
+            },
+            {
+                "subfield": "c",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 809
+            },
+            {
+                "subfield": "d",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 810
+            },
+            {
+                "subfield": "g",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 813
+            },
+            {
+                "subfield": "l",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 818
+            },
+            {
+                "subfield": "n",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 820
+            },
+            {
+                "subfield": "t",
+                "datafield": "710",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 826
+            }
+        ],
+        "sortOrder": 710,
+        "indicator1": [
+            "0",
+            "1",
+            "2"
+        ],
+        "indicator2": [
+            "_",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "711",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 808
+            },
+            {
+                "subfield": "c",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 810
+            },
+            {
+                "subfield": "d",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 811
+            },
+            {
+                "subfield": "e",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 812
+            },
+            {
+                "subfield": "g",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 814
+            },
+            {
+                "subfield": "k",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 818
+            },
+            {
+                "subfield": "n",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 821
+            },
+            {
+                "subfield": "t",
+                "datafield": "711",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 827
+            }
+        ],
+        "sortOrder": 711,
+        "indicator1": [
+            "0",
+            "1",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "730",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 827
+            },
+            {
+                "subfield": "d",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 830
+            },
+            {
+                "subfield": "f",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 832
+            },
+            {
+                "subfield": "g",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 833
+            },
+            {
+                "subfield": "k",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 837
+            },
+            {
+                "subfield": "l",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 838
+            },
+            {
+                "subfield": "p",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 842
+            },
+            {
+                "subfield": "x",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 850
+            },
+            {
+                "subfield": "y",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 851
+            },
+            {
+                "subfield": "z",
+                "datafield": "730",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 852
+            }
+        ],
+        "sortOrder": 730,
+        "indicator1": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ],
+        "indicator2": [
+            "_",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "740",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "740",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 837
+            },
+            {
+                "subfield": "n",
+                "datafield": "740",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 850
+            },
+            {
+                "subfield": "p",
+                "datafield": "740",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": true,
+                "sortOrder": 852
+            }
+        ],
+        "sortOrder": 740,
+        "indicator1": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ],
+        "indicator2": [
+            "_",
+            "2"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "830",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "830",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 927
+            },
+            {
+                "subfield": "v",
+                "datafield": "830",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 948
+            }
+        ],
+        "sortOrder": 830,
+        "indicator2": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        ]
+    },
+    {
+        "material_type": [
+            "book",
+            "manuscript",
+            "pamphlet",
+            "thesis",
+            "computer_legible",
+            "map",
+            "movie",
+            "score",
+            "object_3d",
+            "photo",
+            "periodic",
+            "articles",
+            "music",
+            "nonmusical_sound"
+        ],
+        "datafield": "856",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "d",
+                "datafield": "856",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 956
+            },
+            {
+                "subfield": "f",
+                "datafield": "856",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 958
+            },
+            {
+                "subfield": "u",
+                "datafield": "856",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 973
+            },
+            {
+                "subfield": "y",
+                "datafield": "856",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 977
+            }
+        ],
+        "sortOrder": 856
+    },
+    {
+        "material_type": [
+            "periodic"
+        ],
+        "datafield": "947",
+        "collapsed": false,
+        "repeatable": true,
+        "subfields": [
+            {
+                "subfield": "a",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1044
+            },
+            {
+                "subfield": "b",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1045
+            },
+            {
+                "subfield": "c",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1046
+            },
+            {
+                "subfield": "d",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1047
+            },
+            {
+                "subfield": "e",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1048
+            },
+            {
+                "subfield": "f",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1049
+            },
+            {
+                "subfield": "g",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1050
+            },
+            {
+                "subfield": "i",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1052
+            },
+            {
+                "subfield": "j",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1053
+            },
+            {
+                "subfield": "k",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1054
+            },
+            {
+                "subfield": "l",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1055
+            },
+            {
+                "subfield": "m",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1056
+            },
+            {
+                "subfield": "n",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1057
+            },
+            {
+                "subfield": "o",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1058
+            },
+            {
+                "subfield": "p",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1059
+            },
+            {
+                "subfield": "q",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1060
+            },
+            {
+                "subfield": "r",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1061
+            },
+            {
+                "subfield": "s",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1062
+            },
+            {
+                "subfield": "t",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1063
+            },
+            {
+                "subfield": "u",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1064
+            },
+            {
+                "subfield": "z",
+                "datafield": "947",
+                "autocomplete_type": "disabled",
+                "collapsed": false,
+                "repeatable": false,
+                "sortOrder": 1069
+            }
+        ],
+        "sortOrder": 947
+    }
+]
