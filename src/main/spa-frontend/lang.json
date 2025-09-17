@@ -1,4 +1,22 @@
 {
+  "app.dark_mode.button-description": {
+    "defaultMessage": "Alternar entre modo claro e escuro"
+  },
+  "bibliographic-record.attachments.empty.body": {
+    "defaultMessage": "Este registro não possui arquivos digitais anexados."
+  },
+  "bibliographic-record.attachments.empty.title": {
+    "defaultMessage": "Nenhum arquivo digital encontrado"
+  },
+  "bibliographic-record.attachments.table.name": {
+    "defaultMessage": "Nome do arquivo"
+  },
+  "bibliographic-record.attachments.title": {
+    "defaultMessage": "Arquivos digitais ({count})"
+  },
+  "bibliographic-record.flyout.attachments": {
+    "defaultMessage": "Arquivos digitais"
+  },
   "bibliographic-record.flyout.form": {
     "defaultMessage": "Formulário"
   },
@@ -13,12 +31,6 @@
   },
   "bibliographic-record.flyout.title": {
     "defaultMessage": "Detalhes do registro bibliográfico"
-  },
-  "bibliographic-record.form-panel.description": {
-    "defaultMessage": "Visualização do formulário MARC para o registro bibliográfico."
-  },
-  "bibliographic-record.form-panel.placeholder": {
-    "defaultMessage": "Componente em desenvolvimento - ID do registro: {recordId}"
   },
   "bibliographic-record.holdings-tab.accession_number": {
     "defaultMessage": "Tombo patrimonial"

@@ -13,6 +13,7 @@ import { FormattedMessage } from 'react-intl'
 
 import { useOpenBibliographicRecord } from '../hooks'
 
+import RecordAttachments from './RecordAttachments'
 import RecordBrief from './RecordBrief'
 import RecordForm from './RecordForm'
 import RecordHoldings from './RecordHoldings'
@@ -94,6 +95,16 @@ const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
                         <FormattedMessage
                           defaultMessage='Exemplares'
                           id='bibliographic-record.flyout.holdings'
+                        />
+                      ),
+                    },
+                    {
+                      id: 'attachments',
+                      content: <RecordAttachments record={record.data} />,
+                      name: (
+                        <FormattedMessage
+                          defaultMessage='Arquivos digitais'
+                          id='bibliographic-record.flyout.attachments'
                         />
                       ),
                     },

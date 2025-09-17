@@ -7,6 +7,7 @@ import { icon as brush } from '@elastic/eui/es/components/icon/assets/brush'
 import { icon as calendar } from '@elastic/eui/es/components/icon/assets/calendar'
 import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
 import { icon as cross } from '@elastic/eui/es/components/icon/assets/cross'
+import { icon as download } from '@elastic/eui/es/components/icon/assets/download'
 import { icon as empty } from '@elastic/eui/es/components/icon/assets/empty'
 import { icon as error } from '@elastic/eui/es/components/icon/assets/error'
 import { icon as folderOpen } from '@elastic/eui/es/components/icon/assets/folder_open'
@@ -15,6 +16,7 @@ import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
 import { icon as moon } from '@elastic/eui/es/components/icon/assets/moon'
 import { icon as plusInCircle } from '@elastic/eui/es/components/icon/assets/plus_in_circle'
+import { icon as popout } from '@elastic/eui/es/components/icon/assets/popout'
 import { icon as search } from '@elastic/eui/es/components/icon/assets/search'
 import { icon as sortLeft } from '@elastic/eui/es/components/icon/assets/sortLeft'
 import { icon as sortRight } from '@elastic/eui/es/components/icon/assets/sortRight'
@@ -55,6 +57,8 @@ const cachedIcons: IconComponentCacheType = {
   folderOpen,
   moon,
   sun,
+  download,
+  popout,
 }
 
 appendIconComponentCache(cachedIcons)
