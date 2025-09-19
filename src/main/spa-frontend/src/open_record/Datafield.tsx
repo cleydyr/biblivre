@@ -7,7 +7,7 @@ import type { FC } from 'react'
 import type {
   MarcDatafield,
   MarcDatafieldValue,
-} from '../../api-helpers/search/response-types'
+} from '../api-helpers/search/response-types'
 
 type Props = {
   datafield: MarcDatafield

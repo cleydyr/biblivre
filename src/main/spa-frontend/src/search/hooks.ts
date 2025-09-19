@@ -1,16 +1,17 @@
-import {
-  keepPreviousData,
-  useQuery,
-  type UseQueryOptions,
-} from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
 import {
+  downloadExport,
+  exportBibliographicRecords,
   getCatalographicSearchResults,
   openBibliographicRecord,
   paginateCatalographicSearchResults,
 } from '../api-helpers/search'
 
+import type { UseQueryOptions } from '@tanstack/react-query'
+
+import type { OpenResponse } from '../api-helpers/search/response-types'
 import type {
   BibliographicMaterial,
   SearchQueryTerms,
@@ -76,10 +77,29 @@ export function usePaginatedSearch(
 }
 
 // Hook for opening a bibliographic record
-export function useOpenBibliographicRecord(recordId: number) {
+export function useOpenBibliographicRecord(
+  recordId: number,
+  options?: Omit<
+    UseQueryOptions<OpenResponse>,
+    'queryKey' | 'queryFn' | 'staleTime'
+  >,
+) {
   return useQuery({
+    ...options,
     queryKey: searchQueryKeys.record(recordId),
     queryFn: () => openBibliographicRecord(String(recordId)),
     staleTime: 60 * 1000,
+  })
+}
+
+export function useExportBibliographicRecordsMutation() {
+  return useMutation({
+    mutationFn: (recordIds: number[]) => exportBibliographicRecords(recordIds),
+  })
+}
+
+export function useDownloadExportMutation() {
+  return useMutation({
+    mutationFn: downloadExport,
   })
 }

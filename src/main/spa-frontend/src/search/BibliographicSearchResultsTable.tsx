@@ -2,7 +2,8 @@ import { EuiBasicTable } from '@elastic/eui'
 import { type FC, Fragment, type ReactNode, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import BibliographicRecordFlyout from './open_record/RecordFlyout'
+import ExportSelectedRecordsButton from './ExportSelectedRecordsButton'
+import BibliographicRecordFlyout from './RecordFlyout'
 
 import type {
   Criteria,
@@ -41,6 +42,12 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
     <Fragment>
       {flyout}
 
+      {selectedRecords.length > 0 && (
+        <ExportSelectedRecordsButton
+          selectedRecords={selectedRecords}
+          onExportSuccess={() => setSelectedRecords([])}
+        />
+      )}
       <EuiBasicTable
         columns={columns}
         itemId='id'

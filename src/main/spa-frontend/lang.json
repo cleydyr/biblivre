@@ -2,6 +2,9 @@
   "app.dark_mode.button-description": {
     "defaultMessage": "Alternar entre modo claro e escuro"
   },
+  "app.header.back_to_legacy": {
+    "defaultMessage": "Voltar para a interface clássica"
+  },
   "bibliographic-record.attachments.empty.body": {
     "defaultMessage": "Este registro não possui arquivos digitais anexados."
   },
@@ -13,6 +16,9 @@
   },
   "bibliographic-record.attachments.title": {
     "defaultMessage": "Arquivos digitais ({count})"
+  },
+  "bibliographic-record.error": {
+    "defaultMessage": "Ocorreu um erro ao carregar o registro"
   },
   "bibliographic-record.flyout.attachments": {
     "defaultMessage": "Arquivos digitais"
@@ -31,6 +37,9 @@
   },
   "bibliographic-record.flyout.title": {
     "defaultMessage": "Detalhes do registro bibliográfico"
+  },
+  "bibliographic-record.header.1": {
+    "defaultMessage": "Registro Bibliográfico"
   },
   "bibliographic-record.holdings-tab.accession_number": {
     "defaultMessage": "Tombo patrimonial"
@@ -61,6 +70,9 @@
   },
   "bibliographic-record.holdings-tab.unavailable": {
     "defaultMessage": "Indisponível"
+  },
+  "bibliographic-record.not-found": {
+    "defaultMessage": "Registro não encontrado"
   },
   "bibliographic-search-result-sort.ano": {
     "defaultMessage": "Ano"

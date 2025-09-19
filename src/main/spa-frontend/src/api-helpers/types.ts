@@ -24,6 +24,16 @@ export type LegacyEndpointPayload =
       typeof ACTIONS.OPEN,
       'id'
     >
+  | ParametrizedLegacyEndpointPayload<
+      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
+      typeof ACTIONS.EXPORT,
+      'id_list'
+    >
+  | ParametrizedLegacyEndpointPayload<
+      typeof MODULES.CATALOGING_BIBLIOGRAPHIC,
+      typeof ACTIONS.DOWNLOAD_EXPORT,
+      'id'
+    >
 
 type ParametrizedLegacyEndpointPayload<
   M extends string,

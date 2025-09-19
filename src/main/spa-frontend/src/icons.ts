@@ -11,11 +11,13 @@ import { icon as documents } from '@elastic/eui/es/components/icon/assets/docume
 import { icon as download } from '@elastic/eui/es/components/icon/assets/download'
 import { icon as empty } from '@elastic/eui/es/components/icon/assets/empty'
 import { icon as error } from '@elastic/eui/es/components/icon/assets/error'
+import { icon as exportAction } from '@elastic/eui/es/components/icon/assets/export'
 import { icon as folderOpen } from '@elastic/eui/es/components/icon/assets/folder_open'
 import { icon as help } from '@elastic/eui/es/components/icon/assets/help'
 import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo_elastic'
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
 import { icon as moon } from '@elastic/eui/es/components/icon/assets/moon'
+import { icon as plus } from '@elastic/eui/es/components/icon/assets/plus'
 import { icon as plusInCircle } from '@elastic/eui/es/components/icon/assets/plus_in_circle'
 import { icon as popout } from '@elastic/eui/es/components/icon/assets/popout'
 import { icon as search } from '@elastic/eui/es/components/icon/assets/search'
@@ -61,6 +63,8 @@ const cachedIcons: IconComponentCacheType = {
   download,
   popout,
   documents,
+  exportAction,
+  plus,
 }
 
 appendIconComponentCache(cachedIcons)

@@ -1,7 +1,7 @@
 import { EuiFlexGroup, EuiPanel, EuiTitle } from '@elastic/eui'
 
-import { isMarcDatafield } from '../../api-helpers/search/lib'
-import { getLegacyMarcDatafieldTranslation } from '../../legacy_translations/lib'
+import { isMarcDatafield } from '../api-helpers/search/lib'
+import { getLegacyMarcDatafieldTranslation } from '../legacy_translations/lib'
 
 import Datafield from './Datafield'
 
@@ -10,7 +10,7 @@ import type { FC } from 'react'
 import type {
   MarcDatafield,
   MarcDatafieldValue,
-} from '../../api-helpers/search/response-types'
+} from '../api-helpers/search/response-types'
 
 type Props = {
   datafield: MarcDatafield

@@ -1,10 +1,10 @@
 import { EuiDescriptionList, EuiFlexGroup } from '@elastic/eui'
 
-import { getLegacyMarcDatafieldTranslation } from '../../legacy_translations/lib'
+import { getLegacyMarcDatafieldTranslation } from '../legacy_translations/lib'
 
 import type { FC } from 'react'
 
-import type { OpenResult } from '../../api-helpers/search/response-types'
+import type { OpenResult } from '../api-helpers/search/response-types'
 
 type Props = {
   record: OpenResult

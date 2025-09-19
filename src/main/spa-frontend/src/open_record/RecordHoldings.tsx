@@ -3,10 +3,7 @@ import { FormattedMessage } from 'react-intl'
 
 import type { FC } from 'react'
 
-import type {
-  Holding,
-  OpenResult,
-} from '../../api-helpers/search/response-types'
+import type { Holding, OpenResult } from '../api-helpers/search/response-types'
 
 type Props = {
   record: OpenResult

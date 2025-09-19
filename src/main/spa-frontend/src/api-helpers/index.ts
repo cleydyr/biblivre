@@ -20,3 +20,27 @@ export async function fetchFromLegacyEndpoint({
 
   return response.json()
 }
+
+export async function downloadFromLegacyEndpoint({
+  module,
+  action,
+  ...otherParams
+}: LegacyEndpointPayload) {
+  const queryParams = new URLSearchParams({
+    controller: 'download',
+    module,
+    action,
+    ...otherParams,
+  }).toString()
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BIBLIVRE_ENDPOINT}?${queryParams}`,
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+    },
+  )
+
+  return response.blob()
+}

@@ -1,3 +1,5 @@
+import type { UUID } from '../../search/advanced/types'
+
 import type { DIGITS, INDICATORS } from './constants'
 
 // MARC field structure for bibliographic records
@@ -116,6 +118,19 @@ export type NoResultsSearchResponse = {
 }
 
 export type SearchResponse = SuccessfulSearchResponse | NoResultsSearchResponse
+
+export interface SuccessfulExportResponse {
+  success: true
+  uuid: UUID
+}
+
+export interface NoResultsExportResponse {
+  success: false
+  message_level: 'warning'
+  message: string
+}
+
+export type ExportResponse = SuccessfulExportResponse | NoResultsExportResponse
 
 export interface Holding {
   attachments: unknown[]

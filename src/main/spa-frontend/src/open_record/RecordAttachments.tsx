@@ -14,7 +14,7 @@ import type { FC } from 'react'
 import type {
   BibliographicRecordAttachment,
   OpenResult,
-} from '../../api-helpers/search/response-types'
+} from '../api-helpers/search/response-types'
 
 type Props = {
   record: OpenResult

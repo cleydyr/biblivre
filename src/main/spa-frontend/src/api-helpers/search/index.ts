@@ -1,10 +1,12 @@
 import { MODULES } from '../constants'
-import { fetchFromLegacyEndpoint } from '..'
+import { downloadFromLegacyEndpoint, fetchFromLegacyEndpoint } from '..'
 
 import { ACTIONS, FIELDS } from './constants'
 import { getSearchMode, getSearchTerms } from './lib'
 
-import type { OpenResponse } from './response-types'
+import type { UUID } from '../../search/advanced/types'
+
+import type { ExportResponse, OpenResponse } from './response-types'
 import type {
   BibliographicMaterial,
   SearchQueryTerms,
@@ -50,5 +52,23 @@ export async function openBibliographicRecord(
     module: MODULES.CATALOGING_BIBLIOGRAPHIC,
     action: ACTIONS.OPEN,
     id: recordId,
+  })
+}
+
+export async function exportBibliographicRecords(
+  recordIds: number[],
+): Promise<ExportResponse> {
+  return await fetchFromLegacyEndpoint({
+    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    action: ACTIONS.EXPORT,
+    id_list: recordIds.join(','),
+  })
+}
+
+export async function downloadExport(uuid: UUID): Promise<Blob> {
+  return await downloadFromLegacyEndpoint({
+    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    action: ACTIONS.DOWNLOAD_EXPORT,
+    id: uuid,
   })
 }

@@ -4,7 +4,7 @@ import { usePanelDescriptionListItems } from './lib'
 
 import type { FC } from 'react'
 
-import type { OpenResult } from '../../api-helpers/search/response-types'
+import type { OpenResult } from '../api-helpers/search/response-types'
 
 type Props = {
   record: OpenResult

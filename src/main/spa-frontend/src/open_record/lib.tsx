@@ -1,13 +1,13 @@
 import { EuiFlexGroup, EuiTextColor } from '@elastic/eui'
 import { useIntl } from 'react-intl'
 
-import { INDICATORS } from '../../api-helpers/search/constants'
-import { isDigit } from '../../api-helpers/search/lib'
+import { INDICATORS } from '../api-helpers/search/constants'
+import { isDigit } from '../api-helpers/search/lib'
 import {
   getLegacyIndicatorTranslation,
   getLegacyIndicatorValueTranslation,
   getLegacySubfieldTranslation,
-} from '../../legacy_translations/lib'
+} from '../legacy_translations/lib'
 
 import type { Optional } from 'utility-types'
 
@@ -17,7 +17,7 @@ import type {
   MarcDatafieldValue,
   MarcSubfield,
   OpenResult,
-} from '../../api-helpers/search/response-types'
+} from '../api-helpers/search/response-types'
 
 type EuiDescriptionListItem = {
   title: string
@@ -150,4 +150,8 @@ export function getSubfieldListItems(
       ),
       description: value,
     }))
+}
+
+export function isValidRecordId(recordId: string | undefined): boolean {
+  return recordId !== undefined && !isNaN(Number(recordId))
 }

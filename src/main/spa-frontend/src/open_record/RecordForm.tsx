@@ -1,7 +1,7 @@
 import { EuiFlexGroup } from '@elastic/eui'
 
-import { isMarcDatafield } from '../../api-helpers/search/lib'
-import { useCataloguingFormFields } from '../../cataloguing-form-fields/useCataloguingFormFields'
+import { isMarcDatafield } from '../api-helpers/search/lib'
+import { useCataloguingFormFields } from '../cataloguing-form-fields/useCataloguingFormFields'
 
 import RecordFormFieldPanel from './RecordFormFieldPanel'
 
@@ -11,7 +11,7 @@ import type {
   MarcDatafield,
   MarcField,
   OpenResult,
-} from '../../api-helpers/search/response-types'
+} from '../api-helpers/search/response-types'
 
 type Props = {
   record: OpenResult

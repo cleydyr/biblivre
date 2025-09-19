@@ -16,6 +16,8 @@ export const ACTIONS = {
   SEARCH: 'search',
   PAGINATE: 'paginate',
   OPEN: 'open',
+  EXPORT: 'export_records',
+  DOWNLOAD_EXPORT: 'download_export',
 } as const
 
 export const INDICATORS = [1, 2] as const
