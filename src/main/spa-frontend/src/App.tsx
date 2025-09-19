@@ -1,15 +1,8 @@
-import {
-  EuiButtonIcon,
-  EuiFlexGroup,
-  EuiHeader,
-  EuiHeaderSection,
-  EuiHeaderSectionItem,
-} from '@elastic/eui'
-import { useIntl } from 'react-intl'
+import { EuiFlexGroup } from '@elastic/eui'
 import { Route, Routes } from 'react-router-dom'
 
 import BibliographicSearchPage from './search/BibliographicSearchPage'
-import messages from './messages'
+import AppHeader from './AppHeader'
 
 interface AppProps {
   isDarkMode: boolean
@@ -17,21 +10,9 @@ interface AppProps {
 }
 
 const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
-  const { formatMessage } = useIntl()
-
   return (
     <EuiFlexGroup direction='column' gutterSize='none'>
-      <EuiHeader>
-        <EuiHeaderSection side='right'>
-          <EuiHeaderSectionItem>
-            <EuiButtonIcon
-              aria-label={formatMessage(messages.darkButtonDescription)}
-              iconType={isDarkMode ? 'sun' : 'moon'}
-              onClick={() => setIsDarkMode(!isDarkMode)}
-            />
-          </EuiHeaderSectionItem>
-        </EuiHeaderSection>
-      </EuiHeader>
+      <AppHeader isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
       <Routes>
         <Route element={<BibliographicSearchPage />} path='/search' />
       </Routes>
