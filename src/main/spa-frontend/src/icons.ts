@@ -7,6 +7,7 @@ import { icon as brush } from '@elastic/eui/es/components/icon/assets/brush'
 import { icon as calendar } from '@elastic/eui/es/components/icon/assets/calendar'
 import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
 import { icon as cross } from '@elastic/eui/es/components/icon/assets/cross'
+import { icon as documents } from '@elastic/eui/es/components/icon/assets/documents'
 import { icon as download } from '@elastic/eui/es/components/icon/assets/download'
 import { icon as empty } from '@elastic/eui/es/components/icon/assets/empty'
 import { icon as error } from '@elastic/eui/es/components/icon/assets/error'
@@ -59,6 +60,7 @@ const cachedIcons: IconComponentCacheType = {
   sun,
   download,
   popout,
+  documents,
 }
 
 appendIconComponentCache(cachedIcons)
