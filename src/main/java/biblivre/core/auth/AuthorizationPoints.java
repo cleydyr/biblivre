@@ -360,7 +360,7 @@ public class AuthorizationPoints implements Serializable {
         this.addAuthPoint(
                 "cataloging.bibliographic", "move_records", CATALOGING_BIBLIOGRAPHIC_MOVE);
         this.addAuthPoint(
-                "cataloging.bibliographic", "export_records", CATALOGING_BIBLIOGRAPHIC_MOVE);
+                "cataloging.bibliographic", "export_records", CATALOGING_BIBLIOGRAPHIC_EXPORT);
         this.addAuthPoint(
                 "cataloging.bibliographic", "download_export", CATALOGING_BIBLIOGRAPHIC_LIST);
         this.addAuthPoint(

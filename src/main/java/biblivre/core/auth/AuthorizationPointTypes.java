@@ -66,6 +66,10 @@ public enum AuthorizationPointTypes {
             AuthorizationSchemaScope.SINGLE_SCHEMA,
             AuthorizationUserScope.EMPLOYEE,
             AuthorizationPointGroups.CATALOGING),
+    CATALOGING_BIBLIOGRAPHIC_EXPORT(
+            AuthorizationSchemaScope.SINGLE_SCHEMA,
+            AuthorizationUserScope.ANY,
+            AuthorizationPointGroups.CATALOGING, true),
     CATALOGING_BIBLIOGRAPHIC_DELETE(
             AuthorizationSchemaScope.SINGLE_SCHEMA,
             AuthorizationUserScope.EMPLOYEE,
