@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.org.biblivre</groupId>
     <artifactId>biblivre</artifactId>
@@ -12,8 +11,9 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.5.6</version>
+        <relativePath/>
+        <!-- lookup parent from repository -->
     </parent>
     <developers>
         <developer>
@@ -202,7 +202,7 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.1.0</version> <!--$NO-MVN-MAN-VER$-->
+            <version>6.1.0</version>            <!--$NO-MVN-MAN-VER$-->
         </dependency>
         <dependency>
             <groupId>jakarta.servlet.jsp</groupId>
@@ -213,7 +213,7 @@
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-            <version>3.0.0</version> <!--$NO-MVN-MAN-VER$-->
+            <version>3.0.0</version>            <!--$NO-MVN-MAN-VER$-->
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
@@ -440,8 +440,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>true</skipTests>
-                    <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens
-                        java.base/java.lang=ALL-UNNAMED
+                    <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
                     </argLine>
                 </configuration>
             </plugin>
@@ -460,7 +459,7 @@
                 </executions>
                 <configuration>
                     <excludeVulnerabilityIds>
-                        <excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId> <!-- For Freechart -->
+                        <excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>                        <!-- For Freechart -->
                     </excludeVulnerabilityIds>
                 </configuration>
             </plugin>
@@ -496,7 +495,7 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>3.26.0</version>
                 <configuration>
-                    <failOnViolation>true</failOnViolation> <!-- this is actually true by default,
+                    <failOnViolation>true</failOnViolation>                    <!-- this is actually true by default,
 					but can be disabled -->
                     <printFailingErrors>true</printFailingErrors>
                 </configuration>
@@ -654,8 +653,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <skipTests>false</skipTests>
-                            <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens
-                                java.base/java.lang=ALL-UNNAMED
+                            <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
                                 --enable-preview
                             </argLine>
                         </configuration>
@@ -741,8 +739,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <skipTests>false</skipTests>
-                            <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens
-                                java.base/java.lang=ALL-UNNAMED
+                            <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
                                 --enable-preview
                             </argLine>
                         </configuration>
