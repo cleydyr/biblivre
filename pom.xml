@@ -559,37 +559,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.15.1</version>
                 <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-yarn</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v21.7.1</nodeVersion>
-                            <yarnVersion>v1.22.22</yarnVersion>
-                            <installDirectory>${project.basedir}/src/main/frontend</installDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>yarn install</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install --production=false</arguments>
-                            <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>yarn build</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>build</arguments>
-                            <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
-                        </configuration>
-                    </execution>
+
                     <execution>
                         <id>install node and npm spa-frontend</id>
                         <goals>
