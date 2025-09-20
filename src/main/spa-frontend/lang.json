@@ -251,6 +251,9 @@
   "search.bibliographic.title": {
     "defaultMessage": "Título"
   },
+  "search.export.button": {
+    "defaultMessage": "Exportar {count, plural, one {# registro} other {# registros}}"
+  },
   "search_query_operator.and": {
     "defaultMessage": "e"
   },

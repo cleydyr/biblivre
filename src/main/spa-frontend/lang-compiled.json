@@ -83,6 +83,7 @@
   "search.bibliographic.term": "Termo",
   "search.bibliographic.term_help": "Termos vazios não serão nos resultados da busca",
   "search.bibliographic.title": "Título",
+  "search.export.button": "Exportar {count, plural, one {# registro} other {# registros}}",
   "search_query_operator.and": "e",
   "search_query_operator.and_not": "e não",
   "search_query_operator.or": "ou"
