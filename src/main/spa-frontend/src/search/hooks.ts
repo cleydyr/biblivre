@@ -1,6 +1,7 @@
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
+import { downloadFile } from '../api-helpers/lib'
 import {
   downloadExport,
   exportBibliographicRecords,
@@ -9,7 +10,7 @@ import {
   paginateCatalographicSearchResults,
 } from '../api-helpers/search'
 
-import type { UseQueryOptions } from '@tanstack/react-query'
+import type { UseMutationOptions, UseQueryOptions } from '@tanstack/react-query'
 
 import type { OpenResponse } from '../api-helpers/search/response-types'
 import type {
@@ -92,16 +93,21 @@ export function useOpenBibliographicRecord(
   })
 }
 
-export function useExportAndDownloadMutation() {
+export function useExportAndDownloadMutation(
+  options?: Omit<UseMutationOptions<void, Error, number[]>, 'mutationFn'>,
+) {
   return useMutation({
+    ...options,
     mutationFn: async (recordIds: number[]) => {
       const exportResponse = await exportBibliographicRecords(recordIds)
 
-      if (exportResponse.success) {
-        return downloadExport(exportResponse.uuid)
+      if (!exportResponse.success) {
+        throw new Error(exportResponse.message)
       }
 
-      throw new Error(exportResponse.message)
+      const downloadExportResponse = await downloadExport(exportResponse.uuid)
+
+      downloadFile(downloadExportResponse)
     },
   })
 }
