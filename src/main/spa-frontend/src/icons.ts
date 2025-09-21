@@ -3,6 +3,7 @@ import { icon as arrowLeft } from '@elastic/eui/es/components/icon/assets/arrow_
 import { icon as arrowRight } from '@elastic/eui/es/components/icon/assets/arrow_right'
 import { icon as arrowEnd } from '@elastic/eui/es/components/icon/assets/arrowEnd'
 import { icon as arrowStart } from '@elastic/eui/es/components/icon/assets/arrowStart'
+import { icon as boxesHorizontal } from '@elastic/eui/es/components/icon/assets/boxes_horizontal'
 import { icon as brush } from '@elastic/eui/es/components/icon/assets/brush'
 import { icon as calendar } from '@elastic/eui/es/components/icon/assets/calendar'
 import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
@@ -14,9 +15,12 @@ import { icon as error } from '@elastic/eui/es/components/icon/assets/error'
 import { icon as exportAction } from '@elastic/eui/es/components/icon/assets/export'
 import { icon as folderOpen } from '@elastic/eui/es/components/icon/assets/folder_open'
 import { icon as help } from '@elastic/eui/es/components/icon/assets/help'
+import { icon as importAction } from '@elastic/eui/es/components/icon/assets/import'
 import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo_elastic'
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
 import { icon as moon } from '@elastic/eui/es/components/icon/assets/moon'
+import { icon as pencil } from '@elastic/eui/es/components/icon/assets/pencil'
+import { icon as playFilled } from '@elastic/eui/es/components/icon/assets/playFilled'
 import { icon as plus } from '@elastic/eui/es/components/icon/assets/plus'
 import { icon as plusInCircle } from '@elastic/eui/es/components/icon/assets/plus_in_circle'
 import { icon as popout } from '@elastic/eui/es/components/icon/assets/popout'
@@ -65,6 +69,10 @@ const cachedIcons: IconComponentCacheType = {
   documents,
   exportAction,
   plus,
+  importAction,
+  boxesHorizontal,
+  playFilled,
+  pencil,
 }
 
 appendIconComponentCache(cachedIcons)

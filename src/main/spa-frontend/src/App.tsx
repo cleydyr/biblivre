@@ -1,6 +1,7 @@
 import { EuiPageTemplate, useEuiTheme } from '@elastic/eui'
 import { Route, Routes } from 'react-router-dom'
 
+import ReportApp from './administration/reports/ReportApp'
 import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
 import AppHeader from './AppHeader'
@@ -27,6 +28,7 @@ const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
             element={<BibliographicRecordPage />}
             path='record/:recordId'
           />
+          <Route element={<ReportApp />} path='reports' />
         </Route>
       </Routes>
     </EuiPageTemplate>

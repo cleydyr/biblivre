@@ -546,7 +546,7 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/api/report.yaml</inputSpec>
                             <generatorName>typescript-fetch</generatorName>
-                            <output>src/main/frontend/src/generated-sources</output>
+                            <output>src/main/spa-frontend/src/generated-sources</output>
                             <configOptions>
                                 <supportsES6>true</supportsES6>
                             </configOptions>

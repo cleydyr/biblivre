@@ -15,7 +15,12 @@ import tseslint from 'typescript-eslint'
 export default tseslint.config([
   // Global ignores
   {
-    ignores: ['dist/**', 'node_modules/**'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'node/**',
+      'src/administration/reports/api/**',
+    ],
   },
 
   // Base configuration for all files

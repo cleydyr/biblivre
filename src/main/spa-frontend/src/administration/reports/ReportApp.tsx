@@ -12,182 +12,188 @@ import {
   EuiPageTemplate,
   EuiTitle,
   useGeneratedHtmlId,
-} from "@elastic/eui";
-import { Toast } from "@elastic/eui/src/components/toast/global_toast_list";
-import { useCallback, useState } from "react";
-import { ReportFill, ReportTemplate } from "../../generated-sources";
-import ReportFillForm from "./ReportFillForm";
-import ReportTemplateTable from "./ReportTemplateTable";
-import UploadReportForm from "./UploadReportForm";
+} from '@elastic/eui'
+import { useCallback, useState } from 'react'
+
 import {
   useAddReportMutation,
   useDeleteReportMutation,
   useFillReportMutation,
   useListReportsQuery,
   useUpdateReportMutation,
-} from "./queries";
+} from './queries'
+import ReportFillForm from './ReportFillForm'
+import ReportTemplateTable from './ReportTemplateTable'
+import UploadReportForm from './UploadReportForm'
 
-type Screen = "list" | "edit" | "upload" | "fill";
+import type { Toast } from '@elastic/eui/src/components/toast/global_toast_list'
 
-const toasts: Toast[] = [
-  {
-    id: "report-deleted",
-    title: "Modelo de relatório excluído",
-    color: "success",
-    iconType: "check",
-  },
-  {
-    id: "report-updated",
-    title: "Modelo de relatório atualizado",
-    color: "success",
-    iconType: "check",
-  },
-  {
-    id: "report-uploaded",
-    title: "Modelo de relatório criado",
-    color: "success",
-    iconType: "check",
-  },
-  {
-    id: "report-filled",
-    title: "Relatório gerado",
-    color: "success",
-    iconType: "check",
-  },
-] as const;
+import type { ReportFill, ReportTemplate } from '../../generated-sources'
 
-const toastsById = toasts.reduce((acc, toast) => {
-  acc[toast.id] = toast;
-  return acc;
-}, {} as Record<(typeof toasts)[number]["id"], Toast>);
+type Screen = 'list' | 'edit' | 'upload' | 'fill'
+
+const TOASTS: Toast[] = [
+  {
+    id: 'report-deleted',
+    title: 'Modelo de relatório excluído',
+    color: 'success',
+    iconType: 'check',
+  },
+  {
+    id: 'report-updated',
+    title: 'Modelo de relatório atualizado',
+    color: 'success',
+    iconType: 'check',
+  },
+  {
+    id: 'report-uploaded',
+    title: 'Modelo de relatório criado',
+    color: 'success',
+    iconType: 'check',
+  },
+  {
+    id: 'report-filled',
+    title: 'Relatório gerado',
+    color: 'success',
+    iconType: 'check',
+  },
+] as const
+
+const toastsById = TOASTS.reduce(
+  (acc, toast) => {
+    acc[toast.id] = toast
+    return acc
+  },
+  {} as Record<(typeof TOASTS)[number]['id'], Toast>,
+)
 
 export default function ReportApp() {
-  const [screen, setScreen] = useState("list" as Screen);
+  const [screen, setScreen] = useState('list' as Screen)
 
-  const [toasts, setToasts] = useState([] as Toast[]);
+  const [toasts, setToasts] = useState([] as Toast[])
 
   function removeToast(toast: Toast): void {
-    setToasts(toasts.filter((t) => t.id !== toast.id));
+    setToasts(toasts.filter((t) => t.id !== toast.id))
   }
 
   const handleUpdateReportSuccess = useCallback(() => {
-    setScreen("list");
-    setToasts([toastsById["report-updated"]]);
-  }, []);
+    setScreen('list')
+    setToasts([toastsById['report-updated']])
+  }, [])
 
   const handleDeleteReportSuccess = useCallback(() => {
-    setDeletingReport(undefined);
-    setToasts([toastsById["report-deleted"]]);
-  }, []);
+    setDeletingReport(undefined)
+    setToasts([toastsById['report-deleted']])
+  }, [])
 
   const handleDeleteReportFailure = useCallback((error: Error) => {
-    setErrors((errors) => [...errors, error.message]);
-    setDeletingReport(undefined);
-  }, []);
+    setErrors((errors) => [...errors, error.message])
+    setDeletingReport(undefined)
+  }, [])
 
   const handleAddReportSuccess = useCallback(() => {
-    setScreen("list");
-    setToasts([toastsById["report-uploaded"]]);
-  }, []);
+    setScreen('list')
+    setToasts([toastsById['report-uploaded']])
+  }, [])
 
-  const getReportsQuery = useListReportsQuery();
+  const getReportsQuery = useListReportsQuery()
 
   const { mutate: updateReport } = useUpdateReportMutation({
     onSuccess: handleUpdateReportSuccess,
-  });
+  })
 
   const { mutate: deleteReport } = useDeleteReportMutation({
     onSuccess: handleDeleteReportSuccess,
     onError: handleDeleteReportFailure,
-  });
+  })
 
-  const { data: reports, isFetching } = getReportsQuery;
+  const { data: reports } = getReportsQuery
 
   const { mutate: addReport } = useAddReportMutation({
     onSuccess: handleAddReportSuccess,
     onError: (error: Error) => {
-      setErrors((errors) => [...errors, error.message]);
+      setErrors((errors) => [...errors, error.message])
     },
-  });
+  })
 
   const { mutate: fillReport, isPending: isFillReportPending } =
     useFillReportMutation({
       onSuccess: (reportFill: ReportFill) => {
-        setReportFill(reportFill);
+        setReportFill(reportFill)
       },
       onError: (error: Error) => {
-        setErrors((errors) => [...errors, error.message]);
+        setErrors((errors) => [...errors, error.message])
       },
-    });
+    })
 
   const [editingReport, setEditingReport] = useState(
-    undefined as ReportTemplate | undefined
-  );
+    undefined as ReportTemplate | undefined,
+  )
 
   const [deletingReport, setDeletingReport] = useState(
-    undefined as ReportTemplate | undefined
-  );
+    undefined as ReportTemplate | undefined,
+  )
 
-  const [errors, setErrors] = useState([] as string[]);
+  const [errors, setErrors] = useState([] as string[])
 
   const [reportTemplateToFill, setReportTemplateToFill] = useState<
     ReportTemplate | undefined
-  >(undefined);
+  >(undefined)
 
   const [reportFill, setReportFill] = useState<ReportFill | undefined>(
-    undefined
-  );
+    undefined,
+  )
 
   const screenFlyoutId = useGeneratedHtmlId({
     prefix: screen,
-  });
+  })
 
-  let flyout;
+  const downloadReportFillBanner = screen === 'fill' && reportFill && (
+    <EuiCallOut>
+      <p>
+        O relatório foi gerado com sucesso.{' '}
+        <a href={reportFill.uri}>Clique para baixar o relatório gerado.</a>
+      </p>
+    </EuiCallOut>
+  )
+
+  let flyout
 
   switch (screen) {
-    case "fill":
-      const downloadReportFillBanner = reportFill && (
-        <EuiCallOut>
-          <p>
-            O relatório foi gerado com sucesso.{" "}
-            <a href={reportFill.uri}>Clique para baixar o relatório gerado.</a>
-          </p>
-        </EuiCallOut>
-      );
-
+    case 'fill':
       flyout = reportTemplateToFill && (
         <EuiFlyout
           ownFocus
-          onClose={() => {
-            setReportTemplateToFill(undefined);
-            setReportFill(undefined);
-          }}
           aria-labelledby={screenFlyoutId}
+          onClose={() => {
+            setReportTemplateToFill(undefined)
+            setReportFill(undefined)
+          }}
         >
           <EuiFlyoutHeader hasBorder>
-            <EuiTitle size="m">
+            <EuiTitle size='m'>
               <h2 id={screenFlyoutId}>Preencher relatório</h2>
             </EuiTitle>
           </EuiFlyoutHeader>
           <EuiFlyoutBody banner={downloadReportFillBanner}>
             <ReportFillForm
+              pending={isFillReportPending}
               report={reportTemplateToFill}
               onSubmit={fillReport}
-              pending={isFillReportPending}
             />
           </EuiFlyoutBody>
         </EuiFlyout>
-      );
-      break;
-    case "edit":
+      )
+      break
+    case 'edit':
       flyout = (
         <EuiFlyout
-          onClose={() => setScreen("list")}
           ownFocus
           aria-labelledby={screenFlyoutId}
+          onClose={() => setScreen('list')}
         >
           <EuiFlyoutHeader hasBorder>
-            <EuiTitle size="m">
+            <EuiTitle size='m'>
               <h2 id={screenFlyoutId}>Editar modelo de relatório</h2>
             </EuiTitle>
           </EuiFlyoutHeader>
@@ -195,24 +201,24 @@ export default function ReportApp() {
             <EditReportForm
               report={editingReport}
               onSubmit={(report) => {
-                updateReport(report);
-                setEditingReport(undefined);
-                setScreen("list");
+                updateReport(report)
+                setEditingReport(undefined)
+                setScreen('list')
               }}
             />
           </EuiFlyoutBody>
         </EuiFlyout>
-      );
-      break;
-    case "upload":
+      )
+      break
+    case 'upload':
       flyout = (
         <EuiFlyout
-          onClose={() => setScreen("list")}
           ownFocus
           aria-labelledby={screenFlyoutId}
+          onClose={() => setScreen('list')}
         >
           <EuiFlyoutHeader hasBorder>
-            <EuiTitle size="m">
+            <EuiTitle size='m'>
               <h2 id={screenFlyoutId}>Novo modelo de relatório</h2>
             </EuiTitle>
           </EuiFlyoutHeader>
@@ -220,19 +226,19 @@ export default function ReportApp() {
             <UploadReportForm onSubmit={addReport} />
           </EuiFlyoutBody>
         </EuiFlyout>
-      );
-      break;
+      )
+      break
   }
 
   return (
     <>
       <EuiPageTemplate>
         <EuiPageTemplate.Header
-          pageTitle="Relatórios personalizados"
-          description="Crie e gere relatórios personalizados"
+          description='Crie e gere relatórios personalizados'
+          pageTitle='Relatórios personalizados'
           rightSideItems={[
-            screen !== "upload" && (
-              <EuiButton fill onClick={() => setScreen("upload")}>
+            screen !== 'upload' && (
+              <EuiButton fill onClick={() => setScreen('upload')}>
                 Novo modelo
               </EuiButton>
             ),
@@ -241,46 +247,46 @@ export default function ReportApp() {
         <EuiPageTemplate.Section>
           {errors.map((error) => (
             <EuiCallOut
-              title="Desculpe. Aconteceu um erro."
-              color="danger"
-              iconType="error"
               key={error}
+              color='danger'
+              iconType='error'
+              title='Desculpe. Aconteceu um erro.'
             >
               <p>{error}</p>
             </EuiCallOut>
           ))}
           <ReportTemplateTable
             reports={reports ?? []}
-            onEdit={(report) => {
-              setEditingReport(report);
-              setScreen("edit");
-            }}
             onDelete={(report) => {
-              setDeletingReport(report);
+              setDeletingReport(report)
+            }}
+            onEdit={(report) => {
+              setEditingReport(report)
+              setScreen('edit')
             }}
             onFill={(report) => {
-              setReportTemplateToFill(report);
-              setScreen("fill");
+              setReportTemplateToFill(report)
+              setScreen('fill')
             }}
           />
           {flyout}
         </EuiPageTemplate.Section>
       </EuiPageTemplate>
       <EuiGlobalToastList
-        toasts={toasts}
         dismissToast={removeToast}
         toastLifeTimeMs={6000}
+        toasts={toasts}
       />
       {deletingReport && (
         <EuiConfirmModal
-          title="Excluir modelo de relatório"
+          buttonColor='danger'
+          cancelButtonText='Cancelar'
+          confirmButtonText={`Excluir ${deletingReport.name}`}
+          title='Excluir modelo de relatório'
           onCancel={() => setDeletingReport(undefined)}
           onConfirm={() => {
-            deleteReport(deletingReport);
+            deleteReport(deletingReport)
           }}
-          cancelButtonText="Cancelar"
-          confirmButtonText={`Excluir ${deletingReport.name}`}
-          buttonColor="danger"
         >
           <p>
             Você tem certeza que deseja excluir o modelo de relatório
@@ -289,38 +295,38 @@ export default function ReportApp() {
         </EuiConfirmModal>
       )}
     </>
-  );
+  )
 }
 
 type ReportFormProps = {
-  report: ReportTemplate | undefined;
-  onSubmit: (report: ReportTemplate) => void;
-};
+  report: ReportTemplate | undefined
+  onSubmit: (report: ReportTemplate) => void
+}
 
 const EditReportForm = ({ report, onSubmit }: ReportFormProps) => {
-  const [name, setName] = useState(report?.name ?? "");
+  const [name, setName] = useState(report?.name ?? '')
 
-  const [description, setDescription] = useState(report?.description);
+  const [description, setDescription] = useState(report?.description)
 
   if (report === undefined) {
-    return null;
+    return null
   }
 
   return (
     <EuiForm>
       <EuiFormRow
-        label="Nome"
+        error={['O nome do relatório é obrigatório']}
         isInvalid={name.length === 0}
-        error={["O nome do relatório é obrigatório"]}
+        label='Nome'
       >
         <EuiFieldText
+          aria-required
+          required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          aria-required={true}
-          required={true}
         />
       </EuiFormRow>
-      <EuiFormRow label="Descrição">
+      <EuiFormRow label='Descrição'>
         <EuiFieldText
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -329,11 +335,11 @@ const EditReportForm = ({ report, onSubmit }: ReportFormProps) => {
       <EuiButton
         fill
         onClick={() => {
-          onSubmit({ ...report, name, description });
+          onSubmit({ ...report, name, description })
         }}
       >
         Salvar
       </EuiButton>
     </EuiForm>
-  );
-};
+  )
+}
