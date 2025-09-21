@@ -33,7 +33,7 @@ export const ExportSelectedRecordsButton: FC<Props> = ({
       }
     >
       <FormattedMessage
-        defaultMessage='Exportar {count, plural, one {# registro} other {# registros}}'
+        defaultMessage='Exportar {count, plural, one {# registro} other {# registros}} em formato MARC'
         id='search.export.button'
         values={{ count: selectedRecords.length }}
       />

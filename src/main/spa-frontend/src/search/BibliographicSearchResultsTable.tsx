@@ -43,10 +43,12 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
       {flyout}
 
       {selectedRecords.length > 0 && (
-        <ExportSelectedRecordsButton
-          selectedRecords={selectedRecords}
-          onExportSuccess={() => setSelectedRecords([])}
-        />
+        <div>
+          <ExportSelectedRecordsButton
+            selectedRecords={selectedRecords}
+            onExportSuccess={() => setSelectedRecords([])}
+          />
+        </div>
       )}
       <EuiBasicTable
         columns={columns}
