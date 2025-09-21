@@ -1,9 +1,10 @@
-import { EuiFlexGroup } from '@elastic/eui'
+import { EuiPageTemplate, useEuiTheme } from '@elastic/eui'
 import { Route, Routes } from 'react-router-dom'
 
 import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
 import AppHeader from './AppHeader'
+import AppSideNavigation from './AppSideNavigation'
 
 interface AppProps {
   isDarkMode: boolean
@@ -11,8 +12,13 @@ interface AppProps {
 }
 
 const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
+  const { euiTheme } = useEuiTheme()
+
   return (
-    <EuiFlexGroup direction='column' gutterSize='none'>
+    <EuiPageTemplate paddingSize='xl' restrictWidth={euiTheme.breakpoint.xl}>
+      <EuiPageTemplate.Sidebar>
+        <AppSideNavigation />
+      </EuiPageTemplate.Sidebar>
       <AppHeader isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
       <Routes>
         <Route path='/spa'>
@@ -23,7 +29,7 @@ const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
           />
         </Route>
       </Routes>
-    </EuiFlexGroup>
+    </EuiPageTemplate>
   )
 }
 
