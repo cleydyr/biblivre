@@ -152,7 +152,9 @@ export default function ReportApp() {
     <EuiCallOut>
       <p>
         O relatório foi gerado com sucesso.{' '}
-        <a href={reportFill.uri}>Clique para baixar o relatório gerado.</a>
+        <a href={`${import.meta.env.VITE_BIBLIVRE_ENDPOINT}/${reportFill.uri}`}>
+          Clique para baixar o relatório gerado.
+        </a>
       </p>
     </EuiCallOut>
   )
