@@ -5,6 +5,15 @@
   "app.header.back_to_legacy": {
     "defaultMessage": "Voltar para a interface clássica"
   },
+  "app.sideNav.search": {
+    "defaultMessage": "Pesquisa"
+  },
+  "app.sideNav.search.bibliographic": {
+    "defaultMessage": "Pesquisa Bibliográfica"
+  },
+  "app.sideNav.search.main": {
+    "defaultMessage": "Biblivre"
+  },
   "bibliographic-record.attachments.empty.body": {
     "defaultMessage": "Este registro não possui arquivos digitais anexados."
   },
@@ -252,7 +261,7 @@
     "defaultMessage": "Título"
   },
   "search.export.button": {
-    "defaultMessage": "Exportar {count, plural, one {# registro} other {# registros}}"
+    "defaultMessage": "Exportar {count, plural, one {# registro} other {# registros}} em formato MARC"
   },
   "search_query_operator.and": {
     "defaultMessage": "e"

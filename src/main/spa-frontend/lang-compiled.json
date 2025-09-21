@@ -1,6 +1,9 @@
 {
   "app.dark_mode.button-description": "Alternar entre modo claro e escuro",
   "app.header.back_to_legacy": "Voltar para a interface clássica",
+  "app.sideNav.search": "Pesquisa",
+  "app.sideNav.search.bibliographic": "Pesquisa Bibliográfica",
+  "app.sideNav.search.main": "Biblivre",
   "bibliographic-record.attachments.empty.body": "Este registro não possui arquivos digitais anexados.",
   "bibliographic-record.attachments.empty.title": "Nenhum arquivo digital encontrado",
   "bibliographic-record.attachments.table.name": "Nome do arquivo",
@@ -83,7 +86,7 @@
   "search.bibliographic.term": "Termo",
   "search.bibliographic.term_help": "Termos vazios não serão nos resultados da busca",
   "search.bibliographic.title": "Título",
-  "search.export.button": "Exportar {count, plural, one {# registro} other {# registros}}",
+  "search.export.button": "Exportar {count, plural, one {# registro} other {# registros}} em formato MARC",
   "search_query_operator.and": "e",
   "search_query_operator.and_not": "e não",
   "search_query_operator.or": "ou"
