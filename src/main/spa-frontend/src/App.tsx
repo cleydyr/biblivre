@@ -1,38 +1,23 @@
-import { EuiPageTemplate, useEuiTheme } from '@elastic/eui'
 import { Route, type RouteObject, Routes } from 'react-router-dom'
 
 import ReportApp from './administration/reports/ReportApp'
 import { ACTIONS } from './api-helpers/menu/constants'
 import useCheckMenuPermission from './api-helpers/menu/hooks'
+import Layout from './navigation/Layout'
 import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
-import AppHeader from './AppHeader'
-import AppSideNavigation from './AppSideNavigation'
 
-interface AppProps {
-  isDarkMode: boolean
-  setIsDarkMode: (isDarkMode: boolean) => void
-}
-
-const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
-  const { euiTheme } = useEuiTheme()
-
+const App = () => {
   const routes = useAppRoutes()
 
   return (
-    <EuiPageTemplate paddingSize='xl' restrictWidth={euiTheme.breakpoint.xl}>
-      <EuiPageTemplate.Sidebar>
-        <AppSideNavigation />
-      </EuiPageTemplate.Sidebar>
-      <AppHeader isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-      <Routes>
-        <Route path='/spa'>
-          {routes.map((route) => (
-            <Route key={route.path} element={route.element} path={route.path} />
-          ))}
-        </Route>
-      </Routes>
-    </EuiPageTemplate>
+    <Routes>
+      <Route element={<Layout />} path='/spa'>
+        {routes.map((route) => (
+          <Route key={route.path} element={route.element} path={route.path} />
+        ))}
+      </Route>
+    </Routes>
   )
 }
 

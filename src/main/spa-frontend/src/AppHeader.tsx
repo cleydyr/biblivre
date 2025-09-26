@@ -7,19 +7,16 @@ import {
   EuiIcon,
   EuiLink,
 } from '@elastic/eui'
+import { type FC, useContext } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
+import ColorModeContext from './ColorModeContext'
 import messages from './messages'
 
-import type { FC } from 'react'
-
-type Props = {
-  isDarkMode: boolean
-  setIsDarkMode: (isDarkMode: boolean) => void
-}
-
-const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
+const AppHeader: FC = () => {
   const { formatMessage } = useIntl()
+
+  const { colorMode, setColorMode } = useContext(ColorModeContext)
 
   return (
     <EuiHeader>
@@ -40,8 +37,10 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
         <EuiHeaderSectionItem>
           <EuiButtonIcon
             aria-label={formatMessage(messages.darkButtonDescription)}
-            iconType={isDarkMode ? 'sun' : 'moon'}
-            onClick={() => setIsDarkMode(!isDarkMode)}
+            iconType={colorMode === 'dark' ? 'sun' : 'moon'}
+            onClick={() =>
+              setColorMode(colorMode === 'dark' ? 'light' : 'dark')
+            }
           />
         </EuiHeaderSectionItem>
       </EuiHeaderSection>

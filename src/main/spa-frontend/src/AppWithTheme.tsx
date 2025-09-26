@@ -2,14 +2,19 @@ import { EuiProvider } from '@elastic/eui'
 import { useState } from 'react'
 
 import App from './App'
+import ColorModeContext from './ColorModeContext'
+
+import type { EuiThemeColorMode } from '@elastic/eui'
 
 const AppWithTheme = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [colorMode, setColorMode] = useState<EuiThemeColorMode>('light')
 
   return (
-    <EuiProvider colorMode={isDarkMode ? 'dark' : 'light'}>
-      <App isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-    </EuiProvider>
+    <ColorModeContext.Provider value={{ colorMode, setColorMode }}>
+      <EuiProvider colorMode={colorMode}>
+        <App />
+      </EuiProvider>
+    </ColorModeContext.Provider>
   )
 }
 
