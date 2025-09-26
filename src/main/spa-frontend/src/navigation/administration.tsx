@@ -1,9 +1,18 @@
 import { FormattedMessage } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-const useAdministrationNavigation = () => {
+import { ACTIONS } from '../api-helpers/menu/constants'
+import useCheckMenuPermission from '../api-helpers/menu/hooks'
+
+import type { EuiSideNavItemType } from '@elastic/eui'
+
+const useAdministrationNavigation = (): EuiSideNavItemType<unknown> => {
   const navigate = useNavigate()
   const location = useLocation()
+
+  const { data: isMenuEnabled } = useCheckMenuPermission(
+    ACTIONS.ADMINISTRATION_CUSTOM_REPORTS,
+  )
 
   return {
     id: 'administration',
@@ -26,6 +35,7 @@ const useAdministrationNavigation = () => {
           navigate('/spa/reports')
         },
         isSelected: location.pathname === '/spa/reports',
+        disabled: !isMenuEnabled,
       },
     ],
   }

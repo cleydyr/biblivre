@@ -14,11 +14,19 @@ const AppSideNavigation = () => {
           id='app.sideNav.search.main'
         />
       ),
-      items: useNavigationItems(),
+      items: filterEnabledItems(useNavigationItems()),
     },
   ]
 
   return <EuiSideNav items={items} />
+}
+
+const filterEnabledItems = (items: EuiSideNavItemType<unknown>[]) => {
+  return items.filter(
+    (item) =>
+      item.items === undefined ||
+      item.items.some((subItem) => subItem.disabled !== true),
+  )
 }
 
 export default AppSideNavigation

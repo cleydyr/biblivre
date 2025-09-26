@@ -19,7 +19,7 @@ export type ISO8601Date = string & { __brand: 'iso8601' }
 
 type DateTermQueryField = typeof FIELDS.MODIFIED | typeof FIELDS.CREATED
 
-export type AdvancedTextQueryTerm = BaseQueryTerm & {
+export interface AdvancedTextQueryTerm extends BaseQueryTerm {
   operator: QueryOperator
   field: EncodedTextQueryField
 }

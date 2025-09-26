@@ -1,4 +1,5 @@
 import type { UUID } from '../../search/advanced/types'
+import type { NonSuccessfulResponse, SuccessfulResponse } from '../types'
 
 import type { DIGITS, INDICATORS } from './constants'
 
@@ -105,19 +106,12 @@ type SearchResult = {
 }
 
 // Main search response structure
-export interface SuccessfulSearchResponse {
+export interface SuccessfulSearchResponse extends SuccessfulResponse {
   search: SearchResult
   indexing_groups: IndexingGroup[]
-  success: true
 }
 
-export type NoResultsSearchResponse = {
-  success: false
-  message_level: 'warning'
-  message: string
-}
-
-export type SearchResponse = SuccessfulSearchResponse | NoResultsSearchResponse
+export type SearchResponse = SuccessfulSearchResponse | NonSuccessfulResponse
 
 export interface SuccessfulExportResponse {
   success: true
