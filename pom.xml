@@ -475,8 +475,10 @@
 					</execution>
 				</executions>
 				<configuration>
+					<authId>ossindex</authId>
 					<excludeVulnerabilityIds>
-						<excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>                        <!-- For Freechart -->
+						<excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>
+						<excludeVulnerabilityId>CVE-2025-10492</excludeVulnerabilityId>                        <!-- For Freechart -->
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
