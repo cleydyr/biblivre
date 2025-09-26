@@ -24,7 +24,9 @@ public class SecurityConfig {
                                 requests.requestMatchers(
                                                 PathRequest.toStaticResources().atCommonLocations())
                                         .permitAll()
-                                        .requestMatchers("/api/v2/report_template/**", "/api/v2/report_fill/**")
+                                        .requestMatchers(
+                                                "/api/v2/report_template/**",
+                                                "/api/v2/report_fill/**")
                                         .authenticated()
                                         .anyRequest()
                                         .permitAll())
