@@ -1,3 +1,4 @@
+import { icon as apps } from '@elastic/eui/es/components/icon/assets/apps'
 import { icon as arrowDown } from '@elastic/eui/es/components/icon/assets/arrow_down'
 import { icon as arrowLeft } from '@elastic/eui/es/components/icon/assets/arrow_left'
 import { icon as arrowRight } from '@elastic/eui/es/components/icon/assets/arrow_right'
@@ -73,6 +74,7 @@ const cachedIcons: IconComponentCacheType = {
   boxesHorizontal,
   playFilled,
   pencil,
+  apps,
 }
 
 appendIconComponentCache(cachedIcons)
