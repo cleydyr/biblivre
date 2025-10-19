@@ -7,6 +7,7 @@ import { icon as boxesHorizontal } from '@elastic/eui/es/components/icon/assets/
 import { icon as brush } from '@elastic/eui/es/components/icon/assets/brush'
 import { icon as calendar } from '@elastic/eui/es/components/icon/assets/calendar'
 import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
+import { icon as copyClipboard } from '@elastic/eui/es/components/icon/assets/copy_clipboard'
 import { icon as cross } from '@elastic/eui/es/components/icon/assets/cross'
 import { icon as documents } from '@elastic/eui/es/components/icon/assets/documents'
 import { icon as download } from '@elastic/eui/es/components/icon/assets/download'
@@ -73,6 +74,7 @@ const cachedIcons: IconComponentCacheType = {
   boxesHorizontal,
   playFilled,
   pencil,
+  copyClipboard,
 }
 
 appendIconComponentCache(cachedIcons)
