@@ -159,30 +159,9 @@ export type Lending = {
   estimated_fine: number
 }
 
-export interface OpenResult {
-  attachments: BibliographicRecordAttachment[]
-  author?: string
-  created: string
-  database?: string
-  fields: Field[]
+export interface OpenResult extends BibliographicRecord {
+  fields?: Field[]
   holdings?: Holding[]
-  holdings_available: number
-  holdings_count: number
-  holdings_lent: number
-  holdings_reserved: number
-  id: number
-  isbn?: string
-  issn?: string
-  isrc?: string
-  json: MarcJson
-  marc: string
-  material_type: string
-  modified: string
-  publication_year?: string
-  shelf_location?: string
-  subject?: string
-  title?: string
-  lendings?: Record<string, Lending>
 }
 
 export interface SuccessfulOpenResponse {
