@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SpaViewController {
 
     @GetMapping("/spa/**")
-    public String examplePage(Model model) {
+    public String spaPage(Model model) {
         return "spa";
     }
 }
