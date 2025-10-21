@@ -75,6 +75,8 @@ export interface BibliographicRecord {
   publication_year: string
   marc: string
   json: MarcJson
+  issn?: string
+  isrc?: string
 }
 
 // Indexing group count

@@ -24,11 +24,9 @@ const RecordBrief: FC<Props> = ({ record }) => {
 }
 
 function usePanelDescriptionListItems(record: OpenResult) {
-  return record.fields.map((field) => {
-    return {
-      title: getLegacyMarcDatafieldTranslation(field.datafield),
-      description: field.value,
-    }
-  })
+  return record.fields?.map((field) => ({
+    title: getLegacyMarcDatafieldTranslation(field.datafield),
+    description: field.value,
+  }))
 }
 export default RecordBrief
