@@ -7,7 +7,7 @@ import {
   EuiStat,
   useEuiTheme,
 } from '@elastic/eui'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import BibliographicSearchControls from './BibliographicSearchControls'
@@ -18,7 +18,10 @@ import BibliographicRecordFlyout from './RecordFlyout'
 
 import type { Pagination } from '@elastic/eui'
 
-import type { SuccessfulSearchResponse } from '../api-helpers/search/response-types'
+import type {
+  SearchResponse,
+  SuccessfulSearchResponse,
+} from '../api-helpers/search/response-types'
 import type {
   BibliographicMaterial,
   EncodedQueryField,
@@ -47,16 +50,80 @@ const BibliographicSearchPage = () => {
     enabled: isQuerySubmittedOnce,
   })
 
+  const [showFlyout, setShowFlyout] = useState<boolean>(false)
+
   const [recordIdForFlyout, setRecordIdForFlyout] = useState<
     number | undefined
   >(undefined)
 
-  const flyout = recordIdForFlyout ? (
+  useEffect(() => {
+    if (
+      showFlyout &&
+      isSearchSuccess &&
+      searchResults.success &&
+      searchResults.search.data.length > 0 &&
+      recordIdForFlyout === undefined
+    ) {
+      setRecordIdForFlyout(searchResults.search.data[0].id)
+    }
+  }, [showFlyout, isSearchSuccess, searchResults, recordIdForFlyout])
+
+  const flyout = showFlyout && (
     <BibliographicRecordFlyout
-      recordId={recordIdForFlyout}
-      onClose={() => setRecordIdForFlyout(undefined)}
+      disableIterateForward={
+        isSearchFetching || isLastResult(searchResults, recordIdForFlyout)
+      }
+      recordId={recordIdForFlyout ?? 0}
+      onClose={() => {
+        setShowFlyout(false)
+        setRecordIdForFlyout(undefined)
+      }}
+      onIterateBackward={() => {
+        if (searchResults === undefined || !searchResults.success) {
+          return
+        }
+
+        const indexOfRecord = searchResults.search.data.findIndex(
+          (record) => record.id === recordIdForFlyout,
+        )
+
+        if (indexOfRecord > 0) {
+          setRecordIdForFlyout(searchResults.search.data[indexOfRecord - 1].id)
+
+          return
+        }
+
+        if (searchResults.search.page > 1) {
+          setPage(searchResults.search.page - 1)
+          setRecordIdForFlyout(undefined)
+
+          return
+        }
+      }}
+      onIterateForward={() => {
+        if (searchResults === undefined || !searchResults.success) {
+          return
+        }
+
+        const indexOfRecord = searchResults.search.data.findIndex(
+          (record) => record.id === recordIdForFlyout,
+        )
+
+        if (indexOfRecord < searchResults.search.data.length - 1) {
+          setRecordIdForFlyout(searchResults.search.data[indexOfRecord + 1].id)
+
+          return
+        }
+
+        if (searchResults.search.page < searchResults.search.page_count) {
+          setPage(searchResults.search.page)
+          setRecordIdForFlyout(undefined)
+
+          return
+        }
+      }}
     />
-  ) : null
+  )
 
   return (
     <EuiPageTemplate
@@ -146,6 +213,7 @@ const BibliographicSearchPage = () => {
                 }}
                 onRecordDetailsClick={(record) => {
                   setRecordIdForFlyout(record.id)
+                  setShowFlyout(true)
                 }}
               />
               {flyout}
@@ -154,6 +222,26 @@ const BibliographicSearchPage = () => {
         </EuiFlexGroup>
       </EuiPageTemplate.Section>
     </EuiPageTemplate>
+  )
+}
+
+function isLastResult(
+  searchResults: SearchResponse | undefined,
+  recordIdForFlyout: number | undefined,
+) {
+  if (searchResults === undefined || !searchResults.success) {
+    return false
+  }
+
+  if (searchResults.search.page < searchResults.search.page_count) {
+    return false
+  }
+
+  return (
+    searchResults.search.data.findIndex(
+      (record) => record.id === recordIdForFlyout,
+    ) ===
+    searchResults.search.data.length - 1
   )
 }
 
