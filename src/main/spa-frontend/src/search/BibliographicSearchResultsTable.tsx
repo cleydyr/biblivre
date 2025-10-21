@@ -1,9 +1,8 @@
 import { EuiBasicTable } from '@elastic/eui'
-import { type FC, Fragment, type ReactNode, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import ExportSelectedRecordsButton from './ExportSelectedRecordsButton'
-import BibliographicRecordFlyout from './RecordFlyout'
 
 import type {
   Criteria,
@@ -11,6 +10,7 @@ import type {
   EuiTableSelectionType,
   Pagination,
 } from '@elastic/eui'
+import type { FC } from 'react'
 
 import type { BibliographicRecord } from '../api-helpers/search/response-types'
 
@@ -19,6 +19,7 @@ type Props = {
   isLoading: boolean
   pagination: Pagination | undefined
   onChange: (criteria: Criteria<BibliographicRecord>) => void
+  onRecordDetailsClick: (record: BibliographicRecord) => void
 }
 
 export const BibliographicSearchResultsTable: FC<Props> = ({
@@ -26,6 +27,7 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
   isLoading,
   pagination,
   onChange,
+  onRecordDetailsClick,
 }) => {
   const [selectedRecords, setSelectedRecords] = useState<BibliographicRecord[]>(
     [],
@@ -36,12 +38,10 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
     selected: selectedRecords,
   }
 
-  const { flyout, columns } = useBibliographicSearchColumns()
+  const columns = useBibliographicSearchColumns(onRecordDetailsClick)
 
   return (
     <Fragment>
-      {flyout}
-
       {selectedRecords.length > 0 && (
         <div>
           <ExportSelectedRecordsButton
@@ -70,122 +70,103 @@ export const BibliographicSearchResultsTable: FC<Props> = ({
   )
 }
 
-type UseBibliographicSearchColumnsReturnType = {
-  columns: Array<EuiBasicTableColumn<BibliographicRecord>>
-  flyout: ReactNode
-}
-
-function useBibliographicSearchColumns(): UseBibliographicSearchColumnsReturnType {
+function useBibliographicSearchColumns(
+  onRecordDetailsClick: (record: BibliographicRecord) => void,
+): Array<EuiBasicTableColumn<BibliographicRecord>> {
   const { formatMessage } = useIntl()
 
-  const [recordIdForFlyout, setRecordIdForFlyout] = useState<
-    number | undefined
-  >(undefined)
-
-  const flyout = recordIdForFlyout ? (
-    <BibliographicRecordFlyout
-      recordId={recordIdForFlyout}
-      onClose={() => setRecordIdForFlyout(undefined)}
-    />
-  ) : null
-
-  return {
-    columns: [
-      {
-        field: 'title',
-        name: (
-          <FormattedMessage
-            defaultMessage='Título'
-            id='search.bibliographic.title'
-          />
-        ),
-      },
-      {
-        field: 'author',
-        name: (
-          <FormattedMessage
-            defaultMessage='Autor'
-            id='search.bibliographic.author'
-          />
-        ),
-      },
-      {
-        field: 'publication_year',
-        name: (
-          <FormattedMessage
-            defaultMessage='Ano de publicação'
-            id='search.bibliographic.publication_year'
-          />
-        ),
-        align: 'right',
-      },
-      {
-        field: 'shelf_location',
-        name: (
-          <FormattedMessage
-            defaultMessage='Localização'
-            id='search.bibliographic.shelf_location'
-          />
-        ),
-      },
-      {
-        field: 'isbn',
-        name: (
-          <FormattedMessage
-            defaultMessage='ISBN'
-            id='search.bibliographic.isbn'
-          />
-        ),
-      },
-      {
-        field: 'subject',
-        name: (
-          <FormattedMessage
-            defaultMessage='Assunto'
-            id='search.bibliographic.subject'
-          />
-        ),
-      },
-      {
-        field: 'holdings_count',
-        name: (
-          <FormattedMessage
-            defaultMessage='Ex. disponíveis'
-            id='search.bibliographic.holdings_count'
-          />
-        ),
-        align: 'right',
-      },
-      {
-        name: (
-          <FormattedMessage
-            defaultMessage='Ações'
-            id='search.bibliographic.actions'
-          />
-        ),
-        actions: [
-          {
-            name: (
-              <FormattedMessage
-                defaultMessage='Ver detalhes'
-                id='search.bibliographic.actions.details'
-              />
-            ),
-            icon: 'folderOpen',
-            type: 'icon',
-            onClick: (record: BibliographicRecord) => {
-              setRecordIdForFlyout(record.id)
-            },
-            description: formatMessage({
-              defaultMessage: 'Ver detalhes do registro',
-              id: 'search.bibliographic.actions.details.description',
-            }),
-          },
-        ],
-      },
-    ],
-    flyout,
-  }
+  return [
+    {
+      field: 'title',
+      name: (
+        <FormattedMessage
+          defaultMessage='Título'
+          id='search.bibliographic.title'
+        />
+      ),
+    },
+    {
+      field: 'author',
+      name: (
+        <FormattedMessage
+          defaultMessage='Autor'
+          id='search.bibliographic.author'
+        />
+      ),
+    },
+    {
+      field: 'publication_year',
+      name: (
+        <FormattedMessage
+          defaultMessage='Ano de publicação'
+          id='search.bibliographic.publication_year'
+        />
+      ),
+      align: 'right',
+    },
+    {
+      field: 'shelf_location',
+      name: (
+        <FormattedMessage
+          defaultMessage='Localização'
+          id='search.bibliographic.shelf_location'
+        />
+      ),
+    },
+    {
+      field: 'isbn',
+      name: (
+        <FormattedMessage
+          defaultMessage='ISBN'
+          id='search.bibliographic.isbn'
+        />
+      ),
+    },
+    {
+      field: 'subject',
+      name: (
+        <FormattedMessage
+          defaultMessage='Assunto'
+          id='search.bibliographic.subject'
+        />
+      ),
+    },
+    {
+      field: 'holdings_count',
+      name: (
+        <FormattedMessage
+          defaultMessage='Ex. disponíveis'
+          id='search.bibliographic.holdings_count'
+        />
+      ),
+      align: 'right',
+    },
+    {
+      name: (
+        <FormattedMessage
+          defaultMessage='Ações'
+          id='search.bibliographic.actions'
+        />
+      ),
+      actions: [
+        {
+          name: (
+            <FormattedMessage
+              defaultMessage='Ver detalhes'
+              id='search.bibliographic.actions.details'
+            />
+          ),
+          icon: 'folderOpen',
+          type: 'icon',
+          onClick: onRecordDetailsClick,
+          description: formatMessage({
+            defaultMessage: 'Ver detalhes do registro',
+            id: 'search.bibliographic.actions.details.description',
+          }),
+        },
+      ],
+    },
+  ]
 }
 
 export default BibliographicSearchResultsTable

@@ -5,7 +5,6 @@ import {
   EuiPageTemplate,
   EuiPanel,
   EuiStat,
-  type Pagination,
   useEuiTheme,
 } from '@elastic/eui'
 import { useState } from 'react'
@@ -15,6 +14,9 @@ import BibliographicSearchControls from './BibliographicSearchControls'
 import BibliographicSearchResultSort from './BibliographicSearchResultSort'
 import BibliographicSearchResultsTable from './BibliographicSearchResultsTable'
 import { usePaginatedSearch } from './hooks'
+import BibliographicRecordFlyout from './RecordFlyout'
+
+import type { Pagination } from '@elastic/eui'
 
 import type { SuccessfulSearchResponse } from '../api-helpers/search/response-types'
 import type {
@@ -43,6 +45,17 @@ const BibliographicSearchPage = () => {
   } = usePaginatedSearch(terms, page, materialType, sort, {
     enabled: isQuerySubmittedOnce,
   })
+
+  const [recordIdForFlyout, setRecordIdForFlyout] = useState<
+    number | undefined
+  >(undefined)
+
+  const flyout = recordIdForFlyout ? (
+    <BibliographicRecordFlyout
+      recordId={recordIdForFlyout}
+      onClose={() => setRecordIdForFlyout(undefined)}
+    />
+  ) : null
 
   return (
     <EuiPageTemplate
@@ -130,7 +143,11 @@ const BibliographicSearchPage = () => {
                 onChange={(criteria) => {
                   setPage(criteria.page?.index ?? 0)
                 }}
+                onRecordDetailsClick={(record) => {
+                  setRecordIdForFlyout(record.id)
+                }}
               />
+              {flyout}
             </EuiFlexGroup>
           )}
         </EuiFlexGroup>
