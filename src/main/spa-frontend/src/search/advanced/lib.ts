@@ -1,4 +1,4 @@
-import { FIELDS } from '../../api-helpers/search/constants'
+import { DATE_SORT_FIELDS, FIELDS } from '../../api-helpers/search/constants'
 
 import type { Moment } from 'moment'
 
@@ -27,7 +27,7 @@ export function getValidQueries(
 
   if (createdFilter.from !== null || createdFilter.to !== null) {
     const createdTerm: AdvancedDateQueryTerm = {
-      field: FIELDS.CREATED,
+      field: DATE_SORT_FIELDS.CREATED,
       operator: 'AND',
       start_date: getISO8601Date(createdFilter.from),
       end_date: getISO8601Date(createdFilter.to),
@@ -38,7 +38,7 @@ export function getValidQueries(
 
   if (modifiedFilter.from !== null || modifiedFilter.to !== null) {
     const modifiedTerm: AdvancedDateQueryTerm = {
-      field: FIELDS.MODIFIED,
+      field: DATE_SORT_FIELDS.MODIFIED,
       operator: 'AND',
       start_date: getISO8601Date(modifiedFilter.from),
       end_date: getISO8601Date(modifiedFilter.to),

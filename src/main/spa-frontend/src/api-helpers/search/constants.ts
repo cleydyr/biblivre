@@ -8,6 +8,9 @@ export const FIELDS = {
   ISSN: '6',
   PUBLISHER: '7',
   SERIES: '8',
+} as const
+
+export const DATE_SORT_FIELDS = {
   CREATED: 'created',
   MODIFIED: 'modified',
 } as const

@@ -1,4 +1,4 @@
-import type { FIELDS } from './constants'
+import type { DATE_SORT_FIELDS, FIELDS } from './constants'
 
 export type BaseQueryTerm = {
   query: string
@@ -17,7 +17,8 @@ export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
 
 export type ISO8601Date = string & { __brand: 'iso8601' }
 
-type DateTermQueryField = typeof FIELDS.MODIFIED | typeof FIELDS.CREATED
+type DateTermQueryField =
+  (typeof DATE_SORT_FIELDS)[keyof typeof DATE_SORT_FIELDS]
 
 export interface AdvancedTextQueryTerm extends BaseQueryTerm {
   operator: QueryOperator

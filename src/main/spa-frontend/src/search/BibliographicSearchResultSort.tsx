@@ -1,20 +1,25 @@
-import { EuiFormRow, EuiSelect } from '@elastic/eui'
+import { EuiFormRow } from '@elastic/eui'
 import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import { FIELDS } from '../api-helpers/search/constants'
+import TypedEuiSelect from '../components/TypedEuiSelect'
 
-import type { EuiSelectOption } from '@elastic/eui'
 import type { FC } from 'react'
+
+import type { TypedEuiSelectOption } from '../components/TypedEuiSelect'
 
 type Props = {
   onSortChange: (sort: number) => void
 }
 
 const BibliographicSearchResultSort: FC<Props> = ({ onSortChange }) => {
-  const options: EuiSelectOption[] = useBibliographicSearchSortOptions()
+  const options: TypedEuiSelectOption<(typeof FIELDS)[keyof typeof FIELDS]>[] =
+    useBibliographicSearchSortOptions()
 
-  const [sort, setSort] = useState<string>(FIELDS.TITLE)
+  const [sort, setSort] = useState<(typeof FIELDS)[keyof typeof FIELDS]>(
+    FIELDS.TITLE,
+  )
 
   return (
     <EuiFormRow
@@ -25,7 +30,7 @@ const BibliographicSearchResultSort: FC<Props> = ({ onSortChange }) => {
         />
       }
     >
-      <EuiSelect
+      <TypedEuiSelect<(typeof FIELDS)[keyof typeof FIELDS]>
         compressed
         options={options}
         value={sort}
@@ -41,7 +46,9 @@ const BibliographicSearchResultSort: FC<Props> = ({ onSortChange }) => {
   )
 }
 
-const useBibliographicSearchSortOptions = (): EuiSelectOption[] => {
+const useBibliographicSearchSortOptions = (): TypedEuiSelectOption<
+  (typeof FIELDS)[keyof typeof FIELDS]
+>[] => {
   return [
     {
       value: FIELDS.AUTHOR,
