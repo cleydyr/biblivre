@@ -70,6 +70,9 @@ const BibliographicSearchPage = () => {
 
   const flyout = showFlyout && (
     <BibliographicRecordFlyout
+      disableIterateBackward={
+        isSearchFetching || isFirstResult(searchResults, recordIdForFlyout)
+      }
       disableIterateForward={
         isSearchFetching || isLastResult(searchResults, recordIdForFlyout)
       }
@@ -225,6 +228,25 @@ const BibliographicSearchPage = () => {
   )
 }
 
+function isFirstResult(
+  searchResults: SearchResponse | undefined,
+  recordIdForFlyout: number | undefined,
+) {
+  if (searchResults === undefined || !searchResults.success) {
+    return false
+  }
+
+  if (searchResults.search.page !== 1) {
+    return false
+  }
+
+  return (
+    searchResults.search.data.findIndex(
+      (record) => record.id === recordIdForFlyout,
+    ) === 0
+  )
+}
+
 function isLastResult(
   searchResults: SearchResponse | undefined,
   recordIdForFlyout: number | undefined,
@@ -233,7 +255,7 @@ function isLastResult(
     return false
   }
 
-  if (searchResults.search.page < searchResults.search.page_count) {
+  if (searchResults.search.page !== searchResults.search.page_count) {
     return false
   }
 

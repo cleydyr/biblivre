@@ -18,6 +18,7 @@ import type { FC } from 'react'
 type Props = {
   recordId: number
   disableIterateForward: boolean
+  disableIterateBackward: boolean
   onClose: () => void
   onIterateForward: () => void
   onIterateBackward?: () => void
@@ -26,6 +27,7 @@ type Props = {
 const BibliographicRecordFlyout: FC<Props> = ({
   recordId,
   disableIterateForward,
+  disableIterateBackward,
   onClose,
   onIterateBackward,
   onIterateForward,
@@ -57,7 +59,11 @@ const BibliographicRecordFlyout: FC<Props> = ({
           </EuiFlexItem>
           <div>
             <EuiFlexGroup>
-              <EuiButton iconType='arrowLeft' onClick={onIterateBackward}>
+              <EuiButton
+                disabled={disableIterateBackward}
+                iconType='arrowLeft'
+                onClick={onIterateBackward}
+              >
                 <FormattedMessage
                   defaultMessage='Anterior'
                   id='bibliographic-record.flyout.back'
