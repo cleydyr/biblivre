@@ -266,7 +266,7 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>6.21.4</version>
+            <version>6.21.5</version>
         </dependency>
         <!-- Skip CVE-2025-48734 -->
         <dependency>
