@@ -1,8 +1,12 @@
 import {
+  EuiButton,
+  EuiFlexGroup,
+  EuiFlexItem,
   EuiFlyout,
   EuiFlyoutBody,
   EuiFlyoutHeader,
   EuiTitle,
+  useEuiTheme,
   useGeneratedHtmlId,
 } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
@@ -14,22 +18,62 @@ import type { FC } from 'react'
 type Props = {
   recordId: number
   onClose: () => void
+  onIterateForward?: () => void
+  onIterateBackward?: () => void
 }
 
-const BibliographicRecordFlyout: FC<Props> = ({ recordId, onClose }) => {
+const BibliographicRecordFlyout: FC<Props> = ({
+  recordId,
+  onClose,
+  onIterateBackward,
+  onIterateForward,
+}) => {
+  const { euiTheme } = useEuiTheme()
+
   const flyoutTitleId = useGeneratedHtmlId()
 
   return (
-    <EuiFlyout ownFocus aria-labelledby={flyoutTitleId} onClose={onClose}>
+    <EuiFlyout
+      ownFocus
+      aria-labelledby={flyoutTitleId}
+      css={{
+        paddingTop: euiTheme.size.xl,
+      }}
+      onClose={onClose}
+    >
       <EuiFlyoutHeader hasBorder>
-        <EuiTitle size='m'>
-          <h2 id={flyoutTitleId}>
-            <FormattedMessage
-              defaultMessage='Detalhes do registro bibliográfico'
-              id='bibliographic-record.flyout.title'
-            />
-          </h2>
-        </EuiTitle>
+        <EuiFlexGroup alignItems='center' justifyContent='spaceBetween'>
+          <EuiFlexItem>
+            <EuiTitle size='m'>
+              <h2 id={flyoutTitleId}>
+                <FormattedMessage
+                  defaultMessage='Detalhes do registro bibliográfico'
+                  id='bibliographic-record.flyout.title'
+                />
+              </h2>
+            </EuiTitle>
+          </EuiFlexItem>
+          <div>
+            <EuiFlexGroup>
+              <EuiButton iconType='arrowLeft' onClick={onIterateBackward}>
+                <FormattedMessage
+                  defaultMessage='Anterior'
+                  id='bibliographic-record.flyout.back'
+                />
+              </EuiButton>
+              <EuiButton
+                iconSide='right'
+                iconType='arrowRight'
+                onClick={onIterateForward}
+              >
+                <FormattedMessage
+                  defaultMessage='Próximo'
+                  id='bibliographic-record.flyout.next'
+                />
+              </EuiButton>
+            </EuiFlexGroup>
+          </div>
+        </EuiFlexGroup>
       </EuiFlyoutHeader>
       <EuiFlyoutBody>
         <BibliographicRecordDetails recordId={recordId} />
