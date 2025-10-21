@@ -1,8 +1,10 @@
-import { EuiSideNav, type EuiSideNavItemType } from '@elastic/eui'
+import { EuiSideNav } from '@elastic/eui'
 import { useId } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import useNavigationItems from './navigation'
+
+import type { EuiSideNavItemType } from '@elastic/eui'
 
 const AppSideNavigation = () => {
   const items: EuiSideNavItemType<unknown>[] = [

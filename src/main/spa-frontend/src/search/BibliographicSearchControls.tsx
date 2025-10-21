@@ -7,21 +7,22 @@ import {
   EuiSwitch,
   EuiTitle,
 } from '@elastic/eui'
-import { type FC, useState } from 'react'
+import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
-import TypedEuiSelect, {
-  type TypedEuiSelectOption,
-} from '../components/TypedEuiSelect'
+import TypedEuiSelect from '../components/TypedEuiSelect'
 import useToggle from '../hooks/useToggle'
 
 import AdvancedBibliographicSearchControls from './advanced/AdvancedBibliographicSearchControls'
 import SimpleBibliographicSearchControls from './simple/SimpleBibliographicSearchControls'
 
+import type { FC } from 'react'
+
 import type {
   BibliographicMaterial,
   SearchQueryTerms,
 } from '../api-helpers/search/types'
+import type { TypedEuiSelectOption } from '../components/TypedEuiSelect'
 
 type Props = {
   onQuerySubmited: (

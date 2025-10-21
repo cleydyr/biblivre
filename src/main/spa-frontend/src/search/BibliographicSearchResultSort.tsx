@@ -1,8 +1,11 @@
-import { EuiFormRow, EuiSelect, type EuiSelectOption } from '@elastic/eui'
-import { type FC, useState } from 'react'
+import { EuiFormRow, EuiSelect } from '@elastic/eui'
+import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import { FIELDS } from '../api-helpers/search/constants'
+
+import type { EuiSelectOption } from '@elastic/eui'
+import type { FC } from 'react'
 
 type Props = {
   onSortChange: (sort: number) => void

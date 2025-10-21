@@ -1,5 +1,5 @@
 import { EuiPageTemplate, useEuiTheme } from '@elastic/eui'
-import { Route, type RouteObject, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import ReportApp from './administration/reports/ReportApp'
 import { ACTIONS } from './api-helpers/menu/constants'
@@ -8,6 +8,8 @@ import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
 import AppHeader from './AppHeader'
 import AppSideNavigation from './AppSideNavigation'
+
+import type { RouteObject } from 'react-router-dom'
 
 interface AppProps {
   isDarkMode: boolean

@@ -4,7 +4,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
 } from '@elastic/eui'
-import { type FC, useState } from 'react'
+import { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import useMap from '../../hooks/useMap'
@@ -12,6 +12,8 @@ import useMap from '../../hooks/useMap'
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
 import AdvancedBibliographicSearchDateFilters from './AdvancedBibliographicSearchDateFilters'
 import { generateTermField, getEmptyDateRange, getValidQueries } from './lib'
+
+import type { FC } from 'react'
 
 import type {
   AdvancedQueryTerm,
