@@ -15,6 +15,7 @@ import type { UseMutationOptions, UseQueryOptions } from '@tanstack/react-query'
 import type { OpenResponse } from '../api-helpers/search/response-types'
 import type {
   BibliographicMaterial,
+  EncodedQueryField,
   SearchQueryTerms,
   SearchResponse,
 } from '../api-helpers/search/types'
@@ -24,7 +25,7 @@ export const searchQueryKeys = {
   all: ['search'] as const,
   results: (materiaType: BibliographicMaterial, terms?: SearchQueryTerms) =>
     [...searchQueryKeys.all, 'results', materiaType, terms] as const,
-  pagination: (searchId?: string, page?: number, sort?: number) =>
+  pagination: (searchId?: string, page?: number, sort?: EncodedQueryField) =>
     [...searchQueryKeys.all, 'pagination', searchId, page, sort] as const,
   record: (recordId: number) =>
     [...searchQueryKeys.all, 'record', recordId] as const,
@@ -34,7 +35,7 @@ export function usePaginatedSearch(
   terms: SearchQueryTerms | undefined,
   page: number,
   materialType: BibliographicMaterial,
-  sort?: number,
+  sort?: EncodedQueryField,
   options?: Omit<
     UseQueryOptions<SearchResponse>,
     'queryKey' | 'queryFn' | 'placeholderData'

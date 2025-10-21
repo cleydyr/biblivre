@@ -10,6 +10,7 @@ import type { FileDownload } from '../types'
 import type { ExportResponse, OpenResponse } from './response-types'
 import type {
   BibliographicMaterial,
+  EncodedQueryField,
   SearchQueryTerms,
   SearchResponse,
 } from './types'
@@ -33,7 +34,7 @@ export async function getCatalographicSearchResults(
 export async function paginateCatalographicSearchResults(
   search_id: string,
   page: number,
-  sort?: number,
+  sort?: EncodedQueryField,
 ): Promise<SearchResponse> {
   return fetchJSONFromLegacyEndpoint({
     module: MODULES.CATALOGING_BIBLIOGRAPHIC,

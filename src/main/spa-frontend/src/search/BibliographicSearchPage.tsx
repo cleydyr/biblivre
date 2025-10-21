@@ -21,6 +21,7 @@ import type { Pagination } from '@elastic/eui'
 import type { SuccessfulSearchResponse } from '../api-helpers/search/response-types'
 import type {
   BibliographicMaterial,
+  EncodedQueryField,
   SearchQueryTerms,
 } from '../api-helpers/search/types'
 
@@ -31,7 +32,7 @@ const BibliographicSearchPage = () => {
 
   const [page, setPage] = useState<number>(0)
 
-  const [sort, setSort] = useState<number | undefined>(undefined)
+  const [sort, setSort] = useState<EncodedQueryField | undefined>(undefined)
 
   const [materialType, setMaterialType] = useState<BibliographicMaterial>('all')
 
@@ -128,7 +129,7 @@ const BibliographicSearchPage = () => {
                 <EuiFlexItem>
                   <EuiFlexGroup alignItems='flexEnd' justifyContent='flexEnd'>
                     <BibliographicSearchResultSort
-                      onSortChange={(newSort: number) => {
+                      onSortChange={(newSort: EncodedQueryField) => {
                         setSort(newSort)
                         setPage(0)
                       }}
