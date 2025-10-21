@@ -144,6 +144,7 @@ export default tseslint.config([
       'object-shorthand': 'error',
       'prefer-template': 'error',
       'no-else-return': 'warn',
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
     },
   },
 
