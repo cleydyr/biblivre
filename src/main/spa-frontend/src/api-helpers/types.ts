@@ -39,6 +39,11 @@ export type LegacyEndpointPayload =
       typeof MODULES.MENU,
       typeof MENU_ACTIONS.ADMINISTRATION_CUSTOM_REPORTS
     >
+  | ParametrizedLegacyEndpointPayload<
+      typeof MODULES.LOGIN,
+      'login',
+      'username' | 'password'
+    >
 
 type ParametrizedLegacyEndpointPayload<
   M extends string,
