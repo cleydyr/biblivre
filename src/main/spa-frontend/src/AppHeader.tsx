@@ -1,4 +1,5 @@
 import {
+  EuiButton,
   EuiButtonIcon,
   EuiFlexGroup,
   EuiHeader,
@@ -8,6 +9,7 @@ import {
   EuiLink,
 } from '@elastic/eui'
 import { FormattedMessage, useIntl } from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
 import messages from './messages'
 
@@ -20,6 +22,7 @@ type Props = {
 
 const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
   const { formatMessage } = useIntl()
+  const navigate = useNavigate()
 
   return (
     <EuiHeader>
@@ -37,6 +40,11 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
         </EuiHeaderSectionItem>
       </EuiHeaderSection>
       <EuiHeaderSection side='right'>
+        <EuiHeaderSectionItem>
+          <EuiButton size='s' onClick={() => navigate('/spa/login')}>
+            <FormattedMessage defaultMessage='Entrar' id='app.header.login' />
+          </EuiButton>
+        </EuiHeaderSectionItem>
         <EuiHeaderSectionItem>
           <EuiButtonIcon
             aria-label={formatMessage(messages.darkButtonDescription)}

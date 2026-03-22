@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import ReportApp from './administration/reports/ReportApp'
 import { ACTIONS } from './api-helpers/menu/constants'
 import useCheckMenuPermission from './api-helpers/menu/hooks'
+import LoginPage from './login/LoginPage'
 import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
 import AppHeader from './AppHeader'
@@ -39,6 +40,10 @@ const App = ({ isDarkMode, setIsDarkMode }: AppProps) => {
 }
 
 const useAppRoutes = (): RouteObject[] => [
+  {
+    path: 'login',
+    element: <LoginPage />,
+  },
   {
     path: 'search',
     element: <BibliographicSearchPage />,
