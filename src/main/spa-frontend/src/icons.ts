@@ -32,6 +32,8 @@ import { icon as stopFilled } from '@elastic/eui/es/components/icon/assets/stop_
 import { icon as sun } from '@elastic/eui/es/components/icon/assets/sun'
 import { icon as trash } from '@elastic/eui/es/components/icon/assets/trash'
 import { icon as warning } from '@elastic/eui/es/components/icon/assets/warning'
+import { icon as lock } from '@elastic/eui/es/components/icon/assets/lock'
+import { icon as eye } from '@elastic/eui/es/components/icon/assets/eye'
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon'
 
 import type { ICON_TYPES } from '@elastic/eui'
@@ -75,6 +77,8 @@ const cachedIcons: IconComponentCacheType = {
   playFilled,
   pencil,
   copyClipboard,
+  lock,
+  eye,
 }
 
 appendIconComponentCache(cachedIcons)

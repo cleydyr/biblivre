@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom'
 import { useLegacyLogin } from '../api-helpers/login/hooks'
 
 import type { FormEvent } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 
 const LoginPage = () => {
   const { euiTheme } = useEuiTheme()
@@ -25,12 +24,9 @@ const LoginPage = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const queryClient = useQueryClient()
-
   const { mutate, isPending, isError, error } = useLegacyLogin({
     onSuccess: () => {
       navigate('/spa/search')
-      queryClient.invalidateQueries()
     },
   })
 

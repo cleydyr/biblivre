@@ -44,6 +44,8 @@ export type LegacyEndpointPayload =
       'login',
       'username' | 'password'
     >
+  | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'session'>
+  | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'logout'>
 
 type ParametrizedLegacyEndpointPayload<
   M extends string,
@@ -66,6 +68,11 @@ export type FileDownload = {
 
 export type SuccessfulResponse = {
   success: true
+}
+
+/** Session probe from `login.session`; extends the usual JSON success payload. */
+export type LoginSessionResponse = SuccessfulResponse & {
+  logged: boolean
 }
 
 export type NonSuccessfulResponse = {

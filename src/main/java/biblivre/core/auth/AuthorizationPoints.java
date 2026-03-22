@@ -116,6 +116,7 @@ public class AuthorizationPoints implements Serializable {
     private void setupLoginAuthorizations() {
         this.addAuthPoint("login", "login", LOGIN);
         this.addAuthPoint("login", "logout", LOGIN);
+        this.addAuthPoint("login", "session", LOGIN);
         this.addAuthPoint("login", "change_password", LOGIN_CHANGE_PASSWORD);
     }
 
