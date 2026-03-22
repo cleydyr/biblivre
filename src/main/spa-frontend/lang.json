@@ -5,6 +5,12 @@
   "app.header.back_to_legacy": {
     "defaultMessage": "Voltar para a interface clássica"
   },
+  "app.sideNav.administration": {
+    "defaultMessage": "Administração"
+  },
+  "app.sideNav.administration.custom_reports": {
+    "defaultMessage": "Relatórios personalizados"
+  },
   "app.sideNav.search": {
     "defaultMessage": "Pesquisa"
   },
@@ -32,6 +38,9 @@
   "bibliographic-record.flyout.attachments": {
     "defaultMessage": "Arquivos digitais"
   },
+  "bibliographic-record.flyout.back": {
+    "defaultMessage": "Anterior"
+  },
   "bibliographic-record.flyout.form": {
     "defaultMessage": "Formulário"
   },
@@ -40,6 +49,9 @@
   },
   "bibliographic-record.flyout.marc": {
     "defaultMessage": "MARC"
+  },
+  "bibliographic-record.flyout.next": {
+    "defaultMessage": "Próximo"
   },
   "bibliographic-record.flyout.summary": {
     "defaultMessage": "Resumo catalográfico"
@@ -79,6 +91,9 @@
   },
   "bibliographic-record.holdings-tab.unavailable": {
     "defaultMessage": "Indisponível"
+  },
+  "bibliographic-record.marc.copy_aria_label": {
+    "defaultMessage": "Copiar MARC para a área de transferência"
   },
   "bibliographic-record.not-found": {
     "defaultMessage": "Registro não encontrado"
