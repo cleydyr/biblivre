@@ -71,9 +71,16 @@ export type SuccessfulResponse = {
 }
 
 /** Session probe from `login.session`; extends the usual JSON success payload. */
-export type LoginSessionResponse = SuccessfulResponse & {
-  logged: boolean
+export type LoggedLoginSessionResponse = SuccessfulResponse & {
+  logged: true
+  username: string
 }
+
+export type UnloggedLoginSessionResponse = SuccessfulResponse & {
+  logged: false
+}
+
+export type LoginSessionResponse = LoggedLoginSessionResponse | UnloggedLoginSessionResponse
 
 export type NonSuccessfulResponse = {
   success: false

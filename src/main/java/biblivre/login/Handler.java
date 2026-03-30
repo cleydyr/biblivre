@@ -98,7 +98,14 @@ public class Handler extends AbstractHandler {
 
     public void session(ExtendedRequest request, ExtendedResponse response) {
         JSONObject json = getJson();
-        json.put("logged", request.getLoggedUserId() > 0);
+        boolean logged = request.getLoggedUserId() > 0;
+        json.put("logged", logged);
+        if (logged) {
+            Object userObj = request.getScopedSessionAttribute("logged_user");
+            if (userObj instanceof LoginDTO login) {
+                json.put("username", login.getLogin());
+            }
+        }
         setMessage(ActionResult.NORMAL);
     }
 

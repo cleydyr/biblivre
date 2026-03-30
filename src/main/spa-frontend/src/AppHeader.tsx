@@ -7,6 +7,7 @@ import {
   EuiHeaderSectionItem,
   EuiIcon,
   EuiLink,
+  EuiText,
 } from '@elastic/eui'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
@@ -15,11 +16,8 @@ import { useAuthSession, useLegacyLogout } from './api-helpers/login/hooks'
 import messages from './messages'
 
 import type { FC } from 'react'
+import type { LoggedLoginSessionResponse, LoginSessionResponse } from './api-helpers/types'
 
-import type {
-  LoginSessionResponse,
-  NonSuccessfulResponse,
-} from './api-helpers/types'
 
 type Props = {
   isDarkMode: boolean
@@ -27,12 +25,10 @@ type Props = {
 }
 
 function isLoggedInSession(
-  session: LoginSessionResponse | NonSuccessfulResponse | undefined,
-): session is LoginSessionResponse {
+  session: LoginSessionResponse | undefined,
+): session is LoggedLoginSessionResponse {
   return (
-    session?.success === true &&
-    'logged' in session &&
-    session.logged === true
+    session?.success === true && 'logged' in session && session.logged === true
   )
 }
 
@@ -70,17 +66,30 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
       </EuiHeaderSection>
       <EuiHeaderSection side='right'>
         <EuiHeaderSectionItem>
-          <EuiButton
-            isLoading={isSessionPending || isLogoutPending}
-            size='s'
-            onClick={handleAuthClick}
-          >
-            {loggedIn ? (
-              <FormattedMessage defaultMessage='Sair' id='app.header.logout' />
-            ) : (
-              <FormattedMessage defaultMessage='Entrar' id='app.header.login' />
-            )}
-          </EuiButton>
+          <EuiFlexGroup alignItems='center' gutterSize='s' responsive={false}>
+            {loggedIn && session?.username ? (
+              <EuiText css={{ fontWeight: 500 }} size='s'>
+                {session.username}
+              </EuiText>
+            ) : null}
+            <EuiButton
+              isLoading={isSessionPending || isLogoutPending}
+              size='s'
+              onClick={handleAuthClick}
+            >
+              {loggedIn ? (
+                <FormattedMessage
+                  defaultMessage='Sair'
+                  id='app.header.logout'
+                />
+              ) : (
+                <FormattedMessage
+                  defaultMessage='Entrar'
+                  id='app.header.login'
+                />
+              )}
+            </EuiButton>
+          </EuiFlexGroup>
         </EuiHeaderSectionItem>
         <EuiHeaderSectionItem>
           <EuiButtonIcon

@@ -8,25 +8,25 @@ import type {
 } from '../types'
 
 export async function fetchLoginSession(): Promise<
-  LoginSessionResponse | NonSuccessfulResponse
+  LoginSessionResponse
 > {
   const data = await fetchJSONFromLegacyEndpoint({
     module: MODULES.LOGIN,
     action: 'session',
   })
 
-  return data as LoginSessionResponse | NonSuccessfulResponse
+  return data
 }
 
 export async function logoutWithLegacyEndpoint(): Promise<
-  SuccessfulResponse | NonSuccessfulResponse
+SuccessfulResponse | NonSuccessfulResponse
 > {
   const data = await fetchJSONFromLegacyEndpoint({
     module: MODULES.LOGIN,
     action: 'logout',
   })
 
-  return data as SuccessfulResponse | NonSuccessfulResponse
+  return data
 }
 
 export async function loginWithLegacyEndpoint({
@@ -43,5 +43,5 @@ export async function loginWithLegacyEndpoint({
     password,
   })
 
-  return data as SuccessfulResponse | NonSuccessfulResponse
+  return data
 }

@@ -8,12 +8,12 @@ import {
 
 import type { UseMutationOptions } from '@tanstack/react-query'
 
-import type { SuccessfulResponse } from '../types'
+import type { LoginSessionResponse, NonSuccessfulResponse, SuccessfulResponse } from '../types'
 
 export const AUTH_SESSION_QUERY_KEY = ['auth', 'session'] as const
 
 export function useAuthSession() {
-  return useQuery({
+  return useQuery<LoginSessionResponse, NonSuccessfulResponse>({
     queryKey: AUTH_SESSION_QUERY_KEY,
     queryFn: fetchLoginSession,
     refetchOnWindowFocus: true,
