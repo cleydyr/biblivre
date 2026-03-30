@@ -46,6 +46,7 @@ export type LegacyEndpointPayload =
     >
   | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'session'>
   | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'logout'>
+  | ParametrizedLegacyEndpointPayload<typeof MODULES.MULTI_SCHEMA, 'list'>
 
 type ParametrizedLegacyEndpointPayload<
   M extends string,
@@ -70,6 +71,15 @@ export type SuccessfulResponse = {
   success: true
 }
 
+export type SchemaListItem = {
+  schema: string
+  name: string
+}
+
+export type SchemasListResponse = SuccessfulResponse & {
+  data: SchemaListItem[]
+}
+
 /** Session probe from `login.session`; extends the usual JSON success payload. */
 export type LoggedLoginSessionResponse = SuccessfulResponse & {
   logged: true
@@ -80,7 +90,9 @@ export type UnloggedLoginSessionResponse = SuccessfulResponse & {
   logged: false
 }
 
-export type LoginSessionResponse = LoggedLoginSessionResponse | UnloggedLoginSessionResponse
+export type LoginSessionResponse =
+  | LoggedLoginSessionResponse
+  | UnloggedLoginSessionResponse
 
 export type NonSuccessfulResponse = {
   success: false

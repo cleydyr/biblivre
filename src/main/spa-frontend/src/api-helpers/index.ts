@@ -1,6 +1,16 @@
+import { getStoredSchema } from './schema/storage'
 import { DEFAULT_HEADERS } from './constants'
 
 import type { FileDownload, LegacyEndpointPayload } from './types'
+
+export function buildDefaultHeaders(): Record<string, string> {
+  const headers: Record<string, string> = { ...DEFAULT_HEADERS }
+  const schema = getStoredSchema()
+  if (schema) {
+    headers['X-Biblivre-Schema'] = schema
+  }
+  return headers
+}
 
 export async function fetchJSONFromLegacyEndpoint({
   module,
@@ -9,7 +19,7 @@ export async function fetchJSONFromLegacyEndpoint({
 }: LegacyEndpointPayload) {
   const response = await fetch(import.meta.env.VITE_BIBLIVRE_ENDPOINT, {
     method: 'POST',
-    headers: DEFAULT_HEADERS,
+    headers: buildDefaultHeaders(),
     body: new URLSearchParams({
       controller: 'json',
       module,
@@ -36,7 +46,7 @@ export async function downloadFromLegacyEndpoint({
   const response = await fetch(
     `${import.meta.env.VITE_BIBLIVRE_ENDPOINT}?${queryParams}`,
     {
-      headers: DEFAULT_HEADERS,
+      headers: buildDefaultHeaders(),
     },
   )
 

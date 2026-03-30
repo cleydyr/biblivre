@@ -148,6 +148,7 @@ public class AuthorizationPoints implements Serializable {
     }
 
     private void setupMultiSchemaAuthorization() {
+        this.addAuthPoint("multi_schema", "list", LOGIN);
         this.addAuthPoint("multi_schema", "create", ADMINISTRATION_MULTI_SCHEMA);
         this.addAuthPoint("multi_schema", "toggle", ADMINISTRATION_MULTI_SCHEMA);
         this.addAuthPoint("multi_schema", "delete_schema", ADMINISTRATION_MULTI_SCHEMA);
