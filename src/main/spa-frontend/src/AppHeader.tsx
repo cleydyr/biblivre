@@ -191,6 +191,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
             setActiveSchemaId(schemaId)
             setIsSchemaModalOpen(false)
             void queryClient.invalidateQueries()
+            navigate('/spa/search', { replace: true })
           }}
         />
       ) : null}
