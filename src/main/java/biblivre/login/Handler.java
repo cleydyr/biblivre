@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -93,6 +94,19 @@ public class Handler extends AbstractHandler {
         }
 
         setJspURL("/WEB-INF/jsp/index.jsp");
+    }
+
+    public void session(ExtendedRequest request, ExtendedResponse response) {
+        JSONObject json = getJson();
+        boolean logged = request.getLoggedUserId() > 0;
+        json.put("logged", logged);
+        if (logged) {
+            Object userObj = request.getScopedSessionAttribute("logged_user");
+            if (userObj instanceof LoginDTO login) {
+                json.put("username", login.getLogin());
+            }
+        }
+        setMessage(ActionResult.NORMAL);
     }
 
     private void authenticateWithSpringSecurity(

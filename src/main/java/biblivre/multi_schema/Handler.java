@@ -26,7 +26,10 @@ import biblivre.core.ExtendedResponse;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
+import biblivre.core.utils.Constants;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -115,6 +118,28 @@ public class Handler extends AbstractHandler {
             put("success", success);
         } catch (JSONException e) {
             this.setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
+        }
+    }
+
+    public void list(ExtendedRequest request, ExtendedResponse response) {
+        try {
+            JSONArray array = new JSONArray();
+            for (SchemaDTO dto : schemaBO.getSchemas()) {
+                if (dto.isDisabled()) {
+                    continue;
+                }
+                if (Constants.GLOBAL_SCHEMA.equals(dto.getSchema())) {
+                    continue;
+                }
+                JSONObject o = new JSONObject();
+                o.put("schema", dto.getSchema());
+                o.put("name", dto.getName());
+                array.put(o);
+            }
+            put("data", array);
+            setMessage(ActionResult.SUCCESS);
+        } catch (JSONException e) {
+            setMessage(ActionResult.WARNING, ERROR_INVALID_JSON);
         }
     }
 

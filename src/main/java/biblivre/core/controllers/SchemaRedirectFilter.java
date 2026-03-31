@@ -43,6 +43,11 @@ public class SchemaRedirectFilter implements Filter {
                         .getRequestURI()
                         .substring(httpServletRequest.getContextPath().length() + 1);
 
+        if (url.startsWith("api") && url.startsWith("view")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         if (StringUtils.isNotBlank(url)) {
             String[] urlArray = url.split("/");
 

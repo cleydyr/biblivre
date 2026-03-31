@@ -74,6 +74,12 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     }
 
     @Bean
+    public FilterRegistrationBean<CorsFilter> corsFilterRegistration() throws Exception {
+        return createFilterRegistration(
+                CorsFilter.class, 0, DispatcherType.REQUEST, DispatcherType.ERROR);
+    }
+
+    @Bean
     public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
         return createFilterRegistration(
                 SchemaFilter.class,
@@ -151,10 +157,21 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                .allowedHeaders("*");
+        // Check if CORS is enabled via environment variable or system property
+        String corsEnabledEnv = System.getenv("BIBLIVRE_CORS_ENABLED");
+        String corsEnabledProp = System.getProperty("biblivre.cors.enabled");
+
+        boolean corsEnabled =
+                "true".equalsIgnoreCase(corsEnabledEnv) || "true".equalsIgnoreCase(corsEnabledProp);
+
+        if (corsEnabled) {
+            registry.addMapping("/**")
+                    .allowedOriginPatterns("*")
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")
+                    .allowedHeaders("*")
+                    .allowCredentials(true)
+                    .maxAge(3600);
+        }
     }
 
     public static void main(String[] args) {

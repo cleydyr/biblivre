@@ -111,6 +111,7 @@ public class Constants {
     public static final String DATABASE_USERNAME = "PGUSER";
     public static final String PSQL_PATH = "PSQL_PATH";
     public static final String PGDUMP_PATH = "PGDUMP_PATH";
+    public static final String SHOW_ALPHA_BANNER = "SHOW_ALPHA_BANNER";
     public static final String DEFAULT_DATABASE_NAME = "biblivre4";
     public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
     public static final String DEFAULT_DATABASE_USERNAME = "biblivre";
