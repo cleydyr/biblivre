@@ -22,6 +22,7 @@ package biblivre.cataloging.authorities;
 import biblivre.administration.reports.ReportsBO;
 import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.SearchResultsExcelExporter;
 import biblivre.cataloging.enums.RecordDatabase;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
@@ -41,8 +42,11 @@ public class Handler extends PaginableCatalogingHandler {
     private ReportsBO reportsBO;
 
     @Autowired
-    public Handler(AuthoritiesRecordBO recordBO, ReportsBO reportsBO) {
-        super(recordBO, MaterialType.AUTHORITIES);
+    public Handler(
+            AuthoritiesRecordBO recordBO,
+            ReportsBO reportsBO,
+            SearchResultsExcelExporter searchResultsExcelExporter) {
+        super(recordBO, MaterialType.AUTHORITIES, searchResultsExcelExporter);
 
         this.reportsBO = reportsBO;
     }

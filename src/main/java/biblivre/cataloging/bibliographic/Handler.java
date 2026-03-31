@@ -21,6 +21,7 @@ package biblivre.cataloging.bibliographic;
 
 import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.SearchResultsExcelExporter;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,9 @@ import org.springframework.stereotype.Component;
 public class Handler extends PaginableCatalogingHandler {
 
     @Autowired
-    public Handler(BiblioRecordBO biblioRecordBO) {
-        super(biblioRecordBO, MaterialType.BOOK);
+    public Handler(
+            BiblioRecordBO biblioRecordBO, SearchResultsExcelExporter searchResultsExcelExporter) {
+        super(biblioRecordBO, MaterialType.BOOK, searchResultsExcelExporter);
     }
 
     @Override

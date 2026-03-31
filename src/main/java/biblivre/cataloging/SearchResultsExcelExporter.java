@@ -16,40 +16,39 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
+import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
+import biblivre.core.translations.TranslationBO;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.marc4j.marc.ControlField;
-import org.marc4j.marc.DataField;
+import org.marc4j.marc.*;
 import org.marc4j.marc.Record;
-import org.marc4j.marc.Subfield;
-import org.marc4j.marc.VariableField;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public final class SearchResultsExcelExporter {
+@Component
+public class SearchResultsExcelExporter {
+    private final TranslationBO translationBO;
 
     private static final String MULTI_VALUE_SEPARATOR = " | ";
 
-    private SearchResultsExcelExporter() {}
+    @Autowired
+    public SearchResultsExcelExporter(TranslationBO translationBO) {
+        this.translationBO = translationBO;
+    }
 
-    public static DiskFile export(List<RecordDTO> records) throws IOException {
+    public DiskFile export(List<RecordDTO> records) throws IOException {
         if (records == null || records.isEmpty()) {
             return null;
         }
 
-        TreeSet<String> columnKeys = new TreeSet<>(SearchResultsExcelExporter::compareColumnKeys);
+        TreeSet<String> columnKeys = new TreeSet<>(this::compareColumnKeys);
         for (RecordDTO dto : records) {
             Record marc = dto.getRecord();
             if (marc == null) {
@@ -75,7 +74,23 @@ public final class SearchResultsExcelExporter {
             var sheet = workbook.createSheet("search_results");
             var header = sheet.createRow(0);
             for (int c = 0; c < columns.size(); c++) {
-                header.createCell(c).setCellValue(columns.get(c));
+                var i18n = translationBO.get("pt-BR");
+
+                String cellValue = columns.get(c);
+
+                var firstIndexOfDollar = cellValue.indexOf('$');
+
+                var datafield = cellValue.substring(0, firstIndexOfDollar);
+
+                var subfield = cellValue.substring(firstIndexOfDollar + 1);
+
+                header.createCell(c)
+                        .setCellValue(
+                                i18n.getText(
+                                        "marc.bibliographic.datafield."
+                                                + datafield
+                                                + ".subfield."
+                                                + subfield));
             }
 
             int rowIndex = 1;
@@ -99,19 +114,15 @@ public final class SearchResultsExcelExporter {
 
         DiskFile diskFile =
                 new DiskFile(
-                        file,
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        String stamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ROOT).format(new Date());
+                        file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String stamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ROOT).format(new Date());
         diskFile.setName("biblivre_search_export_" + stamp + ".xlsx");
         return diskFile;
     }
 
     private static void collectColumnKeys(Record marc, Set<String> keys) {
         for (VariableField vf : marc.getVariableFields()) {
-            if (vf instanceof ControlField cf) {
-                keys.add(cf.getTag());
-            } else if (vf instanceof DataField df) {
+            if (vf instanceof DataField df) {
                 for (Subfield sf : df.getSubfields()) {
                     keys.add(df.getTag() + "$" + sf.getCode());
                 }
@@ -119,7 +130,28 @@ public final class SearchResultsExcelExporter {
         }
     }
 
-    private static Map<String, String> buildRowValues(Record marc) {
+    private void _collectColumnKeys(Record marc, Set<String> keys) {
+        System.out.println(SchemaThreadLocal.get());
+
+        var i18n = translationBO.get("pt-BR");
+
+        for (VariableField vf : marc.getVariableFields()) {
+            if (vf instanceof DataField df) {
+                for (Subfield sf : df.getSubfields()) {
+                    System.out.println(df.getTag());
+                    System.out.println(sf.getCode());
+                    keys.add(
+                            i18n.getText(
+                                    "marc.bibliographic.datafield."
+                                            + df.getTag()
+                                            + ".subfield."
+                                            + sf.getCode()));
+                }
+            }
+        }
+    }
+
+    private Map<String, String> buildRowValues(Record marc) {
         Map<String, List<String>> acc = new LinkedHashMap<>();
         for (VariableField vf : marc.getVariableFields()) {
             if (vf instanceof ControlField cf) {
@@ -138,7 +170,7 @@ public final class SearchResultsExcelExporter {
         return row;
     }
 
-    private static int compareColumnKeys(String a, String b) {
+    private int compareColumnKeys(String a, String b) {
         boolean aData = a.indexOf('$') >= 0;
         boolean bData = b.indexOf('$') >= 0;
         if (aData != bData) {
