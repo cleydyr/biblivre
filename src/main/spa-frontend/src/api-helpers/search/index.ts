@@ -72,3 +72,23 @@ export function downloadExport(uuid: UUID): Promise<FileDownload> {
     id: uuid,
   })
 }
+
+export async function prepareSearchExcelExport(
+  search_parameters: string,
+  sort: string,
+): Promise<ExportResponse> {
+  return fetchJSONFromLegacyEndpoint({
+    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    action: ACTIONS.EXPORT_SEARCH_EXCEL,
+    search_parameters,
+    sort,
+  })
+}
+
+export function downloadSearchExcel(uuid: UUID): Promise<FileDownload> {
+  return downloadFromLegacyEndpoint({
+    module: MODULES.CATALOGING_BIBLIOGRAPHIC,
+    action: ACTIONS.DOWNLOAD_SEARCH_EXCEL,
+    id: uuid,
+  })
+}

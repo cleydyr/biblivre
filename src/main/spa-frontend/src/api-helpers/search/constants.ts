@@ -21,6 +21,8 @@ export const ACTIONS = {
   OPEN: 'open',
   EXPORT: 'export_records',
   DOWNLOAD_EXPORT: 'download_export',
+  EXPORT_SEARCH_EXCEL: 'export_search_excel',
+  DOWNLOAD_SEARCH_EXCEL: 'download_search_excel',
 } as const
 
 export const INDICATORS = [1, 2] as const

@@ -37,6 +37,8 @@ import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +47,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
+    private static final Logger logger = LoggerFactory.getLogger(PaginableCatalogingHandler.class);
     protected final PaginableRecordBO paginableRecordBO;
 
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
@@ -206,6 +211,98 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         this.setFile(exportFile);
 
         this.setCallback(exportFile::delete);
+    }
+
+    public void exportSearchExcel(ExtendedRequest request, ExtendedResponse response) {
+        String searchParameters = request.getString("search_parameters");
+
+        if (StringUtils.isBlank(searchParameters)) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.invalid_search_parameters");
+
+            return;
+        }
+
+        Integer sortOpt = request.getInteger("sort", null);
+        int sort =
+                sortOpt != null
+                        ? sortOpt
+                        : indexingGroupBO.getDefaultSortableGroupId(
+                                paginableRecordBO.getRecordType());
+        int indexingGroup = request.getInteger("indexing_group", 0);
+
+        String exportId = UUID.randomUUID().toString();
+
+        JSONObject payload = new JSONObject();
+        payload.put("search_parameters", searchParameters);
+        payload.put("sort", sort);
+        payload.put("indexing_group", indexingGroup);
+
+        request.setScopedSessionAttribute(exportId, payload.toString());
+
+        put("uuid", exportId);
+    }
+
+    public void downloadSearchExcel(ExtendedRequest request, ExtendedResponse response) {
+        String exportId = request.getString("id");
+
+        String raw = (String) request.getScopedSessionAttribute(exportId);
+
+        if (StringUtils.isBlank(raw)) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+
+            return;
+        }
+
+        JSONObject payload = new JSONObject(raw);
+
+        String searchParameters = payload.getString("search_parameters");
+
+        int sort = payload.getInt("sort");
+
+        int indexingGroup = payload.optInt("indexing_group", 0);
+
+        SearchQueryDTO searchQuery = new SearchQueryDTO(searchParameters);
+
+        AuthorizationPoints authorizationPoints = request.getAuthorizationPoints();
+
+        SearchDTO search =
+                paginableRecordBO.search(searchQuery, authorizationPoints, sort, indexingGroup);
+
+        if (CollectionUtils.isEmpty(search)) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+
+            return;
+        }
+
+        long pageCount = search.getPaging().getPageCount();
+
+        for (int p = 2; p <= pageCount; p++) {
+            search.getPaging().setPage(p);
+
+            paginableRecordBO.paginateSearch(search, authorizationPoints);
+        }
+
+        List<RecordDTO> rows = new ArrayList<>();
+
+        search.forEach(rows::add);
+
+        try {
+            DiskFile file = SearchResultsExcelExporter.export(rows);
+
+            if (file == null) {
+                this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+
+                return;
+            }
+
+            this.setFile(file);
+
+            this.setCallback(file::delete);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+
+            this.setMessage(ActionResult.ERROR, "error.runtime_error");
+        }
     }
 
     public void autocomplete(ExtendedRequest request, ExtendedResponse response) {

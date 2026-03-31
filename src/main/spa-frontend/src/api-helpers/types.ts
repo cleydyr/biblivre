@@ -47,12 +47,15 @@ export type LegacyEndpointPayload =
   | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'session'>
   | ParametrizedLegacyEndpointPayload<typeof MODULES.LOGIN, 'logout'>
   | ParametrizedLegacyEndpointPayload<typeof MODULES.MULTI_SCHEMA, 'list'>
+  | ParametrizedLegacyEndpointPayload<typeof MODULES.CATALOGING_BIBLIOGRAPHIC, typeof SEARCH_ACTIONS.EXPORT_SEARCH_EXCEL, 'sort' | 'search_parameters'>
+  | ParametrizedLegacyEndpointPayload<typeof MODULES.CATALOGING_BIBLIOGRAPHIC, typeof SEARCH_ACTIONS.DOWNLOAD_SEARCH_EXCEL, 'id'>
 
 type ParametrizedLegacyEndpointPayload<
   M extends string,
   A extends string,
   P extends string = never,
-> = { [key in P]: string } & {
+  R extends string = never,
+> = { [key in P]: string } & { [key in R]?: string } & {
   module: M
   action: A
 }
