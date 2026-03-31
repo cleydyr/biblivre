@@ -21,6 +21,7 @@ package biblivre.cataloging.vocabulary;
 
 import biblivre.cataloging.PaginableCatalogingHandler;
 import biblivre.cataloging.RecordDTO;
+import biblivre.cataloging.SearchResultsExcelExporter;
 import biblivre.core.ExtendedRequest;
 import biblivre.marc.MaterialType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,10 @@ import org.springframework.stereotype.Component;
 public class Handler extends PaginableCatalogingHandler {
 
     @Autowired
-    public Handler(VocabularyRecordBO vocabularyRecordBO) {
-        super(vocabularyRecordBO, MaterialType.VOCABULARY);
+    public Handler(
+            VocabularyRecordBO vocabularyRecordBO,
+            SearchResultsExcelExporter searchResultsExcelExporter) {
+        super(vocabularyRecordBO, MaterialType.VOCABULARY, searchResultsExcelExporter);
     }
 
     @Override

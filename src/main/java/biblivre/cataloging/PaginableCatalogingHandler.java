@@ -38,12 +38,7 @@ import biblivre.core.file.DiskFile;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -62,11 +57,16 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
     protected TabFieldsBO tabFieldsBO;
 
+    protected SearchResultsExcelExporter searchResultsExcelExporter;
+
     public PaginableCatalogingHandler(
-            PaginableRecordBO paginableRecordBO, MaterialType defaultMaterialType) {
+            PaginableRecordBO paginableRecordBO,
+            MaterialType defaultMaterialType,
+            SearchResultsExcelExporter searchResultsExcelExporter) {
         super(paginableRecordBO, defaultMaterialType);
 
         this.paginableRecordBO = paginableRecordBO;
+        this.searchResultsExcelExporter = searchResultsExcelExporter;
     }
 
     public void search(ExtendedRequest request, ExtendedResponse response) {
@@ -287,7 +287,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         search.forEach(rows::add);
 
         try {
-            DiskFile file = SearchResultsExcelExporter.export(rows);
+            DiskFile file = searchResultsExcelExporter.export(rows);
 
             if (file == null) {
                 this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
