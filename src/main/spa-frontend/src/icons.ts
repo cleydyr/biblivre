@@ -1,34 +1,33 @@
-import { icon as arrowDown } from '@elastic/eui/es/components/icon/assets/arrow_down'
-import { icon as arrowLeft } from '@elastic/eui/es/components/icon/assets/arrow_left'
-import { icon as arrowRight } from '@elastic/eui/es/components/icon/assets/arrow_right'
-import { icon as arrowEnd } from '@elastic/eui/es/components/icon/assets/arrowEnd'
-import { icon as arrowStart } from '@elastic/eui/es/components/icon/assets/arrowStart'
-import { icon as boxesHorizontal } from '@elastic/eui/es/components/icon/assets/boxes_horizontal'
+import { icon as boxesVertical } from '@elastic/eui/es/components/icon/assets/boxes_vertical'
 import { icon as brush } from '@elastic/eui/es/components/icon/assets/brush'
 import { icon as calendar } from '@elastic/eui/es/components/icon/assets/calendar'
 import { icon as check } from '@elastic/eui/es/components/icon/assets/check'
-import { icon as copyClipboard } from '@elastic/eui/es/components/icon/assets/copy_clipboard'
+import { icon as chevronLimitLeft } from '@elastic/eui/es/components/icon/assets/chevron_limit_left'
+import { icon as chevronLimitRight } from '@elastic/eui/es/components/icon/assets/chevron_limit_right'
+import { icon as chevronSingleDown } from '@elastic/eui/es/components/icon/assets/chevron_single_down'
+import { icon as chevronSingleLeft } from '@elastic/eui/es/components/icon/assets/chevron_single_left'
+import { icon as chevronSingleRight } from '@elastic/eui/es/components/icon/assets/chevron_single_right'
+import { icon as copy } from '@elastic/eui/es/components/icon/assets/copy'
 import { icon as cross } from '@elastic/eui/es/components/icon/assets/cross'
 import { icon as documents } from '@elastic/eui/es/components/icon/assets/documents'
 import { icon as download } from '@elastic/eui/es/components/icon/assets/download'
 import { icon as empty } from '@elastic/eui/es/components/icon/assets/empty'
 import { icon as error } from '@elastic/eui/es/components/icon/assets/error'
-import { icon as exportAction } from '@elastic/eui/es/components/icon/assets/export'
+import { icon as external } from '@elastic/eui/es/components/icon/assets/external'
 import { icon as folderOpen } from '@elastic/eui/es/components/icon/assets/folder_open'
 import { icon as help } from '@elastic/eui/es/components/icon/assets/help'
-import { icon as importAction } from '@elastic/eui/es/components/icon/assets/import'
 import { icon as logoElastic } from '@elastic/eui/es/components/icon/assets/logo_elastic'
 import { icon as logoElasticsearch } from '@elastic/eui/es/components/icon/assets/logo_elasticsearch'
+import { icon as magnify } from '@elastic/eui/es/components/icon/assets/magnify'
 import { icon as moon } from '@elastic/eui/es/components/icon/assets/moon'
 import { icon as pencil } from '@elastic/eui/es/components/icon/assets/pencil'
-import { icon as playFilled } from '@elastic/eui/es/components/icon/assets/playFilled'
+import { icon as play } from '@elastic/eui/es/components/icon/assets/play'
 import { icon as plus } from '@elastic/eui/es/components/icon/assets/plus'
-import { icon as plusInCircle } from '@elastic/eui/es/components/icon/assets/plus_in_circle'
-import { icon as popout } from '@elastic/eui/es/components/icon/assets/popout'
-import { icon as search } from '@elastic/eui/es/components/icon/assets/search'
-import { icon as sortLeft } from '@elastic/eui/es/components/icon/assets/sortLeft'
-import { icon as sortRight } from '@elastic/eui/es/components/icon/assets/sortRight'
-import { icon as stopFilled } from '@elastic/eui/es/components/icon/assets/stop_filled'
+import { icon as plusCircle } from '@elastic/eui/es/components/icon/assets/plus_circle'
+import { icon as sortLeft } from '@elastic/eui/es/components/icon/assets/sort_left'
+import { icon as sortRight } from '@elastic/eui/es/components/icon/assets/sort_right'
+import { icon as stopFill } from '@elastic/eui/es/components/icon/assets/stop_fill'
+import { icon as upload } from '@elastic/eui/es/components/icon/assets/upload'
 import { icon as sun } from '@elastic/eui/es/components/icon/assets/sun'
 import { icon as trash } from '@elastic/eui/es/components/icon/assets/trash'
 import { icon as warning } from '@elastic/eui/es/components/icon/assets/warning'
@@ -45,38 +44,38 @@ type IconComponentCacheType = Partial<Record<IconComponentNameType, unknown>>
 const cachedIcons: IconComponentCacheType = {
   logoElasticsearch,
   logoElastic,
-  stopFilled,
+  stopFill,
   empty,
   check,
   cross,
-  arrowRight,
-  arrowLeft,
-  arrowDown,
-  search,
+  chevronSingleRight,
+  chevronSingleLeft,
+  chevronSingleDown,
+  magnify,
   trash,
   help,
   calendar,
-  plusInCircle,
+  plusCircle,
   brush,
   sortLeft,
   sortRight,
   warning,
   error,
-  arrowStart,
-  arrowEnd,
+  chevronLimitLeft,
+  chevronLimitRight,
   folderOpen,
   moon,
   sun,
   download,
-  popout,
+  external,
   documents,
-  exportAction,
+  upload,
   plus,
-  importAction,
-  boxesHorizontal,
-  playFilled,
+  importAction: download,
+  boxesVertical,
+  play,
   pencil,
-  copyClipboard,
+  copy,
   lock,
   eye,
 }

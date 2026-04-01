@@ -46,7 +46,7 @@ const ReportTemplateTable = ({
               name: 'Preencher',
               description: 'Gerar um relatório',
               type: 'icon',
-              icon: 'playFilled',
+              icon: 'play',
               onClick: onFill,
               isPrimary: true,
             },

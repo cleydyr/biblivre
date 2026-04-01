@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^106.3.0",
-    "@elastic/eui-theme-borealis": "^3.3.1",
+    "@elastic/eui": "114.0.0",
+    "@elastic/eui-theme-borealis": "7.0.0",
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@tanstack/react-query": "^5.85.3",

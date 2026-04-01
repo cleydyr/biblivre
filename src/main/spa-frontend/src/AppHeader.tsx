@@ -110,7 +110,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
           <EuiHeaderSectionItem>
             <EuiLink href={import.meta.env.VITE_BIBLIVRE_ENDPOINT}>
               <EuiFlexGroup alignItems='center' gutterSize='s'>
-                <EuiIcon type='arrowLeft' />
+                <EuiIcon type='chevronSingleLeft' />
                 <FormattedMessage
                   defaultMessage='Voltar para a interface clássica'
                   id='app.header.back_to_legacy'
