@@ -25,7 +25,7 @@ export const ExportSelectedRecordsButton: FC<Props> = ({
 
   return (
     <EuiButton
-      iconType='exportAction'
+      iconType='upload'
       isLoading={isExportPending}
       size='s'
       onClick={() =>

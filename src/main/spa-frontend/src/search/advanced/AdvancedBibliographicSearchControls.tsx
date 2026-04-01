@@ -59,7 +59,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
         <EuiFlexGroup gutterSize='s'>
           <EuiFlexItem grow={false}>
             <EuiButtonEmpty
-              iconType='plusInCircle'
+              iconType='plusCircle'
               size='s'
               onClick={() => {
                 termFieldsMap.set(...generateTermField())
@@ -100,7 +100,7 @@ const AdvancedBibliographicSearchControls: FC<Props> = ({
         <EuiFlexItem>
           <EuiButton
             fill
-            iconType='search'
+            iconType='magnify'
             isLoading={isLoading}
             onClick={() => {
               onQuerySubmited(

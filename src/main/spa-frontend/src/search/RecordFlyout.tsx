@@ -61,7 +61,7 @@ const BibliographicRecordFlyout: FC<Props> = ({
             <EuiFlexGroup>
               <EuiButton
                 disabled={disableIterateBackward}
-                iconType='arrowLeft'
+                iconType='chevronSingleLeft'
                 onClick={onIterateBackward}
               >
                 <FormattedMessage
@@ -72,7 +72,7 @@ const BibliographicRecordFlyout: FC<Props> = ({
               <EuiButton
                 disabled={disableIterateForward}
                 iconSide='right'
-                iconType='arrowRight'
+                iconType='chevronSingleRight'
                 onClick={onIterateForward}
               >
                 <FormattedMessage
