@@ -282,9 +282,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
             paginableRecordBO.paginateSearch(search, authorizationPoints);
         }
 
-        List<RecordDTO> rows = new ArrayList<>();
-
-        search.forEach(rows::add);
+        List<RecordDTO> rows = new ArrayList<>(search);
 
         try {
             DiskFile file = searchResultsExcelExporter.export(rows);
