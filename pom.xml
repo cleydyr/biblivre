@@ -321,11 +321,11 @@
 			<version>3.0.0</version>
 		</dependency>
 
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>2.2.46</version>
-        </dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>2.2.46</version>
+		</dependency>
 
 		<dependency>
 			<groupId>co.elastic.clients</groupId>
@@ -339,23 +339,17 @@
 			<version>5.3.2</version>
 		</dependency>
 
-        <dependency>
-            <groupId>org.xmlunit</groupId>
-            <artifactId>xmlunit-core</artifactId>
-            <version>2.10.4</version>
-            <scope>test</scope>
-        </dependency>
-
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.5.19</version>
+			<groupId>org.xmlunit</groupId>
+			<artifactId>xmlunit-core</artifactId>
+			<version>2.10.4</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.5.15</version>
+			<version>1.5.32</version>
 		</dependency>
 
 	</dependencies>
