@@ -32,6 +32,7 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
@@ -54,6 +55,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
     private IndexingGroupBO indexingGroupBO;
+
+    private ConfigurationBO configurationBO;
 
     protected TabFieldsBO tabFieldsBO;
 
@@ -214,6 +217,12 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void exportSearchExcel(ExtendedRequest request, ExtendedResponse response) {
+        if (!configurationBO.isSearchExcelExportEnabled()) {
+            this.setMessage(ActionResult.WARNING, "error.no_permission");
+
+            return;
+        }
+
         String searchParameters = request.getString("search_parameters");
 
         if (StringUtils.isBlank(searchParameters)) {
@@ -243,6 +252,12 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void downloadSearchExcel(ExtendedRequest request, ExtendedResponse response) {
+        if (!configurationBO.isSearchExcelExportEnabled()) {
+            this.setMessage(ActionResult.WARNING, "error.no_permission");
+
+            return;
+        }
+
         String exportId = request.getString("id");
 
         String raw = (String) request.getScopedSessionAttribute(exportId);
@@ -413,6 +428,11 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     @Autowired
     public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
         this.indexingGroupBO = indexingGroupBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 
     @Autowired

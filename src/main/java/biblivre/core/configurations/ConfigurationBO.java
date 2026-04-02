@@ -147,6 +147,11 @@ public class ConfigurationBO {
         return "true".equalsIgnoreCase(value) || "1".equals(value);
     }
 
+    public boolean isSearchExcelExportEnabled() {
+        String value = System.getenv(Constants.FEATURE_SEARCH_EXCEL_EXPORT);
+        return "true".equalsIgnoreCase(value) || "1".equals(value);
+    }
+
     public List<ConfigurationsDTO> validate(
             List<ConfigurationsDTO> configs,
             boolean multipleSchemasEnabled,

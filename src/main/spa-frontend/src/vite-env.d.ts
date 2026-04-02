@@ -8,7 +8,7 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly VITE_BIBLIVRE_ENDPOINT: string
-  // more env variables...
+  readonly VITE_FEATURE_SEARCH_EXCEL_EXPORT?: string
 }
 
 interface ImportMeta {

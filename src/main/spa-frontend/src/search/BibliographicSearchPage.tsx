@@ -25,6 +25,7 @@ import {
   prepareSearchExcelExport,
 } from '../api-helpers/search'
 import { getSearchMode, getSearchTerms } from '../api-helpers/search/lib'
+import { isSearchExcelExportEnabled } from '../config/features'
 
 import type { Pagination } from '@elastic/eui'
 
@@ -196,7 +197,7 @@ const BibliographicSearchPage = () => {
           )}
           {isSearchSuccess && searchResults.success && (
             <EuiFlexGroup direction='column'>
-              {excelExportError && (
+              {isSearchExcelExportEnabled() && excelExportError && (
                 <EuiCallOut
                   color='danger'
                   iconType='error'
@@ -222,48 +223,50 @@ const BibliographicSearchPage = () => {
                     titleSize='s'
                   />
                 </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiButton
-                    color='primary'
-                    iconType='exportAction'
-                    isDisabled={searchResults.search.data.length === 0}
-                    isLoading={isExportingExcel}
-                    onClick={async () => {
-                      setExcelExportError(false)
-                      setIsExportingExcel(true)
-                      try {
-                        const search_parameters = JSON.stringify({
-                          database: 'main',
-                          material_type: materialType,
-                          search_mode: getSearchMode(terms),
-                          ...getSearchTerms(terms),
-                        })
-                        const sortParam =
-                          sort !== undefined ? String(sort) : FIELDS.TITLE
-                        const res = await prepareSearchExcelExport(
-                          search_parameters,
-                          sortParam,
-                        )
-                        if (!res.success) {
-                          setExcelExportError(true)
+                {isSearchExcelExportEnabled() && (
+                  <EuiFlexItem grow={false}>
+                    <EuiButton
+                      color='primary'
+                      iconType='exportAction'
+                      isDisabled={searchResults.search.data.length === 0}
+                      isLoading={isExportingExcel}
+                      onClick={async () => {
+                        setExcelExportError(false)
+                        setIsExportingExcel(true)
+                        try {
+                          const search_parameters = JSON.stringify({
+                            database: 'main',
+                            material_type: materialType,
+                            search_mode: getSearchMode(terms),
+                            ...getSearchTerms(terms),
+                          })
+                          const sortParam =
+                            sort !== undefined ? String(sort) : FIELDS.TITLE
+                          const res = await prepareSearchExcelExport(
+                            search_parameters,
+                            sortParam,
+                          )
+                          if (!res.success) {
+                            setExcelExportError(true)
 
-                          return
+                            return
+                          }
+                          const file = await downloadSearchExcel(res.uuid)
+                          downloadFile(file)
+                        } catch {
+                          setExcelExportError(true)
+                        } finally {
+                          setIsExportingExcel(false)
                         }
-                        const file = await downloadSearchExcel(res.uuid)
-                        downloadFile(file)
-                      } catch {
-                        setExcelExportError(true)
-                      } finally {
-                        setIsExportingExcel(false)
-                      }
-                    }}
-                  >
-                    <FormattedMessage
-                      defaultMessage='Exportar resultados (Excel)'
-                      id='search.bibliographic.export_excel'
-                    />
-                  </EuiButton>
-                </EuiFlexItem>
+                      }}
+                    >
+                      <FormattedMessage
+                        defaultMessage='Exportar resultados (Excel)'
+                        id='search.bibliographic.export_excel'
+                      />
+                    </EuiButton>
+                  </EuiFlexItem>
+                )}
                 <EuiFlexItem>
                   <EuiFlexGroup alignItems='flexEnd' justifyContent='flexEnd'>
                     <BibliographicSearchResultSort
