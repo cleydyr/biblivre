@@ -7,9 +7,7 @@ import type {
   SuccessfulResponse,
 } from '../types'
 
-export async function fetchLoginSession(): Promise<
-  LoginSessionResponse
-> {
+export async function fetchLoginSession(): Promise<LoginSessionResponse> {
   const data = await fetchJSONFromLegacyEndpoint({
     module: MODULES.LOGIN,
     action: 'session',
@@ -19,7 +17,7 @@ export async function fetchLoginSession(): Promise<
 }
 
 export async function logoutWithLegacyEndpoint(): Promise<
-SuccessfulResponse | NonSuccessfulResponse
+  SuccessfulResponse | NonSuccessfulResponse
 > {
   const data = await fetchJSONFromLegacyEndpoint({
     module: MODULES.LOGIN,
