@@ -285,7 +285,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         List<RecordDTO> rows = new ArrayList<>(search);
 
         try {
-            DiskFile file = searchResultsExcelExporter.export(rows);
+            DiskFile file = searchResultsExcelExporter.export(rows, request.getLanguage());
 
             if (file == null) {
                 this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");

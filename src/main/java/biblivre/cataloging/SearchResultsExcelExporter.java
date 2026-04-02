@@ -16,7 +16,6 @@
  ******************************************************************************/
 package biblivre.cataloging;
 
-import biblivre.core.SchemaThreadLocal;
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationBO;
 import java.io.File;
@@ -43,7 +42,7 @@ public class SearchResultsExcelExporter {
         this.translationBO = translationBO;
     }
 
-    public DiskFile export(List<RecordDTO> records) throws IOException {
+    public DiskFile export(List<RecordDTO> records, String language) throws IOException {
         if (records == null || records.isEmpty()) {
             return null;
         }
@@ -74,7 +73,7 @@ public class SearchResultsExcelExporter {
             var sheet = workbook.createSheet("search_results");
             var header = sheet.createRow(0);
             for (int c = 0; c < columns.size(); c++) {
-                var i18n = translationBO.get("pt-BR");
+                var i18n = translationBO.get(language);
 
                 String cellValue = columns.get(c);
 
