@@ -21,7 +21,7 @@ jobs:
       PUBLIC_URL: /static/
 
     # The type of runner that the job will run on
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -35,4 +35,4 @@ jobs:
           java-version: "21"
           cache: 'maven'
       - name: Build with Maven
-        run: mvn clean test package -Pgithub-ci
+        run: mvn -B -ntp clean test package -Pgithub-ci
