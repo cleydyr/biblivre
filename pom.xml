@@ -712,7 +712,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>12.1.3</version>
+						<version>12.2.0</version>
 					</plugin>
 					<plugin>
 						<artifactId>maven-failsafe-plugin</artifactId>
@@ -798,7 +798,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>12.1.3</version>
+						<version>12.2.0</version>
 					</plugin>
 					<plugin>
 						<artifactId>maven-failsafe-plugin</artifactId>
