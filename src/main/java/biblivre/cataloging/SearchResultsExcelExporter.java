@@ -130,27 +130,6 @@ public class SearchResultsExcelExporter {
         }
     }
 
-    private void _collectColumnKeys(Record marc, Set<String> keys) {
-        System.out.println(SchemaThreadLocal.get());
-
-        var i18n = translationBO.get("pt-BR");
-
-        for (VariableField vf : marc.getVariableFields()) {
-            if (vf instanceof DataField df) {
-                for (Subfield sf : df.getSubfields()) {
-                    System.out.println(df.getTag());
-                    System.out.println(sf.getCode());
-                    keys.add(
-                            i18n.getText(
-                                    "marc.bibliographic.datafield."
-                                            + df.getTag()
-                                            + ".subfield."
-                                            + sf.getCode()));
-                }
-            }
-        }
-    }
-
     private Map<String, String> buildRowValues(Record marc) {
         Map<String, List<String>> acc = new LinkedHashMap<>();
         for (VariableField vf : marc.getVariableFields()) {
