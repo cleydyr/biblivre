@@ -35,7 +35,7 @@
 		<debug>false</debug>
 		<dockerfile.version>1.4.13</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
-		<aws.java.sdk.version>2.17.100</aws.java.sdk.version>
+		<aws.java.sdk.version>2.42.27</aws.java.sdk.version>
 		<spotless.version>2.46.1</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
 		<error-prone.version>2.48.0</error-prone.version>
