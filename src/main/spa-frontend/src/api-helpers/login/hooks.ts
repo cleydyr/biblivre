@@ -8,7 +8,11 @@ import {
 
 import type { UseMutationOptions } from '@tanstack/react-query'
 
-import type { LoginSessionResponse, NonSuccessfulResponse, SuccessfulResponse } from '../types'
+import type {
+  LoginSessionResponse,
+  NonSuccessfulResponse,
+  SuccessfulResponse,
+} from '../types'
 
 export const AUTH_SESSION_QUERY_KEY = ['auth', 'session'] as const
 
