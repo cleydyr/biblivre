@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SearchResultsExcelExporter {
+    public static final int MAX_CELL_LENGTH = 32766;
     private final TranslationBO translationBO;
 
     private static final String MULTI_VALUE_SEPARATOR = " | ";
@@ -103,6 +104,12 @@ public class SearchResultsExcelExporter {
                 for (int c = 0; c < columns.size(); c++) {
                     String v = rowValues.get(columns.get(c));
                     if (StringUtils.isNotBlank(v)) {
+                        if (v.length() > MAX_CELL_LENGTH) {
+                            row.createCell(c).setCellValue(v.substring(0, MAX_CELL_LENGTH));
+
+                            continue;
+                        }
+
                         row.createCell(c).setCellValue(v);
                     }
                 }
