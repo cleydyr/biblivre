@@ -1,7 +1,8 @@
 package biblivre;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
@@ -14,5 +15,10 @@ public abstract class AbstractContainerDatabaseTest {
     @BeforeAll
     static void beforeAll() {
         postgreSQLContainer.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgreSQLContainer.stop();
     }
 }

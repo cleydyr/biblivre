@@ -3,7 +3,7 @@ package biblivre;
 import biblivre.core.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.MountableFile;
 
 public class SharedPostgreSQLContainer extends PostgreSQLContainer<SharedPostgreSQLContainer> {
