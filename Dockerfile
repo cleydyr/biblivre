@@ -1,4 +1,4 @@
-FROM tomcat:10-jdk21
+FROM tomcat:11-jdk21
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
 	&& apt install -y postgresql-common \
