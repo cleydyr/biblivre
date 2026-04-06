@@ -414,7 +414,6 @@
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
-					<compilerArgs>--enable-preview</compilerArgs>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>com.google.errorprone</groupId>
@@ -710,7 +709,6 @@
 						<configuration>
 							<skipTests>false</skipTests>
 							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
-								--enable-preview
 							</argLine>
 						</configuration>
 					</plugin>
@@ -795,9 +793,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<skipTests>false</skipTests>
-							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
-								--enable-preview
-							</argLine>
+							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
 						</configuration>
 					</plugin>
 				</plugins>
