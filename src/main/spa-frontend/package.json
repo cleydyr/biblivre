@@ -20,6 +20,7 @@
     "i18n:extract-compile": "yarn extract \"src/**/*.{ts,tsx}\" --out-file lang.json --ignore \"src/**/*.d.ts\" && yarn compile lang.json --out-file lang-compiled.json"
   },
   "dependencies": {
+    "@flagsmith/flagsmith": "^11.0.0",
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "114.0.0",
     "@elastic/eui-theme-borealis": "7.0.0",

@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+interface Window {
+  /** Set by Thymeleaf in spa.template from BIBLIVRE_FLAGSMITH_ENVIRONMENT_KEY */
+  __FLAGSMITH_ENVIRONMENT_KEY__?: string
+}
+
 interface ViteTypeOptions {
   // By adding this line, you can make the type of ImportMetaEnv strict
   // to disallow unknown keys.
@@ -8,7 +13,8 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly VITE_BIBLIVRE_ENDPOINT: string
-  readonly VITE_FEATURE_SEARCH_EXCEL_EXPORT?: string
+  /** Optional: local Vite dev only when not loading the app via Spring SPA HTML */
+  readonly VITE_FLAGSMITH_ENVIRONMENT_KEY?: string
 }
 
 interface ImportMeta {

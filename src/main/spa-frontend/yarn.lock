@@ -412,6 +412,11 @@
   resolved "https://registry.yarnpkg.com/@exodus/bytes/-/bytes-1.15.0.tgz#54479e0f406cbad024d6fe1c3190ecca4468df3b"
   integrity sha512-UY0nlA+feH81UGSHv92sLEPLCeZFjXOuHhrIo0HQydScuQc8s0A7kL/UdgwgDq8g8ilksmuoF35YVTNphV2aBQ==
 
+"@flagsmith/flagsmith@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@flagsmith/flagsmith/-/flagsmith-11.0.0.tgz#7e13633f0dfbf38f9bbe031c285b866165957b3b"
+  integrity sha512-jJB+1O/ctU7TCoIBsV2lgYAUOpShjcSqHkH4nlyqUGeQCGC0ZHto8IvGf+nZwpFAF5Czaphn/anm9MDoZIS3rw==
+
 "@formatjs/cli@^6.7.2":
   version "6.14.1"
   resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.14.1.tgz#107e9d51071e9b8d6579e2746ed1735162c9a733"

@@ -25,7 +25,7 @@ import {
   prepareSearchExcelExport,
 } from '../api-helpers/search'
 import { getSearchMode, getSearchTerms } from '../api-helpers/search/lib'
-import { isSearchExcelExportEnabled } from '../config/features'
+import { useSearchExcelExportEnabled } from '../config/features'
 
 import type { Pagination } from '@elastic/eui'
 
@@ -41,6 +41,8 @@ import type {
 
 const BibliographicSearchPage = () => {
   const { euiTheme } = useEuiTheme()
+
+  const isSearchExcelExportEnabled = useSearchExcelExportEnabled()
 
   const [terms, setTerms] = useState<SearchQueryTerms | undefined>()
 
@@ -197,7 +199,7 @@ const BibliographicSearchPage = () => {
           )}
           {isSearchSuccess && searchResults.success && (
             <EuiFlexGroup direction='column'>
-              {isSearchExcelExportEnabled() && excelExportError && (
+              {isSearchExcelExportEnabled && excelExportError && (
                 <EuiCallOut
                   color='danger'
                   iconType='error'
@@ -223,7 +225,7 @@ const BibliographicSearchPage = () => {
                     titleSize='s'
                   />
                 </EuiFlexItem>
-                {isSearchExcelExportEnabled() && (
+                {isSearchExcelExportEnabled && (
                   <EuiFlexItem grow={false}>
                     <EuiButton
                       color='primary'

@@ -115,6 +115,9 @@ public class Constants {
 
     /** When set to true or 1, enables bibliographic search results Excel export (JSON + download). */
     public static final String FEATURE_SEARCH_EXCEL_EXPORT = "BIBLIVRE_FEATURE_SEARCH_EXCEL_EXPORT";
+
+    /** Flagsmith client-side environment key injected into the SPA HTML (see spa.template). */
+    public static final String FLAGSMITH_ENVIRONMENT_KEY = "BIBLIVRE_FLAGSMITH_ENVIRONMENT_KEY";
     public static final String DEFAULT_DATABASE_NAME = "biblivre4";
     public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
     public static final String DEFAULT_DATABASE_USERNAME = "biblivre";
