@@ -1,4 +1,3 @@
-import './icons.ts'
 import './moment/locale/pt-br'
 
 import flagsmith from '@flagsmith/flagsmith'
