@@ -4,7 +4,7 @@ import static biblivre.core.utils.Constants.FROM_CM;
 
 import com.github.cleydyr.pimaco.PimacoTagSheet;
 import com.github.cleydyr.pimaco.SheetSize;
-import com.lowagie.text.RectangleReadOnly;
+import org.openpdf.text.RectangleReadOnly;
 import lombok.Getter;
 
 @Getter
