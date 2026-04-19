@@ -1,6 +1,6 @@
 package biblivre.core.enums;
 
-import com.lowagie.text.Element;
+import org.openpdf.text.Element;
 import java.util.Optional;
 
 public enum ParagraphAlignment {
