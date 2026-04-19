@@ -396,9 +396,9 @@
   integrity sha512-UY0nlA+feH81UGSHv92sLEPLCeZFjXOuHhrIo0HQydScuQc8s0A7kL/UdgwgDq8g8ilksmuoF35YVTNphV2aBQ==
 
 "@formatjs/cli@^6.7.2":
-  version "6.14.1"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.14.1.tgz#107e9d51071e9b8d6579e2746ed1735162c9a733"
-  integrity sha512-afBgzduP4lrOEm1FxMAVMXKi2FNE7KDOWJ7SyhvEI7zRbHhA7qVkb2DbxpPUhtDg0BrdHjdp8ppVyVVNYaFaaA==
+  version "6.14.2"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.14.2.tgz#2c41a1ae6bb3199995d341352ab108ba5d934b8b"
+  integrity sha512-0aZLIRcrxIf6QU2u04bIorYIVA1Sm8hHlHzlK9ROGB2BLN0WbiBCwK3jAPV9um+pPS6O4ZFT6K9c2j/3iMkmSw==
 
 "@formatjs/ecma402-abstract@2.2.4":
   version "2.2.4"
