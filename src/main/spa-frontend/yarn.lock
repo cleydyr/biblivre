@@ -417,10 +417,35 @@
   resolved "https://registry.yarnpkg.com/@exodus/bytes/-/bytes-1.15.0.tgz#54479e0f406cbad024d6fe1c3190ecca4468df3b"
   integrity sha512-UY0nlA+feH81UGSHv92sLEPLCeZFjXOuHhrIo0HQydScuQc8s0A7kL/UdgwgDq8g8ilksmuoF35YVTNphV2aBQ==
 
+"@formatjs/cli-native-darwin-arm64@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-darwin-arm64/-/cli-native-darwin-arm64-1.1.0.tgz#c47df2ec7c1d27643900af77c474bd224b4587dc"
+  integrity sha512-ygEpFpmRjbAKanWaeto/eUItyuK18667mdDzpDg3CTzc15WYzjZKnwJNFUuPFvFA4hiod1tnhXT1eiXmc1wWNg==
+
+"@formatjs/cli-native-linux-arm64@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-arm64/-/cli-native-linux-arm64-1.2.0.tgz#3ddcafb006351417e82785b809a1ab1fbbb2c577"
+  integrity sha512-G6YuIVD8D6hZjnsD/aYZQ2qMHSve7IadEiXgKiDfFQBbyrkjDAlt6LDSqq4qnuv3WJ7/jAOn/An6n/bGyt0rLg==
+
+"@formatjs/cli-native-linux-x64@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-x64/-/cli-native-linux-x64-1.1.0.tgz#1a3f01ea47f971a0dd0d7f49b98df237375862fa"
+  integrity sha512-AxORf5LR14HvXU4ov9gnhLrNIS2DYKqKMkRkprUhuh+ljba1riF05msK8KzslEPYQoeYKc5A0OZp57poh4xz/g==
+
+"@formatjs/cli-native-win32-x64@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-win32-x64/-/cli-native-win32-x64-1.1.1.tgz#a911b22c8f5ccfe4aff5a00276ee4274f4b81079"
+  integrity sha512-2vYgm7dzAb7wA9KjOOJGxZiSShwBNK4dEmgiJ1lRpEIz6RKMZ6wBY4UVn03VdAv8djJ7r6RK4Xyd2ouGcbh9Bg==
+
 "@formatjs/cli@^6.7.2":
-  version "6.14.2"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.14.2.tgz#2c41a1ae6bb3199995d341352ab108ba5d934b8b"
-  integrity sha512-0aZLIRcrxIf6QU2u04bIorYIVA1Sm8hHlHzlK9ROGB2BLN0WbiBCwK3jAPV9um+pPS6O4ZFT6K9c2j/3iMkmSw==
+  version "6.16.3"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.16.3.tgz#728a17c1deaf1fec0ace554b2c72695f18253231"
+  integrity sha512-AN6uZR1xnl3V215HHJiKiA+DvNMrO/XfQ7hOyq3gXfHJwKSgLLQFtSFxw9A1O0SaGC2E2Kwo4mqwS1ZCLGe/qw==
+  optionalDependencies:
+    "@formatjs/cli-native-darwin-arm64" "1.1.0"
+    "@formatjs/cli-native-linux-arm64" "1.2.0"
+    "@formatjs/cli-native-linux-x64" "1.1.0"
+    "@formatjs/cli-native-win32-x64" "1.1.1"
 
 "@formatjs/ecma402-abstract@2.2.4":
   version "2.2.4"
