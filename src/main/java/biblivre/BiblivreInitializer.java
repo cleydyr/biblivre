@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -83,7 +83,7 @@ public class BiblivreInitializer extends SpringBootServletInitializer implements
     public FilterRegistrationBean<SchemaFilter> schemaFilterRegistration() throws Exception {
         return createFilterRegistration(
                 SchemaFilter.class,
-                SecurityProperties.DEFAULT_FILTER_ORDER - 1,
+                SecurityFilterProperties.DEFAULT_FILTER_ORDER - 1,
                 DispatcherType.REQUEST,
                 DispatcherType.ERROR);
     }
