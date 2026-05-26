@@ -56,9 +56,9 @@ export const useFillReportMutation = (
         },
         DEFAULT_FETCH_OPTIONS,
       ),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
-      options.onSuccess?.(data, variables, context)
+      options.onSuccess?.(data, variables, onMutateResult, context)
     },
   })
 }
@@ -84,9 +84,9 @@ const useUpdateReportMutation = (
         },
         DEFAULT_FETCH_OPTIONS,
       ),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
-      options.onSuccess?.(data, variables, context)
+      options.onSuccess?.(data, variables, onMutateResult, context)
     },
   })
 }
@@ -111,9 +111,9 @@ const useDeleteReportMutation = (
         },
         DEFAULT_FETCH_OPTIONS,
       ),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
-      options.onSuccess?.(data, variables, context)
+      options.onSuccess?.(data, variables, onMutateResult, context)
     },
   })
 }
@@ -153,9 +153,9 @@ const useAddReportMutation = (
         },
         DEFAULT_FETCH_OPTIONS,
       ),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
-      options.onSuccess?.(data, variables, context)
+      options.onSuccess?.(data, variables, onMutateResult, context)
     },
   })
 }
