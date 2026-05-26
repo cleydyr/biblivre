@@ -38,7 +38,7 @@
 		<aws.java.sdk.version>2.42.28</aws.java.sdk.version>
 		<spotless.version>3.5.1</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
-		<error-prone.version>2.48.0</error-prone.version>
+		<error-prone.version>2.49.0</error-prone.version>
 		<maven.compiler.release>21</maven.compiler.release>
 	</properties>
 	<dependencyManagement>
