@@ -170,9 +170,9 @@
     tslib "^1.9.3"
 
 "@elastic/eslint-plugin-eui@^2.3.0":
-  version "2.11.1"
-  resolved "https://registry.yarnpkg.com/@elastic/eslint-plugin-eui/-/eslint-plugin-eui-2.11.1.tgz#435248596e044fa1d39a54d820115fefedfe25ef"
-  integrity sha512-zUJCq/0RUUGLcsFpZ8iHReboE8POZZ3XBnEd8DtxWnkf0Eb87VvcZWoQNwQHctPdQkzEmN4VRwLk4kuPX2Es+A==
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eslint-plugin-eui/-/eslint-plugin-eui-2.13.0.tgz#b9c079532257b7d4c46e3004ecb7b1f78f00a6b9"
+  integrity sha512-Itl7zn88GEYRAqfmuRzViNy03nVHkIVLAvtjIC0b3lhjBnJgUbEG8ImfdYUExMiGraFE+2/k6v/Z8LbWXxO+JA==
 
 "@elastic/eui-theme-borealis@7.0.0":
   version "7.0.0"
