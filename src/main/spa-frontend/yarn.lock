@@ -445,9 +445,9 @@
   integrity sha512-2vYgm7dzAb7wA9KjOOJGxZiSShwBNK4dEmgiJ1lRpEIz6RKMZ6wBY4UVn03VdAv8djJ7r6RK4Xyd2ouGcbh9Bg==
 
 "@formatjs/cli@^6.7.2":
-  version "6.16.3"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.16.3.tgz#728a17c1deaf1fec0ace554b2c72695f18253231"
-  integrity sha512-AN6uZR1xnl3V215HHJiKiA+DvNMrO/XfQ7hOyq3gXfHJwKSgLLQFtSFxw9A1O0SaGC2E2Kwo4mqwS1ZCLGe/qw==
+  version "6.16.5"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.16.5.tgz#32cddfe6c02054528c9f756d6d673ac545dece7a"
+  integrity sha512-zxLJSWcIKKO0F4A77i7VKX08BNEf8fTd9s66mPzJWhq17jQU6nb59G6DkRntKwXCPc2xbZAXnQbTlB3Os6zXxg==
   optionalDependencies:
     "@formatjs/cli-native-darwin-arm64" "1.1.0"
     "@formatjs/cli-native-linux-arm64" "1.2.0"
@@ -3404,9 +3404,9 @@ react-focus-on@^3.9.1:
     use-sidecar "^1.1.3"
 
 react-intl@^10.0.0:
-  version "10.1.9"
-  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-10.1.9.tgz#e256f0c28a049d391d421bf658e49fe137fb2cdf"
-  integrity sha512-FOWpTmwnZnAfz8JegRzyGnjUiuzLW3xJFjp/o8VR4HZAQ+Eg++YaeMhoUULLY+LMx7gZm3czaZEqcU4hntwerw==
+  version "10.1.11"
+  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-10.1.11.tgz#1b08edb40082eeb4f8b783cecda33c84ab0da80f"
+  integrity sha512-9VCaWKumbrP91QvS50IYRlbZsD4KdSLwcfEeF9CQLmnqK9qCvFCfyof694I9lqHJL2/TUxBwLCA+whjF129oAg==
   dependencies:
     "@formatjs/icu-messageformat-parser" "3.5.10"
     "@formatjs/intl" "4.1.12"
