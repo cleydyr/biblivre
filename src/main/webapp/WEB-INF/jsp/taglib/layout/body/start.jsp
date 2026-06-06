@@ -1,8 +1,5 @@
 <%@page import="biblivre.core.SchemaThreadLocal"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.Set"%>
-<%@ page import="biblivre.core.translations.TranslationsMap"%>
-<%@ page import="biblivre.core.translations.LanguageDTO"%>
 <%@ page import="biblivre.core.configurations.ConfigurationBO"%>
 <%@ page import="biblivre.core.utils.Constants"%>
 
@@ -61,7 +58,6 @@
 						onchange="Core.submitForm('menu', 'i18n', 'jsp');">
 						<c:forEach items="${languages}" var="dto">
 							<c:set var="selectedAttr">
-								<% TranslationsMap translations = (TranslationsMap) request.getAttribute("translationsMap"); %>
 								${translationsMap.getLanguage().equals(dto.getLanguage()) ? "selected" : ""}
 							</c:set>
 							<option value="${dto.getLanguage()}" ${selectedAttr}>${dto.toString()}</option>
