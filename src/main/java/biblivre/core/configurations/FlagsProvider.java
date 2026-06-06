@@ -5,4 +5,3 @@ public interface FlagsProvider {
 
     Object getFlagValue(String key);
 }
-}
