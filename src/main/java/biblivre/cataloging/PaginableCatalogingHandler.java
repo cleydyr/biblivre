@@ -33,6 +33,7 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.ConfigurationBO;
+import biblivre.core.configurations.FlagsProvider;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
@@ -56,7 +57,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
 
     private IndexingGroupBO indexingGroupBO;
 
-    private ConfigurationBO configurationBO;
+    private FlagsProvider flagsProvider;
 
     protected TabFieldsBO tabFieldsBO;
 
@@ -217,7 +218,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void exportSearchExcel(ExtendedRequest request, ExtendedResponse response) {
-        if (!configurationBO.isSearchExcelExportEnabled()) {
+        if (!flagsProvider.isFlagEnabled("download_search_excel")) {
             this.setMessage(ActionResult.WARNING, "error.no_permission");
 
             return;
@@ -252,7 +253,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void downloadSearchExcel(ExtendedRequest request, ExtendedResponse response) {
-        if (!configurationBO.isSearchExcelExportEnabled()) {
+        if (!flagsProvider.isFlagEnabled("download_search_excel")) {
             this.setMessage(ActionResult.WARNING, "error.no_permission");
 
             return;
@@ -438,5 +439,10 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     @Autowired
     public void setFieldsBO(TabFieldsBO tabFieldsBO) {
         this.tabFieldsBO = tabFieldsBO;
+    }
+
+    @Autowired
+    public void setFlagsProvider(FlagsProvider flagsProvider) {
+        this.flagsProvider = flagsProvider;
     }
 }
