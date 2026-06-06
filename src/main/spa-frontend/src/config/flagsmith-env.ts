@@ -3,22 +3,14 @@
  * (`spa.template`). For `yarn dev` without that page, optional `VITE_*` vars in
  * `.env.local` are used.
  */
-export function getFlagsmithEnvironmentId(): string {
-  const fromPage = globalThis.__FLAGSMITH_ENVIRONMENT_KEY__
-
-  if (fromPage !== undefined && fromPage !== '') {
-    return fromPage
-  }
-
-  return import.meta.env.VITE_FLAGSMITH_ENVIRONMENT_KEY ?? ''
+export function getFlagsmithEnvironmentId(): string | undefined {
+  return getFromPage('__FLAGSMITH_ENVIRONMENT_KEY__') ?? import.meta.env.VITE_FLAGSMITH_ENVIRONMENT_KEY ?? ''
 }
 
-export function getFlagsmithApiUrl(): string {
-  const fromPage = globalThis.__FLAGSMITH_API_URL__
+export function getFlagsmithApiUrl(): string | undefined {
+  return getFromPage('__FLAGSMITH_API_URL__') ?? import.meta.env.VITE_FLAGSMITH_API_URL ?? ''
+}
 
-  if (fromPage !== undefined && fromPage !== '') {
-    return fromPage
-  }
-
-  return import.meta.env.VITE_FLAGSMITH_API_URL ?? ''
+function getFromPage(key: keyof typeof globalThis): string {
+  return globalThis[key]
 }
