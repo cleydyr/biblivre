@@ -20,6 +20,7 @@ export default tseslint.config([
       'node_modules/**',
       'node/**',
       'src/administration/reports/api/**',
+      'src/generated-sources/**',
     ],
   },
 

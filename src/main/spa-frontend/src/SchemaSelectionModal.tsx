@@ -62,7 +62,8 @@ const SchemaSelectionModal: FC<Props> = ({
           name='biblivre-schema'
           options={schemas.map((s) => ({
             id: s.schema,
-            label: s.name || s.schema,
+            label: `${s.name} (${s.schema})`,
+            value: s.schema,
           }))}
           onChange={(id) => setSelectedId(id)}
         />

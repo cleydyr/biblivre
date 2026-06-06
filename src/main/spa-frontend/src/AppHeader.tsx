@@ -10,18 +10,16 @@ import {
   EuiLink,
   EuiText,
 } from '@elastic/eui'
-import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
 import {
-  AUTH_SESSION_QUERY_KEY,
   useAuthSession,
-  useLegacyLogout,
+  useLegacyLogout
 } from './api-helpers/login/hooks'
 import { useSchemasList } from './api-helpers/schema/hooks'
-import { getStoredSchema, setStoredSchema } from './api-helpers/schema/storage'
+import { useSchemaQueryParams } from './api-helpers/schema/useSchemaQueryParams'
 import messages from './messages'
 import SchemaSelectionModal from './SchemaSelectionModal'
 
@@ -48,46 +46,19 @@ function isLoggedInSession(
 const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
 
   const { data: session, isPending: isSessionPending } = useAuthSession()
   const { mutate: logout, isPending: isLogoutPending } = useLegacyLogout()
   const { data: schemas, isPending: isSchemasPending } = useSchemasList()
 
-  const [activeSchemaId, setActiveSchemaId] = useState<string | null>(() =>
-    getStoredSchema(),
-  )
+  
   const [isSchemaModalOpen, setIsSchemaModalOpen] = useState(false)
-  const schemaAutoPromptedRef = useRef(false)
 
-  useEffect(() => {
-    if (!schemas?.length) {
-      return
-    }
-    if (schemas.length === 1) {
-      const only = schemas[0].schema
-      if (getStoredSchema() !== only) {
-        setStoredSchema(only)
-        setActiveSchemaId(only)
-        void queryClient.invalidateQueries({ queryKey: AUTH_SESSION_QUERY_KEY })
-      } else {
-        setActiveSchemaId(only)
-      }
-      return
-    }
-    setActiveSchemaId(getStoredSchema())
-  }, [schemas, queryClient])
-
-  useEffect(() => {
-    if (!schemas || schemas.length <= 1 || schemaAutoPromptedRef.current) {
-      return
-    }
-    if (!getStoredSchema()) {
-      schemaAutoPromptedRef.current = true
-      setIsSchemaModalOpen(true)
-    }
-  }, [schemas])
-
+  const { activeSchemaId, applyActiveSchema } = useSchemaQueryParams({
+    schemas,
+    setIsSchemaModalOpen,
+  })
+  
   const loggedIn = isLoggedInSession(session)
 
   const currentLibraryLabel =
@@ -140,7 +111,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
                       onClick={() => setIsSchemaModalOpen(true)}
                     >
                       <FormattedMessage
-                        defaultMessage='Biblioteca'
+                        defaultMessage='Escolher biblioteca'
                         id='app.header.schema.choose_library'
                       />
                     </EuiButtonEmpty>
@@ -187,10 +158,8 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
           schemas={schemas}
           onClose={() => setIsSchemaModalOpen(false)}
           onConfirm={(schemaId) => {
-            setStoredSchema(schemaId)
-            setActiveSchemaId(schemaId)
+            applyActiveSchema(schemaId)
             setIsSchemaModalOpen(false)
-            void queryClient.invalidateQueries()
             navigate('/spa/search', { replace: true })
           }}
         />
