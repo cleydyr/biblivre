@@ -5,15 +5,20 @@
 				<%@ page import="biblivre.core.translations.LanguageDTO" %>
 					<%@ page import="biblivre.core.configurations.ConfigurationBO" %>
 						<%@ page import="biblivre.core.utils.Constants" %>
-							<%@ page import="org.apache.commons.lang3.StringUtils" %>
-
+							<%@ page import="biblivre.core.configurations.FlagsProvider" %>
 								<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 									<%@ taglib prefix="menu" tagdir="/WEB-INF/tags/menu" %>
 										<%@ taglib prefix="i18n" uri="/WEB-INF/tlds/translations.tld" %>
 
 											<% ConfigurationBO configurationBO=(ConfigurationBO)
-												request.getAttribute("configurations"); String
-												contextPath=request.getContextPath(); %>
+												request.getAttribute("configurations");
+
+												FlagsProvider flagsProvider = (FlagsProvider) request.getAttribute("flagsProvider");
+
+												String contextPath=request.getContextPath();
+
+
+												%>
 
 												<jsp:useBean id="isMultiPart" type="java.lang.Boolean"
 													scope="request" />
@@ -239,20 +244,19 @@
 																	</c:if>
 
 																	<%-- Alpha Interface Banner --%>
-																		<% if (configurationBO.isAlphaBannerEnabled()) {
-																			%>
+																		<c:if test="${flagsProvider.isFlagEnabled('new-interface')}">
 																			<div
 																				class="message success alpha_interface_banner">
 																				<div>
 																					🎉 Experimente nossa nova interface
 																					com usabilidade aprimorada!
-																					<a href="<%= contextPath %>/spa"
+																					<a href="${spaHref}"
 																						class="fright">
 																						Experimentar Versão Alpha →
 																					</a>
 																				</div>
 																			</div>
-																			<% } %>
+																		</c:if>
 															</div>
 															<div id="breadcrumb">
 																<div id="page_help_icon">
