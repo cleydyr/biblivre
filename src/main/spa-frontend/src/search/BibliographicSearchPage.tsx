@@ -25,7 +25,7 @@ import {
   prepareSearchExcelExport,
 } from '../api-helpers/search'
 import { getSearchMode, getSearchTerms } from '../api-helpers/search/lib'
-import { useSearchExcelExportEnabled } from '../config/features'
+import { SEARCH_EXCEL_EXPORT_FEATURE } from '../config/features'
 
 import type { Pagination } from '@elastic/eui'
 
@@ -38,11 +38,10 @@ import type {
   EncodedQueryField,
   SearchQueryTerms,
 } from '../api-helpers/search/types'
+import FeatureFlag from '../components/FeatureFlag'
 
 const BibliographicSearchPage = () => {
   const { euiTheme } = useEuiTheme()
-
-  const isSearchExcelExportEnabled = useSearchExcelExportEnabled()
 
   const [terms, setTerms] = useState<SearchQueryTerms | undefined>()
 
@@ -199,18 +198,20 @@ const BibliographicSearchPage = () => {
           )}
           {isSearchSuccess && searchResults.success && (
             <EuiFlexGroup direction='column'>
-              {isSearchExcelExportEnabled && excelExportError && (
-                <EuiCallOut
-                  color='danger'
-                  iconType='error'
-                  title={
-                    <FormattedMessage
-                      defaultMessage='Não foi possível exportar os resultados.'
-                      id='search.bibliographic.export_excel_error'
-                    />
-                  }
-                />
-              )}
+              <FeatureFlag name={SEARCH_EXCEL_EXPORT_FEATURE}>
+                {excelExportError && (
+                  <EuiCallOut
+                    color='danger'
+                    iconType='error'
+                    title={
+                      <FormattedMessage
+                        defaultMessage='Não foi possível exportar os resultados.'
+                        id='search.bibliographic.export_excel_error'
+                      />
+                    }
+                  />
+                )}
+              </FeatureFlag>
               <EuiFlexGroup alignItems='flexEnd' justifyContent='flexEnd'>
                 <EuiFlexItem grow={false}>
                   <EuiStat
@@ -225,7 +226,7 @@ const BibliographicSearchPage = () => {
                     titleSize='s'
                   />
                 </EuiFlexItem>
-                {isSearchExcelExportEnabled && (
+                <FeatureFlag name={SEARCH_EXCEL_EXPORT_FEATURE}>
                   <EuiFlexItem grow={false}>
                     <EuiButton
                       color='primary'
@@ -268,7 +269,7 @@ const BibliographicSearchPage = () => {
                       />
                     </EuiButton>
                   </EuiFlexItem>
-                )}
+                </FeatureFlag>
                 <EuiFlexItem>
                   <EuiFlexGroup alignItems='flexEnd' justifyContent='flexEnd'>
                     <BibliographicSearchResultSort
