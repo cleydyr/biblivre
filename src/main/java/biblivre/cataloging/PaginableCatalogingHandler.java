@@ -33,21 +33,22 @@ import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
 import biblivre.core.configurations.ConfigurationBO;
-import biblivre.core.configurations.FlagsProvider;
+import biblivre.core.configurations.RequiresFeatureFlag;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
 import biblivre.core.file.DiskFile;
 import biblivre.marc.MarcDataReader;
 import biblivre.marc.MaterialType;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     private static final Logger logger = LoggerFactory.getLogger(PaginableCatalogingHandler.class);
@@ -56,8 +57,6 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     protected Map<RecordType, PaginableRecordBO> paginableRecordBOs;
 
     private IndexingGroupBO indexingGroupBO;
-
-    private FlagsProvider flagsProvider;
 
     protected TabFieldsBO tabFieldsBO;
 
@@ -217,13 +216,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         this.setCallback(exportFile::delete);
     }
 
+    @RequiresFeatureFlag("search_excel_export")
     public void exportSearchExcel(ExtendedRequest request, ExtendedResponse response) {
-        if (!flagsProvider.isFlagEnabled("search_excel_export")) {
-            this.setMessage(ActionResult.WARNING, "error.no_permission");
-
-            return;
-        }
-
         String searchParameters = request.getString("search_parameters");
 
         if (StringUtils.isBlank(searchParameters)) {
@@ -252,13 +246,8 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         put("uuid", exportId);
     }
 
+    @RequiresFeatureFlag("search_excel_export")
     public void downloadSearchExcel(ExtendedRequest request, ExtendedResponse response) {
-        if (!flagsProvider.isFlagEnabled("search_excel_export")) {
-            this.setMessage(ActionResult.WARNING, "error.no_permission");
-
-            return;
-        }
-
         String exportId = request.getString("id");
 
         String raw = (String) request.getScopedSessionAttribute(exportId);
@@ -441,8 +430,4 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         this.tabFieldsBO = tabFieldsBO;
     }
 
-    @Autowired
-    public void setFlagsProvider(FlagsProvider flagsProvider) {
-        this.flagsProvider = flagsProvider;
-    }
 }
