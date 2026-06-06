@@ -39,7 +39,7 @@ export function useSchemaQueryParams({
     (schemaId: string) => {
       setStoredSchema(schemaId)
       setActiveSchemaId(schemaId)
-      void queryClient.invalidateQueries()
+      queryClient.invalidateQueries()
     },
     [queryClient],
   )
@@ -76,7 +76,7 @@ export function useSchemaQueryParams({
     if (showSelectSchemaFromQuery) {
       clearStoredSchema()
       setActiveSchemaId(null)
-      void queryClient.invalidateQueries()
+      queryClient.invalidateQueries()
       schemaAutoPromptedRef.current = true
       removeQueryParams(SHOW_SELECT_SCHEMA_QUERY_PARAM, SCHEMA_QUERY_PARAM)
 
@@ -126,7 +126,7 @@ export function useSchemaQueryParams({
 
       if (getStoredSchema() !== only) {
         setStoredSchema(only)
-        void queryClient.invalidateQueries({ queryKey: AUTH_SESSION_QUERY_KEY })
+        queryClient.invalidateQueries({ queryKey: AUTH_SESSION_QUERY_KEY })
       }
 
       setActiveSchemaId(only)
