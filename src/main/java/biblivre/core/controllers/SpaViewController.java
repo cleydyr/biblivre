@@ -15,12 +15,12 @@ public class SpaViewController {
         if (key == null) {
             key = "";
         }
-        model.addAttribute("flagsmithEnvironmentKeyJson", JSONObject.quote(key));
+        model.addAttribute("flagsmithEnvironmentKeyJson", JSONObject.quote(key).replace("<", "\\u003C").replace(">", "\\u003E").replace("&", "\\u0026"));
         String apiUrl = System.getenv(Constants.FLAGSMITH_API_URL);
         if (apiUrl == null) {
             apiUrl = "";
         }
-        model.addAttribute("flagsmithApiUrlJson", JSONObject.quote(apiUrl));
+        model.addAttribute("flagsmithApiUrlJson", JSONObject.quote(apiUrl).replace("<", "\\u003C").replace(">", "\\u003E").replace("&", "\\u0026"));
         
         return "spa";
     }

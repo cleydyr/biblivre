@@ -62,13 +62,16 @@ public class SearchResultsExcelExporter {
         }
 
         List<String> columns = new ArrayList<>(columnKeys);
+        if (columns.size() > 16384) {
+            columns = columns.subList(0, 16384);
+        }
 
         File file =
                 File.createTempFile(
                         "biblivre_search_export_",
                         ".xlsx",
                         new File(System.getProperty("java.io.tmpdir")));
-        file.deleteOnExit();
+        // Intentionally not using deleteOnExit(): the download handler deletes the temp file via callback.
         try (XSSFWorkbook workbook = new XSSFWorkbook();
                 OutputStream out = Files.newOutputStream(file.toPath())) {
             var sheet = workbook.createSheet("search_results");
