@@ -4,6 +4,10 @@ import path from 'node:path'
 const TS_NOCHECK = '// @ts-nocheck\n'
 
 function addTsNocheck(dir) {
+  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
+    return
+  }
+
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const filePath = path.join(dir, entry.name)
 
