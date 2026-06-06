@@ -250,6 +250,9 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
         String exportId = request.getString("id");
 
         String raw = (String) request.getScopedSessionAttribute(exportId);
+        if (StringUtils.isNotBlank(exportId)) {
+            request.setScopedSessionAttribute(exportId, null);
+        }
 
         if (StringUtils.isBlank(raw)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");

@@ -68,13 +68,13 @@ public class SearchResultsExcelExporter {
                         "biblivre_search_export_",
                         ".xlsx",
                         new File(System.getProperty("java.io.tmpdir")));
-
+        file.deleteOnExit();
         try (XSSFWorkbook workbook = new XSSFWorkbook();
                 OutputStream out = Files.newOutputStream(file.toPath())) {
             var sheet = workbook.createSheet("search_results");
             var header = sheet.createRow(0);
+            var i18n = translationBO.get(language);
             for (int c = 0; c < columns.size(); c++) {
-                var i18n = translationBO.get(language);
 
                 String cellValue = columns.get(c);
 
