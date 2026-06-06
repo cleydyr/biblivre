@@ -42,7 +42,7 @@ check_prerequisites() {
     fi
     
     if ! command -v java &> /dev/null; then
-        echo -e "${RED}Error: Java not found. Please install Java 21+.${NC}"
+        echo -e "${RED}Error: Java not found. Please install Java 25+.${NC}"
         exit 1
     fi
     
@@ -58,8 +58,8 @@ check_prerequisites() {
     
     # Check Java version
     java_version=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2 | cut -d'.' -f1)
-    if [ "$java_version" -lt 21 ]; then
-        echo -e "${YELLOW}Warning: Java 21+ recommended. Current version: $java_version${NC}"
+    if [ "$java_version" -lt 25 ]; then
+        echo -e "${YELLOW}Warning: Java 25+ recommended. Current version: $java_version${NC}"
     fi
 }
 

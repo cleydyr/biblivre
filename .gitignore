@@ -26,3 +26,4 @@ src/main/resources/META-INF/resources/static/spa/
 src/main/webapp/WEB-INF/templates/spa.template
 
 CLAUDE.local.md
+.env.*

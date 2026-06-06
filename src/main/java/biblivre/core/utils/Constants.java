@@ -111,11 +111,7 @@ public class Constants {
     public static final String DATABASE_USERNAME = "PGUSER";
     public static final String PSQL_PATH = "PSQL_PATH";
     public static final String PGDUMP_PATH = "PGDUMP_PATH";
-    public static final String SHOW_ALPHA_BANNER = "SHOW_ALPHA_BANNER";
-
-    /** When set to true or 1, enables bibliographic search results Excel export (JSON + download). */
-    public static final String FEATURE_SEARCH_EXCEL_EXPORT = "BIBLIVRE_FEATURE_SEARCH_EXCEL_EXPORT";
-
+    
     /** Flagsmith client-side environment key injected into the SPA HTML (see spa.template). */
     public static final String FLAGSMITH_ENVIRONMENT_KEY = "BIBLIVRE_FLAGSMITH_ENVIRONMENT_KEY";
     public static final String DEFAULT_DATABASE_NAME = "biblivre4";

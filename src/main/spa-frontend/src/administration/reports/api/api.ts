@@ -1,3 +1,4 @@
+// @ts-nocheck
 /// <reference path="./custom.d.ts" />
 // tslint:disable
 /**

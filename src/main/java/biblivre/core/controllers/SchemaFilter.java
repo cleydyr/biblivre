@@ -21,15 +21,18 @@ package biblivre.core.controllers;
 
 import biblivre.core.SchemaThreadLocal;
 import biblivre.core.configurations.ConfigurationBO;
+import biblivre.core.configurations.FlagsProvider;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.utils.Constants;
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SchemaFilter implements Filter {
     private SchemaBO schemaBO;
     private ConfigurationBO configurationBO;
+    private FlagsProvider flagsProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -45,9 +48,16 @@ public class SchemaFilter implements Filter {
 
         SchemaThreadLocal.setSchema(schema);
 
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+
         request.setAttribute("schemas", schemaBO.getSchemas());
 
         request.setAttribute("configurations", configurationBO);
+
+        request.setAttribute("flagsProvider", flagsProvider);
+
+        request.setAttribute(
+                "spaHref", SchemaUtil.buildSpaSearchHref(httpRequest.getContextPath(), schema));
 
         try {
             chain.doFilter(request, response);
@@ -64,5 +74,10 @@ public class SchemaFilter implements Filter {
     @Autowired
     public void setConfigurationBO(ConfigurationBO configurationBO) {
         this.configurationBO = configurationBO;
+    }
+
+    @Autowired
+    public void setFlagsProvider(FlagsProvider flagsProvider) {
+        this.flagsProvider = flagsProvider;
     }
 }

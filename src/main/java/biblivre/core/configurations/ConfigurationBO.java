@@ -142,16 +142,6 @@ public class ConfigurationBO {
         return SchemaThreadLocal.withGlobalSchema(() -> getBoolean(Constants.CONFIG_MULTI_SCHEMA));
     }
 
-    public boolean isAlphaBannerEnabled() {
-        String value = System.getenv(Constants.SHOW_ALPHA_BANNER);
-        return "true".equalsIgnoreCase(value) || "1".equals(value);
-    }
-
-    public boolean isSearchExcelExportEnabled() {
-        String value = System.getenv(Constants.FEATURE_SEARCH_EXCEL_EXPORT);
-        return "true".equalsIgnoreCase(value) || "1".equals(value);
-    }
-
     public List<ConfigurationsDTO> validate(
             List<ConfigurationsDTO> configs,
             boolean multipleSchemasEnabled,
