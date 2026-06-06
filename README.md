@@ -12,7 +12,7 @@ There are basically two ways to build and deploy:
 
 ### Dependencies
 To build and deploy it's necessary to have in your system
-1. JDK (version 17 or newer)
+1. JDK (version 25 or newer)
 1. Maven
 1. Docker (optional, but required for testing and for using the developer, docker and docker-compose profiles)
 1. Docker Compose (optional, but required for using the docker-compose profile)
