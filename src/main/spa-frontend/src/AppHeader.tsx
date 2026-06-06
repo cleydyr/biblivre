@@ -10,22 +10,16 @@ import {
   EuiLink,
   EuiText,
 } from '@elastic/eui'
-import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import {
-  AUTH_SESSION_QUERY_KEY,
   useAuthSession,
-  useLegacyLogout,
+  useLegacyLogout
 } from './api-helpers/login/hooks'
 import { useSchemasList } from './api-helpers/schema/hooks'
-import {
-  clearStoredSchema,
-  getStoredSchema,
-  setStoredSchema,
-} from './api-helpers/schema/storage'
+import { useSchemaQueryParams } from './api-helpers/schema/useSchemaQueryParams'
 import messages from './messages'
 import SchemaSelectionModal from './SchemaSelectionModal'
 
@@ -35,9 +29,6 @@ import type {
   LoggedLoginSessionResponse,
   LoginSessionResponse,
 } from './api-helpers/types'
-
-const SCHEMA_QUERY_PARAM = 'schema'
-const SHOW_SELECT_SCHEMA_QUERY_PARAM = 'showSelectSchema'
 
 type Props = {
   isDarkMode: boolean
@@ -55,112 +46,19 @@ function isLoggedInSession(
 const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const schemaFromQuery = searchParams.get(SCHEMA_QUERY_PARAM)
-  const showSelectSchemaFromQuery = searchParams.has(
-    SHOW_SELECT_SCHEMA_QUERY_PARAM,
-  )
 
   const { data: session, isPending: isSessionPending } = useAuthSession()
   const { mutate: logout, isPending: isLogoutPending } = useLegacyLogout()
   const { data: schemas, isPending: isSchemasPending } = useSchemasList()
 
-  const [activeSchemaId, setActiveSchemaId] = useState<string | null>(() =>
-    getStoredSchema(),
-  )
+  
   const [isSchemaModalOpen, setIsSchemaModalOpen] = useState(false)
-  const schemaAutoPromptedRef = useRef(false)
 
-  const applyActiveSchema = useCallback(
-    (schemaId: string) => {
-      setStoredSchema(schemaId)
-      setActiveSchemaId(schemaId)
-      void queryClient.invalidateQueries()
-    },
-    [queryClient],
-  )
-
-  const removeQueryParams = useCallback(
-    (...keys: string[]) => {
-      const next = new URLSearchParams(searchParams)
-      let changed = false
-
-      for (const key of keys) {
-        if (next.has(key)) {
-          next.delete(key)
-          changed = true
-        }
-      }
-
-      if (changed) {
-        setSearchParams(next, { replace: true })
-      }
-    },
-    [searchParams, setSearchParams],
-  )
-
-  useEffect(() => {
-    if (!schemas?.length) {
-      return
-    }
-
-    if (showSelectSchemaFromQuery) {
-      clearStoredSchema()
-      setActiveSchemaId(null)
-      void queryClient.invalidateQueries()
-      schemaAutoPromptedRef.current = true
-      removeQueryParams(SHOW_SELECT_SCHEMA_QUERY_PARAM, SCHEMA_QUERY_PARAM)
-
-      if (schemas.length > 1) {
-        setIsSchemaModalOpen(true)
-        return
-      }
-    }
-
-    if (schemaFromQuery) {
-      const matchedSchema = schemas.find((s) => s.schema === schemaFromQuery)
-      if (matchedSchema) {
-        schemaAutoPromptedRef.current = true
-        applyActiveSchema(matchedSchema.schema)
-        removeQueryParams(SCHEMA_QUERY_PARAM)
-        return
-      }
-    }
-
-    if (schemas.length === 1) {
-      const only = schemas[0].schema
-
-      if (getStoredSchema() !== only) {
-        setStoredSchema(only)
-        void queryClient.invalidateQueries({ queryKey: AUTH_SESSION_QUERY_KEY })
-      }
-
-      setActiveSchemaId(only)
-
-      return
-    }
-
-    setActiveSchemaId(getStoredSchema())
-  }, [
-    applyActiveSchema,
-    queryClient,
-    removeQueryParams,
-    schemaFromQuery,
+  const { activeSchemaId, applyActiveSchema } = useSchemaQueryParams({
     schemas,
-    showSelectSchemaFromQuery,
-  ])
-
-  useEffect(() => {
-    if (!schemas || schemas.length <= 1 || schemaAutoPromptedRef.current) {
-      return
-    }
-    if (!getStoredSchema()) {
-      schemaAutoPromptedRef.current = true
-      setIsSchemaModalOpen(true)
-    }
-  }, [schemas])
-
+    setIsSchemaModalOpen,
+  })
+  
   const loggedIn = isLoggedInSession(session)
 
   const currentLibraryLabel =
