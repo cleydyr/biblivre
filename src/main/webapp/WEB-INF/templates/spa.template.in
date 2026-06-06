@@ -6,8 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Biblivre SPA</title>
 	<script>
-	window.__FLAGSMITH_ENVIRONMENT_KEY__ = [(${flagsmithEnvironmentKeyJson})];
-	window.__FLAGSMITH_API_URL__ = [(${flagsmithApiUrlJson})];
+	globalThis.__FLAGSMITH_ENVIRONMENT_KEY__ = [(${flagsmithEnvironmentKeyJson})];
+	globalThis.__FLAGSMITH_API_URL__ = [(${flagsmithApiUrlJson})];
 	</script>
 	<script type="module" crossorigin src="/static/spa/@JS_BUNDLE@"></script>
 </head>

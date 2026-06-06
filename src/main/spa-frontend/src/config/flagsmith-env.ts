@@ -1,11 +1,10 @@
 /**
- * Client-side Flagsmith environment key: set on `window` by the Spring Boot SPA
- * template (`spa.template`). For `yarn dev` without that page, optional
- * `VITE_FLAGSMITH_ENVIRONMENT_KEY` in `.env.local` is used.
+ * Client-side Flagsmith config: set on `globalThis` by the Spring Boot SPA template
+ * (`spa.template`). For `yarn dev` without that page, optional `VITE_*` vars in
+ * `.env.local` are used.
  */
 export function getFlagsmithEnvironmentId(): string {
-  const fromPage =
-    typeof window !== 'undefined' ? window.__FLAGSMITH_ENVIRONMENT_KEY__ : undefined
+  const fromPage = globalThis.__FLAGSMITH_ENVIRONMENT_KEY__
 
   if (fromPage !== undefined && fromPage !== '') {
     return fromPage
@@ -14,10 +13,8 @@ export function getFlagsmithEnvironmentId(): string {
   return import.meta.env.VITE_FLAGSMITH_ENVIRONMENT_KEY ?? ''
 }
 
-
 export function getFlagsmithApiUrl(): string {
-  const fromPage =
-    typeof window !== 'undefined' ? window.__FLAGSMITH_API_URL__ : undefined
+  const fromPage = globalThis.__FLAGSMITH_API_URL__
 
   if (fromPage !== undefined && fromPage !== '') {
     return fromPage

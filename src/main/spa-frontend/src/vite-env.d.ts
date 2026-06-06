@@ -1,10 +1,9 @@
 /// <reference types="vite/client" />
 
-interface Window {
-  /** Set by Thymeleaf in spa.template from BIBLIVRE_FLAGSMITH_ENVIRONMENT_KEY */
-  __FLAGSMITH_ENVIRONMENT_KEY__?: string
-  __FLAGSMITH_API_URL__?: string
-}
+/** Set by Thymeleaf in spa.template from BIBLIVRE_FLAGSMITH_ENVIRONMENT_KEY */
+declare var __FLAGSMITH_ENVIRONMENT_KEY__: string | undefined
+/** Set by Thymeleaf in spa.template from FLAGSMITH_API_URL */
+declare var __FLAGSMITH_API_URL__: string | undefined
 
 interface ViteTypeOptions {
   // By adding this line, you can make the type of ImportMetaEnv strict
