@@ -244,7 +244,7 @@ const BibliographicSearchPage = () => {
                             ...getSearchTerms(terms),
                           })
                           const sortParam =
-                            sort !== undefined ? String(sort) : FIELDS.TITLE
+                            sort === undefined ? FIELDS.TITLE : String(sort)
                           const res = await prepareSearchExcelExport(
                             search_parameters,
                             sortParam,
