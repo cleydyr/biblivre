@@ -32,7 +32,6 @@ import biblivre.core.DTOCollection;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
 import biblivre.core.auth.AuthorizationPoints;
-import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.configurations.RequiresFeatureFlag;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.exceptions.ValidationException;
@@ -418,11 +417,6 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     @Autowired
     public void setIndexingGroupBO(IndexingGroupBO indexingGroupBO) {
         this.indexingGroupBO = indexingGroupBO;
-    }
-
-    @Autowired
-    public void setConfigurationBO(ConfigurationBO configurationBO) {
-        this.configurationBO = configurationBO;
     }
 
     @Autowired
