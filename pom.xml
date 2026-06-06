@@ -654,6 +654,7 @@
 	&lt;title&gt;Biblivre SPA&lt;/title&gt;
 	&lt;script&gt;
 	window.__FLAGSMITH_ENVIRONMENT_KEY__ = [(${flagsmithEnvironmentKeyJson})];
+	window.__FLAGSMITH_API_URL__ = [(${flagsmithApiUrlJson})];
 	&lt;/script&gt;
 	&lt;script type="module" crossorigin src="/static/spa/${js.bundle}"&gt;&lt;/script&gt;
 &lt;/head&gt;

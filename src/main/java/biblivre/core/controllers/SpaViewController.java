@@ -16,6 +16,12 @@ public class SpaViewController {
             key = "";
         }
         model.addAttribute("flagsmithEnvironmentKeyJson", JSONObject.quote(key));
+        String apiUrl = System.getenv(Constants.FLAGSMITH_API_URL);
+        if (apiUrl == null) {
+            apiUrl = "";
+        }
+        model.addAttribute("flagsmithApiUrlJson", JSONObject.quote(apiUrl));
+        
         return "spa";
     }
 }

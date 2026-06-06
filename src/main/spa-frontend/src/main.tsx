@@ -13,7 +13,7 @@ import { BrowserRouter } from 'react-router-dom'
 import messages from '../lang-compiled.json'
 
 import AppWithTheme from './AppWithTheme.tsx'
-import { getFlagsmithEnvironmentId } from './config/flagsmith-env.ts'
+import { getFlagsmithEnvironmentId, getFlagsmithApiUrl } from './config/flagsmith-env.ts'
 import { i18n } from './i18n.ts'
 
 // Create a client
@@ -26,6 +26,8 @@ createRoot(document.getElementById('root')!).render(
         flagsmith={flagsmith}
         options={{
           environmentID: getFlagsmithEnvironmentId(),
+          api: getFlagsmithApiUrl(),
+          
         }}
       >
         <IntlProvider locale='pt-BR' messages={messages}>

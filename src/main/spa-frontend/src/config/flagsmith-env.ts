@@ -13,3 +13,15 @@ export function getFlagsmithEnvironmentId(): string {
 
   return import.meta.env.VITE_FLAGSMITH_ENVIRONMENT_KEY ?? ''
 }
+
+
+export function getFlagsmithApiUrl(): string {
+  const fromPage =
+    typeof window !== 'undefined' ? window.__FLAGSMITH_API_URL__ : undefined
+
+  if (fromPage !== undefined && fromPage !== '') {
+    return fromPage
+  }
+
+  return import.meta.env.VITE_FLAGSMITH_API_URL ?? ''
+}

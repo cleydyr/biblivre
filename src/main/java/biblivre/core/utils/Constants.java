@@ -19,17 +19,18 @@
  ******************************************************************************/
 package biblivre.core.utils;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.function.Function;
-import javax.measure.MetricPrefix;
-import javax.measure.Quantity;
-import javax.measure.Unit;
-import javax.measure.quantity.Length;
 import org.apache.commons.lang3.time.DateParser;
 import org.apache.commons.lang3.time.DatePrinter;
 import org.apache.commons.lang3.time.FastDateFormat;
 import tech.units.indriya.unit.Units;
+
+import javax.measure.MetricPrefix;
+import javax.measure.Quantity;
+import javax.measure.Unit;
+import javax.measure.quantity.Length;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.function.Function;
 
 public class Constants {
 
@@ -114,6 +115,7 @@ public class Constants {
 
     /** Flagsmith client-side environment key injected into the SPA HTML (see spa.template). */
     public static final String FLAGSMITH_ENVIRONMENT_KEY = "BIBLIVRE_FLAGSMITH_ENVIRONMENT_KEY";
+    public static final String FLAGSMITH_API_URL =  "FLAGSMITH_API_URL";
 
     public static final String DEFAULT_DATABASE_NAME = "biblivre4";
     public static final String DEFAULT_DATABASE_PASSWORD = "abracadabra";
