@@ -1,16 +1,15 @@
 package biblivre.cataloging;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +29,7 @@ import biblivre.core.file.DiskFile;
 import biblivre.marc.MaterialType;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +37,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 class PaginableCatalogingHandlerTest {
     private static final String SEARCH_PARAMETERS =
@@ -227,7 +226,7 @@ class PaginableCatalogingHandlerTest {
 
         handler.downloadSearchExcel(request, response);
 
-        assertNull(handlerContext.getMessage().getText());
+        assertFalse(handler.hasErrors());
         assertEquals(exportFile, handlerContext.getFile());
         assertNotNull(handlerContext.getCallback());
         assertNull(sessionAttributes.get(exportId));
@@ -263,15 +262,19 @@ class PaginableCatalogingHandlerTest {
                 .thenReturn(search);
         when(searchResultsExcelExporter.export(any(), eq("pt-BR"))).thenReturn(exportFile);
 
+        List<Long> paginatedPages = new ArrayList<>();
+        doAnswer(
+                        invocation -> {
+                            SearchDTO searchArg = invocation.getArgument(0);
+                            paginatedPages.add(searchArg.getPaging().getPage());
+                            return null;
+                        })
+                .when(paginableRecordBO)
+                .paginateSearch(any(), eq(authorizationPoints));
+
         handler.downloadSearchExcel(request, response);
 
-        ArgumentCaptor<SearchDTO> searchCaptor = ArgumentCaptor.forClass(SearchDTO.class);
-        verify(paginableRecordBO, times(2))
-                .paginateSearch(searchCaptor.capture(), eq(authorizationPoints));
-
-        List<SearchDTO> paginatedSearches = searchCaptor.getAllValues();
-        assertEquals(2, paginatedSearches.get(0).getPaging().getPage());
-        assertEquals(3, paginatedSearches.get(1).getPaging().getPage());
+        assertEquals(List.of(2L, 3L), paginatedPages);
         assertEquals(exportFile, handlerContext.getFile());
     }
 
