@@ -642,34 +642,13 @@
 						<configuration>
 							<target>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-								<!-- Extract the script src from the built index.html and update the template -->
-								<loadfile property="spa.index.html" srcFile="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html"/>
-								<propertyregex property="spa.js.file" input="${spa.index.html}" regexp="src=&quot;(/assets/[^&quot;]+\.js)&quot;" select="\1" casesensitive="false" />
-								<!-- Copy the built index.html content to template with corrected paths -->
-								<copy file="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html" tofile="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" overwrite="true"/>
-								<replace file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" token='src="/assets/' value='src="/spa/assets/'/>
-								<replace file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" token='href="/vite.svg"' value='href="/spa/vite.svg"'/>
-								<replace file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" token='Vite + React + TS' value='Biblivre SPA'/>
-								<!-- Move script from body to head by using a custom template approach -->
 								<loadfile property="built.content" srcFile="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html"/>
 								<propertyregex property="js.bundle" input="${built.content}" regexp="assets/index-[^&quot;]+\.js" select="\0" casesensitive="false"/>
-								<echo file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template">&lt;!doctype html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-	&lt;meta charset="UTF-8" /&gt;
-	&lt;link rel="icon" type="image/svg+xml" href="/static/spa/vite.svg" /&gt;
-	&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
-	&lt;title&gt;Biblivre SPA&lt;/title&gt;
-	&lt;script&gt;
-	window.__FLAGSMITH_ENVIRONMENT_KEY__ = [(${flagsmithEnvironmentKeyJson})];
-	window.__FLAGSMITH_API_URL__ = [(${flagsmithApiUrlJson})];
-	&lt;/script&gt;
-	&lt;script type="module" crossorigin src="/static/spa/${js.bundle}"&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-	&lt;div id="root"&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</echo>
+								<copy file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template.in" tofile="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" overwrite="true">
+									<filterset>
+										<filter token="JS_BUNDLE" value="${js.bundle}"/>
+									</filterset>
+								</copy>
 							</target>
 						</configuration>
 					</execution>
