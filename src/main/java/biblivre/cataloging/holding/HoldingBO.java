@@ -43,7 +43,7 @@ import biblivre.marc.MarcDataReader;
 import biblivre.marc.MarcUtils;
 import biblivre.marc.MaterialType;
 import biblivre.marc.RecordStatus;
-import com.lowagie.text.Element;
+import org.openpdf.text.Element;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;

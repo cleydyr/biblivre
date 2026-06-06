@@ -23,6 +23,7 @@ import biblivre.core.file.BiblivreFile;
 import biblivre.digitalmedia.BaseDigitalMediaDAO;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import lombok.extern.slf4j.Slf4j;
@@ -51,9 +52,9 @@ public class PostgresLargeObjectDigitalMediaDAO extends BaseDigitalMediaDAO {
 
                     LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
 
-                    IOUtils.copy(is, obj.getOutputStream());
-
-                    obj.close();
+                    try (OutputStream outputStream = obj.getOutputStream()) {
+                        IOUtils.copy(is, outputStream);
+                    }
                 });
     }
 

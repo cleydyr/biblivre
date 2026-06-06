@@ -21,11 +21,11 @@ package biblivre.administration.reports;
 
 import biblivre.administration.reports.dto.AssetHoldingDto;
 import biblivre.administration.reports.dto.BaseReportDto;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.Barcode39;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
+import org.openpdf.text.*;
+import org.openpdf.text.pdf.Barcode39;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfPCell;
+import org.openpdf.text.pdf.PdfPTable;
 import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
