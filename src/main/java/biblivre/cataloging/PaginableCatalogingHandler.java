@@ -218,7 +218,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void exportSearchExcel(ExtendedRequest request, ExtendedResponse response) {
-        if (!flagsProvider.isFlagEnabled("download_search_excel")) {
+        if (!flagsProvider.isFlagEnabled("search_excel_export")) {
             this.setMessage(ActionResult.WARNING, "error.no_permission");
 
             return;
@@ -253,7 +253,7 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     }
 
     public void downloadSearchExcel(ExtendedRequest request, ExtendedResponse response) {
-        if (!flagsProvider.isFlagEnabled("download_search_excel")) {
+        if (!flagsProvider.isFlagEnabled("search_excel_export")) {
             this.setMessage(ActionResult.WARNING, "error.no_permission");
 
             return;
