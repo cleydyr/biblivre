@@ -347,7 +347,7 @@
 		<dependency>
 			<groupId>com.flagsmith</groupId>
 			<artifactId>flagsmith-java-client</artifactId>
-			<version>7.4.3</version>
+			<version>8.1.1</version>
 		</dependency>
 
 	</dependencies>
