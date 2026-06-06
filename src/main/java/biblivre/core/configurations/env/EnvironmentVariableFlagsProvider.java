@@ -6,10 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(
-        value = "FLAGS_PROVIDER_IMPL",
-        havingValue = "env",
-        matchIfMissing = true)
+@ConditionalOnProperty(value = "FLAGS_PROVIDER_IMPL", havingValue = "env", matchIfMissing = true)
 public class EnvironmentVariableFlagsProvider implements FlagsProvider {
     private static final String FLAG_ENV_PREFIX = "FLAG_";
 
@@ -21,9 +18,7 @@ public class EnvironmentVariableFlagsProvider implements FlagsProvider {
             return false;
         }
 
-        return "true".equalsIgnoreCase(value)
-                || "1".equals(value)
-                || "yes".equalsIgnoreCase(value);
+        return "true".equalsIgnoreCase(value) || "1".equals(value) || "yes".equalsIgnoreCase(value);
     }
 
     @Override
