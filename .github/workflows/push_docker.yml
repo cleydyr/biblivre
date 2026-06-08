@@ -36,7 +36,7 @@ jobs:
       - name: Cache Dart Sass downloads
         uses: actions/cache@v4
         with:
-          path: ~/.cache/dart-sass-maven-plugin
+          path: ~/.dart-sass-maven-plugin
           key: dart-sass-${{ runner.os }}-${{ hashFiles('pom.xml') }}
           restore-keys: |
             dart-sass-${{ runner.os }}-
