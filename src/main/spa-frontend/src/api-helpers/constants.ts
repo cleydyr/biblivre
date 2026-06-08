@@ -11,4 +11,4 @@ export const DEFAULT_HEADERS = {
 
 export const SCHEMA_STORAGE_KEY = 'biblivre.selectedSchema'
 
-export const BIBLIVRE_ENDPOINT = import.meta.env.VITE_BIBLIVRE_ENDPOINT ?? '/api/v2'
+export const BIBLIVRE_ENDPOINT = import.meta.env.VITE_BIBLIVRE_ENDPOINT || '/'
