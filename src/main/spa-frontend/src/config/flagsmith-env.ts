@@ -4,13 +4,17 @@
  * `.env.local` are used.
  */
 export function getFlagsmithEnvironmentId(): string | undefined {
-  return getFromPage('__FLAGSMITH_ENVIRONMENT_KEY__') ?? import.meta.env.VITE_FLAGSMITH_ENVIRONMENT_KEY ?? ''
+  const fromPage = getFromPage('__FLAGSMITH_ENVIRONMENT_KEY__')
+  return fromPage || import.meta.env.VITE_FLAGSMITH_ENVIRONMENT_KEY
 }
 
 export function getFlagsmithApiUrl(): string | undefined {
-  return getFromPage('__FLAGSMITH_API_URL__') ?? import.meta.env.VITE_FLAGSMITH_API_URL ?? ''
+  const fromPage = getFromPage('__FLAGSMITH_API_URL__')
+  return fromPage || import.meta.env.VITE_FLAGSMITH_API_URL
 }
 
-function getFromPage(key: keyof typeof globalThis): string {
+function getFromPage(
+  key: '__FLAGSMITH_ENVIRONMENT_KEY__' | '__FLAGSMITH_API_URL__',
+): string | undefined {
   return globalThis[key]
 }
