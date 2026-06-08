@@ -249,10 +249,14 @@ public abstract class PaginableCatalogingHandler extends CatalogingHandler {
     public void downloadSearchExcel(ExtendedRequest request, ExtendedResponse response) {
         String exportId = request.getString("id");
 
-        String raw = (String) request.getScopedSessionAttribute(exportId);
-        if (StringUtils.isNotBlank(exportId)) {
-            request.setScopedSessionAttribute(exportId, null);
+        if (StringUtils.isBlank(exportId)) {
+            this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
+
+            return;
         }
+
+        String raw = (String) request.getScopedSessionAttribute(exportId);
+        request.setScopedSessionAttribute(exportId, null);
 
         if (StringUtils.isBlank(raw)) {
             this.setMessage(ActionResult.WARNING, "cataloging.error.no_records_found");
