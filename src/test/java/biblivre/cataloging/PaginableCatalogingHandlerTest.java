@@ -232,6 +232,7 @@ class PaginableCatalogingHandlerTest {
         assertNull(sessionAttributes.get(exportId));
         verify(paginableRecordBO, never()).paginateSearch(any(), any());
         handlerContext.getCallback().success();
+    }
 
     @Test
     void downloadSearchExcel_paginatesRemainingPages() throws IOException {
@@ -277,6 +278,7 @@ class PaginableCatalogingHandlerTest {
         assertEquals(List.of(2L, 3L), paginatedPages);
         assertEquals(exportFile, handlerContext.getFile());
         handlerContext.getCallback().success();
+    }
 
     @Test
     void downloadSearchExcel_handlesExporterIOException() throws IOException {
