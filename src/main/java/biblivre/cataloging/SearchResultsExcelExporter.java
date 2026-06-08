@@ -18,18 +18,21 @@ package biblivre.cataloging;
 
 import biblivre.core.file.DiskFile;
 import biblivre.core.translations.TranslationBO;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Record;
+import org.marc4j.marc.Subfield;
+import org.marc4j.marc.VariableField;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.marc4j.marc.*;
-import org.marc4j.marc.Record;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class SearchResultsExcelExporter {
@@ -142,9 +145,7 @@ public class SearchResultsExcelExporter {
     private Map<String, String> buildRowValues(Record marc) {
         Map<String, List<String>> acc = new LinkedHashMap<>();
         for (VariableField vf : marc.getVariableFields()) {
-            if (vf instanceof ControlField cf) {
-                acc.computeIfAbsent(cf.getTag(), k -> new ArrayList<>()).add(cf.getData());
-            } else if (vf instanceof DataField df) {
+            if (vf instanceof DataField df) {
                 for (Subfield sf : df.getSubfields()) {
                     String key = df.getTag() + "$" + sf.getCode();
                     acc.computeIfAbsent(key, k -> new ArrayList<>()).add(sf.getData());
