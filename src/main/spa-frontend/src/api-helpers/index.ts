@@ -1,5 +1,5 @@
 import { getStoredSchema } from './schema/storage'
-import { DEFAULT_HEADERS } from './constants'
+import { BIBLIVRE_ENDPOINT, DEFAULT_HEADERS } from './constants'
 
 import type { FileDownload, LegacyEndpointPayload } from './types'
 
@@ -17,7 +17,7 @@ export async function fetchJSONFromLegacyEndpoint({
   action,
   ...otherParams
 }: LegacyEndpointPayload) {
-  const response = await fetch(import.meta.env.VITE_BIBLIVRE_ENDPOINT, {
+  const response = await fetch(BIBLIVRE_ENDPOINT, {
     method: 'POST',
     headers: buildDefaultHeaders(),
     body: new URLSearchParams({
@@ -44,7 +44,7 @@ export async function downloadFromLegacyEndpoint({
   }).toString()
 
   const response = await fetch(
-    `${import.meta.env.VITE_BIBLIVRE_ENDPOINT}?${queryParams}`,
+    `${BIBLIVRE_ENDPOINT}?${queryParams}`,
     {
       headers: buildDefaultHeaders(),
     },
