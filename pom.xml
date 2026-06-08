@@ -371,7 +371,7 @@
 				<configuration>
 					<outputFolder>src/main/resources/META-INF/resources/static/styles/</outputFolder>
 					<style>COMPRESSED</style>
-					<version>1.83.0</version>
+					<version>1.100.0</version>
 				</configuration>
 				<executions>
 					<execution>
