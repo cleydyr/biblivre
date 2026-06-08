@@ -49,6 +49,18 @@ public abstract class PaginableRecordBO extends RecordBO {
     }
 
     public SearchDTO search(SearchQueryDTO searchQuery, AuthorizationPoints authorizationPoints) {
+        return search(
+                searchQuery,
+                authorizationPoints,
+                indexingGroupBO.getDefaultSortableGroupId(getRecordType()),
+                0);
+    }
+
+    public SearchDTO search(
+            SearchQueryDTO searchQuery,
+            AuthorizationPoints authorizationPoints,
+            int sort,
+            int indexingGroup) {
         if (searchQuery.getDatabase() == RecordDatabase.PRIVATE) {
             authorize("cataloging.bibliographic", "private_database_access", authorizationPoints);
         }
@@ -61,7 +73,9 @@ public abstract class PaginableRecordBO extends RecordBO {
 
         search.setQuery(searchQuery);
 
-        search.setSort(indexingGroupBO.getDefaultSortableGroupId(getRecordType()));
+        search.setSort(sort);
+
+        search.setIndexingGroup(indexingGroup);
 
         search(search);
 

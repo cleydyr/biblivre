@@ -444,6 +444,11 @@
   resolved "https://registry.yarnpkg.com/@formatjs/cli-native-win32-x64/-/cli-native-win32-x64-1.1.2.tgz#6cc2db043243d5215065d3548e7198233e342c0d"
   integrity sha512-2TKatQRlDbVc+eJE4b9n0/+bsDg+DpS0kmHw7OYI1zGXhus4YqRPtlJnraazRmPlXtRNgvY/UYCPgBvX7DbYhw==
 
+"@flagsmith/flagsmith@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@flagsmith/flagsmith/-/flagsmith-11.0.0.tgz#7e13633f0dfbf38f9bbe031c285b866165957b3b"
+  integrity sha512-jJB+1O/ctU7TCoIBsV2lgYAUOpShjcSqHkH4nlyqUGeQCGC0ZHto8IvGf+nZwpFAF5Czaphn/anm9MDoZIS3rw==
+
 "@formatjs/cli@^6.7.2":
   version "6.16.6"
   resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.16.6.tgz#dcc47f28756eec01f59e3911f58407293ff9c65f"

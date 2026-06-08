@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/svg+xml" href="/static/spa/vite.svg" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Biblivre SPA</title>
+	<script>
+	globalThis.__FLAGSMITH_ENVIRONMENT_KEY__ = [(${flagsmithEnvironmentKeyJson})];
+	globalThis.__FLAGSMITH_API_URL__ = [(${flagsmithApiUrlJson})];
+	</script>
+	<script type="module" crossorigin src="/static/spa/@JS_BUNDLE@"></script>
+</head>
+<body>
+	<div id="root"></div>
+</body>
+</html>

@@ -364,7 +364,11 @@ public class AuthorizationPoints implements Serializable {
         this.addAuthPoint(
                 "cataloging.bibliographic", "export_records", CATALOGING_BIBLIOGRAPHIC_EXPORT);
         this.addAuthPoint(
+                "cataloging.bibliographic", "export_search_excel", CATALOGING_BIBLIOGRAPHIC_EXPORT);
+        this.addAuthPoint(
                 "cataloging.bibliographic", "download_export", CATALOGING_BIBLIOGRAPHIC_LIST);
+        this.addAuthPoint(
+                "cataloging.bibliographic", "download_search_excel", CATALOGING_BIBLIOGRAPHIC_LIST);
         this.addAuthPoint(
                 "cataloging.bibliographic", "add_attachment", CATALOGING_BIBLIOGRAPHIC_SAVE);
         this.addAuthPoint(

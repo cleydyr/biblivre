@@ -41,6 +41,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Controller {
@@ -156,7 +157,9 @@ public abstract class Controller {
         }
 
         try {
-            Method method = _getMethodFromHandler(action);
+            Method method =
+                    AopUtils.getMostSpecificMethod(
+                            _getMethodFromHandler(action), this.handler.getClass());
 
             method.invoke(this.handler, this.xRequest, this.xResponse);
         } catch (InvocationTargetException e) {
