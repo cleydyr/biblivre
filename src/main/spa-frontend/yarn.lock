@@ -424,6 +424,11 @@
   resolved "https://registry.yarnpkg.com/@exodus/bytes/-/bytes-1.15.1.tgz#b13bc464ca162c17abf0837fb3a11aeab79e45d1"
   integrity sha512-S6mL0yNB/Abt9Ei4tq8gDhcczc4S3+vQ4ra7vxnAf+YHC02srtqxKKZghx2Dq6p0e66THKwR6r8N6P95wEty7Q==
 
+"@flagsmith/flagsmith@^12.0.0":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@flagsmith/flagsmith/-/flagsmith-12.0.1.tgz#9ba14188052094bfd9ba814fbc507d27e01376d8"
+  integrity sha512-umrkh+zBUU5slA7nWnx4ktRuv2IomjD0iMzkB28pWJKv312VfENLTAABhrN9DHk/ZgAM2RzqQ5mbSHjQusQ2IA==
+
 "@formatjs/cli-native-darwin-arm64@1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@formatjs/cli-native-darwin-arm64/-/cli-native-darwin-arm64-1.1.1.tgz#abf5d12040511bbb9225ae6835fb6107f3e7f866"
@@ -443,11 +448,6 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@formatjs/cli-native-win32-x64/-/cli-native-win32-x64-1.1.2.tgz#6cc2db043243d5215065d3548e7198233e342c0d"
   integrity sha512-2TKatQRlDbVc+eJE4b9n0/+bsDg+DpS0kmHw7OYI1zGXhus4YqRPtlJnraazRmPlXtRNgvY/UYCPgBvX7DbYhw==
-
-"@flagsmith/flagsmith@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@flagsmith/flagsmith/-/flagsmith-11.0.0.tgz#7e13633f0dfbf38f9bbe031c285b866165957b3b"
-  integrity sha512-jJB+1O/ctU7TCoIBsV2lgYAUOpShjcSqHkH4nlyqUGeQCGC0ZHto8IvGf+nZwpFAF5Czaphn/anm9MDoZIS3rw==
 
 "@formatjs/cli@^6.7.2":
   version "6.16.6"
