@@ -4,6 +4,27 @@ info:
   description: |-
   version: 0.0.1
 paths:
+  /indexing_groups/{recordType}:
+    get:
+      description: Retrieves the indexing groups for a record type
+      parameters:
+        - $ref: '#/components/parameters/RecordType'
+      responses:
+        200:
+          description: The indexing groups for the provided record type
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IndexingGroup'
+        404:
+          $ref: '#/components/responses/404ApiError'
+        500:
+          $ref: '#/components/responses/500ApiError'
+      operationId: getIndexingGroups
+      tags:
+        - Indexing Group
   /report_template:
     get:
       responses:
@@ -155,6 +176,13 @@ paths:
         - Report Fill
 components:
   parameters:
+    RecordType:
+      name: recordType
+      in: path
+      required: true
+      schema:
+        type: string
+        example: biblio
     ReportTemplateId:
       name: reportTemplateId
       in: path
@@ -203,6 +231,26 @@ components:
         type:
           type: string
           example: java.time.LocalDate
+    IndexingGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        translationKey:
+          type: string
+        datafields:
+          type: string
+        sortable:
+          type: boolean
+        defaultSort:
+          type: boolean
+      required:
+        - id
+        - translationKey
+        - datafields
+        - sortable
+        - defaultSort
     ReportTemplateCompileRequest:
       type: object
       required:
