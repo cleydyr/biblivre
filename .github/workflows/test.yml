@@ -1,4 +1,4 @@
-# This is a basic workflow to help you get started with Actions
+# CI workflow for Biblivre
 
 name: CI
 
@@ -34,6 +34,16 @@ jobs:
           distribution: "zulu"
           java-version: "25"
           cache: 'maven'
+      - name: Get Yarn version
+        id: yarn-version
+        run: echo "version=$(grep -oP '(?<=<yarnVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
+      - name: Cache frontend-maven-plugin Node/Yarn downloads
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository/com/github/eirslett
+          key: frontend-maven-plugin-${{ runner.os }}-${{ steps.yarn-version.outputs.version }}
+          restore-keys: |
+            frontend-maven-plugin-${{ runner.os }}-
       - name: Cache Dart Sass downloads
         uses: actions/cache@v5
         with:
