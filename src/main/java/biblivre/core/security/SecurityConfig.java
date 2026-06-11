@@ -26,8 +26,7 @@ public class SecurityConfig {
                                         .permitAll()
                                         .requestMatchers(
                                                 "/api/v2/report_template/**",
-                                                "/api/v2/report_fill/**",
-                                                "/api/v2/indexing_groups/**")
+                                                "/api/v2/report_fill/**")
                                         .authenticated()
                                         .anyRequest()
                                         .permitAll())
