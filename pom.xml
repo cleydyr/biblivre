@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.6</version>
+		<version>4.0.7</version>
 		<relativePath/>
 		<!-- lookup parent from repository -->
 	</parent>
@@ -40,6 +40,8 @@
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
 		<error-prone.version>2.49.0</error-prone.version>
 		<maven.compiler.release>25</maven.compiler.release>
+		<spring-security.version>7.1.0</spring-security.version>
+		<opentelemetry.version>1.63.0</opentelemetry.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -49,6 +51,11 @@
 				<version>${aws.java.sdk.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>4.0.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -252,7 +259,7 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>6.21.4</version>
+			<version>6.21.5</version>
 		</dependency>
 		<!-- Skip CVE-2025-48734 -->
 		<dependency>
@@ -469,6 +476,8 @@
 					<excludeVulnerabilityIds>
 						<excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>
 						<excludeVulnerabilityId>CVE-2025-10492</excludeVulnerabilityId>                        <!-- For Freechart -->
+						<excludeVulnerabilityId>CVE-2026-6009</excludeVulnerabilityId>                         <!-- No fix available for jasperreports as of 6.21.5 -->
+						<excludeVulnerabilityId>CVE-2026-22747</excludeVulnerabilityId>                        <!-- No fix available for spring-security-web as of 7.1.0 -->
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
