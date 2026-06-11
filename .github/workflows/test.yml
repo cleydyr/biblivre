@@ -34,6 +34,9 @@ jobs:
           distribution: "zulu"
           java-version: "25"
           cache: 'maven'
+          server-id: ossindex
+          server-username: ${{ secrets.OSSINDEX_USERNAME }}
+          server-password: ${{ secrets.OSSINDEX_TOKEN }}
       - name: Get Yarn version
         id: yarn-version
         run: echo "version=$(grep -oP '(?<=<yarnVersion>)[^<]+' pom.xml)" >> $GITHUB_OUTPUT
@@ -44,6 +47,13 @@ jobs:
           key: frontend-maven-plugin-${{ runner.os }}-${{ steps.yarn-version.outputs.version }}
           restore-keys: |
             frontend-maven-plugin-${{ runner.os }}-
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v5
+        with:
+          path: src/main/spa-frontend/node_modules
+          key: yarn-${{ runner.os }}-${{ hashFiles('src/main/spa-frontend/yarn.lock') }}
+          restore-keys: |
+            yarn-${{ runner.os }}-
       - name: Cache Dart Sass downloads
         uses: actions/cache@v5
         with:
@@ -52,4 +62,4 @@ jobs:
           restore-keys: |
             dart-sass-${{ runner.os }}-
       - name: Build with Maven
-        run: mvn -B -ntp clean test package -Pgithub-ci
+        run: mvn -B -ntp clean test -Pgithub-ci
