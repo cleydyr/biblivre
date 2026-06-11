@@ -429,61 +429,73 @@
   resolved "https://registry.yarnpkg.com/@flagsmith/flagsmith/-/flagsmith-12.0.1.tgz#9ba14188052094bfd9ba814fbc507d27e01376d8"
   integrity sha512-umrkh+zBUU5slA7nWnx4ktRuv2IomjD0iMzkB28pWJKv312VfENLTAABhrN9DHk/ZgAM2RzqQ5mbSHjQusQ2IA==
 
-"@formatjs/cli-native-darwin-arm64@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-darwin-arm64/-/cli-native-darwin-arm64-1.1.1.tgz#abf5d12040511bbb9225ae6835fb6107f3e7f866"
-  integrity sha512-G2IfmxwDN1kUMIbM9ec5HfJTNR89X11+U3bt4lewfrRqoHOc9bQAkkVHLsY8gNVLjyQIXch58Ewd+AAHkg6cag==
+"@formatjs/cli-native-darwin-arm64@1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-darwin-arm64/-/cli-native-darwin-arm64-1.1.4.tgz#788f8fe592710c1b74d363854c02816685d245bf"
+  integrity sha512-ejXNrd4RDHKWgnNY425RJZglduSVmFFgPLK1+lZa+zLbHz1Z6XyXV7aX1jlicMLGL7HYmaU2i4co//6vu3DrRg==
 
-"@formatjs/cli-native-linux-arm64@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-arm64/-/cli-native-linux-arm64-1.2.1.tgz#b55884c1bbe4c68a6545dd4e87e60e043c394c0e"
-  integrity sha512-dbafLt5p1wQi16QnTFuz6s5j5c8HcyRSw+gUp5xEtaQ9Ua2YKRu+YqlgsERg+ArTWN+ZTHIGu+0YymTvfTropA==
+"@formatjs/cli-native-linux-arm64-musl@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-arm64-musl/-/cli-native-linux-arm64-musl-1.0.2.tgz#aacd83ab5f7bf03ac318821aece97e0e00c9e1b7"
+  integrity sha512-oDJ6xJANOd/HB+g86vvvWc6oSic/SvEDwu/QUjGhqursTFPQZr2iewzhwm/wFbTp7x9P1X4fy5k87leSSrm45g==
 
-"@formatjs/cli-native-linux-x64@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-x64/-/cli-native-linux-x64-1.1.1.tgz#e3439d454b6006537abc22130989f285d036426b"
-  integrity sha512-zi6eOPAc03fszPyiGCkmzBxjIxynDFflie9zgbyZIQgKV7MhXEmUmpGYeaTTDX903OFCJJ3ZvpajSTdZ7C7yeQ==
+"@formatjs/cli-native-linux-arm64@1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-arm64/-/cli-native-linux-arm64-1.2.4.tgz#4ae41509a567f10da09f21763a7a9e26a5441a94"
+  integrity sha512-YDLXzRnI85a96imavjcBUBwt5GMt/DKdwLyOgFeW2htQZYwWr1Vxjsi0Fvc/A4c89DxwkQ64cmhC0Wpl+o/kKQ==
 
-"@formatjs/cli-native-win32-x64@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-win32-x64/-/cli-native-win32-x64-1.1.2.tgz#6cc2db043243d5215065d3548e7198233e342c0d"
-  integrity sha512-2TKatQRlDbVc+eJE4b9n0/+bsDg+DpS0kmHw7OYI1zGXhus4YqRPtlJnraazRmPlXtRNgvY/UYCPgBvX7DbYhw==
+"@formatjs/cli-native-linux-x64-musl@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-x64-musl/-/cli-native-linux-x64-musl-1.0.2.tgz#2d2d024d89cc61ab3e168e1ebdc0d8f6ee2b5809"
+  integrity sha512-fmBUVOeGb2Aaf1qVnEybjNx3vk7PQwAshSMLV7xJgSAyht0P1tgoSmq4o2mjYgZ87n/QaqZfiHJlqLwkjsaPtA==
+
+"@formatjs/cli-native-linux-x64@1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-linux-x64/-/cli-native-linux-x64-1.1.4.tgz#de8dfac0955ba645c03adb262c4c9f8d8b92caa6"
+  integrity sha512-BnLTyb2q3j37hUiWYrFuarGvA9XTL0Ye2++pV4LRo1sQJN8TJb3dWfc6O4RTjt/9imKl+egjw4hkrxB6s3XUYw==
+
+"@formatjs/cli-native-win32-x64@1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli-native-win32-x64/-/cli-native-win32-x64-1.1.5.tgz#4b8e613a0b17d86c06b208111a076b59485f0c80"
+  integrity sha512-TrF7H25n58o6/L8GP2hA6eCUxKUq2y3+fQE/DFGKkmqWhwLNl/qd+HVEX1Yoz6MiO0dUznNgDsrPvbvZGfERGA==
 
 "@formatjs/cli@^6.7.2":
-  version "6.16.6"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.16.6.tgz#dcc47f28756eec01f59e3911f58407293ff9c65f"
-  integrity sha512-82l9wmeqvClrtI/8VQOcFVZQwZWYEiMI505hywngF+xr7ti94OQXg0gi3piYaQarfiIac2GSMibLQ2aQM5mJaA==
+  version "6.16.10"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-6.16.10.tgz#b5cfeb02159e576c491450a21261f87fed3fb43e"
+  integrity sha512-rzAeTuC1wnwltAyG0KGQNcyCGK/YldjkOvOTjgdLjMmVpPz4l7WGBNPkOb3l8jYBjJ8XxCtQGPAW4kmsmUzQoA==
   optionalDependencies:
-    "@formatjs/cli-native-darwin-arm64" "1.1.1"
-    "@formatjs/cli-native-linux-arm64" "1.2.1"
-    "@formatjs/cli-native-linux-x64" "1.1.1"
-    "@formatjs/cli-native-win32-x64" "1.1.2"
+    "@formatjs/cli-native-darwin-arm64" "1.1.4"
+    "@formatjs/cli-native-linux-arm64" "1.2.4"
+    "@formatjs/cli-native-linux-arm64-musl" "1.0.2"
+    "@formatjs/cli-native-linux-x64" "1.1.4"
+    "@formatjs/cli-native-linux-x64-musl" "1.0.2"
+    "@formatjs/cli-native-win32-x64" "1.1.5"
 
-"@formatjs/fast-memoize@3.1.5":
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/@formatjs/fast-memoize/-/fast-memoize-3.1.5.tgz#bdfe0b884cdecc25100534086f36a0b30bd15b3b"
-  integrity sha512-KLi3fan6WnCHmigd9pmEEN8Hid0v4wiFBW576M/d07KMWYecf1CvyMI3n34vCmHT4AoVqG2n702kiHbXjzZX2A==
+"@formatjs/fast-memoize@3.1.6":
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/@formatjs/fast-memoize/-/fast-memoize-3.1.6.tgz#fca16a7d60f89df48f506f130f58223d7d81c2a2"
+  integrity sha512-H5aexk1Le7T9TPmscacZ+1pR6CTa2n1wq+HDVGXhH8TzUlQQpeXzZs91dRtmFHrbeNbjPFPfQujUqm7MHgVoXQ==
 
-"@formatjs/icu-messageformat-parser@3.5.10":
-  version "3.5.10"
-  resolved "https://registry.yarnpkg.com/@formatjs/icu-messageformat-parser/-/icu-messageformat-parser-3.5.10.tgz#0ced2d6e8009eed57c6f0e7b4cc51dfea63b9bff"
-  integrity sha512-XeJihYLy1lCe19xfK1KWKG/betBOK2rB0luL8lSkjfvJj0zP+LTJvkC+RKd0jsFI8mWxN71LrarHSrEXE8xxOQ==
+"@formatjs/icu-messageformat-parser@3.5.11":
+  version "3.5.11"
+  resolved "https://registry.yarnpkg.com/@formatjs/icu-messageformat-parser/-/icu-messageformat-parser-3.5.11.tgz#2b68955ebb7ca1daa9145335c0d800a87b44c332"
+  integrity sha512-NVsuNsc2dUVG9+4HBJ/srScxtA/18LqGgwtop/tuN/OIBjVl6QA+0KhfZQddDD9sEh2LeVjLFPGVU3ixa3blcA==
   dependencies:
-    "@formatjs/icu-skeleton-parser" "2.1.9"
+    "@formatjs/icu-skeleton-parser" "2.1.10"
 
-"@formatjs/icu-skeleton-parser@2.1.9":
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/@formatjs/icu-skeleton-parser/-/icu-skeleton-parser-2.1.9.tgz#746edae664b2ef148df1301845d1bb40000bbebb"
-  integrity sha512-rsxswgHMfU1zUgB2byc08fesf83wLGjFnzLCEtuf00mx2doiqc6pYrf67raI37XqdRcGUviQepk2UKGqpng74Q==
+"@formatjs/icu-skeleton-parser@2.1.10":
+  version "2.1.10"
+  resolved "https://registry.yarnpkg.com/@formatjs/icu-skeleton-parser/-/icu-skeleton-parser-2.1.10.tgz#a72859339c68ce29d595d27c481115a50b8b6527"
+  integrity sha512-XuSva+8ZGawk8VnD5VD6UeH8KarQ/Z022zgjHDoHmlNiAewstXuuzXc0Hk5pGFSdG+nNw5bfJKXqj1ZXHn9yUA==
 
-"@formatjs/intl@4.1.12":
-  version "4.1.12"
-  resolved "https://registry.yarnpkg.com/@formatjs/intl/-/intl-4.1.12.tgz#a29521f9bba79df1690c430f3d2cee8817778674"
-  integrity sha512-r288ut+p+CUQZSg+0gAT+D0i6xgrnoxE0B4HTbPY2zei/AtYmFhlu87BKjgCf1CweH4pZIbr152JFjxO8jVb1A==
+"@formatjs/intl@4.1.13":
+  version "4.1.13"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl/-/intl-4.1.13.tgz#21e4f87ae739ac20b1854dee3b30d776725f3298"
+  integrity sha512-dufOl09iREq8V+laVdlGuyoqNmuzqDvyeA3O3k+0XQfvKJgK8bBWFKqYYWejFMKeOij/4LuPKJA+LsshpXQ4sw==
   dependencies:
-    "@formatjs/fast-memoize" "3.1.5"
-    "@formatjs/icu-messageformat-parser" "3.5.10"
-    intl-messageformat "11.2.7"
+    "@formatjs/fast-memoize" "3.1.6"
+    "@formatjs/icu-messageformat-parser" "3.5.11"
+    intl-messageformat "11.2.8"
 
 "@hello-pangea/dnd@^16.6.0":
   version "16.6.0"
@@ -2480,13 +2492,13 @@ intl-messageformat-parser@1.3.0:
   resolved "https://registry.yarnpkg.com/intl-messageformat-parser/-/intl-messageformat-parser-1.3.0.tgz#c5d26ffb894c7d9c2b9fa444c67f417ab2594268"
   integrity sha512-MG/5y6vq/bDSx7nHiVlnm1LkrzX/TojibozgfLUHk0zybWVkSpAQ4XBCPtoJ/XAjPaNv0YbKtHYyxGiLW5k4sw==
 
-intl-messageformat@11.2.7:
-  version "11.2.7"
-  resolved "https://registry.yarnpkg.com/intl-messageformat/-/intl-messageformat-11.2.7.tgz#1d922a7df8964ec496c56f62928ef2134674bdae"
-  integrity sha512-+q6Ktg119nULZEpZ8YTuGOst9MyEzFtjD63FTGBlN1mLz0Z/MOUYDIvnpVKwq17eezIEh+cfJIebfJoCetpiNw==
+intl-messageformat@11.2.8:
+  version "11.2.8"
+  resolved "https://registry.yarnpkg.com/intl-messageformat/-/intl-messageformat-11.2.8.tgz#c5c5be3c3fa3d61e7956644d67b9e812ee50b4e3"
+  integrity sha512-l323RCl3qJDVQ8U9j74ut/hVMdg3VPsOHpVMDvFfz9qiq4dPO5ooVYFNVUzzrpgG39a+RLzcXyJb8VFgIU+tUA==
   dependencies:
-    "@formatjs/fast-memoize" "3.1.5"
-    "@formatjs/icu-messageformat-parser" "3.5.10"
+    "@formatjs/fast-memoize" "3.1.6"
+    "@formatjs/icu-messageformat-parser" "3.5.11"
 
 is-alphabetical@^1.0.0:
   version "1.0.4"
@@ -3409,13 +3421,13 @@ react-focus-on@^3.9.1:
     use-sidecar "^1.1.3"
 
 react-intl@^10.0.0:
-  version "10.1.11"
-  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-10.1.11.tgz#1b08edb40082eeb4f8b783cecda33c84ab0da80f"
-  integrity sha512-9VCaWKumbrP91QvS50IYRlbZsD4KdSLwcfEeF9CQLmnqK9qCvFCfyof694I9lqHJL2/TUxBwLCA+whjF129oAg==
+  version "10.1.13"
+  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-10.1.13.tgz#8c54f88a8d120abb1f212ec4524f11c3e7e8acba"
+  integrity sha512-3aKnIOIPN6CWsu3jqPpYMlJZ2U0Qnxhd42xGWQNdGIknK/gBudWOHSIx9vN4XKkITokJLr7YTgs4yLUGtbvP9g==
   dependencies:
-    "@formatjs/icu-messageformat-parser" "3.5.10"
-    "@formatjs/intl" "4.1.12"
-    intl-messageformat "11.2.7"
+    "@formatjs/icu-messageformat-parser" "3.5.11"
+    "@formatjs/intl" "4.1.13"
+    intl-messageformat "11.2.8"
 
 react-is@18.1.0:
   version "18.1.0"
