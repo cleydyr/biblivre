@@ -475,13 +475,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
@@ -786,6 +779,9 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<skipTests>false</skipTests>
+							<parallel>classes</parallel>
+							<threadCount>2</threadCount>
+							<perCoreThreadCount>false</perCoreThreadCount>
 							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
 						</configuration>
 					</plugin>
