@@ -23,10 +23,13 @@ import biblivre.administration.setup.State;
 import biblivre.core.AbstractHandler;
 import biblivre.core.ExtendedRequest;
 import biblivre.core.ExtendedResponse;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.configurations.ConfigurationBO;
 import biblivre.core.enums.ActionResult;
 import biblivre.core.schemas.SchemaBO;
 import biblivre.core.schemas.SchemaDTO;
 import biblivre.core.utils.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +39,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Handler extends AbstractHandler {
     private SchemaBO schemaBO;
+    private ConfigurationBO configurationBO;
 
     public void create(ExtendedRequest request, ExtendedResponse response) {
 
@@ -134,6 +138,13 @@ public class Handler extends AbstractHandler {
                 JSONObject o = new JSONObject();
                 o.put("schema", dto.getSchema());
                 o.put("name", dto.getName());
+                String subtitle =
+                        SchemaThreadLocal.withSchema(
+                                dto.getSchema(),
+                                () -> configurationBO.getString(Constants.CONFIG_SUBTITLE));
+                if (StringUtils.isNotBlank(subtitle)) {
+                    o.put("subtitle", subtitle);
+                }
                 array.put(o);
             }
             put("data", array);
@@ -146,5 +157,10 @@ public class Handler extends AbstractHandler {
     @Autowired
     public void setSchemaBO(SchemaBO schemaBO) {
         this.schemaBO = schemaBO;
+    }
+
+    @Autowired
+    public void setConfigurationBO(ConfigurationBO configurationBO) {
+        this.configurationBO = configurationBO;
     }
 }

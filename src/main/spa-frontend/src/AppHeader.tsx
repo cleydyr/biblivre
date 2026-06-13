@@ -20,6 +20,7 @@ import {
 } from './api-helpers/login/hooks'
 import { useSchemasList } from './api-helpers/schema/hooks'
 import { useSchemaQueryParams } from './api-helpers/schema/useSchemaQueryParams'
+import LibraryHeading from './components/LibraryHeading'
 import messages from './messages'
 import SchemaSelectionModal from './SchemaSelectionModal'
 
@@ -61,10 +62,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
   
   const loggedIn = isLoggedInSession(session)
 
-  const currentLibraryLabel =
-    schemas?.find((s) => s.schema === activeSchemaId)?.name ??
-    activeSchemaId ??
-    null
+  const activeSchema = schemas?.find((s) => s.schema === activeSchemaId)
 
   const handleAuthClick = () => {
     if (loggedIn) {
@@ -99,10 +97,13 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
                   gutterSize='xs'
                   responsive={false}
                 >
-                  {currentLibraryLabel ? (
-                    <EuiText css={{ fontWeight: 500 }} size='s'>
-                      {currentLibraryLabel}
-                    </EuiText>
+                  {activeSchema || activeSchemaId ? (
+                    <LibraryHeading
+                      name={activeSchema?.name ?? activeSchemaId}
+                      subtitle={activeSchema?.subtitle}
+                      subtitleMaxWidth='200px'
+                      titleSize='s'
+                    />
                   ) : null}
                   {schemas.length > 1 ? (
                     <EuiButtonEmpty

@@ -77,6 +77,7 @@ export type SuccessfulResponse = {
 export type SchemaListItem = {
   schema: string
   name: string
+  subtitle?: string
 }
 
 export type SchemasListResponse = SuccessfulResponse & {
