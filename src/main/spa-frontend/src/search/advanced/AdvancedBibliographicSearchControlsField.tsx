@@ -123,6 +123,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
                     field: e.target.value,
                   })
                 }
+                isLoading={isFieldOptionsLoading}
               />
             </EuiFormRow>
           </EuiFlexItem>
