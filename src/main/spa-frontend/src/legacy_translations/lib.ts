@@ -12,6 +12,19 @@ export function getLegacyTranslation(key: keyof typeof translations) {
   return translations[key]
 }
 
+export function getLegacyBibliographicIndexingGroupTranslation(
+  translationKey: string,
+) {
+  const key =
+    `cataloging.bibliographic.indexing_groups.${translationKey}` as keyof typeof translations
+
+  if (key in translations) {
+    return translations[key]
+  }
+
+  return translationKey
+}
+
 export function getLegacyMarcDatafieldTranslation(field: MarcField) {
   const customKey = `cataloging.tab.record.custom.field_label.biblio_${field}`
 

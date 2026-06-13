@@ -3,9 +3,17 @@ import userEvent from '@testing-library/user-event'
 import { IntlProvider } from 'react-intl'
 import { describe, expect, it, vi } from 'vitest'
 
+import { biblioIndexingGroupsFixture } from '../../api-helpers/indexing-groups/fixtures'
 import { FIELDS } from '../../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
+
+vi.mock('../../api-helpers/indexing-groups/hooks', () => ({
+  useBibliographicIndexingGroups: () => ({
+    data: biblioIndexingGroupsFixture,
+    isLoading: false,
+  }),
+}))
 
 import type { ComponentProps } from 'react'
 
@@ -15,14 +23,7 @@ const mockMessages = {
   'search.bibliographic.operator': 'Operador',
   'search.bibliographic.field': 'Campo',
   'search.bibliographic.term': 'Termo',
-  'search.bibliographic.any': 'Qualquer campo',
-  'search.bibliographic.author': 'Autor',
-  'search.bibliographic.publication_year': 'Ano de publicação',
-  'search.bibliographic.title': 'Título',
-  'search.bibliographic.shelf_location': 'Assunto',
-  'search.bibliographic.isbn': 'ISBN',
-  'search.bibliographic.publisher': 'Editora',
-  'search.bibliographic.series': 'Série',
+  'search.bibliographic.remove_field': 'Remover termo',
   'search_query_operator.and': 'e',
   'search_query_operator.or': 'ou',
   'search_query_operator.and_not': 'e não',
@@ -184,9 +185,7 @@ describe('AdvancedBibliographicSearchControlsField', () => {
         screen.getByRole('option', { name: 'Qualquer campo' }),
       ).toBeInTheDocument()
       expect(screen.getByRole('option', { name: 'Autor' })).toBeInTheDocument()
-      expect(
-        screen.getByRole('option', { name: 'Ano de publicação' }),
-      ).toBeInTheDocument()
+      expect(screen.getByRole('option', { name: 'Ano' })).toBeInTheDocument()
       expect(screen.getByRole('option', { name: 'Título' })).toBeInTheDocument()
       expect(
         screen.getByRole('option', { name: 'Assunto' }),

@@ -7,10 +7,13 @@ import {
   EuiSpacer,
   EuiToolTip,
 } from '@elastic/eui'
+import { useMemo } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
+import { useBibliographicIndexingGroups } from '../../api-helpers/indexing-groups/hooks'
 import { FIELDS } from '../../api-helpers/search/constants'
 import TypedEuiSelect from '../../components/TypedEuiSelect'
+import { getLegacyBibliographicIndexingGroupTranslation } from '../../legacy_translations/lib'
 
 import type { FC } from 'react'
 
@@ -38,7 +41,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
 
   const afterFirst = order > 0
 
-  const fieldOptions = useFieldOptions()
+  const { fieldOptions, isLoading: isFieldOptionsLoading } = useFieldOptions()
 
   return (
     <EuiFlexGroup>
@@ -111,6 +114,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
               }
             >
               <TypedEuiSelect<EncodedTextQueryField>
+                disabled={isFieldOptionsLoading}
                 options={fieldOptions}
                 value={term?.field ?? FIELDS.TITLE}
                 onChange={(e) =>
@@ -119,6 +123,7 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
                     field: e.target.value,
                   })
                 }
+                isLoading={isFieldOptionsLoading}
               />
             </EuiFormRow>
           </EuiFlexItem>
@@ -153,82 +158,25 @@ const AdvancedBibliographicSearchControlsField: FC<Props> = ({
   )
 }
 
-function useFieldOptions(): TypedEuiSelectOption<EncodedTextQueryField>[] {
-  return [
-    {
-      value: FIELDS.ANY,
-      text: (
-        <FormattedMessage
-          defaultMessage='Qualquer campo'
-          id='search.bibliographic.any'
-        />
-      ),
-    },
+function useFieldOptions(): {
+  fieldOptions: TypedEuiSelectOption<EncodedTextQueryField>[]
+  isLoading: boolean
+} {
+  const { data: indexingGroups = [], isLoading } =
+    useBibliographicIndexingGroups()
 
-    {
-      value: FIELDS.AUTHOR,
-      text: (
-        <FormattedMessage
-          defaultMessage='Autor'
-          id='search.bibliographic.author'
-        />
-      ),
-    },
-    {
-      value: FIELDS.YEAR,
-      text: (
-        <FormattedMessage
-          defaultMessage='Ano de publicação'
-          id='search.bibliographic.publication_year'
-        />
-      ),
-    },
-    {
-      value: FIELDS.TITLE,
-      text: (
-        <FormattedMessage
-          defaultMessage='Título'
-          id='search.bibliographic.title'
-        />
-      ),
-    },
-    {
-      value: FIELDS.SUBJECT,
-      text: (
-        <FormattedMessage
-          defaultMessage='Assunto'
-          id='search.bibliographic.subject'
-        />
-      ),
-    },
-    {
-      value: FIELDS.ISBN,
-      text: (
-        <FormattedMessage
-          defaultMessage='ISBN'
-          id='search.bibliographic.isbn'
-        />
-      ),
-    },
-    {
-      value: FIELDS.PUBLISHER,
-      text: (
-        <FormattedMessage
-          defaultMessage='Editora'
-          id='search.bibliographic.publisher'
-        />
-      ),
-    },
-    {
-      value: FIELDS.SERIES,
-      text: (
-        <FormattedMessage
-          defaultMessage='Série'
-          id='search.bibliographic.series'
-        />
-      ),
-    },
-  ]
+  const fieldOptions = useMemo(
+    () =>
+      indexingGroups.map((group) => ({
+        value: String(group.id) as EncodedTextQueryField,
+        text: getLegacyBibliographicIndexingGroupTranslation(
+          group.translationKey,
+        ),
+      })),
+    [indexingGroups],
+  )
+
+  return { fieldOptions, isLoading }
 }
 
 const operatorOptions: TypedEuiSelectOption<QueryOperator>[] = [

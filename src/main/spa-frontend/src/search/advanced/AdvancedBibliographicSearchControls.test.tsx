@@ -3,9 +3,17 @@ import userEvent from '@testing-library/user-event'
 import { IntlProvider } from 'react-intl'
 import { describe, expect, it, vi } from 'vitest'
 
+import { biblioIndexingGroupsFixture } from '../../api-helpers/indexing-groups/fixtures'
 import { FIELDS } from '../../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
+
+vi.mock('../../api-helpers/indexing-groups/hooks', () => ({
+  useBibliographicIndexingGroups: () => ({
+    data: biblioIndexingGroupsFixture,
+    isLoading: false,
+  }),
+}))
 
 import type { ComponentProps } from 'react'
 

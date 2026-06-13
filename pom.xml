@@ -477,7 +477,8 @@
 						<excludeVulnerabilityId>CVE-2023-52070</excludeVulnerabilityId>
 						<excludeVulnerabilityId>CVE-2025-10492</excludeVulnerabilityId>                        <!-- For Freechart -->
 						<excludeVulnerabilityId>CVE-2026-6009</excludeVulnerabilityId>                         <!-- No fix available for jasperreports as of 6.21.5 -->
-						<excludeVulnerabilityId>CVE-2026-22747</excludeVulnerabilityId>                        <!-- No fix available for spring-security-web as of 7.1.0 -->
+						<excludeVulnerabilityId>CVE-2026-22747</excludeVulnerabilityId>                        <!-- Sonatype false positive: deprecated SubjectDnX509PrincipalExtractor still in jar -->
+						<excludeVulnerabilityId>CVE-2026-47838</excludeVulnerabilityId>                        <!-- Sonatype false positive for 7.x; fixed in SubjectX500PrincipalExtractor since 7.0.5 -->
 					</excludeVulnerabilityIds>
 				</configuration>
 			</plugin>
