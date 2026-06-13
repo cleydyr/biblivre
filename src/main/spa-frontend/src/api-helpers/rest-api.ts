@@ -4,12 +4,18 @@ import { buildDefaultHeaders } from '.'
 
 export const defaultRestApiFetchOptions: InitOverrideFunction = async ({
   init,
-}) => ({
-  ...init,
-  headers: {
-    ...(init.headers as Record<string, string>),
-    Accept: 'application/json',
-    ...buildDefaultHeaders(),
-  },
-  credentials: 'include',
-})
+}) => {
+  const existingHeaders = new Headers(init?.headers)
+   const headers: Record<string, string> = Object.fromEntries(
+     existingHeaders.entries(),
+   )
+   return {
+     ...init,
+     headers: {
+       ...headers,
+       Accept: 'application/json',
+       ...buildDefaultHeaders(),
+     },
+     credentials: 'include',
+   }
+}
