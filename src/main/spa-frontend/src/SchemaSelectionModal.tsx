@@ -12,6 +12,8 @@ import {
 import { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
+import LibraryHeading from './components/LibraryHeading'
+
 import type { FC } from 'react'
 
 import type { SchemaListItem } from './api-helpers/types'
@@ -62,7 +64,14 @@ const SchemaSelectionModal: FC<Props> = ({
           name='biblivre-schema'
           options={schemas.map((s) => ({
             id: s.schema,
-            label: `${s.name} (${s.schema})`,
+            label: (
+              <LibraryHeading
+                name={`${s.name} (${s.schema})`}
+                subtitle={s.subtitle}
+                subtitleMaxWidth='100%'
+                titleSize='s'
+              />
+            ),
             value: s.schema,
           }))}
           onChange={(id) => setSelectedId(id)}
