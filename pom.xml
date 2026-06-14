@@ -42,6 +42,7 @@
 		<maven.compiler.release>25</maven.compiler.release>
 		<spring-security.version>7.1.0</spring-security.version>
 		<opentelemetry.version>1.63.0</opentelemetry.version>
+		<openpdf.version>2.4.0</openpdf.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -243,8 +244,13 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf-core-modern</artifactId>
+			<version>${openpdf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>
-			<version>3.0.5</version>
+			<version>${openpdf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.datafaker</groupId>
