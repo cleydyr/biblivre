@@ -104,6 +104,10 @@ paths:
       responses:
         201:
           description: The file has been uploaded and compiled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportTemplate'
         500:
           $ref: '#/components/responses/500ApiError'
       operationId: compileReportTemplate
@@ -231,6 +235,9 @@ components:
         type:
           type: string
           example: java.time.LocalDate
+        description:
+          type: string
+          example: Data final do relatório
     IndexingGroup:
       type: object
       properties:

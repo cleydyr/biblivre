@@ -28,6 +28,8 @@ describe('defaultRestApiFetchOptions', () => {
       Accept: 'application/json',
       'X-Biblivre-Schema': 'bib4template',
     })
+    expect(result.headers).not.toHaveProperty('content-type')
+    expect(result.headers).not.toHaveProperty('Content-Type')
   })
 
   it('preserves existing headers', async () => {
@@ -46,7 +48,7 @@ describe('defaultRestApiFetchOptions', () => {
     })
 
     expect(result.headers).toMatchObject({
-      'X-Custom': 'value',
+      'x-custom': 'value',
       Accept: 'application/json',
     })
   })

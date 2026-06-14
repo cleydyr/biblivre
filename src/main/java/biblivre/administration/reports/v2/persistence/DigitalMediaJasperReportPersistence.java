@@ -81,7 +81,7 @@ public class DigitalMediaJasperReportPersistence implements JasperReportPersiste
                                     compiledReportInputStream.available(),
                                     compiledReportInputStream));
         } catch (Exception e) {
-            throw new ReportException("can't compile report", e);
+            throw new ReportException("can't compile report: " + e.getMessage(), e);
         }
     }
 

@@ -7,13 +7,15 @@ import biblivre.administration.reports.v2.model.ReportParameter;
 import biblivre.administration.reports.v2.persistence.JasperReportPersistence;
 import biblivre.administration.reports.v2.persistence.ReportRepository;
 import biblivre.core.SchemaThreadLocal;
+import biblivre.core.schemas.SchemaBO;
+import biblivre.core.utils.Constants;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import net.sf.jasperreports.engine.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +29,13 @@ public class ReportService {
 
     private ReportRepository reportRepository;
 
-    public void compileReportTemplate(
+    private SchemaBO schemaBO;
+
+    public Report compileReportTemplate(
             String name, String description, InputStream reportJRXMLDefinition, long fileSize)
             throws ReportException {
+        validateLibrarySchema();
+
         long digitalMediaId = jasperReportPersistence.compile(reportJRXMLDefinition, fileSize);
 
         JasperReportImpl compiledReport = jasperReportPersistence.getById(digitalMediaId);
@@ -54,24 +60,18 @@ public class ReportService {
 
         reportParameters.forEach(reportParameter -> reportParameter.setReport(report));
 
-        reportRepository.save(report);
+        return reportRepository.save(report);
     }
 
     public List<Report> getReportTemplates() {
-        List<Report> list = new ArrayList<>();
-
-        for (Report report : reportRepository.findAll()) {
-            list.add(report);
-        }
-
-        return list;
+        return reportRepository.findAllWithParameters();
     }
 
     public Report updateReport(Long reportTemplateId, String name, String description)
             throws ReportException {
         Report existingReport =
                 reportRepository
-                        .findById(reportTemplateId)
+                        .findByIdWithParameters(reportTemplateId)
                         .orElseThrow(() -> new ReportException("Report not found"));
 
         Report newReport =
@@ -91,6 +91,17 @@ public class ReportService {
         reportRepository.deleteById(reportTemplateId);
     }
 
+    private void validateLibrarySchema() throws ReportException {
+        String schema = SchemaThreadLocal.get();
+
+        if (StringUtils.isBlank(schema)
+                || Constants.GLOBAL_SCHEMA.equals(schema)
+                || !schemaBO.isLoaded(schema)) {
+            throw new ReportException(
+                    "Selecione uma biblioteca válida antes de enviar o modelo de relatório.");
+        }
+    }
+
     private static ReportParameter toReportParameter(JRParameter jrParameter) {
         return new ReportParameter(
                 0,
@@ -108,5 +119,10 @@ public class ReportService {
     @Autowired
     public void setReportRepository(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
+    }
+
+    @Autowired
+    public void setSchemaBO(SchemaBO schemaBO) {
+        this.schemaBO = schemaBO;
     }
 }

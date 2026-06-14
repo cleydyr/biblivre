@@ -23,6 +23,8 @@ import {
   useUpdateReportMutation,
 } from './queries'
 import ReportFillForm from './ReportFillForm'
+import { getRestApiErrorMessage } from './reportApiErrors'
+import { getShortTypeName } from './reportParameterFields'
 import ReportTemplateTable from './ReportTemplateTable'
 import UploadReportForm from './UploadReportForm'
 
@@ -59,6 +61,18 @@ const TOASTS: Toast[] = [
   },
 ] as const
 
+const formatUploadParameterSummary = (report: ReportTemplate): string => {
+  const parameters = report.parameters ?? []
+
+  if (parameters.length === 0) {
+    return 'Nenhum parâmetro detectado.'
+  }
+
+  return `Parâmetros detectados: ${parameters
+    .map((parameter) => `${parameter.name} (${getShortTypeName(parameter.type)})`)
+    .join(', ')}.`
+}
+
 const toastsById = TOASTS.reduce(
   (acc, toast) => {
     acc[toast.id] = toast
@@ -87,13 +101,20 @@ export default function ReportApp() {
   }, [])
 
   const handleDeleteReportFailure = useCallback((error: Error) => {
-    setErrors((errors) => [...errors, error.message])
-    setDeletingReport(undefined)
+    void getRestApiErrorMessage(error).then((message) => {
+      setErrors((errors) => [...errors, message])
+      setDeletingReport(undefined)
+    })
   }, [])
 
-  const handleAddReportSuccess = useCallback(() => {
+  const handleAddReportSuccess = useCallback((report: ReportTemplate) => {
     setScreen('list')
-    setToasts([toastsById['report-uploaded']])
+    setToasts([
+      {
+        ...toastsById['report-uploaded'],
+        text: formatUploadParameterSummary(report),
+      },
+    ])
   }, [])
 
   const getReportsQuery = useListReportsQuery()
@@ -112,17 +133,23 @@ export default function ReportApp() {
   const { mutate: addReport } = useAddReportMutation({
     onSuccess: handleAddReportSuccess,
     onError: (error: Error) => {
-      setErrors((errors) => [...errors, error.message])
+      void getRestApiErrorMessage(error).then((message) => {
+        setErrors((errors) => [...errors, message])
+      })
     },
   })
 
   const { mutate: fillReport, isPending: isFillReportPending } =
     useFillReportMutation({
       onSuccess: (reportFill: ReportFill) => {
+        setFillError(undefined)
         setReportFill(reportFill)
+        setToasts([toastsById['report-filled']])
       },
       onError: (error: Error) => {
-        setErrors((errors) => [...errors, error.message])
+        void getRestApiErrorMessage(error).then((message) => {
+          setFillError(message)
+        })
       },
     })
 
@@ -143,6 +170,8 @@ export default function ReportApp() {
   const [reportFill, setReportFill] = useState<ReportFill | undefined>(
     undefined,
   )
+
+  const [fillError, setFillError] = useState<string | undefined>(undefined)
 
   const screenFlyoutId = useGeneratedHtmlId({
     prefix: screen,
@@ -170,6 +199,7 @@ export default function ReportApp() {
           onClose={() => {
             setReportTemplateToFill(undefined)
             setReportFill(undefined)
+            setFillError(undefined)
           }}
         >
           <EuiFlyoutHeader hasBorder>
@@ -179,6 +209,8 @@ export default function ReportApp() {
           </EuiFlyoutHeader>
           <EuiFlyoutBody banner={downloadReportFillBanner}>
             <ReportFillForm
+              key={reportTemplateToFill.id}
+              errorMessage={fillError}
               pending={isFillReportPending}
               report={reportTemplateToFill}
               onSubmit={fillReport}
@@ -268,6 +300,8 @@ export default function ReportApp() {
             }}
             onFill={(report) => {
               setReportTemplateToFill(report)
+              setReportFill(undefined)
+              setFillError(undefined)
               setScreen('fill')
             }}
           />

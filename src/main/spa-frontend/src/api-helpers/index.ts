@@ -12,6 +12,15 @@ export function buildDefaultHeaders(): Record<string, string> {
   return headers
 }
 
+export function buildRestApiHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {}
+  const schema = getStoredSchema()
+  if (schema) {
+    headers['X-Biblivre-Schema'] = schema
+  }
+  return headers
+}
+
 export async function fetchJSONFromLegacyEndpoint({
   module,
   action,
