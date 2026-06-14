@@ -11,6 +11,7 @@ import {
 } from './reportParameterFields'
 
 import type { ReportFillRequest, ReportTemplate } from '../../generated-sources'
+import { FormattedMessage } from 'react-intl'
 
 type ReportFillFormProps = {
   report: ReportTemplate
@@ -71,7 +72,7 @@ const ReportFillForm = ({
   return (
     <EuiFlexGroup direction='column'>
       {errorMessage && (
-        <EuiCallOut color='danger' iconType='error' title='Erro ao gerar relatório'>
+        <EuiCallOut color='danger' iconType='error' title={<FormattedMessage defaultMessage='Erro ao gerar relatório' id='app.reports.fill.submit.error' />}>
           <p>{errorMessage}</p>
         </EuiCallOut>
       )}
@@ -79,7 +80,7 @@ const ReportFillForm = ({
         <EuiCallOut
           iconType='iInCircle'
           size='s'
-          title='Este modelo não possui parâmetros'
+          title={<FormattedMessage defaultMessage='Este modelo não possui parâmetros' id='app.reports.fill.submit.no.parameters.info' />}
         />
       )}
       <EuiForm component='form' onSubmit={handleFormSubmit}>
@@ -99,7 +100,7 @@ const ReportFillForm = ({
             <EuiCallOut
               color='danger'
               iconType='alert'
-              title='Este relatório possui parâmetros com tipos não suportados e não pode ser gerado pela interface.'
+              title={<FormattedMessage defaultMessage='Este relatório possui parâmetros com tipos não suportados e não pode ser gerado pela interface.' id='app.reports.fill.submit.unsupported.info' />}
             />
           </>
         )}
@@ -107,9 +108,9 @@ const ReportFillForm = ({
           <>
             <EuiSpacer size='m' />
             <EuiCallOut
-              iconType='iInCircle'
+              iconType='info'
               size='s'
-              title='Preencha todos os parâmetros para gerar o relatório'
+              title={<FormattedMessage defaultMessage='Preencha todos os parâmetros para gerar o relatório' id='app.reports.fill.submit.info' />}
             />
           </>
         )}
@@ -120,7 +121,7 @@ const ReportFillForm = ({
           isLoading={pending}
           type='submit'
         >
-          Gerar relatório
+          <FormattedMessage defaultMessage='Gerar relatório' id='app.reports.fill.submit' />
         </EuiButton>
       </EuiForm>
     </EuiFlexGroup>
