@@ -92,7 +92,9 @@ public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
 
         if (report.getParameters() != null) {
             restReportTemplate.setParameters(
-                    report.getParameters().stream().map(this::toRestReportTemplateParameter).toList());
+                    report.getParameters().stream()
+                            .map(this::toRestReportTemplateParameter)
+                            .toList());
         } else {
             restReportTemplate.setParameters(Collections.emptyList());
         }

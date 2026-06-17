@@ -20,14 +20,7 @@ class ReportFillApiDelegateImplTest {
     @Test
     void createReportFill_includesSchemaInDownloadUri() throws Exception {
         Report report =
-                new Report(
-                        42,
-                        "Test report",
-                        "Description",
-                        List.of(),
-                        List.of(),
-                        "single",
-                        99);
+                new Report(42, "Test report", "Description", List.of(), List.of(), "single", 99);
         ReportFill reportFill = new ReportFill(1, Map.of("dataInicio", "2024-01-01"), report, 7);
 
         ReportFillService reportFillService = mock(ReportFillService.class);

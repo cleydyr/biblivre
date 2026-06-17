@@ -102,10 +102,7 @@ class ReportServiceTest extends AbstractContainerDatabaseTest {
         assertEquals("java.lang.Boolean", active.getType());
         assertEquals("Registros ativos", active.getDescription());
 
-        Report persisted =
-                reportRepository
-                        .findByIdWithParameters(report.getId())
-                        .orElseThrow();
+        Report persisted = reportRepository.findByIdWithParameters(report.getId()).orElseThrow();
 
         assertEquals(2, persisted.getParameters().size());
     }

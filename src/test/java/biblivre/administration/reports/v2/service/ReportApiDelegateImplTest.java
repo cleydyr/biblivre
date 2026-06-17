@@ -18,8 +18,7 @@ class ReportApiDelegateImplTest {
     @Test
     void getReportTemplates_mapsParameters() {
         ReportParameter parameter =
-                new ReportParameter(
-                        1, "dataInicio", "java.time.LocalDate", "Data inicial", null);
+                new ReportParameter(1, "dataInicio", "java.time.LocalDate", "Data inicial", null);
         Report report =
                 new Report(
                         42,
