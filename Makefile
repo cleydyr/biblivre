@@ -8,6 +8,8 @@
 MAVEN_OPTS := -XX:+UnlockExperimentalVMOptions --enable-preview
 DEBUG_OPTS := -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
 DOCKER_COMPOSE_FILE := docker-compose.yml
+E2E_COMPOSE_FILE := $(CURDIR)/docker-compose.e2e.yml
+E2E_BASE_URL := http://localhost:8090
 DOCKER_COMPOSE := docker compose
 
 # Colors for output
@@ -16,12 +18,12 @@ GREEN := \033[0;32m
 YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
-.PHONY: help dev debug build test clean format check docker-up docker-down frontend-dev frontend-build
+.PHONY: help dev debug build test clean format check docker-up docker-down frontend-dev frontend-build e2e e2e-build e2e-up e2e-down e2e-wait e2e-test
 
 help: ## Show this help message
 	@echo "$(GREEN)Biblivre Development Shortcuts$(NC)"
 	@echo "================================"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(YELLOW)%-20s$(NC) %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(YELLOW)%-20s$(NC) %s\n", $$1, $$2}'
 
 # Development Commands
 dev: ## Run Spring Boot application with hot reload
@@ -69,6 +71,52 @@ test-specific: ## Run specific test class (usage: make test-specific TEST=OrderD
 test-frontend: ## Run frontend tests
 	@echo "$(GREEN)Running frontend tests...$(NC)"
 	@cd src/main/frontend && yarn test
+
+e2e: e2e-build e2e-run ## Build Biblivre, run it in Docker, and execute Playwright e2e tests
+
+e2e-build: ## Build Biblivre WAR for the e2e Docker environment
+	@echo "$(GREEN)Building Biblivre for e2e...$(NC)"
+	@export NODE_ENV=production BABEL_ENV=production BUILD_PATH=../resources/META-INF/resources/static/ PUBLIC_URL=/static/ && \
+	mvn clean package -DskipTests -Dspotless.check.skip=true -Dspotbugs.skip=true -Dpmd.skip=true
+
+e2e-run: ## Start Biblivre in Docker and run Playwright e2e tests
+	@set -e; \
+	trap '$(DOCKER_COMPOSE) -f $(E2E_COMPOSE_FILE) down -v' EXIT; \
+	echo "$(GREEN)Starting Biblivre e2e environment...$(NC)"; \
+	$(DOCKER_COMPOSE) -f $(E2E_COMPOSE_FILE) up -d --pull missing; \
+	$(MAKE) e2e-wait; \
+	echo "$(GREEN)Running Playwright e2e tests...$(NC)"; \
+	( cd e2e && yarn install --frozen-lockfile && yarn install:browsers && \
+	BIBLIVRE_BASE_URL=$(E2E_BASE_URL) CI=1 yarn test )
+
+e2e-up: e2e-build ## Start Biblivre e2e Docker environment (without running tests)
+	@echo "$(GREEN)Starting Biblivre e2e environment...$(NC)"
+	@$(DOCKER_COMPOSE) -f $(E2E_COMPOSE_FILE) up -d --pull missing
+	@$(MAKE) e2e-wait
+	@echo "$(YELLOW)Run tests with: make e2e-test$(NC)"
+
+e2e-down: ## Stop Biblivre e2e Docker environment
+	@echo "$(GREEN)Stopping Biblivre e2e environment...$(NC)"
+	@$(DOCKER_COMPOSE) -f $(E2E_COMPOSE_FILE) down -v
+
+e2e-wait: ## Wait until the e2e Biblivre instance is ready
+	@echo "$(YELLOW)Waiting for Biblivre at $(E2E_BASE_URL)...$(NC)"
+	@timeout=240; \
+	while [ $$timeout -gt 0 ]; do \
+		if curl -sf $(E2E_BASE_URL)/spa/login > /dev/null 2>&1; then \
+			echo "$(GREEN)Biblivre is ready at $(E2E_BASE_URL)$(NC)"; \
+			exit 0; \
+		fi; \
+		sleep 2; \
+		timeout=$$((timeout-2)); \
+	done; \
+	echo "$(RED)Biblivre did not become ready at $(E2E_BASE_URL)$(NC)"; \
+	exit 1
+
+e2e-test: ## Run Playwright e2e tests against a running e2e environment
+	@echo "$(GREEN)Running Playwright e2e tests...$(NC)"
+	@cd e2e && yarn install --frozen-lockfile && yarn install:browsers && \
+	BIBLIVRE_BASE_URL=$(E2E_BASE_URL) CI=1 yarn test
 
 # Code Quality Commands
 format: ## Format code using Spotless
