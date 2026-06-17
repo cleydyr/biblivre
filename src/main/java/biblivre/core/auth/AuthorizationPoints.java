@@ -470,7 +470,6 @@ public class AuthorizationPoints implements Serializable {
         this.addAuthPoint("menu", "administration_configurations", ADMINISTRATION_CONFIGURATIONS);
         this.addAuthPoint("menu", "administration_permissions", ADMINISTRATION_PERMISSIONS);
         this.addAuthPoint("menu", "administration_reports", ADMINISTRATION_REPORTS);
-        this.addAuthPoint("menu", "administration_custom_reports", ADMINISTRATION_REPORTS);
         this.addAuthPoint("menu", "administration_translations", ADMINISTRATION_TRANSLATIONS);
         this.addAuthPoint(
                 "menu", "administration_brief_customization", ADMINISTRATION_CUSTOMIZATION);
