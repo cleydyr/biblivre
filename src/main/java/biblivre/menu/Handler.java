@@ -304,6 +304,16 @@ public class Handler extends AbstractHandler {
         setJspURL("/WEB-INF/jsp/administration/reports.jsp");
     }
 
+    public void administrationCustomReports(ExtendedRequest request, ExtendedResponse response) {
+        if (menuPropertiesService.isEnabled("administration_custom_reports")) {
+            setJspURL("/WEB-INF/jsp/administration/custom_reports.jsp");
+
+            return;
+        }
+
+        throw new IllegalArgumentException("Custom reports are not enabled.");
+    }
+
     public void administrationUserTypes(ExtendedRequest request, ExtendedResponse response) {
         setJspURL("/WEB-INF/jsp/administration/user_types.jsp");
     }
