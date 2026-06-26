@@ -36,7 +36,7 @@
 		<dockerfile.version>1.4.13</dockerfile.version>
 		<docker.image.prefix>cleydyr</docker.image.prefix>
 		<aws.java.sdk.version>2.46.14</aws.java.sdk.version>
-		<spotless.version>3.6.0</spotless.version>
+		<spotless.version>3.7.0</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
 		<error-prone.version>2.50.0</error-prone.version>
 		<maven.compiler.release>25</maven.compiler.release>
