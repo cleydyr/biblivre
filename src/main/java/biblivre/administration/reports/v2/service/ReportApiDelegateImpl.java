@@ -113,7 +113,8 @@ public class ReportApiDelegateImpl implements ReportTemplateApiDelegate {
     @SuppressWarnings("unchecked")
     private static <T> ResponseEntity<T> errorResponse(String message) {
         return (ResponseEntity<T>)
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", message));
+                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("statusCode", HttpStatus.BAD_REQUEST.value(), "message", message));
     }
 
     @Autowired

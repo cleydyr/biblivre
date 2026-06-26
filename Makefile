@@ -18,7 +18,7 @@ GREEN := \033[0;32m
 YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
-.PHONY: help dev debug build test clean format check docker-up docker-down frontend-dev frontend-build e2e e2e-build e2e-up e2e-down e2e-wait e2e-test
+.PHONY: help dev debug build test clean format check docker-up docker-down frontend-dev frontend-build e2e e2e-build e2e-run e2e-up e2e-down e2e-wait e2e-test
 
 help: ## Show this help message
 	@echo "$(GREEN)Biblivre Development Shortcuts$(NC)"
