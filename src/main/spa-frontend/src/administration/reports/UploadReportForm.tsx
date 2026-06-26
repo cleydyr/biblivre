@@ -13,6 +13,8 @@ import {
 } from '@elastic/eui'
 import { useRef, useState } from 'react'
 
+import type { ComponentRef } from 'react'
+
 export type UploadReportFormData = {
   file: File
   title: string
@@ -32,7 +34,7 @@ const UploadReportForm = ({ onSubmit }: UploadReportFormProps) => {
 
   const [description, setDescription] = useState('')
 
-  const filePickerRef = useRef(EuiFilePicker.prototype)
+  const filePickerRef = useRef<ComponentRef<typeof EuiFilePicker>>(null)
 
   const removeFilePickerId = useGeneratedHtmlId({ prefix: 'removeFilePicker' })
 
@@ -86,8 +88,6 @@ const UploadReportForm = ({ onSubmit }: UploadReportFormProps) => {
                   title,
                   description,
                 })
-
-                filePickerRef.current.removeFiles()
               }}
             >
               Enviar

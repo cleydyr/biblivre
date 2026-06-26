@@ -136,7 +136,7 @@ const AppHeader: FC<Props> = ({ isDarkMode, setIsDarkMode }) => {
                   />
                 ) : (
                   <FormattedMessage
-                    defaultMessage='Entrar'
+                    defaultMessage='Entrar no sistema'
                     id='app.header.login'
                   />
                 )}

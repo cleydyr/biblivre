@@ -1,12 +1,15 @@
 package biblivre.administration.reports.v2.service;
 
 import biblivre.administration.reports.v2.model.ReportFill;
+import biblivre.core.SchemaThreadLocal;
+import biblivre.core.utils.Constants;
 import biblivre.digitalmedia.DigitalMediaEncodingUtil;
 import biblivre.reports.generated.api.ReportFillApiDelegate;
 import biblivre.reports.generated.api.model.RestReportFill;
 import biblivre.reports.generated.api.model.RestReportFillRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,7 +45,17 @@ public class ReportFillApiDelegateImpl implements ReportFillApiDelegate {
         String digitalMediaId =
                 DigitalMediaEncodingUtil.getEncodedId(reportFill.getDigitalMediaId(), "report.pdf");
 
-        restReportFill.setUri(new URI("DigitalMediaController?id=" + digitalMediaId));
+        String schema = reportFill.getReport().getSchema();
+
+        if (StringUtils.isBlank(schema) || Constants.GLOBAL_SCHEMA.equals(schema)) {
+            schema = SchemaThreadLocal.get();
+        }
+
+        if (StringUtils.isBlank(schema) || Constants.GLOBAL_SCHEMA.equals(schema)) {
+            schema = Constants.SINGLE_SCHEMA;
+        }
+
+        restReportFill.setUri(new URI(schema + "/DigitalMediaController?id=" + digitalMediaId));
 
         return restReportFill;
     }

@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
+import { getStoredSchema } from '../../api-helpers/schema/storage'
+import { defaultRestApiFetchOptions } from '../../api-helpers/rest-api'
 import {
   Configuration,
   ReportFillApi,
@@ -7,7 +9,6 @@ import {
 } from '../../generated-sources'
 
 import type {
-  InitOverrideFunction,
   ReportFill,
   ReportFillRequest,
   ReportTemplate,
@@ -16,14 +17,6 @@ import type {
 import type { UploadReportFormData } from './UploadReportForm'
 
 const LIST_REPORTS = 'listReports'
-
-const DEFAULT_FETCH_OPTIONS: InitOverrideFunction = async ({ init }) => ({
-  ...init,
-  headers: {
-    ...init.headers,
-    Accept: 'application/json',
-  },
-})
 
 function baseEndpointPath() {
   return `${import.meta.env.VITE_BIBLIVRE_ENDPOINT}/api/v2`
@@ -46,16 +39,25 @@ export const useFillReportMutation = (
 
   return useMutation({
     ...options,
-    mutationFn: (request: ReportFillRequest) =>
-      api.createReportFill(
+    mutationFn: (request: ReportFillRequest) => {
+      if (!getStoredSchema()) {
+        return Promise.reject(
+          new Error(
+            'Selecione uma biblioteca antes de gerar o relatório.',
+          ),
+        )
+      }
+
+      return api.createReportFill(
         {
           reportFillRequest: {
             reportTemplateId: request.reportTemplateId,
             parameters: request.parameters,
           },
         },
-        DEFAULT_FETCH_OPTIONS,
-      ),
+        defaultRestApiFetchOptions,
+      )
+    },
     onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
       options.onSuccess?.(data, variables, onMutateResult, context)
@@ -82,7 +84,7 @@ const useUpdateReportMutation = (
           reportTemplateId: reportTemplate.id ?? 0,
           reportTemplate,
         },
-        DEFAULT_FETCH_OPTIONS,
+        defaultRestApiFetchOptions,
       ),
     onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
@@ -109,7 +111,7 @@ const useDeleteReportMutation = (
         {
           reportTemplateId: report.id,
         },
-        DEFAULT_FETCH_OPTIONS,
+        defaultRestApiFetchOptions,
       ),
     onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
@@ -127,12 +129,12 @@ const useListReportsQuery = () => {
 
   return useQuery({
     queryKey: [LIST_REPORTS],
-    queryFn: () => api.getReportTemplates(DEFAULT_FETCH_OPTIONS),
+    queryFn: () => api.getReportTemplates(defaultRestApiFetchOptions),
   })
 }
 
 const useAddReportMutation = (
-  options: UseMutationOptions<UploadReportFormData, void> = {},
+  options: UseMutationOptions<UploadReportFormData, ReportTemplate> = {},
 ) => {
   const queryClient = useQueryClient()
 
@@ -144,15 +146,24 @@ const useAddReportMutation = (
 
   return useMutation({
     ...options,
-    mutationFn: ({ title, description, file }: UploadReportFormData) =>
-      api.compileReportTemplate(
+    mutationFn: ({ title, description, file }: UploadReportFormData) => {
+      if (!getStoredSchema()) {
+        return Promise.reject(
+          new Error(
+            'Selecione uma biblioteca antes de enviar o modelo de relatório.',
+          ),
+        )
+      }
+
+      return api.compileReportTemplate(
         {
           name: title,
           description,
           file,
         },
-        DEFAULT_FETCH_OPTIONS,
-      ),
+        defaultRestApiFetchOptions,
+      )
+    },
     onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: [LIST_REPORTS] })
       options.onSuccess?.(data, variables, onMutateResult, context)

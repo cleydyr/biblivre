@@ -1,0 +1,41 @@
+name: biblivre-e2e
+
+services:
+  database:
+    image: postgres:18-alpine
+    container_name: biblivre-e2e-db
+    environment:
+      POSTGRES_USER: biblivre
+      POSTGRES_PASSWORD: abracadabra
+      POSTGRES_DB: biblivre4
+    volumes:
+      - "./sql/biblivre4.sql:/docker-entrypoint-initdb.d/populate-initial-data.sql"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U biblivre -d biblivre4"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  app:
+    image: eclipse-temurin:25-jre-jammy
+    container_name: biblivre-e2e-app
+    ports:
+      - "8090:8090"
+    volumes:
+      - "./target/Biblivre6.war:/app/biblivre.war:ro"
+    command:
+      - java
+      - -XX:+UnlockExperimentalVMOptions
+      - --enable-preview
+      - -jar
+      - /app/biblivre.war
+    environment:
+      DATABASE_HOST_NAME: database
+      DATABASE_PORT: "5432"
+      PGUSER: biblivre
+      PGPASSWORD: abracadabra
+      PGDATABASE: biblivre4
+    depends_on:
+      database:
+        condition: service_healthy
