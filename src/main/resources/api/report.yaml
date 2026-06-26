@@ -108,6 +108,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReportTemplate'
+        400:
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
         500:
           $ref: '#/components/responses/500ApiError'
       operationId: compileReportTemplate
