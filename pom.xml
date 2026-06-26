@@ -38,7 +38,7 @@
 		<aws.java.sdk.version>2.46.14</aws.java.sdk.version>
 		<spotless.version>3.6.0</spotless.version>
 		<webapp.dir>${basedir}/src/main/webapp</webapp.dir>
-		<error-prone.version>2.49.0</error-prone.version>
+		<error-prone.version>2.50.0</error-prone.version>
 		<maven.compiler.release>25</maven.compiler.release>
 		<spring-security.version>7.1.0</spring-security.version>
 		<opentelemetry.version>1.63.0</opentelemetry.version>
