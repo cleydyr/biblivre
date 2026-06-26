@@ -11,6 +11,6 @@ public interface ReportRepository extends CrudRepository<Report, Long> {
     @Query("SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.parameters")
     List<Report> findAllWithParameters();
 
-    @Query("SELECT r FROM Report r LEFT JOIN FETCH r.parameters WHERE r.id = :id")
+    @Query("SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.parameters WHERE r.id = :id")
     Optional<Report> findByIdWithParameters(@Param("id") Long id);
 }
