@@ -584,6 +584,8 @@
 						</goals>
 						<configuration>
 							<nodeVersion>v24.14.1</nodeVersion>
+							<!-- Yarn 1.x is used as a bootstrap; the project-local Berry version
+							     in .yarn/releases/ is picked up automatically via .yarnrc.yml -->
 							<yarnVersion>v1.22.22</yarnVersion>
 							<installDirectory>${project.basedir}/src/main/spa-frontend</installDirectory>
 						</configuration>
@@ -594,7 +596,7 @@
 							<goal>yarn</goal>
 						</goals>
 						<configuration>
-							<arguments>install --production=false</arguments>
+							<arguments>install --immutable</arguments>
 							<workingDirectory>${project.basedir}/src/main/spa-frontend</workingDirectory>
 						</configuration>
 					</execution>
