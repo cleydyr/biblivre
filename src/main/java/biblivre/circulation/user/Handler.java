@@ -20,11 +20,11 @@
 package biblivre.circulation.user;
 
 import biblivre.circulation.lending.LendingBO;
+import biblivre.circulation.lending.LendingBag;
 import biblivre.circulation.lending.LendingFineBO;
 import biblivre.circulation.lending.LendingFineDTO;
-import biblivre.circulation.lending.LendingInfoDTO;
 import biblivre.circulation.reservation.ReservationBO;
-import biblivre.circulation.reservation.ReservationInfoDTO;
+import biblivre.circulation.reservation.ReservationBag;
 import biblivre.circulation.reservation.ReservationListDTO;
 import biblivre.core.AbstractDTO;
 import biblivre.core.AbstractHandler;
@@ -225,17 +225,17 @@ public class Handler extends AbstractHandler {
 
         switch (tab) {
             case "lendings" -> {
-                Collection<LendingInfoDTO> list =
-                        lendingBO.populateLendingInfo(lendingBO.listLendings(user), false);
-                list.addAll(lendingBO.populateLendingInfo(lendingBO.listHistory(user), false));
+                Collection<LendingBag> list =
+                        lendingBO.populateLendingBag(lendingBO.listLendings(user), false);
+                list.addAll(lendingBO.populateLendingBag(lendingBO.listHistory(user), false));
                 data.addAll(list);
             }
             case "reservations" -> {
-                List<ReservationInfoDTO> infos = reservationBO.listReservationInfo(user);
+                List<ReservationBag> reservationBags = reservationBO.getReservationBags(user);
                 ReservationListDTO reservationList = new ReservationListDTO();
                 reservationList.setUser(user);
                 reservationList.setId(user.getId());
-                reservationList.setReservationInfoList(infos);
+                reservationList.setReservationInfoList(reservationBags);
                 data.add(reservationList);
             }
             case "fines" -> {

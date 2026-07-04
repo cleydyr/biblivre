@@ -24,25 +24,25 @@ import biblivre.administration.reports.dto.UserReportDto;
 import biblivre.administration.usertype.UserTypeBO;
 import biblivre.administration.usertype.UserTypeDTO;
 import biblivre.circulation.lending.LendingBO;
+import biblivre.circulation.lending.LendingBag;
 import biblivre.circulation.lending.LendingDTO;
 import biblivre.circulation.lending.LendingFineBO;
-import biblivre.circulation.lending.LendingInfoDTO;
 import biblivre.circulation.user.UserBO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.circulation.user.UserFieldBO;
 import biblivre.circulation.user.UserFieldDTO;
-import org.openpdf.text.Document;
-import org.openpdf.text.Element;
-import org.openpdf.text.Paragraph;
-import org.openpdf.text.Phrase;
-import org.openpdf.text.pdf.PdfPCell;
-import org.openpdf.text.pdf.PdfPTable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.openpdf.text.Document;
+import org.openpdf.text.Element;
+import org.openpdf.text.Paragraph;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.PdfPCell;
+import org.openpdf.text.pdf.PdfPTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,9 +65,9 @@ public class UserReport extends BaseBiblivreReport {
 
         Collection<LendingDTO> history = lendingBO.listHistory(user);
 
-        Collection<LendingInfoDTO> historyInfo = lendingBO.populateLendingInfo(history);
+        Collection<LendingBag> historyInfo = lendingBO.populateLendingBag(history);
         List<String[]> returnedLendings = new ArrayList<>();
-        for (LendingInfoDTO lidto : historyInfo) {
+        for (LendingBag lidto : historyInfo) {
             String[] data = new String[3];
             data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
             data[1] = lidto.getBiblio().getTitle();
@@ -80,9 +80,9 @@ public class UserReport extends BaseBiblivreReport {
         List<String[]> lateLendings = new ArrayList<>();
 
         List<LendingDTO> currentLendingsList = lendingBO.listUserLendings(user);
-        Collection<LendingInfoDTO> currentLendingsInfo =
-                lendingBO.populateLendingInfo(currentLendingsList);
-        for (LendingInfoDTO lidto : currentLendingsInfo) {
+        Collection<LendingBag> currentLendingsInfo =
+                lendingBO.populateLendingBag(currentLendingsList);
+        for (LendingBag lidto : currentLendingsInfo) {
             String[] data = new String[3];
             data[0] = dd_MM_yyyy.format(lidto.getLending().getCreated());
             data[1] = lidto.getBiblio().getTitle();

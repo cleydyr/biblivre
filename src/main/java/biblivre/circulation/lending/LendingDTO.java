@@ -22,7 +22,11 @@ package biblivre.circulation.lending;
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class LendingDTO extends AbstractDTO {
 
     @Serial private static final long serialVersionUID = 1L;
@@ -37,76 +41,4 @@ public class LendingDTO extends AbstractDTO {
     private transient Float dailyFine;
     private transient Integer daysLate;
     private transient Float estimatedFine;
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getHoldingId() {
-        return this.holdingId;
-    }
-
-    public void setHoldingId(Integer holdingId) {
-        this.holdingId = holdingId;
-    }
-
-    public Integer getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getPreviousLendingId() {
-        return this.previousLendingId;
-    }
-
-    public void setPreviousLendingId(Integer previousLendingId) {
-        this.previousLendingId = previousLendingId;
-    }
-
-    public Date getExpectedReturnDate() {
-        return this.expectedReturnDate;
-    }
-
-    public void setExpectedReturnDate(Date expectedReturnDate) {
-        this.expectedReturnDate = expectedReturnDate;
-    }
-
-    public Date getReturnDate() {
-        return this.returnDate;
-    }
-
-    public void setReturnDate(Date returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public Float getEstimatedFine() {
-        return this.estimatedFine;
-    }
-
-    public void setEstimatedFine(Float estimatedFine) {
-        this.estimatedFine = estimatedFine;
-    }
-
-    public Float getDailyFine() {
-        return this.dailyFine;
-    }
-
-    public void setDailyFine(Float dailyFine) {
-        this.dailyFine = dailyFine;
-    }
-
-    public Integer getDaysLate() {
-        return this.daysLate;
-    }
-
-    public void setDaysLate(Integer daysLate) {
-        this.daysLate = daysLate;
-    }
 }

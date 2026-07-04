@@ -23,38 +23,18 @@ import biblivre.cataloging.bibliographic.BiblioRecordDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ReservationInfoDTO extends AbstractDTO {
+@Setter
+@Getter
+public class ReservationBag extends AbstractDTO {
 
     @Serial private static final long serialVersionUID = 1L;
 
     private BiblioRecordDTO biblio;
     private ReservationDTO reservation;
     private UserDTO user;
-
-    public UserDTO getUser() {
-        return this.user;
-    }
-
-    public void setUser(UserDTO user) {
-        this.user = user;
-    }
-
-    public ReservationDTO getReservation() {
-        return this.reservation;
-    }
-
-    public void setReservation(ReservationDTO reservation) {
-        this.reservation = reservation;
-    }
-
-    public BiblioRecordDTO getBiblio() {
-        return this.biblio;
-    }
-
-    public void setBiblio(BiblioRecordDTO biblio) {
-        this.biblio = biblio;
-    }
 
     public static long getSerialversionuid() {
         return serialVersionUID;

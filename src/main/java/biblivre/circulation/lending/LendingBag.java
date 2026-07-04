@@ -24,9 +24,13 @@ import biblivre.cataloging.holding.HoldingDTO;
 import biblivre.circulation.user.UserDTO;
 import biblivre.core.AbstractDTO;
 import java.io.Serial;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
-public class LendingInfoDTO extends AbstractDTO {
+@Setter
+@Getter
+public class LendingBag extends AbstractDTO {
 
     @Serial private static final long serialVersionUID = 1L;
 
@@ -35,46 +39,6 @@ public class LendingInfoDTO extends AbstractDTO {
     private UserDTO user;
     private LendingDTO lending;
     private LendingFineDTO lendingFine;
-
-    public LendingDTO getLending() {
-        return this.lending;
-    }
-
-    public void setLending(LendingDTO lending) {
-        this.lending = lending;
-    }
-
-    public LendingFineDTO getLendingFine() {
-        return this.lendingFine;
-    }
-
-    public void setLendingFine(LendingFineDTO lendingFine) {
-        this.lendingFine = lendingFine;
-    }
-
-    public UserDTO getUser() {
-        return this.user;
-    }
-
-    public void setUser(UserDTO user) {
-        this.user = user;
-    }
-
-    public HoldingDTO getHolding() {
-        return this.holding;
-    }
-
-    public void setHolding(HoldingDTO holding) {
-        this.holding = holding;
-    }
-
-    public BiblioRecordDTO getBiblio() {
-        return this.biblio;
-    }
-
-    public void setBiblio(BiblioRecordDTO biblio) {
-        this.biblio = biblio;
-    }
 
     @Override
     public JSONObject toJSONObject() {

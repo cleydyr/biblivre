@@ -49,6 +49,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
@@ -146,16 +147,7 @@ public class LendingBO {
         lending.setHoldingId(holding.getId());
         lending.setUserId(user.getId());
 
-        UserTypeDTO type = userTypeBO.get(user.getType());
-
-        Date today = new Date();
-        int days = (type != null) ? type.getLendingTimeLimit() : 7;
-
-        Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(
-                        today,
-                        days,
-                        configurationBO.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6"));
+        Date expectedReturnDate = calculateExpectedReturnDate(user);
         lending.setExpectedReturnDate(expectedReturnDate);
 
         if (this.lendingDAO.doLend(lending)) {
@@ -164,6 +156,18 @@ public class LendingBO {
         } else {
             return false;
         }
+    }
+
+    private @NonNull Date calculateExpectedReturnDate(UserDTO user) {
+        UserTypeDTO type = userTypeBO.get(user.getType());
+
+        Date today = new Date();
+        int days = (type != null) ? type.getLendingTimeLimit() : 7;
+
+        return CalendarUtils.calculateExpectedReturnDate(
+                today,
+                days,
+                configurationBO.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6"));
     }
 
     public boolean doReturn(LendingDTO lending, Float fineValue, boolean paid) {
@@ -185,16 +189,7 @@ public class LendingBO {
         HoldingDTO holding = (HoldingDTO) holdingBO.get(lending.getHoldingId());
         this.checkRenew(holding, userDto);
 
-        UserTypeDTO type = userTypeBO.get(userDto.getType());
-
-        Date today = new Date();
-        int days = (type != null) ? type.getLendingTimeLimit() : 7;
-
-        Date expectedReturnDate =
-                CalendarUtils.calculateExpectedReturnDate(
-                        today,
-                        days,
-                        configurationBO.getIntArray(Constants.CONFIG_BUSINESS_DAYS, "2,3,4,5,6"));
+        Date expectedReturnDate = calculateExpectedReturnDate(userDto);
 
         lending.setExpectedReturnDate(expectedReturnDate);
 
@@ -220,20 +215,12 @@ public class LendingBO {
         return this.lendingDAO.listLendings(user);
     }
 
-    public Collection<LendingInfoDTO> listLendings(int offset, int limit) {
+    public Collection<LendingBag> listLendings(int offset, int limit) {
         List<LendingDTO> list = this.lendingDAO.listLendings(offset, limit);
-        return this.populateLendingInfo(list);
+        return this.populateLendingBag(list);
     }
 
-    public Integer countHistory(UserDTO user) {
-        return this.lendingDAO.countHistory(user);
-    }
-
-    public Integer countLendings(UserDTO user) {
-        return this.lendingDAO.countLendings(user);
-    }
-
-    public DTOCollection<LendingInfoDTO> populateLendingInfoByHolding(
+    public DTOCollection<LendingBag> populateLendingBagByHolding(
             DTOCollection<HoldingDTO> holdingList) {
         Set<Integer> users = new HashSet<>();
         Set<Integer> records = new HashSet<>();
@@ -267,11 +254,11 @@ public class LendingBO {
         }
 
         // Join data
-        DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
+        DTOCollection<LendingBag> collection = new DTOCollection<>();
         collection.setPaging(holdingList.getPaging());
 
         for (HoldingDTO holding : holdingList) {
-            LendingInfoDTO info = new LendingInfoDTO();
+            LendingBag info = new LendingBag();
 
             Integer holdingId = holding.getId();
             Integer recordId = holding.getRecordId();
@@ -308,14 +295,14 @@ public class LendingBO {
         return collection;
     }
 
-    public Collection<LendingInfoDTO> populateLendingInfo(Collection<LendingDTO> list) {
-        return this.populateLendingInfo(list, true);
+    public Collection<LendingBag> populateLendingBag(Collection<LendingDTO> list) {
+        return this.populateLendingBag(list, true);
     }
 
-    public Collection<LendingInfoDTO> populateLendingInfo(
+    public Collection<LendingBag> populateLendingBag(
             Collection<LendingDTO> list, boolean populateUser) {
 
-        DTOCollection<LendingInfoDTO> collection = new DTOCollection<>();
+        DTOCollection<LendingBag> collection = new DTOCollection<>();
 
         Set<Integer> userIds = new HashSet<>();
         Set<Integer> holdingIds = new HashSet<>();
@@ -356,20 +343,16 @@ public class LendingBO {
             BiblioRecordDTO record =
                     (holding != null) ? (BiblioRecordDTO) records.get(holding.getRecordId()) : null;
 
-            LendingInfoDTO info = new LendingInfoDTO();
-            info.setLending(lending);
-            info.setUser(user);
-            info.setHolding(holding);
-            info.setBiblio(record);
+            LendingBag lendingBag = new LendingBag();
+            lendingBag.setLending(lending);
+            lendingBag.setUser(user);
+            lendingBag.setHolding(holding);
+            lendingBag.setBiblio(record);
 
-            collection.add(info);
+            collection.add(lendingBag);
         }
 
         return collection;
-    }
-
-    public LendingDTO getLatest(int holdingSerial, int userId) {
-        return this.lendingDAO.getLatest(holdingSerial, userId);
     }
 
     public Integer countLendings() {
@@ -422,7 +405,7 @@ public class LendingBO {
             return StringPool.BLANK;
         }
 
-        Collection<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+        Collection<LendingBag> lendingInfo = this.populateLendingBag(lendings);
 
         if (lendingInfo == null || lendingInfo.isEmpty()) {
             return StringPool.BLANK;
@@ -448,7 +431,7 @@ public class LendingBO {
 
         if (!lendingInfo.isEmpty()) {
 
-            LendingInfoDTO firstEntry = lendingInfo.iterator().next();
+            LendingBag firstEntry = lendingInfo.iterator().next();
 
             UserDTO user = firstEntry.getUser();
 
@@ -482,11 +465,11 @@ public class LendingBO {
             }
             receipt.append(CharPool.NEW_LINE);
 
-            List<LendingInfoDTO> currentLendings = new ArrayList<>();
-            List<LendingInfoDTO> currentRenews = new ArrayList<>();
-            List<LendingInfoDTO> currentReturns = new ArrayList<>();
+            List<LendingBag> currentLendings = new ArrayList<>();
+            List<LendingBag> currentRenews = new ArrayList<>();
+            List<LendingBag> currentReturns = new ArrayList<>();
 
-            for (LendingInfoDTO info : lendingInfo) {
+            for (LendingBag info : lendingInfo) {
                 LendingDTO lendingDto = info.getLending();
                 if (lendingDto.getReturnDate() != null) {
                     currentReturns.add(info);
@@ -516,7 +499,7 @@ public class LendingBO {
                 receipt.append(StringUtils.center(header, columns)).append(CharPool.NEW_LINE);
                 receipt.append(CharPool.NEW_LINE);
 
-                for (LendingInfoDTO info : currentLendings) {
+                for (LendingBag info : currentLendings) {
                     receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
                             .append(CharPool.NEW_LINE);
                     receipt.append(authorLabel).append(":\n");
@@ -564,7 +547,7 @@ public class LendingBO {
                 receipt.append(StringUtils.center(header, columns)).append(CharPool.NEW_LINE);
                 receipt.append(CharPool.NEW_LINE);
 
-                for (LendingInfoDTO info : currentRenews) {
+                for (LendingBag info : currentRenews) {
                     receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
                             .append(CharPool.NEW_LINE);
                     receipt.append(authorLabel).append(":\n");
@@ -611,7 +594,7 @@ public class LendingBO {
                 receipt.append(StringUtils.center(header, columns)).append(CharPool.NEW_LINE);
                 receipt.append(CharPool.NEW_LINE);
 
-                for (LendingInfoDTO info : currentReturns) {
+                for (LendingBag info : currentReturns) {
                     receipt.append(StringUtils.repeat(CharPool.ASTERISK, columns / 2))
                             .append(CharPool.NEW_LINE);
                     receipt.append(authorLabel).append(":\n");
@@ -679,7 +662,7 @@ public class LendingBO {
             return "";
         }
 
-        Collection<LendingInfoDTO> lendingInfo = this.populateLendingInfo(lendings);
+        Collection<LendingBag> lendingInfo = this.populateLendingBag(lendings);
 
         if (lendingInfo == null || lendingInfo.isEmpty()) {
             return "";
@@ -695,7 +678,7 @@ public class LendingBO {
 
         if (lendingInfo.size() > 0) {
 
-            LendingInfoDTO firstEntry = lendingInfo.iterator().next();
+            LendingBag firstEntry = lendingInfo.iterator().next();
 
             UserDTO user = firstEntry.getUser();
 
@@ -717,11 +700,11 @@ public class LendingBO {
 
             root.put("enrollment", enrollment);
 
-            List<LendingInfoDTO> currentLendings = new ArrayList<>();
-            List<LendingInfoDTO> currentRenews = new ArrayList<>();
-            List<LendingInfoDTO> currentReturns = new ArrayList<>();
+            List<LendingBag> currentLendings = new ArrayList<>();
+            List<LendingBag> currentRenews = new ArrayList<>();
+            List<LendingBag> currentReturns = new ArrayList<>();
 
-            for (LendingInfoDTO info : lendingInfo) {
+            for (LendingBag info : lendingInfo) {
                 LendingDTO lendingDto = info.getLending();
 
                 if (lendingDto.getReturnDate() != null) {
