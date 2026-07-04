@@ -5,11 +5,65 @@
   "app.header.back_to_legacy": {
     "defaultMessage": "Voltar para a interface clássica"
   },
+  "app.header.login": {
+    "defaultMessage": "Entrar no sistema"
+  },
+  "app.header.logout": {
+    "defaultMessage": "Sair"
+  },
+  "app.header.schema.choose_library": {
+    "defaultMessage": "Escolher biblioteca"
+  },
+  "app.login.errorTitle": {
+    "defaultMessage": "Não foi possível entrar"
+  },
+  "app.login.field.password": {
+    "defaultMessage": "Senha"
+  },
+  "app.login.field.username": {
+    "defaultMessage": "Usuário"
+  },
+  "app.login.pageTitle": {
+    "defaultMessage": "Entrar"
+  },
+  "app.login.submit": {
+    "defaultMessage": "Entrar"
+  },
+  "app.reports.fill.submit": {
+    "defaultMessage": "Gerar relatório"
+  },
+  "app.reports.fill.submit.error": {
+    "defaultMessage": "Erro ao gerar relatório"
+  },
+  "app.reports.fill.submit.info": {
+    "defaultMessage": "Preencha todos os parâmetros para gerar o relatório"
+  },
+  "app.reports.fill.submit.no.parameters.info": {
+    "defaultMessage": "Este modelo não possui parâmetros"
+  },
+  "app.reports.fill.submit.unsupported.info": {
+    "defaultMessage": "Este relatório possui parâmetros com tipos não suportados e não pode ser gerado pela interface."
+  },
+  "app.schema.modal.cancel": {
+    "defaultMessage": "Cancelar"
+  },
+  "app.schema.modal.confirm": {
+    "defaultMessage": "Confirmar"
+  },
+  "app.schema.modal.title": {
+    "defaultMessage": "Selecionar biblioteca"
+  },
   "app.sideNav.administration": {
     "defaultMessage": "Administração"
   },
   "app.sideNav.administration.custom_reports": {
     "defaultMessage": "Relatórios personalizados"
+  },
+  "app.sideNav.circulation": {
+    "defaultMessage": "Circulação"
+  },
+  "app.sideNav.circulation.user": {
+    "defaultMessage": "Cadastro de usuários"
   },
   "app.sideNav.search": {
     "defaultMessage": "Pesquisa"
@@ -116,6 +170,138 @@
   "bibliographic-search-result-sort.title": {
     "defaultMessage": "Título"
   },
+  "circulation.header.1": {
+    "defaultMessage": "Circulação"
+  },
+  "circulation.instructions.1": {
+    "defaultMessage": "O \"Cadastro de Usuários\" permitirá guardar informações sobre os leitores e funcionários da biblioteca para que seja possível realizar empréstimos, reservas e controlar o acesso destes usuários à biblioteca. Antes de cadastrar um usuário é recomendado verificar se ele já está cadastrado, através da pesquisa simplificada, que buscará cada um dos termos digitados no campo selecionado ou através da pesquisa avançada, que confere um maior controle sobre os usuários localizados, permitindo, por exemplo, buscar usuários com multas pendentes."
+  },
+  "circulation.lending.days_late": {
+    "defaultMessage": "Dias de atraso"
+  },
+  "circulation.lending.estimated_fine": {
+    "defaultMessage": "Multa estimada"
+  },
+  "circulation.lending.expected_return_date": {
+    "defaultMessage": "Data prevista para devolução"
+  },
+  "circulation.lending.fine_value": {
+    "defaultMessage": "Valor da multa"
+  },
+  "circulation.lending.lending_date": {
+    "defaultMessage": "Data do empréstimo"
+  },
+  "circulation.lending.payment_date": {
+    "defaultMessage": "Data do pagamento"
+  },
+  "circulation.lending.return_date": {
+    "defaultMessage": "Data da devolução"
+  },
+  "circulation.reservation.expiration_date": {
+    "defaultMessage": "Data de expiração"
+  },
+  "circulation.reservation.reserve_date": {
+    "defaultMessage": "Data da reserva"
+  },
+  "circulation.user.active_lendings": {
+    "defaultMessage": "Empréstimos ativos"
+  },
+  "circulation.user.fine.pending": {
+    "defaultMessage": "Pendente"
+  },
+  "circulation.user.flyout.back": {
+    "defaultMessage": "Anterior"
+  },
+  "circulation.user.flyout.email": {
+    "defaultMessage": "E-mail"
+  },
+  "circulation.user.flyout.enrollment": {
+    "defaultMessage": "Matrícula"
+  },
+  "circulation.user.flyout.fine.status": {
+    "defaultMessage": "Situação"
+  },
+  "circulation.user.flyout.fines.error": {
+    "defaultMessage": "Ocorreu um erro ao carregar as multas"
+  },
+  "circulation.user.flyout.lendings.error": {
+    "defaultMessage": "Ocorreu um erro ao carregar os empréstimos"
+  },
+  "circulation.user.flyout.name": {
+    "defaultMessage": "Nome"
+  },
+  "circulation.user.flyout.next": {
+    "defaultMessage": "Próximo"
+  },
+  "circulation.user.flyout.reservations.error": {
+    "defaultMessage": "Ocorreu um erro ao carregar as reservas"
+  },
+  "circulation.user.flyout.status": {
+    "defaultMessage": "Situação"
+  },
+  "circulation.user.flyout.title": {
+    "defaultMessage": "Detalhes do usuário"
+  },
+  "circulation.user.flyout.type": {
+    "defaultMessage": "Tipo"
+  },
+  "circulation.user.no_fines": {
+    "defaultMessage": "Este usuário não possui multas"
+  },
+  "circulation.user.no_lendings": {
+    "defaultMessage": "Este usuário não possui empréstimos"
+  },
+  "circulation.user.no_reserves": {
+    "defaultMessage": "Este usuário não possui reservas"
+  },
+  "circulation.user.returned_lendings": {
+    "defaultMessage": "Empréstimos devolvidos"
+  },
+  "circulation.user.tabs.fines": {
+    "defaultMessage": "Multas"
+  },
+  "circulation.user.tabs.lendings": {
+    "defaultMessage": "Empréstimos"
+  },
+  "circulation.user.tabs.reservations": {
+    "defaultMessage": "Reservas"
+  },
+  "circulation.users.advanced.search.label": {
+    "defaultMessage": "Pesquisa avançada"
+  },
+  "circulation.users.search.button": {
+    "defaultMessage": "Pesquisar"
+  },
+  "circulation.users.search.field": {
+    "defaultMessage": "Campo de busca"
+  },
+  "circulation.users.search.placeholder": {
+    "defaultMessage": "Pesquisar por nome, email, telefone, etc."
+  },
+  "circulation.users.table.actions.details.description": {
+    "defaultMessage": "Ver detalhes do usuário"
+  },
+  "circulation.users.table.caption": {
+    "defaultMessage": "Resultados da busca de usuários"
+  },
+  "circulation.users.table.empty.body": {
+    "defaultMessage": "Não foi possível encontrar nenhum usuário com os termos de busca e filtros aplicados"
+  },
+  "circulation.users.table.empty.title": {
+    "defaultMessage": "Nenhum usuário encontrado"
+  },
+  "circulation.users.table.status.active": {
+    "defaultMessage": "Ativo"
+  },
+  "circulation.users.table.status.blocked": {
+    "defaultMessage": "Bloqueado"
+  },
+  "circulation.users.table.status.inactive": {
+    "defaultMessage": "Inativo"
+  },
+  "circulation.users.table.status.pending_issues": {
+    "defaultMessage": "Com pendências"
+  },
   "material-type.all": {
     "defaultMessage": "Todos"
   },
@@ -176,9 +362,6 @@
   "search.bibliographic.advanced_search": {
     "defaultMessage": "Pesquisa avançada"
   },
-  "search.bibliographic.any": {
-    "defaultMessage": "Qualquer campo"
-  },
   "search.bibliographic.author": {
     "defaultMessage": "Autor"
   },
@@ -190,6 +373,12 @@
   },
   "search.bibliographic.error": {
     "defaultMessage": "Ocorreu um erro ao realizar a pesquisa"
+  },
+  "search.bibliographic.export_excel": {
+    "defaultMessage": "Exportar resultados (Excel)"
+  },
+  "search.bibliographic.export_excel_error": {
+    "defaultMessage": "Não foi possível exportar os resultados."
   },
   "search.bibliographic.field": {
     "defaultMessage": "Campo"
@@ -236,9 +425,6 @@
   "search.bibliographic.publication_year": {
     "defaultMessage": "Ano de publicação"
   },
-  "search.bibliographic.publisher": {
-    "defaultMessage": "Editora"
-  },
   "search.bibliographic.remove_field": {
     "defaultMessage": "Remover termo"
   },
@@ -257,9 +443,6 @@
   "search.bibliographic.search_placeholder": {
     "defaultMessage": "Preencha os termos da pesquisa"
   },
-  "search.bibliographic.series": {
-    "defaultMessage": "Série"
-  },
   "search.bibliographic.shelf_location": {
     "defaultMessage": "Localização"
   },
@@ -275,8 +458,35 @@
   "search.bibliographic.title": {
     "defaultMessage": "Título"
   },
+  "search.common.clear_filters": {
+    "defaultMessage": "Limpar filtros"
+  },
+  "search.common.modified_between": {
+    "defaultMessage": "Alterado entre"
+  },
+  "search.common.only_access_card": {
+    "defaultMessage": "Apenas usuários com cartão de acesso"
+  },
+  "search.common.only_inactive": {
+    "defaultMessage": "Apenas usuários inativos"
+  },
+  "search.common.only_login": {
+    "defaultMessage": "Apenas usuários com login de acesso ao Biblivre"
+  },
+  "search.common.only_overdue": {
+    "defaultMessage": "Apenas usuários com empréstimos em atraso"
+  },
+  "search.common.only_pending_fines": {
+    "defaultMessage": "Apenas usuários com multas pendentes"
+  },
+  "search.common.registered_between": {
+    "defaultMessage": "Cadastrado entre"
+  },
   "search.export.button": {
     "defaultMessage": "Exportar {count, plural, one {# registro} other {# registros}} em formato MARC"
+  },
+  "search.holding.accession_number": {
+    "defaultMessage": "Tombo patrimonial"
   },
   "search_query_operator.and": {
     "defaultMessage": "e"

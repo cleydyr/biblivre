@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bash scripts/dev.sh",
     "build": "yarn add-ts-nocheck && tsgo -b && vite build",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --fix --cache",
@@ -45,6 +45,7 @@
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^26.1.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "8.60.1",

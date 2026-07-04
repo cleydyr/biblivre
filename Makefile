@@ -18,7 +18,7 @@ GREEN := \033[0;32m
 YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
-.PHONY: help dev debug build test clean format check docker-up docker-down frontend-dev frontend-build e2e e2e-build e2e-run e2e-up e2e-down e2e-wait e2e-test
+.PHONY: help dev dev-spa debug build test clean format check docker-up docker-down spa-dev spa-setup frontend-dev frontend-build e2e e2e-build e2e-run e2e-up e2e-down e2e-wait e2e-test
 
 help: ## Show this help message
 	@echo "$(GREEN)Biblivre Development Shortcuts$(NC)"
@@ -132,21 +132,55 @@ check-security: ## Run security audit
 	@mvn org.owasp:dependency-check-maven:check
 
 # Frontend Commands
-frontend-setup: ## Install frontend dependencies
-	@echo "$(GREEN)Installing frontend dependencies...$(NC)"
-	@cd src/main/frontend && yarn install
+spa-setup: ## Install spa-frontend dependencies
+	@echo "$(GREEN)Installing spa-frontend dependencies...$(NC)"
+	@cd src/main/spa-frontend && yarn install
 
-frontend-dev: ## Start frontend development server
-	@echo "$(GREEN)Starting frontend development server...$(NC)"
-	@cd src/main/frontend && yarn start
+spa-dev: ## Start Vite dev server for spa-frontend HMR (use with `make dev` or `make dev-spa`)
+	@echo "$(GREEN)Starting spa-frontend Vite dev server on http://localhost:5173$(NC)"
+	@echo "$(YELLOW)Browse the SPA at http://localhost:8090/spa/ (Spring Boot must be running with BIBLIVRE_VITE_DEV_SERVER set)$(NC)"
+	@cd src/main/spa-frontend && yarn dev
 
-frontend-build: ## Build frontend for production
-	@echo "$(GREEN)Building frontend...$(NC)"
-	@cd src/main/frontend && yarn build
+dev-spa: ## Run backend + spa-frontend Vite HMR together
+	@$(MAKE) db-start
+	@echo "$(GREEN)Starting Spring Boot and spa-frontend Vite dev server...$(NC)"
+	@echo "$(YELLOW)Browse the SPA at http://localhost:8090/spa/$(NC)"
+	@set -a; [ -f .env.dev ] && . ./.env.dev; set +a; \
+	export BIBLIVRE_VITE_DEV_SERVER=$${BIBLIVRE_VITE_DEV_SERVER:-http://localhost:5173}; \
+	SPA_STARTED_BY_US=0; \
+	if curl -sf "$$BIBLIVRE_VITE_DEV_SERVER/@vite/client" >/dev/null 2>&1; then \
+		echo "$(YELLOW)Vite dev server already running at $$BIBLIVRE_VITE_DEV_SERVER — reusing it$(NC)"; \
+	else \
+		(cd src/main/spa-frontend && yarn dev) & SPA_PID=$$!; \
+		SPA_STARTED_BY_US=1; \
+		echo "$(YELLOW)Waiting for Vite dev server...$(NC)"; \
+		timeout=30; \
+		while [ $$timeout -gt 0 ] && ! curl -sf "$$BIBLIVRE_VITE_DEV_SERVER/@vite/client" >/dev/null 2>&1; do \
+			if ! kill -0 $$SPA_PID 2>/dev/null; then \
+				echo "$(RED)Vite dev server failed to start$(NC)"; \
+				exit 1; \
+			fi; \
+			sleep 1; \
+			timeout=$$((timeout-1)); \
+		done; \
+		if [ $$timeout -le 0 ]; then \
+			echo "$(RED)Vite dev server did not become ready at $$BIBLIVRE_VITE_DEV_SERVER$(NC)"; \
+			kill $$SPA_PID 2>/dev/null || true; \
+			exit 1; \
+		fi; \
+		echo "$(GREEN)Vite dev server is ready$(NC)"; \
+	fi; \
+	trap 'if [ "$$SPA_STARTED_BY_US" = "1" ]; then kill $$SPA_PID 2>/dev/null || true; fi' EXIT INT TERM; \
+	export MAVEN_OPTS="$(MAVEN_OPTS)" BIBLIVRE_CORS_ENABLED=true BIBLIVRE_VITE_DEV_SERVER; \
+	mvn spring-boot:run -Dspring-boot.run.profiles=developer
 
-frontend-watch: ## Watch frontend files for changes
-	@echo "$(GREEN)Watching frontend files...$(NC)"
-	@cd src/main/frontend && yarn watch
+frontend-setup: spa-setup ## Alias for spa-setup
+
+frontend-dev: spa-dev ## Alias for spa-dev
+
+frontend-build: ## Build spa-frontend for production
+	@echo "$(GREEN)Building spa-frontend...$(NC)"
+	@cd src/main/spa-frontend && yarn build
 
 # Docker Commands
 docker-up: ## Start Docker Compose environment
