@@ -1,3 +1,5 @@
+import type { ISO8601Date } from '../../types'
+
 import type { DATE_SORT_FIELDS, FIELDS } from './constants'
 
 export type BaseQueryTerm = {
@@ -14,8 +16,6 @@ export type EncodedTextQueryField = Exclude<
 >
 
 export type QueryOperator = 'AND' | 'OR' | 'AND_NOT'
-
-export type ISO8601Date = string & { __brand: 'iso8601' }
 
 type DateTermQueryField =
   (typeof DATE_SORT_FIELDS)[keyof typeof DATE_SORT_FIELDS]

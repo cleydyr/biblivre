@@ -8,9 +8,11 @@ import {
 import moment from 'moment'
 import { FormattedMessage } from 'react-intl'
 
+import { DAY_FIRST_DATE_FORMAT } from '../../constants'
+
 import type { FC } from 'react'
 
-import type { DateRange } from './types'
+import type { DateRange } from '../../types'
 
 type Props = {
   createdFilter: DateRange
@@ -43,9 +45,10 @@ const AdvancedBibliographicSearchDateFilters: FC<Props> = ({
             endDateControl={
               <EuiDatePicker
                 compressed
+                dateFormat={DAY_FIRST_DATE_FORMAT}
                 locale='pt-br'
                 maxDate={today}
-                selected={createdFilter?.to}
+                selected={createdFilter.to}
                 onChange={(date) => {
                   onCreatedFilterChanged({
                     ...createdFilter,
@@ -57,9 +60,10 @@ const AdvancedBibliographicSearchDateFilters: FC<Props> = ({
             startDateControl={
               <EuiDatePicker
                 compressed
+                dateFormat={DAY_FIRST_DATE_FORMAT}
                 locale='pt-br'
                 maxDate={today}
-                selected={createdFilter?.from}
+                selected={createdFilter.from}
                 onChange={(date) => {
                   onCreatedFilterChanged({
                     ...modifiedFilter,
@@ -84,9 +88,10 @@ const AdvancedBibliographicSearchDateFilters: FC<Props> = ({
             compressed
             endDateControl={
               <EuiDatePicker
+                dateFormat={DAY_FIRST_DATE_FORMAT}
                 locale='pt-br'
                 maxDate={today}
-                selected={modifiedFilter?.to}
+                selected={modifiedFilter.to}
                 onChange={(date) => {
                   onModifiedFilterChanged({
                     ...modifiedFilter,
@@ -98,9 +103,10 @@ const AdvancedBibliographicSearchDateFilters: FC<Props> = ({
             startDateControl={
               <EuiDatePicker
                 compressed
+                dateFormat={DAY_FIRST_DATE_FORMAT}
                 locale='pt-br'
                 maxDate={today}
-                selected={modifiedFilter?.from}
+                selected={modifiedFilter.from}
                 onChange={(date) => {
                   onModifiedFilterChanged({
                     ...modifiedFilter,

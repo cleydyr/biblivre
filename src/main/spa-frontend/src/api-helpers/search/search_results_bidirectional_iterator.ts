@@ -7,9 +7,7 @@ import type {
   SuccessfulSearchResponse,
 } from './response-types'
 
-class SearchResultsBidirectionalIterator
-  implements AsyncBidirectionalIterator<BibliographicRecord>
-{
+class SearchResultsBidirectionalIterator implements AsyncBidirectionalIterator<BibliographicRecord> {
   // private fields
   #searchResults: SuccessfulSearchResponse
 

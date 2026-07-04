@@ -1,0 +1,172 @@
+import { EuiBadge } from '@elastic/eui'
+import { FormattedMessage, useIntl } from 'react-intl'
+
+import { useUserType } from '../api-helpers/user-type/hooks'
+
+import type { Moment } from 'moment'
+
+import type { User } from '../api-helpers/circulation/response-types'
+import type { CirculationSearchPayload } from '../api-helpers/circulation/types'
+import type { EuiDescriptionListItem } from '../components/types'
+import type { ISO8601Date } from '../types'
+
+import type { CirculationSearchControlConfig } from './types'
+
+export function useUserPanelDescriptionListItems(
+  user: User,
+): EuiDescriptionListItem[] {
+  const { formatMessage } = useIntl()
+
+  return [
+    {
+      title: formatMessage({
+        defaultMessage: 'Nome',
+        id: 'circulation.user.flyout.name',
+      }),
+      description: user.name,
+    },
+    {
+      title: formatMessage({
+        defaultMessage: 'Matrícula',
+        id: 'circulation.user.flyout.enrollment',
+      }),
+      description: user.enrollment || String(user.id),
+    },
+    {
+      title: formatMessage({
+        defaultMessage: 'Tipo',
+        id: 'circulation.user.flyout.type',
+      }),
+      description: <UserTypeBadge type={user.type} />,
+    },
+    {
+      title: formatMessage({
+        defaultMessage: 'Situação',
+        id: 'circulation.user.flyout.status',
+      }),
+      description: <UserStatusBadge status={user.status} />,
+    },
+    {
+      title: formatMessage({
+        defaultMessage: 'E-mail',
+        id: 'circulation.user.flyout.email',
+      }),
+      description: user.fields.email,
+    },
+  ].filter((item) => item.description)
+}
+
+const UserTypeBadge = ({ type }: { type: User['type'] }) => {
+  const { data: userType = null, isLoading } = useUserType(type)
+
+  if (isLoading) {
+    return null
+  }
+
+  return <EuiBadge color='default'>{userType?.name}</EuiBadge>
+}
+
+const UserStatusBadge = ({ status }: { status: User['status'] }) => {
+  switch (status) {
+    case 'active':
+      return (
+        <EuiBadge color='success'>
+          <FormattedMessage
+            defaultMessage='Ativo'
+            id='circulation.users.table.status.active'
+          />
+        </EuiBadge>
+      )
+    case 'inactive':
+      return (
+        <EuiBadge color='danger'>
+          <FormattedMessage
+            defaultMessage='Inativo'
+            id='circulation.users.table.status.inactive'
+          />
+        </EuiBadge>
+      )
+    case 'blocked':
+      return (
+        <EuiBadge color='warning'>
+          <FormattedMessage
+            defaultMessage='Bloqueado'
+            id='circulation.users.table.status.blocked'
+          />
+        </EuiBadge>
+      )
+    case 'pending_issues':
+      return (
+        <EuiBadge color='default'>
+          <FormattedMessage
+            defaultMessage='Com pendências'
+            id='circulation.users.table.status.pending_issues'
+          />
+        </EuiBadge>
+      )
+  }
+}
+
+export function formatCirculationDateTime(date: string | undefined): string {
+  if (!date) {
+    return '-'
+  }
+
+  return Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date(date))
+}
+
+export function formatCirculationDate(date: string | undefined): string {
+  if (!date) {
+    return '-'
+  }
+
+  return Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'short',
+  }).format(new Date(date))
+}
+
+export function toISO8601Date(date: Moment | null): ISO8601Date | '' {
+  return date ? (date.toISOString() as ISO8601Date) : ''
+}
+
+export function toCirculationSearchPayload(
+  searchConfig: CirculationSearchControlConfig,
+): CirculationSearchPayload {
+  const { query, searchField, isAdvancedSearch } = searchConfig
+
+  if (isAdvancedSearch) {
+    const {
+      createdAtRange,
+      modifiedAtRange,
+      usersWithPendingFines,
+      usersWithLateLendings,
+      usersWhoHaveLoginAccess,
+      usersWithoutUserCard,
+      inactiveUsersOnly,
+    } = searchConfig.filters
+
+    return {
+      query,
+      field: searchField === 'name_or_id' ? '' : searchField,
+      mode: 'advanced',
+      created_start: toISO8601Date(createdAtRange.from),
+      created_end: toISO8601Date(createdAtRange.to),
+      modified_start: toISO8601Date(modifiedAtRange.from),
+      modified_end: toISO8601Date(modifiedAtRange.to),
+      users_with_pending_fines: usersWithPendingFines,
+      users_with_late_lendings: usersWithLateLendings,
+      users_who_have_login_access: usersWhoHaveLoginAccess,
+      users_without_user_card: usersWithoutUserCard,
+      inactive_users_only: inactiveUsersOnly,
+    }
+  }
+
+  return {
+    query,
+    field: searchField === 'name_or_id' ? '' : searchField,
+    mode: 'simple',
+  }
+}

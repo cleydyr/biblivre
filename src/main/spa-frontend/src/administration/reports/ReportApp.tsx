@@ -15,6 +15,8 @@ import {
 } from '@elastic/eui'
 import { useCallback, useState } from 'react'
 
+import { BIBLIVRE_ENDPOINT } from '../../api-helpers/constants'
+
 import {
   useAddReportMutation,
   useDeleteReportMutation,
@@ -22,8 +24,8 @@ import {
   useListReportsQuery,
   useUpdateReportMutation,
 } from './queries'
-import ReportFillForm from './ReportFillForm'
 import { getRestApiErrorMessage } from './reportApiErrors'
+import ReportFillForm from './ReportFillForm'
 import { getShortTypeName } from './reportParameterFields'
 import ReportTemplateTable from './ReportTemplateTable'
 import UploadReportForm from './UploadReportForm'
@@ -69,7 +71,9 @@ const formatUploadParameterSummary = (report: ReportTemplate): string => {
   }
 
   return `Parâmetros detectados: ${parameters
-    .map((parameter) => `${parameter.name} (${getShortTypeName(parameter.type)})`)
+    .map(
+      (parameter) => `${parameter.name} (${getShortTypeName(parameter.type)})`,
+    )
     .join(', ')}.`
 }
 
@@ -178,10 +182,10 @@ export default function ReportApp() {
   })
 
   const downloadReportFillBanner = screen === 'fill' && reportFill && (
-    <EuiCallOut>
+    <EuiCallOut announceOnMount>
       <p>
         O relatório foi gerado com sucesso.{' '}
-        <a href={`${import.meta.env.VITE_BIBLIVRE_ENDPOINT}/${reportFill.uri}`}>
+        <a href={`${BIBLIVRE_ENDPOINT}/${reportFill.uri}`}>
           Clique para baixar o relatório gerado.
         </a>
       </p>
@@ -358,6 +362,7 @@ const EditReportForm = ({ report, onSubmit }: ReportFormProps) => {
         <EuiFieldText
           aria-required
           required
+          isInvalid={name.length === 0}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />

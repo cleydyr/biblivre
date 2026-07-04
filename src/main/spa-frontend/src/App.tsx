@@ -9,6 +9,7 @@ import BibliographicRecordPage from './open_record/BibliographicRecordPage'
 import BibliographicSearchPage from './search/BibliographicSearchPage'
 import AppHeader from './AppHeader'
 import AppSideNavigation from './AppSideNavigation'
+import CirculationPage from './circulation'
 
 import type { RouteObject } from 'react-router-dom'
 
@@ -52,6 +53,13 @@ const useAppRoutes = (): RouteObject[] => [
     path: 'record/:recordId',
     element: <BibliographicRecordPage />,
   },
+  useCheckedMenuRoute(
+    {
+      path: 'circulation_user',
+      element: <CirculationPage />,
+    },
+    ACTIONS.CIRCULATION_USER,
+  ),
   useCheckedMenuRoute(
     {
       path: 'reports',

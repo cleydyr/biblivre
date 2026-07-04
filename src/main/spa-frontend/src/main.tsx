@@ -1,8 +1,9 @@
+import '@vitejs/plugin-react-swc/preamble'
 import './moment/locale/pt-br'
 
+import { EuiContext } from '@elastic/eui'
 import flagsmith from '@flagsmith/flagsmith'
 import { FlagsmithProvider } from '@flagsmith/flagsmith/react'
-import { EuiContext } from '@elastic/eui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { StrictMode } from 'react'
@@ -12,8 +13,11 @@ import { BrowserRouter } from 'react-router-dom'
 
 import messages from '../lang-compiled.json'
 
+import {
+  getFlagsmithApiUrl,
+  getFlagsmithEnvironmentId,
+} from './config/flagsmith-env.ts'
 import AppWithTheme from './AppWithTheme.tsx'
-import { getFlagsmithEnvironmentId, getFlagsmithApiUrl } from './config/flagsmith-env.ts'
 import { i18n } from './i18n.ts'
 
 // Create a client
@@ -27,7 +31,6 @@ createRoot(document.getElementById('root')!).render(
         options={{
           environmentID: getFlagsmithEnvironmentId(),
           api: getFlagsmithApiUrl(),
-          
         }}
       >
         <IntlProvider locale='pt-BR' messages={messages}>

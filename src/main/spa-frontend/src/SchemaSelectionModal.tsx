@@ -26,6 +26,17 @@ type Props = {
   onConfirm: (schemaId: string) => void
 }
 
+function resolveSelectedSchemaId(
+  initialSchemaId: string | null,
+  schemas: SchemaListItem[],
+): string {
+  if (initialSchemaId !== null) {
+    return initialSchemaId
+  }
+
+  return schemas[0]?.schema ?? ''
+}
+
 const SchemaSelectionModal: FC<Props> = ({
   isOpen,
   schemas,
@@ -33,13 +44,13 @@ const SchemaSelectionModal: FC<Props> = ({
   onClose,
   onConfirm,
 }) => {
-  const [selectedId, setSelectedId] = useState(
-    () => initialSchemaId ?? schemas[0]?.schema ?? '',
+  const [selectedId, setSelectedId] = useState(() =>
+    resolveSelectedSchemaId(initialSchemaId, schemas),
   )
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedId(initialSchemaId ?? schemas[0]?.schema ?? '')
+      setSelectedId(resolveSelectedSchemaId(initialSchemaId, schemas))
     }
   }, [initialSchemaId, isOpen, schemas])
 

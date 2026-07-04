@@ -5,10 +5,6 @@ export default defineMessages({
     defaultMessage: 'Alternar entre modo claro e escuro',
     id: 'app.dark_mode.button-description',
   },
-  schemaChooseLibrary: {
-    defaultMessage: 'Biblioteca',
-    id: 'app.header.schema.choose_library',
-  },
   schemaModalCancel: {
     defaultMessage: 'Cancelar',
     id: 'app.schema.modal.cancel',

@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react'
 import { IntlProvider } from 'react-intl'
 import { describe, expect, it } from 'vitest'
 
-import type { ComponentProps } from 'react'
-
 import LibraryHeading from './LibraryHeading'
+
+import type { ComponentProps } from 'react'
 
 function renderHeading(props: ComponentProps<typeof LibraryHeading>) {
   return render(

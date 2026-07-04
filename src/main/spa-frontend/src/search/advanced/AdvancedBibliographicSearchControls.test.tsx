@@ -8,14 +8,14 @@ import { FIELDS } from '../../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControls from './AdvancedBibliographicSearchControls'
 
+import type { ComponentProps } from 'react'
+
 vi.mock('../../api-helpers/indexing-groups/hooks', () => ({
   useBibliographicIndexingGroups: () => ({
     data: biblioIndexingGroupsFixture,
     isLoading: false,
   }),
 }))
-
-import type { ComponentProps } from 'react'
 
 const renderComponent = (
   props: Partial<ComponentProps<typeof AdvancedBibliographicSearchControls>>,

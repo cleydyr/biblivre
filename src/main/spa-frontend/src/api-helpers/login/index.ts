@@ -1,4 +1,3 @@
-import { MODULES } from '../constants'
 import { fetchJSONFromLegacyEndpoint } from '..'
 
 import type {
@@ -9,7 +8,7 @@ import type {
 
 export async function fetchLoginSession(): Promise<LoginSessionResponse> {
   const data = await fetchJSONFromLegacyEndpoint({
-    module: MODULES.LOGIN,
+    module: 'login',
     action: 'session',
   })
 
@@ -20,7 +19,7 @@ export async function logoutWithLegacyEndpoint(): Promise<
   SuccessfulResponse | NonSuccessfulResponse
 > {
   const data = await fetchJSONFromLegacyEndpoint({
-    module: MODULES.LOGIN,
+    module: 'login',
     action: 'logout',
   })
 
@@ -35,7 +34,7 @@ export async function loginWithLegacyEndpoint({
   password: string
 }): Promise<SuccessfulResponse | NonSuccessfulResponse> {
   const data = await fetchJSONFromLegacyEndpoint({
-    module: MODULES.LOGIN,
+    module: 'login',
     action: 'login',
     username,
     password,

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { Configuration, IndexingGroupApi } from '../../generated-sources'
-
 import { BIBLIVRE_ENDPOINT } from '../constants'
 import { defaultRestApiFetchOptions } from '../rest-api'
 

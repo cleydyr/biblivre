@@ -21,7 +21,10 @@ const LibraryHeading: FC<Props> = ({
 
   return (
     <div css={{ minWidth: 0, maxWidth: subtitleMaxWidth }}>
-      <EuiText css={{ fontWeight: euiTheme.font.weight.semiBold }} size={titleSize}>
+      <EuiText
+        css={{ fontWeight: euiTheme.font.weight.semiBold }}
+        size={titleSize}
+      >
         {name}
       </EuiText>
       {trimmedSubtitle ? (

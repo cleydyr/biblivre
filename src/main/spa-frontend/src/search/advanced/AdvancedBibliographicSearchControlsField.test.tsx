@@ -8,16 +8,16 @@ import { FIELDS } from '../../api-helpers/search/constants'
 
 import AdvancedBibliographicSearchControlsField from './AdvancedBibliographicSearchControlsField'
 
+import type { ComponentProps } from 'react'
+
+import type { AdvancedTextQueryTerm } from '../../api-helpers/search/types'
+
 vi.mock('../../api-helpers/indexing-groups/hooks', () => ({
   useBibliographicIndexingGroups: () => ({
     data: biblioIndexingGroupsFixture,
     isLoading: false,
   }),
 }))
-
-import type { ComponentProps } from 'react'
-
-import type { AdvancedTextQueryTerm } from '../../api-helpers/search/types'
 
 const mockMessages = {
   'search.bibliographic.operator': 'Operador',

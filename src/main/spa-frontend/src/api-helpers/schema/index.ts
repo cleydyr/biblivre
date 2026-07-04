@@ -1,11 +1,10 @@
-import { MODULES } from '../constants'
 import { fetchJSONFromLegacyEndpoint } from '..'
 
 import type { SchemasListResponse } from '../types'
 
 export async function fetchSchemasList(): Promise<SchemasListResponse> {
   const data = await fetchJSONFromLegacyEndpoint({
-    module: MODULES.MULTI_SCHEMA,
+    module: 'multi_schema',
     action: 'list',
   })
 

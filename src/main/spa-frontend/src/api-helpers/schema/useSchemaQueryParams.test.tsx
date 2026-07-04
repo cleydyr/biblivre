@@ -1,18 +1,21 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, renderHook, waitFor } from '@testing-library/react'
-import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 import { MemoryRouter, useSearchParams } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AUTH_SESSION_QUERY_KEY } from '../login/hooks'
 import { SCHEMA_STORAGE_KEY } from '../constants'
-import type { SchemaListItem } from '../types'
+import { AUTH_SESSION_QUERY_KEY } from '../login/hooks'
+
 import {
   SCHEMA_QUERY_PARAM,
   SHOW_SELECT_SCHEMA_QUERY_PARAM,
   useSchemaQueryParams,
 } from './useSchemaQueryParams'
+
+import type { ReactNode } from 'react'
+
+import type { SchemaListItem } from '../types'
 
 const schemaA: SchemaListItem = { schema: 'schema-a', name: 'Schema A' }
 const schemaB: SchemaListItem = { schema: 'schema-b', name: 'Schema B' }

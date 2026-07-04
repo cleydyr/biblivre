@@ -1,5 +1,5 @@
-import type { UUID } from '../../search/advanced/types'
-import type { NonSuccessfulResponse, SuccessfulResponse } from '../types'
+import type { UUID } from '../../types'
+import type { NonSuccessfulResponse, PaginatedResponsePayload } from '../types'
 
 import type { DIGITS, INDICATORS } from './constants'
 
@@ -94,23 +94,12 @@ export interface IndexingGroup {
   datafields?: string
 }
 
-type SearchResult = {
-  record_count: number
-  record_limit: number
-  records_per_page: number
+export type SuccessfulSearchResponse = PaginatedResponsePayload<
+  BibliographicRecord,
+  'id'
+> & {
   indexing_group_count: IndexingGroupCount[]
-  data: BibliographicRecord[]
-  page: number
-  time: number
-  id: number
-  page_count: number
   record_type: string
-}
-
-// Main search response structure
-export interface SuccessfulSearchResponse extends SuccessfulResponse {
-  search: SearchResult
-  indexing_groups: IndexingGroup[]
 }
 
 export type SearchResponse = SuccessfulSearchResponse | NonSuccessfulResponse
@@ -147,18 +136,6 @@ export interface Holding {
 export interface Field {
   datafield: MarcDatafield
   value: string
-}
-
-export type Lending = {
-  id: number
-  holding_id: number
-  user_id: number
-  previous_lending_id: number
-  expected_return_date: string
-  return_date: string
-  daily_fine: number
-  days_late: number
-  estimated_fine: number
 }
 
 export interface OpenResult extends BibliographicRecord {

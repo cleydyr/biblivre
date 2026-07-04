@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
-
 import { useFeatureFlag } from '../config/features'
+
+import type { ReactNode } from 'react'
 
 type FeatureFlagProps = {
   name: string

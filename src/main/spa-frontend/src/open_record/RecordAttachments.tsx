@@ -9,6 +9,8 @@ import {
 } from '@elastic/eui'
 import { FormattedMessage } from 'react-intl'
 
+import { BIBLIVRE_ENDPOINT } from '../api-helpers/constants'
+
 import type { FC } from 'react'
 
 import type {
@@ -21,7 +23,7 @@ type Props = {
 }
 
 const RecordAttachments: FC<Props> = ({ record }) => {
-  const attachments = record.attachments || []
+  const attachments = record.attachments
 
   if (attachments.length === 0) {
     return (
@@ -34,7 +36,7 @@ const RecordAttachments: FC<Props> = ({ record }) => {
             />
           </p>
         }
-        icon={<EuiIcon size='xl' type='documents' />}
+        icon={<EuiIcon aria-hidden size='xl' type='documents' />}
         title={
           <h3>
             <FormattedMessage
@@ -83,7 +85,7 @@ const RecordAttachments: FC<Props> = ({ record }) => {
 }
 
 function getAttachmentUrl(attachment: BibliographicRecordAttachment): string {
-  return `${import.meta.env.VITE_BIBLIVRE_ENDPOINT}/${attachment.uri}`
+  return `${BIBLIVRE_ENDPOINT}/${attachment.uri}`
 }
 
 export default RecordAttachments
