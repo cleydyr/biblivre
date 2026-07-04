@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.org.biblivre</groupId>
 	<artifactId>biblivre</artifactId>
@@ -638,9 +639,13 @@
 						<configuration>
 							<target>
 								<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-								<loadfile property="built.content" srcFile="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html"/>
-								<propertyregex property="js.bundle" input="${built.content}" regexp="assets/index-[^&quot;]+\.js" select="\0" casesensitive="false"/>
-								<copy file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template.in" tofile="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template" overwrite="true">
+								<loadfile property="built.content"
+										srcFile="${project.basedir}/src/main/resources/META-INF/resources/static/spa/index.html"/>
+								<propertyregex property="js.bundle" input="${built.content}"
+											regexp="assets/index-[^&quot;]+\.js" select="\0" casesensitive="false"/>
+								<copy file="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template.in"
+									tofile="${project.basedir}/src/main/webapp/WEB-INF/templates/spa.template"
+									overwrite="true">
 									<filterset>
 										<filter token="JS_BUNDLE" value="${js.bundle}"/>
 									</filterset>
@@ -711,7 +716,8 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<skipTests>false</skipTests>
-							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
+							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens
+								java.base/java.lang=ALL-UNNAMED
 							</argLine>
 						</configuration>
 					</plugin>
@@ -799,7 +805,9 @@
 							<parallel>classes</parallel>
 							<threadCount>2</threadCount>
 							<perCoreThreadCount>false</perCoreThreadCount>
-							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+							<argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens
+								java.base/java.lang=ALL-UNNAMED
+							</argLine>
 						</configuration>
 					</plugin>
 				</plugins>
