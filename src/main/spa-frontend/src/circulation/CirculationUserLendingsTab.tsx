@@ -22,14 +22,13 @@ import type { EuiDescriptionListItem } from '../components/types'
 
 type Props = {
   userId: number
-  enabled: boolean
 }
 
-const CirculationUserLendingsTab: FC<Props> = ({ userId, enabled }) => {
+const CirculationUserLendingsTab: FC<Props> = ({ userId }) => {
   const { data, isFetching, isError, isSuccess } = useCirculationUserTabData(
     userId,
     'lendings',
-    enabled,
+    true,
   )
 
   if (isError) {
