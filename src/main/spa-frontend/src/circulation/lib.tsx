@@ -1,6 +1,8 @@
 import { EuiBadge } from '@elastic/eui'
 import { FormattedMessage, useIntl } from 'react-intl'
 
+import { BIBLIVRE_ENDPOINT } from '../api-helpers/constants'
+import { getStoredSchema } from '../api-helpers/schema/storage'
 import { useUserType } from '../api-helpers/user-type/hooks'
 
 import type { Moment } from 'moment'
@@ -11,6 +13,15 @@ import type { EuiDescriptionListItem } from '../components/types'
 import type { ISO8601Date } from '../types'
 
 import type { CirculationSearchControlConfig } from './types'
+
+export function getUserPhotoUrl(photoId: string): string {
+  const schema = getStoredSchema()
+  const mediaPath = schema
+    ? `${schema}/DigitalMediaController/?id=${encodeURIComponent(photoId)}`
+    : `DigitalMediaController/?id=${encodeURIComponent(photoId)}`
+
+  return `${BIBLIVRE_ENDPOINT}/${mediaPath}`
+}
 
 export function useUserPanelDescriptionListItems(
   user: User,
