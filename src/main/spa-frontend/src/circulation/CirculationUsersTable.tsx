@@ -14,7 +14,7 @@ import type { FC } from 'react'
 import type { User } from '../api-helpers/circulation/response-types'
 
 type CirculationUsersTableProps = {
-  users: User[] | undefined
+  users: User[]
   isLoading: boolean
   onUserDetailsClick: (user: User) => void
   pagination: Pagination | undefined
@@ -29,25 +29,6 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
   onPaginate,
 }) => {
   const { formatMessage } = useIntl()
-
-  if (!users) {
-    return (
-      <EuiEmptyPrompt
-        body={
-          <FormattedMessage
-            defaultMessage='Não foi possível encontrar nenhum usuário com os termos de busca e filtros aplicados'
-            id='circulation.users.table.empty.body'
-          />
-        }
-        title={
-          <FormattedMessage
-            defaultMessage='Nenhum usuário encontrado'
-            id='circulation.users.table.empty.title'
-          />
-        }
-      />
-    )
-  }
 
   const columns: Array<EuiBasicTableColumn<User>> = [
     {
@@ -124,6 +105,22 @@ const CirculationUsersTable: FC<CirculationUsersTableProps> = ({
       columns={columns}
       items={users}
       loading={isLoading}
+      noItemsMessage={
+        <EuiEmptyPrompt
+          body={
+            <FormattedMessage
+              defaultMessage='Não foi possível encontrar nenhum usuário com os termos de busca e filtros aplicados'
+              id='circulation.users.table.empty.body'
+            />
+          }
+          title={
+            <FormattedMessage
+              defaultMessage='Nenhum usuário encontrado'
+              id='circulation.users.table.empty.title'
+            />
+          }
+        />
+      }
       pagination={
         pagination && {
           ...pagination,
