@@ -13,6 +13,7 @@ export type User = Auditable<{
   loginId: number
   name: string
   id: number
+  photo_id?: string
   type: number
   fields: {
     birthday: ISO8601Date
